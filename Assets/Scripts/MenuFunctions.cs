@@ -6,9 +6,13 @@ using UnityEngine.UI;
 public class MenuFunctions : MonoBehaviour
 {
     public GameObject[] allMenus;
+    public Button[] buttons;
+    private int currentMenu;
+    private int noMenu = 10;
+
+
 
     public GameObject menus;
-    private int currentMenu;
 
     MenuExtender extensionScript;
 
@@ -19,106 +23,67 @@ public class MenuFunctions : MonoBehaviour
 
     private void Start()
     {
-        extensionScript = menus.GetComponent<MenuExtender>();
+        currentMenu = noMenu;
     }
 
     private void Update()
     {
         // het huidige menu wordt zichtbaar gemaakt
-        allMenus[currentMenu].SetActive(true);
-
+        if (currentMenu != noMenu) allMenus[currentMenu].SetActive(true);
+        
         // alle andere menus worden ontzichtbaar gemaakt.
-        for (int i=0; i<allMenus.Length; i++)
+        for (int i = 0; i < allMenus.Length; i++)
         {
             if (i != currentMenu) allMenus[i].SetActive(false);
         }
     }
 
-    public void DatumTijd()
+    public void One()
     {
         DecideMenu(0);
-        Extension();
-        Back();
+        Back(allMenus[0], buttons[0]);
     }
 
-    public void Weer()
+    public void Two()
     {
         DecideMenu(1);
-        Extension();
-        Back();
+        Back(allMenus[1], buttons[1]);
     }
 
-    public void Zoeken()
+    public void Three()
     {
         DecideMenu(2);
-        Extension();
-        Back();
+        Back(allMenus[2], buttons[2]);
     }
 
-    public void Uploaden()
+    public void Four()
     {
         DecideMenu(3);
-        Extension();
-        Back();
+        Back(allMenus[3], buttons[3]);
     }
 
-    public void PlaatsenGebouw()
-    {
-        DecideMenu(4);
-        Extension();
-        Back();
-    }
-
-    public void Downloaden()
-    {
-        DecideMenu(5);
-        Extension();
-        Back();
-    }
-
-    public void Saven()
-    {
-        DecideMenu(6);
-        Extension();
-        Back();
-    }
-
-    public void Visualisatie()
-    {
-        DecideMenu(7);
-        Extension();
-        Back();
-    }
-
-    public void Opties()
-    {
-        DecideMenu(8);
-        Extension();
-        Back();
-    }
 
     // kiest het huidige menu
     private void DecideMenu(int _currentMenu)
     {
-        // het huidige menu verandert pas als het menu weer achter de opties is verdwenen
-        if (menus.transform.position.x == 0) currentMenu = _currentMenu;
+        currentMenu = _currentMenu;
     }
 
-    private void Extension()
+    private void Back(GameObject menu, Button button)
     {
-        // het menu wordt uitgeklapt
-        if (menus.transform.position.x == 0)
+        ColorBlock colors = button.colors;
+
+        if (menu.activeSelf)
         {
-            extensionScript.extend = true;
+            currentMenu = noMenu;
+
+            colors.highlightedColor = new Color(0.094f, 0.094f, 0.094f);
+            button.colors = colors;
         }
-    }
-
-    private void Back()
-    {
-        // het menu wordt ingeklapt
-        if (menus.transform.position.x == extensionScript.extensionDistance)
+        else
         {
-            extensionScript.goBack = true;
+            colors.highlightedColor = Color.red;
+            button.colors = colors;
         }
     }
 
