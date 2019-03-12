@@ -15,9 +15,4 @@ public class MinimapBehavior : MonoBehaviour
         //eulerRotation = new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, transform.eulerAngles.z);
         //transform.rotation = Quaternion.Euler(eulerRotation);
     }
-
-    private void ShowLocation()
-    {
-
-    }
 }

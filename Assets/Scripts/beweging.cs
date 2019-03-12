@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class beweging : MonoBehaviour
 {
     public Camera cam;
-    public TextMeshProUGUI zoomWarning;
 
     private const float zoomSpeed = 0.3f;
     private const float maxZoomOut = 100f;
