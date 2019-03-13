@@ -1,34 +1,87 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using UnityEngine.UI;
-//using TMPro;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
-//public class TimeController : MonoBehaviour
-//{
-//    public Scrollbar scrollBar;
+public class TimeController : MonoBehaviour
+{
+    public TextMeshProUGUI hours;
+    public TextMeshProUGUI minutes;
+    public TextMeshProUGUI time;
+    public GameObject menu;
 
-//    public TextMeshProUGUI timeText;
-//    private TextMeshProUGUI _timeText;
+    private int _hours, _minutes;
 
-//    private void Start()
-//    {
-//        _timeText = timeText.GetComponent<TextMeshProUGUI>();
-//    }
+    public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
 
-//    private void Update()
-//    {
-//        if (scrollBar.value == 0) _timeText.text = "00:00";
-//        else if (scrollBar.value == (float) 1 / 8) _timeText.text = "03:00";
-//        else if (scrollBar.value == (float) 2 / 8) _timeText.text = "06:00";
-//        else if (scrollBar.value == (float) 3 / 8) _timeText.text = "09:00";
-//        else if (scrollBar.value == (float) 4 / 8) _timeText.text = "12:00";
-//        else if (scrollBar.value == (float) 5 / 8) _timeText.text = "15:00";
-//        else if (scrollBar.value == (float) 6 / 8) _timeText.text = "18:00";
-//        else if (scrollBar.value == (float) 7 / 8) _timeText.text = "21:00";
-//        else
-//        {
-//            _timeText.text = "23:59";
-//        }
-//    }
-//}
+    private void Update()
+    {
+        if (_hours < 10)
+        {
+            hours.GetComponent<TextMeshProUGUI>().text = "0" + _hours.ToString();
+            time.GetComponent<TextMeshProUGUI>().text = "0" + _hours.ToString() + ":" + _minutes.ToString();
+        }
+        else
+        {
+            hours.GetComponent<TextMeshProUGUI>().text = _hours.ToString();
+            time.GetComponent<TextMeshProUGUI>().text = _hours.ToString() + ":" + _minutes.ToString();
+        }
+
+        if (_minutes < 10)
+        {
+            minutes.GetComponent<TextMeshProUGUI>().text = "0" + _minutes.ToString();
+            time.GetComponent<TextMeshProUGUI>().text = _hours.ToString() + ":" + "0" + _minutes.ToString();
+        }
+        else
+        {
+            minutes.GetComponent<TextMeshProUGUI>().text = _minutes.ToString();
+            time.GetComponent<TextMeshProUGUI>().text = _hours.ToString() + ":" + _minutes.ToString();
+        }
+    }
+
+    public void MenuController()
+    {
+        if (menu.activeSelf) menu.SetActive(false);
+        else
+        {
+            menu.SetActive(true);
+        }
+    }
+
+    public void IncreaseMinutes()
+    {
+        if (_minutes >= 59) _minutes = 1;
+        else
+        {
+            _minutes++;
+        }
+    }
+
+    public void IncreaseHours()
+    {
+        if (_hours >= 23) _hours = 0;
+        else
+        {
+            _hours++;
+        }
+    }
+
+    public void DecreaseMinutes()
+    {
+        if (_minutes <= 0) _minutes = 59;
+        else
+        {
+            _minutes--;
+        }
+    }
+
+    public void DecreaseHours()
+    {
+        if (_hours <= 0) _hours = 23;
+        else
+        {
+            _hours--;
+        }
+    }
+}

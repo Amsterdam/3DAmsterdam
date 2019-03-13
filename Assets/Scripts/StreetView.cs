@@ -5,21 +5,24 @@ using UnityEngine;
 public class StreetView : MonoBehaviour
 {
     private bool moveToStreet = false;
-    private Vector3 startPos;
-    private Vector3 endPos = new Vector3(0, 10, 0);
+    private Vector3 endPos = new Vector3(0, 1, 0);
 
     public Camera cam;
 
+    public float speed;
+
     private void Start()
     {
-        startPos = cam.transform.position;
     }
 
     private void LateUpdate()
     {
-        if (moveToStreet) cam.transform.position = Vector3.Lerp(startPos, endPos, Time.deltaTime * 1f);
+        if (moveToStreet) cam.transform.position = Vector3.Lerp(cam.transform.position, endPos, speed * Time.deltaTime);
 
-        //if (Camera.main.transform.position == endPos) moveToStreet = false;
+        if (new Vector3(cam.transform.position.x, (int)cam.transform.position.y, cam.transform.position.z) == endPos)
+        {
+            moveToStreet = false;
+        }
     }
 
     public void StreetCam()

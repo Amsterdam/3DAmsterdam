@@ -10,12 +10,6 @@ public class MenuFunctions : MonoBehaviour
     private int currentMenu;
     private int noMenu = 10;
 
-
-
-    public GameObject menus;
-
-    MenuExtender extensionScript;
-
     public Toggle OptionsToggleOne;
     public Toggle OptionsToggleTwo;
     public GameObject coordinatesPanel;
@@ -29,13 +23,18 @@ public class MenuFunctions : MonoBehaviour
     private void Update()
     {
         // het huidige menu wordt zichtbaar gemaakt
-        if (currentMenu != noMenu) allMenus[currentMenu].SetActive(true);
+        if (currentMenu != noMenu)
+        {
+            allMenus[currentMenu].SetActive(true);
+        }
         
         // alle andere menus worden ontzichtbaar gemaakt.
         for (int i = 0; i < allMenus.Length; i++)
         {
             if (i != currentMenu) allMenus[i].SetActive(false);
         }
+
+        ToggleMapAndCoordinates();
     }
 
     public void One()
@@ -60,6 +59,11 @@ public class MenuFunctions : MonoBehaviour
     {
         DecideMenu(3);
         Back(allMenus[3], buttons[3]);
+    }
+
+    public void Exit()
+    {
+        currentMenu = noMenu;
     }
 
 
@@ -88,7 +92,7 @@ public class MenuFunctions : MonoBehaviour
     }
 
     // zet minimap en coordinates panelen uit/aan onder opties menu
-    public void ToggleCoordinates()
+    public void ToggleMapAndCoordinates()
     {
         if (OptionsToggleOne.GetComponent<Toggle>().isOn)
         {
