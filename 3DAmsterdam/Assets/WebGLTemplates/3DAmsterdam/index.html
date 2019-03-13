@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | %UNITY_WEB_NAME%</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/Build-test.json", {
+  compatibilityCheck: function (gameInstance, onsuccess, onerror) {
+    if (!UnityLoader.SystemInfo.hasWebGL) {
+      gameInstance.popup("Your browser does not support WebGL",
+        [{text: "OK", callback: onerror}]);
+    } else if (UnityLoader.SystemInfo.mobile) {
+      gameInstance.popup("Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway.",
+        [{text: "OK", callback: onsuccess}]);
+    } else if (["Edge", "Firefox", "Chrome", "Safari"].indexOf(UnityLoader.SystemInfo.browser) == -1) {
+      gameInstance.popup("Please note that your browser is not currently supported for this Unity WebGL content. Press OK if you wish to continue anyway.",
+        [{text: "OK", callback: onsuccess}]);
+    } else {
+      onsuccess();
+    }
+  },
+  onProgress: UnityProgress,
+});
+	
+	</script>
+	
+	<!-- Matomo -->
+<script type="text/javascript">
+ var _paq = _paq || [];
+ /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+ _paq.push(["setCookieDomain", "*.acc.3d.amsterdam.nl"]);
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+   var u="//piwik.data.amsterdam.nl/";
+   _paq.push(['setTrackerUrl', u+'piwik.php']);
+   _paq.push(['setSiteId', '20']);
+   var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+   g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+</script>
+<!-- End Matomo Code -->
+  </head>
+  <body style="background-image: url('TemplateData/test.png');">
+    <div class="webgl-content">
+      <div id="gameContainer" style="width: %UNITY_WIDTH%px; height: %UNITY_HEIGHT%px"></div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
+        <div class="title">3D Amsterdam</div>
+      </div>
+    </div>
+  </body>
+</html>
