@@ -1,15 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StreetView : MonoBehaviour
 {
     private bool moveToStreet = false;
-    private Vector3 endPos = new Vector3(0, 1, 0);
+    private bool canClick = false;
+    private bool instanCam = false;
 
+    private Vector3 endPos;
+    private Vector3 mousePos;
+
+    public GameObject FPSCam;
     public Camera cam;
 
-    public float speed;
+    private float stopHeight = 1f;
+    public float lerpSpeed;
 
     private void Start()
     {
@@ -17,16 +24,45 @@ public class StreetView : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (moveToStreet) cam.transform.position = Vector3.Lerp(cam.transform.position, endPos, speed * Time.deltaTime);
+        Debug.Log(endPos);
 
-        if (new Vector3(cam.transform.position.x, (int)cam.transform.position.y, cam.transform.position.z) == endPos)
+        if (Input.GetMouseButtonDown(0) && canClick)
+        {
+            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+            // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
+            if (Physics.Raycast(ray, out hit))
+            {
+                mousePos = hit.point;
+            }
+
+            endPos = new Vector3(mousePos.x, stopHeight, mousePos.z);
+
+            canClick = false;
+            moveToStreet = true;
+        }
+
+        if (moveToStreet)
+        {
+            cam.transform.position = Vector3.Lerp(cam.transform.position, endPos, lerpSpeed * Time.deltaTime);
+        }
+
+        if ((cam.transform.position.y <= (stopHeight + 0.01f)) && instanCam)
         {
             moveToStreet = false;
+            instanCam = false;
+
+            cam.enabled = false;
+            Destroy(cam.GetComponent<AudioListener>());
+
+            FPSCam.transform.position = endPos;
         }
     }
 
     public void StreetCam()
     {
-        moveToStreet = true;
+        canClick = true;
+        instanCam = true;
     }
 }

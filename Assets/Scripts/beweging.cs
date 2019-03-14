@@ -189,7 +189,7 @@ public class beweging : MonoBehaviour
             if (!Input.GetMouseButton(0)) return;
 
             // de positie waar de muis heen beweegt wordt bijgehouden
-            Vector2 updatedPos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
+            Vector2 updatedPos = cam.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
 
             // de bewegingsfactor voor de camera wordt berekent
             Vector3 camMove = new Vector3(updatedPos.x * dragSpeed, 0, updatedPos.y * dragSpeed);
