@@ -1,17 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 using ConvertCoordinates;
 using BruTile;
-using UnityEditor;
 
+/// <summary>
+/// bepaalt elke frame welk deel van amsterdam in beeld is en stelt in als public Brutile.Extent in WGS84 beschikbaar
+/// </summary>
 public class CameraView : MonoBehaviour
 {
-    public GameObject lijn1;
-    public GameObject lijn2;
-    public GameObject lijn3;
-    public GameObject lijn4;
-    public GameObject contour;
+    //TekenZichtlijnen is voor debugging
+    //4 lijnen worden getekend van de camera naar de hoekpunten van het zichtveld op maaiveldniveau
+    //1 contour wordt getekend tussen de 4 lijen op maaiveldniveau
+    public bool TekenZichtlijnen = false;
+    public GameObject lijn1;    //gameobject met linerenderer met 2 points
+    public GameObject lijn2;    //gameobject met linerenderer met 2 points
+    public GameObject lijn3;    //gameobject met linerenderer met 2 points
+    public GameObject lijn4;    //gameobject met linerenderer met 2 points
+    public GameObject contour;  //gameobject met linerenderer met 4 points
+
     Vector3[] Contourcoordinaten;
     Vector3[] hoeken;
     Vector3 Camlocation;
@@ -19,7 +25,6 @@ public class CameraView : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CoordConvert.ReferenceWGS84 = new Vector3WGS(4.892504f, 52.373043f, 0);
         CameraExtent = CamExtent();
     }
 
@@ -49,20 +54,12 @@ public class CameraView : MonoBehaviour
     }
     private Extent CamExtent()
     {
-        // Zoomlevel en maximale kijkafstand bepalen op basis van de hoogte van de Camera
-        Camlocation = Camera.main.transform.localPosition;
-        int zoomLevel;
-        zoomLevel = 13;
-        float Maxafstand = 10000;
-        if (Camlocation.y < 1600) { zoomLevel = 14; Maxafstand = 6400; }
-        if (Camlocation.y < 800) { zoomLevel = 15; Maxafstand = 3200; }
-        if (Camlocation.y < 400) { zoomLevel = 16; Maxafstand = 1600; }
-        if (Camlocation.y < 200) { zoomLevel = 17; Maxafstand = 800; }
-        Maxafstand = 10000;
+        // locatie van de camera bepalen
+        Camlocation = transform.localPosition;
+        
         // bepalen welke UnityCoordinaten zichtbaar zijn in de hoeken van het scherm
         hoeken = new Vector3[4];
         hoeken[0] = GetHoekpunt("LinksBoven");
-        
         hoeken[1] = GetHoekpunt("RechtsBoven");
         hoeken[2] = GetHoekpunt("RechtsOnder");
         hoeken[3] = GetHoekpunt("LinksOnder");
@@ -77,32 +74,23 @@ public class CameraView : MonoBehaviour
             if (hoeken[i].x > UnityMax.x) { UnityMax.x = hoeken[i].x; }
             if (hoeken[i].z > UnityMax.z) { UnityMax.z = hoeken[i].z; }
         }
-        Contourcoordinaten = new Vector3[5];
-        Contourcoordinaten[0] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
-        Contourcoordinaten[1] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMin.z);
-        Contourcoordinaten[2] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMax.z);
-        Contourcoordinaten[3] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMax.z);
-        Contourcoordinaten[4] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
 
-        //setLineRenderer();
+        if (TekenZichtlijnen)
+        {
+            Contourcoordinaten = new Vector3[5];
+            Contourcoordinaten[0] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
+            Contourcoordinaten[1] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMin.z);
+            Contourcoordinaten[2] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMax.z);
+            Contourcoordinaten[3] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMax.z);
+            Contourcoordinaten[4] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
 
-
-        //// maximale en minimale X- en Z-waarden aanpassen aan de maximale zichtafastand
-        //if (UnityMin.x < Camlocation.x - Maxafstand) { UnityMin.x = Camlocation.x - Maxafstand; }
-        //if (UnityMin.z < Camlocation.z - Maxafstand) { UnityMin.z = Camlocation.z - Maxafstand; }
-        //if (UnityMax.x > Camlocation.x + Maxafstand) { UnityMax.x = Camlocation.x + Maxafstand; }
-        //if (UnityMax.z > Camlocation.z + Maxafstand) { UnityMax.z = Camlocation.z + Maxafstand; }
+            setLineRenderer();
+        }
+        
 
         // Maximale en Minimale X- en Z-unitywaarden omrekenen naar WGS84
         Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
         Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
-
-        // de maximale en minimale WGS84-coordinaten uitbreiden met 1 tegelafmeting
-        //double tegelbreedte = tilesize / Math.Pow(2, zoomLevel); //TileSize in Degrees
-        //WGSMin.lon = WGSMin.lon - tegelbreedte;
-        //WGSMax.lon = WGSMax.lon + (1.5*tegelbreedte);
-        //WGSMax.lat = WGSMax.lat + tegelbreedte;
-        //WGSMin.lat = WGSMin.lat - tegelbreedte;
 
         // gebied waarbinnen data geladen moet worden
         Extent Tempextent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
@@ -111,12 +99,10 @@ public class CameraView : MonoBehaviour
 
     private Vector3 GetHoekpunt(string hoek)
     {
-
         Vector2 Screenpos = new Vector2();
         if (hoek == "LinksBoven")
         {
             Screenpos.x = Camera.main.pixelRect.xMin;
-            
             Screenpos.y = Camera.main.pixelRect.yMax;
         }
         if (hoek == "RechtsBoven")
@@ -135,31 +121,29 @@ public class CameraView : MonoBehaviour
             Screenpos.y = Camera.main.pixelRect.yMin;
         }
         Vector3 output = new Vector3();
-        Vector3 linkerbovenhoekA;
+
+
+        Vector3 linkerbovenhoekA; //coordinaat op 10 eenheden van het scherm
         linkerbovenhoekA = Camera.main.ScreenToWorldPoint(new Vector3(Screenpos.x, Screenpos.y, 10));
-        Vector3 linkerbovenhoekB;
+        Vector3 linkerbovenhoekB;//coordinaat op 3010 eenheden van het scherm
         linkerbovenhoekB = Camera.main.ScreenToWorldPoint(new Vector3(Screenpos.x, Screenpos.y, 3010));
         
-
+        // de richting van de lijn bepalen
         Vector3 richting = linkerbovenhoekA - linkerbovenhoekB;
-        float factor;
-        if (richting.y < 0)
+        float factor; //factor waarmee de Richtingvector vermenigvuldigd moet worden om op het maaiveld te stoppen
+        if (richting.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
         {
             factor = 1;
         }
         else
         {
-            factor = ((Camera.main.transform.localPosition.y - 40) / richting.y);
+            factor = ((Camera.main.transform.localPosition.y - 40) / richting.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
         }
 
-
-
-
+        // uiteindelijke X, Y, en Z locatie bepalen waar de zichtlijn eindigt.
         output.x = Camera.main.transform.localPosition.x - (factor * richting.x);
         output.y = Camera.main.transform.localPosition.y - (factor * richting.y);
         output.z = Camera.main.transform.localPosition.z - (factor * richting.z);
-        
-
 
         return output;
     }
