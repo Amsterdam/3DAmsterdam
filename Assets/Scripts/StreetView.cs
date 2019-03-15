@@ -24,8 +24,7 @@ public class StreetView : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(endPos);
-
+        // als de linkermuis knop ergens op het scherm wordt ingedrukt vlieg je daarheen
         if (Input.GetMouseButtonDown(0) && canClick)
         {
             RaycastHit hit;
@@ -37,6 +36,7 @@ public class StreetView : MonoBehaviour
                 mousePos = hit.point;
             }
 
+            // de stoppositie is waar geklikt is met een bepaalde afstand van de grond (y-axis)
             endPos = new Vector3(mousePos.x, stopHeight, mousePos.z);
 
             canClick = false;
@@ -45,9 +45,11 @@ public class StreetView : MonoBehaviour
 
         if (moveToStreet)
         {
+            // camera beweegt langzaam naar aangewezen plaats
             cam.transform.position = Vector3.Lerp(cam.transform.position, endPos, lerpSpeed * Time.deltaTime);
         }
 
+        // camera stopt met bewegen als die is aangekomen op locatie
         if ((cam.transform.position.y <= (stopHeight + 0.01f)) && instanCam)
         {
             moveToStreet = false;
@@ -56,10 +58,12 @@ public class StreetView : MonoBehaviour
             cam.enabled = false;
             Destroy(cam.GetComponent<AudioListener>());
 
+            // nieuwe FPS camera wordt op juiste positie geplaatst 
             FPSCam.transform.position = endPos;
         }
     }
 
+    // de knop wordt ingedrukt dus er kan nu een plek geselecteerd worden om heen te vliegen
     public void StreetCam()
     {
         canClick = true;
