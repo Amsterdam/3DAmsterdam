@@ -16,7 +16,7 @@ public class StreetView : MonoBehaviour
     public Camera cam;
 
     private float stopHeight = 1f;
-    public float lerpSpeed;
+    private float lerpSpeed = 3f;
 
     private void Start()
     {
