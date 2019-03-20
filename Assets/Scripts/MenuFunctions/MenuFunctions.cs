@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
 
 public class MenuFunctions : MonoBehaviour
 {
@@ -10,14 +12,24 @@ public class MenuFunctions : MonoBehaviour
     private int currentMenu;
     private int noMenu = 10;
 
-    public Toggle OptionsToggleOne;
-    public Toggle OptionsToggleTwo;
-    public GameObject coordinatesPanel;
-    public GameObject miniMap;
+    public Toggle OptionsToggleOne, OptionsToggleTwo, PlaceBuildingToggle;
+    public GameObject coordinatesPanel, miniMap, placeBuildingMenu;
+    public Slider heightSlider, widthSlider, lengthSlider;
+    public TextMeshProUGUI heightValue, widthValue, lengthValue;
+    public Image cubeImage;
+    public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular;
+
+    private TextMeshProUGUI _heightValue, _widthValue, _lengthValue;
+
+    private float scaleFactor = 50f;
 
     private void Start()
     {
         currentMenu = noMenu;
+
+        _heightValue = heightValue.GetComponent<TextMeshProUGUI>();
+        _widthValue = widthValue.GetComponent<TextMeshProUGUI>();
+        _lengthValue = lengthValue.GetComponent<TextMeshProUGUI>();
     }
 
     private void Update()
@@ -35,6 +47,7 @@ public class MenuFunctions : MonoBehaviour
         }
 
         ToggleMapAndCoordinates();
+        changePlaceBuildingValues();
     }
 
     public void One()
@@ -111,4 +124,39 @@ public class MenuFunctions : MonoBehaviour
         }
     }
 
+    public void TogglePlaceBuilding()
+    {
+        if (PlaceBuildingToggle.GetComponent<Toggle>().isOn)
+        {
+            placeBuildingMenu.SetActive(true);
+        }
+        else
+        {
+            placeBuildingMenu.SetActive(false);
+        }
+    }
+
+    private void changePlaceBuildingValues()
+    {
+        _heightValue.text = ((int)(heightSlider.value * scaleFactor)).ToString() + "m";
+        _widthValue.text = ((int)(widthSlider.value * scaleFactor)).ToString() + "m";
+        _lengthValue.text = ((int)(lengthSlider.value * scaleFactor)).ToString() + "m";
+
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (heightSlider.name == EventSystem.current.currentSelectedGameObject.name)
+            {
+                cubeImage.GetComponent<Image>().sprite = spriteHeight;
+            } else if (widthSlider.name == EventSystem.current.currentSelectedGameObject.name)
+            {
+                cubeImage.GetComponent<Image>().sprite = spriteWidth;
+            } else
+            {
+                cubeImage.GetComponent<Image>().sprite = spriteLength;
+            } 
+        } else
+        {
+            cubeImage.GetComponent<Image>().sprite = spriteRegular;
+        }
+    }
 }
