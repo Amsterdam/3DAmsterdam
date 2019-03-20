@@ -416,8 +416,8 @@ public class BuildingLoader : MonoBehaviour
             filter.mesh = msh;
 
             gevel.GetComponent<MeshRenderer>().material = GebouwMateriaal;
-            MeshCollider mc = gevel.AddComponent<MeshCollider>();
-            mc.sharedMesh = msh;
+            //MeshCollider mc = gevel.AddComponent<MeshCollider>();
+            //mc.sharedMesh = msh;
             //}
             //catch (System.Exception)
             //{

@@ -277,6 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e675ca81884e00e438a4f9493167b693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TekenZichtlijnen: 0
   lijn1: {fileID: 0}
   lijn2: {fileID: 0}
   lijn3: {fileID: 0}
@@ -462,8 +463,8 @@ MonoBehaviour:
   BAGURL: https://acc.3d.amsterdam.nl/webmap/gebouwen/{id}.geojson
   ModelURL: https://acc.3d.amsterdam.nl/webmap/gebouwen/models/{id}
   GebouwMateriaal: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  Max_Afstand_Top10: 5000
-  Max_Afstand_BAG: 1000
+  Max_Afstand_Top10: 2000
+  Max_Afstand_BAG: 500
 --- !u!4 &1814701006
 Transform:
   m_ObjectHideFlags: 0
