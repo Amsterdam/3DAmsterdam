@@ -499,6 +499,15 @@ namespace ConvertCoordinates
             double rijhoogte = (Ymax - Ymin) / sizeY;
             double locatieY = (long)Math.Floor((y - Ymin) / rijhoogte);
 
+            if (locatieX < Xmin || locatieX > Xmax)
+            {
+                return waarde;
+            }
+            if (locatieY < Ymin || locatieY > Ymax)
+            {
+                return waarde;
+            }
+
             datanummer = (int)(locatieY * sizeX + locatieX);
 
             // do linear interpolation on the grid

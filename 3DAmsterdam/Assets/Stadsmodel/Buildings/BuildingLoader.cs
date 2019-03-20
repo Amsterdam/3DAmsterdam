@@ -166,6 +166,7 @@ public class BuildingLoader : MonoBehaviour
                 }
                 if (afstand < Max_Afstand_BAG)
                 {
+                    //controleren of bagpandtegel binnen view valt
                     Top10Nodig.Add(new Vector3(deltax, deltay, 1));
                     Top10Nodig.Add(new Vector3(deltax + 500, deltay, 1));
                     Top10Nodig.Add(new Vector3(deltax, deltay + 500, 1));
