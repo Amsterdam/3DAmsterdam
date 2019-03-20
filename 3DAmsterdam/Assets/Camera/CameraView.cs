@@ -131,7 +131,7 @@ public class CameraView : MonoBehaviour
         // de richting van de lijn bepalen
         Vector3 richting = linkerbovenhoekA - linkerbovenhoekB;
         float factor; //factor waarmee de Richtingvector vermenigvuldigd moet worden om op het maaiveld te stoppen
-        if (richting.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
+        if (richting.y < 260) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
         {
             factor = 1;
         }
