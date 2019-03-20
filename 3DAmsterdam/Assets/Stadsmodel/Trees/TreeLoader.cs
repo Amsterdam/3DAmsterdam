@@ -19,6 +19,7 @@ public class TreeLoader : MonoBehaviour
     public GameObject Boomcontainer;
     public GameObject BoomPrefab;
     public int MaxParallelDownloads = 5;
+    public int MaxAfstand = 1000;
     struct Boomdata
     {
         public GameObject Container;
@@ -136,7 +137,7 @@ public class TreeLoader : MonoBehaviour
                 Vector3 HartUnity = CoordConvert.RDtoUnity(Hart);
                 Vector3 Verschil = Camera.main.transform.localPosition - HartUnity;
                 double afstand = Math.Sqrt(Math.Pow(Verschil.x, 2) + Math.Pow(Verschil.y, 2) + Math.Pow(Verschil.z, 2));
-                if (afstand < 1000)
+                if (afstand < MaxAfstand)
                 {
                     BomenNodig.Add(new Vector3(deltax, deltay, 0));
                 }

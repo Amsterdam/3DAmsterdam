@@ -336,6 +336,7 @@ MonoBehaviour:
   BoomPrefab: {fileID: 3454690812133158225, guid: becbe2334f61c8243bf48fe12bd03835,
     type: 3}
   MaxParallelDownloads: 5
+  MaxAfstand: 500
 --- !u!4 &882275713
 Transform:
   m_ObjectHideFlags: 0
@@ -463,7 +464,7 @@ MonoBehaviour:
   BAGURL: https://acc.3d.amsterdam.nl/webmap/gebouwen/{id}.geojson
   ModelURL: https://acc.3d.amsterdam.nl/webmap/gebouwen/models/{id}
   GebouwMateriaal: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  Max_Afstand_Top10: 2000
+  Max_Afstand_Top10: 1200
   Max_Afstand_BAG: 500
 --- !u!4 &1814701006
 Transform:
