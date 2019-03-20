@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        _target = anchors[0].transform;
+        //_target = anchors[0].transform;
     }
 
     public void AnimateTo(Transform target)

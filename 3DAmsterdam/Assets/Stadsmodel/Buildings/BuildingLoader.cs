@@ -93,25 +93,25 @@ public class BuildingLoader : MonoBehaviour
         CV = Camera.main.GetComponent<CameraView>();
 
         /// lijst met custom modellen inlezen en opslaan in de list CustomModels
-        TextAsset modellijst = new TextAsset();
-        modellijst = Resources.Load<TextAsset>("3Dmodellen/gebouwencoordinatenlijst");
-        string tekst = modellijst.text;
-        string[] linesInFile = tekst.Split('\n');
-        for (int i = 3; i < linesInFile.Length; i++)
-        {
-            string[] regeldelen = linesInFile[i].Split(';');
-            modeldata gegevens = new modeldata();
-            gegevens.modelnaam = regeldelen[0];
-            double dbl;
-            double.TryParse(regeldelen[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            gegevens.lat = dbl;
-            double.TryParse(regeldelen[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            gegevens.lon = dbl;
-            double.TryParse(regeldelen[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            gegevens.NAPHoogte = dbl;
-            gegevens.BAGid = regeldelen[4];
-            CustomModels.Add(gegevens);
-        }
+        //TextAsset modellijst = new TextAsset();
+        //modellijst = Resources.Load<TextAsset>("3Dmodellen/gebouwencoordinatenlijst");
+        //string tekst = modellijst.text;
+        //string[] linesInFile = tekst.Split('\n');
+        //for (int i = 3; i < linesInFile.Length; i++)
+        //{
+        //    string[] regeldelen = linesInFile[i].Split(';');
+        //    modeldata gegevens = new modeldata();
+        //    gegevens.modelnaam = regeldelen[0];
+        //    double dbl;
+        //    double.TryParse(regeldelen[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
+        //    gegevens.lat = dbl;
+        //    double.TryParse(regeldelen[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
+        //    gegevens.lon = dbl;
+        //    double.TryParse(regeldelen[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
+        //    gegevens.NAPHoogte = dbl;
+        //    gegevens.BAGid = regeldelen[4];
+        //    CustomModels.Add(gegevens);
+        //}
     }
 
     // Update is called once per frame
