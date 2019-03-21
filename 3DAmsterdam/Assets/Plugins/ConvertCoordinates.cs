@@ -281,7 +281,7 @@ namespace ConvertCoordinates
             Vector3WGS wgs = UnitytoWGS84(coordinaat);
             Vector3RD RD = WGS84toRD(wgs.lon, wgs.lat);
             RD.z = wgs.h - RDCorrection(wgs.lon, wgs.lat, "Z");
-            RD.z = RD.z - ReferenceWGS84.h;
+            RD.z = RD.z + referenceRD.z;
             return RD;
         }
 
