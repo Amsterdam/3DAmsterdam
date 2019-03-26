@@ -12,6 +12,7 @@ using System.Linq;
 public class TreeLoader : MonoBehaviour
 {
     private CameraView CV;
+    private Extent vorigeCV = new Extent(0, 0, 0, 0);
     private string TreeURL = "https://map.data.amsterdam.nl/maps/bgtobjecten?SERVICE=wfs&version=2.0.0&request=GetFeature&typeName=BGTPLUS_VGT_boom&srsName=epsg:4326&outputFormat=geojson&bbox={xmin},{ymin},{xmax},{ymax}";
     Dictionary<Vector3, GameObject> treeDb = new Dictionary<Vector3, GameObject>();
     Queue<Boomdata> DownloadQueue = new Queue<Boomdata>();
@@ -46,13 +47,21 @@ public class TreeLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTrees(CV.CameraExtent);
-        if (DownloadQueue.Count>0 && PendingQueue.Count<MaxParallelDownloads)
+        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
-            Boomdata dwnload = DownloadQueue.Dequeue();
-            PendingQueue.Add(dwnload.Locatie);
-            StartCoroutine(Download(dwnload));
+            UpdateTrees(CV.CameraExtent);
         }
+
+        //if (1==2)
+        //{
+
+        //}
+        //if (DownloadQueue.Count > 0 && PendingQueue.Count < MaxParallelDownloads)
+        //{
+        //    //    Boomdata dwnload = DownloadQueue.Dequeue();
+        //    //    PendingQueue.Add(dwnload.Locatie);
+        //    //    //StartCoroutine(Download(dwnload));
+        //}
 
     }
     private IEnumerator Download(Boomdata test)
@@ -74,7 +83,7 @@ public class TreeLoader : MonoBehaviour
 
             for (int i = 0; i < bomen["features"].Count; i++)
             {
-                if (i % 20 == 0)
+                if (i % 2 == 0)
                 {
                     yield return null;
                 }

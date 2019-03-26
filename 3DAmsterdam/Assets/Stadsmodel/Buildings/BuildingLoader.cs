@@ -36,9 +36,10 @@ public class BuildingLoader : MonoBehaviour
     public double Max_Afstand_Top10 = 5000;
     public double Max_Afstand_BAG = 1000;
     private CameraView CV;
-
+    private Extent vorigeCV = new Extent(0, 0, 0, 0);
     Dictionary<Vector3, GameObject> top10Db = new Dictionary<Vector3, GameObject>();
-    const int maxParallelRequests = 8;
+    const int maxParallelRequests = 3;
+    public int AantalGebouwenPerFrame = 3;
     Queue<downloadRequest> gebouwenQueue = new Queue<downloadRequest>();
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     Queue<ModelDownloadData> ModelQueue = new Queue<ModelDownloadData>();
@@ -117,7 +118,11 @@ public class BuildingLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTop10(CV.CameraExtent);
+        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY !=CV.CameraExtent.CenterY)
+        {
+            UpdateTop10(CV.CameraExtent);
+        }
+        
 
         // generieke panden donloaden
         if (pendingQueue.Count < maxParallelRequests && gebouwenQueue.Count > 0)
@@ -143,7 +148,8 @@ public class BuildingLoader : MonoBehaviour
         Vector3RD RDmin = CoordConvert.WGS84toRD(WGSExtent.MinX, WGSExtent.MinY);
         Vector3RD RDmax = CoordConvert.WGS84toRD(WGSExtent.MaxX, WGSExtent.MaxY);
         Extent TempExtent = new Extent(RDmin.x, RDmin.y, RDmax.x, RDmax.y);
-
+        Vector3RD Camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
+        Vector3 CamlocationRD = new Vector3((float)Camlocation3RD.x, (float)Camlocation3RD.y, (float)Camlocation3RD.z);
         //1. uitzoeken welke tegels nodig zijn
         List<Vector3> Top10Nodig = new List<Vector3>();
         int X0 = ((int)Math.Floor(TempExtent.MinX / 1000) * 1000);
@@ -157,8 +163,8 @@ public class BuildingLoader : MonoBehaviour
             for (int deltay = Y0; deltay <= Y1; deltay += 1000)
             {
                 Vector3 Hart = new Vector3(deltax + 500, deltay + 500, 0);
-                Vector3 HartUnity = CoordConvert.RDtoUnity(Hart);
-                Vector3 Verschil = Camera.main.transform.localPosition - HartUnity;
+                ;
+                Vector3 Verschil = CamlocationRD - Hart;
                 double afstand = Verschil.magnitude;
                 if (Max_Afstand_BAG < afstand && afstand < Max_Afstand_Top10)
                 {
@@ -267,9 +273,10 @@ public class BuildingLoader : MonoBehaviour
 
 
     }
-    void CreeerGebouw(JSONNode pand, GameObject container)
+    Mesh CreeerGebouw(JSONNode pand, Vector3RD V3Origin)
 
     {
+        Mesh msh = new Mesh();
         //pandid bepalen
         string naam = pand["properties"]["PAND_ID"].Value;
         if (naam == "")
@@ -277,20 +284,19 @@ public class BuildingLoader : MonoBehaviour
             naam = pand["properties"]["gml_id"].Value;
         }
         
-        GameObject gevel = new GameObject("gebouw");
-        gevel.layer = 9;
-        try
-        {
+        //GameObject gevel = new GameObject("gebouw");
+        //gevel.layer = 9;
+        
 
-            gevel.transform.parent = container.transform;
+            //gevel.transform.parent = container.transform;
 
-            gevel.name = naam;
+            //gevel.name = naam;
             //gevelhoogte bepalen
             string tekst = pand["properties"]["mediaan_ho"].Value;
             //tekst = tekst.Replace(".", ",");
             double dbl;
             double.TryParse(tekst, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            float Dakhoogte = (float)dbl;
+            double Dakhoogte = dbl;
             float Gevelhoogte;
             //UnityEngine.Debug.Log(Gevelhoogte);
             //UnityEngine.Debug.Log(pand["geometry"]["coordinates"]);
@@ -325,10 +331,10 @@ public class BuildingLoader : MonoBehaviour
             double Z = dbl;
             Gevelhoogte = (float)(Dakhoogte - Z + 1f);
             Vector3 Coord = new Vector3(0, 0, 0);
-            Vector3RD V3Origin = new Vector3RD(X, Y, Z);
-            gevel.transform.localPosition = CoordConvert.RDtoUnity(V3Origin);
-            double rotatie = CoordConvert.RDRotation(V3Origin);
-            gevel.transform.Rotate(new Vector3(0, (float)rotatie,0));
+            //Vector3RD V3Origin = new Vector3RD(X, Y, Z);
+            //gevel.transform.localPosition = CoordConvert.RDtoUnity(V3Origin);
+            //double rotatie = CoordConvert.RDRotation(V3Origin);
+            //gevel.transform.Rotate(new Vector3(0, (float)rotatie,0));
 
 
             for (int i = 0; i < coordinaten - 1; i++)
@@ -343,7 +349,9 @@ public class BuildingLoader : MonoBehaviour
                 dbl -= V3Origin.y;
                 Y = dbl;
 
-                Coord = new Vector3((float)X, Dakhoogte, (float)Y);
+
+
+            Coord = new Vector3((float)X, (float)(Dakhoogte-V3Origin.z), (float)Y);
 
                 V3coordinaten.Add(Coord);
 
@@ -406,17 +414,13 @@ public class BuildingLoader : MonoBehaviour
             //try
             //{
             // Create the mesh
-            Mesh msh = new Mesh();
+            
             msh.vertices = V3coordinaten.ToArray();
             msh.triangles = Tris.ToArray();
             msh.RecalculateNormals();
             msh.RecalculateBounds();
-
-            gevel.AddComponent(typeof(MeshRenderer));
-            MeshFilter filter = gevel.AddComponent(typeof(MeshFilter)) as MeshFilter;
-            filter.mesh = msh;
-
-            gevel.GetComponent<MeshRenderer>().material = GebouwMateriaal;
+            
+            
             //MeshCollider mc = gevel.AddComponent<MeshCollider>();
             //mc.sharedMesh = msh;
             //}
@@ -425,12 +429,9 @@ public class BuildingLoader : MonoBehaviour
 
 
             //}
-        }
+        
+        return msh;
 
-        catch
-        {
-            Destroy(gevel);
-        }
     }
 
     private IEnumerator requestTop10(string url, Vector3 id)
@@ -441,35 +442,61 @@ public class BuildingLoader : MonoBehaviour
         if (top10Db.ContainsKey(id))
         {
             GameObject container = top10Db[id];
-
+            List<Mesh> pandmeshes = new List<Mesh>();
             if (!www.isNetworkError && !www.isHttpError)
             {
-
+                Vector3RD origin = new Vector3RD();
+                origin.x = id.x + 500;
+                origin.y = id.y + 500;
+                origin.z = 0;
+                //Vector3RD origin = CoordConvert.UnitytoRD(container.transform.position);
+                double rotatie = CoordConvert.RDRotation(origin);
+                container.transform.localPosition = CoordConvert.RDtoUnity(origin);
+                container.transform.Rotate(new Vector3(0, (float)rotatie,0));
                 var gebouwen = JSON.Parse(www.downloadHandler.text);
 
                 for (int i = 0; i < gebouwen["features"].Count; i++)
                 {
-                    if (i % 20 == 0)
-                    {
-                        yield return null;
-                    }
-                    
+                   
+                        
+
                         string naam = gebouwen["features"][i]["properties"]["PAND_ID"].Value;
                         if (naam == "") //betreft hier een top10-pand
                         {
-                            CreeerGebouw(gebouwen["features"][i], container);
+                           pandmeshes.Add( CreeerGebouw(gebouwen["features"][i],origin));
                         }
                         else //betreft een BAG-pand, hier controleren of er een gedetailleerd model van bestaat
                         {
                             if (LoadModel(naam, container) == false)
                             {
-                                CreeerGebouw(gebouwen["features"][i], container);
+                                pandmeshes.Add(CreeerGebouw(gebouwen["features"][i], origin));
                             };
                         }
-                                        
+                    if (i%AantalGebouwenPerFrame==0)
+                    {
+                        yield return null;
+                    }
+                    
+                }
 
-
-
+                if (top10Db.ContainsKey(id))
+                {
+                    container.AddComponent<MeshFilter>();
+                    //MeshFilter[] Meshfilters = container.GetComponentsInChildren<MeshFilter>();
+                    CombineInstance[] combine = new CombineInstance[pandmeshes.Count];
+                    int j = 0;
+                    while (j < pandmeshes.Count)
+                    {
+                        combine[j].mesh = pandmeshes[j];
+                        //combine[j].transform = Meshfilters[j].transform.localToWorldMatrix;
+                        //Meshfilters[j].gameObject.SetActive(false);
+                        j++;
+                    }
+                    container.AddComponent(typeof(MeshRenderer));
+                    container.GetComponent<MeshRenderer>().material = GebouwMateriaal;
+                    container.GetComponent<MeshFilter>().mesh = new Mesh();
+                    container.GetComponent<MeshFilter>().mesh.CombineMeshes(combine,true,false,false);
+                    container.SetActive(true);
                 }
             }
             else
