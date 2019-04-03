@@ -1,5 +1,6 @@
 # initiele dockerfile - test
 FROM node:10.7
+RUN sed -i '/jessie-updates/d' /etc/apt/sources.list  # Now archived
 
 MAINTAINER datapunt.ois@amsterdam.nl
 
