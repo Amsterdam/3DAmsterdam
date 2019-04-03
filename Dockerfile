@@ -29,11 +29,11 @@ ENV PATH=./node_modules/.bin/:~/node_modules/.bin/:$PATH
 
 #COPY . /app
 
-RUN npm run build && cp -r /app/dist/. /var/www/html/
+#RUN npm run build && cp -r /app/dist/. /var/www/html/
 
 # forward request and error logs to docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
- && ln -sf /dev/stderr /var/log/nginx/error.log
+#RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+# && ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY default.conf /etc/nginx/conf.d/
-CMD ["nginx", "-g", "daemon off;"]
+#COPY default.conf /etc/nginx/conf.d/
+#CMD ["nginx", "-g", "daemon off;"]
