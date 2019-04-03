@@ -22,10 +22,10 @@ RUN apt-get update && \
 WORKDIR /app
 
 ENV PATH=./node_modules/.bin/:~/node_modules/.bin/:$PATH
-RUN git config --global url."https://".insteadOf git:// && \
-    git config --global url."https://github.com/".insteadOf git@github.com: && \
-    npm --production=false --unsafe-perm install && \
-    chmod -R u+x node_modules/.bin/
+#RUN git config --global url."https://".insteadOf git:// && \
+#    git config --global url."https://github.com/".insteadOf git@github.com: && \
+#    npm --production=false --unsafe-perm install && \
+#    chmod -R u+x node_modules/.bin/
 
 #COPY . /app
 
