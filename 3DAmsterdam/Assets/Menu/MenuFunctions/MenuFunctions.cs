@@ -9,22 +9,24 @@ public class MenuFunctions : MonoBehaviour
 {
     public GameObject[] allMenus, weatherOptions, buildingOptions;
     public GameObject coordinatesPanel, miniMap, zoomButtonPlus, zoomButtonMinus, compass, streetView, placeBuildingMenu, timeMenu, 
-                      dateMenu, twentyNine, thirty, thirtyOne, manager;
+                      dateMenu, twentyNine, thirty, thirtyOne, manager, uploadBuildingMenu, createBuilding, uploadBuilding;
 
     public Button[] buttons;
     public Toggle[] optionsToggles;
-    public Toggle PlaceBuildingToggle;
     public Slider heightSlider, widthSlider, lengthSlider, rotationSlider;
     public Image cubeImage;
-    public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular;
-    public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
+    public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
+    public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes, placeBuildingButton, uploadBuildingButton;
     public RectTransform positioning, positioningGebouwen;
 
     public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue, hours, minutes, time, monthYear, date;
 
     private TextMeshProUGUI _monthyear, _date, _heightValue, _widthValue, _lengthValue, _rotationValue;
 
-    private int currentMenu, noMenu = 10, minBarrier = 0, maxBarrier = 2, minBarrierGebouwen = 0, maxBarrierGebouwen = 2;
+    private Vector3 startPosMenuCreateBuilding, startPosMap;
+
+    private int currentMenu, noMenu = 10, minBarrier = 0, maxBarrier = 2, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
+                buildingMenuDecider = 1, uploadMenuDecider = 1;
 
     [HideInInspector]
     public int _hours, _minutes, _currentDay, _currentMonth, _currentYear;
@@ -50,6 +52,9 @@ public class MenuFunctions : MonoBehaviour
         _currentYear = System.DateTime.Now.Year;
 
         _hours = 14; // tijd begint op een licht moment
+
+        startPosMenuCreateBuilding = createBuilding.transform.position;
+        startPosMap = miniMap.transform.localPosition;
     }
 
     private void Update()
@@ -67,6 +72,9 @@ public class MenuFunctions : MonoBehaviour
         // plaats gebouw menu
         ShowBuildingOptions();
         changePlaceBuildingValues();
+
+        // minimap
+        MapPositioning();
     }
 
     // beheert alle menus
@@ -386,13 +394,55 @@ public class MenuFunctions : MonoBehaviour
     // methode om submenu(gebouw plaatsen) aan/uit te zetten
     public void TogglePlaceBuilding()
     {
-        if (PlaceBuildingToggle.GetComponent<Toggle>().isOn)
+        buildingMenuDecider *= -1;
+
+        if (buildingMenuDecider == 1)
         {
-            placeBuildingMenu.SetActive(true);
+            placeBuildingMenu.SetActive(false);
+            placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
         }
         else
         {
-            placeBuildingMenu.SetActive(false);
+            placeBuildingMenu.SetActive(true);
+            placeBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
+
+            createBuilding.transform.position = startPosMenuCreateBuilding;
+
+            if (uploadBuildingMenu.activeSelf)
+            {
+                uploadMenuDecider *= -1;
+                uploadBuildingMenu.SetActive(false);
+                uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+            }
+        }
+    }
+
+    public void ToggleUploadBuilding()
+    {
+        uploadMenuDecider *= -1;
+
+        if (uploadMenuDecider == 1)
+        {
+            uploadBuildingMenu.SetActive(false);
+            uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+
+            createBuilding.transform.position = startPosMenuCreateBuilding;
+        }
+        else
+        {
+            uploadBuildingMenu.SetActive(true);
+            uploadBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
+
+            createBuilding.transform.position = new Vector3(createBuilding.transform.position.x, uploadBuildingMenu.transform.position.y,
+                                                            createBuilding.transform.position.z) - 
+                                                new Vector3(0, uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2f + 13f, 0);
+
+            if (placeBuildingMenu.activeSelf)
+            {
+                buildingMenuDecider *= -1;
+                placeBuildingMenu.SetActive(false);
+                placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+            }
         }
     }
 
@@ -515,6 +565,20 @@ public class MenuFunctions : MonoBehaviour
         } else
         {
             streetView.SetActive(false);
+        }
+    }
+    #endregion
+
+
+    #region Minimap
+    private void MapPositioning()
+    {
+        if (!(zoomButtonMinus.activeSelf) && !(zoomButtonPlus.activeSelf) && !(streetView.activeSelf))
+        {
+            miniMap.transform.localPosition = new Vector3(startPosMap.x + 50f, startPosMap.y, startPosMap.z);
+        } else
+        {
+            miniMap.transform.localPosition = startPosMap;
         }
     }
     #endregion

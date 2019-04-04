@@ -12,7 +12,7 @@ public class SchaalBestuurMenu : MonoBehaviour
 
     public GameObject Gebouwplaatser1;
 
-    //[HideInInspector]
+    [HideInInspector]
     public int MenuLengte = 25, MenuBreedte = 25, MenuHoogte = 25, MenuRotatie = 0;
     public Slider SLengte, SBreedte, SHoogte, SRotatie;
 
@@ -38,63 +38,63 @@ public class SchaalBestuurMenu : MonoBehaviour
             var ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             Physics.Raycast(ray2, out hitMenu);
-            
-                if (hitMenu.collider.transform.parent.gameObject.layer==11)
-                {
 
-                
-                Objectnaam = hitMenu.collider.transform.parent.name;
-                string SetSlider = hitMenu.collider.transform.parent.name;
+            //if (hitMenu.collider.transform.parent.gameObject.layer == 11)
+            //{
 
-                //TekstObjectID.text = SetSlider;
 
-                VervormObject = hitMenu.collider.transform.parent.gameObject;
+            //    Objectnaam = hitMenu.collider.transform.parent.name;
+            //    string SetSlider = hitMenu.collider.transform.parent.name;
 
-                int tempLengte = VervormObject.GetComponent<Schaal>().Lengte;
-                MenuLengte = tempLengte;
-                SLengte.value = tempLengte;
+            //    //TekstObjectID.text = SetSlider;
 
-                int tempBreedte = VervormObject.GetComponent<Schaal>().Breedte;
-                //TekstObjectID.text = Objectnaam;
-                MenuBreedte = tempBreedte;
-                SBreedte.value = tempBreedte;
+            //    VervormObject = hitMenu.collider.transform.parent.gameObject;
 
-                int tempHoogte = VervormObject.GetComponent<Schaal>().Hoogte;
-                MenuHoogte = tempHoogte;
-                SHoogte.value = tempHoogte;
+            //    int tempLengte = VervormObject.GetComponent<Schaal>().Lengte;
+            //    MenuLengte = tempLengte;
+            //    SLengte.value = tempLengte;
 
-                int tempRotatie = VervormObject.GetComponent<Schaal>().RotatieY;
-                MenuRotatie = tempRotatie;
-                SRotatie.value = tempRotatie;
+            //    int tempBreedte = VervormObject.GetComponent<Schaal>().Breedte;
+            //    //TekstObjectID.text = Objectnaam;
+            //    MenuBreedte = tempBreedte;
+            //    SBreedte.value = tempBreedte;
 
-                Objectnaam = SetSlider;
+            //    int tempHoogte = VervormObject.GetComponent<Schaal>().Hoogte;
+            //    MenuHoogte = tempHoogte;
+            //    SHoogte.value = tempHoogte;
 
-            }
-            else
-            {
-                
-            }
+            //    int tempRotatie = VervormObject.GetComponent<Schaal>().RotatieY;
+            //    MenuRotatie = tempRotatie;
+            //    SRotatie.value = tempRotatie;
+
+            //    Objectnaam = SetSlider;
+
+            //}
+            //else
+            //{
+
+            //}
         }
     }
 
     public void Lengte(float Lengte)
     {
-        MenuLengte = (int)(Lengte*50);
+        MenuLengte = (int)(Lengte * 50);
     }
 
     public void Breedte(float Breedte)
     {
-        MenuBreedte = (int)(Breedte*50);
+        MenuBreedte = (int)(Breedte * 50);
     }
 
     public void Hoogte(float Hoogte)
     {
-        MenuHoogte = (int)(Hoogte*50);
+        MenuHoogte = (int)(Hoogte * 50);
     }
 
     public void Rotatie(float Rotatie)
     {
-        MenuRotatie = (int)(Rotatie*360);
+        MenuRotatie = (int)(Rotatie * 360);
     }
 
     public void PlaatsGebouw()
@@ -109,7 +109,7 @@ public class SchaalBestuurMenu : MonoBehaviour
 
     public void PijlenAan()
     {
-        PijlenAanUit = ! PijlenAanUit; 
+        PijlenAanUit = !PijlenAanUit;
     }
 
     public void ZomaarEenKnop()
