@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CUIColorPicker : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class CUIColorPicker : MonoBehaviour
     private Action<Color> _onValueChange;
     private Action _update;
 
-    public Text textR, textB, textG;
+    public TextMeshProUGUI textR, textB, textG, textA;
+    public Slider sliderR, sliderB, sliderG, sliderA;
 
     public GameObject cube;
 
@@ -170,53 +172,35 @@ public class CUIColorPicker : MonoBehaviour
         Color = new Color( r, g, b );
     }
 
-    public void setRGB()
+    public void SetRGB()
     {
-        float redInput, greenInput, blueInput;
+        Color = new Color(sliderR.GetComponent<Slider>().value, sliderG.GetComponent<Slider>().value, sliderB.GetComponent<Slider>().value);
 
-        if (GO("RedInput/Text").GetComponent<Text>().text == "")
-        {
-            redInput = 0f;
-        } else
-        {
-            redInput = float.Parse(GO("RedInput/Text").GetComponent<Text>().text);
-        }
-
-        if (GO("GreenInput/Text").GetComponent<Text>().text == "")
-        {
-            greenInput = 0;
-        } else
-        {
-            greenInput = float.Parse(GO("GreenInput/Text").GetComponent<Text>().text);
-        }
-
-        if (GO("BlueInput/Text").GetComponent<Text>().text == "")
-        {
-            blueInput = 0;
-        } else
-        {
-            blueInput = float.Parse(GO("BlueInput/Text").GetComponent<Text>().text);
-        }
-
-        if ((redInput >= 0f && redInput <= 1f) && (greenInput >= 0f && greenInput <= 1f) &&
-            (blueInput >= 0f && blueInput <= 1f))
-        {
-            Color = new Color(redInput, greenInput, blueInput);
-        }
+        textR.GetComponent<TextMeshProUGUI>().text = ((int)(sliderR.GetComponent<Slider>().value * 255f)).ToString();
+        textG.GetComponent<TextMeshProUGUI>().text = ((int)(sliderG.GetComponent<Slider>().value * 255f)).ToString();
+        textB.GetComponent<TextMeshProUGUI>().text = ((int)(sliderB.GetComponent<Slider>().value * 255f)).ToString();
+        textA.GetComponent<TextMeshProUGUI>().text = ((int)(sliderA.GetComponent<Slider>().value * 255f)).ToString();
     }
 
     void Awake()
     {
         Color = Color.white;
+
+        sliderR.GetComponent<Slider>().value = 1f;
+        sliderG.GetComponent<Slider>().value = 1f;
+        sliderB.GetComponent<Slider>().value = 1f;
+        sliderA.GetComponent<Slider>().value = 1f;
+
+        textR.GetComponent<TextMeshProUGUI>().text = "255";
+        textG.GetComponent<TextMeshProUGUI>().text = "255";
+        textB.GetComponent<TextMeshProUGUI>().text = "255";
+        textA.GetComponent<TextMeshProUGUI>().text = "255";
     }
 
     void Update()
     {
-        //textR.GetComponent<Text>().text = 0.5f.ToString();
-        //textG.GetComponent<Text>().text = Color.g.ToString();
-        //textB.GetComponent<Text>().text = Color.b.ToString();
-        //Debug.Log(textR.GetComponent<Text>().text);
-        cube.GetComponent<Renderer>().material.color = Color;
+        //cube.GetComponent<Renderer>().material.color = Color;
+        cube.GetComponent<Renderer>().material.color = new Color(Color.r, Color.g, Color.b, sliderA.GetComponent<Slider>().value);
 
         _update();
     }
