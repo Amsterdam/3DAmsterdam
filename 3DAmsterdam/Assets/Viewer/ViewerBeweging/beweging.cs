@@ -12,15 +12,20 @@ public class beweging : MonoBehaviour
     private const float maxZoomOut = 2500f;
     private const float maxZoomIn = 47f;
     private const float rotationSpeed = 1f;
-    private const float dragSpeed = 4f;
     private const float maxRotate = 50f;
     private const float minAngle = -10f;
     private const float maxAngle = 89f;
     private const float speedFactor = 0.5f;
+    private const float dragFactor = 2f;
+    private const float rotationSensitivity = 5f;
+    private const float maxYAngle = 80f;
 
     private float scroll;
     private float zoomDistance;
     private float moveSpeed;
+    private float mouseHor;
+    private float mouseVer;
+    private float dragSpeed;
 
     private bool canMove = true;
     private bool canUseFunction = true;
@@ -33,6 +38,9 @@ public class beweging : MonoBehaviour
     private Vector3 dragOrigin;
     private Vector3 upDirection;
     private Vector3 movDir;
+    private Vector2 currentRotation;
+
+
 
     void Start()
     {
@@ -42,7 +50,6 @@ public class beweging : MonoBehaviour
         // de juiste directie om omhoog en omlaag te bewegen (ook voor als de cam geroteerd wordt)
         upDirection = cam.transform.up;
         cam.transform.rotation = temprotation;
-
     }
 
     void Update()
@@ -87,8 +94,8 @@ public class beweging : MonoBehaviour
             if (Input.GetKey(KeyCode.DownArrow)) cam.transform.position -= movDir * moveSpeed;
 
             // zijwaarts bewegen (gebaseerd op rotatie van camera)
-            if (Input.GetKey(KeyCode.LeftArrow)) cam.transform.position -= cam.transform.right * moveSpeed;    
-            if (Input.GetKey(KeyCode.RightArrow)) cam.transform.position += cam.transform.right * moveSpeed;     
+            if (Input.GetKey(KeyCode.LeftArrow)) cam.transform.position -= cam.transform.right * moveSpeed;
+            if (Input.GetKey(KeyCode.RightArrow)) cam.transform.position += cam.transform.right * moveSpeed;
         }
     }
 
@@ -104,7 +111,7 @@ public class beweging : MonoBehaviour
             if (Input.GetKey(KeyCode.RightArrow)) cam.transform.RotateAround(cam.transform.position, Vector3.up, rotationSpeed);
 
             // de camera kan niet verder geroteerd worden dan de min en max angle
-            cam.transform.rotation = Quaternion.Euler(new Vector3(ClampAngle(cam.transform.eulerAngles.x, minAngle, maxAngle), 
+            cam.transform.rotation = Quaternion.Euler(new Vector3(ClampAngle(cam.transform.eulerAngles.x, minAngle, maxAngle),
                                                                              cam.transform.eulerAngles.y, cam.transform.eulerAngles.z));
 
             // roteren omhoog/omlaag
@@ -128,7 +135,29 @@ public class beweging : MonoBehaviour
         {
             canMove = true;
         }
+
+
+        // camera roteren doormiddel van rechter muisknop
+        if (Input.GetMouseButton(1))
+        {
+            mouseHor = Input.GetAxis("Mouse X");
+            mouseVer = Input.GetAxis("Mouse Y");
+
+            // berekent rotatie van camera gebaseerd op beweging van muis
+            currentRotation.x += mouseHor * rotationSensitivity;
+            currentRotation.y -= mouseVer * rotationSensitivity;
+
+            // de rotatie blijft tussen de 0 en 360 graden
+            currentRotation.x = Mathf.Repeat(currentRotation.x, 360f);
+
+            // zorgt dat de rotatie niet verder kan dan de min en max angle
+            currentRotation.y = Mathf.Clamp(currentRotation.y, minAngle, maxAngle);
+
+            // de rotatie van de camera wordt aangepast
+            cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
+        }
     }
+
 
     void Zooming()
     {
@@ -187,6 +216,8 @@ public class beweging : MonoBehaviour
 
     void Dragging()
     {
+        dragSpeed = Mathf.Sqrt(cam.transform.position.y) * dragFactor;
+
         if (!(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
         {
             // het punt vanaf waar gesleept wordt, wordt opgeslagen als de muis ingedrukt wordt
