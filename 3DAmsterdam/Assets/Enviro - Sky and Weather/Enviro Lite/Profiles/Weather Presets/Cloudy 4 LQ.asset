@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad9e871a73fc09d488bc058f3b382b35, type: 3}
+  m_Name: Cloudy 4 LQ
+  m_EditorClassIdentifier: 
+  version: 1.9.0
+  Name: Cloudy 4
+  Spring: 1
+  possibiltyInSpring: 50
+  Summer: 1
+  possibiltyInSummer: 50
+  Autumn: 1
+  possibiltyInAutumn: 50
+  winter: 1
+  possibiltyInWinter: 50
+  cloudsConfig:
+    ambientTopColorBrightness: 1
+    ambientbottomColorBrightness: 1
+    skyBlending: 1
+    alphaCoef: 4
+    scatteringCoef: 0.137
+    density: 1.72
+    coverage: 2
+    coverageHeight: 0.672
+    raymarchingScale: 1
+    cloudType: 0.638
+    cirrusAlpha: 0
+    cirrusCoverage: 0
+    cirrusColorPow: 1
+    flatAlpha: 1.764
+    flatCoverage: 0.802
+    flatSoftness: 0.834
+    flatBrightness: 0.647
+    flatColorPow: 2.17
+    particleLayer1Alpha: 1
+    particleLayer1Brightness: 0.849
+    particleLayer1ColorPow: 2.12
+    particleLayer2Alpha: 0.77
+    particleLayer2Brightness: 0.71
+    particleLayer2ColorPow: 2
+    particleCloudsOverwrite: 0
+  fogStartDistance: 0
+  fogDistance: 1000
+  fogDensity: 0.00015
+  weatherSkyMod:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 0}
+    key1: {r: 1, g: 1, b: 1, a: 0}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  weatherLightMod:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 0}
+    key1: {r: 1, g: 1, b: 1, a: 0}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  weatherFogMod:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 0.9411765}
+    key1: {r: 0, g: 0, b: 0, a: 0.88235295}
+    key2: {r: 0.68235296, g: 0.7058824, b: 0.88235295, a: 0}
+    key3: {r: 0.42352942, g: 0.54901963, b: 0.7490196, a: 0.4627451}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 32198
+    ctime2: 34695
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 31770
+    atime2: 33981
+    atime3: 65535
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 4
+  volumeLightIntensity: 1
+  heightFogDensity: 0.65
+  SkyFogHeight: 2
+  SkyFogIntensity: 0.026
+  FogScatteringIntensity: 1.12
+  fogSunBlocking: 0.25
+  moonIntensity: 1
+  effectSystems: []
+  WindStrenght: 0.2
+  wetnessLevel: 0
+  snowLevel: 0
+  temperatureLevel: 0
+  isLightningStorm: 0
+  lightningInterval: 10
+  weatherSFX: {fileID: 0}
+  SpringDayAmbient: {fileID: 8300000, guid: 9e4f9b704d4c6a545863111b7ab9bb51, type: 3}
+  SpringNightAmbient: {fileID: 8300000, guid: 421815712ee5317449eeef6d06fac4a3, type: 3}
+  SummerDayAmbient: {fileID: 8300000, guid: 9e4f9b704d4c6a545863111b7ab9bb51, type: 3}
+  SummerNightAmbient: {fileID: 8300000, guid: 421815712ee5317449eeef6d06fac4a3, type: 3}
+  AutumnDayAmbient: {fileID: 8300000, guid: 9e4f9b704d4c6a545863111b7ab9bb51, type: 3}
+  AutumnNightAmbient: {fileID: 8300000, guid: 421815712ee5317449eeef6d06fac4a3, type: 3}
+  WinterDayAmbient: {fileID: 0}
+  WinterNightAmbient: {fileID: 0}
+  blurDistance: 100
+  blurIntensity: 1
+  blurSkyIntensity: 1

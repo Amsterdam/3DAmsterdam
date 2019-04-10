@@ -1,0 +1,1811 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BruTile</name>
+    </assembly>
+    <members>
+        <member name="T:BruTile.Cache.IPersistentCache`1">
+            <summary>
+            All caches that touch the disk (e.g.: FileCache, DbCache and MBTilesCache) should be derived
+            from IPersistentCache so that it can be used in an interface where only a persistent cache 
+            would make sense
+            </summary>
+        </member>
+        <member name="M:BruTile.Cache.ITileCache`1.Add(BruTile.TileIndex,`0)">
+            <summary>
+            Adds a tile that corresponds to the index
+            </summary>
+            <param name="index">The index of the tile to add. If the tile already exists no exepection is thrown.</param>
+            <param name="tile">The tile data</param>
+        </member>
+        <member name="M:BruTile.Cache.ITileCache`1.Remove(BruTile.TileIndex)">
+            <summary>
+            Removes the tile that corresponds with the index passed as argument. When the tile is not found no exception is thrown.
+            </summary>
+            <param name="index">The index of the tile to be removed.</param>
+        </member>
+        <member name="M:BruTile.Cache.ITileCache`1.Find(BruTile.TileIndex)">
+            <summary>
+            Tries to find a tile that corresponds with the index. Returns null if not found.
+            </summary>
+            <param name="index">The index of the tile to find</param>
+            <returns>The tile data that corresponds with the index or null.</returns>
+        </member>
+        <member name="M:BruTile.Extensions.HttpWebRequestExtensions.GetSyncResponse(System.Net.HttpWebRequest,System.Nullable{System.Int32})">
+            <summary>
+            A blocking operation that does not continue until a response has been
+            received for a given <see cref="T:System.Net.HttpWebRequest"/>, or the request
+            timed out.
+            </summary>
+            <param name="request">The request to be sent.</param>
+            <param name="timeout">An optional timeout.</param>
+            <returns>The response that was received for the request.</returns>
+            <exception cref="T:System.TimeoutException">If the <paramref name="timeout"/>
+            parameter was set, and no response was received within the specified
+            time.</exception>
+            <see href="http://www.hardcodet.net/2010/02/blocking-httpwebrequest-getresponse-for-silverlight"/>
+        </member>
+        <member name="M:BruTile.ITileProvider.GetTile(BruTile.TileInfo)">
+            <summary>
+            May return null
+            </summary>
+            <param name="tileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BruTile.ITileSchema">
+            <summary>
+            Interface definition of a tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSchema.Name">
+            <summary>
+            Gets a value indicating the name of the tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSchema.Srs">
+            <summary>
+            Gets a value indicating the spatial reference system (srs) of the tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSchema.Extent">
+            <summary>
+            Gets a value indicating the extent covered by this tile schema
+            </summary>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetTileWidth(System.String)">
+            <summary>
+            Function to get a tile's width for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The width of the tile</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetTileHeight(System.String)">
+            <summary>
+            Function to get a tile's height for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The height of the tile</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetOriginX(System.String)">
+            <summary>
+            Function to get the x vertex of the schema's origin for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The x vertex of the origin</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetOriginY(System.String)">
+            <summary>
+            Function to get the y vertex of the schema's origin for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The y vertex of the origin</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetMatrixWidth(System.String)">
+            <summary>
+            Function to get the matrix width (aka number of columns) of the schema for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The matrix width</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetMatrixHeight(System.String)">
+            <summary>
+            Function to get the matrix height (aka number of rows) of the schema for a given zoom level.
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The matrix height</returns>
+        </member>
+        <member name="P:BruTile.ITileSchema.Resolutions">
+            <summary>
+            Gets a value indicating the resolutions defined in this schema
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSchema.Format">
+            <summary>
+            Gets a value indicating the file format of the tiles
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSchema.YAxis">
+            <summary>
+            Gets a value indicating the orientation of the y-axis
+            </summary>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetTileInfos(BruTile.Extent,System.String)">
+            <summary>
+            Function to get the <see cref="T:BruTile.TileInfo"/>s for a given extent and zoom level.
+            </summary>
+            <param name="extent">The extent for which to get the tiles</param>
+            <param name="levelId">The zoom level's id</param>
+            <returns>A number of <see cref="T:BruTile.TileInfo"/>s</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetTileInfos(BruTile.Extent,System.Double)">
+            <summary>
+            Function to get the <see cref="T:BruTile.TileInfo"/>s for a given extent and unitsPerPixel.
+            </summary>
+            <param name="extent">The extent for which to get the tiles</param>
+            <param name="unitsPerPixel">The unitsPerPixel</param>
+            <returns>A number of <see cref="T:BruTile.TileInfo"/>s</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetExtentOfTilesInView(BruTile.Extent,System.String)">
+            <summary>
+            Function to get the intersection of requested <paramref name="extent"/> 
+            and this schema's <see cref="P:BruTile.ITileSchema.Extent"/> for a given zoom level.
+            </summary>
+            <param name="extent">The extent for which to get tiles</param>
+            <param name="levelId">The zoom level's id</param>
+            <returns>The intersection of requested extent and this schema's extent</returns>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetMatrixFirstCol(System.String)">
+            <summary>
+            Function to get the first matrix column served by this schema for a given zoom level. 
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+        </member>
+        <member name="M:BruTile.ITileSchema.GetMatrixFirstRow(System.String)">
+            <summary>
+            Function to get the first matrix row served by this schema for a given zoom level. 
+            </summary>
+            <param name="levelId">The zoom level's id</param>
+        </member>
+        <member name="T:BruTile.ITileSource">
+            <summary>
+            Interface for a tile source.
+            </summary>
+            <remarks>A tile provider is tuple of <see cref="T:BruTile.ITileProvider"/> and <see cref="T:BruTile.ITileSchema"/>.</remarks>
+        </member>
+        <member name="P:BruTile.ITileSource.Schema">
+            <summary>
+            Gets a value indicating the tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSource.Name">
+            <summary>
+            Gets a value indicating the title of the tile source
+            </summary>
+        </member>
+        <member name="P:BruTile.ITileSource.Attribution">
+            <summary>
+            Gets the attribution text with respect the provided data
+            </summary>
+        </member>
+        <member name="T:BruTile.Predefined.GlobalMercator">
+            <summary>
+            Tile schema for Global Mercator 
+            </summary>
+            <seealso href="http://wiki.osgeo.org/wiki/Tile_Map_Service_Specification#global-mercator"/>
+        </member>
+        <member name="M:BruTile.Predefined.GlobalMercator.#ctor">
+            <summary>
+            Creates an instance of this class
+            </summary>
+        </member>
+        <member name="M:BruTile.Predefined.GlobalMercator.#ctor(System.String)">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="format">The image format of the tiles</param>
+        </member>
+        <member name="M:BruTile.Predefined.GlobalMercator.#ctor(System.String,System.Int32)">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="format">The image format of the tiles</param>
+            <param name="numResolution">The number of resolutions to create</param>
+        </member>
+        <member name="M:BruTile.Predefined.GlobalMercator.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="format">The image format of the tiles</param>
+            <param name="minZoomLevel">The minimum zoom level</param>
+            <param name="maxZoomLevel">The maximum zoom level</param>
+        </member>
+        <member name="M:BruTile.Predefined.GlobalMercator.#ctor(System.String,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="format">The image format of the tiles</param>
+            <param name="declaredZoomLevels">The declared zoomlevels</param>
+        </member>
+        <member name="P:BruTile.Predefined.GlobalMercator.SrsWkt">
+            <summary>
+            Gets the Well-Known-Text representation of the spatial reference system
+            </summary>
+        </member>
+        <member name="T:BruTile.Predefined.KnownTileSource">
+            <summary>
+            Known tile sources
+            </summary>
+        </member>
+        <member name="M:BruTile.Predefined.KnownTileSources.Create(BruTile.Predefined.KnownTileSource,System.String,BruTile.Cache.IPersistentCache{System.Byte[]},System.Func{System.Uri,System.Byte[]})">
+            <summary>
+            Static factory method for known tile services
+            </summary>
+            <param name="source">The source</param>
+            <param name="apiKey">An (optional) API key</param>
+            <param name="persistentCache">A place to permanently store tiles (file of database)</param>
+            <param name="tileFetcher">Option to override the web request</param>
+            <returns>The tile source</returns>
+        </member>
+        <member name="T:BruTile.YAxis">
+            <summary>
+            Enumeration of possible YAxis directions
+            </summary>
+            <remarks>
+            Direction is relative to the coordinate system in which the map is presented.
+            <para/>
+            </remarks>
+        </member>
+        <member name="F:BruTile.YAxis.TMS">
+            <summary>
+            The y-axis direction of the tiles match that of the map. This is used by TMS.
+            </summary>
+        </member>
+        <member name="F:BruTile.YAxis.OSM">
+            <summary>
+            The y-axis direction is inverted compared to that of the map. This is used by OpenStreetMap
+            </summary>
+        </member>
+        <member name="M:BruTile.TileSchema.GetTileInfos(BruTile.Extent,System.Double)">
+            <summary>
+            Returns a List of TileInfos that cover the provided extent. 
+            </summary>
+        </member>
+        <member name="M:BruTile.TileSchema.Validate">
+            <summary>
+            Checks if the TileSchema members are properly initialized and throws an exception if not.
+            </summary>
+        </member>
+        <member name="T:BruTile.TileSource">
+            <summary>
+            The default implementation of a <see cref="T:BruTile.ITileSource"/>.
+            </summary>
+        </member>
+        <member name="M:BruTile.TileSource.#ctor(BruTile.ITileProvider,BruTile.ITileSchema)">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="tileProvider">The tile provider</param>
+            <param name="tileSchema">The tile schema</param>
+        </member>
+        <member name="P:BruTile.TileSource.Name">
+            <summary>
+            Gets a the Name of the tile source
+            </summary>
+        </member>
+        <member name="M:BruTile.TileSource.GetTile(BruTile.TileInfo)">
+            <summary>
+            Gets the image content of the tile 
+            </summary>
+        </member>
+        <member name="P:BruTile.TileSource.Schema">
+            <summary>
+            Gets a value indicating the tile schema
+            </summary>
+        </member>
+        <member name="T:BruTile.Tms.TileMap">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.Title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.Abstract">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.SRS">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.BoundingBox">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.Origin">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.TileFormat">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.TileSets">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.version">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMap.tilemapservice">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.TileMapBoundingBox">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapBoundingBox.minx">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapBoundingBox.miny">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapBoundingBox.maxx">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapBoundingBox.maxy">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.TileMapOrigin">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapOrigin.x">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapOrigin.y">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.TileMapTileFormat">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileFormat.width">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileFormat.height">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileFormat.mimetype">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileFormat.extension">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.TileMapTileSets">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileSets.TileSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileSets.profile">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.TileMapTileSetsTileSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileSetsTileSet.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileSetsTileSet.unitsperpixel">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.TileMapTileSetsTileSet.order">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Tms.NewDataSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Tms.NewDataSet.Items">
+            <remarks/>
+        </member>
+        <member name="M:BruTile.Tms.TmsRequest.GetUri(BruTile.TileInfo)">
+            <summary>
+            Generates a URI at which to get the data for a tile.
+            </summary>
+            <param name="info">Information about a tile.</param>
+            <returns>The URI at which to get the data for the specified tile.</returns>
+        </member>
+        <member name="M:BruTile.Utilities.ReadFully(System.IO.Stream)">
+            <summary>
+              Reads data from a stream until the end is reached. The
+              data is returned as a byte array. An IOException is
+              thrown if any of the underlying IO calls fail.
+            </summary>
+            <param name = "stream">The stream to read data from</param>
+        </member>
+        <member name="T:BruTile.Web.BasicRequest">
+            <summary>
+            A flexible request builder that can be used for a number of simple cases.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest.XTag">
+            <summary>
+            Tag to be replaced by column value.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest.YTag">
+            <summary>
+            Tag to be replaced by row value.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest.ZTag">
+            <summary>
+            Tag to be replaced by zoom level value.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest.ServerNodeTag">
+            <summary>
+            Tag to be replaced by server node entries, if any.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest.ApiKeyTag">
+            <summary>
+            Tag to be replaced by api key, if defined.
+            </summary>
+        </member>
+        <member name="F:BruTile.Web.BasicRequest._urlFormatter">
+            <summary>
+            Tag to be replaced with the Bing quad key. This is a single number that 
+            represents a combination of X, Y and Z. This can not be used in combination
+            with the X, Y and Z tags.
+            </summary>
+        </member>
+        <member name="M:BruTile.Web.BasicRequest.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Creates an instance of this class
+            </summary>
+            <param name="urlFormatter">The url formatter</param>
+            <param name="serverNodes">The server nodes</param>
+            <param name="apiKey">The API key</param>
+        </member>
+        <member name="M:BruTile.Web.BasicRequest.GetUri(BruTile.TileInfo)">
+            <summary>
+            Generates a URI at which to get the data for a tile.
+            </summary>
+            <param name="info">Information about a tile.</param>
+            <returns>The URI at which to get the data for the specified tile.</returns>
+        </member>
+        <member name="M:BruTile.Web.BasicRequest.TileXyToQuadKey(System.Int32,System.Int32,System.String)">
+            <summary>
+            Converts tile XY coordinates into a QuadKey at a specified level of detail.
+            </summary>
+            <param name="tileX">Tile X coordinate.</param>
+            <param name="tileY">Tile Y coordinate.</param>
+            <param name="levelId">Level of detail, from 1 (lowest detail)
+            to 23 (highest detail).</param>
+            <returns>A string containing the QuadKey.</returns>
+            Stole this methode from this nice blog: http://www.silverlightshow.net/items/Virtual-earth-deep-zooming.aspx. PDD.
+        </member>
+        <member name="M:BruTile.Web.BingRequest.GetUri(BruTile.TileInfo)">
+            <summary>
+            Generates a URI at which to get the data for a tile.
+            </summary>
+            <param name="info">Information about a tile.</param>
+            <returns>The URI at which to get the data for the specified tile.</returns>
+        </member>
+        <member name="M:BruTile.Web.HttpTileSource.GetTile(BruTile.TileInfo)">
+            <summary>
+            Gets the actual image content of the tile as byte array
+            </summary>
+        </member>
+        <member name="M:BruTile.Web.IRequest.GetUri(BruTile.TileInfo)">
+            <summary>
+            Generates a URI at which to get the data for a tile.
+            </summary>
+            <param name="info">Information about a tile.</param>
+            <returns>The URI at which to get the data for the specified tile.</returns>
+        </member>
+        <member name="T:BruTile.Web.NullRequest">
+            <summary>
+            NullRequest class is a placeholder for request builders for tile providers. It has no other use!
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmsc.WmscRequest.GetUri(BruTile.TileInfo)">
+            <summary>
+            Generates a URI at which to get the data for a tile.
+            </summary>
+            <param name="info">Information about a tile.</param>
+            <returns>The URI at which to get the data for the specified tile.</returns>
+        </member>
+        <member name="M:BruTile.Wmsc.WmscTileSource.ParseVendorSpecificCapabilitiesNode(System.Xml.Linq.XElement,BruTile.Wms.OnlineResource)">
+            <remarks> WMS-C uses the VendorSpecificCapabilities to specify the tile schema.</remarks>
+        </member>
+        <member name="P:BruTile.Wms.Layer.Cascaded">
+            <summary>
+            Gets a value whether this layer has been fetched from another wms server. If the value is greater than one, it has been gotten from the total number of servers
+            </summary>
+        </member>
+        <member name="P:BruTile.Wms.Service.ParseName">
+            <summary>
+            ParseName - Many WMS' do not set the Name correctly, so a client may set to false to allow these slightly out of spec servers
+            </summary>
+        </member>
+        <member name="F:BruTile.Wms.ServiceName.WMS">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.CrsAxisOrderRegistry">
+            <summary>
+            A class that provides axis orders for EPSG coordinate reference systems with an identifier less that 32787
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.CrsAxisOrderRegistry.Item(BruTile.Wmts.CrsIdentifier)">
+            <summary>
+            Gets the axis order for *all* EPSG defined coordinate reference systems with an srid less than 32768
+            </summary>
+            <param name="identifier">The identifier</param>
+            <returns>The axis order</returns>
+        </member>
+        <member name="T:BruTile.Wmts.CrsIdentifier">
+            <summary>
+            An identifier for the crs
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.CrsIdentifier.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes this coordinate system identifier
+            </summary>
+            <param name="authority">The authority</param>
+            <param name="version">The version</param>
+            <param name="identifier">The identifier</param>
+        </member>
+        <member name="P:BruTile.Wmts.CrsIdentifier.Authority">
+            <summary>
+            The authority
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.CrsIdentifier.Identifier">
+            <summary>
+            The identifier
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.CrsIdentifier.Version">
+            <summary>
+            The version
+            </summary>
+        </member>
+        <member name="T:BruTile.Wmts.UnitOfMeasure">
+            <summary>
+            A unit of measure
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.UnitOfMeasure.#ctor(System.String,System.Double)">
+            <summary>
+            Initializes this unit of measue with a <paramref name="name"/> and <paramref name="toMeter"/> value.
+            </summary>
+            <param name="name">A value indicating the name of the unit of measure</param>
+            <param name="toMeter">A scale value to transform this Unit of measure</param>
+        </member>
+        <member name="P:BruTile.Wmts.UnitOfMeasure.Name">
+            <summary>
+            Gets a value indicating the name of the unit of measure
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.UnitOfMeasure.ToMeter">
+            <summary>
+            Gets a scale value to transform this Unit of measure to <see cref="P:BruTile.Wmts.UnitOfMeasure.ToMeter"/>
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.UnitOfMeasure.Equals(BruTile.Wmts.UnitOfMeasure)">
+            <summary>
+            Function to check for equality 
+            </summary>
+            <param name="other">Another unit of measure</param>
+            <returns><c>true</c> if <see cref="P:BruTile.Wmts.UnitOfMeasure.ToMeter"/>s are equal</returns>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.CodeType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CodeType.codeSpace">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CodeType.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.AbstractReferenceBaseType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.arcrole">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.show">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.showSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.actuate">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AbstractReferenceBaseType.actuateSpecified">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.showType">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.showType.new">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.showType.replace">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.showType.embed">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.showType.other">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.showType.none">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.actuateType">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.URLTemplateType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.URLTemplateType.format">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.URLTemplateType.resourceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.URLTemplateType.template">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.URLTemplateTypeResourceType">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.URLTemplateTypeResourceType.tile">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.URLTemplateTypeResourceType.FeatureInfo">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ContentsBaseType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContentsBaseType.DatasetDescriptionSummary">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContentsBaseType.OtherSource">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType.WGS84BoundingBox">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType.Items">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType.Metadata">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DatasetDescriptionSummaryBaseType.DatasetDescriptionSummary">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.WGS84BoundingBoxType">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.MetadataType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.AbstractMetaData">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.typeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.arcrole">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.show">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.showSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.actuate">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.actuateSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.MetadataType.about">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.typeType">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.simple">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.extended">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.title">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.resource">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.locator">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.typeType.arc">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.DescriptionType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DescriptionType.Title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DescriptionType.Abstract">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DescriptionType.Keywords">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.LanguageStringType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LanguageStringType.lang">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LanguageStringType.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.KeywordsType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.KeywordsType.Keyword">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.KeywordsType.Type">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.BasicIdentificationType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.BasicIdentificationType.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.BasicIdentificationType.Metadata">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.IdentificationType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.IdentificationType.Items">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.IdentificationType.OutputFormat">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.IdentificationType.AvailableCRS">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.LayerType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.Style">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.Format">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.InfoFormat">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.Dimension">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.TileMatrixSetLink">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LayerType.ResourceURL">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Style">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Style.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Style.LegendURL">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Style.isDefault">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Style.isDefaultSpecified">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.LegendURL">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.format">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.minScaleDenominator">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.minScaleDenominatorSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.maxScaleDenominator">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.maxScaleDenominatorSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.width">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.LegendURL.height">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.OnlineResourceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.typeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.arcrole">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.show">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.showSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.actuate">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OnlineResourceType.actuateSpecified">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.RequestMethodType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RequestMethodType.Constraint">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.DomainType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DomainType.name">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.UnNamedDomainType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.AllowedValues">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.AnyValue">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.NoValues">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.ValuesReference">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.DefaultValue">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.Meaning">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.DataType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.UOM">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.ReferenceSystem">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.UnNamedDomainType.Metadata">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.RangeType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RangeType.MinimumValue">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RangeType.MaximumValue">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RangeType.Spacing">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RangeType.rangeClosure">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.RangeType.rangeClosureSpecified">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ValueType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ValueType.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.RangeTypeRangeClosure">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.RangeTypeRangeClosure.closed">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.RangeTypeRangeClosure.open">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.RangeTypeRangeClosure.openclosed">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.RangeTypeRangeClosure.closedopen">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.AnyValue">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.NoValues">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ValuesReference">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ValuesReference.reference">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ValuesReference.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.DomainMetadataType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DomainMetadataType.reference">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DomainMetadataType.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Dimension">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.UOM">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.UnitSymbol">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.Default">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.Current">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.CurrentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Dimension.Value">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TileMatrixSetLink">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSetLink.TileMatrixSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSetLink.TileMatrixSetLimits">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TileMatrixLimits">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixLimits.TileMatrix">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixLimits.MinTileRow">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixLimits.MaxTileRow">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixLimits.MinTileCol">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixLimits.MaxTileCol">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ContentsType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContentsType.TileMatrixSet">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TileMatrixSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSet.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSet.Item">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSet.SupportedCRS">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSet.WellKnownScaleSet">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSet.TileMatrix">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TileMatrix">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrix.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrix.ScaleDenominator">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrix.TopLeftCorner">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrix.TileWidth">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrix.TileHeight">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.CapabilitiesBaseType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CapabilitiesBaseType.ServiceIdentification">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CapabilitiesBaseType.ServiceProvider">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CapabilitiesBaseType.OperationsMetadata">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CapabilitiesBaseType.version">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.CapabilitiesBaseType.updateSequence">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ServiceIdentification">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceIdentification.ServiceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceIdentification.ServiceTypeVersion">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceIdentification.Profile">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceIdentification.Fees">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceIdentification.AccessConstraints">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ServiceProvider">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceProvider.ProviderName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceProvider.ProviderSite">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceProvider.ServiceContact">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ResponsiblePartySubsetType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartySubsetType.IndividualName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartySubsetType.PositionName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartySubsetType.ContactInfo">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartySubsetType.Role">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ContactType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContactType.Phone">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContactType.Address">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContactType.OnlineResource">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContactType.HoursOfService">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ContactType.ContactInstructions">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TelephoneType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TelephoneType.Voice">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TelephoneType.Facsimile">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.AddressType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.DeliveryPoint">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.City">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.AdministrativeArea">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.PostalCode">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.Country">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AddressType.ElectronicMailAddress">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.OperationsMetadata">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OperationsMetadata.Operation">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OperationsMetadata.Parameter">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OperationsMetadata.Constraint">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.OperationsMetadata.ExtendedCapabilities">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Operation">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Operation.DCP">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Operation.Parameter">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Operation.Constraint">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Operation.Metadata">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Operation.name">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.DCP">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.DCP.Http">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.HTTP">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.HTTP.Items">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.HTTP.ItemsElementName">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ItemsChoiceType">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.ItemsChoiceType.Get">
+            <remarks/>
+        </member>
+        <member name="F:BruTile.Wmts.Generated.ItemsChoiceType.Post">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.arcType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.arcrole">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.title1">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.show">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.showSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.actuate">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.actuateSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.from">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.arcType.to">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.titleEltType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.titleEltType.Any">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.titleEltType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.titleEltType.lang">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.locatorType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.title1">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.locatorType.label">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.resourceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.resourceType.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.resourceType.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.resourceType.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.resourceType.label">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.extended">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.extended.Items">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.extended.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.extended.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.extended.title">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.simple">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.type">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.typeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.href">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.role">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.arcrole">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.title">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.show">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.showSpecified">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.actuate">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.simple.actuateSpecified">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ResponsiblePartyType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartyType.IndividualName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartyType.OrganisationName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartyType.PositionName">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartyType.ContactInfo">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ResponsiblePartyType.Role">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.GetCapabilitiesType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetCapabilitiesType.AcceptVersions">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetCapabilitiesType.Sections">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetCapabilitiesType.AcceptFormats">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetCapabilitiesType.updateSequence">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.GetResourceByIdType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetResourceByIdType.ResourceID">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetResourceByIdType.OutputFormat">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetResourceByIdType.service">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetResourceByIdType.version">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ExceptionReport">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionReport.Exception">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionReport.version">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionReport.lang">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ExceptionType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionType.ExceptionText">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionType.exceptionCode">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ExceptionType.locator">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.AllowedValues">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.AllowedValues.Items">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ReferenceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ReferenceType.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ReferenceType.Abstract">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ReferenceType.Format">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ReferenceType.Metadata">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ReferenceGroupType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ReferenceGroupType.AbstractReferenceBase">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ManifestType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ManifestType.ReferenceGroup">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.ServiceReferenceType">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.ServiceReferenceType.Item">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.GetCapabilities">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.GetCapabilities.service">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Capabilities">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Capabilities.Contents">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Capabilities.Themes">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Capabilities.WSDL">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Capabilities.ServiceMetadataURL">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Theme">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Theme.Identifier">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Theme.Theme1">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Theme.LayerRef">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.TileMatrixSetLimits">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.TileMatrixSetLimits.TileMatrixLimits">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.Generated.Themes">
+            <remarks/>
+        </member>
+        <member name="P:BruTile.Wmts.Generated.Themes.Theme">
+            <remarks/>
+        </member>
+        <member name="T:BruTile.Wmts.ScaleSet">
+            <summary>
+            A set of scales
+            </summary>
+        </member>
+        <member name="F:BruTile.Wmts.ScaleSet._items">
+            <summary>
+            The items
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.ScaleSet.#ctor(System.String,BruTile.Wmts.CrsIdentifier,System.Collections.Generic.IEnumerable{BruTile.Wmts.ScaleSetItem})">
+            <summary>
+            Creates an instance for this class
+            </summary>
+            <param name="name"></param>
+            <param name="crs"></param>
+            <param name="items"></param>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSet.Crs">
+            <summary>
+            Gets the Crs identifier for this scale set
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSet.Name">
+            <summary>
+            Gets a value indicating the name of the scale set
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSet.Item(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSet.Item(System.Double)">
+            <summary>
+            Accessor to a pixel size
+            </summary>
+            <param name="scaleDenominator"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BruTile.Wmts.ScaleSetItem">
+            <summary>
+            A precomputed pair of ScaleDenominator and PixelSize
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.ScaleSetItem.#ctor(System.Double,System.Double)">
+            <summary>
+            Initializes a scale set item with the provided values
+            </summary>
+            <param name="scaleDenominator">The scale denominator</param>
+            <param name="pixelSize">The pixel size</param>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSetItem.ScaleDenominator">
+            <summary>
+            Gets a value indicating the scale denominator (1:...)
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.ScaleSetItem.PixelSize">
+            <summary>
+            Gets a value indicating the pixel size
+            </summary>
+        </member>
+        <member name="T:BruTile.Wmts.WellKnownScaleSets">
+            <summary>
+            A repository of well known scale sets.
+            </summary>
+            <remarks>
+            These scale sets are defined in the WMTS specification (OGC 07-057r7),
+            Chapter 6.2 and Annex E
+            <para>
+            Since a WMTS server will serve its data in a limited number of coordinate systems and
+            scales (because, unlike a WMS, it serves only pre-defined tiles), and since some simple
+            WMTS client will be unable to perform coordinate-system transformations or rescaling
+            of tiles, the ability for a WMTS client to overlay tiles from one server on top of tiles from
+            other servers will be limited unless there are some general agreements among WMTS
+            servers as to what constitutes a common coordinate reference system and a common set
+            of scales. Thus, this standard defines the concept of well-known scale sets. In order to
+            increase interoperability between clients and servers it is recommended that many layers
+            use a common set of scales in the same CRS that the target community agree to use.
+            </para>
+            <para>
+            A well-known scale set is a well-known combination of a coordinate reference system
+            and a set of scales that a tile matrix set declares support for. Each tile matrix set
+            references one well-known scale set. A client application can confirm that tiles from one
+            WMTS server are compatible with tiles from another WMTS server merely by verifying
+            that they declare a common well-known scale set. It may also be the case that a client
+            application is limited to supporting a particular coordinate system and set of scales (e.g.,
+            an application that overlays WMTS tiles on top of Google Maps tiles). In this situation, a
+            client application can accept or reject a WMTS as being compatible merely by verifying
+            the declared well-known scale set. Furthermore, the existence of well-known scale sets
+            provides incentive for WMTS servers to support a well-known scale set, increasing the
+            odds of compatibility with other WMTS sources. The informative Annex E provides
+            several well-known scale sets and others could be incorporated in the future.
+            </para>
+            <para>
+            A tile matrix set conforms to a particular well-known scale set when it uses the same
+            CRS and defines all scale denominators ranging from the largest scale denominator in the
+            well-known scale set to some low scale denominator (in other words, it is not necessary
+            to define all the lower scale denominators to conform to a well-known scale set).
+            </para>
+            <para>
+            NOTE: Well-known scale sets are technically not necessary for interoperability, since a client
+            application can always examine the actual list of coordinate systems and scales available for each layer of a
+            WMTS server in order to determine its level of compatibility with other WMTS servers. Well-known scale
+            sets are merely a convenience mechanism.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:BruTile.Wmts.WellKnownScaleSets.#cctor">
+            <summary>
+            Static constructor
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WellKnownScaleSets.Item(System.String)">
+            <summary>
+            Get a scale set by its key
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BruTile.Wmts.BoundingBoxAxisOrderInterpretation">
+            <summary>
+            An enumeration of possibilities of how to interpret the axis order in &lt;ows:BoundingBox&gt; definitions
+            </summary>
+        </member>
+        <member name="F:BruTile.Wmts.BoundingBoxAxisOrderInterpretation.Natural">
+            <summary>
+            Natural, first x, then y
+            </summary>
+        </member>
+        <member name="F:BruTile.Wmts.BoundingBoxAxisOrderInterpretation.CRS">
+            <summary>
+            As defined in the definition of the coordinate reference system
+            </summary>
+        </member>
+        <member name="F:BruTile.Wmts.BoundingBoxAxisOrderInterpretation.Geographic">
+            <summary>
+            Geographic, first y (latitude), then x (longitude)
+            </summary>
+        </member>
+        <member name="F:BruTile.Wmts.WmtsParser.ScaleHint">
+            <summary>
+            According to OGC SLD 1.0 specification:
+            The "standardized rendering pixel size" is defined to be 0.28mm × 0.28mm (millimeters).
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.WmtsParser.Parse(System.IO.Stream,BruTile.Wmts.BoundingBoxAxisOrderInterpretation)">
+            <summary>
+            Method to parse WMTS tile sources from a stream
+            </summary>
+            <param name="source">The source stream</param>
+            <param name="bbaoi">The way how axis order should be interpreted for &lt;ows:BoundingBox&gt;es</param>
+            <returns>An enumeration of tile sources</returns>
+        </member>
+        <member name="M:BruTile.Wmts.WmtsParser.GetLayers(BruTile.Wmts.Generated.Capabilities,System.Collections.Generic.List{BruTile.ITileSchema})">
+            <summary>
+            Method to extract all image layers from a wmts capabilities document.
+            </summary>
+            <param name="capabilties">The capabilities document</param>
+            <param name="tileSchemas">A set of</param>
+            <returns></returns>
+        </member>
+        <member name="M:BruTile.Wmts.WmtsTileSchema.#ctor">
+            <summary>
+            Creates an instance of this class
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Identifier">
+            <summary>
+            Gets an identifier for the layer and tile matrix set.
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Layer">
+            <summary>
+            The layer identifier
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Title">
+            <summary>
+            The title of the layer
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.TileMatrixSet">
+            <summary>
+            The identifier of the tile matrix set
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.SupportedSRS">
+            <summary>
+            Gets or sets the supported spatial reference system
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Style">
+            <summary>
+            Gets a value indicating the style
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.WmtsTileSchema.CreateSpecific(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a copy of this schema with <see cref="P:BruTile.Wmts.WmtsTileSchema.Format"/> set to <paramref name="format"/>
+            </summary>
+            <param name="title">The layer title</param>
+            <param name="layer">The layer identifier</param>
+            <param name="abstract">A description for the layers content</param>
+            <param name="tileMatrixSet">The TileMatrixSet identifier</param>
+            <param name="style">The style identifier</param>
+            <param name="format">The format used for this style</param>
+            <returns>A tile schema</returns>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Abstract">
+            <summary>
+            Gets or sets a value indicating the content of the layer
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Name">
+            <summary>
+            Gets a value indicating the name of the tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Srs">
+            <summary>
+            Gets a value indicating the spatial reference system (srs) of the tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Extent">
+            <summary>
+            Gets or sets a value indicating the extent covered by this tile schema
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.Format">
+            <summary>
+            Gets a value indicating the file format of the tiles
+            </summary>
+        </member>
+        <member name="P:BruTile.Wmts.WmtsTileSchema.YAxis">
+            <summary>
+            Gets a value indicating the orientation of the y-axis
+            </summary>
+        </member>
+        <member name="M:BruTile.Wmts.WmtsTileSchema.GetTileInfos(BruTile.Extent,System.Double)">
+            <summary>
+            Returns a List of TileInfos that cover the provided extent. 
+            </summary>
+        </member>
+    </members>
+</doc>
