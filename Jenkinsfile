@@ -22,11 +22,18 @@ node {
         checkout scm
     }
 
-
+    stage('Test') {
+        tryStep "test", {
+            sh "docker-compose -f test/docker-compose.yml build && " +
+               "docker-compose -f test/docker-compose.yml run -u root --rm test"
+        }, {
+            sh "docker-compose -f test/docker-compose.yml down"
+        }
+    }
 
     stage("Build image") {
         tryStep "build", {
-            def image = docker.build("build.app.amsterdam.nl:5000/ruimte/3d:${env.BUILD_NUMBER}",
+            def image = docker.build("build.app.amsterdam.nl:5000/3d:${env.BUILD_NUMBER}",
                 "--shm-size 1G " +
                 "--build-arg BUILD_ENV=acc" +
                 " .")
@@ -43,7 +50,7 @@ if (BRANCH == "master") {
     node {
         stage('Push acceptance image') {
             tryStep "image tagging", {
-                def image = docker.image("build.app.amsterdam.nl:5000/ruimte/3d:${env.BUILD_NUMBER}")
+                def image = docker.image("build.app.amsterdam.nl:5000/3d:${env.BUILD_NUMBER}")
                 image.pull()
                 image.push("acceptance")
             }
@@ -63,14 +70,14 @@ if (BRANCH == "master") {
     }
 
     stage('Waiting for approval') {
-        slackSend channel: '#ci-channel', color: 'warning', message: '3DAmsterdam Dashboard is waiting for Production Release - please confirm'
+        slackSend channel: '#ci-channel', color: 'warning', message: 'Amsterdam 3D Dashboard is waiting for Production Release - please confirm'
         input "Deploy to Production?"
     }
 
     node {
         stage('Push production image') {
             tryStep "image tagging", {
-                def image = docker.image("build.app.amsterdam.nl:5000/ruimte/3d:${env.BUILD_NUMBER}")
+                def image = docker.image("build.app.amsterdam.nl:5000/3d:${env.BUILD_NUMBER}")
                 image.pull()
                 image.push("production")
                 image.push("latest")
