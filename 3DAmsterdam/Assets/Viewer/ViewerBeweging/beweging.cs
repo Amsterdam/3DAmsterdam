@@ -258,7 +258,6 @@ public class beweging : MonoBehaviour
         }
     }
 
-    // buggy functie
     private float ClampAngle(float angle, float from, float to)
     {
         if (angle < 0f) angle = 360 + angle;
