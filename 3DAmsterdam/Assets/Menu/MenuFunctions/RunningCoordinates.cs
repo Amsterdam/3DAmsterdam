@@ -22,10 +22,10 @@ public class RunningCoordinates : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Vector3WGS wgscoords = CoordConvert.UnitytoWGS84(hit.point);
-            string gpstekst = "WGS84: " + ((float)wgscoords.lon).ToString() + " " + ((float)wgscoords.lat).ToString();
+            string gpstekst = "WGS84: " + " X: " + ((int)wgscoords.lon).ToString() + "  Y: " + ((int)wgscoords.lat).ToString();
             GPScoordinaten.GetComponent<TextMeshProUGUI>().text = gpstekst;
             Vector3RD RDcoords = CoordConvert.UnitytoRD(hit.point);
-            string rdtekst = "RD: " + ((float)RDcoords.x).ToString() + " " + ((float)RDcoords.y).ToString() + " " + ((float)RDcoords.z).ToString();
+            string rdtekst = "RD: " + " X: " + ((int)RDcoords.x).ToString() + "  Y: " + ((int)RDcoords.y).ToString() + "  Z: " + ((int)RDcoords.z).ToString();
             RDcoordinaten.GetComponent<TextMeshProUGUI>().text = rdtekst;
         }
     }
