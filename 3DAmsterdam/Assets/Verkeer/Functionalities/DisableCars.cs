@@ -35,9 +35,5 @@ public class DisableCars : MonoBehaviour
             }
             switcher *= -1;
         }
-
-
-
-        Debug.Log(switcher);
     }
 }

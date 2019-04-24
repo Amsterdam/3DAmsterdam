@@ -23,10 +23,11 @@ public class CUIColorPicker : MonoBehaviour
     private Queue savedColors = new Queue();
     private int queueSize = 3;
     int counter = 0;
+    [HideInInspector]
+    public string selectedObject;
 
-
-
-    public Material materialBuildings;
+    private int currentMaterial;
+    public Material materialBuildings, materialTreeBase, materialTreeTop;
 
     private static void RGBToHSV(Color color, out float h, out float s, out float v)
     {
@@ -191,6 +192,19 @@ public class CUIColorPicker : MonoBehaviour
         textA.GetComponent<TextMeshProUGUI>().text = ((int)(sliderA.GetComponent<Slider>().value * 255f)).ToString();
     }
 
+    private void SetObject()
+    {
+        if (selectedObject == "Gebouwen")
+        {
+            currentMaterial = 0;
+        } else if (selectedObject == "BoomBlaadjes"){
+            currentMaterial = 1;
+        } else
+        {
+            currentMaterial = 2;
+        }
+    }
+
     public void SaveColor()
     {
         savedColors.Enqueue(Color);
@@ -210,6 +224,7 @@ public class CUIColorPicker : MonoBehaviour
             counter--;
         }
     }
+    
 
     void Awake()
     {
@@ -228,7 +243,18 @@ public class CUIColorPicker : MonoBehaviour
 
     void Update()
     {
-        materialBuildings.color = new Color(Color.r, Color.g, Color.b, sliderA.GetComponent<Slider>().value);
+        SetObject();
+
+        if (currentMaterial == 0)
+        {
+            materialBuildings.color = new Color(Color.r, Color.g, Color.b, sliderA.GetComponent<Slider>().value);
+        } else if (currentMaterial == 1)
+        {
+            materialTreeTop.color = new Color(Color.r, Color.g, Color.b, sliderA.GetComponent<Slider>().value);
+        } else
+        {
+            materialTreeBase.color = new Color(Color.r, Color.g, Color.b, sliderA.GetComponent<Slider>().value);
+        }
 
         _update();
     }
