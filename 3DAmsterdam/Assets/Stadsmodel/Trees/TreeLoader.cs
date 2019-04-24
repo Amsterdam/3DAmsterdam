@@ -26,7 +26,7 @@ public class TreeLoader : MonoBehaviour
         public GameObject Container;
         public Vector3 Locatie;
 
-
+        
         public Boomdata(GameObject container, Vector3 locatie)
         {
             Container = container;
@@ -37,6 +37,7 @@ public class TreeLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         CV = Camera.main.GetComponent<CameraView>();
         //Vector3WGS min = CoordConvert.RDtoWGS84(121000, 486000);
         //Vector3WGS max = CoordConvert.RDtoWGS84(122000, 487000);

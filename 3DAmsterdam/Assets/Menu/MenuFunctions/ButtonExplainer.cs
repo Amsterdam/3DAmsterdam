@@ -15,7 +15,9 @@ public class ButtonExplainer : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private GameObject _helpMessage;
 
     private Vector3 imagePos;
+    private Vector3 position;
 
+    private float offSetX, offSetY;
     private float scaling = 15f;
 
     private void Start()
@@ -29,24 +31,27 @@ public class ButtonExplainer : MonoBehaviour, IPointerEnterHandler, IPointerExit
         // het bericht wordt geinstantieerd
         _helpMessage = Instantiate(helpMessage, imagePos, Quaternion.identity);
 
-        // het bericht wordt child gemaakt van het canvas
-        _helpMessage.transform.SetParent(GameObject.Find("Canvas").transform);
+        // het bericht wordt child gemaakt van de bijbehorende knop
+        _helpMessage.transform.SetParent(this.gameObject.transform);
 
         // de text in het bericht wordt aangepast
         _helpMessage.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = message;
 
+        // de grootte van de image wordt bepaald
         RectTransform imageRectTransform = _helpMessage.GetComponent<RectTransform>();
         imageRectTransform.sizeDelta = new Vector2(message.Length * scaling, imageRectTransform.sizeDelta.y);
 
+        // de grootte van de tekst wordt bepaald
         RectTransform textRectTransform = _helpMessage.transform.GetChild(0).gameObject.GetComponent<RectTransform>();
         textRectTransform.sizeDelta = new Vector2(message.Length * scaling, textRectTransform.sizeDelta.y);
 
         // de offset van het bericht wordt bepaald
-        float offSetX = GetComponent<RectTransform>().rect.width / 2, offSetY = GetComponent<RectTransform>().rect.height / 2;
+        offSetX = GetComponent<RectTransform>().rect.width / 2;
         offSetX += (_helpMessage.GetComponent<RectTransform>().rect.width / 2) + 10f;
+        offSetY = GetComponent<RectTransform>().rect.height / 2;
+
         _helpMessage.transform.position += new Vector3(offSetX, offSetY, 0);
     }
-
 
     private void Update()
     {

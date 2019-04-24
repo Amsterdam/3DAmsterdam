@@ -16,15 +16,12 @@ public class Grounddetection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(transform.name);
-
         RaycastHit hit;
         
         rayvanaf.y -= 50;
-        Debug.Log(transform.position.y);
-        Debug.Log(rayvanaf.y);
+
         Physics.Raycast(rayvanaf, transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity);
-        Debug.Log(hit.transform.name);
+
         if (hit.transform.name !="FPSController")
             
         {
@@ -37,7 +34,6 @@ public class Grounddetection : MonoBehaviour
         }
         else
         {
-            Debug.Log("wel floating");
             if (floating == false)
             {
                 GetComponent<Rigidbody>().useGravity = false;
