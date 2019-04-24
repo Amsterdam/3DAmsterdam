@@ -9,6 +9,6 @@ public class UploadGebouw : MonoBehaviour
 
     public void OpenExplorer()
     {
-        path = EditorUtility.OpenFilePanel("", "", "");
+        //path = EditorUtility.OpenFilePanel("", "", "");
     }
 }

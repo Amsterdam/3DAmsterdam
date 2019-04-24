@@ -11,6 +11,9 @@ using UnityEngine.Networking;
 using System;
 using ConvertCoordinates;
 using SimpleJSON;
+using System.IO;
+
+using System.Diagnostics;
 
 
 public static class UnityExtensions
@@ -29,7 +32,7 @@ public static class UnityExtensions
 public class BuildingLoader : MonoBehaviour
 {
 
-    public string TOP10URL = "https://acc.3d.amsterdam.nl/webmap/gebouwen/top10/{id}.geojson";
+    public string TOP10URL = "https://acc.3d.amsterdam.nl/webmap/gebouwen/{id}.geojson";
     public string BAGURL = "https://acc.3d.amsterdam.nl/webmap/gebouwen/{id}.geojson";
     public string ModelURL = "https://acc.3d.amsterdam.nl/webmap/gebouwen/models/{id}";
     public Material GebouwMateriaal;
@@ -44,9 +47,16 @@ public class BuildingLoader : MonoBehaviour
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     Queue<ModelDownloadData> ModelQueue = new Queue<ModelDownloadData>();
     int AantalModelDownloads = 0;
+    public Boolean GebruikAssetBundles = true;
+    public Boolean Bagpanden = true;
+    public Boolean Top10Panden = true;
 
 
-    Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
+ 
+
+
+
+Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
     public struct ModelDownloadData
     {
@@ -93,23 +103,95 @@ public class BuildingLoader : MonoBehaviour
     {
         CV = Camera.main.GetComponent<CameraView>();
 
+        //List<Vector3> Top10Nodig = new List<Vector3>();
+        //if (Top10Panden)
+        //{
+
+
+
+        //    for (int x = 100000; x < 133000; x += 1000)
+        //    {
+        //        for (int y = 460000; y < 500000; y += 1000)
+        //        {
+        //            Top10Nodig.Add(new Vector3(x, y, 0));
+        //        }
+        //    }
+        //}
+        //if (Bagpanden)
+        //{
+
+
+
+        //    for (int x = 100000; x < 133000; x += 500)
+        //    {
+        //        for (int y = 460000; y < 500000; y += 500)
+        //        {
+        //            Top10Nodig.Add(new Vector3(x, y, 1));
+        //        }
+        //    }
+        //}
+        ////Top10Nodig.Add(new Vector3(112000, 491000, 1));
+        ////Top10Nodig.Add(new Vector3(113000, 490000, 1));
+        ////Top10Nodig.Add(new Vector3(122000, 486500, 1));
+        ////Top10Nodig.Add(new Vector3(122500, 486500, 1));
+
+        //if (Bagpanden || Top10Panden)
+        //{
+
+
+
+        //foreach (var t in Top10Nodig)
+        //{
+        //    //draw placeholder tile
+
+        //    if (top10Db.ContainsKey(t) == false) // alleen verdergaan als de tegel nog niet in de lijst met geladentegels staat.
+        //    {
+        //        GameObject gebouwtegel;
+        //        if (t.z == 0)
+        //        {
+        //            gebouwtegel = new GameObject("top10/" + t.x + "_" + t.y);
+        //            gebouwtegel.transform.parent = transform;
+        //            //gebouwtegel.name = "top10/" + t.x + "_" + t.y;
+        //        }
+        //        else
+        //        {
+        //            gebouwtegel = new GameObject("BAG/" + t.x + "_" + t.y);
+        //            gebouwtegel.transform.parent = transform;
+        //            //gebouwtegel.name = "BAG/" + t.x + "_" + t.y;
+        //        }
+
+        //        top10Db.Add(t, gebouwtegel);
+
+        //        //get tile texture data
+
+        //        string wmsUrl;
+        //        if (t.z == 0)
+        //        {
+        //            wmsUrl = TOP10URL.Replace("{id}", gebouwtegel.name);
+        //        }
+        //        else
+        //        {
+        //            wmsUrl = BAGURL.Replace("{id}", gebouwtegel.name);
+        //        }
+        //        gebouwenQueue.Enqueue(new downloadRequest(wmsUrl, TileService.Top10, t));
+
+
+        //    }
+
+
+        //}
+        //}
         /// lijst met custom modellen inlezen en opslaan in de list CustomModels
         TextAsset modellijst = new TextAsset();
         modellijst = Resources.Load<TextAsset>("Mooiegebouwenvervanglijst");
         string tekst = modellijst.text;
         string[] linesInFile = tekst.Split('\n');
-        for (int i = 2; i < linesInFile.Length; i++)
+        for (int i = 3; i < linesInFile.Length; i++)
         {
             string[] regeldelen = linesInFile[i].Split(';');
             modeldata gegevens = new modeldata();
-            //    gegevens.modelnaam = regeldelen[0];
-            //    double dbl;
-            //    double.TryParse(regeldelen[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            //    gegevens.lat = dbl;
-            //    double.TryParse(regeldelen[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            //    gegevens.lon = dbl;
-            //    double.TryParse(regeldelen[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
-            //    gegevens.NAPHoogte = dbl;
+           
+            
             gegevens.BAGid = regeldelen[0];
             CustomModels.Add(gegevens);
         }
@@ -118,11 +200,12 @@ public class BuildingLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY !=CV.CameraExtent.CenterY)
+
+        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
             UpdateTop10(CV.CameraExtent);
         }
-        
+
 
         // generieke panden donloaden
         if (pendingQueue.Count < maxParallelRequests && gebouwenQueue.Count > 0)
@@ -135,11 +218,22 @@ public class BuildingLoader : MonoBehaviour
             {
 
                 case TileService.Top10:
+                    if (GebruikAssetBundles)
+                    {
+                        StartCoroutine(RequestTop10AssetBundel(request.Url, request.TileId));
+                    }
+                    else
+                    { 
                     StartCoroutine(requestTop10(request.Url, request.TileId));
+                    }
                     break;
             }
         }
-        
+        else
+        {
+
+        }
+
     }
 
     public void UpdateTop10(Extent WGSExtent)
@@ -293,6 +387,10 @@ public class BuildingLoader : MonoBehaviour
             //gevel.name = naam;
             //gevelhoogte bepalen
             string tekst = pand["properties"]["mediaan_ho"].Value;
+        if (tekst =="")
+        {
+            tekst = pand["properties"]["Hoogte"].Value;
+        }
             //tekst = tekst.Replace(".", ",");
             double dbl;
             double.TryParse(tekst, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out dbl);
@@ -434,90 +532,222 @@ public class BuildingLoader : MonoBehaviour
 
     }
 
-    private IEnumerator requestTop10(string url, Vector3 id)
+    private IEnumerator RequestTop10AssetBundel(string url, Vector3 id)
     {
-        UnityWebRequest www = UnityWebRequest.Get(url);
+        Stopwatch timer;
+        timer = new Stopwatch();
 
-        yield return www.SendWebRequest();
+        timer.Start();
+        
+        //UnityWebRequest www = UnityWebRequest.Get(url);
+        //yield return www.SendWebRequest();
         if (top10Db.ContainsKey(id))
         {
             GameObject container = top10Db[id];
-            List<Mesh> pandmeshes = new List<Mesh>();
-            if (!www.isNetworkError && !www.isHttpError)
+            
+            Vector3RD origin = new Vector3RD();
+            bool IsBagpand = false;
+            origin.x = id.x + 500;
+            origin.y = id.y + 500;
+            origin.z = 0;
+            string assetbundlenaam = "AssetBundles/WebGL/bag/"+ id.x.ToString() + "_" + id.y.ToString();
+            //Vector3RD origin = CoordConvert.UnitytoRD(container.transform.position);
+            double rotatie = CoordConvert.RDRotation(origin);
+            container.transform.localPosition = CoordConvert.RDtoUnity(origin);
+            container.transform.Rotate(new Vector3(0, (float)rotatie, 0));
+
+            string uri = "file:///D://Git/A3D/AssetBundles/WebGL/gebouwen_" + id.x.ToString() + "_" + id.y.ToString()+"."+id.z.ToString();
+            UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequestAssetBundle.GetAssetBundle(uri, 0);
+            yield return request.SendWebRequest();
+            AssetBundle myLoadedAssetBundle = DownloadHandlerAssetBundle.GetContent(request);
+
+
+           // var myLoadedAssetBundle = AssetBundle.LoadFromFile(assetbundlenaam);
+            if (myLoadedAssetBundle == null)
             {
-                Vector3RD origin = new Vector3RD();
-                origin.x = id.x + 500;
-                origin.y = id.y + 500;
-                origin.z = 0;
-                //Vector3RD origin = CoordConvert.UnitytoRD(container.transform.position);
-                double rotatie = CoordConvert.RDRotation(origin);
-                container.transform.localPosition = CoordConvert.RDtoUnity(origin);
-                container.transform.Rotate(new Vector3(0, (float)rotatie,0));
-                var gebouwen = JSON.Parse(www.downloadHandler.text);
-
-                for (int i = 0; i < gebouwen["features"].Count; i++)
-                {
-                   
-                        
-
-                        string naam = gebouwen["features"][i]["properties"]["PAND_ID"].Value;
-                        if (naam == "") //betreft hier een top10-pand
-                        {
-                           pandmeshes.Add( CreeerGebouw(gebouwen["features"][i],origin));
-                        }
-                        else //betreft een BAG-pand, hier controleren of er een gedetailleerd model van bestaat
-                        {
-                            if (LoadModel(naam, container) == false)
-                            {
-                                pandmeshes.Add(CreeerGebouw(gebouwen["features"][i], origin));
-                            };
-                        }
-                    if (i%AantalGebouwenPerFrame==0)
-                    {
-                        yield return null;
-                    }
-                    
-                }
-
-                if (top10Db.ContainsKey(id))
-                {
-                    container.AddComponent<MeshFilter>();
-                    //MeshFilter[] Meshfilters = container.GetComponentsInChildren<MeshFilter>();
-                    CombineInstance[] combine = new CombineInstance[pandmeshes.Count];
-                    int j = 0;
-                    while (j < pandmeshes.Count)
-                    {
-                        combine[j].mesh = pandmeshes[j];
-                        //combine[j].transform = Meshfilters[j].transform.localToWorldMatrix;
-                        //Meshfilters[j].gameObject.SetActive(false);
-                        j++;
-                    }
-                    container.AddComponent(typeof(MeshRenderer));
-                    container.GetComponent<MeshRenderer>().material = GebouwMateriaal;
-                    container.GetComponent<MeshFilter>().mesh = new Mesh();
-                    container.GetComponent<MeshFilter>().mesh.CombineMeshes(combine,true,false,false);
-                    container.SetActive(true);
-                }
+                UnityEngine.Debug.Log("Failed to load AssetBundle!");
+                
             }
             else
             {
-                UnityEngine.Debug.Log("kan bestand niet downloaden van " + url);
+                Mesh[] ABAssets = myLoadedAssetBundle.LoadAllAssets<Mesh>();
+                foreach (Mesh ass in ABAssets)
+                {
+                 
+                    MeshFilter mf = container.AddComponent<MeshFilter>();
+                    mf.sharedMesh = ass;
+                    MeshRenderer mr = container.AddComponent<MeshRenderer>();
+                    mr.material = GebouwMateriaal;
+                }
+
+
+                //string Meshnaam = id.x.ToString() + "_" + id.y.ToString(); ;
+                //Mesh assetmesh = myLoadedAssetBundle.LoadAsset< Mesh > (Meshnaam);
+                //MeshFilter mf = container.AddComponent<MeshFilter>();
+                //mf.sharedMesh = assetmesh;
+                //MeshRenderer mr = container.AddComponent<MeshRenderer>();
+                //mr.material = GebouwMateriaal;
+
             }
+
         }
         pendingQueue.Remove(url);
-    }
 
+        if (timer.IsRunning)
+        {
+            UnityEngine.Debug.Log("3 tegels maken durt: " + timer.Elapsed);
+            timer.Stop();
+        }
+        yield return null;
+        }
+
+    private IEnumerator requestTop10(string url, Vector3 id)
+    {
+            Stopwatch timer;
+            timer = new Stopwatch();
+
+        timer.Start();
+        JSONNode gebouwen;
+        //UnityWebRequest www = UnityWebRequest.Get(url);
+        //yield return www.SendWebRequest();
+
+
+        if (top10Db.ContainsKey(id))
+        {
+            GameObject container = top10Db[id];
+           
+            Vector3RD origin = new Vector3RD();
+            bool IsBagpand = false;
+            origin.x = id.x + 500;
+            origin.y = id.y + 500;
+            origin.z = 0;
+            //Vector3RD origin = CoordConvert.UnitytoRD(container.transform.position);
+            double rotatie = CoordConvert.RDRotation(origin);
+            container.transform.localPosition = CoordConvert.RDtoUnity(origin);
+            container.transform.Rotate(new Vector3(0, (float)rotatie, 0));
+            int fileX = (int)id.x;
+            int fileY = (int)id.y;
+
+            List<Mesh> pandmeshes = new List<Mesh>();
+            List<Mesh> nwMeshes = new List<Mesh>();
+            string path = "";
+            if (id.z==0)
+            {
+                    path = Application.dataPath + "/PandData/top10/" + fileX + "_" + fileY + ".geojson";
+            }
+            if (id.z == 1)
+            {
+                path = Application.dataPath + "/PandData/BAG/" + fileX + "_" + fileY + ".geojson";
+            }
+
+            nwMeshes = VoegTegelToe(path, id, container, origin);
+            pandmeshes = pandmeshes.Concat(nwMeshes).ToList();
+            //path = Application.dataPath + "/BAG/" + fileX + "_" + (fileY + 500) + ".geojson";
+            //nwMeshes = VoegTegelToe(path, id, container, origin);
+            //pandmeshes = pandmeshes.Concat(nwMeshes).ToList();
+            //path = Application.dataPath + "/BAG/" + (fileX + 500) + "_" + fileY + ".geojson";
+            //nwMeshes = VoegTegelToe(path, id, container, origin);
+            //pandmeshes = pandmeshes.Concat(nwMeshes).ToList();
+            //path = Application.dataPath + "/BAG/" + (fileX + 500) + "_" + (fileY + 500) + ".geojson";
+            //nwMeshes = VoegTegelToe(path, id, container, origin);
+            //pandmeshes = pandmeshes.Concat(nwMeshes).ToList();
+
+            container.AddComponent<MeshFilter>();
+            //    //MeshFilter[] Meshfilters = container.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[pandmeshes.Count];
+            int j = 0;
+            while (j < pandmeshes.Count)
+            {
+                combine[j].mesh = pandmeshes[j];
+                //combine[j].transform = Meshfilters[j].transform.localToWorldMatrix;
+                //Meshfilters[j].gameObject.SetActive(false);
+                j++;
+            }
+            container.AddComponent(typeof(MeshRenderer));
+            container.GetComponent<MeshRenderer>().material = GebouwMateriaal;
+            container.GetComponent<MeshFilter>().mesh.CombineMeshes(combine,true, false, false);
+            
+
+            yield return null;
+
+            //}
+        }
+        pendingQueue.Remove(url);
+
+        if (timer.IsRunning)
+        {
+            UnityEngine.Debug.Log("3 tegels maken durt: " + timer.Elapsed);
+            timer.Stop();
+        }
+
+        
+    }
+    List<Mesh> VoegTegelToe(string path, Vector3 id, GameObject container, Vector3RD origin)
+    {
+        List<Mesh> pandmeshes = new List<Mesh>();
+        if (File.Exists(path))
+        {
+            using (StreamReader sr = File.OpenText(path))
+            {
+               JSONNode gebouwen = JSON.Parse(sr.ReadToEnd());
+
+                for (int i = 0; i < gebouwen["features"].Count; i++)
+                {
+                    string naam = gebouwen["features"][i]["properties"]["PAND_ID"].Value;
+                    if (naam == "") //betreft hier een top10-pand
+                    {
+                        pandmeshes.Add(CreeerGebouw(gebouwen["features"][i], origin));
+                    }
+                    else //betreft een BAG-pand, hier controleren of er een gedetailleerd model van bestaat
+                    {
+                        
+                        if (LoadModel(naam, container) == false)
+                        {
+                            pandmeshes.Add(CreeerGebouw(gebouwen["features"][i], origin));
+                        };
+                    }
+
+
+                }
+
+                //if (top10Db.ContainsKey(id))
+                //{
+                //    container.AddComponent<MeshFilter>();
+                //    //MeshFilter[] Meshfilters = container.GetComponentsInChildren<MeshFilter>();
+                //    CombineInstance[] combine = new CombineInstance[pandmeshes.Count];
+                //    int j = 0;
+                //    while (j < pandmeshes.Count)
+                //    {
+                //        combine[j].mesh = pandmeshes[j];
+                //        //combine[j].transform = Meshfilters[j].transform.localToWorldMatrix;
+                //        //Meshfilters[j].gameObject.SetActive(false);
+                //        j++;
+                //    }
+                //    container.AddComponent(typeof(MeshRenderer));
+                //    container.GetComponent<MeshRenderer>().material = GebouwMateriaal;
+                //    container.GetComponent<MeshFilter>().mesh = new Mesh();
+                //    container.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true, false, false);
+                //    container.SetActive(true);
+
+
+                //}
+                
+            }
+        }
+        return pandmeshes;
+    }
     bool LoadModel(string bagid, GameObject container)
     {
-        
         bool isaanwezig = false;
-        for (int i = 0; i < CustomModels.Count; i++)
+        foreach (var item in CustomModels)
         {
-            if (CustomModels[i].BAGid==bagid)
+            if (item.BAGid == bagid)
             {
                 isaanwezig = true;
             }
         }
+        
+
         return isaanwezig;
     }
     

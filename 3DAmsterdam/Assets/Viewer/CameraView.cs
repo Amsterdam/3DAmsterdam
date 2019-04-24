@@ -8,6 +8,7 @@ using BruTile;
 /// </summary>
 public class CameraView : MonoBehaviour
 {
+    public float MaximaleZichtafstand = 5000;
     //TekenZichtlijnen is voor debugging
     //4 lijnen worden getekend van de camera naar de hoekpunten van het zichtveld op maaiveldniveau
     //1 contour wordt getekend tussen de 4 lijen op maaiveldniveau
@@ -131,7 +132,7 @@ public class CameraView : MonoBehaviour
         // de richting van de lijn bepalen
         Vector3 richting = linkerbovenhoekA - linkerbovenhoekB;
         float factor; //factor waarmee de Richtingvector vermenigvuldigd moet worden om op het maaiveld te stoppen
-        if (richting.y < 260) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
+        if (richting.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
         {
             factor = 1;
         }
@@ -141,9 +142,12 @@ public class CameraView : MonoBehaviour
         }
 
         // uiteindelijke X, Y, en Z locatie bepalen waar de zichtlijn eindigt.
-        output.x = Camera.main.transform.localPosition.x - (factor * richting.x);
-        output.y = Camera.main.transform.localPosition.y - (factor * richting.y);
-        output.z = Camera.main.transform.localPosition.z - (factor * richting.z);
+        
+
+
+        output.x = Camera.main.transform.localPosition.x - Mathf.Clamp((factor * richting.x),-1 * MaximaleZichtafstand, MaximaleZichtafstand);
+        output.y = Camera.main.transform.localPosition.y - Mathf.Clamp((factor * richting.y), -1 * MaximaleZichtafstand, MaximaleZichtafstand);
+        output.z = Camera.main.transform.localPosition.z - Mathf.Clamp((factor * richting.z), -1 * MaximaleZichtafstand, MaximaleZichtafstand);
 
         return output;
     }
