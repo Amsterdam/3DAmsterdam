@@ -39,41 +39,43 @@ public class SchaalBestuurMenu : MonoBehaviour
 
             Physics.Raycast(ray2, out hitMenu);
 
-            //if (hitMenu.collider.transform.parent.gameObject.layer == 11)
-            //{
+            if (hitMenu.collider.transform.parent.gameObject.layer == 11)
+            {
 
 
-            //    Objectnaam = hitMenu.collider.transform.parent.name;
-            //    string SetSlider = hitMenu.collider.transform.parent.name;
+                Objectnaam = hitMenu.collider.transform.parent.name;
 
-            //    //TekstObjectID.text = SetSlider;
+                string SetSlider = hitMenu.collider.transform.parent.name;
 
-            //    VervormObject = hitMenu.collider.transform.parent.gameObject;
+                TekstObjectID.text = SetSlider;
 
-            //    int tempLengte = VervormObject.GetComponent<Schaal>().Lengte;
-            //    MenuLengte = tempLengte;
-            //    SLengte.value = tempLengte;
+                VervormObject = hitMenu.collider.transform.parent.gameObject;
 
-            //    int tempBreedte = VervormObject.GetComponent<Schaal>().Breedte;
-            //    //TekstObjectID.text = Objectnaam;
-            //    MenuBreedte = tempBreedte;
-            //    SBreedte.value = tempBreedte;
+                int tempLengte = VervormObject.GetComponent<Schaal>().Lengte;
+                MenuLengte = tempLengte;
+                SLengte.value = tempLengte;
 
-            //    int tempHoogte = VervormObject.GetComponent<Schaal>().Hoogte;
-            //    MenuHoogte = tempHoogte;
-            //    SHoogte.value = tempHoogte;
+                int tempBreedte = VervormObject.GetComponent<Schaal>().Breedte;
 
-            //    int tempRotatie = VervormObject.GetComponent<Schaal>().RotatieY;
-            //    MenuRotatie = tempRotatie;
-            //    SRotatie.value = tempRotatie;
+                TekstObjectID.text = Objectnaam;
+                MenuBreedte = tempBreedte;
+                SBreedte.value = tempBreedte;
 
-            //    Objectnaam = SetSlider;
+                int tempHoogte = VervormObject.GetComponent<Schaal>().Hoogte;
+                MenuHoogte = tempHoogte;
+                SHoogte.value = tempHoogte;
 
-            //}
-            //else
-            //{
+                int tempRotatie = VervormObject.GetComponent<Schaal>().RotatieY;
+                MenuRotatie = tempRotatie;
+                SRotatie.value = tempRotatie;
 
-            //}
+                Objectnaam = SetSlider;
+
+            }
+            else
+            {
+
+            }
         }
     }
 

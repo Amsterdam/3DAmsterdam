@@ -43,7 +43,7 @@ public class Schaal : MonoBehaviour
                     }
                     else if (GameObject.Find("PijlenPrefab(Clone)") != null)
                     {
-
+                       
                     }
                 }
             }
