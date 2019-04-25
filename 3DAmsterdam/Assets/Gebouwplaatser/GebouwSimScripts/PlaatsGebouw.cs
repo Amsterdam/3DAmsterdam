@@ -11,7 +11,6 @@ public class PlaatsGebouw : MonoBehaviour
     private GameObject instance;
     private bool Waarde;
 
-
     private string DefGebouwNaam = "Gebouw";
     private string TempGebouwNaam = "TijdelijkGebouw";
     private string MapNaam = "Gebouwen";
@@ -45,20 +44,19 @@ public class PlaatsGebouw : MonoBehaviour
 
     void Update()
     {
-        
         if (Input.GetMouseButtonDown(0))
 
-        if (Waarde == true)
+            if (Waarde == true)
             {
                 Tempplaatsobject();
-                
+
                 StartCoroutine("PlaatsobjectD");
 
                 Waarde = false;
             }
             else
             {
-                if(!(GameObject.Find(DefGebouwNaam + Nummer) == null))
+                if (!(GameObject.Find(DefGebouwNaam + Nummer) == null))
                 {
                     Nummer++;
                 }
@@ -67,18 +65,15 @@ public class PlaatsGebouw : MonoBehaviour
                     Nummer++;
                 }
 
-                instance.name = DefGebouwNaam + Nummer;             
+                instance.name = DefGebouwNaam + Nummer;
                 GameObject Parent = GameObject.Find(MapNaam);
                 instance.transform.parent = Parent.transform;
                 instance.layer = 11;
-                //instance.AddComponent<MeshCollider>();
-                //instance.AddComponent<ActivateWhenClick>();
 
                 this.gameObject.SetActive(false);
 
                 Waarde = true;
             }
-
     }
 
     void Tempplaatsobject()
@@ -88,8 +83,6 @@ public class PlaatsGebouw : MonoBehaviour
             Verwijderobject();
             
             instance = Instantiate(TePlaatsenObject, transform.position, transform.rotation);
-
-            //instance = PrefabUtility.InstantiatePrefab(TePlaatsenObject as GameObject) as GameObject;
 
             instance.transform.position = locatie;
                 

@@ -44,10 +44,9 @@ public class SchaalBestuurMenu : MonoBehaviour
 
 
                 Objectnaam = hitMenu.collider.transform.parent.name;
-
                 string SetSlider = hitMenu.collider.transform.parent.name;
 
-                TekstObjectID.text = SetSlider;
+                //TekstObjectID.text = SetSlider;
 
                 VervormObject = hitMenu.collider.transform.parent.gameObject;
 
@@ -56,8 +55,7 @@ public class SchaalBestuurMenu : MonoBehaviour
                 SLengte.value = tempLengte;
 
                 int tempBreedte = VervormObject.GetComponent<Schaal>().Breedte;
-
-                TekstObjectID.text = Objectnaam;
+                //TekstObjectID.text = Objectnaam;
                 MenuBreedte = tempBreedte;
                 SBreedte.value = tempBreedte;
 
@@ -117,8 +115,6 @@ public class SchaalBestuurMenu : MonoBehaviour
     public void ZomaarEenKnop()
     {
         VervormObject.GetComponent<Schaal>().Lengte = 250;
-
-        Debug.Log("Zomaar Een Knop");
     }
 
 }
