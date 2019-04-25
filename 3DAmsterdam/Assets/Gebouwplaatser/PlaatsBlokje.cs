@@ -99,7 +99,7 @@ public class PlaatsBlokje : MonoBehaviour
             {
                 if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
                 {
-                    selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = originalColour;
+                    selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
 
                     selectedObject.transform.gameObject.AddComponent<HighLight>();
 
