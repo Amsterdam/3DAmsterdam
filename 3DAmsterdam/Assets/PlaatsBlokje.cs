@@ -10,6 +10,8 @@ public class PlaatsBlokje : MonoBehaviour
     GameObject gebouw;
     public GameObject selectedObject;
 
+    public ScaleObject scaleObject;
+
     bool placingObject;
     bool instantiate;
     bool highlight;
@@ -92,6 +94,12 @@ public class PlaatsBlokje : MonoBehaviour
                     Destroy(highlight);
 
                     selectedObject = hit.transform.gameObject;
+
+                    scaleObject.hoogte.value = selectedObject.transform.localScale.y / 100;
+                    scaleObject.breedte.value = selectedObject.transform.localScale.x / 100;
+                    scaleObject.lengte.value = selectedObject.transform.localScale.z / 100;
+
+                    scaleObject.rotatie.value = selectedObject.transform.rotation.y / 360;
                 }
             }
 
@@ -99,7 +107,7 @@ public class PlaatsBlokje : MonoBehaviour
             {
                 if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
                 {
-                    selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = originalColour;
+                    selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
 
                     selectedObject.transform.gameObject.AddComponent<HighLight>();
 

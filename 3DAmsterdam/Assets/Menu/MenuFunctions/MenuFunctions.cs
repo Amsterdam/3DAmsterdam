@@ -18,6 +18,7 @@ public class MenuFunctions : MonoBehaviour
     public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
     public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes, placeBuildingButton, uploadBuildingButton;
     public RectTransform positioning, positioningGebouwen;
+    public PlaatsBlokje plaatsBlokje;
 
     public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue, hours, minutes, time, monthYear, date;
 
@@ -112,6 +113,19 @@ public class MenuFunctions : MonoBehaviour
     {
         DecideMenu(2);
         Back(allMenus[2], buttons[2]);
+
+        //if a meny gets closed
+        if (plaatsBlokje.selectedObject != null)
+        {
+            //Make the block white
+            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
+
+            //Add the highlight script
+            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
+
+            //and deselect it
+            plaatsBlokje.selectedObject = null;
+        }
     }
 
     public void Four()
@@ -141,6 +155,19 @@ public class MenuFunctions : MonoBehaviour
     public void Exit()
     {
         currentMenu = noMenu;
+
+        //if a meny gets closed
+        if(plaatsBlokje.selectedObject != null)
+        {
+            //Make the block white
+            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
+
+            //Add the highlight script
+            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
+
+            //and deselect it
+            plaatsBlokje.selectedObject = null;
+        }
     }
 
 
