@@ -9,7 +9,6 @@ public class FlyToDemos : MonoBehaviour
     public GameObject Bimlink;
     public GameObject bomen;
     public GameObject DirectionalLight;
-    public GameObject Enviro;
 
     private bool bomenactief = false;
     private bool RickActief = false;
@@ -18,6 +17,7 @@ public class FlyToDemos : MonoBehaviour
 
     public void RickDemo()
     {
+        Debug.Log("banaan");
         Bimlink.SetActive(false);
         if (RickActief == false)
         {
@@ -29,8 +29,7 @@ public class FlyToDemos : MonoBehaviour
         {
             RickGameOBject.SetActive(false);
             RickActief = false;
-        }
-        
+        }   
     }
 
     public void DeKomPlein()
@@ -60,22 +59,6 @@ public class FlyToDemos : MonoBehaviour
         {
             bomen.SetActive(false);
             bomenactief = false;
-        }
-    }
-
-    public void EnviroToggle()
-    {
-        if (EnviroActief == false)
-        {
-            Enviro.SetActive(true);
-            DirectionalLight.SetActive(false);
-            EnviroActief = true;
-        }
-        else
-        {
-            EnviroActief = false;
-            Enviro.SetActive(false);
-            DirectionalLight.SetActive(true);
         }
     }
 }
