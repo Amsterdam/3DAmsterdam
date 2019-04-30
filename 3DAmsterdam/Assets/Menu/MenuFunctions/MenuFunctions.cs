@@ -117,6 +117,8 @@ public class MenuFunctions : MonoBehaviour
         //if a meny gets closed
         if (plaatsBlokje.selectedObject != null)
         {
+            Destroy(plaatsBlokje.pijlenprefab);
+
             //Make the block white
             plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
 
@@ -159,6 +161,8 @@ public class MenuFunctions : MonoBehaviour
         //if a meny gets closed
         if(plaatsBlokje.selectedObject != null)
         {
+            Destroy(plaatsBlokje.pijlenprefab);
+
             //Make the block white
             plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
 

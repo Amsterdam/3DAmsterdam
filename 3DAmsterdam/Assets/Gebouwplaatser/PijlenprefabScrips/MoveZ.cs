@@ -10,7 +10,7 @@ public class MoveZ : MonoBehaviour {
 
     private float offSet;
     private float distanceToCamera;
-    private float moveSpeed = 0.15f;
+    private float moveSpeed = 2f;
     private float angle;
 
     private void OnMouseDown()
@@ -28,7 +28,7 @@ public class MoveZ : MonoBehaviour {
 
         if (ManageStates.Instance.selectionState == "Z")
         {
-            transform.parent.parent.Translate(chooseDirection() * mousePosition * moveSpeed * Time.deltaTime);
+            transform.parent.parent.position += (chooseDirection() * mousePosition * moveSpeed * Time.deltaTime);
         }
     }
 
