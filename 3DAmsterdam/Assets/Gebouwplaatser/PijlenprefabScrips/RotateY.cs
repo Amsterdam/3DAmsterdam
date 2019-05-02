@@ -5,8 +5,6 @@ using UnityEngine;
 public class RotateY : MonoBehaviour {
 
     private float rotSpeed = 15;
-    public bool isRotating = false;
-    float fixedRotation = 0;
 
     void OnMouseDown()
     {
@@ -15,18 +13,16 @@ public class RotateY : MonoBehaviour {
 
     void OnMouseDrag()
     {
-        float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
+            float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
 
-        transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
+            transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
 
-        //transform.parent.rotation = transform.parent.parent.rotation;
-
-        isRotating = true;
+            //transform.parent.rotation = transform.parent.parent.rotation;
     }
 
-    void OnMouseExit()
-    {
-        isRotating = false;
-    }
+    //void OnMouseExit()
+    //{
+    //    isRotating = false;
+    //}
 
 }
