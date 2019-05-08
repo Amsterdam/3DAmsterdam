@@ -9,9 +9,14 @@ public class PlaatsBlokje : MonoBehaviour
     GameObject tempGebouw;
     GameObject gebouw;
 
+    [HideInInspector]
     public GameObject selectedObject;
+
     public GameObject Pijlenprefab;
+
+    [HideInInspector]
     public GameObject pijlenprefab;
+
     public ScaleObject scaleObject;
 
     bool placingObject;
