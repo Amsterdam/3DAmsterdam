@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SetRotation : MonoBehaviour
 {
-    void Start()
-    {
-        transform.rotation = transform.parent.rotation;
-    }
+    //void Start()
+    //{
+    //    transform.rotation = transform.parent.rotation;
+    //}
 }

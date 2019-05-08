@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class KeepRotation : MonoBehaviour {
 
-    Quaternion rotation;
+ //   Quaternion rotation;
 
-	void Start () {
-        rotation = transform.rotation;
-	}
+	//void Start () {
+ //       rotation = transform.rotation;
+	//}
 	
-	void Update () {
-        transform.rotation = rotation;
-	}
+	//void Update () {
+ //       transform.rotation = rotation;
+	//}
 }

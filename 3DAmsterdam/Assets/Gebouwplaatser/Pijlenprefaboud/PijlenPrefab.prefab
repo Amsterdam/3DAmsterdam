@@ -13,11 +13,9 @@ GameObject:
   - component: {fileID: 23087723197935874}
   - component: {fileID: 64007689154813474}
   - component: {fileID: 114087305970174590}
-  - component: {fileID: 114786017843530116}
-  - component: {fileID: 114590239534777816}
   m_Layer: 0
   m_Name: Ry
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,30 +107,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isRotating: 0
---- !u!114 &114786017843530116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023037617230708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0ea95e3cc40964bb900c0a0fa02292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114590239534777816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023037617230708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1036401738218d41a1ab996a0f1a7b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1043086306725214
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,7 +490,7 @@ GameObject:
   - component: {fileID: 114730940387550572}
   m_Layer: 0
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -687,7 +661,7 @@ GameObject:
   - component: {fileID: 224782453142235852}
   - component: {fileID: 222554055451838806}
   - component: {fileID: 114823531214998306}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1240,7 +1214,7 @@ GameObject:
   - component: {fileID: 224189287835405766}
   - component: {fileID: 222389248175332880}
   - component: {fileID: 114779386448432572}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1322,7 +1296,7 @@ GameObject:
   - component: {fileID: 114024717281547982}
   - component: {fileID: 114472796811408378}
   - component: {fileID: 8384610319753067644}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel ObjectManipulation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1407,7 +1381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74131a785272d642a4c096f11cd4bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1926603812005308}
 --- !u!114 &114472796811408378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1444,13 +1417,11 @@ GameObject:
   - component: {fileID: 4886121831817624}
   - component: {fileID: 33455217113703404}
   - component: {fileID: 23903750512955722}
-  - component: {fileID: 114122873870128416}
   - component: {fileID: 64549091063479822}
-  - component: {fileID: 114178926397500076}
-  - component: {fileID: 114752037962063002}
+  - component: {fileID: 114122873870128416}
   m_Layer: 0
   m_Name: XZ
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1515,18 +1486,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114122873870128416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1563834630854410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5255e366761fa1249ab6ea514be8c571, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &64549091063479822
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1541,7 +1500,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300012, guid: 1fd0be3cb1942de4080001a76527c47d, type: 3}
---- !u!114 &114178926397500076
+--- !u!114 &114122873870128416
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1550,19 +1509,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1563834630854410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0ea95e3cc40964bb900c0a0fa02292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114752037962063002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1563834630854410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1036401738218d41a1ab996a0f1a7b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 5255e366761fa1249ab6ea514be8c571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1565955135378294
@@ -2385,7 +2332,7 @@ GameObject:
   - component: {fileID: 224753835488149446}
   - component: {fileID: 222048509677961724}
   - component: {fileID: 114809628250868342}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2559,13 +2506,11 @@ GameObject:
   - component: {fileID: 4029690115762252}
   - component: {fileID: 33972741279340844}
   - component: {fileID: 23031612820086220}
-  - component: {fileID: 114927686349246312}
   - component: {fileID: 64360836234126090}
-  - component: {fileID: 114482222125075694}
-  - component: {fileID: 114818706423500408}
+  - component: {fileID: 114927686349246312}
   m_Layer: 0
   m_Name: X
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2630,18 +2575,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114927686349246312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1747987179468834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43d71b83ccf2f34e9af25186987f5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &64360836234126090
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2656,7 +2589,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300000, guid: 1fd0be3cb1942de4080001a76527c47d, type: 3}
---- !u!114 &114482222125075694
+--- !u!114 &114927686349246312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2665,19 +2598,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1747987179468834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0ea95e3cc40964bb900c0a0fa02292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114818706423500408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1747987179468834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1036401738218d41a1ab996a0f1a7b2, type: 3}
+  m_Script: {fileID: 11500000, guid: a43d71b83ccf2f34e9af25186987f5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1748261128661312
@@ -2770,13 +2691,11 @@ GameObject:
   - component: {fileID: 4246267484018330}
   - component: {fileID: 33692309447479010}
   - component: {fileID: 23917446909311356}
-  - component: {fileID: 114080470987867228}
   - component: {fileID: 64804432737253598}
-  - component: {fileID: 114179172926805752}
-  - component: {fileID: 114439284654355572}
+  - component: {fileID: 114080470987867228}
   m_Layer: 0
   m_Name: Z
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2841,18 +2760,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &114080470987867228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1754952003124052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a730e34a34a94c459005f1d8f47831d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &64804432737253598
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2867,7 +2774,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300004, guid: 1fd0be3cb1942de4080001a76527c47d, type: 3}
---- !u!114 &114179172926805752
+--- !u!114 &114080470987867228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2876,19 +2783,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1754952003124052}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0ea95e3cc40964bb900c0a0fa02292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114439284654355572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1754952003124052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1036401738218d41a1ab996a0f1a7b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a730e34a34a94c459005f1d8f47831d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1770403752842132
@@ -3360,7 +3255,7 @@ GameObject:
   - component: {fileID: 222184760517371460}
   - component: {fileID: 114674869104957140}
   - component: {fileID: 114078157197089900}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Remove
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3489,7 +3384,7 @@ GameObject:
   - component: {fileID: 222096387916410020}
   - component: {fileID: 114346111223399244}
   - component: {fileID: 114355082724810734}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Scaling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3689,13 +3584,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4467451303692208}
-  - component: {fileID: 114255070807256104}
-  - component: {fileID: 114579639942423010}
-  - component: {fileID: 114519351458431528}
-  - component: {fileID: 3348604361944663304}
   m_Layer: 0
   m_Name: PijlenPrefab
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3720,55 +3611,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114255070807256104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950851110447768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 112d8f2d06ef20c47b764e34e741671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114579639942423010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950851110447768}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2bcfb280c210d41a4ddd9f8a29e7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114519351458431528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950851110447768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bbfd444d0af2a940afed5c1afeb4752, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 0.7
---- !u!114 &3348604361944663304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950851110447768}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17559fa60399e79499eeccdda994f393, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1957290872202258
 GameObject:
   m_ObjectHideFlags: 0
@@ -3996,7 +3838,7 @@ GameObject:
   - component: {fileID: 222933924247628460}
   - component: {fileID: 114724052433573436}
   - component: {fileID: 114973142087243358}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackToOriginal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4124,7 +3966,7 @@ GameObject:
   - component: {fileID: 7151829422348582573}
   - component: {fileID: 5892402732417551527}
   - component: {fileID: 4277785121482493047}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ShiftButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4198,7 +4040,7 @@ GameObject:
   - component: {fileID: 6818166748827388680}
   - component: {fileID: 2981750739962057005}
   - component: {fileID: 3022343188415922144}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4278,7 +4120,7 @@ GameObject:
   - component: {fileID: 1810469820930760313}
   - component: {fileID: 9153971623501124223}
   - component: {fileID: 1141215756237470074}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Y
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4407,10 +4249,10 @@ GameObject:
   - component: {fileID: 5021732110088829516}
   - component: {fileID: 4953669449188074747}
   - component: {fileID: 1065618957946260292}
-  - component: {fileID: 5710173534235503758}
+  - component: {fileID: 1301175268981002409}
   m_Layer: 0
   m_Name: Afvalbak
-  m_TagString: Untagged
+  m_TagString: PijlenPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4488,7 +4330,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &5710173534235503758
+--- !u!114 &1301175268981002409
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

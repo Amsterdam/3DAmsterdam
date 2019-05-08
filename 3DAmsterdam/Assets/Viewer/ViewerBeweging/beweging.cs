@@ -73,7 +73,7 @@ public class beweging : MonoBehaviour
             if (canUseFunction)
             {
                 Zooming();
-                Dragging();
+                //Dragging();
                 FocusPoint();
             }
         }

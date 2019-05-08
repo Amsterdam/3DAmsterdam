@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChangeColorByMouseOver : MonoBehaviour {
 
-    //Color myColor = new Color(0f, 0f, 1f, 1f);
+    Color myColor = new Color(0f, 0f, 1f, 1f);
 
     private Color32 originalColor;
     private byte orgR;
@@ -12,7 +12,7 @@ public class ChangeColorByMouseOver : MonoBehaviour {
     private byte orgB;
     private byte orgA;
 
-    void Start ()
+    void Start()
     {
         originalColor = GetComponent<Renderer>().material.color;
         orgR = originalColor.r;
