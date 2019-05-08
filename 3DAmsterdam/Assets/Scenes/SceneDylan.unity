@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 1629918820}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -7720,12 +7720,12 @@ MonoBehaviour:
   MainLight: {fileID: 1488944675}
   MoonTransform: {fileID: 535523476}
   MoonRenderer: {fileID: 535523475}
-  MoonShader: {fileID: 944205963}
+  MoonShader: {fileID: 1220043982}
   lastAmbientSkyUpdate: 0
   lastRelfectionUpdate: 17677716
   lastRelfectionPositionUpdate: {x: 0, y: 0, z: 0}
-  EffectsHolder: {fileID: 2024795938}
-  lightningEffect: {fileID: 2072327820}
+  EffectsHolder: {fileID: 0}
+  lightningEffect: {fileID: 0}
   GameTime:
     ProgressTime: 0
     Seconds: 0
@@ -7746,15 +7746,15 @@ MonoBehaviour:
     SFXHolderPrefab: {fileID: 126800, guid: 9c3f35feb7ea8e84bbdbd37d8bb2ddf0, type: 3}
     ambientSFXVolume: 0.5
     weatherSFXVolume: 1
-    currentAmbientSource: {fileID: 1506522904}
+    currentAmbientSource: {fileID: 0}
     ambientSFXVolumeMod: 0
     weatherSFXVolumeMod: 0
-    AudioSourceWeather: {fileID: 1123355452}
-    AudioSourceWeather2: {fileID: 487220220}
-    AudioSourceAmbient: {fileID: 1506522904}
-    AudioSourceAmbient2: {fileID: 296760092}
-    AudioSourceThunder: {fileID: 2099971628}
-    AudioSourceZone: {fileID: 525821410}
+    AudioSourceWeather: {fileID: 0}
+    AudioSourceWeather2: {fileID: 0}
+    AudioSourceAmbient: {fileID: 0}
+    AudioSourceAmbient2: {fileID: 0}
+    AudioSourceThunder: {fileID: 0}
+    AudioSourceZone: {fileID: 0}
   Weather:
     updateWeather: 1
     weatherPresets: []
@@ -7774,7 +7774,7 @@ MonoBehaviour:
     snowStrength: 0
     curSnowStrength: 0
     thundersfx: 0
-    currentAudioSource: {fileID: 1123355452}
+    currentAudioSource: {fileID: 0}
     weatherFullyChanged: 0
     currentTemperature: 0
   Seasons:
@@ -7814,7 +7814,7 @@ MonoBehaviour:
   EnviroSkyRender: {fileID: 534669907}
   cloudAnim: {x: 0, y: 0}
   cloudAnimNonScaled: {x: 0, y: 0}
-  skyMat: {fileID: 1629918820}
+  skyMat: {fileID: 1294344592}
   showSettings: 1
 --- !u!4 &317485543
 Transform:
@@ -12446,7 +12446,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 944205963}
+  - {fileID: 1220043982}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -23591,33 +23591,6 @@ RectTransform:
   m_AnchoredPosition: {x: 91.099976, y: 0}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!21 &944205963
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Enviro/LW Version/MoonShader
-  m_Shader: {fileID: 4800000, guid: 8a73bcd29e414e34fb7b2b7eb7f75155, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a1ecb87143451c742941779d0eb2e32f, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - _Brightness: 0.67351377
-    m_Colors:
-    - _Color: {r: 0.8014706, g: 0.8014706, b: 0.8014706, a: 1}
 --- !u!1 &952192396
 GameObject:
   m_ObjectHideFlags: 0
@@ -32654,6 +32627,33 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1187217354}
   m_CullTransparentMesh: 0
+--- !u!21 &1220043982
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enviro/LW Version/MoonShader
+  m_Shader: {fileID: 4800000, guid: 8a73bcd29e414e34fb7b2b7eb7f75155, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: a1ecb87143451c742941779d0eb2e32f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Brightness: 0.67351377
+    m_Colors:
+    - _Color: {r: 0.8014706, g: 0.8014706, b: 0.8014706, a: 1}
 --- !u!1 &1230604267
 GameObject:
   m_ObjectHideFlags: 0
@@ -34339,6 +34339,34 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!21 &1294344592
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Enviro/SkyboxSimple
+  m_Shader: {fileID: 4800000, guid: 846f1e8b410d51444866f03712815c1e, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Stars:
+        m_Texture: {fileID: 8900000, guid: 214e1a8de772f334886a8d3bee074dc9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors:
+    - _HorizonColor: {r: 0.43060374, g: 0.31879336, b: 0.21699685, a: 1}
+    - _SkyColor: {r: 0.15294118, g: 0.2817027, b: 0.3696165, a: 0.5074557}
+    - _SunColor: {r: 0.73944044, g: 0.3594084, b: 0.019934539, a: 1}
 --- !u!1 &1295682112
 GameObject:
   m_ObjectHideFlags: 0
@@ -40145,7 +40173,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52d18d8708ab6ed418f26415b0544ae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Activate: {fileID: 1950851110447768, guid: 132cb32844fcaae45b29a18da01bec09, type: 3}
 --- !u!1 &1601905978
 GameObject:
   m_ObjectHideFlags: 0
@@ -40552,34 +40579,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622978915}
   m_CullTransparentMesh: 0
---- !u!21 &1629918820
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Enviro/SkyboxSimple
-  m_Shader: {fileID: 4800000, guid: 846f1e8b410d51444866f03712815c1e, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _Stars:
-        m_Texture: {fileID: 8900000, guid: 214e1a8de772f334886a8d3bee074dc9, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors:
-    - _HorizonColor: {r: 0.43060374, g: 0.31879336, b: 0.21699685, a: 1}
-    - _SkyColor: {r: 0.15294118, g: 0.2817027, b: 0.3696165, a: 0.5074557}
-    - _SunColor: {r: 0.73944044, g: 0.3594084, b: 0.019934539, a: 1}
 --- !u!1001 &1630530595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60216,6 +60215,7 @@ MonoBehaviour:
   uploadBuildingButton: {fileID: 1412954427}
   positioning: {fileID: 1090301626}
   positioningGebouwen: {fileID: 1896820697}
+  plaatsBlokje: {fileID: 0}
   heightValue: {fileID: 1388075708}
   widthValue: {fileID: 1634626746}
   lengthValue: {fileID: 1973561735}
