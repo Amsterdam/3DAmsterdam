@@ -106,17 +106,19 @@ public class PlaatsBlokje : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 1000))
         {
-            if (hit.transform.gameObject.tag == "Sizeable" && selectedObject == null)
+            if ((hit.transform.gameObject.tag == "Sizeable" && selectedObject == null))
             {
                 if (Input.GetMouseButtonDown(0) && placingObject == false)
                 {
                     originalColour = hit.transform.gameObject.GetComponent<Renderer>().material.color;
 
-                    HighLight highlight = hit.transform.gameObject.GetComponent<HighLight>();
+                     if (!(hit.transform.gameObject.GetComponent<HighLight>() == false)){
 
-                    hit.transform.gameObject.GetComponent<Renderer>().material.color = Color.red;
+                        HighLight highlight = hit.transform.gameObject.GetComponent<HighLight>();
+                        hit.transform.gameObject.GetComponent<Renderer>().material.color = Color.red;
 
-                    Destroy(highlight);
+                        Destroy(highlight);
+                     }
 
                     selectedObject = hit.transform.gameObject;
 

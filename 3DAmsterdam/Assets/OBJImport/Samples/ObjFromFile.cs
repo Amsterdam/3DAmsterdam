@@ -9,49 +9,20 @@ public class ObjFromFile : MonoBehaviour
     string objPath = string.Empty;
     string error = string.Empty;
     GameObject loadedObject;
+    GameObject plaatsBlokje;
     Ray ray;
     RaycastHit hit;
     bool placeUpload = false;
+
+    void Start()
+    {
+        plaatsBlokje = GameObject.Find("PlaceBuilding");
+    }
 
     void Update()
     {
         PlaceUpload();
     }
-
-    //void OnGUI()
-    //{
-    //    objPath = GUI.TextField(new Rect(0, 0, 256, 32), objPath);
-
-    //    GUI.Label(new Rect(0, 0, 256, 32), "Obj Path:");
-    //    if (GUI.Button(new Rect(256, 32, 64, 32), "Load File"))
-    //    {
-    //        //file path
-    //        if (!File.Exists(FileBrowser.Result))
-    //        {
-    //            error = "File doesn't exist.";
-
-    //        }
-    //        else
-    //        {
-    //            if (loadedObject != null)
-    //                Destroy(loadedObject);
-
-    //            loadedObject = new OBJLoader().Load(objPath);
-    //            loadedObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-
-    //            placeUpload = true;
-
-    //            error = string.Empty;
-    //        }
-    //    }
-
-    //    if (!string.IsNullOrWhiteSpace(error))
-    //    {
-    //        GUI.color = Color.red;
-    //        GUI.Box(new Rect(0, 64, 256 + 64, 32), error);
-    //        GUI.color = Color.white;
-    //    }
-    //}
 
     public void PlaceUpload()
     {
@@ -67,6 +38,16 @@ public class ObjFromFile : MonoBehaviour
 
                     if (Input.GetMouseButtonDown(0) && !(EventSystem.current.IsPointerOverGameObject()))
                     {
+                        loadedObject.tag = ("UploadedObj");
+                        loadedObject.layer = LayerMask.NameToLayer("Default");
+
+                        foreach (Transform child in loadedObject.transform)
+                        {
+                            child.gameObject.AddComponent<MeshCollider>();
+                            child.gameObject.AddComponent<AddPijlenprefab>();
+                            child.gameObject.AddComponent<HighLight>();
+                        }
+
                         placeUpload = false;
                     }
                 }
@@ -76,7 +57,6 @@ public class ObjFromFile : MonoBehaviour
 
     public void LoadUpload()
     {
-
         //file path
         if (!File.Exists(FileBrowser.Result))
         {
@@ -86,10 +66,10 @@ public class ObjFromFile : MonoBehaviour
         {
             if (loadedObject != null)
                 Destroy(loadedObject);
-
+            
             loadedObject = new OBJLoader().Load(FileBrowser.Result);
             loadedObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-
+           
             placeUpload = true;
 
             error = string.Empty;
