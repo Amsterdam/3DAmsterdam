@@ -30,7 +30,7 @@ public class beweging : MonoBehaviour
     private bool canMove = true;
     private bool canUseFunction = true;
 
-    private Quaternion startRotation = Quaternion.Euler(90f, 0, 0);
+    private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
     private Vector3 zoomPoint;
     private Vector3 zoomDirection;
     private Vector3 zoom;
@@ -40,16 +40,13 @@ public class beweging : MonoBehaviour
     private Vector3 movDir;
     private Vector2 currentRotation;
 
-
-
     void Start()
     {
-        Quaternion temprotation = cam.transform.rotation;
         cam.transform.rotation = startRotation;
+        currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
 
         // de juiste directie om omhoog en omlaag te bewegen (ook voor als de cam geroteerd wordt)
         upDirection = cam.transform.up;
-        cam.transform.rotation = temprotation;
     }
 
     void Update()
@@ -153,7 +150,9 @@ public class beweging : MonoBehaviour
             // zorgt dat de rotatie niet verder kan dan de min en max angle
             currentRotation.y = Mathf.Clamp(currentRotation.y, minAngle, maxAngle);
 
-            // de rotatie van de camera wordt aangepast
+            Debug.Log(currentRotation);
+
+            //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
     }
