@@ -36,7 +36,6 @@ public class beweging : MonoBehaviour
     private Vector3 zoom;
     private Vector3 direction;
     private Vector3 dragOrigin;
-    private Vector3 upDirection;
     private Vector3 movDir;
     private Vector2 currentRotation;
 
@@ -44,9 +43,6 @@ public class beweging : MonoBehaviour
     {
         cam.transform.rotation = startRotation;
         currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
-
-        // de juiste directie om omhoog en omlaag te bewegen (ook voor als de cam geroteerd wordt)
-        upDirection = cam.transform.up;
     }
 
     void Update()
@@ -83,8 +79,7 @@ public class beweging : MonoBehaviour
         if (canMove)
         {
             // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
-            movDir = upDirection;
-            movDir = Quaternion.AngleAxis(cam.transform.eulerAngles.y, Vector3.up) * movDir;
+            movDir = Quaternion.AngleAxis(cam.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
 
             // vooruit/achteruit bewegen (gebaseerd op rotatie van camera)
             if (Input.GetKey(KeyCode.UpArrow)) cam.transform.position += movDir * moveSpeed;
@@ -101,6 +96,8 @@ public class beweging : MonoBehaviour
         // rotatie met control knop
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
+            currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
+
             canMove = false;
 
             // roteren naar links/rechts met control knop
@@ -119,6 +116,8 @@ public class beweging : MonoBehaviour
         // rotatie met shift knop
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
+            currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
+
             canMove = false;
 
             // roteren naar links/recht met shift knop.
@@ -132,7 +131,6 @@ public class beweging : MonoBehaviour
         {
             canMove = true;
         }
-
 
         // camera roteren doormiddel van rechter muisknop
         if (Input.GetMouseButton(1))
@@ -149,8 +147,6 @@ public class beweging : MonoBehaviour
 
             // zorgt dat de rotatie niet verder kan dan de min en max angle
             currentRotation.y = Mathf.Clamp(currentRotation.y, minAngle, maxAngle);
-
-            Debug.Log(currentRotation);
 
             //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
