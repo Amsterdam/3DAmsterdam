@@ -7,20 +7,33 @@ using UnityEngine.EventSystems;
 
 public class MenuFunctions : MonoBehaviour
 {
-    public GameObject[] allMenus, weatherOptions, buildingOptions;
-    public GameObject coordinatesPanel, miniMap, zoomButtonPlus, zoomButtonMinus, compass, streetView, placeBuildingMenu, timeMenu, 
-                      dateMenu, twentyNine, thirty, thirtyOne, manager, uploadBuildingMenu, createBuilding, uploadBuilding;
-
+    [Header("Algemeen")]
+    public GameObject[] allMenus;
     public Button[] buttons;
-    public Toggle[] optionsToggles;
+    public GameObject coordinatesPanel, miniMap, zoomButtonPlus, zoomButtonMinus, compass, streetView, godView, manager;
+
+    [Header("Tijd en Weer")]
+    public GameObject[] weatherOptions;
+    public GameObject timeMenu, dateMenu, twentyNine, thirty, thirtyOne;
+    public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
+    public RectTransform positioning;
+    public TextMeshProUGUI hours, minutes, time, monthYear, date;
+
+    [Header("Bouwen")]
+    public GameObject[] buildingOptions;
+    public GameObject placeBuildingMenu, uploadBuildingMenu, createBuilding, uploadBuilding;
     public Slider heightSlider, widthSlider, lengthSlider, rotationSlider;
     public Image cubeImage;
     public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
-    public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes, placeBuildingButton, uploadBuildingButton;
-    public RectTransform positioning, positioningGebouwen;
+    public Button placeBuildingButton, uploadBuildingButton;
+    public RectTransform positioningGebouwen;
     public PlaatsBlokje plaatsBlokje;
+    public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue;
 
-    public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue, hours, minutes, time, monthYear, date;
+    [Header("Opties")]
+    public Toggle[] optionsToggles;
+
+    private ModeManager modeManager;
 
     private TextMeshProUGUI _monthyear, _date, _heightValue, _widthValue, _lengthValue, _rotationValue;
 
@@ -58,6 +71,8 @@ public class MenuFunctions : MonoBehaviour
         startPosMap = miniMap.transform.localPosition;
 
         currentWeer = weatherOptions.Length / 2;
+
+        modeManager = manager.GetComponent<ModeManager>();
     }
 
     private void Update()
@@ -97,61 +112,49 @@ public class MenuFunctions : MonoBehaviour
     }
 
     #region MainMenu
-    public void One()
+    // een menu wordt geselecteerd
+    public void SelectMenu(int menuNumber)
     {
-        DecideMenu(0);
-        Back(allMenus[0], buttons[0]);
-    }
+        // voor een array is de index een lager (begint bij 0)
+        int _menuNumber = menuNumber - 1;
 
-    public void Two()
-    {
-        DecideMenu(1);
-        Back(allMenus[1], buttons[1]);
-    }
+        currentMenu = _menuNumber;
 
-    public void Three()
-    {
-        DecideMenu(2);
-        Back(allMenus[2], buttons[2]);
-
-        //if a meny gets closed
-        if (plaatsBlokje.selectedObject != null)
+        if (menuNumber == 3)
         {
-            Destroy(plaatsBlokje.pijlenprefab);
+            //if a menu gets closed
+            if (plaatsBlokje.selectedObject != null)
+            {
+                Destroy(plaatsBlokje.pijlenprefab);
 
-            //Make the block white
-            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                //Make the block white
+                plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
 
-            //Add the highlight script
-            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
+                //Add the highlight script
+                plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
 
-            //and deselect it
-            plaatsBlokje.selectedObject = null;
+                //and deselect it
+                plaatsBlokje.selectedObject = null;
+            }
         }
-    }
 
-    public void Four()
-    {
-        DecideMenu(3);
-        Back(allMenus[3], buttons[3]);
-    }
+        GameObject menu = allMenus[_menuNumber];
+        Button button = buttons[_menuNumber];
+        ColorBlock colors = button.colors;
 
-    public void Five()
-    {
-        DecideMenu(4);
-        Back(allMenus[4], buttons[4]);
-    }
+        // als het menu actief is wordt de knop niet meer highlighted, als het menu niet actief is wordt de knop gehighlight
+        if (menu.activeSelf)
+        {
+            currentMenu = noMenu;
 
-    public void Six()
-    {
-        DecideMenu(5);
-        Back(allMenus[5], buttons[5]);
-    }
-
-    public void Seven()
-    {
-        DecideMenu(6);
-        Back(allMenus[6], buttons[6]);
+            colors.highlightedColor = new Color(0.094f, 0.094f, 0.094f);
+            button.colors = colors;
+        }
+        else
+        {
+            colors.highlightedColor = Color.red;
+            button.colors = colors;
+        }
     }
 
     public void Exit()
@@ -171,31 +174,6 @@ public class MenuFunctions : MonoBehaviour
 
             //and deselect it
             plaatsBlokje.selectedObject = null;
-        }
-    }
-
-
-    // kiest het huidige menu
-    private void DecideMenu(int _currentMenu)
-    {
-        currentMenu = _currentMenu;
-    }
-
-    private void Back(GameObject menu, Button button)
-    {
-        ColorBlock colors = button.colors;
-
-        if (menu.activeSelf)
-        {
-            currentMenu = noMenu;
-
-            colors.highlightedColor = new Color(0.094f, 0.094f, 0.094f);
-            button.colors = colors;
-        }
-        else
-        {
-            colors.highlightedColor = Color.red;
-            button.colors = colors;
         }
     }
     #endregion
@@ -682,12 +660,26 @@ public class MenuFunctions : MonoBehaviour
     #region Minimap
     private void MapPositioning()
     {
-        if (!(zoomButtonMinus.activeSelf) && !(zoomButtonPlus.activeSelf) && !(streetView.activeSelf))
+        if (modeManager.mode == 1)
         {
-            miniMap.transform.localPosition = new Vector3(startPosMap.x + 70f, startPosMap.y, startPosMap.z);
+            if (!(zoomButtonMinus.activeSelf) && !(zoomButtonPlus.activeSelf) && !(streetView.activeSelf))
+            {
+                miniMap.transform.localPosition = new Vector3(startPosMap.x + 70f, startPosMap.y, startPosMap.z);
+            }
+            else
+            {
+                miniMap.transform.localPosition = startPosMap;
+            }
         } else
         {
-            miniMap.transform.localPosition = startPosMap;
+            if (!(godView.activeSelf))
+            {
+                miniMap.transform.localPosition = new Vector3(startPosMap.x + 70f, startPosMap.y, startPosMap.z);
+            }
+            else
+            {
+                miniMap.transform.localPosition = startPosMap;
+            }
         }
     }
     #endregion
