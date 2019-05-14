@@ -10,9 +10,11 @@ public class HighLight : MonoBehaviour
     {
         foreach (Transform child in this.transform)
         {
-            originalColour = child.gameObject.GetComponent<Renderer>().material.color;
+            foreach(Material mat in child.transform)
+            {
+                originalColour = mat.color;
+            }     
         }
-
         originalColour = gameObject.GetComponent<Renderer>().material.color;
     }
 
@@ -20,7 +22,10 @@ public class HighLight : MonoBehaviour
     {
         foreach (Transform child in this.transform)
         {
-            child.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            foreach(Material mat in child.transform)
+            {
+                mat.color =  Color.red;
+            }
         }
 
         gameObject.GetComponent<Renderer>().material.color = Color.red;
@@ -30,9 +35,11 @@ public class HighLight : MonoBehaviour
     {
         foreach (Transform child in this.transform)
         {
-            child.gameObject.GetComponent<Renderer>().material.color = originalColour;
+            foreach(Material mat in child.transform)
+            {
+                mat.color = originalColour;
+            }
         }
-
         gameObject.GetComponent<Renderer>().material.color = originalColour;  
     }
 }

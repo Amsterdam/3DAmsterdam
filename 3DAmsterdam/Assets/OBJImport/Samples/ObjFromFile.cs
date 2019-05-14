@@ -38,13 +38,11 @@ public class ObjFromFile : MonoBehaviour
 
                     if (Input.GetMouseButtonDown(0) && !(EventSystem.current.IsPointerOverGameObject()))
                     {
-                        loadedObject.tag = ("UploadedObj");
                         loadedObject.layer = LayerMask.NameToLayer("Default");
 
                         foreach (Transform child in loadedObject.transform)
                         {
                             child.gameObject.AddComponent<MeshCollider>();
-                            child.gameObject.AddComponent<AddPijlenprefab>();
                             child.gameObject.AddComponent<HighLight>();
                         }
 
