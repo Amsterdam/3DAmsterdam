@@ -18,7 +18,7 @@ public enum BuildingTileStatus
     Built,              //Assetbundlecontent is displayed
     PendingDestroy
 }
-class BuildingTileData
+public class BuildingTileData
 {
     public Vector3 id;
     public List<GameObject> Gameobjecten = new List<GameObject>();
@@ -154,6 +154,14 @@ public class BuildingTileManager : MonoBehaviour
         }
     }
 
+    public BuildingTileData Get(Vector3 TileID)
+    {
+        BuildingTileData btd;
+        if (!buildingTiles.TryGetValue(TileID, out btd))
+            return null;
+        return btd;
+    }
+
     /// <summary>
     /// Mark a BuildingTIle "To Be Removed"
     /// </summary>
@@ -259,6 +267,7 @@ public class BuildingTileManager : MonoBehaviour
             float Y = float.Parse(Meshnaam.Split('_')[1]);
             GameObject container = new GameObject(X + "_" + Y+"_"+TileID.z);
             container.transform.parent = transform;
+            container.layer = LayerMask.NameToLayer("Panden");
             //positioning container
             Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
@@ -278,6 +287,8 @@ public class BuildingTileManager : MonoBehaviour
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;
+            // Collider for entire tile (possibly temporary)
+            container.AddComponent<MeshCollider>();
             //add to Buildingtiledata
             btd.Gameobjecten.Add(container);
             ActiveBuilds.Remove(btd.id);

@@ -51,7 +51,10 @@ public class PlaatsBlokje : MonoBehaviour
         PlaceObject();
         SelectAndTransform();
 
-        pijlenprefab.transform.eulerAngles = new Vector3(0, 0, 0);
+        if (pijlenprefab != null)
+        {
+            pijlenprefab.transform.eulerAngles = new Vector3(0, 0, 0);
+        }
     }
 
     public void PlaceActivation()
@@ -69,7 +72,7 @@ public class PlaatsBlokje : MonoBehaviour
 
         placingObject = true;
         instantiate = true;
-        highlight = false;
+        highlight = false;  
     }
 
     public void PlaceObject()
@@ -101,6 +104,9 @@ public class PlaatsBlokje : MonoBehaviour
 
     public void SelectAndTransform()
     {
+        if (!placingObject)
+            return;
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
