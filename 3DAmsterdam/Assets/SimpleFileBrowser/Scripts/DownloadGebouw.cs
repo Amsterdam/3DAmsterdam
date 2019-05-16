@@ -8,8 +8,16 @@ using SimpleFileBrowser;
 
 public class DownloadGebouw : MonoBehaviour
 {
+    public bool downloading;
+
+    public void Start()
+    {
+        downloading = false;
+    }
+
     public void StartDownloadBrowser()
     {
+        downloading = true;
         StartCoroutine(WaitForSaveDialog());
     }
 
