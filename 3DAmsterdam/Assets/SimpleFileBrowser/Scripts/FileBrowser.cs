@@ -680,9 +680,17 @@ namespace SimpleFileBrowser
             }
 
             if (uploadGebouw.GetComponent<UploadGebouw>().uploading)
-            {
-                objFromFile.GetComponent<ObjFromFile>().LoadUpload();
-                uploadGebouw.GetComponent<UploadGebouw>().uploading = false;
+            {      
+               if (Path.GetExtension(path) != ".obj")
+               {
+                   Show(path);
+                   filenameImage.color = wrongFilenameColor;
+               }
+               else if(Path.GetExtension(path) == ".obj")
+               {
+                   objFromFile.GetComponent<ObjFromFile>().LoadUpload();
+                   uploadGebouw.GetComponent<UploadGebouw>().uploading = false;
+               }       
             }
             else if (downloadGebouw.GetComponent<DownloadGebouw>().downloading)
             {
