@@ -13,10 +13,12 @@ public class ObjFromFile : MonoBehaviour
     Ray ray;
     RaycastHit hit;
     bool placeUpload = false;
+    GameObject uploadGebouw;
 
     void Start()
     {
         plaatsBlokje = GameObject.Find("PlaceBuilding");
+        uploadGebouw = GameObject.Find("Menus");
     }
 
     void Update()
@@ -45,7 +47,6 @@ public class ObjFromFile : MonoBehaviour
                             child.gameObject.AddComponent<MeshCollider>();
                             child.gameObject.AddComponent<HighLight>();
                         }
-
                         placeUpload = false;
                     }
                 }

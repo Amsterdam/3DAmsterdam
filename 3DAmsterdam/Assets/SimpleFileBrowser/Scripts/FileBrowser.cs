@@ -11,12 +11,18 @@ namespace SimpleFileBrowser
 	public class FileBrowser : MonoBehaviour, IListViewAdapter
 	{
         GameObject objFromFile;
+        GameObject uploadGebouw;
+        GameObject downloadGebouw;
+        GameObject selectDownload;
 
 		public enum Permission { Denied = 0, Granted = 1, ShouldAsk = 2 };
 
         void Start()
         {
             objFromFile = GameObject.Find("OBJLoader");
+            uploadGebouw = GameObject.Find("Menus");
+            downloadGebouw = GameObject.Find("Download Object");
+            selectDownload = GameObject.Find("Menus");
         }
 
 		#region Structs
@@ -672,7 +678,7 @@ namespace SimpleFileBrowser
                     filenameImage.color = wrongFilenameColor;
             }
 
-            objFromFile.GetComponent<ObjFromFile>().LoadUpload();
+           objFromFile.GetComponent<ObjFromFile>().LoadUpload();
         }
 
         public void OnCancelButtonClicked()
