@@ -4,42 +4,64 @@ using UnityEngine;
 
 public class HighLight : MonoBehaviour
 {
-    public Color originalColour;
+    Color[] originalColour;
+    List<Transform> children;
+    Material[] mats;
 
     void Start()
     {
-        foreach (Transform child in this.transform)
+        children = new List<Transform>();
+
+        foreach (Transform child in transform)
         {
-            foreach(Material mat in child.transform)
-            {
-                originalColour = mat.color;
-            }     
+            children.Add(child);
         }
-        originalColour = gameObject.GetComponent<Renderer>().material.color;
     }
 
     void OnMouseOver()
     {
-        foreach (Transform child in this.transform)
+        if (children.Count != 0)
         {
-            foreach(Material mat in child.transform)
+            for (int i = 0; i < children.Count; i++)
             {
-                mat.color =  Color.red;
+                mats = children[i].gameObject.GetComponent<MeshRenderer>().materials;
+
+                for (int j = 0; j < mats.Length; j++)
+                {
+                    originalColour[j] = mats[j].color;
+                    mats[j].color = Color.red;
+                }
             }
         }
+        else if (children.Count == 0)
+        {
+            mats = transform.gameObject.GetComponent<MeshRenderer>().materials;
 
-        gameObject.GetComponent<Renderer>().material.color = Color.red;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                //originalColour[i] = mats[i].color;
+                mats[i].color = Color.red;
+            }
+        }
     }
 
     void OnMouseExit()
     {
-        foreach (Transform child in this.transform)
+        if (children.Count != 0)
         {
-            foreach(Material mat in child.transform)
+           for (int j = 0; j < mats.Length; j++)
+           {
+                mats[j].color = Color.white;
+           }
+
+            children.Clear();
+        }
+        else if (children.Count == 0)
+        {
+            for (int i = 0; i < mats.Length; i++)
             {
-                mat.color = originalColour;
+                mats[i].color = Color.white;
             }
         }
-        gameObject.GetComponent<Renderer>().material.color = originalColour;  
     }
 }

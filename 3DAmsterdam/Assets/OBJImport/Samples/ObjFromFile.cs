@@ -41,12 +41,15 @@ public class ObjFromFile : MonoBehaviour
                     if (Input.GetMouseButtonDown(0) && !(EventSystem.current.IsPointerOverGameObject()))
                     {
                         loadedObject.layer = LayerMask.NameToLayer("Default");
+                        loadedObject.AddComponent<HighLight>();
+                        loadedObject.AddComponent<BoxCollider>();
 
                         foreach (Transform child in loadedObject.transform)
-                        {
+                        { 
                             child.gameObject.AddComponent<MeshCollider>();
                             child.gameObject.AddComponent<HighLight>();
                         }
+
                         placeUpload = false;
                     }
                 }
