@@ -11,12 +11,18 @@ namespace SimpleFileBrowser
 	public class FileBrowser : MonoBehaviour, IListViewAdapter
 	{
         GameObject objFromFile;
+        GameObject uploadGebouw;
+        GameObject downloadGebouw;
+        GameObject selectDownload;
 
 		public enum Permission { Denied = 0, Granted = 1, ShouldAsk = 2 };
 
         void Start()
         {
             objFromFile = GameObject.Find("OBJLoader");
+            uploadGebouw = GameObject.Find("Menus");
+            downloadGebouw = GameObject.Find("Download Object");
+            selectDownload = GameObject.Find("Menus");
         }
 
 		#region Structs
@@ -637,8 +643,9 @@ namespace SimpleFileBrowser
 		public void OnSubmitButtonClicked()
 		{
             string path = m_currentPath;
+
             if (filenameInputField.text.Length > 0)
-                path = Path.Combine(path, filenameInputField.text);
+               path = Path.Combine(path, filenameInputField.text);
 
             if (File.Exists(path))
             {
@@ -672,7 +679,31 @@ namespace SimpleFileBrowser
                     filenameImage.color = wrongFilenameColor;
             }
 
-            objFromFile.GetComponent<ObjFromFile>().LoadUpload();
+            if (uploadGebouw.GetComponent<UploadGebouw>().uploading)
+            {      
+               if (Path.GetExtension(path) != ".obj")
+               {
+                   Show(path);
+                   filenameImage.color = wrongFilenameColor;
+               }
+               else if(Path.GetExtension(path) == ".obj")
+               {
+                   objFromFile.GetComponent<ObjFromFile>().LoadUpload();
+                   uploadGebouw.GetComponent<UploadGebouw>().uploading = false;
+               }       
+            }
+            else if (downloadGebouw.GetComponent<DownloadGebouw>().downloading)
+            {
+                if (selectDownload.GetComponent<SelectDownLoad>().selectedDownloadObj != null)
+                {
+                    MeshFilter mesh1;
+
+                    mesh1 = selectDownload.GetComponent<SelectDownLoad>().selectedDownloadObj.GetComponentInChildren<MeshFilter>();
+
+                    ObjExporter.MeshToFile(mesh1, path + ".obj");
+                }
+            }
+          
         }
 
         public void OnCancelButtonClicked()

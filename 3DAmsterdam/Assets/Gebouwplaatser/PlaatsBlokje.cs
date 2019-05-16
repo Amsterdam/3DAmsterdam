@@ -51,7 +51,10 @@ public class PlaatsBlokje : MonoBehaviour
         PlaceObject();
         SelectAndTransform();
 
-        pijlenprefab.transform.eulerAngles = new Vector3(0, 0, 0);
+        if (pijlenprefab != null)
+        {
+            pijlenprefab.transform.eulerAngles = new Vector3(0, 0, 0);
+        }  
     }
 
     public void PlaceActivation()
