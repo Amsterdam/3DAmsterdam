@@ -1,35 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using System.IO;
-using System.Text;
-using SimpleFileBrowser;
 
 public class DownloadGebied : MonoBehaviour
 {
-    bool isActive = false;
-
-    public void StartFileBrowser()
-    {
-        StartCoroutine(WaitForLoadDialog());
-    }
-
-    public static IEnumerator WaitForLoadDialog(bool folderMode = false, string initialPath = null, string title = "Load", string loadButtonText = "Select")
-    {
-        yield return FileBrowser.WaitForLoadDialog(false, null, "Load File", "Load");
-    }
-
-    public void ToggleActivation()
-    {
-        isActive = !isActive;
-    }
+    Color oriColor = Color.black;
 
     private void Update()
     {
-        if (!isActive)
-            return;
-
         if (!Input.GetMouseButtonDown(0))
             return;
 
@@ -47,9 +25,41 @@ public class DownloadGebied : MonoBehaviour
         if (!int.TryParse(tileIdStr[1], out y)) return;
         if (!int.TryParse(tileIdStr[2], out z)) return;
 
-        List<Vector3> tileIds = new List<Vector3>();
-        tileIds.Add(new Vector3(x, y, z));
-        TileSaver.Save2(tileIds.ToArray());
-        
+        GameObject pand = GameObject.Find($"{x}_{y}_{z}");
+
+        if ( oriColor == Color.black)
+        {
+            oriColor = pand.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
+        }
+
+        // Optionally find other tile data 
+        var panden = new GameObject[] { pand };
+        MarkColor(panden, Color.blue);
+
+        TileSaver.SaveGameObjects(panden, (bool succes) =>
+        {
+             MarkColor(panden, succes ? Color.green : Color.red);
+             StartCoroutine(ResetColor(panden));
+        });
+    }
+
+    void MarkColor(GameObject [] gos, Color c)
+    {
+        foreach( var go in gos )
+        {
+            foreach( var mr in go.GetComponentsInChildren<MeshRenderer>())
+            {
+                for(int i = 0; i < mr.materials.Length; i++)
+                {
+                    mr.materials[i].color = c;
+                }
+            }
+        }
+    }
+
+    IEnumerator ResetColor(GameObject[] gos)
+    {
+        yield return new WaitForSeconds(3);
+        MarkColor(gos, oriColor);
     }
 }
