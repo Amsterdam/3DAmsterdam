@@ -42,10 +42,10 @@ public class ObjFromFile : MonoBehaviour
                     {
                         loadedObject.layer = LayerMask.NameToLayer("Default");
                         loadedObject.AddComponent<HighLight>();
-                        loadedObject.AddComponent<BoxCollider>();
+                        loadedObject.AddComponent<PijlenPrefab>();
 
                         foreach (Transform child in loadedObject.transform)
-                        { 
+                        {
                             child.gameObject.AddComponent<MeshCollider>();
                             child.gameObject.AddComponent<HighLight>();
                         }

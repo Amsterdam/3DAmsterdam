@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PijlenPrefab : MonoBehaviour
 {
-    private GameObject pijlenPrefab, pijlenPrefabMesh;
-    private bool spawned = false;
+    [HideInInspector]
+    public GameObject pijlenPrefab;
+
+    private GameObject pijlenPrefabMesh;
+    private bool spawned = false, nextSpawn;
 
     private string hitObject;
     private RaycastHit hit;
@@ -38,11 +41,14 @@ public class PijlenPrefab : MonoBehaviour
 
             pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
                                                           pijlenPrefab.transform.position.z);
+
+            nextSpawn = true;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && nextSpawn)
         {
             spawned = true;
+            nextSpawn = false;
         }
     }
 
@@ -60,6 +66,8 @@ public class PijlenPrefab : MonoBehaviour
                 spawned = false;
             }
         }
+
+        pijlenPrefab.transform.eulerAngles = Vector3.zero;
     }
 
     private void DefineCollider()

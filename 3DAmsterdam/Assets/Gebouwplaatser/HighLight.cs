@@ -28,7 +28,7 @@ public class HighLight : MonoBehaviour
 
                 for (int j = 0; j < mats.Length; j++)
                 {
-                    originalColour[j] = mats[j].color;
+                    //originalColour[j] = mats[j].color;
                     mats[j].color = Color.red;
                 }
             }
@@ -39,7 +39,6 @@ public class HighLight : MonoBehaviour
 
             for (int i = 0; i < mats.Length; i++)
             {
-                //originalColour[i] = mats[i].color;
                 mats[i].color = Color.red;
             }
         }
@@ -53,8 +52,6 @@ public class HighLight : MonoBehaviour
            {
                 mats[j].color = Color.white;
            }
-
-            children.Clear();
         }
         else if (children.Count == 0)
         {
