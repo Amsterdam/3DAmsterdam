@@ -13,10 +13,12 @@ public class ObjFromFile : MonoBehaviour
     Ray ray;
     RaycastHit hit;
     bool placeUpload = false;
+    GameObject uploadGebouw;
 
     void Start()
     {
         plaatsBlokje = GameObject.Find("PlaceBuilding");
+        uploadGebouw = GameObject.Find("Menus");
     }
 
     void Update()
@@ -39,6 +41,8 @@ public class ObjFromFile : MonoBehaviour
                     if (Input.GetMouseButtonDown(0) && !(EventSystem.current.IsPointerOverGameObject()))
                     {
                         loadedObject.layer = LayerMask.NameToLayer("Default");
+                        loadedObject.AddComponent<HighLight>();
+                        loadedObject.AddComponent<PijlenPrefab>();
 
                         foreach (Transform child in loadedObject.transform)
                         {

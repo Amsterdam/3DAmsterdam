@@ -8,8 +8,16 @@ using SimpleFileBrowser;
 
 public class UploadGebouw : MonoBehaviour
 {
+    public bool uploading;
+
+    public void Start()
+    {
+        uploading = false;
+    }
+
     public void StartFileBrowser()
     {
+        uploading = true;
         StartCoroutine(WaitForLoadDialog());
     }
 

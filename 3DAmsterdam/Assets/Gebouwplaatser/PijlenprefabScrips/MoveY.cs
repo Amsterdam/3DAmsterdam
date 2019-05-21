@@ -5,30 +5,30 @@ using UnityEngine.UI;
 
 public class MoveY : MonoBehaviour {
 
-    public GameObject button;
-    private Image buttonImage;
+    //public GameObject button;
+    //private Image buttonImage;
 
-    public void UpDown()
-    {
-        ManageStates.Instance.selectionState = "Y";
-    }
+    //public void UpDown()
+    //{
+    //    ManageStates.Instance.selectionState = "Y";
+    //}
 
-    private void Start()
-    {
-        buttonImage = button.GetComponent<Image>();
-    }
+    //private void Start()
+    //{
+    //    buttonImage = button.GetComponent<Image>();
+    //}
 
-    private void Update()
-    {
-        if (ManageStates.Instance.selectionState == "Y")
-        {
-            buttonImage.color = Color.yellow;
-        }
-        else
-        {
-            buttonImage.color = Color.white;
-        }
-    }
+    //private void Update()
+    //{
+    //    if (ManageStates.Instance.selectionState == "Y")
+    //    {
+    //        buttonImage.color = Color.yellow;
+    //    }
+    //    else
+    //    {
+    //        buttonImage.color = Color.white;
+    //    }
+    //}
 
     //private Vector3 mousePosition;
     //private Vector3 currentMousePosition;

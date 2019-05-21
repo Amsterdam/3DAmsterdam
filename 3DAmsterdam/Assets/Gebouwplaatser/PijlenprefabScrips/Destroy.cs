@@ -8,10 +8,4 @@ public class Destroy : MonoBehaviour {
     {
         Destroy(transform.parent.parent.gameObject);
     }
-
-
-    public void Remove()
-    {
-        Destroy(transform.parent.parent.parent.gameObject);
-    }
 }

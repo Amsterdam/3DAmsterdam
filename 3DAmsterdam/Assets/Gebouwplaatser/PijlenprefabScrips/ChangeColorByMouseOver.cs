@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeColorByMouseOver : MonoBehaviour {
-
-    Color myColor = new Color(0f, 0f, 1f, 1f);
-
+public class ChangeColorByMouseOver : MonoBehaviour
+{
     private Color32 originalColor;
     private byte orgR;
     private byte orgG;
@@ -15,6 +13,7 @@ public class ChangeColorByMouseOver : MonoBehaviour {
     void Start()
     {
         originalColor = GetComponent<Renderer>().material.color;
+
         orgR = originalColor.r;
         orgG = originalColor.g;
         orgB = originalColor.b;

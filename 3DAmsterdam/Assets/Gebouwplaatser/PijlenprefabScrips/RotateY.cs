@@ -6,23 +6,10 @@ public class RotateY : MonoBehaviour {
 
     private float rotSpeed = 15;
 
-    void OnMouseDown()
-    {
-        ManageStates.Instance.selectionState = "Ry";
-    }
-
     void OnMouseDrag()
     {
-            float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
+         float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
 
-            transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
-
-            //transform.parent.rotation = transform.parent.parent.rotation;
+         transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
     }
-
-    //void OnMouseExit()
-    //{
-    //    isRotating = false;
-    //}
-
 }
