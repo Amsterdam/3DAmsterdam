@@ -10,8 +10,10 @@ using UnityEngine.Networking;
 
 public class Uploader : MonoBehaviour
 {
-    public static string UploadUrl = "localhost:80/customUpload.php";
-    public static string DownloadUrl = "localhost:80/customDownload.php?name=";
+    public static string Key = "87ajdf898##@@jjKJA";
+    public static string Server = "localhost:80/";
+    public static string UploadUrl = Server + "customUpload.php";
+    public static string DownloadUrl = Server + "customDownload.php?";
 
     [DllImport("__Internal")]
     private static extern void DownloadFile(string uri, string filename);
@@ -24,7 +26,8 @@ public class Uploader : MonoBehaviour
     public IEnumerator Upload(string objData, Action<bool> onDone)
     {
         WWWForm form = new WWWForm();
-        string randomName = "objData_" + UnityEngine.Random.Range(0, 1000) + ".obj";
+        string randomName = "objData_" + Guid.NewGuid().ToString() + ".obj";
+        form.AddField("secret", Key);
         form.AddField("name", randomName);
         form.AddField("objData", objData);
 
@@ -41,7 +44,9 @@ public class Uploader : MonoBehaviour
             Destroy(gameObject);
             Debug.Log("Form upload complete!");
             // Download it
-            Application.OpenURL(DownloadUrl + randomName);
+            string dlUrl = "window.open(" + DownloadUrl + "name="+ randomName + "&secret=" + Key + ")";
+            Application.ExternalEval(dlUrl);
+            //  Application.OpenURL(DownloadUrl + randomName);
             //  DownloadFile(DownloadUrl + randomName, randomName);
             if (onDone != null) onDone(true);
         }

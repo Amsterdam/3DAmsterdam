@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class DownloadGebied : MonoBehaviour
 {
-    Color oriColor = Color.black;
-
     private void Update()
     {
         if (!Input.GetMouseButtonDown(0))
@@ -26,20 +24,16 @@ public class DownloadGebied : MonoBehaviour
         if (!int.TryParse(tileIdStr[2], out z)) return;
 
         GameObject pand = GameObject.Find($"{x}_{y}_{z}");
-
-        if ( oriColor == Color.black)
-        {
-            oriColor = pand.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
-        }
+        Color oriColor = pand.GetComponentInChildren<MeshRenderer>().sharedMaterial.color;
 
         // Optionally find other tile data 
         var panden = new GameObject[] { pand };
-        MarkColor(panden, Color.blue);
+        MarkColor(panden, Color.red);
 
         TileSaver.SaveGameObjects(panden, (bool succes) =>
         {
-             MarkColor(panden, succes ? Color.green : Color.red);
-             StartCoroutine(ResetColor(panden));
+          //   MarkColor(panden, succes ? Color.green : Color.red);
+             StartCoroutine(ResetColor(panden, oriColor));
         });
     }
 
@@ -57,7 +51,7 @@ public class DownloadGebied : MonoBehaviour
         }
     }
 
-    IEnumerator ResetColor(GameObject[] gos)
+    IEnumerator ResetColor(GameObject[] gos, Color oriColor)
     {
         yield return new WaitForSeconds(3);
         MarkColor(gos, oriColor);

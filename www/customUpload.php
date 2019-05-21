@@ -1,24 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>PHP Upload file</title>
-</head>
-<body>
+
 <?php
-if(isset($_POST["name"]) && isset($_POST["objData"]))
+if(isset($_POST["secret"]) && isset($_POST["name"]) && isset($_POST["objData"]))
 { 
-    $name = $_POST["name"];
-    $handle = fopen("uploadedFiles/" . $name, "w");
-    if ( $handle )
+    if ( $_POST["secret"] == "87ajdf898##@@jjKJA" )
     {
-        // Write data to the file
-        $data = $_POST["objData"];
-        file_put_contents($handle, $data) or die("ERROR: Cannot write the file.");
-        fflush($handle);
-        fclose($handle);
+        $name = $_POST["name"];
+        $handle = fopen("uploadedFiles/" . $name, "w");
+        if ( isset($handle) )
+        {
+            // Write data to the file
+            $data = $_POST["objData"];
+            fwrite($handle, $data);
+            fflush($handle);
+            fclose($handle);
+        }
+        else
+        {
+            echo "failed to write file";
+        }
     }
-   // readfile("tile.obj");
-//    exit;
+    else
+    {
+        echo "invalid secret";
+    }
+}
+else 
+{
+    echo "not all parameters set";
 }
 ?>
-</body>

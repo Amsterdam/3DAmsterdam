@@ -1,4 +1,5 @@
-mergeInto(LibraryManager.library, {
+mergeInto(LibraryManager.library, 
+{
 
 
   DownloadFile: function (uri, filename)
