@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 868656540736623562}
   - component: {fileID: 868656540736623561}
   - component: {fileID: 868656540736623560}
-  - component: {fileID: 868656540736623567}
-  - component: {fileID: 8278916290530375079}
   m_Layer: 2
   m_Name: Cube
   m_TagString: Sizeable
@@ -79,29 +77,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &868656540736623567
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868656540736623566}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8278916290530375079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868656540736623566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2a876358a1f21f4c9e201bed3dc0e0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  originalColour: {r: 1, g: 1, b: 1, a: 0}

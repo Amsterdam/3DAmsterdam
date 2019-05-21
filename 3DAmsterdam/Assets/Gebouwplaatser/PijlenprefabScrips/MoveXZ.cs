@@ -13,8 +13,6 @@ public class MoveXZ : MonoBehaviour
 
     void OnMouseDown()
     {
-        ManageStates.Instance.selectionState = "XZ";
-
         startPosY = transform.parent.parent.position.y;
 
         distanceFromObject = Camera.main.WorldToScreenPoint(transform.parent.parent.position);
@@ -26,10 +24,7 @@ public class MoveXZ : MonoBehaviour
         updatedDis = Input.mousePosition - offSet;
         updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
 
-        if (ManageStates.Instance.selectionState == "XZ")
-        {
-            transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, updatedPos.z);
-        }
+        transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, updatedPos.z);
     }
 }
 
