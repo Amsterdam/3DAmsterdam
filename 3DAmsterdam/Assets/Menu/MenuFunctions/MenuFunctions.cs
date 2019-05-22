@@ -39,11 +39,11 @@ public class MenuFunctions : MonoBehaviour
 
     private Vector3 startPosMenuCreateBuilding, startPosMap;
 
-    private int currentMenu, noMenu = 10, currentWeer, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
+    private int noMenu = 10, currentWeer, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
                 buildingMenuDecider = 1, uploadMenuDecider = 1;
 
     [HideInInspector]
-    public int _hours, _minutes, _currentDay, _currentMonth, _currentYear;
+    public int currentMenu, _hours, _minutes, _currentDay, _currentMonth, _currentYear;
 
     private float scaleFactor = 50f, moveFactor = 55f;
 

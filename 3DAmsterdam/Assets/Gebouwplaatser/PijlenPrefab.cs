@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PijlenPrefab : MonoBehaviour
 {
-    private GameObject pijlenPrefab;
+    private GameObject pijlenPrefab, pijlenPrefabMesh;
+    private ScaleUploads scaleScript;
 
-    private GameObject pijlenPrefabMesh;
     private bool spawned = false, nextSpawn;
+    [HideInInspector]
+    public bool scaling;
 
     private string hitObject;
     private RaycastHit hit;
@@ -41,6 +43,9 @@ public class PijlenPrefab : MonoBehaviour
 
         // de prefab wordt vanuit de "Resources" folder ingeladen
         pijlenPrefabMesh = (GameObject) Resources.Load("PijlenPrefab");
+
+        scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
+        scaleScript.gameObjects.Add(this.gameObject);
     }
 
     private void OnMouseOver()
@@ -62,6 +67,7 @@ public class PijlenPrefab : MonoBehaviour
                                                           pijlenPrefab.transform.position.z);
 
             nextSpawn = true;
+            scaling = true;
         }
 
         if (Input.GetMouseButtonUp(0) && nextSpawn)
@@ -84,6 +90,7 @@ public class PijlenPrefab : MonoBehaviour
                 Destroy(pijlenPrefab);
 
                 spawned = false;
+                scaling = false;
             }
         }
 
