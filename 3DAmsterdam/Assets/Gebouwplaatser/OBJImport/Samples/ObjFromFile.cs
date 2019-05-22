@@ -43,13 +43,16 @@ public class ObjFromFile : MonoBehaviour
                         loadedObject.layer = LayerMask.NameToLayer("Default");
                         loadedObject.AddComponent<HighLight>();
                         loadedObject.AddComponent<PijlenPrefab>();
+                        loadedObject.tag = "Sizeable";
 
                         foreach (Transform child in loadedObject.transform)
                         {
                             child.gameObject.AddComponent<MeshCollider>();
                             child.gameObject.AddComponent<HighLight>();
+                            child.gameObject.tag = "Sizeable";
                         }
 
+                        loadedObject = null;
                         placeUpload = false;
                     }
                 }

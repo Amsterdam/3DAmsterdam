@@ -35,15 +35,18 @@ public class SelectDownLoad : MonoBehaviour
 
         if (deselect)
         {
-            for (int i = 0; i < mats.Length; i++)
+            if(!(mats.Length == 0))
             {
-                mats[i].color = Color.white;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    mats[i].color = Color.white;
+                }
             }
 
             children.Clear();
-            selectedDownloadObj = null;
             downloadButton.gameObject.SetActive(false);
             selectButton.gameObject.SetActive(true);
+            selectedDownloadObj = null;
             deselect = false;
         }
     }
@@ -93,12 +96,15 @@ public class SelectDownLoad : MonoBehaviour
     {
         for (int i = 0; i < children.Count; i++)
         {
-            mats = children[i].gameObject.GetComponent<MeshRenderer>().materials;
+            mats = children[i].gameObject.GetComponent<Renderer>().materials;
 
             for (int j = 0; j < mats.Length; j++)
             {
-                var originalColour = mats[j].color;
-                mats[j].color = Color.yellow;
+                //var originalColour = mats[j].color;
+                if(mats.Length != 0)
+                {
+                    mats[j].color = Color.yellow;
+                }            
             } 
         }
     }

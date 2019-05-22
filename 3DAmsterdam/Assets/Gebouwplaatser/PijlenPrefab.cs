@@ -118,7 +118,7 @@ public class PijlenPrefab : MonoBehaviour
             scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
 
             pijlenPrefab.transform.parent = null;
-            pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 1f, scalingXZ * scaleFactor);
+            pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 3f, scalingXZ * scaleFactor);
             pijlenPrefab.transform.parent = gameObject.transform;
         }
     }
