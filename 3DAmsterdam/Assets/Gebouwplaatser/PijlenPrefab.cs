@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PijlenPrefab : MonoBehaviour
 {
@@ -85,8 +86,8 @@ public class PijlenPrefab : MonoBehaviour
         // als er niet op de prefab wordt geklikt wordt die verwijdert
         if (Input.GetMouseButtonDown(0) && spawned)
         {
-            if (hitObject != "Pijlenprefab")
-            {
+            if (hitObject != "Pijlenprefab" && !EventSystem.current.IsPointerOverGameObject())
+            { 
                 Destroy(pijlenPrefab);
 
                 spawned = false;
