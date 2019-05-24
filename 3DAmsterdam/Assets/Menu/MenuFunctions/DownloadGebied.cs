@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class DownloadGebied : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class DownloadGebied : MonoBehaviour
 
     private void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (!Input.GetMouseButtonDown(0))
             return;
 

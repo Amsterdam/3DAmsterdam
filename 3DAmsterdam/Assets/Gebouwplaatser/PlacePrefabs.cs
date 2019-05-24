@@ -31,6 +31,7 @@ public class PlacePrefabs : MonoBehaviour
                 if (instantiate)
                 {
                     buildingIns = (GameObject)Instantiate(building, hit.point, Quaternion.identity);
+                    buildingIns.tag = "CustomPlaced";
                     instantiate = false;
                 }
 
