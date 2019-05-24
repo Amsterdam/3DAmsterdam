@@ -21,7 +21,7 @@ namespace SimpleFileBrowser
         {
             objFromFile = GameObject.Find("OBJLoader");
             uploadGebouw = GameObject.Find("Menus");
-            downloadGebouw = GameObject.Find("Download Object");
+            downloadGebouw = GameObject.Find("Menus");
             selectDownload = GameObject.Find("Menus");
         }
 
@@ -692,7 +692,8 @@ namespace SimpleFileBrowser
                    uploadGebouw.GetComponent<UploadGebouw>().uploading = false;
                }       
             }
-            else if (downloadGebouw.GetComponent<DownloadGebouw>().downloading)
+
+            if (downloadGebouw.GetComponent<DownloadGebouw>().downloading)
             {
                 if (selectDownload.GetComponent<SelectDownLoad>().selectedDownloadObj != null)
                 {
@@ -702,8 +703,7 @@ namespace SimpleFileBrowser
 
                     ObjExporter.MeshToFile(mesh1, path + ".obj");
                 }
-            }
-          
+            }         
         }
 
         public void OnCancelButtonClicked()

@@ -13,6 +13,9 @@ public class PijlenPrefab : MonoBehaviour
     private RaycastHit hit;
     private Ray ray;
 
+    [HideInInspector]
+    public GameObject selectDownload;
+
     private List<Transform> rendererOptions;
     private Vector3 largestSize = Vector3.zero;
     private Transform rendChild;
@@ -22,6 +25,7 @@ public class PijlenPrefab : MonoBehaviour
     private void Start()
     {
         rendererOptions = new List<Transform>();
+        selectDownload = GameObject.Find("Menus");
 
         // als er al een collider op het object zit wordt die verplaatst met een box collider
         if (gameObject.GetComponent<Collider>() != null && gameObject.GetComponent<BoxCollider>() == null)
@@ -45,29 +49,32 @@ public class PijlenPrefab : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && spawned == false)
+        if(selectDownload.GetComponent<SelectDownLoad>().selecting != true)
         {
-            FindRenderer();
-            ChangeCollider();
+            if (Input.GetMouseButtonDown(0) && spawned == false)
+            {
+                FindRenderer();
+                ChangeCollider();
 
-            // de prefab wordt geinstantieerd op het moment dat er op het object geklikt wordt
-            pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.identity);
-            pijlenPrefab.transform.parent = gameObject.transform;
+                // de prefab wordt geinstantieerd op het moment dat er op het object geklikt wordt
+                pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.identity);
+                pijlenPrefab.transform.parent = gameObject.transform;
 
-            // berekent afstand tussen de grond en object
-            var groundToObject = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), transform.position);
+                // berekent afstand tussen de grond en object
+                var groundToObject = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), transform.position);
 
-            // prefab wordt op positie geplaatst gebaseerd op grootte/positie van object
-            pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
-                                                          pijlenPrefab.transform.position.z);
+                // prefab wordt op positie geplaatst gebaseerd op grootte/positie van object
+                pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
+                                                              pijlenPrefab.transform.position.z);
 
-            nextSpawn = true;
-        }
+                nextSpawn = true;
+            }
 
-        if (Input.GetMouseButtonUp(0) && nextSpawn)
-        {
-            spawned = true;
-            nextSpawn = false;
+            if (Input.GetMouseButtonUp(0) && nextSpawn)
+            {
+                spawned = true;
+                nextSpawn = false;
+            }
         }
     }
 
@@ -118,7 +125,7 @@ public class PijlenPrefab : MonoBehaviour
             scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
 
             pijlenPrefab.transform.parent = null;
-            pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 1f, scalingXZ * scaleFactor);
+            pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 3f, scalingXZ * scaleFactor);
             pijlenPrefab.transform.parent = gameObject.transform;
         }
     }
