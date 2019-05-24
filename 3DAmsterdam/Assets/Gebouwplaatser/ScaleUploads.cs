@@ -18,21 +18,27 @@ public class ScaleUploads : MonoBehaviour
     {
         turnOffMenu = true;
 
+        // alle objecten die verschaalt kunnen worden worden in deze lijst toegevoegd
         for (int i = 0; i < gameObjects.Count; i++)
         {
+            // als de pijlenprefab geselecteerd is wordt het schaalmenu geopend
             if (gameObjects[i].gameObject.GetComponent<PijlenPrefab>().scaling)
             {
                 scaleMenu.SetActive(true);
                 selectedObject = gameObjects[i].gameObject;
 
-                height.value = selectedObject.transform.localScale.y / 50f;
-                width.value = selectedObject.transform.localScale.x / 50f;
-                length.value = selectedObject.transform.localScale.z / 50f;
+                if (selectedObject.GetComponent<PijlenPrefab>().setScaleValues)
+                {
+                    InitializeScaleValues();
+                }
 
                 turnOffMenu = false;
             }
+
+            
         }
 
+        // het menu wordt uigezet zodra de pijlenprefab gedeselecteerd is
         if (turnOffMenu)
         {
             scaleMenu.SetActive(false);
@@ -41,11 +47,20 @@ public class ScaleUploads : MonoBehaviour
         Scaling();
     }
 
+    // het verschalen van het object
     private void Scaling()
     {
         if (selectedObject != null)
         {
             selectedObject.transform.localScale = new Vector3(width.value * 50f, height.value * 50f, length.value * 50f);
         }
+    }
+
+    // de huidige waardes van het object worden overgenomen in het schaalmenu
+    private void InitializeScaleValues()
+    {
+        height.value = selectedObject.transform.localScale.y / 50f;
+        width.value = selectedObject.transform.localScale.x / 50f;
+        length.value = selectedObject.transform.localScale.z / 50f;
     }
 }

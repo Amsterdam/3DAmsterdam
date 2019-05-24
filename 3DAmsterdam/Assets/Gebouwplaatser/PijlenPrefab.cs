@@ -10,7 +10,7 @@ public class PijlenPrefab : MonoBehaviour
 
     private bool spawned = false, nextSpawn;
     [HideInInspector]
-    public bool scaling;
+    public bool scaling, setScaleValues;
 
     private string hitObject;
     private RaycastHit hit;
@@ -67,8 +67,12 @@ public class PijlenPrefab : MonoBehaviour
             pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
                                                           pijlenPrefab.transform.position.z);
 
-            nextSpawn = true;
+
             scaling = true;
+            setScaleValues = true;
+            nextSpawn = true;
+
+            Invoke("SetScaleInitilialization", 1f);
         }
 
         if (Input.GetMouseButtonUp(0) && nextSpawn)
@@ -168,5 +172,10 @@ public class PijlenPrefab : MonoBehaviour
 
         gameObject.GetComponent<BoxCollider>().size = boxCollider.size;
         gameObject.GetComponent<BoxCollider>().center = new Vector3(0f, boxCollider.center.y, 0f);      
+    }
+
+    private void SetScaleInitilialization()
+    {
+        setScaleValues = false;
     }
 }
