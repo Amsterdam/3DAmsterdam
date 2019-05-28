@@ -65,14 +65,15 @@ public class ObjExporter : MonoBehaviour
         }
     }
 
-    static void WriteTextureAndAssignName(StringBuilder sb, Material mat, string id, string keyword, string extension)
+    static void WriteTextureAndAssignName(StringBuilder sb, Material mat, string id, string keyword, string extension, HashSet<Texture2D> textures)
     {
         if ( mat.HasProperty(keyword))
         {
-            var c = mat.GetTexture(keyword);
-            if (c)
+            var c = mat.GetTexture(keyword) as Texture2D;
+            if (c &&!textures.Contains(c))
             {
-                var texName = CleanMaterialName(mat.name) + keyword + extension;
+                textures.Add(c);
+                var texName = $"texture{textures.Count}" + extension;
                 c.name = texName;
                 sb.AppendLine($"{id} {texName}");
             }
@@ -108,12 +109,14 @@ public class ObjExporter : MonoBehaviour
 
     // ---------- Public accessors ----------------------------------------------------------------------------
 
-    public static string WriteMaterial(MeshFilter[] mfs, StringBuilder sb = null, HashSet<string> materials = null)
+    public static string WriteMaterial(MeshFilter[] mfs, StringBuilder sb = null, HashSet<string> materials = null, HashSet<Texture2D> textures = null)
     {
         if (sb == null)
             sb = new StringBuilder();
         if (materials == null)
             materials = new HashSet<string>();
+        if (textures == null)
+            textures = new HashSet<Texture2D>();
         int kWrittenMaterials = 0;
         foreach (var mf in mfs)
         {
@@ -140,9 +143,9 @@ public class ObjExporter : MonoBehaviour
                 WriteColor(sb, mat, "Ks", "_SpecColor");
                 WriteColor(sb, mat, "Ka", "_EmissionColor");
 
-                WriteTextureAndAssignName(sb, mat, "map_Kd", "_MainTex", ".png");
-                WriteTextureAndAssignName(sb, mat, "map_Disp", "_BumpMap", ".png");
-                WriteTextureAndAssignName(sb, mat, "map_Ka", "_EmissionMap", ".png");
+                WriteTextureAndAssignName(sb, mat, "map_Kd", "_MainTex", ".png", textures);
+                WriteTextureAndAssignName(sb, mat, "map_Disp", "_BumpMap", ".png", textures);
+                WriteTextureAndAssignName(sb, mat, "map_Ka", "_EmissionMap", ".png", textures);
 
                 //                newmtl floor
                 //Ns 7.843137
@@ -189,10 +192,11 @@ public class ObjExporter : MonoBehaviour
     {
         StringBuilder sb = new StringBuilder();
         HashSet<string> materials = new HashSet<string>();
+        HashSet<Texture2D> textures = new HashSet<Texture2D>();
         foreach (var go in gos)
         {
             var mfs = go.GetComponentsInChildren<MeshFilter>();
-            WriteMaterial(mfs, sb, materials);
+            WriteMaterial(mfs, sb, materials, textures);
         }
         return sb.ToString();
     }

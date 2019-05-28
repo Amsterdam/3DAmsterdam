@@ -22,6 +22,8 @@ public class DownloadGebied : MonoBehaviour
     private void Start()
     {
         lineRenderer = GetComponent<UILineRenderer>();
+        if (lineRenderer == null)
+            lineRenderer = gameObject.AddComponent<UILineRenderer>();
         
     }
 
