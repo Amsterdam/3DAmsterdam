@@ -8,8 +8,8 @@ public class RotateY : MonoBehaviour {
 
     void OnMouseDrag()
     {
-         float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
+        float rotY = Input.GetAxis("Mouse X") * rotSpeed + Input.GetAxis("Mouse Y") * -rotSpeed;
 
-         transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
+        transform.parent.parent.RotateAround(transform.parent.parent.GetComponent<Collider>().bounds.center, Vector3.up, rotY);
     }
 }

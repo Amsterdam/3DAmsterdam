@@ -39,8 +39,8 @@ public class PijlenPrefab : MonoBehaviour
             gameObject.AddComponent<BoxCollider>();
         }
 
-        FindRenderer();
-        ChangeCollider();
+        //FindRenderer();
+        //ChangeCollider();
 
         // de prefab wordt vanuit de "Resources" folder ingeladen
         pijlenPrefabMesh = (GameObject) Resources.Load("PijlenPrefab");
@@ -53,11 +53,11 @@ public class PijlenPrefab : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && spawned == false)
         {
-            FindRenderer();
-            ChangeCollider();
+            //FindRenderer();
+            //ChangeCollider();
 
             // de prefab wordt geinstantieerd op het moment dat er op het object geklikt wordt
-            pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.identity);
+            pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.Euler(0, 0, 0));
             pijlenPrefab.transform.parent = gameObject.transform;
 
             // berekent afstand tussen de grond en object
@@ -66,7 +66,6 @@ public class PijlenPrefab : MonoBehaviour
             // prefab wordt op positie geplaatst gebaseerd op grootte/positie van object
             pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
                                                           pijlenPrefab.transform.position.z);
-
 
             scaling = true;
             setScaleValues = true;
@@ -84,8 +83,10 @@ public class PijlenPrefab : MonoBehaviour
 
     private void Update()
     {
-        DefineCollider();
+        FindRenderer();
+        ChangeCollider();
         UpdateScale();
+        DefineHitBox();
 
         // als er niet op de prefab wordt geklikt wordt die verwijdert
         if (Input.GetMouseButtonDown(0) && spawned)
@@ -102,12 +103,12 @@ public class PijlenPrefab : MonoBehaviour
         // alleen het object zelf wordt geroteerd
         if (pijlenPrefab != null)
         {
-            pijlenPrefab.transform.eulerAngles = Vector3.zero;
+            //pijlenPrefab.transform.eulerAngles = Vector3.zero;
         }
     }
 
     // er wordt bepaald wat de hitbox van de prefab zelf is, zodat bepaald kan worden wanneer er wel/niet op wordt geklikt
-    private void DefineCollider()
+    private void DefineHitBox()
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -125,9 +126,11 @@ public class PijlenPrefab : MonoBehaviour
     // de prefab wordt mee verschaald met de grootte van het object waar het omheen zit
     private void UpdateScale()
     {
-        if (transform.hasChanged && pijlenPrefab != null)
+        if (pijlenPrefab != null)
         {
             scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
+
+            //Debug.Log("Renderer:" + largestSize + "Collider:" + transform.GetComponent<BoxCollider>().size);
 
             pijlenPrefab.transform.parent = null;
             pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 3f, scalingXZ * scaleFactor);

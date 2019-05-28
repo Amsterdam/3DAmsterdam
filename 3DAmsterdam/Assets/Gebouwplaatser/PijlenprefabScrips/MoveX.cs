@@ -16,15 +16,10 @@ public class MoveX : MonoBehaviour {
     private float angle;
     private float startPosY;
     private float startPosZ;
+    private float angleObject;
 
-    private float directionH;
-    private float directionV;
+    private Vector3 moveVector;
 
-    public void Update()
-    {
-        directionH = Input.GetAxis("Horizontal");
-        directionV = Input.GetAxis("Vertical");
-    }
 
     private void OnMouseDown()
     {
@@ -40,9 +35,57 @@ public class MoveX : MonoBehaviour {
 
     private void OnMouseDrag()
     {
-        updatedDis = Input.mousePosition - offSet;
-        updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
+        angleObject = transform.parent.parent.eulerAngles.y;
+        moveVector = transform.right * Mathf.Log(Camera.main.transform.position.y, 2) * 0.15f;
 
-        transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, startPosZ);
+        if (angleObject > 315f && angleObject < 360f || angleObject >= 0f && angleObject < 45f)
+        {
+            if (Input.GetAxis("Mouse X") < 0)
+            {
+                transform.parent.parent.position -= moveVector;
+            }
+            if (Input.GetAxis("Mouse X") > 0)
+            {
+                transform.parent.parent.position += moveVector;
+            }
+        }
+        else if (angleObject >= 45f && angleObject < 135f)
+        {
+            if (Input.GetAxis("Mouse Y") < 0)
+            {
+                transform.parent.parent.position += moveVector;
+            }
+            if (Input.GetAxis("Mouse Y") > 0)
+            {
+                transform.parent.parent.position -= moveVector;
+            }
+        }
+        else if (angleObject >= 135f && angleObject < 225f)
+        {
+            if (Input.GetAxis("Mouse X") < 0)
+            {
+                transform.parent.parent.position += moveVector;
+            }
+            if (Input.GetAxis("Mouse X") > 0)
+            {
+                transform.parent.parent.position -= moveVector;
+            }
+        }
+        else
+        {
+            if (Input.GetAxis("Mouse Y") < 0)
+            {
+                transform.parent.parent.position -= moveVector;
+            }
+            if (Input.GetAxis("Mouse Y") > 0)
+            {
+                transform.parent.parent.position += moveVector;
+            }
+        }
+
+        //updatedDis = Input.mousePosition - offSet;
+        //updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
+
+        //transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, startPosZ);
     }
 }
