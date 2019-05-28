@@ -9,7 +9,15 @@ public class DownloadGebied : MonoBehaviour
     Vector3 startPosition;
     UILineRenderer lineRenderer;
     Bounds lastBounds;
-    bool startedSelecting;
+
+    enum State
+    {
+        Idle,
+        Selecting,
+        Uploading
+    }
+    State state = State.Idle;
+
 
     private void Start()
     {
@@ -48,21 +56,30 @@ public class DownloadGebied : MonoBehaviour
 
     void Update()
     {
-        if (!startedSelecting && Input.GetMouseButtonDown(0))
+        switch ( state)
         {
-            StartDrawingLine();
-            startedSelecting = true;
-        }
-        else if (startedSelecting && Input.GetMouseButton(0))
-        {
-            PreviewLine();
-        }
-        else if (startedSelecting && Input.GetMouseButtonUp(0))
-        {
-            startedSelecting = false;
-            EndDrawingLine();
-            var mfs = SelectTerrain();
-            UploadTerrain(mfs);
+            case State.Idle:
+                if (Input.GetMouseButtonDown(0))
+                {
+                    StartDrawingLine();
+                    state = State.Selecting;
+                }
+                break;
+
+            case State.Selecting:
+                PreviewLine();
+                if (Input.GetMouseButtonUp(0))
+                {
+                    EndDrawingLine();
+                    var mfs = SelectTerrain();
+                    UploadTerrain(mfs);
+                    state = State.Uploading;
+                }
+                break;
+
+            case State.Uploading:
+                // Wait..
+                break;
         }
     }
 
@@ -87,13 +104,17 @@ public class DownloadGebied : MonoBehaviour
             var cc = Physics.OverlapBox(bb.center, bb.extents);
             foreach( var c in cc)
             {
-                var mr = c.GetComponent<MeshRenderer>();
-                var mf = c.GetComponent<MeshFilter>();
-                if (mr != null && mf != null)
+                var mrs = c.GetComponentsInChildren<MeshRenderer>();
+                foreach(var mr in mrs )
                 {
-                    if (bb.Intersects(mr.bounds))
+                    var mf = mr.GetComponent<MeshFilter>();
+                    if (mr != null && mf != null)
                     {
-                        selected.Add(mf);
+                        if (bb.Intersects(mr.bounds))
+                        {
+                            if(!selected.Contains(mf))
+                                selected.Add(mf);
+                        }
                     }
                 }
             }
@@ -104,11 +125,9 @@ public class DownloadGebied : MonoBehaviour
     private void UploadTerrain(MeshFilter [] mfs)
     {
         var oriMfs = Highlighter.SetColor(mfs, Color.red);
-
         TileSaver.SaveMeshFilters(mfs, (bool succes) =>
         {
-          //   MarkColor(panden, succes ? Color.green : Color.red);
-             StartCoroutine(ResetColor(oriMfs));
+            StartCoroutine(ResetColor(oriMfs));
         });
     }
 
@@ -116,6 +135,7 @@ public class DownloadGebied : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         Highlighter.ResetMaterials(oriMfs);
+        state = State.Idle;
     }
 
     private void OnDrawGizmos()

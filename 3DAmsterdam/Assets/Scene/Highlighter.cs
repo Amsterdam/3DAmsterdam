@@ -24,11 +24,13 @@ public class Highlighter
                 Renderer = mr
             };
             oris.Add(om);
-            var mats = mr.materials;
-            for(int i = 0; i < mats.Length; i++ )
+            var mats = new Material[mr.sharedMaterials.Length];
+            for(int i = 0; i < mr.sharedMaterials.Length; i++ )
             {
+                mats[i] = new Material(mr.sharedMaterials[i]);
                 mats[i].color = c;
             }
+            mr.sharedMaterials = mats;
         }
         return oris.ToArray();
     }
@@ -39,7 +41,7 @@ public class Highlighter
         {
             if (om.Renderer != null)
             {
-                om.Renderer.materials = om.Mats;
+                om.Renderer.sharedMaterials = om.Mats;
             }
         }
     }

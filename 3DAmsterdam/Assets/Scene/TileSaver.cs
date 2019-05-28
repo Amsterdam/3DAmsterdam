@@ -57,12 +57,12 @@ public class ObjUploader : MonoBehaviour
                     }
                 }
             }
-            using (var fs = File.Open(Path.GetFileNameWithoutExtension(randomName) + ".zip", FileMode.Create))
-            {
-                zipToOpen.Seek(0, SeekOrigin.Begin);
-                zipToOpen.CopyTo(fs);
-            }
-            byte [] buffer = zipToOpen.GetBuffer();
+            //using (var fs = File.Open(Path.GetFileNameWithoutExtension(randomName) + ".zip", FileMode.Create))
+            //{
+            //    zipToOpen.Seek(0, SeekOrigin.Begin);
+            //    zipToOpen.CopyTo(fs);
+            //}
+            byte[] buffer = zipToOpen.ToArray();
             form.AddBinaryData("file", buffer, randomName, "application/zip");
         }
 
@@ -80,6 +80,7 @@ public class ObjUploader : MonoBehaviour
             bSucces = true;
             Debug.Log("Form upload complete!");
             // Download it
+            yield return new WaitForSeconds(2);// Wait 2 seconds for the file to be placed in the correct location
             string dlUrl = "window.open(" + DownloadUrl + "name="+ randomName + "&secret=" + Key + ")";
             Application.ExternalEval(dlUrl);
             //  Application.OpenURL(DownloadUrl + randomName);
