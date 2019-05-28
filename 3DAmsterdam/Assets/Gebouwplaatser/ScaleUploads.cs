@@ -33,9 +33,7 @@ public class ScaleUploads : MonoBehaviour
                 }
 
                 turnOffMenu = false;
-            }
-
-            
+            }    
         }
 
         // het menu wordt uigezet zodra de pijlenprefab gedeselecteerd is
