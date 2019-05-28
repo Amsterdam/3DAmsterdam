@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 
 public class SelectDownLoad : MonoBehaviour
 {
-    bool selecting;
+    [HideInInspector]
+    public bool selecting;
 
     [HideInInspector]
     public GameObject selectedDownloadObj;
@@ -35,7 +36,10 @@ public class SelectDownLoad : MonoBehaviour
 
         if (deselect)
         {
-            if(!(mats.Length == 0))
+            downloadButton.gameObject.SetActive(false);
+            selectButton.gameObject.SetActive(true);
+
+            if (!(mats.Length == 0))
             {
                 for (int i = 0; i < mats.Length; i++)
                 {
@@ -44,8 +48,6 @@ public class SelectDownLoad : MonoBehaviour
             }
 
             children.Clear();
-            downloadButton.gameObject.SetActive(false);
-            selectButton.gameObject.SetActive(true);
             selectedDownloadObj = null;
             deselect = false;
         }
@@ -64,48 +66,49 @@ public class SelectDownLoad : MonoBehaviour
 
             if (Physics.Raycast(rayCast, out hit))
             {
-                if(hit.transform.gameObject.tag == "Sizeable")
+                if (hit.transform.gameObject.tag == "Sizeable")
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                       selectButton.gameObject.SetActive(false);
-                       downloadButton.gameObject.SetActive(true);
-                       selectedDownloadObj = hit.transform.gameObject;
+                        selectButton.gameObject.SetActive(false);
+                        downloadButton.gameObject.SetActive(true);
 
-                       foreach(Transform child in hit.transform)
+                        selectedDownloadObj = hit.transform.gameObject;
+
+                        foreach (Transform child in hit.transform)
                         {
                             children.Add(child);
-                            MaterialChange();
+                        }
+
+                        for (int i = 0; i < children.Count; i++)
+                        {
+                            mats = children[i].gameObject.GetComponent<Renderer>().materials;
+
+                            for (int j = 0; j < mats.Length; j++)
+                            {
+                                //var originalColour = mats[j].color;
+                                if (mats.Length != 0)
+                                {
+                                    mats[j].color = Color.yellow;
+                                    Debug.Log("Hallooo");
+                                }
+                            }
                         }
                     }
                 }
-
-                if (Input.GetMouseButtonDown(0))
+                else if(hit.transform.gameObject != selectedDownloadObj || hit.transform.gameObject.tag != "Sizeable")
                 {
-                    if(hit.transform.gameObject != selectedDownloadObj && !(EventSystem.current.IsPointerOverGameObject()))
+                    if(hit.transform != EventSystem.current.IsPointerOverGameObject())
                     {
-                        deselect = true;
-                        selecting = false;
-                    }
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            Debug.Log("Get ROENKT");
+                            deselect = true;
+                            selecting = false;
+                        }
+                    }            
                 }
             }
-        }
-    }
-
-    public void MaterialChange()
-    {
-        for (int i = 0; i < children.Count; i++)
-        {
-            mats = children[i].gameObject.GetComponent<Renderer>().materials;
-
-            for (int j = 0; j < mats.Length; j++)
-            {
-                //var originalColour = mats[j].color;
-                if(mats.Length != 0)
-                {
-                    mats[j].color = Color.yellow;
-                }            
-            } 
         }
     }
 }
