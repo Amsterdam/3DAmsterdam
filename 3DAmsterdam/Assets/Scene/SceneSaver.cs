@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
-using UnityEngine;
-using SimpleFileBrowser;
-using System.IO;
 using Serialize;
-using UnityEngine.UI;
+using System;
+using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Serialize
 {

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2161799675749056472}
   - component: {fileID: 2161799675750383608}
   - component: {fileID: 2161799675751349560}
+  - component: {fileID: 4495136358739122575}
   m_Layer: 2
   m_Name: Symphony building
   m_TagString: Untagged
@@ -82,6 +83,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &4495136358739122575
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2161799675749082104}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 28.175955, y: 104.783, z: 22.4371}
+  m_Center: {x: 13.976321, y: 52.3915, z: 11.21855}
 --- !u!1 &8018549383312193568
 GameObject:
   m_ObjectHideFlags: 0

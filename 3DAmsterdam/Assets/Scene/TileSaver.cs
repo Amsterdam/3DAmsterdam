@@ -4,11 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Uploader : MonoBehaviour
+public class ObjUploader : MonoBehaviour
 {
     public static string Key = "87ajdf898##@@jjKJA";
     public static string Server = "localhost:80/";
@@ -18,38 +19,75 @@ public class Uploader : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void DownloadFile(string uri, string filename);
 
-    public void StartUpload(string objData, Action<bool> onDone)
+    public void StartUpload(string objData, string mtlData, Texture2D [] textures, Action<bool> onDone)
     {
-        StartCoroutine(Upload(objData, onDone));
+        StartCoroutine(Upload(objData, mtlData, textures, onDone));
     }
 
-    public IEnumerator Upload(string objData, Action<bool> onDone)
+    public IEnumerator Upload(string objData, string mtlData, Texture2D [] textures, Action<bool> onDone)
     {
         WWWForm form = new WWWForm();
-        string randomName = "objData_" + Guid.NewGuid().ToString() + ".obj";
+        var guid = Guid.NewGuid().ToString();
+        string randomName = "terrain_" + guid + ".zip";
         form.AddField("secret", Key);
-        form.AddField("name", randomName);
-        form.AddField("objData", objData);
+
+        using (MemoryStream zipToOpen = new MemoryStream())
+        {
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create, true))
+            {
+                archive.AddData(guid.ToString() + "_ObjFile.obj", objData);
+                archive.AddData(guid.ToString() + "_MtlFile.mtl", mtlData);
+                foreach (var tex in textures)
+                {
+                    if (!string.IsNullOrEmpty(tex.name) && tex.width > 0 && tex.height > 0  &&
+                        tex.isReadable)
+                    {
+                        try
+                        {
+                            var bytes = tex.EncodeToPNG();
+                            if (bytes != null && bytes.Length != 0)
+                            {
+                                archive.AddData(tex.name, bytes);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogException(e);
+                        }
+                    }
+                }
+            }
+            using (var fs = File.Open(Path.GetFileNameWithoutExtension(randomName) + ".zip", FileMode.Create))
+            {
+                zipToOpen.Seek(0, SeekOrigin.Begin);
+                zipToOpen.CopyTo(fs);
+            }
+            byte [] buffer = zipToOpen.GetBuffer();
+            form.AddBinaryData("file", buffer, randomName, "application/zip");
+        }
 
         UnityWebRequest www = UnityWebRequest.Post(UploadUrl, form);
         yield return www.SendWebRequest();
+        bool bSucces;
 
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.Log(www.error);
-            if (onDone != null) onDone(false);
+            bSucces = false;
         }
         else
         {
-            Destroy(gameObject);
+            bSucces = true;
             Debug.Log("Form upload complete!");
             // Download it
             string dlUrl = "window.open(" + DownloadUrl + "name="+ randomName + "&secret=" + Key + ")";
             Application.ExternalEval(dlUrl);
             //  Application.OpenURL(DownloadUrl + randomName);
             //  DownloadFile(DownloadUrl + randomName, randomName);
-            if (onDone != null) onDone(true);
         }
+
+        if (onDone != null) onDone(bSucces);
+        Destroy(gameObject);
     }
 }
 
@@ -57,86 +95,21 @@ public class TileSaver
 {
     public static void SaveGameObjects(GameObject[] gos, Action<bool> onDone)
     {
-        string objData = ComposeObj(gos);
+        string objData = ObjExporter.GameObjectsToString(gos, true);
+        string mtlData = ObjExporter.GameObjectsMaterialToString(gos);
+        Texture2D[] textures = ObjExporter.GetUniqueTextures(gos);
         var saver = new GameObject("SaveTile");
-        var sr = saver.AddComponent<Uploader>();
-        sr.StartUpload(objData, onDone);
+        var sr = saver.AddComponent<ObjUploader>();
+        sr.StartUpload(objData, mtlData, textures, onDone);
     }
 
-    public static string ComposeObj(GameObject [] gos)
+    public static void SaveMeshFilters(MeshFilter [] mfs, Action<bool> onDone)
     {
-        StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
-        List<int> offsets = new List<int>();
-
-        foreach (var go in gos)
-        {
-            var mrs = go.GetComponentsInChildren<MeshFilter>();
-            foreach (var mf in mrs)
-            {
-                var v = mf.sharedMesh.vertices;
-                sw.WriteLine("# vertices");
-                for (int i = 0; i < v.Length; i++)
-                {
-                    sw.WriteLine($"v {v[i].x} {v[i].y} {v[i].z}");
-                }
-                offsets.Add(v.Length);
-            }
-        }
-
-        foreach (var go in gos)
-        {
-            var mrs = go.GetComponentsInChildren<MeshFilter>();
-            foreach (var mf in mrs)
-            {
-                var u = mf.sharedMesh.uv;
-                if (u != null && u.Length != 0)
-                {
-                    sw.WriteLine("# uvs");
-                    for (int i = 0; i < u.Length; i++)
-                    {
-                        sw.WriteLine($"vt {u[i].x} {u[i].y}");
-                    }
-                }
-            }
-        }
-
-        foreach (var go in gos)
-        {
-            var mrs = go.GetComponentsInChildren<MeshFilter>();
-            foreach (var mf in mrs)
-            {
-                var n = mf.sharedMesh.normals;
-                if (n != null && n.Length != 0)
-                {
-                    sw.WriteLine("# normals");
-                    for (int i = 0; i < n.Length; i++)
-                    {
-                        sw.WriteLine($"vn {n[i].x} {n[i].y} {n[i].z}");
-                    }
-                }
-            }
-        }
-
-        int ofsIdx = -1;
-        foreach (var go in gos)
-        {
-            var mrs = go.GetComponentsInChildren<MeshFilter>();
-            foreach (var mf in mrs)
-            {
-                sw.WriteLine("# faces");
-                int ofs = (ofsIdx == -1 ? 0 : offsets[ofsIdx]) + 1;
-                for (int j = 0; j < mf.sharedMesh.subMeshCount; j++)
-                {
-                    var indices = mf.sharedMesh.GetIndices(j);
-                    for (int k = 0; k < indices.Length; k += 3)
-                    {
-                        sw.WriteLine($"f {indices[k] + ofs} {indices[k + 1] + ofs} {indices[k + 2] + ofs}");
-                    }
-                }
-                ofsIdx++;
-            }
-        }
-
-        return sw.ToString();
+        string objData = ObjExporter.MeshFiltersToString(mfs, true);
+        string mtlData = ObjExporter.WriteMaterial(mfs);
+        Texture2D[] textures = ObjExporter.GetUniqueTextures(mfs);
+        var saver = new GameObject("SaveTile");
+        var sr = saver.AddComponent<ObjUploader>();
+        sr.StartUpload(objData, mtlData, textures, onDone);
     }
 }
