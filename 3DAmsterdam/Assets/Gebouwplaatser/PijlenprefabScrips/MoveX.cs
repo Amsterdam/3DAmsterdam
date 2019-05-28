@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MoveX : MonoBehaviour {
 
@@ -16,33 +17,79 @@ public class MoveX : MonoBehaviour {
     private float angle;
     private float startPosY;
     private float startPosZ;
+    private float angleObject;
 
-    private float directionH;
-    private float directionV;
+    private Vector3 moveVector;
 
-    public void Update()
-    {
-        directionH = Input.GetAxis("Horizontal");
-        directionV = Input.GetAxis("Vertical");
-    }
 
     private void OnMouseDown()
     {
         // de positie die het muis op dat moment heeft wordt uitgerekend
-        currentMousePosition = Input.mousePosition;
+        //currentMousePosition = Input.mousePosition;
 
-        startPosY = transform.parent.parent.position.y;
-        startPosZ = transform.parent.parent.position.z;
+        //startPosY = transform.parent.parent.position.y;
+        //startPosZ = transform.parent.parent.position.z;
 
-        distanceFromObject = Camera.main.WorldToScreenPoint(transform.parent.parent.position);
-        offSet = Input.mousePosition - distanceFromObject;
+        //distanceFromObject = Camera.main.WorldToScreenPoint(transform.parent.parent.position);
+        //offSet = Input.mousePosition - distanceFromObject;
     }
 
     private void OnMouseDrag()
     {
-        updatedDis = Input.mousePosition - offSet;
-        updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
+        angleObject = transform.parent.parent.eulerAngles.y;
+        moveVector = transform.right * Mathf.Log(Camera.main.transform.position.y, 2) * 0.15f;
 
-        transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, startPosZ);
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            if (angleObject > 315f && angleObject < 360f || angleObject >= 0f && angleObject < 45f)
+            {
+                if (Input.GetAxis("Mouse X") < 0)
+                {
+                    transform.parent.parent.position -= moveVector;
+                }
+                if (Input.GetAxis("Mouse X") > 0)
+                {
+                    transform.parent.parent.position += moveVector;
+                }
+            }
+            else if (angleObject >= 45f && angleObject < 135f)
+            {
+                if (Input.GetAxis("Mouse Y") < 0)
+                {
+                    transform.parent.parent.position += moveVector;
+                }
+                if (Input.GetAxis("Mouse Y") > 0)
+                {
+                    transform.parent.parent.position -= moveVector;
+                }
+            }
+            else if (angleObject >= 135f && angleObject < 225f)
+            {
+                if (Input.GetAxis("Mouse X") < 0)
+                {
+                    transform.parent.parent.position += moveVector;
+                }
+                if (Input.GetAxis("Mouse X") > 0)
+                {
+                    transform.parent.parent.position -= moveVector;
+                }
+            }
+            else
+            {
+                if (Input.GetAxis("Mouse Y") < 0)
+                {
+                    transform.parent.parent.position -= moveVector;
+                }
+                if (Input.GetAxis("Mouse Y") > 0)
+                {
+                    transform.parent.parent.position += moveVector;
+                }
+            }
+        }
+
+        //updatedDis = Input.mousePosition - offSet;
+        //updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
+
+        //transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, startPosZ);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MoveXZ : MonoBehaviour
 {
@@ -24,7 +25,10 @@ public class MoveXZ : MonoBehaviour
         updatedDis = Input.mousePosition - offSet;
         updatedPos = Camera.main.ScreenToWorldPoint(updatedDis);
 
-        transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, updatedPos.z);
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            transform.parent.parent.position = new Vector3(updatedPos.x, startPosY, updatedPos.z);
+        }
     }
 }
 

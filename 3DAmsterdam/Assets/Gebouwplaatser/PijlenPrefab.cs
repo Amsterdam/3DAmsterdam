@@ -1,20 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PijlenPrefab : MonoBehaviour
 {
-    private GameObject pijlenPrefab;
+    private GameObject pijlenPrefab, pijlenPrefabMesh;
+    private ScaleUploads scaleScript;
 
-    private GameObject pijlenPrefabMesh;
     private bool spawned = false, nextSpawn;
+    [HideInInspector]
+    public bool scaling, setScaleValues;
 
     private string hitObject;
     private RaycastHit hit;
     private Ray ray;
-
-    [HideInInspector]
-    public GameObject selectDownload;
 
     private List<Transform> rendererOptions;
     private Vector3 largestSize = Vector3.zero;
@@ -25,7 +25,6 @@ public class PijlenPrefab : MonoBehaviour
     private void Start()
     {
         rendererOptions = new List<Transform>();
-        selectDownload = GameObject.Find("Menus");
 
         // als er al een collider op het object zit wordt die verplaatst met een box collider
         if (gameObject.GetComponent<Collider>() != null && gameObject.GetComponent<BoxCollider>() == null)
@@ -40,69 +39,64 @@ public class PijlenPrefab : MonoBehaviour
             gameObject.AddComponent<BoxCollider>();
         }
 
-        FindRenderer();
-        ChangeCollider();
-
         // de prefab wordt vanuit de "Resources" folder ingeladen
         pijlenPrefabMesh = (GameObject) Resources.Load("PijlenPrefab");
+
+        scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
+        scaleScript.gameObjects.Add(this.gameObject);
     }
 
     private void OnMouseOver()
     {
-        if(selectDownload.GetComponent<SelectDownLoad>().selecting != true)
+        if (Input.GetMouseButtonDown(0) && spawned == false)
         {
-            if (Input.GetMouseButtonDown(0) && spawned == false)
-            {
-                FindRenderer();
-                ChangeCollider();
+            // de prefab wordt geinstantieerd op het moment dat er op het object geklikt wordt
+            pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.Euler(0, 0, 0));
+            pijlenPrefab.transform.parent = gameObject.transform;
 
-                // de prefab wordt geinstantieerd op het moment dat er op het object geklikt wordt
-                pijlenPrefab = Instantiate(pijlenPrefabMesh, transform.position, Quaternion.identity);
-                pijlenPrefab.transform.parent = gameObject.transform;
+            // berekent afstand tussen de grond en object
+            var groundToObject = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), transform.position);
 
-                // berekent afstand tussen de grond en object
-                var groundToObject = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), transform.position);
+            // prefab wordt op positie geplaatst gebaseerd op grootte/positie van object
+            pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
+                                                          pijlenPrefab.transform.position.z);
 
-                // prefab wordt op positie geplaatst gebaseerd op grootte/positie van object
-                pijlenPrefab.transform.position = new Vector3(pijlenPrefab.transform.position.x, groundToObject + (largestSize.y / 3),
-                                                              pijlenPrefab.transform.position.z);
+            scaling = true;
+            setScaleValues = true;
+            nextSpawn = true;
 
-                nextSpawn = true;
-            }
+            Invoke("SetScaleInitilialization", 1f);
+        }
 
-            if (Input.GetMouseButtonUp(0) && nextSpawn)
-            {
-                spawned = true;
-                nextSpawn = false;
-            }
+        if (Input.GetMouseButtonUp(0) && nextSpawn)
+        {
+            spawned = true;
+            nextSpawn = false;
         }
     }
 
     private void Update()
     {
-        DefineCollider();
+        FindRenderer();
+        ChangeCollider();
         UpdateScale();
+        DefineHitBox();
 
         // als er niet op de prefab wordt geklikt wordt die verwijdert
         if (Input.GetMouseButtonDown(0) && spawned)
         {
-            if (hitObject != "Pijlenprefab")
-            {
+            if (hitObject != "Pijlenprefab" && !EventSystem.current.IsPointerOverGameObject())
+            { 
                 Destroy(pijlenPrefab);
 
                 spawned = false;
+                scaling = false;
             }
-        }
-
-        // alleen het object zelf wordt geroteerd
-        if (pijlenPrefab != null)
-        {
-            pijlenPrefab.transform.eulerAngles = Vector3.zero;
         }
     }
 
     // er wordt bepaald wat de hitbox van de prefab zelf is, zodat bepaald kan worden wanneer er wel/niet op wordt geklikt
-    private void DefineCollider()
+    private void DefineHitBox()
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -120,7 +114,7 @@ public class PijlenPrefab : MonoBehaviour
     // de prefab wordt mee verschaald met de grootte van het object waar het omheen zit
     private void UpdateScale()
     {
-        if (transform.hasChanged && pijlenPrefab != null)
+        if (pijlenPrefab != null)
         {
             scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
 
@@ -167,5 +161,10 @@ public class PijlenPrefab : MonoBehaviour
 
         gameObject.GetComponent<BoxCollider>().size = boxCollider.size;
         gameObject.GetComponent<BoxCollider>().center = new Vector3(0f, boxCollider.center.y, 0f);      
+    }
+
+    private void SetScaleInitilialization()
+    {
+        setScaleValues = false;
     }
 }
