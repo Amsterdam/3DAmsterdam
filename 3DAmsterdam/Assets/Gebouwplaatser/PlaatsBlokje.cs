@@ -49,7 +49,7 @@ public class PlaatsBlokje : MonoBehaviour
     void Update()
     {
         PlaceObject();
-        Select();
+       // Select();
 
         //SelectAndTransform();
 
@@ -65,8 +65,6 @@ public class PlaatsBlokje : MonoBehaviour
         {
             //Destroy(pijlenprefab);
             selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-            if (selectedObject.transform.gameObject.GetComponent<HighLight>() == null) selectedObject.transform.gameObject.AddComponent<HighLight>();
 
             selectedObject = null;
         }
@@ -96,7 +94,6 @@ public class PlaatsBlokje : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     tempGebouw.AddComponent<PijlenPrefab>();
-                    tempGebouw.AddComponent<HighLight>();
 
                     tempGebouw.transform.position = hit.point;
                     tempGebouw.gameObject.layer = 11;
@@ -107,32 +104,32 @@ public class PlaatsBlokje : MonoBehaviour
         }
     }
 
-    private void Select()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+    //private void Select()
+    //{
+    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform.gameObject.tag == "Sizeable" && selectedObject == null)
-            {
-                selectedObject = hit.transform.gameObject;
-            }
+    //    if (Physics.Raycast(ray, out hit))
+    //    {
+    //        if (hit.transform.gameObject.tag == "Sizeable" && selectedObject == null)
+    //        {
+    //            selectedObject = hit.transform.gameObject;
+    //        }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
-                {
-                    if (hit.transform.tag != "PijlenPrefab")
-                    {
-                        selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
+    //        if (Input.GetMouseButtonDown(0))
+    //        {
+    //            if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
+    //            {
+    //                if (hit.transform.tag != "PijlenPrefab")
+    //                {
+    //                    selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
 
-                        selectedObject = null;
-                    }
-                }
-            }
-        }
-    }
+    //                    selectedObject = null;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     //public void SelectAndTransform()
     //{
