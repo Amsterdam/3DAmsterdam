@@ -40,6 +40,30 @@ public class SelectBuilding : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    if(selectedObj != null)
+                    {
+                        if (parentMats.Length != 0)
+                        {
+                            for (int i = 0; i < parentMats.Length; i++)
+                            {
+                                parentMats[i].color = originalParentColors[i];
+                            }
+                        }
+
+                        for (int i = 0; i < children.Count; i++)
+                        {
+                            mats = children[i].gameObject.GetComponent<Renderer>().materials;
+
+                            for (int j = 0; j < mats.Length; j++)
+                            {
+                                if (mats.Length > 0)
+                                {
+                                    mats[j].color = originalColours[j];
+                                }
+                            }
+                        }
+                    }
+
                     selectedObj = hit.transform.gameObject;
 
                     parentMats = hit.transform.gameObject.GetComponent<Renderer>().materials;
