@@ -20,7 +20,7 @@ public class PijlenPrefab : MonoBehaviour
     private Vector3 largestSize = Vector3.zero;
     private Transform rendChild;
 
-    private float scalingXZ, scaleFactor = 2f;
+    private float scalingXZ, scaleFactor, scalingDif = 2f;
 
     private void Start()
     {
@@ -116,10 +116,21 @@ public class PijlenPrefab : MonoBehaviour
     {
         if (pijlenPrefab != null)
         {
-            scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
+            //scalingXZ = Mathf.Max(largestSize.x, largestSize.z);
+            scalingDif = Mathf.Max(gameObject.transform.localScale.x, gameObject.transform.localScale.z) - Mathf.Min(gameObject.transform.localScale.x, gameObject.transform.localScale.z);
+            Debug.Log(scalingDif);
 
             pijlenPrefab.transform.parent = null;
-            pijlenPrefab.transform.localScale = new Vector3(scalingXZ * scaleFactor, 3f, scalingXZ * scaleFactor);
+
+            if(Mathf.Max(gameObject.transform.localScale.x, gameObject.transform.localScale.z) == gameObject.transform.localScale.x)
+            {
+                pijlenPrefab.transform.localScale = new Vector3(gameObject.transform.localScale.x * (scaleScript.width.value * 8), 3f, ((gameObject.transform.localScale.z + (scalingDif * 1.5f + (scalingDif / 2))) * (scaleScript.length.value * 8)));
+            }
+            else if(Mathf.Max(gameObject.transform.localScale.x, gameObject.transform.localScale.z) == gameObject.transform.localScale.z)
+            {
+                pijlenPrefab.transform.localScale = new Vector3((gameObject.transform.localScale.x + (scalingDif * (1.5f + scalingDif / 2))) * (scaleScript.width.value * 8), 3f, gameObject.transform.localScale.z * (scaleScript.length.value * 8));
+            }
+
             pijlenPrefab.transform.parent = gameObject.transform;
         }
     }

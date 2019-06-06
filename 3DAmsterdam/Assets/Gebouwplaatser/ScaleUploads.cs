@@ -14,6 +14,13 @@ public class ScaleUploads : MonoBehaviour
     private GameObject selectedObject;
     private bool turnOffMenu;
 
+    public void Start()
+    {
+        height.value = 0.5f;
+        width.value = 0.5f;
+        length.value = 0.5f;
+    }
+
     private void Update()
     {
         turnOffMenu = true;
