@@ -701,7 +701,7 @@ namespace SimpleFileBrowser
 
                     mesh1 = selectDownload.GetComponent<SelectDownLoad>().selectedDownloadObj.GetComponentInChildren<MeshFilter>();
 
-                    ObjExporter.MeshToFile(mesh1, path + ".obj");
+                    ObjExporter.WriteObjToFile(mesh1, path + ".obj");
                 }
             }         
         }

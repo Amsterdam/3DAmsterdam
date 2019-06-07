@@ -27,16 +27,9 @@ public class DownloadGebied : MonoBehaviour
         
     }
 
-    Vector3 ToWorldPosition(Vector3 scrp)
-    {
-        Vector3 positionToReturn = Camera.main.ScreenToWorldPoint(scrp);
-        return positionToReturn;
-    }
-
     void StartDrawingLine()
     {
         startPosition = Input.mousePosition;
-        lineRenderer.Points = null;
         lineRenderer.enabled = true;
     }
 
@@ -54,6 +47,7 @@ public class DownloadGebied : MonoBehaviour
     void EndDrawingLine()
     {
         lineRenderer.enabled = false;
+        lineRenderer.Points = null;
     }
 
     void Update()
@@ -73,9 +67,17 @@ public class DownloadGebied : MonoBehaviour
                 if (Input.GetMouseButtonUp(0))
                 {
                     EndDrawingLine();
-                    var mfs = SelectTerrain();
-                    UploadTerrain(mfs);
-                    state = State.Uploading;
+                    Rect rc = new Rect(startPosition, Input.mousePosition);
+                    if (rc.size.magnitude > 5)
+                    {
+                        var mfs = SelectTerrain();
+                        UploadTerrain(mfs);
+                        state = State.Uploading;
+                    }
+                    else
+                    {
+                        state = State.Idle;
+                    }
                 }
                 break;
 
@@ -104,10 +106,10 @@ public class DownloadGebied : MonoBehaviour
             lastBounds = bb;
 
             var cc = Physics.OverlapBox(bb.center, bb.extents);
-            foreach( var c in cc)
+            foreach( var c in cc )
             {
                 var mrs = c.GetComponentsInChildren<MeshRenderer>();
-                foreach(var mr in mrs )
+                foreach( var mr in mrs )
                 {
                     var mf = mr.GetComponent<MeshFilter>();
                     if (mr != null && mf != null)
@@ -127,7 +129,7 @@ public class DownloadGebied : MonoBehaviour
     private void UploadTerrain(MeshFilter [] mfs)
     {
         var oriMfs = Highlighter.SetColor(mfs, Color.red);
-        TileSaver.SaveMeshFilters(mfs, (bool succes) =>
+        SelectionSaver.SaveMeshFilters(mfs, (bool succes) =>
         {
             StartCoroutine(ResetColor(oriMfs));
         });
@@ -138,6 +140,13 @@ public class DownloadGebied : MonoBehaviour
         yield return new WaitForSeconds(3);
         Highlighter.ResetMaterials(oriMfs);
         state = State.Idle;
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        state = State.Idle;
+        EndDrawingLine();
     }
 
     private void OnDrawGizmos()

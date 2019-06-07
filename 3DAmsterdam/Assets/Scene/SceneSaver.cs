@@ -29,12 +29,18 @@ namespace Serialize
         public string name;
         public Vec3 pos, scale;
         public Quat rot;
-        public Building(string _name, Transform t)
+
+        [JsonIgnore]
+        public GameObject go;
+
+        public Building(GameObject _go)
         {
-            name = _name;
+            var t = _go.transform;
             pos = new Vec3(t.position);
             scale = new Vec3(t.localScale);
             rot = new Quat(t.rotation);
+            go = _go;
+            name = _go.name;
         }
     }
 }
@@ -58,8 +64,8 @@ public class SceneInstance
     public float SliderA, SliderR, SliderG, SliderB;
 
     // Custom placed prefabs
-    public Building[] CustomBuildings;
-    public Building[] CustomBoxes;
+    public Building[] CustomStaticBuildings;
+    public Building[] CustomSizableBuildings;
       
 
     GameObject wasActiveMenu;
@@ -140,8 +146,8 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find CUIColorPicker");
 
-        CustomBuildings = GameObject.FindGameObjectsWithTag("CustomPlaced").Select(cp => new Building(cp.name.Replace("(Clone)", ""), cp.transform)).ToArray();
-        CustomBoxes = GameObject.FindGameObjectsWithTag("Sizeable").Select(b => new Building("Box", b.transform)).ToArray();
+        CustomStaticBuildings = GameObject.FindGameObjectsWithTag("CustomPlaced").Select(go => new Building(go)).ToArray();
+        CustomSizableBuildings = GameObject.FindGameObjectsWithTag("Sizeable").Select(go => new Building(go)).ToArray();
 
         // Disable menus again now that data is retreived
         EnableMenus(false);
@@ -159,7 +165,6 @@ public class SceneInstance
             mf._currentMonth = CurrentMonth;
             mf._currentYear = CurrentYear;
             mf._currentWeer = CurrentWeer;
-
             if (Options != null)
             {
                 for (int i = 0; i < Options.Length; i++)
@@ -199,33 +204,34 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find CUIColorPicker");
 
-        foreach (var cb in CustomBuildings)
+        foreach (var cb in CustomStaticBuildings)
         {
             if (ss.StaticBuildings != null && ss.StaticBuildings.Length != 0)
             {
                 for (int i = 0; i < ss.StaticBuildings.Length; i++)
                 {
                     var prefab = ss.StaticBuildings[i];
-                    if (prefab != null && prefab.name == cb.name.Replace("(Clone)", ""))
+                    if (prefab != null && cb.name.Contains(prefab.name))
                     {
                         GameObject go = (GameObject)GameObject.Instantiate(prefab, cb.pos.ToUnity(), cb.rot.ToUnity());
                         go.transform.localScale = cb.scale.ToUnity();
+                        break;
                     }
                 }
             }
             else Debug.LogWarning("No static buildings set.");
         }
 
-        var pb = GameObject.FindObjectOfType<PlaatsBlokje>();
-        if (pb != null)
-        {
-            foreach (var cb in CustomBoxes)
-            {
-                GameObject go = (GameObject)GameObject.Instantiate(pb.blokje, cb.pos.ToUnity(), cb.rot.ToUnity());
-                go.transform.localScale = cb.scale.ToUnity();
-            }
-        }
-        else Debug.LogWarning("Cannot find PlaatsBlokje script.");
+        //var pb = GameObject.FindObjectOfType<PlaatsBlokje>();
+        //if (pb != null)
+        //{
+        //    foreach (var cb in CustomSizableBuildings)
+        //    {
+        //        GameObject go = (GameObject)GameObject.Instantiate(pb.blokje, cb.pos.ToUnity(), cb.rot.ToUnity());
+        //        go.transform.localScale = cb.scale.ToUnity();
+        //    }
+        //}
+        //else Debug.LogWarning("Cannot find PlaatsBlokje script.");
 
         if (TimeNow)
             EnviroSkyMgr.instance.SetTime(DateTime.Now);
@@ -237,30 +243,99 @@ public class SceneInstance
         // Disable menus again now that data is retreived
         EnableMenus(false);
     }
+
+    public void UploadBuildingData()
+    {
+        foreach (var b in CustomSizableBuildings)
+        {
+            if (b.go == null) continue;
+
+            var mfs = b.go.GetComponentsInChildren<MeshFilter>();
+            if (mfs != null && mfs.Length != 0)
+            {
+                string objData = ObjExporter.WriteObjToString(mfs, b.go.transform.worldToLocalMatrix);
+                string mtlData = MtlExporter.WriteMaterialToString(mfs).ToString();
+                var textures = MtlExporter.GetUniqueTextures(mfs).ToArray();
+                Uploader.StartUploadObj(b.name, objData, null);
+                Uploader.StartUploadMtl(b.name, mtlData, null);
+                Uploader.StartUploadTextures(textures, null);
+            }
+        }
+    }
+
+    public void DownloadBuildingData()
+    {
+        foreach (var b in CustomSizableBuildings)
+        {
+            if (string.IsNullOrEmpty(b.name)) continue;
+         //   if (b.name.Contains("Cube")) continue;
+
+            Uploader.StartDownloadObj(b.name, (string objData, bool succes) =>
+            {
+                if (!succes) return;
+
+                Uploader.StartDownloadMtl(b.name, (string mtlData, bool succes2) =>
+                {
+                    if (!succes2) return;
+
+                    var meshMats = ObjExporter.ObjToMesh(objData);
+                    var mats = MtlExporter.MtlToMaterials(mtlData);
+                    if (meshMats == null || mats == null)
+                        return;
+
+                    GameObject go = new GameObject(b.name);
+                    var bd = go.AddComponent<BuildingDeserializer>();
+                    bd.Deserialize(b, meshMats.ToArray(), mats);
+                });
+            });
+        }
+    }
 }
 
 
 public class SceneSaver : MonoBehaviour
 {
     public GameObject[] StaticBuildings;
-
-    public void OnSave() { Save(); }
-    public void OnLoad() { Load(); }
+    public UnityEngine.UI.InputField SceneInput;
 
     public void Save()
     {
         SceneInstance si = new SceneInstance();
         si.PopulateFromScene();
         string output = JsonConvert.SerializeObject(si, Formatting.Indented);
-        File.WriteAllText("Scene.json", output);
+        var guid = Guid.NewGuid().ToString();
+        Uploader.StartUploadScene(guid, output, null);
+        si.UploadBuildingData();
+        //File.WriteAllText("Scene.json", output);
     }
 
 
     public void Load()
     {
-        string json = File.ReadAllText("Scene.json");
-        SceneInstance si = JsonConvert.DeserializeObject<SceneInstance>(json);
-        si?.PopulateToScene(this);
+        if (SceneInput == null)
+            return;
+
+        string sceneId = SceneInput.text;
+        if (string.IsNullOrEmpty(sceneId))
+            return;
+
+        Uploader.StartDownloadScene(sceneId, (string json, bool bSucces) =>
+        {
+            if (!bSucces) return;
+            SceneInstance si = JsonConvert.DeserializeObject<SceneInstance>(json);
+            if (si != null)
+            {
+                ClearScene();
+                si.PopulateToScene(this);
+                si.DownloadBuildingData();
+            }
+        });
+    }
+
+    public void ClearScene()
+    {
+        GameObject.FindGameObjectsWithTag("CustomPlaced").ToList().ForEach(g => Destroy(g));
+        GameObject.FindGameObjectsWithTag("Sizeable").ToList().ForEach(g => Destroy(g));
     }
 }
 
