@@ -3,6 +3,7 @@ using Serialize;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -222,17 +223,6 @@ public class SceneInstance
             else Debug.LogWarning("No static buildings set.");
         }
 
-        //var pb = GameObject.FindObjectOfType<PlaatsBlokje>();
-        //if (pb != null)
-        //{
-        //    foreach (var cb in CustomSizableBuildings)
-        //    {
-        //        GameObject go = (GameObject)GameObject.Instantiate(pb.blokje, cb.pos.ToUnity(), cb.rot.ToUnity());
-        //        go.transform.localScale = cb.scale.ToUnity();
-        //    }
-        //}
-        //else Debug.LogWarning("Cannot find PlaatsBlokje script.");
-
         if (TimeNow)
             EnviroSkyMgr.instance.SetTime(DateTime.Now);
         else
@@ -249,11 +239,10 @@ public class SceneInstance
         foreach (var b in CustomSizableBuildings)
         {
             if (b.go == null) continue;
-
             var mfs = b.go.GetComponentsInChildren<MeshFilter>();
             if (mfs != null && mfs.Length != 0)
             {
-                string objData = ObjExporter.WriteObjToString(mfs, b.go.transform.worldToLocalMatrix);
+                string objData = ObjExporter.WriteObjToString(b.name + ".mtl", mfs, b.go.transform.worldToLocalMatrix);
                 string mtlData = MtlExporter.WriteMaterialToString(mfs).ToString();
                 var textures = MtlExporter.GetUniqueTextures(mfs).ToArray();
                 Uploader.StartUploadObj(b.name, objData, null);
@@ -317,6 +306,20 @@ public class SceneSaver : MonoBehaviour
 
         string sceneId = SceneInput.text;
         if (string.IsNullOrEmpty(sceneId))
+            return;
+
+        MatchCollection mc = Regex.Matches(sceneId, "name=[a-f0-9-]*.json");
+        bool bValid = false;
+        foreach (var m in mc)
+        {
+            string s = m.ToString();
+            s = s.Replace("name=", "");
+            s = s.Replace(".json", "");
+            sceneId = s;
+            bValid = true;            
+        }
+
+        if (!bValid)
             return;
 
         Uploader.StartDownloadScene(sceneId, (string json, bool bSucces) =>

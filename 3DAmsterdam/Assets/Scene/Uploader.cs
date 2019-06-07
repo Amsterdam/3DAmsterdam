@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
@@ -23,22 +24,22 @@ public class Uploader : MonoBehaviour
         return go.AddComponent<Uploader>();
     }
 
-    public static void StartUploadPackage(string objData, string mtlData, Texture2D[] textures, Action<bool> onDone)
+    public static void StartUploadPackage(string filename, string objData, string mtlData, Texture2D[] textures, Action<bool> onDone)
     {
         var u = NewUploader();
-        u.StartCoroutine(u.UploadPackage(objData, mtlData, textures, onDone));
+        u.StartCoroutine(u.UploadPackage(filename, objData, mtlData, textures, onDone));
     }
 
-    public static void StartUploadScene(string id, string json, Action<bool> onDone)
+    public static void StartUploadScene(string filename, string json, Action<bool> onDone)
     {
-        var fn = string.Join("", id, ".json");
+        var fn = string.Join("", filename, ".json");
         var u = NewUploader();
         u.StartCoroutine(u.UploadString(fn, json, onDone));
     }
 
-    public static void StartUploadObj(string id, string objData, Action<bool> onDone)
+    public static void StartUploadObj(string filename, string objData, Action<bool> onDone)
     {
-        var fn = string.Join("", id, ".obj");
+        var fn = string.Join("", filename, ".obj");
         var u = NewUploader();
         u.StartCoroutine(u.UploadString(fn, objData, onDone));
     }
@@ -99,13 +100,14 @@ public class Uploader : MonoBehaviour
         bool bSucces = false;
         if (!(www.isNetworkError || www.isHttpError))
         {
-            Debug.Log("Completed Upload " + filename);
+            string dlUrl = DownloadUrl + "name=" + filename + "&secret=" + Key;
+            Debug.Log("Completed Upload " + dlUrl);
 
             if (downloadAfterUpload)
             {
                 // Download it
                 yield return new WaitForSeconds(2);// Wait 2 seconds for the file to be placed in the correct location
-                string dlUrl = "window.open(" + DownloadUrl + "name=" + filename + "&secret=" + Key + ")";
+                dlUrl = "window.open(" + dlUrl + ")";
 
                 // TODO: Replace for possibly more appropriate method
                 Application.ExternalEval(dlUrl);
@@ -115,6 +117,10 @@ public class Uploader : MonoBehaviour
 
             bSucces = true;
         }
+        else
+        {
+            Debug.LogWarning("network error: " + www.error + " http error: " + www.isHttpError);
+        }
 
         if (onDone != null) onDone(bSucces);
         if (!bSucces) Debug.Log(www.error);
@@ -122,42 +128,38 @@ public class Uploader : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator UploadPackage(string objData, string mtlData, Texture2D[] textures, Action<bool> onDone)
+    IEnumerator UploadPackage(string filename, string objData, string mtlData, Texture2D[] textures, Action<bool> onDone)
     {
         var guid = Guid.NewGuid().ToString();
-        string filename = guid.ToString() + ".zip";
         byte[] buffer;
+
+        // Get textures from server as encoding to PNG only works for readable non compressed textures.
+        Dictionary<string, byte[]> downloadedTextures = new Dictionary<string, byte[]>();
+        foreach (var tex in textures)
+        {
+            string texFilename = tex.imageContentsHash.ToString() + ".png";
+            yield return DownloadTextureRaw(texFilename, (byte [] data, bool succes) =>
+            {
+                if (!succes) return;
+                downloadedTextures.Add(texFilename, data);
+            });
+        }
 
         using (MemoryStream zipToOpen = new MemoryStream())
         {
             using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create, true))
             {
-                archive.AddData(guid.ToString() + "_ObjFile.obj", objData);
-                archive.AddData(guid.ToString() + "_MtlFile.mtl", mtlData);
-                var texArchive = archive.CreateEntry("textures").Archive;
-                foreach (var tex in textures)
+                archive.AddData(filename + ".obj", objData);
+                archive.AddData(filename + ".mtl", mtlData);
+                foreach (var tex in downloadedTextures)
                 {
-                    if (tex.width > 0 && tex.height > 0 && tex.isReadable)
-                    {
-                        try
-                        {
-                            var bytes = tex.EncodeToPNG();
-                            if (bytes != null && bytes.Length != 0)
-                            {
-                                texArchive.AddData(tex.imageContentsHash.ToString() + ".png", bytes);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogException(e);
-                        }
-                    }
+                    archive.AddData(tex.Key, tex.Value);
                 }
             }
             buffer = zipToOpen.ToArray();
         }
 
-        yield return Upload(buffer, "application/zip", filename, true, onDone);
+        yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
     }
 
     IEnumerator UploadString(string filename, string data, Action<bool> onDone)
@@ -187,19 +189,33 @@ public class Uploader : MonoBehaviour
 
     IEnumerator DownloadTexture(string filename, Action<Texture2D, bool> onDone)
     {
+        yield return DownloadTextureRaw(filename, (byte[] data, bool succes) =>
+        {
+            Texture2D tex = new Texture2D(2, 2);
+            if (!succes)
+            {
+                if (onDone != null) onDone(tex, succes);
+                return;
+            }
+            succes = false;
+            if (tex.LoadImage(data))
+            {
+                succes = true;
+            }
+            if (onDone != null) onDone(tex, succes);
+        });
+    }
+
+    IEnumerator DownloadTextureRaw(string filename, Action<byte[], bool> onDone)
+    {
         string url = DownloadUrl + "name=" + filename + "&secret=" + Key;
         var www = UnityWebRequestTexture.GetTexture(url);
         yield return www.SendWebRequest();
         bool succes = false;
-        Texture2D tex = null;
-        if (!(www.isNetworkError || www.isHttpError))
+        if (!(www.isNetworkError || www.isHttpError || www.downloadHandler.text == "File does not exist."))
         {
-            tex = new Texture2D(2, 2);
-            if (tex.LoadImage(www.downloadHandler.data))
-            {
-                succes = true;
-            }
+            succes = true;
         }
-        if (onDone != null) onDone(tex, succes);
+        if (onDone != null) onDone(www.downloadHandler.data, succes);
     }
 }

@@ -12,12 +12,14 @@ public class MtlExporter
 
     public static string GetMatName(Material mat)
     {
-        return "mat_" + Hash128.Parse(mat.name).ToString();
+        return ((uint)mat.GetInstanceID()).ToString();
+       // return mat.name;
+        //return Hash128.Parse(mat.name).ToString();
     }
 
     public static string GetTexName(Texture2D tex)
     {
-        return "tex_" + tex.imageContentsHash.ToString();
+        return tex.imageContentsHash.ToString();
     }
 
     public static Dictionary<string, Material> MtlToMaterials(string mtlData)
@@ -98,9 +100,20 @@ public class MtlExporter
         return mats;
     }
 
-    public static HashSet<Texture2D> GetUniqueTextures(MeshFilter[] mfs)
+    static void AddTextureIfIsUnique(Dictionary<string, Texture2D> textures, Material mat, string keyWord)
     {
-        HashSet<Texture2D> textures = new HashSet<Texture2D>();
+        if (mat.HasProperty(keyWord))
+        {
+            var tex = mat.GetTexture(keyWord) as Texture2D;
+            if (tex == null) return;
+            string hash = tex.imageContentsHash.ToString();
+            if (!textures.ContainsKey(hash)) textures.Add(hash, tex);
+        }
+    }
+
+    public static Texture2D [] GetUniqueTextures(MeshFilter[] mfs)
+    {
+        Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         foreach (var mf in mfs)
         {
             var mr = mf.GetComponent<MeshRenderer>();
@@ -108,27 +121,13 @@ public class MtlExporter
             {
                 for (int i = 0; i < mr.sharedMaterials.Length; i++)
                 {
-                    if (mr.sharedMaterials[i].HasProperty("_MainTex"))
-                    {
-                        var tex = mr.sharedMaterials[i].GetTexture("_MainTex") as Texture2D;
-                        if (tex != null && !textures.Contains(tex)) textures.Add(tex);
-                    }
-
-                    if (mr.sharedMaterials[i].HasProperty("_BumpMap"))
-                    {
-                        var tex = mr.sharedMaterials[i].GetTexture("_BumpMap") as Texture2D;
-                        if (tex != null && !textures.Contains(tex)) textures.Add(tex);
-                    }
-
-                    if (mr.sharedMaterials[i].HasProperty("_EmissionMap"))
-                    {
-                        var tex = mr.sharedMaterials[i].GetTexture("_EmissionMap") as Texture2D;
-                        if (tex != null && !textures.Contains(tex)) textures.Add(tex);
-                    }
+                    AddTextureIfIsUnique(textures, mr.sharedMaterials[i], "_MainTex");
+                    AddTextureIfIsUnique(textures, mr.sharedMaterials[i], "_BumpMap");
+                    AddTextureIfIsUnique(textures, mr.sharedMaterials[i], "_EmissionMap");
                 }
             }
         }
-        return textures;
+        return textures.Select(kvp => kvp.Value).ToArray();
     }
 
     static void WriteColor(StringBuilder sb, Material mat, string id, string keyword)
@@ -158,6 +157,7 @@ public class MtlExporter
     {
         if (sb == null)
             sb = new StringBuilder();
+        HashSet<string> materials = new HashSet<string>();
         int kWrittenMaterials = 0;
         foreach (var mf in mfs)
         {
@@ -167,8 +167,11 @@ public class MtlExporter
             {
                 var mat = mr.sharedMaterials[i];
                 string name = GetMatName(mat);
+                if (materials.Contains(name))
+                    continue;
+                materials.Add(name);
 
-                if (kWrittenMaterials != 0) sb.AppendLine();
+             //   if (kWrittenMaterials != 0) sb.AppendLine();
                 sb.Append($"newmtl {name}\n");
 
                 if (mat.HasProperty("_Glossiness*"))

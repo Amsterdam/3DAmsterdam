@@ -46,8 +46,8 @@ public class DownloadGebied : MonoBehaviour
 
     void EndDrawingLine()
     {
-        lineRenderer.enabled = false;
         lineRenderer.Points = null;
+        lineRenderer.enabled = false;
     }
 
     void Update()
@@ -58,6 +58,7 @@ public class DownloadGebied : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     StartDrawingLine();
+                    PreviewLine();
                     state = State.Selecting;
                 }
                 break;
@@ -67,8 +68,8 @@ public class DownloadGebied : MonoBehaviour
                 if (Input.GetMouseButtonUp(0))
                 {
                     EndDrawingLine();
-                    Rect rc = new Rect(startPosition, Input.mousePosition);
-                    if (rc.size.magnitude > 5)
+                    Rect rc = new Rect(startPosition, Input.mousePosition - startPosition);
+                    if (rc.size.magnitude > 25)
                     {
                         var mfs = SelectTerrain();
                         UploadTerrain(mfs);
@@ -89,10 +90,16 @@ public class DownloadGebied : MonoBehaviour
 
     MeshFilter[] SelectTerrain()
     {
+        // Temporarilly disable pijlenPrefab as we do not want to include in the selection.
+        var pijlenPrefab = GameObject.FindGameObjectWithTag("PijlenPrefab");
+        if (pijlenPrefab != null)
+            pijlenPrefab.SetActive(false);
+
         List<MeshFilter> selected = new List<MeshFilter>();
         var ray1 = Camera.main.ScreenPointToRay(startPosition);
         var ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit1, hit2;
+        
         if (Physics.Raycast(ray1, out hit1, 10000, LayerMask.GetMask("Terrein")) &&
             Physics.Raycast(ray2, out hit2, 10000, LayerMask.GetMask("Terrein")))
         {
@@ -123,22 +130,25 @@ public class DownloadGebied : MonoBehaviour
                 }
             }
         }
+
+        // Re-enable pijlenPrefab
+        if (pijlenPrefab != null) pijlenPrefab.SetActive(true);
         return selected.ToArray();
     }
 
     private void UploadTerrain(MeshFilter [] mfs)
     {
         var oriMfs = Highlighter.SetColor(mfs, Color.red);
-        SelectionSaver.SaveMeshFilters(mfs, (bool succes) =>
-        {
-            StartCoroutine(ResetColor(oriMfs));
-        });
+        StartCoroutine(ResetColorAndSaveArea(mfs, oriMfs));
     }
 
-    IEnumerator ResetColor(OriginalMeshfilter[] oriMfs)
+    IEnumerator ResetColorAndSaveArea(MeshFilter [] mfs, OriginalMeshfilter[] oriMfs)
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         Highlighter.ResetMaterials(oriMfs);
+        SelectionSaver.SaveMeshFilters(mfs, (bool succes) =>
+        {
+        });
         state = State.Idle;
     }
 

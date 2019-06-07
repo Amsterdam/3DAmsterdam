@@ -19,9 +19,11 @@ public class SelectionSaver
 
     public static void SaveMeshFilters(MeshFilter [] mfs, Action<bool> onDone)
     {
-        string objData = ObjExporter.WriteObjToString(mfs, Matrix4x4.identity);
+        mfs = mfs.Distinct().ToArray();
+        string filename = Guid.NewGuid().ToString();
+        string objData = ObjExporter.WriteObjToString(filename + ".mtl", mfs, Matrix4x4.identity);
         string mtlData = MtlExporter.WriteMaterialToString(mfs).ToString();
-        HashSet<Texture2D> textures = MtlExporter.GetUniqueTextures(mfs);
-        Uploader.StartUploadPackage(objData, mtlData, textures.ToArray(), onDone);
+        Texture2D [] textures = MtlExporter.GetUniqueTextures(mfs);
+        Uploader.StartUploadPackage(filename, objData, mtlData, textures, onDone);
     }
 }

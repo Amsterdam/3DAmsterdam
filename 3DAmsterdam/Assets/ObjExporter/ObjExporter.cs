@@ -47,7 +47,7 @@ public class ObjExporter
         int count = Mathf.Min(m.subMeshCount, mats.Length);
         for (int material = 0; material < count; material++)
         {
-            sb.Append("\n");
+         //   sb.Append("\n");
 
             var matName = MtlExporter.GetMatName(mats[material]);
 
@@ -174,19 +174,25 @@ public class ObjExporter
         return meshMats;
     }
 
-    public static string WriteObjToString(MeshFilter mf, Matrix4x4 preTransform)
+    public static string WriteObjToString(string mtlLib, MeshFilter mf, Matrix4x4 preTransform)
     {
         StringBuilder sb = new StringBuilder();
+        sb.Append("mtllib ").Append(mtlLib).Append("\n");
         AppendMesh(sb, mf, preTransform, 0);
         return sb.ToString();
     }
 
-    public static string WriteObjToString(MeshFilter[] mfs, Matrix4x4 preTransform)
+    public static string WriteObjToString(string mtlLib, MeshFilter[] mfs, Matrix4x4 preTransform)
     {
         StringBuilder sb = new StringBuilder();
+        sb.Append("mtllib ").Append(mtlLib).Append("\n");
         int vertexOffset = 0;
+        HashSet<int> objs = new HashSet<int>();
         foreach (var mf in mfs)
         {
+            if (objs.Contains(mf.GetInstanceID()))
+                continue;
+            objs.Add(mf.GetInstanceID());
             vertexOffset += AppendMesh(sb, mf, preTransform, vertexOffset);
             sb.Append('\n');
         }
@@ -197,7 +203,7 @@ public class ObjExporter
     {
         using (StreamWriter sw = new StreamWriter(filename))
         {
-            sw.Write(WriteObjToString(mf, Matrix4x4.identity));
+            sw.Write(WriteObjToString(Path.GetFileNameWithoutExtension(filename) + ".mtl", mf, Matrix4x4.identity));
         }
     }
 }

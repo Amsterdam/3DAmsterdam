@@ -49,7 +49,7 @@ public class ObjFromFile : MonoBehaviour
                         {
                             child.gameObject.AddComponent<MeshCollider>();
                             //child.gameObject.AddComponent<HighLight>();
-                            child.gameObject.tag = "Sizeable";
+                            //child.gameObject.tag = "Sizeable";
                         }
 
                         loadedObject = null;
