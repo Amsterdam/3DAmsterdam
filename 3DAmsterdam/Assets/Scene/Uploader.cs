@@ -133,17 +133,15 @@ public class Uploader : MonoBehaviour
         var guid = Guid.NewGuid().ToString();
         byte[] buffer;
 
-        // Get textures from server as encoding to PNG only works for readable non compressed textures.
-        Dictionary<string, byte[]> downloadedTextures = new Dictionary<string, byte[]>();
+        // Render textures (trick to get them to CPU memory).
+        Dictionary<string, Texture2D> downloadedTextures;
+        var onPostRenderTexture = TextureRenderer.Begin();
         foreach (var tex in textures)
         {
-            string texFilename = tex.imageContentsHash.ToString() + ".png";
-            yield return DownloadTextureRaw(texFilename, (byte [] data, bool succes) =>
-            {
-                if (!succes) return;
-                downloadedTextures.Add(texFilename, data);
-            });
+            TextureRenderer.RenderTexture(tex);
         }
+        downloadedTextures = onPostRenderTexture.Textures;
+        TextureRenderer.End();
 
         using (MemoryStream zipToOpen = new MemoryStream())
         {
@@ -151,9 +149,17 @@ public class Uploader : MonoBehaviour
             {
                 archive.AddData(filename + ".obj", objData);
                 archive.AddData(filename + ".mtl", mtlData);
-                foreach (var tex in downloadedTextures)
+                if (downloadedTextures != null)
                 {
-                    archive.AddData(tex.Key, tex.Value);
+                    foreach (var tex in downloadedTextures)
+                    {
+                        try
+                        {
+                            var bytes = tex.Value.EncodeToPNG();
+                            archive.AddData(tex.Key + ".png", bytes);
+                        }
+                        catch (Exception e) { Debug.LogException(e); }
+                    }
                 }
             }
             buffer = zipToOpen.ToArray();

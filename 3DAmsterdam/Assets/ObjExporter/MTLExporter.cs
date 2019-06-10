@@ -54,6 +54,10 @@ public class MtlExporter
                             break;
 
                         case "d":
+                            c = mat.color;
+                            mat.color = new Color(c.r, c.g, c.b, Convert.ToSingle(el[1]));
+                            break;
+
                         case "Tr":
                             c = mat.color;
                             mat.color = new Color(c.r, c.g, c.b, 1.0f - Convert.ToSingle(el[1]));
@@ -180,9 +184,9 @@ public class MtlExporter
                     sb.Append($"Ns {0.0f}\n");
 
                 if (mat.HasProperty("_Color"))
-                    sb.Append($"d {1.0f - mat.GetColor("_Color").a}\n");
+                    sb.Append($"d {mat.GetColor("_Color").a}\n");
                 else
-                    sb.Append($"d {0.0f}\n");
+                    sb.Append($"d {1.0f}\n");
 
                 sb.Append("illum 2\n");
 

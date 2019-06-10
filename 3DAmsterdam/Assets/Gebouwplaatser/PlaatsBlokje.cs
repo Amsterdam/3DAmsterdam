@@ -125,7 +125,8 @@ public class PlaatsBlokje : MonoBehaviour
                 {
                     if (hit.transform.tag != "PijlenPrefab")
                     {
-                        selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                        // Should get all renderers (GetComponentsInChildren), then use for loop
+                        selectedObject.transform.gameObject.GetComponentInChildren<Renderer>().material.color = Color.white;
 
                         selectedObject = null;
                     }
