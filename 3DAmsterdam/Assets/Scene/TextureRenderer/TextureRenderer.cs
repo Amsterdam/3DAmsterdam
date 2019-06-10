@@ -13,53 +13,52 @@ public class TextureRenderer
         }
     }
 
-    public static OnPostTextureRender2 Begin()
+    public static PostTextureRenderer Begin()
     {
-        GameObject goRtt = RTT;
-        if (goRtt == null) return null;
-
-        foreach (var o in goRtt.GetComponent<EnableGameObjects>().Objects)
+          foreach (var o in RTT.GetComponent<EnableGameObjects>().Objects)
             o.SetActive(true);
 
-        var res = goRtt.GetComponentInChildren<OnPostTextureRender2>();
-        res.Begin();
-        return res;
+        Camera rtt = RTT.GetComponentInChildren<Camera>();
+        var ptr = rtt.GetComponent<PostTextureRenderer>();
+        if (ptr == null)
+            ptr = rtt.gameObject.AddComponent<PostTextureRenderer>();
+        ptr.BeginCapture();
+        return ptr;
     }
 
     // This function is a workaround to get the texture contents from a texture and makes
-    // it encodible to PNG for upload or saving on disk.
-    public static void RenderTexture(Texture2D tex)
+    // it encodable to PNG for upload or saving on disk.
+    public static void Capture(Texture2D tex)
     {
-        var goRtt = RTT;
-        if (goRtt == null) return;
-
-        Camera rtt = goRtt.GetComponentInChildren<Camera>();
-        RawImage ri = goRtt.GetComponentInChildren<RawImage>();
-        var script = goRtt.GetComponentInChildren<OnPostTextureRender2>();
+        Camera rtt = RTT.GetComponentInChildren<Camera>();
+        RawImage ri = RTT.GetComponentInChildren<RawImage>();
+        var script = RTT.GetComponentInChildren<PostTextureRenderer>();
 
         ri.texture = tex;
 
-        RenderTexture rt = new RenderTexture(tex.width, tex.height, 0, RenderTextureFormat.Default);
+        var rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.Default);
+        //RenderTexture rt = new RenderTexture(tex.width, tex.height, 0, RenderTextureFormat.Default);
+        //if (!rt.Create())
+        //    return;
+
         rtt.orthographicSize = tex.height;
         rtt.aspect = tex.width / (float)tex.height;
         rtt.targetTexture = rt;
-        rtt.forceIntoRenderTexture = true;
+      //  rtt.forceIntoRenderTexture = true;
 
         script.TextureName = tex.imageContentsHash.ToString();
-        script.Width = tex.width;
-        script.Height = tex.height;
+        script.TexWidth = tex.width;
+        script.TexHeight = tex.height;
         rtt.Render();
+        RenderTexture.ReleaseTemporary(rt);
     }
 
     public static void End()
     {
-        var goRtt = RTT;
-        if (goRtt == null) return;
+        var res = RTT.GetComponentInChildren<PostTextureRenderer>();
+        res.EndCapture();
 
-        var res = goRtt.GetComponentInChildren<OnPostTextureRender2>();
-        res.End();
-
-        foreach (var o in goRtt.GetComponent<EnableGameObjects>().Objects)
+        foreach (var o in RTT.GetComponent<EnableGameObjects>().Objects)
             o.SetActive(false);
     }
 }

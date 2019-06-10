@@ -261,10 +261,12 @@ public class SceneInstance
 
             Uploader.StartDownloadObj(b.name, (string objData, bool succes) =>
             {
+                if (this == null) return;
                 if (!succes) return;
 
                 Uploader.StartDownloadMtl(b.name, (string mtlData, bool succes2) =>
                 {
+                    if (this == null) return;
                     if (!succes2) return;
 
                     var meshMats = ObjExporter.ObjToMesh(objData);

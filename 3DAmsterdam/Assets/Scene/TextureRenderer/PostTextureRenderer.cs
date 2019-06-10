@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnPostTextureRender2 : MonoBehaviour
+public class PostTextureRenderer : MonoBehaviour
 {
     public string TextureName;
-    public int Width;
-    public int Height;
+    public int TexWidth;
+    public int TexHeight;
     public Dictionary<string, Texture2D> Textures;
 
-    public void Begin()
+    public void BeginCapture()
     {
         Textures = new Dictionary<string, Texture2D>();
     }
@@ -23,15 +23,15 @@ public class OnPostTextureRender2 : MonoBehaviour
             return;
 
         //Create a new texture with the width and height of the screen
-        Texture2D texture = new Texture2D(Width, Height, TextureFormat.RGB24, false);
+        Texture2D texture = new Texture2D(TexWidth, TexHeight, TextureFormat.RGB24, false);
         //Read the pixels in the Rect starting at 0,0 and ending at the screen's width and height
-        texture.ReadPixels(new Rect(0, 0, Width, Height), 0, 0, false);
+        texture.ReadPixels(new Rect(0, 0, TexWidth, TexHeight), 0, 0, false);
         texture.Apply();
 
         Textures.Add(TextureName, texture);
     }
 
-    public void End()
+    public void EndCapture()
     {
         Textures = null;
     }

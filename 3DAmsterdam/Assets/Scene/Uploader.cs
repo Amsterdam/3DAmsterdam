@@ -15,6 +15,7 @@ public class Uploader : MonoBehaviour
     public static string UploadUrl = Server + "customUpload.php";
     public static string DownloadUrl = Server + "customDownload.php?";
 
+    // TODO If ExternalEval not works, use this in combination with JsLib See documentation for interacting with javascript in unity.
     [DllImport("__Internal")]
     private static extern void DownloadFile(string uri, string filename);
 
@@ -138,7 +139,7 @@ public class Uploader : MonoBehaviour
         var onPostRenderTexture = TextureRenderer.Begin();
         foreach (var tex in textures)
         {
-            TextureRenderer.RenderTexture(tex);
+            TextureRenderer.Capture(tex);
         }
         downloadedTextures = onPostRenderTexture.Textures;
         TextureRenderer.End();
@@ -175,7 +176,16 @@ public class Uploader : MonoBehaviour
 
     IEnumerator UploadTexture(string filename, Texture2D tex, Action<bool> onDone)
     {
-        yield return Upload(tex.EncodeToPNG(), "image/png", filename, false, onDone);
+        if (tex == null) yield break;
+        var script = TextureRenderer.Begin();
+        script.TextureName = tex.imageContentsHash.ToString();
+        TextureRenderer.Capture(tex);
+        var textures = script.Textures;
+        TextureRenderer.End();
+        if (textures == null || textures.Count != 1)
+            yield break;
+        var bytes = textures[tex.imageContentsHash.ToString()].EncodeToPNG();
+        yield return Upload(bytes, "image/png", filename, false, onDone);
     }
 
     IEnumerator DownloadString(string filename, Action<string, bool> onDone)
@@ -191,12 +201,14 @@ public class Uploader : MonoBehaviour
             bSucces = true;
         }
         if (onDone != null) onDone(str, bSucces);
+        Destroy(gameObject);
     }
 
     IEnumerator DownloadTexture(string filename, Action<Texture2D, bool> onDone)
     {
         yield return DownloadTextureRaw(filename, (byte[] data, bool succes) =>
         {
+            if (this == null) return;
             Texture2D tex = new Texture2D(2, 2);
             if (!succes)
             {
@@ -209,6 +221,7 @@ public class Uploader : MonoBehaviour
                 succes = true;
             }
             if (onDone != null) onDone(tex, succes);
+            Destroy(gameObject);
         });
     }
 

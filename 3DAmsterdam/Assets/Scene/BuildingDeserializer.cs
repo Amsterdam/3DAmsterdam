@@ -13,7 +13,7 @@ public class BuildingDeserializer : MonoBehaviour
         foreach (var mm in meshMats)
         {
             GameObject child = new GameObject();
-            child.transform.parent = transform.parent;
+            child.transform.parent = transform;
             child.AddComponent<MeshFilter>().sharedMesh = mm.m;
             Material[] childMats = new Material[mm.mats.Length];
             for (int i = 0; i < childMats.Length; i++)

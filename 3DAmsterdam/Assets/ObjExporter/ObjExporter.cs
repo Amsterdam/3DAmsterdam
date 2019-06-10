@@ -95,7 +95,6 @@ public class ObjExporter
         List<Vector3> normals = new List<Vector3>();
         List<Vector2> uvs = new List<Vector2>();
         List<List<int>> indices = new List<List<int>>();
-        List<int> curIndices = new List<int>();
         List<string> mats = new List<string>();
 
         using (StringReader sr = new StringReader(objData))
@@ -119,7 +118,6 @@ public class ObjExporter
                                 mm.mats = mats.ToArray();
                                 meshMats.Add(mm);
                                 mats.Clear();
-                                curIndices.Clear();
                             }
                             break;
 
@@ -144,18 +142,14 @@ public class ObjExporter
                             break;
 
                         case "f":
-                            curIndices.Add(Convert.ToInt32(el[1]));
-                            curIndices.Add(Convert.ToInt32(el[2]));
-                            curIndices.Add(Convert.ToInt32(el[3]));
+                            indices.Last().Add(Convert.ToInt32(el[1])-1);
+                            indices.Last().Add(Convert.ToInt32(el[2])-1);
+                            indices.Last().Add(Convert.ToInt32(el[3])-1);
                             break;
 
                         case "usemtl":
                             mats.Add(el[1]);
-                            if (curIndices.Count != 0)
-                            {
-                                indices.Add(curIndices);
-                                curIndices.Clear();
-                            }
+                            indices.Add(new List<int>());
                             break;
                     }
                 }
