@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class PostTextureRenderer : MonoBehaviour
 {
-    public string TextureName;
-    public int TexWidth;
-    public int TexHeight;
-    public Dictionary<string, Texture2D> Textures;
+    string TextureName;
+    int TexWidth;
+    int TexHeight;
+    Dictionary<string, Texture2D> Textures;
 
     public void BeginCapture()
     {
         Textures = new Dictionary<string, Texture2D>();
+    }
+
+    public void PreRender(string textureName, int texWidth, int texHeight)
+    {
+        TextureName = textureName;
+        TexWidth = texWidth;
+        TexHeight = texHeight;
     }
 
     private void OnPostRender()
@@ -31,8 +38,10 @@ public class PostTextureRenderer : MonoBehaviour
         Textures.Add(TextureName, texture);
     }
 
-    public void EndCapture()
+    public Dictionary<string, Texture2D> EndCapture()
     {
+        var res = Textures;
         Textures = null;
+        return res;
     }
 }

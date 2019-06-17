@@ -39,7 +39,7 @@ public class ObjExporter
         var uvs = m.uv;
         if (uvs == null || uvs.Length == 0)
             uvs = new Vector2[m.vertexCount];
-        foreach (Vector3 uv in uvs)
+        foreach (Vector2 uv in uvs)
         {
             sb.Append($"vt {uv.x} {uv.y}\n");
         }

@@ -135,14 +135,12 @@ public class Uploader : MonoBehaviour
         byte[] buffer;
 
         // Render textures (trick to get them to CPU memory).
-        Dictionary<string, Texture2D> downloadedTextures;
-        var onPostRenderTexture = TextureRenderer.Begin();
+        TextureRenderer.Begin();
         foreach (var tex in textures)
         {
             TextureRenderer.Capture(tex);
         }
-        downloadedTextures = onPostRenderTexture.Textures;
-        TextureRenderer.End();
+        var capturedTextures = TextureRenderer.End();
 
         using (MemoryStream zipToOpen = new MemoryStream())
         {
@@ -150,9 +148,9 @@ public class Uploader : MonoBehaviour
             {
                 archive.AddData(filename + ".obj", objData);
                 archive.AddData(filename + ".mtl", mtlData);
-                if (downloadedTextures != null)
+                if (capturedTextures != null)
                 {
-                    foreach (var tex in downloadedTextures)
+                    foreach (var tex in capturedTextures)
                     {
                         try
                         {
@@ -177,11 +175,9 @@ public class Uploader : MonoBehaviour
     IEnumerator UploadTexture(string filename, Texture2D tex, Action<bool> onDone)
     {
         if (tex == null) yield break;
-        var script = TextureRenderer.Begin();
-        script.TextureName = tex.imageContentsHash.ToString();
+        TextureRenderer.Begin();
         TextureRenderer.Capture(tex);
-        var textures = script.Textures;
-        TextureRenderer.End();
+        var textures = TextureRenderer.End();
         if (textures == null || textures.Count != 1)
             yield break;
         var bytes = textures[tex.imageContentsHash.ToString()].EncodeToPNG();

@@ -215,6 +215,7 @@ public class SceneInstance
                     if (prefab != null && cb.name.Contains(prefab.name))
                     {
                         GameObject go = (GameObject)GameObject.Instantiate(prefab, cb.pos.ToUnity(), cb.rot.ToUnity());
+                        go.tag = "CustomPlaced";
                         go.transform.localScale = cb.scale.ToUnity();
                         break;
                     }
@@ -275,6 +276,7 @@ public class SceneInstance
                         return;
 
                     GameObject go = new GameObject(b.name);
+                    go.tag = "Sizeable";
                     var bd = go.AddComponent<BuildingDeserializer>();
                     bd.Deserialize(b, meshMats.ToArray(), mats);
                 });
