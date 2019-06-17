@@ -53,9 +53,11 @@ public class BuildingDeserializer : MonoBehaviour
 
     void FetchTexture(Material m, string texKeyName)
     {
+        if (m == null) return;
         if (m.HasProperty(texKeyName))
         {
             var tex = m.GetTexture(texKeyName);
+            if (tex == null) return;
             string filename = tex.name;
             MtlExporter.GetTextureFromCacheOrDownload(filename, (Texture2D tex2, bool succes) =>
             {

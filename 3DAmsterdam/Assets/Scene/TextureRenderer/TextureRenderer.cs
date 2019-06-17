@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TextureRenderer
@@ -36,29 +37,40 @@ public class TextureRenderer
 
         ri.texture = tex;
 
+        if (rtt.targetTexture != null)
+        {
+            var t = rtt.targetTexture;
+            rtt.targetTexture = null;
+            RenderTexture.ReleaseTemporary(t);
+        }
+
         var rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.Default);
-        //RenderTexture rt = new RenderTexture(tex.width, tex.height, 0, RenderTextureFormat.Default);
-        //if (!rt.Create())
-        //    return;
+        if (!rt.IsCreated())
+            rt.Create();
 
         rtt.orthographicSize = tex.height;
         rtt.aspect = tex.width / (float)tex.height;
         rtt.targetTexture = rt;
       //  rtt.forceIntoRenderTexture = true;
 
-        script.TextureName = tex.imageContentsHash.ToString();
-        script.TexWidth = tex.width;
-        script.TexHeight = tex.height;
+        script.PreRender(tex.imageContentsHash.ToString(), tex.width, tex.height);
         rtt.Render();
-        RenderTexture.ReleaseTemporary(rt);
     }
 
-    public static void End()
+    public static Dictionary<string, Texture2D> End()
     {
-        var res = RTT.GetComponentInChildren<PostTextureRenderer>();
-        res.EndCapture();
+        var script = RTT.GetComponentInChildren<PostTextureRenderer>();
+        Camera rtt = RTT.GetComponentInChildren<Camera>();
+        if (rtt.targetTexture != null)
+        {
+            var t = rtt.targetTexture;
+            rtt.targetTexture = null;
+            RenderTexture.ReleaseTemporary(t);
+        }
 
         foreach (var o in RTT.GetComponent<EnableGameObjects>().Objects)
             o.SetActive(false);
+
+        return script.EndCapture();
     }
 }
