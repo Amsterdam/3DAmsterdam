@@ -37,6 +37,7 @@ public class beweging : MonoBehaviour
     private Vector3 direction;
     private Vector3 dragOrigin;
     private Vector3 movDir;
+    private Vector3 rotationPoint;
     private Vector2 currentRotation;
 
     void Start()
@@ -66,7 +67,7 @@ public class beweging : MonoBehaviour
             if (canUseFunction)
             {
                 Zooming();
-                //Dragging();
+                Dragging();
                 FocusPoint();
             }
         }
@@ -132,6 +133,7 @@ public class beweging : MonoBehaviour
             canMove = true;
         }
 
+
         // camera roteren doormiddel van rechter muisknop
         if (Input.GetMouseButton(1))
         {
@@ -150,6 +152,24 @@ public class beweging : MonoBehaviour
 
             //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
+        }
+
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+            // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
+            if (Physics.Raycast(ray, out hit))
+            {
+                rotationPoint = hit.point;
+            }
+        }
+
+        if (Input.GetMouseButton(2))
+        {
+            cam.transform.Rotate(rotationPoint, 20f);
         }
     }
 
