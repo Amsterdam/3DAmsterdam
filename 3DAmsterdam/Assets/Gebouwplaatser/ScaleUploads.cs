@@ -14,6 +14,14 @@ public class ScaleUploads : MonoBehaviour
     private GameObject selectedObject;
     private bool turnOffMenu;
 
+    // When loading scene, old scene gets destroyed. Need to reset these game objects.
+    public void ClearGameObjectsList()
+    {
+        gameObjects.Clear();
+        scaleMenu.SetActive(false);
+        turnOffMenu = true;
+    }
+
     private void Update()
     {
         turnOffMenu = true;

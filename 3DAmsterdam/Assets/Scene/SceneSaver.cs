@@ -215,8 +215,9 @@ public class SceneInstance
                     if (prefab != null && cb.name.Contains(prefab.name))
                     {
                         GameObject go = (GameObject)GameObject.Instantiate(prefab, cb.pos.ToUnity(), cb.rot.ToUnity());
-                        go.tag = "CustomPlaced";
                         go.transform.localScale = cb.scale.ToUnity();
+                        go.layer = 11;
+                        go.tag = "CustomPlaced";
                         break;
                     }
                 }
@@ -278,7 +279,12 @@ public class SceneInstance
                     GameObject go = new GameObject(b.name);
                     go.tag = "Sizeable";
                     var bd = go.AddComponent<BuildingDeserializer>();
+                    go.AddComponent<PijlenPrefab>();
                     bd.Deserialize(b, meshMats.ToArray(), mats);
+
+                    var scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
+                    if (scaleScript != null)
+                        scaleScript.gameObjects.Add(go);
                 });
             });
         }
@@ -311,6 +317,10 @@ public class SceneSaver : MonoBehaviour
         string sceneId = SceneInput.text;
         if (string.IsNullOrEmpty(sceneId))
             return;
+
+        var scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
+        if (scaleScript != null)
+            scaleScript.ClearGameObjectsList();
 
         MatchCollection mc = Regex.Matches(sceneId, "name=[a-f0-9-]*.json");
         bool bValid = false;

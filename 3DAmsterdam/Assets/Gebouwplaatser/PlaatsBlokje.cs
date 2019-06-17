@@ -119,7 +119,7 @@ public class PlaatsBlokje : MonoBehaviour
                 selectedObject = hit.transform.gameObject;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && selectedObject != null)
             {
                 if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
                 {

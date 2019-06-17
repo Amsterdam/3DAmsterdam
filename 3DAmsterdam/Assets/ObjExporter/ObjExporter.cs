@@ -23,19 +23,8 @@ public class ObjExporter
         {
             Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
             Vector3 vt = finalMat.MultiplyPoint(v);
-            sb.Append($"v {vt.x} {vt.y} {vt.z}\n");
+            sb.Append($"v {-vt.x} {vt.y} {vt.z}\n");
         }
-        sb.Append("\n");
-        var normals = m.normals;
-        if (normals == null || normals.Length == 0)
-            normals = new Vector3[m.vertexCount];
-        foreach (Vector3 n in normals)
-        {
-            Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
-            Vector3 nt = finalMat.MultiplyVector(n);
-            sb.Append($"vn {nt.x} {nt.y} {nt.z}\n");
-        }
-        sb.Append("\n");
         var uvs = m.uv;
         if (uvs == null || uvs.Length == 0)
             uvs = new Vector2[m.vertexCount];
@@ -43,12 +32,19 @@ public class ObjExporter
         {
             sb.Append($"vt {uv.x} {uv.y}\n");
         }
+        var normals = m.normals;
+        if (normals == null || normals.Length == 0)
+            normals = new Vector3[m.vertexCount];
+        foreach (Vector3 n in normals)
+        {
+            Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
+            Vector3 nt = finalMat.MultiplyVector(n);
+            sb.Append($"vn {-nt.x} {nt.y} {nt.z}\n");
+        }
         var vo = vertexOffset;
         int count = Mathf.Min(m.subMeshCount, mats.Length);
         for (int material = 0; material < count; material++)
         {
-         //   sb.Append("\n");
-
             var matName = MtlExporter.GetMatName(mats[material]);
 
             sb.Append("usemtl ").Append(matName).Append("\n");
@@ -97,6 +93,8 @@ public class ObjExporter
         List<List<int>> indices = new List<List<int>>();
         List<string> mats = new List<string>();
 
+        int vertexOffset = 0;
+
         using (StringReader sr = new StringReader(objData))
         {
             string line;
@@ -112,6 +110,7 @@ public class ObjExporter
                         case "g":
                             if (vertices.Count != 0)
                             {
+                                vertexOffset += vertices.Count;
                                 Mesh m = FinishMesh(ref vertices, ref normals, ref uvs, ref indices);
                                 MeshMaterials mm = new MeshMaterials();
                                 mm.m = m;
@@ -124,14 +123,14 @@ public class ObjExporter
                         case "v":
                             v.x = Convert.ToSingle(el[1]);
                             v.y = Convert.ToSingle(el[2]);
-                            v.z = Convert.ToSingle(el[3]);
+                            v.z = -Convert.ToSingle(el[3]);
                             vertices.Add(v);
                             break;
 
                         case "vn":
                             v.x = Convert.ToSingle(el[1]);
                             v.y = Convert.ToSingle(el[2]);
-                            v.z = Convert.ToSingle(el[3]);
+                            v.z = -Convert.ToSingle(el[3]);
                             normals.Add(v);
                             break;
 
@@ -142,9 +141,9 @@ public class ObjExporter
                             break;
 
                         case "f":
-                            indices.Last().Add(Convert.ToInt32(el[1])-1);
-                            indices.Last().Add(Convert.ToInt32(el[2])-1);
-                            indices.Last().Add(Convert.ToInt32(el[3])-1);
+                            indices.Last().Add(Convert.ToInt32(el[1])-1-vertexOffset);
+                            indices.Last().Add(Convert.ToInt32(el[2])-1-vertexOffset);
+                            indices.Last().Add(Convert.ToInt32(el[3])-1-vertexOffset);
                             break;
 
                         case "usemtl":

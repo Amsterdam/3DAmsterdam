@@ -91,9 +91,12 @@ public class DownloadGebied : MonoBehaviour
     MeshFilter[] SelectTerrain()
     {
         // Temporarilly disable pijlenPrefab as we do not want to include in the selection.
-        var pijlenPrefab = GameObject.FindGameObjectWithTag("PijlenPrefab");
+        var pijlenPrefab = GameObject.FindGameObjectsWithTag("PijlenPrefab");
         if (pijlenPrefab != null)
-            pijlenPrefab.SetActive(false);
+        {
+            foreach (var pb in pijlenPrefab)
+                pb.SetActive(false);
+        }
 
         List<MeshFilter> selected = new List<MeshFilter>();
         var ray1 = Camera.main.ScreenPointToRay(startPosition);
@@ -132,7 +135,11 @@ public class DownloadGebied : MonoBehaviour
         }
 
         // Re-enable pijlenPrefab
-        if (pijlenPrefab != null) pijlenPrefab.SetActive(true);
+        if (pijlenPrefab != null)
+        {
+            foreach (var pb in pijlenPrefab)
+                pb.SetActive(true);
+        }
         return selected.ToArray();
     }
 

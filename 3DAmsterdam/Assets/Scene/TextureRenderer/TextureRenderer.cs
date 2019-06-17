@@ -4,73 +4,24 @@ using UnityEngine.UI;
 
 public class TextureRenderer
 {
-    static GameObject _rtt;
-    public static GameObject RTT
+    public static Dictionary<string, Texture2D> CopyAndMakeReadable(Texture[] textures)
     {
-        get
+        Dictionary<string, Texture2D> output = new Dictionary<string, Texture2D>();
+        foreach (var t in textures)
         {
-            if (_rtt == null) _rtt = GameObject.Find("RTT");
-            return _rtt;
+            if (output.ContainsKey(t.imageContentsHash.ToString()))
+                continue;
+
+            RenderTexture render_texture = RenderTexture.GetTemporary(t.width, t.height, 24, RenderTextureFormat.ARGB32);
+            Graphics.Blit(t, render_texture);
+
+            RenderTexture.active = render_texture;
+            Texture2D temp = new Texture2D(t.width, t.height);
+            temp.ReadPixels(new Rect(0, 0, render_texture.width, render_texture.height), 0, 0);
+            temp.Apply();
+
+            output.Add(t.imageContentsHash.ToString(), temp);
         }
-    }
-
-    public static PostTextureRenderer Begin()
-    {
-          foreach (var o in RTT.GetComponent<EnableGameObjects>().Objects)
-            o.SetActive(true);
-
-        Camera rtt = RTT.GetComponentInChildren<Camera>();
-        var ptr = rtt.GetComponent<PostTextureRenderer>();
-        if (ptr == null)
-            ptr = rtt.gameObject.AddComponent<PostTextureRenderer>();
-        ptr.BeginCapture();
-        return ptr;
-    }
-
-    // This function is a workaround to get the texture contents from a texture and makes
-    // it encodable to PNG for upload or saving on disk.
-    public static void Capture(Texture2D tex)
-    {
-        Camera rtt = RTT.GetComponentInChildren<Camera>();
-        RawImage ri = RTT.GetComponentInChildren<RawImage>();
-        var script = RTT.GetComponentInChildren<PostTextureRenderer>();
-
-        ri.texture = tex;
-
-        if (rtt.targetTexture != null)
-        {
-            var t = rtt.targetTexture;
-            rtt.targetTexture = null;
-            RenderTexture.ReleaseTemporary(t);
-        }
-
-        var rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.Default);
-        if (!rt.IsCreated())
-            rt.Create();
-
-        rtt.orthographicSize = tex.height;
-        rtt.aspect = tex.width / (float)tex.height;
-        rtt.targetTexture = rt;
-      //  rtt.forceIntoRenderTexture = true;
-
-        script.PreRender(tex.imageContentsHash.ToString(), tex.width, tex.height);
-        rtt.Render();
-    }
-
-    public static Dictionary<string, Texture2D> End()
-    {
-        var script = RTT.GetComponentInChildren<PostTextureRenderer>();
-        Camera rtt = RTT.GetComponentInChildren<Camera>();
-        if (rtt.targetTexture != null)
-        {
-            var t = rtt.targetTexture;
-            rtt.targetTexture = null;
-            RenderTexture.ReleaseTemporary(t);
-        }
-
-        foreach (var o in RTT.GetComponent<EnableGameObjects>().Objects)
-            o.SetActive(false);
-
-        return script.EndCapture();
+        return output;
     }
 }

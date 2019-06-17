@@ -40,8 +40,11 @@ public class beweging : MonoBehaviour
     private Vector3 rotationPoint;
     private Vector2 currentRotation;
 
+    private MenuFunctions menuFunctions;
+
     void Start()
     {
+        menuFunctions = FindObjectOfType<MenuFunctions>();
         cam.transform.rotation = startRotation;
         currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
     }
@@ -49,7 +52,8 @@ public class beweging : MonoBehaviour
     void Update()
     {
         // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current.IsPointerOverGameObject() ||
+            menuFunctions.allMenus[6].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
         {
             canUseFunction = false;
         }
