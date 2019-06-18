@@ -225,11 +225,14 @@ public class SceneInstance
             else Debug.LogWarning("No static buildings set.");
         }
 
+
+        // TODO for some reason this does not set the 'correct' weather type eventhough it has the right value.
+        EnviroSkyMgr.instance.ChangeWeather(EnviWeerType);
+
         if (TimeNow)
             EnviroSkyMgr.instance.SetTime(DateTime.Now);
         else
             EnviroSkyMgr.instance.SetTime(CurrentYear, CurrentDay, Hours, Minutes, 0);
-        EnviroSkyMgr.instance.ChangeWeather(EnviWeerType); // TODO for some reason you have to load scene twice to have make weather change effect
 
 
         // Disable menus again now that data is retreived

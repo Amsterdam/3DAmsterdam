@@ -23,6 +23,7 @@ public class ObjExporter
         {
             Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
             Vector3 vt = finalMat.MultiplyPoint(v);
+          //  sb.Append(string.Format("v {0:0.00000} {0:0.00000} {0:0.00000}\n", -vt.x, vt.y, vt.z));
             sb.Append($"v {-vt.x} {vt.y} {vt.z}\n");
         }
         var uvs = m.uv;
@@ -30,6 +31,7 @@ public class ObjExporter
             uvs = new Vector2[m.vertexCount];
         foreach (Vector2 uv in uvs)
         {
+         //   sb.Append(string.Format("vt {0:0.00000} {0:0.00000}\n", uv.x, uv.y));
             sb.Append($"vt {uv.x} {uv.y}\n");
         }
         var normals = m.normals;
@@ -39,6 +41,7 @@ public class ObjExporter
         {
             Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
             Vector3 nt = finalMat.MultiplyVector(n);
+          //  sb.Append(string.Format("vn {0:0.00000} {0:0.00000} {0:0.00000}\n", -nt.x, nt.y, nt.z));
             sb.Append($"vn {-nt.x} {nt.y} {nt.z}\n");
         }
         var vo = vertexOffset;
@@ -48,7 +51,7 @@ public class ObjExporter
             var matName = MtlExporter.GetMatName(mats[material]);
 
             sb.Append("usemtl ").Append(matName).Append("\n");
-            sb.Append("usemap ").Append(matName).Append("\n");
+        //    sb.Append("usemap ").Append(matName).Append("\n");
 
             int[] triangles = m.GetTriangles(material);
             for (int i = 0; i < triangles.Length; i += 3)
@@ -56,7 +59,7 @@ public class ObjExporter
                 int i0 = triangles[i + 0] + 1 + vo;
                 int i1 = triangles[i + 1] + 1 + vo;
                 int i2 = triangles[i + 2] + 1 + vo;
-                sb.Append($"f {i0} {i1} {i2}\n");
+                sb.Append($"f {i0}/{i0}/{i0} {i1}/{i1}/{i1} {i2}/{i2}/{i2}\n");
             }
         }
         return m.vertexCount;
@@ -141,9 +144,14 @@ public class ObjExporter
                             break;
 
                         case "f":
-                            indices.Last().Add(Convert.ToInt32(el[1])-1-vertexOffset);
-                            indices.Last().Add(Convert.ToInt32(el[2])-1-vertexOffset);
-                            indices.Last().Add(Convert.ToInt32(el[3])-1-vertexOffset);
+                            {
+                                var fidx1 = el[1].Split('/');
+                                var fidx2 = el[2].Split('/');
+                                var fidx3 = el[3].Split('/');
+                                indices.Last().Add(Convert.ToInt32(fidx1[0]) - 1 - vertexOffset);
+                                indices.Last().Add(Convert.ToInt32(fidx2[0]) - 1 - vertexOffset);
+                                indices.Last().Add(Convert.ToInt32(fidx3[0]) - 1 - vertexOffset);
+                            }
                             break;
 
                         case "usemtl":
