@@ -188,7 +188,7 @@ public class BuildingTileManager : MonoBehaviour
             Vector3 TileID = PendingDestroy[j];
             if (buildingTiles[TileID].AB != null)
             {
-                buildingTiles[TileID].AB.Unload(true);
+                buildingTiles[TileID].AB.Unload(false); // TODO
                 for (int i = buildingTiles[TileID].Gameobjecten.Count-1; i >-1; i--)
                 {
                     Destroy(buildingTiles[TileID].Gameobjecten[i]);
