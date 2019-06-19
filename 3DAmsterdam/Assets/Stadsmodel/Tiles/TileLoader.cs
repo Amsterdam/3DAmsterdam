@@ -68,6 +68,10 @@ public class TileLoader : MonoBehaviour
         if (pendingQueue.Count < maxParallelRequests && downloadQueue.Count > 0)
         {
             var request = downloadQueue.Dequeue();
+            if (pendingQueue.ContainsKey(request.Url))
+            {
+                return;
+            }
             pendingQueue.Add(request.Url, request);
 
             //fire request

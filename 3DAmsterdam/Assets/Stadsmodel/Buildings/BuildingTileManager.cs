@@ -239,13 +239,14 @@ public class BuildingTileManager : MonoBehaviour
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 ActiveDownloads.Remove(btd.id);
-                btd.Status = BuildingTileStatus.PendingBuild;
-                PendingBuilds.Add(btd.id);
+                btd.Status = BuildingTileStatus.Built;
+
             }
             else
             {
                 // Get downloaded asset bundle
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(uwr);
+
                 btd.AB = bundle;
                 ActiveDownloads.Remove(btd.id);
                 btd.Status = BuildingTileStatus.PendingBuild;
@@ -259,6 +260,7 @@ public class BuildingTileManager : MonoBehaviour
     private IEnumerator ProcessBuildingTile(Vector3 TileID)
     {
         BuildingTileData btd = buildingTiles[TileID];
+
         Mesh[] ABAssets = btd.AB.LoadAllAssets<Mesh>();
         foreach (Mesh ass in ABAssets)
         {
