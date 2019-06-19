@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using System.Linq;
 using System;
+using System.Globalization;
 
 public class ObjExporter
 {
@@ -23,8 +24,8 @@ public class ObjExporter
         {
             Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
             Vector3 vt = finalMat.MultiplyPoint(v);
-          //  sb.Append(string.Format("v {0:0.00000} {0:0.00000} {0:0.00000}\n", -vt.x, vt.y, vt.z));
-            sb.Append($"v {-vt.x} {vt.y} {vt.z}\n");
+            //  sb.Append(string.Format("v {0:0.00000} {0:0.00000} {0:0.00000}\n", -vt.x, vt.y, vt.z));
+            sb.Append($"v {-vt.x} {vt.y} {vt.z}\n".Replace(',', '.'));
         }
         var uvs = m.uv;
         if (uvs == null || uvs.Length == 0)
@@ -32,7 +33,7 @@ public class ObjExporter
         foreach (Vector2 uv in uvs)
         {
          //   sb.Append(string.Format("vt {0:0.00000} {0:0.00000}\n", uv.x, uv.y));
-            sb.Append($"vt {uv.x} {uv.y}\n");
+            sb.Append($"vt {uv.x} {uv.y}\n".Replace(',', '.'));
         }
         var normals = m.normals;
         if (normals == null || normals.Length == 0)
@@ -42,7 +43,7 @@ public class ObjExporter
             Matrix4x4 finalMat = preTransform * mf.transform.localToWorldMatrix;
             Vector3 nt = finalMat.MultiplyVector(n);
           //  sb.Append(string.Format("vn {0:0.00000} {0:0.00000} {0:0.00000}\n", -nt.x, nt.y, nt.z));
-            sb.Append($"vn {-nt.x} {nt.y} {nt.z}\n");
+            sb.Append($"vn {-nt.x} {nt.y} {nt.z}\n".Replace(',', '.'));
         }
         var vo = vertexOffset;
         int count = Mathf.Min(m.subMeshCount, mats.Length);

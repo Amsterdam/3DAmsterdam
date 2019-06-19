@@ -139,9 +139,9 @@ public class MtlExporter
         if (mat.HasProperty(keyword))
         {
             var c = mat.GetColor(keyword);
-            sb.AppendLine($"{id} {c.r} {c.g} {c.b}");
+            sb.AppendLine($"{id} {c.r} {c.g} {c.b}".Replace(',', '.'));
         }
-        else sb.AppendLine($"{id} {0.0f} {0.0f} {0.0f}");
+        else sb.AppendLine($"{id} {0.0f} {0.0f} {0.0f}".Replace(',', '.'));
     }
 
     static void WriteTexture(StringBuilder sb, Material mat, string id, string keyword)
@@ -179,14 +179,14 @@ public class MtlExporter
                 sb.Append($"newmtl {name}\n");
 
                 if (mat.HasProperty("_Glossiness*"))
-                    sb.Append($"Ns {mat.GetFloat("_Glossiness") * 1000}\n");
+                    sb.Append($"Ns {mat.GetFloat("_Glossiness") * 1000}\n".Replace(',', '.'));
                 else
                     sb.Append($"Ns {0.0f}\n");
 
                 if (mat.HasProperty("_Color"))
-                    sb.Append($"d {mat.GetColor("_Color").a}\n");
+                    sb.Append($"d {mat.GetColor("_Color").a}\n".Replace(',', '.'));
                 else
-                    sb.Append($"d {1.0f}\n");
+                    sb.Append($"d {1.0f}\n".Replace(',', '.'));
 
                 sb.Append("illum 2\n");
 
