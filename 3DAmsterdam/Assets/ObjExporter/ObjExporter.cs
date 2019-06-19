@@ -125,22 +125,22 @@ public class ObjExporter
                             break;
 
                         case "v":
-                            v.x = Convert.ToSingle(el[1]);
-                            v.y = Convert.ToSingle(el[2]);
-                            v.z = -Convert.ToSingle(el[3]);
+                            v.x = -Convert.ToSingle(el[1], CultureInfo.InvariantCulture);
+                            v.y = Convert.ToSingle(el[2], CultureInfo.InvariantCulture);
+                            v.z = Convert.ToSingle(el[3], CultureInfo.InvariantCulture);
                             vertices.Add(v);
                             break;
 
                         case "vn":
-                            v.x = Convert.ToSingle(el[1]);
-                            v.y = Convert.ToSingle(el[2]);
-                            v.z = -Convert.ToSingle(el[3]);
+                            v.x = -Convert.ToSingle(el[1], CultureInfo.InvariantCulture);
+                            v.y = Convert.ToSingle(el[2], CultureInfo.InvariantCulture);
+                            v.z = Convert.ToSingle(el[3], CultureInfo.InvariantCulture);
                             normals.Add(v);
                             break;
 
                         case "vt":
-                            v.x = Convert.ToSingle(el[1]);
-                            v.y = Convert.ToSingle(el[2]);
+                            v.x = Convert.ToSingle(el[1], CultureInfo.InvariantCulture);
+                            v.y = Convert.ToSingle(el[2], CultureInfo.InvariantCulture);
                             uvs.Add(v);
                             break;
 

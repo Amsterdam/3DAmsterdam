@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -50,33 +51,33 @@ public class MtlExporter
                             break;
 
                         case "Ns":
-                            mat.SetFloat("_Glossiness", Convert.ToSingle(el[1]) / 1000);
+                            mat.SetFloat("_Glossiness", Convert.ToSingle(el[1], CultureInfo.InvariantCulture) / 1000);
                             break;
 
                         case "d":
                             c = mat.color;
-                            mat.color = new Color(c.r, c.g, c.b, Convert.ToSingle(el[1]));
+                            mat.color = new Color(c.r, c.g, c.b, Convert.ToSingle(el[1], CultureInfo.InvariantCulture));
                             break;
 
                         case "Tr":
                             c = mat.color;
-                            mat.color = new Color(c.r, c.g, c.b, 1.0f - Convert.ToSingle(el[1]));
+                            mat.color = new Color(c.r, c.g, c.b, 1.0f - Convert.ToSingle(el[1], CultureInfo.InvariantCulture));
                             break;
 
                         case "Kd":
                         case "kd":
                             c = mat.color;
-                            mat.color = new Color(Convert.ToSingle(el[1]), Convert.ToSingle(el[2]), Convert.ToSingle(el[3]), c.a);
+                            mat.color = new Color(Convert.ToSingle(el[1], CultureInfo.InvariantCulture), Convert.ToSingle(el[2], CultureInfo.InvariantCulture), Convert.ToSingle(el[3], CultureInfo.InvariantCulture), c.a);
                             break;
 
                         case "Ks":
                         case "ks":
-                            mat.SetColor("_SpecColor", new Color(Convert.ToSingle(el[1]), Convert.ToSingle(el[2]), Convert.ToSingle(el[3])));
+                            mat.SetColor("_SpecColor", new Color(Convert.ToSingle(el[1], CultureInfo.InvariantCulture), Convert.ToSingle(el[2], CultureInfo.InvariantCulture), Convert.ToSingle(el[3], CultureInfo.InvariantCulture)));
                             break;
 
                         case "Ka":
                         case "ka":
-                            mat.SetColor("_EmissionColor", new Color(Convert.ToSingle(el[1]), Convert.ToSingle(el[2]), Convert.ToSingle(el[3])));
+                            mat.SetColor("_EmissionColor", new Color(Convert.ToSingle(el[1], CultureInfo.InvariantCulture), Convert.ToSingle(el[2], CultureInfo.InvariantCulture), Convert.ToSingle(el[3], CultureInfo.InvariantCulture)));
                             break;
 
                         case "map_Kd":
