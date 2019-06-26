@@ -9,6 +9,7 @@ public class ScaleUploads : MonoBehaviour
     public List<GameObject> gameObjects;
 
     public GameObject scaleMenu;
+    public GameObject pijlenNavigatie;
     public Slider height, width, length;
 
     private GameObject selectedObject;
@@ -30,43 +31,44 @@ public class ScaleUploads : MonoBehaviour
         for (int i = 0; i < gameObjects.Count; i++)
         {
             // als de pijlenprefab geselecteerd is wordt het schaalmenu geopend
-            if (gameObjects[i].gameObject.GetComponent<PijlenPrefab>().scaling)
+            if (gameObjects[i].gameObject.GetComponent<PijlenPrefab>().activate)
             {
                 scaleMenu.SetActive(true);
+                pijlenNavigatie.SetActive(true);
                 selectedObject = gameObjects[i].gameObject;
 
-                if (selectedObject.GetComponent<PijlenPrefab>().setScaleValues)
-                {
-                    InitializeScaleValues();
-                }
+                //if (selectedObject.GetComponent<PijlenPrefab>().setScaleValues)
+                //{
+                //    InitializeScaleValues();
+                //}
 
-                turnOffMenu = false;
-            }    
+                //turnOffMenu = false;
+            }
         }
 
         // het menu wordt uigezet zodra de pijlenprefab gedeselecteerd is
-        if (turnOffMenu)
-        {
-            scaleMenu.SetActive(false);
-        }
+        //if (turnOffMenu)
+        //{
+        //    scaleMenu.SetActive(false);
+        //}
 
-        Scaling();
+        //Scaling();
     }
 
-    // het verschalen van het object
-    private void Scaling()
-    {
-        if (selectedObject != null)
-        {
-            selectedObject.transform.localScale = new Vector3(width.value * 50f, height.value * 50f, length.value * 50f);
-        }
-    }
+    //// het verschalen van het object
+    //private void Scaling()
+    //{
+    //    if (selectedObject != null)
+    //    {
+    //        selectedObject.transform.localScale = new Vector3(width.value * 50f, height.value * 50f, length.value * 50f);
+    //    }
+    //}
 
-    // de huidige waardes van het object worden overgenomen in het schaalmenu
-    private void InitializeScaleValues()
-    {
-        height.value = selectedObject.transform.localScale.y / 50f;
-        width.value = selectedObject.transform.localScale.x / 50f;
-        length.value = selectedObject.transform.localScale.z / 50f;
-    }
+    //// de huidige waardes van het object worden overgenomen in het schaalmenu
+    //private void InitializeScaleValues()
+    //{
+    //    height.value = selectedObject.transform.localScale.y / 50f;
+    //    width.value = selectedObject.transform.localScale.x / 50f;
+    //    length.value = selectedObject.transform.localScale.z / 50f;
+    //}
 }
