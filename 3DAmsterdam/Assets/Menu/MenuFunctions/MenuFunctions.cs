@@ -27,7 +27,6 @@ public class MenuFunctions : MonoBehaviour
     public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
     public Button placeBuildingButton, uploadBuildingButton;
     public RectTransform positioningGebouwen;
-    public PlaatsBlokje plaatsBlokje;
     public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue;
 
     [Header("Opties")]
@@ -121,24 +120,6 @@ public class MenuFunctions : MonoBehaviour
 
         currentMenu = _menuNumber;
 
-        if (menuNumber == 3)
-        {
-            //if a menu gets closed
-            if (plaatsBlokje.selectedObject != null)
-            {
-                Destroy(plaatsBlokje.pijlenprefab);
-
-                //Make the block white
-                plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-                //Add the highlight script
-                plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-                //and deselect it
-                plaatsBlokje.selectedObject = null;
-            }
-        }
-
         GameObject menu = allMenus[_menuNumber];
         Button button = buttons[_menuNumber];
         ColorBlock colors = button.colors;
@@ -161,21 +142,6 @@ public class MenuFunctions : MonoBehaviour
     public void Exit()
     {
         currentMenu = noMenu;
-
-        //if a meny gets closed
-        if(plaatsBlokje.selectedObject != null)
-        {
-            Destroy(plaatsBlokje.pijlenprefab);
-
-            //Make the block white
-            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-            //Add the highlight script
-            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-            //and deselect it
-            plaatsBlokje.selectedObject = null;
-        }
     }
     #endregion
 

@@ -2,78 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlaatsBlokje : MonoBehaviour
 {
     public GameObject blokje;
-    GameObject tempGebouw;
-    GameObject gebouw;
+    private GameObject tempGebouw;
 
-    [HideInInspector]
-    public GameObject selectedObject;
+    private bool placingObject, instantiate;
 
-    public GameObject Pijlenprefab;
+    public Slider hoogte, breedte, lengte, rotatie;
+    private float scaleFactor = 100f;
 
-    [HideInInspector]
-    public GameObject pijlenprefab;
+    private int cubeNaming = 1;
 
-    public ScaleObject scaleObject;
-
-    bool placingObject;
-    bool instantiate;
-    bool highlight;
-    bool getColour;
-
-    private float arrowPositioningY = 4f;
-    private float arrowScaling = 2f;
-
-    public LayerMask rayLayer;
-
-    Color originalColour;
-
-    float scalingX, scalingY, scalingZ, distanceToObject;
-
-    int clickCount;
-
-    // Start is called before the first frame update
     void Start()
     {
         placingObject = false;
         instantiate = false;
-        getColour = false;
-        rayLayer = 1 << 9;
-        clickCount = 0;
+
+        hoogte.value = 0.5f;
+        breedte.value = 0.5f;
+        lengte.value = 0.5f;
+        rotatie.value = 0f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         PlaceObject();
-        Select();
-
-        //SelectAndTransform();
-
-        //if (pijlenprefab != null)
-        //{
-        //    pijlenprefab.transform.eulerAngles = new Vector3(0, 0, 0);
-        //}  
-    }
-
-    public void PlaceActivation()
-    {
-        if(selectedObject != null)
-        {
-            //Destroy(pijlenprefab);
-            selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-            if (selectedObject.transform.gameObject.GetComponent<HighLight>() == null) selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-            selectedObject = null;
-        }
-
-        placingObject = true;
-        instantiate = true;
-        highlight = false;
     }
 
     private void PlaceObject()
@@ -83,138 +39,40 @@ public class PlaatsBlokje : MonoBehaviour
 
         if (placingObject)
         {
-            if(Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit))
             {
                 if (instantiate)
                 {
+                    // houdt het blokje vast aan de muis
                     tempGebouw = (GameObject)Instantiate(blokje, hit.point, Quaternion.identity);
                     instantiate = false;
                 }
 
+                // positie van blokje gaat mee met die van de muis
                 tempGebouw.transform.position = hit.point;
 
+                // blokje krijgt schaal en rotatie die gegeven worden in het menu
+                tempGebouw.transform.localScale = new Vector3(breedte.value * scaleFactor, hoogte.value * scaleFactor, lengte.value * scaleFactor);
+                tempGebouw.transform.rotation = Quaternion.Euler(0, rotatie.value * 360, 0);
+
+                // als er geklikt wordt, dan wordt het blokje geplaatst
                 if (Input.GetMouseButtonDown(0))
                 {
                     tempGebouw.AddComponent<PijlenPrefab>();
-                    tempGebouw.AddComponent<HighLight>();
-
-                    tempGebouw.transform.position = hit.point;
                     tempGebouw.gameObject.layer = 11;
+                    tempGebouw.gameObject.name = "Cube" + cubeNaming;
+
+                    cubeNaming++;
+
                     placingObject = false;
                 }
-
             }
         }
     }
 
-    private void Select()
+    public void PlaceActivation()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform.gameObject.tag == "Sizeable" && selectedObject == null)
-            {
-                selectedObject = hit.transform.gameObject;
-            }
-
-            if (Input.GetMouseButtonDown(0) && selectedObject != null)
-            {
-                if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
-                {
-                    if (hit.transform.tag != "PijlenPrefab")
-                    {
-                        // Should get all renderers (GetComponentsInChildren), then use for loop
-                        selectedObject.transform.gameObject.GetComponentInChildren<Renderer>().material.color = Color.white;
-
-                        selectedObject = null;
-                    }
-                }
-            }
-        }
-    }
-
-    //public void SelectAndTransform()
-    //{
-    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //    RaycastHit hit;
-
-    //    if (Physics.Raycast(ray, out hit, 1000))
-    //    {
-    //        if ((hit.transform.gameObject.tag == "Sizeable" && selectedObject == null))
-    //        {
-    //            if (Input.GetMouseButtonDown(0) && placingObject == false)
-    //            {
-    //                originalColour = hit.transform.gameObject.GetComponent<Renderer>().material.color;
-
-    //                if (!(hit.transform.gameObject.GetComponent<HighLight>() == false))
-    //                {
-
-    //                    HighLight highlight = hit.transform.gameObject.GetComponent<HighLight>();
-    //                    hit.transform.gameObject.GetComponent<Renderer>().material.color = Color.red;
-
-    //                    Destroy(highlight);
-    //                }
-
-    //                selectedObject = hit.transform.gameObject;
-
-    //                scaleObject.hoogte.value = selectedObject.transform.localScale.y / 100;
-    //                scaleObject.breedte.value = selectedObject.transform.localScale.x / 100;
-    //                scaleObject.lengte.value = selectedObject.transform.localScale.z / 100;
-
-    //                scaleObject.rotatie.value = selectedObject.transform.rotation.y / 360;
-
-    //                //pijlenprefab = Instantiate(Resources.Load("Pijlenprefab/PijlenPrefab", typeof(GameObject))) as GameObject;
-    //                pijlenprefab = Instantiate<GameObject>(Pijlenprefab, hit.transform.position, hit.transform.rotation);
-
-    //                foreach (Transform child in pijlenprefab.transform)
-    //                {
-    //                    if (child.GetComponent<MeshCollider>() == null) child.gameObject.AddComponent<MeshCollider>();
-
-    //                    child.gameObject.AddComponent<ChangeColorByMouseOver>();
-    //                    child.gameObject.AddComponent<ChangeColorBack>();
-    //                }
-
-    //                pijlenprefab.transform.parent = hit.transform;
-
-    //                // de afstand tussen het object en de grond wordt berekend.\
-    //                Vector3 positionUnderObject = new Vector3(hit.transform.position.x, 0, hit.transform.position.z);
-    //                distanceToObject = Vector3.Distance(positionUnderObject, hit.transform.position);
-
-    //                // de positie van de pijlen worden op de juiste positie neergezet. Deze afstand is de afstand tot het object
-    //                // plus de 1/4de van het object zelf.
-    //                Renderer renderer = hit.transform.gameObject.GetComponent<Renderer>();
-
-    //                pijlenprefab.transform.position = new Vector3(renderer.bounds.center.x, distanceToObject + (renderer.bounds.size.y
-    //                                                             / arrowPositioningY), renderer.bounds.center.z);
-
-    //                // de juiste scaling factoren worden berekend voor x, y en z.
-    //                scalingX = renderer.bounds.size.x / (hit.transform.localScale.x / 1f);
-    //                scalingY = renderer.bounds.size.y / (hit.transform.localScale.y / 1f);
-    //                scalingZ = renderer.bounds.size.z / (hit.transform.localScale.z / 1f);
-
-    //                // de scale van de pijlen wordt aangepast met een scaling factor.
-    //                pijlenprefab.transform.localScale = new Vector3(scalingX, scalingY, scalingZ) * arrowScaling;
-    //            }
-
-    //            if (Input.GetMouseButtonDown(0))
-    //            {
-    //                if (hit.transform.gameObject != selectedObject && !(EventSystem.current.IsPointerOverGameObject()))
-    //                {
-    //                    if (hit.transform.tag != "PijlenPrefab")
-    //                    {
-    //                        Destroy(pijlenprefab);
-
-    //                        selectedObject.transform.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-    //                        selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-    //                        selectedObject = null;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+        placingObject = true;
+        instantiate = true;
+    }     
 }

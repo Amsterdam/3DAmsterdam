@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class RotateY : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class MoveRight : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private GameObject _selectedObject;
     private SelectAndScale script;
     private bool buttonPressed = false;
-    private float rotationFactor = 3f;
+    private float moveFactor = 5f;
 
     void Start()
     {
@@ -32,10 +32,9 @@ public class RotateY : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         if (buttonPressed)
         {
-            _selectedObject.transform.RotateAround(_selectedObject.transform.GetComponent<Collider>().bounds.center, Vector3.up, rotationFactor);
+            _selectedObject.transform.position += new Vector3(moveFactor, 0, 0);
             gameObject.GetComponent<Image>().color = Color.yellow;
-        }
-        else
+        } else
         {
             gameObject.GetComponent<Image>().color = Color.white;
         }

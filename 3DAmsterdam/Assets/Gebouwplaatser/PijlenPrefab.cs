@@ -17,10 +17,10 @@ public class PijlenPrefab : MonoBehaviour
 
     void Start()
     {
-        scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
-        scaleScript.gameObjects.Add(this.gameObject);
+        //scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
+        //scaleScript.gameObjects.Add(this.gameObject);
 
-        rendererOptions = new List<Transform>();
+        //rendererOptions = new List<Transform>();
 
         // als er al een collider op het object zit wordt die verplaatst met een box collider
         if (gameObject.GetComponent<Collider>() != null && gameObject.GetComponent<BoxCollider>() == null)
@@ -36,13 +36,29 @@ public class PijlenPrefab : MonoBehaviour
         }
     }
 
-    private void OnMouseOver()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            activate = true;
-        }
-    }
+    //private void Update()
+    //{
+    //    // menus verdwijnen als er ergens anders geklikt wordt
+    //    if (Input.GetMouseButtonDown(0) && activate && !EventSystem.current.IsPointerOverGameObject())
+    //    {
+    //        activate = false;
+    //    }
+    //}
+
+    //private void OnMouseOver()
+    //{
+    //    // selecteert het juiste object
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        scaleScript.selectedObject = this.gameObject;
+    //    }
+
+    //    // navigatie/verschaal menu komt tevoorschijn
+    //    if (Input.GetMouseButtonUp(0) && activate == false)
+    //    {
+    //        activate = true;
+    //    }
+    //}
 
 
 

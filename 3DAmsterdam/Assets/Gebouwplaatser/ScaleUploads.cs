@@ -8,11 +8,11 @@ public class ScaleUploads : MonoBehaviour
     [HideInInspector]
     public List<GameObject> gameObjects;
 
-    public GameObject scaleMenu;
-    public GameObject pijlenNavigatie;
+    public GameObject scaleMenu; // verschaal menu
     public Slider height, width, length;
 
-    private GameObject selectedObject;
+    [HideInInspector]
+    public GameObject selectedObject;
     private bool turnOffMenu;
 
     // When loading scene, old scene gets destroyed. Need to reset these game objects.
@@ -34,8 +34,8 @@ public class ScaleUploads : MonoBehaviour
             if (gameObjects[i].gameObject.GetComponent<PijlenPrefab>().activate)
             {
                 scaleMenu.SetActive(true);
-                pijlenNavigatie.SetActive(true);
-                selectedObject = gameObjects[i].gameObject;
+
+                //selectedObject = gameObjects[i].gameObject;
 
                 //if (selectedObject.GetComponent<PijlenPrefab>().setScaleValues)
                 //{
@@ -43,6 +43,9 @@ public class ScaleUploads : MonoBehaviour
                 //}
 
                 //turnOffMenu = false;
+            } else
+            {
+                scaleMenu.SetActive(false);
             }
         }
 
