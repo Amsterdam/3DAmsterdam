@@ -17,6 +17,7 @@ using ConvertCoordinates;
 public class TileLoader : MonoBehaviour
 {
     private CameraView CV;
+    private Extent vorigeCV = new Extent(0, 0, 0, 0);
     public string terrainUrl = "https://saturnus.geodan.nl/tomt/data/tiles/{z}/{x}/{y}.terrain?v=1.0.0";
     
     //public string textureUrl = "https://saturnus.geodan.nl/mapproxy/bgt/service?crs=EPSG%3A3857&service=WMS&version=1.1.1&request=GetMap&styles=&format=image%2Fjpeg&layers=bgt&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326";
@@ -62,8 +63,12 @@ public class TileLoader : MonoBehaviour
     void Update()
     {
         VerwijderTiles();
-        Extent Tempextent = CV.CameraExtent;
-        UpdateTerrainTiles(Tempextent);
+        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
+        {
+            vorigeCV = CV.CameraExtent;
+            UpdateTerrainTiles(vorigeCV);
+        }
+        
         // verdergaan met downloaden uit de queue
         if (pendingQueue.Count < maxParallelRequests && downloadQueue.Count > 0)
         {
