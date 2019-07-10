@@ -2,10 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Destroy : MonoBehaviour {
+public class Destroy : MonoBehaviour
+{
+    private GameObject _selectedObject;
+    private SelectAndScale script;
 
-    private void OnMouseDown()
+    private void Start()
     {
-        Destroy(transform.parent.parent.gameObject);
+        script = GameObject.Find("Manager").GetComponent<SelectAndScale>();
+
+    }
+
+    private void Update()
+    {
+        _selectedObject = script.selectedObject;
+    }
+
+    public void Remove()
+    {
+        Destroy(_selectedObject.gameObject);
     }
 }
