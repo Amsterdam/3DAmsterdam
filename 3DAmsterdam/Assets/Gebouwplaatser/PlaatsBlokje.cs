@@ -59,6 +59,7 @@ public class PlaatsBlokje : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     tempGebouw.AddComponent<ColliderCheck>();
+                    tempGebouw.AddComponent<PositioningBlokje>();
                     tempGebouw.gameObject.layer = 11;
                     tempGebouw.gameObject.name = "Cube" + cubeNaming;
 
