@@ -39,6 +39,7 @@ public class PlacePrefabs : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    buildingIns.AddComponent<ColliderCheck>();
                     buildingIns.gameObject.layer = 11;
                     placingObject = false;
                 }

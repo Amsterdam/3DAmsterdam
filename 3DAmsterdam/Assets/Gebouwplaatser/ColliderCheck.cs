@@ -3,13 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PijlenPrefab : MonoBehaviour
+public class ColliderCheck : MonoBehaviour
 {
-    private ScaleUploads scaleScript;
-
-    [HideInInspector]
-    public bool activate = false;
-
     private List<Transform> rendererOptions;
     private Vector3 largestSize = Vector3.zero;
     private Transform rendChild;
@@ -17,9 +12,6 @@ public class PijlenPrefab : MonoBehaviour
 
     void Start()
     {
-        //scaleScript = GameObject.Find("Manager").GetComponent<ScaleUploads>();
-        //scaleScript.gameObjects.Add(this.gameObject);
-
         //rendererOptions = new List<Transform>();
 
         // als er al een collider op het object zit wordt die verplaatst met een box collider

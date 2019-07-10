@@ -58,7 +58,7 @@ public class PlaatsBlokje : MonoBehaviour
                 // als er geklikt wordt, dan wordt het blokje geplaatst
                 if (Input.GetMouseButtonDown(0))
                 {
-                    tempGebouw.AddComponent<PijlenPrefab>();
+                    tempGebouw.AddComponent<ColliderCheck>();
                     tempGebouw.gameObject.layer = 11;
                     tempGebouw.gameObject.name = "Cube" + cubeNaming;
 
