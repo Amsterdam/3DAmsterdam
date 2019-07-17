@@ -29,7 +29,7 @@ public class SelectBuilding : MonoBehaviour
         originalParentColors = new List<Color>();
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -42,10 +42,10 @@ public class SelectBuilding : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Hoogbouw"))
             {
+                api.bagID = hit.transform.name;
+
                 if (Input.GetMouseButtonDown(0))
                 {
-                    api.bagID = hit.transform.name;
-
                     StartCoroutine(api.OnResponse(api.request));
 
                     bagCanvas.SetActive(true);
