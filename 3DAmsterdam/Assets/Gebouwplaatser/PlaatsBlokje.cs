@@ -49,7 +49,7 @@ public class PlaatsBlokje : MonoBehaviour
                 }
 
                 // positie van blokje gaat mee met die van de muis
-                tempGebouw.transform.position = hit.point;
+                tempGebouw.transform.position = new Vector3(0, tempGebouw.transform.localScale.y / 2, 0) + hit.point;
 
                 // blokje krijgt schaal en rotatie die gegeven worden in het menu
                 tempGebouw.transform.localScale = new Vector3(breedte.value * scaleFactor, hoogte.value * scaleFactor, lengte.value * scaleFactor);

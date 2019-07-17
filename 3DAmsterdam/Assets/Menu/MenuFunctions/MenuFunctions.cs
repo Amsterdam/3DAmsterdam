@@ -45,7 +45,7 @@ public class MenuFunctions : MonoBehaviour
     public int _hours, _minutes, _currentDay, _currentMonth, _currentYear, _currentWeer;
 
 
-    private float scaleFactor = 50f, moveFactor = 55f;
+    private float scaleFactor = 100f, moveFactor = 55f;
 
     private string[] months = new string[] {"Januari", "Februari", "Maart", "April", "Mei", "Juni",
                                             "Juli", "Augustus", "September", "Oktober", "November", "December" };

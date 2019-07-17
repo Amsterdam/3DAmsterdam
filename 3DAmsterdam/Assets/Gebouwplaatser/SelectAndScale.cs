@@ -11,7 +11,7 @@ public class SelectAndScale : MonoBehaviour
     public Slider height, width, length; // kubussen
     public Slider size; // andere objecten
     public TextMeshProUGUI text;
-    private TextMeshProUGUI _text, sizeText;
+    private TextMeshProUGUI _text, sizeText, heightText, widthText, lengthText;
 
     [HideInInspector]
     public GameObject selectedObject;
@@ -24,6 +24,9 @@ public class SelectAndScale : MonoBehaviour
     {
         _text = text.GetComponent<TextMeshProUGUI>();
         sizeText = objectScaling.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+        heightText = cubeScaling.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+        widthText = cubeScaling.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
+        lengthText = cubeScaling.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
 
         scaleMenu.SetActive(false);
 
@@ -112,7 +115,10 @@ public class SelectAndScale : MonoBehaviour
                 size.value = 0;
             } else if (scale.x > 1)
             {
-                size.value = scale.x * 10;
+                size.value = scale.x * 10 - 10;
+            } else
+            {
+                size.value = -(size.maxValue - (scale.x * size.maxValue));
             }
         }
     }
@@ -122,19 +128,23 @@ public class SelectAndScale : MonoBehaviour
     {
         if (selectedObject.tag == cubeTag)
         {
+            heightText.text = ((int)(selectedObject.transform.localScale.y)).ToString() + "m";
+            widthText.text = ((int)(selectedObject.transform.localScale.x)).ToString() + "m";
+            lengthText.text = ((int)(selectedObject.transform.localScale.z)).ToString() + "m";
+
             selectedObject.transform.localScale = new Vector3(width.value * scaleFactor, height.value * scaleFactor, length.value * scaleFactor);
         }
         else
         {
             sizeText.text = selectedObject.transform.localScale.x.ToString("F2") + "x";
 
-            if (size.value > 0)
+            if (size.value > 0) // vergroten van object
             {
                 selectedObject.transform.localScale = Vector3.one * ((size.value + 10) / 10);
-            } else if (size.value == 0)
+            } else if (size.value == 0) // beginwaarde van object
             {
                 selectedObject.transform.localScale = Vector3.one;
-            } else if (size.value < 0 && size.value > (size.minValue + 5))
+            } else if (size.value < 0 && size.value > (size.minValue + 5)) // verkleinen van object
             {
                 selectedObject.transform.localScale = Vector3.one * ((size.maxValue - Mathf.Abs(size.value)) / size.maxValue);
             }
