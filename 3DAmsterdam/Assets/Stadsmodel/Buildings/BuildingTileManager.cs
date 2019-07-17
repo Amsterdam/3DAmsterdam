@@ -37,9 +37,9 @@ class BuildingTileData
 
 public class BuildingTileManager : MonoBehaviour
 {
+    
 
-
-    public string BuildingURL = "http://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/"; //"file:///D://Git/A3d/AssetBundles/WebGL/";
+    public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
@@ -173,6 +173,7 @@ public class BuildingTileManager : MonoBehaviour
 
     private IEnumerator TilesBijwerken()
     {
+        Debug.Log("PendingDestroyCount: "+ PendingDestroy.Count);
         // verwijderen wanneer mogelijk
         for (int j = PendingDestroy.Count-1; j >-1; j--)
         
@@ -190,6 +191,7 @@ public class BuildingTileManager : MonoBehaviour
             PendingDestroy.RemoveAt(j);
         }
         //downloaden wanneer mogelijk
+        Debug.Log("PendingDowndloadsCount: " + PendingDownloads.Count);
         if (ActiveDownloads.Count < MAX_Concurrent_Downloads && PendingDownloads.Count>0)
         {
             Vector3 TileID = PendingDownloads[0];
@@ -199,6 +201,7 @@ public class BuildingTileManager : MonoBehaviour
             StartCoroutine(DownloadAssetBundleWebGL(TileID));
         }
         //builden wanneer mogelijk
+        Debug.Log("PendingBuildsCount: " + PendingBuilds.Count);
         if (PendingBuilds.Count>0)
         {
             Vector3 TileID = PendingBuilds[0];
@@ -230,6 +233,7 @@ public class BuildingTileManager : MonoBehaviour
 
             if (uwr.isNetworkError || uwr.isHttpError)
             {
+                Debug.Log(uwr.error);
                 ActiveDownloads.Remove(btd.id);
                 btd.Status = BuildingTileStatus.PendingBuild;
                 PendingBuilds.Add(btd.id);
