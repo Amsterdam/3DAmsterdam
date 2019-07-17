@@ -18,7 +18,7 @@ public enum BuildingTileStatus
     Built,              //Assetbundlecontent is displayed
     PendingDestroy
 }
-public class BuildingTileData
+class BuildingTileData
 {
     public Vector3 id;
     public List<GameObject> Gameobjecten = new List<GameObject>();
@@ -37,9 +37,9 @@ public class BuildingTileData
 
 public class BuildingTileManager : MonoBehaviour
 {
+    
 
-
-    public string BuildingURL = "http://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/"; //"file:///D://Git/A3d/AssetBundles/WebGL/";
+    public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
@@ -154,14 +154,6 @@ public class BuildingTileManager : MonoBehaviour
         }
     }
 
-    public BuildingTileData Get(Vector3 TileID)
-    {
-        BuildingTileData btd;
-        if (!buildingTiles.TryGetValue(TileID, out btd))
-            return null;
-        return btd;
-    }
-
     /// <summary>
     /// Mark a BuildingTIle "To Be Removed"
     /// </summary>
@@ -181,6 +173,7 @@ public class BuildingTileManager : MonoBehaviour
 
     private IEnumerator TilesBijwerken()
     {
+        Debug.Log("PendingDestroyCount: "+ PendingDestroy.Count);
         // verwijderen wanneer mogelijk
         for (int j = PendingDestroy.Count-1; j >-1; j--)
         
@@ -188,7 +181,7 @@ public class BuildingTileManager : MonoBehaviour
             Vector3 TileID = PendingDestroy[j];
             if (buildingTiles[TileID].AB != null)
             {
-                buildingTiles[TileID].AB.Unload(false); // TODO
+                buildingTiles[TileID].AB.Unload(true);
                 for (int i = buildingTiles[TileID].Gameobjecten.Count-1; i >-1; i--)
                 {
                     Destroy(buildingTiles[TileID].Gameobjecten[i]);
@@ -198,6 +191,7 @@ public class BuildingTileManager : MonoBehaviour
             PendingDestroy.RemoveAt(j);
         }
         //downloaden wanneer mogelijk
+        Debug.Log("PendingDowndloadsCount: " + PendingDownloads.Count);
         if (ActiveDownloads.Count < MAX_Concurrent_Downloads && PendingDownloads.Count>0)
         {
             Vector3 TileID = PendingDownloads[0];
@@ -207,6 +201,7 @@ public class BuildingTileManager : MonoBehaviour
             StartCoroutine(DownloadAssetBundleWebGL(TileID));
         }
         //builden wanneer mogelijk
+        Debug.Log("PendingBuildsCount: " + PendingBuilds.Count);
         if (PendingBuilds.Count>0)
         {
             Vector3 TileID = PendingBuilds[0];
@@ -238,6 +233,7 @@ public class BuildingTileManager : MonoBehaviour
 
             if (uwr.isNetworkError || uwr.isHttpError)
             {
+                Debug.Log(uwr.error);
                 ActiveDownloads.Remove(btd.id);
                 btd.Status = BuildingTileStatus.PendingBuild;
                 PendingBuilds.Add(btd.id);
@@ -267,7 +263,6 @@ public class BuildingTileManager : MonoBehaviour
             float Y = float.Parse(Meshnaam.Split('_')[1]);
             GameObject container = new GameObject(X + "_" + Y+"_"+TileID.z);
             container.transform.parent = transform;
-            container.layer = LayerMask.NameToLayer("Panden");
             //positioning container
             Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
@@ -287,8 +282,6 @@ public class BuildingTileManager : MonoBehaviour
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;
-            // Collider for entire tile (possibly temporary)
-            container.AddComponent<MeshCollider>();
             //add to Buildingtiledata
             btd.Gameobjecten.Add(container);
             ActiveBuilds.Remove(btd.id);
