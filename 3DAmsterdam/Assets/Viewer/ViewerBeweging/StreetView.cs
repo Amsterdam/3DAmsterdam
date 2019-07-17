@@ -11,12 +11,28 @@ public class StreetView : MonoBehaviour
 
     private Vector3 endPos;
     private Vector3 mousePos;
+    private TileLoader tileScript;
 
-    public GameObject FPSCam;
+    public GameObject FPSCam, tileManager;
     public Camera cam;
 
     private float stopHeight = 60f;
     private float lerpSpeed = 3f;
+
+
+    private void Start()
+    {
+        tileScript = tileManager.GetComponent<TileLoader>();
+    }
+
+    private void Update()
+    {
+        Debug.Log(tileScript.pendingQueue.Count);
+        if (tileScript.pendingQueue.Count != 0)
+        {
+            FPSCam.transform.position = Vector3.zero;
+        }
+    }
 
     private void LateUpdate()
     {

@@ -30,7 +30,7 @@ public class TileLoader : MonoBehaviour
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
     const int maxParallelRequests = 8;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
-    Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
+    public Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
     public enum TileService
     {
