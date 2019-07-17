@@ -86,8 +86,13 @@ public class AdresZoeker : MonoBehaviour
                 Debug.Log(lon);
                 Debug.Log(lat);
                 Vector3 UnityLocatie = CoordConvert.WGS84toUnity(lon, lat);
-                UnityLocatie.y = 200;
-                Camera.main.transform.position = UnityLocatie;
+
+                Vector3 Campositie = UnityLocatie;
+                Campositie.x -= 100;
+                Campositie.z -= 100;
+                Campositie.y = 200;
+                Camera.main.transform.position = Campositie;
+                Camera.main.transform.LookAt(UnityLocatie, Vector3.up);
             }
 
         }
