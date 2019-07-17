@@ -20,7 +20,7 @@ public class Export : MonoBehaviour
 
             mesh1 = _selectDownload.selectedDownloadObj.GetComponentInChildren<MeshFilter>();
 
-            ObjExporter.MeshToFile(mesh1, "C:/Users/Rick/Desktop/OBjFile/" + _selectDownload.selectedDownloadObj.name + ".obj");
+            ObjExporter.WriteObjToFile(mesh1, "C:/Users/Rick/Desktop/OBjFile/" + _selectDownload.selectedDownloadObj.name + ".obj");
         }  
     }
 }

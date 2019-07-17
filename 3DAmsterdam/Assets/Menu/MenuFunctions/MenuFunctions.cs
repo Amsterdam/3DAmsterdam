@@ -27,7 +27,6 @@ public class MenuFunctions : MonoBehaviour
     public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
     public Button placeBuildingButton, uploadBuildingButton;
     public RectTransform positioningGebouwen;
-    public PlaatsBlokje plaatsBlokje;
     public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue;
 
     [Header("Opties")]
@@ -39,13 +38,14 @@ public class MenuFunctions : MonoBehaviour
 
     private Vector3 startPosMenuCreateBuilding, startPosMap;
 
-    private int noMenu = 10, currentWeer, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
+    private int currentMenu, noMenu = 10, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
                 buildingMenuDecider = 1, uploadMenuDecider = 1;
 
     [HideInInspector]
-    public int currentMenu, _hours, _minutes, _currentDay, _currentMonth, _currentYear;
+    public int _hours, _minutes, _currentDay, _currentMonth, _currentYear, _currentWeer;
 
-    private float scaleFactor = 50f, moveFactor = 55f;
+
+    private float scaleFactor = 100f, moveFactor = 55f;
 
     private string[] months = new string[] {"Januari", "Februari", "Maart", "April", "Mei", "Juni",
                                             "Juli", "Augustus", "September", "Oktober", "November", "December" };
@@ -70,7 +70,7 @@ public class MenuFunctions : MonoBehaviour
         startPosMenuCreateBuilding = createBuilding.transform.position;
         startPosMap = miniMap.transform.localPosition;
 
-        currentWeer = weatherOptions.Length / 2;
+        _currentWeer = weatherOptions.Length / 2;
 
         modeManager = manager.GetComponent<ModeManager>();
     }
@@ -120,24 +120,6 @@ public class MenuFunctions : MonoBehaviour
 
         currentMenu = _menuNumber;
 
-        if (menuNumber == 3)
-        {
-            //if a menu gets closed
-            if (plaatsBlokje.selectedObject != null)
-            {
-                Destroy(plaatsBlokje.pijlenprefab);
-
-                //Make the block white
-                plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-                //Add the highlight script
-                plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-                //and deselect it
-                plaatsBlokje.selectedObject = null;
-            }
-        }
-
         GameObject menu = allMenus[_menuNumber];
         Button button = buttons[_menuNumber];
         ColorBlock colors = button.colors;
@@ -160,21 +142,6 @@ public class MenuFunctions : MonoBehaviour
     public void Exit()
     {
         currentMenu = noMenu;
-
-        //if a meny gets closed
-        if(plaatsBlokje.selectedObject != null)
-        {
-            Destroy(plaatsBlokje.pijlenprefab);
-
-            //Make the block white
-            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-            //Add the highlight script
-            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-            //and deselect it
-            plaatsBlokje.selectedObject = null;
-        }
     }
     #endregion
 
@@ -183,20 +150,20 @@ public class MenuFunctions : MonoBehaviour
     // weerselectie naar rechts
     public void WeerRightButton()
     {
-        if (currentWeer > 0)
+        if (_currentWeer > 0)
         {
             positioning.position += new Vector3(moveFactor, 0, 0);
-            currentWeer--;
+            _currentWeer--;
         }
     }
 
     // weerselectie naar links
     public void WeerLeftButton()
     {
-        if (currentWeer < 6)
+        if (_currentWeer < 6)
         {
             positioning.position -= new Vector3(moveFactor, 0, 0);
-            currentWeer++;
+            _currentWeer++;
         }
     }
 
@@ -205,7 +172,7 @@ public class MenuFunctions : MonoBehaviour
     {
         for (int i = 0; i < weatherOptions.Length; i++)
         {
-            if (i == currentWeer)
+            if (i == _currentWeer)
             {
                 weatherOptions[i].GetComponent<Button>().enabled = true;
                 weatherOptions[i].GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
@@ -220,7 +187,7 @@ public class MenuFunctions : MonoBehaviour
                 weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
             }
 
-            switch (currentWeer)
+            switch (_currentWeer)
             {
                 case 0:
                     if (i >= 3 && i <= 6)

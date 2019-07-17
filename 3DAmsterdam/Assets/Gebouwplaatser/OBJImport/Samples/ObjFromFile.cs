@@ -42,14 +42,14 @@ public class ObjFromFile : MonoBehaviour
                     {
                         loadedObject.layer = LayerMask.NameToLayer("Default");
                         //loadedObject.gameObject.AddComponent<HighLight>();
-                        loadedObject.AddComponent<PijlenPrefab>();
+                        loadedObject.AddComponent<ColliderCheck>();
                         loadedObject.tag = "Sizeable";
 
                         foreach (Transform child in loadedObject.transform)
                         {
                             child.gameObject.AddComponent<MeshCollider>();
                             //child.gameObject.AddComponent<HighLight>();
-                            child.gameObject.tag = "Sizeable";
+                            //child.gameObject.tag = "Sizeable";
                         }
 
                         loadedObject = null;

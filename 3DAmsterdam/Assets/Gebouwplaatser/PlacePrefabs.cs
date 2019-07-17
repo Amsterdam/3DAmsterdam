@@ -31,6 +31,7 @@ public class PlacePrefabs : MonoBehaviour
                 if (instantiate)
                 {
                     buildingIns = (GameObject)Instantiate(building, hit.point, Quaternion.identity);
+                    buildingIns.tag = "CustomPlaced";
                     instantiate = false;
                 }
 
@@ -38,6 +39,7 @@ public class PlacePrefabs : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    buildingIns.AddComponent<ColliderCheck>();
                     buildingIns.gameObject.layer = 11;
                     placingObject = false;
                 }
