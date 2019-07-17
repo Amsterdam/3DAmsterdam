@@ -107,31 +107,13 @@ public class SelectAndScale : MonoBehaviour
         }
         else
         {
-            Debug.Log("ei");
-            //switch (scale.x)
-            //{
-            //    case 0.125f:
-            //        size.value = 0;
-            //        break;
-            //    case 0.25f:
-            //        size.value = 1;
-            //        break;
-            //    case 0.5f:
-            //        size.value = 2;
-            //        break;
-            //    case 1f:
-            //        size.value = 3;
-            //        break;
-            //    case 2f:
-            //        size.value = 4;
-            //        break;
-            //    case 4f:
-            //        size.value = 5;
-            //        break;
-            //    case 8f:
-            //        size.value = 6;
-            //        break;
-            //}
+            if (scale.x == 1)
+            {
+                size.value = 0;
+            } else if (scale.x > 1)
+            {
+                size.value = scale.x * 10;
+            }
         }
     }
 
@@ -155,7 +137,7 @@ public class SelectAndScale : MonoBehaviour
             } else if (size.value < 0 && size.value > (size.minValue + 5))
             {
                 selectedObject.transform.localScale = Vector3.one * ((size.maxValue - Mathf.Abs(size.value)) / size.maxValue);
-            } 
+            }
         }
     }
 
