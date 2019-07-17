@@ -40,7 +40,7 @@ public class SelectBuilding : MonoBehaviour
     {
         if(Physics.Raycast(ray, out hit))
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Hoogbouw"))
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Hoogbouw") && hit.transform.tag != "Sizeable" && hit.transform.tag != "CustomPlaced")
             {
                 api.bagID = hit.transform.name;
 
