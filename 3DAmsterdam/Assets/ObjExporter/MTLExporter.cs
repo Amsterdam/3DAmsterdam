@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 
 public class MtlExporter
@@ -14,13 +16,13 @@ public class MtlExporter
     public static string GetMatName(Material mat)
     {
         return ((uint)mat.GetInstanceID()).ToString();
-       // return mat.name;
+        // return mat.name;
         //return Hash128.Parse(mat.name).ToString();
     }
 
     public static string GetTexName(Texture2D tex)
     {
-        return tex.imageContentsHash.ToString();
+        return GetTextureHash(tex);
     }
 
     public static Dictionary<string, Material> MtlToMaterials(string mtlData)
@@ -31,7 +33,7 @@ public class MtlExporter
         Color c;
         Texture2D tex;
         Material mat = new Material(s);
-        
+
         using (StringReader sr = new StringReader(mtlData))
         {
             string line;
@@ -111,12 +113,25 @@ public class MtlExporter
         {
             var tex = mat.GetTexture(keyWord) as Texture2D;
             if (tex == null) return;
-            string hash = tex.imageContentsHash.ToString();
+
+            Color32[] texCols = tex.GetPixels32();
+            byte[] rawTextureData = Color32ArrayToByteArray(texCols);
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            byte[] hashbytes = md5.ComputeHash(rawTextureData);
+
+            StringBuilder sBuilder = new StringBuilder();
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < hashbytes.Length; i++)
+            {
+                sBuilder.Append(hashbytes[i].ToString("x2"));
+            }
+            string hash = sBuilder.ToString();
             if (!textures.ContainsKey(hash)) textures.Add(hash, tex);
         }
     }
 
-    public static Texture2D [] GetUniqueTextures(MeshFilter[] mfs)
+    public static Texture2D[] GetUniqueTextures(MeshFilter[] mfs)
     {
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         foreach (var mf in mfs)
@@ -176,7 +191,7 @@ public class MtlExporter
                     continue;
                 materials.Add(name);
 
-             //   if (kWrittenMaterials != 0) sb.AppendLine();
+                //   if (kWrittenMaterials != 0) sb.AppendLine();
                 sb.Append($"newmtl {name}\n");
 
                 if (mat.HasProperty("_Glossiness*"))
@@ -235,5 +250,47 @@ public class MtlExporter
             }
             onDone(tex, succes);
         });
+    }
+
+    private static byte[] Color32ArrayToByteArray(Color32[] colors)
+    {
+        if (colors == null || colors.Length == 0)
+            return null;
+
+        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
+        int length = lengthOfColor32 * colors.Length;
+        byte[] bytes = new byte[length];
+
+        GCHandle handle = default(GCHandle);
+        try
+        {
+            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
+            IntPtr ptr = handle.AddrOfPinnedObject();
+            Marshal.Copy(ptr, bytes, 0, length);
+        }
+        finally
+        {
+            if (handle != default(GCHandle))
+                handle.Free();
+        }
+
+        return bytes;
+    }
+    private static string GetTextureHash(Texture2D tex)
+    {
+        Color32[] texCols = tex.GetPixels32();
+        byte[] rawTextureData = Color32ArrayToByteArray(texCols);
+        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+        byte[] hashbytes = md5.ComputeHash(rawTextureData);
+
+        StringBuilder sBuilder = new StringBuilder();
+        // Loop through each byte of the hashed data 
+        // and format each one as a hexadecimal string.
+        for (int i = 0; i < hashbytes.Length; i++)
+        {
+            sBuilder.Append(hashbytes[i].ToString("x2"));
+        }
+        string hash = sBuilder.ToString();
+        return hash;
     }
 }
