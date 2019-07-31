@@ -20,19 +20,18 @@ public class StreetView : MonoBehaviour
     private float lerpSpeed = 3f;
 
 
-    private void Start()
-    {
-        tileScript = tileManager.GetComponent<TileLoader>();
-    }
+    //private void Start()
+    //{
+    //    tileScript = tileManager.GetComponent<TileLoader>();
+    //}
 
-    private void Update()
-    {
-        Debug.Log(tileScript.pendingQueue.Count);
-        if (tileScript.pendingQueue.Count != 0)
-        {
-            FPSCam.transform.position = Vector3.zero;
-        }
-    }
+    //private void Update()
+    //{
+    //    if (tileScript.pendingQueue.Count != 0)
+    //    {
+    //        FPSCam.transform.position = Vector3.zero;
+    //    }
+    //}
 
     private void LateUpdate()
     {
