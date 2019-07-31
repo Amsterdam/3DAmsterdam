@@ -10,11 +10,11 @@ public class API : MonoBehaviour
 
     private string URL;
 
+    [HideInInspector]
     public Text naam;
     public Text bouwjaar;
     public Text BAGID;
     public Text verblijfsobjecten;
-
     public WWW request;
 
     JSONNode requestOutput;
