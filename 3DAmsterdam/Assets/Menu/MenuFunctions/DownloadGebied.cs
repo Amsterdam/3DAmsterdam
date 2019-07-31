@@ -84,6 +84,7 @@ public class DownloadGebied : MonoBehaviour
 
             case State.Uploading:
                 // Wait..
+                
                 break;
         }
     }
@@ -157,6 +158,7 @@ public class DownloadGebied : MonoBehaviour
         {
         });
         state = State.Idle;
+        transform.gameObject.SetActive(false);
     }
 
     private void OnDisable()
