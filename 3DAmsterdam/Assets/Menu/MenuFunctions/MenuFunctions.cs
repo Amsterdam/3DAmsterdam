@@ -18,6 +18,7 @@ public class MenuFunctions : MonoBehaviour
     public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
     public RectTransform positioning;
     public TextMeshProUGUI hours, minutes, time, monthYear, date;
+    private bool huidigSelected = false;
 
     [Header("Bouwen")]
     public GameObject[] buildingOptions;
@@ -64,8 +65,6 @@ public class MenuFunctions : MonoBehaviour
         _currentDay = System.DateTime.Now.Day;
         _currentMonth = System.DateTime.Now.Month;
         _currentYear = System.DateTime.Now.Year;
-        _hours = System.DateTime.Now.Hour;
-        _minutes = System.DateTime.Now.Minute;
 
         startPosMenuCreateBuilding = new Vector3(createBuilding.transform.position.x + allMenus[2].GetComponent<RectTransform>().sizeDelta.x,
                                                  createBuilding.transform.position.y, createBuilding.transform.position.z);
@@ -94,6 +93,12 @@ public class MenuFunctions : MonoBehaviour
 
         // minimap
         MapPositioning();
+
+        if (huidigSelected)
+        {
+            _hours = System.DateTime.Now.Hour;
+            _minutes = System.DateTime.Now.Minute;
+        }
     }
 
     // beheert alle menus
@@ -450,6 +455,11 @@ public class MenuFunctions : MonoBehaviour
     public void SelectDay()
     {
         _currentDay = int.Parse(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+    }
+
+    public void HuidigMoment()
+    {
+        huidigSelected = true;
     }
     #endregion
 
