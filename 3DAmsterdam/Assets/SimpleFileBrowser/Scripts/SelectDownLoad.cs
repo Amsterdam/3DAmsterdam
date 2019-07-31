@@ -19,6 +19,7 @@ public class SelectDownLoad : MonoBehaviour
 
     public Button selectButton;
     public Button downloadButton;
+    public GameObject DownloadGebied;
 
     bool deselect;
 
@@ -55,7 +56,8 @@ public class SelectDownLoad : MonoBehaviour
 
     public void StartSelecting()
     {
-        selecting = true;
+        DownloadGebied.SetActive(true);
+        //selecting = true;
     }
 
     public void SelectDownloadObj()
