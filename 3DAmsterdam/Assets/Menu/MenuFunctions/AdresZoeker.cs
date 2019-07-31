@@ -77,14 +77,10 @@ public class AdresZoeker : MonoBehaviour
 
                 string lonstr = locatiedata.Split(' ')[0];
                 string latstr = locatiedata.Split(' ')[1];
-                Debug.Log(lonstr);
-                Debug.Log(latstr);
                 double lon;
                 double lat;
                 double.TryParse(lonstr, NumberStyles.Any, CultureInfo.InvariantCulture, out lon);
                 double.TryParse(latstr, NumberStyles.Any, CultureInfo.InvariantCulture, out lat);
-                Debug.Log(lon);
-                Debug.Log(lat);
                 Vector3 UnityLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
                 Vector3 Campositie = UnityLocatie;

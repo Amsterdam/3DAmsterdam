@@ -67,7 +67,8 @@ public class MenuFunctions : MonoBehaviour
 
         _hours = 14; // tijd begint op een licht moment
 
-        startPosMenuCreateBuilding = createBuilding.transform.position;
+        startPosMenuCreateBuilding = new Vector3(createBuilding.transform.position.x + allMenus[2].GetComponent<RectTransform>().sizeDelta.x,
+                                                 createBuilding.transform.position.y, createBuilding.transform.position.z);
         startPosMap = miniMap.transform.localPosition;
 
         _currentWeer = weatherOptions.Length / 2;
@@ -101,13 +102,22 @@ public class MenuFunctions : MonoBehaviour
         // het huidige menu wordt zichtbaar gemaakt
         if (currentMenu != noMenu)
         {
-            allMenus[currentMenu].SetActive(true);
+            var menu = allMenus[currentMenu];
+
+            menu.SetActive(true);
+
+            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, menu.GetComponent<RectTransform>().sizeDelta.x, 
+                                                       6f * Time.deltaTime), 0, 0);
         }
 
         // alle andere menus worden ontzichtbaar gemaakt.
         for (int i = 0; i < allMenus.Length; i++)
         {
-            if (i != currentMenu) allMenus[i].SetActive(false);
+            if (i != currentMenu)
+            {
+                allMenus[i].transform.localPosition = Vector3.zero;
+                allMenus[i].SetActive(false);
+            }
         }
     }
 
