@@ -12,7 +12,7 @@ public class KNMIAPI : MonoBehaviour
     private string huidigWeer;
     private bool runTime = false;
 
-    public void Start()
+    public void HuidigWeer()
     {    
         URL = "https://meteoserver.nl/api/liveweer.php?locatie=Amsterdam&key=a84d8b8009";
         WWW request = new WWW(URL);

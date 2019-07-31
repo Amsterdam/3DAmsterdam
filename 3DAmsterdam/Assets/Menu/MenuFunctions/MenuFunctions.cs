@@ -64,8 +64,8 @@ public class MenuFunctions : MonoBehaviour
         _currentDay = System.DateTime.Now.Day;
         _currentMonth = System.DateTime.Now.Month;
         _currentYear = System.DateTime.Now.Year;
-
-        _hours = 14; // tijd begint op een licht moment
+        _hours = System.DateTime.Now.Hour;
+        _minutes = System.DateTime.Now.Minute;
 
         startPosMenuCreateBuilding = new Vector3(createBuilding.transform.position.x + allMenus[2].GetComponent<RectTransform>().sizeDelta.x,
                                                  createBuilding.transform.position.y, createBuilding.transform.position.z);
