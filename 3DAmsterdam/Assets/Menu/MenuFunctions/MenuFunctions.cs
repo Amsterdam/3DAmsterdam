@@ -70,8 +70,7 @@ public class MenuFunctions : MonoBehaviour
         _currentYear = System.DateTime.Now.Year;
         _hours = 12;
 
-        startPosMenuCreateBuilding = new Vector3(createBuilding.transform.position.x + allMenus[2].GetComponent<RectTransform>().sizeDelta.x,
-                                                 createBuilding.transform.position.y, createBuilding.transform.position.z);
+        startPosMenuCreateBuilding = createBuilding.transform.localPosition;
         startPosMap = miniMap.transform.localPosition;
 
         _currentWeer = weatherOptions.Length / 2;
@@ -499,8 +498,6 @@ public class MenuFunctions : MonoBehaviour
             placeBuildingMenu.SetActive(true);
             placeBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
 
-            createBuilding.transform.position = startPosMenuCreateBuilding;
-
             if (uploadBuildingMenu.activeSelf)
             {
                 uploadMenuDecider *= -1;
@@ -519,16 +516,16 @@ public class MenuFunctions : MonoBehaviour
             uploadBuildingMenu.SetActive(false);
             uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
 
-            createBuilding.transform.position = startPosMenuCreateBuilding;
+            createBuilding.transform.localPosition = startPosMenuCreateBuilding;
         }
         else
         {
             uploadBuildingMenu.SetActive(true);
             uploadBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
 
-            createBuilding.transform.position = new Vector3(createBuilding.transform.position.x, uploadBuildingMenu.transform.position.y,
-                                                            createBuilding.transform.position.z) - 
-                                                new Vector3(0, uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2f + 13f, 0);
+            createBuilding.transform.localPosition = new Vector3(createBuilding.transform.localPosition.x, 
+                                                            uploadBuildingMenu.transform.localPosition.y - (uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2 + 10),
+                                                            createBuilding.transform.localPosition.z);
 
             if (placeBuildingMenu.activeSelf)
             {
