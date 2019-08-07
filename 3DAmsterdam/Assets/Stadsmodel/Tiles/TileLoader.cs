@@ -16,6 +16,7 @@ using ConvertCoordinates;
 
 public class TileLoader : MonoBehaviour
 {
+    public Material DeFaultMaterial;
     private CameraView CV;
     private Extent vorigeCV = new Extent(0, 0, 0, 0);
     public string terrainUrl = "https://saturnus.geodan.nl/tomt/data/tiles/{z}/{x}/{y}.terrain?v=1.0.0";
@@ -25,6 +26,9 @@ public class TileLoader : MonoBehaviour
    // public string textureUrl = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=512&crs=EPSG%3A4326&srs=EPSG%3A4326";
     public GameObject placeholderTile;
     private const int tilesize = 180;
+
+    Texture2D myTexture;
+
 
     readonly Dictionary<Vector3, GameObject> tileDb = new Dictionary<Vector3, GameObject>();
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
@@ -93,6 +97,7 @@ public class TileLoader : MonoBehaviour
     private GameObject DrawPlaceHolder(Vector3 t)
     {
         var tile = Instantiate(placeholderTile);
+        
         tile.transform.parent = transform;
         tile.name = $"tile/{t.x.ToString()}/{t.y.ToString()}/{t.z.ToString()}";
         tile.transform.position = GetTilePosition(t);
@@ -139,10 +144,14 @@ public class TileLoader : MonoBehaviour
         {
             if (tileDb.ContainsKey(tileId))
             {
-                Texture2D myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                myTexture.wrapMode = TextureWrapMode.Clamp;
+
+                //myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                //myTexture.wrapMode = TextureWrapMode.Clamp;
                 //update tile with height data
-                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = myTexture;
+
+                DestroyImmediate(tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture);
+                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
             }
         }
         else
@@ -170,11 +179,16 @@ public class TileLoader : MonoBehaviour
             //update tile with height data
             if (tileDb.ContainsKey(tileId))
             {
-                tileDb[tileId].GetComponent<MeshFilter>().sharedMesh = terrainTile.GetMesh(0);
+                DestroyImmediate(tileDb[tileId].GetComponent<MeshFilter>().mesh);
+                tileDb[tileId].GetComponent<MeshFilter>().mesh.vertices = terrainTile.GetVertices(0);
+                tileDb[tileId].GetComponent<MeshFilter>().mesh.triangles = terrainTile.GetTriangles(0);
+                tileDb[tileId].GetComponent<MeshFilter>().mesh.uv = terrainTile.GetUV(0);
+                tileDb[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
+
+
                 tileDb[tileId].AddComponent<MeshCollider>();
                 
                 tileDb[tileId].GetComponent<MeshCollider>().sharedMesh = tileDb[tileId].GetComponent<MeshFilter>().sharedMesh;
-               
                 tileDb[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = tileDb[tileId].transform.localPosition;
                 loc.y = 0;
@@ -367,7 +381,7 @@ public class TileLoader : MonoBehaviour
                     TeVerwijderenTiles.Add(V, tileDb[V]);
                 }
                 //verwijderen uit de lijst met geladen tegels
-                Destroy(tileDb[V]);
+                //Destroy(tileDb[V]);
                 tileDb.Remove(V);
                 
             }
@@ -475,6 +489,10 @@ public class TileLoader : MonoBehaviour
 
             if (GroterAanwezig==false && KleinerAanwezig==false)
             {
+
+
+                Destroy(TeVerwijderenTiles[V].GetComponent<MeshRenderer>().material.mainTexture);
+                Destroy(TeVerwijderenTiles[V].GetComponent<MeshFilter>().mesh);
                 Destroy(TeVerwijderenTiles[V]);
                 TeVerwijderenTiles.Remove(V);
             }

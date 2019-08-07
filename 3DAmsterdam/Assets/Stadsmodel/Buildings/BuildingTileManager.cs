@@ -96,8 +96,8 @@ public class BuildingTileManager : MonoBehaviour
         Vector3RD Camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
         Vector3 CamlocationRD = new Vector3((float)Camlocation3RD.x, (float)Camlocation3RD.y, (float)Camlocation3RD.z);
 
-        // tegels toevoegen
-
+      
+        //Benodigde tegels uitzoeken
         Dictionary<Vector3, int> BuildingTilesNeeded = new Dictionary<Vector3, int>();
         for (int deltax = X0; deltax <= X1; deltax += 1000)
         {
@@ -183,6 +183,7 @@ public class BuildingTileManager : MonoBehaviour
                 buildingTiles[TileID].AB.Unload(true);
                 for (int i = buildingTiles[TileID].Gameobjecten.Count-1; i >-1; i--)
                 {
+                    Destroy(buildingTiles[TileID].Gameobjecten[i].GetComponent<MeshFilter>().mesh);
                     Destroy(buildingTiles[TileID].Gameobjecten[i]);
                 }
             }
@@ -202,9 +203,16 @@ public class BuildingTileManager : MonoBehaviour
         if (PendingBuilds.Count>0)
         {
             Vector3 TileID = PendingBuilds[0];
-            PendingBuilds.RemoveAt(0);
-            ActiveBuilds.Add(TileID);
-            StartCoroutine(ProcessBuildingTile(TileID));
+            if (buildingTiles.ContainsKey(TileID))
+            {
+                PendingBuilds.RemoveAt(0);
+                ActiveBuilds.Add(TileID);
+                StartCoroutine(ProcessBuildingTile(TileID));
+            }
+            else{
+                PendingBuilds.RemoveAt(0);
+            }
+            
         }
         yield return new WaitForSeconds(0.1f);
         BijwerkenGereed = true;
