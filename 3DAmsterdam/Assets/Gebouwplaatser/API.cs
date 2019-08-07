@@ -31,9 +31,9 @@ public class API : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        naam.text = requestOutput["pandnaam"];
-        bouwjaar.text = requestOutput["oorspronkelijk_bouwjaar"];
-        BAGID.text = requestOutput["pandidentificatie"];
-        verblijfsobjecten.text = requestOutput["verblijfsobjecten"]["count"];
+        naam.GetComponent<TextMeshProUGUI>().text = requestOutput["pandnaam"];
+        bouwjaar.GetComponent<TextMeshProUGUI>().text = requestOutput["oorspronkelijk_bouwjaar"];
+        BAGID.GetComponent<TextMeshProUGUI>().text = requestOutput["pandidentificatie"];
+        verblijfsobjecten.GetComponent<TextMeshProUGUI>().text = requestOutput["verblijfsobjecten"]["count"];
     }
 }

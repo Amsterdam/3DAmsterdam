@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SelectBuilding : MonoBehaviour
 {
@@ -16,7 +17,11 @@ public class SelectBuilding : MonoBehaviour
 
     GameObject selectedObj;
 
+    public MenuFunctions menuFunctions;
+
     List<Color> originalParentColors;
+
+    public GameObject infoMenu;
 
     public API api;
 
@@ -25,6 +30,8 @@ public class SelectBuilding : MonoBehaviour
         children = new List<Transform>();
         originalColours = new List<Color>();
         originalParentColors = new List<Color>();
+
+        menuFunctions.GetComponent<MenuFunctions>();
     }
 
     public void FixedUpdate()
@@ -44,6 +51,7 @@ public class SelectBuilding : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    menuFunctions.SelectMenu(4);
                     StartCoroutine(api.OnResponse(api.request));
 
                     if (selectedObj != null)
@@ -101,11 +109,13 @@ public class SelectBuilding : MonoBehaviour
                 }              
             }
 
-            if(hit.transform.gameObject != selectedObj)
+            if(hit.transform.gameObject != selectedObj && hit.transform.gameObject != EventSystem.current.IsPointerOverGameObject() && menuFunctions.currentMenu == 3)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if(parentMats.Length != 0)
+                    menuFunctions.SelectMenu(4);
+
+                    if (parentMats.Length != 0)
                     {
                         for (int i = 0; i < parentMats.Length; i++)
                         {
