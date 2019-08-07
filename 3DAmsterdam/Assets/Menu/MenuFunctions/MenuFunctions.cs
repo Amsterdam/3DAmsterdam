@@ -97,12 +97,6 @@ public class MenuFunctions : MonoBehaviour
 
         // minimap
         MapPositioning();
-
-        if (huidigSelected)
-        {
-            _hours = System.DateTime.Now.Hour;
-            _minutes = System.DateTime.Now.Minute;
-        }
     }
 
     // beheert alle menus
@@ -356,6 +350,13 @@ public class MenuFunctions : MonoBehaviour
             minutes.GetComponent<TextMeshProUGUI>().text = _minutes.ToString();
             time.GetComponent<TextMeshProUGUI>().text = _hours.ToString() + ":" + _minutes.ToString();
         }
+
+
+        if (huidigSelected)
+        {
+            _hours = System.DateTime.Now.Hour;
+            _minutes = System.DateTime.Now.Minute;
+        }
     }
 
     // vertoont de datum juist in beeld
@@ -415,6 +416,13 @@ public class MenuFunctions : MonoBehaviour
                 thirtyOne.SetActive(true);
                 break;
         }
+
+        if (huidigSelected)
+        {
+            _currentDay = System.DateTime.Now.Day;
+            _currentMonth = System.DateTime.Now.Month;
+            _currentYear = System.DateTime.Now.Year;
+        }
     }
 
     // rechterknop om de maand te selecteren
@@ -459,11 +467,18 @@ public class MenuFunctions : MonoBehaviour
     public void SelectDay()
     {
         _currentDay = int.Parse(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+        dateMenu.SetActive(false);
     }
 
     public void HuidigMoment()
     {
-        huidigSelected = true;
+        if (huidigSelected == false)
+        {
+            huidigSelected = true;
+        } else
+        {
+            huidigSelected = false;
+        }
     }
     #endregion
 

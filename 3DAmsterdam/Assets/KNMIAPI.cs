@@ -31,7 +31,6 @@ public class KNMIAPI : MonoBehaviour
             requestOutput = JSON.Parse(req.text);
 
             huidigWeer = requestOutput["liveweer"][0]["image"].Value;
-            Debug.Log(huidigWeer);
 
             switch (huidigWeer)
             {
