@@ -36,6 +36,10 @@ public class KNMIAPI : MonoBehaviour
             switch (huidigWeer)
             {
                 case "bewolkt":
+                    EnviroSkyMgr.instance.ChangeWeather(3);
+                    break;
+
+                case "zwaarbewolkt":
                     EnviroSkyMgr.instance.ChangeWeather(6);
                     break;
 
