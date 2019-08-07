@@ -9,7 +9,7 @@
     <script src="TemplateData/UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
     <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/Build-test.json", {
+      var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {
   compatibilityCheck: function (gameInstance, onsuccess, onerror) {
     if (!UnityLoader.SystemInfo.hasWebGL) {
       gameInstance.popup("Your browser does not support WebGL",

@@ -17,6 +17,7 @@ using ConvertCoordinates;
 public class TileLoader : MonoBehaviour
 {
     private CameraView CV;
+    private Extent vorigeCV = new Extent(0, 0, 0, 0);
     public string terrainUrl = "https://saturnus.geodan.nl/tomt/data/tiles/{z}/{x}/{y}.terrain?v=1.0.0";
     
     //public string textureUrl = "https://saturnus.geodan.nl/mapproxy/bgt/service?crs=EPSG%3A3857&service=WMS&version=1.1.1&request=GetMap&styles=&format=image%2Fjpeg&layers=bgt&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326";
@@ -29,7 +30,7 @@ public class TileLoader : MonoBehaviour
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
     const int maxParallelRequests = 8;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
-    Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
+    public Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
     public enum TileService
     {
@@ -62,12 +63,20 @@ public class TileLoader : MonoBehaviour
     void Update()
     {
         VerwijderTiles();
-        Extent Tempextent = CV.CameraExtent;
-        UpdateTerrainTiles(Tempextent);
+        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
+        {
+            vorigeCV = CV.CameraExtent;
+            UpdateTerrainTiles(vorigeCV);
+        }
+        
         // verdergaan met downloaden uit de queue
         if (pendingQueue.Count < maxParallelRequests && downloadQueue.Count > 0)
         {
             var request = downloadQueue.Dequeue();
+            if (pendingQueue.ContainsKey(request.Url))
+            {
+                return;
+            }
             pendingQueue.Add(request.Url, request);
 
             //fire request
@@ -161,7 +170,9 @@ public class TileLoader : MonoBehaviour
             //update tile with height data
             if (tileDb.ContainsKey(tileId))
             {
-                tileDb[tileId].GetComponent<MeshFilter>().sharedMesh = terrainTile.GetMesh(0); 
+                tileDb[tileId].GetComponent<MeshFilter>().sharedMesh = terrainTile.GetMesh(0);
+                tileDb[tileId].AddComponent<MeshCollider>();
+                
                 tileDb[tileId].GetComponent<MeshCollider>().sharedMesh = tileDb[tileId].GetComponent<MeshFilter>().sharedMesh;
                
                 tileDb[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
@@ -304,6 +315,34 @@ public class TileLoader : MonoBehaviour
         }
         TileKeys.Reverse();
 
+        // tegel zoomniveau 17 tpv camera toevoegen als dit buiten het camerabeeld valt.
+
+        if (true)
+        {
+
+        }
+        Vector3 campos = Camera.main.transform.position;
+
+        Vector3 UnityMin = new Vector3(campos.x-10,campos.y-10,campos.z-10);
+        Vector3 UnityMax = new Vector3(campos.x + 10, campos.y + 10, campos.z + 10);
+        Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
+        Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
+        Extent LocatieExtent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
+
+        if (!IsInsideExtent(LocatieExtent,Tempextent))
+        {
+            tiles = schema.GetTileInfos(LocatieExtent, "17").ToList();
+            foreach (var t in tiles)
+            {
+                Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
+                if (!TileKeys.Contains(td))
+                {
+                    TileKeys.Add(td);
+                }
+
+            }
+        }
+        
 
         // bepalen welke reeds geladentegels niet meer nodig zijn en deze toevoegen aan TeVerwijderenTiles
         Vector3[] TileDBKeys = tileDb.Keys.ToArray();

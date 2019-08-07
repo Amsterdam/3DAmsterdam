@@ -18,6 +18,7 @@ public class MenuFunctions : MonoBehaviour
     public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
     public RectTransform positioning;
     public TextMeshProUGUI hours, minutes, time, monthYear, date;
+    private bool huidigSelected = false;
 
     [Header("Bouwen")]
     public GameObject[] buildingOptions;
@@ -27,7 +28,6 @@ public class MenuFunctions : MonoBehaviour
     public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
     public Button placeBuildingButton, uploadBuildingButton;
     public RectTransform positioningGebouwen;
-    public PlaatsBlokje plaatsBlokje;
     public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue;
 
     [Header("Opties")]
@@ -39,13 +39,14 @@ public class MenuFunctions : MonoBehaviour
 
     private Vector3 startPosMenuCreateBuilding, startPosMap;
 
-    private int noMenu = 10, currentWeer, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
+    private int currentMenu, noMenu = 10, minBarrierGebouwen = 0, maxBarrierGebouwen = 2,
                 buildingMenuDecider = 1, uploadMenuDecider = 1;
 
     [HideInInspector]
-    public int currentMenu, _hours, _minutes, _currentDay, _currentMonth, _currentYear;
+    public int _hours, _minutes, _currentDay, _currentMonth, _currentYear, _currentWeer;
 
-    private float scaleFactor = 50f, moveFactor = 55f;
+
+    private float scaleFactor = 100f, moveFactor = 55f;
 
     private string[] months = new string[] {"Januari", "Februari", "Maart", "April", "Mei", "Juni",
                                             "Juli", "Augustus", "September", "Oktober", "November", "December" };
@@ -65,12 +66,11 @@ public class MenuFunctions : MonoBehaviour
         _currentMonth = System.DateTime.Now.Month;
         _currentYear = System.DateTime.Now.Year;
 
-        _hours = 14; // tijd begint op een licht moment
-
-        startPosMenuCreateBuilding = createBuilding.transform.position;
+        startPosMenuCreateBuilding = new Vector3(createBuilding.transform.position.x + allMenus[2].GetComponent<RectTransform>().sizeDelta.x,
+                                                 createBuilding.transform.position.y, createBuilding.transform.position.z);
         startPosMap = miniMap.transform.localPosition;
 
-        currentWeer = weatherOptions.Length / 2;
+        _currentWeer = weatherOptions.Length / 2;
 
         modeManager = manager.GetComponent<ModeManager>();
     }
@@ -93,6 +93,12 @@ public class MenuFunctions : MonoBehaviour
 
         // minimap
         MapPositioning();
+
+        if (huidigSelected)
+        {
+            _hours = System.DateTime.Now.Hour;
+            _minutes = System.DateTime.Now.Minute;
+        }
     }
 
     // beheert alle menus
@@ -101,13 +107,22 @@ public class MenuFunctions : MonoBehaviour
         // het huidige menu wordt zichtbaar gemaakt
         if (currentMenu != noMenu)
         {
-            allMenus[currentMenu].SetActive(true);
+            var menu = allMenus[currentMenu];
+
+            menu.SetActive(true);
+
+            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, menu.GetComponent<RectTransform>().sizeDelta.x, 
+                                                       6f * Time.deltaTime), 0, 0);
         }
 
         // alle andere menus worden ontzichtbaar gemaakt.
         for (int i = 0; i < allMenus.Length; i++)
         {
-            if (i != currentMenu) allMenus[i].SetActive(false);
+            if (i != currentMenu)
+            {
+                allMenus[i].transform.localPosition = Vector3.zero;
+                allMenus[i].SetActive(false);
+            }
         }
     }
 
@@ -119,24 +134,6 @@ public class MenuFunctions : MonoBehaviour
         int _menuNumber = menuNumber - 1;
 
         currentMenu = _menuNumber;
-
-        if (menuNumber == 3)
-        {
-            //if a menu gets closed
-            if (plaatsBlokje.selectedObject != null)
-            {
-                Destroy(plaatsBlokje.pijlenprefab);
-
-                //Make the block white
-                plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-                //Add the highlight script
-                plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-                //and deselect it
-                plaatsBlokje.selectedObject = null;
-            }
-        }
 
         GameObject menu = allMenus[_menuNumber];
         Button button = buttons[_menuNumber];
@@ -160,21 +157,6 @@ public class MenuFunctions : MonoBehaviour
     public void Exit()
     {
         currentMenu = noMenu;
-
-        //if a meny gets closed
-        if(plaatsBlokje.selectedObject != null)
-        {
-            Destroy(plaatsBlokje.pijlenprefab);
-
-            //Make the block white
-            plaatsBlokje.selectedObject.gameObject.GetComponent<Renderer>().material.color = Color.white;
-
-            //Add the highlight script
-            plaatsBlokje.selectedObject.transform.gameObject.AddComponent<HighLight>();
-
-            //and deselect it
-            plaatsBlokje.selectedObject = null;
-        }
     }
     #endregion
 
@@ -183,20 +165,20 @@ public class MenuFunctions : MonoBehaviour
     // weerselectie naar rechts
     public void WeerRightButton()
     {
-        if (currentWeer > 0)
+        if (_currentWeer > 0)
         {
             positioning.position += new Vector3(moveFactor, 0, 0);
-            currentWeer--;
+            _currentWeer--;
         }
     }
 
     // weerselectie naar links
     public void WeerLeftButton()
     {
-        if (currentWeer < 6)
+        if (_currentWeer < 6)
         {
             positioning.position -= new Vector3(moveFactor, 0, 0);
-            currentWeer++;
+            _currentWeer++;
         }
     }
 
@@ -205,7 +187,7 @@ public class MenuFunctions : MonoBehaviour
     {
         for (int i = 0; i < weatherOptions.Length; i++)
         {
-            if (i == currentWeer)
+            if (i == _currentWeer)
             {
                 weatherOptions[i].GetComponent<Button>().enabled = true;
                 weatherOptions[i].GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
@@ -220,7 +202,7 @@ public class MenuFunctions : MonoBehaviour
                 weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
             }
 
-            switch (currentWeer)
+            switch (_currentWeer)
             {
                 case 0:
                     if (i >= 3 && i <= 6)
@@ -473,6 +455,11 @@ public class MenuFunctions : MonoBehaviour
     public void SelectDay()
     {
         _currentDay = int.Parse(EventSystem.current.currentSelectedGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+    }
+
+    public void HuidigMoment()
+    {
+        huidigSelected = true;
     }
     #endregion
 

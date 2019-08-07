@@ -55,6 +55,11 @@ namespace ConvertCoordinates
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude
         private static double unitsPerDegreeY = 111000; //approximation of distance between lattitudinal degrees in meters
 
+
+        private static byte[] RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
+        private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
+        private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
+
         /// <summary>
         /// set ReferenceWGS84 to given value, 
         /// sets referenceRD to corresponding value, 
@@ -75,7 +80,7 @@ namespace ConvertCoordinates
                 // update referenceRD
                 Vector3RD refRD = WGS84toRD(referenceWGS84.lon, referenceWGS84.lat);
                 // get elevation 
-                double hoogte = RDCorrection(referenceWGS84.lon,referenceWGS84.lat,"Z");
+                double hoogte = RDCorrection(referenceWGS84.lon,referenceWGS84.lat,"Z",RDCorrectionZ);
                 referenceRD = new Vector3RD(refRD.x,refRD.y,-hoogte);
                 
             }
@@ -93,7 +98,7 @@ namespace ConvertCoordinates
                 referenceRD = value;
                 //update referenceWGS84
                 Vector3WGS refWGS = RDtoWGS84(referenceRD.x, referenceRD.y);
-                double hoogte = RDCorrection(refWGS.lon, refWGS.lat, "Z");
+                double hoogte = RDCorrection(refWGS.lon, refWGS.lat, "Z", RDCorrectionZ);
                 referenceWGS84 = new Vector3WGS(refWGS.lon, refWGS.lat,hoogte);
                 //update unitsperdegreeX
                 unitsPerDegreeX = Math.Cos(referenceWGS84.lon * Math.PI / 180) * unitsPerDegreeY;
@@ -253,7 +258,7 @@ namespace ConvertCoordinates
             Vector3WGS wgs = RDtoWGS84(X, Y);
             //convert to Unity
             output = WGS84toUnity(wgs.lon, wgs.lat);
-            double hoogte = RDCorrection(wgs.lon, wgs.lat, "Z");
+            double hoogte = RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
             output.y = (float)(Z - referenceRD.z);
             return output;
         }
@@ -280,7 +285,7 @@ namespace ConvertCoordinates
         {
             Vector3WGS wgs = UnitytoWGS84(coordinaat);
             Vector3RD RD = WGS84toRD(wgs.lon, wgs.lat);
-            RD.z = wgs.h - RDCorrection(wgs.lon, wgs.lat, "Z");
+            RD.z = wgs.h - RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
             RD.z = RD.z + referenceRD.z;
             return RD;
         }
@@ -303,8 +308,8 @@ namespace ConvertCoordinates
             double refLon = 5.38720621;
             double refLat = 52.15517440;
 
-            double correctionX = RDCorrection(x,y,"X");
-            double correctionY = RDCorrection(x, y, "Y");
+            double correctionX = RDCorrection(x,y,"X",RDCorrectionX);
+            double correctionY = RDCorrection(x, y, "Y", RDCorrectionY);
 
             double DeltaX = (x+correctionX - refRDX) * Math.Pow(10, -5);
             double DeltaY = (y+correctionY - refRDY) * Math.Pow(10, -5);
@@ -391,8 +396,8 @@ namespace ConvertCoordinates
             }
             double Y = DeltaY + refRDY;
 
-            double correctionX = RDCorrection(X, Y, "X");
-            double correctionY = RDCorrection(X,Y, "Y");
+            double correctionX = RDCorrection(X, Y, "X",RDCorrectionX);
+            double correctionY = RDCorrection(X,Y, "Y", RDCorrectionY);
             X -= correctionX;
             Y -= correctionY;
 
@@ -455,29 +460,29 @@ namespace ConvertCoordinates
         /// <param name="y">Y-value of coordinate when richting is X or Y, else lattitude</param>
         /// <param name="richting">X, Y, or Z</param>
         /// <returns>correction for RD X and Y or Elevationdifference between WGS84  and RD</returns>
-        public static Double RDCorrection(double x, double y, string richting)
+        public static Double RDCorrection(double x, double y, string richting, byte[] bytes)
         {
             double waarde = 0;
-            TextAsset txt = new TextAsset();
+            //TextAsset txt;
 
             if (richting == "X")
             {
-                txt = Resources.Load<TextAsset>("x2c");
+                //txt = RDCorrectionX;
                 waarde = -0.185;    
             }
             else if (richting == "Y")
             {
-                txt = Resources.Load<TextAsset>("y2c");
+                //txt = RDCorrectionY;
                 waarde = -0.232;
             }
             else
             {
                 //DeltaH tussen wGS en NAP
-                txt = Resources.Load<TextAsset>("nlgeo04");
+                //txt = RDCorrectionZ;
             }
 
             
-            byte[] bytes = txt.bytes;
+            //byte[] bytes = txt.bytes;
 
             double Xmin;
             double Xmax;

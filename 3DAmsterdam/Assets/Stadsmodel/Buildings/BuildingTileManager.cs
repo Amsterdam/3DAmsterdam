@@ -37,9 +37,9 @@ class BuildingTileData
 
 public class BuildingTileManager : MonoBehaviour
 {
+    
 
-
-    public string BuildingURL = "http://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/"; //"file:///D://Git/A3d/AssetBundles/WebGL/";
+    public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
