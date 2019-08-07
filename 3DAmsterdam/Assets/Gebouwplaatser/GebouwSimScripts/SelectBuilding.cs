@@ -7,8 +7,6 @@ public class SelectBuilding : MonoBehaviour
     Ray ray;
     RaycastHit hit;
 
-    public GameObject bagCanvas;
-
     List<Transform> children;
 
     Material[] mats;
@@ -47,10 +45,6 @@ public class SelectBuilding : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     StartCoroutine(api.OnResponse(api.request));
-
-                    bagCanvas.SetActive(true);
-
-                    bagCanvas.transform.position = hit.point + new Vector3(0, 60, 0);
 
                     if (selectedObj != null)
                     {
@@ -111,8 +105,6 @@ public class SelectBuilding : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    bagCanvas.SetActive(false);
-
                     if(parentMats.Length != 0)
                     {
                         for (int i = 0; i < parentMats.Length; i++)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SimpleJSON;
+using TMPro;
 
 public class API : MonoBehaviour
 {
@@ -10,11 +11,10 @@ public class API : MonoBehaviour
 
     private string URL;
 
-    [HideInInspector]
-    public Text naam;
-    public Text bouwjaar;
-    public Text BAGID;
-    public Text verblijfsobjecten;
+    public TextMeshProUGUI naam;
+    public TextMeshProUGUI bouwjaar;
+    public TextMeshProUGUI BAGID;
+    public TextMeshProUGUI verblijfsobjecten;
     public WWW request;
 
     JSONNode requestOutput;
