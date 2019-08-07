@@ -9,6 +9,7 @@ public class beweging : MonoBehaviour
     public Camera cam;
 
     private const float zoomSpeed = 0.5f;
+    private const float zoomSpeedAir = 800f;
     private const float maxZoomOut = 2500f;
     private const float maxZoomIn = 47f;
     private const float rotationSpeed = 1f;
@@ -29,6 +30,7 @@ public class beweging : MonoBehaviour
 
     private bool canMove = true;
     private bool canUseFunction = true;
+    private bool hitCollider = false;
 
     private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
     private Vector3 zoomPoint;
@@ -192,7 +194,12 @@ public class beweging : MonoBehaviour
         // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
         if (Physics.Raycast(ray, out hit))
         {
+            hitCollider = true; // checkt of er een collider geraakt wordt met raycast
+
             zoomPoint = hit.point;
+        } else
+        {
+            hitCollider = false;
         }
 
         // de afstand tussen de camera en het zoompunt wordt berekend.
@@ -203,32 +210,41 @@ public class beweging : MonoBehaviour
 
         zoom = zoomDirection * zoomDistance * scroll * zoomSpeed;
 
-        // er kan niet verder worden uitgezoomd dan de maximale range.
-        if (cam.transform.position.y > maxZoomOut)
+        if (hitCollider)
         {
-            cam.transform.position = maxZoomPosition;
-        }
-        // er kan niet verder worden ingezoomd dan de minimale range.
-        else if (cam.transform.position.y < maxZoomIn)
-        {
-            cam.transform.position = minZoomPosition;
-        }
-        else
-        {
-            // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
-            if (cam.transform.position.y == maxZoomOut)
+            // er kan niet verder worden uitgezoomd dan de maximale range.
+            if (cam.transform.position.y > maxZoomOut)
             {
-                if (scroll > 0) cam.transform.position += zoom;
+                cam.transform.position = maxZoomPosition;
             }
-            // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
-            else if (cam.transform.position.y == maxZoomIn)
+            // er kan niet verder worden ingezoomd dan de minimale range.
+            else if (cam.transform.position.y < maxZoomIn)
             {
-                if (scroll < 0) cam.transform.position += zoom;
+                cam.transform.position = minZoomPosition;
             }
-            // de positie van de camera wordt aangepast.
             else
             {
-                cam.transform.position += zoom;
+                // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
+                if (cam.transform.position.y == maxZoomOut)
+                {
+                    if (scroll > 0) cam.transform.position += zoom;
+                }
+                // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
+                else if (cam.transform.position.y == maxZoomIn)
+                {
+                    if (scroll < 0) cam.transform.position += zoom;
+                }
+                // de positie van de camera wordt aangepast.
+                else
+                {
+                    cam.transform.position += zoom;
+                }
+            }
+        } else // in/uit zoomen op de lucht
+        {
+            if (currentRotation.y < 20f)
+            {
+                cam.transform.position += scroll * zoomSpeedAir * movDir;
             }
         }
     }
