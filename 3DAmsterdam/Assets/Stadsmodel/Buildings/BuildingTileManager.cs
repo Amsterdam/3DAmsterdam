@@ -259,7 +259,18 @@ public class BuildingTileManager : MonoBehaviour
     private IEnumerator ProcessBuildingTile(Vector3 TileID)
     {
         BuildingTileData btd = buildingTiles[TileID];
-        Mesh[] ABAssets = btd.AB.LoadAllAssets<Mesh>();
+        Mesh[] ABAssets = new Mesh[0];
+        try
+        {
+            ABAssets = btd.AB.LoadAllAssets<Mesh>();
+        }
+        catch (Exception)
+        {
+            btd.Status = BuildingTileStatus.Built;
+            yield break;
+
+        }
+
         foreach (Mesh ass in ABAssets)
         {
             string Meshnaam = ass.name;

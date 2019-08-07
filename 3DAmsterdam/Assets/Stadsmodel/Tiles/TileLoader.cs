@@ -382,7 +382,7 @@ public class TileLoader : MonoBehaviour
                 }
                 //verwijderen uit de lijst met geladen tegels
                 //Destroy(tileDb[V]);
-                tileDb.Remove(V);
+                //tileDb.Remove(V);
                 
             }
         }
@@ -495,6 +495,7 @@ public class TileLoader : MonoBehaviour
                 Destroy(TeVerwijderenTiles[V].GetComponent<MeshFilter>().mesh);
                 Destroy(TeVerwijderenTiles[V]);
                 TeVerwijderenTiles.Remove(V);
+                tileDb.Remove(V);
             }
         }
 
