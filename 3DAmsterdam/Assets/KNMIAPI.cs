@@ -43,6 +43,10 @@ public class KNMIAPI : MonoBehaviour
                     EnviroSkyMgr.instance.ChangeWeather(6);
                     break;
 
+                case "lichtbewolkt":
+                    EnviroSkyMgr.instance.ChangeWeather(1);
+                    break;
+
                 case "buien":
                     EnviroSkyMgr.instance.ChangeWeather(7);
                     break;
