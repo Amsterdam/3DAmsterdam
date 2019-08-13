@@ -39,7 +39,9 @@ public class beweging : MonoBehaviour
     private Vector3 direction;
     private Vector3 dragOrigin;
     private Vector3 movDir;
-    private Vector3 rotationPoint;
+    private Vector3 rotatePoint;
+    private Vector3 camOffSet;
+
     private Vector2 currentRotation;
 
     private MenuFunctions menuFunctions;
@@ -159,24 +161,6 @@ public class beweging : MonoBehaviour
             //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
-
-
-        if (Input.GetMouseButtonDown(2))
-        {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-            // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
-            if (Physics.Raycast(ray, out hit))
-            {
-                rotationPoint = hit.point;
-            }
-        }
-
-        if (Input.GetMouseButton(2))
-        {
-            cam.transform.Rotate(rotationPoint, 20f);
-        }
     }
 
 
@@ -277,19 +261,27 @@ public class beweging : MonoBehaviour
 
     void FocusPoint()
     {
-        Vector3 rotatePoint = new Vector3();
+        RaycastHit hit;
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        if (Input.GetMouseButtonDown(2))
         {
-            if (Input.GetMouseButtonDown(0)) rotatePoint = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
-            if (Input.GetMouseButton(0))
+            if (Physics.Raycast(ray, out hit))
             {
-                cam.transform.RotateAround(rotatePoint, Vector3.up, 1f);
-                //transform.Rotate(Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * Time.deltaTime * speed);
+                rotatePoint = hit.point;
             }
-            //if (!Input.GetMouseButton(0)) return;
+        }
 
+        if (Input.GetMouseButton(2))
+        {
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+
+            if (cam.transform.position.y > 50f)
+            {
+                cam.transform.RotateAround(rotatePoint, cam.transform.right, -mouseY * 5f);
+                cam.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+            }
         }
     }
 
