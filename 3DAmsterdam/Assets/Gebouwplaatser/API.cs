@@ -44,8 +44,6 @@ public class API : MonoBehaviour
         bouwjaar.GetComponent<TextMeshProUGUI>().text = requestOutput["oorspronkelijk_bouwjaar"];
         BAGID.GetComponent<TextMeshProUGUI>().text = requestOutput["pandidentificatie"];
         verblijfsobjecten.GetComponent<TextMeshProUGUI>().text = requestOutput["verblijfsobjecten"]["count"];
-
-        Debug.Log("Einde 1");
     }
 
     public IEnumerator AdressLoader(WWW req)
@@ -54,15 +52,24 @@ public class API : MonoBehaviour
 
         Debug.Log(req.error);
 
-        verblijfOutput = JSON.Parse(req.text);
+        try
+        {
+            verblijfOutput = JSON.Parse(req.text);
+        }
+        catch
+        {
+            Debug.Log(req.text);
+        }
 
         if (pageNumber == 1)
         {
             verblijfList.Capacity = verblijfOutput["count"];
         }
-        
-        if(verblijfOutput["next"]["href"] != "null")
+
+        if (verblijfOutput["_links"]["next"]["href"].Value != "")
         {
+            Debug.Log("DE FUCKING VALUE " + verblijfOutput["_links"]["next"]["href"].Value);
+
             for (int i = 0; i < verblijfOutput["results"].Count; i++)
             {
                 verblijfList.Add(verblijfOutput["results"][i]["_display"]);
@@ -71,17 +78,19 @@ public class API : MonoBehaviour
             dropDown.AddOptions(verblijfList);
             verblijfList.Clear();
             Debug.Log("Aantal options: " + dropDown.options.Count);
-            Debug.Log(pageNumber);
 
             pageNumber++;
 
-            verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?format=api" + "&page=" + pageNumber + "&panden__id=0363100012185598";
+            StopCoroutine(AdressLoader(verblijfRequest));
+
+            verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?format=api" + "&page=" + pageNumber + "&panden__id=" + bagID;
+            Debug.Log(verblijfURL);
             verblijfRequest = new WWW(verblijfURL);
 
             StartCoroutine(AdressLoader(verblijfRequest));
 
         }
-        else if(verblijfOutput["next"]["href"] == "null")
+        else if (verblijfOutput["_links"]["next"]["href"].Value == "")
         {
             for (int i = 0; i < verblijfOutput["results"].Count; i++)
             {
@@ -95,6 +104,8 @@ public class API : MonoBehaviour
             Debug.Log(pageNumber);
             Debug.Log("Klaar met Loopen");
             Debug.Log(dropDown.options);
+
+            StopCoroutine(AdressLoader(verblijfRequest));
         }
     }
 }
