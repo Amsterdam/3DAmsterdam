@@ -49,10 +49,17 @@ public class SelectBuilding : MonoBehaviour
             {
                 api.bagID = hit.transform.name;
 
+                api.pandURL = "https://api.data.amsterdam.nl/bag/pand/" + api.bagID;
+                api.request = new WWW(api.pandURL);
+
+                api.verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?panden__id=" + api.bagID;
+                api.verblijfRequest = new WWW(api.verblijfURL);
+
                 if (Input.GetMouseButtonDown(0))
                 {
                     menuFunctions.SelectMenu(4);
-                    StartCoroutine(api.OnResponse(api.request));
+                    //StartCoroutine(api.OnResponse(api.request));
+                    StartCoroutine(api.AdressLoader(api.verblijfRequest));
 
                     if (selectedObj != null)
                     {
@@ -113,6 +120,8 @@ public class SelectBuilding : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    StopCoroutine(api.OnResponse(api.request));
+                    StopCoroutine(api.AdressLoader(api.verblijfRequest));
                     menuFunctions.SelectMenu(4);
 
                     if (parentMats.Length != 0)

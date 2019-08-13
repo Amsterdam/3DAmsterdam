@@ -10,34 +10,28 @@ public class API : MonoBehaviour
 {
     public string bagID;
 
-    private string pandURL;
-    private string verblijfURL;
-    bool adresAanvraag = false;
+    public string pandURL;
+    public string verblijfURL;
 
     public TextMeshProUGUI naam;
     public TextMeshProUGUI bouwjaar;
     public TextMeshProUGUI BAGID;
     public TextMeshProUGUI verblijfsobjecten;
     public WWW request;
-    private WWW verblijfRequest;
+    public WWW verblijfRequest;
     public TMP_Dropdown dropDown;
+    int pageNumber;
 
     JSONNode requestOutput;
     JSONNode verblijfOutput;
 
-    public void FixedUpdate()
-    {
-        pandURL = "https://api.data.amsterdam.nl/bag/pand/" + bagID;
-        request = new WWW(pandURL);
-     
-        if (adresAanvraag)
-        {
-            verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?panden__id=" + bagID;
-            verblijfRequest = new WWW(verblijfURL);
+    List<string> verblijfList;
 
-            StartCoroutine(AdressLoader(verblijfRequest));
-            adresAanvraag = false;
-        }
+    public void Start()
+    {
+        dropDown.ClearOptions();
+        verblijfList = new List<string>();
+        pageNumber = 1;
     }
 
     public IEnumerator OnResponse(WWW req)
@@ -51,27 +45,56 @@ public class API : MonoBehaviour
         BAGID.GetComponent<TextMeshProUGUI>().text = requestOutput["pandidentificatie"];
         verblijfsobjecten.GetComponent<TextMeshProUGUI>().text = requestOutput["verblijfsobjecten"]["count"];
 
-        adresAanvraag = true;
+        Debug.Log("Einde 1");
     }
 
     public IEnumerator AdressLoader(WWW req)
     {
-        List<string> verblijfList = new List<string>();
-
         yield return req;
+
+        Debug.Log(req.error);
 
         verblijfOutput = JSON.Parse(req.text);
 
-        verblijfList.Capacity = verblijfOutput["count"];
-
-        Debug.Log(verblijfList.Capacity);
-
-        for (int i = 0; i < verblijfList.Count; i++)
+        if (pageNumber == 1)
         {
-            verblijfList[i] = verblijfOutput["results"][i]["_display"];    
+            verblijfList.Capacity = verblijfOutput["count"];
         }
+        
+        if(verblijfOutput["next"]["href"] != "null")
+        {
+            for (int i = 0; i < verblijfOutput["results"].Count; i++)
+            {
+                verblijfList.Add(verblijfOutput["results"][i]["_display"]);
+            }
 
-        dropDown.ClearOptions();
-        dropDown.AddOptions(verblijfList);      
+            dropDown.AddOptions(verblijfList);
+            verblijfList.Clear();
+            Debug.Log("Aantal options: " + dropDown.options.Count);
+            Debug.Log(pageNumber);
+
+            pageNumber++;
+
+            verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?format=api" + "&page=" + pageNumber + "&panden__id=0363100012185598";
+            verblijfRequest = new WWW(verblijfURL);
+
+            StartCoroutine(AdressLoader(verblijfRequest));
+
+        }
+        else if(verblijfOutput["next"]["href"] == "null")
+        {
+            for (int i = 0; i < verblijfOutput["results"].Count; i++)
+            {
+                verblijfList.Add(verblijfOutput["results"][i]["_display"]);
+            }
+
+            dropDown.AddOptions(verblijfList);
+            Debug.Log("Aantal options: " + dropDown.options.Count);
+            verblijfList.Clear();
+
+            Debug.Log(pageNumber);
+            Debug.Log("Klaar met Loopen");
+            Debug.Log(dropDown.options);
+        }
     }
 }
