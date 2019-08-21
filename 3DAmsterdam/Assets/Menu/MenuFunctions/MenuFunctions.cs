@@ -108,8 +108,7 @@ public class MenuFunctions : MonoBehaviour
 
             menu.SetActive(true);
 
-            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, menu.GetComponent<RectTransform>().sizeDelta.x, 
-                                                       6f * Time.deltaTime), 0, 0);
+            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 187f, 6f * Time.deltaTime), 0, 0);
         }
 
         // alle andere menus worden ontzichtbaar gemaakt.
@@ -483,58 +482,58 @@ public class MenuFunctions : MonoBehaviour
 
 
     #region PlaatsGebouwMenu
-    // methode om submenu(gebouw plaatsen) aan/uit te zetten
-    public void TogglePlaceBuilding()
-    {
-        buildingMenuDecider *= -1;
+    //// methode om submenu(gebouw plaatsen) aan/uit te zetten
+    //public void TogglePlaceBuilding()
+    //{
+    //    buildingMenuDecider *= -1;
 
-        if (buildingMenuDecider == 1)
-        {
-            placeBuildingMenu.SetActive(false);
-            placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-        }
-        else
-        {
-            placeBuildingMenu.SetActive(true);
-            placeBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
+    //    if (buildingMenuDecider == 1)
+    //    {
+    //        placeBuildingMenu.SetActive(false);
+    //        placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+    //    }
+    //    else
+    //    {
+    //        placeBuildingMenu.SetActive(true);
+    //        placeBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
 
-            if (uploadBuildingMenu.activeSelf)
-            {
-                uploadMenuDecider *= -1;
-                uploadBuildingMenu.SetActive(false);
-                uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-            }
-        }
-    }
+    //        if (uploadBuildingMenu.activeSelf)
+    //        {
+    //            uploadMenuDecider *= -1;
+    //            uploadBuildingMenu.SetActive(false);
+    //            uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+    //        }
+    //    }
+    //}
 
-    public void ToggleUploadBuilding()
-    {
-        uploadMenuDecider *= -1;
+    //public void ToggleUploadBuilding()
+    //{
+    //    uploadMenuDecider *= -1;
 
-        if (uploadMenuDecider == 1)
-        {
-            uploadBuildingMenu.SetActive(false);
-            uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+    //    if (uploadMenuDecider == 1)
+    //    {
+    //        uploadBuildingMenu.SetActive(false);
+    //        uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
 
-            createBuilding.transform.localPosition = startPosMenuCreateBuilding;
-        }
-        else
-        {
-            uploadBuildingMenu.SetActive(true);
-            uploadBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
+    //        createBuilding.transform.localPosition = startPosMenuCreateBuilding;
+    //    }
+    //    else
+    //    {
+    //        uploadBuildingMenu.SetActive(true);
+    //        uploadBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
 
-            createBuilding.transform.localPosition = new Vector3(createBuilding.transform.localPosition.x, 
-                                                            uploadBuildingMenu.transform.localPosition.y - (uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2 + 10),
-                                                            createBuilding.transform.localPosition.z);
+    //        createBuilding.transform.localPosition = new Vector3(createBuilding.transform.localPosition.x,
+    //                                                        uploadBuildingMenu.transform.localPosition.y - (uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2 + 10),
+    //                                                        createBuilding.transform.localPosition.z);
 
-            if (placeBuildingMenu.activeSelf)
-            {
-                buildingMenuDecider *= -1;
-                placeBuildingMenu.SetActive(false);
-                placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-            }
-        }
-    }
+    //        if (placeBuildingMenu.activeSelf)
+    //        {
+    //            buildingMenuDecider *= -1;
+    //            placeBuildingMenu.SetActive(false);
+    //            placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
+    //        }
+    //    }
+    //}
 
     // methode om kubus van kleur te laten veranderen zodat zichtbaar wordt of hoogte, lengte of breedte wordt aangepast
     private void changePlaceBuildingValues()
