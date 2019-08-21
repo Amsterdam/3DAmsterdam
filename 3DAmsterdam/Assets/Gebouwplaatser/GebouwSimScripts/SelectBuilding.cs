@@ -58,7 +58,7 @@ public class SelectBuilding : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     menuFunctions.SelectMenu(4);
-                    //StartCoroutine(api.OnResponse(api.request));
+                    StartCoroutine(api.OnResponse(api.request));
                     StartCoroutine(api.AdressLoader(api.verblijfRequest));
 
                     if (selectedObj != null)
