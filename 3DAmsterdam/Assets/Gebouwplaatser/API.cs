@@ -61,7 +61,7 @@ public class API : MonoBehaviour
             verblijfList.Capacity = verblijfOutput["count"];
         }
         
-        if(verblijfOutput["links"]["next"]["href"] != "null")
+        if(verblijfOutput["_links"]["next"]["href"] != null)
         {
             for (int i = 0; i < verblijfOutput["results"].Count; i++)
             {
@@ -75,14 +75,14 @@ public class API : MonoBehaviour
 
             pageNumber++;
 
-            verblijfURL = verblijfOutput["links"]["next"]["href"];
+            verblijfURL = verblijfOutput["_links"]["next"]["href"];
             //verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?format=api" + "&page=" + pageNumber + "&panden__id=0363100012185598";
             verblijfRequest = new WWW(verblijfURL);
 
             StartCoroutine(AdressLoader(verblijfRequest));
 
         }
-        else if(verblijfOutput["links"]["next"]["href"] == "null")
+        else
         {
             for (int i = 0; i < verblijfOutput["results"].Count; i++)
             {
