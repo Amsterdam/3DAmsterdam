@@ -55,7 +55,7 @@ public class KNMIAPI : MonoBehaviour
                     EnviroSkyMgr.instance.ChangeWeather(7);
                     break;
 
-                case "zon":
+                case "zonnig":
                     EnviroSkyMgr.instance.ChangeWeather(0);
                     break;
             }
