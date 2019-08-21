@@ -9,6 +9,7 @@ public class beweging : MonoBehaviour
     public Camera cam;
 
     private const float zoomSpeed = 0.5f;
+    private const float zoomSpeedAir = 800f;
     private const float maxZoomOut = 2500f;
     private const float maxZoomIn = 47f;
     private const float rotationSpeed = 1f;
@@ -29,6 +30,7 @@ public class beweging : MonoBehaviour
 
     private bool canMove = true;
     private bool canUseFunction = true;
+    private bool hitCollider = false;
 
     private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
     private Vector3 zoomPoint;
@@ -37,7 +39,9 @@ public class beweging : MonoBehaviour
     private Vector3 direction;
     private Vector3 dragOrigin;
     private Vector3 movDir;
-    private Vector3 rotationPoint;
+    private Vector3 rotatePoint;
+    private Vector3 camOffSet;
+
     private Vector2 currentRotation;
 
     private MenuFunctions menuFunctions;
@@ -157,24 +161,6 @@ public class beweging : MonoBehaviour
             //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
-
-
-        if (Input.GetMouseButtonDown(2))
-        {
-            RaycastHit hit;
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-            // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
-            if (Physics.Raycast(ray, out hit))
-            {
-                rotationPoint = hit.point;
-            }
-        }
-
-        if (Input.GetMouseButton(2))
-        {
-            cam.transform.Rotate(rotationPoint, 20f);
-        }
     }
 
 
@@ -192,7 +178,12 @@ public class beweging : MonoBehaviour
         // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
         if (Physics.Raycast(ray, out hit))
         {
+            hitCollider = true; // checkt of er een collider geraakt wordt met raycast
+
             zoomPoint = hit.point;
+        } else
+        {
+            hitCollider = false;
         }
 
         // de afstand tussen de camera en het zoompunt wordt berekend.
@@ -203,32 +194,41 @@ public class beweging : MonoBehaviour
 
         zoom = zoomDirection * zoomDistance * scroll * zoomSpeed;
 
-        // er kan niet verder worden uitgezoomd dan de maximale range.
-        if (cam.transform.position.y > maxZoomOut)
+        if (hitCollider)
         {
-            cam.transform.position = maxZoomPosition;
-        }
-        // er kan niet verder worden ingezoomd dan de minimale range.
-        else if (cam.transform.position.y < maxZoomIn)
-        {
-            cam.transform.position = minZoomPosition;
-        }
-        else
-        {
-            // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
-            if (cam.transform.position.y == maxZoomOut)
+            // er kan niet verder worden uitgezoomd dan de maximale range.
+            if (cam.transform.position.y > maxZoomOut)
             {
-                if (scroll > 0) cam.transform.position += zoom;
+                cam.transform.position = maxZoomPosition;
             }
-            // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
-            else if (cam.transform.position.y == maxZoomIn)
+            // er kan niet verder worden ingezoomd dan de minimale range.
+            else if (cam.transform.position.y < maxZoomIn)
             {
-                if (scroll < 0) cam.transform.position += zoom;
+                cam.transform.position = minZoomPosition;
             }
-            // de positie van de camera wordt aangepast.
             else
             {
-                cam.transform.position += zoom;
+                // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
+                if (cam.transform.position.y == maxZoomOut)
+                {
+                    if (scroll > 0) cam.transform.position += zoom;
+                }
+                // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
+                else if (cam.transform.position.y == maxZoomIn)
+                {
+                    if (scroll < 0) cam.transform.position += zoom;
+                }
+                // de positie van de camera wordt aangepast.
+                else
+                {
+                    cam.transform.position += zoom;
+                }
+            }
+        } else // in/uit zoomen op de lucht
+        {
+            if (currentRotation.y < 20f)
+            {
+                cam.transform.position += scroll * zoomSpeedAir * movDir;
             }
         }
     }
@@ -261,19 +261,27 @@ public class beweging : MonoBehaviour
 
     void FocusPoint()
     {
-        Vector3 rotatePoint = new Vector3();
+        RaycastHit hit;
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        if (Input.GetMouseButtonDown(2))
         {
-            if (Input.GetMouseButtonDown(0)) rotatePoint = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
-            if (Input.GetMouseButton(0))
+            if (Physics.Raycast(ray, out hit))
             {
-                cam.transform.RotateAround(rotatePoint, Vector3.up, 1f);
-                //transform.Rotate(Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * Time.deltaTime * speed);
+                rotatePoint = hit.point;
             }
-            //if (!Input.GetMouseButton(0)) return;
+        }
 
+        if (Input.GetMouseButton(2))
+        {
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+
+            if (cam.transform.position.y > 50f)
+            {
+                cam.transform.RotateAround(rotatePoint, cam.transform.right, -mouseY * 5f);
+                cam.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+            }
         }
     }
 
