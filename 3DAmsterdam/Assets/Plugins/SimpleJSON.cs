@@ -484,6 +484,11 @@ namespace SimpleJSON
             return !(a == b);
         }
 
+        public static implicit operator List<object>(JSONNode v)
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object obj)
         {
             return ReferenceEquals(this, obj);
