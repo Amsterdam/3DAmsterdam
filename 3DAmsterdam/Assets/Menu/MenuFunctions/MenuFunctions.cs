@@ -90,7 +90,7 @@ public class MenuFunctions : MonoBehaviour
 
             menu.SetActive(true);
 
-            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 187f, 6f * Time.deltaTime), 0, 0);
+            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 239f, 6f * Time.deltaTime), -538f, 0);
         }
 
         // alle andere menus worden ontzichtbaar gemaakt.

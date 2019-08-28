@@ -20,6 +20,7 @@ public class SelectAndScale : MonoBehaviour
 
     private float scaleFactor = 100f;
     private string cubeTag, objectTag;
+    private Vector3 startPos, startScale;
 
     void Start()
     {
@@ -34,6 +35,7 @@ public class SelectAndScale : MonoBehaviour
 
         cubeTag = "Sizeable";
         objectTag = "CustomPlaced";
+
     }
 
     void Update()
@@ -45,7 +47,6 @@ public class SelectAndScale : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
-
                 // het geselecteerde object is het object waar op geklikt wordt
                 selectedObject = hit.collider.gameObject;
 
@@ -64,6 +65,9 @@ public class SelectAndScale : MonoBehaviour
                 else
                 {
                     menuScript.currentMenu = 2;
+
+                    startPos = selectedObject.transform.position;
+                    startScale = selectedObject.transform.localScale;
                 }
             }
         }
@@ -163,6 +167,21 @@ public class SelectAndScale : MonoBehaviour
             {
                 selectedObject.transform.localScale = Vector3.one * ((size.maxValue - Mathf.Abs(size.value)) / size.maxValue);
             }
+        }
+    }
+
+    public void Reset()
+    {
+        selectedObject.transform.position = startPos;
+
+        if (selectedObject.transform.tag == cubeTag)
+        {
+            width.value = startScale.x / 100;
+            height.value = startScale.y / 100;
+            length.value = startScale.z / 100;
+        } else
+        {
+            size.value = 0;
         }
     }
 }
