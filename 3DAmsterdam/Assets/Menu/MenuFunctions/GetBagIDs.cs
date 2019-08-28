@@ -58,6 +58,11 @@ public class GetBagIDs :MonoBehaviour
         FInished
     }
 
+    public void Start()
+    {
+        api.GetComponent<SelectBuilding>();
+    }
+
     private void Update()
     {
         //als geklikt wordt en er nog niet gezocht wordt naar BagIDs
@@ -128,10 +133,8 @@ public class GetBagIDs :MonoBehaviour
         //api.locatie = hit.point;
         if (Bagids.Count>0)
         {
-            api.SelectHoogbouw(Bagids[0]);
-        }
-
-           
+            api.SelectHoogbouw();
+        } 
 
         //aangeven dat zoekactie gereed is
         Bezig = false;

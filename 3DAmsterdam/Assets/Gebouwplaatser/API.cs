@@ -11,27 +11,43 @@ public class API : MonoBehaviour
     public string bagID;
 
     public string pandURL;
+
     public string verblijfURL;
 
+    [HideInInspector]
     public TextMeshProUGUI naam;
+    [HideInInspector]
     public TextMeshProUGUI bouwjaar;
+    [HideInInspector]
     public TextMeshProUGUI BAGID;
+    [HideInInspector]
     public TextMeshProUGUI verblijfsobjecten;
+
     public WWW request;
     public WWW verblijfRequest;
+
+    [HideInInspector]
     public TMP_Dropdown dropDown;
+
     int pageNumber;
+
+    public GetBagIDs martijnsScript;
 
     JSONNode requestOutput;
     JSONNode verblijfOutput;
 
     List<string> verblijfList;
 
-    public void Start()
+    public void Begin(string bagIDstring)
     {
-        dropDown.ClearOptions();
         verblijfList = new List<string>();
         pageNumber = 1;
+
+        bagID = bagIDstring;
+
+        StartCoroutine(OnResponse(new WWW("https://api.data.amsterdam.nl/bag/pand/" + bagID)));
+        StartCoroutine(AdressLoader(new WWW("https://api.data.amsterdam.nl/bag/verblijfsobject/?panden__id=" + bagID)));
+        
     }
 
     public IEnumerator OnResponse(WWW req)
@@ -40,12 +56,13 @@ public class API : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        naam.GetComponent<TextMeshProUGUI>().text = requestOutput["pandnaam"];
-        bouwjaar.GetComponent<TextMeshProUGUI>().text = requestOutput["oorspronkelijk_bouwjaar"];
-        BAGID.GetComponent<TextMeshProUGUI>().text = requestOutput["pandidentificatie"];
-        verblijfsobjecten.GetComponent<TextMeshProUGUI>().text = requestOutput["verblijfsobjecten"]["count"];
-
-        Debug.Log("Einde 1");
+        foreach (string bagid in martijnsScript.Bagids)
+        {
+            this.gameObject.GetComponent<TekstVeldScript>().naam.text = requestOutput["pandnaam"];
+            this.gameObject.GetComponent<TekstVeldScript>().bouwjaar.text = requestOutput["oorspronkelijk_bouwjaar"];
+            this.gameObject.GetComponent<TekstVeldScript>().BAGID.text = requestOutput["pandidentificatie"];
+            this.gameObject.GetComponent<TekstVeldScript>().label.text = requestOutput["verblijfsobjecten"]["count"];
+        }
     }
 
     public IEnumerator AdressLoader(WWW req)
@@ -58,6 +75,7 @@ public class API : MonoBehaviour
 
         if (pageNumber == 1)
         {
+            dropDown.ClearOptions();
             verblijfList.Capacity = verblijfOutput["count"];
         }
         
@@ -76,7 +94,6 @@ public class API : MonoBehaviour
             pageNumber++;
 
             verblijfURL = verblijfOutput["_links"]["next"]["href"];
-            //verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?format=api" + "&page=" + pageNumber + "&panden__id=0363100012185598";
             verblijfRequest = new WWW(verblijfURL);
 
             StartCoroutine(AdressLoader(verblijfRequest));
