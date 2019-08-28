@@ -13,7 +13,6 @@ public class MenuFunctions : MonoBehaviour
     public GameObject coordinatesPanel, miniMap, zoomButtonPlus, zoomButtonMinus, compass, streetView, godView, manager;
 
     [Header("Tijd en Weer")]
-    public GameObject[] weatherOptions;
     public GameObject timeMenu, dateMenu, twentyNine, thirty, thirtyOne;
     public Button upButtonHours, downButtonHours, upButtonMinutes, downButtonMinutes;
     public RectTransform positioning;
@@ -58,7 +57,7 @@ public class MenuFunctions : MonoBehaviour
 
         startPosMap = miniMap.transform.localPosition;
 
-        _currentWeer = weatherOptions.Length / 2;
+        //_currentWeer = weatherOptions.Length / 2;
 
         modeManager = manager.GetComponent<ModeManager>();
     }
@@ -68,7 +67,7 @@ public class MenuFunctions : MonoBehaviour
         ManageMenus();
 
         // tijd en weer menu
-        ShowWeatherOptions();
+        //ShowWeatherOptions();
         TimeManager();
         DateManager();
 
@@ -141,121 +140,121 @@ public class MenuFunctions : MonoBehaviour
 
 
     #region TijdWeerMenu
-    // weerselectie naar rechts
-    public void WeerRightButton()
-    {
-        if (_currentWeer > 0)
-        {
-            positioning.position += new Vector3(moveFactor, 0, 0);
-            _currentWeer--;
-        }
-    }
+    //// weerselectie naar rechts
+    //public void WeerRightButton()
+    //{
+    //    if (_currentWeer > 0)
+    //    {
+    //        positioning.position += new Vector3(moveFactor, 0, 0);
+    //        _currentWeer--;
+    //    }
+    //}
 
-    // weerselectie naar links
-    public void WeerLeftButton()
-    {
-        if (_currentWeer < 6)
-        {
-            positioning.position -= new Vector3(moveFactor, 0, 0);
-            _currentWeer++;
-        }
-    }
+    //// weerselectie naar links
+    //public void WeerLeftButton()
+    //{
+    //    if (_currentWeer < 6)
+    //    {
+    //        positioning.position -= new Vector3(moveFactor, 0, 0);
+    //        _currentWeer++;
+    //    }
+    //}
 
     // zichtbaarheid van weeropties 
-    private void ShowWeatherOptions()
-    {
-        for (int i = 0; i < weatherOptions.Length; i++)
-        {
-            if (i == _currentWeer)
-            {
-                weatherOptions[i].GetComponent<Button>().enabled = true;
-                weatherOptions[i].GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
-                weatherOptions[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
-                weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
-            }
-            else
-            {
-                weatherOptions[i].GetComponent<Button>().enabled = false;
-                weatherOptions[i].GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
-                weatherOptions[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
-                weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
-            }
+    //private void ShowWeatherOptions()
+    //{
+    //    for (int i = 0; i < weatherOptions.Length; i++)
+    //    {
+    //        if (i == _currentWeer)
+    //        {
+    //            weatherOptions[i].GetComponent<Button>().enabled = true;
+    //            weatherOptions[i].GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+    //            weatherOptions[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+    //            weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+    //        }
+    //        else
+    //        {
+    //            weatherOptions[i].GetComponent<Button>().enabled = false;
+    //            weatherOptions[i].GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+    //            weatherOptions[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
+    //            weatherOptions[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
+    //        }
 
-            switch (_currentWeer)
-            {
-                case 0:
-                    if (i >= 3 && i <= 6)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 1:
-                    if (i >= 4 && i <= 6)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 2:
-                    if (i == 5 || i == 6)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 3:
-                    if (i == 0 || i == 6)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 4:
-                    if (i == 0 || i == 1)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 5:
-                    if (i >= 0 && i <= 2)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-                case 6:
-                    if (i >= 0 && i <= 3)
-                    {
-                        weatherOptions[i].SetActive(false);
-                    }
-                    else
-                    {
-                        weatherOptions[i].SetActive(true);
-                    }
-                    break;
-            }
-        }   
-    }
+    //        switch (_currentWeer)
+    //        {
+    //            case 0:
+    //                if (i >= 3 && i <= 6)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 1:
+    //                if (i >= 4 && i <= 6)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 2:
+    //                if (i == 5 || i == 6)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 3:
+    //                if (i == 0 || i == 6)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 4:
+    //                if (i == 0 || i == 1)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 5:
+    //                if (i >= 0 && i <= 2)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //            case 6:
+    //                if (i >= 0 && i <= 3)
+    //                {
+    //                    weatherOptions[i].SetActive(false);
+    //                }
+    //                else
+    //                {
+    //                    weatherOptions[i].SetActive(true);
+    //                }
+    //                break;
+    //        }
+    //    }   
+    //}
 
     // zichtbaarheid van tijd menu
     public void TimeMenuController()
@@ -461,15 +460,6 @@ public class MenuFunctions : MonoBehaviour
             huidigSelected = false;
         }
     }
-    #endregion
-
-
-    #region PlaatsGebouwMenu
-
-
-
- 
-  
     #endregion
 
 

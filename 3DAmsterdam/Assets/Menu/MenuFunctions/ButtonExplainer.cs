@@ -20,6 +20,8 @@ public class ButtonExplainer : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private float offSetX, offSetY;
     private float scaling = 15f;
 
+    public float offSet;
+
     private void Start()
     {
         // de UI van het bericht wordt ingeladen
@@ -47,7 +49,7 @@ public class ButtonExplainer : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         // de offset van het bericht wordt bepaald
         offSetX = GetComponent<RectTransform>().rect.width / 2;
-        offSetX += (_helpMessage.GetComponent<RectTransform>().rect.width / 2) + 10f;
+        offSetX += (_helpMessage.GetComponent<RectTransform>().rect.width / 2) + offSet;
         offSetY = GetComponent<RectTransform>().rect.height / 2;
 
         _helpMessage.transform.position += new Vector3(offSetX, offSetY, 0);
