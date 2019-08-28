@@ -15,21 +15,29 @@ public class SelectBuilding : MonoBehaviour
 
     List<Color> originalColours;
 
+    public GameObject panel;
+
     GameObject selectedObj;
 
     public MenuFunctions menuFunctions;
 
-    List<Color> originalParentColors;
+    List<GameObject> dataFields;
 
     public GameObject infoMenu;
 
     public API api;
+    string BagID;
+
+    public GameObject bagData;
+
+
+    public GetBagIDs martijnScript;
 
     public void Start()
     {
         children = new List<Transform>();
         originalColours = new List<Color>();
-        originalParentColors = new List<Color>();
+        dataFields= new List<GameObject>();
 
         menuFunctions.GetComponent<MenuFunctions>();
     }
@@ -41,74 +49,87 @@ public class SelectBuilding : MonoBehaviour
     //    SelectHoogbouw();
     //}
 
-    public void SelectHoogbouw(string BagID)
+    public void SelectHoogbouw()
     {
+        for (int i = 0; i < dataFields.Count; i++)
+        {
+            Destroy(dataFields[i]);
+        }
 
+        dataFields.Clear();
 
-        api.pandURL = "https://api.data.amsterdam.nl/bag/pand/" + BagID;
-        api.request = new WWW(api.pandURL);
+        for (int i = 0; i < martijnScript.Bagids.Count; i++)
+        {
+            GameObject instantiateData = Instantiate(bagData, Vector3.zero, Quaternion.identity, panel.transform);
+    
+            instantiateData.SetActive(true);
 
-        api.verblijfURL = "https://api.data.amsterdam.nl/bag/verblijfsobject/?panden__id=" + BagID;
-        api.verblijfRequest = new WWW(api.verblijfURL);
+            instantiateData.GetComponent<API>().Begin(martijnScript.Bagids[i]);
+
+            dataFields.Add(instantiateData);
+        }
+        
+
+        //api.dropDown.ClearOptions();
 
         //if (Input.GetMouseButtonDown(0))
         //{
-            //menuFunctions.SelectMenu(4);
-            StartCoroutine(api.OnResponse(api.request));
-            StartCoroutine(api.AdressLoader(api.verblijfRequest));
+        //menuFunctions.SelectMenu(4);
 
-            //if (selectedObj != null)
-            //{
-            //    if (parentMats.Length != 0)
-            //    {
-            //        for (int i = 0; i < parentMats.Length; i++)
-            //        {
-            //            parentMats[i].color = originalParentColors[i];
-            //        }
-            //    }
 
-            //    for (int i = 0; i < children.Count; i++)
-            //    {
-            //        mats = children[i].gameObject.GetComponent<Renderer>().materials;
 
-            //        for (int j = 0; j < mats.Length; j++)
-            //        {
-            //            if (mats.Length > 0)
-            //            {
-            //                mats[j].color = originalColours[j];
-            //            }
-            //        }
-            //    }
-            //}
+        //if (selectedObj != null)
+        //{
+        //    if (parentMats.Length != 0)
+        //    {
+        //        for (int i = 0; i < parentMats.Length; i++)
+        //        {
+        //            parentMats[i].color = originalParentColors[i];
+        //        }
+        //    }
 
-            //selectedObj = hit.transform.gameObject;
+        //    for (int i = 0; i < children.Count; i++)
+        //    {
+        //        mats = children[i].gameObject.GetComponent<Renderer>().materials;
 
-            //parentMats = hit.transform.gameObject.GetComponent<Renderer>().materials;
+        //        for (int j = 0; j < mats.Length; j++)
+        //        {
+        //            if (mats.Length > 0)
+        //            {
+        //                mats[j].color = originalColours[j];
+        //            }
+        //        }
+        //    }
+        //}
 
-            //foreach (Transform child in hit.transform)
-            //{
-            //    children.Add(child);
-            //}
+        //selectedObj = hit.transform.gameObject;
 
-            //for (int i = 0; i < parentMats.Length; i++)
-            //{
-            //    originalParentColors.Add(parentMats[i].color);
-            //    parentMats[i].color = Color.red;
-            //}
+        //parentMats = hit.transform.gameObject.GetComponent<Renderer>().materials;
 
-            //for (int i = 0; i < children.Count; i++)
-            //{
-            //    mats = children[i].gameObject.GetComponent<Renderer>().materials;
+        //foreach (Transform child in hit.transform)
+        //{
+        //    children.Add(child);
+        //}
 
-            //    for (int j = 0; j < mats.Length; j++)
-            //    {
-            //        if (mats.Length > 0)
-            //        {
-            //            originalColours.Add(mats[j].color);
-            //            mats[j].color = Color.red;
-            //        }
-            //    }
-            //}
+        //for (int i = 0; i < parentMats.Length; i++)
+        //{
+        //    originalParentColors.Add(parentMats[i].color);
+        //    parentMats[i].color = Color.red;
+        //}
+
+        //for (int i = 0; i < children.Count; i++)
+        //{
+        //    mats = children[i].gameObject.GetComponent<Renderer>().materials;
+
+        //    for (int j = 0; j < mats.Length; j++)
+        //    {
+        //        if (mats.Length > 0)
+        //        {
+        //            originalColours.Add(mats[j].color);
+        //            mats[j].color = Color.red;
+        //        }
+        //    }
+        //}
         //}
 
 
