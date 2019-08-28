@@ -7,11 +7,12 @@ using TMPro;
 
 public class SelectAndScale : MonoBehaviour
 {
-    public GameObject scaleMenu, cubeScaling, objectScaling;
+    private MenuFunctions menuScript;
+
+    public GameObject scaleMenu, uploadMenu, buildingMenu, cubeScaling, objectScaling;
     public Slider height, width, length; // kubussen
     public Slider size; // andere objecten
-    public TextMeshProUGUI text;
-    private TextMeshProUGUI _text, sizeText, heightText, widthText, lengthText;
+    private TextMeshProUGUI sizeText, heightText, widthText, lengthText;
 
     [HideInInspector]
     public GameObject selectedObject;
@@ -22,7 +23,8 @@ public class SelectAndScale : MonoBehaviour
 
     void Start()
     {
-        _text = text.GetComponent<TextMeshProUGUI>();
+        menuScript = GameObject.Find("Menus").GetComponent<MenuFunctions>();
+
         sizeText = objectScaling.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         heightText = cubeScaling.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         widthText = cubeScaling.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -43,6 +45,7 @@ public class SelectAndScale : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
+
                 // het geselecteerde object is het object waar op geklikt wordt
                 selectedObject = hit.collider.gameObject;
 
@@ -52,6 +55,15 @@ public class SelectAndScale : MonoBehaviour
                 if (!(selectedObject.tag == cubeTag || selectedObject.tag == objectTag))
                 {
                     selectedObject = null;
+
+                    if (scaleMenu.activeSelf)
+                    {
+                        menuScript.currentMenu = 10;
+                    }
+                }
+                else
+                {
+                    menuScript.currentMenu = 2;
                 }
             }
         }
@@ -81,7 +93,6 @@ public class SelectAndScale : MonoBehaviour
             }
 
             ChangeScale();
-            ObjectIndication();
         }
     }
 
@@ -91,9 +102,13 @@ public class SelectAndScale : MonoBehaviour
         if (showMenu)
         {
             scaleMenu.SetActive(true);
+            buildingMenu.SetActive(false);
+            uploadMenu.SetActive(false);
         } else
         {
             scaleMenu.SetActive(false);
+            buildingMenu.SetActive(true);
+            uploadMenu.SetActive(true);
         }
     }
 
@@ -149,11 +164,5 @@ public class SelectAndScale : MonoBehaviour
                 selectedObject.transform.localScale = Vector3.one * ((size.maxValue - Mathf.Abs(size.value)) / size.maxValue);
             }
         }
-    }
-
-    // naam van het object wordt weergegeven boven het menu
-    private void ObjectIndication()
-    {
-        _text.text = selectedObject.gameObject.name;
     }
 }

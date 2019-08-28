@@ -20,22 +20,12 @@ public class MenuFunctions : MonoBehaviour
     public TextMeshProUGUI hours, minutes, time, monthYear, date;
     private bool huidigSelected = false;
 
-    [Header("Bouwen")]
-    public GameObject[] buildingOptions;
-    public GameObject placeBuildingMenu, uploadBuildingMenu, createBuilding, uploadBuilding;
-    public Slider heightSlider, widthSlider, lengthSlider, rotationSlider;
-    public Image cubeImage;
-    public Sprite spriteHeight, spriteWidth, spriteLength, spriteRegular, spriteRightArrow, spriteDownArrow;
-    public Button placeBuildingButton, uploadBuildingButton;
-    public RectTransform positioningGebouwen;
-    public TextMeshProUGUI heightValue, widthValue, lengthValue, rotationValue;
-
     [Header("Opties")]
     public Toggle[] optionsToggles;
 
     private ModeManager modeManager;
 
-    private TextMeshProUGUI _monthyear, _date, _heightValue, _widthValue, _lengthValue, _rotationValue;
+    private TextMeshProUGUI _monthyear, _date;
 
     private Vector3 startPosMenuCreateBuilding, startPosMap;
 
@@ -58,10 +48,6 @@ public class MenuFunctions : MonoBehaviour
     {
         currentMenu = noMenu;
 
-        _heightValue = heightValue.GetComponent<TextMeshProUGUI>();
-        _widthValue = widthValue.GetComponent<TextMeshProUGUI>();
-        _lengthValue = lengthValue.GetComponent<TextMeshProUGUI>();
-        _rotationValue = rotationValue.GetComponent<TextMeshProUGUI>();
         _monthyear = monthYear.GetComponent<TextMeshProUGUI>();
         _date = date.GetComponent<TextMeshProUGUI>();
 
@@ -70,7 +56,6 @@ public class MenuFunctions : MonoBehaviour
         _currentYear = System.DateTime.Now.Year;
         _hours = 12;
 
-        startPosMenuCreateBuilding = createBuilding.transform.localPosition;
         startPosMap = miniMap.transform.localPosition;
 
         _currentWeer = weatherOptions.Length / 2;
@@ -91,8 +76,6 @@ public class MenuFunctions : MonoBehaviour
         TogglingItems();
 
         // plaats gebouw menu
-        ShowBuildingOptions();
-        changePlaceBuildingValues();
 
         // minimap
         MapPositioning();
@@ -482,128 +465,11 @@ public class MenuFunctions : MonoBehaviour
 
 
     #region PlaatsGebouwMenu
-    //// methode om submenu(gebouw plaatsen) aan/uit te zetten
-    //public void TogglePlaceBuilding()
-    //{
-    //    buildingMenuDecider *= -1;
-
-    //    if (buildingMenuDecider == 1)
-    //    {
-    //        placeBuildingMenu.SetActive(false);
-    //        placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-    //    }
-    //    else
-    //    {
-    //        placeBuildingMenu.SetActive(true);
-    //        placeBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
-
-    //        if (uploadBuildingMenu.activeSelf)
-    //        {
-    //            uploadMenuDecider *= -1;
-    //            uploadBuildingMenu.SetActive(false);
-    //            uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-    //        }
-    //    }
-    //}
-
-    //public void ToggleUploadBuilding()
-    //{
-    //    uploadMenuDecider *= -1;
-
-    //    if (uploadMenuDecider == 1)
-    //    {
-    //        uploadBuildingMenu.SetActive(false);
-    //        uploadBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-
-    //        createBuilding.transform.localPosition = startPosMenuCreateBuilding;
-    //    }
-    //    else
-    //    {
-    //        uploadBuildingMenu.SetActive(true);
-    //        uploadBuildingButton.GetComponent<Image>().sprite = spriteDownArrow;
-
-    //        createBuilding.transform.localPosition = new Vector3(createBuilding.transform.localPosition.x,
-    //                                                        uploadBuildingMenu.transform.localPosition.y - (uploadBuildingMenu.GetComponent<RectTransform>().sizeDelta.y / 2 + 10),
-    //                                                        createBuilding.transform.localPosition.z);
-
-    //        if (placeBuildingMenu.activeSelf)
-    //        {
-    //            buildingMenuDecider *= -1;
-    //            placeBuildingMenu.SetActive(false);
-    //            placeBuildingButton.GetComponent<Image>().sprite = spriteRightArrow;
-    //        }
-    //    }
-    //}
-
-    // methode om kubus van kleur te laten veranderen zodat zichtbaar wordt of hoogte, lengte of breedte wordt aangepast
-    private void changePlaceBuildingValues()
-    {
-        _heightValue.text = ((int)(heightSlider.value * scaleFactor)).ToString() + "m";
-        _widthValue.text = ((int)(widthSlider.value * scaleFactor)).ToString() + "m";
-        _lengthValue.text = ((int)(lengthSlider.value * scaleFactor)).ToString() + "m";
-        _rotationValue.text = ((int)(rotationSlider.value * 360f)).ToString() + "°";
 
 
-        if (EventSystem.current.currentSelectedGameObject != null)
-        {
-            if (heightSlider.name == EventSystem.current.currentSelectedGameObject.name)
-            {
-                cubeImage.GetComponent<Image>().sprite = spriteHeight;
-            }
-            else if (widthSlider.name == EventSystem.current.currentSelectedGameObject.name)
-            {
-                cubeImage.GetComponent<Image>().sprite = spriteWidth;
-            }
-            else
-            {
-                cubeImage.GetComponent<Image>().sprite = spriteLength;
-            }
-        }
-        else
-        {
-            cubeImage.GetComponent<Image>().sprite = spriteRegular;
-        }
-    }
 
-    // weerselectie naar rechts
-    public void GebouwenRightButton()
-    {
-        if (positioningGebouwen.localPosition.x > -((buildingOptions.Length - 3) * moveFactor))
-        {
-            positioningGebouwen.position -= new Vector3(moveFactor, 0, 0);
-
-            minBarrierGebouwen++;
-            maxBarrierGebouwen++;
-        }
-    }
-
-    // weerselectie naar links
-    public void GebouwenLeftButton()
-    {
-        if (positioningGebouwen.localPosition.x < 0)
-        {
-            positioningGebouwen.position += new Vector3(moveFactor, 0, 0);
-
-            minBarrierGebouwen--;
-            maxBarrierGebouwen--;
-        }
-    }
-
-    // zichtbaarheid van weeropties 
-    private void ShowBuildingOptions()
-    {
-        for (int i = 0; i < buildingOptions.Length; i++)
-        {
-            if (i >= minBarrierGebouwen && i <= maxBarrierGebouwen)
-            {
-                buildingOptions[i].SetActive(true);
-            }
-            else
-            {
-                buildingOptions[i].SetActive(false);
-            }
-        }
-    }
+ 
+  
     #endregion
 
 

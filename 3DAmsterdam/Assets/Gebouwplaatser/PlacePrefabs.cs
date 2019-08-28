@@ -8,8 +8,6 @@ public class PlacePrefabs : MonoBehaviour
 
     private bool placingObject = false, instantiate = false, highlight;
 
-    private int clickCount = 0;
-
     public void PlaceActivation(GameObject _building)
     {
         building = _building;

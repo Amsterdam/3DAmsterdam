@@ -11,20 +11,12 @@ public class PlaatsBlokje : MonoBehaviour
 
     private bool placingObject, instantiate;
 
-    public Slider hoogte, breedte, lengte, rotatie;
-    private float scaleFactor = 100f;
-
     private int cubeNaming = 1;
 
     void Start()
     {
         placingObject = false;
         instantiate = false;
-
-        hoogte.value = 0.5f;
-        breedte.value = 0.5f;
-        lengte.value = 0.5f;
-        rotatie.value = 0f;
     }
 
     void Update()
@@ -52,8 +44,8 @@ public class PlaatsBlokje : MonoBehaviour
                 tempGebouw.transform.position = new Vector3(0, tempGebouw.transform.localScale.y / 2, 0) + hit.point;
 
                 // blokje krijgt schaal en rotatie die gegeven worden in het menu
-                tempGebouw.transform.localScale = new Vector3(breedte.value * scaleFactor, hoogte.value * scaleFactor, lengte.value * scaleFactor);
-                tempGebouw.transform.rotation = Quaternion.Euler(0, rotatie.value * 360, 0);
+                tempGebouw.transform.localScale = new Vector3(50f, 50f, 50f);
+                //tempGebouw.transform.rotation = Quaternion.Euler(0, rotatie.value * 360, 0);
 
                 // als er geklikt wordt, dan wordt het blokje geplaatst
                 if (Input.GetMouseButtonDown(0))
