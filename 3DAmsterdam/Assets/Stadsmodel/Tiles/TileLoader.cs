@@ -123,7 +123,17 @@ public class TileLoader : MonoBehaviour
         return CoordConvert.WGS84toUnity(origin);
     }
 
-    private IEnumerator requestQMTile(string url, Vector3 tileId)
+    public void UpdateTerrainTextures()
+    {
+        List<KeyValuePair<Vector3,GameObject>> temp = tileDb.ToList();
+
+        for (int i = 0; i < temp.Count; i++)
+        {
+           StartCoroutine(UpdateTerrainTexture(textureUrl, temp[i].Key));
+        }
+    }
+
+    private IEnumerator UpdateTerrainTexture(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
         TerrainTile terrainTile;
@@ -145,9 +155,39 @@ public class TileLoader : MonoBehaviour
             if (tileDb.ContainsKey(tileId))
             {
 
-                //myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                //myTexture.wrapMode = TextureWrapMode.Clamp;
-                //update tile with height data
+                DestroyImmediate(tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture);
+                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+            }
+        }
+        else
+        {
+            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
+        }
+    }
+
+
+    private IEnumerator requestQMTile(string url, Vector3 tileId)
+    {
+        DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
+        TerrainTile terrainTile;
+
+        //get tile texture data
+        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
+        Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
+        string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
+        if (tileId.z == 17)
+        {
+            wmsUrl = wmsUrl.Replace("width=256", "width=1024");
+            wmsUrl = wmsUrl.Replace("height=256", "height=1024");
+        }
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(wmsUrl);
+        yield return www.SendWebRequest();
+
+        if (!www.isNetworkError && !www.isHttpError)
+        {
+            if (tileDb.ContainsKey(tileId))
+            {
 
                 DestroyImmediate(tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture);
                 tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
