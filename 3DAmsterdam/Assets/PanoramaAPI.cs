@@ -26,8 +26,7 @@ public class PanoramaAPI : MonoBehaviour
     List<string> Locaties;
     RaycastHit hit;
     Ray ray;
-
-    // Start is called before the first frame update
+    
     public void WorldClick()
     {    
         Locaties = new List<string>();
@@ -54,12 +53,15 @@ public class PanoramaAPI : MonoBehaviour
 
         wgs = CoordConvert.UnitytoWGS84(hit.point);
 
-        //wgs.lon = Mathf.Round((float)wgs.lon);
-        //wgs.lat = Mathf.Round((float)wgs.lat);
+        string wgsLon;
+        string wgsLat;
 
-        Debug.Log("WgsLon: " + wgs.lon + " Wgslat: " + wgs.lat);
-        StartCoroutine(Panoramas(new WWW("https://api.data.amsterdam.nl/panorama/panoramas/?near=" + wgs.lon + "," + wgs.lat + "&radius=100&srid=4326&newest_in_range=true&limit_results=1")));
-              
+        wgsLon = wgs.lon.ToString().Replace(',', '.');
+        wgsLat = wgs.lat.ToString().Replace(',', '.');
+
+        Debug.Log("WgsLon: " + wgsLon + " Wgslat: " + wgsLat);
+        StartCoroutine(Panoramas(new WWW("https://api.data.amsterdam.nl/panorama/panoramas/?near="+wgsLon+","+wgsLat+"&radius=100&srid=4326&newest_in_range=true&limit_results=1")));
+                                        
     }
 
     public IEnumerator Panoramas(WWW req)
@@ -68,8 +70,8 @@ public class PanoramaAPI : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        Locaties.Add(requestOutput["_embedded"]["panoramas"]["geometry"]["coordinates"]);
+        //Locaties.Add(requestOutput["_embedded"]["panoramas"]["_links"]["self"].Value);
        
-        Debug.Log("Locatie in de lijst: " + Locaties[0]);
+        Debug.Log("APIDATA: " + requestOutput["count"]);
     }
 }
