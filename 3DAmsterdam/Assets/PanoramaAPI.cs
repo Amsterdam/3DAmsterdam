@@ -12,24 +12,31 @@ public class PanoramaAPI : MonoBehaviour
      * Raycast naar de grond CHECK
      * Haal coördinaten op van de hit.point CHECK
      * Haal de coördinaten door martijn zijn script, daar krijg je lon/lat uit CHECK
-     * Kijk in de API in een radius van 100 meter welke coördinaten hier het dichtstbij zijn CHECK
-     * Geef deze coördinaten weer op de kaart met een stipje of animatie.
-     * Laat de persoon klikken op zo'n stipje
+     * Kijk in de API in een radius van 100 meter welke coördinaten hier het dichtstbij zijn en kies de meest dichtstbijzijnde CHECK
+     * Laat het canvas zien op de plek van aanklikken CHECK
      * Geef de panorama weer van de locatie naar keuze. Einde Coroutine.
      * 
      * 
      */
-
+    [HideInInspector]
     public Vector3WGS wgs;
+
     JSONNode requestOutput;
     Vector3 location;
-    List<string> Locaties;
+    Vector3 fotoLocatie;
+    string[] locaties;
     RaycastHit hit;
     Ray ray;
-    
+    Vector3 hitPunt;
+
+    double lon;
+    double lat;
+
+    public GameObject canvas;
+
     public void WorldClick()
-    {    
-        Locaties = new List<string>();
+    {
+        locaties = new string[2];
         StartCoroutine(ClickPhase());
     }
 
@@ -37,21 +44,24 @@ public class PanoramaAPI : MonoBehaviour
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null)
+        if(Physics.Raycast(ray, out hit))
         {
-            hit.point = Input.mousePosition;
-        }
+            if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null)
+            {
+                hitPunt = hit.point;
+            }
+        }      
     }
     
     public IEnumerator ClickPhase()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
 
-        Debug.Log("Hit.point:" + hit.point);           
+        Debug.Log("Hit.point:" + hitPunt);           
 
-        yield return new WaitUntil(() => hit.point != null);
+        yield return new WaitUntil(() => hitPunt != null);
 
-        wgs = CoordConvert.UnitytoWGS84(hit.point);
+        wgs = CoordConvert.UnitytoWGS84(hitPunt);
 
         string wgsLon;
         string wgsLat;
@@ -70,8 +80,22 @@ public class PanoramaAPI : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        //Locaties.Add(requestOutput["_embedded"]["panoramas"]["_links"]["self"].Value);
-       
-        Debug.Log("APIDATA: " + requestOutput["count"]);
+        string coordinateText = requestOutput["_embedded"]["panoramas"].ToString();
+
+        int startIndex = 1288;
+        int length = 32;
+        string coordinaten = coordinateText.Substring(startIndex, length);
+
+        locaties = coordinaten.Split(',');
+
+        lon = double.Parse(locaties[0].Replace('.', ','));
+        lat = double.Parse(locaties[1].Replace('.', ','));
+
+        Debug.Log(lon + " " + lat);
+
+        fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
+
+        Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
+        canvas.SetActive(true);
     }
 }
