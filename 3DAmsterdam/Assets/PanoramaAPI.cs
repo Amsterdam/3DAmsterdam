@@ -36,6 +36,9 @@ public class PanoramaAPI : MonoBehaviour
     public GameObject worldSphere;
     public GameObject canvas;
     public Shader shader;
+    GameObject thumbnail;
+
+    bool panoramaWatch = false;
 
     public void WorldClick()
     {
@@ -54,6 +57,14 @@ public class PanoramaAPI : MonoBehaviour
                 hitPunt = hit.point;
             }
         }      
+
+        if(Vector3.Distance(hit.point, fotoLocatie) <= 1000f)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                SpawnPanorama();
+            }
+        }
     }
     
     public IEnumerator ClickPhase()
@@ -114,24 +125,20 @@ public class PanoramaAPI : MonoBehaviour
 
         yield return imageTexture;
 
-        //urlImage = GameObject.Find("RawImage");
-        //urlImage.GetComponent<RawImage>().texture = urlTexture;
-
-        //Debug.Log("DONE!");
-
         urlImage = imageTexture.texture;
 
         Renderer sphereRend = worldSphere.GetComponent<Renderer>();
         sphereRend.material = new Material(shader);
         sphereRend.material.mainTexture = urlImage;
         sphereRend.material.renderQueue = 3001;
-        
-
-        worldSphere.transform.localScale += new Vector3(50, 50, 50);
-        worldSphere.transform.position = Camera.main.transform.position;
 
         yield return new WaitForSeconds(1);
+    }
 
-        //canvas.GetComponent<Renderer>().enabled = false;
+    public void SpawnPanorama()
+    {
+        panoramaWatch = true;
+        worldSphere.transform.localScale += new Vector3(50, 50, 50);
+        worldSphere.transform.position = Camera.main.transform.position;
     }
 }
