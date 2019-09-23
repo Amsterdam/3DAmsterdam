@@ -32,7 +32,10 @@ public class PanoramaAPI : MonoBehaviour
     double lon;
     double lat;
 
+    Texture2D urlImage;
+    public GameObject worldSphere;
     public GameObject canvas;
+    public Shader shader;
 
     public void WorldClick()
     {
@@ -80,11 +83,13 @@ public class PanoramaAPI : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        string coordinateText = requestOutput["_embedded"]["panoramas"].ToString();
+        string apiText = requestOutput["_embedded"]["panoramas"].ToString();
+
+        Debug.Log(apiText);
 
         int startIndex = 1288;
         int length = 32;
-        string coordinaten = coordinateText.Substring(startIndex, length);
+        string coordinaten = apiText.Substring(startIndex, length);
 
         locaties = coordinaten.Split(',');
 
@@ -95,7 +100,38 @@ public class PanoramaAPI : MonoBehaviour
 
         fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
-        Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
+        Instantiate(canvas, fotoLocatie + new Vector3(0, 200, 0), Quaternion.identity);
         canvas.SetActive(true);
+
+        startIndex = 150;
+        length = 126;
+
+        string imageLink = apiText.Substring(startIndex, length);
+
+        Debug.Log("ImageLink: " + imageLink);
+
+        WWW imageTexture = new WWW(imageLink);
+
+        yield return imageTexture;
+
+        //urlImage = GameObject.Find("RawImage");
+        //urlImage.GetComponent<RawImage>().texture = urlTexture;
+
+        //Debug.Log("DONE!");
+
+        urlImage = imageTexture.texture;
+
+        Renderer sphereRend = worldSphere.GetComponent<Renderer>();
+        sphereRend.material = new Material(shader);
+        sphereRend.material.mainTexture = urlImage;
+        sphereRend.material.renderQueue = 3001;
+        
+
+        worldSphere.transform.localScale += new Vector3(50, 50, 50);
+        worldSphere.transform.position = Camera.main.transform.position;
+
+        yield return new WaitForSeconds(1);
+
+        //canvas.GetComponent<Renderer>().enabled = false;
     }
 }
