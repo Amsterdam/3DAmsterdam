@@ -304,7 +304,7 @@ public class BuildingTileManager : MonoBehaviour
             {
                 volgnummer = int.Parse(Meshnaam.Split('_')[2]);
             }
-            GameObject container = new GameObject(X + "_" + Y+"_"+TileID.z);
+            GameObject container = new GameObject(Meshnaam);
             container.transform.parent = transform;
             container.layer = LayerMask.NameToLayer("Panden");
 
@@ -333,7 +333,8 @@ public class BuildingTileManager : MonoBehaviour
             //gebouwenlijst toevoegen
             if (TileID.z == 2)
             {
-                gebouwenlijst.Clear();
+                gebouwenlijst = new Dictionary<string, float>();
+                
                 string[] panden = Regex.Split(bagidRegels[volgnummer * 2], ",");
                 for (int i = 0; i < panden.Length - 1; i++)
                 {

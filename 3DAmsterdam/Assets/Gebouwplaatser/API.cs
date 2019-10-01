@@ -56,20 +56,20 @@ public class API : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        foreach (string bagid in martijnsScript.Bagids)
-        {
+        //foreach (string bagid in martijnsScript.Bagids)
+        //{
             this.gameObject.GetComponent<TekstVeldScript>().naam.text = requestOutput["pandnaam"];
             this.gameObject.GetComponent<TekstVeldScript>().bouwjaar.text = requestOutput["oorspronkelijk_bouwjaar"];
             this.gameObject.GetComponent<TekstVeldScript>().BAGID.text = requestOutput["pandidentificatie"];
             this.gameObject.GetComponent<TekstVeldScript>().label.text = requestOutput["verblijfsobjecten"]["count"];
-        }
+        //}
     }
 
     public IEnumerator AdressLoader(WWW req)
     {
         yield return req;
 
-        Debug.Log(req.error);
+        //Debug.Log(req.error);
 
         verblijfOutput = JSON.Parse(req.text);
 
@@ -107,12 +107,12 @@ public class API : MonoBehaviour
             }
 
             dropDown.AddOptions(verblijfList);
-            Debug.Log("Aantal options: " + dropDown.options.Count);
+            //Debug.Log("Aantal options: " + dropDown.options.Count);
             verblijfList.Clear();
 
-            Debug.Log(pageNumber);
-            Debug.Log("Klaar met Loopen");
-            Debug.Log(dropDown.options);
+            //Debug.Log(pageNumber);
+            //Debug.Log("Klaar met Loopen");
+            //Debug.Log(dropDown.options);
         }
     }
 }

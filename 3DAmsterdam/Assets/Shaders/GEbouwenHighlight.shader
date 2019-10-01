@@ -9,7 +9,7 @@
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
 	
-		_OverrideUVx("OverrideUVx",float) = 0.625
+
 
 
     }
@@ -41,7 +41,7 @@
         half _Metallic;
         fixed4 _Color;
 		fixed4 _OverrideColor;
-		float _OverrideUVx;
+	
 
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -55,7 +55,7 @@
 		{
 			bool override = false;
 			for (int i = 0; i < _SegmentsCount; i++) {
-				if (_pandcodes[i] == IN.uv2_HighlightTex.x)
+				if (abs(_pandcodes[i]-IN.uv2_HighlightTex.x)<0.5)
 				{
 					override = true;
 				}

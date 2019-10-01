@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 /// </summary>
 public class GetBagIDs :MonoBehaviour
 {
+    public API BagdataInterface;
     public List<string> Bagids = new List<string>();        //gevonden BagIds
     public bool Bezig = false;                              //geeft aan of het zoeken nar BAGids bezig is
     public bool HasError = false;                           //geeft aan of er bij het zoeken naar BagIDs fouten zijn opgetreden
@@ -84,6 +85,13 @@ public class GetBagIDs :MonoBehaviour
 
     private void GetBagIDopMeshData(RaycastHit hit)
     {
+
+        if (hit.transform.GetComponent<BagIDs>() == null)
+        {
+            return;
+        }
+
+
         HighLightPanden.Clear();
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null)//niets highlighten als raycasthit niet op mesh
@@ -97,18 +105,26 @@ public class GetBagIDs :MonoBehaviour
             return;
         }
 
+        
+
         Vector2[] uvs = meshCollider.sharedMesh.uv2;
         float uvx = uvs[meshCollider.sharedMesh.triangles[hit.triangleIndex * 3]].x;
+
+
         Dictionary<string, float> bagidlijst = hit.transform.gameObject.GetComponent<BagIDs>().gebouwenlijst;
         string bagid = "";
         foreach (KeyValuePair<string, float> pair in bagidlijst)
         {
             if (pair.Value == uvx)
             {
-                Debug.Log(uvx);
                 bagid = pair.Key;
                 HighLightPanden.Add(bagid);
                 setHighlight();
+                BagdataInterface.gameObject.SetActive(true);
+                BagdataInterface.Begin(bagid);
+                Bagids = new List<string>();
+                Bagids.Add(bagid);
+                Status = WFSStatus.FInished;
                 break;
             }
         }
