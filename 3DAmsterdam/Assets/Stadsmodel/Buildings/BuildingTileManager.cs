@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using ConvertCoordinates;
 using BruTile;
 using System;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// enum to indentify the status of a BuildingTile
@@ -41,6 +42,7 @@ public class BuildingTileManager : MonoBehaviour
 
     public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
+    public float Max_Afstand_Daken = 500;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
     private CameraView CV;
@@ -48,6 +50,7 @@ public class BuildingTileManager : MonoBehaviour
     public int MAX_Concurrent_Downloads = 5;
     private Boolean BijwerkenGereed = true;
 
+    private Dictionary<string, float> gebouwenlijst = new Dictionary<string, float>();
     private Dictionary<Vector3, BuildingTileData> buildingTiles = new Dictionary<Vector3, BuildingTileData>();
     private List<Vector3> PendingDownloads = new List<Vector3>();
     private List<Vector3> ActiveDownloads = new List<Vector3>();
@@ -112,13 +115,21 @@ public class BuildingTileManager : MonoBehaviour
                     Add(new Vector3(deltax, deltay, 0));
                     BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 0),1);
                 }
-                if (afstand < Max_Afstand_BAG)
+                if (Max_Afstand_Daken<afstand && afstand < Max_Afstand_BAG)
                 {
                     //controleren of bagpandtegel binnen view valt
                     Add(new Vector3(deltax, deltay, 1));
                     BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 1), 1);
                     
                 }
+                if (afstand < Max_Afstand_Daken)
+                {
+                    //controleren of bagpandtegel binnen view valt
+                    Add(new Vector3(deltax, deltay, 2));
+                    BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 2), 1);
+
+                }
+
             }
         }
 
@@ -259,6 +270,8 @@ public class BuildingTileManager : MonoBehaviour
     private IEnumerator ProcessBuildingTile(Vector3 TileID)
     {
         BuildingTileData btd = buildingTiles[TileID];
+
+        //meshes uit assetbundle inlezen
         Mesh[] ABAssets = new Mesh[0];
         try
         {
@@ -271,13 +284,30 @@ public class BuildingTileManager : MonoBehaviour
 
         }
 
+        //bagidlijst uit assetbundle inlezen als detailniveau = 2
+        string[] bagidRegels = new string[0];
+        if (TileID.z == 2)
+        {
+            TextAsset bagidlijst = btd.AB.LoadAllAssets<TextAsset>()[0];
+            string tekst = bagidlijst.text;
+            bagidRegels = Regex.Split(tekst, "\n|\r|\r\n");
+            
+        }
+
         foreach (Mesh ass in ABAssets)
         {
             string Meshnaam = ass.name;
             float X = float.Parse(Meshnaam.Split('_')[0]);
             float Y = float.Parse(Meshnaam.Split('_')[1]);
+            int volgnummer = 0;
+            if (TileID.z == 2)
+            {
+                volgnummer = int.Parse(Meshnaam.Split('_')[2]);
+            }
             GameObject container = new GameObject(X + "_" + Y+"_"+TileID.z);
             container.transform.parent = transform;
+            container.layer = LayerMask.NameToLayer("Panden");
+
             //positioning container
             Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
@@ -294,9 +324,32 @@ public class BuildingTileManager : MonoBehaviour
             //add mesh
             MeshFilter mf = container.AddComponent<MeshFilter>();
             mf.sharedMesh = ass;
+            MeshCollider mc = container.AddComponent<MeshCollider>();
+            mc.sharedMesh = ass;
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;
+
+            //gebouwenlijst toevoegen
+            if (TileID.z == 2)
+            {
+                gebouwenlijst.Clear();
+                string[] panden = Regex.Split(bagidRegels[volgnummer * 2], ",");
+                for (int i = 0; i < panden.Length - 1; i++)
+                {
+                    if (gebouwenlijst.ContainsKey(panden[i]))
+                    {
+                        Debug.Log("bagid '" + panden[i] + "' bestaat al");
+                    }
+                    else
+                    {
+                        gebouwenlijst.Add(panden[i], (float)i);
+                    }
+                }
+                BagIDs Bid = container.AddComponent<BagIDs>();
+                Bid.gebouwenlijst = gebouwenlijst;
+
+            }
             //add to Buildingtiledata
             btd.Gameobjecten.Add(container);
             ActiveBuilds.Remove(btd.id);

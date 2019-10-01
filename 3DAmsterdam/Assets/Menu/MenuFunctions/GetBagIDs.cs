@@ -20,8 +20,8 @@ public class GetBagIDs :MonoBehaviour
     private bool StapBezig = false;
 
     private Vector3 LocatieUnity;
-
-
+    public List<string> HighLightPanden = new List<string>();
+    public GameObject GebouwenFolder;
 
     //Zoekinstellingen
     private int Servernr = 0;
@@ -60,26 +60,76 @@ public class GetBagIDs :MonoBehaviour
 
     public void Start()
     {
-        api.GetComponent<SelectBuilding>();
+        //api.GetComponent<SelectBuilding>();
     }
 
     private void Update()
     {
         //als geklikt wordt en er nog niet gezocht wordt naar BagIDs
-        if (Input.GetMouseButtonDown(0) && Bezig==false)
+        if (Input.GetMouseButtonDown(0))
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
             if (Physics.Raycast(ray, out hit, LayerMask.GetMask("Panden"))) //raycast naar layer Panden
             {
                 //Hitpoint opslaan en coroutine starten
                 LocatieUnity = hit.point;
-                StartCoroutine(GetBagID());
+
+                GetBagIDopMeshData(hit);
+
+                //StartCoroutine(GetBagIDOpLocatie());
             }
         }
     }
 
 
-    private IEnumerator GetBagID()
+    private void GetBagIDopMeshData(RaycastHit hit)
+    {
+        HighLightPanden.Clear();
+        MeshCollider meshCollider = hit.collider as MeshCollider;
+        if (meshCollider == null || meshCollider.sharedMesh == null)//niets highlighten als raycasthit niet op mesh
+        {
+            setHighlight();
+            return;
+        }
+        if (hit.transform.gameObject.layer != LayerMask.NameToLayer("Panden"))
+        {
+            setHighlight();
+            return;
+        }
+
+        Vector2[] uvs = meshCollider.sharedMesh.uv2;
+        float uvx = uvs[meshCollider.sharedMesh.triangles[hit.triangleIndex * 3]].x;
+        Dictionary<string, float> bagidlijst = hit.transform.gameObject.GetComponent<BagIDs>().gebouwenlijst;
+        string bagid = "";
+        foreach (KeyValuePair<string, float> pair in bagidlijst)
+        {
+            if (pair.Value == uvx)
+            {
+                Debug.Log(uvx);
+                bagid = pair.Key;
+                HighLightPanden.Add(bagid);
+                setHighlight();
+                break;
+            }
+        }
+        
+    }
+
+    void setHighlight()
+    {
+
+        foreach (BagIDs h in GebouwenFolder.GetComponentsInChildren<BagIDs>())
+        {
+            h.SetHighlight(HighLightPanden);
+        }
+
+
+    }
+
+
+
+    // bagid bepalen op basis van locatie en wfs-server
+    private IEnumerator GetBagIDOpLocatie()
     {
         //instellingen op standard zetten
         Bezig = true;
