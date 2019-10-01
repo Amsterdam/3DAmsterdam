@@ -8,7 +8,7 @@ public class beweging : MonoBehaviour
 {
     public Camera cam;
 
-    private const float zoomSpeed = 0.5f;
+    public float zoomSpeed = 0.5f;
     private const float zoomSpeedAir = 800f;
     private const float maxZoomOut = 2500f;
     private const float maxZoomIn = 47f;
@@ -28,7 +28,7 @@ public class beweging : MonoBehaviour
     private float mouseVer;
     private float dragSpeed;
 
-    private bool canMove = true;
+    public bool canMove = true;
     private bool canUseFunction = true;
     private bool hitCollider = false;
 

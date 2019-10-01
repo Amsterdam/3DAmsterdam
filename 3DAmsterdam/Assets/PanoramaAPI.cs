@@ -37,11 +37,21 @@ public class PanoramaAPI : MonoBehaviour
     public GameObject canvas;
     public Shader shader;
     GameObject thumbnail;
+    GameObject instantiated;
+
+    public beweging cameraManager;
+    public GameObject exitText;
+    public GameObject miniMap;
+    public Toggle toggle;
+    List<GameObject> panoramaInstantiated;
 
     bool panoramaWatch = false;
 
     public void WorldClick()
     {
+        panoramaInstantiated = new List<GameObject>();
+        hitPunt = new Vector3();
+        panoramaWatch = false;
         locaties = new string[2];
         StartCoroutine(ClickPhase());
     }
@@ -50,30 +60,50 @@ public class PanoramaAPI : MonoBehaviour
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if(Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit))
         {
             if (Input.GetMouseButtonDown(0) && EventSystem.current.currentSelectedGameObject == null)
             {
                 hitPunt = hit.point;
             }
-        }      
+        }
 
-        if(Vector3.Distance(hit.point, fotoLocatie) <= 1000f)
+        if (panoramaWatch)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Physics.Raycast(ray, out hit))
             {
-                SpawnPanorama();
+                if (Vector3.Distance(hit.point, fotoLocatie) <= 500f)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        SpawnPanorama();
+                        cameraManager.canMove = false;
+                        cameraManager.zoomSpeed = 0f;
+                        exitText.SetActive(true);
+                        miniMap.SetActive(false);
+                        toggle.isOn = false;
+                        
+                    }
+                }
+            }
+
+            if (Input.GetKey(KeyCode.Escape))
+            {
+               
+
+                cameraManager.canMove = true;
+                cameraManager.zoomSpeed = 0.5f;
+                exitText.SetActive(false);
+                worldSphere.transform.position = new Vector3(0, -2000, 0);
+                miniMap.SetActive(true);
+                panoramaWatch = false;
             }
         }
     }
     
     public IEnumerator ClickPhase()
     {
-        yield return new WaitForSeconds(3);
-
-        Debug.Log("Hit.point:" + hitPunt);           
-
-        yield return new WaitUntil(() => hitPunt != null);
+        yield return new WaitUntil(() => hitPunt != new Vector3(0,0,0));
 
         wgs = CoordConvert.UnitytoWGS84(hitPunt);
 
@@ -83,7 +113,6 @@ public class PanoramaAPI : MonoBehaviour
         wgsLon = wgs.lon.ToString().Replace(',', '.');
         wgsLat = wgs.lat.ToString().Replace(',', '.');
 
-        Debug.Log("WgsLon: " + wgsLon + " Wgslat: " + wgsLat);
         StartCoroutine(Panoramas(new WWW("https://api.data.amsterdam.nl/panorama/panoramas/?near="+wgsLon+","+wgsLat+"&radius=100&srid=4326&newest_in_range=true&limit_results=1")));
                                         
     }
@@ -96,30 +125,26 @@ public class PanoramaAPI : MonoBehaviour
 
         string apiText = requestOutput["_embedded"]["panoramas"].ToString();
 
-        Debug.Log(apiText);
-
         int startIndex = 1288;
         int length = 32;
         string coordinaten = apiText.Substring(startIndex, length);
 
         locaties = coordinaten.Split(',');
 
-        lon = double.Parse(locaties[0].Replace('.', ','));
-        lat = double.Parse(locaties[1].Replace('.', ','));
-
-        Debug.Log(lon + " " + lat);
+        lon = double.Parse(locaties[0],System.Globalization.CultureInfo.InvariantCulture);
+        lat = double.Parse(locaties[1], System.Globalization.CultureInfo.InvariantCulture); ;
 
         fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
-        Instantiate(canvas, fotoLocatie + new Vector3(0, 200, 0), Quaternion.identity);
+        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
+        instantiated.tag = "panoramaInstantiated";
+
         canvas.SetActive(true);
 
         startIndex = 150;
         length = 126;
 
         string imageLink = apiText.Substring(startIndex, length);
-
-        Debug.Log("ImageLink: " + imageLink);
 
         WWW imageTexture = new WWW(imageLink);
 
@@ -132,12 +157,13 @@ public class PanoramaAPI : MonoBehaviour
         sphereRend.material.mainTexture = urlImage;
         sphereRend.material.renderQueue = 3001;
 
-        yield return new WaitForSeconds(1);
+        panoramaWatch = true;
+
+        StopAllCoroutines();
     }
 
     public void SpawnPanorama()
     {
-        panoramaWatch = true;
         worldSphere.transform.localScale += new Vector3(50, 50, 50);
         worldSphere.transform.position = Camera.main.transform.position;
     }
