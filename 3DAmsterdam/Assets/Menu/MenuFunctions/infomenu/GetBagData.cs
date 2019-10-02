@@ -6,7 +6,7 @@ using SimpleJSON;
 using TMPro;
 using UnityEngine.UI.Extensions;
 
-public class API : MonoBehaviour
+public class GetBagData : MonoBehaviour
 {
     public string bagID;
 
@@ -31,7 +31,6 @@ public class API : MonoBehaviour
 
     int pageNumber;
 
-    public GetBagIDs martijnsScript;
 
     JSONNode requestOutput;
     JSONNode verblijfOutput;
@@ -40,14 +39,28 @@ public class API : MonoBehaviour
 
     public void Begin(string bagIDstring)
     {
+
         verblijfList = new List<string>();
         pageNumber = 1;
 
         bagID = bagIDstring;
+        if(bagID == "")
+        {
+            ClearFields();
+            return;
+        }
 
         StartCoroutine(OnResponse(new WWW("https://api.data.amsterdam.nl/bag/pand/" + bagID)));
         StartCoroutine(AdressLoader(new WWW("https://api.data.amsterdam.nl/bag/verblijfsobject/?panden__id=" + bagID)));
         
+    }
+
+    public void ClearFields()
+    {
+        this.gameObject.GetComponent<TekstVeldScript>().naam.text = "";
+        this.gameObject.GetComponent<TekstVeldScript>().bouwjaar.text = "";
+        this.gameObject.GetComponent<TekstVeldScript>().BAGID.text = "";
+        this.gameObject.GetComponent<TekstVeldScript>().label.text = "";
     }
 
     public IEnumerator OnResponse(WWW req)
@@ -56,13 +69,11 @@ public class API : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        //foreach (string bagid in martijnsScript.Bagids)
-        //{
             this.gameObject.GetComponent<TekstVeldScript>().naam.text = requestOutput["pandnaam"];
             this.gameObject.GetComponent<TekstVeldScript>().bouwjaar.text = requestOutput["oorspronkelijk_bouwjaar"];
             this.gameObject.GetComponent<TekstVeldScript>().BAGID.text = requestOutput["pandidentificatie"];
             this.gameObject.GetComponent<TekstVeldScript>().label.text = requestOutput["verblijfsobjecten"]["count"];
-        //}
+
     }
 
     public IEnumerator AdressLoader(WWW req)

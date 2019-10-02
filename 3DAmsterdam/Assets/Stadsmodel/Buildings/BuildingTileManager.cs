@@ -42,6 +42,7 @@ public class BuildingTileManager : MonoBehaviour
 
     public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
+    public Material HighLightMateriaal;
     public float Max_Afstand_Daken = 500;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
@@ -286,8 +287,10 @@ public class BuildingTileManager : MonoBehaviour
 
         //bagidlijst uit assetbundle inlezen als detailniveau = 2
         string[] bagidRegels = new string[0];
-        if (TileID.z == 2)
+        bool ObjectenlijstAanwezig = false;
+        if (btd.AB.LoadAllAssets<TextAsset>().Length > 0)
         {
+            ObjectenlijstAanwezig = true;
             TextAsset bagidlijst = btd.AB.LoadAllAssets<TextAsset>()[0];
             string tekst = bagidlijst.text;
             bagidRegels = Regex.Split(tekst, "\n|\r|\r\n");
@@ -300,7 +303,7 @@ public class BuildingTileManager : MonoBehaviour
             float X = float.Parse(Meshnaam.Split('_')[0]);
             float Y = float.Parse(Meshnaam.Split('_')[1]);
             int volgnummer = 0;
-            if (TileID.z == 2)
+            if (Meshnaam.Split('_').Length>2)
             {
                 volgnummer = int.Parse(Meshnaam.Split('_')[2]);
             }
@@ -331,7 +334,7 @@ public class BuildingTileManager : MonoBehaviour
             mr.material = GebouwMateriaal;
 
             //gebouwenlijst toevoegen
-            if (TileID.z == 2)
+            if (ObjectenlijstAanwezig)
             {
                 gebouwenlijst = new Dictionary<string, float>();
                 
@@ -347,8 +350,10 @@ public class BuildingTileManager : MonoBehaviour
                         gebouwenlijst.Add(panden[i], (float)i);
                     }
                 }
-                BagIDs Bid = container.AddComponent<BagIDs>();
-                Bid.gebouwenlijst = gebouwenlijst;
+                ObjectMapping Bid = container.AddComponent<ObjectMapping>();
+                Bid.Objectenlijst = gebouwenlijst;
+                Bid.DefaultMaterial = GebouwMateriaal;
+                Bid.HighlightMaterial = HighLightMateriaal;
 
             }
             //add to Buildingtiledata

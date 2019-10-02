@@ -5,7 +5,7 @@ using TMPro;
 
 public class TekstVeldScript : MonoBehaviour
 {
-    public API api;
+    public GetBagData api;
     public TextMeshProUGUI naam;
     public TextMeshProUGUI bouwjaar;
     public TextMeshProUGUI BAGID;

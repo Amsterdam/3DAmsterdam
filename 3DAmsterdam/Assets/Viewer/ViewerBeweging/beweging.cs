@@ -57,7 +57,7 @@ public class beweging : MonoBehaviour
     {
         // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
         if (EventSystem.current.IsPointerOverGameObject() ||
-            menuFunctions.allMenus[6].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
+            menuFunctions.allMenus[5].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
         {
             canUseFunction = false;
         }
