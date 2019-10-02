@@ -12,7 +12,7 @@ public class ObjectMapping : MonoBehaviour
     public void SetHighlight(List<string> HighlightObjecten)
     {
         int nummer = 0;
-        float[] renderList = new float[1000];
+        float[] renderList = new float[100];
         for (int i = 0; i < HighlightObjecten.Count; i++)
         {
             if (Objectenlijst.ContainsKey(HighlightObjecten[i]))

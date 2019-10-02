@@ -21,7 +21,7 @@
         CGPROGRAM
 
 		int _SegmentsCount = 0;
-		float _pandcodes[1000];
+		float _pandcodes[100];
         // Physically based Standard lighting model, and enable shadows on all light types
         #pragma surface surf Standard fullforwardshadows
 
