@@ -354,6 +354,7 @@ public class BuildingTileManager : MonoBehaviour
                 Bid.Objectenlijst = gebouwenlijst;
                 Bid.DefaultMaterial = GebouwMateriaal;
                 Bid.HighlightMaterial = HighLightMateriaal;
+                Bid.SetMesh(ass);
 
             }
             //add to Buildingtiledata
