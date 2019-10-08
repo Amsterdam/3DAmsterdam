@@ -72,9 +72,10 @@ public class BuildingTileManager : MonoBehaviour
         if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
             UpdateGebouwen(CV.CameraExtent);
-        }
-        if (BijwerkenGereed)
-        {
+            vorigeCV = CV.CameraExtent;
+        //}
+        //if (BijwerkenGereed)
+        //{
             if (PendingDestroy.Count>0 || PendingBuilds.Count>0 || PendingDownloads.Count>0 )
             {
                 BijwerkenGereed = false;
@@ -240,14 +241,15 @@ public class BuildingTileManager : MonoBehaviour
         /////downloaden van de Assetbundle
         ///
         BuildingTileData btd = buildingTiles[TileID];
-#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
-        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
-#endif
+//#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
+//        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
+//#endif
         string url = BuildingURL + "gebouwen_" + ((int)btd.id.x).ToString() + "_" + ((int)btd.id.y).ToString() + "." + ((int)btd.id.z).ToString();
+        float starttijd = Time.time;
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
         {
             yield return uwr.SendWebRequest();
-
+            Debug.Log("downloadtijd: " + (starttijd - Time.time));
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 ActiveDownloads.Remove(btd.id);

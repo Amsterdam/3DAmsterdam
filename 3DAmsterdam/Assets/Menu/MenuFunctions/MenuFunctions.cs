@@ -69,8 +69,15 @@ public class MenuFunctions : MonoBehaviour
         ExtendMenu();
         // tijd en weer menu
         //ShowWeatherOptions();
-        TimeManager();
-        DateManager();
+        if (timeMenu.activeSelf)
+        {
+            TimeManager();
+        }
+        if (dateMenu.activeSelf)
+        {
+            DateManager();
+        }
+        
 
         // opties menu
         TogglingItems();
