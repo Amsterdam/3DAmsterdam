@@ -73,6 +73,7 @@ public class BuildingTileManager : MonoBehaviour
         {
             UpdateGebouwen(CV.CameraExtent);
             vorigeCV = CV.CameraExtent;
+        }
         //}
         //if (BijwerkenGereed)
         //{
@@ -82,7 +83,7 @@ public class BuildingTileManager : MonoBehaviour
                 StartCoroutine(TilesBijwerken());
             }
             
-        }
+        
         
     }
 
@@ -245,11 +246,11 @@ public class BuildingTileManager : MonoBehaviour
 //        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
 //#endif
         string url = BuildingURL + "gebouwen_" + ((int)btd.id.x).ToString() + "_" + ((int)btd.id.y).ToString() + "." + ((int)btd.id.z).ToString();
-        float starttijd = Time.time;
+        
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
         {
             yield return uwr.SendWebRequest();
-            Debug.Log("downloadtijd: " + (starttijd - Time.time));
+            
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 ActiveDownloads.Remove(btd.id);
