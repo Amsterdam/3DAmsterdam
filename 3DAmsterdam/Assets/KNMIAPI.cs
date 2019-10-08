@@ -18,7 +18,7 @@ public class KNMIAPI : MonoBehaviour
         WWW request = new WWW(URL);
 
         runTime = true;
-
+        
         StartCoroutine(OnResponse(request));
     }
 
