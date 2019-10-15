@@ -12,12 +12,18 @@ public class ObjectMapping : MonoBehaviour
 
     private SubObject Totaalmesh;
     private SubObject Tempmesh;
+    private bool IsHighlighted = false;
+    private Mesh PandenMesh;
 
     private List<SubObject> HighlightObjecten = new List<SubObject>();
 
     public void SetMesh(Mesh totaalmesh)
     {
-        Totaalmesh = new SubObject();
+        if (Totaalmesh==null)
+        {
+            Totaalmesh = new SubObject();
+        }
+        
         Totaalmesh.verts = totaalmesh.vertices;
         Totaalmesh.triangles = totaalmesh.triangles;
         Totaalmesh.uv2 = totaalmesh.uv2;
@@ -25,23 +31,30 @@ public class ObjectMapping : MonoBehaviour
         Tempmesh.verts = totaalmesh.vertices;
         Tempmesh.triangles = totaalmesh.triangles;
         Tempmesh.uv2 = totaalmesh.uv2;
+
     }
 
     public void SetHighlight(List<string> HighlightObjectenstring)
     {
-
+        bool highlighten = false;
         HighlightObjecten = new List<SubObject>();
         Totaalmesh.triangles = Tempmesh.triangles;
+
         for (int i = 0; i < 1; i++)
         {
             if (Objectenlijst.ContainsKey(HighlightObjectenstring[i]))
             {
-
+                highlighten = true;
                     ExtractSubObject(HighlightObjectenstring[i]);
 
             }
         }
-        SetupMesh();
+        if (highlighten || IsHighlighted)
+        {
+            SetupMesh();
+            IsHighlighted = highlighten;
+        }
+        
     }
 
     void ReturnSubobject(SubObject SO)
@@ -96,7 +109,7 @@ public class ObjectMapping : MonoBehaviour
 
     void SetupMesh()
     {
-        Mesh ms = new Mesh();
+        PandenMesh= transform.GetComponent<MeshFilter>().sharedMesh;
         List<Material> mats = new List<Material>();
         mats.Add(DefaultMaterial);
         for (int i = 0; i < HighlightObjecten.Count; i++)
@@ -104,20 +117,21 @@ public class ObjectMapping : MonoBehaviour
             mats.Add(HighlightMaterial);
         }
         transform.GetComponent<MeshRenderer>().sharedMaterials = mats.ToArray();
-        
-        ms.subMeshCount = HighlightObjecten.Count+1;
-        ms.vertices = Tempmesh.verts;
-        ms.uv2 = Tempmesh.uv2;
+
+        PandenMesh.subMeshCount = HighlightObjecten.Count+1;
+        PandenMesh.vertices = Tempmesh.verts;
+        PandenMesh.uv2 = Tempmesh.uv2;
         //ms.SetTriangles( Totaalmesh.triangles,0);
-        ms.SetTriangles(Totaalmesh.triangles,  0);
+        PandenMesh.SetTriangles(Totaalmesh.triangles,  0);
         for (int i = 0; i < HighlightObjecten.Count; i++)
         {
-  
-         ms.SetTriangles(HighlightObjecten[i].triangles, i+1);
+
+            PandenMesh.SetTriangles(HighlightObjecten[i].triangles, i+1);
             
         }
-        ms.RecalculateNormals();
-        transform.GetComponent<MeshFilter>().sharedMesh = ms;
+        PandenMesh.RecalculateNormals();
+
+        transform.GetComponent<MeshFilter>().sharedMesh = PandenMesh;
         
         
     }
