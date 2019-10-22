@@ -55,7 +55,8 @@ public class MenuFunctions : MonoBehaviour
         _currentMonth = System.DateTime.Now.Month;
         _currentYear = System.DateTime.Now.Year;
         _hours = 12;
-
+        TimeManager();
+        DateManager();
         startPosMap = miniMap.transform.localPosition;
 
         //_currentWeer = weatherOptions.Length / 2;
@@ -293,6 +294,9 @@ public class MenuFunctions : MonoBehaviour
     //}
 
     // zichtbaarheid van tijd menu
+
+
+
     public void TimeMenuController()
     {
         if (timeMenu.activeSelf) timeMenu.SetActive(false);
@@ -345,6 +349,11 @@ public class MenuFunctions : MonoBehaviour
     // vertoont de tijd juist in beeld
     private void TimeManager()
     {
+        if (huidigSelected)
+        {
+            
+        }
+
         if (_hours < 10)
         {
             hours.GetComponent<TextMeshProUGUI>().text = "0" + _hours.ToString();
@@ -368,11 +377,7 @@ public class MenuFunctions : MonoBehaviour
         }
 
 
-        if (huidigSelected)
-        {
-            _hours = System.DateTime.Now.Hour;
-            _minutes = System.DateTime.Now.Minute;
-        }
+        
     }
 
     // vertoont de datum juist in beeld
@@ -491,6 +496,11 @@ public class MenuFunctions : MonoBehaviour
         if (huidigSelected == false)
         {
             huidigSelected = true;
+            _hours = System.DateTime.Now.Hour;
+            _minutes = System.DateTime.Now.Minute;
+            TimeManager();
+            DateManager();
+
         } else
         {
             huidigSelected = false;

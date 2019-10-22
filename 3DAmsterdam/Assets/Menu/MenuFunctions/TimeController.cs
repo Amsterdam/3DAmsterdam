@@ -18,6 +18,7 @@ public class TimeController : MonoBehaviour
 
         currentHours = _menuFunctions._hours;
         currentMinutes = _menuFunctions._minutes;
+        
     }
 
     public void ShowTimeInputField(GameObject inputField)
