@@ -5,6 +5,7 @@ using SimpleJSON;
 using ConvertCoordinates;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class PanoramaAPI : MonoBehaviour
 {
@@ -103,7 +104,6 @@ public class PanoramaAPI : MonoBehaviour
         worldSphere.transform.position = new Vector3(0, -2000, 0);
         miniMap.SetActive(true);
         panoramaWatch = false;
-        Destroy(instantiated);
         Camera.main.transform.rotation = Camrotatie;
     }
 
@@ -163,7 +163,7 @@ public class PanoramaAPI : MonoBehaviour
 
         instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 150, 0), Quaternion.identity);
         instantiated.tag = "panoramaInstantiated";
-
+       
         canvas.SetActive(true);
 
         loadingIcon.SetActive(false);
@@ -176,6 +176,7 @@ public class PanoramaAPI : MonoBehaviour
 
     public void SpawnPanorama()
     {
+        Destroy(instantiated);
         worldSphere.transform.localScale += new Vector3(50, 50, 50);
         worldSphere.transform.position = Camera.main.transform.position;
     }
