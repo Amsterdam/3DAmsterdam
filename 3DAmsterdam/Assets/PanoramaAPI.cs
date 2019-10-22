@@ -45,12 +45,12 @@ public class PanoramaAPI : MonoBehaviour
     public Toggle toggle;
     List<GameObject> panoramaInstantiated;
     private Quaternion Camrotatie;
+    public GameObject loadingIcon;
 
     bool panoramaWatch = false;
 
     public void WorldClick()
-    {
-        
+    {      
         panoramaInstantiated = new List<GameObject>();
         hitPunt = new Vector3();
         panoramaWatch = false;
@@ -72,8 +72,7 @@ public class PanoramaAPI : MonoBehaviour
         }
 
         if (panoramaWatch)
-        {
-            
+        {        
             if (Physics.Raycast(ray, out hit))
             {
                 //if (hit.transform.tag=="panormaInstantiated")
@@ -81,43 +80,41 @@ public class PanoramaAPI : MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        Camrotatie = Camera.main.transform.rotation;
                         SpawnPanorama();
-                        cameraManager.canMove = false;
                         cameraManager.zoomSpeed = 0f;
+                        cameraManager.dragFactor = 0f;
+                        Camrotatie = Camera.main.transform.rotation;        
+                        cameraManager.canMove = false;
                         exitText.SetActive(true);
-                        miniMap.SetActive(false);
-                        toggle.isOn = false;
-                        
+                        miniMap.SetActive(false);              
                     }
                 }
-                else
-                {
-                    Destroy(instantiated);
-                }
-            }
-
-            if (Input.GetKey(KeyCode.Escape))
-            {
-               
-
-                cameraManager.canMove = true;
-                cameraManager.zoomSpeed = 0.5f;
-                exitText.SetActive(false);
-                worldSphere.transform.position = new Vector3(0, -2000, 0);
-                miniMap.SetActive(true);
-                panoramaWatch = false;
-                Destroy(instantiated);
-                Camera.main.transform.rotation = Camrotatie ;
             }
         }
     }
     
+    public void ExitPanorama()
+    {
+        toggle.interactable = true;
+        cameraManager.canMove = true;
+        cameraManager.zoomSpeed = 0.5f;
+        cameraManager.dragFactor = 2f;
+        exitText.SetActive(false);
+        worldSphere.transform.position = new Vector3(0, -2000, 0);
+        miniMap.SetActive(true);
+        panoramaWatch = false;
+        Destroy(instantiated);
+        Camera.main.transform.rotation = Camrotatie;
+    }
+
     public IEnumerator ClickPhase()
     {
         yield return new WaitUntil(() => hitPunt != new Vector3(0,0,0));
 
         wgs = CoordConvert.UnitytoWGS84(hitPunt);
+
+        loadingIcon.SetActive(true);
+        toggle.interactable = false;
 
         string wgsLon;
         string wgsLat;
@@ -148,11 +145,6 @@ public class PanoramaAPI : MonoBehaviour
 
         fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
-        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 150, 0), Quaternion.identity);
-        instantiated.tag = "panoramaInstantiated";
-
-        canvas.SetActive(true);
-
         startIndex = 150;
         length = 126;
 
@@ -168,6 +160,14 @@ public class PanoramaAPI : MonoBehaviour
         sphereRend.material = new Material(shader);
         sphereRend.material.mainTexture = urlImage;
         sphereRend.material.renderQueue = 3001;
+
+        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 150, 0), Quaternion.identity);
+        instantiated.tag = "panoramaInstantiated";
+
+        canvas.SetActive(true);
+
+        loadingIcon.SetActive(false);
+        coordinaten = "";
 
         panoramaWatch = true;
 
