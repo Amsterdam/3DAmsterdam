@@ -36,20 +36,19 @@ public class PanoramaAPI : MonoBehaviour
     public GameObject worldSphere;
     public GameObject canvas;
     public Shader shader;
+    public GameObject coordinaatPanel;
     GameObject thumbnail;
     GameObject instantiated;
+    public GameObject exitPanorama;
 
     public beweging cameraManager;
-    public GameObject exitText;
     public GameObject miniMap;
     public Toggle toggle;
-    List<GameObject> panoramaInstantiated;
 
     bool panoramaWatch = false;
 
     public void WorldClick()
     {
-        panoramaInstantiated = new List<GameObject>();
         hitPunt = new Vector3();
         panoramaWatch = false;
         locaties = new string[2];
@@ -67,40 +66,23 @@ public class PanoramaAPI : MonoBehaviour
                 hitPunt = hit.point;
             }
         }
-
-        if (panoramaWatch)
-        {
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (Vector3.Distance(hit.point, fotoLocatie) <= 500f)
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        SpawnPanorama();
-                        cameraManager.canMove = false;
-                        cameraManager.zoomSpeed = 0f;
-                        exitText.SetActive(true);
-                        miniMap.SetActive(false);
-                        toggle.isOn = false;
-                        
-                    }
-                }
-            }
-
-            if (Input.GetKey(KeyCode.Escape))
-            {
-               
-
-                cameraManager.canMove = true;
-                cameraManager.zoomSpeed = 0.5f;
-                exitText.SetActive(false);
-                worldSphere.transform.position = new Vector3(0, -2000, 0);
-                miniMap.SetActive(true);
-                panoramaWatch = false;
-            }
-        }
     }
     
+    public void ExitPanorama()
+    {
+        StopAllCoroutines();
+
+        toggle.interactable = true;
+        cameraManager.canMove = true;
+        cameraManager.zoomSpeed = 0.5f;
+        cameraManager.dragFactor = 2f;
+        worldSphere.transform.position = new Vector3(0, -2000, 0);
+        miniMap.SetActive(true);
+        panoramaWatch = false;
+        coordinaatPanel.SetActive(true);
+        exitPanorama.SetActive(false);
+    }
+
     public IEnumerator ClickPhase()
     {
         yield return new WaitUntil(() => hitPunt != new Vector3(0,0,0));
@@ -123,47 +105,75 @@ public class PanoramaAPI : MonoBehaviour
 
         requestOutput = JSON.Parse(req.text);
 
-        string apiText = requestOutput["_embedded"]["panoramas"].ToString();
+        if (panoramaWatch == false)
+        {
+            string apiText = requestOutput["_embedded"]["panoramas"].ToString();
 
-        int startIndex = 1288;
-        int length = 32;
-        string coordinaten = apiText.Substring(startIndex, length);
+            int startIndex = 1288;
+            int length = 32;
+            string coordinaten = apiText.Substring(startIndex, length);
 
-        locaties = coordinaten.Split(',');
+            locaties = coordinaten.Split(',');
 
-        lon = double.Parse(locaties[0],System.Globalization.CultureInfo.InvariantCulture);
-        lat = double.Parse(locaties[1], System.Globalization.CultureInfo.InvariantCulture); ;
+            lon = double.Parse(locaties[0], System.Globalization.CultureInfo.InvariantCulture);
+            lat = double.Parse(locaties[1], System.Globalization.CultureInfo.InvariantCulture); ;
 
-        fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
+            fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
-        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
-        instantiated.tag = "panoramaInstantiated";
+            canvas.SetActive(true);
 
-        canvas.SetActive(true);
+            startIndex = 150;
+            length = 126;
 
-        startIndex = 150;
-        length = 126;
+            string imageLink = apiText.Substring(startIndex, length);
 
-        string imageLink = apiText.Substring(startIndex, length);
+            WWW imageTexture = new WWW(imageLink);
 
-        WWW imageTexture = new WWW(imageLink);
+            yield return imageTexture;
 
-        yield return imageTexture;
+            instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
+            instantiated.tag = "panoramaInstantiated";
 
-        urlImage = imageTexture.texture;
+            urlImage = imageTexture.texture;
 
-        Renderer sphereRend = worldSphere.GetComponent<Renderer>();
-        sphereRend.material = new Material(shader);
-        sphereRend.material.mainTexture = urlImage;
-        sphereRend.material.renderQueue = 3001;
+            Renderer sphereRend = worldSphere.GetComponent<Renderer>();
+            sphereRend.material = new Material(shader);
+            sphereRend.material.mainTexture = urlImage;
+            sphereRend.material.renderQueue = 3001;
 
-        panoramaWatch = true;
+            panoramaWatch = true;
+
+            if (panoramaWatch)
+            {
+                toggle.isOn = false;
+
+                  if (Input.GetMouseButtonDown(0))
+                  {
+                        GameObject[] instants = GameObject.FindGameObjectsWithTag("panoramaInstantiated");
+
+                        foreach (GameObject x in instants)
+                        {
+                            DestroyImmediate(x);
+                        }
+
+                        toggle.interactable = false;
+                        exitPanorama.SetActive(true);
+                        SpawnPanorama();
+                        cameraManager.canMove = false;
+                        cameraManager.zoomSpeed = 0f;
+                        cameraManager.dragFactor = 0f;
+                        miniMap.SetActive(false);
+                        coordinaatPanel.SetActive(false);
+                  }
+            }
+        }
 
         StopAllCoroutines();
     }
 
     public void SpawnPanorama()
     {
+        StopAllCoroutines();
         worldSphere.transform.localScale += new Vector3(50, 50, 50);
         worldSphere.transform.position = Camera.main.transform.position;
     }

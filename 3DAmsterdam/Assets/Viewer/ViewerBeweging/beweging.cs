@@ -17,7 +17,7 @@ public class beweging : MonoBehaviour
     private const float minAngle = -10f;
     private const float maxAngle = 89f;
     private const float speedFactor = 0.5f;
-    private const float dragFactor = 2f;
+    public float dragFactor = 2f;
     private const float rotationSensitivity = 5f;
     private const float maxYAngle = 80f;
 
