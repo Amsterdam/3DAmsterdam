@@ -70,7 +70,7 @@ public class TileLoader : MonoBehaviour
         if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
             vorigeCV = CV.CameraExtent;
-            UpdateTerrainTiles(vorigeCV);
+            UpdateTerrainTilesOud(vorigeCV);
         }
         
         // verdergaan met downloaden uit de queue
@@ -256,12 +256,35 @@ public class TileLoader : MonoBehaviour
         return (float)(CoordConvert.UnitsPerDegreeY / Math.Pow(2, z));
     }
 
-    public void UpdateTerrainTiles(Extent Tempextent)
-    {
 
+    
+
+    private List<Vector3> SetBasicTilekeys(Extent TempExtent)
+    {
+        double TegelAfmeting = 180 / (Math.Pow(2, 10)); //tegelafmeting in graden bij zoomniveau 10;
+        int tegelMinX = (int)Math.Floor((TempExtent.MinX + 180) / TegelAfmeting);
+        int tegelMaxX = (int)Math.Floor((TempExtent.MaxX + 180) / TegelAfmeting);
+        int tegelMinY = (int)Math.Floor((TempExtent.MinY + 90) / TegelAfmeting);
+        int tegelMaxY = (int)Math.Floor((TempExtent.MaxY + 90) / TegelAfmeting);
+
+        List<Vector3> TileKeys = new List<Vector3>();
+        for (int X = tegelMinX; X < tegelMaxX + 1; X++)
+        {
+
+            for (int Y = tegelMinY; Y < tegelMaxY + 1; Y++)
+            {
+                Vector3 td = new Vector3(X, Y, 10);
+                TileKeys.Add(td);
+            }
+        }
+        return TileKeys;
+    }
+
+    private List<Vector3> SetBasicTilekeysOud(Extent Tempextent)
+    {
         // bepalen welke tegels geladen moeten worden
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        bool doorgaan = true;
+        
 
         var tiles = schema.GetTileInfos(Tempextent, "10").ToList();
         List<Vector3> TileKeys = new List<Vector3>();
@@ -270,7 +293,31 @@ public class TileLoader : MonoBehaviour
             Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
             TileKeys.Add(td);
         }
+        return TileKeys;
+    }
 
+
+    private double GetMinimumDistance(float X, float Y, float Zoomlevel)
+    {
+        double TegelAfmeting = 180 / (Math.Pow(2, Zoomlevel)); //tegelafmeting in graden bij zoomniveau 10;
+        double lon = (TegelAfmeting * X) - 180;
+        double Lat = (TegelAfmeting * Y) - 90;
+        double H = CoordConvert.ReferenceWGS84.h;
+        Vector3 LocatieUnity = new Vector3();
+        LocatieUnity.x = (float)((lon - CoordConvert.ReferenceWGS84.lon) * CoordConvert.UnitsPerDegreeX);
+        LocatieUnity.y = (float)CoordConvert.ReferenceWGS84.h;
+        LocatieUnity.z = (float)((Lat - CoordConvert.ReferenceWGS84.lat) * CoordConvert.UnitsPerDegreeY);
+        //LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
+        Vector3 afstand3D = LocatieUnity - Camera.main.transform.localPosition;
+        double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
+        return afstand;
+    }
+    public void UpdateTerrainTilesOud(Extent Tempextent)
+    {
+
+        List<Vector3> TileKeys = SetBasicTilekeys(Tempextent);
+        bool doorgaan = true;
+        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
         while (doorgaan)
         {
             doorgaan = false;
@@ -283,81 +330,41 @@ public class TileLoader : MonoBehaviour
                 Vector3 afstand3D = new Vector3();
                 double afstand;
                 double Werkafstand = 100000;
+                double TegelAfmeting = 180 / (Math.Pow(2, t.z)); //tegelafmeting in graden bij zoomniveau 10;
 
-
-                locatieWGS.lon = subtileExtent.MinX;
-                locatieWGS.lat = subtileExtent.MinY;
-                locatieWGS.h = CoordConvert.ReferenceWGS84.h;
-                LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-                afstand3D = LocatieUnity - Camera.main.transform.localPosition;
-                afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
-
-                if (afstand < Werkafstand)
-                {
-                    Werkafstand = afstand;
-                }
-
-                locatieWGS.lon = subtileExtent.MaxX;
-                locatieWGS.lat = subtileExtent.MinY;
-                locatieWGS.h = CoordConvert.ReferenceWGS84.h;
-                LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-                afstand3D = LocatieUnity - Camera.main.transform.localPosition;
-                afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
-
-                if (afstand < Werkafstand)
-                {
-                    Werkafstand = afstand;
-                }
-                locatieWGS.lon = subtileExtent.MaxX;
-                locatieWGS.lat = subtileExtent.MaxY;
-                locatieWGS.h = CoordConvert.ReferenceWGS84.h;
-                LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-                afstand3D = LocatieUnity - Camera.main.transform.localPosition;
-                afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
-
-                if (afstand < Werkafstand)
-                {
-                    Werkafstand = afstand;
-                }
-
-                locatieWGS.lon = subtileExtent.MinX;
-                locatieWGS.lat = subtileExtent.MaxY;
-                locatieWGS.h = CoordConvert.ReferenceWGS84.h;
-                LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-                afstand3D = LocatieUnity - Camera.main.transform.localPosition;
-                afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
-
-                if (afstand < Werkafstand)
-                {
-                    Werkafstand = afstand;
-                }
+                Werkafstand = GetMinimumDistance(t.x + 0.5f, t.y + 0.5f, t.z);
 
                 double minafstand = 50 * Math.Pow(2, (18 - t.z));
                 if (Werkafstand < minafstand && t.z < 17)
                 {
                     Vector3 toevoeging;
-                    Extent tempExtent = TileTransform.TileToWorld(new TileRange(int.Parse((t.x*2).ToString()), int.Parse((t.y*2).ToString())), (t.z+1).ToString(), schema);
-                    if (IsInsideExtent(tempExtent, CV.CameraExtent))
-                    {
                     toevoeging = new Vector3(t.x * 2, t.y * 2, t.z + 1);
+
+                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
+                    {
                         TileKeys.Add(toevoeging);
                     }
-                    tempExtent = TileTransform.TileToWorld(new TileRange(int.Parse(((t.x * 2)+1).ToString()), int.Parse(((t.y * 2)).ToString())), (t.z + 1).ToString(), schema);
-                    if (IsInsideExtent(tempExtent, CV.CameraExtent))
+                    toevoeging = new Vector3((t.x * 2) + 1, t.y * 2, t.z + 1);
+
+                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
                         {
-                        toevoeging = new Vector3((t.x * 2) + 1, t.y * 2, t.z + 1);
+                        
                         TileKeys.Add(toevoeging);
                     }
-                    tempExtent = TileTransform.TileToWorld(new TileRange(int.Parse((t.x * 2).ToString()), int.Parse(((t.y * 2) + 1).ToString())), (t.z + 1).ToString(), schema);
-                    if (IsInsideExtent(tempExtent, CV.CameraExtent))
+
+                    toevoeging = new Vector3(t.x * 2, (t.y * 2) + 1, t.z + 1);
+                    
+                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
                         {
-                        toevoeging = new Vector3(t.x * 2, (t.y * 2) + 1, t.z + 1);
+
                         TileKeys.Add(toevoeging);
                     }
-                    tempExtent = TileTransform.TileToWorld(new TileRange(int.Parse(((t.x * 2) + 1).ToString()), int.Parse(((t.y * 2)+1).ToString())), (t.z + 1).ToString(), schema);
-                    if (IsInsideExtent(tempExtent, CV.CameraExtent))
+
+                    toevoeging = new Vector3((t.x * 2) + 1, (t.y * 2) + 1, t.z + 1);
+
+                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
                         {
-                        toevoeging = new Vector3((t.x * 2) + 1, (t.y * 2) + 1, t.z + 1);
+
                         TileKeys.Add(toevoeging);
                     }
                     TileKeys.Remove(t);
@@ -371,31 +378,28 @@ public class TileLoader : MonoBehaviour
 
         // tegel zoomniveau 17 tpv camera toevoegen als dit buiten het camerabeeld valt.
 
-        if (true)
-        {
 
-        }
-        Vector3 campos = Camera.main.transform.position;
+        //Vector3 campos = Camera.main.transform.position;
 
-        Vector3 UnityMin = new Vector3(campos.x-10,campos.y-10,campos.z-10);
-        Vector3 UnityMax = new Vector3(campos.x + 10, campos.y + 10, campos.z + 10);
-        Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
-        Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
-        Extent LocatieExtent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
+        //Vector3 UnityMin = new Vector3(campos.x-10,campos.y-10,campos.z-10);
+        //Vector3 UnityMax = new Vector3(campos.x + 10, campos.y + 10, campos.z + 10);
+        //Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
+        //Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
+        //Extent LocatieExtent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
 
-        if (!IsInsideExtent(LocatieExtent,Tempextent))
-        {
-            tiles = schema.GetTileInfos(LocatieExtent, "17").ToList();
-            foreach (var t in tiles)
-            {
-                Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
-                if (!TileKeys.Contains(td))
-                {
-                    TileKeys.Add(td);
-                }
+        //if (!IsInsideExtent(LocatieExtent,Tempextent))
+        //{
+        //    var tiles = schema.GetTileInfos(LocatieExtent, "17").ToList();
+        //    foreach (var t in tiles)
+        //    {
+        //        Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
+        //        if (!TileKeys.Contains(td))
+        //        {
+        //            TileKeys.Add(td);
+        //        }
 
-            }
-        }
+        //    }
+        //}
         
 
         // bepalen welke reeds geladentegels niet meer nodig zijn en deze toevoegen aan TeVerwijderenTiles
@@ -479,12 +483,17 @@ public class TileLoader : MonoBehaviour
         }
     }
 
-    Boolean IsInsideExtent(Extent Subtileextent, Extent BBox)
+    Boolean IsInsideExtent(Vector3 tiledata, Extent BBox)
     {
         Boolean isbinnen = false;
+        
+        double TegelAfmeting = 180 / (Math.Pow(2, tiledata.z)); //tegelafmeting in graden bij zoomniveau 10;
+        double lon = (TegelAfmeting * tiledata.x) - 180;
+        double Lat = (TegelAfmeting * tiledata.y) - 90;
+        Extent Subtileextent = new Extent((TegelAfmeting * tiledata.x) - 180, (TegelAfmeting * tiledata.y) - 90, (TegelAfmeting * (tiledata.x+1)) - 180, (TegelAfmeting * (tiledata.y+1)) - 90);
 
         // check Linkerbovenhoek
-        if(Subtileextent.MaxY>BBox.MinY && Subtileextent.MinY<BBox.MaxY && Subtileextent.MaxX > BBox.MinX && Subtileextent.MinX < BBox.MaxX) { isbinnen = true; };
+        if (Subtileextent.MaxY>BBox.MinY && Subtileextent.MinY<BBox.MaxY && Subtileextent.MaxX > BBox.MinX && Subtileextent.MinX < BBox.MaxX) { isbinnen = true; };
 
 
         return isbinnen;

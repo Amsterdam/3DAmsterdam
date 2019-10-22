@@ -11,6 +11,7 @@ public class MenuFunctions : MonoBehaviour
     public GameObject[] allMenus;
     public Button[] buttons;
     public GameObject coordinatesPanel, miniMap, zoomButtonPlus, zoomButtonMinus, compass, streetView, godView, manager;
+    public GameObject DataVenster;
 
     [Header("Tijd en Weer")]
     public GameObject timeMenu, dateMenu, twentyNine, thirty, thirtyOne;
@@ -46,7 +47,7 @@ public class MenuFunctions : MonoBehaviour
     private void Start()
     {
         currentMenu = noMenu;
-
+        ManageMenus();
         _monthyear = monthYear.GetComponent<TextMeshProUGUI>();
         _date = date.GetComponent<TextMeshProUGUI>();
 
@@ -54,7 +55,8 @@ public class MenuFunctions : MonoBehaviour
         _currentMonth = System.DateTime.Now.Month;
         _currentYear = System.DateTime.Now.Year;
         _hours = 12;
-
+        TimeManager();
+        DateManager();
         startPosMap = miniMap.transform.localPosition;
 
         //_currentWeer = weatherOptions.Length / 2;
@@ -64,12 +66,19 @@ public class MenuFunctions : MonoBehaviour
 
     private void Update()
     {
-        ManageMenus();
-
+        //ManageMenus();
+        ExtendMenu();
         // tijd en weer menu
         //ShowWeatherOptions();
-        TimeManager();
-        DateManager();
+        if (timeMenu.activeSelf)
+        {
+            TimeManager();
+        }
+        if (dateMenu.activeSelf)
+        {
+            DateManager();
+        }
+        
 
         // opties menu
         TogglingItems();
@@ -81,6 +90,31 @@ public class MenuFunctions : MonoBehaviour
     }
 
     // beheert alle menus
+
+    private void ExtendMenu()
+    {
+        if (currentMenu != noMenu)
+        {
+            var menu = allMenus[currentMenu];
+
+
+            if (DataVenster.activeSelf)
+            {
+                menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
+                DataVenster.transform.localPosition = new Vector3(Mathf.Lerp(DataVenster.transform.localPosition.x, 238f + 278, 6f * Time.deltaTime), -538f, 0);
+            }
+            else
+            {
+                menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
+            }
+            
+        }
+        else
+        {
+            DataVenster.transform.localPosition = new Vector3(Mathf.Lerp(DataVenster.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
+        }
+    }
+
     private void ManageMenus()
     {
         // het huidige menu wordt zichtbaar gemaakt
@@ -90,7 +124,7 @@ public class MenuFunctions : MonoBehaviour
 
             menu.SetActive(true);
 
-            menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 239f, 6f * Time.deltaTime), -538f, 0);
+            
         }
 
         // alle andere menus worden ontzichtbaar gemaakt.
@@ -114,6 +148,7 @@ public class MenuFunctions : MonoBehaviour
         currentMenu = _menuNumber;
 
         GameObject menu = allMenus[_menuNumber];
+        
         Button button = buttons[_menuNumber];
         ColorBlock colors = button.colors;
 
@@ -130,11 +165,13 @@ public class MenuFunctions : MonoBehaviour
             colors.highlightedColor = Color.red;
             button.colors = colors;
         }
+        ManageMenus();
     }
 
     public void Exit()
     {
         currentMenu = noMenu;
+        ManageMenus();
     }
     #endregion
 
@@ -257,6 +294,9 @@ public class MenuFunctions : MonoBehaviour
     //}
 
     // zichtbaarheid van tijd menu
+
+
+
     public void TimeMenuController()
     {
         if (timeMenu.activeSelf) timeMenu.SetActive(false);
@@ -309,6 +349,11 @@ public class MenuFunctions : MonoBehaviour
     // vertoont de tijd juist in beeld
     private void TimeManager()
     {
+        if (huidigSelected)
+        {
+            
+        }
+
         if (_hours < 10)
         {
             hours.GetComponent<TextMeshProUGUI>().text = "0" + _hours.ToString();
@@ -332,11 +377,7 @@ public class MenuFunctions : MonoBehaviour
         }
 
 
-        if (huidigSelected)
-        {
-            _hours = System.DateTime.Now.Hour;
-            _minutes = System.DateTime.Now.Minute;
-        }
+        
     }
 
     // vertoont de datum juist in beeld
@@ -455,6 +496,11 @@ public class MenuFunctions : MonoBehaviour
         if (huidigSelected == false)
         {
             huidigSelected = true;
+            _hours = System.DateTime.Now.Hour;
+            _minutes = System.DateTime.Now.Minute;
+            TimeManager();
+            DateManager();
+
         } else
         {
             huidigSelected = false;

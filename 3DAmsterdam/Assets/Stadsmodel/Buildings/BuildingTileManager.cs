@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using ConvertCoordinates;
 using BruTile;
 using System;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// enum to indentify the status of a BuildingTile
@@ -41,6 +42,8 @@ public class BuildingTileManager : MonoBehaviour
 
     public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
     public Material GebouwMateriaal;
+    public Material HighLightMateriaal;
+    public float Max_Afstand_Daken = 500;
     public float Max_Afstand_BAG = 1000;
     public float Max_Afstand_Top10 = 3000;
     private CameraView CV;
@@ -48,6 +51,7 @@ public class BuildingTileManager : MonoBehaviour
     public int MAX_Concurrent_Downloads = 5;
     private Boolean BijwerkenGereed = true;
 
+    private Dictionary<string, float> gebouwenlijst = new Dictionary<string, float>();
     private Dictionary<Vector3, BuildingTileData> buildingTiles = new Dictionary<Vector3, BuildingTileData>();
     private List<Vector3> PendingDownloads = new List<Vector3>();
     private List<Vector3> ActiveDownloads = new List<Vector3>();
@@ -68,16 +72,18 @@ public class BuildingTileManager : MonoBehaviour
         if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
             UpdateGebouwen(CV.CameraExtent);
+            vorigeCV = CV.CameraExtent;
         }
-        if (BijwerkenGereed)
-        {
+        //}
+        //if (BijwerkenGereed)
+        //{
             if (PendingDestroy.Count>0 || PendingBuilds.Count>0 || PendingDownloads.Count>0 )
             {
                 BijwerkenGereed = false;
                 StartCoroutine(TilesBijwerken());
             }
             
-        }
+        
         
     }
 
@@ -112,13 +118,21 @@ public class BuildingTileManager : MonoBehaviour
                     Add(new Vector3(deltax, deltay, 0));
                     BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 0),1);
                 }
-                if (afstand < Max_Afstand_BAG)
+                if (Max_Afstand_Daken<afstand && afstand < Max_Afstand_BAG)
                 {
                     //controleren of bagpandtegel binnen view valt
                     Add(new Vector3(deltax, deltay, 1));
                     BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 1), 1);
                     
                 }
+                if (afstand < Max_Afstand_Daken)
+                {
+                    //controleren of bagpandtegel binnen view valt
+                    Add(new Vector3(deltax, deltay, 2));
+                    BuildingTilesNeeded.Add(new Vector3(deltax, deltay, 2), 1);
+
+                }
+
             }
         }
 
@@ -228,19 +242,20 @@ public class BuildingTileManager : MonoBehaviour
         /////downloaden van de Assetbundle
         ///
         BuildingTileData btd = buildingTiles[TileID];
-#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
-        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
-#endif
+//#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
+//        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
+//#endif
         string url = BuildingURL + "gebouwen_" + ((int)btd.id.x).ToString() + "_" + ((int)btd.id.y).ToString() + "." + ((int)btd.id.z).ToString();
+        
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
         {
             yield return uwr.SendWebRequest();
-
+            
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 ActiveDownloads.Remove(btd.id);
-                btd.Status = BuildingTileStatus.PendingBuild;
-                PendingBuilds.Add(btd.id);
+                btd.Status = BuildingTileStatus.Built;
+                
             }
             else
             {
@@ -259,6 +274,8 @@ public class BuildingTileManager : MonoBehaviour
     private IEnumerator ProcessBuildingTile(Vector3 TileID)
     {
         BuildingTileData btd = buildingTiles[TileID];
+
+        //meshes uit assetbundle inlezen
         Mesh[] ABAssets = new Mesh[0];
         try
         {
@@ -267,8 +284,22 @@ public class BuildingTileManager : MonoBehaviour
         catch (Exception)
         {
             btd.Status = BuildingTileStatus.Built;
+            ActiveBuilds.Remove(btd.id);
+            
             yield break;
 
+        }
+
+        //bagidlijst uit assetbundle inlezen als detailniveau = 2
+        string[] bagidRegels = new string[0];
+        bool ObjectenlijstAanwezig = false;
+        if (btd.AB.LoadAllAssets<TextAsset>().Length > 0)
+        {
+            ObjectenlijstAanwezig = true;
+            TextAsset bagidlijst = btd.AB.LoadAllAssets<TextAsset>()[0];
+            string tekst = bagidlijst.text;
+            bagidRegels = Regex.Split(tekst, "\n|\r|\r\n");
+            
         }
 
         foreach (Mesh ass in ABAssets)
@@ -276,8 +307,15 @@ public class BuildingTileManager : MonoBehaviour
             string Meshnaam = ass.name;
             float X = float.Parse(Meshnaam.Split('_')[0]);
             float Y = float.Parse(Meshnaam.Split('_')[1]);
-            GameObject container = new GameObject(X + "_" + Y+"_"+TileID.z);
+            int volgnummer = 0;
+            if (Meshnaam.Split('_').Length>2)
+            {
+                volgnummer = int.Parse(Meshnaam.Split('_')[2]);
+            }
+            GameObject container = new GameObject(Meshnaam);
             container.transform.parent = transform;
+            container.layer = LayerMask.NameToLayer("Panden");
+
             //positioning container
             Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
@@ -294,20 +332,48 @@ public class BuildingTileManager : MonoBehaviour
             //add mesh
             MeshFilter mf = container.AddComponent<MeshFilter>();
             mf.sharedMesh = ass;
+            MeshCollider mc = container.AddComponent<MeshCollider>();
+            mc.sharedMesh = ass;
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;
+
+            //gebouwenlijst toevoegen
+            if (ObjectenlijstAanwezig)
+            {
+                gebouwenlijst = new Dictionary<string, float>();
+                
+                string[] panden = Regex.Split(bagidRegels[volgnummer * 2], ",");
+                for (int i = 0; i < panden.Length - 1; i++)
+                {
+                    if (gebouwenlijst.ContainsKey(panden[i]))
+                    {
+                        Debug.Log("bagid '" + panden[i] + "' bestaat al");
+                    }
+                    else
+                    {
+                        gebouwenlijst.Add(panden[i], (float)i);
+                    }
+                }
+                ObjectMapping Bid = container.AddComponent<ObjectMapping>();
+                Bid.Objectenlijst = gebouwenlijst;
+                Bid.DefaultMaterial = GebouwMateriaal;
+                Bid.HighlightMaterial = HighLightMateriaal;
+                Bid.SetMesh(ass);
+
+            }
             //add to Buildingtiledata
             btd.Gameobjecten.Add(container);
-            ActiveBuilds.Remove(btd.id);
+            
             
 
             yield return null;
         }
+        ActiveBuilds.Remove(btd.id);
         //////instantiaten en assets loaden
         btd.Status = BuildingTileStatus.Built;
-        
-        
+
+
     }
 
 }
