@@ -44,15 +44,18 @@ public class PanoramaAPI : MonoBehaviour
     public GameObject miniMap;
     public Toggle toggle;
     List<GameObject> panoramaInstantiated;
+    private Quaternion Camrotatie;
 
     bool panoramaWatch = false;
 
     public void WorldClick()
     {
+        
         panoramaInstantiated = new List<GameObject>();
         hitPunt = new Vector3();
         panoramaWatch = false;
         locaties = new string[2];
+        toggle.SetIsOnWithoutNotify(false);
         StartCoroutine(ClickPhase());
     }
 
@@ -70,12 +73,15 @@ public class PanoramaAPI : MonoBehaviour
 
         if (panoramaWatch)
         {
+            
             if (Physics.Raycast(ray, out hit))
             {
-                if (Vector3.Distance(hit.point, fotoLocatie) <= 500f)
+                //if (hit.transform.tag=="panormaInstantiated")
+                if (Vector3.Distance(hit.point, fotoLocatie) <= 200f)
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
+                        Camrotatie = Camera.main.transform.rotation;
                         SpawnPanorama();
                         cameraManager.canMove = false;
                         cameraManager.zoomSpeed = 0f;
@@ -84,6 +90,10 @@ public class PanoramaAPI : MonoBehaviour
                         toggle.isOn = false;
                         
                     }
+                }
+                else
+                {
+                    Destroy(instantiated);
                 }
             }
 
@@ -97,6 +107,8 @@ public class PanoramaAPI : MonoBehaviour
                 worldSphere.transform.position = new Vector3(0, -2000, 0);
                 miniMap.SetActive(true);
                 panoramaWatch = false;
+                Destroy(instantiated);
+                Camera.main.transform.rotation = Camrotatie ;
             }
         }
     }
@@ -136,7 +148,7 @@ public class PanoramaAPI : MonoBehaviour
 
         fotoLocatie = CoordConvert.WGS84toUnity(lon, lat);
 
-        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 100, 0), Quaternion.identity);
+        instantiated = Instantiate(canvas, fotoLocatie + new Vector3(0, 150, 0), Quaternion.identity);
         instantiated.tag = "panoramaInstantiated";
 
         canvas.SetActive(true);
