@@ -121,7 +121,8 @@ public class GetObjectname :MonoBehaviour
     public void CloseView()
     {
         DataVenster.SetActive(false);
-        List<string> HighLightPanden = new List<string>(0);
+        List<string> HighLightPanden = new List<string>();
+        HighLightPanden.Add("0");
         foreach (ObjectMapping h in GebouwenFolder.GetComponentsInChildren<ObjectMapping>())
         {
             h.SetHighlight(HighLightPanden);

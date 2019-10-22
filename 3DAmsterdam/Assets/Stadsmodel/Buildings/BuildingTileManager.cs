@@ -254,8 +254,8 @@ public class BuildingTileManager : MonoBehaviour
             if (uwr.isNetworkError || uwr.isHttpError)
             {
                 ActiveDownloads.Remove(btd.id);
-                btd.Status = BuildingTileStatus.PendingBuild;
-                PendingBuilds.Add(btd.id);
+                btd.Status = BuildingTileStatus.Built;
+                
             }
             else
             {
@@ -284,6 +284,8 @@ public class BuildingTileManager : MonoBehaviour
         catch (Exception)
         {
             btd.Status = BuildingTileStatus.Built;
+            ActiveBuilds.Remove(btd.id);
+            
             yield break;
 
         }
@@ -362,15 +364,16 @@ public class BuildingTileManager : MonoBehaviour
             }
             //add to Buildingtiledata
             btd.Gameobjecten.Add(container);
-            ActiveBuilds.Remove(btd.id);
+            
             
 
             yield return null;
         }
+        ActiveBuilds.Remove(btd.id);
         //////instantiaten en assets loaden
         btd.Status = BuildingTileStatus.Built;
-        
-        
+
+
     }
 
 }
