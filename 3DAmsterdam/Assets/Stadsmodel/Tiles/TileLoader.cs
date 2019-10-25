@@ -261,7 +261,7 @@ public class TileLoader : MonoBehaviour
 
     private List<Vector3> SetBasicTilekeys(Extent TempExtent)
     {
-        double TegelAfmeting = 180 / (Math.Pow(2, 10)); //tegelafmeting in graden bij zoomniveau 10;
+        double TegelAfmeting = 180 / (Math.Pow(2, 13)); //tegelafmeting in graden bij zoomniveau 13;
         int tegelMinX = (int)Math.Floor((TempExtent.MinX + 180) / TegelAfmeting);
         int tegelMaxX = (int)Math.Floor((TempExtent.MaxX + 180) / TegelAfmeting);
         int tegelMinY = (int)Math.Floor((TempExtent.MinY + 90) / TegelAfmeting);
@@ -273,7 +273,7 @@ public class TileLoader : MonoBehaviour
 
             for (int Y = tegelMinY; Y < tegelMaxY + 1; Y++)
             {
-                Vector3 td = new Vector3(X, Y, 10);
+                Vector3 td = new Vector3(X, Y, 13);
                 TileKeys.Add(td);
             }
         }
@@ -286,7 +286,7 @@ public class TileLoader : MonoBehaviour
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
         
 
-        var tiles = schema.GetTileInfos(Tempextent, "10").ToList();
+        var tiles = schema.GetTileInfos(Tempextent, "13").ToList();
         List<Vector3> TileKeys = new List<Vector3>();
         foreach (var t in tiles)
         {
