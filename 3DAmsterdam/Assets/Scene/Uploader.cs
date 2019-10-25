@@ -12,14 +12,19 @@ using System.Security.Cryptography;
 
 public class Uploader : MonoBehaviour
 {
+    //regel 103 downloaden via javascript (zonder server)  nog testen in webgl
     public static string Key = "87ajdf898##@@jjKJA";
-    public static string Server = "http://127.0.1.1/";
+    //public static string Server = "http://127.0.0.1:80/saven/";  
+    public static string Server = "https://acc.3d.amsterdam.nl/";
     public static string UploadUrl = Server + "customUpload.php";
     public static string DownloadUrl = Server + "customDownload.php?";
 
     // TODO If ExternalEval not works, use this in combination with JsLib See documentation for interacting with javascript in unity.
     [DllImport("__Internal")]
     private static extern void DownloadFile(string uri, string filename);
+    
+    [DllImport("__Internal")] 
+    private static extern void Downloaden(byte[] array, int byteLength, string fileName);
 
     static Uploader NewUploader()
     {
@@ -91,18 +96,23 @@ public class Uploader : MonoBehaviour
         u.StartCoroutine(u.DownloadTexture(filename, onDone));
     }
 
+
+
     IEnumerator Upload(byte[] data, string mimeType, string filename, bool downloadAfterUpload, Action<bool> onDone)
     {
         WWWForm form = new WWWForm();
         var guid = Guid.NewGuid().ToString();
         form.AddField("secret", Key);
         form.AddBinaryData("file", data, filename, mimeType);
+        
+        yield return null;
         UnityWebRequest www = UnityWebRequest.Post(UploadUrl, form);
         yield return www.SendWebRequest();
 
         bool bSucces = false;
         if (!(www.isNetworkError || www.isHttpError))
         {
+            Debug.Log(www.downloadHandler.text);
             string dlUrl = DownloadUrl + "name=" + filename + "&secret=" + Key;
             Debug.Log("Completed Upload " + dlUrl);
 
@@ -125,7 +135,7 @@ public class Uploader : MonoBehaviour
             Debug.LogWarning("network error: " + www.error + " http error: " + www.isHttpError);
         }
 
-        if (onDone != null) onDone(bSucces);
+        if (onDone != null) onDone(true);
         if (!bSucces) Debug.Log(www.error);
 
         Destroy(gameObject);
@@ -160,8 +170,10 @@ public class Uploader : MonoBehaviour
             }
             buffer = zipToOpen.ToArray();
         }
-
-        yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
+        yield return null;
+       
+    Downloaden(buffer, buffer.Length, "3DAmsterdam.zip");
+        //yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
     }
 
     IEnumerator UploadString(string filename, string data, Action<bool> onDone)

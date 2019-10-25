@@ -282,8 +282,9 @@ public class SceneInstance
                     GameObject go = new GameObject(b.name);
                     go.tag = "Sizeable";
                     var bd = go.AddComponent<BuildingDeserializer>();
-                    go.AddComponent<ColliderCheck>();
+                    
                     bd.Deserialize(b, meshMats.ToArray(), mats);
+                    go.AddComponent<ColliderCheck>();
                 });
             });
         }
@@ -333,6 +334,7 @@ public class SceneSaver : MonoBehaviour
 
         Uploader.StartDownloadScene(sceneId, (string json, bool bSucces) =>
         {
+            Debug.Log(json);
             if (!bSucces) return;
             SceneInstance si = JsonConvert.DeserializeObject<SceneInstance>(json);
             if (si != null)
