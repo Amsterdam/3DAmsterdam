@@ -20,7 +20,7 @@ public class TileLoader : MonoBehaviour
     private CameraView CV;
     private Extent vorigeCV = new Extent(0, 0, 0, 0);
     public string terrainUrl = "https://saturnus.geodan.nl/tomt/data/tiles/{z}/{x}/{y}.terrain?v=1.0.0";
-    
+    //file:///D://QMtiles/{z}/{x}/{y}.terrain
     //public string textureUrl = "https://saturnus.geodan.nl/mapproxy/bgt/service?crs=EPSG%3A3857&service=WMS&version=1.1.1&request=GetMap&styles=&format=image%2Fjpeg&layers=bgt&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326";
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
    // public string textureUrl = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=512&crs=EPSG%3A4326&srs=EPSG%3A4326";
@@ -176,7 +176,7 @@ public class TileLoader : MonoBehaviour
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
         Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
         string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-        if (tileId.z == 17)
+        if (tileId.z >= 17)
         {
             wmsUrl = wmsUrl.Replace("width=256", "width=1024");
             wmsUrl = wmsUrl.Replace("height=256", "height=1024");
@@ -239,7 +239,8 @@ public class TileLoader : MonoBehaviour
         }
         else
         {
-            UnityEngine.Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading height data");
+            UnityEngine.Debug.LogError("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
+            UnityEngine.Debug.LogError(www.error);
         }
         
 
@@ -334,8 +335,8 @@ public class TileLoader : MonoBehaviour
 
                 Werkafstand = GetMinimumDistance(t.x + 0.5f, t.y + 0.5f, t.z);
 
-                double minafstand = 50 * Math.Pow(2, (18 - t.z));
-                if (Werkafstand < minafstand && t.z < 17)
+                double minafstand = 50 * Math.Pow(2, (19 - t.z));
+                if (Werkafstand < minafstand && t.z < 18)
                 {
                     Vector3 toevoeging;
                     toevoeging = new Vector3(t.x * 2, t.y * 2, t.z + 1);

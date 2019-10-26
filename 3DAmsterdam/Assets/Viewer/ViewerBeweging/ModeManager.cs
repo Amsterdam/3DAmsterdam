@@ -19,52 +19,52 @@ public class ModeManager : MonoBehaviour
 
     void Update()
     {
-        // als 'god modus' is geselecteerd dan wordt de FPS camera uitgezet
-        if (cam.enabled)
-        {
-            mode = 1;
+        //// als 'god modus' is geselecteerd dan wordt de FPS camera uitgezet
+        //if (cam.enabled)
+        //{
+        //    mode = 1;
 
-            FPSCam.SetActive(false);
+        //    FPSCam.SetActive(false);
 
-            // checkt of deze item niet in opties is uitgezet
-            if (zoomButtonsToggle.GetComponent<Toggle>().isOn)
-            {
-                zoomIn.SetActive(true);
-                zoomOut.SetActive(true);
-            }
+        //    // checkt of deze item niet in opties is uitgezet
+        //    if (zoomButtonsToggle.GetComponent<Toggle>().isOn)
+        //    {
+        //        zoomIn.SetActive(true);
+        //        zoomOut.SetActive(true);
+        //    }
 
-            // checkt of deze item niet in opties is uitgezet
-            if (viewToggle.GetComponent<Toggle>().isOn)
-            {
-                streetViewButton.SetActive(true);
-            }
-            godModeButton.SetActive(false);
-        } // als 'FPS modus' is geselecteerd wordt de FPS camera aangezet
-        else
-        {
-            mode = -1;
+        //    // checkt of deze item niet in opties is uitgezet
+        //    if (viewToggle.GetComponent<Toggle>().isOn)
+        //    {
+        //        streetViewButton.SetActive(true);
+        //    }
+        //    godModeButton.SetActive(false);
+        //} // als 'FPS modus' is geselecteerd wordt de FPS camera aangezet
+        //else
+        //{
+        //    mode = -1;
 
-            FPSCam.SetActive(true);
-            zoomIn.SetActive(false);
-            zoomOut.SetActive(false);
-            streetViewButton.SetActive(false);
-            godModeButton.SetActive(true);
+        //    FPSCam.SetActive(true);
+        //    zoomIn.SetActive(false);
+        //    zoomOut.SetActive(false);
+        //    streetViewButton.SetActive(false);
+        //    godModeButton.SetActive(true);
 
 
-            // het switchen van FPSmodus
-            if (Input.GetKeyDown(KeyCode.F)) FPSMode *= -1;
+        //    // het switchen van FPSmodus
+        //    if (Input.GetKeyDown(KeyCode.F)) FPSMode *= -1;
 
-            // camera kan gebruikt worden
-            if (FPSMode == 1)
-            {
-                FPSCam.GetComponent<FirstPersonController>().enabled = true;
-            } // menus kunnen geselecteerd worden
-            else
-            {
-                FPSCam.GetComponent<FirstPersonController>().enabled = false;
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
-        }
+        //    // camera kan gebruikt worden
+        //    if (FPSMode == 1)
+        //    {
+        //        FPSCam.GetComponent<FirstPersonController>().enabled = true;
+        //    } // menus kunnen geselecteerd worden
+        //    else
+        //    {
+        //        FPSCam.GetComponent<FirstPersonController>().enabled = false;
+        //        Cursor.visible = true;
+        //        Cursor.lockState = CursorLockMode.None;
+        //    }
+        //}
     }
 }

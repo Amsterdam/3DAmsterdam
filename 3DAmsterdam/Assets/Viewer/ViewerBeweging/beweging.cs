@@ -31,6 +31,7 @@ public class beweging : MonoBehaviour
     public bool canMove = true;
     private bool canUseFunction = true;
     private bool hitCollider = false;
+    public bool IsFPSmode = false;
 
     private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
     private Vector3 zoomPoint;
@@ -56,7 +57,7 @@ public class beweging : MonoBehaviour
     void Update()
     {
         // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-        if (EventSystem.current.IsPointerOverGameObject() ||
+        if (EventSystem.current.IsPointerOverGameObject() || IsFPSmode ||
             menuFunctions.allMenus[5].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
         {
             canUseFunction = false;
@@ -79,11 +80,23 @@ public class beweging : MonoBehaviour
                 FocusPoint();
             }
         }
+        if(IsFPSmode)
+        {
+            ClampToGround();
+        }
     }
 
     void StandardMovement()
     {
-        moveSpeed = Mathf.Sqrt(cam.transform.position.y) * speedFactor;
+        if(IsFPSmode)
+        {
+            moveSpeed = 5f * Time.deltaTime;
+        }
+        else
+        {
+            moveSpeed = Mathf.Sqrt(cam.transform.position.y) * speedFactor;
+        }
+        
 
         if (canMove)
         {
@@ -94,9 +107,13 @@ public class beweging : MonoBehaviour
             if (Input.GetKey(KeyCode.UpArrow)) cam.transform.position += movDir * moveSpeed;
             if (Input.GetKey(KeyCode.DownArrow)) cam.transform.position -= movDir * moveSpeed;
 
-            // zijwaarts bewegen (gebaseerd op rotatie van camera)
-            if (Input.GetKey(KeyCode.LeftArrow)) cam.transform.position -= cam.transform.right * moveSpeed;
-            if (Input.GetKey(KeyCode.RightArrow)) cam.transform.position += cam.transform.right * moveSpeed;
+            if (!IsFPSmode)
+            {
+                // zijwaarts bewegen (gebaseerd op rotatie van camera)
+                if (Input.GetKey(KeyCode.LeftArrow)) cam.transform.position -= cam.transform.right * moveSpeed;
+                if (Input.GetKey(KeyCode.RightArrow)) cam.transform.position += cam.transform.right * moveSpeed;
+            }
+            
         }
     }
 
@@ -142,6 +159,8 @@ public class beweging : MonoBehaviour
         }
 
 
+
+
         // camera roteren doormiddel van rechter muisknop
         if (Input.GetMouseButton(1))
         {
@@ -161,8 +180,28 @@ public class beweging : MonoBehaviour
             //// de rotatie van de camera wordt aangepast
             cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
+
+
+        //
+        if (IsFPSmode)
+        {
+            // roteren naar links/rechtsmet pijlen
+            if (Input.GetKey(KeyCode.LeftArrow)) cam.transform.RotateAround(cam.transform.position, Vector3.up, -rotationSpeed);
+            if (Input.GetKey(KeyCode.RightArrow)) cam.transform.RotateAround(cam.transform.position, Vector3.up, rotationSpeed);
+        }
+
     }
 
+    void ClampToGround()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(cam.transform.position, transform.TransformDirection(Vector3.down), out hit))
+        {
+            cam.transform.position = hit.point+ new Vector3(0,1.8f,0);
+        }
+        
+
+    }
 
     void Zooming()
     {

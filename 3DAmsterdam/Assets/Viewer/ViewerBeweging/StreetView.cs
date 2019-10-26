@@ -8,16 +8,20 @@ public class StreetView : MonoBehaviour
     private bool moveToStreet = false;
     private bool canClick = false;
     private bool instanCam = false;
+    public GameObject streetcamButton;
+    public GameObject GodviewButton;
 
     private Vector3 endPos;
     private Vector3 mousePos;
-    private TileLoader tileScript;
+    
 
     public GameObject FPSCam, tileManager;
     public Camera cam;
+    public beweging camcontroller;
 
     private float stopHeight = 60f;
     private float lerpSpeed = 3f;
+    private Quaternion Endrotation;
 
 
     //private void Start()
@@ -48,16 +52,19 @@ public class StreetView : MonoBehaviour
             }
 
             // de stoppositie is waar geklikt is met een bepaalde afstand van de grond (y-axis)
-            endPos = new Vector3(mousePos.x, stopHeight, mousePos.z);
-
+            endPos = new Vector3(mousePos.x, mousePos.y+1.8f, mousePos.z);
+            Endrotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
             canClick = false;
             moveToStreet = true;
+            streetcamButton.SetActive(false);
+            GodviewButton.SetActive(true);
         }
 
         if (moveToStreet)
         {
             // camera beweegt langzaam naar aangewezen plaats
             cam.transform.position = Vector3.Lerp(cam.transform.position, endPos, lerpSpeed * Time.deltaTime);
+            cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, Endrotation, lerpSpeed * Time.deltaTime);
         }
 
         // camera stopt met bewegen als die is aangekomen op locatie
@@ -66,17 +73,20 @@ public class StreetView : MonoBehaviour
             moveToStreet = false;
             instanCam = false;
 
-            cam.enabled = false;
-            Destroy(cam.GetComponent<AudioListener>());
+            //cam.enabled = false;
+            //Destroy(cam.GetComponent<AudioListener>());
 
             // nieuwe FPS camera wordt op juiste positie geplaatst 
-            FPSCam.transform.position = endPos;
+            //FPSCam.transform.position = endPos;
+            camcontroller.IsFPSmode = true;
+            
         }
     }
 
     // de knop wordt ingedrukt dus er kan nu een plek geselecteerd worden om heen te vliegen
     public void StreetCam()
     {
+        
         canClick = true;
         instanCam = true;
     }
