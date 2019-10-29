@@ -46,7 +46,7 @@ public class MenuFunctions : MonoBehaviour
 
     private void Start()
     {
-        currentMenu = noMenu;
+        currentMenu = 3;
         ManageMenus();
         _monthyear = monthYear.GetComponent<TextMeshProUGUI>();
         _date = date.GetComponent<TextMeshProUGUI>();
@@ -98,15 +98,15 @@ public class MenuFunctions : MonoBehaviour
             var menu = allMenus[currentMenu];
 
 
-            if (DataVenster.activeSelf)
-            {
+            //if (DataVenster.activeSelf)
+            //{
+            //    menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
+            //    DataVenster.transform.localPosition = new Vector3(Mathf.Lerp(DataVenster.transform.localPosition.x, 238f + 278, 6f * Time.deltaTime), -538f, 0);
+            //}
+            //else
+            //{
                 menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
-                DataVenster.transform.localPosition = new Vector3(Mathf.Lerp(DataVenster.transform.localPosition.x, 238f + 278, 6f * Time.deltaTime), -538f, 0);
-            }
-            else
-            {
-                menu.transform.localPosition = new Vector3(Mathf.Lerp(menu.transform.localPosition.x, 238f, 6f * Time.deltaTime), -538f, 0);
-            }
+            //}
             
         }
         else
