@@ -242,7 +242,7 @@ public class BuildingTileManager : MonoBehaviour
         /////downloaden van de Assetbundle
         ///
         BuildingTileData btd = buildingTiles[TileID];
-
+        //BuildingURL = "file:///D://Github/WebGL/";
         string url = BuildingURL + "gebouwen_" + ((int)btd.id.x).ToString() + "_" + ((int)btd.id.y).ToString() + "." + ((int)btd.id.z).ToString();
         
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
