@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ObjectMapping : MonoBehaviour
 {
-    public Dictionary<string, float> Objectenlijst = new Dictionary<string, float>();
+    public Dictionary<float, string> Objectenlijst = new Dictionary<float, string>();
     private MeshRenderer mr;
     public Material HighlightMaterial;
     public Material DefaultMaterial;
@@ -42,7 +42,8 @@ public class ObjectMapping : MonoBehaviour
 
         for (int i = 0; i < 1; i++)
         {
-            if (Objectenlijst.ContainsKey(HighlightObjectenstring[i]))
+            
+            if (Objectenlijst.ContainsValue(HighlightObjectenstring[i]))
             {
                 highlighten = true;
                     ExtractSubObject(HighlightObjectenstring[i]);
@@ -77,8 +78,16 @@ public class ObjectMapping : MonoBehaviour
         SubObject SO = new SubObject(); //nieuw subobject
         SubObject TO = new SubObject(); // nieuw totaalobject zonder subobject
         SO.ObjectID = ObjectID;
-        
-        float uv2Waarde = Objectenlijst[ObjectID];
+
+        float uv2Waarde = 0;
+        foreach (KeyValuePair<float, string> kpv in Objectenlijst)
+        {
+            if (kpv.Value==ObjectID)
+            {
+                uv2Waarde = kpv.Key;
+            }
+        }
+            
         
         //triangles splitsen
         List<int> trianglesSO = new List<int>();

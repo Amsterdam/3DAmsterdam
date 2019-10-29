@@ -51,7 +51,7 @@ public class BuildingTileManager : MonoBehaviour
     public int MAX_Concurrent_Downloads = 5;
     private Boolean BijwerkenGereed = true;
 
-    private Dictionary<string, float> gebouwenlijst = new Dictionary<string, float>();
+    private Dictionary<float, string> gebouwenlijst = new Dictionary<float, string>();
     private Dictionary<Vector3, BuildingTileData> buildingTiles = new Dictionary<Vector3, BuildingTileData>();
     private List<Vector3> PendingDownloads = new List<Vector3>();
     private List<Vector3> ActiveDownloads = new List<Vector3>();
@@ -242,9 +242,7 @@ public class BuildingTileManager : MonoBehaviour
         /////downloaden van de Assetbundle
         ///
         BuildingTileData btd = buildingTiles[TileID];
-//#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
-//        BuildingURL = "file:///" + Application.dataPath.Replace("/3DAmsterdam/Assets","") + "/AssetBundles/WebGL/";
-//#endif
+
         string url = BuildingURL + "gebouwen_" + ((int)btd.id.x).ToString() + "_" + ((int)btd.id.y).ToString() + "." + ((int)btd.id.z).ToString();
         
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
@@ -341,19 +339,14 @@ public class BuildingTileManager : MonoBehaviour
             //gebouwenlijst toevoegen
             if (ObjectenlijstAanwezig)
             {
-                gebouwenlijst = new Dictionary<string, float>();
+                gebouwenlijst = new Dictionary<float, string>();
                 
                 string[] panden = Regex.Split(bagidRegels[volgnummer * 2], ",");
                 for (int i = 0; i < panden.Length - 1; i++)
                 {
-                    if (gebouwenlijst.ContainsKey(panden[i]))
-                    {
-                        Debug.Log("bagid '" + panden[i] + "' bestaat al");
-                    }
-                    else
-                    {
-                        gebouwenlijst.Add(panden[i], (float)i);
-                    }
+
+                        gebouwenlijst.Add((float)i,panden[i]);
+
                 }
                 ObjectMapping Bid = container.AddComponent<ObjectMapping>();
                 Bid.Objectenlijst = gebouwenlijst;

@@ -90,13 +90,13 @@ public class GetObjectname :MonoBehaviour
         Vector2[] uvs = meshCollider.sharedMesh.uv2;
         float uvx = uvs[meshCollider.sharedMesh.triangles[hit.triangleIndex * 3]].x;
 
-        Dictionary<string, float> bagidlijst = hit.transform.gameObject.GetComponent<ObjectMapping>().Objectenlijst;
+        Dictionary<float, string> bagidlijst = hit.transform.gameObject.GetComponent<ObjectMapping>().Objectenlijst;
         string bagid = "";
-        foreach (KeyValuePair<string, float> pair in bagidlijst)
+        foreach (KeyValuePair<float, string> pair in bagidlijst)
         {
-            if (pair.Value == uvx)
+            if (pair.Key == uvx)
             {
-                bagid = pair.Key;
+                bagid = pair.Value;
                 returnstring = bagid;
                 return returnstring;
             }
