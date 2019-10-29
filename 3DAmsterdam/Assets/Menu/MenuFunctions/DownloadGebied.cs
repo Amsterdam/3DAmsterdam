@@ -9,6 +9,8 @@ public class DownloadGebied : MonoBehaviour
     Vector3 startPosition;
     UILineRenderer lineRenderer;
     Bounds lastBounds;
+    public beweging camcontroller;
+    
 
     enum State
     {
@@ -21,6 +23,7 @@ public class DownloadGebied : MonoBehaviour
 
     private void Start()
     {
+        
         lineRenderer = GetComponent<UILineRenderer>();
         if (lineRenderer == null)
             lineRenderer = gameObject.AddComponent<UILineRenderer>();
@@ -57,6 +60,7 @@ public class DownloadGebied : MonoBehaviour
             case State.Idle:
                 if (Input.GetMouseButtonDown(0))
                 {
+                    camcontroller.LockFunctions = true;
                     StartDrawingLine();
                     PreviewLine();
                     state = State.Selecting;
@@ -79,6 +83,7 @@ public class DownloadGebied : MonoBehaviour
                     {
                         state = State.Idle;
                     }
+                    camcontroller.LockFunctions = false;
                 }
                 break;
 

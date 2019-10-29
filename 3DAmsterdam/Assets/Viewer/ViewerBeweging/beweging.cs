@@ -32,6 +32,7 @@ public class beweging : MonoBehaviour
     private bool canUseFunction = true;
     private bool hitCollider = false;
     public bool IsFPSmode = false;
+    public bool LockFunctions = false;
 
     private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
     private Vector3 zoomPoint;
@@ -57,7 +58,7 @@ public class beweging : MonoBehaviour
     void Update()
     {
         // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-        if (EventSystem.current.IsPointerOverGameObject() || IsFPSmode ||
+        if (EventSystem.current.IsPointerOverGameObject() || IsFPSmode || LockFunctions ||
             menuFunctions.allMenus[5].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
         {
             canUseFunction = false;
