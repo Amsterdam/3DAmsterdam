@@ -58,8 +58,8 @@ using System.Text.RegularExpressions;
         void Start()
         {
             CV = Camera.main.GetComponent<CameraView>();
-            Add(new Vector3(105000, 471000, 0));
-            Add(new Vector3(105000, 473000, 0));
+            //Add(new Vector3(105000, 471000, 0));
+            //Add(new Vector3(105000, 473000, 0));
         }
 
         // Update is called once per frame
@@ -232,7 +232,7 @@ using System.Text.RegularExpressions;
 //            BuildingURL = "file:///D:/Github/WebGL/Bomen/";
 //#endif
             string url = BuildingURL + "bomen_" + ((int)btd.id.x).ToString() + "-" + ((int)btd.id.y).ToString();
-
+        
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
                 yield return uwr.SendWebRequest();
