@@ -112,7 +112,7 @@ public class SelectAndScale : MonoBehaviour
         {
             scaleMenu.SetActive(false);
             buildingMenu.SetActive(true);
-            uploadMenu.SetActive(true);
+            uploadMenu.SetActive(false);
         }
     }
 

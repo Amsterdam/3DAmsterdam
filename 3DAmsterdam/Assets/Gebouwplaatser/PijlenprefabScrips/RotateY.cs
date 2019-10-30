@@ -13,7 +13,7 @@ public class RotateY : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void Start()
     {
-        script = GameObject.Find("Manager").GetComponent<SelectAndScale>();
+        script = GameObject.Find("UploadGebouwMenu").GetComponent<SelectAndScale>();
     }
 
     public void OnPointerDown(PointerEventData eventData)

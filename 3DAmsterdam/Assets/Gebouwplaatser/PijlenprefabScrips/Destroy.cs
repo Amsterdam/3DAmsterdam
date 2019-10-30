@@ -9,7 +9,7 @@ public class Destroy : MonoBehaviour
 
     private void Start()
     {
-        script = GameObject.Find("Manager").GetComponent<SelectAndScale>();
+        script = GameObject.Find("UploadGebouwMenu").GetComponent<SelectAndScale>();
 
     }
 
