@@ -98,9 +98,11 @@ public class GetObjectname :MonoBehaviour
             {
                 bagid = pair.Value;
                 returnstring = bagid;
+                Debug.Log(returnstring);
                 return returnstring;
             }
         }
+        Debug.Log("geen bagid gevonden ");
         return "";
     }
 

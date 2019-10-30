@@ -40,16 +40,18 @@ public class ObjectMapping : MonoBehaviour
         HighlightObjecten = new List<SubObject>();
         Totaalmesh.triangles = Tempmesh.triangles;
 
-        for (int i = 0; i < 1; i++)
-        {
-            
-            if (Objectenlijst.ContainsValue(HighlightObjectenstring[i]))
-            {
-                highlighten = true;
-                    ExtractSubObject(HighlightObjectenstring[i]);
 
-            }
-        }
+            if (HighlightObjectenstring.Count>0)
+            {
+                if (Objectenlijst.ContainsValue(HighlightObjectenstring[0]))
+                {
+                    highlighten = true;
+                    ExtractSubObject(HighlightObjectenstring[0]);
+
+                }
+            }   
+            
+
         if (highlighten || IsHighlighted)
         {
             SetupMesh();
