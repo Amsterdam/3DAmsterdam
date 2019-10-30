@@ -335,7 +335,7 @@ public class TileLoader : MonoBehaviour
 
                 Werkafstand = GetMinimumDistance(t.x + 0.5f, t.y + 0.5f, t.z);
 
-                double minafstand = 50 * Math.Pow(2, (19 - t.z));
+                double minafstand = 50* Math.Pow(2, (19 - t.z));
                 if (Werkafstand < minafstand && t.z < 18)
                 {
                     Vector3 toevoeging;

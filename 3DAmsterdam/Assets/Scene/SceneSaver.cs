@@ -71,6 +71,8 @@ public class SceneInstance
 
     GameObject wasActiveMenu;
 
+
+
     MenuFunctions EnableMenus(bool enable)
     {
         var mf = GameObject.FindObjectOfType<MenuFunctions>();
@@ -294,6 +296,8 @@ public class SceneInstance
 
 public class SceneSaver : MonoBehaviour
 {
+    public UnityEngine.UI.Text uploadtekst;
+    public UnityEngine.UI.InputField SceneNaamOutput;
     public GameObject[] StaticBuildings;
     public UnityEngine.UI.InputField SceneInput;
 
@@ -305,6 +309,9 @@ public class SceneSaver : MonoBehaviour
         var guid = Guid.NewGuid().ToString();
         Uploader.StartUploadScene(guid, output, null);
         si.UploadBuildingData();
+        SceneNaamOutput.text = "name="+guid+".json";
+        SceneNaamOutput.gameObject.SetActive(true);
+        uploadtekst.gameObject.SetActive(true);
         //File.WriteAllText("Scene.json", output);
     }
 
@@ -328,7 +335,7 @@ public class SceneSaver : MonoBehaviour
             sceneId = s;
             bValid = true;            
         }
-
+        Debug.Log(sceneId);
         if (!bValid)
             return;
 

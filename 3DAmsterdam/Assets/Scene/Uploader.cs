@@ -15,7 +15,7 @@ public class Uploader : MonoBehaviour
     //regel 103 downloaden via javascript (zonder server)  nog testen in webgl
     public static string Key = "87ajdf898##@@jjKJA";
     //public static string Server = "http://127.0.0.1:80/saven/";  
-    public static string Server = "https://acc.3d.amsterdam.nl/";
+    public static string Server = "https://3d.amsterdam.nl/";
     public static string UploadUrl = Server + "customUpload.php";
     public static string DownloadUrl = Server + "customDownload.php?";
 

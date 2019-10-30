@@ -51,7 +51,7 @@ public class beweging : MonoBehaviour
     void Start()
     {
         menuFunctions = FindObjectOfType<MenuFunctions>();
-        cam.transform.rotation = startRotation;
+        //cam.transform.rotation = startRotation;
         currentRotation = new Vector2(cam.transform.rotation.eulerAngles.y, cam.transform.rotation.eulerAngles.x);
     }
 
