@@ -70,7 +70,7 @@ public class Schaal : MonoBehaviour
     void Update()
     {
         Verschalen();
-        Rotaties();
+        //Rotaties();
     }
 
     public void Verschalen()

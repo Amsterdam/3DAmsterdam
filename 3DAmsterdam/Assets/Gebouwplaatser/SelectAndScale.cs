@@ -151,7 +151,7 @@ public class SelectAndScale : MonoBehaviour
             widthText.text = ((int)(selectedObject.transform.localScale.x)).ToString() + "m";
             lengthText.text = ((int)(selectedObject.transform.localScale.z)).ToString() + "m";
 
-            selectedObject.transform.localScale = new Vector3(width.value * scaleFactor, height.value * scaleFactor, length.value * scaleFactor);
+            selectedObject.transform.localScale = new Vector3(width.value * scaleFactor, 2*height.value * scaleFactor, length.value * scaleFactor);
         }
         else
         {
