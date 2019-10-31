@@ -126,7 +126,7 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find MainCamera");
 
-        var timeNowToggle = GameObject.Find("TijdNu");
+        var timeNowToggle = GameObject.Find("HuidigMoment");
         if ( timeNowToggle != null)
         {
             var toggle = timeNowToggle.GetComponent<Toggle>();

@@ -171,8 +171,11 @@ public class Uploader : MonoBehaviour
             buffer = zipToOpen.ToArray();
         }
         yield return null;
-       
-    Downloaden(buffer, buffer.Length, "3DAmsterdam.zip");
+        if (buffer!=null)
+        {
+            Downloaden(buffer, buffer.Length, "3DAmsterdam.zip");
+        }
+    
         //yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
     }
 
