@@ -1,0 +1,6 @@
+If you are using Microsplat (https://www.assetstore.unity3d.com/en/#!/content/96478) as you terrain shader and using some of the advanced modules like Dynamic Snow or Wetness/Streams/Puddles you can synchronze these with enviro weather system.
+
+1. Add the Enviro MicroSplat component to one of your gameobjects in scene.
+2. Enable modules in MicroSplat material editor.
+3. Enable the "Global Driven Property" in each module of Microsplat by clicking on the "G" next to the setting. For example at Snow Modules -> Amount.
+4. That's all! :)

@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad9e871a73fc09d488bc058f3b382b35, type: 3}
+  m_Name: Storm LQ
+  m_EditorClassIdentifier: 
+  version: 1.9.0
+  Name: Storm
+  Spring: 1
+  possibiltyInSpring: 69.3
+  Summer: 1
+  possibiltyInSummer: 52
+  Autumn: 1
+  possibiltyInAutumn: 57.6
+  winter: 0
+  possibiltyInWinter: 100
+  cloudsConfig:
+    topColor: {r: 0.2352941, g: 0.2352941, b: 0.2352941, a: 1}
+    bottomColor: {r: 0, g: 0, b: 0, a: 1}
+    skyBlending: 0.409
+    alphaCoef: 1.25
+    scatteringCoef: 0.141
+    density: 1.386
+    coverage: 1.62
+    coverageHeight: 2
+    raymarchingScale: 1
+    cloudType: 1
+    cirrusAlpha: 0
+    cirrusCoverage: 0
+    cirrusColorPow: 1
+    flatAlpha: 1.863
+    flatCoverage: 0.893
+    flatSoftness: 0.905
+    flatBrightness: 0.314
+    flatColorPow: 3.07
+    particleLayer1Alpha: 0.266
+    particleLayer1Brightness: 0.034
+    particleLayer1ColorPow: 2
+    particleLayer2Alpha: 0.537
+    particleLayer2Brightness: 0.361
+    particleLayer2ColorPow: 2
+    particleCloudsOverwrite: 0
+  fogStartDistance: 0
+  fogDistance: 0
+  fogDensity: 0.0005
+  weatherSkyMod:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
+    key2: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 1}
+    key3: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 30412
+    ctime2: 34695
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 29491
+    atime2: 32839
+    atime3: 65535
+    atime4: 65535
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 4
+  weatherLightMod:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 0}
+    key1: {r: 0, g: 0, b: 0, a: 0.050980393}
+    key2: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 0.7647059}
+    key3: {r: 0.30588236, g: 0.30588236, b: 0.30588236, a: 0.91764706}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 29491
+    ctime2: 32768
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 29491
+    atime2: 32768
+    atime3: 65535
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 4
+  weatherFogMod:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
+    key2: {r: 0.11764705, g: 0.11764705, b: 0.11764705, a: 0.9254902}
+    key3: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 0.9490196}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 30412
+    ctime2: 34695
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 29491
+    atime2: 32839
+    atime3: 65535
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 4
+  volumeLightIntensity: 1
+  heightFogDensity: 2.1
+  SkyFogHeight: 0.131
+  SkyFogIntensity: 1.289
+  FogScatteringIntensity: 1
+  fogSunBlocking: 0
+  moonIntensity: 0
+  effectSystems:
+  - prefab: {fileID: 1000010197746070, guid: 35b265635b434fb4589078490426250b, type: 2}
+    localPositionOffset: {x: 0, y: 25, z: 0}
+    localRotationOffset: {x: -90, y: 0, z: -180}
+  WindStrenght: 0.635
+  wetnessLevel: 1
+  snowLevel: 0
+  isLightningStorm: 1
+  lightningInterval: 10
+  weatherSFX: {fileID: 8300000, guid: f31058b86e6160c4ab736a2b8c210219, type: 3}
+  SpringDayAmbient: {fileID: 0}
+  SpringNightAmbient: {fileID: 0}
+  SummerDayAmbient: {fileID: 0}
+  SummerNightAmbient: {fileID: 0}
+  AutumnDayAmbient: {fileID: 0}
+  AutumnNightAmbient: {fileID: 0}
+  WinterDayAmbient: {fileID: 0}
+  WinterNightAmbient: {fileID: 0}
