@@ -9342,19 +9342,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ab5cbdc1174f4243900ca83356d9f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAddionalCamera: 0
-  myCam: {fileID: 0}
-  material: {fileID: 0}
-  simpleFog: 0
-  currentSimpleFog: 0
-  volumeLighting: 1
-  dirVolumeLighting: 1
-  distanceFog: 1
-  useRadialDistance: 1
-  heightFog: 1
-  height: 25
-  heightDensity: 1e-45
-  startDistance: 0
 --- !u!114 &534669908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9367,12 +9354,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f89b6d3142b38d9409bf73b28187f9fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  radialBlurIterations: 2
-  sunShaftsMaterial: {fileID: 0}
-  moonShaftsMaterial: {fileID: 0}
-  simpleSunClearMaterial: {fileID: 0}
-  simpleMoonClearMaterial: {fileID: 0}
 --- !u!114 &534669909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9462,262 +9443,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25662192fc626eb47a5e9eb586e7fd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAddionalCamera: 0
-  myCam: {fileID: 0}
-  spSatTex: {fileID: 0}
-  spSatCam: {fileID: 0}
-  cloudsMat: {fileID: 0}
-  blitMat: {fileID: 0}
-  subFrameTex: {fileID: 0}
-  prevFrameTex: {fileID: 0}
-  curlMap: {fileID: 0}
-  dither: {fileID: 0}
-  noiseTexture: {fileID: 0}
-  noiseTextureHigh: {fileID: 0}
-  detailNoiseTexture: {fileID: 0}
-  detailNoiseTextureHigh: {fileID: 0}
-  projection:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  projectionSPVR:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  inverseRotation:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  inverseRotationSPVR:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  rotation:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  rotationSPVR:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  previousRotation:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  previousRotationSPVR:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  currentReprojectionPixelSize: 1
-  reprojectionPixelSize: 0
-  isFirstFrame: 0
-  subFrameNumber: 0
-  frameList: 
-  renderingCounter: 0
-  subFrameWidth: 0
-  subFrameHeight: 0
-  frameWidth: 0
-  frameHeight: 0
-  textureDimensionChanged: 0
-  simpleFog: 0
-  currentSimpleFog: 0
-  volumeLighting: 1
-  dirVolumeLighting: 1
-  distanceFog: 1
-  useRadialDistance: 1
-  heightFog: 1
-  height: 50
-  heightDensity: 0
-  startDistance: 0
-  _viewProj:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  _viewProjSP:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  fogMat: {fileID: 0}
-  _bilateralBlurMaterial: {fileID: 0}
-  _volumeLightTexture: {fileID: 0}
-  _halfVolumeLightTexture: {fileID: 0}
-  _quarterVolumeLightTexture: {fileID: 0}
-  _halfDepthBuffer: {fileID: 0}
-  _quarterDepthBuffer: {fileID: 0}
-  _ditheringTexture: {fileID: 0}
-  blackTexture: {fileID: 0}
-  _noiseTexture: {fileID: 0}
-  Resolution: 1
-  _currentResolution: 2
-  DefaultSpotCookie: {fileID: 2800000, guid: d569327f9e6a94841835e2f701795322, type: 3}
-  volumeLightMat: {fileID: 0}
-  postProcessMat: {fileID: 0}
-  _blurBuffer1:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _blurBuffer2:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  distributionTexture: {fileID: 0}
-  _threshold: 0
 --- !u!1 &537193726
 GameObject:
   m_ObjectHideFlags: 0
@@ -15163,7 +14888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95efd698380b3e4d80904009ab3540d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingURL: https://3d.amsterdam.nl/web/AssetBundles/Bomen/
+  BuildingURL: https://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/Bomen/
   kruinmateriaal: {fileID: 2100000, guid: af29b84ec03afb14a8811735af53ed43, type: 2}
   stammateriaal: {fileID: 2100000, guid: 149038e7565fb6a4b98404331c54c6fe, type: 2}
   Max_Afstand: 1000
@@ -18435,12 +18160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea461d70eb91ca4494a86ba56eb0507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TijdObject: {fileID: 2087613524}
-  Uren: 0
-  Minuten: 0
-  Jaren: 0
-  Maanden: 0
-  Dagen: 0
 --- !u!1 &1091703152
 GameObject:
   m_ObjectHideFlags: 0
@@ -30462,7 +30181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4214f956c7198246a26fbd85ca682eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingURL: https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/
+  BuildingURL: https://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/
   GebouwMateriaal: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
   HighLightMateriaal: {fileID: 2100000, guid: cd867c0d1d193d04e89dcecaef7cb1fd, type: 2}
   Max_Afstand_Daken: 500
@@ -36107,12 +35826,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b4dc0c604fa2248b4ddfc4bebc5c5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TijdObject: {fileID: 2087613524}
-  Uren: 0
-  Minuten: 0
-  Jaren: 0
-  Maanden: 0
-  Dagen: 0
 --- !u!1 &2216380994031662031
 GameObject:
   m_ObjectHideFlags: 0
