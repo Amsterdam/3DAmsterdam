@@ -335,7 +335,7 @@ public class BuildingTileManager : MonoBehaviour
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;
-
+            yield return null;
             //gebouwenlijst toevoegen
             if (ObjectenlijstAanwezig)
             {

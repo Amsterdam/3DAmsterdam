@@ -16,6 +16,7 @@ using ConvertCoordinates;
 
 public class TileLoader : MonoBehaviour
 {
+    private Boolean UpdateReady = true;
     public Material DeFaultMaterial;
     private CameraView CV;
     private Extent vorigeCV = new Extent(0, 0, 0, 0);
@@ -69,8 +70,11 @@ public class TileLoader : MonoBehaviour
         VerwijderTiles();
         if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
         {
-            vorigeCV = CV.CameraExtent;
-            UpdateTerrainTilesOud(vorigeCV);
+            if (UpdateReady)
+            {
+                vorigeCV = CV.CameraExtent;
+                StartCoroutine(UpdateTerrainTilesOud(vorigeCV));
+            }
         }
         
         // verdergaan met downloaden uit de queue
@@ -313,7 +317,7 @@ public class TileLoader : MonoBehaviour
         double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
         return afstand;
     }
-    public void UpdateTerrainTilesOud(Extent Tempextent)
+    IEnumerator UpdateTerrainTilesOud(Extent Tempextent)
     {
 
         List<Vector3> TileKeys = SetBasicTilekeys(Tempextent);
@@ -321,6 +325,7 @@ public class TileLoader : MonoBehaviour
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
         while (doorgaan)
         {
+            yield return null;
             doorgaan = false;
             foreach (Vector3 t in TileKeys)
             {
@@ -401,7 +406,7 @@ public class TileLoader : MonoBehaviour
 
         //    }
         //}
-        
+        yield return null;
 
         // bepalen welke reeds geladentegels niet meer nodig zijn en deze toevoegen aan TeVerwijderenTiles
         Vector3[] TileDBKeys = tileDb.Keys.ToArray();
@@ -482,6 +487,7 @@ public class TileLoader : MonoBehaviour
             }
 
         }
+        UpdateReady = true;
     }
 
     Boolean IsInsideExtent(Vector3 tiledata, Extent BBox)

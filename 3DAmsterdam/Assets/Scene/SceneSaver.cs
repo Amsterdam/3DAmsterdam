@@ -116,7 +116,7 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find menu functions");
 
-        EnviWeerType = EnviroSkyMgr.instance.Weather.currentActiveWeatherPreset.Name;
+        //EnviWeerType = EnviroSkyMgr.instance.Weather.currentActiveWeatherPreset.Name;
 
         var cam = GameObject.FindGameObjectWithTag("MainCamera");
         if ( cam != null )
@@ -229,12 +229,12 @@ public class SceneInstance
 
 
         // TODO for some reason this does not set the 'correct' weather type eventhough it has the right value.
-        EnviroSkyMgr.instance.ChangeWeather(EnviWeerType);
+        //EnviroSkyMgr.instance.ChangeWeather(EnviWeerType);
 
-        if (TimeNow)
-            EnviroSkyMgr.instance.SetTime(DateTime.Now);
-        else
-            EnviroSkyMgr.instance.SetTime(CurrentYear, CurrentDay, Hours, Minutes, 0);
+        //if (TimeNow)
+            //EnviroSkyMgr.instance.SetTime(DateTime.Now);
+        //else
+         //   EnviroSkyMgr.instance.SetTime(CurrentYear, CurrentDay, Hours, Minutes, 0);
 
 
         // Disable menus again now that data is retreived
