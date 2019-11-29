@@ -104,6 +104,12 @@ public class DownloadGebied : MonoBehaviour
                 pb.SetActive(false);
         }
 
+        // Disable Sphere (1) if is required to be in scene, to avoid occluding the export
+        var sphere = GameObject.Find("Sphere (1)");
+        bool sphereWasActive = false;
+        if (sphere != null) sphereWasActive = sphere.activeSelf;
+        if (sphere != null) sphere.SetActive(false);
+
         List<MeshFilter> selected = new List<MeshFilter>();
         var ray1 = Camera.main.ScreenPointToRay(startPosition);
         var ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -146,6 +152,7 @@ public class DownloadGebied : MonoBehaviour
             foreach (var pb in pijlenPrefab)
                 pb.SetActive(true);
         }
+        if (sphere != null) sphere.SetActive(sphereWasActive);
         return selected.ToArray();
     }
 

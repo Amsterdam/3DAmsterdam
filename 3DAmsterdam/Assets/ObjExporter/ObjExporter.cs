@@ -16,6 +16,11 @@ public class ObjExporter
 
     static int AppendMesh(StringBuilder sb, MeshFilter mf, Matrix4x4 preTransform, int vertexOffset)
     {
+        if (mf == null || !mf.sharedMesh.isReadable)
+        {
+            Debug.Log("Mesh " + mf.name + " is not readable");
+            return 0;
+        }
         Mesh m = mf.sharedMesh;
         Material[] mats = mf.GetComponent<Renderer>().sharedMaterials;
 
@@ -192,11 +197,16 @@ public class ObjExporter
         HashSet<int> objs = new HashSet<int>();
         foreach (var mf in mfs)
         {
+            if (mf == null) continue;
             if (objs.Contains(mf.GetInstanceID()))
                 continue;
             objs.Add(mf.GetInstanceID());
-            vertexOffset += AppendMesh(sb, mf, preTransform, vertexOffset);
-            sb.Append('\n');
+            int vAdded = AppendMesh(sb, mf, preTransform, vertexOffset);
+            if (vAdded != 0)
+            {
+                vertexOffset += vAdded;
+                sb.Append('\n');
+            }
         }
         return sb.ToString();
     }

@@ -11,6 +11,21 @@ public class TextureRenderer
     public static Dictionary<string, Texture2D> CopyAndMakeReadable(Texture[] textures)
     {
         Dictionary<string, Texture2D> output = new Dictionary<string, Texture2D>();
+        CopyAndMakeReadable2(textures).ForEach(t =>
+        {
+           string texturehash = MtlExporter.GetTexName(t);
+           if (!output.ContainsKey(texturehash))
+           {
+               output.Add(texturehash, t);
+           }
+        });
+        return output;
+    }
+
+
+    public static List<Texture2D> CopyAndMakeReadable2(Texture[] textures)
+    {
+        List<Texture2D> output = new List<Texture2D>();
         foreach (var t in textures)
         {
             RenderTexture render_texture = RenderTexture.GetTemporary(t.width, t.height, 24, RenderTextureFormat.ARGB32);
@@ -21,57 +36,8 @@ public class TextureRenderer
             temp.ReadPixels(new Rect(0, 0, render_texture.width, render_texture.height), 0, 0);
             temp.Apply();
 
-            string texturehash = GetTextureHash(temp);
-            if (output.ContainsKey(texturehash))
-                continue;
-
-            output.Add(texturehash, temp);
+            output.Add(temp);
         }
         return output;
-    }
-    private static string GetTextureHash(Texture2D tex)
-    {
-        Color32[] texCols = tex.GetPixels32();
-        //byte[] rawTextureData = Color32ArrayToByteArray(texCols);
-        byte[] rawTextureData = new byte[texCols.Length];
-        for (int i = 0; i < texCols.Length; i++)
-            rawTextureData[i] = texCols[i].g;
-        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-        byte[] hashbytes = md5.ComputeHash(rawTextureData);
-
-        StringBuilder sBuilder = new StringBuilder();
-        // Loop through each byte of the hashed data 
-        // and format each one as a hexadecimal string.
-        for (int i = 0; i < hashbytes.Length; i++)
-        {
-            sBuilder.Append(hashbytes[i].ToString("x2"));
-        }
-        string hash = sBuilder.ToString();
-        Debug.Log("Texture hash: " + hash);
-        return hash;
-    }
-    private static byte[] Color32ArrayToByteArray(Color32[] colors)
-    {
-        if (colors == null || colors.Length == 0)
-            return null;
-
-        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
-        int length = lengthOfColor32 * colors.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
     }
 }

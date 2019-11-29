@@ -107,33 +107,21 @@ public class MtlExporter
         return mats;
     }
 
-    static void AddTextureIfIsUnique(Dictionary<string, Texture2D> textures, Material mat, string keyWord)
+    static void AddTextureIfIsUnique(Dictionary<int, Texture2D> textures, Material mat, string keyWord)
     {
         if (mat.HasProperty(keyWord))
         {
             var tex = mat.GetTexture(keyWord) as Texture2D;
             if (tex == null) return;
-
-            Color32[] texCols = tex.GetPixels32();
-            byte[] rawTextureData = Color32ArrayToByteArray(texCols);
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] hashbytes = md5.ComputeHash(rawTextureData);
-
-            StringBuilder sBuilder = new StringBuilder();
-            // Loop through each byte of the hashed data 
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < hashbytes.Length; i++)
-            {
-                sBuilder.Append(hashbytes[i].ToString("x2"));
-            }
-            string hash = sBuilder.ToString();
-            if (!textures.ContainsKey(hash)) textures.Add(hash, tex);
+            // For this we do not need the hash, this is just locally checking if we are dealing with the same resource.
+            int id = tex.GetInstanceID();
+            if (!textures.ContainsKey(id)) textures.Add(id, tex);
         }
     }
 
-    public static Texture2D[] GetUniqueTextures(MeshFilter[] mfs)
+    public static List<Texture2D> GetUniqueTextures(MeshFilter[] mfs)
     {
-        Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        Dictionary<int, Texture2D> textures = new Dictionary<int, Texture2D>();
         foreach (var mf in mfs)
         {
             var mr = mf.GetComponent<MeshRenderer>();
@@ -147,7 +135,7 @@ public class MtlExporter
                 }
             }
         }
-        return textures.Select(kvp => kvp.Value).ToArray();
+        return textures.Select(kvp => kvp.Value).ToList();
     }
 
     static void WriteColor(StringBuilder sb, Material mat, string id, string keyword)
@@ -252,34 +240,13 @@ public class MtlExporter
         });
     }
 
-    private static byte[] Color32ArrayToByteArray(Color32[] colors)
-    {
-        if (colors == null || colors.Length == 0)
-            return null;
-
-        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
-        int length = lengthOfColor32 * colors.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
-    }
     private static string GetTextureHash(Texture2D tex)
     {
         Color32[] texCols = tex.GetPixels32();
-        byte[] rawTextureData = Color32ArrayToByteArray(texCols);
+        byte[] rawTextureData = new byte[texCols.Length];
+        for (int i = 0; i < rawTextureData.Length; i++)
+            rawTextureData[i] = texCols[i].g;
+            
         MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
         byte[] hashbytes = md5.ComputeHash(rawTextureData);
 

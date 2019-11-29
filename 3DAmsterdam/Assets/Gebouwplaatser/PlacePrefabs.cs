@@ -9,7 +9,7 @@ public class PlacePrefabs : MonoBehaviour
     public string AssetbundlesUrl = "file:///D://Github/WebGL/Meubilair/";
     private GameObject building, buildingIns;
 
-    private bool placingObject = false, instantiate = false, highlight;
+    private bool placingObject = false, instantiate = false;
 
 
     public void PlaceActivation(GameObject _building)
@@ -18,7 +18,6 @@ public class PlacePrefabs : MonoBehaviour
 
         placingObject = true;
         instantiate = true;
-        highlight = false;
     }
 
     public void PlaatsGebouw(string Objectnaam)

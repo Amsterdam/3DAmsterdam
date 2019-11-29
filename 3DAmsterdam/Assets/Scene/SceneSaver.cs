@@ -291,7 +291,7 @@ public class SceneInstance
             {
                 string objData = ObjExporter.WriteObjToString(b.name + ".mtl", mfs, b.go.transform.worldToLocalMatrix);
                 string mtlData = MtlExporter.WriteMaterialToString(mfs).ToString();
-                var textures = MtlExporter.GetUniqueTextures(mfs).ToArray();
+                var textures = MtlExporter.GetUniqueTextures(mfs);
                 Uploader.StartUploadObj(b.name, objData, null);
                 Uploader.StartUploadMtl(b.name, mtlData, null);
                 Uploader.StartUploadTextures(textures, null);
@@ -379,6 +379,14 @@ public class SceneSaver : MonoBehaviour
                 si.DownloadBuildingData();
             }
         });
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.V) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+        {
+            SceneInput.text = ClipboardHelper.clipBoard;
+        }
     }
 
     public void ClearScene()

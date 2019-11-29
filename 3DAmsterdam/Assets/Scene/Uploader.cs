@@ -59,13 +59,13 @@ public class Uploader : MonoBehaviour
         u.StartCoroutine(u.UploadString(fn, mtlData, onDone));
     }
 
-    public static void StartUploadTextures(Texture2D[] textures, Action<bool> onDone)
+    public static void StartUploadTextures(List<Texture2D> textures, Action<bool> onDone)
     {
         foreach (var tex in textures)
         {
-            var fn = string.Join("", GetTextureHash(tex), ".png");
-            var u = NewUploader();
-            u.StartCoroutine(u.UploadTexture(fn, tex, onDone));
+            // Key is unique filename/hash of texture
+            var u  = NewUploader();
+            u.StartCoroutine(u.UploadTexture(tex, onDone));
         }
     }
 
@@ -95,8 +95,6 @@ public class Uploader : MonoBehaviour
         var u = NewUploader();
         u.StartCoroutine(u.DownloadTexture(filename, onDone));
     }
-
-
 
     IEnumerator Upload(byte[] data, string mimeType, string filename, bool downloadAfterUpload, Action<bool> onDone)
     {
@@ -147,7 +145,7 @@ public class Uploader : MonoBehaviour
         byte[] buffer;
 
         // Render textures (trick to get them to CPU memory).
-        var capturedTextures = TextureRenderer.CopyAndMakeReadable(textures);
+        Dictionary<string, Texture2D> capturedTextures = TextureRenderer.CopyAndMakeReadable(textures);
 
         using (MemoryStream zipToOpen = new MemoryStream())
         {
@@ -187,19 +185,15 @@ public class Uploader : MonoBehaviour
         yield return Upload(Encoding.ASCII.GetBytes(data), "application/x-binary", filename, false, onDone);
     }
 
-    IEnumerator UploadTexture(string filename, Texture2D tex, Action<bool> onDone)
+    IEnumerator UploadTexture(Texture2D tex, Action<bool> onDone)
     {
         if (tex == null) yield break;
-        var textures = TextureRenderer.CopyAndMakeReadable(new Texture[] { tex });
+        var textures = TextureRenderer.CopyAndMakeReadable2(new Texture[] { tex });
         if (textures == null || textures.Count != 1)
             yield break;
 
-        //texturehash bepalen
-
-        string hash = GetTextureHash(tex);
-
-        if (!textures.ContainsKey(hash)) textures.Add(hash, tex);
-        var bytes = textures[hash].EncodeToPNG();
+        string filename = MtlExporter.GetTexName(textures[0]) + ".png";
+        var bytes = textures[0].EncodeToPNG();
         yield return Upload(bytes, "image/png", filename, false, onDone);
     }
 
@@ -252,47 +246,5 @@ public class Uploader : MonoBehaviour
             succes = true;
         }
         if (onDone != null) onDone(www.downloadHandler.data, succes);
-    }
-
-    private static string GetTextureHash(Texture2D tex)
-    {
-        Color32[] texCols = tex.GetPixels32();
-        byte[] rawTextureData = Color32ArrayToByteArray(texCols);
-        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-        byte[] hashbytes = md5.ComputeHash(rawTextureData);
-
-        StringBuilder sBuilder = new StringBuilder();
-        // Loop through each byte of the hashed data 
-        // and format each one as a hexadecimal string.
-        for (int i = 0; i < hashbytes.Length; i++)
-        {
-            sBuilder.Append(hashbytes[i].ToString("x2"));
-        }
-        string hash = sBuilder.ToString();
-        return hash;
-    }
-    private static byte[] Color32ArrayToByteArray(Color32[] colors)
-    {
-        if (colors == null || colors.Length == 0)
-            return null;
-
-        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
-        int length = lengthOfColor32 * colors.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
     }
 }

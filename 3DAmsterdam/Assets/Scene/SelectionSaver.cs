@@ -23,7 +23,7 @@ public class SelectionSaver
         string filename = Guid.NewGuid().ToString();
         string objData = ObjExporter.WriteObjToString(filename + ".mtl", mfs, Matrix4x4.identity);
         string mtlData = MtlExporter.WriteMaterialToString(mfs).ToString();
-        Texture2D [] textures = MtlExporter.GetUniqueTextures(mfs);
-        Uploader.StartUploadPackage(filename, objData, mtlData, textures, onDone);
+        List<Texture2D> textures = MtlExporter.GetUniqueTextures(mfs);
+        Uploader.StartUploadPackage(filename, objData, mtlData, textures.ToArray(), onDone);
     }
 }

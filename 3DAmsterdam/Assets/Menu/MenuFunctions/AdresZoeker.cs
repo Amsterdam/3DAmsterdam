@@ -12,7 +12,6 @@ using ConvertCoordinates;
 public class AdresZoeker : MonoBehaviour
 {
     public InputField Inputfield;
-    bool IgnoreInpufieldChange = false;
     public Dropdown ResultatenDropdown;
     public Button[] ResultButtons = new Button[5];
     string[] ResultIDs = new string[5];
