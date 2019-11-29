@@ -109,8 +109,8 @@ public class DownloadGebied : MonoBehaviour
         var ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit1, hit2;
         
-        if (Physics.Raycast(ray1, out hit1, 10000, LayerMask.GetMask("Terrein")) &&
-            Physics.Raycast(ray2, out hit2, 10000, LayerMask.GetMask("Terrein")))
+        if (Physics.Raycast(ray1, out hit1, 10000, LayerMask.GetMask("Terrein", "Terrain")) &&
+            Physics.Raycast(ray2, out hit2, 10000, LayerMask.GetMask("Terrein", "Terrain")))
         {
             Bounds bb = new Bounds();
 

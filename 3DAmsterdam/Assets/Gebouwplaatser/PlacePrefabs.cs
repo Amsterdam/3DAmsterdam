@@ -45,6 +45,8 @@ public class PlacePrefabs : MonoBehaviour
                 AssetBundle myLoadedAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                 GameObject[] prefabs = myLoadedAssetBundle.LoadAllAssets<GameObject>();
                 GameObject prefab = prefabs[0];
+                var parts = pad.Split('/');
+                prefab.name = parts[parts.Length - 1];
                 //Instantiate(prefab);
                 MeshCollider[] mcs = prefab.GetComponentsInChildren<MeshCollider>();
                 foreach (MeshCollider mc in mcs)
@@ -71,9 +73,6 @@ public class PlacePrefabs : MonoBehaviour
 
     void Update()
     {
-        
-
-
         if (placingObject)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

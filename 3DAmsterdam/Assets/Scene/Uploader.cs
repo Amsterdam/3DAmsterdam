@@ -14,7 +14,7 @@ public class Uploader : MonoBehaviour
 {
     //regel 103 downloaden via javascript (zonder server)  nog testen in webgl
     public static string Key = "87ajdf898##@@jjKJA";
-    //public static string Server = "http://127.0.0.1:80/saven/";  
+  //  public static string Server = "http://127.0.0.1:80/saven/";  
     public static string Server = "https://3d.amsterdam.nl/";
     public static string UploadUrl = Server + "customUpload.php";
     public static string DownloadUrl = Server + "customDownload.php?";
@@ -173,10 +173,13 @@ public class Uploader : MonoBehaviour
         yield return null;
         if (buffer!=null)
         {
-            Downloaden(buffer, buffer.Length, "3DAmsterdam.zip");
+            if (!Application.isEditor) Downloaden(buffer, buffer.Length, "3DAmsterdam.zip");
+            else
+            {
+                yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
+            }
         }
     
-        //yield return Upload(buffer, "application/zip", filename + ".zip", true, onDone);
     }
 
     IEnumerator UploadString(string filename, string data, Action<bool> onDone)
@@ -207,10 +210,11 @@ public class Uploader : MonoBehaviour
         yield return www.SendWebRequest();
         string str = "";
         bool bSucces = false;
-        if (!(www.isNetworkError || www.isHttpError))
+        if (!(www.isNetworkError || www.isHttpError || www.responseCode!=200))
         {
             str = Encoding.ASCII.GetString(www.downloadHandler.data);
-            bSucces = true;
+            if ( str != "File does not exist." )
+                bSucces = true;
         }
         if (onDone != null) onDone(str, bSucces);
         Destroy(gameObject);

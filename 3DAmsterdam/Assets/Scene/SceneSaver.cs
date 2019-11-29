@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Serialize;
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace Serialize
@@ -42,6 +44,58 @@ namespace Serialize
             rot = new Quat(t.rotation);
             go = _go;
             name = _go.name;
+        }
+    }
+}
+
+public class PlaceBuildingFromAssetBundle : MonoBehaviour
+{
+    static GameObject PlaceBuildingsObject = null;
+    static string MeubilairUrl = "https://3d.amsterdam.nl/web/AssetBundles/Meubilair/";
+
+    public static void StartPlace(Building b)
+    {
+        if (PlaceBuildingsObject == null)
+        {
+            PlaceBuildingsObject = new GameObject("PlaceBuildingsHelper");
+            PlaceBuildingsObject.AddComponent<PlaceBuildingFromAssetBundle>();
+        }
+        PlaceBuildingsObject.GetComponent<PlaceBuildingFromAssetBundle>().StartCoroutine(LoadMeubilair(b));
+    }
+
+    static IEnumerator LoadMeubilair(Building b)
+    {
+        string n = b.name.Replace("(Clone)", "");
+        string pad = MeubilairUrl + n;
+        using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(pad))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                Debug.Log("kan niet bij de assetbundles");
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                AssetBundle myLoadedAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                GameObject[] prefabs = myLoadedAssetBundle.LoadAllAssets<GameObject>();
+                GameObject prefab = prefabs[0];
+                prefab.name = n;
+                MeshCollider[] mcs = prefab.GetComponentsInChildren<MeshCollider>();
+                foreach (MeshCollider mc in mcs)
+                {
+                    mc.enabled = false;
+                }
+                GameObject buildingIns = (GameObject)Instantiate(prefab, b.pos.ToUnity(), b.rot.ToUnity());
+                buildingIns.transform.localScale = b.scale.ToUnity();
+                buildingIns.AddComponent<ColliderCheck>();
+
+                buildingIns.tag = "CustomPlaced";
+                buildingIns.gameObject.layer = 11;
+                myLoadedAssetBundle.Unload(false);
+
+            }
         }
     }
 }
@@ -207,24 +261,10 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find CUIColorPicker");
 
+        PlacePrefabs pp = GameObject.FindObjectOfType<PlacePrefabs>();
         foreach (var cb in CustomStaticBuildings)
         {
-            if (ss.StaticBuildings != null && ss.StaticBuildings.Length != 0)
-            {
-                for (int i = 0; i < ss.StaticBuildings.Length; i++)
-                {
-                    var prefab = ss.StaticBuildings[i];
-                    if (prefab != null && cb.name.Contains(prefab.name))
-                    {
-                        GameObject go = (GameObject)GameObject.Instantiate(prefab, cb.pos.ToUnity(), cb.rot.ToUnity());
-                        go.transform.localScale = cb.scale.ToUnity();
-                        go.layer = 11;
-                        go.tag = "CustomPlaced";
-                        break;
-                    }
-                }
-            }
-            else Debug.LogWarning("No static buildings set.");
+            PlaceBuildingFromAssetBundle.StartPlace(cb);
         }
 
 
@@ -298,7 +338,6 @@ public class SceneSaver : MonoBehaviour
 {
     public UnityEngine.UI.Text uploadtekst;
     public UnityEngine.UI.InputField SceneNaamOutput;
-    public GameObject[] StaticBuildings;
     public UnityEngine.UI.InputField SceneInput;
 
     public void Save()
@@ -309,9 +348,11 @@ public class SceneSaver : MonoBehaviour
         var guid = Guid.NewGuid().ToString();
         Uploader.StartUploadScene(guid, output, null);
         si.UploadBuildingData();
-        SceneNaamOutput.text = "name="+guid+".json";
+        SceneNaamOutput.text = guid;
         SceneNaamOutput.gameObject.SetActive(true);
         uploadtekst.gameObject.SetActive(true);
+        ClipboardHelper.clipBoard = guid;
+        //System.Windows.Clipboard.SetText(SceneNaamOutput.text);
         //File.WriteAllText("Scene.json", output);
     }
 
@@ -325,22 +366,9 @@ public class SceneSaver : MonoBehaviour
         if (string.IsNullOrEmpty(sceneId))
             return;
 
-        MatchCollection mc = Regex.Matches(sceneId, "name=[a-f0-9-]*.json");
-        bool bValid = false;
-        foreach (var m in mc)
-        {
-            string s = m.ToString();
-            s = s.Replace("name=", "");
-            s = s.Replace(".json", "");
-            sceneId = s;
-            bValid = true;            
-        }
-        Debug.Log(sceneId);
-        if (!bValid)
-            return;
-
         Uploader.StartDownloadScene(sceneId, (string json, bool bSucces) =>
         {
+            Debug.Log("SceneID: " + sceneId);
             Debug.Log(json);
             if (!bSucces) return;
             SceneInstance si = JsonConvert.DeserializeObject<SceneInstance>(json);

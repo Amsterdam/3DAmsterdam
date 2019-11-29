@@ -13,8 +13,6 @@ public class TextureRenderer
         Dictionary<string, Texture2D> output = new Dictionary<string, Texture2D>();
         foreach (var t in textures)
         {
-            
-
             RenderTexture render_texture = RenderTexture.GetTemporary(t.width, t.height, 24, RenderTextureFormat.ARGB32);
             Graphics.Blit(t, render_texture);
 
@@ -34,7 +32,10 @@ public class TextureRenderer
     private static string GetTextureHash(Texture2D tex)
     {
         Color32[] texCols = tex.GetPixels32();
-        byte[] rawTextureData = Color32ArrayToByteArray(texCols);
+        //byte[] rawTextureData = Color32ArrayToByteArray(texCols);
+        byte[] rawTextureData = new byte[texCols.Length];
+        for (int i = 0; i < texCols.Length; i++)
+            rawTextureData[i] = texCols[i].g;
         MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
         byte[] hashbytes = md5.ComputeHash(rawTextureData);
 
@@ -46,6 +47,7 @@ public class TextureRenderer
             sBuilder.Append(hashbytes[i].ToString("x2"));
         }
         string hash = sBuilder.ToString();
+        Debug.Log("Texture hash: " + hash);
         return hash;
     }
     private static byte[] Color32ArrayToByteArray(Color32[] colors)
