@@ -110,18 +110,35 @@ public class DownloadGebied : MonoBehaviour
         if (sphere != null) sphereWasActive = sphere.activeSelf;
         if (sphere != null) sphere.SetActive(false);
 
+        // Attempt to include trees
+        GameObject bomen = GameObject.Find("Bomen");
+        //if (bomen != null)
+        //{
+        //    for (int i = 0; i < bomen.transform.childCount; i++)
+        //    {
+        //        bomen.transform.GetChild(i).gameObject.AddComponent<MeshCollider>();
+        //    }
+        //}
+
+        
         List<MeshFilter> selected = new List<MeshFilter>();
         var ray1 = Camera.main.ScreenPointToRay(startPosition);
         var ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit1, hit2;
+        var ray3 = Camera.main.ScreenPointToRay(new Vector2(Input.mousePosition.x, startPosition.y));
+        var ray4 = Camera.main.ScreenPointToRay(new Vector2(startPosition.x, Input.mousePosition.y));
+        RaycastHit hit1, hit2, hit3, hit4;
         
         if (Physics.Raycast(ray1, out hit1, 10000, LayerMask.GetMask("Terrein", "Terrain")) &&
-            Physics.Raycast(ray2, out hit2, 10000, LayerMask.GetMask("Terrein", "Terrain")))
+            Physics.Raycast(ray2, out hit2, 10000, LayerMask.GetMask("Terrein", "Terrain")) &&
+            Physics.Raycast(ray3, out hit3, 10000, LayerMask.GetMask("Terrein", "Terrain")) &&
+            Physics.Raycast(ray4, out hit4, 10000, LayerMask.GetMask("Terrein", "Terrain")))
         {
             Bounds bb = new Bounds();
 
-            Vector3 min = Vector3.Min(hit1.point, hit2.point);
-            Vector3 max = Vector3.Max(hit1.point, hit2.point);
+           // Debug.DrawRay(hit1.point, Vector3.up * 100, Color.yellow, 20, false);
+           // Debug.DrawRay(hit2.point, Vector3.up * 100, Color.yellow, 20, false);
+            Vector3 min = Vector3.Min(hit4.point, Vector3.Min(hit3.point, Vector3.Min(hit1.point, hit2.point)));
+            Vector3 max = Vector3.Max(hit4.point, Vector3.Max(hit3.point, Vector3.Max(hit1.point, hit2.point)));
 
             bb.min = min + Vector3.down * 10;
             bb.max = max + Vector3.up * 100;
@@ -153,6 +170,15 @@ public class DownloadGebied : MonoBehaviour
                 pb.SetActive(true);
         }
         if (sphere != null) sphere.SetActive(sphereWasActive);
+
+        // Undo collider on trees
+        if (bomen != null)
+        {
+            for (int i = 0; i < bomen.transform.childCount; i++)
+            {
+                Destroy(bomen.transform.GetChild(i).gameObject.GetComponent<MeshCollider>());
+            }
+        }
         return selected.ToArray();
     }
 

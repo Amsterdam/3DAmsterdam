@@ -2,9 +2,8 @@
 using Serialize;
 using System;
 using System.Collections;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -27,7 +26,7 @@ namespace Serialize
         public Color ToColor() { return new Color(x, y, z, w); }
     }
 
-    public struct Building
+    public class Building
     {
         public string name;
         public Vec3 pos, scale;
@@ -36,7 +35,8 @@ namespace Serialize
         [JsonIgnore]
         public GameObject go;
 
-        public Building(GameObject _go)
+        // Attempt to fix target invocation exception in webGL
+        public void SetBuildingInfo(GameObject _go)
         {
             var t = _go.transform;
             pos = new Vec3(t.position);
@@ -45,8 +45,19 @@ namespace Serialize
             go = _go;
             name = _go.name;
         }
+
+        //public Building(GameObject _go)
+        //{
+        //    var t = _go.transform;
+        //    pos = new Vec3(t.position);
+        //    scale = new Vec3(t.localScale);
+        //    rot = new Quat(t.rotation);
+        //    go = _go;
+        //    name = _go.name;
+        //}
     }
 }
+
 
 public class PlaceBuildingFromAssetBundle : MonoBehaviour
 {
@@ -121,11 +132,9 @@ public class SceneInstance
     // Custom placed prefabs
     public Building[] CustomStaticBuildings;
     public Building[] CustomSizableBuildings;
-      
 
+    [JsonIgnore]
     GameObject wasActiveMenu;
-
-
 
     MenuFunctions EnableMenus(bool enable)
     {
@@ -203,8 +212,18 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find CUIColorPicker");
 
-        CustomStaticBuildings = GameObject.FindGameObjectsWithTag("CustomPlaced").Select(go => new Building(go)).ToArray();
-        CustomSizableBuildings = GameObject.FindGameObjectsWithTag("Sizeable").Select(go => new Building(go)).ToArray();
+        CustomStaticBuildings = GameObject.FindGameObjectsWithTag("CustomPlaced").Select(go =>
+        {
+            var b = new Building();
+            b.SetBuildingInfo(go);
+            return b;
+            }).ToArray();
+        CustomSizableBuildings = GameObject.FindGameObjectsWithTag("Sizeable").Select(go =>
+        {
+            var b = new Building();
+            b.SetBuildingInfo(go);
+            return b;
+            }).ToArray();
 
         // Disable menus again now that data is retreived
         EnableMenus(false);
@@ -261,7 +280,6 @@ public class SceneInstance
         }
         else Debug.LogWarning("Cannot find CUIColorPicker");
 
-        PlacePrefabs pp = GameObject.FindObjectOfType<PlacePrefabs>();
         foreach (var cb in CustomStaticBuildings)
         {
             PlaceBuildingFromAssetBundle.StartPlace(cb);
@@ -351,9 +369,6 @@ public class SceneSaver : MonoBehaviour
         SceneNaamOutput.text = guid;
         SceneNaamOutput.gameObject.SetActive(true);
         uploadtekst.gameObject.SetActive(true);
-        ClipboardHelper.clipBoard = guid;
-        //System.Windows.Clipboard.SetText(SceneNaamOutput.text);
-        //File.WriteAllText("Scene.json", output);
     }
 
 
@@ -371,22 +386,23 @@ public class SceneSaver : MonoBehaviour
             Debug.Log("SceneID: " + sceneId);
             Debug.Log(json);
             if (!bSucces) return;
+            Debug.Log("!! Pre deserialize");
             SceneInstance si = JsonConvert.DeserializeObject<SceneInstance>(json);
             if (si != null)
             {
+                Debug.Log("!! Pre clear");
                 ClearScene();
+                Debug.Log("!! Pre populate");
                 si.PopulateToScene(this);
+                Debug.Log("!! Pre Download buildings");
                 si.DownloadBuildingData();
             }
         });
     }
 
-    public void Update()
+    void Paste(string str)
     {
-        if (Input.GetKeyDown(KeyCode.V) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
-        {
-            SceneInput.text = ClipboardHelper.clipBoard;
-        }
+        SceneInput.text = str;
     }
 
     public void ClearScene()
