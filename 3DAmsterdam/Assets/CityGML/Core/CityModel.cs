@@ -40,11 +40,15 @@ namespace CityGML
         {
             XmlNodeList buildingnodes = doc.SelectNodes("core:CityModel/core:cityObjectMember/bldg:Building", nsmr);
             
-            
             List<BuildingFeature> output = new List<BuildingFeature>();
 
             BuildingFeature building;
+
             foreach (XmlNode node in buildingnodes)
+            {
+
+            }
+                foreach (XmlNode node in buildingnodes)
             {
                 building = new BuildingFeature(node, nsmr, filepath);
                 if (building.isLOD(LOD))

@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using cityJSON;
 
 public class ObjectProperties : MonoBehaviour
 {
-    public string gmlID;
+  
+    public List<Semantics> semantics;
     
 }

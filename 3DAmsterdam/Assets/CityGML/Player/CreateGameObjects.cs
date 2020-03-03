@@ -62,26 +62,7 @@ namespace CityGML
             Mesh ms = new Mesh();
             List<CombineInstance> submeshes = new List<CombineInstance>();
             CombineInstance ci;
-            if (surf.ExteriorRings.Count > 1) // multiple External rings, treat as seperate meshes
-            {
-                foreach (LinearRing ring in surf.ExteriorRings)
-                {
-                    Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
-                    List<Vector3> subvectors = CreateVectorlist(ring.Vertices, origin); // unitystyle coordinates
-                    poly.outside = subvectors;
-                    if (surf.ExteriorRings[0].uvs != null)
-                    {
-                        List<Vector2> uvs = createUVList(surf.ExteriorRings[0].uvs);
-                        poly.outsideUVs = uvs;
-                    }
-                    Mesh submesh = Poly2Mesh.CreateMesh(poly);
-                    ci = new CombineInstance();
-                    ci.mesh = submesh;
-                    submeshes.Add(ci);
-                }
-            }
-            else //single exteriorring with possibly multiple exteriorRings
-            {
+            
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
                 List<Vector3> subvectors = CreateVectorlist(surf.ExteriorRings[0].Vertices, origin); // unitystyle coordinates outerring
                 poly.outside = subvectors;
@@ -122,7 +103,7 @@ namespace CityGML
                     ci.mesh = submesh;
                     submeshes.Add(ci);
                 }
-            }
+            
 
             
             ms.CombineMeshes(submeshes.ToArray(), true, false);
@@ -134,7 +115,7 @@ namespace CityGML
         {
             List<Vector3> output = new List<Vector3>();
             Vector3 vect;
-            for (int i = 0; i < vectors.Count-1; i++)
+            for (int i = 0; i < vectors.Count; i++)
             {
                 vect = new Vector3();
                 vect.x = (float)(vectors[i].x-origin.x);
@@ -155,10 +136,7 @@ namespace CityGML
                 return null;
             }
             input.Reverse();
-            if (input[0] == input[input.Count-1])
-            {
-                input.RemoveAt(0);
-            }
+            
             
             return input;
 
