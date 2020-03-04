@@ -9,14 +9,31 @@ namespace cityJSON
 
     public class CreateGameObjectsV2
     {
-
-        public void CreateMeshesByIdentifier(List<Building> buildings, string identifiername)
+        
+        private Vector3 offset;
+        public GameObject CreateMeshesByIdentifier(List<Building> buildings, string identifiername, Vector3RD origin)
         {
+            offset = Vector3.zero-CoordConvert.RDtoUnity(new Vector2((float)origin.x, (float)origin.y));
+            GameObject container = new GameObject();
+            ObjectMapping objMap = container.AddComponent<ObjectMapping>();
             List<string> identifiers = new List<string>();
             List<List<SurfaceData>> surfdata = new List<List<SurfaceData>>();
+            int buildingnumber = 0;
             foreach (Building building in buildings)
             {
-                List<SurfaceData> surfaces = SortSurfacesBySemantics(building, identifiername);
+                string buildingname = "";
+                foreach (Semantics item in building.semantics)
+                {
+                    if( item.name == "name")
+                    {
+                        buildingname = item.value;
+                    }
+                }
+                //objMap.Objectmap.Add(buildingnumber, buildingname);
+                objMap.BagID.Add(buildingname);
+                buildingnumber++;
+                List<SurfaceData> surfaces = SortSurfacesBySemantics(building, identifiername,buildingnumber);
+
                 foreach (SurfaceData surf in surfaces)
                 {
                     bool found = false;
@@ -36,34 +53,47 @@ namespace cityJSON
                     }
                 }
             }
-
+            
+            int vertexcount = 0;
+            int counter = 0;
             for (int i = 0; i < identifiers.Count; i++)
             {
                 List<CombineInstance> cis = new List<CombineInstance>();
                 foreach (SurfaceData surf in surfdata[i])
                 {
+                    if (vertexcount + surf.texturedMesh.mesh.vertexCount>65535)
+                    {
+                        AddSubobject(container, cis, identifiers[i],counter);
+                        counter += 1;
+                        cis = new List<CombineInstance>();
+                        vertexcount = 0;
+                    }
                     CombineInstance ci = new CombineInstance();
                     ci.mesh = surf.texturedMesh.mesh;
                     cis.Add(ci);
+                    surf.texturedMesh.mesh = null;
+                   
+                    vertexcount += ci.mesh.vertexCount;
                 }
-                GameObject go = new GameObject();
-                go.name = identifiers[i];
-                Mesh combimesh = new Mesh();
-                combimesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-                combimesh.CombineMeshes(cis.ToArray(), true, false);
-                go.AddComponent<MeshFilter>().sharedMesh = combimesh;
-                Material mat = Resources.Load("CityJSON/"+ identifiers[i], typeof(Material)) as Material;
-                go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+                surfdata[i] = null;
+                AddSubobject(container, cis, identifiers[i],counter);
+
             }
 
-
+            return container;
         }
-
-
-
-
-
-        public List<SurfaceData> SortSurfacesBySemantics(Building building, string identifiername, string Buildingname ="")
+        private void AddSubobject(GameObject container,List<CombineInstance> cis, string identifier, int counter)
+        {
+            GameObject go = new GameObject();
+            go.transform.parent = container.transform;
+            go.name = identifier + "_" + counter; ;
+            Mesh combimesh = new Mesh();
+            combimesh.CombineMeshes(cis.ToArray(), true, false);
+            go.AddComponent<MeshFilter>().sharedMesh = combimesh;
+            Material mat = Resources.Load("CityJSON/" + identifier, typeof(Material)) as Material;
+            go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+        }
+        public List<SurfaceData> SortSurfacesBySemantics(Building building, string identifiername,int buildingnr, string Buildingname ="")
         {
             string buildingname = Buildingname;
             string buildingpartname = "";
@@ -103,12 +133,20 @@ namespace cityJSON
                         i = surf.semantics.Count;
                     }
                     surfdata.texturedMesh = CreateSurface(surf);
+                    Vector2 uv = new Vector2(buildingnr, buildingnr);
+                    Vector2[] uv4 = new Vector2[surfdata.texturedMesh.mesh.vertexCount];
+                    for (int j = 0; j < uv4.Length; j++)
+                    {
+                        uv4[j] = uv;
+                    }
+                    surfdata.texturedMesh.mesh.uv4 = uv4;
+
                 }
                 output.Add(surfdata);
             }
             foreach (Building child in building.children)
             {
-                List<SurfaceData> subtextures = SortSurfacesBySemantics(child,identifiername,buildingname);
+                List<SurfaceData> subtextures = SortSurfacesBySemantics(child,identifiername,buildingnr,buildingname);
                 foreach (SurfaceData item in subtextures)
                 {
                     output.Add(item);
@@ -159,7 +197,7 @@ namespace cityJSON
             Vector3 vect;
             for (int i = 0; i < vectors.Count; i++)
             {
-                vect = CoordConvert.RDtoUnity(new Vector3RD(vectors[i].x,vectors[i].y,vectors[i].z));
+                vect = CoordConvert.RDtoUnity(new Vector3RD(vectors[i].x,vectors[i].y,vectors[i].z))+offset;
                 output.Add(vect);
             }
             output.Reverse();
