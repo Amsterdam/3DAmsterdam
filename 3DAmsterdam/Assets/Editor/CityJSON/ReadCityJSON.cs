@@ -28,6 +28,8 @@ namespace cityJSON
         private List<Vector3Double> vertices;
         private List<Vector2>textureVertices;
         private List<Surfacetexture> Textures;
+        private List<material> Materials;
+
         private int LOD;
         public CityModel(string filepath, string filename)
         {
@@ -55,7 +57,22 @@ namespace cityJSON
                 texture.wrapmode = node["wrapMode"];
                 Textures.Add(texture);
             }
-
+            
+            //get materials
+            //foreach (JSONNode node in cityjsonNode["appearance"]["materials"])
+            //{
+            //    material mat = new material();
+            //    mat.name = node["name"];
+            //    JSONNode diffColor;
+            //    diffColor = node["diffuseColor"];
+            //    if (diffColor!=null)
+            //    {
+            //        mat.r = diffColor[0];
+            //        mat.g = diffColor[1];
+            //        mat.b = diffColor[2];
+            //    }
+            //    Materials.Add(mat);
+            //}
         }
 
         public List<Building> LoadBuildings(int lod)
@@ -195,6 +212,10 @@ namespace cityJSON
                         }
 
                     }
+
+                    // read MaterialValues
+                    JSONNode materialnode = geometrynode["material"];
+
                 }
             }
 
@@ -467,5 +488,14 @@ namespace cityJSON
             name = Name;
             value = Value;
         }
+    }
+
+    public class material
+    {
+        public string name;
+        public float r;
+        public float g;
+        public float b;
+        public float a;
     }
 }

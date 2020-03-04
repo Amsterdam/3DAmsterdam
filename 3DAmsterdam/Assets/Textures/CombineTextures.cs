@@ -11,6 +11,7 @@ namespace  TextureCombiner
         public string TextureName;
         public Mesh mesh;
         public Texture2D texture;
+        public string IdentifierString;
 
         public TexturedMesh()
         {

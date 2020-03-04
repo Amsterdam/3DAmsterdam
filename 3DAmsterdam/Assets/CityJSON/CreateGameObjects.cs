@@ -16,8 +16,12 @@ namespace cityJSON
         public bool minimizeMeshes = true;
         public bool CreatePrefabs = false;
         private Vector3Double Origin;
-        public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent)
+        private Dictionary<string, Material> Materialmapping;
+        private bool wgsConvert;
+        public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null)
         {
+            Materialmapping = materialmapping;
+            wgsConvert = WGSConvert;
             Defaultmaterial = DefaultMaterial;
             Origin = origin;
 
@@ -72,7 +76,6 @@ namespace cityJSON
                 AssetDatabase.Refresh();
                 foreach (MeshRenderer mr in meshrenderers)
                 {
-                    
                     Texture2D tex = (Texture2D)mr.sharedMaterial.GetTexture("_MainTex");
                     if (tex !=null)
                     {
@@ -110,6 +113,8 @@ namespace cityJSON
         {
             List<TexturedMesh> Allbuildingparts = new List<TexturedMesh>();
             List<TexturedMesh> buildingparts = new List<TexturedMesh>();
+            TexturedMesh[] materialparts;
+
             foreach (Building building in buildings)
             {
                 buildingparts = CreateOneMeshBulding(building);
@@ -120,6 +125,10 @@ namespace cityJSON
             }
             List<TexturedMesh> textured = new List<TexturedMesh>();
             List<TexturedMesh> untextured = new List<TexturedMesh>();
+            if (Materialmapping !=null)
+            {
+                materialparts = new TexturedMesh[Materialmapping.Count];
+            }
             foreach (TexturedMesh item in Allbuildingparts)
             {
                 if (item.TextureName != "" && useTextures == true)
@@ -144,6 +153,7 @@ namespace cityJSON
                 GameObject go = new GameObject();
                 go.transform.parent = parent.transform;
                 Mesh mesh = new Mesh();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 mesh.CombineMeshes(ci.ToArray(), true, false);
                 go.AddComponent<MeshFilter>().mesh = mesh;
                 go.AddComponent<MeshRenderer>().sharedMaterial = Defaultmaterial;
@@ -286,6 +296,7 @@ namespace cityJSON
             poly.outside = CreateVectorlist(surf.outerRing, Origin);
             if (surf.outerringUVs.Count > 0)
             {
+                
                 poly.outsideUVs = surf.outerringUVs;
             };
             if(surf.innerRings.Count>0)
@@ -297,6 +308,7 @@ namespace cityJSON
             }
             if (surf.innerringUVs.Count > 0)
             {
+                
                 poly.holesUVs = surf.innerringUVs;
             }
 
@@ -308,7 +320,7 @@ namespace cityJSON
 
                 for (int i = 0; i < surf.semantics.Count; i++)
                 {
-                    if (surf.semantics[i].name == "type")
+                    if (surf.semantics[i].name == "name")
                     {
                         go.name = surf.semantics[i].value;
                         i = surf.semantics.Count;
@@ -335,6 +347,13 @@ namespace cityJSON
             else
             {
                 TexturedMesh texturedmesh = new TexturedMesh();
+                for (int i = 0; i < surf.semantics.Count; i++)
+                {
+                    if (surf.semantics[i].name == "name")
+                    {
+                        texturedmesh.IdentifierString = surf.semantics[i].value;
+                    }
+                }
                 texturedmesh.mesh = submesh;
                 if (surf.surfacetexture!=null)
                 {
