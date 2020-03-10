@@ -23,7 +23,7 @@ public class ImportCitymodel: MonoBehaviour
         int LOD = 2;
 
         //testpurpose
-        Xmin = 126000;
+        Xmin = 129000;
         //Ymax = 476000;
 
         for (int X = 0; X < (Xmax-Xmin)/stepSize; X++)

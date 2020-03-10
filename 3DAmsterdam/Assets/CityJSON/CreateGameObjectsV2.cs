@@ -13,7 +13,7 @@ namespace cityJSON
         private Vector3 offset;
         public GameObject CreateMeshesByIdentifier(List<Building> buildings, string identifiername, Vector3RD origin)
         {
-            offset = Vector3.zero-CoordConvert.RDtoUnity(new Vector2((float)origin.x, (float)origin.y));
+            offset = CoordConvert.RDtoUnity(new Vector2((float)origin.x, (float)origin.y));
             GameObject container = new GameObject();
             ObjectMapping objMap = container.AddComponent<ObjectMapping>();
             List<string> identifiers = new List<string>();
@@ -197,7 +197,7 @@ namespace cityJSON
             Vector3 vect;
             for (int i = 0; i < vectors.Count; i++)
             {
-                vect = CoordConvert.RDtoUnity(new Vector3RD(vectors[i].x,vectors[i].y,vectors[i].z))+offset;
+                vect = CoordConvert.RDtoUnity(new Vector3RD(vectors[i].x,vectors[i].y,vectors[i].z))-offset;
                 output.Add(vect);
             }
             output.Reverse();
