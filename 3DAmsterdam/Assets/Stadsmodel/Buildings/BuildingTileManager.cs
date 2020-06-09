@@ -330,8 +330,8 @@ public class BuildingTileManager : MonoBehaviour
             //add mesh
             MeshFilter mf = container.AddComponent<MeshFilter>();
             mf.sharedMesh = ass;
-            MeshCollider mc = container.AddComponent<MeshCollider>();
-            mc.sharedMesh = ass;
+            //MeshCollider mc = container.AddComponent<MeshCollider>();
+            //mc.sharedMesh = ass;
             //add material
             MeshRenderer mr = container.AddComponent<MeshRenderer>();
             mr.material = GebouwMateriaal;

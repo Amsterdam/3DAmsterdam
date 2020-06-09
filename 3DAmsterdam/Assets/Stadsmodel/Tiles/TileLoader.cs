@@ -230,9 +230,9 @@ public class TileLoader : MonoBehaviour
                 tileDb[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
 
 
-                tileDb[tileId].AddComponent<MeshCollider>();
+                //tileDb[tileId].AddComponent<MeshCollider>();
                 
-                tileDb[tileId].GetComponent<MeshCollider>().sharedMesh = tileDb[tileId].GetComponent<MeshFilter>().sharedMesh;
+                //tileDb[tileId].GetComponent<MeshCollider>().sharedMesh = tileDb[tileId].GetComponent<MeshFilter>().sharedMesh;
                 tileDb[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = tileDb[tileId].transform.localPosition;
                 loc.y = 0;

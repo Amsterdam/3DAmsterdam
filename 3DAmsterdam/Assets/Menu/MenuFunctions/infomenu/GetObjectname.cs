@@ -40,6 +40,15 @@ public class GetObjectname :MonoBehaviour
             RaycastHit hit;
             if (IsCanvas()) { return; };
 
+            // meshcollider toevogen aan gebouwen
+            foreach (MeshFilter mshfilter in GebouwenFolder.GetComponentsInChildren<MeshFilter>())
+            {
+                if (mshfilter.gameObject.GetComponent<MeshCollider>()==null)
+                {
+                    mshfilter.gameObject.AddComponent<MeshCollider>().sharedMesh = mshfilter.sharedMesh;
+                }
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit) == false) //hit nothing
