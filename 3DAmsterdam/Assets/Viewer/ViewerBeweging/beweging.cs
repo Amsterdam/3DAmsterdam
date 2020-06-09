@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class beweging : MonoBehaviour
 {
     public Camera cam;
-
+    public GameObject TerrainTileContainer;
     public float zoomSpeed = 0.5f;
     private const float zoomSpeedAir = 800f;
     private const float maxZoomOut = 2500f;
@@ -195,13 +195,37 @@ public class beweging : MonoBehaviour
 
     void ClampToGround()
     {
+        AddColliderToNearestTile();
         RaycastHit hit;
-        if (Physics.Raycast(cam.transform.position, transform.TransformDirection(Vector3.down), out hit))
+        int layermask = LayerMask.GetMask("Terrain");
+        if (Physics.Raycast(cam.transform.position, transform.TransformDirection(Vector3.down), out hit,100f, layermask))
         {
             cam.transform.position = hit.point+ new Vector3(0,1.8f,0);
         }
         
 
+    }
+    private void AddColliderToNearestTile()
+    {
+        float minDistance = float.MaxValue;
+        GameObject ClosestTile=TerrainTileContainer;
+        float distance;
+        Vector3 pos = cam.transform.position;
+        foreach (MeshFilter mf in TerrainTileContainer.GetComponentsInChildren<MeshFilter>())
+        {
+            distance = (mf.gameObject.transform.position - pos).magnitude;
+            if (distance < 500f)
+            {
+                minDistance = distance;
+                ClosestTile = mf.gameObject;
+                if (ClosestTile.GetComponent<MeshCollider>() == null && mf.sharedMesh.name != "tileplaceholder")
+                {
+                    ClosestTile.AddComponent<MeshCollider>().sharedMesh = ClosestTile.GetComponent<MeshFilter>().sharedMesh;
+                }
+
+            }
+        }
+        
     }
 
     void Zooming()
