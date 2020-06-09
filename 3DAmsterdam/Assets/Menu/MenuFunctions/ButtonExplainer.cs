@@ -36,8 +36,10 @@ public class ButtonExplainer : MonoBehaviour, IPointerEnterHandler, IPointerExit
         // het bericht wordt child gemaakt van de bijbehorende knop
         _helpMessage.transform.SetParent(this.gameObject.transform);
 
-        // de text in het bericht wordt aangepast
-        _helpMessage.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = message;
+        // de text in het bericht wordt 
+        if (_helpMessage.transform.childCount == 0) return; 
+           
+        gameObject.GetComponent<TextMeshProUGUI>().text = message;
 
         // de grootte van de image wordt bepaald
         RectTransform imageRectTransform = _helpMessage.GetComponent<RectTransform>();
