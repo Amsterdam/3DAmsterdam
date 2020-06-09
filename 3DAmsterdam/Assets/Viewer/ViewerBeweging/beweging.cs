@@ -214,7 +214,7 @@ public class beweging : MonoBehaviour
         foreach (MeshFilter mf in TerrainTileContainer.GetComponentsInChildren<MeshFilter>())
         {
             distance = (mf.gameObject.transform.position - pos).magnitude;
-            if (distance < 500f)
+            if (distance < 100f)
             {
                 minDistance = distance;
                 ClosestTile = mf.gameObject;

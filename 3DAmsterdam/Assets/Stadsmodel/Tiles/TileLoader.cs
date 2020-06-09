@@ -319,7 +319,7 @@ public class TileLoader : MonoBehaviour
     }
     IEnumerator UpdateTerrainTilesOud(Extent Tempextent)
     {
-
+        UpdateReady = false;
         List<Vector3> TileKeys = SetBasicTilekeys(Tempextent);
         bool doorgaan = true;
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
