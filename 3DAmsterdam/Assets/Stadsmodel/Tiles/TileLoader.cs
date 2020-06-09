@@ -243,8 +243,8 @@ public class TileLoader : MonoBehaviour
         }
         else
         {
-            UnityEngine.Debug.LogError("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
-            UnityEngine.Debug.LogError(www.error);
+            UnityEngine.Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
+            UnityEngine.Debug.Log(www.error);
         }
         
 
