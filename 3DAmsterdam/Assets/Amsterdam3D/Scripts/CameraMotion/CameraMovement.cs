@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using System.Runtime.CompilerServices;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -21,11 +22,11 @@ public class CameraMovement : MonoBehaviour
     private const float rotationSensitivity = 5f;
     private const float maxYAngle = 80f;
 
-    private float scroll;
+    private float scrollDelta;
     private float zoomDistance;
     private float moveSpeed;
-    private float mouseHor;
-    private float mouseVer;
+    private float mouseHorizontal;
+    private float mouseVertical;
     private float dragSpeed;
 
     public bool canMove = true;
@@ -40,14 +41,16 @@ public class CameraMovement : MonoBehaviour
     private Vector3 zoom;
     private Vector3 direction;
     private Vector3 dragOrigin;
-    private Vector3 movDir;
+    private Vector3 moveDirection;
     private Vector3 rotatePoint;
     private Vector3 camOffSet;
 
     private Vector2 currentRotation;
-
     private MenuFunctions menuFunctions;
 
+    public delegate void FocusPointChanged(Vector3 pointerPosition);
+    public static FocusPointChanged focusPointChanged;
+    
     void Awake()
     {
         camera = GetComponent<Camera>();
@@ -56,7 +59,6 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         menuFunctions = FindObjectOfType<MenuFunctions>();
-        //cam.transform.rotation = startRotation;
         currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
     }
 
@@ -107,11 +109,11 @@ public class CameraMovement : MonoBehaviour
         if (canMove)
         {
             // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
-            movDir = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
+            moveDirection = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
 
             // vooruit/achteruit bewegen (gebaseerd op rotatie van camera)
-            if (Input.GetKey(KeyCode.UpArrow)) camera.transform.position += movDir * moveSpeed;
-            if (Input.GetKey(KeyCode.DownArrow)) camera.transform.position -= movDir * moveSpeed;
+            if (Input.GetKey(KeyCode.UpArrow)) camera.transform.position += moveDirection * moveSpeed;
+            if (Input.GetKey(KeyCode.DownArrow)) camera.transform.position -= moveDirection * moveSpeed;
 
             if (!IsFPSmode)
             {
@@ -123,7 +125,7 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
-    void Rotation()
+    private void Rotation()
     {
         // rotatie met control knop
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
@@ -164,18 +166,15 @@ public class CameraMovement : MonoBehaviour
             canMove = true;
         }
 
-
-
-
         // camera roteren doormiddel van rechter muisknop
         if (Input.GetMouseButton(1))
         {
-            mouseHor = Input.GetAxis("Mouse X");
-            mouseVer = Input.GetAxis("Mouse Y");
+            mouseHorizontal = Input.GetAxis("Mouse X");
+            mouseVertical = Input.GetAxis("Mouse Y");
 
             // berekent rotatie van camera gebaseerd op beweging van muis
-            currentRotation.x += mouseHor * rotationSensitivity;
-            currentRotation.y -= mouseVer * rotationSensitivity;
+            currentRotation.x += mouseHorizontal * rotationSensitivity;
+            currentRotation.y -= mouseVertical * rotationSensitivity;
 
             // de rotatie blijft tussen de 0 en 360 graden
             currentRotation.x = Mathf.Repeat(currentRotation.x, 360f);
@@ -187,7 +186,6 @@ public class CameraMovement : MonoBehaviour
             camera.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
 
-
         //
         if (IsFPSmode)
         {
@@ -198,7 +196,7 @@ public class CameraMovement : MonoBehaviour
 
     }
 
-    void ClampToGround()
+    private void ClampToGround()
     {
         RaycastHit hit;
         if (Physics.Raycast(camera.transform.position, transform.TransformDirection(Vector3.down), out hit))
@@ -209,23 +207,21 @@ public class CameraMovement : MonoBehaviour
 
     }
 
-    void Zooming()
+    private void Zooming()
     {
+        scrollDelta = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollDelta == 0) return;
+
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-
-        scroll = Input.GetAxis("Mouse ScrollWheel");
         zoomPoint = camera.transform.position;
-
-        Vector3 maxZoomPosition = new Vector3(camera.transform.position.x, maxZoomOut, camera.transform.position.z);
-        Vector3 minZoomPosition = new Vector3(camera.transform.position.x, maxZoomIn, camera.transform.position.z);
 
         // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
         if (Physics.Raycast(ray, out hit))
         {
             hitCollider = true; // checkt of er een collider geraakt wordt met raycast
-
             zoomPoint = hit.point;
+            focusPointChanged(zoomPoint);
         } else
         {
             hitCollider = false;
@@ -233,22 +229,22 @@ public class CameraMovement : MonoBehaviour
 
         // de afstand tussen de camera en het zoompunt wordt berekend.
         zoomDistance = Vector3.Distance(zoomPoint, camera.transform.position);
-
         // de richting waar in gezoomd moet worden wordt berekend.
         zoomDirection = Vector3.Normalize(zoomPoint - camera.transform.position);
-
-        zoom = zoomDirection * zoomDistance * scroll * zoomSpeed;
+        zoom = zoomDirection * zoomDistance * scrollDelta * zoomSpeed;
 
         if (hitCollider)
         {
             // er kan niet verder worden uitgezoomd dan de maximale range.
             if (camera.transform.position.y > maxZoomOut)
             {
+                var maxZoomPosition = new Vector3(camera.transform.position.x, maxZoomOut, camera.transform.position.z);
                 camera.transform.position = maxZoomPosition;
             }
             // er kan niet verder worden ingezoomd dan de minimale range.
             else if (camera.transform.position.y < maxZoomIn)
             {
+                var minZoomPosition = new Vector3(camera.transform.position.x, maxZoomIn, camera.transform.position.z);
                 camera.transform.position = minZoomPosition;
             }
             else
@@ -256,12 +252,12 @@ public class CameraMovement : MonoBehaviour
                 // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
                 if (camera.transform.position.y == maxZoomOut)
                 {
-                    if (scroll > 0) camera.transform.position += zoom;
+                    if (scrollDelta > 0) camera.transform.position += zoom;
                 }
                 // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
                 else if (camera.transform.position.y == maxZoomIn)
                 {
-                    if (scroll < 0) camera.transform.position += zoom;
+                    if (scrollDelta < 0) camera.transform.position += zoom;
                 }
                 // de positie van de camera wordt aangepast.
                 else
@@ -273,12 +269,12 @@ public class CameraMovement : MonoBehaviour
         {
             if (currentRotation.y < 20f)
             {
-                camera.transform.position += scroll * zoomSpeedAir * movDir;
+                camera.transform.position += scrollDelta * zoomSpeedAir * moveDirection;
             }
         }
     }
 
-    void Dragging()
+    private void Dragging()
     {
         dragSpeed = Mathf.Sqrt(camera.transform.position.y) * dragFactor;
 
@@ -304,23 +300,24 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
-    void FocusPoint()
+    private void FocusPoint()
     {
         RaycastHit hit;
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        var ray = camera.ScreenPointToRay(Input.mousePosition);
 
         if (Input.GetMouseButtonDown(2))
         {
             if (Physics.Raycast(ray, out hit))
             {
                 rotatePoint = hit.point;
+                focusPointChanged(rotatePoint);
             }
         }
 
         if (Input.GetMouseButton(2))
         {
-            float mouseX = Input.GetAxis("Mouse X");
-            float mouseY = Input.GetAxis("Mouse Y");
+            var mouseX = Input.GetAxis("Mouse X");
+            var mouseY = Input.GetAxis("Mouse Y");
 
             if (camera.transform.position.y > 50f)
             {
