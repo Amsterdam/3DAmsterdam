@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Compass : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-    public GameObject manager;
-    private int mode;
-
-    public Transform targetGod;
-    public Transform targetFPS;
-    private Transform target;
-
-    private Vector3 direction;
-
-    void Update()
+    public class Compass : MonoBehaviour
     {
-        target = targetGod;
-       
+        private Vector3 direction;
 
-        direction.z = target.eulerAngles.y;
-        transform.localEulerAngles = direction;
+        void Update()
+        {
+            ChangeImageForwardToCameraForward();
+        }
+
+        private void ChangeImageForwardToCameraForward()
+        {
+            direction.z = Camera.main.transform.eulerAngles.y;
+            transform.localEulerAngles = direction;
+        }
     }
 }
