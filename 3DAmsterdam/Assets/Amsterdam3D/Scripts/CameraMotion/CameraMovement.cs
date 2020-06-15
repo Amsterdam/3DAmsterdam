@@ -48,6 +48,11 @@ public class CameraMovement : MonoBehaviour
 
     private MenuFunctions menuFunctions;
 
+    void Awake()
+    {
+        camera = GetComponent<Camera>();
+    }
+
     void Start()
     {
         menuFunctions = FindObjectOfType<MenuFunctions>();
