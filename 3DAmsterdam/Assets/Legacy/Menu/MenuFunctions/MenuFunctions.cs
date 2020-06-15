@@ -537,7 +537,7 @@ public class MenuFunctions : MonoBehaviour
             compass.SetActive(false);
         }
 
-        if (optionsToggles[3].GetComponent<Toggle>().isOn)
+        /*if (optionsToggles[3].GetComponent<Toggle>().isOn)
         {
             if (manager.GetComponent<ModeManager>().mode != -1)
             {
@@ -556,7 +556,7 @@ public class MenuFunctions : MonoBehaviour
         } else
         {
             streetView.SetActive(false);
-        }
+        }*/
     }
     #endregion
 
@@ -564,7 +564,7 @@ public class MenuFunctions : MonoBehaviour
     #region Minimap
     private void MapPositioning()
     {
-        if (modeManager.mode == 1)
+        /*if (modeManager.mode == 1)
         {
             if (!(zoomButtonMinus.activeSelf) && !(zoomButtonPlus.activeSelf) && !(streetView.activeSelf))
             {
@@ -584,7 +584,7 @@ public class MenuFunctions : MonoBehaviour
             {
                 miniMap.transform.localPosition = startPosMap;
             }
-        }
+        }*/
     }
     #endregion
 }

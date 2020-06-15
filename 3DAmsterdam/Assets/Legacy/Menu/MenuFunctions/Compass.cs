@@ -15,16 +15,8 @@ public class Compass : MonoBehaviour
 
     void Update()
     {
-        mode = manager.GetComponent<ModeManager>().mode;
-
-        if (mode == 1)
-        {
-            target = targetGod;
-        }
-        else
-        {
-            target = targetFPS;
-        }
+        target = targetGod;
+       
 
         direction.z = target.eulerAngles.y;
         transform.localEulerAngles = direction;
