@@ -65,8 +65,7 @@ public class CameraControls : MonoBehaviour
     void Update()
     {
         // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-        if (EventSystem.current.IsPointerOverGameObject() || IsFPSmode || LockFunctions ||
-            menuFunctions.allMenus[5].activeSelf /* Kan anders geen gebied selecteren omdat wereld draggen. */)
+        if (EventSystem.current.IsPointerOverGameObject() || IsFPSmode || LockFunctions )
         {
             canUseFunction = false;
         }
