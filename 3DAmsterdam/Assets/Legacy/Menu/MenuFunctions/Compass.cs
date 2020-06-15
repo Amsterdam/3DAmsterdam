@@ -8,12 +8,12 @@ namespace Amsterdam3D.Interface
     {
         private Vector3 direction;
 
-        void Update()
+        void LateUpdate()
         {
-            ChangeImageForwardToCameraForward();
+            RotateByCameraDirection();
         }
 
-        private void ChangeImageForwardToCameraForward()
+        private void RotateByCameraDirection()
         {
             direction.z = Camera.main.transform.eulerAngles.y;
             transform.localEulerAngles = direction;

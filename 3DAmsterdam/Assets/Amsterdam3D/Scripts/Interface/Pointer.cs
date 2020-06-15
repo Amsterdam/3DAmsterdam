@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pointer : MonoBehaviour
 {
-    private CameraMovement cameraMovement;
+    private CameraControls cameraMovement;
     private RectTransform rectTransform;
 
     private Vector3 lastPointerPosition = Vector3.zero;
@@ -13,11 +13,11 @@ public class Pointer : MonoBehaviour
 
     void Start()
     {
-        cameraMovement = FindObjectOfType<CameraMovement>();
+        cameraMovement = FindObjectOfType<CameraControls>();
         rectTransform = GetComponent<RectTransform>();
         parentCanvas = GetComponentInParent<Canvas>();
 
-        CameraMovement.focusPointChanged += MovePointerToPosition;
+        CameraControls.focusPointChanged += MovePointerToPosition;
     }
         
     private void MovePointerToPosition(Vector3 newPosition){

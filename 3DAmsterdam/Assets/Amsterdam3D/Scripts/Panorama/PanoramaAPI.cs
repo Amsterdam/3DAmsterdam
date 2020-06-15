@@ -40,7 +40,7 @@ public class PanoramaAPI : MonoBehaviour
     GameObject thumbnail;
     GameObject instantiated;
 
-    public CameraMovement cameraManager;
+    public CameraControls cameraManager;
     public GameObject exitText;
     public GameObject miniMap;
     public Toggle toggle;

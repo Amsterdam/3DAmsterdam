@@ -9,7 +9,7 @@ public class DownloadGebied : MonoBehaviour
     Vector3 startPosition;
     UILineRenderer lineRenderer;
     Bounds lastBounds;
-    public CameraMovement camcontroller;
+    public CameraControls camcontroller;
     
 
     enum State

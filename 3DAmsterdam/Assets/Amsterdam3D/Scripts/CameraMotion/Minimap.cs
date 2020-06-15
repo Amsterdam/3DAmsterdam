@@ -8,46 +8,55 @@ namespace Amsterdam3D.Interface
 {
     public class Minimap : MonoBehaviour
     {
-        public GameObject kompas;
+        private Vector3 direction;
 
-        Vector3 linksOnder, rechtsBoven, midden, startPos;
-        float breedteAdam, lengteAdam, breedtePlaatje, lengtePlaatje, ratioBreedte, ratioLengte;
+        Vector3 bottomleft, topRight, centerPosition, startPosition;
+        private float mapWidth, mapLength, mapImageWidth, mapImageLength, widthRatio, lengthRatio;
+
+        private const float bottomLeftLat = 52.261480f;
+        private const float bottomLeftLong = 4.727386f;
+        private const float topRightLat = 52.454227f;
+        private const float topRightLong = 5.108260f;
 
         private void Start()
         {
-            startPos = transform.localPosition;
-
-            linksOnder = CoordConvert.WGS84toUnity(4.727386, 52.261480); // omgerekende coordinaat (van WGS naar Unity)
-            rechtsBoven = CoordConvert.WGS84toUnity(5.108260, 52.454227); // omgerekende coordinaat (van WGS naar Unity)
-            midden = (linksOnder + rechtsBoven) / 2; // middenpunt van Adam in Unity coordinaten
-
-            breedteAdam = rechtsBoven.x - linksOnder.x;
-            lengteAdam = rechtsBoven.z - linksOnder.z;
-            breedtePlaatje = transform.parent.GetComponent<RectTransform>().sizeDelta.x;
-            lengtePlaatje = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
-
-            ratioBreedte = breedtePlaatje / breedteAdam; // verhouding tussen breedte van Adam en plaatje van de minimap
-            ratioLengte = lengtePlaatje / lengteAdam;    // verhouding tussen lengte van Adam en plaatje van de minimap
+            startPosition = transform.localPosition;
+            CalculateMapCoordinates();
+            CalculateRatio();
         }
 
-        void Update()
+        private void CalculateRatio()
         {
-            float posX = (Camera.main.transform.position.x - midden.x) * ratioBreedte; // xpos van minimaplocatie
-            float posY = (Camera.main.transform.position.z - midden.z) * ratioLengte;  // ypos van minimaplocatie
+            mapImageWidth = transform.parent.GetComponent<RectTransform>().sizeDelta.x;
+            mapImageLength = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+
+            widthRatio = mapImageWidth / mapWidth;
+            lengthRatio = mapImageLength / mapLength;
+        }
+
+        private void CalculateMapCoordinates()
+        {
+            bottomleft = CoordConvert.WGS84toUnity(bottomLeftLong, bottomLeftLat);
+            topRight = CoordConvert.WGS84toUnity(topRightLong, topRightLat);
+            centerPosition = (bottomleft + topRight) / 2;
+
+            mapWidth = topRight.x - bottomleft.x;
+            mapLength = topRight.z - bottomleft.z;
+        }
+
+        void LateUpdate()
+        {
+            var posX = (Camera.main.transform.position.x - centerPosition.x) * widthRatio;
+            var posY = (Camera.main.transform.position.z - centerPosition.z) * lengthRatio;
 
             transform.localPosition = new Vector3(posX, posY, 0);
+            ChangeImageForwardToCameraForward();
+        }
 
-            transform.localRotation = Quaternion.Euler(kompas.transform.rotation.eulerAngles * -1);
-
-            if (transform.localPosition.x >= (startPos.x + breedtePlaatje / 2) || transform.localPosition.x <= (startPos.x - breedtePlaatje / 2) ||
-                transform.localPosition.y >= (startPos.y + lengtePlaatje / 2) || transform.localPosition.y <= (startPos.y - lengtePlaatje / 2))
-            {
-                GetComponent<Image>().enabled = false;
-            }
-            else
-            {
-                GetComponent<Image>().enabled = true;
-            }
+        private void ChangeImageForwardToCameraForward()
+        {
+            direction.z = Camera.main.transform.eulerAngles.y;
+            transform.localEulerAngles = direction * -1.0f;
         }
     }
 }

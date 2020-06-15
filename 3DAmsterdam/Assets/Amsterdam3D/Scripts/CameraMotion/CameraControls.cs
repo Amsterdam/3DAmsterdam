@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System.Runtime.CompilerServices;
 
-public class CameraMovement : MonoBehaviour
+public class CameraControls : MonoBehaviour
 {
     private Camera camera;
 

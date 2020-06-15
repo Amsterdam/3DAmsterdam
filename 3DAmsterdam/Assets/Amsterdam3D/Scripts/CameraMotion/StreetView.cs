@@ -17,7 +17,7 @@ public class StreetView : MonoBehaviour
 
     public GameObject FPSCam, tileManager;
     public Camera cam;
-    public CameraMovement camcontroller;
+    public CameraControls camcontroller;
 
     private float stopHeight = 60f;
     private float lerpSpeed = 3f;

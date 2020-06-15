@@ -10,7 +10,7 @@ public class GodView : MonoBehaviour
 
     public GameObject FPSCam, godCam;
     public Camera cam;
-    public CameraMovement camcontroller;
+    public CameraControls camcontroller;
     public GameObject streetcamButton;
     public GameObject GodviewButton;
 
