@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-namespace Amsterdam3D.Debug
+namespace Amsterdam3D.Interface
 {
 	public class Fps : MonoBehaviour
 	{
