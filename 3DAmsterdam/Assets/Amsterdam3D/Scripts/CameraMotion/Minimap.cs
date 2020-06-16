@@ -10,46 +10,39 @@ namespace Amsterdam3D.Interface
     {
         private Vector3 direction;
 
-        Vector3 bottomleft, topRight, centerPosition, startPosition;
-        private float mapWidth, mapLength, mapImageWidth, mapImageLength, widthRatio, lengthRatio;
+        Vector3 bottomLeft, topRight, centerPosition, startPosition;
+
+        private RectTransform rectTransform;
 
         private const float bottomLeftLat = 52.261480f;
         private const float bottomLeftLong = 4.727386f;
         private const float topRightLat = 52.454227f;
         private const float topRightLong = 5.108260f;
 
+        private void Awake()
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         private void Start()
         {
             startPosition = transform.localPosition;
             CalculateMapCoordinates();
-            CalculateRatio();
-        }
-
-        private void CalculateRatio()
-        {
-            mapImageWidth = transform.parent.GetComponent<RectTransform>().sizeDelta.x;
-            mapImageLength = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
-
-            widthRatio = mapImageWidth / mapWidth;
-            lengthRatio = mapImageLength / mapLength;
         }
 
         private void CalculateMapCoordinates()
         {
-            bottomleft = CoordConvert.WGS84toUnity(bottomLeftLong, bottomLeftLat);
+            bottomLeft = CoordConvert.WGS84toUnity(bottomLeftLong, bottomLeftLat);
             topRight = CoordConvert.WGS84toUnity(topRightLong, topRightLat);
-            centerPosition = (bottomleft + topRight) / 2;
-
-            mapWidth = topRight.x - bottomleft.x;
-            mapLength = topRight.z - bottomleft.z;
         }
 
         void LateUpdate()
         {
-            var posX = (Camera.main.transform.position.x - centerPosition.x) * widthRatio;
-            var posY = (Camera.main.transform.position.z - centerPosition.z) * lengthRatio;
+            var posX = Mathf.InverseLerp(bottomLeft.x,topRight.x,Camera.main.transform.position.x);
+            var posY = Mathf.InverseLerp(bottomLeft.z, topRight.z, Camera.main.transform.position.z);
 
-            transform.localPosition = new Vector3(posX, posY, 0);
+            rectTransform.anchorMin = rectTransform.anchorMax = new Vector3(posX, posY, 0);
+
             ChangeImageForwardToCameraForward();
         }
 
