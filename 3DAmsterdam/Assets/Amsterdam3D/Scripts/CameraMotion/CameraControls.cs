@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -24,6 +25,9 @@ namespace Amsterdam3D.CameraMotion
         private const float rotationSensitivity = 5f;
         private const float maxYAngle = 80f;
         private const float floorOffset = 1.8f;
+
+        [SerializeField]
+        private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
 
         private float scrollDelta;
         private float zoomDistance;
@@ -90,7 +94,15 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        void StandardMovement()
+		public void MoveAndFocusOnLocation(Vector3 targetLocation)
+		{
+            Camera.main.transform.position = targetLocation + cameraOffsetForTargetLocation;
+            Camera.main.transform.LookAt(targetLocation, Vector3.up);
+
+            focusPointChanged(targetLocation);
+        }
+
+		void StandardMovement()
         {         
             moveSpeed = Mathf.Sqrt(camera.transform.position.y) * speedFactor;
 
