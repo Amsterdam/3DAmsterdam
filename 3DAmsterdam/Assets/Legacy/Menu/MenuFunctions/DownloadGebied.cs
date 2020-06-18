@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,11 +24,9 @@ public class DownloadGebied : MonoBehaviour
 
     private void Start()
     {
-        
         lineRenderer = GetComponent<UILineRenderer>();
         if (lineRenderer == null)
             lineRenderer = gameObject.AddComponent<UILineRenderer>();
-        
     }
 
     void StartDrawingLine()

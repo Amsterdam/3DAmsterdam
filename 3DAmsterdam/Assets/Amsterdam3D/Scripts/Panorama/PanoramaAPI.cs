@@ -6,6 +6,7 @@ using ConvertCoordinates;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Amsterdam3D.CameraMotion;
 
 public class PanoramaAPI : MonoBehaviour
 {

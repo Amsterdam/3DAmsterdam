@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Amsterdam3D.CameraMotion;
 using UnityEngine;
 
 public class Pointer : MonoBehaviour

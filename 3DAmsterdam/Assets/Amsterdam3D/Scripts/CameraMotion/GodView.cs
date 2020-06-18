@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,12 +45,5 @@ public class GodView : MonoBehaviour
         GodviewButton.SetActive(false);
         moveToAir = true;
         endPos = new Vector3(cam.transform.position.x, stopHeight, cam.transform.position.z);
-        camcontroller.IsFPSmode = false;
-        //cam.transform.position = FPSCam.transform.position;
-
-        //FPSCam.SetActive(false);
-        //cam.enabled = true;
-
-        //godCam.AddComponent<AudioListener>();
     }
 }
