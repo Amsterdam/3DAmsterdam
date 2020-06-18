@@ -3,23 +3,19 @@ using UnityEngine;
 
 public class Pointer : MonoBehaviour
 {
-    private CameraControls cameraMovement;
+    private CameraControls cameraControls;
     private RectTransform rectTransform;
-
     private Vector3 lastPointerPosition = Vector3.zero;
-
-    private Canvas parentCanvas;
 
     void Start()
     {
-        cameraMovement = FindObjectOfType<CameraControls>();
+        cameraControls = FindObjectOfType<CameraControls>();
         rectTransform = GetComponent<RectTransform>();
-        parentCanvas = GetComponentInParent<Canvas>();
 
         CameraControls.focusPointChanged += MovePointerToPosition;
     }
         
-    private void MovePointerToPosition(Vector3 newPosition){
+    public void MovePointerToPosition(Vector3 newPosition){
         lastPointerPosition = newPosition;
     }
 
