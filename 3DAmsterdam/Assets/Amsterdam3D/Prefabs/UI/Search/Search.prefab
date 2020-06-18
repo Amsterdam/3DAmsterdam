@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 712693447504430857}
   - component: {fileID: 712693447504430858}
   - component: {fileID: 712693447504430859}
+  - component: {fileID: 3810611622197368018}
   m_Layer: 5
   m_Name: SearchInputField
   m_TagString: Untagged
@@ -130,10 +131,32 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3810611622197368018}
+        m_MethodName: EndEdit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3810611622197368018}
+        m_MethodName: GetSuggestions
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -141,6 +164,21 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &3810611622197368018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712693447504430861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3993a7448cae9fe44aa264887bbc30a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charactersNeededBeforeSearch: 1
+  searchInputField: {fileID: 712693447504430859}
+  searchResultsList: {fileID: 7997918941171017025}
 --- !u!1 &712693447523462671
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,7 +495,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 712693449112873878}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7997918941171017025}
+        m_MethodName: SelectFirstItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &712693449117882653
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,3 +735,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8080127765423650827}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7997918941171017025 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2223706753030495562, guid: 311201435ecb84646897a483460d8a8e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8080127765423650827}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd3de4620395f2408cb965e68f164bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

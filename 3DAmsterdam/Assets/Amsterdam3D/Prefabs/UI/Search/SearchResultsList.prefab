@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 5937466426448168606}
   - component: {fileID: 3506183707016738214}
   - component: {fileID: 8611535214672256500}
+  - component: {fileID: 2223706753030495562}
   m_Layer: 5
-  m_Name: SearchResults
+  m_Name: SearchResultsList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,6 +117,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &2223706753030495562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8018161124602695328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd3de4620395f2408cb965e68f164bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  searchResultPrefab: {fileID: 4098423004519722306, guid: 3932711185c03b448963556e30d7827a,
+    type: 3}
+  maxSearchResults: 8
 --- !u!1001 &2399942149457571676
 PrefabInstance:
   m_ObjectHideFlags: 0

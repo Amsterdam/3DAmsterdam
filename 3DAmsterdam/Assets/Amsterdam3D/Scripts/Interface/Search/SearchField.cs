@@ -5,59 +5,73 @@ using UnityEngine.Networking;
 using System.Globalization;
 using ConvertCoordinates;
 using System;
+using UnityEngine.EventSystems;
 
 namespace Amsterdam3D.Interface.Search
 {
-    public class SearchField : MonoBehaviour
-    {
-        [SerializeField]
-        private int charactersNeededBeforeSearch = 2;
+	public class SearchField : MonoBehaviour, ISelectHandler
+	{
+		[SerializeField]
+		private int charactersNeededBeforeSearch = 2;
 
-        [SerializeField]
-        private InputField searchInputField;
+		[SerializeField]
+		private InputField searchInputField;
 
-        [SerializeField]
-        private SearchResultsList searchResultsList;
+		[SerializeField]
+		private SearchResultsList searchResultsList;
 
-        public Button[] ResultButtons = new Button[5];
-        private string[] ResultIDs = new string[5];
+		private const string REPLACEMENT_STRING = "{SEARCHTERM}";
+		private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
 
-        private const string REPLACEMENT_STRING = "{SEARCHTERM}";
-        private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
+		private SearchData searchData;
 
-        private SearchData searchData;
+		private void Start()
+		{
+			searchResultsList.gameObject.SetActive(false);
+		}
 
-        public void GetSuggestions(string textInput)
-        {
-            StopAllCoroutines();
-            if (textInput.Length > charactersNeededBeforeSearch)
-            {
-                StartCoroutine(FindSearchSuggestions(textInput));
-            }
-        }
+		public void GetSuggestions(string textInput)
+		{
+			searchResultsList.gameObject.SetActive(textInput != "");
 
-        IEnumerator FindSearchSuggestions(string searchTerm)
-        {
-            string urlEncodedSearchTerm = UnityWebRequest.EscapeURL(searchTerm);
-            string url = locationSuggestionUrl.Replace(REPLACEMENT_STRING, urlEncodedSearchTerm);
+			StopAllCoroutines();
+			if (textInput.Length > charactersNeededBeforeSearch)
+			{
+				StartCoroutine(FindSearchSuggestions(textInput));
+			}
+		}
 
-            using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
-            {
-                // Request and wait for the desired page.
-                yield return webRequest.SendWebRequest();
+		public void EndEdit()
+		{
+			searchResultsList.gameObject.SetActive(false);
+		}
+		public void OnSelect(BaseEventData data)
+		{
+			searchResultsList.gameObject.SetActive(true);
+		}
 
-                if (webRequest.isNetworkError)
-                {
-                    Debug.Log("Error: " + webRequest.error);
-                }
-                else
-                {
-                    string jsonStringResult = webRequest.downloadHandler.text;
-                    searchData = JsonUtility.FromJson<SearchData>(jsonStringResult);
+		IEnumerator FindSearchSuggestions(string searchTerm)
+		{
+			string urlEncodedSearchTerm = UnityWebRequest.EscapeURL(searchTerm);
+			string url = locationSuggestionUrl.Replace(REPLACEMENT_STRING, urlEncodedSearchTerm);
 
-                    searchResultsList.DrawResults(searchData.response.docs, searchTerm);
-                }
-            }
-        }
-    }
+			using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+			{
+				// Request and wait for the desired page.
+				yield return webRequest.SendWebRequest();
+
+				if (webRequest.isNetworkError)
+				{
+					Debug.Log("Error: " + webRequest.error);
+				}
+				else
+				{
+					string jsonStringResult = webRequest.downloadHandler.text;
+					searchData = JsonUtility.FromJson<SearchData>(jsonStringResult);
+
+					searchResultsList.DrawResults(searchData.response.docs, searchTerm);
+				}
+			}
+		}
+	}
 }
