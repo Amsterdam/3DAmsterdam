@@ -94,8 +94,5 @@ namespace Amsterdam3D.Interface.Search
             Vector3 unityLocation = CoordConvert.WGS84toUnity(lon, lat);
             return unityLocation;
         }
-
-
-
     }
 }

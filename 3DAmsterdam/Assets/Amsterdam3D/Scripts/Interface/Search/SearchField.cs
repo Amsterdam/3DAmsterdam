@@ -43,7 +43,7 @@ namespace Amsterdam3D.Interface.Search
 
 		public void EndEdit()
 		{
-			searchResultsList.gameObject.SetActive(false);
+			//searchResultsList.gameObject.SetActive(false);
 		}
 		public void OnSelect(BaseEventData data)
 		{
