@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System.Runtime.CompilerServices;
 using System;
+using Amsterdam3D.FreeShape;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -42,7 +43,7 @@ namespace Amsterdam3D.CameraMotion
 
         public bool LockFunctions = false;
 
-		private bool clickedUI = false;
+		private bool interactionOverruled = false;
 
         private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
         private Vector3 zoomPoint;
@@ -71,7 +72,7 @@ namespace Amsterdam3D.CameraMotion
 
         void Update()
 		{
-			if (StartedClickActionOnUI()) return;
+			if (InteractionOverruled()) return;
 
 			// checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
 			if (EventSystem.current.IsPointerOverGameObject() || LockFunctions)
@@ -98,17 +99,17 @@ namespace Amsterdam3D.CameraMotion
 			}
 		}
 
-		private bool StartedClickActionOnUI()
+		private bool InteractionOverruled()
 		{
-			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject())
+			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || Handle.draggingAHandle)
 			{
-				clickedUI = true;
+				interactionOverruled = true;
 			}
 			else if (Input.GetMouseButtonUp(0))
 			{
-				clickedUI = false;
+				interactionOverruled = false;
 			}
-			return clickedUI;
+			return interactionOverruled;
 		}
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation)
