@@ -42,6 +42,8 @@ namespace Amsterdam3D.CameraMotion
 
         public bool LockFunctions = false;
 
+		private bool clickedUI = false;
+
         private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
         private Vector3 zoomPoint;
         private Vector3 zoomDirection;
@@ -68,31 +70,46 @@ namespace Amsterdam3D.CameraMotion
         }
 
         void Update()
-        {
-            // checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-            if (EventSystem.current.IsPointerOverGameObject() || LockFunctions)
-            {
-                canUseFunction = false;
-            }
-            else
-            {
-                canUseFunction = true;
-            }
+		{
+			if (StartedClickActionOnUI()) return;
 
-            // als spatie wordt ingedrukt wordt de huidige actie gestopt
-            if (!(Input.GetKey(KeyCode.Space)))
-            {
-                StandardMovement();
-                Rotation();
+			// checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
+			if (EventSystem.current.IsPointerOverGameObject() || LockFunctions)
+			{
+				canUseFunction = false;
+			}
+			else
+			{
+				canUseFunction = true;
+			}
 
-                if (canUseFunction)
-                {
-                    Zooming();
-                    Dragging();
-                    FocusPoint();
-                }
-            }
-        }
+			// als spatie wordt ingedrukt wordt de huidige actie gestopt
+			if (!(Input.GetKey(KeyCode.Space)))
+			{
+				StandardMovement();
+				Rotation();
+
+				if (canUseFunction)
+				{
+					Zooming();
+					Dragging();
+					FocusPoint();
+				}
+			}
+		}
+
+		private bool StartedClickActionOnUI()
+		{
+			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject())
+			{
+				clickedUI = true;
+			}
+			else if (Input.GetMouseButtonUp(0))
+			{
+				clickedUI = false;
+			}
+			return clickedUI;
+		}
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation)
 		{
