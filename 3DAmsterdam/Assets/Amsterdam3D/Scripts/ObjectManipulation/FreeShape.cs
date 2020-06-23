@@ -27,9 +27,11 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private Transform floorOrigin;
 
-		[Header("Rotators")]
+		[Header("Rotation handles")]
 		[SerializeField]
-		private Transform rotationHandle;
+		private Transform rotationHandle1;
+		[SerializeField]
+		private Transform rotationHandle2;
 
 		private Vector3[] shapeVertices;
 
@@ -39,11 +41,13 @@ namespace Amsterdam3D.FreeShape
 		private Mesh customMesh;
 		private MeshCollider collider;
 
-		private Handle[] handles;
+		private ScaleHandle[] handles;
+
+		public Transform FloorOrigin { get => floorOrigin; set => floorOrigin = value; }
 
 		private void Start()
 		{
-			handles = GetComponentsInChildren<Handle>();
+			handles = GetComponentsInChildren<ScaleHandle>();
 			collider = shape.GetComponent<MeshCollider>();
 
 			CreateCustomMesh();
@@ -87,7 +91,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void ApplyOriginOffset()
 		{
-			this.transform.Translate(0.0f, -floorOrigin.localPosition.y, 0.0f);
+			this.transform.Translate(0.0f, -FloorOrigin.localPosition.y, 0.0f);
 		}
 
 		private void UpdateShapeVerts()
@@ -95,15 +99,15 @@ namespace Amsterdam3D.FreeShape
 			//Here we set the vert position axes to their corresponding handle positions
 			//Using the arbitrary internal vertex order indices for the Unity Cube mesh. 
 			//Note that 3 verts share the same location, because the cube is flat shaded.
-			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.localPosition.x - margin, floorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x - margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.localPosition.x - margin, FloorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x - margin, FloorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
 			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
 
 			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
 			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
-			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x + margin, FloorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, FloorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 
 			customMesh.SetVertices(shapeVertices);
 		}
@@ -120,22 +124,26 @@ namespace Amsterdam3D.FreeShape
 			}
 		}
 
-		public void UpdateShape(Handle controllingHandle = null)
+		public void UpdateShape(ScaleHandle controllingHandle = null)
 		{
 			UpdateShapeVerts();
 
 			if (controllingHandle)
 			{
-				AlignOtherHandles(controllingHandle);
+				AlignOtherScaleHandles(controllingHandle);
 			}
+
+			//Move rotation handles onto bottom corner verts
+			rotationHandle1.localPosition = shapeVertices[16];
+			rotationHandle2.localPosition = shapeVertices[20];
 
 			collider.sharedMesh = customMesh;
 		}
 
-		private void AlignOtherHandles(Handle ignoreHandle)
+		private void AlignOtherScaleHandles(ScaleHandle ignoreHandle)
 		{
 			var center = GetCenterFromOppositeHandle(ignoreHandle);
-			foreach (Handle handle in handles)
+			foreach (ScaleHandle handle in handles)
 			{
 				if (handle.Axis != ignoreHandle.Axis)
 				{
@@ -148,9 +156,9 @@ namespace Amsterdam3D.FreeShape
 			}
 		}
 
-		private Vector3 GetCenterFromOppositeHandle(Handle fromHandle)
+		private Vector3 GetCenterFromOppositeHandle(ScaleHandle fromHandle)
 		{
-			foreach (Handle handle in handles)
+			foreach (ScaleHandle handle in handles)
 			{
 				if (handle != fromHandle && handle.Axis == fromHandle.Axis)
 				{

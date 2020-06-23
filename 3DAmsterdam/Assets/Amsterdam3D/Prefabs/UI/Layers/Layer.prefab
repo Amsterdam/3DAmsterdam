@@ -486,6 +486,7 @@ GameObject:
   - component: {fileID: 2046455972425426066}
   - component: {fileID: 2061910241135985460}
   - component: {fileID: 3170416133864113753}
+  - component: {fileID: 7540042185761023342}
   m_Layer: 5
   m_Name: IconTrash
   m_TagString: Untagged
@@ -592,6 +593,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7540042185761023342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7692026339836838617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: Remove layer
 --- !u!1 &8937069160708743383
 GameObject:
   m_ObjectHideFlags: 0

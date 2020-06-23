@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Amsterdam3D.FreeShape
 {
-	public class Handle : ObjectManipulation
+	public class ScaleHandle : ObjectManipulation
 	{
 		private bool dragging = false;
 		private float objectY = 0.0f;
