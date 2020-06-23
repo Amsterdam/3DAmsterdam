@@ -101,7 +101,7 @@ namespace Amsterdam3D.CameraMotion
 
 		private bool InteractionOverruled()
 		{
-			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || Handle.draggingAHandle)
+			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || ObjectManipulation.manipulatingObject)
 			{
 				interactionOverruled = true;
 			}

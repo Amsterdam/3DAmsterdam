@@ -6,11 +6,12 @@ using UnityEngine;
 
 namespace Amsterdam3D.FreeShape
 {
-	public class FreeShape : MonoBehaviour
+	public class FreeShape : ObjectManipulation
 	{
 		[SerializeField]
 		private MeshFilter shape;
 
+		[Header("Scaling handles")]
 		[SerializeField]
 		private Transform handleXMin;
 		[SerializeField]
@@ -25,6 +26,10 @@ namespace Amsterdam3D.FreeShape
 
 		[SerializeField]
 		private Transform floorOrigin;
+
+		[Header("Rotators")]
+		[SerializeField]
+		private Transform rotationHandle;
 
 		private Vector3[] shapeVertices;
 
@@ -45,6 +50,29 @@ namespace Amsterdam3D.FreeShape
 			UpdateShape();
 
 			ApplyOriginOffset();
+
+			DisplayHandles(true);
+		}
+
+		public override void OnMouseDown()
+		{
+			base.OnMouseDown();
+			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
+			foreach (FreeShape freeShape in shapes)
+				freeShape.DisplayHandles(false);
+
+			DisplayHandles(true);
+		}
+
+		private void OnMouseDrag()
+		{
+			this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y);
+		}
+
+		private void DisplayHandles(bool display)
+		{
+			foreach (Transform child in transform)
+				child.gameObject.SetActive(display);
 		}
 
 		private void CreateCustomMesh()
