@@ -11,16 +11,16 @@ namespace Amsterdam3D.FreeShape
 		private MeshFilter shape;
 
 		[SerializeField]
-		private Handle handleXMin;
+		private Transform handleXMin;
 		[SerializeField]
-		private Handle handleXPlus;
+		private Transform handleXPlus;
 		[SerializeField]
-		private Handle handleZMin;
+		private Transform handleZMin;
 		[SerializeField]
-		private Handle handleZPlus;
+		private Transform handleZPlus;
 
 		[SerializeField]
-		private Handle handleY;
+		private Transform handleY;
 
 		[SerializeField]
 		private Transform floorOrigin;
@@ -28,30 +28,27 @@ namespace Amsterdam3D.FreeShape
 		private Vector3[] shapeVertices;
 
 		[SerializeField]
-		private float defaultSize = 1.0f;
+		private float margin = 10.0f;
 
 		private void Start()
 		{
 			shapeVertices = shape.sharedMesh.vertices;
-			for (int i = 0; i < shapeVertices.Length; i++)
-			{
-				shapeVertices[i] = shapeVertices[i] * defaultSize;
-			}
-			shape.sharedMesh.SetVertices(shapeVertices);
+			
 		}
 
 		private void UpdateShapeVerts(){
-			//Using Unity's internal vertex order indices for the Cube mesh. 
+			//Here we set the vert position axes to their corresponding handle positions
+			//Using the arbitrary internal vertex order indices for the Unity Cube mesh. 
 			//Note that 3 verts share the same location, because the cube is flat shaded.
-			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.transform.localPosition.x, floorOrigin.localPosition.y, handleZPlus.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.transform.localPosition.x, floorOrigin.localPosition.y, handleZMin.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.transform.localPosition.x, handleY.transform.localPosition.y, handleZPlus.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.transform.localPosition.x, handleY.transform.localPosition.y, handleZMin.transform.localPosition.z);
+			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.localPosition.x - margin, floorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x - margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
 			
-			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.transform.localPosition.x, handleY.transform.localPosition.y, handleZPlus.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.transform.localPosition.x, floorOrigin.localPosition.y, handleZPlus.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.transform.localPosition.x, floorOrigin.localPosition.y, handleZMin.transform.localPosition.z);
-			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.transform.localPosition.x, handleY.transform.localPosition.y, handleZMin.transform.localPosition.z);
+			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
+			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 
 			shape.sharedMesh.SetVertices(shapeVertices);
 		}
