@@ -24,20 +24,32 @@ namespace Amsterdam3D.FreeShape
 
 		private Vector3[] shapeVertices;
 
+		[SerializeField]
+		private float defaultSize = 1.0f;
+
 		private void Start()
 		{
 			shapeVertices = shape.sharedMesh.vertices;
+			for (int i = 0; i < shapeVertices.Length; i++)
+			{
+				shapeVertices[i] = shapeVertices[i] * defaultSize;
+			}
+			shape.sharedMesh.SetVertices(shapeVertices);
 		}
 
 		private void UpdateShapeVerts(){
-			OverrideVertPosition(new int[]{ 0, 15, 22 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
-			OverrideVertPosition(new int[] { 7, 18, 14 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
-			OverrideVertPosition(new int[] { 6, 20, 12 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
-			OverrideVertPosition(new int[] { 8, 21, 2 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			/*OverrideVertPosition(new int[]{ 2, 8, 22 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			
+			shape.sharedMesh.SetVertices(shapeVertices);*/
+			OverrideVertPosition(new int[] { 1, 14, 16 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
+			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXPlus.transform.localPosition.x, -handleY.transform.localPosition.x, handleZPlus.transform.localPosition.x);
 
-
-
-			shape.sharedMesh.vertices = shapeVertices;
 		}
 
 		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f){
@@ -73,11 +85,9 @@ namespace Amsterdam3D.FreeShape
 
 		private void OnDrawGizmos()
 		{
-			string spacer = "";
 			for (int i = 0; i < shape.sharedMesh.vertices.Length; i++)
 			{
-				spacer += "------";
-				Handles.Label(this.transform.position + shape.sharedMesh.vertices[i], "vert:"+i+ spacer);
+				Handles.Label(this.transform.position + shape.sharedMesh.vertices[i] + Vector3.up* i, "<b>vert:"+i+"</b>",new GUIStyle() { richText = true });
 			}
 		}
 	}
