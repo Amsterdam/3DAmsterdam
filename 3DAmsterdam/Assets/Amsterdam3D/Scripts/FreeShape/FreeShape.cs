@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,10 +31,17 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private float margin = 10.0f;
 
+		private MeshCollider collider;
+
+		private Handle[] handles;
+
 		private void Start()
 		{
+			handles = GetComponentsInChildren<Handle>();
 			shapeVertices = shape.sharedMesh.vertices;
-			
+			collider = shape.GetComponent<MeshCollider>();
+
+			UpdateShape();
 		}
 
 		private void UpdateShapeVerts(){
@@ -64,9 +72,44 @@ namespace Amsterdam3D.FreeShape
 			}
 		}
 
-		private void Update()
+		public void UpdateShape(Handle controllingHandle = null)
 		{
 			UpdateShapeVerts();
+
+			if(controllingHandle)
+			{
+				AlignOtherHandles(controllingHandle);
+			}
+
+			collider.sharedMesh = shape.sharedMesh;
+		}
+
+		private void AlignOtherHandles(Handle ignoreHandle)
+		{
+			var center = GetCenterFromOppositeHandle(ignoreHandle);
+			foreach (Handle handle in handles){
+				if(handle.Axis != ignoreHandle.Axis)
+				{
+					handle.transform.localPosition = new Vector3(
+						(handle.Axis.x != 0) ? handle.transform.localPosition.x : center.x,
+						(handle.Axis.y != 0) ? handle.transform.localPosition.y : center.y,
+						(handle.Axis.z != 0) ? handle.transform.localPosition.z : center.z
+					);
+				}
+			}
+		}
+
+		private Vector3 GetCenterFromOppositeHandle(Handle fromHandle){
+			foreach (Handle handle in handles)
+			{
+				if (handle != fromHandle && handle.Axis == fromHandle.Axis)
+				{
+					var center = Vector3.Lerp(handle.transform.localPosition, fromHandle.transform.localPosition, 0.5f);
+					UnityEngine.Debug.DrawLine(center, center + Vector3.up);
+					return center;
+				}
+			}
+			return Vector3.zero;
 		}
 
 		private void OnDrawGizmos()

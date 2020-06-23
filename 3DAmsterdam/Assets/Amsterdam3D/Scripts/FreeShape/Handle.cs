@@ -14,31 +14,66 @@ namespace Amsterdam3D.FreeShape
 		private Vector3 axis;
 		public Vector3 Axis { get => axis; }
 
+		private FreeShape freeShape;
+
+		[SerializeField]
+		private Material defaultMaterial;
+		[SerializeField]
+		private Material hoverMaterial;
+
+		private MeshRenderer renderer;
+
+		private void Start()
+		{
+			freeShape = GetComponentInParent<FreeShape>();
+			renderer = GetComponent<MeshRenderer>();
+
+			if(renderer)
+				renderer.material = defaultMaterial;
+		}
+
+		private void OnMouseEnter()
+		{
+			renderer.material = hoverMaterial;
+		}
+		private void OnMouseExit()
+		{
+			if (dragging) return;
+			renderer.material = defaultMaterial;
+		}
+
 		private void OnMouseDown()
 		{
 			dragging = true;
 			draggingAHandle = true;
-
 			objectY = this.transform.position.y;
 		}
 
-		private void Update()
+		private void OnMouseUp()
 		{
-			if (!dragging) return;
+			renderer.material = defaultMaterial;
+			dragging = false;
+			draggingAHandle = false;
+		}
+
+		private void OnMouseDrag()
+		{
 			MoveHandleIntoDragDirection();
 		}
 
 		private void MoveHandleIntoDragDirection()
 		{
 			var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, objectY);
+			var originalLocalPosition = transform.localPosition;
 			transform.position = dragTargetPosition;
-			transform.localPosition = new Vector3(transform.localPosition.x*Axis.x, transform.localPosition.y * Axis.y, transform.localPosition.z * Axis.z);
-		}
 
-		private void OnMouseUp()
-		{
-			dragging = false;
-			draggingAHandle = false;
+			transform.localPosition = new Vector3(
+				(Axis.x != 0.0f) ? transform.localPosition.x : originalLocalPosition.x,
+				(Axis.y != 0.0f) ? transform.localPosition.y : originalLocalPosition.y,
+				(Axis.z != 0.0f) ? transform.localPosition.z : originalLocalPosition.z
+			);
+
+			freeShape.UpdateShape(this);
 		}
 
 		public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldY)
