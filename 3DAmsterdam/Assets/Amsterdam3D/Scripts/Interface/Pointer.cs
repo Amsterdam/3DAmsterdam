@@ -5,6 +5,8 @@ public class Pointer : MonoBehaviour
 {
     private CameraControls cameraControls;
     private RectTransform rectTransform;
+
+    [SerializeField]
     private Vector3 worldPosition = Vector3.zero;
 
     public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
