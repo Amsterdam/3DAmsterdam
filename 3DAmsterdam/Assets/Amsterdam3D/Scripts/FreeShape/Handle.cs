@@ -53,7 +53,16 @@ namespace Amsterdam3D.FreeShape
 		public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldY)
 		{
 			var ray = Camera.main.ScreenPointToRay(screenPosition);
-			var worldPlane = new Plane(Vector3.up, new Vector3(transform.position.x, planeWorldY,transform.position.z));
+
+			var planeNormal = Vector3.up;
+			if (axis == Vector3.up) 
+			{
+				//Up handle uses a plane looking at camera, flattened on the Y 
+				planeNormal = Camera.main.transform.position - this.transform.position;
+				planeNormal.y = 0;
+			}			
+
+			var worldPlane = new Plane(planeNormal, new Vector3(transform.position.x, planeWorldY,transform.position.z));
 			worldPlane.Raycast(ray, out float distance);
 			return ray.GetPoint(distance);
 		}
