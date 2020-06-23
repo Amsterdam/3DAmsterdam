@@ -31,6 +31,7 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private float margin = 10.0f;
 
+		private Mesh customMesh;
 		private MeshCollider collider;
 
 		private Handle[] handles;
@@ -38,13 +39,31 @@ namespace Amsterdam3D.FreeShape
 		private void Start()
 		{
 			handles = GetComponentsInChildren<Handle>();
-			shapeVertices = shape.sharedMesh.vertices;
 			collider = shape.GetComponent<MeshCollider>();
 
+			CreateCustomMesh();
 			UpdateShape();
+
+			ApplyOriginOffset();
 		}
 
-		private void UpdateShapeVerts(){
+		private void CreateCustomMesh()
+		{
+			customMesh = new Mesh();
+			customMesh.vertices = shape.sharedMesh.vertices;
+			customMesh.normals = shape.sharedMesh.normals;
+			customMesh.triangles = shape.sharedMesh.triangles;
+			shape.mesh = customMesh;
+			shapeVertices = customMesh.vertices;
+		}
+
+		private void ApplyOriginOffset()
+		{
+			this.transform.Translate(0.0f, -floorOrigin.localPosition.y, 0.0f);
+		}
+
+		private void UpdateShapeVerts()
+		{
 			//Here we set the vert position axes to their corresponding handle positions
 			//Using the arbitrary internal vertex order indices for the Unity Cube mesh. 
 			//Note that 3 verts share the same location, because the cube is flat shaded.
@@ -52,16 +71,17 @@ namespace Amsterdam3D.FreeShape
 			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x - margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
 			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
-			
+
 			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
 			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
 			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
 			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, floorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 
-			shape.sharedMesh.SetVertices(shapeVertices);
+			customMesh.SetVertices(shapeVertices);
 		}
 
-		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f){
+		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f)
+		{
 			foreach (int index in arrayPositions)
 			{
 				shapeVertices[index] = new Vector3(
@@ -76,19 +96,20 @@ namespace Amsterdam3D.FreeShape
 		{
 			UpdateShapeVerts();
 
-			if(controllingHandle)
+			if (controllingHandle)
 			{
 				AlignOtherHandles(controllingHandle);
 			}
 
-			collider.sharedMesh = shape.sharedMesh;
+			collider.sharedMesh = customMesh;
 		}
 
 		private void AlignOtherHandles(Handle ignoreHandle)
 		{
 			var center = GetCenterFromOppositeHandle(ignoreHandle);
-			foreach (Handle handle in handles){
-				if(handle.Axis != ignoreHandle.Axis)
+			foreach (Handle handle in handles)
+			{
+				if (handle.Axis != ignoreHandle.Axis)
 				{
 					handle.transform.localPosition = new Vector3(
 						(handle.Axis.x != 0) ? handle.transform.localPosition.x : center.x,
@@ -99,7 +120,8 @@ namespace Amsterdam3D.FreeShape
 			}
 		}
 
-		private Vector3 GetCenterFromOppositeHandle(Handle fromHandle){
+		private Vector3 GetCenterFromOppositeHandle(Handle fromHandle)
+		{
 			foreach (Handle handle in handles)
 			{
 				if (handle != fromHandle && handle.Axis == fromHandle.Axis)
@@ -114,9 +136,10 @@ namespace Amsterdam3D.FreeShape
 
 		private void OnDrawGizmos()
 		{
-			for (int i = 0; i < shape.sharedMesh.vertices.Length; i++)
+			if (!customMesh) return;
+			for (int i = 0; i < customMesh.vertices.Length; i++)
 			{
-				Handles.Label(this.transform.position + shape.sharedMesh.vertices[i] + Vector3.up* i, "<b>vert:"+i+"</b>",new GUIStyle() { richText = true });
+				Handles.Label(this.transform.position + customMesh.vertices[i] + Vector3.up * i, "<b>vert:" + i + "</b>", new GUIStyle() { richText = true });
 			}
 		}
 	}
