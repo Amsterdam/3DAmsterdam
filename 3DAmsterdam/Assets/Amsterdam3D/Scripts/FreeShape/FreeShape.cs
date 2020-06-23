@@ -72,21 +72,6 @@ namespace Amsterdam3D.FreeShape
 			UpdateShapeVerts();
 		}
 
-		public void ScaleShape()
-		{
-			shape.transform.localPosition = new Vector3(
-				Mathf.Lerp(handleXMin.transform.localPosition.x, handleXPlus.transform.localPosition.x, 0.5f),
-				Mathf.Lerp(-handleY.transform.localPosition.y, handleY.transform.localPosition.y, 0.5f),
-				Mathf.Lerp(handleZMin.transform.localPosition.z, handleZPlus.transform.localPosition.z, 0.5f)
-			);
-	
-			/*shape.transform.localScale = new Vector3(
-				Vector3.Distance(handleXMin.transform.localPosition, handleXPlus.transform.localPosition) - handleXPlus.StartOffset.x*2.0f,
-				Vector3.Distance(-handleY.transform.localPosition, handleY.transform.localPosition) - handleY.StartOffset.y * 2.0f,
-				Vector3.Distance(handleXMin.transform.localPosition, handleXPlus.transform.localPosition)  - handleXPlus.StartOffset.x*2.0f
-			);*/
-		}
-
 		private void OnDrawGizmos()
 		{
 			for (int i = 0; i < shape.sharedMesh.vertices.Length; i++)

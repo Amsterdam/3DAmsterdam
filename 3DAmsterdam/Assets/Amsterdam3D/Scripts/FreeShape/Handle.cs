@@ -14,15 +14,6 @@ namespace Amsterdam3D.FreeShape
 		private Vector3 axis;
 		public Vector3 Axis { get => axis; }
 
-		private Vector3 startOffset;
-		public Vector3 StartOffset { get => startOffset; }
-
-
-		private void Start()
-		{
-			startOffset = this.transform.localPosition;
-		}
-
 		private void OnMouseDown()
 		{
 			dragging = true;
