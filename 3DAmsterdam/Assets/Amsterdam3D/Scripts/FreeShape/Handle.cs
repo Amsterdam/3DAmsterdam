@@ -23,6 +23,9 @@ namespace Amsterdam3D.FreeShape
 
 		private MeshRenderer renderer;
 
+		[SerializeField]
+		private float screenSize = 10.0f;
+
 		private void Start()
 		{
 			freeShape = GetComponentInParent<FreeShape>();
@@ -30,6 +33,11 @@ namespace Amsterdam3D.FreeShape
 
 			if(renderer)
 				renderer.material = defaultMaterial;
+		}
+
+		private void Update()
+		{
+			this.transform.localScale = Vector3.one * Vector3.Distance(Camera.main.transform.position, transform.position) * screenSize;
 		}
 
 		private void OnMouseEnter()
