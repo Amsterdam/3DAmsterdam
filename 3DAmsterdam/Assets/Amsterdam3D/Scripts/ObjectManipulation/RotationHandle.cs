@@ -41,10 +41,11 @@ public class RotationHandle : ObjectManipulation
 	private void RotateParentOverOrigin()
 	{
 		var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y);
-		var angle = Mathf.Atan2(Vector3.Dot(parentFreeShape.transform.position, 
-								Vector3.Cross(dragStartLocation, dragTargetPosition)), 
-								Vector3.Dot(dragStartLocation, dragTargetPosition)) 
-								* Mathf.Rad2Deg;
-		rotationOrigin.transform.eulerAngles = new Vector3(0.0f, angle, 0.0f);
+
+		var startNormal = (dragStartLocation - rotationOrigin.transform.position).normalized;
+		var targetNormal = (dragTargetPosition - rotationOrigin.transform.position).normalized;
+
+		var angle = Vector3.SignedAngle(targetNormal, startNormal,Vector3.up);
+		rotationOrigin.transform.eulerAngles = new Vector3(0.0f, -angle, 0.0f);
 	}
 }

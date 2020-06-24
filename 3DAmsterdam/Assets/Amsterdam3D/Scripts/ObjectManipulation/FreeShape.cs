@@ -32,6 +32,10 @@ namespace Amsterdam3D.FreeShape
 		private Transform rotationHandle1;
 		[SerializeField]
 		private Transform rotationHandle2;
+		[SerializeField]
+		private Transform rotationHandle3;
+		[SerializeField]
+		private Transform rotationHandle4;
 
 		private Vector3[] shapeVertices;
 
@@ -56,6 +60,13 @@ namespace Amsterdam3D.FreeShape
 			ApplyOriginOffset();
 
 			DisplayHandles(true);
+		}
+
+		private void Update()
+		{
+			if(Input.GetMouseButtonUp(0)){
+				DisplayHandles(false);
+			}
 		}
 
 		public override void OnMouseDown()
@@ -136,6 +147,8 @@ namespace Amsterdam3D.FreeShape
 			//Move rotation handles onto bottom corner verts
 			rotationHandle1.localPosition = shapeVertices[16];
 			rotationHandle2.localPosition = shapeVertices[20];
+			rotationHandle3.localPosition = shapeVertices[19];
+			rotationHandle4.localPosition = shapeVertices[23];
 
 			collider.sharedMesh = customMesh;
 		}
@@ -169,7 +182,7 @@ namespace Amsterdam3D.FreeShape
 			}
 			return Vector3.zero;
 		}
-
+		#if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{
 			if (!customMesh) return;
@@ -178,5 +191,6 @@ namespace Amsterdam3D.FreeShape
 				Handles.Label(this.transform.position + customMesh.vertices[i] + Vector3.up * i, "<b>vert:" + i + "</b>", new GUIStyle() { richText = true });
 			}
 		}
+		#endif
 	}
 }
