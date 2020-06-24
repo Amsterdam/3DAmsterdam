@@ -58,6 +58,8 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private TextMesh shapeLengthText;
 
+		private Vector3 clickOffset;
+
 		private void Start()
 		{
 			handles = GetComponentsInChildren<ScaleHandle>();
@@ -85,12 +87,14 @@ namespace Amsterdam3D.FreeShape
 			foreach (FreeShape freeShape in shapes)
 				freeShape.DisplayHandles(false);
 
+			clickOffset = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - this.transform.position;
+
 			DisplayHandles(true);
 		}
 
 		private void OnMouseDrag()
 		{
-			this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y);
+			this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - clickOffset;
 		}
 
 		private void DisplayHandles(bool display)
