@@ -134,6 +134,7 @@ namespace Amsterdam3D.FreeShape
 			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, FloorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
 
 			customMesh.SetVertices(shapeVertices);
+			customMesh.RecalculateBounds();
 		}
 
 		private void TextLengthBetweenVerts(TextMesh textMesh, Vector3 vertA, Vector3 vertB)
