@@ -134,7 +134,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void TextLengthBetweenVerts(TextMesh textMesh, Vector3 vertA, Vector3 vertB)
 		{
-			textMesh.text = Vector3.Distance(vertA, vertB) + "m";
+			textMesh.text = Vector3.Distance(vertA, vertB).ToString("F2") + "m";
 			textMesh.transform.localPosition = Vector3.Lerp(vertA, vertB, 0.5f);
 
 			var lookatTarget = new Vector3(Camera.main.transform.position.x, textMesh.transform.position.y, Camera.main.transform.position.z);
