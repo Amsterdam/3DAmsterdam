@@ -10,6 +10,8 @@ public class ObjectManipulation : MonoBehaviour
 
 	public static bool manipulatingObject = false;
 
+	public float screenSize = 10.0f;
+
 	public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldY)
 	{
 		var ray = Camera.main.ScreenPointToRay(screenPosition);
@@ -25,6 +27,12 @@ public class ObjectManipulation : MonoBehaviour
 		var worldPlane = new Plane(planeNormal, new Vector3(transform.position.x, planeWorldY, transform.position.z));
 		worldPlane.Raycast(ray, out float distance);
 		return ray.GetPoint(distance);
+	}
+
+	private void Update()
+	{
+		if(screenSize > 0)
+			this.transform.localScale = Vector3.one * Vector3.Distance(Camera.main.transform.position, transform.position) * screenSize;
 	}
 
 	public virtual void OnMouseDown()

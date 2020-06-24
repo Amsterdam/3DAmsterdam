@@ -64,9 +64,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void Update()
 		{
-			if(Input.GetMouseButtonUp(0)){
-				DisplayHandles(false);
-			}
+			
 		}
 
 		public override void OnMouseDown()

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8475150724259711264}
   - component: {fileID: 5557809749764145213}
   m_Layer: 0
-  m_Name: RotateHandle
+  m_Name: RotationHandle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1301294676150496514}
   m_LocalRotation: {x: 0.6532815, y: -0.27059805, z: 0.27059802, w: 0.6532815}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 43.13764, y: 19.43564, z: 0.94808}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -107,3 +107,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07a18316e1ac79d41adc662348d922d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  axis: {x: 0, y: 0, z: 0}
+  screenSize: 10
