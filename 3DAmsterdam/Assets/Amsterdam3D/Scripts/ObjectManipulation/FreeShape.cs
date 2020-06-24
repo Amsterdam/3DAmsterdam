@@ -49,6 +49,15 @@ namespace Amsterdam3D.FreeShape
 
 		public Transform FloorOrigin { get => floorOrigin; set => floorOrigin = value; }
 
+		[SerializeField]
+		private TextMesh shapeHeightText;
+
+		[SerializeField]
+		private TextMesh shapeDepthText;
+
+		[SerializeField]
+		private TextMesh shapeLengthText;
+
 		private void Start()
 		{
 			handles = GetComponentsInChildren<ScaleHandle>();
@@ -64,7 +73,9 @@ namespace Amsterdam3D.FreeShape
 
 		private void Update()
 		{
-			
+			TextLengthBetweenVerts(shapeHeightText, shapeVertices[21], shapeVertices[20]);
+			TextLengthBetweenVerts(shapeDepthText, shapeVertices[18], shapeVertices[21]);
+			TextLengthBetweenVerts(shapeLengthText, shapeVertices[8], shapeVertices[21]);
 		}
 
 		public override void OnMouseDown()
@@ -121,6 +132,16 @@ namespace Amsterdam3D.FreeShape
 			customMesh.SetVertices(shapeVertices);
 		}
 
+		private void TextLengthBetweenVerts(TextMesh textMesh, Vector3 vertA, Vector3 vertB)
+		{
+			textMesh.text = Vector3.Distance(vertA, vertB) + "m";
+			textMesh.transform.localPosition = Vector3.Lerp(vertA, vertB, 0.5f);
+
+			var lookatTarget = new Vector3(Camera.main.transform.position.x, textMesh.transform.position.y, Camera.main.transform.position.z);
+			textMesh.transform.LookAt(lookatTarget);
+			textMesh.transform.Rotate(0, 180.0f, 0);
+		}
+
 		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f)
 		{
 			foreach (int index in arrayPositions)
@@ -142,11 +163,11 @@ namespace Amsterdam3D.FreeShape
 				AlignOtherScaleHandles(controllingHandle);
 			}
 
-			//Move rotation handles onto bottom corner verts
-			rotationHandle1.localPosition = shapeVertices[16];
-			rotationHandle2.localPosition = shapeVertices[20];
-			rotationHandle3.localPosition = shapeVertices[19];
-			rotationHandle4.localPosition = shapeVertices[23];
+			//Move rotation handles onto the side edges
+			rotationHandle1.localPosition = Vector3.Lerp(shapeVertices[16], shapeVertices[17],0.5f);
+			rotationHandle2.localPosition = Vector3.Lerp(shapeVertices[20], shapeVertices[21], 0.5f);
+			rotationHandle3.localPosition = Vector3.Lerp(shapeVertices[18], shapeVertices[19], 0.5f);
+			rotationHandle4.localPosition = Vector3.Lerp(shapeVertices[22], shapeVertices[23], 0.5f);
 
 			collider.sharedMesh = customMesh;
 		}
