@@ -136,40 +136,46 @@
 
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
-  var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
-  function UnityProgress(gameInstance, progress) {
-    if (!gameInstance.Module) {
+  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
+  function UnityProgress(unityInstance, progress) {
+    if (!unityInstance.Module) {
       return;
     }
     const loader = document.querySelector("#loader");
-    if (!gameInstance.progress) {
+    if (!unityInstance.progress) {
       const progress = document.querySelector("#loader .progress");
       progress.style.display = "block";
-      gameInstance.progress = progress.querySelector(".full");
+      unityInstance.progress = progress.querySelector(".full");
       loader.querySelector(".spinner").style.display = "none";
     }
-    gameInstance.progress.style.transform = `scaleX(${progress})`;
-    if (progress === 1 && !gameInstance.removeTimeout) {
-      gameInstance.removeTimeout = setTimeout(function() {
+    unityInstance.progress.style.transform = `scaleX(${progress})`;
+    if (progress === 1 && !unityInstance.removeTimeout) {
+      unityInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
       }, 2000);
     }
   }
   
+  var objTextReader;
   function readOBJ(filePath) {
+		if (window.File && window.FileReader && window.FileList && window.Blob) {
+            objTextReader = new FileReader();
+        } else {
+            alert('Bestanden uploaden wordt helaas niet ondersteund door deze browser.');
+        }
+	
         var output = ""; 
         if(filePath.files && filePath.files[0]) {           
-            reader.onload = function (e) {
+            objTextReader.onload = function (e) {
                 output = e.target.result;
-                displayContents(output);
 				unityInstance.SendMessage('OBJLoader', 'LoadOBJFromString', output);
             };
-            reader.readAsText(filePath.files[0]);
+            objTextReader.readAsText(filePath.files[0]);
         }
         else if(ActiveXObject && filePath) { //fallback to IE 6-8 support via ActiveX
             try {
-                reader = new ActiveXObject("Scripting.FileSystemObject");
-                var file = reader.OpenTextFile(filePath, 1); //ActiveX File Object
+                objTextReader = new ActiveXObject("Scripting.FileSystemObject");
+                var file = objTextReader.OpenTextFile(filePath, 1); //ActiveX File Object
                 output = file.ReadAll(); //text contents of file
                 file.Close(); //close file "input stream"
                 unityInstance.SendMessage('OBJLoader', 'LoadOBJFromString', output);
@@ -180,7 +186,8 @@
                      'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"'); 
                 }
             }       
-        }     
+        }   
+		document.getElementById('obj').value = ''		
         return true;
     }   
   
