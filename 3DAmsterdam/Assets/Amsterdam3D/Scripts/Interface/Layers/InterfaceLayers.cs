@@ -26,9 +26,9 @@ namespace Amsterdam3D.Interface
             animator.SetBool("AnimateIn", toggledVisible);
         }
 
-        public void AddNewCustomObject(GameObject linkedWorldObject, CustomLayerType type){
+        public void AddNewCustomObjectLayer(GameObject linkedWorldObject, CustomLayerType type){
             CustomLayer newCustomlayer = Instantiate<CustomLayer>(customObjectLayerPrefab, layersContainer);
-            newCustomlayer.Create("Basisvorm", linkedWorldObject, type);
+            newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type);
             newCustomlayer.transform.SetSiblingIndex(0);
         }
     }
