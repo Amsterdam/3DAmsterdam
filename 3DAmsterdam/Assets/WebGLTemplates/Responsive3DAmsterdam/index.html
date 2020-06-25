@@ -158,6 +158,7 @@
   
   var objTextReader;
   var unityObjectName = "AddObject";
+  var objData = "";
   function readOBJ(fileInput) {
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
             objTextReader = new FileReader();
@@ -172,7 +173,9 @@
             objTextReader.onload = function (e) {
                 output = e.target.result;
 				
-				unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
+				//unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
+				objData = output;
+				unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
             };
             objTextReader.readAsText(fileInput.files[0]);
         }
@@ -182,7 +185,9 @@
                 var file = objTextReader.OpenTextFile(fileInput, 1); //ActiveX File Object
                 output = file.ReadAll(); //text contents of file
                 file.Close(); //close file "input stream"
-                unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
+                //unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
+				objData = output;
+				unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
             } catch (e) {
                 if (e.number == -2146827859) {
                     alert('Unable to access local files due to browser security settings. ' + 

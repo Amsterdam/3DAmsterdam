@@ -21,12 +21,17 @@ namespace Amsterdam3D.UserLayers {
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.L))
-                LoadOBJFromString(File.ReadAllText("C:/Users/Sam/Desktop/untitled.obj"));
+                LoadOBJFromString(File.ReadAllText("C:/Users/Sam/Desktop/big.obj"));
         }
 #endif
         public void SetOBJFileName(string fileName)
         {
             objFileName = fileName;
+        }
+
+        public void LoadOBJFromJavascript()
+        {
+            LoadOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString());
         }
 
         public void LoadOBJFromString(string objText) {
