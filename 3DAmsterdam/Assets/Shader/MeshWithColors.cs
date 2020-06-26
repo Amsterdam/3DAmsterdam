@@ -18,14 +18,14 @@ public class MeshWithColors : MonoBehaviour
 		particles = GetComponent<ParticleSystem>();
 
 		Mesh mesh = new Mesh();
+		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-		gameObject.GetComponent<MeshFilter>().mesh = mesh;
-
-		string[] lines = File.ReadAllLines("C:/Users/Sam/Desktop/tree.txt");
+		string[] lines = File.ReadAllLines("C:/Users/Sam/Desktop/tree.xyz");
 
 
 		List<Vector3> verts = new List<Vector3>();
-		List<Color> colors = new List<Color>();
+		List<Color32> colors = new List<Color32>();
+		List<int> triangles = new List<int>();
 
 		foreach (string line in lines)
 		{
@@ -39,9 +39,24 @@ public class MeshWithColors : MonoBehaviour
 					(float)values[2])));
 
 			colors.Add(new Color((float)values[3], (float)values[4], (float)values[5], 1.0f));
+
+			//triangles share vert positions
+			int vertindex = verts.Count - 1;
+			triangles.Add(vertindex);
+			triangles.Add(vertindex);
+			triangles.Add(vertindex);
 		}
 
+		Camera.main.transform.position = verts[0];
+
 		mesh.vertices = verts.ToArray();
-		mesh.colors = colors.ToArray();
+		mesh.colors32 = colors.ToArray();
+		mesh.normals = mesh.vertices;
+
+		mesh.triangles = triangles.ToArray();
+		mesh.RecalculateNormals();
+		mesh.RecalculateBounds();
+
+		gameObject.GetComponent<MeshFilter>().mesh = mesh;
 	}
 }
