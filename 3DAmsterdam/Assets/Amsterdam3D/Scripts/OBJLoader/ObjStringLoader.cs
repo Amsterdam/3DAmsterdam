@@ -21,7 +21,7 @@ namespace Amsterdam3D.UserLayers {
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.L))
-                LoadOBJFromString(File.ReadAllText("C:/Users/Sam/Desktop/big.obj"));
+                LoadOBJFromString(File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"));
         }
 #endif
         public void SetOBJFileName(string fileName)
@@ -35,7 +35,7 @@ namespace Amsterdam3D.UserLayers {
         }
 
         public void LoadOBJFromString(string objText) {
-            var newOBJ = new GameObject().AddComponent<OBJ>();
+            var newOBJ = new GameObject().AddComponent<ObjLoad>();
             newOBJ.SetGeometryData(objText);
             newOBJ.Build(defaultLoadedObjectsMaterial);
             newOBJ.name = objFileName;
