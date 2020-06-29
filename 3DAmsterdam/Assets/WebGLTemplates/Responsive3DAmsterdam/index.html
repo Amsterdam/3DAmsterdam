@@ -124,7 +124,7 @@
 
   <body>
 	<div id="objUploadClickRegisterArea" style="display:none;">
-		<input id="obj" type="file" accept=".obj,.mtl" onchange='readOBJ(this)' multiple>
+		<input id="obj" type="file" accept=".obj,.mtl" onchange='ReadOBJ(this)' multiple>
 	</div>
     <div id="gameContainer"></div>
     <div id="loader">
@@ -164,7 +164,13 @@
   var mtlData = "";
   var dataType = 0;
   
-  function readOBJ(fileInput) {
+  function LoadInUnity(){
+	unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+	//Reset file selection
+	document.getElementById('obj').value = '';
+  }
+  
+  function ReadOBJ(fileInput) {
 		//Check browser support
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
             objTextReader = new FileReader();
@@ -172,8 +178,6 @@
         } else {
             alert('Bestanden uploaden wordt helaas niet ondersteund door deze browser.');
         }
-	
-        var output = ""; 
 		unityInstance.SendMessage(unityObjectName, 'SetOBJFileName', fileInput.files.item(0).name);
 		
 		//If we selected at least one file
@@ -182,24 +186,23 @@
 			var mtlFileSelectionIndex = -1;
 			
 			objTextReader.onload = function (e) {
-                output = e.target.result;
-				objData = output;
+				objData = e.target.result;
 				if(mtlFileSelectionIndex > -1){
 					//Load material after loading obj (optionaly)
 					mtlTextReader.onload = function (e) {
-						output = e.target.result;
-						mtlData = output;
-						unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+						mtlData = e.target.result;
+						LoadInUnity();
 					};
-					mtlTextReader.readAsText(fileInput.files[i]);
+					mtlTextReader.readAsText(fileInput.files[mtlFileSelectionIndex]);
 				}
 				else{
-					unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+					LoadInUnity();
 				}
             };
 			
+			//Read the obj in the file input
 			for (var i = 0; i < fileInput.files.length; i++) {
-				var extension = fileInput.files[i].split('.').pop().toLowerCase();
+				var extension = fileInput.files[i].name.split('.').pop().toLowerCase();
                 if(extension == "mtl"){
 					mtlFileSelectionIndex = i;
 				}
@@ -207,9 +210,7 @@
 					objTextReader.readAsText(fileInput.files[i]);
 				}
             }
-        }
-		//Clear file selection, so we can upload the same file repetitively
-		document.getElementById('obj').value = ''		
+        }	
         return true;
     }   
   
