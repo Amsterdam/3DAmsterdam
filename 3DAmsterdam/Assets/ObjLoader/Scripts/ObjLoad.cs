@@ -10,7 +10,6 @@ public class ObjLoad : MonoBehaviour
 {
 	// OBJ File Tags
 	const string O = "o";
-	const string G = "g";
 	const string V = "v";
 	const string VT = "vt";
 	const string VN = "vn";
@@ -114,44 +113,44 @@ public class ObjLoad : MonoBehaviour
 		bool isFaceIndexPlus = true;
 		for (int i = 0; i < lines.Length; i++)
 		{
-			string l = lines[i].Trim();
+			string line = lines[i].Trim();
 
-			if (l.IndexOf("#") != -1)
-			{ // comment line
+			if (line.IndexOf("#") != -1)
+			{ 
 				continue;
 			}
-			string[] p = regexWhitespaces.Split(l);
-			switch (p[0])
+			string[] linePart = regexWhitespaces.Split(line);
+			switch (linePart[0])
 			{
 				case O:
-					buffer.PushObject(p[1].Trim());
+					buffer.AddObject(linePart[1].Trim());
 					isFirstInGroup = true;
 					break;
 				case V:
-					buffer.PushVertex(new Vector3(cf(p[1]), cf(p[2]), cf(p[3])));
+					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
 					break;
 				case VT:
-					buffer.PushUV(new Vector2(cf(p[1]), cf(p[2])));
+					buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
 					break;
 				case VN:
-					buffer.PushNormal(new Vector3(cf(p[1]), cf(p[2]), cf(p[3])));
+					buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
 					break;
 				case F:
-					var faces = new FaceIndices[p.Length - 1];
+					var faces = new FaceIndices[linePart.Length - 1];
 					if (isFirstInGroup)
 					{
 						isFirstInGroup = false;
-						string[] c = p[1].Trim().Split("/".ToCharArray());
+						string[] c = linePart[1].Trim().Split("/".ToCharArray());
 						isFaceIndexPlus = (ci(c[0]) >= 0);
 					}
-					GetFaceIndicesByOneFaceLine(faces, p, isFaceIndexPlus);
-					if (p.Length == 4)
+					GetFaceIndicesByOneFaceLine(faces, linePart, isFaceIndexPlus);
+					if (linePart.Length == 4)
 					{
 						buffer.PushFace(faces[0]);
 						buffer.PushFace(faces[1]);
 						buffer.PushFace(faces[2]);
 					}
-					else if (p.Length == 5)
+					else if (linePart.Length == 5)
 					{
 						buffer.PushFace(faces[0]);
 						buffer.PushFace(faces[1]);
@@ -162,14 +161,14 @@ public class ObjLoad : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogWarning("face vertex count :" + (p.Length - 1) + " larger than 4:");
+						Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4:");
 					}
 					break;
 				case MTLLIB:
-					mtllib = l.Substring(p[0].Length + 1).Trim();
+					mtllib = line.Substring(linePart[0].Length + 1).Trim();
 					break;
 				case USEMTL:
-					buffer.PushMaterialName(p[1].Trim());
+					isFirstInGroup = buffer.AddSubMeshGroup(linePart[1].Trim());
 					break;
 			}
 		}
@@ -406,28 +405,23 @@ public class ObjLoad : MonoBehaviour
 		return new Color(cf(p[1]), cf(p[2]), cf(p[3]));
 	}
 
-	public void Build(Material defaultMaterial, bool skipMaterialLibrary = false)
+	public void Build(Material defaultMaterial)
 	{
-		var materials = new Dictionary<string, Material>();
+		var materialLibrary = new Dictionary<string, Material>();
 		if (!string.IsNullOrEmpty(mtllib) && materialData != null)
 		{
 			foreach (MaterialData md in materialData)
 			{
-				if (materials.ContainsKey(md.Name))
+				if (materialLibrary.ContainsKey(md.Name))
 				{
 					Debug.LogWarning("Duplicate material found: " + md.Name + ". ignored repeated occurences");
 					continue;
 				}
-				materials.Add(md.Name, GetMaterial(md, defaultMaterial));
+				materialLibrary.Add(md.Name, GetMaterial(md, defaultMaterial));
 			}
-		}
-		else
-		{
-			materials.Add("default", defaultMaterial);
 		}
 
 		var gameObjects = new GameObject[buffer.NumberOfObjects];
-
 		if (buffer.NumberOfObjects == 1)
 		{
 			gameObject.AddComponent(typeof(MeshFilter));
@@ -445,6 +439,6 @@ public class ObjLoad : MonoBehaviour
 				gameObjects[i] = go;
 			}
 		}
-		buffer.PopulateMeshes(gameObjects, materials);
+		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
 	}
 }

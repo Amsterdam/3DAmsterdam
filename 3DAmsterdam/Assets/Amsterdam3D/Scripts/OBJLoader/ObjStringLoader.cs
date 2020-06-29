@@ -34,6 +34,21 @@ namespace Amsterdam3D.UserLayers
 				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
 				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
 				));
+			if (Input.GetKeyDown(KeyCode.K))
+				StartCoroutine(ParseOBJFromString(
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/Marineterrein_OBJ/25052020 MV 3D Model Marineterrein.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/Marineterrein_OBJ/25052020 MV 3D Model Marineterrein.mtl")
+				));
+			if (Input.GetKeyDown(KeyCode.H))
+				StartCoroutine(ParseOBJFromString(
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.mtl")
+				));
+			if (Input.GetKeyDown(KeyCode.J))
+				StartCoroutine(ParseOBJFromString(
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
+				""
+				));
 		}
 #endif
 		public void SetOBJFileName(string fileName)
@@ -51,9 +66,10 @@ namespace Amsterdam3D.UserLayers
 			yield return new WaitForSeconds(0.1f);
 
 			var newOBJ = new GameObject().AddComponent<ObjLoad>();
-			newOBJ.SetGeometryData(objText);
 			if (mtlText != "")
 				newOBJ.SetMaterialData(mtlText);
+
+			newOBJ.SetGeometryData(objText);
 
 			newOBJ.Build(defaultLoadedObjectsMaterial);
 			newOBJ.name = objModelName;

@@ -26,11 +26,10 @@ public class GeometryBuffer
 		}
 	}
 
-	SubMeshGroupData curgr;
+	SubMeshGroupData currentSubMeshGroup;
 	class SubMeshGroupData
 	{
 		public string Name;
-		public string MaterialName;
 		public List<FaceIndices> Faces;
 		public SubMeshGroupData()
 		{
@@ -47,62 +46,45 @@ public class GeometryBuffer
 		Objects.Add(d);
 		current = d;
 
-		var g = new SubMeshGroupData();
-		g.Name = "default";
-		d.SubMeshGroups.Add(g.Name, g);
-		curgr = g;
-
 		Vertices = new List<Vector3>();
 		Uvs = new List<Vector2>();
 		Normals = new List<Vector3>();
 	}
 
-	public void PushObject(string name)
+	public void AddObject(string name)
 	{
 		Debug.Log("Adding new object " + name + ". Current is empty: " + IsEmpty);
 		if (IsEmpty) Objects.Remove(current);
 
 		// Object Data
-		var n = new ObjectData();
-		n.Name = name;
-		Objects.Add(n);
+		var newObjectData = new ObjectData();
+		newObjectData.Name = name;
+		Objects.Add(newObjectData);
 
 		// Group Data
-		var g = new SubMeshGroupData();
-		g.Name = "default";
-		n.SubMeshGroups.Add(g.Name, g);
+		AddSubMeshGroup("default");
 
-		curgr = g;
-		current = n;
+		current = newObjectData;
 	}
 
-	public void PushGroup(string name)
+	public bool AddSubMeshGroup(string name)
 	{
-		if (current.SubMeshGroups.TryGetValue(name, out curgr))
-		{
-			return;
+		if (current.SubMeshGroups.TryGetValue(name, out currentSubMeshGroup))
+		{	
+			return true;
 		}
-		var g = new SubMeshGroupData();
+
+		var newGroup = new SubMeshGroupData();
 		if (name == null)
 		{
 			name = "Unnamed-" + UnnamedGroupIndex;
 			UnnamedGroupIndex++;
 		}
-		g.Name = name;
-		current.SubMeshGroups.Add(g.Name, g);
-		curgr = g;
-	}
+		newGroup.Name = name;
+		current.SubMeshGroups.Add(newGroup.Name, newGroup);
+		currentSubMeshGroup = newGroup;
 
-	public void PushMaterialName(string name)
-	{
-		// Debug.Log("Pushing new material " + name + " with curgr.empty =" + curgr.IsEmpty);
-		PushGroup(name);
-		if (curgr.Name == "default") curgr.Name = name;
-
-		//only make a new group if we do not have this name yet.
-
-
-		curgr.MaterialName = name;
+		return false;
 	}
 
 	public void PushVertex(Vector3 v)
@@ -122,7 +104,7 @@ public class GeometryBuffer
 
 	public void PushFace(FaceIndices f)
 	{
-		curgr.Faces.Add(f);
+		currentSubMeshGroup.Faces.Add(f);
 		current.AllFaces.Add(f);
 		if (f.Vn >= 0)
 		{
@@ -154,7 +136,7 @@ public class GeometryBuffer
 	// Max Vertices Limit for a given Mesh.
 	public static int MaxVerticesLimit = 64999;
 
-	public void PopulateMeshes(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary)
+	public void PopulateMeshes(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary, Material defaultMaterial)
 	{
 		// Check is valid file.
 		if (gameObjects.Length != NumberOfObjects)
@@ -197,14 +179,15 @@ public class GeometryBuffer
 			if (objectData.SubMeshGroups.Count == 1)
 			{
 				SubMeshGroupData firstSubMeshGroup = objectData.SubMeshGroups.Values.First();
-				string matName = firstSubMeshGroup.MaterialName ?? "default";
+				string matName = firstSubMeshGroup.Name;
 				if (materialDictionary.ContainsKey(matName))
-				{
+				{ 
+					Debug.Log("Assigning " + materialDictionary[matName]);
 					gameObjects[i].GetComponent<Renderer>().material = materialDictionary[matName];
 				}
 				else
 				{
-					Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
+					gameObjects[i].GetComponent<Renderer>().material = defaultMaterial;
 				}
 
 				var triangles = new int[firstSubMeshGroup.Faces.Count];
@@ -216,7 +199,7 @@ public class GeometryBuffer
 			{
 				int subMeshCount = objectData.SubMeshGroups.Count;
 				var materials = new Material[subMeshCount];
-				mesh.subMeshCount = materialDictionary.Count;
+				mesh.subMeshCount = subMeshCount;
 				int c = 0;
 				int submeshIndex = -1;
 				Debug.Log("PopulateMeshes group count: " + subMeshCount);
@@ -224,7 +207,7 @@ public class GeometryBuffer
 				{
 					submeshIndex++;
 
-					string matName = subMesh.Value.MaterialName ?? "default";
+					string matName = subMesh.Value.Name;
 					if (materialDictionary.ContainsKey(matName))
 					{
 						materials[submeshIndex] = materialDictionary[matName];
@@ -232,6 +215,7 @@ public class GeometryBuffer
 					}
 					else
 					{
+						materials[submeshIndex] = defaultMaterial;
 						Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
 					}
 
