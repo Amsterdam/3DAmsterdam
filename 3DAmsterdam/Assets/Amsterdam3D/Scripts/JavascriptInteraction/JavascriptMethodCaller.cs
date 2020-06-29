@@ -11,6 +11,9 @@ public class JavascriptMethodCaller : MonoBehaviour
 	[DllImport("__Internal")]
 	private static extern string FetchOBJData();
 
+	[DllImport("__Internal")]
+	private static extern string FetchMTLData();
+
 	/// <summary>
 	/// This methods activates the html hitarea for the file upload button.
 	/// The user will click the hidden file input dialog in the index.html template file that is drawn on top of our WebGL canvas.
@@ -28,5 +31,9 @@ public class JavascriptMethodCaller : MonoBehaviour
 	public static string FetchOBJDataAsString()
 	{
 		return FetchOBJData();
+	}
+	public static string FetchMTLDataAsString()
+	{
+		return FetchMTLData();
 	}
 }

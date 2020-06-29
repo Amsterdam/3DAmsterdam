@@ -6,44 +6,47 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-namespace Amsterdam3D.UserLayers {
-    public class ObjStringLoader : MonoBehaviour
-    {
-        [SerializeField]
-        private Material defaultLoadedObjectsMaterial;
+namespace Amsterdam3D.UserLayers
+{
+	public class ObjStringLoader : MonoBehaviour
+	{
+		[SerializeField]
+		private Material defaultLoadedObjectsMaterial;
 
-        [SerializeField]
-        private PlaceCustomObject customObjectPlacer;
+		[SerializeField]
+		private PlaceCustomObject customObjectPlacer;
 
-        private string objFileName = "model.obj";
+		private string objFileName = "model.obj";
+
 
 #if UNITY_EDITOR
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.L))
-                LoadOBJFromString(File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"));
-        }
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.L))
+				ParseOBJFromString(File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"));
+		}
 #endif
-        public void SetOBJFileName(string fileName)
-        {
-            objFileName = fileName;
-        }
+		public void SetOBJFileName(string fileName)
+		{
+			objFileName = fileName;
+		}
+		public void LoadOBJFromJavascript()
+		{
+			ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString());
+		}
+		public void ParseOBJFromString(string objText, string mtlText = "")
+		{
+			var newOBJ = new GameObject().AddComponent<ObjLoad>();
+			newOBJ.SetGeometryData(objText);
+			if (mtlText != "")
+				newOBJ.SetMaterialData(mtlText);
+			newOBJ.Build(defaultLoadedObjectsMaterial);
+			newOBJ.name = objFileName;
 
-        public void LoadOBJFromJavascript()
-        {
-            LoadOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString());
-        }
+			customObjectPlacer.AtPointer(newOBJ.gameObject);
 
-        public void LoadOBJFromString(string objText) {
-            var newOBJ = new GameObject().AddComponent<ObjLoad>();
-            newOBJ.SetGeometryData(objText);
-            newOBJ.Build(defaultLoadedObjectsMaterial);
-            newOBJ.name = objFileName;
-
-            customObjectPlacer.AtPointer(newOBJ.gameObject);
-
-            //hide panel after loading
-            gameObject.SetActive(false);
-        }
-    }
+			//hide panel after loading
+			gameObject.SetActive(false);
+		}
+	}
 }

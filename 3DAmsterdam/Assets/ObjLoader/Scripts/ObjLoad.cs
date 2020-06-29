@@ -246,7 +246,7 @@ public class ObjLoad : MonoBehaviour
 		public Texture2D BumpTex;
 	}
 
-	void SetMaterialData(string data)
+	public void SetMaterialData(string data)
 	{
 		string[] lines = data.Split("\n".ToCharArray());
 

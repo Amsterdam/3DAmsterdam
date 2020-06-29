@@ -124,7 +124,7 @@
 
   <body>
 	<div id="objUploadClickRegisterArea" style="display:none;">
-		<input id="obj" type="file" accept=".obj" onchange='readOBJ(this)'>
+		<input id="obj" type="file" accept=".obj,.mtl" onchange='readOBJ(this)'>
 	</div>
     <div id="gameContainer"></div>
     <div id="loader">
@@ -157,11 +157,18 @@
   }
   
   var objTextReader;
+  var mtlTextReader;
+  
   var unityObjectName = "AddObject";
   var objData = "";
+  var mtlData = "";
+  var dataType = 0;
+  
   function readOBJ(fileInput) {
+		//Check browser support
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
             objTextReader = new FileReader();
+			mtlTextReader = new FileReader();
         } else {
             alert('Bestanden uploaden wordt helaas niet ondersteund door deze browser.');
         }
@@ -169,33 +176,39 @@
         var output = ""; 
 		unityInstance.SendMessage(unityObjectName, 'SetOBJFileName', fileInput.files.item(0).name);
 		
-        if(fileInput.files && fileInput.files[0]) {          
-            objTextReader.onload = function (e) {
+		//If we selected at least one file
+        if(fileInput.files && fileInput.files[0]) { 
+			//parse obj and optionaly the mtl file
+			var mtlFileSelectionIndex = -1;
+			
+			objTextReader.onload = function (e) {
                 output = e.target.result;
-				
-				//unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
 				objData = output;
-				unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+				if(mtlFileSelectionIndex > -1){
+					//Load material after loading obj (optionaly)
+					mtlTextReader.onload = function (e) {
+						output = e.target.result;
+						mtlData = output;
+						unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+					};
+					mtlTextReader.readAsText(fileInput.files[i]);
+				}
+				else{
+					unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+				}
             };
-            objTextReader.readAsText(fileInput.files[0]);
+			
+			for (var i = 0; i < fileInput.files.length; i++) {
+				var extension = fileInput.files[i].split('.').pop().toLowerCase();
+                if(extension == "mtl"){
+					mtlFileSelectionIndex = i;
+				}
+				else if(extension == "obj"){
+					objTextReader.readAsText(fileInput.files[i]);
+				}
+            }
         }
-        else if(ActiveXObject && fileInput) { //fallback to IE 6-8 support via ActiveX
-            try {
-                objTextReader = new ActiveXObject("Scripting.FileSystemObject");
-                var file = objTextReader.OpenTextFile(fileInput, 1); //ActiveX File Object
-                output = file.ReadAll(); //text contents of file
-                file.Close(); //close file "input stream"
-                //unityInstance.SendMessage(unityObjectName, 'LoadOBJFromString', output);
-				objData = output;
-				unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
-            } catch (e) {
-                if (e.number == -2146827859) {
-                    alert('Unable to access local files due to browser security settings. ' + 
-                     'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' + 
-                     'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"'); 
-                }
-            }       
-        }   
+		//Clear file selection, so we can upload the same file repetitively
 		document.getElementById('obj').value = ''		
         return true;
     }   
