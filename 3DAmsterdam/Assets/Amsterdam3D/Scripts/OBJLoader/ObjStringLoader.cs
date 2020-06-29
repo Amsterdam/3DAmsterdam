@@ -14,39 +14,57 @@ namespace Amsterdam3D.UserLayers
 		private Material defaultLoadedObjectsMaterial;
 
 		[SerializeField]
+		private LoadingScreen loadingObjScreen;
+
+		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
 
-		private string objFileName = "model.obj";
+		private string objModelName = "model";
 
+		private void Start()
+		{
+			loadingObjScreen.Hide();
+		}
 
 #if UNITY_EDITOR
 		private void Update()
 		{
 			if (Input.GetKeyDown(KeyCode.L))
-				ParseOBJFromString(File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"));
+				StartCoroutine(ParseOBJFromString(
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
+				));
 		}
 #endif
 		public void SetOBJFileName(string fileName)
 		{
-			objFileName = fileName;
+			objModelName = Path.GetFileNameWithoutExtension(fileName);
 		}
 		public void LoadOBJFromJavascript()
 		{
-			ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString());
+			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
-		public void ParseOBJFromString(string objText, string mtlText = "")
+		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
+			//Display loading message covering entire screen
+			loadingObjScreen.ShowMessage("Loading " + objModelName + "...");
+			yield return new WaitForSeconds(0.1f);
+
 			var newOBJ = new GameObject().AddComponent<ObjLoad>();
 			newOBJ.SetGeometryData(objText);
 			if (mtlText != "")
 				newOBJ.SetMaterialData(mtlText);
+
 			newOBJ.Build(defaultLoadedObjectsMaterial);
-			newOBJ.name = objFileName;
+			newOBJ.name = objModelName;
 
 			customObjectPlacer.AtPointer(newOBJ.gameObject);
 
 			//hide panel after loading
 			gameObject.SetActive(false);
+			loadingObjScreen.Hide();
+
+			yield return false;
 		}
 	}
 }

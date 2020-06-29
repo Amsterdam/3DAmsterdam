@@ -8,9 +8,6 @@ using UnityEngine.Networking;
 
 public class ObjLoad : MonoBehaviour
 {
-
-	public Shader Shader;
-
 	// OBJ File Tags
 	const string O = "o";
 	const string G = "g";
@@ -18,8 +15,8 @@ public class ObjLoad : MonoBehaviour
 	const string VT = "vt";
 	const string VN = "vn";
 	const string F = "f";
-	const string MTL = "mtllib";
-	const string UML = "usemtl";
+	const string MTLLIB = "mtllib";
+	const string USEMTL = "usemtl";
 
 	// MTL File Tags
 	const string NML = "newmtl";
@@ -45,22 +42,6 @@ public class ObjLoad : MonoBehaviour
 	void Awake()
 	{
 		buffer = new GeometryBuffer();
-		Shader = Shader.Find("Standard");
-	}
-
-	UnityWebRequest GetTextureLoader(MaterialData m, string texpath)
-	{
-		char[] separators = { '/', '\\' };
-		string[] components = texpath.Split(separators);
-		string filename = components[components.Length - 1];
-		string ext = Path.GetExtension(filename).ToLower();
-		if (ext != ".png" && ext != ".jpg")
-		{
-			Debug.LogWarning("Unsupported texture format: " + ext);
-		}
-		var texloader = new UnityWebRequest(basepath + filename);
-		Debug.Log("Texture path for material(" + m.Name + ") = " + (basepath + filename));
-		return texloader;
 	}
 
 	void GetFaceIndicesByOneFaceLine(IList<FaceIndices> faces, string[] p, bool isFaceIndexPlus)
@@ -146,15 +127,6 @@ public class ObjLoad : MonoBehaviour
 					buffer.PushObject(p[1].Trim());
 					isFirstInGroup = true;
 					break;
-				case G:
-					string groupName = null;
-					if (p.Length >= 2)
-					{
-						groupName = p[1].Trim();
-					}
-					isFirstInGroup = true;
-					buffer.PushGroup(groupName);
-					break;
 				case V:
 					buffer.PushVertex(new Vector3(cf(p[1]), cf(p[2]), cf(p[3])));
 					break;
@@ -193,10 +165,10 @@ public class ObjLoad : MonoBehaviour
 						Debug.LogWarning("face vertex count :" + (p.Length - 1) + " larger than 4:");
 					}
 					break;
-				case MTL:
+				case MTLLIB:
 					mtllib = l.Substring(p[0].Length + 1).Trim();
 					break;
-				case UML:
+				case USEMTL:
 					buffer.PushMaterialName(p[1].Trim());
 					break;
 			}
@@ -302,21 +274,21 @@ public class ObjLoad : MonoBehaviour
 		}
 	}
 
-	static Material GetMaterial(MaterialData md)
+	static Material GetMaterial(MaterialData md, Material sourceMaterial)
 	{
 		Material m;
 
 		if (md.IllumType == 2)
 		{
 			string shaderName = (md.BumpTex != null) ? "Bumped Specular" : "Specular";
-			m = new Material(Shader.Find(shaderName));
+			m = new Material(sourceMaterial);
 			m.SetColor("_SpecColor", md.Specular);
 			m.SetFloat("_Shininess", md.Shininess);
 		}
 		else
 		{
 			string shaderName = (md.BumpTex != null) ? "Bumped Diffuse" : "Diffuse";
-			m = new Material(Shader.Find(shaderName));
+			m = new Material(sourceMaterial);
 		}
 
 		if (md.DiffuseTex != null)
@@ -434,10 +406,10 @@ public class ObjLoad : MonoBehaviour
 		return new Color(cf(p[1]), cf(p[2]), cf(p[3]));
 	}
 
-	public void Build(Material defaultMaterial)
+	public void Build(Material defaultMaterial, bool skipMaterialLibrary = false)
 	{
 		var materials = new Dictionary<string, Material>();
-		if (!string.IsNullOrEmpty(mtllib))
+		if (!string.IsNullOrEmpty(mtllib) && materialData != null)
 		{
 			foreach (MaterialData md in materialData)
 			{
@@ -446,7 +418,7 @@ public class ObjLoad : MonoBehaviour
 					Debug.LogWarning("Duplicate material found: " + md.Name + ". ignored repeated occurences");
 					continue;
 				}
-				materials.Add(md.Name, GetMaterial(md));
+				materials.Add(md.Name, GetMaterial(md, defaultMaterial));
 			}
 		}
 		else
@@ -454,13 +426,13 @@ public class ObjLoad : MonoBehaviour
 			materials.Add("default", defaultMaterial);
 		}
 
-		var ms = new GameObject[buffer.NumberOfObjects];
+		var gameObjects = new GameObject[buffer.NumberOfObjects];
 
 		if (buffer.NumberOfObjects == 1)
 		{
 			gameObject.AddComponent(typeof(MeshFilter));
 			gameObject.AddComponent(typeof(MeshRenderer));
-			ms[0] = gameObject;
+			gameObjects[0] = gameObject;
 		}
 		else if (buffer.NumberOfObjects > 1)
 		{
@@ -470,9 +442,9 @@ public class ObjLoad : MonoBehaviour
 				go.transform.parent = gameObject.transform;
 				go.AddComponent(typeof(MeshFilter));
 				go.AddComponent(typeof(MeshRenderer));
-				ms[i] = go;
+				gameObjects[i] = go;
 			}
 		}
-		buffer.PopulateMeshes(ms, materials);
+		buffer.PopulateMeshes(gameObjects, materials);
 	}
 }
