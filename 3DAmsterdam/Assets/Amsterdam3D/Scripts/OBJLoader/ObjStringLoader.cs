@@ -36,8 +36,8 @@ namespace Amsterdam3D.UserLayers
 				));
 			if (Input.GetKeyDown(KeyCode.K))
 				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/Marineterrein_OBJ/25052020 MV 3D Model Marineterrein.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/Marineterrein_OBJ/25052020 MV 3D Model Marineterrein.mtl")
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.mtl")
 				));
 			if (Input.GetKeyDown(KeyCode.H))
 				StartCoroutine(ParseOBJFromString(
@@ -63,6 +63,7 @@ namespace Amsterdam3D.UserLayers
 		{
 			//Display loading message covering entire screen
 			loadingObjScreen.ShowMessage("Loading " + objModelName + "...");
+			yield return new WaitForEndOfFrame();
 			yield return new WaitForSeconds(0.1f);
 
 			var newOBJ = new GameObject().AddComponent<ObjLoad>();
@@ -72,7 +73,9 @@ namespace Amsterdam3D.UserLayers
 			newOBJ.SetGeometryData(objText);
 
 			newOBJ.Build(defaultLoadedObjectsMaterial);
-			newOBJ.name = objModelName;
+			newOBJ.transform.Rotate(0, 90, 0);
+			newOBJ.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+;			newOBJ.name = objModelName;
 
 			customObjectPlacer.AtPointer(newOBJ.gameObject);
 
