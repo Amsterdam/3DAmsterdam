@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 912797556926425457}
   - component: {fileID: 465399373360844520}
   - component: {fileID: 912797556926425456}
+  - component: {fileID: -2078267290102013595}
   m_Layer: 0
   m_Name: BasicShape
   m_TagString: Untagged
@@ -120,8 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54a6ffa6a1b036f459400b6edcf1cd90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axis: {x: 0, y: 0, z: 0}
-  screenSize: 0
   shape: {fileID: 912797556926425462}
   handleXMin: {fileID: 1162732927152086222}
   handleXPlus: {fileID: 8880083981021142124}
@@ -133,12 +132,27 @@ MonoBehaviour:
   rotationHandle2: {fileID: 566500540631543150}
   rotationHandle3: {fileID: 3583805143132735645}
   rotationHandle4: {fileID: 978374637966966476}
-  margin: -20
   numberScreenSize: 0.003
   shapeScreenStartScale: 0.001
   shapeHeightText: {fileID: 1314850539555842738}
   shapeDepthText: {fileID: 3257649693444342009}
   shapeLengthText: {fileID: 7783554342168861219}
+--- !u!114 &-2078267290102013595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912797556926425458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dbd983772d80d1418c6467eed2abbba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axisContraint: {x: 0, y: 0, z: 0}
+  screenSize: 0
+  clickOffset: {x: 0, y: 0, z: 0}
+  snapToGround: 0
 --- !u!1 &2269356427172999513
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,8 +382,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90bca925ea4ed654dabc7d5ce6c2d6b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axis: {x: 0, y: 1, z: 0}
+  axisContraint: {x: 0, y: 1, z: 0}
   screenSize: 10
+  clickOffset: {x: 0, y: 0, z: 0}
   defaultMaterial: {fileID: 0}
   hoverMaterial: {fileID: 0}
 --- !u!1 &8939264665807819458
@@ -532,11 +547,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 315
       objectReference: {fileID: 0}
-    - target: {fileID: 5557809749764145213, guid: aa677367071736f478232c3ea5a80c5d,
-        type: 3}
-      propertyPath: screenSize
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa677367071736f478232c3ea5a80c5d, type: 3}
 --- !u!4 &978374637966966476 stripped
@@ -612,11 +622,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 225
       objectReference: {fileID: 0}
-    - target: {fileID: 5557809749764145213, guid: aa677367071736f478232c3ea5a80c5d,
-        type: 3}
-      propertyPath: screenSize
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa677367071736f478232c3ea5a80c5d, type: 3}
 --- !u!4 &566500540631543150 stripped
@@ -635,6 +640,11 @@ PrefabInstance:
     - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
         type: 3}
       propertyPath: axis.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: axisContraint.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3919558193828322395, guid: 417b40145563a4649862ffe6974aea3a,
@@ -802,11 +812,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5557809749764145213, guid: aa677367071736f478232c3ea5a80c5d,
-        type: 3}
-      propertyPath: screenSize
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa677367071736f478232c3ea5a80c5d, type: 3}
 --- !u!4 &3583805143132735645 stripped
@@ -825,6 +830,11 @@ PrefabInstance:
     - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
         type: 3}
       propertyPath: axis.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: axisContraint.z
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3919558193828322395, guid: 417b40145563a4649862ffe6974aea3a,
@@ -920,6 +930,11 @@ PrefabInstance:
     - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
         type: 3}
       propertyPath: axis.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: axisContraint.z
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3919558193828322395, guid: 417b40145563a4649862ffe6974aea3a,
@@ -1072,11 +1087,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 45
       objectReference: {fileID: 0}
-    - target: {fileID: 5557809749764145213, guid: aa677367071736f478232c3ea5a80c5d,
-        type: 3}
-      propertyPath: screenSize
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa677367071736f478232c3ea5a80c5d, type: 3}
 --- !u!4 &6783926641713683687 stripped
@@ -1095,6 +1105,11 @@ PrefabInstance:
     - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
         type: 3}
       propertyPath: axis.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: axisContraint.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3919558193828322395, guid: 417b40145563a4649862ffe6974aea3a,
@@ -1190,6 +1205,11 @@ PrefabInstance:
     - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
         type: 3}
       propertyPath: axis.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -413922233356504239, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: axisContraint.y
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3919558193828322395, guid: 417b40145563a4649862ffe6974aea3a,

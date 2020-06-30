@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace Amsterdam3D.FreeShape
 {
 	public class ScaleHandle : ObjectManipulation
 	{
 		private bool dragging = false;
-		private float objectY = 0.0f;
+		private float startObjectY = 0.0f;
 
 		private FreeShape freeShape;
 
@@ -18,12 +19,11 @@ namespace Amsterdam3D.FreeShape
 
 		private MeshRenderer renderer;
 
-		private void Start()
+		private void Awake()
 		{
 			freeShape = GetComponentInParent<FreeShape>();
 			renderer = GetComponent<MeshRenderer>();
-
-			if(renderer)
+			if (renderer)
 				renderer.material = defaultMaterial;
 		}
 
@@ -31,7 +31,7 @@ namespace Amsterdam3D.FreeShape
 		{
 			base.OnMouseDown();
 			dragging = true;
-			objectY = this.transform.position.y;
+			startObjectY = this.transform.position.y;
 		}
 		public override void OnMouseUp()
 		{
@@ -56,14 +56,14 @@ namespace Amsterdam3D.FreeShape
 
 		private void MoveHandleIntoDragDirection()
 		{
-			var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, objectY);
+			var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, startObjectY) - clickOffset;
 			var originalLocalPosition = transform.localPosition;
 			transform.position = dragTargetPosition;
 
 			transform.localPosition = new Vector3(
-				(Axis.x != 0.0f) ? transform.localPosition.x : originalLocalPosition.x,
-				(Axis.y != 0.0f) ? transform.localPosition.y : originalLocalPosition.y,
-				(Axis.z != 0.0f) ? transform.localPosition.z : originalLocalPosition.z
+				(AxisConstraint.x != 0.0f) ? transform.localPosition.x : originalLocalPosition.x,
+				(AxisConstraint.y != 0.0f) ? transform.localPosition.y : originalLocalPosition.y,
+				(AxisConstraint.z != 0.0f) ? transform.localPosition.z : originalLocalPosition.z
 			);
 
 			freeShape.UpdateShape(this);

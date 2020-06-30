@@ -8,7 +8,7 @@ public class RotationHandle : ObjectManipulation
 	private GameObject rotationOrigin;
 	private FreeShape parentFreeShape;
 	private Vector3 dragStartLocation;
-
+	private float startYRotation = 0;
 	private void Start()
 	{
 		parentFreeShape = GetComponentInParent<FreeShape>();
@@ -22,6 +22,9 @@ public class RotationHandle : ObjectManipulation
 		rotationOrigin.transform.position = parentFreeShape.FloorOrigin.position;
 
 		dragStartLocation = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y);
+
+		startYRotation = rotationOrigin.transform.eulerAngles.y;
+
 		parentFreeShape.transform.SetParent(rotationOrigin.transform);
 
 	}
@@ -31,7 +34,6 @@ public class RotationHandle : ObjectManipulation
 		this.transform.parent.SetParent(null);
 		Destroy(rotationOrigin);
 	}
-
 
 	private void OnMouseDrag()
 	{
@@ -44,8 +46,14 @@ public class RotationHandle : ObjectManipulation
 
 		var startNormal = (dragStartLocation - rotationOrigin.transform.position).normalized;
 		var targetNormal = (dragTargetPosition - rotationOrigin.transform.position).normalized;
+		startNormal.y = 0;
+		targetNormal.y = 0;
+
+		Debug.DrawLine(rotationOrigin.transform.position, rotationOrigin.transform.position+startNormal, Color.green);
+		Debug.DrawLine(rotationOrigin.transform.position, rotationOrigin.transform.position+targetNormal, Color.red);
 
 		var angle = Vector3.SignedAngle(targetNormal, startNormal,Vector3.up);
-		rotationOrigin.transform.eulerAngles = new Vector3(0.0f, -angle, 0.0f);
+
+		rotationOrigin.transform.rotation = Quaternion.Euler(0.0f,-angle,0.0f);
 	}
 }

@@ -7,7 +7,8 @@ using UnityEngine;
 
 namespace Amsterdam3D.FreeShape
 {
-	public class FreeShape : ObjectManipulation
+	[RequireComponent(typeof(Draggable))]
+	public class FreeShape : MonoBehaviour
 	{
 		[SerializeField]
 		private MeshFilter shape;
@@ -63,20 +64,19 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private TextMesh shapeLengthText;
 
-		private Vector3 clickOffset;
+		private void Awake()
+		{
+			collider = shape.GetComponent<MeshCollider>();
+			scaleHandles = GetComponentsInChildren<ScaleHandle>();
+			shape = GetComponent<MeshFilter>();
+		}
 
 		private void Start()
-		{
-			scaleHandles = GetComponentsInChildren<ScaleHandle>();
-			collider = shape.GetComponent<MeshCollider>();
-
+		{			
 			CreateCustomMesh();
-
 			FitScaleHandesInView();
-
 			UpdateShape();
-			MoveTowardsGround();
-
+			ApplyShappeOriginOffset();
 			DisplayHandles(true);
 		}
 
@@ -85,14 +85,11 @@ namespace Amsterdam3D.FreeShape
 			ShowEdgeLengthNumbers();
 		}
 
-		public override void OnMouseDown()
+		public void OnMouseDown()
 		{
-			base.OnMouseDown();
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
 			foreach (FreeShape freeShape in shapes)
 				freeShape.DisplayHandles(false);
-
-			clickOffset = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - this.transform.position;
 
 			DisplayHandles(true);
 		}
@@ -105,11 +102,6 @@ namespace Amsterdam3D.FreeShape
 			foreach(ScaleHandle handle in scaleHandles){
 				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(Camera.main.transform.position, this.transform.position)) * shapeScreenStartScale;
 			}
-		}
-
-		private void OnMouseDrag()
-		{
-			this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - clickOffset;
 		}
 
 		private void DisplayHandles(bool display)
@@ -128,7 +120,7 @@ namespace Amsterdam3D.FreeShape
 			shapeVertices = customMesh.vertices;
 		}
 
-		private void MoveTowardsGround()
+		private void ApplyShappeOriginOffset()
 		{
 			this.transform.Translate(0.0f, -FloorOrigin.localPosition.y, 0.0f);
 		}
@@ -206,12 +198,12 @@ namespace Amsterdam3D.FreeShape
 			var center = GetCenterFromOppositeHandle(ignoreHandle);
 			foreach (ScaleHandle handle in scaleHandles)
 			{
-				if (handle.Axis != ignoreHandle.Axis)
+				if (handle.AxisConstraint != ignoreHandle.AxisConstraint)
 				{
 					handle.transform.localPosition = new Vector3(
-						(handle.Axis.x != 0) ? handle.transform.localPosition.x : center.x,
-						(handle.Axis.y != 0) ? handle.transform.localPosition.y : center.y,
-						(handle.Axis.z != 0) ? handle.transform.localPosition.z : center.z
+						(handle.AxisConstraint.x != 0) ? handle.transform.localPosition.x : center.x,
+						(handle.AxisConstraint.y != 0) ? handle.transform.localPosition.y : center.y,
+						(handle.AxisConstraint.z != 0) ? handle.transform.localPosition.z : center.z
 					);
 				}
 			}
@@ -221,7 +213,7 @@ namespace Amsterdam3D.FreeShape
 		{
 			foreach (ScaleHandle handle in scaleHandles)
 			{
-				if (handle != fromHandle && handle.Axis == fromHandle.Axis)
+				if (handle != fromHandle && handle.AxisConstraint == fromHandle.AxisConstraint)
 				{
 					var center = Vector3.Lerp(handle.transform.localPosition, fromHandle.transform.localPosition, 0.5f);
 					UnityEngine.Debug.DrawLine(center, center + Vector3.up);

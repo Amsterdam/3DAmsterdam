@@ -71,15 +71,18 @@ namespace Amsterdam3D.UserLayers
 				newOBJ.SetMaterialData(mtlText);
 
 			newOBJ.SetGeometryData(objText);
-
 			newOBJ.Build(defaultLoadedObjectsMaterial);
+			
+			//Make interactable
 			newOBJ.transform.Rotate(0, 90, 0);
 			newOBJ.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
 ;			newOBJ.name = objModelName;
+			newOBJ.gameObject.AddComponent<Draggable>();
+			newOBJ.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJ.GetComponent<MeshFilter>().sharedMesh;
 
 			customObjectPlacer.AtPointer(newOBJ.gameObject);
 
-			//hide panel after loading
+			//hide panel and loading screen after loading
 			gameObject.SetActive(false);
 			loadingObjScreen.Hide();
 
