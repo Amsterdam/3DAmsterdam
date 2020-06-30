@@ -106,7 +106,7 @@ public class GeometryBuffer
 	{
 		currentSubMeshGroup.Faces.Add(f);
 		current.AllFaces.Add(f);
-		if (f.Vn >= 0)
+		if (f.vertexNormal >= 0)
 		{
 			current.NormalCount++;
 		}
@@ -134,7 +134,7 @@ public class GeometryBuffer
 	public bool HasNormals { get { return Normals.Count > 0; } }
 
 	// Max Vertices Limit for a given Mesh.
-	public static int MaxVerticesLimit = 64999;
+	public static long MaxVerticesLimit = 4294967296;
 
 	public void PopulateMeshes(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary, Material defaultMaterial)
 	{
@@ -165,13 +165,14 @@ public class GeometryBuffer
 					Debug.LogWarning("Maximum vertex number for a mesh exceeded for object: " + gameObjects[i].name);
 					break;
 				}
-				tvertices[k] = Vertices[fi.Vi];
-				if (HasUVs) tuvs[k] = Uvs[fi.Vu];
-				if (HasNormals && fi.Vn >= 0) tnormals[k] = Normals[fi.Vn];
+				tvertices[k] = Vertices[fi.vertexIndex];
+				if (HasUVs) tuvs[k] = Uvs[fi.vertexUV];
+				if (HasNormals && fi.vertexNormal >= 0) tnormals[k] = Normals[fi.vertexNormal];
 				k++;
 			}
 
 			Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
+			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; //Supports 4 billion verts instead of 65535
 			mesh.vertices = tvertices;
 			if (HasUVs) mesh.uv = tuvs;
 			if (objectHasNormals) mesh.normals = tnormals;
