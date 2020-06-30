@@ -43,74 +43,41 @@ public class ObjLoad : MonoBehaviour
 		buffer = new GeometryBuffer();
 	}
 
-	void GetFaceIndicesByOneFaceLine(IList<FaceIndices> faces, string[] p, bool isFaceIndexPlus)
+	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
 	{
-		if (isFaceIndexPlus)
+		for (int i = 1; i < linePart.Length; i++)
 		{
-			for (int j = 1; j < p.Length; j++)
+			string[] indices = linePart[i].Trim().Split("/".ToCharArray());
+			var faceIndices = new FaceIndices();
+			// vertex
+			int vertexIndex = ci(indices[0]);
+			faceIndices.vertexIndex = vertexIndex - 1;
+			// uv
+			if (indices.Length > 1 && indices[1] != "")
 			{
-				string[] c = p[j].Trim().Split("/".ToCharArray());
-				var fi = new FaceIndices();
-				// vertex
-				int vi = ci(c[0]);
-				fi.Vi = vi - 1;
-				// uv
-				if (c.Length > 1 && c[1] != "")
-				{
-					int vu = ci(c[1]);
-					fi.Vu = vu - 1;
-				}
-				// normal
-				if (c.Length > 2 && c[2] != "")
-				{
-					int vn = ci(c[2]);
-					fi.Vn = vn - 1;
-				}
-				else
-				{
-					fi.Vn = -1;
-				}
-				faces[j - 1] = fi;
+				int uvIndex = ci(indices[1]);
+				faceIndices.vertexUV = uvIndex - 1;
 			}
-		}
-		else
-		{ // for minus index
-			int vertexCount = buffer.Vertices.Count;
-			int uvCount = buffer.Uvs.Count;
-			for (int j = 1; j < p.Length; j++)
+			// normal
+			if (indices.Length > 2 && indices[2] != "")
 			{
-				string[] c = p[j].Trim().Split("/".ToCharArray());
-				var fi = new FaceIndices();
-				// vertex
-				int vi = ci(c[0]);
-				fi.Vi = vertexCount + vi;
-				// uv
-				if (c.Length > 1 && c[1] != "")
-				{
-					int vu = ci(c[1]);
-					fi.Vu = uvCount + vu;
-				}
-				// normal
-				if (c.Length > 2 && c[2] != "")
-				{
-					int vn = ci(c[2]);
-					fi.Vn = vertexCount + vn;
-				}
-				else
-				{
-					fi.Vn = -1;
-				}
-				faces[j - 1] = fi;
+				int normalIndex = ci(indices[2]);
+				faceIndices.vertexNormal = normalIndex - 1;
 			}
+			else
+			{
+				faceIndices.vertexNormal = -1;
+			}
+			targetFacesList[i - 1] = faceIndices;
 		}
 	}
+
 
 	public void SetGeometryData(string data)
 	{
 		string[] lines = data.Split("\n".ToCharArray());
 		var regexWhitespaces = new Regex(@"\s+");
-		bool isFirstInGroup = true;
-		bool isFaceIndexPlus = true;
+
 		for (int i = 0; i < lines.Length; i++)
 		{
 			string line = lines[i].Trim();
@@ -124,7 +91,6 @@ public class ObjLoad : MonoBehaviour
 			{
 				case O:
 					buffer.AddObject(linePart[1].Trim());
-					isFirstInGroup = true;
 					break;
 				case V:
 					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
@@ -137,21 +103,17 @@ public class ObjLoad : MonoBehaviour
 					break;
 				case F:
 					var faces = new FaceIndices[linePart.Length - 1];
-					if (isFirstInGroup)
-					{
-						isFirstInGroup = false;
-						string[] c = linePart[1].Trim().Split("/".ToCharArray());
-						isFaceIndexPlus = (ci(c[0]) >= 0);
-					}
-					GetFaceIndicesByOneFaceLine(faces, linePart, isFaceIndexPlus);
+					GetFaceIndices(faces, linePart);
 					if (linePart.Length == 4)
 					{
+						//tris
 						buffer.PushFace(faces[0]);
 						buffer.PushFace(faces[1]);
 						buffer.PushFace(faces[2]);
 					}
 					else if (linePart.Length == 5)
 					{
+						//quad
 						buffer.PushFace(faces[0]);
 						buffer.PushFace(faces[1]);
 						buffer.PushFace(faces[3]);
@@ -161,14 +123,15 @@ public class ObjLoad : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4:");
+						//ngons
+						Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
 					}
 					break;
 				case MTLLIB:
 					mtllib = line.Substring(linePart[0].Length + 1).Trim();
 					break;
 				case USEMTL:
-					isFirstInGroup = buffer.AddSubMeshGroup(linePart[1].Trim());
+					buffer.AddSubMeshGroup(linePart[1].Trim());
 					break;
 			}
 		}
@@ -439,6 +402,7 @@ public class ObjLoad : MonoBehaviour
 				gameObjects[i] = go;
 			}
 		}
+
 		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
 	}
 }
