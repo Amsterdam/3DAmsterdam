@@ -19,6 +19,10 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public Color pickedColor;
 
 	public Material[] targetMaterials;
+	public Image[] targetImages;
+
+	[SerializeField]
+	private bool radialConstraint = false;
 
 	void Start()
 	{
@@ -45,10 +49,19 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		regionRect = RectTransformToScreenSpace(dragDropRegion);
 		pickerRect = RectTransformToScreenSpace(pointer.rectTransform);
 
-		var xPosition = Mathf.Max(Mathf.Min(regionRect.max.x, Input.mousePosition.x), regionRect.min.x);
-		var yPosition = Mathf.Max(Mathf.Min(regionRect.max.y, Input.mousePosition.y), regionRect.min.y);
+		var newPosition = new Vector2(
+			Mathf.Max(Mathf.Min(regionRect.max.x, Input.mousePosition.x), regionRect.min.x),
+			Mathf.Max(Mathf.Min(regionRect.max.y, Input.mousePosition.y), regionRect.min.y)
+		);
 
-		pointer.rectTransform.position = new Vector2(xPosition, yPosition);
+		if (radialConstraint)
+		{
+			var radius = regionRect.width * 0.5f;
+			var distanceFromCenter = Vector2.Distance(regionRect.center, newPosition);
+			newPosition = Vector2.Lerp(regionRect.center,newPosition,(radius / distanceFromCenter));
+		}
+
+		pointer.rectTransform.position = newPosition;
 	}
 	public void Pick()
 	{
