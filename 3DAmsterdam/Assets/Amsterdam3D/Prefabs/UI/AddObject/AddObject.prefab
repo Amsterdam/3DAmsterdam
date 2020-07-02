@@ -77,7 +77,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Upload .OBJ
+  m_Text: Import .OBJ
 --- !u!1 &580711822187266149
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,6 +1045,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultLoadedObjectsMaterial: {fileID: 2100000, guid: c819d018e5b8b174d84f338b2ebb7dec,
     type: 2}
+  loadingObjScreen: {fileID: 0}
   customObjectPlacer: {fileID: 9150156595344381996}
 --- !u!1 &7601175907505151231
 GameObject:
