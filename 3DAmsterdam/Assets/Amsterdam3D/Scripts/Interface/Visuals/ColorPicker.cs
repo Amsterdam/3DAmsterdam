@@ -23,6 +23,8 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	[SerializeField]
 	private bool radialConstraint = false;
 
+	private float intensity = 1.0f;
+
 	void Start()
 	{
 		PickColorFromPalette();
@@ -43,6 +45,13 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		MovePointer();
 		PickColorFromPalette();
 	}
+
+	public void SetColorIntensity(float intensityValue){
+		intensity = intensityValue;
+		PickColorFromPalette();
+		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+	}
+
 	void MovePointer()
 	{
 		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
@@ -76,7 +85,7 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		inverseTransform.y /= paletteRectangle.height;
 
 		//Grab the raw texture pixel at the picker coordinates
-		pickedColor = colorPalette.GetPixel((int)(inverseTransform.x * W), (int)(inverseTransform.y * H));
+		pickedColor = colorPalette.GetPixel((int)(inverseTransform.x * W), (int)(inverseTransform.y * H)) * intensity;
 		pointer.color = pickedColor;
 
 		//Apply color to selected object/material
