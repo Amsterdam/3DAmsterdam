@@ -12,8 +12,7 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	[SerializeField]
 	private Image pointer;
 
-	private Rect regionRect;
-	private Rect pickerRect;
+	private Rect dragRegionRectangle;
 
 	public RawImage colorPalette;
 	public Color pickedColor;
@@ -26,44 +25,43 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 	void Start()
 	{
-		Pick();
+		PickColorFromPalette();
 	}
 
 	public void OnBeginDrag(PointerEventData EventData)
 	{
-		MovePicker();
-		Pick();
+		MovePointer();
+		PickColorFromPalette();
 	}
 	public void OnDrag(PointerEventData EventData = null)
 	{
-		MovePicker();
-		Pick();
+		MovePointer();
+		PickColorFromPalette();
 	}
 	public void OnEndDrag(PointerEventData EventData)
 	{
-		MovePicker();
-		Pick();
+		MovePointer();
+		PickColorFromPalette();
 	}
-	void MovePicker()
+	void MovePointer()
 	{
-		regionRect = RectTransformToScreenSpace(dragDropRegion);
-		pickerRect = RectTransformToScreenSpace(pointer.rectTransform);
+		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
 
 		var newPosition = new Vector2(
-			Mathf.Max(Mathf.Min(regionRect.max.x, Input.mousePosition.x), regionRect.min.x),
-			Mathf.Max(Mathf.Min(regionRect.max.y, Input.mousePosition.y), regionRect.min.y)
+			Mathf.Max(Mathf.Min(dragRegionRectangle.max.x, Input.mousePosition.x), dragRegionRectangle.min.x),
+			Mathf.Max(Mathf.Min(dragRegionRectangle.max.y, Input.mousePosition.y), dragRegionRectangle.min.y)
 		);
 
 		if (radialConstraint)
 		{
-			var radius = regionRect.width * 0.5f;
-			var distanceFromCenter = Vector2.Distance(regionRect.center, newPosition);
-			newPosition = Vector2.Lerp(regionRect.center,newPosition,(radius / distanceFromCenter));
+			var radius = dragRegionRectangle.width * 0.5f;
+			var distanceFromCenter = Vector2.Distance(dragRegionRectangle.center, newPosition);
+			newPosition = Vector2.Lerp(dragRegionRectangle.center,newPosition,(radius / distanceFromCenter));
 		}
 
 		pointer.rectTransform.position = newPosition;
 	}
-	public void Pick()
+	public void PickColorFromPalette()
 	{
 		//Lets inverse transform point so we can scale stuff as well
 		Vector3 inverseTransform = this.colorPalette.rectTransform.InverseTransformPoint(pointer.rectTransform.position);
