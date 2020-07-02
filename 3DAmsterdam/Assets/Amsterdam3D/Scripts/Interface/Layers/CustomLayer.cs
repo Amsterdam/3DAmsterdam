@@ -10,11 +10,12 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Text layerNameText;
 
-        public void Create(string name, GameObject link, CustomLayerType type)
+        public void Create(string name, GameObject link, CustomLayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
             layerNameText.text = name;
-            linkedObject = link;
+            LinkedObject = link;
+            parentInterfaceLayers = interfaceLayers;
         }
 
         public void RenameLayer(string newName){
@@ -24,12 +25,13 @@ namespace Amsterdam3D.Interface
         public void Remove()
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
+            parentInterfaceLayers.LayerVisuals.Close();
             Destroy(gameObject);
         }
 
         private void OnDestroy()
         {
-            GameObject.Destroy(linkedObject);
+            GameObject.Destroy(LinkedObject);
         }
     }
 }

@@ -16,20 +16,20 @@ namespace Amsterdam3D.Interface
 		protected CustomLayerType layerType = CustomLayerType.STATIC;
 
 		[SerializeField]
-		protected GameObject linkedObject;
+		private GameObject linkedObject;
+		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
-		private LayerVisuals layerVisuals;
-
-		private void Start()
-		{
-			
-		}
+		[SerializeField]
+		protected InterfaceLayers parentInterfaceLayers;
 
 		public void ToggleLinkedObject(bool isOn)
 		{
-			linkedObject.SetActive(isOn);
+			LinkedObject.SetActive(isOn);
 		}
 
-		public void 
+		public void OpenLayerVisualOptions(){
+			Debug.Log("Open layer visual buttons", this);
+			parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
+		}
 	}
 }

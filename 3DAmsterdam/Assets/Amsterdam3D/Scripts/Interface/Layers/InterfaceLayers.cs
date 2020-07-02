@@ -15,6 +15,10 @@ namespace Amsterdam3D.Interface
         private Animator animator;
         private bool toggledVisible = false;
 
+        [SerializeField]
+        private LayerVisuals layerVisualsDialog;
+        public LayerVisuals LayerVisuals { get => layerVisualsDialog; }
+
         void Awake()
         {
             animator = GetComponent<Animator>();
@@ -27,8 +31,8 @@ namespace Amsterdam3D.Interface
         }
 
         public void AddNewCustomObjectLayer(GameObject linkedWorldObject, CustomLayerType type){
-            CustomLayer newCustomlayer = Instantiate<CustomLayer>(customObjectLayerPrefab, layersContainer);
-            newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type);
+            CustomLayer newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
+            newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
             newCustomlayer.transform.SetSiblingIndex(0);
         }
     }
