@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
 	[SerializeField]
 	private RectTransform dragDropRegion;
@@ -25,24 +25,17 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 	private float intensity = 1.0f;
 
-	void Start()
+	public void OnPointerClick(PointerEventData eventData) => OnDrag(eventData);
+	public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);
+	public void OnEndDrag(PointerEventData eventData) => OnDrag(eventData);
+	public void OnDrag(PointerEventData eventData = null)
 	{
+		MovePointer();
 		PickColorFromPalette();
 	}
 
-	public void OnBeginDrag(PointerEventData EventData)
+	void Start()
 	{
-		MovePointer();
-		PickColorFromPalette();
-	}
-	public void OnDrag(PointerEventData EventData = null)
-	{
-		MovePointer();
-		PickColorFromPalette();
-	}
-	public void OnEndDrag(PointerEventData EventData)
-	{
-		MovePointer();
 		PickColorFromPalette();
 	}
 
