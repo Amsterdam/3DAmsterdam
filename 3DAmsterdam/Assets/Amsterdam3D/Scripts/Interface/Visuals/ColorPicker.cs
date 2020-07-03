@@ -17,13 +17,15 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public RawImage colorPalette;
 	public Color pickedColor;
 
-	public Material[] targetMaterials;
-	public Image[] targetImages;
-
+	[SerializeField]
+	private bool useVectorPalette = false;
 	[SerializeField]
 	private bool radialConstraint = false;
 
 	private float intensity = 1.0f;
+
+	public delegate void PickedNewColor(Color color);
+	public PickedNewColor pickedNewColor;
 
 	public void OnPointerClick(PointerEventData eventData) => OnDrag(eventData);
 	public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);
@@ -68,8 +70,8 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		//Lets inverse transform point so we can scale stuff as well
 		Vector3 inverseTransform = this.colorPalette.rectTransform.InverseTransformPoint(pointer.rectTransform.position);
 		var colorPalette = (Texture2D)this.colorPalette.texture;
-		int W = colorPalette.width;
-		int H = colorPalette.height;
+		int paletteWidth = colorPalette.width;
+		int paletteHeight = colorPalette.height;
 
 		var paletteRectangle = this.colorPalette.rectTransform.rect;
 		inverseTransform.x -= paletteRectangle.x;
@@ -77,15 +79,32 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		inverseTransform.x /= paletteRectangle.width;
 		inverseTransform.y /= paletteRectangle.height;
 
-		//Grab the raw texture pixel at the picker coordinates
-		pickedColor = colorPalette.GetPixel((int)(inverseTransform.x * W), (int)(inverseTransform.y * H)) * intensity;
+		if (useVectorPalette)
+		{
+			//Get a radial vector color based on pointer position
+			var redVector = Vector2.left;
+			var greenVector = Quaternion.AngleAxis(-120, Vector3.forward) * redVector;
+			var blueVector = Quaternion.AngleAxis(-120, Vector3.forward) * greenVector;
+
+			var pointerLocalVector = pointer.rectTransform.anchoredPosition.normalized;
+			var lightness = pointer.rectTransform.anchoredPosition.magnitude / (paletteWidth/2.0f);
+			print(lightness);
+			var red = Vector2.Dot(redVector, pointerLocalVector);
+			var green = Vector2.Dot(greenVector, pointerLocalVector);
+			var blue = Vector2.Dot(blueVector, pointerLocalVector);
+
+			pickedColor = Color.Lerp(Color.white, new Color(red,green,blue), lightness) * intensity;
+		}
+		else
+		{
+			//Grab the raw texture pixel at the picker coordinates
+			pickedColor = colorPalette.GetPixel((int)(inverseTransform.x * paletteWidth), (int)(inverseTransform.y * paletteHeight)) * intensity;
+		}
+		pickedColor.a = 1.0f;
 		pointer.color = pickedColor;
 
 		//Apply color to selected object/material
-		foreach (var material in targetMaterials)
-		{
-			material.color = pickedColor;
-		}
+		pickedNewColor.Invoke(pickedColor);
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)

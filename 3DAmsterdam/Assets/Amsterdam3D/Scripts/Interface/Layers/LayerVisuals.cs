@@ -25,6 +25,16 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private Vector3 locationOffset;
 
+		private void Start()
+		{
+			colorPicker.pickedNewColor += ChangeMaterialColor;
+		}
+
+		private void ChangeMaterialColor(Color pickedColor)
+		{
+			targetMaterialSlot?.ChangeColor(pickedColor);
+		}
+
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.transform.position = interfaceLayer.transform.position + locationOffset;
@@ -53,7 +63,7 @@ namespace Amsterdam3D.Interface
 					if (!uniqueMaterials.Contains(sharedMaterial))
 					{
 						uniqueMaterials.Add(sharedMaterial);
-						Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform).SetTargetMaterial(sharedMaterial, this);
+						Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform).Init(sharedMaterial, this);
 					}
 				}
 			}
@@ -64,9 +74,6 @@ namespace Amsterdam3D.Interface
 			//Get the selected MaterialSlot toggle from the ToggleGroup.
 			//This allows us to optionally use this logic later for a multiselect of material slots
 			targetMaterialSlot = MaterialSlotsGroup.ActiveToggles().FirstOrDefault().GetComponent<MaterialSlot>();
-
-			//Now we show the Colorpicker, but different MaterialSlot types can have other options
-			//colorPicker.
 		}
 
 		private void ClearMaterialSlots()

@@ -319,6 +319,7 @@ MonoBehaviour:
     type: 3}
   colorPicker: {fileID: 8849778405559282789}
   materialSlotsGroup: {fileID: 1129665818789608922}
+  locationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &2670736040088308368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,9 +1228,7 @@ MonoBehaviour:
   pointer: {fileID: 2161029794795823064}
   colorPalette: {fileID: 3805833765404930256}
   pickedColor: {r: 0, g: 0, b: 0, a: 0}
-  targetMaterials: []
-  targetImages:
-  - {fileID: 8793043751005778505}
+  useVectorPalette: 1
   radialConstraint: 1
 --- !u!1 &9117005810241167512
 GameObject:
@@ -1452,15 +1451,3 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 964223389739647831}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8793043751005778505 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8603764954914681118, guid: b016b3cda38b1e74ab19417e311a4e7d,
-    type: 3}
-  m_PrefabInstance: {fileID: 964223389739647831}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
