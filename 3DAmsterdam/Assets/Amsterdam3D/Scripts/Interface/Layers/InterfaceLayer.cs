@@ -22,6 +22,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;
 
+		[SerializeField]
+		private bool combinedMaterialSlots = false;
+
 		public void ToggleLinkedObject(bool isOn)
 		{
 			LinkedObject.SetActive(isOn);
