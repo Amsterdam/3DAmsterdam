@@ -21,7 +21,8 @@ namespace Amsterdam3D.Interface
 		public void Init(Material target, LayerVisuals targetLayerVisuals)
 		{
 			targetMaterial = target;
-			colorImage.color = targetMaterial.color;
+			colorImage.color = new Color(targetMaterial.color.r, targetMaterial.color.g, targetMaterial.color.b,1.0f);
+
 			layerVisuals = targetLayerVisuals;
 			GetComponent<Toggle>().group = targetLayerVisuals.MaterialSlotsGroup;
 		}
