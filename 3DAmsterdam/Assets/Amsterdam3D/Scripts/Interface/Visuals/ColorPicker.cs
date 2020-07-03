@@ -79,7 +79,7 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		inverseTransform.x /= paletteRectangle.width;
 		inverseTransform.y /= paletteRectangle.height;
 
-		if (useVectorPalette)
+		if (radialConstraint && useVectorPalette)
 		{
 			//Get a radial vector color based on pointer position
 			var redVector = Vector2.left;
@@ -88,7 +88,6 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 			var pointerLocalVector = pointer.rectTransform.anchoredPosition.normalized;
 			var lightness = pointer.rectTransform.anchoredPosition.magnitude / (paletteWidth/2.0f);
-			print(lightness);
 			var red = Vector2.Dot(redVector, pointerLocalVector);
 			var green = Vector2.Dot(greenVector, pointerLocalVector);
 			var blue = Vector2.Dot(blueVector, pointerLocalVector);

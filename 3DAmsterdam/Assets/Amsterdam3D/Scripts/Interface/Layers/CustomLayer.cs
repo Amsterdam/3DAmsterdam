@@ -14,7 +14,7 @@ namespace Amsterdam3D.Interface
         {
             layerType = type;
             layerNameText.text = name;
-            LinkedObject = link;
+            LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
         }
 
@@ -31,7 +31,7 @@ namespace Amsterdam3D.Interface
 
         private void OnDestroy()
         {
-            GameObject.Destroy(LinkedObject);
+            GameObject.Destroy(linkedObject);
         }
     }
 }

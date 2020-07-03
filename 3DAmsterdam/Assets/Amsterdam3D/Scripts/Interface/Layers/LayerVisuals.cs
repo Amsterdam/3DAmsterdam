@@ -32,7 +32,13 @@ namespace Amsterdam3D.Interface
 
 		private void ChangeMaterialColor(Color pickedColor)
 		{
-			targetMaterialSlot?.ChangeColor(pickedColor);
+			if (!targetMaterialSlot) return;
+
+			targetMaterialSlot.ChangeColor(pickedColor);
+			if (targetMaterialSlot.transform.GetSiblingIndex() == 0)
+			{
+				targetLayer.UpdateLayerPrimaryColor();
+			}
 		}
 
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
@@ -52,20 +58,9 @@ namespace Amsterdam3D.Interface
 		{
 			ClearMaterialSlots();
 
-			//Get all the unique materials we can find nested inside our linked GameObject.
-			//Then instantiate a new MaterialSlot in our container
-			var uniqueMaterials = new List<Material>();
-			Renderer[] linkedObjectRenderers = targetLayer.LinkedObject.GetComponentsInChildren<Renderer>();
-			foreach (Renderer renderer in linkedObjectRenderers)
+			foreach (Material uniqueMaterial in targetLayer.UniqueLinkedObjectMaterials)
 			{
-				foreach (Material sharedMaterial in renderer.sharedMaterials)
-				{
-					if (!uniqueMaterials.Contains(sharedMaterial))
-					{
-						uniqueMaterials.Add(sharedMaterial);
-						Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform).Init(sharedMaterial, this);
-					}
-				}
+				Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform).Init(uniqueMaterial, this);
 			}
 		}
 
