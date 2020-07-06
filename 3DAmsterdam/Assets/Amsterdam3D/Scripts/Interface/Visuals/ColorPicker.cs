@@ -50,8 +50,13 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 			greenVector = Quaternion.AngleAxis(-120, Vector3.forward) * redVector;
 			blueVector = Quaternion.AngleAxis(-120, Vector3.forward) * greenVector;
 		}
-		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
+		CalculateHitArea();
 		PickColorFromPalette();
+	}
+
+	public void CalculateHitArea()
+	{
+		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
 	}
 
 	public void SetColorIntensity(float intensityValue){

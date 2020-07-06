@@ -14,10 +14,10 @@ namespace Amsterdam3D.Interface
 		private MaterialSlot materialSlotPrefab;
 
 		[SerializeField]
-		private ColorSelector colorPicker;
+		private ColorPicker colorPicker;
 
 		[SerializeField]
-		private ColorSelector hexColorField;
+		private HexColorField hexColorField;
 
 		[SerializeField]
 		private ToggleGroup materialSlotsGroup;
@@ -27,7 +27,7 @@ namespace Amsterdam3D.Interface
 		private MaterialSlot targetMaterialSlot;
 
 		[SerializeField]
-		private Vector3 locationOffset;
+		private Vector2 locationOffset;
 
 		private void Start()
 		{
@@ -57,7 +57,8 @@ namespace Amsterdam3D.Interface
 
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
-			this.transform.position = interfaceLayer.transform.position + locationOffset;
+			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
+			colorPicker.CalculateHitArea();
 			targetLayer = interfaceLayer;
 			GenerateTargetLayerMaterialSlot();
 			gameObject.SetActive(true);

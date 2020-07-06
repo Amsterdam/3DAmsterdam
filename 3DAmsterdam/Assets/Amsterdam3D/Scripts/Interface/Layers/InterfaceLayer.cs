@@ -23,6 +23,7 @@ namespace Amsterdam3D.Interface
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
 
+
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;
 
@@ -31,7 +32,6 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private Image visualOptionsButton;
-
 		private void Start()
 		{
 			if (linkedObject){
