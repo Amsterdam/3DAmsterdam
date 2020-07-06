@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
 	[SerializeField]
 	private RectTransform dragDropRegion;
@@ -22,10 +22,15 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	[SerializeField]
 	private bool radialConstraint = false;
 
+	[SerializeField]
+	private Slider intensitySlider;
 	private float intensity = 1.0f;
 
-	public delegate void PickedNewColor(Color color);
-	public PickedNewColor pickedNewColor;
+	private Vector3 redVector = Vector2.left;
+	private Vector3 greenVector;
+	private Vector3 blueVector;
+
+	private bool ignoreChanges = false;
 
 	public void OnPointerClick(PointerEventData eventData) => OnDrag(eventData);
 	public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);
@@ -38,19 +43,28 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
 	void Start()
 	{
+		if (useVectorPalette && radialConstraint)
+		{
+			//Radial vector color based on pointer position
+			//This is based on a color wheel with red on the left, and green and blue following clockwise
+			greenVector = Quaternion.AngleAxis(-120, Vector3.forward) * redVector;
+			blueVector = Quaternion.AngleAxis(-120, Vector3.forward) * greenVector;
+		}
+		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
 		PickColorFromPalette();
 	}
 
 	public void SetColorIntensity(float intensityValue){
-		intensity = intensityValue;
-		PickColorFromPalette();
-		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+		if (!ignoreChanges)
+		{
+			intensity = intensityValue;
+			PickColorFromPalette();
+			colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+		}
 	}
 
 	void MovePointer()
 	{
-		dragRegionRectangle = RectTransformToScreenSpace(dragDropRegion);
-
 		var newPosition = new Vector2(
 			Mathf.Max(Mathf.Min(dragRegionRectangle.max.x, Input.mousePosition.x), dragRegionRectangle.min.x),
 			Mathf.Max(Mathf.Min(dragRegionRectangle.max.y, Input.mousePosition.y), dragRegionRectangle.min.y)
@@ -68,24 +82,19 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public void PickColorFromPalette()
 	{
 		//Lets inverse transform point so we can scale stuff as well
-		Vector3 inverseTransform = this.colorPalette.rectTransform.InverseTransformPoint(pointer.rectTransform.position);
+		Vector3 pointerPosition = this.colorPalette.rectTransform.InverseTransformPoint(pointer.rectTransform.position);
 		var colorPalette = (Texture2D)this.colorPalette.texture;
 		int paletteWidth = colorPalette.width;
 		int paletteHeight = colorPalette.height;
 
 		var paletteRectangle = this.colorPalette.rectTransform.rect;
-		inverseTransform.x -= paletteRectangle.x;
-		inverseTransform.y -= paletteRectangle.y;
-		inverseTransform.x /= paletteRectangle.width;
-		inverseTransform.y /= paletteRectangle.height;
+		pointerPosition.x -= paletteRectangle.x;
+		pointerPosition.y -= paletteRectangle.y;
+		pointerPosition.x /= paletteRectangle.width;
+		pointerPosition.y /= paletteRectangle.height;
 
 		if (radialConstraint && useVectorPalette)
 		{
-			//Get a radial vector color based on pointer position
-			var redVector = Vector2.left;
-			var greenVector = Quaternion.AngleAxis(-120, Vector3.forward) * redVector;
-			var blueVector = Quaternion.AngleAxis(-120, Vector3.forward) * greenVector;
-
 			var pointerLocalVector = pointer.rectTransform.anchoredPosition.normalized;
 			var lightness = pointer.rectTransform.anchoredPosition.magnitude / (paletteWidth/2.0f);
 			var red = Vector2.Dot(redVector, pointerLocalVector);
@@ -96,14 +105,29 @@ public class ColorPicker : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 		}
 		else
 		{
-			//Grab the raw texture pixel at the picker coordinates
-			pickedColor = colorPalette.GetPixel((int)(inverseTransform.x * paletteWidth), (int)(inverseTransform.y * paletteHeight)) * intensity;
+			//Grab the raw texture pixel at the coordinates of the pointer
+			pickedColor = colorPalette.GetPixel((int)(pointerPosition.x * paletteWidth), (int)(pointerPosition.y * paletteHeight)) * intensity;
 		}
 		pickedColor.a = 1.0f;
 		pointer.color = pickedColor;
 
-		//Apply color to selected object/material
-		pickedNewColor.Invoke(pickedColor);
+		selectedNewColor.Invoke(pickedColor,this);
+	}
+
+	public override void ChangeColorInput(Color inputColor)
+	{
+		var whiteness = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), new Vector3(1.0f, 1.0f, 1.0f));
+
+		ignoreChanges = true;
+		intensitySlider.value = whiteness / 0.5f;
+		ignoreChanges = false;
+
+		var targetVector = ((inputColor.r * redVector) + (inputColor.g * greenVector) + (inputColor.b * blueVector)).normalized;
+		targetVector = Vector3.Lerp(Vector3.zero, targetVector, whiteness);
+
+		targetVector.x = (dragDropRegion.rect.width / 2.0f) * targetVector.x;
+		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
+		pointer.rectTransform.anchoredPosition = targetVector;
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)

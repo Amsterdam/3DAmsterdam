@@ -14,7 +14,7 @@ namespace Amsterdam3D.Interface
 
 		public void Select()
 		{
-			layerVisuals.SelectedMaterialSlot();
+			layerVisuals.SelectMaterialSlot(this);
 			Debug.Log("Selected material " + targetMaterial.name);
 		}
 

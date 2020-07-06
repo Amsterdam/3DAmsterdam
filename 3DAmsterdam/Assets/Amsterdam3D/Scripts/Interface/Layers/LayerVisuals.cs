@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
@@ -13,7 +14,10 @@ namespace Amsterdam3D.Interface
 		private MaterialSlot materialSlotPrefab;
 
 		[SerializeField]
-		private ColorPicker colorPicker;
+		private ColorSelector colorPicker;
+
+		[SerializeField]
+		private ColorSelector hexColorField;
 
 		[SerializeField]
 		private ToggleGroup materialSlotsGroup;
@@ -27,10 +31,11 @@ namespace Amsterdam3D.Interface
 
 		private void Start()
 		{
-			colorPicker.pickedNewColor += ChangeMaterialColor;
+			colorPicker.selectedNewColor += ChangeMaterialColor;
+			hexColorField.selectedNewColor += ChangeMaterialColor;
 		}
 
-		private void ChangeMaterialColor(Color pickedColor)
+		private void ChangeMaterialColor(Color pickedColor, ColorSelector selector)
 		{
 			if (!targetMaterialSlot) return;
 
@@ -38,6 +43,15 @@ namespace Amsterdam3D.Interface
 			if (targetMaterialSlot.transform.GetSiblingIndex() == 0)
 			{
 				targetLayer.UpdateLayerPrimaryColor();
+			}
+
+			if(selector == colorPicker)
+			{
+				hexColorField.ChangeColorInput(pickedColor);
+			}
+			else if(selector == hexColorField)
+			{
+				colorPicker.ChangeColorInput(pickedColor);
 			}
 		}
 
@@ -60,15 +74,16 @@ namespace Amsterdam3D.Interface
 
 			foreach (Material uniqueMaterial in targetLayer.UniqueLinkedObjectMaterials)
 			{
-				Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform).Init(uniqueMaterial, this);
+				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform);
+				newMaterialSlot.Init(uniqueMaterial, this);
+
+				if (!targetMaterialSlot) SelectMaterialSlot(newMaterialSlot);
 			}
 		}
 
-		public void SelectedMaterialSlot()
+		public void SelectMaterialSlot(MaterialSlot materialSlot)
 		{
-			//Get the selected MaterialSlot toggle from the ToggleGroup.
-			//This allows us to optionally use this logic later for a multiselect of material slots
-			targetMaterialSlot = MaterialSlotsGroup.ActiveToggles().FirstOrDefault().GetComponent<MaterialSlot>();
+			targetMaterialSlot = materialSlot;
 		}
 
 		private void ClearMaterialSlots()

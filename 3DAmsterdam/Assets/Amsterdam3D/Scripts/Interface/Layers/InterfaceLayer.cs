@@ -52,17 +52,14 @@ namespace Amsterdam3D.Interface
 		}
 
 		private void GetUniqueNestedMaterials(){
-			print("Get Layer materials");
 			uniqueLinkedObjectMaterials = new List<Material>();
 			Renderer[] linkedObjectRenderers = linkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
-				print("Renderer");
 				foreach (Material sharedMaterial in renderer.sharedMaterials)
 				{
 					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial))
 					{
-						Debug.Log("material: ",sharedMaterial);
 						uniqueLinkedObjectMaterials.Add(sharedMaterial);
 					}
 				}
