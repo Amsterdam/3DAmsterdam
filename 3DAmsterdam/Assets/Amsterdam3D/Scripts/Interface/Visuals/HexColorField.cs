@@ -12,13 +12,14 @@ public class HexColorField : ColorSelector
 
     public void ChangedHexInput(string currentInputText)
     {
-        var hexText = currentInputText;         
-        if (hexText.Substring(0,1) != "#"){
-            hexText = "#" + hexText;
-            inputTextField.caretPosition = 1;
-        }
-
+        var hexText = currentInputText;
+        hexText = hexText.Replace("#", "").Trim();
+        hexText = "#" + hexText;
+        
         inputTextField.text = hexText.ToUpper();
+
+        if (inputTextField.text.Length == 1)
+            inputTextField.caretPosition = 1;
 
         ChangeHexToColor(inputTextField.text);
     }
