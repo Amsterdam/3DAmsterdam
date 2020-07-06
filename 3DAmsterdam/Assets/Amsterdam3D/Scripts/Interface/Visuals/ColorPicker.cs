@@ -25,6 +25,10 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	[SerializeField]
 	private Slider intensitySlider;
 	private float intensity = 1.0f;
+	[SerializeField]
+	private Image sliderHandle;
+	[SerializeField]
+	private Image sliderArea;
 
 	private Vector3 redVector = Vector2.left;
 	private Vector3 greenVector;
@@ -70,6 +74,8 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 	void MovePointer()
 	{
+		CalculateHitArea();
+
 		var newPosition = new Vector2(
 			Mathf.Max(Mathf.Min(dragRegionRectangle.max.x, Input.mousePosition.x), dragRegionRectangle.min.x),
 			Mathf.Max(Mathf.Min(dragRegionRectangle.max.y, Input.mousePosition.y), dragRegionRectangle.min.y)
@@ -106,7 +112,10 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 			var green = Vector2.Dot(greenVector, pointerLocalVector);
 			var blue = Vector2.Dot(blueVector, pointerLocalVector);
 
-			pickedColor = Color.Lerp(Color.white, new Color(red,green,blue), lightness) * intensity;
+			pickedColor = Color.Lerp(Color.white, new Color(red,green,blue), lightness);
+			sliderArea.color = pickedColor;
+
+			pickedColor *= intensity;
 		}
 		else
 		{
@@ -115,6 +124,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		}
 		pickedColor.a = 1.0f;
 		pointer.color = pickedColor;
+		sliderHandle.color = pickedColor;
 
 		selectedNewColor.Invoke(pickedColor,this);
 	}
@@ -137,6 +147,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		pointer.color = inputColor;
 
 		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+		intensitySlider.handleRect.GetComponent<Image>().color = pickedColor;
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)

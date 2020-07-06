@@ -58,7 +58,7 @@ namespace Amsterdam3D.Interface
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
-			colorPicker.CalculateHitArea();
+			
 			targetLayer = interfaceLayer;
 			GenerateTargetLayerMaterialSlot();
 			gameObject.SetActive(true);

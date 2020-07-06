@@ -13,6 +13,11 @@ public class HexColorField : ColorSelector
     public void ChangedHexInput(string currentInputText)
     {
         var hexText = currentInputText;
+
+        //just reset to white if we clear the field
+        if (hexText == "") hexText = "#FFFFFF";
+        
+        //always make sure with have a hash prefix
         hexText = hexText.Replace("#", "").Trim();
         hexText = "#" + hexText;
         
@@ -21,14 +26,6 @@ public class HexColorField : ColorSelector
         if (inputTextField.text.Length == 1)
             inputTextField.caretPosition = 1;
 
-        ChangeHexToColor(inputTextField.text);
-    }
-    public void ResetIfEmpty(string inputString)
-    {
-        if(inputTextField.text.Length < inputTextField.characterLimit)
-        {
-            inputTextField.text = inputTextField.text.PadRight(inputTextField.characterLimit, '0');
-        }
         ChangeHexToColor(inputTextField.text);
     }
 
