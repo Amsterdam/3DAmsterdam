@@ -23,6 +23,14 @@ public class HexColorField : ColorSelector
 
         ChangeHexToColor(inputTextField.text);
     }
+    public void ResetIfEmpty(string inputString)
+    {
+        if(inputTextField.text.Length < inputTextField.characterLimit)
+        {
+            inputTextField.text = inputTextField.text.PadRight(inputTextField.characterLimit, '0');
+        }
+        ChangeHexToColor(inputTextField.text);
+    }
 
     private void ChangeHexToColor(string hexColor){
         if (!inputTextField.isFocused) return;
