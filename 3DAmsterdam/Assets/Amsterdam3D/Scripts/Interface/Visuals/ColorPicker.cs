@@ -116,18 +116,22 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 	public override void ChangeColorInput(Color inputColor)
 	{
-		var whiteness = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), new Vector3(1.0f, 1.0f, 1.0f));
+		var intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
 
 		ignoreChanges = true;
-		intensitySlider.value = whiteness / 0.5f;
+		intensitySlider.value = Mathf.InverseLerp(0.0f,1.0f,intensity);
 		ignoreChanges = false;
 
 		var targetVector = ((inputColor.r * redVector) + (inputColor.g * greenVector) + (inputColor.b * blueVector)).normalized;
-		targetVector = Vector3.Lerp(Vector3.zero, targetVector, whiteness);
+		targetVector = Vector3.Lerp(targetVector, Vector3.zero, Mathf.InverseLerp(1.0f, 2.0f, intensity));
 
 		targetVector.x = (dragDropRegion.rect.width / 2.0f) * targetVector.x;
 		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
 		pointer.rectTransform.anchoredPosition = targetVector;
+
+		pointer.color = inputColor;
+
+		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)
