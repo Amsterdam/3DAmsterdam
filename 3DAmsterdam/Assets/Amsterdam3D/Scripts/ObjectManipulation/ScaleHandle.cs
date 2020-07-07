@@ -36,16 +36,18 @@ namespace Amsterdam3D.FreeShape
 		public override void OnMouseUp()
 		{
 			base.OnMouseUp();
-			renderer.material = defaultMaterial;
+			if (renderer)
+				renderer.material = defaultMaterial;
 			dragging = false;
 		}
 		private void OnMouseEnter()
 		{
-			renderer.material = hoverMaterial;
+			if (renderer)
+				renderer.material = hoverMaterial;
 		}
 		private void OnMouseExit()
 		{
-			if (dragging) return;
+			if (dragging || !renderer) return;
 			renderer.material = defaultMaterial;
 		}
 
