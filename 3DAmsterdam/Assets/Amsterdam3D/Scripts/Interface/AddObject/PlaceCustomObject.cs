@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
         private GameObject customObject;
 
         [SerializeField]
-        private CustomLayerType layerType;
+        private LayerType layerType;
 
         private InterfaceLayers layers;
 

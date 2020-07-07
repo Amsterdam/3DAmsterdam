@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Text layerNameText;
 
-        public void Create(string name, GameObject link, CustomLayerType type, InterfaceLayers interfaceLayers)
+        public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
             layerNameText.text = name;
