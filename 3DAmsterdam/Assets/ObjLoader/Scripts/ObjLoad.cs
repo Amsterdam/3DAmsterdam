@@ -90,7 +90,7 @@ public class ObjLoad : MonoBehaviour
 			switch (linePart[0])
 			{
 				case O:
-					buffer.AddObject(linePart[1].Trim());
+					//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count
 					break;
 				case V:
 					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
