@@ -35,6 +35,11 @@ namespace Amsterdam3D.Interface
 			hexColorField.selectedNewColor += ChangeMaterialColor;
 		}
 
+		/// <summary>
+		/// Change the color, and update all the color selectors to match the same color.
+		/// </summary>
+		/// <param name="pickedColor">The color to change to</param>
+		/// <param name="selector">The selector we used to change the color</param>
 		private void ChangeMaterialColor(Color pickedColor, ColorSelector selector)
 		{
 			if (!targetMaterialSlot) return;
@@ -45,34 +50,45 @@ namespace Amsterdam3D.Interface
 				targetLayer.UpdateLayerPrimaryColor();
 			}
 
-			if(selector == colorPicker)
+			//Match all selector colors
+			if (selector == colorPicker)
 			{
 				hexColorField.ChangeColorInput(pickedColor);
 			}
-			else if(selector == hexColorField)
+			else if (selector == hexColorField)
 			{
 				colorPicker.ChangeColorInput(pickedColor);
 			}
 		}
 
+		/// <summary>
+		/// Open this layer visuals panel with the options for this target interface layer.
+		/// </summary>
+		/// <param name="interfaceLayer">Target interface layer</param>
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
 			
 			targetLayer = interfaceLayer;
-			GenerateTargetLayerMaterialSlot();
+			GenerateMaterialSlots();
 			gameObject.SetActive(true);
 		}
 
+		/// <summary>
+		/// Closes the dialog GameObject
+		/// </summary>
 		public void Close()
 		{
 			gameObject.SetActive(false);
 		}
 
-		private void GenerateTargetLayerMaterialSlot()
+		/// <summary>
+		/// Generate all the material slots for this layer.
+		/// </summary>
+		private void GenerateMaterialSlots()
 		{
 			ClearMaterialSlots();
-
+			
 			foreach (Material uniqueMaterial in targetLayer.UniqueLinkedObjectMaterials)
 			{
 				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform);
@@ -82,18 +98,25 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		public void SelectMaterialSlot(MaterialSlot materialSlot)
-		{
-			targetMaterialSlot = materialSlot;
-			colorPicker.ChangeColorInput(targetMaterialSlot.GetColor);
-		}
-
+		/// <summary>
+		/// Clear all the current material slots.
+		/// </summary>
 		private void ClearMaterialSlots()
 		{
 			foreach (Transform materialSlot in MaterialSlotsGroup.transform)
 			{
 				Destroy(materialSlot.gameObject);
 			}
+		}
+
+		/// <summary>
+		/// Selection of a specific material slot.
+		/// </summary>
+		/// <param name="materialSlot">Selected material slot</param>
+		public void SelectMaterialSlot(MaterialSlot materialSlot)
+		{
+			targetMaterialSlot = materialSlot;
+			colorPicker.ChangeColorInput(targetMaterialSlot.GetColor);
 		}
 	}
 }
