@@ -11,6 +11,7 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private Image colorImage;
+		public Color GetColor => targetMaterial.color;
 
 		public void Select()
 		{

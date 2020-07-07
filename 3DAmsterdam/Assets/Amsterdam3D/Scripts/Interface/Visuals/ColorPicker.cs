@@ -145,9 +145,11 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		pointer.rectTransform.anchoredPosition = targetVector;
 
 		pointer.color = inputColor;
+		sliderHandle.color = inputColor;
+		sliderArea.color = inputColor;
 
 		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
-		intensitySlider.handleRect.GetComponent<Image>().color = pickedColor;
+		
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)

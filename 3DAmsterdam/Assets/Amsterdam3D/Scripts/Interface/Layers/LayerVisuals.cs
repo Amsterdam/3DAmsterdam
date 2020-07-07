@@ -85,6 +85,7 @@ namespace Amsterdam3D.Interface
 		public void SelectMaterialSlot(MaterialSlot materialSlot)
 		{
 			targetMaterialSlot = materialSlot;
+			colorPicker.ChangeColorInput(targetMaterialSlot.GetColor);
 		}
 
 		private void ClearMaterialSlots()
