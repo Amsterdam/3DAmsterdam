@@ -16,26 +16,21 @@ using ConvertCoordinates;
 
 public class TileLoader : MonoBehaviour
 {
-    private Boolean UpdateReady = true;
+    private Boolean UpdateTerrainTilesFinished = true;
     public Material DeFaultMaterial;
     private CameraView CV;
-    private Extent vorigeCV = new Extent(0, 0, 0, 0);
-    public string terrainUrl = "https://saturnus.geodan.nl/tomt/data/tiles/{z}/{x}/{y}.terrain?v=1.0.0";
-    //file:///D://QMtiles/{z}/{x}/{y}.terrain
-    //public string textureUrl = "https://saturnus.geodan.nl/mapproxy/bgt/service?crs=EPSG%3A3857&service=WMS&version=1.1.1&request=GetMap&styles=&format=image%2Fjpeg&layers=bgt&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326";
+    private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
+    public string terrainUrl = "https://acc.3d.amsterdam.nl/webmap/QMtiles/{z}/{x}/{y}.terrain";
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
-   // public string textureUrl = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=512&crs=EPSG%3A4326&srs=EPSG%3A4326";
     public GameObject placeholderTile;
     private const int tilesize = 180;
 
-    Texture2D myTexture;
 
-
-    readonly Dictionary<Vector3, GameObject> tileDb = new Dictionary<Vector3, GameObject>();
+    readonly Dictionary<Vector3, GameObject> activeTiles = new Dictionary<Vector3, GameObject>();
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
     const int maxParallelRequests = 8;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
-    public Dictionary<string, downloadRequest> pendingQueue = new Dictionary<string, downloadRequest>(maxParallelRequests);
+    public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
     public enum TileService
     {
@@ -67,35 +62,39 @@ public class TileLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        VerwijderTiles();
-        if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
+        RemoveTiles();
+
+        if (HasCameraViewChanged())
         {
-            if (UpdateReady)
+            if (UpdateTerrainTilesFinished)
             {
-                vorigeCV = CV.CameraExtent;
-                StartCoroutine(UpdateTerrainTilesOud(vorigeCV));
+                previousCameraViewExtent = CV.CameraExtent;
+                StartCoroutine(UpdateTerrainTiles(previousCameraViewExtent));
             }
         }
         
-        // verdergaan met downloaden uit de queue
-        if (pendingQueue.Count < maxParallelRequests && downloadQueue.Count > 0)
+        // Continue downloading from queue
+        if (activeDownloads.Count < maxParallelRequests && downloadQueue.Count > 0)
         {
             var request = downloadQueue.Dequeue();
-            if (pendingQueue.ContainsKey(request.Url))
-            {
-                return;
-            }
-            pendingQueue.Add(request.Url, request);
+
+            activeDownloads.Add(request.Url, request);
 
             //fire request
-            switch (request.Service)
-            {
-                case TileService.QM:
-                    StartCoroutine(requestQMTile(request.Url, request.TileId));
-                    break;
-                
-            }
+
+            StartCoroutine(requestQMTile(request.Url, request.TileId));
+
         }
+    }
+
+    bool HasCameraViewChanged()
+    {
+        bool cameraviewChanged = false;
+        if (previousCameraViewExtent.CenterX != CV.CameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.CameraExtent.CenterY)
+        {
+            cameraviewChanged=true;
+        }
+        return cameraviewChanged;
     }
 
     private GameObject DrawPlaceHolder(Vector3 t)
@@ -129,7 +128,7 @@ public class TileLoader : MonoBehaviour
 
     public void UpdateTerrainTextures()
     {
-        List<KeyValuePair<Vector3,GameObject>> temp = tileDb.ToList();
+        List<KeyValuePair<Vector3,GameObject>> temp = activeTiles.ToList();
 
         for (int i = 0; i < temp.Count; i++)
         {
@@ -140,7 +139,7 @@ public class TileLoader : MonoBehaviour
     private IEnumerator UpdateTerrainTexture(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
-        TerrainTile terrainTile;
+        
 
         //get tile texture data
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
@@ -156,12 +155,12 @@ public class TileLoader : MonoBehaviour
 
         if (!www.isNetworkError && !www.isHttpError)
         {
-            if (tileDb.ContainsKey(tileId))
+            if (activeTiles.ContainsKey(tileId))
             {
 
-                DestroyImmediate(tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
+                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
             }
         }
         else
@@ -170,44 +169,13 @@ public class TileLoader : MonoBehaviour
         }
     }
 
-
     private IEnumerator requestQMTile(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
         TerrainTile terrainTile;
 
-        //get tile texture data
-        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
-        string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-        if (tileId.z >= 17)
-        {
-            wmsUrl = wmsUrl.Replace("width=256", "width=1024");
-            wmsUrl = wmsUrl.Replace("height=256", "height=1024");
-        }
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(wmsUrl);
-        yield return www.SendWebRequest();
-
-        if (!www.isNetworkError && !www.isHttpError)
-        {
-            if (tileDb.ContainsKey(tileId))
-            {
-
-                DestroyImmediate(tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                tileDb[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
-            }
-        }
-        else
-        {
-            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
-        }
-
-
-
-
         ///QM-tile downloaden
-        www = new UnityWebRequest(url);
+        UnityWebRequest www = new UnityWebRequest(url);
 
         www.downloadHandler = handler;
         yield return www.SendWebRequest();
@@ -221,34 +189,68 @@ public class TileLoader : MonoBehaviour
             terrainTile = TerrainTileParser.Parse(stream);
 
             //update tile with height data
-            if (tileDb.ContainsKey(tileId))
+            if (activeTiles.ContainsKey(tileId))
             {
-                DestroyImmediate(tileDb[tileId].GetComponent<MeshFilter>().mesh);
-                tileDb[tileId].GetComponent<MeshFilter>().mesh.vertices = terrainTile.GetVertices(0);
-                tileDb[tileId].GetComponent<MeshFilter>().mesh.triangles = terrainTile.GetTriangles(0);
-                tileDb[tileId].GetComponent<MeshFilter>().mesh.uv = terrainTile.GetUV(0);
-                tileDb[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
+                DestroyImmediate(activeTiles[tileId].GetComponent<MeshFilter>().mesh);
+                activeTiles[tileId].GetComponent<MeshFilter>().mesh.vertices = terrainTile.GetVertices(0);
+                activeTiles[tileId].GetComponent<MeshFilter>().mesh.triangles = terrainTile.GetTriangles(0);
+                activeTiles[tileId].GetComponent<MeshFilter>().mesh.uv = terrainTile.GetUV(0);
+                activeTiles[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
 
 
-                tileDb[tileId].AddComponent<MeshCollider>();
-                
-                tileDb[tileId].GetComponent<MeshCollider>().sharedMesh = tileDb[tileId].GetComponent<MeshFilter>().sharedMesh;
-                tileDb[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
-                Vector3 loc = tileDb[tileId].transform.localPosition;
+                activeTiles[tileId].AddComponent<MeshCollider>();
+                activeTiles[tileId].GetComponent<MeshCollider>().sharedMesh = activeTiles[tileId].GetComponent<MeshFilter>().sharedMesh;
+                activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
+                Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
-                tileDb[tileId].transform.localPosition = loc;
-                tileDb[tileId].layer = 9;
+                activeTiles[tileId].transform.localPosition = loc;
+                activeTiles[tileId].layer = 9;
 
             }
         }
         else
         {
-            UnityEngine.Debug.LogError("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
-            UnityEngine.Debug.LogError(www.error);
+            UnityEngine.Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
+            UnityEngine.Debug.Log(www.error);
         }
+
+
+
+
+        //get tile texture data
+        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
+        Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
+        string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
+        if (tileId.z >= 17)
+        {
+            wmsUrl = wmsUrl.Replace("width=256", "width=1024");
+            wmsUrl = wmsUrl.Replace("height=256", "height=1024");
+        }
+        www = UnityWebRequestTexture.GetTexture(wmsUrl);
+        yield return www.SendWebRequest();
+
+        if (!www.isNetworkError && !www.isHttpError)
+        {
+            if (activeTiles.ContainsKey(tileId))
+            {
+
+                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
+                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+            }
+        }
+        else
+        {
+            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
+        }
+
+
+
+
+        
         
 
-        pendingQueue.Remove(url);
+        activeDownloads.Remove(url);
     }
 
     private float ComputeScaleFactorX(int z)
@@ -285,23 +287,6 @@ public class TileLoader : MonoBehaviour
         return TileKeys;
     }
 
-    private List<Vector3> SetBasicTilekeysOud(Extent Tempextent)
-    {
-        // bepalen welke tegels geladen moeten worden
-        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        
-
-        var tiles = schema.GetTileInfos(Tempextent, "13").ToList();
-        List<Vector3> TileKeys = new List<Vector3>();
-        foreach (var t in tiles)
-        {
-            Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
-            TileKeys.Add(td);
-        }
-        return TileKeys;
-    }
-
-
     private double GetMinimumDistance(float X, float Y, float Zoomlevel)
     {
         double TegelAfmeting = 180 / (Math.Pow(2, Zoomlevel)); //tegelafmeting in graden bij zoomniveau 10;
@@ -309,6 +294,7 @@ public class TileLoader : MonoBehaviour
         double Lat = (TegelAfmeting * Y) - 90;
         double H = CoordConvert.ReferenceWGS84.h;
         Vector3 LocatieUnity = new Vector3();
+        LocatieUnity = CoordConvert.WGS84toUnity(lon, Lat);
         LocatieUnity.x = (float)((lon - CoordConvert.ReferenceWGS84.lon) * CoordConvert.UnitsPerDegreeX);
         LocatieUnity.y = (float)CoordConvert.ReferenceWGS84.h;
         LocatieUnity.z = (float)((Lat - CoordConvert.ReferenceWGS84.lat) * CoordConvert.UnitsPerDegreeY);
@@ -317,177 +303,128 @@ public class TileLoader : MonoBehaviour
         double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
         return afstand;
     }
-    IEnumerator UpdateTerrainTilesOud(Extent Tempextent)
+    IEnumerator UpdateTerrainTiles(Extent Tempextent)
     {
-
-        List<Vector3> TileKeys = SetBasicTilekeys(Tempextent);
-        bool doorgaan = true;
+        UpdateTerrainTilesFinished = false;
+        List<Vector3> requiredTileKeys = SetBasicTilekeys(Tempextent);
+        bool subTilesAdded = true;
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        while (doorgaan)
+        while (subTilesAdded)
         {
             yield return null;
-            doorgaan = false;
-            foreach (Vector3 t in TileKeys)
+            subTilesAdded = false;
+            foreach (Vector3 tileKey in requiredTileKeys)
             {
-                Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(t.x.ToString()), int.Parse(t.y.ToString())), t.z.ToString(), schema);
+                
+                double tileSizeInDegrees = 180 / (Math.Pow(2, tileKey.z));
 
-                Vector3WGS locatieWGS = new Vector3WGS();
-                Vector3 LocatieUnity;
-                Vector3 afstand3D = new Vector3();
-                double afstand;
-                double Werkafstand = 100000;
-                double TegelAfmeting = 180 / (Math.Pow(2, t.z)); //tegelafmeting in graden bij zoomniveau 10;
-
-                Werkafstand = GetMinimumDistance(t.x + 0.5f, t.y + 0.5f, t.z);
-
-                double minafstand = 50* Math.Pow(2, (19 - t.z));
-                if (Werkafstand < minafstand && t.z < 18)
+                double tileDistance = GetMinimumDistance(tileKey.x + 0.5f, tileKey.y + 0.5f, tileKey.z);
+                double minafstand = 50* Math.Pow(2, (19 - tileKey.z));
+                if (tileDistance < minafstand && tileKey.z < 18)
                 {
-                    Vector3 toevoeging;
-                    toevoeging = new Vector3(t.x * 2, t.y * 2, t.z + 1);
-
-                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
-                    {
-                        TileKeys.Add(toevoeging);
-                    }
-                    toevoeging = new Vector3((t.x * 2) + 1, t.y * 2, t.z + 1);
-
-                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
-                        {
-                        
-                        TileKeys.Add(toevoeging);
-                    }
-
-                    toevoeging = new Vector3(t.x * 2, (t.y * 2) + 1, t.z + 1);
-                    
-                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
-                        {
-
-                        TileKeys.Add(toevoeging);
-                    }
-
-                    toevoeging = new Vector3((t.x * 2) + 1, (t.y * 2) + 1, t.z + 1);
-
-                    if (IsInsideExtent(toevoeging, CV.CameraExtent))
-                        {
-
-                        TileKeys.Add(toevoeging);
-                    }
-                    TileKeys.Remove(t);
-                    doorgaan = true;
+                    AddSubtilesToTileKeys(tileKey, requiredTileKeys);
+                    requiredTileKeys.Remove(tileKey);
+                    subTilesAdded = true;
                     break;
                 }
 
             }
         }
-        TileKeys.Reverse();
+        requiredTileKeys.Reverse();
 
-        // tegel zoomniveau 17 tpv camera toevoegen als dit buiten het camerabeeld valt.
-
-
-        //Vector3 campos = Camera.main.transform.position;
-
-        //Vector3 UnityMin = new Vector3(campos.x-10,campos.y-10,campos.z-10);
-        //Vector3 UnityMax = new Vector3(campos.x + 10, campos.y + 10, campos.z + 10);
-        //Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
-        //Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
-        //Extent LocatieExtent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
-
-        //if (!IsInsideExtent(LocatieExtent,Tempextent))
-        //{
-        //    var tiles = schema.GetTileInfos(LocatieExtent, "17").ToList();
-        //    foreach (var t in tiles)
-        //    {
-        //        Vector3 td = new Vector3(t.Index.Col, t.Index.Row, int.Parse(t.Index.Level));
-        //        if (!TileKeys.Contains(td))
-        //        {
-        //            TileKeys.Add(td);
-        //        }
-
-        //    }
-        //}
         yield return null;
 
         // bepalen welke reeds geladentegels niet meer nodig zijn en deze toevoegen aan TeVerwijderenTiles
-        Vector3[] TileDBKeys = tileDb.Keys.ToArray();
-        bool nodig = false;
-        foreach (Vector3 V in TileDBKeys)
+        Vector3[] activeTileKeys = activeTiles.Keys.ToArray();
+        bool tileIsRequired = false;
+        foreach (Vector3 activeTile in activeTileKeys)
         {
-            nodig = false;
-            foreach (var t in TileKeys)
+            tileIsRequired = false;
+            foreach (var requiredTileKey in requiredTileKeys)
             {
-                if (t == V)
+                if (requiredTileKey == activeTile)
                 {
-                    nodig = true;
+                    tileIsRequired = true;
                 }
             }
-            if (nodig == false)
+            if (tileIsRequired == false)
             {
-                // gameobject toevoegen aan de te verwijderen lijst
-                //Color kleur = new Color(255, 255, 255, 100);
-                //tileDb[V].GetComponent<Material>().color = kleur;
-                if (TeVerwijderenTiles.ContainsKey(V) == false)
+                if (TeVerwijderenTiles.ContainsKey(activeTile) == false)
                 {
-                    TeVerwijderenTiles.Add(V, tileDb[V]);
+                    TeVerwijderenTiles.Add(activeTile, activeTiles[activeTile]);
                 }
-                //verwijderen uit de lijst met geladen tegels
-                //Destroy(tileDb[V]);
-                //tileDb.Remove(V);
                 
             }
         }
 
-        // tegels die niet meer nodig zijn uit de downloadqueue verwijderen
-        downloadRequest[] reqs = downloadQueue.ToArray();
-
+        // update downloadqueue
+        downloadRequest[] downloadRequests = downloadQueue.ToArray();
         Queue<downloadRequest> tempQueue = new Queue<downloadRequest>();
-        foreach (downloadRequest req in reqs)
+        foreach (downloadRequest downloadRequest in downloadRequests)
         {
-            if (req.Service == TileService.WMS || req.Service == TileService.QM)
-            {
-                nodig = false;
-                foreach (var t in TileKeys)
+                tileIsRequired = false;
+                foreach (var requiredTileKey in requiredTileKeys)
                 {
-                    if (t == req.TileId)
+                    if (requiredTileKey == downloadRequest.TileId)
                     {
-                        nodig = true;
-                        tempQueue.Enqueue(req);
+                        tileIsRequired = true;
+                        tempQueue.Enqueue(downloadRequest);
                     }
                 }
-            }
-            else tempQueue.Enqueue(req);
         }
         downloadQueue = tempQueue;
 
-        //nieuwe tiles toevoegen aan TileDB
-        //immediately draw placeholder tile and fire request for texture and height. Depending on which one returns first, update place holder.
-        foreach (var t in TileKeys)
+        // Add new Tiles to ActiveTiles
+        foreach (var newTileKey in requiredTileKeys)
         {
             //draw placeholder tile
 
-            if (tileDb.ContainsKey(t) == false) // alleen verdergaan als de tegel nog niet in de lijst met geladentegels staat.
+            if (activeTiles.ContainsKey(newTileKey) == false) 
             {
-                GameObject tile = DrawPlaceHolder(t);
-                tileDb.Add(t, tile);
+                GameObject tile = DrawPlaceHolder(newTileKey);
+                activeTiles.Add(newTileKey, tile);
 
-                //get tile texture data
-                //Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(t.x.ToString()), int.Parse(t.y.ToString())), t.z.ToString(), schema);
-                //string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-                //if (t.z == 17)
-                //{
-                //    wmsUrl = wmsUrl.Replace("width=256", "width=1024");
-                //    wmsUrl = wmsUrl.Replace("height=256", "height=1024");
-                //}
-
-                //downloadQueue.Enqueue(new downloadRequest(wmsUrl, TileService.WMS, t));
-
-                //get tile height data (
-                var qmUrl = terrainUrl.Replace("{x}", t.x.ToString()).Replace("{y}", t.y.ToString()).Replace("{z}", int.Parse(t.z.ToString()).ToString());
-                downloadQueue.Enqueue(new downloadRequest(qmUrl, TileService.QM, t));
+                var qmUrl = terrainUrl.Replace("{x}", newTileKey.x.ToString()).Replace("{y}", newTileKey.y.ToString()).Replace("{z}", int.Parse(newTileKey.z.ToString()).ToString());
+                downloadQueue.Enqueue(new downloadRequest(qmUrl, TileService.QM, newTileKey));
             }
 
         }
-        UpdateReady = true;
+        UpdateTerrainTilesFinished = true;
+    }
+
+
+    void AddSubtilesToTileKeys(Vector3 parentTile, List<Vector3> TileKeys)
+    {
+        Vector3 newTile;
+
+        // Add bottom-left tile.
+        newTile = new Vector3(parentTile.x * 2, parentTile.y * 2, parentTile.z + 1);
+        if (IsInsideExtent(newTile, CV.CameraExtent))
+        {
+            TileKeys.Add(newTile);
+        }
+
+        // Add botton-riht tile.
+        newTile = new Vector3((parentTile.x * 2) + 1, parentTile.y * 2, parentTile.z + 1);
+        if (IsInsideExtent(newTile, CV.CameraExtent))
+        {
+
+            TileKeys.Add(newTile);
+        }
+        // Add top-left tile.
+        newTile = new Vector3(parentTile.x * 2, (parentTile.y * 2) + 1, parentTile.z + 1);
+        if (IsInsideExtent(newTile, CV.CameraExtent))
+        {
+            TileKeys.Add(newTile);
+        }
+
+        // Add top-right tile
+        newTile = new Vector3((parentTile.x * 2) + 1, (parentTile.y * 2) + 1, parentTile.z + 1);
+        if (IsInsideExtent(newTile, CV.CameraExtent))
+        {
+
+            TileKeys.Add(newTile);
+        }
     }
 
     Boolean IsInsideExtent(Vector3 tiledata, Extent BBox)
@@ -508,50 +445,53 @@ public class TileLoader : MonoBehaviour
 
    
 
-    void VerwijderTiles()
+    private bool IsReplacementTileInDownloadQueue(Vector3 currentTileKey, downloadRequest[] downloadQueue )
     {
-        Vector3[] TileDBKeys = TeVerwijderenTiles.Keys.ToArray();
-        downloadRequest[] reqs = downloadQueue.ToArray();
+        bool replacementInQueue = false;
 
+        Vector3 expectedBiggerTileKey = new Vector3(
+            UnityEngine.Mathf.Floor(currentTileKey.x / 2),
+            UnityEngine.Mathf.Floor(currentTileKey.y / 2), 
+            currentTileKey.z - 1
+            );
+        Vector3 expectedSmallerTileKey = new Vector3(currentTileKey.x * 2, currentTileKey.y * 2, currentTileKey.z + 1);
 
-        foreach (Vector3 V in TileDBKeys)
+        //check if smaller or bigger tilekey is in downloadqueue
+        foreach (var downloadQueueItem in downloadQueue)
         {
-            bool GroterAanwezig = false;
-            bool KleinerAanwezig = false;
-            float Xgroter = UnityEngine.Mathf.Floor(V.x / 2);
-            float Ygroter = UnityEngine.Mathf.Floor(V.y / 2);
-            float ZoomGroter = V.z - 1;
-            Vector3 Groter = new Vector3(Xgroter, Ygroter, ZoomGroter);
-            Vector3 Kleiner = new Vector3(V.x * 2, V.y * 2, V.z + 1);
-            foreach (var req in reqs)
+            if (downloadQueueItem.TileId == expectedBiggerTileKey) { replacementInQueue = true; }
+            if (downloadQueueItem.TileId == expectedSmallerTileKey) { replacementInQueue = true; }
+            if (downloadQueueItem.TileId == (expectedSmallerTileKey + new Vector3(1, 0, 0))) { replacementInQueue = true; }
+            if (downloadQueueItem.TileId == (expectedSmallerTileKey + new Vector3(0, 1, 0))) { replacementInQueue = true; }
+            if (downloadQueueItem.TileId == (expectedSmallerTileKey + new Vector3(1, 1, 0))) { replacementInQueue = true; }
+        }
+        //check if smaller or bigger tilekey is in activeDownloadList
+        foreach (var activeDownloadItem in activeDownloads)
+        {
+            if (activeDownloadItem.Value.TileId == expectedBiggerTileKey) { replacementInQueue = true; }
+            if (activeDownloadItem.Value.TileId == expectedSmallerTileKey) { replacementInQueue = true; }
+            if (activeDownloadItem.Value.TileId == (expectedSmallerTileKey + new Vector3(1, 0, 0))) { replacementInQueue = true; }
+            if (activeDownloadItem.Value.TileId == (expectedSmallerTileKey + new Vector3(0, 1, 0))) { replacementInQueue = true; }
+            if (activeDownloadItem.Value.TileId == (expectedSmallerTileKey + new Vector3(1, 1, 0))) { replacementInQueue = true; }
+        }
+
+        return replacementInQueue;
+    }
+
+    void RemoveTiles()
+    {
+        Vector3[] tilesToBeRemoved = TeVerwijderenTiles.Keys.ToArray();
+        downloadRequest[] downloadRequests = downloadQueue.ToArray();
+
+        foreach (Vector3 tileToBeRemoved in tilesToBeRemoved)
+        {
+            if (IsReplacementTileInDownloadQueue(tileToBeRemoved,downloadRequests)==false)
             {
-                //controleren of een grotere tegel op dezelfde locatie gedouwnload moet worden
-                if (req.TileId==Groter){GroterAanwezig = true;}
-                if (req.TileId == Kleiner){KleinerAanwezig = true;}
-                if (req.TileId == (Kleiner+new Vector3(1,0,0))) { KleinerAanwezig = true; }
-                if (req.TileId == (Kleiner + new Vector3(0, 1, 0))) { KleinerAanwezig = true; }
-                if (req.TileId == (Kleiner + new Vector3(1, 1, 0))) { KleinerAanwezig = true; }
-
-
-            }
-            foreach (var DR in pendingQueue)
-            {
-                if (DR.Value.TileId == Groter) { GroterAanwezig = true; }
-                if (DR.Value.TileId == Kleiner) { KleinerAanwezig = true; }
-                if (DR.Value.TileId == (Kleiner + new Vector3(1, 0, 0))) { KleinerAanwezig = true; }
-                if (DR.Value.TileId == (Kleiner + new Vector3(0, 1, 0))) { KleinerAanwezig = true; }
-                if (DR.Value.TileId == (Kleiner + new Vector3(1, 1, 0))) { KleinerAanwezig = true; }
-            }
-
-            if (GroterAanwezig==false && KleinerAanwezig==false)
-            {
-
-
-                Destroy(TeVerwijderenTiles[V].GetComponent<MeshRenderer>().material.mainTexture);
-                Destroy(TeVerwijderenTiles[V].GetComponent<MeshFilter>().mesh);
-                Destroy(TeVerwijderenTiles[V]);
-                TeVerwijderenTiles.Remove(V);
-                tileDb.Remove(V);
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.mainTexture);
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
+                Destroy(TeVerwijderenTiles[tileToBeRemoved]);
+                TeVerwijderenTiles.Remove(tileToBeRemoved);
+                activeTiles.Remove(tileToBeRemoved);
             }
         }
 
