@@ -117,6 +117,7 @@ namespace Amsterdam3D.Interface
 		{
 			targetMaterialSlot = materialSlot;
 			colorPicker.ChangeColorInput(targetMaterialSlot.GetColor);
+			hexColorField.ChangeColorInput(targetMaterialSlot.GetColor);
 		}
 	}
 }

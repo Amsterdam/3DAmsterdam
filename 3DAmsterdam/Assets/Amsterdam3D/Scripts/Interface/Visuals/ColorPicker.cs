@@ -54,8 +54,6 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 			greenVector = Quaternion.AngleAxis(-120, Vector3.forward) * redVector;
 			blueVector = Quaternion.AngleAxis(-120, Vector3.forward) * greenVector;
 		}
-		CalculateHitArea();
-		PickColorFromPalette();
 	}
 
 	public void CalculateHitArea()
@@ -67,8 +65,8 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		if (!ignoreChanges)
 		{
 			intensity = intensityValue;
-			PickColorFromPalette();
 			colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+			PickColorFromPalette();
 		}
 	}
 
@@ -131,6 +129,8 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 	public override void ChangeColorInput(Color inputColor)
 	{
+		CalculateHitArea();
+
 		var intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
 
 		ignoreChanges = true;
@@ -149,7 +149,6 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		sliderArea.color = inputColor;
 
 		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
-		
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)
