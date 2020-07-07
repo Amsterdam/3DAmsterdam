@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 
 namespace Amsterdam3D.FreeShape
 {
-	public class FreeShape : ObjectManipulation
+	[RequireComponent(typeof(Draggable))]
+	public class FreeShape : MonoBehaviour
 	{
 		[SerializeField]
 		private MeshFilter shape;
@@ -39,13 +41,15 @@ namespace Amsterdam3D.FreeShape
 
 		private Vector3[] shapeVertices;
 
-		[SerializeField]
-		private float margin = 10.0f;
-
 		private Mesh customMesh;
 		private MeshCollider collider;
 
-		private ScaleHandle[] handles;
+		private ScaleHandle[] scaleHandles;
+
+		[SerializeField]
+		private float numberScreenSize = 10.0f;
+		[SerializeField]
+		private float shapeScreenStartScale = 0.0f;
 
 		public Transform FloorOrigin { get => floorOrigin; set => floorOrigin = value; }
 
@@ -58,43 +62,44 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private TextMesh shapeLengthText;
 
-		private Vector3 clickOffset;
+		private void Awake()
+		{
+			collider = shape.GetComponent<MeshCollider>();
+			scaleHandles = GetComponentsInChildren<ScaleHandle>();
+			shape = GetComponent<MeshFilter>();
+		}
 
 		private void Start()
-		{
-			handles = GetComponentsInChildren<ScaleHandle>();
-			collider = shape.GetComponent<MeshCollider>();
-
+		{			
 			CreateCustomMesh();
+			FitScaleHandesInView();
 			UpdateShape();
-
-			ApplyOriginOffset();
-
+			ApplyShappeOriginOffset();
 			DisplayHandles(true);
 		}
 
 		private void Update()
 		{
-			TextLengthBetweenVerts(shapeHeightText, shapeVertices[21], shapeVertices[20]);
-			TextLengthBetweenVerts(shapeDepthText, shapeVertices[18], shapeVertices[21]);
-			TextLengthBetweenVerts(shapeLengthText, shapeVertices[8], shapeVertices[21]);
+			ShowEdgeLengthNumbers();
 		}
 
-		public override void OnMouseDown()
+		public void OnMouseDown()
 		{
-			base.OnMouseDown();
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
 			foreach (FreeShape freeShape in shapes)
 				freeShape.DisplayHandles(false);
 
-			clickOffset = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - this.transform.position;
-
 			DisplayHandles(true);
 		}
 
-		private void OnMouseDrag()
+		private void FitScaleHandesInView()
 		{
-			this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - clickOffset;
+			if (shapeScreenStartScale == 0.0f)
+				return;
+			
+			foreach(ScaleHandle handle in scaleHandles){
+				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(Camera.main.transform.position, this.transform.position)) * shapeScreenStartScale;
+			}
 		}
 
 		private void DisplayHandles(bool display)
@@ -113,7 +118,7 @@ namespace Amsterdam3D.FreeShape
 			shapeVertices = customMesh.vertices;
 		}
 
-		private void ApplyOriginOffset()
+		private void ApplyShappeOriginOffset()
 		{
 			this.transform.Translate(0.0f, -FloorOrigin.localPosition.y, 0.0f);
 		}
@@ -123,28 +128,37 @@ namespace Amsterdam3D.FreeShape
 			//Here we set the vert position axes to their corresponding handle positions
 			//Using the arbitrary internal vertex order indices for the Unity Cube mesh. 
 			//Note that 3 verts share the same location, because the cube is flat shaded.
-			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.localPosition.x - margin, FloorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x - margin, FloorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
-			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.localPosition.x - margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 16, 14, 1 }, handleXMin.localPosition.x, FloorOrigin.localPosition.y, handleZPlus.localPosition.z);
+			OverrideVertPosition(new int[] { 19, 15, 7 }, handleXMin.localPosition.x, FloorOrigin.localPosition.y, handleZMin.localPosition.z);
+			OverrideVertPosition(new int[] { 17, 9, 3 }, handleXMin.localPosition.x, handleY.transform.localPosition.y, handleZPlus.localPosition.z);
+			OverrideVertPosition(new int[] { 18, 11, 5 }, handleXMin.localPosition.x, handleY.transform.localPosition.y, handleZMin.localPosition.z);
 
-			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.localPosition.x + margin, handleY.transform.localPosition.y + margin, handleZMin.localPosition.z - margin);
-			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x + margin, FloorOrigin.localPosition.y, handleZPlus.localPosition.z + margin);
-			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x + margin, FloorOrigin.localPosition.y, handleZMin.localPosition.z - margin);
+			OverrideVertPosition(new int[] { 22, 8, 2 }, handleXPlus.localPosition.x, handleY.transform.localPosition.y, handleZPlus.localPosition.z);
+			OverrideVertPosition(new int[] { 21, 10, 4 }, handleXPlus.localPosition.x, handleY.transform.localPosition.y, handleZMin.localPosition.z);
+			OverrideVertPosition(new int[] { 23, 13, 0 }, handleXPlus.localPosition.x, FloorOrigin.localPosition.y, handleZPlus.localPosition.z);
+			OverrideVertPosition(new int[] { 20, 12, 6 }, handleXPlus.localPosition.x, FloorOrigin.localPosition.y, handleZMin.localPosition.z);
 
 			customMesh.SetVertices(shapeVertices);
 			customMesh.RecalculateBounds();
 		}
 
-		private void TextLengthBetweenVerts(TextMesh textMesh, Vector3 vertA, Vector3 vertB)
+		private void ShowEdgeLengthNumbers()
 		{
-			textMesh.text = Vector3.Distance(vertA, vertB).ToString("F2") + "m";
-			textMesh.transform.localPosition = Vector3.Lerp(vertA, vertB, 0.5f);
+			DrawEdgeLengthNumberText(shapeHeightText, shapeVertices[21], shapeVertices[20]);
+			DrawEdgeLengthNumberText(shapeDepthText, shapeVertices[18], shapeVertices[21]);
+			DrawEdgeLengthNumberText(shapeLengthText, shapeVertices[8], shapeVertices[21]);
+		}
 
-			var lookatTarget = new Vector3(Camera.main.transform.position.x, textMesh.transform.position.y, Camera.main.transform.position.z);
-			textMesh.transform.LookAt(lookatTarget);
-			textMesh.transform.Rotate(0, 180.0f, 0);
+		private void DrawEdgeLengthNumberText(TextMesh numberTextMesh, Vector3 fromPosition, Vector3 toPosition)
+		{
+			numberTextMesh.text = Vector3.Distance(fromPosition, toPosition).ToString("F2") + "m";
+			numberTextMesh.transform.localPosition = Vector3.Lerp(fromPosition, toPosition, 0.5f);
+
+			//Always turn to camera
+			numberTextMesh.transform.rotation = Camera.main.transform.rotation;
+
+			if (numberScreenSize > 0)
+				numberTextMesh.transform.localScale = Vector3.one * Vector3.Distance(Camera.main.transform.position, numberTextMesh.transform.position) * numberScreenSize;
 		}
 
 		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f)
@@ -169,7 +183,7 @@ namespace Amsterdam3D.FreeShape
 			}
 
 			//Move rotation handles onto the side edges
-			rotationHandle1.localPosition = Vector3.Lerp(shapeVertices[16], shapeVertices[17],0.5f);
+			rotationHandle1.localPosition = Vector3.Lerp(shapeVertices[16], shapeVertices[17], 0.5f);
 			rotationHandle2.localPosition = Vector3.Lerp(shapeVertices[20], shapeVertices[21], 0.5f);
 			rotationHandle3.localPosition = Vector3.Lerp(shapeVertices[18], shapeVertices[19], 0.5f);
 			rotationHandle4.localPosition = Vector3.Lerp(shapeVertices[22], shapeVertices[23], 0.5f);
@@ -180,14 +194,14 @@ namespace Amsterdam3D.FreeShape
 		private void AlignOtherScaleHandles(ScaleHandle ignoreHandle)
 		{
 			var center = GetCenterFromOppositeHandle(ignoreHandle);
-			foreach (ScaleHandle handle in handles)
+			foreach (ScaleHandle handle in scaleHandles)
 			{
-				if (handle.Axis != ignoreHandle.Axis)
+				if (handle.AxisConstraint != ignoreHandle.AxisConstraint)
 				{
 					handle.transform.localPosition = new Vector3(
-						(handle.Axis.x != 0) ? handle.transform.localPosition.x : center.x,
-						(handle.Axis.y != 0) ? handle.transform.localPosition.y : center.y,
-						(handle.Axis.z != 0) ? handle.transform.localPosition.z : center.z
+						(handle.AxisConstraint.x != 0) ? handle.transform.localPosition.x : center.x,
+						(handle.AxisConstraint.y != 0) ? handle.transform.localPosition.y : center.y,
+						(handle.AxisConstraint.z != 0) ? handle.transform.localPosition.z : center.z
 					);
 				}
 			}
@@ -195,9 +209,9 @@ namespace Amsterdam3D.FreeShape
 
 		private Vector3 GetCenterFromOppositeHandle(ScaleHandle fromHandle)
 		{
-			foreach (ScaleHandle handle in handles)
+			foreach (ScaleHandle handle in scaleHandles)
 			{
-				if (handle != fromHandle && handle.Axis == fromHandle.Axis)
+				if (handle != fromHandle && handle.AxisConstraint == fromHandle.AxisConstraint)
 				{
 					var center = Vector3.Lerp(handle.transform.localPosition, fromHandle.transform.localPosition, 0.5f);
 					UnityEngine.Debug.DrawLine(center, center + Vector3.up);
@@ -206,7 +220,7 @@ namespace Amsterdam3D.FreeShape
 			}
 			return Vector3.zero;
 		}
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{
 			if (!customMesh) return;
@@ -215,6 +229,6 @@ namespace Amsterdam3D.FreeShape
 				Handles.Label(this.transform.position + customMesh.vertices[i] + Vector3.up * i, "<b>vert:" + i + "</b>", new GUIStyle() { richText = true });
 			}
 		}
-		#endif
+#endif
 	}
 }

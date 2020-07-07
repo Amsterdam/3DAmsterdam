@@ -366,11 +366,10 @@ namespace Amsterdam3D.CameraMotion
                 var mouseX = Input.GetAxis("Mouse X");
                 var mouseY = Input.GetAxis("Mouse Y");
 
-                if (camera.transform.position.y > 50f)
-                {
-                    camera.transform.RotateAround(rotatePoint, camera.transform.right, -mouseY * 5f);
-                    camera.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
-                }
+                camera.transform.RotateAround(rotatePoint, camera.transform.right, -mouseY * 5f);
+                camera.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+
+                currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
             }
         }
 

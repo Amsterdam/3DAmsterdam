@@ -5,34 +5,28 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-    public enum CustomLayerType
-    {
-        BASICSHAPE,
-        OBJMODEL
-    }
-    public class CustomLayer : MonoBehaviour
-    {       
-        private CustomLayerType layerType = CustomLayerType.BASICSHAPE;
-        private GameObject linkedObject;
-
+    public class CustomLayer : InterfaceLayer
+    {               
         [SerializeField]
         private Text layerNameText;
 
-        public void Remove()
-        {
-            //TODO: A confirmation before removing might be required. Verify.
-            Destroy(gameObject);
-        }
-
-        public void Create(string name, GameObject link, CustomLayerType type)
+        public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
             layerNameText.text = name;
-            linkedObject = link;
+            LinkObject(link);
+            parentInterfaceLayers = interfaceLayers;
         }
 
-        public void ToggleLinkedObject(bool isOn){
-            linkedObject.SetActive(isOn);
+        public void RenameLayer(string newName){
+            layerNameText.text = newName;
+        }
+
+        public void Remove()
+        {
+            //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
+            parentInterfaceLayers.LayerVisuals.Close();
+            Destroy(gameObject);
         }
 
         private void OnDestroy()
