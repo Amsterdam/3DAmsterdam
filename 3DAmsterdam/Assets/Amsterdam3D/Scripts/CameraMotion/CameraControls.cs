@@ -323,7 +323,7 @@ namespace Amsterdam3D.CameraMotion
 
         private void Dragging()
         {
-            dragSpeed = Mathf.Sqrt(camera.transform.position.y) * dragFactor;
+            dragSpeed = Mathf.Sqrt(camera.transform.position.y) * dragFactor * Time.deltaTime;
 
             if (!(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
             {
