@@ -8,34 +8,34 @@ using System;
 using System.Text.RegularExpressions;
 
 
-    /// <summary>
-    /// enum to indentify the status of a BuildingTile
-    /// </summary>
-    //public enum BuildingTileStatus
-    //{
-    //    WaitingForDownload,     //ready to be downloaded
-    //    Downloading,            //download is active
-    //    PendingBuild,             //waiting for display
-    //    Building,             //getting displayed
-    //    Built,              //Assetbundlecontent is displayed
-    //    PendingDestroy
-    //}
-    //class BuildingTileData
-    //{
-    //    public Vector3 id;
-    //    public List<GameObject> Gameobjecten = new List<GameObject>();
-    //    public AssetBundle AB;
-    //    public bool TeVerwijderen = false;
-    //    public BuildingTileStatus Status;
+/// <summary>
+/// enum to indentify the status of a BuildingTile
+/// </summary>
+public enum TileStatus
+{
+    WaitingForDownload,
+    Downloading,
+    PendingBuild,
+    Building,
+    Built,
+    PendingDestroy
+}
+//class BuildingTileData
+//{
+//    public Vector3 id;
+//    public List<GameObject> Gameobjecten = new List<GameObject>();
+//    public AssetBundle AB;
+//    public bool TeVerwijderen = false;
+//    public BuildingTileStatus Status;
 
-    //    public BuildingTileData(Vector3 TileID)
-    //    {
-    //        id = TileID;
-    //        Status = BuildingTileStatus.WaitingForDownload;
-    //    }
-    //}
+//    public BuildingTileData(Vector3 TileID)
+//    {
+//        id = TileID;
+//        Status = BuildingTileStatus.WaitingForDownload;
+//    }
+//}
 
-    public class BoomTileManager : MonoBehaviour
+public class BoomTileManager : MonoBehaviour
     {
         public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
         public Material kruinmateriaal;
@@ -48,7 +48,7 @@ using System.Text.RegularExpressions;
         private Boolean BijwerkenGereed = true;
 
         private Dictionary<string, float> gebouwenlijst = new Dictionary<string, float>();
-        private Dictionary<Vector3, BuildingTileData> buildingTiles = new Dictionary<Vector3, BuildingTileData>();
+        private Dictionary<Vector3, TileData> buildingTiles = new Dictionary<Vector3, TileData>();
         private List<Vector3> PendingDownloads = new List<Vector3>();
         private List<Vector3> ActiveDownloads = new List<Vector3>();
         private List<Vector3> PendingBuilds = new List<Vector3>();
@@ -121,7 +121,7 @@ using System.Text.RegularExpressions;
             }
 
             // tegels verwijderen die niet meer nodig zijn
-            foreach (KeyValuePair<Vector3, BuildingTileData> KeyPair in buildingTiles)
+            foreach (KeyValuePair<Vector3, TileData> KeyPair in buildingTiles)
             {
                 if (!BuildingTilesNeeded.ContainsKey(KeyPair.Key))
                 {
@@ -139,14 +139,14 @@ using System.Text.RegularExpressions;
         {
             if (!buildingTiles.ContainsKey(TileID))
             {
-                buildingTiles.Add(TileID, new BuildingTileData(TileID));
+                buildingTiles.Add(TileID, new TileData(TileID));
                 PendingDownloads.Add(TileID);
             }
             else
             {
-                if (buildingTiles[TileID].Status == BuildingTileStatus.PendingDestroy)
+                if (buildingTiles[TileID].Status == TileStatus.PendingDestroy)
                 {
-                    buildingTiles[TileID].Status = BuildingTileStatus.Built; //status terugzetten naar Built
+                    buildingTiles[TileID].Status = TileStatus.Built; //status terugzetten naar Built
                     PendingDestroy.RemoveAll(elem => elem == TileID); //verwijderen uit RemoveBuilds
                 }
             }
@@ -161,7 +161,7 @@ using System.Text.RegularExpressions;
             if (!PendingDestroy.Contains(TileID) && !ActiveDownloads.Contains(TileID) && !ActiveBuilds.Contains(TileID) && buildingTiles.ContainsKey(TileID))
             {
                 PendingDestroy.Add(TileID);
-                buildingTiles[TileID].Status = BuildingTileStatus.PendingDestroy;
+                buildingTiles[TileID].Status = TileStatus.PendingDestroy;
                 PendingDownloads.RemoveAll(elem => elem == TileID);
                 PendingBuilds.RemoveAll(elem => elem == TileID);
 
@@ -176,13 +176,13 @@ using System.Text.RegularExpressions;
 
             {
                 Vector3 TileID = PendingDestroy[j];
-                if (buildingTiles[TileID].AB != null)
+                if (buildingTiles[TileID].assetBundle != null)
                 {
-                    buildingTiles[TileID].AB.Unload(true);
-                    for (int i = buildingTiles[TileID].Gameobjecten.Count - 1; i > -1; i--)
+                    buildingTiles[TileID].assetBundle.Unload(true);
+                    for (int i = buildingTiles[TileID].gameObjects.Count - 1; i > -1; i--)
                     {
                         
-                        Destroy(buildingTiles[TileID].Gameobjecten[i]);
+                        Destroy(buildingTiles[TileID].gameObjects[i]);
                     }
                 }
                 buildingTiles.Remove(TileID);
@@ -194,7 +194,7 @@ using System.Text.RegularExpressions;
                 Vector3 TileID = PendingDownloads[0];
                 PendingDownloads.RemoveAt(0);
                 ActiveDownloads.Add(TileID);
-                buildingTiles[TileID].Status = BuildingTileStatus.Downloading;
+                buildingTiles[TileID].Status = TileStatus.Downloading;
                 StartCoroutine(DownloadAssetBundleWebGL(TileID));
             }
             //builden wanneer mogelijk
@@ -227,11 +227,11 @@ using System.Text.RegularExpressions;
         {
             /////downloaden van de Assetbundle
             ///
-            BuildingTileData btd = buildingTiles[TileID];
+            TileData btd = buildingTiles[TileID];
 //#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
 //            BuildingURL = "file:///D:/Github/WebGL/Bomen/";
 //#endif
-            string url = BuildingURL + "bomen_" + ((int)btd.id.x).ToString() + "-" + ((int)btd.id.y).ToString();
+            string url = BuildingURL + "bomen_" + ((int)btd.tileID.x).ToString() + "-" + ((int)btd.tileID.y).ToString();
         
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
@@ -239,18 +239,18 @@ using System.Text.RegularExpressions;
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    ActiveDownloads.Remove(btd.id);
-                    btd.Status = BuildingTileStatus.Built;
+                    ActiveDownloads.Remove(btd.tileID);
+                    btd.Status = TileStatus.Built;
                     
                 }
                 else
                 {
                     // Get downloaded asset bundle
                     AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    btd.AB = bundle;
-                    ActiveDownloads.Remove(btd.id);
-                    btd.Status = BuildingTileStatus.PendingBuild;
-                    PendingBuilds.Add(btd.id);
+                    btd.assetBundle = bundle;
+                    ActiveDownloads.Remove(btd.tileID);
+                    btd.Status = TileStatus.PendingBuild;
+                    PendingBuilds.Add(btd.tileID);
                 }
             }
 
@@ -259,22 +259,22 @@ using System.Text.RegularExpressions;
 
         private IEnumerator ProcessBuildingTile(Vector3 TileID)
         {
-            BuildingTileData btd = buildingTiles[TileID];
+            TileData btd = buildingTiles[TileID];
 
             //meshes uit assetbundle inlezen
             GameObject[] ABAssets = new GameObject[0];
             try
             {
-                btd.AB.LoadAllAssets<Mesh>();
+                btd.assetBundle.LoadAllAssets<Mesh>();
             
-                ABAssets = btd.AB.LoadAllAssets<GameObject>();
+                ABAssets = btd.assetBundle.LoadAllAssets<GameObject>();
             }
             catch (Exception)
             {
-                btd.Status = BuildingTileStatus.Built;
-            ActiveBuilds.Remove(btd.id);
+                btd.Status = TileStatus.Built;
+            ActiveBuilds.Remove(btd.tileID);
             //////instantiaten en assets loaden
-            btd.Status = BuildingTileStatus.Built;
+            btd.Status = TileStatus.Built;
             yield break;
 
             }
@@ -282,7 +282,7 @@ using System.Text.RegularExpressions;
             {
                 GameObject boomasset = Instantiate(ass, transform);
                 //add to Buildingtiledata
-                btd.Gameobjecten.Add(boomasset);
+                btd.gameObjects.Add(boomasset);
             yield return null;
             if (ass.name.Contains("bomenkruin"))
             {
@@ -297,9 +297,9 @@ using System.Text.RegularExpressions;
 
                 yield return null;
             }
-        ActiveBuilds.Remove(btd.id);
+        ActiveBuilds.Remove(btd.tileID);
         //////instantiaten en assets loaden
-        btd.Status = BuildingTileStatus.Built;
+        btd.Status = TileStatus.Built;
 
 
         }
