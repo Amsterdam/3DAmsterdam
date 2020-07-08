@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using ConvertCoordinates;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-using ConvertCoordinates;
 using UnityEngine.EventSystems;
 
 namespace Amsterdam3D.Interface
 {
-    public class Minimap : MonoBehaviour, IPointerClickHandler, IDragHandler
+    public class Minimap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         private Vector3 direction;
 
@@ -24,8 +22,23 @@ namespace Amsterdam3D.Interface
         private const float topRightLat = 52.454227f;
         private const float topRightLong = 5.108260f;
 
+        [SerializeField]
+        private float scaleSpeed = 10.0f;
+
+        private Vector2 defaultScale;
+
+        [SerializeField]
+        private float zoomMargin = 60;
+        private Vector2 zoomScreenScale;
+
+        private bool holdAndZoom = false;
+
+        [SerializeField]
+        private bool moveCameraOnDrag = false;
+
         private void Start()
         {
+            defaultScale = transform.localScale;
             startPosition = transform.localPosition;
             CalculateMapCoordinates();
         }
@@ -44,7 +57,7 @@ namespace Amsterdam3D.Interface
         private void AlignPointerToCamera()
         {
             PositionPointer();
-            RotatePointerByCameraDirection();
+            RotatePointerToCameraLookDirection();
         }
 
         private void PositionPointer()
@@ -54,19 +67,52 @@ namespace Amsterdam3D.Interface
             minimapPointer.anchorMin = minimapPointer.anchorMax = new Vector3(posX, posY, 0);
         }
 
-        private void RotatePointerByCameraDirection()
+        private void RotatePointerToCameraLookDirection()
         {
             direction.z = Camera.main.transform.eulerAngles.y;
             minimapPointer.localEulerAngles = direction * -1.0f;
         }
 
+        IEnumerator TransitionToScale(Vector2 targetScale)
+        {
+            while(Vector2.Distance(targetScale,transform.localScale) > 0.01f)
+            {
+                transform.localScale = Vector2.Lerp(transform.localScale, targetScale, scaleSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
+
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != 0) return;
+
+            if(!holdAndZoom)
+            {
+                holdAndZoom = true;
+
+                zoomScreenScale.x = zoomScreenScale.y = (Screen.height-zoomMargin) / mapImage.rect.height;
+                                
+                StopAllCoroutines();
+                StartCoroutine(TransitionToScale(zoomScreenScale));
+            }
+
             ConvertClickToMovePosition(eventData);
         }
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData eventData)
         {
+            if (eventData.button != 0) return;
+
+            ConvertClickToMovePosition(eventData);            
+        }
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (eventData.button != 0) return;
+
             ConvertClickToMovePosition(eventData);
+
+            holdAndZoom = false;
+            StopAllCoroutines();
+            StartCoroutine(TransitionToScale(defaultScale));
         }
 
         /// <summary>
@@ -79,12 +125,12 @@ namespace Amsterdam3D.Interface
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(mapImage, eventData.position, eventData.pressEventCamera, out localPositionInRectTransform))
                 return;
 
-            var interpolatedWidth = mapImage.rect.width * 0.5f;
-            var interpolatedHeight = mapImage.rect.height * 0.5f;
+            var interpolatedWidth = mapImage.rect.width;
+            var interpolatedHeight = mapImage.rect.height;
 
             localPositionInRectTransform = new Vector2(
-                Mathf.InverseLerp(-interpolatedWidth, interpolatedWidth, localPositionInRectTransform.x),
-                Mathf.InverseLerp(-interpolatedHeight, interpolatedHeight, localPositionInRectTransform.y)
+                Mathf.InverseLerp(-interpolatedWidth, 0.0f, localPositionInRectTransform.x),
+                Mathf.InverseLerp(0.0f, interpolatedHeight, localPositionInRectTransform.y)
             );
             MoveToLocationOnMap(localPositionInRectTransform);
         }
