@@ -43,13 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4214f956c7198246a26fbd85ca682eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingURL: https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/
-  GebouwMateriaal: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  HighLightMateriaal: {fileID: 2100000, guid: cd867c0d1d193d04e89dcecaef7cb1fd, type: 2}
-  Max_Afstand_Daken: 750
-  Max_Afstand_BAG: 2000
-  Max_Afstand_Top10: 5000
-  MAX_Concurrent_Downloads: 5
+  assetURL: https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/
+  defaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
+  highLightMaterial: {fileID: 2100000, guid: cd867c0d1d193d04e89dcecaef7cb1fd, type: 2}
+  maximumDistanceLOD2: 500
+  maximumDistanceLOD1: 1000
+  maximumDistanceLOD0: 6000
+  maximumConcurrentDownloads: 5
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
