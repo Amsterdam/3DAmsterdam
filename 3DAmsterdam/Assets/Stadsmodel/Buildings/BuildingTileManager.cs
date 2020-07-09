@@ -59,10 +59,10 @@ public class BuildingTileManager : MonoBehaviour
         {
             return;
         }
-        if (previousCameraViewExtent.CenterX != cameraViewExtent.CameraExtent.CenterX || previousCameraViewExtent.CenterY != cameraViewExtent.CameraExtent.CenterY)
+        if (previousCameraViewExtent.CenterX != cameraViewExtent.cameraExtent.CenterX || previousCameraViewExtent.CenterY != cameraViewExtent.cameraExtent.CenterY)
         {
-            UpdateActiveTileList(cameraViewExtent.CameraExtent);
-            previousCameraViewExtent = cameraViewExtent.CameraExtent;
+            UpdateActiveTileList(cameraViewExtent.cameraExtent);
+            previousCameraViewExtent = cameraViewExtent.cameraExtent;
         }
 
 
