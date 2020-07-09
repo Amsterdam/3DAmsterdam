@@ -2,6 +2,7 @@
 using UnityEngine;
 using ConvertCoordinates;
 using BruTile;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// bepaalt elke frame welk deel van amsterdam in beeld is en stelt in als public Brutile.Extent in WGS84 beschikbaar
@@ -20,9 +21,6 @@ public class CameraView : MonoBehaviour
     [SerializeField]
     private bool drawDebugLines = true;
 
-    [SerializeField]
-    private float extraMargin = 2.0f;
-
     private Vector3[] corners;
 
     public Extent cameraExtent;
@@ -35,6 +33,19 @@ public class CameraView : MonoBehaviour
     void Update()
     {
         cameraExtent = CameraExtent();
+    }
+
+    public void ToggleAA(bool aaOn)
+    {
+        //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
+        var universalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+        if(universalCameraData)
+        {
+            universalCameraData.antialiasing = (aaOn) ? AntialiasingMode.FastApproximateAntialiasing : AntialiasingMode.None;
+        }
+        else{
+            QualitySettings.antiAliasing = (aaOn) ? 2 : 0;
+        }
     }
 
     private Extent CameraExtent()

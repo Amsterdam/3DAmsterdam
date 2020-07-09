@@ -90,13 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e675ca81884e00e438a4f9493167b693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaximaleZichtafstand: 5000
-  TekenZichtlijnen: 0
-  lijn1: {fileID: 0}
-  lijn2: {fileID: 0}
-  lijn3: {fileID: 0}
-  lijn4: {fileID: 0}
-  contour: {fileID: 0}
+  maximumViewDistance: 5000
+  drawDebugLines: 0
 --- !u!114 &7164494881010118418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +132,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
