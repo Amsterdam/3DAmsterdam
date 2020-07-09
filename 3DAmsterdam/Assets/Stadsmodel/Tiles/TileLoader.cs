@@ -194,7 +194,6 @@ public class TileLoader : MonoBehaviour
             if (activeTiles.ContainsKey(tileId))
             {
                 var meshFilter = activeTiles[tileId].GetComponent<MeshFilter>();
-                DestroyImmediate(meshFilter.mesh);
                 meshFilter.mesh.vertices = terrainTile.GetVertices(0);
                 meshFilter.mesh.triangles = terrainTile.GetTriangles(0);
                 meshFilter.mesh.uv = terrainTile.GetUV(0);
