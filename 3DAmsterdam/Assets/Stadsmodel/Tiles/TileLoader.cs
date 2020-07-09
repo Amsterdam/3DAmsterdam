@@ -243,7 +243,7 @@ public class TileLoader : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
+            Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
         }
 
         activeDownloads.Remove(url);
