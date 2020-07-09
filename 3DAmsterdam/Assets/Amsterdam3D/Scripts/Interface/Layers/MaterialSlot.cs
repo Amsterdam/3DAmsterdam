@@ -11,7 +11,7 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private Image colorImage;
-		public Color GetColor => targetMaterial.color;
+		public Color GetColor => targetMaterial.GetColor("_BaseColor");
 
 		public void Select()
 		{
@@ -22,7 +22,8 @@ namespace Amsterdam3D.Interface
 		public void Init(Material target, LayerVisuals targetLayerVisuals)
 		{
 			targetMaterial = target;
-			colorImage.color = new Color(targetMaterial.color.r, targetMaterial.color.g, targetMaterial.color.b,1.0f);
+			var targetMaterialColor = GetColor;
+			colorImage.color = new Color(targetMaterialColor.r, targetMaterialColor.g, targetMaterialColor.b,1.0f);
 
 			layerVisuals = targetLayerVisuals;
 			GetComponent<Toggle>().group = targetLayerVisuals.MaterialSlotsGroup;
@@ -31,7 +32,7 @@ namespace Amsterdam3D.Interface
 		public void ChangeColor(Color pickedColor)
 		{
 			colorImage.color = pickedColor;
-			targetMaterial.color = pickedColor;
+			targetMaterial.SetColor("_BaseColor",pickedColor);
 		}
 	}
 }
