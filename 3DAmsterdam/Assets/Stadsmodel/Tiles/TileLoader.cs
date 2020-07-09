@@ -483,6 +483,7 @@ public class TileLoader : MonoBehaviour
             if (IsReplacementTileInDownloadQueue(tileToBeRemoved,downloadRequests)==false)
             {
                 Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.GetTexture("_BaseMap"));
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material);
                 Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
                 Destroy(TeVerwijderenTiles[tileToBeRemoved]);
                 TeVerwijderenTiles.Remove(tileToBeRemoved);
