@@ -157,10 +157,12 @@ public class TileLoader : MonoBehaviour
         {
             if (activeTiles.ContainsKey(tileId))
             {
+                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                DestroyImmediate(meshRenderer.material.mainTexture);
 
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+                var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
             }
         }
         else
@@ -191,21 +193,19 @@ public class TileLoader : MonoBehaviour
             //update tile with height data
             if (activeTiles.ContainsKey(tileId))
             {
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshFilter>().mesh);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.vertices = terrainTile.GetVertices(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.triangles = terrainTile.GetTriangles(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.uv = terrainTile.GetUV(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
+                var meshFilter = activeTiles[tileId].GetComponent<MeshFilter>();
+                DestroyImmediate(meshFilter.mesh);
+                meshFilter.mesh.vertices = terrainTile.GetVertices(0);
+                meshFilter.mesh.triangles = terrainTile.GetTriangles(0);
+                meshFilter.mesh.uv = terrainTile.GetUV(0);
+                meshFilter.mesh.RecalculateNormals();
 
-
-                activeTiles[tileId].AddComponent<MeshCollider>();
-                activeTiles[tileId].GetComponent<MeshCollider>().sharedMesh = activeTiles[tileId].GetComponent<MeshFilter>().sharedMesh;
+                activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
                 activeTiles[tileId].transform.localPosition = loc;
                 activeTiles[tileId].layer = 9;
-
             }
         }
         else
@@ -233,22 +233,18 @@ public class TileLoader : MonoBehaviour
         {
             if (activeTiles.ContainsKey(tileId))
             {
+                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                DestroyImmediate(meshRenderer.material.GetTexture("_BaseMap"));
 
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+                var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
             }
         }
         else
         {
             Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
         }
-
-
-
-
-        
-        
 
         activeDownloads.Remove(url);
     }
@@ -487,7 +483,7 @@ public class TileLoader : MonoBehaviour
         {
             if (IsReplacementTileInDownloadQueue(tileToBeRemoved,downloadRequests)==false)
             {
-                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.mainTexture);
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.GetTexture("_BaseMap"));
                 Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
                 Destroy(TeVerwijderenTiles[tileToBeRemoved]);
                 TeVerwijderenTiles.Remove(tileToBeRemoved);
