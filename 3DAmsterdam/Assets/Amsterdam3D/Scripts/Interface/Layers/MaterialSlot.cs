@@ -86,7 +86,7 @@ namespace Amsterdam3D.Interface
 			else if (opacity < 1.0f)
 			{
 				targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
-				var color = targetMaterial.GetColor("_BaseColor");
+				var color = colorImage.color;
 				color.a = materialOpacity;
 				targetMaterial.SetFloat("_Surface", 1); //1 Alpha
 				targetMaterial.SetColor("_BaseColor", color);
@@ -94,6 +94,7 @@ namespace Amsterdam3D.Interface
 			else {
 				targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
 				targetMaterial.SetFloat("_Surface", 0); //0 Opaque
+				targetMaterial.SetColor("_BaseColor", colorImage.color);
 			}
 
 			materialOpacity = opacity;
