@@ -259,7 +259,7 @@ public class ObjLoad : MonoBehaviour
 		}
 		else
 		{
-			m.SetColor("_Color", md.Diffuse);
+			m.SetColor("_BaseColor", md.Diffuse);
 		}
 		if (md.BumpTex != null) m.SetTexture("_BumpMap", md.BumpTex);
 
