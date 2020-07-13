@@ -394,7 +394,7 @@ MonoBehaviour:
     type: 3}
   colorPicker: {fileID: 8849778405559282789}
   hexColorField: {fileID: 6441819321257435748}
-  materialSlotsGroup: {fileID: 1129665818789608922}
+  materialSlotsContainer: {fileID: 8257208777891523024}
   locationOffset: {x: -95, y: -45}
 --- !u!1 &2660055003587506494
 GameObject:
@@ -1593,7 +1593,6 @@ GameObject:
   - component: {fileID: 8257208777891523024}
   - component: {fileID: 8333491155327029276}
   - component: {fileID: 6011062906273056632}
-  - component: {fileID: 1129665818789608922}
   m_Layer: 5
   m_Name: ContentMaterialSlots
   m_TagString: Untagged
@@ -1660,19 +1659,6 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
---- !u!114 &1129665818789608922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9117005810241167512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
 --- !u!1001 &964223389739647831
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1684,7 +1670,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Group
       value: 
-      objectReference: {fileID: 1129665818789608922}
+      objectReference: {fileID: 0}
     - target: {fileID: 8603764954914681116, guid: b016b3cda38b1e74ab19417e311a4e7d,
         type: 3}
       propertyPath: m_Name
