@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Draggable : ObjectManipulation
 {
@@ -10,6 +11,8 @@ public class Draggable : ObjectManipulation
 
 	private void OnMouseDrag()
 	{
+		if (EventSystem.current.IsPointerOverGameObject()) return;
+
 		this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - clickOffset;
 
 		if (snapToGround)
