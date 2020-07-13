@@ -65,7 +65,6 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		if (!ignoreChanges)
 		{
 			intensity = intensityValue;
-			//colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
 			PickColorFromPalette();
 		}
 	}
@@ -147,8 +146,6 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		pointer.color = inputColor;
 		sliderHandle.color = inputColor;
 		sliderArea.color = inputColor;
-
-		colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)

@@ -20,6 +20,9 @@ namespace Amsterdam3D.Interface
 		private HexColorField hexColorField;
 
 		[SerializeField]
+		private Slider opacitySlider;
+
+		[SerializeField]
 		private RectTransform materialSlotsContainer;
 
 		private InterfaceLayer targetLayer;
@@ -60,6 +63,20 @@ namespace Amsterdam3D.Interface
 			else if (selector == hexColorField)
 			{
 				colorPicker.ChangeColorInput(pickedColor);
+			}
+		}
+
+		/// <summary>
+		///	Change the opacity of all selected material slots.
+		///	Swap the shader type to opaque for optimal performance on 100% opacity.
+		/// Can be called directly from the opacity slider.
+		/// </summary>
+		/// <param name="value">Opacity from 0.0 to 1.0</param>
+		public void ChangeMaterialOpacity(float opacity)
+		{
+			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+			{
+				materialSlot.ChangeOpacity(opacity);
 			}
 		}
 
@@ -149,6 +166,7 @@ namespace Amsterdam3D.Interface
 			{
 				colorPicker.ChangeColorInput(selectedMaterialSlot.GetColor);
 				hexColorField.ChangeColorInput(selectedMaterialSlot.GetColor);
+				opacitySlider.value = selectedMaterialSlot.materialOpacity;
 			}
 		}
 	}
