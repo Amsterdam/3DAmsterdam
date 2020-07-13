@@ -65,7 +65,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		if (!ignoreChanges)
 		{
 			intensity = intensityValue;
-			colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
+			//colorPalette.color = Color.Lerp(Color.black, Color.white, intensity);
 			PickColorFromPalette();
 		}
 	}
