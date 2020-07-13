@@ -12,8 +12,7 @@ public abstract class ColorSelector : MonoBehaviour
 	}
 
 	private void PickedColorMessage(Color color, ColorSelector selector)
-	{
-		print("Picked color " + color + " using " + selector.name);
+	{		
 	}
 
 	public abstract void ChangeColorInput(Color inputColor);

@@ -2,154 +2,137 @@
 using UnityEngine;
 using ConvertCoordinates;
 using BruTile;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// bepaalt elke frame welk deel van amsterdam in beeld is en stelt in als public Brutile.Extent in WGS84 beschikbaar
 /// </summary>
 public class CameraView : MonoBehaviour
 {
-    public float MaximaleZichtafstand = 5000;
-    //TekenZichtlijnen is voor debugging
-    //4 lijnen worden getekend van de camera naar de hoekpunten van het zichtveld op maaiveldniveau
-    //1 contour wordt getekend tussen de 4 lijen op maaiveldniveau
-    public bool TekenZichtlijnen = false;
-    public GameObject lijn1;    //gameobject met linerenderer met 2 points
-    public GameObject lijn2;    //gameobject met linerenderer met 2 points
-    public GameObject lijn3;    //gameobject met linerenderer met 2 points
-    public GameObject lijn4;    //gameobject met linerenderer met 2 points
-    public GameObject contour;  //gameobject met linerenderer met 4 points
+    private enum Corners{
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
+    }
 
-    Vector3[] Contourcoordinaten;
-    Vector3[] hoeken;
-    Vector3 Camlocation;
-    public Extent CameraExtent;
-    // Start is called before the first frame update
+    [SerializeField]
+    private float maximumViewDistance = 5000;
+    [SerializeField]
+    private bool drawDebugLines = true;
+
+    private Vector3[] corners;
+
+    public Extent cameraExtent;
+
     void Start()
     {
-        CameraExtent = CamExtent();
+        cameraExtent = CameraExtent();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        CameraExtent = CamExtent();
+        cameraExtent = CameraExtent();
     }
-    public void setLineRenderer()
+
+    public void ToggleAA(bool aaOn)
     {
-        var points = new Vector3[2];
-        points[0] = Camlocation;
-        points[1] = hoeken[0];
-        LineRenderer LR = lijn1.GetComponent<LineRenderer>();
-        LR.SetPositions(points);
-        points[1] = hoeken[1];
-        LR = lijn2.GetComponent<LineRenderer>();
-        LR.SetPositions(points);
-        points[1] = hoeken[2];
-        LR = lijn3.GetComponent<LineRenderer>();
-        LR.SetPositions(points);
-        points[1] = hoeken[3];
-        LR = lijn4.GetComponent<LineRenderer>();
-        LR.SetPositions(points);
-        LR = contour.GetComponent<LineRenderer>();
-        LR.SetPositions(Contourcoordinaten);
+        //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
+        var universalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
+        if(universalCameraData)
+        {
+            universalCameraData.antialiasing = (aaOn) ? AntialiasingMode.FastApproximateAntialiasing : AntialiasingMode.None;
+        }
+        else{
+            QualitySettings.antiAliasing = (aaOn) ? 2 : 0;
+        }
     }
-    private Extent CamExtent()
-    {
-        // locatie van de camera bepalen
-        Camlocation = transform.localPosition;
+
+    private Extent CameraExtent()
+    {        
+        // Determine what world coordinates are in the corners of our view
+        corners = new Vector3[4];
+        corners[0] = GetCornerPoint(Corners.TOP_LEFT);
+        corners[1] = GetCornerPoint(Corners.TOP_RIGHT);
+        corners[2] = GetCornerPoint(Corners.BOTTOM_RIGHT);
+        corners[3] = GetCornerPoint(Corners.BOTTOM_LEFT);
         
-        // bepalen welke UnityCoordinaten zichtbaar zijn in de hoeken van het scherm
-        hoeken = new Vector3[4];
-        hoeken[0] = GetHoekpunt("LinksBoven");
-        hoeken[1] = GetHoekpunt("RechtsBoven");
-        hoeken[2] = GetHoekpunt("RechtsOnder");
-        hoeken[3] = GetHoekpunt("LinksOnder");
-        
-        // de maximale en minimale X- en Z-waarde van de zichtbare coordinaten bepalen
-        Vector3 UnityMax = new Vector3(-9999999, -9999999, -99999999);
-        Vector3 UnityMin = new Vector3(9999999, 9999999, 9999999);
+        // Determine the min and max X- en Z-value of the visible coordinates
+        var unityMax = new Vector3(-9999999, -9999999, -99999999);
+        var unityMin = new Vector3(9999999, 9999999, 9999999);
         for (int i = 0; i < 4; i++)
         {
-            if (hoeken[i].x < UnityMin.x) { UnityMin.x = hoeken[i].x; }
-            if (hoeken[i].z < UnityMin.z) { UnityMin.z = hoeken[i].z; }
-            if (hoeken[i].x > UnityMax.x) { UnityMax.x = hoeken[i].x; }
-            if (hoeken[i].z > UnityMax.z) { UnityMax.z = hoeken[i].z; }
-        }
+            unityMin.x = Mathf.Min(unityMin.x, corners[i].x);
+            unityMin.z = Mathf.Min(unityMin.z, corners[i].z);
+            unityMax.x = Mathf.Max(unityMax.x, corners[i].x);
+            unityMax.z = Mathf.Max(unityMax.z, corners[i].z);
+        }        
 
-        if (TekenZichtlijnen)
-        {
-            Contourcoordinaten = new Vector3[5];
-            Contourcoordinaten[0] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
-            Contourcoordinaten[1] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMin.z);
-            Contourcoordinaten[2] = new Vector3(UnityMax.x, hoeken[0].y+10, UnityMax.z);
-            Contourcoordinaten[3] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMax.z);
-            Contourcoordinaten[4] = new Vector3(UnityMin.x, hoeken[0].y+10, UnityMin.z);
+        // Convert min and max to WGS84 coordinates
+        var wGSMin = CoordConvert.UnitytoWGS84(unityMin);
+        var wGSMax = CoordConvert.UnitytoWGS84(unityMax);
 
-            setLineRenderer();
-        }
-        
-
-        // Maximale en Minimale X- en Z-unitywaarden omrekenen naar WGS84
-        Vector3WGS WGSMin = CoordConvert.UnitytoWGS84(UnityMin);
-        Vector3WGS WGSMax = CoordConvert.UnitytoWGS84(UnityMax);
-
-        // gebied waarbinnen data geladen moet worden
-        Extent Tempextent = new Extent(WGSMin.lon, WGSMin.lat, WGSMax.lon, WGSMax.lat);
-        return Tempextent;
+        // Area that should be loaded
+        var extent = new Extent(wGSMin.lon, wGSMin.lat, wGSMax.lon, wGSMax.lat);
+        return extent;
     }
 
-    private Vector3 GetHoekpunt(string hoek)
+    private Vector3 GetCornerPoint(Corners corner)
     {
-        Vector2 Screenpos = new Vector2();
-        if (hoek == "LinksBoven")
-        {
-            Screenpos.x = Camera.main.pixelRect.xMin;
-            Screenpos.y = Camera.main.pixelRect.yMax;
-        }
-        if (hoek == "RechtsBoven")
-        {
-            Screenpos.x = Camera.main.pixelRect.xMax;
-            Screenpos.y = Camera.main.pixelRect.yMax;
-        }
-        if (hoek == "LinksOnder")
-        {
-            Screenpos.x = Camera.main.pixelRect.xMin;
-            Screenpos.y = Camera.main.pixelRect.yMin;
-        }
-        if (hoek == "RechtsOnder")
-        {
-            Screenpos.x = Camera.main.pixelRect.xMax;
-            Screenpos.y = Camera.main.pixelRect.yMin;
-        }
-        Vector3 output = new Vector3();
+        var screenPosition = new Vector2();
 
+        switch (corner)
+        {
+            case Corners.TOP_LEFT:
+                screenPosition.x = Camera.main.pixelRect.xMin;
+                screenPosition.y = Camera.main.pixelRect.yMax;
+                break;
+            case Corners.TOP_RIGHT:
+                screenPosition.x = Camera.main.pixelRect.xMax;
+                screenPosition.y = Camera.main.pixelRect.yMax;
+                break;
+            case Corners.BOTTOM_LEFT:
+                screenPosition.x = Camera.main.pixelRect.xMin;
+                screenPosition.y = Camera.main.pixelRect.yMin;
+                break;
+            case Corners.BOTTOM_RIGHT:
+                screenPosition.x = Camera.main.pixelRect.xMax;
+                screenPosition.y = Camera.main.pixelRect.yMin;
+                break;
+            default:
+                break;
+        }
+        var output = new Vector3();
 
-        Vector3 linkerbovenhoekA; //coordinaat op 10 eenheden van het scherm
-        linkerbovenhoekA = Camera.main.ScreenToWorldPoint(new Vector3(Screenpos.x, Screenpos.y, 10));
-        Vector3 linkerbovenhoekB;//coordinaat op 3010 eenheden van het scherm
-        linkerbovenhoekB = Camera.main.ScreenToWorldPoint(new Vector3(Screenpos.x, Screenpos.y, 3010));
+        var topLeftCornerStart = Camera.main.transform.position; 
+        var topLeftCornerFar = Camera.main.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
         
-        // de richting van de lijn bepalen
-        Vector3 richting = linkerbovenhoekA - linkerbovenhoekB;
+        // Calculate direction vector
+        Vector3 direction = topLeftCornerStart - topLeftCornerFar;
         float factor; //factor waarmee de Richtingvector vermenigvuldigd moet worden om op het maaiveld te stoppen
-        if (richting.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
+        if (direction.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
         {
             factor = 1;
         }
         else
         {
-            factor = ((Camera.main.transform.localPosition.y - 40) / richting.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
+            factor = ((Camera.main.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
         }
 
-        // uiteindelijke X, Y, en Z locatie bepalen waar de zichtlijn eindigt.
-        
-
-
-        output.x = Camera.main.transform.localPosition.x - Mathf.Clamp((factor * richting.x),-1 * MaximaleZichtafstand, MaximaleZichtafstand);
-        output.y = Camera.main.transform.localPosition.y - Mathf.Clamp((factor * richting.y), -1 * MaximaleZichtafstand, MaximaleZichtafstand);
-        output.z = Camera.main.transform.localPosition.z - Mathf.Clamp((factor * richting.z), -1 * MaximaleZichtafstand, MaximaleZichtafstand);
+        // Determine the X, Y, en Z location where the viewline ends
+        output.x = Camera.main.transform.localPosition.x - Mathf.Clamp((factor * direction.x),-1 * maximumViewDistance, maximumViewDistance);
+        output.y = Camera.main.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
+        output.z = Camera.main.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
 
         return output;
     }
 
+    private void OnDrawGizmos()
+    {
+        if (!drawDebugLines) return;
+
+        Gizmos.color = Color.green;
+        foreach(var corner in corners)
+            Gizmos.DrawLine(Camera.main.transform.position, corner);
+    }
 }

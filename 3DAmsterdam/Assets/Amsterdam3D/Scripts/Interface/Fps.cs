@@ -26,7 +26,7 @@ namespace Amsterdam3D.Interface
 		private void DrawFps()
 		{
 			count = (1 / Time.deltaTime);
-			fpsCounter.text = "FPS:" + (Mathf.Round(count));
+			fpsCounter.text = Mathf.Round(count).ToString();
 		}
 	}
 }

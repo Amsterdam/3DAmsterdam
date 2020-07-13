@@ -65,10 +65,10 @@ public class BoomTileManager : MonoBehaviour
         // Update is called once per frame
         void Update()
         {
-            if (vorigeCV.CenterX != CV.CameraExtent.CenterX || vorigeCV.CenterY != CV.CameraExtent.CenterY)
+            if (vorigeCV.CenterX != CV.cameraExtent.CenterX || vorigeCV.CenterY != CV.cameraExtent.CenterY)
             {
-                UpdateGebouwen(CV.CameraExtent);
-                vorigeCV = CV.CameraExtent;
+                UpdateGebouwen(CV.cameraExtent);
+                vorigeCV = CV.cameraExtent;
             }
             //}
             //if (BijwerkenGereed)

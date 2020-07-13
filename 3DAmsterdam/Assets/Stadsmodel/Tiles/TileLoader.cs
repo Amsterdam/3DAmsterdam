@@ -68,7 +68,7 @@ public class TileLoader : MonoBehaviour
         {
             if (UpdateTerrainTilesFinished)
             {
-                previousCameraViewExtent = CV.CameraExtent;
+                previousCameraViewExtent = CV.cameraExtent;
                 StartCoroutine(UpdateTerrainTiles(previousCameraViewExtent));
             }
         }
@@ -78,7 +78,8 @@ public class TileLoader : MonoBehaviour
         {
             var request = downloadQueue.Dequeue();
 
-            activeDownloads.Add(request.Url, request);
+            if(!activeDownloads.ContainsKey(request.Url))
+                activeDownloads.Add(request.Url, request);
 
             //fire request
 
@@ -90,7 +91,7 @@ public class TileLoader : MonoBehaviour
     bool HasCameraViewChanged()
     {
         bool cameraviewChanged = false;
-        if (previousCameraViewExtent.CenterX != CV.CameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.CameraExtent.CenterY)
+        if (previousCameraViewExtent.CenterX != CV.cameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.cameraExtent.CenterY)
         {
             cameraviewChanged=true;
         }
@@ -157,10 +158,12 @@ public class TileLoader : MonoBehaviour
         {
             if (activeTiles.ContainsKey(tileId))
             {
+                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                DestroyImmediate(meshRenderer.material.mainTexture);
 
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+                var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
             }
         }
         else
@@ -191,21 +194,18 @@ public class TileLoader : MonoBehaviour
             //update tile with height data
             if (activeTiles.ContainsKey(tileId))
             {
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshFilter>().mesh);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.vertices = terrainTile.GetVertices(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.triangles = terrainTile.GetTriangles(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.uv = terrainTile.GetUV(0);
-                activeTiles[tileId].GetComponent<MeshFilter>().mesh.RecalculateNormals();
+                var meshFilter = activeTiles[tileId].GetComponent<MeshFilter>();
+                meshFilter.mesh.vertices = terrainTile.GetVertices(0);
+                meshFilter.mesh.triangles = terrainTile.GetTriangles(0);
+                meshFilter.mesh.uv = terrainTile.GetUV(0);
+                meshFilter.mesh.RecalculateNormals();
 
-
-                activeTiles[tileId].AddComponent<MeshCollider>();
-                activeTiles[tileId].GetComponent<MeshCollider>().sharedMesh = activeTiles[tileId].GetComponent<MeshFilter>().sharedMesh;
+                activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
                 activeTiles[tileId].transform.localPosition = loc;
                 activeTiles[tileId].layer = 9;
-
             }
         }
         else
@@ -233,22 +233,18 @@ public class TileLoader : MonoBehaviour
         {
             if (activeTiles.ContainsKey(tileId))
             {
+                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                DestroyImmediate(meshRenderer.material.GetTexture("_BaseMap"));
 
-                DestroyImmediate(activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture);
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                activeTiles[tileId].GetComponent<MeshRenderer>().material.mainTexture.wrapMode = TextureWrapMode.Clamp;
+                var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
             }
         }
         else
         {
-            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
+            Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
         }
-
-
-
-
-        
-        
 
         activeDownloads.Remove(url);
     }
@@ -399,28 +395,28 @@ public class TileLoader : MonoBehaviour
 
         // Add bottom-left tile.
         newTile = new Vector3(parentTile.x * 2, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.CameraExtent))
+        if (IsInsideExtent(newTile, CV.cameraExtent))
         {
             TileKeys.Add(newTile);
         }
 
         // Add botton-riht tile.
         newTile = new Vector3((parentTile.x * 2) + 1, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.CameraExtent))
+        if (IsInsideExtent(newTile, CV.cameraExtent))
         {
 
             TileKeys.Add(newTile);
         }
         // Add top-left tile.
         newTile = new Vector3(parentTile.x * 2, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.CameraExtent))
+        if (IsInsideExtent(newTile, CV.cameraExtent))
         {
             TileKeys.Add(newTile);
         }
 
         // Add top-right tile
         newTile = new Vector3((parentTile.x * 2) + 1, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.CameraExtent))
+        if (IsInsideExtent(newTile, CV.cameraExtent))
         {
 
             TileKeys.Add(newTile);
@@ -487,7 +483,8 @@ public class TileLoader : MonoBehaviour
         {
             if (IsReplacementTileInDownloadQueue(tileToBeRemoved,downloadRequests)==false)
             {
-                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.mainTexture);
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.GetTexture("_BaseMap"));
+                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material);
                 Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
                 Destroy(TeVerwijderenTiles[tileToBeRemoved]);
                 TeVerwijderenTiles.Remove(tileToBeRemoved);
