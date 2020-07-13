@@ -133,24 +133,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &872119437 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7164494881010118419, guid: a47e589561ad72342980f70c742130aa,
-    type: 3}
-  m_PrefabInstance: {fileID: 7164494880686212445}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &872119440 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7164494881010118415, guid: a47e589561ad72342980f70c742130aa,
-    type: 3}
-  m_PrefabInstance: {fileID: 7164494880686212445}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872119437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e675ca81884e00e438a4f9493167b693, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1070333720
 GameObject:
   m_ObjectHideFlags: 0
@@ -2172,11 +2154,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7164494880686212446}
+      objectReference: {fileID: 7164494880686212447}
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_enabled
+      value: TogglePostEffects
       objectReference: {fileID: 0}
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2186,7 +2168,7 @@ PrefabInstance:
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2197,7 +2179,17 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 872119437}
+      objectReference: {fileID: 7164494880686212446}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3366804079452426397, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4493,7 +4485,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 872119440}
+      objectReference: {fileID: 7164494880686212447}
     - target: {fileID: 8594245406280920954, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -4861,10 +4853,22 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 7164494880686212445}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872119437}
+  m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7164494880686212447 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7892430062090860733, guid: a47e589561ad72342980f70c742130aa,
+    type: 3}
+  m_PrefabInstance: {fileID: 7164494880686212445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ccef527f2f293449a14025b6383723a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7890631199436206413
