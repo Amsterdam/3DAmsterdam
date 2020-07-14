@@ -434,7 +434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2e2948d02173cec4c89cdc07a55057e6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c48c20ee3dfbcb94fb764c41756f59d6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1143,6 +1143,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2368847772163807733}
     m_Modifications:
+    - target: {fileID: 867606502004389036, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 867606502004389036, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 867606502004389036, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 867606502004389036, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 867606502004389036, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 924983492793793712, guid: 7859e241f2c4f4345943bbb961ba7591,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1252,6 +1277,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GroundTextures
+      objectReference: {fileID: 0}
+    - target: {fileID: 8711553427901965917, guid: 7859e241f2c4f4345943bbb961ba7591,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7859e241f2c4f4345943bbb961ba7591, type: 3}

@@ -21,10 +21,11 @@ public class TileLoader : MonoBehaviour
     private CameraView CV;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     public string terrainUrl = "https://acc.3d.amsterdam.nl/webmap/QMtiles/{z}/{x}/{y}.terrain";
+
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
+   
     public GameObject placeholderTile;
     private const int tilesize = 180;
-
 
     readonly Dictionary<Vector3, GameObject> activeTiles = new Dictionary<Vector3, GameObject>();
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
@@ -127,10 +128,11 @@ public class TileLoader : MonoBehaviour
         return CoordConvert.WGS84toUnity(origin);
     }
 
-    public void UpdateTerrainTextures()
+    public void UpdateTerrainTextures(string newTextureURL)
     {
+        textureUrl = newTextureURL;
         List<KeyValuePair<Vector3,GameObject>> temp = activeTiles.ToList();
-
+        StopAllCoroutines();
         for (int i = 0; i < temp.Count; i++)
         {
            StartCoroutine(UpdateTerrainTexture(textureUrl, temp[i].Key));
@@ -140,7 +142,15 @@ public class TileLoader : MonoBehaviour
     private IEnumerator UpdateTerrainTexture(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
-        
+        var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+        var baseMap = meshRenderer.material.GetTexture("_BaseMap");
+        if (url.Length == 0)
+        {
+            //If the url is empty, simply clear the texture slot
+            meshRenderer.material.SetTexture("_BaseMap", null);
+            if (baseMap) Destroy(baseMap);
+            yield return null;
+        }
 
         //get tile texture data
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
@@ -148,8 +158,7 @@ public class TileLoader : MonoBehaviour
         string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
         if (tileId.z == 17)
         {
-            wmsUrl = wmsUrl.Replace("width=256", "width=1024");
-            wmsUrl = wmsUrl.Replace("height=256", "height=1024");
+            wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
         }
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(wmsUrl);
         yield return www.SendWebRequest();
@@ -158,8 +167,7 @@ public class TileLoader : MonoBehaviour
         {
             if (activeTiles.ContainsKey(tileId))
             {
-                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
-                DestroyImmediate(meshRenderer.material.mainTexture);
+                Destroy(baseMap);
 
                 var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
                 loadedTexture.wrapMode = TextureWrapMode.Clamp;
@@ -168,7 +176,7 @@ public class TileLoader : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
+            Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data");
         }
     }
 
@@ -210,40 +218,38 @@ public class TileLoader : MonoBehaviour
         }
         else
         {
-            UnityEngine.Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
-            UnityEngine.Debug.Log(www.error);
+            Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
+            Debug.Log(www.error);
         }
 
-
-
-
-        //get tile texture data
-        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
-        string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-        if (tileId.z >= 17)
+        if (textureUrl != "")
         {
-            wmsUrl = wmsUrl.Replace("width=256", "width=1024");
-            wmsUrl = wmsUrl.Replace("height=256", "height=1024");
-        }
-        www = UnityWebRequestTexture.GetTexture(wmsUrl);
-        yield return www.SendWebRequest();
-
-        if (!www.isNetworkError && !www.isHttpError)
-        {
-            if (activeTiles.ContainsKey(tileId))
+            var schema = new Terrain.TmsGlobalGeodeticTileSchema();
+            Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
+            string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
+            if (tileId.z >= 17)
             {
-                var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
-                DestroyImmediate(meshRenderer.material.GetTexture("_BaseMap"));
-
-                var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                loadedTexture.wrapMode = TextureWrapMode.Clamp;
-                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
             }
-        }
-        else
-        {
-            Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
+            www = UnityWebRequestTexture.GetTexture(wmsUrl);
+            yield return www.SendWebRequest();
+
+            if (!www.isNetworkError && !www.isHttpError)
+            {
+                if (activeTiles.ContainsKey(tileId))
+                {
+                    var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                    Destroy(meshRenderer.material.GetTexture("_BaseMap"));
+
+                    var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                    loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                    meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
+            }
         }
 
         activeDownloads.Remove(url);
