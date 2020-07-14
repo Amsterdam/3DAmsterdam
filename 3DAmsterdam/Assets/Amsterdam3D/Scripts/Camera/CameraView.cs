@@ -35,19 +35,6 @@ public class CameraView : MonoBehaviour
         cameraExtent = CameraExtent();
     }
 
-    public void ToggleAA(bool aaOn)
-    {
-        //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
-        var universalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
-        if(universalCameraData)
-        {
-            universalCameraData.antialiasing = (aaOn) ? AntialiasingMode.FastApproximateAntialiasing : AntialiasingMode.None;
-        }
-        else{
-            QualitySettings.antiAliasing = (aaOn) ? 2 : 0;
-        }
-    }
-
     private Extent CameraExtent()
     {        
         // Determine what world coordinates are in the corners of our view

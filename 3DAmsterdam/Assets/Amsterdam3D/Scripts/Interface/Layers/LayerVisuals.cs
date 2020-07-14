@@ -20,11 +20,13 @@ namespace Amsterdam3D.Interface
 		private HexColorField hexColorField;
 
 		[SerializeField]
-		private ToggleGroup materialSlotsGroup;
-		public ToggleGroup MaterialSlotsGroup { get => materialSlotsGroup; }
+		private Slider opacitySlider;
+
+		[SerializeField]
+		private RectTransform materialSlotsContainer;
 
 		private InterfaceLayer targetLayer;
-		private MaterialSlot targetMaterialSlot;
+		private List<MaterialSlot> selectedMaterialSlots;
 
 		[SerializeField]
 		private Vector2 locationOffset;
@@ -42,12 +44,15 @@ namespace Amsterdam3D.Interface
 		/// <param name="selector">The selector we used to change the color</param>
 		private void ChangeMaterialColor(Color pickedColor, ColorSelector selector)
 		{
-			if (!targetMaterialSlot) return;
+			if (selectedMaterialSlots.Count < 1) return;
 
-			targetMaterialSlot.ChangeColor(pickedColor);
-			if (targetMaterialSlot.transform.GetSiblingIndex() == 0)
+			foreach(MaterialSlot materialSlot in selectedMaterialSlots)
 			{
-				targetLayer.UpdateLayerPrimaryColor();
+				materialSlot.ChangeColor(pickedColor);
+				if (materialSlot.transform.GetSiblingIndex() == 0)
+				{
+					targetLayer.UpdateLayerPrimaryColor();
+				}
 			}
 
 			//Match all selector colors
@@ -62,13 +67,27 @@ namespace Amsterdam3D.Interface
 		}
 
 		/// <summary>
+		///	Change the opacity of all selected material slots.
+		///	Swap the shader type to opaque for optimal performance on 100% opacity.
+		/// Can be called directly from the opacity slider.
+		/// </summary>
+		/// <param name="value">Opacity from 0.0 to 1.0</param>
+		public void ChangeMaterialOpacity(float opacity)
+		{
+			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+			{
+				materialSlot.ChangeOpacity(opacity);
+			}
+		}
+
+		/// <summary>
 		/// Open this layer visuals panel with the options for this target interface layer.
 		/// </summary>
 		/// <param name="interfaceLayer">Target interface layer</param>
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
-			
+
 			targetLayer = interfaceLayer;
 			GenerateMaterialSlots();
 			gameObject.SetActive(true);
@@ -84,17 +103,18 @@ namespace Amsterdam3D.Interface
 
 		/// <summary>
 		/// Generate all the material slots for this layer.
+		/// Select the first one if none is selected yet.
 		/// </summary>
 		private void GenerateMaterialSlots()
 		{
 			ClearMaterialSlots();
-			
+
 			foreach (Material uniqueMaterial in targetLayer.UniqueLinkedObjectMaterials)
 			{
-				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, MaterialSlotsGroup.transform);
+				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, materialSlotsContainer);
 				newMaterialSlot.Init(uniqueMaterial, this);
 
-				if (!targetMaterialSlot) SelectMaterialSlot(newMaterialSlot);
+				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
 		}
 
@@ -103,21 +123,51 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		private void ClearMaterialSlots()
 		{
-			foreach (Transform materialSlot in MaterialSlotsGroup.transform)
+			ClearMaterialSlotsSelection();
+
+			foreach (Transform materialSlot in materialSlotsContainer)
 			{
 				Destroy(materialSlot.gameObject);
 			}
 		}
 
 		/// <summary>
-		/// Selection of a specific material slot.
+		/// Clears our multiselection list or create it if it doesnt exist yet
 		/// </summary>
-		/// <param name="materialSlot">Selected material slot</param>
-		public void SelectMaterialSlot(MaterialSlot materialSlot)
+		private void ClearMaterialSlotsSelection()
 		{
-			targetMaterialSlot = materialSlot;
-			colorPicker.ChangeColorInput(targetMaterialSlot.GetColor);
-			hexColorField.ChangeColorInput(targetMaterialSlot.GetColor);
+			if (selectedMaterialSlots == null)
+			{
+				selectedMaterialSlots = new List<MaterialSlot>();
+			}
+			else
+			{
+				selectedMaterialSlots.Clear();
+			}
+		}
+
+		/// <summary>
+		/// Selection of a specific material slot. Only clear materialslots list if we dont do multiselect
+		/// </summary>
+		/// <param name="selectedMaterialSlot">Selected material slot</param>
+		public void SelectMaterialSlot(MaterialSlot selectedMaterialSlot, bool multiSelect = false)
+		{
+			if (!multiSelect)
+			{
+				selectedMaterialSlots.Clear();
+				//If we are not multiselecting, make sure we only select this one
+				var materialSlots = materialSlotsContainer.GetComponentsInChildren<MaterialSlot>();
+				foreach (MaterialSlot slot in materialSlots)
+					slot.Selected = (slot == selectedMaterialSlot) ? true : false;
+			}
+			selectedMaterialSlots.Add(selectedMaterialSlot);
+			
+			if (!multiSelect)
+			{
+				colorPicker.ChangeColorInput(selectedMaterialSlot.GetColor);
+				hexColorField.ChangeColorInput(selectedMaterialSlot.GetColor);
+				opacitySlider.value = selectedMaterialSlot.materialOpacity;
+			}
 		}
 	}
 }
