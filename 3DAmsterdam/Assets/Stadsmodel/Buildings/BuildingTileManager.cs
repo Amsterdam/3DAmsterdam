@@ -24,14 +24,14 @@ class TileData
 
 public class BuildingTileManager : MonoBehaviour
 {
-    
 
-    public string assetURL = "https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/";
-    public Material defaultMaterial;
-    public Material highLightMaterial;
-    public float maximumDistanceLOD2 = 500;
-    public float maximumDistanceLOD1 = 1000;
-    public float maximumDistanceLOD0 = 3000;
+
+    [SerializeField] private string assetURL = "https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/";
+    [SerializeField] private Material defaultMaterial;
+    [SerializeField] private Material highLightMaterial;
+    [SerializeField] private float maximumDistanceLOD2 = 500;
+    [SerializeField] private float maximumDistanceLOD1 = 1000;
+    [SerializeField] private float maximumDistanceLOD0 = 3000;
     private CameraView cameraViewExtent;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     public int maximumConcurrentDownloads = 5;
@@ -39,11 +39,13 @@ public class BuildingTileManager : MonoBehaviour
     private bool tileUpdateCompleted = true;
 
     private Dictionary<Vector3, TileData> activeTileList = new Dictionary<Vector3, TileData>();
-    private List<Vector3> PendingDownloads = new List<Vector3>();
-    private List<Vector3> ActiveDownloads = new List<Vector3>();
-    private List<Vector3> PendingBuilds = new List<Vector3>();
-    private List<Vector3> ActiveBuilds = new List<Vector3>();
-    private List<Vector3> PendingDestroy = new List<Vector3>();
+    private List<Vector3> pendingDownloads = new List<Vector3>();
+    private List<Vector3> activeDownloads = new List<Vector3>();
+    private List<Vector3> pendingBuilds = new List<Vector3>();
+    private List<Vector3> activeBuilds = new List<Vector3>();
+    private List<Vector3> pendingDestroy = new List<Vector3>();
+
+    [SerializeField] private string layerName = "Building";
 
     // Start is called before the first frame update
     void Start()
@@ -66,7 +68,7 @@ public class BuildingTileManager : MonoBehaviour
         }
 
 
-        if (PendingDestroy.Count>0 || PendingBuilds.Count>0 || PendingDownloads.Count>0 )
+        if (pendingDestroy.Count>0 || pendingBuilds.Count>0 || pendingDownloads.Count>0 )
             {
                 tileUpdateCompleted = false;
                 StartCoroutine(ProcessActiveTiles());
@@ -81,24 +83,24 @@ public class BuildingTileManager : MonoBehaviour
  
         Extent rDExtent = ConvertWGSExtentToRDExtent(wGSExtent);
 
-        Vector3RD Camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
-        Vector3 CamlocationRD = new Vector3((float)Camlocation3RD.x, (float)Camlocation3RD.y, (float)Camlocation3RD.z);
+        Vector3RD camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
+        Vector3 camlocationRD = new Vector3((float)camlocation3RD.x, (float)camlocation3RD.y, (float)camlocation3RD.z);
 
         
         Dictionary<Vector3, int> BuildingTilesNeeded = new Dictionary<Vector3, int>();
-        for (double deltax = rDExtent.MinX; deltax <= rDExtent.MaxX; deltax += 1000)
+        for (double deltaX = rDExtent.MinX; deltaX <= rDExtent.MaxX; deltaX += 1000)
         {
-            for (double deltay = rDExtent.MinY; deltay <= rDExtent.MaxY; deltay += 1000)
+            for (double deltaY = rDExtent.MinY; deltaY <= rDExtent.MaxY; deltaY += 1000)
             {
-                Vector3 tileCenterLocationRD = new Vector3((float)deltax + 500, (float)deltay + 500, 0);
-                double distanceFromCamera = (CamlocationRD - tileCenterLocationRD).magnitude;
+                Vector3 tileCenterLocationRD = new Vector3((float)deltaX + 500, (float)deltaY + 500, 0);
+                double distanceFromCamera = (camlocationRD - tileCenterLocationRD).magnitude;
 
                 float requiredLOD = GetRequiredLOD(distanceFromCamera);
 
                 if (requiredLOD!=-1)
                 {
-                    AddTile(new Vector3((float)deltax, (float)deltay, requiredLOD));
-                    BuildingTilesNeeded.Add(new Vector3((float)deltax, (float)deltay, requiredLOD), 1);
+                    AddTile(new Vector3((float)deltaX, (float)deltaY, requiredLOD));
+                    BuildingTilesNeeded.Add(new Vector3((float)deltaX, (float)deltaY, requiredLOD), 1);
                 }
 
             }
@@ -122,14 +124,14 @@ public class BuildingTileManager : MonoBehaviour
         if (!activeTileList.ContainsKey(TileID)) 
         {
             activeTileList.Add(TileID, new TileData(TileID));
-            PendingDownloads.Add(TileID);
+            pendingDownloads.Add(TileID);
         }
         else
         {
             // set tilestatus to Built and remove for PendingDestroy-list if tile was setup for destroy
-            if(PendingDestroy.Contains(TileID))
+            if(pendingDestroy.Contains(TileID))
             {
-                PendingDestroy.RemoveAll(elem => elem == TileID); 
+                pendingDestroy.RemoveAll(elem => elem == TileID); 
             }
         }
     }
@@ -137,11 +139,11 @@ public class BuildingTileManager : MonoBehaviour
     public void RemoveTile(Vector3 TileID)
     {
         // Add tile tile to pendingDestroy-List if the tile is not actively worked on.
-        if (!PendingDestroy.Contains(TileID)&& !ActiveDownloads.Contains(TileID) && !ActiveBuilds.Contains(TileID))
+        if (!pendingDestroy.Contains(TileID)&& !activeDownloads.Contains(TileID) && !activeBuilds.Contains(TileID))
         {
-            PendingDestroy.Add(TileID);
-            PendingDownloads.RemoveAll(elem => elem == TileID);
-            PendingBuilds.RemoveAll(elem => elem == TileID);
+            pendingDestroy.Add(TileID);
+            pendingDownloads.RemoveAll(elem => elem == TileID);
+            pendingBuilds.RemoveAll(elem => elem == TileID);
 
         }
         
@@ -150,9 +152,9 @@ public class BuildingTileManager : MonoBehaviour
     private IEnumerator ProcessActiveTiles()
     {
         // Remove BuildingTiles
-        for (int j = PendingDestroy.Count-1; j >-1; j--)
+        for (int j = pendingDestroy.Count-1; j >-1; j--)
         {
-            Vector3 TileID = PendingDestroy[j];
+            Vector3 TileID = pendingDestroy[j];
             if (activeTileList[TileID].assetBundle != null)
             {
                 
@@ -164,28 +166,28 @@ public class BuildingTileManager : MonoBehaviour
                 activeTileList[TileID].assetBundle.Unload(true);
             }
             activeTileList.Remove(TileID);
-            PendingDestroy.RemoveAt(j);
+            pendingDestroy.RemoveAt(j);
         }
         // Download BuildingTiles
-        if (ActiveDownloads.Count < maximumConcurrentDownloads && PendingDownloads.Count>0)
+        if (activeDownloads.Count < maximumConcurrentDownloads && pendingDownloads.Count>0)
         {
-            Vector3 TileID = PendingDownloads[0];
-            PendingDownloads.RemoveAt(0);
-            ActiveDownloads.Add(TileID);
+            Vector3 TileID = pendingDownloads[0];
+            pendingDownloads.RemoveAt(0);
+            activeDownloads.Add(TileID);
             StartCoroutine(DownloadAssetBundleWebGL(TileID));
         }
         //build buildingtiles
-        if (PendingBuilds.Count>0)
+        if (pendingBuilds.Count>0)
         {
-            Vector3 TileID = PendingBuilds[0];
+            Vector3 TileID = pendingBuilds[0];
             if (activeTileList.ContainsKey(TileID))
             {
-                PendingBuilds.RemoveAt(0);
-                ActiveBuilds.Add(TileID);
+                pendingBuilds.RemoveAt(0);
+                activeBuilds.Add(TileID);
                 StartCoroutine(BuildTile(TileID));
             }
             else{
-                PendingBuilds.RemoveAt(0);
+                pendingBuilds.RemoveAt(0);
             }
             
         }
@@ -207,15 +209,15 @@ public class BuildingTileManager : MonoBehaviour
             
             if (uwr.isNetworkError || uwr.isHttpError)
             {
-                ActiveDownloads.Remove(tileData.tileID);  
+                activeDownloads.Remove(tileData.tileID);  
             }
             else
             {
                 // Get downloaded asset bundle
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(uwr);
                 tileData.assetBundle = bundle;
-                ActiveDownloads.Remove(tileData.tileID);
-                PendingBuilds.Add(tileData.tileID);
+                activeDownloads.Remove(tileData.tileID);
+                pendingBuilds.Add(tileData.tileID);
             }
         }
         
@@ -233,7 +235,7 @@ public class BuildingTileManager : MonoBehaviour
         }
         catch (Exception)
         {
-            ActiveBuilds.Remove(tileData.tileID);
+            activeBuilds.Remove(tileData.tileID);
             
             yield break;
 
@@ -259,7 +261,7 @@ public class BuildingTileManager : MonoBehaviour
 
             yield return null;
         }
-        ActiveBuilds.Remove(tileData.tileID);
+        activeBuilds.Remove(tileData.tileID);
         tileData.Status = TileStatus.Built;
 
 
@@ -273,23 +275,23 @@ public class BuildingTileManager : MonoBehaviour
         
         GameObject container = new GameObject(gameObjectName);
         container.transform.parent = transform;
-        container.layer = LayerMask.NameToLayer("Panden");
+        container.layer = LayerMask.NameToLayer(layerName);
 
         //positioning container
         Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
         double OriginOffset = 500;
         Vector3RD origin = new Vector3RD(hoekpunt.x + (OriginOffset), hoekpunt.y + (OriginOffset), 0);
-        Vector3 UnityOrigin = CoordConvert.RDtoUnity(origin);
-        container.transform.localPosition = UnityOrigin;
+        Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+        container.transform.localPosition = unityOrigin;
         double Rotatie = CoordConvert.RDRotation(origin);
         container.transform.Rotate(Vector3.up, (float)Rotatie);
 
         //add mesh
-        MeshFilter mf = container.AddComponent<MeshFilter>();
-        mf.sharedMesh = mesh;
+        container.AddComponent<MeshFilter>().sharedMesh = mesh;
+        
         //add material
-        MeshRenderer mr = container.AddComponent<MeshRenderer>();
-        mr.material = defaultMaterial;
+        container.AddComponent<MeshRenderer>().material = defaultMaterial;
+       
 
         return container;
     }
@@ -346,18 +348,20 @@ public class BuildingTileManager : MonoBehaviour
     {
         float requiredLOD = -1;
 
-        if (distanceFromCamera < maximumDistanceLOD0)
-        {
-            requiredLOD = 0;
-        }
-        if (distanceFromCamera < maximumDistanceLOD1)
-        {
-            requiredLOD = 1;
-        }
         if (distanceFromCamera < maximumDistanceLOD2)
         {
             requiredLOD = 2;
         }
+        else if (distanceFromCamera < maximumDistanceLOD1)
+        {
+            requiredLOD = 1;
+        }
+        else if (distanceFromCamera < maximumDistanceLOD0)
+        {
+            requiredLOD = 0;
+        }
+        
+        
 
         return requiredLOD;
     }
