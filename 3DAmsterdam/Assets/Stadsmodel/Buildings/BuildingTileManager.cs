@@ -54,6 +54,18 @@ public class BuildingTileManager : MonoBehaviour
 
     }
 
+    private void OnDisable()
+    {
+        
+        pendingDownloads.AddRange(activeDownloads);
+        activeDownloads = new List<Vector3>();
+    }
+
+    private void OnEnable()
+    {
+        tileUpdateCompleted = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
