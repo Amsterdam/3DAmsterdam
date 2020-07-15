@@ -18,7 +18,13 @@ public class ClickOutsideToClose : MonoBehaviour
     }
     private bool ClickingSelfOrChild()
     {
+        if (!EventSystem.current.IsPointerOverGameObject()) 
+            return false;
+
         //Check self and children
+        if(EventSystem.current.currentSelectedGameObject)
+            Debug.Log("Clicking on " + EventSystem.current.currentSelectedGameObject.name, EventSystem.current.currentSelectedGameObject);
+
         RectTransform[] rectTransforms = GetComponentsInChildren<RectTransform>();
         foreach(RectTransform rectTransform in rectTransforms)
         {
