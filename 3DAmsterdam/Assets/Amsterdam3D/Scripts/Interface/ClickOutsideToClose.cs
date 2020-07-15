@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 
 public class ClickOutsideToClose : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject[] additionalGameObjects;
+
     void Update()
     {
         if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
@@ -15,6 +18,7 @@ public class ClickOutsideToClose : MonoBehaviour
     }
     private bool ClickingSelfOrChild()
     {
+        //Check self and children
         RectTransform[] rectTransforms = GetComponentsInChildren<RectTransform>();
         foreach(RectTransform rectTransform in rectTransforms)
         {
@@ -23,6 +27,16 @@ public class ClickOutsideToClose : MonoBehaviour
                 return true;
             };
         }
+
+        //Check the additional list we set manualy
+        foreach(GameObject otherGameObject in additionalGameObjects)
+        {
+            if (EventSystem.current.currentSelectedGameObject == otherGameObject)
+            {
+                return true;
+            };
+        }
+
         return false;
     }
 }

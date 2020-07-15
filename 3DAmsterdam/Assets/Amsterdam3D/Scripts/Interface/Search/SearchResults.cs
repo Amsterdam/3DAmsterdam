@@ -1,12 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface.Search
 {
-	public class SearchResultsList : MonoBehaviour
+	public class SearchResults : MonoBehaviour
 	{
+		[SerializeField]
+		private RectTransform searchResultsContainer;
+
 		[SerializeField]
 		private SearchResult searchResultPrefab;
 
@@ -14,9 +18,12 @@ namespace Amsterdam3D.Interface.Search
 		private int maxSearchResults = 8;
 
 		private SearchResult firstResultItem;
+		private SearchField searchField;
 
-		public void DrawResults(SearchData.Response.Docs[] results, string searchTerm)
+		public void DrawResults(SearchData.Response.Docs[] results, SearchField usedInputField)
 		{
+			searchField = usedInputField;
+
 			ClearOldResults();
 
 			int itemsFound = results.Length;
@@ -28,14 +35,32 @@ namespace Amsterdam3D.Interface.Search
 			int resultsToShow = Mathf.Min(itemsFound, maxSearchResults);
 			for (int i = 0; i < resultsToShow; i++)
 			{
-				CreateNewResult(results[i], searchTerm, (i == 0));
+				CreateNewResult(results[i], searchField.SearchInput, (i == 0));
 			}
+		}
+
+		private void Update()
+		{
+			if(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
+			{
+				SelectFirstItem();
+			}
+		}
+
+		public void ShowResultsList(bool show)
+		{
+			searchResultsContainer.gameObject.SetActive(show);
+		}
+
+		public void AutocompleteSearchText(string inputText)
+		{
+			searchField.SearchInput = inputText;
 		}
 
 		public void ClearOldResults()
 		{
 			firstResultItem = null;
-			foreach (Transform child in transform)
+			foreach (Transform child in searchResultsContainer)
 				Destroy(child.gameObject);
 		}
 
@@ -43,6 +68,7 @@ namespace Amsterdam3D.Interface.Search
 		{
 			if (firstResultItem)
 			{
+				ShowResultsList(true); //The results contain the coroutines, make sure they are active
 				firstResultItem.ClickedResult();
 				firstResultItem.GetComponent<Button>().Select();
 			}
@@ -65,9 +91,10 @@ namespace Amsterdam3D.Interface.Search
 			string boldMarkupPart = "<b>" + resultName.Substring(searchStart, searchTerm.Length) + "</b>";
 			string restOfName = resultName.Substring(searchStart + searchTerm.Length);
 
-			SearchResult newSearchResult = Instantiate(searchResultPrefab, transform).GetComponent<SearchResult>();
+			SearchResult newSearchResult = Instantiate(searchResultPrefab, searchResultsContainer).GetComponent<SearchResult>();
 			newSearchResult.ResultText = boldMarkupPart + restOfName;
 			newSearchResult.ID = resultID;
+			newSearchResult.ParentList = this;
 
 			if (select) firstResultItem = newSearchResult;
 		}
