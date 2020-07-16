@@ -37,6 +37,10 @@ public class ColorPipette : MonoBehaviour
         panelCloseCatcher.IgnoreClicks(1); //This will keep our color panel open when we click the screen
         selectionPointer.gameObject.SetActive(true);
 
+        //We create a new texture once, for the sake of performance
+        viewRectangle = Camera.main.pixelRect;
+        screenTexture = new Texture2D((int)viewRectangle.width, (int)viewRectangle.height, TextureFormat.RGB24, false);
+
         activeImageIcon.color = activeIconColor;
 
         StartCoroutine(ContinuousColorPick());
@@ -72,8 +76,6 @@ public class ColorPipette : MonoBehaviour
 
     private void ReadCurrentScreenToTexture()
     {
-        viewRectangle = Camera.main.pixelRect;
-        screenTexture = new Texture2D((int)viewRectangle.width, (int)viewRectangle.height, TextureFormat.RGB24, false);
         screenTexture.ReadPixels(viewRectangle, 0, 0, false);
         screenTexture.Apply(false);
     }
