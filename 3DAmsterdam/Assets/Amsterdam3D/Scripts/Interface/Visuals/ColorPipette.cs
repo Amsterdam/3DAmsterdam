@@ -29,6 +29,10 @@ public class ColorPipette : MonoBehaviour
 
     private void Start()
     {
+        //Move our selectionpointer circle to the front canvas layer
+        selectionPointer.rectTransform.SetParent(selectionPointer.canvas.transform);
+        selectionPointer.rectTransform.SetAsLastSibling();
+
         defaultIconColor = activeImageIcon.color;
     }
 
