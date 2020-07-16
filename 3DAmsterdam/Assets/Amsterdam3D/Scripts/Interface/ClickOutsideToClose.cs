@@ -9,13 +9,23 @@ public class ClickOutsideToClose : MonoBehaviour
     [SerializeField]
     private GameObject[] additionalGameObjects;
 
+    private int numberOfClicksToIgnore = 0;
+
     void Update()
     {
         if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
-            this.gameObject.SetActive(ClickingSelfOrChild());
+            this.gameObject.SetActive(numberOfClicksToIgnore > 0 || ClickingSelfOrChild());
+
+            if (numberOfClicksToIgnore > 0) 
+                numberOfClicksToIgnore--;
         }
     }
+
+    public void IgnoreClicks(int ignore = 0){
+        numberOfClicksToIgnore = ignore;
+    }
+
     private bool ClickingSelfOrChild()
     {
         if (!EventSystem.current.IsPointerOverGameObject()) 
