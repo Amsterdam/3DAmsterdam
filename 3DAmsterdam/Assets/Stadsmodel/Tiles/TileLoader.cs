@@ -149,7 +149,7 @@ public class TileLoader : MonoBehaviour
             //If the url is empty, simply clear the texture slot
             meshRenderer.material.SetTexture("_BaseMap", null);
             if (baseMap) Destroy(baseMap);
-            yield return null;
+            yield break;
         }
 
         //get tile texture data
