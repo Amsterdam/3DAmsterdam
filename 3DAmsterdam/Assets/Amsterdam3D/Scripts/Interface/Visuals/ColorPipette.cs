@@ -91,8 +91,11 @@ public class ColorPipette : MonoBehaviour
         activeImageIcon.color = defaultIconColor;
 
         selectionPointer.gameObject.SetActive(false);
-        if(useColor) colorPicker.ChangeColorInput(pickedColor);
-
+        if (useColor)
+        {
+            colorPicker.ChangeColorInput(pickedColor);
+            colorPicker.selectedNewColor.Invoke(pickedColor, colorPicker);
+        }
         StopAllCoroutines();
     }
 }
