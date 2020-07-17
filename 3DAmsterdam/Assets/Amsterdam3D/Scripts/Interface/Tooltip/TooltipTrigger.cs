@@ -8,6 +8,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 {
     [SerializeField]
     private string tooltipText = "";
+    public string TooltipText { get => tooltipText; set => tooltipText = value; }
 
     public void OnPointerDown(PointerEventData eventData)
     {

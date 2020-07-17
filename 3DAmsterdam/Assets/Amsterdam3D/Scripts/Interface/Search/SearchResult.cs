@@ -14,6 +14,9 @@ namespace Amsterdam3D.Interface.Search
         private const string REPLACEMENT_STRING = "{ID}";
         private const string lookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
 
+        private SearchResults parentList;
+        public SearchResults ParentList { get => parentList; set => parentList = value; }
+
         [SerializeField]
         private Text textField;
 
@@ -48,8 +51,10 @@ namespace Amsterdam3D.Interface.Search
         }
 
         public void ClickedResult(){
+            ParentList.AutocompleteSearchText(ResultText);
             StartCoroutine(FindLocationByIDLookup());
         }
+
         IEnumerator FindLocationByIDLookup()
         {
             string uri = lookupUrl.Replace(REPLACEMENT_STRING, id);
@@ -74,6 +79,7 @@ namespace Amsterdam3D.Interface.Search
                     string locationData = lookupData.response.docs[0].centroide_ll;
                     Vector3 targetLocation = ExtractUnityLocation(ref locationData);
 
+                    ParentList.ShowResultsList(false);
                     cameraControls.MoveAndFocusOnLocation(targetLocation);
                 }
             }

@@ -20,6 +20,8 @@ namespace Amsterdam3D.Interface
 
 		public float materialOpacity = 1.0f;
 
+		private const string EXPLANATION_TEXT = "\nShift+Click: Multiselect";
+
 		public bool Selected
 		{
 			get
@@ -53,8 +55,11 @@ namespace Amsterdam3D.Interface
 		{
 			targetMaterial = target;
 
+			//Tooltip text. Users do not need to know if a material is an instance.
+			var materialName = targetMaterial.name.Replace(" (Instance)", "");
+			GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
+
 			var targetMaterialColor = GetColor;
-			
 			colorImage.color = new Color(targetMaterialColor.r, targetMaterialColor.g, targetMaterialColor.b, 1.0f);
 			materialOpacity = targetMaterialColor.a;
 

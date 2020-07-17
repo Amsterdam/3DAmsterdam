@@ -6,6 +6,8 @@ using System.Globalization;
 using ConvertCoordinates;
 using System;
 using UnityEngine.EventSystems;
+using BruTile.Wms;
+using System.Text.RegularExpressions;
 
 namespace Amsterdam3D.Interface.Search
 {
@@ -16,9 +18,12 @@ namespace Amsterdam3D.Interface.Search
 
 		[SerializeField]
 		private InputField searchInputField;
+		/// <summary>
+		/// Searchinput makes sure any rich markup (bold, italic etc.) is stripped from the input, when we set the value.
+		/// </summary>
+		public string SearchInput { get => searchInputField.text; set => searchInputField.text = Regex.Replace(value, "<.*?>", string.Empty); }
 
-		[SerializeField]
-		private SearchResultsList searchResultsList;
+		private SearchResults searchResultsList;
 
 		private const string REPLACEMENT_STRING = "{SEARCHTERM}";
 		private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
@@ -27,12 +32,14 @@ namespace Amsterdam3D.Interface.Search
 
 		private void Start()
 		{
-			searchResultsList.gameObject.SetActive(false);
+			searchResultsList = GetComponent<SearchResults>();
+			searchResultsList.ShowResultsList(false);
 		}
 
 		public void GetSuggestions(string textInput)
 		{
-			searchResultsList.gameObject.SetActive(textInput != "");
+			var inputNotEmpty = (textInput != "");
+			searchResultsList.ShowResultsList(inputNotEmpty);
 
 			StopAllCoroutines();
 			if (textInput.Length > charactersNeededBeforeSearch)
@@ -47,7 +54,8 @@ namespace Amsterdam3D.Interface.Search
 		}
 		public void OnSelect(BaseEventData data)
 		{
-			searchResultsList.gameObject.SetActive(true);
+			print("Selected search input field");
+			searchResultsList.ShowResultsList(true);
 		}
 
 		IEnumerator FindSearchSuggestions(string searchTerm)
@@ -69,7 +77,7 @@ namespace Amsterdam3D.Interface.Search
 					string jsonStringResult = webRequest.downloadHandler.text;
 					searchData = JsonUtility.FromJson<SearchData>(jsonStringResult);
 
-					searchResultsList.DrawResults(searchData.response.docs, searchTerm);
+					searchResultsList.DrawResults(searchData.response.docs, this);
 				}
 			}
 		}

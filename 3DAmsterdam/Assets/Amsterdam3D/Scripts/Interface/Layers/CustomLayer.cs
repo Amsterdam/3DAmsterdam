@@ -13,7 +13,7 @@ namespace Amsterdam3D.Interface
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
-            layerNameText.text = name;
+            layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
             LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
         }

@@ -143,6 +143,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
 		pointer.rectTransform.anchoredPosition = targetVector;
 
+		inputColor.a = 1.0f;
 		pointer.color = inputColor;
 		sliderHandle.color = inputColor;
 		sliderArea.color = inputColor;
