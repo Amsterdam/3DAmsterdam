@@ -298,9 +298,14 @@ namespace Amsterdam3D.CameraMotion
 
             if (Input.GetMouseButtonDown(2))
             {
+                //Check if a collider is under our mouse, if not get a point on NAP~0
                 if (Physics.Raycast(ray, out hit))
                 {
                     rotatePoint = hit.point;
+                    focusPointChanged(rotatePoint);
+                }
+                else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter)){
+                    rotatePoint = ray.GetPoint(enter);
                     focusPointChanged(rotatePoint);
                 }
             }
