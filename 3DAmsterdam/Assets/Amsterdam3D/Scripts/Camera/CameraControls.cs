@@ -257,68 +257,12 @@ namespace Amsterdam3D.CameraMotion
             scrollDelta = Input.GetAxis("Mouse ScrollWheel");
             if (scrollDelta == 0) return;
 
-            RaycastHit hit;
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-            zoomPoint = camera.transform.position;
+            zoomPoint = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
 
-            // raycast wordt afgevuurd naar de positie van de muis. als er iets wordt gedecteerd wordt dat opgeslagen in een variabel.
-            if (Physics.Raycast(ray, out hit))
-            {
-                hitCollider = true; // checkt of er een collider geraakt wordt met raycast
-                zoomPoint = hit.point;
-                focusPointChanged(zoomPoint);
-            }
-            else
-            {
-                hitCollider = false;
-            }
+            var heightSpeed = camera.transform.position.y; //The higher we are, the faster we zoom
+            var zoomDirection = (zoomPoint - camera.transform.position).normalized;
 
-            // de afstand tussen de camera en het zoompunt wordt berekend.
-            zoomDistance = Vector3.Distance(zoomPoint, camera.transform.position);
-            // de richting waar in gezoomd moet worden wordt berekend.
-            zoomDirection = Vector3.Normalize(zoomPoint - camera.transform.position);
-            zoom = zoomDirection * zoomDistance * scrollDelta * zoomSpeed;
-
-            if (hitCollider)
-            {
-                // er kan niet verder worden uitgezoomd dan de maximale range.
-                if (camera.transform.position.y > maxZoomOut)
-                {
-                    var maxZoomPosition = new Vector3(camera.transform.position.x, maxZoomOut, camera.transform.position.z);
-                    camera.transform.position = maxZoomPosition;
-                }
-                // er kan niet verder worden ingezoomd dan de minimale range.
-                else if (camera.transform.position.y < maxZoomIn)
-                {
-                    var minZoomPosition = new Vector3(camera.transform.position.x, maxZoomIn, camera.transform.position.z);
-                    camera.transform.position = minZoomPosition;
-                }
-                else
-                {
-                    // als de maximale uitzoom range bereikt is kan er alleen ingezoomd worden.
-                    if (camera.transform.position.y == maxZoomOut)
-                    {
-                        if (scrollDelta > 0) camera.transform.position += zoom;
-                    }
-                    // als de maximale inzoom range bereikt is kan er alleen uitgezoomd worden.
-                    else if (camera.transform.position.y == maxZoomIn)
-                    {
-                        if (scrollDelta < 0) camera.transform.position += zoom;
-                    }
-                    // de positie van de camera wordt aangepast.
-                    else
-                    {
-                        camera.transform.position += zoom;
-                    }
-                }
-            }
-            else // in/uit zoomen op de lucht
-            {
-                if (currentRotation.y < 20f)
-                {
-                    camera.transform.position += scrollDelta * zoomSpeedAir * moveDirection;
-                }
-            }
+            camera.transform.Translate(zoomDirection * zoomSpeed * scrollDelta * heightSpeed,Space.World);
         }
 
         private void Dragging()
