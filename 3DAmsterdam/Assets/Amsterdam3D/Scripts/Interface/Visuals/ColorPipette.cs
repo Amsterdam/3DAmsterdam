@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ColorPipette : MonoBehaviour
@@ -27,19 +28,29 @@ public class ColorPipette : MonoBehaviour
 
     private Rect viewRectangle;
 
+    private GraphicRaycaster parentCanvasGraphicRaycaster;
+
     private void Start()
     {
         //Move our selectionpointer circle to the front canvas layer
         selectionPointer.rectTransform.SetParent(selectionPointer.canvas.transform);
         selectionPointer.rectTransform.SetAsLastSibling();
 
+        parentCanvasGraphicRaycaster = selectionPointer.canvas.GetComponent<GraphicRaycaster>();
         defaultIconColor = activeImageIcon.color;
     }
 
+    /// <summary>
+    /// Start using the pipette color selection.
+    /// We jump in to our color selection mode, where we can only click to select a color.
+    /// </summary>
     public void StartColorSelection()
     {
         panelCloseCatcher.IgnoreClicks(1); //This will keep our color panel open when we click the screen
         selectionPointer.gameObject.SetActive(true);
+
+        //We dont allow clicks on the canvas, untill we are done picking a color
+        parentCanvasGraphicRaycaster.enabled = false;
 
         //We create a new texture once, for the sake of performance
         viewRectangle = Camera.main.pixelRect;
@@ -50,6 +61,10 @@ public class ColorPipette : MonoBehaviour
         StartCoroutine(ContinuousColorPick());
     }
 
+    /// <summary>
+    /// Keep reading the pixel color under our mouse
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ContinuousColorPick()
     {
         while (true)
@@ -71,6 +86,9 @@ public class ColorPipette : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// We get the pixel Color under our mouse pointer.
+    /// </summary>
     private void GrabPixelUnderMouse()
     {
         pickedColor = screenTexture.GetPixel((int)Input.mousePosition.x, (int)Input.mousePosition.y);
@@ -78,15 +96,26 @@ public class ColorPipette : MonoBehaviour
         selectionPointer.color = pickedColor;
     }
 
+    /// <summary>
+    /// Grabs the pixels of the rendered screen and apply them to our texture.
+    /// </summary>
     private void ReadCurrentScreenToTexture()
     {
         screenTexture.ReadPixels(viewRectangle, 0, 0, false);
         screenTexture.Apply(false);
     }
 
+    /// <summary>
+    /// We clicked and go back to normal.
+    /// Optionaly we send the color we selected to our ColorPicker.
+    /// </summary>
+    /// <param name="useColor">Use color in ColorPicker</param>
     private void DonePicking(bool useColor)
     {
         Destroy(screenTexture);
+
+        //Allow interaction on the canvas again
+        parentCanvasGraphicRaycaster.enabled = true; 
 
         activeImageIcon.color = defaultIconColor;
 
