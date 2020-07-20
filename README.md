@@ -5,8 +5,8 @@ More and more information and data is embedded in 3D, allowing future features l
 providing insight in decision making processes.
 
 ## Unity 2019.4. (LTS)
-We are currently using the latest LTS (long-term support) release of Unity: 2019.4. 
-Untill new engine feature updates are required, we will stick to this version for the sake of maximum stability.
+The project is using the latest LTS (long-term support) release of Unity: 2019.4. 
+We will stick to this version untill new engine feature updates are required for the sake of maximum stability.
 ## WebGL/Universal Render Pipeline
 Currently the main target platform is a WebGL(2.0) application.
 The project is set up to use the [Universal Render Pipeline](https://unity.com/srp/universal-render-pipeline), focussing on high performance for lower end machines. Please note that shaders/materials have specific requirements in order to work in this render pipeline.
