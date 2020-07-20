@@ -1,18 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ScreenCapturing : MonoBehaviour
 {
     [SerializeField]
     private KeyCode screenCaptureKey = KeyCode.S;
-
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if(Input.GetKeyDown(screenCaptureKey)){
