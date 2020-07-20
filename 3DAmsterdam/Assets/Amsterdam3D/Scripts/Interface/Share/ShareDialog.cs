@@ -27,6 +27,7 @@ namespace Amsterdam3D.Interface.Sharing
 
         [SerializeField]
         private RectTransform generatedURL;
+        [SerializeField]
         private InputField generatedURLInputField;
         private string generatedURLAddress = "";
 
@@ -52,9 +53,10 @@ namespace Amsterdam3D.Interface.Sharing
         private IEnumerator Share()
         {
             //TODO real server upload/feedback
-            ChangeState(SharingState.SHARING_SCENE);
+            
             progressBar.SetMessage("Instellingen opslaan..");
             progressBar.Percentage(0.2f);
+            ChangeState(SharingState.SHARING_SCENE);
 
             yield return new WaitForSeconds(1.0f);
             progressBar.SetMessage("Object A wordt geupload..");
@@ -63,6 +65,11 @@ namespace Amsterdam3D.Interface.Sharing
             yield return new WaitForSeconds(2.0f);
             progressBar.SetMessage("Object B wordt geupload..");
             progressBar.Percentage(0.8f);
+
+            yield return new WaitForSeconds(2.0f);
+            progressBar.Percentage(1.0f);
+
+            yield return new WaitForSeconds(0.1f);
 
             //Temp fake random URL
             generatedURLAddress = "https://3d.amsterdam.nl/?view=" + Path.GetRandomFileName().Split('.')[0];
@@ -78,15 +85,21 @@ namespace Amsterdam3D.Interface.Sharing
             {
                 case SharingState.SHARING_OPTIONS:
                     shareOptions.gameObject.SetActive(true);
+
+                    progressFeedback.gameObject.SetActive(false);
+                    generatedURL.gameObject.SetActive(false);
                     break;
                 case SharingState.SHARING_SCENE:
-                    shareOptions.gameObject.SetActive(false);
                     progressFeedback.gameObject.SetActive(true);
+
+                    shareOptions.gameObject.SetActive(false);
+                    generatedURL.gameObject.SetActive(false);
                     break;
                 case SharingState.SHOW_URL:
-                    shareOptions.gameObject.SetActive(false);
-                    progressFeedback.gameObject.SetActive(false);
                     generatedURL.gameObject.SetActive(true);
+
+                    shareOptions.gameObject.SetActive(false);
+                    progressFeedback.gameObject.SetActive(false); 
                     break;
                 default:
                     break;
