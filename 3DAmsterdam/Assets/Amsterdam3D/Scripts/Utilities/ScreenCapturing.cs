@@ -9,7 +9,7 @@ public class ScreenCapturing : MonoBehaviour
         if(Input.GetKeyDown(screenCaptureKey)){
             var randomName = "Screenshot_" + Random.value + ".png"; 
             ScreenCapture.CaptureScreenshot(randomName);
-            print(Application.dataPath + "../" + randomName);
+            print("Saved screenshot to: " + Application.dataPath + "../" + randomName);
         }
     }
 }
