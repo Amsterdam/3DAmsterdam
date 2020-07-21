@@ -24,9 +24,7 @@ class TileData
 
 public class BuildingTileManager : MonoBehaviour
 {
-
-
-    [SerializeField] private string assetURL = "https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/";
+    private string assetURL = Constants.BASE_DATA_URL + "AssetBundles/Gebouwen/";
     [SerializeField] private Material defaultMaterial;
     [SerializeField] private Material highLightMaterial;
     [SerializeField] private float maximumDistanceLOD2 = 500;
