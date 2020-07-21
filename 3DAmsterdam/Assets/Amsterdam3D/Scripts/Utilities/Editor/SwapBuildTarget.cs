@@ -14,7 +14,19 @@ namespace Amsterdam3D.Utilities
 			FEATURE
 		}
 
-	    public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL, BranchType branchType = BranchType.FEATURE)
+        [MenuItem("3D Amsterdam/Build for WebGL")]
+        public static void BuildWebGL()
+        {
+            TargetedBuild(BuildTarget.WebGL);
+        }
+
+        [MenuItem("3D Amsterdam/Build for Windows 64 bit")]
+        public static void BuildWindows()
+        {
+            TargetedBuild(BuildTarget.StandaloneWindows64);
+        }
+
+        public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL, BranchType branchType = BranchType.FEATURE)
         {           
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
@@ -22,9 +34,7 @@ namespace Amsterdam3D.Utilities
                 target = buildTarget,
                 locationPathName = (buildTarget==BuildTarget.WebGL) ? "BuildWebGL" : "BuildDesktop",
                 options = BuildOptions.AutoRunPlayer
-            };
-
-            
+            };            
 
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
@@ -39,17 +49,5 @@ namespace Amsterdam3D.Utilities
                 Debug.Log("Build failed");
             }
         }
-
-        [MenuItem("3D Amsterdam/Build for WebGL")]
-        public static void BuildWebGL()
-        {
-			TargetedBuild(BuildTarget.WebGL);
-		}
-
-		[MenuItem("3D Amsterdam/Build for Windows 64 bit")]
-		public static void BuildWindows()
-		{
-			TargetedBuild(BuildTarget.StandaloneWindows64);
-		}
     }
 }
