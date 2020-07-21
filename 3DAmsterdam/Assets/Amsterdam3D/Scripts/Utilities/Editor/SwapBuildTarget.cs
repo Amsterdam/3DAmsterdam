@@ -9,34 +9,39 @@ namespace Amsterdam3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
-        [MenuItem("3D Amsterdam/Set branch type/master")]
+        [MenuItem("3D Amsterdam/Environment target/Production")]
         public static void SwitchBranchMaster()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"BRANCH_MASTER");
-            PlayerSettings.bundleVersion = "master";
-            Debug.Log("Set scripting define symbols to BRANCH_MASTER");
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
+            PlayerSettings.bundleVersion = ""; 
+            Debug.Log("Set scripting define symbols to PRODUCTION");
         }
-        [MenuItem("3D Amsterdam/Set branch type/develop")]
+        [MenuItem("3D Amsterdam/Environment target/Development")]
         public static void SwitchBranchDevelop()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "BRANCH_DEVELOP");
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             PlayerSettings.bundleVersion = "develop";
-            Debug.Log("Set scripting define symbols to BRANCH_DEVELOP");
+            Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
-        [MenuItem("3D Amsterdam/Set branch type/feature")]
+        [MenuItem("3D Amsterdam/Environment target/Development - Custom feature data")]
         public static void SwitchBranchFeature()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "BRANCH_FEATURE");
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT_FEATURE");
 
             var gitHeadFile = Application.dataPath + "/../../.git/HEAD";
             var headLine = File.ReadAllText(gitHeadFile);
+            Debug.Log("Reading git HEAD file:" + headLine);
+
+            if (!headLine.Contains("feature/")){
+                Debug.Log("Your branch does not seem to be a feature/ branch");
+            }
             var positionLastSlash = headLine.LastIndexOf("/") + 1;
             var featureName = headLine.Substring(positionLastSlash, headLine.Length - positionLastSlash);
 
             PlayerSettings.bundleVersion = "feature/" + featureName;
             Debug.Log("Version set to feature name: " + Application.version);
 
-            Debug.Log("Set scripting define symbols to BRANCH_FEATURE");
+            Debug.Log("Set scripting define symbols to DEVELOPMENT_FEATURE");
         }
         [MenuItem("3D Amsterdam/Build for WebGL platform")]
         public static void BuildWebGL()
