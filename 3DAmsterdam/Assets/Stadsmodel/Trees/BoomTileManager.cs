@@ -37,7 +37,7 @@ public enum TileStatus
 
 public class BoomTileManager : MonoBehaviour
     {
-        public string BuildingURL = "file:///D://Git/A3d/AssetBundles/WebGL/";
+        private string treeUrl = Constants.BASE_DATA_URL + "AssetBundles/WebGL/Bomen/";
         public Material kruinmateriaal;
         public Material stammateriaal;
         public float Max_Afstand = 2000f;
@@ -231,7 +231,7 @@ public class BoomTileManager : MonoBehaviour
 //#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
 //            BuildingURL = "file:///D:/Github/WebGL/Bomen/";
 //#endif
-            string url = BuildingURL + "bomen_" + ((int)btd.tileID.x).ToString() + "-" + ((int)btd.tileID.y).ToString();
+            string url = treeUrl + "bomen_" + ((int)btd.tileID.x).ToString() + "-" + ((int)btd.tileID.y).ToString();
         
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
