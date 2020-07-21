@@ -23,7 +23,7 @@ namespace Amsterdam3D.Utilities
             PlayerSettings.bundleVersion = "develop";
             Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
-        [MenuItem("3D Amsterdam/Environment target/Development - Custom feature data")]
+        [MenuItem("3D Amsterdam/Environment target/Development - Feature")]
         public static void SwitchBranchFeature()
         {
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT_FEATURE");

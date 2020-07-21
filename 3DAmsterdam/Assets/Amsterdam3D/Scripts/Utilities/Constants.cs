@@ -9,13 +9,14 @@
     /// <summary>
     /// Swap data URL based on the branch type. If we build, use a relative path in WebGL.
     /// </summary>
-#if !UNITY_EDITOR && UNITY_WEBGL
-    public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
-#elif UNITY_EDITOR && PRODUCTION
-    public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
-#elif UNITY_EDITOR && DEVELOPMENT
-    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
-#elif UNITY_EDITOR && DEVELOPMENT_FEATURE
-    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
-#endif
+    #if !UNITY_EDITOR && RELATIVE_BASE_PATH
+        public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
+    #elif PRODUCTION
+        public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
+    #elif DEVELOPMENT_FEATURE
+        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
+    #else
+        //USE DEVELOPMENT PATH BY DEFAULT
+        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
+    #endif
 }
