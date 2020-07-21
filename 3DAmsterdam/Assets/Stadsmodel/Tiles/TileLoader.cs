@@ -20,8 +20,7 @@ public class TileLoader : MonoBehaviour
     public Material DeFaultMaterial;
     private CameraView CV;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
-    public string terrainUrl = "https://acc.3d.amsterdam.nl/webmap/QMtiles/{z}/{x}/{y}.terrain";
-
+    private string terrainUrl = Constants.BASE_DATA_URL + "QMtiles/{z}/{x}/{y}.terrain";
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
    
     public GameObject placeholderTile;
