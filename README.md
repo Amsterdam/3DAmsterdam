@@ -1,8 +1,8 @@
 # 3DAmsterdam
 
-3D Amsterdam is a platform ( available at 3d.amsterdam.nl ) where the city of Amsterdam can be experienced interactively, and where communication and participation is made more accessible.<br/>
-More and more information and data is embedded in 3D, allowing future features like running simulations, and   
-providing insight in decision making processes.
+3D Amsterdam is a platform ( available at 3d.amsterdam.nl ) where the city of Amsterdam can be experienced interactively in 3D.<br/>
+The main goals are providing information about the city and it's changes as well as making communication and participation more accessible.<br/>
+More and more information and data is embedded, allowing future features like running simulations, solar and wind studies and address sustainability issues as well as providing insight in decision making processes.
 
 ## Unity 2019.4. (LTS)
 The project is using the latest LTS (long-term support) release of Unity: 2019.4.<br/>
