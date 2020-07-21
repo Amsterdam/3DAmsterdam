@@ -57,7 +57,7 @@ namespace Amsterdam3D.Utilities
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = (buildTarget==BuildTarget.WebGL) ? "BuildWebGL" : "BuildDesktop",
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL" : "BuildDesktop"),
                 options = BuildOptions.AutoRunPlayer
             };            
 
