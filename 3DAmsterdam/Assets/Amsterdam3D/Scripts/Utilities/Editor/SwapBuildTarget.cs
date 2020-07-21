@@ -8,7 +8,13 @@ namespace Amsterdam3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
-        public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL)
+		public enum BranchType{
+			MASTER,
+			DEVELOP,
+			FEATURE
+		}
+
+	    public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL, BranchType branchType = BranchType.FEATURE)
         {           
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
