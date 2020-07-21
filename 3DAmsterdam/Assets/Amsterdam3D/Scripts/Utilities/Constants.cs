@@ -11,11 +11,11 @@
     /// </summary>
 #if !UNITY_EDITOR && UNITY_WEBGL
     public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
-#elif UNITY_EDITOR && BRANCH_MASTER
-    public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/AssetBundles/WebGL/";
-#elif UNITY_EDITOR && BRANCH_DEVELOP
-    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/";
-#elif UNITY_EDITOR && BRANCH_FEATURE
-    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/AssetBundles/WebGL/";
+#elif UNITY_EDITOR && PRODUCTION
+    public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
+#elif UNITY_EDITOR && DEVELOPMENT
+    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
+#elif UNITY_EDITOR && DEVELOPMENT_FEATURE
+    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
 #endif
 }
