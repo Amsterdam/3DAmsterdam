@@ -12,7 +12,7 @@ namespace Amsterdam3D.Utilities
         [MenuItem("3D Amsterdam/Environment target/Production")]
         public static void SwitchBranchMaster()
         {
-            PlayerSettings.bundleVersion = ""; //The place to assign release versioning
+            PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
@@ -56,21 +56,22 @@ namespace Amsterdam3D.Utilities
         }*/
 
         public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL)
-        {           
+        {
+            var verionSuffix = Application.version;
+
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL" : "BuildDesktop"),
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL_" : "BuildDesktop_") + verionSuffix,
                 options = BuildOptions.AutoRunPlayer
             };            
 
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
-
             if (buildSummary.result == BuildResult.Succeeded)
             {
-                Debug.Log("Build succeeded: " + buildSummary.totalSize + " bytes");
+                Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
             }
 
             if (buildSummary.result == BuildResult.Failed)
