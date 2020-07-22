@@ -9,21 +9,23 @@ namespace Amsterdam3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
-        [MenuItem("3D Amsterdam/Environment target/Production")]
+        public static void DataTarget(){}
+
+        [MenuItem("3D Amsterdam/Set data target/Production")]
         public static void SwitchBranchMaster()
         {
             PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
-        [MenuItem("3D Amsterdam/Environment target/Development")]
+        [MenuItem("3D Amsterdam/Set data target/Development")]
         public static void SwitchBranchDevelop()
         {
             PlayerSettings.bundleVersion = "develop";
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
-        [MenuItem("3D Amsterdam/Environment target/Development - Feature")]
+        [MenuItem("3D Amsterdam/Set data target/Specific feature")]
         public static void SwitchBranchFeature()
         {
             var gitHeadFile = Application.dataPath + "/../../.git/HEAD";
