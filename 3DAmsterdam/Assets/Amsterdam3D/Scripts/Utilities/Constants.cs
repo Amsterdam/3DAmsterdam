@@ -1,4 +1,6 @@
-﻿public static class Constants
+﻿using UnityEngine;
+
+public static class Constants
 {
     /// <summary>
     /// The world Y axis is based on GPS coordinates.
@@ -7,16 +9,17 @@
     public const float ZERO_GROUND_LEVEL_Y = 43.0f;
 
     /// <summary>
-    /// Swap data URL based on the branch type. If we build, use a relative path in WebGL.
+    /// Swap data URL based on the branch type. Optionaly we can choose to use a relative path for WebGL.
     /// </summary>
-    #if !UNITY_EDITOR && RELATIVE_BASE_PATH
+#if !UNITY_EDITOR && RELATIVE_BASE_PATH
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
-    #elif PRODUCTION
+#elif PRODUCTION
         public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
-    #elif DEVELOPMENT_FEATURE
-        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
-    #else
+#elif DEVELOPMENT_FEATURE
+        //version contains branch name, for example feature/new-feature-name
+        public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version; 
+#else
         //USE DEVELOPMENT PATH BY DEFAULT
-        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/";
-    #endif
+        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
+#endif
 }

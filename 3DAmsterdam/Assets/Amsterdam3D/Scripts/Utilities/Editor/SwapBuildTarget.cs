@@ -12,22 +12,20 @@ namespace Amsterdam3D.Utilities
         [MenuItem("3D Amsterdam/Environment target/Production")]
         public static void SwitchBranchMaster()
         {
+            PlayerSettings.bundleVersion = ""; //The place to assign release versioning
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
-            PlayerSettings.bundleVersion = ""; 
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
         [MenuItem("3D Amsterdam/Environment target/Development")]
         public static void SwitchBranchDevelop()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             PlayerSettings.bundleVersion = "develop";
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
         [MenuItem("3D Amsterdam/Environment target/Development - Feature")]
         public static void SwitchBranchFeature()
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT_FEATURE");
-
             var gitHeadFile = Application.dataPath + "/../../.git/HEAD";
             var headLine = File.ReadAllText(gitHeadFile);
             Debug.Log("Reading git HEAD file:" + headLine);
@@ -41,6 +39,7 @@ namespace Amsterdam3D.Utilities
             PlayerSettings.bundleVersion = "feature/" + featureName;
             Debug.Log("Version set to feature name: " + Application.version);
 
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT_FEATURE");
             Debug.Log("Set scripting define symbols to DEVELOPMENT_FEATURE");
         }
         [MenuItem("3D Amsterdam/Build for WebGL platform")]

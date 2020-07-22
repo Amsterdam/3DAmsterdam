@@ -20,7 +20,8 @@ public class TileLoader : MonoBehaviour
     public Material DeFaultMaterial;
     private CameraView CV;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
-    private string terrainUrl = Constants.BASE_DATA_URL + "QMtiles/{z}/{x}/{y}.terrain";
+    [SerializeField] private string dataFolder = "terrain";
+    private string terrainUrl;
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
    
     public GameObject placeholderTile;
@@ -57,6 +58,7 @@ public class TileLoader : MonoBehaviour
     void Start()
     {
         CV = Camera.main.GetComponent<CameraView>();
+        terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
     }
 
     // Update is called once per frame
@@ -384,7 +386,6 @@ public class TileLoader : MonoBehaviour
             {
                 GameObject tile = DrawPlaceHolder(newTileKey);
                 activeTiles.Add(newTileKey, tile);
-
                 var qmUrl = terrainUrl.Replace("{x}", newTileKey.x.ToString()).Replace("{y}", newTileKey.y.ToString()).Replace("{z}", int.Parse(newTileKey.z.ToString()).ToString());
                 downloadQueue.Enqueue(new downloadRequest(qmUrl, TileService.QM, newTileKey));
             }
