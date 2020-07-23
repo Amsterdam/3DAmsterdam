@@ -56,7 +56,7 @@ namespace Amsterdam3D.Interface.Sharing
         private IEnumerator Share()
         {
             //TODO real server upload/feedback
-            var json = JsonUtility.ToJson(SceneSerializer.ToDataStructure());
+            var json = JsonUtility.ToJson(sceneSerializer.ToDataStructure());
 
             progressBar.SetMessage("Instellingen opslaan..");
             progressBar.Percentage(0.2f);
