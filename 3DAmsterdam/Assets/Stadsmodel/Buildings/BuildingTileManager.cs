@@ -24,9 +24,7 @@ class TileData
 
 public class BuildingTileManager : MonoBehaviour
 {
-
-
-    [SerializeField] private string assetURL = "https://3d.amsterdam.nl/web/AssetBundles/Gebouwen/";
+    [SerializeField] private string dataFolder = "buildings";
     [SerializeField] private Material defaultMaterial;
     [SerializeField] private Material highLightMaterial;
     [SerializeField] private float maximumDistanceLOD2 = 500;
@@ -76,16 +74,12 @@ public class BuildingTileManager : MonoBehaviour
 
     }
 
-    
 
     private void UpdateActiveTileList(Extent wGSExtent)
     {
- 
         Extent rDExtent = ConvertWGSExtentToRDExtent(wGSExtent);
-
         Vector3RD camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
         Vector3 camlocationRD = new Vector3((float)camlocation3RD.x, (float)camlocation3RD.y, (float)camlocation3RD.z);
-
         
         Dictionary<Vector3, int> BuildingTilesNeeded = new Dictionary<Vector3, int>();
         for (double deltaX = rDExtent.MinX; deltaX <= rDExtent.MaxX; deltaX += 1000)
@@ -201,8 +195,8 @@ public class BuildingTileManager : MonoBehaviour
         ///
         TileData tileData = activeTileList[TileID];
         //BuildingURL = "file:///D://Github/WebGL/";
-        string url = assetURL + "gebouwen_" + ((int)tileData.tileID.x).ToString() + "_" + ((int)tileData.tileID.y).ToString() + "." + ((int)tileData.tileID.z).ToString();
-        
+        string url = Constants.BASE_DATA_URL + dataFolder + "/buildings_" + ((int)tileData.tileID.x).ToString() + "_" + ((int)tileData.tileID.y).ToString() + "." + ((int)tileData.tileID.z).ToString();
+        print(url);
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
         {
             yield return uwr.SendWebRequest();
