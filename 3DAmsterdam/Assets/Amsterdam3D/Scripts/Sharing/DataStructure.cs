@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Amsterdam3D.Sharing
+﻿namespace Amsterdam3D.Sharing
 {
     [System.Serializable]
     public struct DataStructure
@@ -16,7 +14,7 @@ namespace Amsterdam3D.Sharing
         public CustomLayer[] customLayers;
         public FixedLayers fixedLayers;
 
-        public struct FixedLayers{
+        public struct FixedLayers{ 
             public FixedLayer buildings;
             public FixedLayer trees;
             public FixedLayer ground;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.Sharing;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace Amsterdam3D.Interface.Sharing
         private InputField generatedURLInputField;
         private string generatedURLAddress = "";
 
+        [SerializeField]
+        private SceneSerializer sceneSerializer;
 
         private SharingState state = SharingState.SHARING_OPTIONS;
 
@@ -53,7 +56,8 @@ namespace Amsterdam3D.Interface.Sharing
         private IEnumerator Share()
         {
             //TODO real server upload/feedback
-            
+            var json = JsonUtility.ToJson(SceneSerializer.ToDataStructure());
+
             progressBar.SetMessage("Instellingen opslaan..");
             progressBar.Percentage(0.2f);
             ChangeState(SharingState.SHARING_SCENE);
