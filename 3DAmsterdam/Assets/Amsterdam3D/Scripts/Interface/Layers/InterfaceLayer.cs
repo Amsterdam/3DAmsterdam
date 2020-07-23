@@ -18,13 +18,16 @@ namespace Amsterdam3D.Interface
 		protected LayerType layerType = LayerType.STATIC;
 		public LayerType LayerType { get => layerType; }
 
+		private bool active = true;
+		public bool Active { get => active; set => active = value; }
+
 		[SerializeField]
 		protected GameObject linkedObject;
 
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
-		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }	
-
+		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+		
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;
 
@@ -96,7 +99,8 @@ namespace Amsterdam3D.Interface
 		/// <param name="isOn"></param>
 		public void ToggleLinkedObject(bool isOn)
 		{
-			linkedObject.SetActive(isOn);
+			active = isOn;
+			linkedObject.SetActive(active);
 		}
 
 		/// <summary>
