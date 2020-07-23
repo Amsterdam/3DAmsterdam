@@ -21,6 +21,26 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private InterfaceLayer groundLayer;
 
+        [SerializeField]
+        private string urlViewIDVariable = "?view=";
+
+        [SerializeField]
+        private string savedScenePath = "uploads";
+
+        private void Start()
+        {
+            if(Application.absoluteURL.Contains(urlViewIDVariable)){
+                StartCoroutine(GetSharedScene());
+            }
+        }
+
+        IEnumerator GetSharedScene(){
+            
+            //Get GET parameter from url (Application.absoluteURL)
+            //Split ID, and try to load scene with that ID 
+            yield return null;
+        }
+
         public void LoadFromDataStructure(DataStructure dataStructure)
         {
             
