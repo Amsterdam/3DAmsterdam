@@ -21,6 +21,11 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private InterfaceLayer groundLayer;
 
+        public void LoadFromDataStructure(DataStructure dataStructure)
+        {
+            
+        }
+
         public DataStructure ToDataStructure()
         {
             var cameraPosition = Camera.main.transform.position;
