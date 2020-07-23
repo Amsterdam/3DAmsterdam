@@ -56,9 +56,15 @@ namespace Amsterdam3D.Interface.Sharing
         private IEnumerator Share()
         {
             //TODO real server upload/feedback
-            var json = JsonUtility.ToJson(sceneSerializer.ToDataStructure());
+            var json = JsonUtility.ToJson(sceneSerializer.ToDataStructure(),true);
 
-            progressBar.SetMessage("Instellingen opslaan..");
+            Debug.Log(json);
+
+            //SERVER: post basic scene, and get unique token in return
+            //SERVER: use token to upload model, one by one
+            //SERVER: Finalize and place json file
+
+            /*progressBar.SetMessage("Instellingen opslaan..");
             progressBar.Percentage(0.2f);
             ChangeState(SharingState.SHARING_SCENE);
 
@@ -73,7 +79,7 @@ namespace Amsterdam3D.Interface.Sharing
             yield return new WaitForSeconds(2.0f);
             progressBar.Percentage(1.0f);
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f);*/
 
             //Temp fake random URL
             generatedURLAddress = "https://3d.amsterdam.nl/?view=" + Path.GetRandomFileName().Split('.')[0];

@@ -14,18 +14,21 @@
         public CustomLayer[] customLayers;
         public FixedLayers fixedLayers;
 
+        [System.Serializable]
         public struct FixedLayers{ 
             public FixedLayer buildings;
             public FixedLayer trees;
             public FixedLayer ground;
         }
 
+        [System.Serializable]
         public struct FixedLayer{
             public bool active;
             public Material[] materials;
             public int textureID;
         }
 
+        [System.Serializable]
         public struct CustomLayer {
             public int layerID;
             public int type;
@@ -42,8 +45,11 @@
             public Position[] verts; //for free shape corners. optionaly later vert overrides
         }
 
+        [System.Serializable]
         public struct Weather{}
+        [System.Serializable]
         public struct PostProcessing { }
+        [System.Serializable]
         public struct Material
         {
             public string slotName;
@@ -52,12 +58,14 @@
             public float b;
             public float a;
         }
+        [System.Serializable]
         public struct Position
         {
             public float x;
             public float y;
             public float z;
         }
+        [System.Serializable]
         public struct Rotation
         {
             public float x;
@@ -65,7 +73,7 @@
             public float z;
             public float w;
         }
-        
+        [System.Serializable]
         public struct Camera{
             public Position position;
             public Rotation rotation;
