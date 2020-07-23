@@ -18,16 +18,12 @@ namespace Amsterdam3D.Interface
 		protected LayerType layerType = LayerType.STATIC;
 		public LayerType LayerType { get => layerType; }
 
-		private bool active = true;
-		public bool Active { get => active; set => active = value; }
-
 		[SerializeField]
-		private GameObject linkedObject;
-		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
+		protected GameObject linkedObject;
 
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
-		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }	
 
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;
@@ -37,7 +33,7 @@ namespace Amsterdam3D.Interface
 		private void Start()
 		{
 			//If we set a linkedObject manualy, get the color.
-			if (LinkedObject){
+			if (linkedObject){
 				UpdateLayerPrimaryColor();
 			}
 		}
@@ -48,17 +44,17 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="newLinkedObject">The GameObject to be linked</param>
 		public void LinkObject(GameObject newLinkedObject){
-			LinkedObject = newLinkedObject;
+			linkedObject = newLinkedObject;
 
 			switch(layerType)
 			{
 				case LayerType.BASICSHAPE:
 					//Create a clone so we can change this specific material
-					uniqueLinkedObjectMaterials.Add(LinkedObject.GetComponent<MeshRenderer>().material);
+					uniqueLinkedObjectMaterials.Add(linkedObject.GetComponent<MeshRenderer>().material);
 					break;
 				case LayerType.OBJMODEL:
 					//Get all the nested materials in this OBJ
-					FetchUniqueNestedMaterials();
+					GetUniqueNestedMaterials();
 					break;
 			}
 
@@ -78,10 +74,10 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Fetch all the nested Materials found in renderers within the linked GameObject.
 		/// </summary>
-		public void FetchUniqueNestedMaterials(){
+		public void GetUniqueNestedMaterials(){
 			uniqueLinkedObjectMaterials = new List<Material>();
 
-			Renderer[] linkedObjectRenderers = LinkedObject.GetComponentsInChildren<Renderer>(true);
+			Renderer[] linkedObjectRenderers = linkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
 				foreach (Material sharedMaterial in renderer.sharedMaterials)
@@ -100,8 +96,7 @@ namespace Amsterdam3D.Interface
 		/// <param name="isOn"></param>
 		public void ToggleLinkedObject(bool isOn)
 		{
-			active = isOn;
-			LinkedObject.SetActive(active);
+			linkedObject.SetActive(isOn);
 		}
 
 		/// <summary>

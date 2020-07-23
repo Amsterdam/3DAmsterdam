@@ -10,8 +10,6 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Text layerNameText;
 
-        public string GetName => layerNameText.text;
-
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
@@ -33,7 +31,7 @@ namespace Amsterdam3D.Interface
 
         private void OnDestroy()
         {
-            GameObject.Destroy(LinkedObject);
+            GameObject.Destroy(linkedObject);
         }
     }
 }
