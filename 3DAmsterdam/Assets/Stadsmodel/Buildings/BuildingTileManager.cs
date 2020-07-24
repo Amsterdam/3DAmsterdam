@@ -196,7 +196,7 @@ public class BuildingTileManager : MonoBehaviour
         TileData tileData = activeTileList[TileID];
         //BuildingURL = "file:///D://Github/WebGL/";
         string url = Constants.BASE_DATA_URL + dataFolder + "/buildings_" + ((int)tileData.tileID.x).ToString() + "_" + ((int)tileData.tileID.y).ToString() + "." + ((int)tileData.tileID.z).ToString();
-        print(url);
+
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
         {
             yield return uwr.SendWebRequest();
