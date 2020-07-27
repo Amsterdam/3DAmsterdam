@@ -65,7 +65,7 @@ namespace Amsterdam3D.Sharing
                 verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
                 uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv),
                 normals = MeshSerializer.FlattenVector3Array(targetMesh.normals),
-                subMeshes = SerializeSubMesh(targetMesh)
+                subMeshes = SerializeSubMeshes(targetMesh)
             };
 
             customMeshIndex++;
@@ -73,7 +73,7 @@ namespace Amsterdam3D.Sharing
             return newSerializableMesh;
         }
 
-        public SerializableSubMesh[] SerializeSubMesh(Mesh mesh){
+        public SerializableSubMesh[] SerializeSubMeshes(Mesh mesh){
             var subMeshes = new SerializableSubMesh[mesh.subMeshCount];
             for (int i = 0; i < subMeshes.Length; i++)
             {
