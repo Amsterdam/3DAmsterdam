@@ -6,6 +6,9 @@ using UnityEngine;
 namespace Amsterdam3D.Sharing{ 
 	[System.Serializable]
 	public struct SerializableMesh{
+		public string sceneId;
+		public string meshToken;
+
 		public string version;
 		public int meshBitType;
 		public SerializableSubMesh[] subMeshes;

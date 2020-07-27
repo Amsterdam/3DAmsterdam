@@ -32,6 +32,7 @@
         public struct CustomLayer {
             public int layerID;
             public int type;
+            public string token;
             public bool active;
             public string layerName;
             public string modelFilePath;
@@ -42,7 +43,6 @@
             public Rotation rotation;
 
             public Material[] materials;
-            public Position[] verts; //for free shape corners. optionaly later vert overrides
         }
 
         [System.Serializable]

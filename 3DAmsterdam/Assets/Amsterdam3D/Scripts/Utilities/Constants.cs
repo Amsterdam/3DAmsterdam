@@ -15,11 +15,14 @@ public static class Constants
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
 #elif PRODUCTION
         public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
+        public static string SHARE_URL = "";
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
         public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version; 
+        public static string SHARE_URL = "";
 #else
         //USE DEVELOPMENT PATH BY DEFAULT
         public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
+	    public static string SHARE_URL = "http://blob.sambaas.nl/share.php";
 #endif
 }

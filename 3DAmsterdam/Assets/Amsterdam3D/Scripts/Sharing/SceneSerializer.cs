@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace Amsterdam3D.Sharing
 {
@@ -29,10 +30,6 @@ namespace Amsterdam3D.Sharing
         private string savedScenePath = "uploads";
 
         private List<GameObject> customMeshObjects;
-        public int CustomMeshCount => customMeshObjects.Count;
-
-        public int CustomMeshIndex { get => customMeshIndex; }
-        private int customMeshIndex = 0;
 
         private void Start()
         {
@@ -55,11 +52,13 @@ namespace Amsterdam3D.Sharing
             
         }
 
-        public SerializableMesh SerializeCustomObject(){
+        public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
 
             var newSerializableMesh = new SerializableMesh
             {
+                sceneId = sceneId,
+                meshToken = meshToken,
                 version = appVersion,
                 meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
                 verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
@@ -67,9 +66,6 @@ namespace Amsterdam3D.Sharing
                 normals = MeshSerializer.FlattenVector3Array(targetMesh.normals),
                 subMeshes = SerializeSubMeshes(targetMesh)
             };
-
-            customMeshIndex++;
-
             return newSerializableMesh;
         }
 
@@ -128,7 +124,6 @@ namespace Amsterdam3D.Sharing
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
             var customLayersData = new List<DataStructure.CustomLayer>();
             customMeshObjects.Clear();
-            customMeshIndex = 0;
 
             var customModelId = 0;
             foreach (var layer in customLayers)
