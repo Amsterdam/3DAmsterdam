@@ -44,6 +44,7 @@ namespace Amsterdam3D.Sharing
             
             //Get GET parameter from url (Application.absoluteURL)
             //Split ID, and try to load scene with that ID 
+
             yield return null;
         }
 
@@ -62,7 +63,7 @@ namespace Amsterdam3D.Sharing
                 version = appVersion,
                 meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
                 verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
-                uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv),
+                //uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv), //No texture support yet. So we dont need these yet.
                 normals = MeshSerializer.FlattenVector3Array(targetMesh.normals),
                 subMeshes = SerializeSubMeshes(targetMesh)
             };

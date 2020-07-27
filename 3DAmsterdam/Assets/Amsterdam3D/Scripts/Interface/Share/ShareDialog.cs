@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -77,11 +78,12 @@ namespace Amsterdam3D.Interface.Sharing
 				{
 					progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
 					var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel,serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token),false);						
-					Debug.Log("Trying to upload model " + currentModel);
-					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL, jsonCustomObject);
+					Debug.Log("Trying to upload model " + currentModel + " with size " + ASCIIEncoding.ASCII.GetByteCount(jsonCustomObject));
+					Debug.Log(jsonCustomObject);
+					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL+"share.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 					yield return modelSaveRequest.SendWebRequest();
-					Debug.Log(jsonCustomObject);
+					Debug.Log(modelSaveRequest.downloadHandler.text);
 					currentModel++;
 
 					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
