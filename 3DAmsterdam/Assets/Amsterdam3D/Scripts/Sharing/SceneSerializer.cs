@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
@@ -36,21 +37,34 @@ namespace Amsterdam3D.Sharing
             if(Application.absoluteURL.Contains(urlViewIDVariable)){
                 StartCoroutine(GetSharedScene());
             }
-
             customMeshObjects = new List<GameObject>();
         }
 
-        IEnumerator GetSharedScene(){
-            
-            //Get GET parameter from url (Application.absoluteURL)
-            //Split ID, and try to load scene with that ID 
+        IEnumerator GetSharedScene()
+        {
+            var sceneId = Application.absoluteURL.Split('=')[1];
+
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId);
+            getSceneRequest.SetRequestHeader("Content-Type", "application/json");
+            yield return getSceneRequest.SendWebRequest();
+            if (getSceneRequest.isNetworkError)
+            {
+                Debug.Log("Error: " + getSceneRequest.error);
+            }
+            else
+            {
+                LoadFromDataStructure(JsonUtility.FromJson<DataStructure>(getSceneRequest.downloadHandler.text));
+            }
 
             yield return null;
         }
 
         public void LoadFromDataStructure(DataStructure dataStructure)
         {
-            
+            Camera.main.transform.position = new Vector3(dataStructure.camera.position.x, dataStructure.camera.position.y, dataStructure.camera.position.z);
+            Camera.main.transform.rotation = new Quaternion(dataStructure.camera.rotation.x, dataStructure.camera.rotation.y, dataStructure.camera.rotation.z, dataStructure.camera.rotation.w);
+
+            var cameraRotation = Camera.main.transform.rotation;
         }
 
         public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
