@@ -5,15 +5,15 @@ using UnityEngine;
 
 namespace Amsterdam3D.Sharing{ 
 	[System.Serializable]
-	public struct SharedMesh{
+	public struct SerializableMesh{
 		public int meshBitType;
-		public SharedSubMesh[] subMeshes;
+		public SerializableSubMesh[] subMeshes;
 		public float[] verts;
 		public float[] uvs;
 		public float[] normals;
 	}
 	[System.Serializable]
-	public struct SharedSubMesh
+	public struct SerializableSubMesh
 	{
 		public string materialId;
 		public int[] triangles; //vert ids, per 3

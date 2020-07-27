@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Amsterdam3D.Sharing
 {
@@ -27,11 +28,17 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private string savedScenePath = "uploads";
 
+        private List<GameObject> customMeshObjects;
+        public int CustomMeshCount => customMeshObjects.Count;
+        private int customMeshIndex = 0;
+
         private void Start()
         {
             if(Application.absoluteURL.Contains(urlViewIDVariable)){
                 StartCoroutine(GetSharedScene());
             }
+
+            customMeshObjects = new List<GameObject>();
         }
 
         IEnumerator GetSharedScene(){
@@ -44,6 +51,18 @@ namespace Amsterdam3D.Sharing
         public void LoadFromDataStructure(DataStructure dataStructure)
         {
             
+        }
+
+        public void SerializeCustomObject(){
+            var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
+
+            var newSerializableMesh = new SerializableMesh
+            {
+                meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
+                verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
+                uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv),
+                normals = MeshSerializer.FlattenVector3Array(targetMesh.normals)
+            };
         }
 
         public DataStructure ToDataStructure()
@@ -88,21 +107,31 @@ namespace Amsterdam3D.Sharing
         {
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
             var customLayersData = new List<DataStructure.CustomLayer>();
+            customMeshObjects.Clear();
+            var customModelId = 0;
+
             foreach (var layer in customLayers)
             {
-                customLayersData.Add(new DataStructure.CustomLayer
-                {
-                    layerID = layer.gameObject.transform.GetSiblingIndex(),
-                    type = (int)layer.LayerType,
-                    active = layer.Active,
-                    layerName = layer.GetName,
-                    modelFilePath = layer.LinkedObject.name,
-                    modelFileSize = 0, //Tbtt filesize estimation based on mesh vert count
-                    parsedType = "obj", //The parser that was used to parse this model into our platform
-                    position = new DataStructure.Position { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
-                    rotation = new DataStructure.Rotation { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
-                    materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
-                });
+                switch (layer.LayerType){
+                    case LayerType.OBJMODEL:
+                    case LayerType.BASICSHAPE:
+                        customMeshObjects.Add(layer.LinkedObject);
+                        customLayersData.Add(new DataStructure.CustomLayer
+                        {
+                            layerID = layer.gameObject.transform.GetSiblingIndex(),
+                            type = (int)layer.LayerType,
+                            active = layer.Active,
+                            layerName = layer.GetName,
+                            modelFilePath = customModelId.ToString(),
+                            modelFileSize = 0, //Tbtt filesize estimation based on mesh vert count
+                            parsedType = "obj", //The parser that was used to parse this model into our platform
+                            position = new DataStructure.Position { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
+                            rotation = new DataStructure.Rotation { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
+                            materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
+                        });
+                        break;
+                }
+                customModelId++;
             }
             return customLayersData.ToArray();
         }
