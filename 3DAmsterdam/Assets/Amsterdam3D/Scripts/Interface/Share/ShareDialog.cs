@@ -55,18 +55,22 @@ namespace Amsterdam3D.Interface.Sharing
 
 		private IEnumerator Share()
 		{
-			//TODO real server upload/feedback
 			progressBar.SetMessage("Instellingen opslaan..");
 			progressBar.Percentage(0.2f);
+			ChangeState(SharingState.SHARING_SCENE);
+
 			var jsonScene = JsonUtility.ToJson(sceneSerializer.ToDataStructure(), true);
 			//SERVER: post basic scene, and get unique token in return
 			//SERVER: use token to upload model, one by one
 
 			progressBar.SetMessage("Objecten opslaan..");
-			progressBar.Percentage(0.3f);
-			for (var i = 0; i < sceneSerializer.CustomMeshCount; i++)
+			while(sceneSerializer.CustomMeshIndex < sceneSerializer.CustomMeshCount-1)
 			{
-				sceneSerializer.SerializeCustomObject();
+				progressBar.SetMessage("Objecten opslaan.. " + (sceneSerializer.CustomMeshIndex + 1) + "/" + sceneSerializer.CustomMeshCount);
+				var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(), true);
+				Debug.Log(jsonCustomObject);
+				progressBar.Percentage(0.3f + 0.7f * ((float)sceneSerializer.CustomMeshIndex / (float)sceneSerializer.CustomMeshCount - 1));
+				yield return new WaitForSeconds(0.2f);				
 			}
 
 			//SERVER: Finalize and place json file
