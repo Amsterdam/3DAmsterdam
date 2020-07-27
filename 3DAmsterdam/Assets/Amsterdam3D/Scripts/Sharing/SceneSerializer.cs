@@ -30,6 +30,8 @@ namespace Amsterdam3D.Sharing
 
         private List<GameObject> customMeshObjects;
         public int CustomMeshCount => customMeshObjects.Count;
+
+        public int CustomMeshIndex { get => customMeshIndex; }
         private int customMeshIndex = 0;
 
         private void Start()
@@ -53,16 +55,34 @@ namespace Amsterdam3D.Sharing
             
         }
 
-        public void SerializeCustomObject(){
+        public SerializableMesh SerializeCustomObject(){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
 
             var newSerializableMesh = new SerializableMesh
             {
+                version = appVersion,
                 meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
                 verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
                 uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv),
-                normals = MeshSerializer.FlattenVector3Array(targetMesh.normals)
+                normals = MeshSerializer.FlattenVector3Array(targetMesh.normals),
+                subMeshes = SerializeSubMesh(targetMesh)
             };
+
+            customMeshIndex++;
+
+            return newSerializableMesh;
+        }
+
+        public SerializableSubMesh[] SerializeSubMesh(Mesh mesh){
+            var subMeshes = new SerializableSubMesh[mesh.subMeshCount];
+            for (int i = 0; i < subMeshes.Length; i++)
+            {
+                subMeshes[i] = new SerializableSubMesh
+                {
+                    triangles = mesh.GetTriangles(i)
+                };
+            }
+            return subMeshes;
         }
 
         public DataStructure ToDataStructure()
@@ -108,8 +128,9 @@ namespace Amsterdam3D.Sharing
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
             var customLayersData = new List<DataStructure.CustomLayer>();
             customMeshObjects.Clear();
-            var customModelId = 0;
+            customMeshIndex = 0;
 
+            var customModelId = 0;
             foreach (var layer in customLayers)
             {
                 switch (layer.LayerType){
