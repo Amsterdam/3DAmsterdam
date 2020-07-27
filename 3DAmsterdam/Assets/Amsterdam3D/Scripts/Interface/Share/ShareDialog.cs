@@ -31,7 +31,6 @@ namespace Amsterdam3D.Interface.Sharing
 		private RectTransform generatedURL;
 		[SerializeField]
 		private InputField generatedURLInputField;
-		private string generatedURLAddress = "";
 
 		[SerializeField]
 		private SceneSerializer sceneSerializer;
@@ -85,6 +84,7 @@ namespace Amsterdam3D.Interface.Sharing
 					yield return modelSaveRequest.SendWebRequest();
 					Debug.Log(modelSaveRequest.downloadHandler.text);
 					currentModel++;
+					generatedURLInputField.text = Constants.SHARED_VIEW_URL + serverReturn.sceneId;
 
 					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
@@ -95,12 +95,7 @@ namespace Amsterdam3D.Interface.Sharing
 			progressBar.Percentage(1.0f);
 
 			yield return new WaitForSeconds(0.1f);
-
 			Debug.Log(jsonScene);
-
-			//Temp fake random URL
-			generatedURLAddress = "https://3d.amsterdam.nl/?view=" + Path.GetRandomFileName().Split('.')[0];
-			generatedURLInputField.text = generatedURLAddress;
 
 			ChangeState(SharingState.SHOW_URL);
 			yield return null;

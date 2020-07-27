@@ -9,7 +9,7 @@ namespace Amsterdam3D.Sharing
     public struct ServerReturn
     {
         public string sceneId;
-        public string sceneFile;
+        public string sceneUrl;
         public ModelUploadToken[] modelUploadTokens;
     }
 
