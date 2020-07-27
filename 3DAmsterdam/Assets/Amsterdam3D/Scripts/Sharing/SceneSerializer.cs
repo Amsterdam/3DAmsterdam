@@ -44,7 +44,7 @@ namespace Amsterdam3D.Sharing
         {
             var sceneId = Application.absoluteURL.Split('=')[1];
 
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId);
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId + "/scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.isNetworkError)

@@ -1,9 +1,4 @@
-﻿using Packages.Rider.Editor.UnitTesting;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Amsterdam3D.Sharing{ 
+﻿namespace Amsterdam3D.Sharing{ 
 	[System.Serializable]
 	public struct SerializableMesh{
 		public string sceneId;
