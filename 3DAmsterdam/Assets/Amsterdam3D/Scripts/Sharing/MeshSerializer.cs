@@ -18,6 +18,15 @@ namespace Amsterdam3D.Sharing
             }
             return flatArray;
         }
+        public static Vector3[] SeperateVector3Array(float[] array)
+        {
+            Vector3[] seperatedArray = new Vector3[array.Length / 3];
+            for (var i = 0; i < seperatedArray.Length; i ++)
+            {
+                seperatedArray[i] = new Vector3(array[i*3], array[(i * 3) + 1], array[(i * 3) + 2]);
+            }
+            return seperatedArray;
+        }
 
         public static float[] FlattenVector2Array(Vector2[] array)
         {
@@ -28,6 +37,15 @@ namespace Amsterdam3D.Sharing
                 flatArray[i + 1] = array[i].y;
             }
             return flatArray;
+        }
+        public static Vector2[] SeperateVector2Array(float[] array)
+        {
+            Vector2[] seperatedArray = new Vector2[array.Length / 2];
+            for (var i = 0; i < seperatedArray.Length; i++)
+            {
+                seperatedArray[i] = new Vector2(array[i * 2], array[(i * 2) + 1]);
+            }
+            return seperatedArray;
         }
     }
 }
