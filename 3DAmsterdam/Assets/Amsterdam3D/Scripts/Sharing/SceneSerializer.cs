@@ -36,9 +36,10 @@ namespace Amsterdam3D.Sharing
 
         private List<GameObject> customMeshObjects;
 
+        #if UNITY_EDITOR
         [SerializeField]
         private string testId = "";
-
+        #endif
         private void Start()
         {
             #if UNITY_EDITOR
@@ -93,22 +94,6 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
         }
 
-        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
-            Mesh parsedMesh = new Mesh();
-            parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
-            var subMeshCount = serializableMesh.subMeshes.Length;
-            parsedMesh.subMeshCount = subMeshCount;
-            for (int i = 0; i < subMeshCount; i++)
-            {
-                var subMesh = serializableMesh.subMeshes[i];
-                parsedMesh.SetTriangles(subMesh.triangles,i);
-            }
-            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
-            parsedMesh.SetUVs(0,MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
-            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
-            return parsedMesh;
-        }
-
         private IEnumerator GetCustomObject(string token)
         {
             GameObject customObject = new GameObject();
@@ -123,11 +108,30 @@ namespace Amsterdam3D.Sharing
             else
             {
                 Debug.Log(getModelRequest.downloadHandler.text);
-                ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
+                Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
+                customObject.AddComponent<MeshRenderer>();
+                customObject.AddComponent<MeshFilter>().mesh = parsedMesh;
+
             }
 
             yield return null;
             //interfaceLayers.AddNewCustomObjectLayer(, LayerType.OBJMODEL);
+        }
+
+        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
+            Mesh parsedMesh = new Mesh();
+            parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
+            var subMeshCount = serializableMesh.subMeshes.Length;
+            parsedMesh.subMeshCount = subMeshCount;
+            for (int i = 0; i < subMeshCount; i++)
+            {
+                var subMesh = serializableMesh.subMeshes[i];
+                parsedMesh.SetTriangles(subMesh.triangles,i);
+            }
+            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
+            parsedMesh.SetUVs(0,MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
+            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
+            return parsedMesh;
         }
 
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
