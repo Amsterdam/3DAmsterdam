@@ -85,7 +85,7 @@ namespace Amsterdam3D.Sharing
             for (int i = 0; i < scene.customLayers.Length; i++)
             {
                 var customLayer = scene.customLayers[i];
-                StartCoroutine(GetCustomObject(customLayer.token));
+                StartCoroutine(GetCustomObject(customLayer.token, customLayer.position, customLayer.rotation));
             }
 
             //Set material properties for fixed layers
@@ -94,7 +94,7 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
         }
 
-        private IEnumerator GetCustomObject(string token)
+        private IEnumerator GetCustomObject(string token, SerializableScene.Position position, SerializableScene.Rotation rotation)
         {
             GameObject customObject = new GameObject();
 
@@ -111,7 +111,8 @@ namespace Amsterdam3D.Sharing
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
                 customObject.AddComponent<MeshRenderer>();
                 customObject.AddComponent<MeshFilter>().mesh = parsedMesh;
-
+                customObject.transform.position = new Vector3(position.x, position.y, position.z);
+                customObject.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
             }
 
             yield return null;
