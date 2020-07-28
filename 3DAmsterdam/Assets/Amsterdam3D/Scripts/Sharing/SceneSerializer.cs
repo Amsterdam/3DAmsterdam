@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityScript.Steps;
 
 namespace Amsterdam3D.Sharing
 {
@@ -61,13 +62,13 @@ namespace Amsterdam3D.Sharing
             else
             {
                 Debug.Log(getSceneRequest.downloadHandler.text);
-                LoadFromDataStructure(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text));
+                ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text));
             }
 
             yield return null;
         }
 
-        public void LoadFromDataStructure(SerializableScene scene)
+        public void ParseSerializableScene(SerializableScene scene)
         {
             Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
             Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
@@ -83,7 +84,7 @@ namespace Amsterdam3D.Sharing
             for (int i = 0; i < scene.customLayers.Length; i++)
             {
                 var customLayer = scene.customLayers[i];
-                StartCoroutine(LoadCustomLayerObject(customLayer.token));
+                StartCoroutine(GetCustomObject(customLayer.token));
             }
 
             //Set material properties for fixed layers
@@ -92,9 +93,38 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
         }
 
-        private IEnumerator LoadCustomLayerObject(string token)
+        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
+            Mesh parsedMesh = new Mesh();
+            parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
+            var subMeshCount = serializableMesh.subMeshes.Length;
+            parsedMesh.subMeshCount = subMeshCount;
+            for (int i = 0; i < subMeshCount; i++)
+            {
+                var subMesh = serializableMesh.subMeshes[i];
+                parsedMesh.SetTriangles(subMesh.triangles,i);
+            }
+            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
+            parsedMesh.SetUVs(0,MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
+            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
+            return parsedMesh;
+        }
+
+        private IEnumerator GetCustomObject(string token)
         {
             GameObject customObject = new GameObject();
+
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + token);
+            getModelRequest.SetRequestHeader("Content-Type", "application/json");
+            yield return getModelRequest.SendWebRequest();
+            if (getModelRequest.isNetworkError)
+            {
+                Debug.Log("Error: " + getModelRequest.error);
+            }
+            else
+            {
+                Debug.Log(getModelRequest.downloadHandler.text);
+                ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
+            }
 
             yield return null;
             //interfaceLayers.AddNewCustomObjectLayer(, LayerType.OBJMODEL);
