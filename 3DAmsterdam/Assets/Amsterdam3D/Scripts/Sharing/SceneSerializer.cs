@@ -15,6 +15,9 @@ namespace Amsterdam3D.Sharing
         private string appVersion = "0.0.1";
 
         [SerializeField]
+        private InterfaceLayers interfaceLayers;
+
+        [SerializeField]
         private RectTransform customLayerContainer;
 
         [SerializeField]
@@ -76,10 +79,25 @@ namespace Amsterdam3D.Sharing
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
 
-            //Set material colors
+            //Create all custom layers
+            for (int i = 0; i < scene.customLayers.Length; i++)
+            {
+                var customLayer = scene.customLayers[i];
+                StartCoroutine(LoadCustomLayerObject(customLayer.token));
+            }
+
+            //Set material properties for fixed layers
             SetFixedLayerProperties(buildingsLayer, scene.fixedLayers.buildings);
             SetFixedLayerProperties(treesLayer, scene.fixedLayers.trees);
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
+        }
+
+        private IEnumerator LoadCustomLayerObject(string token)
+        {
+            GameObject customObject = new GameObject();
+
+            yield return null;
+            //interfaceLayers.AddNewCustomObjectLayer(, LayerType.OBJMODEL);
         }
 
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
