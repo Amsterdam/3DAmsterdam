@@ -1,7 +1,7 @@
 ﻿namespace Amsterdam3D.Sharing
 {
     [System.Serializable]
-    public struct DataStructure
+    public struct SerializableScene
     {
         public string appVersion;
         public string buildType;
@@ -52,6 +52,7 @@
         [System.Serializable]
         public struct Material
         {
+            public int slotId;
             public string slotName;
             public float r;
             public float g;

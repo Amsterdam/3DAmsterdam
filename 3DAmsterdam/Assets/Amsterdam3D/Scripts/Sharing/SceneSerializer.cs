@@ -32,18 +32,22 @@ namespace Amsterdam3D.Sharing
 
         private List<GameObject> customMeshObjects;
 
+        [SerializeField]
+        private string testId = "";
+
         private void Start()
         {
-            if(Application.absoluteURL.Contains(urlViewIDVariable)){
-                StartCoroutine(GetSharedScene());
+            #if UNITY_EDITOR
+            if(testId != "") StartCoroutine(GetSharedScene(testId));
+            #endif
+            if (Application.absoluteURL.Contains(urlViewIDVariable)){
+                StartCoroutine(GetSharedScene(Application.absoluteURL.Split('=')[1]));
             }
             customMeshObjects = new List<GameObject>();
         }
 
-        IEnumerator GetSharedScene()
+        IEnumerator GetSharedScene(string sceneId)
         {
-            var sceneId = Application.absoluteURL.Split('=')[1];
-
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId + "/scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
@@ -53,18 +57,38 @@ namespace Amsterdam3D.Sharing
             }
             else
             {
-                LoadFromDataStructure(JsonUtility.FromJson<DataStructure>(getSceneRequest.downloadHandler.text));
+                Debug.Log(getSceneRequest.downloadHandler.text);
+                LoadFromDataStructure(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text));
             }
 
             yield return null;
         }
 
-        public void LoadFromDataStructure(DataStructure dataStructure)
+        public void LoadFromDataStructure(SerializableScene scene)
         {
-            Camera.main.transform.position = new Vector3(dataStructure.camera.position.x, dataStructure.camera.position.y, dataStructure.camera.position.z);
-            Camera.main.transform.rotation = new Quaternion(dataStructure.camera.rotation.x, dataStructure.camera.rotation.y, dataStructure.camera.rotation.z, dataStructure.camera.rotation.w);
+            Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
+            Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
             var cameraRotation = Camera.main.transform.rotation;
+
+            //Fixed layer settings
+            buildingsLayer.Active = scene.fixedLayers.buildings.active;
+            treesLayer.Active = scene.fixedLayers.trees.active;
+            groundLayer.Active = scene.fixedLayers.ground.active;
+
+            //Set material colors
+            SetFixedLayerProperties(buildingsLayer, scene.fixedLayers.buildings);
+            SetFixedLayerProperties(treesLayer, scene.fixedLayers.trees);
+            SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
+        }
+
+        private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
+        {
+            for (int i = 0; i < fixedLayerProperties.materials.Length; i++)
+            {
+                var materialProperties = fixedLayerProperties.materials[i];
+                targetLayer.SetMaterialProperties(materialProperties.slotId, new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
+            }
         }
 
         public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
@@ -96,36 +120,36 @@ namespace Amsterdam3D.Sharing
             return subMeshes;
         }
 
-        public DataStructure ToDataStructure()
+        public SerializableScene ToDataStructure()
         {
             var cameraPosition = Camera.main.transform.position;
             var cameraRotation = Camera.main.transform.rotation;
 
-            var dataStructure = new DataStructure
+            var dataStructure = new SerializableScene
             {
                 appVersion = Application.version + "-" + appVersion, //Set in SceneSerializer
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
                 virtualTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Will be our virtual world time, linked to the Sun
-                weather = new DataStructure.Weather { },
-                postProcessing = new DataStructure.PostProcessing { },
-                camera = new DataStructure.Camera
+                weather = new SerializableScene.Weather { },
+                postProcessing = new SerializableScene.PostProcessing { },
+                camera = new SerializableScene.Camera
                 {
-                    position = new DataStructure.Position { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
-                    rotation = new DataStructure.Rotation { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
+                    position = new SerializableScene.Position { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
+                    rotation = new SerializableScene.Rotation { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
                 customLayers = GetCustomLayers(),
-                fixedLayers = new DataStructure.FixedLayers {
-                    buildings = new DataStructure.FixedLayer {
+                fixedLayers = new SerializableScene.FixedLayers {
+                    buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
                         materials = GetMaterialsAsData(buildingsLayer.UniqueLinkedObjectMaterials)
                     },
-                    trees = new DataStructure.FixedLayer
+                    trees = new SerializableScene.FixedLayer
                     {
                         active = treesLayer.Active,
                         materials = GetMaterialsAsData(treesLayer.UniqueLinkedObjectMaterials)
                     },
-                    ground = new DataStructure.FixedLayer
+                    ground = new SerializableScene.FixedLayer
                     {
                         active = groundLayer.Active,
                         textureID = 0
@@ -134,10 +158,10 @@ namespace Amsterdam3D.Sharing
             };
             return dataStructure;
         }
-        private DataStructure.CustomLayer[] GetCustomLayers()
+        private SerializableScene.CustomLayer[] GetCustomLayers()
         {
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
-            var customLayersData = new List<DataStructure.CustomLayer>();
+            var customLayersData = new List<SerializableScene.CustomLayer>();
             customMeshObjects.Clear();
 
             var customModelId = 0;
@@ -147,7 +171,7 @@ namespace Amsterdam3D.Sharing
                     case LayerType.OBJMODEL:
                     case LayerType.BASICSHAPE:
                         customMeshObjects.Add(layer.LinkedObject);
-                        customLayersData.Add(new DataStructure.CustomLayer
+                        customLayersData.Add(new SerializableScene.CustomLayer
                         {
                             layerID = layer.gameObject.transform.GetSiblingIndex(),
                             type = (int)layer.LayerType,
@@ -156,8 +180,8 @@ namespace Amsterdam3D.Sharing
                             modelFilePath = customModelId.ToString(),
                             modelFileSize = 0, //Tbtt filesize estimation based on mesh vert count
                             parsedType = "obj", //The parser that was used to parse this model into our platform
-                            position = new DataStructure.Position { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
-                            rotation = new DataStructure.Rotation { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
+                            position = new SerializableScene.Position { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
+                            rotation = new SerializableScene.Rotation { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
                             materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
                         });
                         break;
@@ -166,13 +190,13 @@ namespace Amsterdam3D.Sharing
             }
             return customLayersData.ToArray();
         }
-        private DataStructure.Material[] GetMaterialsAsData(List<Material> materialList)
+        private SerializableScene.Material[] GetMaterialsAsData(List<Material> materialList)
         {
-            var materialData = new List<DataStructure.Material>();
+            var materialData = new List<SerializableScene.Material>();
             foreach(var material in materialList)
             {
                 var color = material.GetColor("_BaseColor"); 
-                materialData.Add(new DataStructure.Material
+                materialData.Add(new SerializableScene.Material
                 {
                     slotName = material.name,
                     r = color.r,

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -102,6 +103,11 @@ namespace Amsterdam3D.Interface
 		{
 			active = isOn;
 			LinkedObject.SetActive(active);
+		}
+
+		public void SetMaterialProperties(int slotId, Color color)
+		{
+			uniqueLinkedObjectMaterials[slotId].color = color;
 		}
 
 		/// <summary>
