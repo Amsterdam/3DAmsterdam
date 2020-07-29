@@ -28,6 +28,18 @@ public class JavascriptMethodCaller : MonoBehaviour
 #endif
 	}
 
+	public static void ShowUniqueShareURL(bool show, string uniqueUrl = "")
+	{
+#if UNITY_WEBGL && !UNITY_EDITOR
+         if(show){
+			DisplayUniqueShareURL(uniqueUrl);
+		 }
+		else 
+			HideUniqueShareURL();
+		}
+#endif
+	}
+
 	public static string FetchOBJDataAsString()
 	{
 		return FetchOBJData();
