@@ -29,8 +29,6 @@ namespace Amsterdam3D.Interface.Sharing
 
 		[SerializeField]
 		private RectTransform generatedURL;
-		[SerializeField]
-		private InputField generatedURLInputField;
 
 		[SerializeField]
 		private SceneSerializer sceneSerializer;
@@ -45,7 +43,7 @@ namespace Amsterdam3D.Interface.Sharing
 		private void OnDisable()
 		{
 			StopAllCoroutines();
-			JavascriptMethodCaller.ShowUniqueShareURL(false);
+			JavascriptMethodCaller.ShowUniqueShareToken(false);
 		}
 
 		public void GenerateURL()
@@ -86,8 +84,6 @@ namespace Amsterdam3D.Interface.Sharing
 					yield return modelSaveRequest.SendWebRequest();
 
 					currentModel++;
-					Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
-					JavascriptMethodCaller.ShowUniqueShareURL(true, Constants.SHARED_VIEW_URL + serverReturn.sceneId);
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
 					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
@@ -100,6 +96,9 @@ namespace Amsterdam3D.Interface.Sharing
 			yield return new WaitForSeconds(0.1f);
 
 			ChangeState(SharingState.SHOW_URL);
+			Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
+			JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
+
 			yield return null;
 		}
 

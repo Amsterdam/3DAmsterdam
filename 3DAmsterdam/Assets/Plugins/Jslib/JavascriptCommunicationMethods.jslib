@@ -2,9 +2,9 @@ mergeInto(LibraryManager.library, {
 	UploadButtonCSSDisplay: function(display) {
 		document.getElementById("objUploadClickRegisterArea").style.display = Pointer_stringify(display);
 	},
-	DisplayUniqueShareURL: function(uniqueUrl) {
+	DisplayUniqueShareURL: function(uniqueToken) {
 		document.getElementById("sharedUrl").style.display = 'inline';
-		document.getElementById("sharedUrl").innerHTML = Pointer_stringify(uniqueUrl);
+		document.getElementById("sharedUrl").innerHTML = window.location.href + "?view=" + Pointer_stringify(uniqueUrl);
 	},
 	HideUniqueShareURL: function() {
 		document.getElementById("sharedUrl").style.display = 'none';

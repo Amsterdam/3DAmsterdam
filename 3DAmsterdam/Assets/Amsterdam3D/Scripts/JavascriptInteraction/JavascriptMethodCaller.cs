@@ -14,6 +14,12 @@ public class JavascriptMethodCaller : MonoBehaviour
 	[DllImport("__Internal")]
 	private static extern string FetchMTLData();
 
+	[DllImport("__Internal")]
+	private static extern string DisplayUniqueShareURL(string uniqueToken = "");
+
+	[DllImport("__Internal")]
+	private static extern void HideUniqueShareURL();
+
 	/// <summary>
 	/// This methods activates the html hitarea for the file upload button.
 	/// The user will click the hidden file input dialog in the index.html template file that is drawn on top of our WebGL canvas.
@@ -28,13 +34,13 @@ public class JavascriptMethodCaller : MonoBehaviour
 #endif
 	}
 
-	public static void ShowUniqueShareURL(bool show, string uniqueUrl = "")
+	public static void ShowUniqueShareToken(bool show, string uniqueToken = "")
 	{
 #if UNITY_WEBGL && !UNITY_EDITOR
          if(show){
-			DisplayUniqueShareURL(uniqueUrl);
+			DisplayUniqueShareURL(uniqueToken);
 		 }
-		else 
+		 else {
 			HideUniqueShareURL();
 		}
 #endif

@@ -25,7 +25,7 @@ public static class Constants
 #else
         //USE DEVELOPMENT PATH BY DEFAULT
         public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
-	    public static string SHARE_URL = "http://blob.sambaas.nl/";
+	    public static string SHARE_URL = "https://sambaas.nl/blob/";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
 #endif
 }

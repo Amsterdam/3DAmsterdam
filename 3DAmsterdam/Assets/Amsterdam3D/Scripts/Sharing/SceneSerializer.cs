@@ -91,17 +91,37 @@ namespace Amsterdam3D.Sharing
             //Create all custom layers
             for (int i = 0; i < scene.customLayers.Length; i++)
             {
-                var customLayer = scene.customLayers[i];
+                SerializableScene.CustomLayer customLayer = scene.customLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
-                interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL).ViewingOnly(true);
-                StartCoroutine(GetCustomObject(customObject,sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale, customLayer.materials));
+                ApplyLayerMaterialsToObject(customLayer, customObject);
+
+                CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL);
+                newCustomLayer.ViewingOnly(true);
+                newCustomLayer.Active = customLayer.active;
+                newCustomLayer.FetchUniqueNestedMaterials();
+                newCustomLayer.UpdateLayerPrimaryColor();
+
+                StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
             }
 
             //Set material properties for fixed layers
             SetFixedLayerProperties(buildingsLayer, scene.fixedLayers.buildings);
             SetFixedLayerProperties(treesLayer, scene.fixedLayers.trees);
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
+        }
+
+        private void ApplyLayerMaterialsToObject(SerializableScene.CustomLayer customLayer, GameObject customObject)
+        {
+            Material[] materials = new Material[customLayer.materials.Length];
+            foreach (SerializableScene.Material material in customLayer.materials)
+            {
+                var newMaterial = new Material(sourceMaterialForParsedMeshes);
+                newMaterial.SetColor("_BaseColor", new Color(material.r, material.g, material.b, material.a));
+                newMaterial.name = material.slotName;
+                materials[material.slotId] = newMaterial;
+            }
+            customObject.AddComponent<MeshRenderer>().materials = materials;
         }
 
         private void RemoveObjectsForViewing()
@@ -112,7 +132,7 @@ namespace Amsterdam3D.Sharing
             }
         }
 
-        private IEnumerator GetCustomObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale,SerializableScene.Material[] modelMaterials)
+        private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
         {
             
             Debug.Log(Constants.SHARE_URL + "share/" + token + ".dat");
@@ -126,17 +146,6 @@ namespace Amsterdam3D.Sharing
             else
             {
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
-
-                Material[] materials = new Material[modelMaterials.Length];
-                foreach(SerializableScene.Material material in modelMaterials)
-                {
-                    var newMaterial = new Material(sourceMaterialForParsedMeshes);
-                    newMaterial.SetColor("_BaseColor", new Color(material.r, material.g, material.b, material.a));
-                    newMaterial.name = material.slotName;
-                    materials[material.slotId] = newMaterial;
-                }
-
-                gameObjectTarget.AddComponent<MeshRenderer>().materials = materials;
                 gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
                 gameObjectTarget.transform.position = new Vector3(position.x, position.y, position.z);
                 gameObjectTarget.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
