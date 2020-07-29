@@ -9,12 +9,13 @@ namespace Amsterdam3D.Sharing
     {
         public static float[] FlattenVector3Array(Vector3[] array)
         {
+            Debug.Log(array.Length);
             float[] flatArray = new float[array.Length * 3];
-            for (var i = 0; i < array.Length; i += 3)
+            for (var i = 0; i < array.Length; i++)
             {
-                flatArray[i] = array[i].x;
-                flatArray[i + 1] = array[i].y;
-                flatArray[i + 2] = array[i].z;
+                flatArray[i*3] = array[i].x;
+                flatArray[(i*3) + 1] = array[i].y;
+                flatArray[(i*3) + 2] = array[i].z;
             }
             return flatArray;
         }
@@ -31,10 +32,10 @@ namespace Amsterdam3D.Sharing
         public static float[] FlattenVector2Array(Vector2[] array)
         {
             float[] flatArray = new float[array.Length * 2];
-            for (var i = 0; i < array.Length; i += 2)
+            for (var i = 0; i < array.Length; i ++)
             {
-                flatArray[i] = array[i].x;
-                flatArray[i + 1] = array[i].y;
+                flatArray[i*2] = array[i].x;
+                flatArray[(i*2) + 1] = array[i].y;
             }
             return flatArray;
         }
