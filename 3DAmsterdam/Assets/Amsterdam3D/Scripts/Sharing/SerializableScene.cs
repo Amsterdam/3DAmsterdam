@@ -39,8 +39,9 @@
             public int modelFileSize;
             public string parsedType;
 
-            public Position position;
-            public Rotation rotation;
+            public Vector3 position;
+            public Quaternion rotation;
+            public Vector3 scale;
 
             public Material[] materials;
         }
@@ -60,14 +61,14 @@
             public float a;
         }
         [System.Serializable]
-        public struct Position
+        public struct Vector3
         {
             public float x;
             public float y;
             public float z;
         }
         [System.Serializable]
-        public struct Rotation
+        public struct Quaternion
         {
             public float x;
             public float y;
@@ -76,8 +77,8 @@
         }
         [System.Serializable]
         public struct Camera{
-            public Position position;
-            public Rotation rotation;
+            public Vector3 position;
+            public Quaternion rotation;
         }
     }
 }
