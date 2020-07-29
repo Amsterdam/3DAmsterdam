@@ -36,19 +36,22 @@ namespace Amsterdam3D.Sharing
 
         private List<GameObject> customMeshObjects;
 
-        #if UNITY_EDITOR
+        public string sharedSceneId = "";
+
         [SerializeField]
-        private string testId = "";
-        #endif
+        private Material sourceMaterialForParsedMeshes;
+
         private void Start()
         {
-            #if UNITY_EDITOR
-            if(testId != "") StartCoroutine(GetSharedScene(testId));
-            #endif
             if (Application.absoluteURL.Contains(urlViewIDVariable)){
                 StartCoroutine(GetSharedScene(Application.absoluteURL.Split('=')[1]));
             }
             customMeshObjects = new List<GameObject>();
+        }
+
+        [ContextMenu("Load last saved ID")]
+        public void GetTestId(){
+            if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
 
         IEnumerator GetSharedScene(string sceneId)
@@ -63,13 +66,13 @@ namespace Amsterdam3D.Sharing
             else
             {
                 Debug.Log(getSceneRequest.downloadHandler.text);
-                ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text));
+                ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text), sceneId);
             }
 
             yield return null;
         }
 
-        public void ParseSerializableScene(SerializableScene scene)
+        public void ParseSerializableScene(SerializableScene scene, string sceneId)
         {
             Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
             Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
@@ -85,7 +88,10 @@ namespace Amsterdam3D.Sharing
             for (int i = 0; i < scene.customLayers.Length; i++)
             {
                 var customLayer = scene.customLayers[i];
-                StartCoroutine(GetCustomObject(customLayer.token, customLayer.position, customLayer.rotation));
+                GameObject customObject = new GameObject();
+                customObject.name = customLayer.layerName;
+                interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL);
+                StartCoroutine(GetCustomObject(customObject,sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale, customLayer.materials));
             }
 
             //Set material properties for fixed layers
@@ -94,11 +100,11 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
         }
 
-        private IEnumerator GetCustomObject(string token, SerializableScene.Position position, SerializableScene.Rotation rotation)
+        private IEnumerator GetCustomObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale,SerializableScene.Material[] modelMaterials)
         {
-            GameObject customObject = new GameObject();
-
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + token);
+            
+            Debug.Log(Constants.SHARE_URL + "share/" + token + ".dat");
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId + "/" + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
             if (getModelRequest.isNetworkError)
@@ -109,10 +115,21 @@ namespace Amsterdam3D.Sharing
             {
                 Debug.Log(getModelRequest.downloadHandler.text);
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
-                customObject.AddComponent<MeshRenderer>();
-                customObject.AddComponent<MeshFilter>().mesh = parsedMesh;
-                customObject.transform.position = new Vector3(position.x, position.y, position.z);
-                customObject.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+
+                Material[] materials = new Material[modelMaterials.Length];
+                foreach(SerializableScene.Material material in modelMaterials)
+                {
+                    var newMaterial = new Material(sourceMaterialForParsedMeshes);
+                    newMaterial.SetColor("_BaseColor", new Color(material.r, material.g, material.b, material.a));
+                    newMaterial.name = material.slotName;
+                    materials[material.slotId] = newMaterial;
+                }
+
+                gameObjectTarget.AddComponent<MeshRenderer>().materials = materials;
+                gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
+                gameObjectTarget.transform.position = new Vector3(position.x, position.y, position.z);
+                gameObjectTarget.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+                gameObjectTarget.transform.localScale = new Vector3(scale.x, scale.y, scale.z);
             }
 
             yield return null;
@@ -124,14 +141,14 @@ namespace Amsterdam3D.Sharing
             parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
             var subMeshCount = serializableMesh.subMeshes.Length;
             parsedMesh.subMeshCount = subMeshCount;
+            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
+            parsedMesh.SetUVs(0, MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
+            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMesh = serializableMesh.subMeshes[i];
                 parsedMesh.SetTriangles(subMesh.triangles,i);
             }
-            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
-            parsedMesh.SetUVs(0,MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
-            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
             return parsedMesh;
         }
 
@@ -146,7 +163,7 @@ namespace Amsterdam3D.Sharing
 
         public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
-
+            
             var newSerializableMesh = new SerializableMesh
             {
                 sceneId = sceneId,
@@ -173,7 +190,7 @@ namespace Amsterdam3D.Sharing
             return subMeshes;
         }
 
-        public SerializableScene ToDataStructure()
+        public SerializableScene SerializeScene()
         {
             var cameraPosition = Camera.main.transform.position;
             var cameraRotation = Camera.main.transform.rotation;
@@ -188,8 +205,8 @@ namespace Amsterdam3D.Sharing
                 postProcessing = new SerializableScene.PostProcessing { },
                 camera = new SerializableScene.Camera
                 {
-                    position = new SerializableScene.Position { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
-                    rotation = new SerializableScene.Rotation { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
+                    position = new SerializableScene.Vector3 { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
+                    rotation = new SerializableScene.Quaternion { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
                 customLayers = GetCustomLayers(),
                 fixedLayers = new SerializableScene.FixedLayers {
@@ -233,8 +250,8 @@ namespace Amsterdam3D.Sharing
                             modelFilePath = customModelId.ToString(),
                             modelFileSize = 0, //Tbtt filesize estimation based on mesh vert count
                             parsedType = "obj", //The parser that was used to parse this model into our platform
-                            position = new SerializableScene.Position { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
-                            rotation = new SerializableScene.Rotation { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
+                            position = new SerializableScene.Vector3 { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
+                            rotation = new SerializableScene.Quaternion { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
                             materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
                         });
                         break;
@@ -246,17 +263,19 @@ namespace Amsterdam3D.Sharing
         private SerializableScene.Material[] GetMaterialsAsData(List<Material> materialList)
         {
             var materialData = new List<SerializableScene.Material>();
-            foreach(var material in materialList)
+            for (int i = 0; i < materialList.Count; i++)
             {
-                var color = material.GetColor("_BaseColor"); 
+                var material = materialList[i];
+                var color = material.GetColor("_BaseColor");
                 materialData.Add(new SerializableScene.Material
                 {
+                    slotId = i,
                     slotName = material.name,
                     r = color.r,
                     g = color.g,
                     b = color.b,
                     a = color.a
-                });
+                }); ;
             }
             return materialData.ToArray();
         }
