@@ -121,7 +121,7 @@ namespace Amsterdam3D.Interface
 
 		public void SetMaterialProperties(int slotId, Color color)
 		{
-			uniqueLinkedObjectMaterials[slotId].color = color;
+			uniqueLinkedObjectMaterials[slotId].SetColor("_BaseColor",color);
 		}
 
 		/// <summary>

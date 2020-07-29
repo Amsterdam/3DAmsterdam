@@ -136,7 +136,7 @@
   </head>
 
   <body>
-	<div id="sharedUrl" style="display:none;"></div>
+	<div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
 	<div id="objUploadClickRegisterArea" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange='ReadOBJ(this)' multiple>
 	</div>
@@ -177,6 +177,13 @@
   var objData = "";
   var mtlData = "";
   var dataType = 0;
+  
+  function SelectSharedURL() {
+	  window.getSelection()
+		.selectAllChildren(
+		  document.getElementById("sharedUrl") 
+		);
+  }
   
   function LoadInUnity(){
 	unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');

@@ -179,6 +179,7 @@ namespace Amsterdam3D.Sharing
                 var materialProperties = fixedLayerProperties.materials[i];
                 targetLayer.SetMaterialProperties(materialProperties.slotId, new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }
+            targetLayer.UpdateLayerPrimaryColor();
         }
 
         public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
