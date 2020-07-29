@@ -12,12 +12,21 @@ namespace Amsterdam3D.Interface
 
         public string GetName => layerNameText.text;
 
+        [SerializeField]
+        private GameObject removeButton;
+
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
             layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
             LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
+        }
+
+        public void ViewingOnly(bool viewOnly)
+        {
+            removeButton.SetActive(!viewOnly);
+            FetchUniqueNestedMaterials();
         }
 
         public void RenameLayer(string newName){

@@ -45,6 +45,7 @@ namespace Amsterdam3D.Interface.Sharing
 		private void OnDisable()
 		{
 			StopAllCoroutines();
+			JavascriptMethodCaller.ShowUniqueShareURL(false);
 		}
 
 		public void GenerateURL()
@@ -52,6 +53,7 @@ namespace Amsterdam3D.Interface.Sharing
 			//Start uploading scene settings, and models to unique URL/session ID
 			StartCoroutine(Share());
 		}
+
 
 		private IEnumerator Share()
 		{
@@ -65,7 +67,7 @@ namespace Amsterdam3D.Interface.Sharing
 			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php", jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
-			Debug.Log(sceneSaveRequest.downloadHandler.text);
+
 			//Check if we got some tokens for model uploads
 			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
 
@@ -76,15 +78,16 @@ namespace Amsterdam3D.Interface.Sharing
 				while (currentModel < serverReturn.modelUploadTokens.Length)
 				{
 					progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
+					progressBar.Percentage(0.3f);
 					var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel,serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token),false);						
-					Debug.Log("Trying to upload model " + currentModel + " with size " + ASCIIEncoding.ASCII.GetByteCount(jsonCustomObject));
-					Debug.Log(jsonCustomObject);
+
 					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 					yield return modelSaveRequest.SendWebRequest();
-					Debug.Log(modelSaveRequest.downloadHandler.text);
+
 					currentModel++;
-					generatedURLInputField.text = Constants.SHARED_VIEW_URL + serverReturn.sceneId;
+					Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
+					JavascriptMethodCaller.ShowUniqueShareURL(true, Constants.SHARED_VIEW_URL + serverReturn.sceneId);
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
 					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
@@ -95,7 +98,6 @@ namespace Amsterdam3D.Interface.Sharing
 			progressBar.Percentage(1.0f);
 
 			yield return new WaitForSeconds(0.1f);
-			Debug.Log(jsonScene);
 
 			ChangeState(SharingState.SHOW_URL);
 			yield return null;

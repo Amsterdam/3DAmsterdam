@@ -41,6 +41,9 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private Material sourceMaterialForParsedMeshes;
 
+        [SerializeField]
+        private GameObject[] removeObjectsWhenViewing;
+
         private void Start()
         {
             if (Application.absoluteURL.Contains(urlViewIDVariable)){
@@ -65,7 +68,6 @@ namespace Amsterdam3D.Sharing
             }
             else
             {
-                Debug.Log(getSceneRequest.downloadHandler.text);
                 ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text), sceneId);
             }
 
@@ -74,6 +76,8 @@ namespace Amsterdam3D.Sharing
 
         public void ParseSerializableScene(SerializableScene scene, string sceneId)
         {
+            RemoveObjectsForViewing();
+
             Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
             Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
@@ -90,7 +94,7 @@ namespace Amsterdam3D.Sharing
                 var customLayer = scene.customLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
-                interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL);
+                interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL).ViewingOnly(true);
                 StartCoroutine(GetCustomObject(customObject,sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale, customLayer.materials));
             }
 
@@ -98,6 +102,14 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(buildingsLayer, scene.fixedLayers.buildings);
             SetFixedLayerProperties(treesLayer, scene.fixedLayers.trees);
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
+        }
+
+        private void RemoveObjectsForViewing()
+        {
+            foreach(GameObject gameObject in removeObjectsWhenViewing)
+            {
+                Destroy(gameObject);
+            }
         }
 
         private IEnumerator GetCustomObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale,SerializableScene.Material[] modelMaterials)
@@ -113,7 +125,6 @@ namespace Amsterdam3D.Sharing
             }
             else
             {
-                Debug.Log(getModelRequest.downloadHandler.text);
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
 
                 Material[] materials = new Material[modelMaterials.Length];
@@ -252,6 +263,7 @@ namespace Amsterdam3D.Sharing
                             parsedType = "obj", //The parser that was used to parse this model into our platform
                             position = new SerializableScene.Vector3 { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
                             rotation = new SerializableScene.Quaternion { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
+                            scale = new SerializableScene.Vector3 { x=layer.LinkedObject.transform.localScale.x, y = layer.LinkedObject.transform.localScale.y , z = layer.LinkedObject.transform.localScale.z },
                             materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
                         });
                         break;
