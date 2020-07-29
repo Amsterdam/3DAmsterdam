@@ -20,7 +20,18 @@ namespace Amsterdam3D.Interface
 		public LayerType LayerType { get => layerType; }
 
 		private bool active = true;
-		public bool Active { get => active; set => active = value; }
+		public bool Active
+		{
+			get
+			{
+				return active;
+			}
+			set
+			{
+				active = value;
+				toggleActiveLayer.isOn = active;
+			}
+		}
 
 		[SerializeField]
 		private GameObject linkedObject;
@@ -29,6 +40,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+
+		[SerializeField]
+		private Toggle toggleActiveLayer;
 
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;

@@ -23,10 +23,13 @@ namespace Amsterdam3D.Interface
             parentInterfaceLayers = interfaceLayers;
         }
 
+        /// <summary>
+        /// Enable or disable layer options based on view mode
+        /// </summary>
+        /// <param name="viewOnly">Only view mode enabled</param>
         public void ViewingOnly(bool viewOnly)
         {
             removeButton.SetActive(!viewOnly);
-            FetchUniqueNestedMaterials();
         }
 
         public void RenameLayer(string newName){
