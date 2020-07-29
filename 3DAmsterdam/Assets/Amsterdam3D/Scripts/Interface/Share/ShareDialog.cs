@@ -60,7 +60,7 @@ namespace Amsterdam3D.Interface.Sharing
 			ChangeState(SharingState.SHARING_SCENE);
 			yield return new WaitForEndOfFrame(); 
 
-			var jsonScene = JsonUtility.ToJson(sceneSerializer.ToDataStructure(), true);
+			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(), true);
 			//Post basic scene, and optionaly get unique tokens in return
 			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php", jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
@@ -85,7 +85,7 @@ namespace Amsterdam3D.Interface.Sharing
 					Debug.Log(modelSaveRequest.downloadHandler.text);
 					currentModel++;
 					generatedURLInputField.text = Constants.SHARED_VIEW_URL + serverReturn.sceneId;
-
+					sceneSerializer.sharedSceneId = serverReturn.sceneId;
 					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 					yield return new WaitForSeconds(0.2f);
