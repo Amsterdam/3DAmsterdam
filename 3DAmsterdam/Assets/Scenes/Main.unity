@@ -247,6 +247,25 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1849979446 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5078650885605019113, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1849979452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849979446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: (Tijdelijk uitgeschakeld)
 --- !u!1 &1902941943 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013376440829, guid: 1686781c0bba69b41bd5102479f39f29,
@@ -2495,6 +2514,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3366804079910630389, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3416959378882522210, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -2699,6 +2723,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3800202900651559462, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3807263362381798957, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3360,6 +3389,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144698978811829059, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144698978811829069, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144698979215942811, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.6698113
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144698979215942811, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.6698113
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144698979215942811, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.6698113
       objectReference: {fileID: 0}
     - target: {fileID: 5149745265082326498, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4265,7 +4319,7 @@ PrefabInstance:
     - target: {fileID: 6852224972476124720, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_Interactable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6852224972476124721, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4291,6 +4345,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852224972476124734, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.6698113
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.6698113
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.6698113
+      objectReference: {fileID: 0}
+    - target: {fileID: 6882877639433519796, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: tooltipText
+      value: Maak schermopname (Tijdelijk uitgeschakeld)
       objectReference: {fileID: 0}
     - target: {fileID: 6886888897187487100, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4412,6 +4491,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: -90.8125
+      objectReference: {fileID: 0}
+    - target: {fileID: 7260507945299782865, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7416911376603720827, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5063,6 +5147,11 @@ PrefabInstance:
       propertyPath: m_Value
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8746359810610513230, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: tooltipText
+      value: Download gebied (Tijdelijk uitgeschakeld)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764577271579498388, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
@@ -5339,7 +5428,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6586757046511072011, guid: 551dff695a15b634a97abe62e9edd824, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 551dff695a15b634a97abe62e9edd824, type: 3}
 --- !u!1 &2124185597603950388 stripped
 GameObject:
