@@ -7,6 +7,8 @@
         public string buildType;
         public string timeStamp;
         public string virtualTimeStamp;
+        public bool allowSceneEdit;
+
         public Weather weather;
         public PostProcessing postProcessing;
         public Camera camera;

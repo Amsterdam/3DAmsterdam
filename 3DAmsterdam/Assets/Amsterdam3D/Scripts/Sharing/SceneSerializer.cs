@@ -211,7 +211,7 @@ namespace Amsterdam3D.Sharing
             return subMeshes;
         }
 
-        public SerializableScene SerializeScene()
+        public SerializableScene SerializeScene(bool allowSceneEditAfterSharing = false)
         {
             var cameraPosition = Camera.main.transform.position;
             var cameraRotation = Camera.main.transform.rotation;
@@ -222,6 +222,7 @@ namespace Amsterdam3D.Sharing
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
                 virtualTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Will be our virtual world time, linked to the Sun
+                allowSceneEdit = allowSceneEditAfterSharing,
                 weather = new SerializableScene.Weather { },
                 postProcessing = new SerializableScene.PostProcessing { },
                 camera = new SerializableScene.Camera

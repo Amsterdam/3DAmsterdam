@@ -23,6 +23,9 @@ namespace Amsterdam3D.Interface.Sharing
 		private RectTransform shareOptions;
 
 		[SerializeField]
+		private Toggle editAllowToggle;
+
+		[SerializeField]
 		private RectTransform progressFeedback;
 		[SerializeField]
 		private ProgressBar progressBar;
@@ -60,7 +63,7 @@ namespace Amsterdam3D.Interface.Sharing
 			ChangeState(SharingState.SHARING_SCENE);
 			yield return new WaitForEndOfFrame(); 
 
-			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(), true);
+			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
 			//Post basic scene, and optionaly get unique tokens in return
 			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php", jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
