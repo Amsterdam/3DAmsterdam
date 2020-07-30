@@ -121,6 +121,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: a6184d81acebd6d4dbd37680b6441ab6, type: 2}
+--- !u!1 &171816946 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6852224972476124734, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &230687846 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1666942183257782017, guid: 551dff695a15b634a97abe62e9edd824,
@@ -150,6 +156,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013737045302, guid: 1686781c0bba69b41bd5102479f39f29,
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1015344115 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8850718267560267112, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1070333720
 GameObject:
@@ -286,6 +298,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
         type: 3}
+      propertyPath: removeObjectsWhenViewing.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
+        type: 3}
       propertyPath: customLayerContainer
       value: 
       objectReference: {fileID: 559338378}
@@ -316,9 +333,14 @@ PrefabInstance:
       objectReference: {fileID: 1379230082}
     - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
         type: 3}
-      propertyPath: sharedSceneId
-      value: GsWmmOHU
-      objectReference: {fileID: 0}
+      propertyPath: removeObjectsWhenViewing.Array.data[0]
+      value: 
+      objectReference: {fileID: 1015344115}
+    - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
+        type: 3}
+      propertyPath: removeObjectsWhenViewing.Array.data[1]
+      value: 
+      objectReference: {fileID: 171816946}
     - target: {fileID: 4437516830654672952, guid: 62959bc94378b334691032ece604518e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1423,6 +1445,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MaterialSlotsContainer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1834615852147028644, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1849694459051416179, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4660,7 +4687,7 @@ PrefabInstance:
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 44.5
       objectReference: {fileID: 0}
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
