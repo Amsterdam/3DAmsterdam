@@ -76,7 +76,10 @@ namespace Amsterdam3D.Sharing
 
         public void ParseSerializableScene(SerializableScene scene, string sceneId)
         {
-            RemoveObjectsForViewing();
+            if (!scene.allowSceneEdit)
+            {
+                RemoveObjectsForViewing();
+            }
 
             Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
             Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
@@ -97,7 +100,10 @@ namespace Amsterdam3D.Sharing
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL);
-                newCustomLayer.ViewingOnly(true);
+                if (!scene.allowSceneEdit)
+                {
+                    newCustomLayer.ViewingOnly(true);
+                }
                 newCustomLayer.Active = customLayer.active;
                 newCustomLayer.FetchUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
