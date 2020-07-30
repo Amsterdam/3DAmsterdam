@@ -232,7 +232,7 @@ public class BoomTileManager : MonoBehaviour
 //#if UNITY_EDITOR        // inde editor staand de assetbundles in de map Assetbundles naast de map 3DAmsterdam
 //            BuildingURL = "file:///D:/Github/WebGL/Bomen/";
 //#endif
-            string url = Constants.BASE_DATA_URL + dataFolder + "/trees_" + ((int)btd.tileID.x).ToString() + "-" + ((int)btd.tileID.y).ToString();
+            string url = Constants.BASE_DATA_URL + dataFolder + "/bomen_" + ((int)btd.tileID.x).ToString() + "-" + ((int)btd.tileID.y).ToString();
         
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
