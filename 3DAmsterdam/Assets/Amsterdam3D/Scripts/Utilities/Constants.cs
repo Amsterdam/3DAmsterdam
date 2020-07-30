@@ -14,7 +14,7 @@ public static class Constants
 #if !UNITY_EDITOR && RELATIVE_BASE_PATH
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
 #elif PRODUCTION
-        public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/data/";
+        public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/AssetBundles/";
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
         public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version; 
