@@ -58,10 +58,7 @@ public class TileLoader : MonoBehaviour
     void Start()
     {
         CV = Camera.main.GetComponent<CameraView>();
-        //terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
-
-        //hardcoded for release (QMtiles only present on acc)
-        terrainUrl = "https://acc.3d.amsterdam.nl/webmap/QMtiles/{z}/{x}/{y}.terrain";
+        terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
     }
 
     // Update is called once per frame
