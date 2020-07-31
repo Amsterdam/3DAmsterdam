@@ -14,14 +14,14 @@ public static class Constants
 #if !UNITY_EDITOR && RELATIVE_BASE_PATH
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
 #elif PRODUCTION
-        public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/app/";
+        public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
         public static string SHARE_URL = "";
-        public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html";
+        public static string SHARED_VIEW_URL = "https://3d.amsterdam.nl/web/app/index.html?view=";
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
         public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version; 
         public static string SHARE_URL = "";
-        public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html";
+        public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
 #else
         //USE DEVELOPMENT PATH BY DEFAULT
         public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
