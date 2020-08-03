@@ -13,6 +13,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private Material opaqueMaterialSource;
 
+		private bool gotResetcolor = false;
+		private Color initMaterialColor;
+
 		private Material targetMaterial;
 		private LayerVisuals layerVisuals;
 
@@ -51,21 +54,30 @@ namespace Amsterdam3D.Interface
 			Select();
 		}
 
+		/// <summary>
+		/// Sets the material target and reference the target LayerVisuals where this slot is in.
+		/// </summary>
+		/// <param name="target">The Material this slot targets</param>
+		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
 		public void Init(Material target, LayerVisuals targetLayerVisuals)
 		{
 			targetMaterial = target;
 
-			//Tooltip text. Users do not need to know if a material is an instance.
+			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
 			GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
 
-			var targetMaterialColor = GetColor;
-			colorImage.color = new Color(targetMaterialColor.r, targetMaterialColor.g, targetMaterialColor.b, 1.0f);
-			materialOpacity = targetMaterialColor.a;
+			initMaterialColor = GetColor;
+
+			colorImage.color = new Color(initMaterialColor.r, initMaterialColor.g, initMaterialColor.b, 1.0f);
+			materialOpacity = initMaterialColor.a;
 
 			layerVisuals = targetLayerVisuals;
 		}
 
+		/// <summary>
+		/// User (multi)selection of the material slot
+		/// </summary>
 		private void Select()
 		{
 			var multiSelect = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
@@ -76,12 +88,28 @@ namespace Amsterdam3D.Interface
 			Debug.Log("Selected material " + targetMaterial.name);
 		}
 
+		/// <summary>
+		/// Reset the material color back to what it was at initialisation.
+		/// </summary>
+		public void ResetColor()
+		{
+			ChangeColor(initMaterialColor);
+		}
+
+		/// <summary>
+		/// Changes the color of the Material that is linked to this slot
+		/// </summary>
+		/// <param name="pickedColor">The new color for the linked Material</param>
 		public void ChangeColor(Color pickedColor)
 		{
 			colorImage.color = pickedColor;
 			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
 		}
 
+		/// <summary>
+		/// Changes the opacity of the material, and always swap the shader type to the faster Opaque surface when opacity is 1.
+		/// </summary>
+		/// <param name="opacity">Opacity value from 0.0 to 1.0</param>
 		public void ChangeOpacity(float opacity)
 		{
 			if(materialOpacity == opacity)
