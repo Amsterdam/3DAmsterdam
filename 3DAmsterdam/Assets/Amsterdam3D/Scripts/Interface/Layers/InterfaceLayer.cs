@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +24,10 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
-		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }	
+		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+		public List<Color> ResetColors { get => resetColors; set => resetColors = value; }
+
+		private List<Color> resetColors;
 
 		[SerializeField]
 		protected InterfaceLayers parentInterfaceLayers;
@@ -33,9 +37,23 @@ namespace Amsterdam3D.Interface
 		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
-			if (linkedObject){
+			if (linkedObject)
+			{
 				UpdateLayerPrimaryColor();
+				GetResetColorValues();
 			}
+		}
+
+
+		/// <summary>
+		/// Grab all the starting colors for this layer, so we can always reset it back during runtime
+		/// </summary>
+		private void GetResetColorValues()
+		{
+			//Store all the colors for the materials so we can reset to it later
+			resetColors = new List<Color>();
+			foreach (Material material in uniqueLinkedObjectMaterials)
+				resetColors.Add(material.GetColor("_BaseColor"));
 		}
 
 		/// <summary>
@@ -59,6 +77,7 @@ namespace Amsterdam3D.Interface
 			}
 
 			UpdateLayerPrimaryColor();
+			GetResetColorValues();
 		}
 
 		/// <summary>
@@ -76,7 +95,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void GetUniqueNestedMaterials(){
 			uniqueLinkedObjectMaterials = new List<Material>();
-
+			
 			Renderer[] linkedObjectRenderers = linkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
