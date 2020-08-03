@@ -63,8 +63,9 @@ namespace Amsterdam3D.Interface
 		{
 			for (int i = 0; i < uniqueLinkedObjectMaterials.Count; i++)
 			{
-				uniqueLinkedObjectMaterials[i].color = resetColorValues[i];
+				uniqueLinkedObjectMaterials[i].SetColor("_BaseColor", resetColorValues[i]);
 			}
+			UpdateLayerPrimaryColor();
 		}
 
 		/// <summary>
@@ -78,7 +79,7 @@ namespace Amsterdam3D.Interface
 			switch(layerType)
 			{
 				case LayerType.BASICSHAPE:
-					//Create a clone so we can change this specific material
+					//Target the main material of a basic shape
 					uniqueLinkedObjectMaterials.Add(linkedObject.GetComponent<MeshRenderer>().material);
 					break;
 				case LayerType.OBJMODEL:
@@ -97,6 +98,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void UpdateLayerPrimaryColor()
 		{
+			print("Updating primary color for " + name);
 			if (uniqueLinkedObjectMaterials.Count > 0)
 				visualOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 		}
