@@ -31,7 +31,7 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private Vector2 locationOffset;
 
-		private void Start()
+		private void Awake()
 		{
 			colorPicker.selectedNewColor += ChangeMaterialColor;
 			hexColorField.selectedNewColor += ChangeMaterialColor;
@@ -55,7 +55,7 @@ namespace Amsterdam3D.Interface
 				}
 			}
 
-			//Match all selector colors
+			//Match other selector colors
 			if (selector == colorPicker)
 			{
 				hexColorField.ChangeColorInput(pickedColor);
@@ -87,10 +87,10 @@ namespace Amsterdam3D.Interface
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
-
 			targetLayer = interfaceLayer;
-			GenerateMaterialSlots();
 			gameObject.SetActive(true);
+
+			GenerateMaterialSlots();
 		}
 
 		/// <summary>
@@ -116,6 +116,23 @@ namespace Amsterdam3D.Interface
 
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
+		}
+
+		public void ResetColorsInSelectedMaterials(){
+			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+			{
+				materialSlot.ResetColor();
+				if (materialSlot.transform.GetSiblingIndex() == 0)
+				{
+					targetLayer.UpdateLayerPrimaryColor();
+				}
+			}
+
+			targetLayer.UpdateLayerPrimaryColor();
+
+			//Reset color selectors to the first one in our selection
+			hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetColor);
+			colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetColor);
 		}
 
 		/// <summary>
