@@ -28,52 +28,57 @@ namespace Amsterdam3D.Utilities
         [MenuItem("3D Amsterdam/Set data target/Specific feature")]
         public static void SwitchBranchFeature()
         {
-            var gitHeadFile = Application.dataPath + "/../../.git/HEAD";
-            var headLine = File.ReadAllText(gitHeadFile);
-            Debug.Log("Reading git HEAD file:" + headLine);
+            PlayerSettings.bundleVersion = ReadGitHead();
 
-            if (!headLine.Contains("feature/")){
-                Debug.Log("Your branch does not seem to be a feature/ branch");
-            }
-            var positionLastSlash = headLine.LastIndexOf("/") + 1;
-            var featureName = headLine.Substring(positionLastSlash, headLine.Length - positionLastSlash);
-
-            PlayerSettings.bundleVersion = "feature/" + featureName;
             Debug.Log("Version set to feature name: " + Application.version);
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT_FEATURE");
             Debug.Log("Set scripting define symbols to DEVELOPMENT_FEATURE");
         }
-        [MenuItem("3D Amsterdam/Build for WebGL platform")]
+
+        private static string ReadGitHead()
+        {
+            var gitHeadFile = Application.dataPath + "/../../.git/HEAD";
+            var headLine = File.ReadAllText(gitHeadFile);
+            Debug.Log("Reading git HEAD file:" + headLine);
+
+            headLine = headLine.Replace("feature/", "feature-");
+            var positionLastSlash = headLine.LastIndexOf("/") + 1;
+            var headName = headLine.Substring(positionLastSlash, headLine.Length - positionLastSlash);
+
+            Debug.Log("Got head name: " + headName);
+
+            return headName;
+        }
+
+        [MenuItem("3D Amsterdam/Build by feature name")]
         public static void BuildWebGL()
         {
             TargetedBuild(BuildTarget.WebGL);
         }
 
-        //Optional other future platform targets, for example desktop:
-        /*[MenuItem("3D Amsterdam/Build for Windows 64 bit")]
-        public static void BuildWindows()
-        {
-            TargetedBuild(BuildTarget.StandaloneWindows64);
-        }*/
 
         public static void TargetedBuild(BuildTarget buildTarget = BuildTarget.WebGL)
         {
-            var verionSuffix = Application.version;
+            var gitHeadName = ReadGitHead();
+            var headNameWithoutControlCharacters = new string(gitHeadName.Where(c => !char.IsControl(c)).ToArray());
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL_" : "BuildDesktop_") + verionSuffix,
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL_" : "BuildDesktop_") + headNameWithoutControlCharacters,
                 options = BuildOptions.AutoRunPlayer
-            };            
+            };
+
+            Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
 
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
             if (buildSummary.result == BuildResult.Succeeded)
             {
                 Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
+                
             }
 
             if (buildSummary.result == BuildResult.Failed)
