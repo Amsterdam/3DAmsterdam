@@ -30,7 +30,7 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private Image visualOptionsButton;
-		private void Start()
+		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
 			if (linkedObject){
