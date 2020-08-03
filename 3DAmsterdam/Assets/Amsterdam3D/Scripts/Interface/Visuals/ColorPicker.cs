@@ -45,7 +45,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		PickColorFromPalette();
 	}
 
-	void Start()
+	void Awake()
 	{
 		if (useVectorPalette && radialConstraint)
 		{
@@ -69,7 +69,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		}
 	}
 
-	void MovePointer()
+	private void MovePointer()
 	{
 		CalculateHitArea();
 
