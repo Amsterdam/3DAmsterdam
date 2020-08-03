@@ -25,12 +25,12 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
-		public List<Color> ResetColors { get => resetColors; set => resetColors = value; }
+		public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
 
-		private List<Color> resetColors;
+		private List<Color> resetColorValues;
 
 		[SerializeField]
-		protected InterfaceLayers parentInterfaceLayers;
+		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
 		private Image visualOptionsButton;
@@ -51,9 +51,20 @@ namespace Amsterdam3D.Interface
 		private void GetResetColorValues()
 		{
 			//Store all the colors for the materials so we can reset to it later
-			resetColors = new List<Color>();
+			resetColorValues = new List<Color>();
 			foreach (Material material in uniqueLinkedObjectMaterials)
-				resetColors.Add(material.GetColor("_BaseColor"));
+				resetColorValues.Add(material.GetColor("_BaseColor"));
+		}
+
+		/// <summary>
+		/// Reset all the linked materials their color back to their starting values
+		/// </summary>
+		public void ResetAllColors()
+		{
+			for (int i = 0; i < uniqueLinkedObjectMaterials.Count; i++)
+			{
+				uniqueLinkedObjectMaterials[i].color = resetColorValues[i];
+			}
 		}
 
 		/// <summary>
