@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class ClickOutsideToClose : MonoBehaviour
 {
     [SerializeField]
+    [Tooltip("Additional objects that can be clicked without closing this UI item.")]
     private GameObject[] additionalGameObjects;
 
     private int numberOfClicksToIgnore = 0;
