@@ -98,7 +98,6 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void UpdateLayerPrimaryColor()
 		{
-			print("Updating primary color for " + name);
 			if (uniqueLinkedObjectMaterials.Count > 0)
 				visualOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 		}
