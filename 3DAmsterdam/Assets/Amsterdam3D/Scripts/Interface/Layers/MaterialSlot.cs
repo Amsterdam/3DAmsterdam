@@ -20,7 +20,7 @@ namespace Amsterdam3D.Interface
 
 		public float materialOpacity = 1.0f;
 
-		private const string EXPLANATION_TEXT = "\nShift+Click: Multiselect";
+		private const string EXPLANATION_TEXT = "\nShift+Klik: Multi-select";
 
 		public bool Selected
 		{
