@@ -13,8 +13,7 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private Material opaqueMaterialSource;
 
-		private bool gotResetcolor = false;
-		private Color initMaterialColor;
+		private Color resetMaterialColor;
 
 		private Material targetMaterial;
 		private LayerVisuals layerVisuals;
@@ -42,7 +41,7 @@ namespace Amsterdam3D.Interface
 		private Image selectedImage;
 		[SerializeField]
 		private Image colorImage;
-		public Color GetColor => targetMaterial.GetColor("_BaseColor");
+		public Color GetMaterialColor => targetMaterial.GetColor("_BaseColor");
 
 		private void Start()
 		{
@@ -59,7 +58,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="target">The Material this slot targets</param>
 		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-		public void Init(Material target, LayerVisuals targetLayerVisuals)
+		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals)
 		{
 			targetMaterial = target;
 
@@ -67,10 +66,11 @@ namespace Amsterdam3D.Interface
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
 			GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
 
-			initMaterialColor = GetColor;
+			var materialColor = GetMaterialColor;
+			colorImage.color = new Color(materialColor.r, materialColor.g, materialColor.b, 1.0f);
+			materialOpacity = materialColor.a;
 
-			colorImage.color = new Color(initMaterialColor.r, initMaterialColor.g, initMaterialColor.b, 1.0f);
-			materialOpacity = initMaterialColor.a;
+			resetMaterialColor = resetColor;
 
 			layerVisuals = targetLayerVisuals;
 		}
@@ -93,7 +93,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void ResetColor()
 		{
-			ChangeColor(initMaterialColor);
+			ChangeColor(resetMaterialColor);
 		}
 
 		/// <summary>
