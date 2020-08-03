@@ -40,7 +40,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void ResetAllLayerMaterialColors()
 		{
-			var interfaceLayers = FindObjectsOfType<InterfaceLayer>();
+			InterfaceLayer[] interfaceLayers = FindObjectsOfType<InterfaceLayer>();
 			foreach (InterfaceLayer layer in interfaceLayers)
 			{
 				layer.ResetAllColors();
