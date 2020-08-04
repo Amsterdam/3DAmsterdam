@@ -130,7 +130,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	{
 		CalculateHitArea();
 
-		var intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
+		intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
 
 		ignoreChanges = true;
 		intensitySlider.value = Mathf.InverseLerp(0.0f,1.0f,intensity);
