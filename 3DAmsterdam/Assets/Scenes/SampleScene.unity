@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -145,8 +146,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -294,62 +296,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1702554662
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1702554664}
-  - component: {fileID: 1702554663}
-  m_Layer: 0
-  m_Name: Amsterdam
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1702554663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702554662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29d94807ab9d06f4db97c0f1abaa836c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Origin:
-    x: 115000
-    y: 485000
-    z: 0
-  filepath: D:\CityGmlFromDBV2\tile_10_14\
-  filename: gebouwenLOD2.json
-  Defaultmaterial: {fileID: 2100000, guid: 735cab25f34c110499fb092689c7ccdd, type: 2}
-  LOD: 2
-  modelname: 
-  useTextures: 1
-  SingleMeshBuildings: 0
-  minimizeMeshes: 1
-  CreatePrefabs: 0
---- !u!4 &1702554664
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702554662}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1932203830
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,7 +307,7 @@ GameObject:
   - component: {fileID: 1932203832}
   - component: {fileID: 1932203831}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CreateTerainAssetBundles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -376,13 +322,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1932203830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cb919c7ded3ae74da9a498b6075ea24, type: 3}
+  m_Script: {fileID: 11500000, guid: b064cf211f3437d458aea9252a5cc56e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standaardmateriaal: {fileID: 2100000, guid: 735cab25f34c110499fb092689c7ccdd, type: 2}
-  Gevelmateriaal: {fileID: 2100000, guid: 06c8cbf78e8e5f4469bbdaa0d9a4a07d, type: 2}
-  Platdakmateriaal: {fileID: 2100000, guid: 5bacd877db90c314d826f119576b7692, type: 2}
-  Schuindakmateriaal: {fileID: 2100000, guid: 6e40745d0aea4144ea88338bf0834eaf, type: 2}
+  materialList:
+  - {fileID: 2100000, guid: 404a18bd83ffcc147990be189c0857c7, type: 2}
+  - {fileID: 2100000, guid: e499efa5644d62e46b0ecf430c5f64fa, type: 2}
+  - {fileID: 2100000, guid: 2b5e7dcc12315b945a7339e3c6d7473f, type: 2}
+  - {fileID: 2100000, guid: f5eb8f6f398a2f740bf65430dcf5d11d, type: 2}
+  - {fileID: 2100000, guid: 4b16835b98934eb4ea7b2f1177b6678c, type: 2}
+  - {fileID: 2100000, guid: fdb7391f183c7e549b9a8dee99e8b7f2, type: 2}
+  - {fileID: 2100000, guid: 233ccddebefea5048ad28724de33ab1e, type: 2}
+  - {fileID: 2100000, guid: 2455e5d40ec07534f962c41d2bbe93f9, type: 2}
 --- !u!4 &1932203832
 Transform:
   m_ObjectHideFlags: 0

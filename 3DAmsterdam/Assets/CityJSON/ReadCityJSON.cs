@@ -24,8 +24,8 @@ namespace cityJSON
 
     public class CityModel
     {
-        private JSONNode cityjsonNode;
-        private List<Vector3Double> vertices;
+        public JSONNode cityjsonNode;
+        public List<Vector3Double> vertices;
         private List<Vector2>textureVertices;
         private List<Surfacetexture> Textures;
         private List<material> Materials;

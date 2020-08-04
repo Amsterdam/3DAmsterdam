@@ -1,4 +1,6 @@
-﻿using cityJSON;
+﻿#if UNITY_EDITOR
+
+using cityJSON;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -90,3 +92,4 @@ public class ImportCitymodel: MonoBehaviour
         return folderpath + "/" + foldername;
     }
 }
+#endif
