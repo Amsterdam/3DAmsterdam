@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
 	[SerializeField]
 	private RectTransform dragDropRegion;
@@ -36,7 +36,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 	private bool ignoreChanges = false;
 
-	public void OnPointerClick(PointerEventData eventData) => OnDrag(eventData);
+	public void OnPointerDown(PointerEventData eventData) => OnDrag(eventData);
 	public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);
 	public void OnEndDrag(PointerEventData eventData) => OnDrag(eventData);
 	public void OnDrag(PointerEventData eventData = null)
