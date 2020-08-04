@@ -7,7 +7,7 @@ using UnityEngine;
 using cityJSON;
 using UnityEditor;
 using System.IO;
-using UnityEditor.PackageManager.Requests;
+
 
 public class ImportCityJsonTerrain : MonoBehaviour
 {
@@ -18,8 +18,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        ImportSingle();
-        //StartCoroutine(importeer());
+        //ImportSingle();
+        importeer();
     }
 
     // Update is called once per frame
@@ -29,10 +29,10 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
     void ImportSingle()
     {
-        int Xmin = 105000;
-        int Ymin = 475000;
-        int Xmax = 135000;
-        int Ymax = 497000;
+        int Xmin = 109000;
+        int Ymin = 474000;
+        int Xmax = 140000;
+        int Ymax = 501000;
 
         
         string basefilepath = "E:/UnityData/3DBasisgegevens/";
@@ -66,32 +66,33 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
 
 
-    IEnumerator importeer()
+    void importeer()
     {
-        int Xmin = 105000;
+        int Xmin = 109000;
         int Ymin = 475000;
         int Xmax = 136000;
         int Ymax = 498000;
 
         int stepSize = 1000;
 
-        string basefilepath = "D:/CityGmlFromDBV2/";
+        string basefilepath = "E:/TiledData/TerrainLOD1/";
         string filepath = "";
-        string jsonfilename = "gebouwenLOD2Poly.json";
+        string jsonfilename = "terraintile.json";
         int LOD = 1;
         bool skip = false;
         //testpurpose
-        int Xstart = (105000 - Xmin) / stepSize;
+        int Xstart = (109000 - Xmin) / stepSize;
         
-        for (int X = Xstart; X < (Xmax - Xmin) / stepSize; X++)
+        for (int X = Xstart; X < ((Xmax - Xmin) / stepSize); X++)
         {
-            for (int Y = 0; Y < (Ymax - Ymin) / stepSize; Y++)
+            for (int Y = 0; Y < ((Ymax - Ymin) / stepSize); Y++)
             {
                 skip = false;
-                filepath = basefilepath + "tile_" + Y + "_" + X + "/";
-                Debug.Log(filepath);
+                filepath = basefilepath + "tile_" + ((X*stepSize)+Xmin )+ ".0_" + ((Y * stepSize) + Ymin) + ".0/";
+                
                 if (File.Exists(filepath+jsonfilename)==false)
                 {
+                    Debug.Log(filepath + jsonfilename + " bestaat niet");
                     skip = true;
                 }
                     double originX = (X * stepSize) + Xmin;
@@ -99,17 +100,22 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
                 if (skip == false)
                 {
+                    Debug.Log("loading: " +filepath + jsonfilename);
                     CityModel cm = new CityModel(filepath, jsonfilename);
                     CreateTerrainSurface surfaceCreator = new CreateTerrainSurface();
                     GameObject go = surfaceCreator.CreateMesh(cm, new ConvertCoordinates.Vector3RD(originX + 500, originY + 500, 0));
                     go.name = originX.ToString() + "-" + originY.ToString() + "-LOD" + LOD;
                     go.transform.parent = transform;
                     go.GetComponent<MeshRenderer>().sharedMaterials = materialsArray;
-                    SavePrefab("Terrain", go, originX.ToString(), originY.ToString(), 1);
+                    if (go.GetComponent<MeshFilter>().mesh.vertexCount>0)
+                    {
+                        SavePrefab("Terrain", go, originX.ToString(), originY.ToString(), 1);
+                    }
+                    Debug.Log("loaded: " + filepath + jsonfilename);
                 }
 
 
-                yield return null;
+                
             }
         }
 
