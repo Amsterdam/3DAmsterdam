@@ -14,6 +14,19 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler
     private float rotationSnapDegrees;
     private float beginDragAngle = 0.0f;
 
+    public delegate void ChangedSunWheel(float rotation);
+    public ChangedSunWheel changedDirection;
+
+    private void Awake()
+    {
+        changedDirection += PickedColorMessage;
+    }
+
+    private void PickedColorMessage(float rotation)
+    {
+        Debug.Log("Changed sun wheel to " + rotation);
+    }
+
     private void Update()
     {
         //Keep icons straight
