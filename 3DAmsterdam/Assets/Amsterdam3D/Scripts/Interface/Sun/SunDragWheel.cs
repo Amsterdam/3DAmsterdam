@@ -25,10 +25,6 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler
     private void PickedColorMessage(float rotation)
     {
         Debug.Log("Changed sun wheel to " + rotation);
-    }
-
-    private void Update()
-    {
         //Keep icons straight
         moonIcon.rotation = Quaternion.identity;
         sunIcon.rotation = Quaternion.identity;
@@ -41,6 +37,8 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler
         relativePosition = Input.mousePosition - relativePosition;
         beginDragAngle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg;
         beginDragAngle -= Mathf.Atan2(transform.right.y, transform.right.x) * Mathf.Rad2Deg;
+
+        changedDirection.Invoke(beginDragAngle);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -48,8 +46,10 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler
         //Rotate wheel according to relative mouse position
         Vector3 relativePosition = transform.position;
         relativePosition = Input.mousePosition - relativePosition;
-        float ang = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
-        ang -= (ang % (360.0f / rotationSnapDegrees));
-        transform.rotation = Quaternion.AngleAxis(ang, Vector3.forward);
+        float angle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
+        angle -= (angle % (360.0f / rotationSnapDegrees));
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        changedDirection.Invoke(angle);
     }
 }

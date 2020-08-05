@@ -2,10 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 public class SunSettings : MonoBehaviour
 {
+    [SerializeField]
+    private DirectionalLight sunDirectionalLight;
+
     [SerializeField]
     private SunDragWheel sunDragWheel;
 
@@ -35,6 +39,7 @@ public class SunSettings : MonoBehaviour
 
     private void SunPositionChangedFromOutside(float rotation){
         //Convert flat rotation to expected time/sun position
+        Debug.Log("Rotate sun..");
     }
 
     private void ToggleTimedSun(bool useTimedSun)
