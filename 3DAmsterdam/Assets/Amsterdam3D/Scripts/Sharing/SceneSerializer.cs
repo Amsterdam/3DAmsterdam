@@ -31,9 +31,6 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private string urlViewIDVariable = "?view=";
 
-        [SerializeField]
-        private string savedScenePath = "uploads";
-
         private List<GameObject> customMeshObjects;
 
         public string sharedSceneId = "";
@@ -59,7 +56,9 @@ namespace Amsterdam3D.Sharing
 
         IEnumerator GetSharedScene(string sceneId)
         {
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId + "/scene.json");
+            Debug.Log(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/scene.json");
+
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.isNetworkError)
@@ -68,6 +67,7 @@ namespace Amsterdam3D.Sharing
             }
             else
             {
+                Debug.Log("Return: " + getSceneRequest.downloadHandler.text);
                 ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text), sceneId);
             }
 
@@ -141,8 +141,8 @@ namespace Amsterdam3D.Sharing
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
         {
             
-            Debug.Log(Constants.SHARE_URL + "share/" + token + ".dat");
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "share/" + sceneId + "/" + token + ".dat");
+            Debug.Log(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/" + token + ".dat");
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/" + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
             if (getModelRequest.isNetworkError)
@@ -151,6 +151,7 @@ namespace Amsterdam3D.Sharing
             }
             else
             {
+                Debug.Log(getModelRequest.downloadHandler.text);
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
                 gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
                 gameObjectTarget.transform.position = new Vector3(position.x, position.y, position.z);

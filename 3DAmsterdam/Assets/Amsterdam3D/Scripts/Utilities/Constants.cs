@@ -15,7 +15,7 @@ public static class Constants
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
 #elif PRODUCTION
         public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
-        public static string SHARE_URL = "";
+        public static string SHARE_URL = "https://3d.amsterdam.nl/";
         public static string SHARED_VIEW_URL = "https://3d.amsterdam.nl/web/app/index.html?view=";
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
@@ -23,9 +23,9 @@ public static class Constants
         public static string SHARE_URL = "";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
 #else
-        //USE DEVELOPMENT PATH BY DEFAULT
+    //USE DEVELOPMENT PATH BY DEFAULT
         public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
-	    public static string SHARE_URL = "https://sambaas.nl/blob/";
+	    public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
 #endif
 }

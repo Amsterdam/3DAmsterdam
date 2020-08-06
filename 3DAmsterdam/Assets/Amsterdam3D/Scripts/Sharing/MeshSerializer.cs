@@ -9,7 +9,6 @@ namespace Amsterdam3D.Sharing
     {
         public static float[] FlattenVector3Array(Vector3[] array)
         {
-            Debug.Log(array.Length);
             float[] flatArray = new float[array.Length * 3];
             for (var i = 0; i < array.Length; i++)
             {

@@ -65,9 +65,12 @@ namespace Amsterdam3D.Interface.Sharing
 
 			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
 			//Post basic scene, and optionaly get unique tokens in return
-			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php", jsonScene);
+			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php", jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
+
+			Debug.Log("Scene return:");
+			Debug.Log(sceneSaveRequest.downloadHandler.text);
 
 			//Check if we got some tokens for model uploads
 			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
@@ -82,9 +85,12 @@ namespace Amsterdam3D.Interface.Sharing
 					progressBar.Percentage(0.3f);
 					var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel,serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token),false);						
 
-					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "share.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
+					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 					yield return modelSaveRequest.SendWebRequest();
+
+					Debug.Log("Model return:");
+					Debug.Log(modelSaveRequest.downloadHandler.text);
 
 					currentModel++;
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
