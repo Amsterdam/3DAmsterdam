@@ -130,10 +130,10 @@ RectTransform:
   - {fileID: 7125383172083648178}
   - {fileID: 2397961125615169225}
   - {fileID: 6514551229356701481}
+  - {fileID: 2694604051695148056}
   - {fileID: 4301406493571409135}
   - {fileID: 2129738135252430286}
   - {fileID: 1283703034615146127}
-  - {fileID: 2694604051695148056}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -944,6 +944,41 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8232843990047420045}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772712063144033588, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7772712063144033589, guid: b7030aa81cc345440a7ed884e960011f,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1202,7 +1237,7 @@ PrefabInstance:
     - target: {fileID: 2991073648969461648, guid: f828ce7a4de1c4a4c90bf50fcd569cad,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2991073648969461648, guid: f828ce7a4de1c4a4c90bf50fcd569cad,
         type: 3}
@@ -2443,7 +2478,7 @@ PrefabInstance:
     - target: {fileID: 4008264157967721105, guid: 80f24fa214216924c8024335188ab451,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4008264157967721105, guid: 80f24fa214216924c8024335188ab451,
         type: 3}
@@ -3205,7 +3240,7 @@ PrefabInstance:
     - target: {fileID: 7857794041386956636, guid: 06b2f6b5fee4a9d468a313c693cc089e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7857794041386956636, guid: 06b2f6b5fee4a9d468a313c693cc089e,
         type: 3}
@@ -3274,6 +3309,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06b2f6b5fee4a9d468a313c693cc089e, type: 3}
+--- !u!1 &8232843990047420045 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4191085345761035721, guid: 06b2f6b5fee4a9d468a313c693cc089e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5217796303904500548}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2694604051695148056 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7857794041386956636, guid: 06b2f6b5fee4a9d468a313c693cc089e,
@@ -3335,7 +3376,7 @@ PrefabInstance:
     - target: {fileID: 8633741221634000116, guid: 76cec26c95583104eae8df3d0350c37b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8633741221634000116, guid: 76cec26c95583104eae8df3d0350c37b,
         type: 3}
