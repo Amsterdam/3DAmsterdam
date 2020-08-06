@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [SerializeField]
+    [TextArea(3, 10)]
     private string tooltipText = "";
     public string TooltipText { get => tooltipText; set => tooltipText = value; }
 

@@ -25,13 +25,13 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform materialSlotsContainer;
 
-		private InterfaceLayer targetLayer;
+		private InterfaceLayer targetInterfaceLayer;
 		private List<MaterialSlot> selectedMaterialSlots;
 
 		[SerializeField]
 		private Vector2 locationOffset;
 
-		private void Start()
+		private void Awake()
 		{
 			colorPicker.selectedNewColor += ChangeMaterialColor;
 			hexColorField.selectedNewColor += ChangeMaterialColor;
@@ -51,11 +51,11 @@ namespace Amsterdam3D.Interface
 				materialSlot.ChangeColor(pickedColor);
 				if (materialSlot.transform.GetSiblingIndex() == 0)
 				{
-					targetLayer.UpdateLayerPrimaryColor();
+					targetInterfaceLayer.UpdateLayerPrimaryColor();
 				}
 			}
 
-			//Match all selector colors
+			//Match other selector colors
 			if (selector == colorPicker)
 			{
 				hexColorField.ChangeColorInput(pickedColor);
@@ -87,10 +87,10 @@ namespace Amsterdam3D.Interface
 		public void OpenWithOptionsForLayer(InterfaceLayer interfaceLayer)
 		{
 			this.GetComponent<RectTransform>().anchoredPosition = interfaceLayer.GetComponent<RectTransform>().anchoredPosition + locationOffset;
-
-			targetLayer = interfaceLayer;
-			GenerateMaterialSlots();
+			targetInterfaceLayer = interfaceLayer;
 			gameObject.SetActive(true);
+
+			GenerateMaterialSlots();
 		}
 
 		/// <summary>
@@ -109,13 +109,39 @@ namespace Amsterdam3D.Interface
 		{
 			ClearMaterialSlots();
 
-			foreach (Material uniqueMaterial in targetLayer.UniqueLinkedObjectMaterials)
+			for (int i = 0; i < targetInterfaceLayer.UniqueLinkedObjectMaterials.Count; i++)
 			{
+				var uniqueMaterial = targetInterfaceLayer.UniqueLinkedObjectMaterials[i];
+
 				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, materialSlotsContainer);
-				newMaterialSlot.Init(uniqueMaterial, this);
+				newMaterialSlot.Init(uniqueMaterial, targetInterfaceLayer.ResetColorValues[i], this);
 
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
+		}
+
+		/// <summary>
+		/// Reset all the colors while holding shift, or just the material(s) we selected
+		/// </summary>
+		public void ResetColorsInSelectedMaterials(){
+			var resetAll = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+			if (resetAll)
+			{
+				//Simple reset all material slots, instead of our selected list
+				var allMaterialSlots = materialSlotsContainer.GetComponentsInChildren<MaterialSlot>();
+				foreach (MaterialSlot materialSlot in allMaterialSlots)
+				{
+					materialSlot.ResetColor();
+				}
+			}			
+			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+			{
+				materialSlot.ResetColor();
+			}
+			hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+			colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+			targetInterfaceLayer.UpdateLayerPrimaryColor();
+
 		}
 
 		/// <summary>
@@ -164,8 +190,8 @@ namespace Amsterdam3D.Interface
 			
 			if (!multiSelect)
 			{
-				colorPicker.ChangeColorInput(selectedMaterialSlot.GetColor);
-				hexColorField.ChangeColorInput(selectedMaterialSlot.GetColor);
+				colorPicker.ChangeColorInput(selectedMaterialSlot.GetMaterialColor);
+				hexColorField.ChangeColorInput(selectedMaterialSlot.GetMaterialColor);
 				opacitySlider.value = selectedMaterialSlot.materialOpacity;
 			}
 		}
