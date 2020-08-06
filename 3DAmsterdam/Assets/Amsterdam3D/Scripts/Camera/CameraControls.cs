@@ -14,7 +14,6 @@ namespace Amsterdam3D.CameraMotion
         private Camera camera;
 
         public float zoomSpeed = 0.5f;
-        private const float zoomSpeedAir = 800f;
         private const float maxZoomOut = 2500f;
         private const float maxZoomIn = 47f;
         private const float rotationSpeed = 1f;
@@ -260,7 +259,7 @@ namespace Amsterdam3D.CameraMotion
             zoomPoint = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
 
             var heightSpeed = camera.transform.position.y; //The higher we are, the faster we zoom
-            var zoomDirection = (zoomPoint - camera.transform.position).normalized;
+            zoomDirection = (zoomPoint - camera.transform.position).normalized;
 
             camera.transform.Translate(zoomDirection * zoomSpeed * scrollDelta * heightSpeed,Space.World);
         }
