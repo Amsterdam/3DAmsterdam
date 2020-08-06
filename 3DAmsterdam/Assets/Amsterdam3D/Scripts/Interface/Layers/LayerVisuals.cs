@@ -127,20 +127,21 @@ namespace Amsterdam3D.Interface
 			var resetAll = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
 			if (resetAll)
 			{
-				targetInterfaceLayer.parentInterfaceLayers.ResetAllLayerMaterialColors();
-				//Simply reopen this layer so our color reset is applied to everything
-				OpenWithOptionsForLayer(targetInterfaceLayer);
-			}
-			else
-			{
-				foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+				//Simple reset all material slots, instead of our selected list
+				var allMaterialSlots = materialSlotsContainer.GetComponentsInChildren<MaterialSlot>();
+				foreach (MaterialSlot materialSlot in allMaterialSlots)
 				{
 					materialSlot.ResetColor();
 				}
-				hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
-				colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+			}			
+			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+			{
+				materialSlot.ResetColor();
 			}
+			hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+			colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
 			targetInterfaceLayer.UpdateLayerPrimaryColor();
+
 		}
 
 		/// <summary>
