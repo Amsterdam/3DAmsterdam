@@ -84,8 +84,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: SetActive
+      - m_Target: {fileID: 7584193516858630437}
+        m_MethodName: ToggleTimedSun
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -454,7 +454,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1184520583427275573}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7584193516858630437}
+        m_MethodName: TogglePausePlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1178343811491821676
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +583,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7991018176669481498}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7584193516858630437}
+        m_MethodName: FastBackward
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1603284001815561733
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,6 +729,7 @@ GameObject:
   - component: {fileID: 5421241496705279442}
   - component: {fileID: 5878374550337110869}
   - component: {fileID: 1904684309602659811}
+  - component: {fileID: 8554100719413110358}
   m_Layer: 5
   m_Name: InputFieldMonth
   m_TagString: Untagged
@@ -813,13 +836,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5878374550337110869}
   m_TextComponent: {fileID: 2516731271033885025}
   m_Placeholder: {fileID: 0}
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 1
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -834,6 +857,25 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &8554100719413110358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2499712412725004326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalIncrement: 5
+  scrollWheelSensitivity: 1
+  minValue: 1
+  maxValue: 31
+  loop: 1
+  value: 0
+  inputField: {fileID: 1904684309602659811}
 --- !u!1 &3360990547928478897
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,6 +1043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moonIcon: {fileID: 4708256579752346710}
   sunIcon: {fileID: 6843909219099724053}
+  scrollWheelSensitivity: 10
   rotationSnapDegrees: 360
 --- !u!114 &3241961270202386253
 MonoBehaviour:
@@ -1276,10 +1319,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontalIncrement: 5
+  scrollWheelSensitivity: 1
   minValue: 0
   maxValue: 1440
   loop: 1
   value: 0
+  inputField: {fileID: 5097240996446748500}
 --- !u!1 &4017736041652219082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,10 +1503,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sunDragWheel: {fileID: 7174073007413458522}
-  timeInput: {fileID: 5097240996446748500}
-  dayInput: {fileID: 6364935962477400352}
-  monthInput: {fileID: 1904684309602659811}
-  yearInput: {fileID: 4141236083236528138}
+  timeInput: {fileID: 6808655028179085412}
+  dayInput: {fileID: 5204827080947554042}
+  monthInput: {fileID: 8554100719413110358}
+  yearInput: {fileID: 3224309485585934287}
   coverTimeSettings: {fileID: 5380280545332676619}
 --- !u!114 &4139343253934370360
 MonoBehaviour:
@@ -1949,6 +1994,7 @@ GameObject:
   - component: {fileID: 5695953405482525577}
   - component: {fileID: 2140868358844513695}
   - component: {fileID: 6364935962477400352}
+  - component: {fileID: 5204827080947554042}
   m_Layer: 5
   m_Name: InputFieldDay
   m_TagString: Untagged
@@ -2055,13 +2101,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2140868358844513695}
   m_TextComponent: {fileID: 8184891733295645532}
   m_Placeholder: {fileID: 0}
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 1
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -2076,6 +2122,25 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &5204827080947554042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951257396148514383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalIncrement: 5
+  scrollWheelSensitivity: 1
+  minValue: 1
+  maxValue: 31
+  loop: 1
+  value: 0
+  inputField: {fileID: 6364935962477400352}
 --- !u!1 &6413265099957455469
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,6 +2301,7 @@ GameObject:
   - component: {fileID: 2013267223448209914}
   - component: {fileID: 3616423012177890595}
   - component: {fileID: 4141236083236528138}
+  - component: {fileID: 3224309485585934287}
   m_Layer: 5
   m_Name: InputFieldYear
   m_TagString: Untagged
@@ -2342,13 +2408,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3616423012177890595}
   m_TextComponent: {fileID: 7057153058136326679}
   m_Placeholder: {fileID: 0}
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 1
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -2363,6 +2429,25 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &3224309485585934287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254057360248093855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalIncrement: 5
+  scrollWheelSensitivity: 1
+  minValue: 1200
+  maxValue: 2100
+  loop: 1
+  value: 0
+  inputField: {fileID: 4141236083236528138}
 --- !u!1 &8807264080056674869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2636,4 +2721,15 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9158279455479268319}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7584193516858630437}
+        m_MethodName: FastForward
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
