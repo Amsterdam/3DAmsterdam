@@ -1,22 +1,16 @@
 ﻿using Amsterdam3D.Sun;
+using ConvertCoordinates;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class SunSettings : MonoBehaviour
 {
-    [SerializeField]
     private double longitude;
-
-    [SerializeField]
     private double latitude;
 
     [SerializeField]
-    private Light sunDirectionalLight;
+    private SunVisuals sun;
 
     [SerializeField]
     private SunDragWheel sunDragWheel;
@@ -34,8 +28,21 @@ public class SunSettings : MonoBehaviour
     [SerializeField]
     private Text speedMultiplierText;
     private int speedMultiplier = 1;
+    public int SpeedMultiplier
+    {
+        get
+        {
+            return speedMultiplier;
+        }
+        set
+        {
+            speedMultiplier = value;
+            print("x" + speedMultiplier.ToString());
+            speedMultiplierText.text = "x" + speedMultiplier.ToString();
+        }
+    }
 
-    private bool useTimedSun = false;
+    private bool useTimedSun = true;
     private bool paused = false;
 
     [SerializeField]
@@ -43,26 +50,19 @@ public class SunSettings : MonoBehaviour
     [SerializeField]
     private Button pauseButton;
 
-    [SerializeField]
-    private Image coverTimeSettings;
-
     private DateTime dateTimeNow;
 
     private string previousTimeString = "";
 
-    public int SpeedMultiplier {
-        get {
-            return speedMultiplier;
-        }
-        set {
-            speedMultiplier = value;
-            print("x" + speedMultiplier.ToString());
-            speedMultiplierText.text = "x"+speedMultiplier.ToString();
-        }
-    }
-
     public void Start()
     {
+        ResetTimeToNow();
+
+        //Get the gps coordinates for our world centre
+        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
+        longitude = coordinates.lon;
+        latitude = coordinates.lat;
+
         sunDragWheel.changedDirection += SunPositionChangedFromWheel;
 
         //Receive changes from our input fields
@@ -72,10 +72,6 @@ public class SunSettings : MonoBehaviour
         yearInput.addedOffset += ChangedYear;
     }
 
-    private void OnEnable()
-    {
-        ResetTimeToNow();
-    }
 
     private void ChangedTime(int withOffset)
     {
@@ -112,7 +108,7 @@ public class SunSettings : MonoBehaviour
         monthInput.SetInputText(dateTimeNow.Month.ToString());
         yearInput.SetInputText(dateTimeNow.Year.ToString());
 
-        sunDragWheel.SetUpDirection(new Vector3(sunDirectionalLight.transform.forward.x, sunDirectionalLight.transform.forward.y, 0.0f));
+        sunDragWheel.SetUpDirection(new Vector3(sun.transform.forward.x, sun.transform.forward.y, 0.0f));
     }
 
     private void LateUpdate()
@@ -145,16 +141,15 @@ public class SunSettings : MonoBehaviour
         double azi;
         SunPosition.CalculateSunPosition(dateTimeNow, (double)latitude, (double)longitude, out azi, out alt);
         angles.x = (float)alt * Mathf.Rad2Deg;
-        angles.y = (float)azi * Mathf.Rad2Deg;
-        sunDirectionalLight.transform.localRotation = Quaternion.Euler(angles);
-        sunDirectionalLight.intensity = Mathf.InverseLerp(-12, 0, angles.x);
+        angles.y = (float)azi * Mathf.Rad2Deg;     
+
+        sun.UpdateVisuals(angles);
     }
 
     public void ToggleTimedSun(bool timedSun)
     {
         useTimedSun = timedSun;
         ResetTimeToNow();
-        coverTimeSettings.gameObject.SetActive(!useTimedSun);
     }
 
     public void FastForward()
@@ -170,6 +165,7 @@ public class SunSettings : MonoBehaviour
     public void TogglePausePlay()
     {
         paused = !paused;
+        SpeedMultiplier = 1;
         EnablePausePlayButtons();
     }
 

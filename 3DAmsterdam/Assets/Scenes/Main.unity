@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 410f74e4d9387fa4e89c946fb28d390d, type: 2}
   m_HaloStrength: 0.5
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.7107789, g: 0.72627115, b: 0.7484214, a: 1}
+  m_Sun: {fileID: 1602667574}
+  m_IndirectSpecularColor: {r: 0.7104076, g: 0.72565764, b: 0.74656516, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -127,6 +127,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2124185597603950387}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &526101352 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4408322680050589351, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1602667573}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089ef949449e672498efd62971487454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &581545565 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4927855026980420799, guid: 551dff695a15b634a97abe62e9edd824,
@@ -144,12 +156,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013737045302, guid: 1686781c0bba69b41bd5102479f39f29,
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &643764731 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 6847329374082662541, guid: 221d545c4d79dd445b031a06c6945bbd,
-    type: 3}
-  m_PrefabInstance: {fileID: 1602667573}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &793659920 stripped
 Transform:
@@ -272,22 +278,22 @@ PrefabInstance:
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.21064326
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.75348765
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.287203
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.55263036
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
@@ -297,25 +303,31 @@ PrefabInstance:
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 57.944004
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -146.24701
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 32.599003
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735416, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_Name
-      value: DirectionalLightSun
+      value: Sun
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 221d545c4d79dd445b031a06c6945bbd, type: 3}
+--- !u!108 &1602667574 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 2203220449124261832, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1602667573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1814701004 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013071965061, guid: 1686781c0bba69b41bd5102479f39f29,
@@ -1898,7 +1910,12 @@ PrefabInstance:
         type: 3}
       propertyPath: sunDirectionalLight
       value: 
-      objectReference: {fileID: 643764731}
+      objectReference: {fileID: 1602667574}
+    - target: {fileID: 2389478210589887073, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: sun
+      value: 
+      objectReference: {fileID: 526101352}
     - target: {fileID: 2444298095473229462, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -5366,11 +5383,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232843990047420045, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8256199755232481829, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}

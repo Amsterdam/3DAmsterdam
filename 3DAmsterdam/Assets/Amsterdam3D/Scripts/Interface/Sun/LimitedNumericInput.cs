@@ -1,10 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System;
 
 public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHandler, IEndDragHandler,*/ IPointerEnterHandler, IPointerExitHandler
 {
