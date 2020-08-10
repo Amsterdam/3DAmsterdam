@@ -60,12 +60,10 @@ namespace Amsterdam3D.Sun
 
         private void Start()
         {
-
             light = GetComponent<Light>();
             time = DateTime.Now;
             hour = time.Hour;
             minutes = time.Minute;
-            
         }
 
         private void OnValidate()

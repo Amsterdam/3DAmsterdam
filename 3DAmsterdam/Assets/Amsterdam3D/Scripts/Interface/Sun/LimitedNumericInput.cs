@@ -4,6 +4,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHandler, IEndDragHandler,*/ IPointerEnterHandler, IPointerExitHandler
 {
@@ -12,45 +13,25 @@ public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHan
 	[SerializeField]
 	private float scrollWheelSensitivity = 1.0f;
 
+	/*
 	private float startDragX = 0;
-
-	private int startValue = 0;
+	private int startOffset = 0;
 
 	[SerializeField]
 	private int minValue = 0;
+	public int MinValue { get => minValue; set => minValue = value; }
+
 	[SerializeField]
 	private int maxValue = 1440;
-
-	[SerializeField]
-	private bool loop = false;
-
-	[SerializeField]
-	private int value = 0;
+	public int MaxValue { get => maxValue; set => maxValue = value; }
+	*/
 
 	[SerializeField]
 	private InputField inputField;
 
-	public int Value
-	{
-		get
-		{
-			return value;
-		}
-		set
-		{
-			this.value = value;
-			if (Value > maxValue)
-			{
-				Value = minValue + (Value - maxValue);
-			}
-			else if (Value < minValue)
-			{
-				Value = maxValue + Value;
-			}
+	public delegate void AddedOffset(int addedOffset);
+	public AddedOffset addedOffset;
 
-			if (inputField) inputField.text = value.ToString();
-		}
-	}
 	private void OnDisable()
 	{
 		StopAllCoroutines();
@@ -66,9 +47,14 @@ public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHan
 		StopAllCoroutines();
 	}
 
+	public void SetInputText(string textInput){
+		inputField.text = textInput;
+	}
 	IEnumerator ReadScrollWheelInput() {
-		while (true){ 
-			Value += Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+		while (true){
+			var offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+			if(offset != 0.0f)
+				addedOffset.Invoke(offset);
 			yield return null;
 		}	
 	}
@@ -77,12 +63,12 @@ public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHan
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		startDragX = Input.mousePosition.x;
-		startValue = Value;
+		startOffset = Offset;
 	}
 
 	public void OnDrag(PointerEventData eventData)
 	{
-		Value = startValue + Mathf.RoundToInt((Input.mousePosition.x - startDragX) / horizontalIncrement);
+		Offset = startOffset + Mathf.RoundToInt((Input.mousePosition.x - startDragX) / horizontalIncrement);
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
