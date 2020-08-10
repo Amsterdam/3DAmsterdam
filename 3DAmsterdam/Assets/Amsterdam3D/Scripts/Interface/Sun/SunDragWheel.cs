@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,7 +28,7 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
         changedDirection += UpdateIcons;
     }
 
-    private void UpdateIcons(float rotation)
+    private void UpdateIcons(float rotation = 0.0f)
     {
         Debug.Log("Changed sun wheel to " + rotation);
         //Keep icons straight
@@ -82,5 +83,11 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         changedDirection.Invoke(transform.rotation.z);
+    }
+
+	public void SetUpDirection(Vector3 newUpDirection)
+	{
+        this.transform.up = newUpDirection;
+        UpdateIcons();
     }
 }
