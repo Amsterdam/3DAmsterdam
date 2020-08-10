@@ -87,7 +87,7 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 
 	public void SetUpDirection(Vector3 newUpDirection)
 	{
-        this.transform.up = newUpDirection;
+        this.transform.up = newUpDirection.normalized;
         UpdateIcons();
     }
 }
