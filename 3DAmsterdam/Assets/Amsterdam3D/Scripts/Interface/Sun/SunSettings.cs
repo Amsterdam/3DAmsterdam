@@ -56,14 +56,14 @@ public class SunSettings : MonoBehaviour
 
     public void Start()
     {
-        ResetTimeToNow();
-
         //Get the gps coordinates for our world centre
         var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
         longitude = coordinates.lon;
         latitude = coordinates.lat;
 
-        sunDragWheel.changedDirection += SunPositionChangedFromWheel;
+        ResetTimeToNow();
+
+        sunDragWheel.deltaTurn += SunPositionChangedFromWheel;
 
         //Receive changes from our input fields
         timeInput.addedOffset += ChangedTime;
@@ -83,25 +83,25 @@ public class SunSettings : MonoBehaviour
         {
             dateTimeNow = dateTimeNow.AddHours(withOffset);
         }
-        UpdateInputs();
+        UpdateNumeralInputs();
     }
     private void ChangedDay(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddDays(withOffset);
-        UpdateInputs();
+        UpdateNumeralInputs();
     }
     private void ChangedMonth(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddMonths(withOffset);
-        UpdateInputs();
+        UpdateNumeralInputs();
     }
     private void ChangedYear(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddYears(withOffset);
-        UpdateInputs();
+        UpdateNumeralInputs();
     }
 
-    private void UpdateInputs()
+    private void UpdateNumeralInputs()
     {
         timeInput.SetInputText(dateTimeNow.ToString("HH:mm"));
         dayInput.SetInputText(dateTimeNow.Day.ToString());
@@ -124,15 +124,18 @@ public class SunSettings : MonoBehaviour
             if (dateTimeNow.ToString("HH:mm") != previousTimeString)
             {
                 previousTimeString = dateTimeNow.ToString("HH:mm");
-                UpdateInputs();
+                UpdateNumeralInputs();
             }
             SetSunPosition();
         }
     }
 
-    private void SunPositionChangedFromWheel(float rotation){
+    private void SunPositionChangedFromWheel(float delta){
         //Convert flat rotation to expected time/sun position
+        dateTimeNow = dateTimeNow.AddHours(delta*0.01f);
+
         SetSunPosition();
+        UpdateNumeralInputs();
     }
     private void SetSunPosition()
     {
@@ -179,10 +182,8 @@ public class SunSettings : MonoBehaviour
     {
         dateTimeNow = DateTime.Now;
         SpeedMultiplier = 1;
-        paused = false;
-
-        UpdateInputs();
-        EnablePausePlayButtons();
+        
+        UpdateNumeralInputs();
     }
 
 }

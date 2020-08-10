@@ -31,7 +31,7 @@ public class SunVisuals : MonoBehaviour
         transform.localRotation = Quaternion.Euler(newAngles);
 
         //Reduce sun strength when we go down the horizon
-        sunDirectionalLight.intensity = Mathf.InverseLerp(-crossFadeColorRange, 0, newAngles.x);
+        sunDirectionalLight.intensity = Mathf.InverseLerp(-crossFadeColorRange, 0.01f, newAngles.x);
 
 
         //Change the fog and ambient color based on this intensity

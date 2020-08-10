@@ -13,24 +13,26 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 
     [SerializeField]
     private float scrollWheelSensitivity = 1.0f;
+    [SerializeField]
+    private float dragSensitivity = 1.0f;
 
     [SerializeField]
     private float rotationSnapDegrees;
-    private float beginDragAngle = 0.0f;
+    private float previousPosition = 0.0f;
 
     private float angle;
 
-    public delegate void ChangedSunWheel(float rotation);
-    public ChangedSunWheel changedDirection;
+    public delegate void ChangedSunWheel(float rotate);
+    public ChangedSunWheel deltaTurn;
 
     private void Awake()
     {
-        changedDirection += UpdateIcons;
+        deltaTurn += UpdateIcons;
     }
 
-    private void UpdateIcons(float rotation = 0.0f)
+    private void UpdateIcons(float rotate = 0.0f)
     {
-        Debug.Log("Changed sun wheel to " + rotation);
+        Debug.Log("Wheel rotation input " + rotate);
         //Keep icons straight
         moonIcon.rotation = Quaternion.identity;
         sunIcon.rotation = Quaternion.identity;
@@ -55,34 +57,34 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     {
         while (true)
         {
-            this.transform.Rotate(0, 0, -Input.mouseScrollDelta.y * scrollWheelSensitivity);
-            changedDirection.Invoke(transform.rotation.z);
+            //this.transform.Rotate(0, 0, -Input.mouseScrollDelta.y * scrollWheelSensitivity);
+            if(Input.mouseScrollDelta.y != 0.0f)
+                deltaTurn.Invoke(Input.mouseScrollDelta.y * scrollWheelSensitivity);
             yield return null;
         }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //Get starting rotation, so we rotate from this point
+        /*//Get starting rotation, so we rotate from this point
         Vector3 relativePosition = transform.position;
         relativePosition = Input.mousePosition - relativePosition;
         beginDragAngle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg;
-        beginDragAngle -= Mathf.Atan2(transform.right.y, transform.right.x) * Mathf.Rad2Deg;
+        beginDragAngle -= Mathf.Atan2(transform.right.y, transform.right.x) * Mathf.Rad2Deg;*/
 
-        changedDirection.Invoke(transform.rotation.z);
+        previousPosition = Input.mousePosition.x;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         //Rotate wheel according to relative mouse position
-        Vector3 relativePosition = transform.position;
-        relativePosition = Input.mousePosition - relativePosition;
-       
-        angle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
-        angle -= (angle % (360.0f / rotationSnapDegrees));
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        float relativePosition = Input.mousePosition.x - previousPosition;
 
-        changedDirection.Invoke(transform.rotation.z);
+        //angle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
+
+        deltaTurn.Invoke(relativePosition * dragSensitivity);
+
+        previousPosition = Input.mousePosition.x;
     }
 
 	public void SetUpDirection(Vector3 newUpDirection)

@@ -1094,7 +1094,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moonIcon: {fileID: 4708256579752346710}
   sunIcon: {fileID: 6843909219099724053}
-  scrollWheelSensitivity: 10
+  scrollWheelSensitivity: 100
+  dragSensitivity: 10
   rotationSnapDegrees: 360
 --- !u!114 &3241961270202386253
 MonoBehaviour:
@@ -1549,9 +1550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158c17ece47f7eb4087d15656ec02ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  longitude: 4.8945
-  latitude: 52.3667
-  sunDirectionalLight: {fileID: 0}
+  sun: {fileID: 0}
   sunDragWheel: {fileID: 7174073007413458522}
   timeInput: {fileID: 6808655028179085412}
   dayInput: {fileID: 5204827080947554042}
@@ -2010,8 +2009,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: ResetColorsInSelectedMaterials
+      - m_Target: {fileID: 7584193516858630437}
+        m_MethodName: ResetTimeToNow
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
