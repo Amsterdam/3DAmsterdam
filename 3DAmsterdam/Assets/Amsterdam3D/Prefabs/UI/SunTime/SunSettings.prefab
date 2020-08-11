@@ -785,6 +785,7 @@ GameObject:
   - component: {fileID: 5878374550337110869}
   - component: {fileID: 1904684309602659811}
   - component: {fileID: 8554100719413110358}
+  - component: {fileID: 8947761231033734563}
   m_Layer: 5
   m_Name: InputFieldMonth
   m_TagString: Untagged
@@ -927,6 +928,19 @@ MonoBehaviour:
   horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 1904684309602659811}
+--- !u!114 &8947761231033734563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2499712412725004326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 'Scroll: Maanden'
 --- !u!1 &3360990547928478897
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,6 +1029,7 @@ GameObject:
   - component: {fileID: 5211593317180658022}
   - component: {fileID: 7174073007413458522}
   - component: {fileID: 3241961270202386253}
+  - component: {fileID: 4138609867735266918}
   m_Layer: 5
   m_Name: SunDragWheel
   m_TagString: Untagged
@@ -1140,6 +1155,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4138609867735266918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3673587457156860423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 'Scroll/Sleep: verander stand zon+tijd'
 --- !u!1 &3688636366062868195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,6 +1259,7 @@ GameObject:
   - component: {fileID: 3572613945948719248}
   - component: {fileID: 5097240996446748500}
   - component: {fileID: 6808655028179085412}
+  - component: {fileID: 3987021332017136525}
   m_Layer: 5
   m_Name: InputFieldTime
   m_TagString: Untagged
@@ -1373,6 +1402,21 @@ MonoBehaviour:
   horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 5097240996446748500}
+--- !u!114 &3987021332017136525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3822296243556551711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 'Scroll: Uren
+
+    Shift+Scroll: Minuten'
 --- !u!1 &4017736041652219082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,6 +1601,7 @@ MonoBehaviour:
   monthInput: {fileID: 8554100719413110358}
   yearInput: {fileID: 3224309485585934287}
   speedMultiplierText: {fileID: 3433857591399445323}
+  maxSpeedMultiply: 10000
   playButton: {fileID: 8250048913782980332}
   pauseButton: {fileID: 6587921868184615781}
 --- !u!114 &4139343253934370360
@@ -2046,6 +2091,7 @@ GameObject:
   - component: {fileID: 2140868358844513695}
   - component: {fileID: 6364935962477400352}
   - component: {fileID: 5204827080947554042}
+  - component: {fileID: 4637141329283546865}
   m_Layer: 5
   m_Name: InputFieldDay
   m_TagString: Untagged
@@ -2188,6 +2234,19 @@ MonoBehaviour:
   horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 6364935962477400352}
+--- !u!114 &4637141329283546865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951257396148514383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 'Scroll: Dagen'
 --- !u!1 &6413265099957455469
 GameObject:
   m_ObjectHideFlags: 0
@@ -2349,6 +2408,7 @@ GameObject:
   - component: {fileID: 3616423012177890595}
   - component: {fileID: 4141236083236528138}
   - component: {fileID: 3224309485585934287}
+  - component: {fileID: 3328029182701799211}
   m_Layer: 5
   m_Name: InputFieldYear
   m_TagString: Untagged
@@ -2491,6 +2551,19 @@ MonoBehaviour:
   horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 4141236083236528138}
+--- !u!114 &3328029182701799211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254057360248093855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: 'Scroll: Jaren'
 --- !u!1 &8807264080056674869
 GameObject:
   m_ObjectHideFlags: 0

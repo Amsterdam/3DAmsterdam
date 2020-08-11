@@ -41,6 +41,8 @@ public class SunSettings : MonoBehaviour
             speedMultiplierText.text = "x" + speedMultiplier.ToString();
         }
     }
+    [SerializeField]
+    private int maxSpeedMultiply = 10000;
 
     private bool useTimedSun = true;
     private bool paused = false;
@@ -72,10 +74,9 @@ public class SunSettings : MonoBehaviour
         yearInput.addedOffset += ChangedYear;
     }
 
-
     private void ChangedTime(int withOffset)
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             dateTimeNow = dateTimeNow.AddMinutes(withOffset);
         }
@@ -85,6 +86,65 @@ public class SunSettings : MonoBehaviour
         }
         UpdateNumeralInputs();
     }
+
+    /// <summary>
+    /// Set the time of the day directly as string
+    /// </summary>
+    /// <param name="input">Time of the day as string, for example "13:37"</param>
+    public void SetTime(string input)
+    {
+        string[] time = input.Split(':');
+        if (time.Length > 1 && int.TryParse(time[0], out int hour) && int.TryParse(time[0], out int minute))
+        {
+            dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, hour, minute, dateTimeNow.Second);
+        }
+        SetSunPosition();
+        UpdateNumeralInputs();
+    }
+
+    /// <summary>
+    /// Set the day of the month nr directly based on a string input
+    /// </summary>
+    /// <param name="input">Day of the month input number as string, for example "1" for the first day of the month</param>
+    public void SetDay(string input)
+    {
+        int dayNumber = 0;
+        if(int.TryParse(input, out dayNumber))
+        {
+            dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dayNumber, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
+        }
+        SetSunPosition();
+        UpdateNumeralInputs();
+    }
+    /// <summary>
+    /// Set the month nr directly based on a string input
+    /// </summary>
+    /// <param name="input">Month input number as string, for example "8" for august</param>
+    public void SetMonth(string input)
+    {
+        int monthNumber = 0;
+        if (int.TryParse(input, out monthNumber))
+        {
+            dateTimeNow = new DateTime(dateTimeNow.Year, monthNumber, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
+        }
+        SetSunPosition();
+        UpdateNumeralInputs();
+    }
+    /// <summary>
+    /// Set the year nr directly based on a string input
+    /// </summary>
+    /// <param name="input">Year input number as string, for example "2020"</param>
+    public void SetYear(string input)
+    {
+        int yearNumber = 0;
+        if (int.TryParse(input, out yearNumber))
+        {
+            dateTimeNow = new DateTime(yearNumber, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
+        }
+        SetSunPosition();
+        UpdateNumeralInputs();
+    }
+
     private void ChangedDay(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddDays(withOffset);
@@ -158,17 +218,16 @@ public class SunSettings : MonoBehaviour
     public void FastForward()
     {
         SpeedMultiplier *= 10;
-        if(SpeedMultiplier > 1000) SpeedMultiplier = 1000;
+        if(SpeedMultiplier > maxSpeedMultiply) SpeedMultiplier = maxSpeedMultiply;
     }
     public void FastBackward()
     {
         SpeedMultiplier /= 10;
-        if (SpeedMultiplier < 1) SpeedMultiplier = 1;
+        if (SpeedMultiplier < -maxSpeedMultiply) SpeedMultiplier = -maxSpeedMultiply;
     }
     public void TogglePausePlay()
     {
         paused = !paused;
-        SpeedMultiplier = 1;
         EnablePausePlayButtons();
     }
 
