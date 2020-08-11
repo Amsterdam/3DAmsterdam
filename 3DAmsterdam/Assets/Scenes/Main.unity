@@ -253,6 +253,32 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1902941944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902941943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d87a0488ad204846b69cde768ef6848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dataFolder: terrain
+  defaultMaterialList:
+  - {fileID: 2100000, guid: 37cabf1373b3276459699198995ffb58, type: 2}
+  - {fileID: 2100000, guid: 8567e7b8c2e6a5f4588401ffd1e849c5, type: 2}
+  - {fileID: 2100000, guid: c33d07bc4b94dda4d8277870c05a0143, type: 2}
+  - {fileID: 2100000, guid: 05c9355f947571b43a03d0c1b09c9c88, type: 2}
+  - {fileID: 2100000, guid: 3f103f2dce0324742b03e087c1c88fa1, type: 2}
+  - {fileID: 2100000, guid: 4e0a8de6f05c00b498145ed603f31ec4, type: 2}
+  - {fileID: 2100000, guid: 63ad17a202020f54e9a3501a1f7319af, type: 2}
+  - {fileID: 2100000, guid: cee369ae1cbe0cb4d8f4e77e0287c74b, type: 2}
+  highLightMaterial: {fileID: 0}
+  maximumDistanceLOD: 5000
+  maximumConcurrentDownloads: 5
+  layerName: Terrain
 --- !u!1 &2131600265 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8278632715658735416, guid: 221d545c4d79dd445b031a06c6945bbd,
@@ -5494,6 +5520,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4498901013376440828, guid: 1686781c0bba69b41bd5102479f39f29,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4498901013433943612, guid: 1686781c0bba69b41bd5102479f39f29,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5563,7 +5594,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902941943}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0cdf445e47d5ac4f93e93702f5bd739, type: 3}
   m_Name: 
