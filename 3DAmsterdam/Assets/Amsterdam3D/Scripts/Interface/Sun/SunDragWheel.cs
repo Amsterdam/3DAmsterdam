@@ -25,9 +25,12 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     public delegate void ChangedSunWheel(float rotate);
     public ChangedSunWheel deltaTurn;
 
+    private RectTransform rectTransform;
+
     private void Awake()
     {
         deltaTurn += UpdateIcons;
+        rectTransform = GetComponent<RectTransform>();
     }
 
     private void UpdateIcons(float rotate = 0.0f)
@@ -95,6 +98,7 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 	{
         this.transform.up = -newUpDirection.normalized;
         this.transform.rotation = Quaternion.Euler(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, -this.transform.localEulerAngles.z+180.0f);
+
         UpdateIcons();
     }
 }

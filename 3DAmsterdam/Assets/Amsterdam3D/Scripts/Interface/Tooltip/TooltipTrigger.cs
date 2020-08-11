@@ -18,6 +18,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (Input.GetMouseButton(0)) return; //Dont show new tooltips when we are still holding our mouse button
         TooltipDialog.Instance.ShowMessage(tooltipText);
     }
 

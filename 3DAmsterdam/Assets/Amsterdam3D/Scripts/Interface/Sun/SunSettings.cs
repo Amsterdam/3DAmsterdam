@@ -26,6 +26,9 @@ public class SunSettings : MonoBehaviour
     private LimitedNumericInput yearInput;
 
     [SerializeField]
+    private int maxYearInput = 2100;
+
+    [SerializeField]
     private Text speedMultiplierText;
     private int speedMultiplier = 1;
     public int SpeedMultiplier
@@ -58,13 +61,12 @@ public class SunSettings : MonoBehaviour
 
     public void Start()
     {
-        //Get the gps coordinates for our world centre
+        //Get the GPS coordinates for our world centre
         var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
         longitude = coordinates.lon;
         latitude = coordinates.lat;
 
-        ResetTimeToNow();
-
+        //Receive changes from wheel input
         sunDragWheel.deltaTurn += SunPositionChangedFromWheel;
 
         //Receive changes from our input fields
@@ -72,6 +74,8 @@ public class SunSettings : MonoBehaviour
         dayInput.addedOffset += ChangedDay;
         monthInput.addedOffset += ChangedMonth;
         yearInput.addedOffset += ChangedYear;
+
+        ResetTimeToNow();
     }
 
     private void ChangedTime(int withOffset)
@@ -84,7 +88,7 @@ public class SunSettings : MonoBehaviour
         {
             dateTimeNow = dateTimeNow.AddHours(withOffset);
         }
-        UpdateNumeralInputs();
+        UpdateNumericInputs();
     }
 
     /// <summary>
@@ -94,12 +98,14 @@ public class SunSettings : MonoBehaviour
     public void SetTime(string input)
     {
         string[] time = input.Split(':');
-        if (time.Length > 1 && int.TryParse(time[0], out int hour) && int.TryParse(time[0], out int minute))
+        if (time.Length > 1 && int.TryParse(time[0], out int hour) && int.TryParse(time[1], out int minute))
         {
+            print("Parsed time: " + hour + ":" + minute);
+            hour = Mathf.Clamp(hour, 0, 23);
+            minute = Mathf.Clamp(minute, 0, 59);
             dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, hour, minute, dateTimeNow.Second);
         }
-        SetSunPosition();
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
 
     /// <summary>
@@ -108,13 +114,13 @@ public class SunSettings : MonoBehaviour
     /// <param name="input">Day of the month input number as string, for example "1" for the first day of the month</param>
     public void SetDay(string input)
     {
-        int dayNumber = 0;
-        if(int.TryParse(input, out dayNumber))
+        if(int.TryParse(input, out int dayNumber))
         {
+            print("Parsed day: " + dayNumber);
+            dayNumber = Mathf.Clamp(dayNumber, 1, DateTime.DaysInMonth(dateTimeNow.Year, dateTimeNow.Month));
             dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dayNumber, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
         }
-        SetSunPosition();
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
     /// <summary>
     /// Set the month nr directly based on a string input
@@ -122,13 +128,13 @@ public class SunSettings : MonoBehaviour
     /// <param name="input">Month input number as string, for example "8" for august</param>
     public void SetMonth(string input)
     {
-        int monthNumber = 0;
-        if (int.TryParse(input, out monthNumber))
+        print("End edit. " + input);
+        if (int.TryParse(input, out int monthNumber))
         {
+            monthNumber = Mathf.Clamp(monthNumber, 1, 12);
             dateTimeNow = new DateTime(dateTimeNow.Year, monthNumber, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
         }
-        SetSunPosition();
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
     /// <summary>
     /// Set the year nr directly based on a string input
@@ -136,39 +142,31 @@ public class SunSettings : MonoBehaviour
     /// <param name="input">Year input number as string, for example "2020"</param>
     public void SetYear(string input)
     {
-        int yearNumber = 0;
-        if (int.TryParse(input, out yearNumber))
+        if (int.TryParse(input, out int yearNumber))
         {
+            yearNumber = Mathf.Clamp(yearNumber, 0, maxYearInput);
             dateTimeNow = new DateTime(yearNumber, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
         }
-        SetSunPosition();
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
 
     private void ChangedDay(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddDays(withOffset);
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
     private void ChangedMonth(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddMonths(withOffset);
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
     private void ChangedYear(int withOffset)
     {
         dateTimeNow = dateTimeNow.AddYears(withOffset);
-        UpdateNumeralInputs();
-    }
+        if (dateTimeNow.Year > maxYearInput || dateTimeNow.Year < 0)
+            dateTimeNow = new DateTime(Mathf.Clamp(dateTimeNow.Year,0, maxYearInput), dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, dateTimeNow.Second);
 
-    private void UpdateNumeralInputs()
-    {
-        timeInput.SetInputText(dateTimeNow.ToString("HH:mm"));
-        dayInput.SetInputText(dateTimeNow.Day.ToString());
-        monthInput.SetInputText(dateTimeNow.Month.ToString());
-        yearInput.SetInputText(dateTimeNow.Year.ToString());
-
-        sunDragWheel.SetUpDirection(new Vector3(sun.transform.forward.x, sun.transform.forward.y, 0.0f));
+        ChangeSunPosition();
     }
 
     private void LateUpdate()
@@ -184,9 +182,9 @@ public class SunSettings : MonoBehaviour
             if (dateTimeNow.ToString("HH:mm") != previousTimeString)
             {
                 previousTimeString = dateTimeNow.ToString("HH:mm");
-                UpdateNumeralInputs();
+                UpdateNumericInputs();
             }
-            SetSunPosition();
+            ChangeSunPosition();
         }
     }
 
@@ -194,10 +192,9 @@ public class SunSettings : MonoBehaviour
         //Convert flat rotation to expected time/sun position
         dateTimeNow = dateTimeNow.AddHours(delta*0.01f);
 
-        SetSunPosition();
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
-    private void SetSunPosition()
+    private void ChangeSunPosition()
     {
         var angles = new Vector3();
         double alt;
@@ -207,6 +204,25 @@ public class SunSettings : MonoBehaviour
         angles.y = (float)azi * Mathf.Rad2Deg;     
 
         sun.UpdateVisuals(angles);
+
+        UpdateWheelAccordingToSun();
+        UpdateNumericInputs();
+    }
+
+    /// <summary>
+    /// Changes the text values of our input fields to nicely readable date/time values, and rotate our wheel according to the sun
+    /// </summary>
+    private void UpdateNumericInputs()
+    {
+        timeInput.SetInputText(dateTimeNow.ToString("HH:mm"));
+        dayInput.SetInputText(dateTimeNow.Day.ToString());
+        monthInput.SetInputText(dateTimeNow.Month.ToString());
+        yearInput.SetInputText(dateTimeNow.Year.ToString());
+    }
+
+    private void UpdateWheelAccordingToSun()
+    {
+        sunDragWheel.SetUpDirection(new Vector3(sun.transform.forward.x, sun.transform.forward.y, 0.0f));
     }
 
     public void ToggleTimedSun(bool timedSun)
@@ -223,6 +239,7 @@ public class SunSettings : MonoBehaviour
     public void FastBackward()
     {
         SpeedMultiplier /= 10;
+        if(SpeedMultiplier == 0) SpeedMultiplier = 1;
         if (SpeedMultiplier < -maxSpeedMultiply) SpeedMultiplier = -maxSpeedMultiply;
     }
     public void TogglePausePlay()
@@ -242,7 +259,7 @@ public class SunSettings : MonoBehaviour
         dateTimeNow = DateTime.Now;
         SpeedMultiplier = 1;
         
-        UpdateNumeralInputs();
+        ChangeSunPosition();
     }
 
 }

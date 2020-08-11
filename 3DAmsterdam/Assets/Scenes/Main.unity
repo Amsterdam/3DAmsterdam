@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1602667574}
-  m_IndirectSpecularColor: {r: 0.7104076, g: 0.7256576, b: 0.74656516, a: 1}
+  m_IndirectSpecularColor: {r: 0.710894, g: 0.72656137, b: 0.7492931, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -127,13 +127,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2124185597603950387}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &486435854 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7834459387001506459, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1602667573}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &526101352 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4408322680050589351, guid: 221d545c4d79dd445b031a06c6945bbd,
     type: 3}
   m_PrefabInstance: {fileID: 1602667573}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 486435854}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 089ef949449e672498efd62971487454, type: 3}
@@ -1159,7 +1165,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 486435854}
     - target: {fileID: 1512835079457916147, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -4094,6 +4100,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5910862765130679975, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910862765130679975, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
       propertyPath: m_KeyboardType
       value: 4
       objectReference: {fileID: 0}
@@ -4101,6 +4112,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_CharacterValidation
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910862765130679975, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910862765130679975, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5914588630700909444, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5172,7 +5193,7 @@ PrefabInstance:
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 44.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
