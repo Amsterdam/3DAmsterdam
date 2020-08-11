@@ -18,7 +18,7 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 
     [SerializeField]
     private float rotationSnapDegrees;
-    private float previousPosition = 0.0f;
+    private Vector3 previousPosition;
 
     private float angle;
 
@@ -72,24 +72,29 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
         beginDragAngle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg;
         beginDragAngle -= Mathf.Atan2(transform.right.y, transform.right.x) * Mathf.Rad2Deg;*/
 
-        previousPosition = Input.mousePosition.x;
+        previousPosition = Input.mousePosition;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        Vector3 relativePosition = transform.position;
+        relativePosition = Input.mousePosition - relativePosition;
+
         //Rotate wheel according to relative mouse position
-        float relativePosition = Input.mousePosition.x - previousPosition;
+        float increment = (relativePosition.y > 0) ? Input.mousePosition.x - previousPosition.x : -(Input.mousePosition.x - previousPosition.x);
+        increment += (relativePosition.x < 0) ? Input.mousePosition.y - previousPosition.y : -(Input.mousePosition.y - previousPosition.y);
 
         //angle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
 
-        deltaTurn.Invoke(relativePosition * dragSensitivity);
+        deltaTurn.Invoke(increment * dragSensitivity);
 
-        previousPosition = Input.mousePosition.x;
+        previousPosition = Input.mousePosition;
     }
 
 	public void SetUpDirection(Vector3 newUpDirection)
 	{
-        this.transform.up = newUpDirection.normalized;
+        this.transform.up = -newUpDirection.normalized;
+        this.transform.rotation = Quaternion.Euler(this.transform.localEulerAngles.x, this.transform.localEulerAngles.y, -this.transform.localEulerAngles.z+180.0f);
         UpdateIcons();
     }
 }
