@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IScrollHandler
 {
     [SerializeField]
     [TextArea(3, 10)]
@@ -22,6 +22,11 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     }
 
     public void OnPointerExit(PointerEventData eventData)
+    {
+        TooltipDialog.Instance.Hide();
+    }
+
+    public void OnScroll(PointerEventData eventData)
     {
         TooltipDialog.Instance.Hide();
     }
