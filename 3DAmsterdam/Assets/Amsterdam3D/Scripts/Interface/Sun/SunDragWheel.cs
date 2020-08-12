@@ -20,17 +20,12 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     private float rotationSnapDegrees;
     private Vector3 previousPosition;
 
-    private float angle;
-
     public delegate void ChangedSunWheel(float rotate);
     public ChangedSunWheel deltaTurn;
-
-    private RectTransform rectTransform;
 
     private void Awake()
     {
         deltaTurn += UpdateIcons;
-        rectTransform = GetComponent<RectTransform>();
     }
 
     private void UpdateIcons(float rotate = 0.0f)
@@ -60,7 +55,6 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     {
         while (true)
         {
-            //this.transform.Rotate(0, 0, -Input.mouseScrollDelta.y * scrollWheelSensitivity);
             if(Input.mouseScrollDelta.y != 0.0f)
                 deltaTurn.Invoke(Input.mouseScrollDelta.y * scrollWheelSensitivity);
             yield return null;
@@ -69,12 +63,6 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        /*//Get starting rotation, so we rotate from this point
-        Vector3 relativePosition = transform.position;
-        relativePosition = Input.mousePosition - relativePosition;
-        beginDragAngle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg;
-        beginDragAngle -= Mathf.Atan2(transform.right.y, transform.right.x) * Mathf.Rad2Deg;*/
-
         previousPosition = Input.mousePosition;
     }
 
@@ -87,13 +75,15 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
         float increment = (relativePosition.y > 0) ? Input.mousePosition.x - previousPosition.x : -(Input.mousePosition.x - previousPosition.x);
         increment += (relativePosition.x < 0) ? Input.mousePosition.y - previousPosition.y : -(Input.mousePosition.y - previousPosition.y);
 
-        //angle = Mathf.Atan2(relativePosition.y, relativePosition.x) * Mathf.Rad2Deg - beginDragAngle;
-
         deltaTurn.Invoke(increment * dragSensitivity);
 
         previousPosition = Input.mousePosition;
     }
 
+    /// <summary>
+    /// Change the wheel up position to another vector
+    /// </summary>
+    /// <param name="newUpDirection">The new direction vector</param>
 	public void SetUpDirection(Vector3 newUpDirection)
 	{
         this.transform.up = -newUpDirection.normalized;
