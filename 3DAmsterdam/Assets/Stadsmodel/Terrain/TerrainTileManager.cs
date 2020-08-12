@@ -184,7 +184,8 @@ public class TerrainTileManager : MonoBehaviour
         ///
         TileData tileData = activeTileList[TileID];
         //string BuildingURL = "file:///E://UnityData/Assetbundles/WebGL/terrain";
-        string BuildingURL = "https://acc.3d.amsterdam.nl/webmap/data/feature/3DBasisvoorziening/WebGL/Terrain";
+        //string BuildingURL = "https://acc.3d.amsterdam.nl/webmap/data/feature/3DBasisvoorziening/WebGL/Terrain";
+        string BuildingURL = "file:///E://UnityData/Assetbundles/WebGL/terrain500x500";
         string url = BuildingURL + "/terrain_" + ((int)tileData.tileID.x).ToString() + "_" + ((int)tileData.tileID.y).ToString() + "_lod1";
         Debug.Log(url);
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
