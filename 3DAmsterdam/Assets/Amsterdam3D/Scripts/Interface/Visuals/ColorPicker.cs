@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
 	[SerializeField]
 	private RectTransform dragDropRegion;
@@ -36,7 +36,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 	private bool ignoreChanges = false;
 
-	public void OnPointerClick(PointerEventData eventData) => OnDrag(eventData);
+	public void OnPointerDown(PointerEventData eventData) => OnDrag(eventData);
 	public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);
 	public void OnEndDrag(PointerEventData eventData) => OnDrag(eventData);
 	public void OnDrag(PointerEventData eventData = null)
@@ -45,7 +45,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		PickColorFromPalette();
 	}
 
-	void Start()
+	void Awake()
 	{
 		if (useVectorPalette && radialConstraint)
 		{
@@ -69,7 +69,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 		}
 	}
 
-	void MovePointer()
+	private void MovePointer()
 	{
 		CalculateHitArea();
 
@@ -130,7 +130,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	{
 		CalculateHitArea();
 
-		var intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
+		intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
 
 		ignoreChanges = true;
 		intensitySlider.value = Mathf.InverseLerp(0.0f,1.0f,intensity);

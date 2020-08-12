@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,19 +24,48 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
-		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }	
+		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+		public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
+
+		private List<Color> resetColorValues;
 
 		[SerializeField]
-		protected InterfaceLayers parentInterfaceLayers;
+		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
 		private Image visualOptionsButton;
-		private void Start()
+		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
-			if (linkedObject){
+			if (linkedObject)
+			{
 				UpdateLayerPrimaryColor();
+				GetResetColorValues();
 			}
+		}
+
+
+		/// <summary>
+		/// Grab all the starting colors for this layer, so we can always reset it back during runtime
+		/// </summary>
+		private void GetResetColorValues()
+		{
+			//Store all the colors for the materials so we can reset to it later
+			resetColorValues = new List<Color>();
+			foreach (Material material in uniqueLinkedObjectMaterials)
+				resetColorValues.Add(material.GetColor("_BaseColor"));
+		}
+
+		/// <summary>
+		/// Reset all the linked materials their color back to their starting values
+		/// </summary>
+		public void ResetAllColors()
+		{
+			for (int i = 0; i < uniqueLinkedObjectMaterials.Count; i++)
+			{
+				uniqueLinkedObjectMaterials[i].SetColor("_BaseColor", resetColorValues[i]);
+			}
+			UpdateLayerPrimaryColor();
 		}
 
 		/// <summary>
@@ -49,7 +79,7 @@ namespace Amsterdam3D.Interface
 			switch(layerType)
 			{
 				case LayerType.BASICSHAPE:
-					//Create a clone so we can change this specific material
+					//Target the main material of a basic shape
 					uniqueLinkedObjectMaterials.Add(linkedObject.GetComponent<MeshRenderer>().material);
 					break;
 				case LayerType.OBJMODEL:
@@ -59,6 +89,7 @@ namespace Amsterdam3D.Interface
 			}
 
 			UpdateLayerPrimaryColor();
+			GetResetColorValues();
 		}
 
 		/// <summary>
@@ -76,7 +107,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void GetUniqueNestedMaterials(){
 			uniqueLinkedObjectMaterials = new List<Material>();
-
+			
 			Renderer[] linkedObjectRenderers = linkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
