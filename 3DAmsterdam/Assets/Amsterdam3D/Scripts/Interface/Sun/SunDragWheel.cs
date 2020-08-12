@@ -51,6 +51,9 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
         StopAllCoroutines();
     }
 
+    /// <summary>
+    /// Keeps checking the scroll input and invokes the deltaTurn event when needed
+    /// </summary>
     IEnumerator RotateWheelByScrollInput()
     {
         while (true)

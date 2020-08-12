@@ -3,25 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHandler, IEndDragHandler,*/ IPointerEnterHandler, IPointerExitHandler
+public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField]
 	private float horizontalIncrement = 5.0f;
 	[SerializeField]
 	private float scrollWheelSensitivity = 1.0f;
-
-	/*
-	private float startDragX = 0;
-	private int startOffset = 0;
-
-	[SerializeField]
-	private int minValue = 0;
-	public int MinValue { get => minValue; set => minValue = value; }
-
-	[SerializeField]
-	private int maxValue = 1440;
-	public int MaxValue { get => maxValue; set => maxValue = value; }
-	*/
 
 	[SerializeField]
 	private InputField inputField;
@@ -44,9 +31,17 @@ public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHan
 		StopAllCoroutines();
 	}
 
+	/// <summary>
+	/// Change the input field text value
+	/// </summary>
+	/// <param name="textInput">The new text value</param>
 	public void SetInputText(string textInput){
 		inputField.text = textInput;
 	}
+
+	/// <summary>
+	/// Keeps checking the scroll input and invokes the addOffset event when needed
+	/// </summary>
 	IEnumerator ReadScrollWheelInput() {
 		while (true){
 			var offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
@@ -55,28 +50,4 @@ public class LimitedNumericInput : MonoBehaviour, /*IPointerDownHandler,IDragHan
 			yield return null;
 		}	
 	}
-
-	/* Disabled dragging for now. Feels a bit confusing.
-	public void OnPointerDown(PointerEventData eventData)
-	{
-		startDragX = Input.mousePosition.x;
-		startOffset = Offset;
-	}
-
-	public void OnDrag(PointerEventData eventData)
-	{
-		Offset = startOffset + Mathf.RoundToInt((Input.mousePosition.x - startDragX) / horizontalIncrement);
-	}
-
-	public void OnEndDrag(PointerEventData eventData)
-	{
-		
-	}
-	*/
-	// Update is called once per frame
-	void Update()
-    {
-        
-    }
-
 }
