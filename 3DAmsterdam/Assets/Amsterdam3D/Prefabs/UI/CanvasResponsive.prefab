@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldPosition: {x: 1391.1532, y: 43.472095, z: -3295.3564}
+  fadeOutTime: 0.3
 --- !u!1 &3519288325140479396
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +101,7 @@ GameObject:
   - component: {fileID: 8480914463995445642}
   - component: {fileID: 8480172012122228447}
   - component: {fileID: 505129285667254931}
+  - component: {fileID: 6811659988832752520}
   m_Layer: 5
   m_Name: CanvasResponsive
   m_TagString: Untagged
@@ -202,6 +204,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6811659988832752520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3519288325140479396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5916888277225794991
 GameObject:
   m_ObjectHideFlags: 0
