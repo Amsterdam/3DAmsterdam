@@ -16,7 +16,7 @@ public class WorldPointFollower : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public virtual void MoveToWorldPosition(Vector3 newWorldPosition)
+    public virtual void AlignWithWorldPosition(Vector3 newWorldPosition)
     {
         WorldPosition = newWorldPosition;
     }

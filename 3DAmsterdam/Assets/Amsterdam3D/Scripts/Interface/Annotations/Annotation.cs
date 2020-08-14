@@ -21,6 +21,16 @@ public class Annotation : WorldPointFollower, IDragHandler, IPointerClickHandler
     private float lastClickTime = 0;
     private float doubleClickTime = 0.2f;
 
+    private void Start()
+    {  
+        PointLine();
+    }
+
+    private void PointLine()
+    {
+        
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
         groundPlane = new Plane(Vector3.up,new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
@@ -29,8 +39,9 @@ public class Annotation : WorldPointFollower, IDragHandler, IPointerClickHandler
         if (groundPlane.Raycast(ray, out float enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
-            MoveToWorldPosition(hitPoint);
+            AlignWithWorldPosition(hitPoint);
         }
+        PointLine();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -42,7 +53,7 @@ public class Annotation : WorldPointFollower, IDragHandler, IPointerClickHandler
         lastClickTime = Time.time;
     }
 
-    private void StartEditingText()
+    public void StartEditingText()
     {
         editInputField.gameObject.SetActive(true);
         editInputField.text = balloonText.text;
