@@ -12,7 +12,7 @@ public class Pointer : WorldPointFollower
 
     void Start()
     {
-        CameraControls.focusPointChanged += MoveToWorldPosition;
+        CameraControls.focusPointChanged += AlignWithWorldPosition;
         pointerImage = GetComponent<Image>();
     }
 
