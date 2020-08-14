@@ -1408,7 +1408,29 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9019782703701395036}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5459685081508576711}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1667827248380199893}
+        m_MethodName: SpawnNewObjectAtPointer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1667827248380199893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1421,8 +1443,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8253b97eeb205343b3c7fd7dc1a9f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customObject: {fileID: 0}
-  layerType: 1
+  customObject: {fileID: 2759513318835433424, guid: 4e54c1e7bafa0d74e8429caaf7a63ad0,
+    type: 3}
+  layerType: 3
+  targetParent: {fileID: 0}
 --- !u!1 &7323656544399018115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1658,6 +1682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customObject: {fileID: 0}
   layerType: 1
+  targetParent: {fileID: 0}
 --- !u!1 &7716105529609846427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1779,7 +1804,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4600014425811849355}
-        m_MethodName: AtPointer
+        m_MethodName: SpawnNewObjectAtPointer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1815,6 +1840,7 @@ MonoBehaviour:
   customObject: {fileID: 912797556926425458, guid: ee061bc2cb1bad44fac64ed4b6038d8f,
     type: 3}
   layerType: 0
+  targetParent: {fileID: 0}
 --- !u!1 &8001203685978355583
 GameObject:
   m_ObjectHideFlags: 0

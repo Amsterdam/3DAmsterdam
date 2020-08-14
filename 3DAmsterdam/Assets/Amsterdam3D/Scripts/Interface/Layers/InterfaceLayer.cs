@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
 		BASICSHAPE,
 		OBJMODEL,
 		STATIC,
-		DYNAMIC_MATERIALS
+		ANNOTATION
 	}
 	
 	public class InterfaceLayer : MonoBehaviour
