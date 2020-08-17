@@ -44,6 +44,10 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
+		public void EnableVisualisationOptions(bool enabled)
+		{
+			visualOptionsButton.gameObject.SetActive(enabled);
+		}
 
 		/// <summary>
 		/// Grab all the starting colors for this layer, so we can always reset it back during runtime

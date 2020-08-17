@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
@@ -13,6 +14,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform layersContainer;
 
+		[SerializeField]
+		private RectTransform annotationsContainer;
+
 		private Animator animator;
 		private bool toggledVisible = false;
 
@@ -23,6 +27,7 @@ namespace Amsterdam3D.Interface
 		void Awake()
 		{
 			animator = GetComponent<Animator>();
+			annotationsContainer.gameObject.SetActive(false);
 		}
 
 		/// <summary>
@@ -53,11 +58,24 @@ namespace Amsterdam3D.Interface
 		/// <param name="linkedWorldObject">The GameObject that is linked to this interface layer</param>
 		/// <param name="type">The layer/object type</param>
 
-		public void AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
+		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
 		{
 			CustomLayer newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
 			newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
 			newCustomlayer.transform.SetSiblingIndex(0);
+
+			if (type == LayerType.ANNOTATION)
+			{
+				newCustomlayer.EnableVisualisationOptions(false);
+				newCustomlayer.RenameLayer("Annotatie");
+				newCustomlayer.transform.SetParent(annotationsContainer);
+
+				//Resize container				
+
+				annotationsContainer.gameObject.SetActive(true);
+			}
+
+			return newCustomlayer;
 		}
 	}
 }

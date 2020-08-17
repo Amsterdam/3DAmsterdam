@@ -40,17 +40,18 @@ namespace Amsterdam3D.Interface
         public void SpawnNewObjectAtPointer()
         {
             GameObject newObject = Instantiate(customObject, targetParent);
-            if(layerType == LayerType.ANNOTATION)
+            CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(newObject, layerType);
+
+            if (layerType == LayerType.ANNOTATION)
             {
                 var annotation = newObject.GetComponent<Annotation>();
                 annotation.AlignWithWorldPosition(pointer.WorldPosition);
+                annotation.interfaceLayer = interfaceLayer;
                 annotation.StartEditingText();
             }
             else{
                 newObject.transform.position = pointer.WorldPosition;
             }
-
-            layers.AddNewCustomObjectLayer(newObject, layerType);
         }
     }
 }
