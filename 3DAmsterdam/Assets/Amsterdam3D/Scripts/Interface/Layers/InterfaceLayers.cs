@@ -66,7 +66,7 @@ namespace Amsterdam3D.Interface
 			if(type == LayerType.ANNOTATION)
 			{
 				newCustomlayer = Instantiate(annotationLayerPrefab, layersContainer);
-				newCustomlayer.Create("Annotatie", linkedWorldObject, type, this);
+				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
 
 				newCustomlayer.transform.SetParent(annotationsContainer);
 				annotationsContainer.gameObject.SetActive(true);

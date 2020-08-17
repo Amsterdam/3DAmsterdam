@@ -15,6 +15,8 @@ namespace Amsterdam3D.Interface
         private float lastClickTime = 0;
         private float doubleClickTime = 0.2f;
 
+        private int maxNameLength = 24;
+
         public void OnPointerClick(PointerEventData eventData)
         {
             //Catch double click on layer, to move camera to the linked object
@@ -22,7 +24,9 @@ namespace Amsterdam3D.Interface
             {
                 if (layerType == LayerType.ANNOTATION)
                 {
-                    CameraControls.Instance.MoveAndFocusOnLocation(linkedObject.GetComponent<Annotation>().WorldPosition);
+                    Annotation annotation = linkedObject.GetComponent<Annotation>();
+                    CameraControls.Instance.MoveAndFocusOnLocation(annotation.WorldPosition);
+                    annotation.StartEditingText();
                 }
                 else{
                     CameraControls.Instance.MoveAndFocusOnLocation(linkedObject.transform.position);
@@ -43,6 +47,11 @@ namespace Amsterdam3D.Interface
         }
 
         public void RenameLayer(string newName){
+            name = newName; //use our object name to store our full name
+
+            if (newName.Length > maxNameLength)
+                newName = newName.Substring(0, maxNameLength - 3) + "...";
+
             layerNameText.text = newName;
         }
 
