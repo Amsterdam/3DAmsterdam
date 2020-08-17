@@ -214,7 +214,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 45, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4084957427988651625
@@ -257,7 +257,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Annotatie
+  m_Text: Opmerking
 --- !u!114 &8437343702286092217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,7 +281,32 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
         type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
+        type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 462819011154374467}
+    - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2759513318835433424}
+    - target: {fileID: 1201636134060723550, guid: 03c1067237085104681df6b50c0d5b15,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 462819011154374467}
     - target: {fileID: 2033099120792643283, guid: 03c1067237085104681df6b50c0d5b15,

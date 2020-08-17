@@ -61,6 +61,12 @@ namespace Amsterdam3D.Interface
             editInputField.Select();
         }
 
+        public void EditText()
+        {
+            balloonText.text = editInputField.text;
+            interfaceLayer.RenameLayer(balloonText.text);
+        }
+
         public void StopEditingText()
         {
             balloonText.text = editInputField.text;
