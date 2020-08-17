@@ -22,16 +22,28 @@ public class ExpandGroup : MonoBehaviour
 
 	private int defaultChildCount = 0;
 
+	[SerializeField]
+	private GameObject openGraphic;
+	[SerializeField]
+	private GameObject closeGraphic;
+
 	void Awake()
 	{
 		rectTransform = GetComponent<RectTransform>();
 		closedHeight = rectTransform.sizeDelta.y;
 		defaultChildCount = transform.childCount;
 
-		if (ShowIfHasChildren() && openGroup)
+		if (ShowIfHasChildren())
 		{
+			ShowOpenCloseGraphic();
 			StartCoroutine(Open(openGroup));
 		}
+	}
+
+	private void ShowOpenCloseGraphic()
+	{
+		openGraphic.SetActive(openGroup);
+		closeGraphic.SetActive(!openGroup);
 	}
 
 	private bool ShowIfHasChildren()
@@ -50,6 +62,7 @@ public class ExpandGroup : MonoBehaviour
 			{
 				CalculateMaximumHeight();
 			}
+			ShowOpenCloseGraphic();
 
 			StopAllCoroutines();
 			StartCoroutine(Open(openGroup));
@@ -59,6 +72,8 @@ public class ExpandGroup : MonoBehaviour
 	public void ToggleGroup()
 	{
 		openGroup = !openGroup;
+		ShowOpenCloseGraphic();
+
 		StopAllCoroutines();
 		StartCoroutine(Open(openGroup));
 	}

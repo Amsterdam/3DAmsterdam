@@ -10,6 +10,8 @@ namespace Amsterdam3D.Interface
 	{
 		[SerializeField]
 		private CustomLayer customObjectLayerPrefab;
+		[SerializeField]
+		private CustomLayer annotationLayerPrefab;
 
 		[SerializeField]
 		private RectTransform layersContainer;
@@ -60,21 +62,19 @@ namespace Amsterdam3D.Interface
 
 		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
 		{
-			CustomLayer newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
-			newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
-			newCustomlayer.transform.SetSiblingIndex(0);
-
-			if (type == LayerType.ANNOTATION)
+			CustomLayer newCustomlayer;
+			if(type == LayerType.ANNOTATION)
 			{
-				newCustomlayer.EnableVisualisationOptions(false);
-				newCustomlayer.RenameLayer("Annotatie");
+				newCustomlayer = Instantiate(annotationLayerPrefab, layersContainer);
+				newCustomlayer.Create("Annotatie", linkedWorldObject, type, this);
+
 				newCustomlayer.transform.SetParent(annotationsContainer);
-
-				//Resize container				
-
 				annotationsContainer.gameObject.SetActive(true);
 			}
-
+			else{
+				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
+				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
+			}
 			return newCustomlayer;
 		}
 	}

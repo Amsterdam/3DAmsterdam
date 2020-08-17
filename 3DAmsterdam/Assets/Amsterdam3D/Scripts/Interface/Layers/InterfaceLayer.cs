@@ -33,7 +33,7 @@ namespace Amsterdam3D.Interface
 		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
-		private Image visualOptionsButton;
+		private Image layerOptionsButton;
 		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
@@ -44,9 +44,9 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		public void EnableVisualisationOptions(bool enabled)
+		public void EnableOptions(bool enabled)
 		{
-			visualOptionsButton.gameObject.SetActive(enabled);
+			layerOptionsButton.gameObject.SetActive(enabled);
 		}
 
 		/// <summary>
@@ -103,7 +103,7 @@ namespace Amsterdam3D.Interface
 		public void UpdateLayerPrimaryColor()
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
-				visualOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
+				layerOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 		}
 
 		/// <summary>
