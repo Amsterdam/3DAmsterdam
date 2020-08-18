@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System.Runtime.CompilerServices;
 using System;
 using Amsterdam3D.FreeShape;
+using ConvertCoordinates;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -119,7 +120,17 @@ namespace Amsterdam3D.CameraMotion
             focusPointChanged(targetLocation);
         }
 
-		void StandardMovement()
+        public void ChangedPointFromMinimap(string latLong)
+        {
+            string[] coordinates = latLong.Split(',');
+            var lat = double.Parse(coordinates[0]);
+            var lon = double.Parse(coordinates[0]);
+
+            var convertedCoordinate = CoordConvert.WGS84toUnity(lat, lon);
+            this.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
+        }
+
+        void StandardMovement()
         {         
             moveSpeed = Mathf.Sqrt(camera.transform.position.y) * speedFactor;
 
