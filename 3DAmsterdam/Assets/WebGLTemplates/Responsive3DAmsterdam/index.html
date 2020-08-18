@@ -11,6 +11,7 @@
 
   <body>
 	<div id="mapdiv"></div>
+	<div id="queryresults" style="display:none;"></div>
 	<div id="objUploadClickRegisterArea" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange='ReadOBJ(this)' multiple>
 	</div>
@@ -110,7 +111,7 @@
 	<script src="https://map.data.amsterdam.nl/dist/pointquery.iife.js"></script>
 	<script>
 	  function writeQueryResults(d) {
-		unityInstance.SendMessage("MainCamera",d.query.latitude +","+d.query.longitude, 'ChangedPointFromMinimap');
+		unityInstance.SendMessage('MainCamera','ChangedPointFromMinimap',d.query.latitude +","+d.query.longitude);
 		console.log('Latitude: '+ d.query.latitude + ', Longitude: ' + d.query.longitude);
 	  }
 	  
