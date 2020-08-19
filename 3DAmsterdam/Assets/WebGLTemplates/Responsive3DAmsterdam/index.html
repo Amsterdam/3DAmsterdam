@@ -31,6 +31,7 @@
       return;
     }
     const loader = document.querySelector("#loader");
+	const mapdiv = document.querySelector("#mapdiv");
     if (!unityInstance.progress) {
       const progress = document.querySelector("#loader .progress");
       progress.style.display = "block";
@@ -41,6 +42,7 @@
     if (progress === 1 && !unityInstance.removeTimeout) {
       unityInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
+		  mapdiv.style.opacity = "1.0";
       }, 2000);
     }
   }
