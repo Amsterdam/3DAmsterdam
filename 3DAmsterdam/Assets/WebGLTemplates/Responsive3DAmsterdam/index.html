@@ -112,6 +112,7 @@
 	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 	<script src="https://map.data.amsterdam.nl/dist/pointquery.iife.js"></script>
 	<script>
+	  //Leaflet minimap related scripts
 	  function writeQueryResults(d) {
 		unityInstance.SendMessage('MainCamera','ChangedPointFromMinimap',d.query.latitude +","+d.query.longitude);
 		console.log('Latitude: '+ d.query.latitude + ', Longitude: ' + d.query.longitude);
@@ -121,6 +122,7 @@
 		target: 'mapdiv',
 		layer: 'standaard',
 		marker: true,
+		search: true,
 		zoom: 14,
 		onQueryResult: writeQueryResults
 	  });
