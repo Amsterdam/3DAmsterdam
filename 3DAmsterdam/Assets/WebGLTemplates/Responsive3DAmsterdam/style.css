@@ -99,6 +99,16 @@
 	 #mapdiv:hover{
 		height:222px;
 	 }
+	 .leaflet-control-container{
+		display: none;
+	 }
+	 #mapdiv:hover .leaflet-control-container{
+		display: block;
+	 }
+	 .embed-search{
+		display:none;
+	 }
+	 
       @keyframes spinner-spin {
         0% {
           transform: rotate(0deg);
