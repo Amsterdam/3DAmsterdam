@@ -124,9 +124,9 @@ namespace Amsterdam3D.CameraMotion
         {
             string[] coordinates = latLong.Split(',');
             var lat = double.Parse(coordinates[0]);
-            var lon = double.Parse(coordinates[0]);
+            var lon = double.Parse(coordinates[1]);
 
-            var convertedCoordinate = CoordConvert.WGS84toUnity(lat, lon);
+            var convertedCoordinate = CoordConvert.WGS84toUnity(lon, lat);
             this.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
         }
 
