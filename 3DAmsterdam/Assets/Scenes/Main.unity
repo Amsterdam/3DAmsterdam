@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -163,6 +163,27 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &616626448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616626445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601c8c3306aa1b249a9997e8681ad08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileSize: 1000
+  layerPriority: 10
+  Datasets:
+  - Description: Lod 0
+    lod: 0
+    path: trees/trees_{x}-{y}
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 0
 --- !u!4 &793659920 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7164494881010118412, guid: a47e589561ad72342980f70c742130aa,
@@ -305,6 +326,39 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1814701005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814701004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601c8c3306aa1b249a9997e8681ad08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileSize: 1000
+  layerPriority: 0
+  Datasets:
+  - Description: 
+    lod: 0
+    path: 
+    maximumDistance: 6000
+    maximumDistanceSquared: 0
+    enabled: 1
+  - Description: 
+    lod: 1
+    path: 
+    maximumDistance: 3000
+    maximumDistanceSquared: 0
+    enabled: 1
+  - Description: 
+    lod: 2
+    path: 
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 1
 --- !u!1 &1902941943 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013376440829, guid: 1686781c0bba69b41bd5102479f39f29,
@@ -5193,7 +5247,7 @@ PrefabInstance:
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 44.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5990,6 +6044,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Layers
       objectReference: {fileID: 0}
+    - target: {fileID: 4498901013737045449, guid: 1686781c0bba69b41bd5102479f39f29,
+        type: 3}
+      propertyPath: dataFolder
+      value: trees
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
 --- !u!114 &4498901014617163850 stripped
@@ -6004,6 +6063,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cdf445e47d5ac4f93e93702f5bd739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4498901014617163851 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4498901013433943613, guid: 1686781c0bba69b41bd5102479f39f29,
+    type: 3}
+  m_PrefabInstance: {fileID: 4498901014617163849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4498901014617163852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901014617163851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bf815e09f26f1845a92ef4f3860d415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maximumConcurrentDownloads: 5
+  layers:
+  - {fileID: 1814701005}
+  - {fileID: 616626448}
 --- !u!1001 &7164494880686212445
 PrefabInstance:
   m_ObjectHideFlags: 0
