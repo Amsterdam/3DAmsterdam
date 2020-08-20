@@ -101,7 +101,18 @@ public class Map : MonoBehaviour
             }
         }
     }
-
+    private void GenerateZoomLevelParent(int zoom)
+    {
+        if (!zoomLevelContainers.ContainsKey(zoom))
+        {
+            var newZoomLevelParent = new GameObject().AddComponent<RectTransform>();
+            newZoomLevelParent.name = zoom.ToString();
+            zoomLevelContainers.Add(zoom, newZoomLevelParent.gameObject);
+            newZoomLevelParent.pivot = Vector2.zero;
+            newZoomLevelParent.localScale = Vector3.one * Mathf.Pow(2,-(zoom-minZoom));
+            newZoomLevelParent.SetParent(transform,false);
+        }
+    }
     private static void GenerateTile(int x, int y, GameObject zoomLevelParent, string keyName, Texture texture)
     {
         var newMapTile = new GameObject();
@@ -116,16 +127,5 @@ public class Map : MonoBehaviour
         rawImage.rectTransform.sizeDelta = new Vector2(1.0f, 1.0f);
         newMapTile.transform.SetParent(zoomLevelParent.transform, false);
         newMapTile.transform.localPosition = gridCoordinates;
-    }
-
-    private void GenerateZoomLevelParent(int zoom)
-    {
-        if (!zoomLevelContainers.ContainsKey(zoom))
-        {
-            var newZoomLevelParent = new GameObject();
-            newZoomLevelParent.name = zoom.ToString();
-            zoomLevelContainers.Add(zoom, newZoomLevelParent);
-            newZoomLevelParent.transform.SetParent(transform);
-        }
     }
 }
