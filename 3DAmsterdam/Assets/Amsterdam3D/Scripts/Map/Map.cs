@@ -13,21 +13,22 @@ public class Map : MonoBehaviour
     private string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
 
     private int minZoom = 6;
-    private int maxZoom = 9;
+    private int maxZoom = 16;
 
     private int zoom = 6;
     private int x = 0; //8426
     private int y = 0; //to 5392
 
-    private int gridColumns = 2;
+    private int gridColumns = 4;
 
     [SerializeField]
-    private float meterScale = 0.001f;
+    private int tilePixelSize = 256;
 
     private Dictionary<int, GameObject> zoomLevelContainers;
 
     private void Start()
     {
+        GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
         LoadGridTiles();
         zoomLevelContainers = new Dictionary<int, GameObject>();
     }
@@ -56,17 +57,17 @@ public class Map : MonoBehaviour
         {
             zoom++;
             gridColumns *= 2;
-
+            this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
             LoadGridTiles();
         }
     }
-    public void ZoomOut()
+    public void ZoomOut(bool useMousePosition = false)
     {
         if (zoom > minZoom)
         {
             zoom--;
             gridColumns /= 2;
-
+            this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
             LoadGridTiles();
         }
     }
@@ -120,8 +121,7 @@ public class Map : MonoBehaviour
         var rawImage = newMapTile.AddComponent<RawImage>();
         rawImage.texture = texture;
         rawImage.rectTransform.pivot = Vector2.zero;
-
-        rawImage.rectTransform.sizeDelta = new Vector2(1.0f, 1.0f);
+        rawImage.rectTransform.sizeDelta = Vector2.one;
         newMapTile.transform.SetParent(zoomLevelParent.transform, false);
         newMapTile.transform.localPosition = gridCoordinates;
     }

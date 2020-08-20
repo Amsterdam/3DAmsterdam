@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ConvertCoordinates;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
+public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerClickHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Vector3 dragOffset;
     private Map map;
@@ -15,6 +16,8 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
     private float hoverResizeSpeed = 1.0f;
 
     [SerializeField]
+    private Transform dragTarget;
+    [SerializeField]
     private RectTransform pointer;
     [SerializeField]
     private RectTransform navigation;
@@ -23,9 +26,12 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
     [SerializeField]
     private Vector2 hoverSize;
 
+    private Vector3 bottomLeftUnityCoordinates, topRightUnityCoordinates;
+
     private void Awake()
     {
         rectTransform = this.GetComponent<RectTransform>();
+        CalculateMapCoordinates();
     }
 
     private void Start()
@@ -35,17 +41,23 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
         navigation.gameObject.SetActive(false);
     }
 
+    void Update()
+    {
+        PositionPointer();
+    }
+    private void CalculateMapCoordinates()
+    {
+        bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(Constants.MINIMAP_RD_BOTTOMLEFT_X, Constants.MINIMAP_RD_BOTTOMLEFT_Y, 0.0f));
+        topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(Constants.MINIMAP_RD_BOTTOMLEFT_X + Constants.MINIMAP_0_ZOOM_TILE_SIZE, Constants.MINIMAP_RD_BOTTOMLEFT_Y + Constants.MINIMAP_0_ZOOM_TILE_SIZE, 0.0f));
+    }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        dragOffset = map.transform.position - Input.mousePosition;
+        dragOffset = dragTarget.position - Input.mousePosition;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        map.transform.position = Input.mousePosition + dragOffset;
-
-        //pointer //Move pointer to right position
-
+        dragTarget.position = Input.mousePosition + dragOffset;
         map.LoadTilesInView();
     }
     public void OnScroll(PointerEventData eventData)
@@ -58,6 +70,17 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
         {
             map.ZoomOut();
         }
+    }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Clicked mimimap at:" + eventData.position);
+    }
+    private void PositionPointer()
+    {
+        var posX = Mathf.InverseLerp(bottomLeftUnityCoordinates.x, topRightUnityCoordinates.x, Camera.main.transform.position.x);
+        var posY = Mathf.InverseLerp(bottomLeftUnityCoordinates.z, topRightUnityCoordinates.z, Camera.main.transform.position.z);
+
+        pointer.anchorMin = pointer.anchorMax = new Vector3(posX, posY, 0);
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
