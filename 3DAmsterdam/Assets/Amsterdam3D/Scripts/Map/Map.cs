@@ -24,9 +24,12 @@ public class Map : MonoBehaviour
     [SerializeField]
     private float meterScale = 0.001f;
 
+    private Dictionary<int, GameObject> zoomLevelContainers;
+
     private void Start()
     {
         LoadGrid();
+        zoomLevelContainers = new Dictionary<int, GameObject>();
     }
 
     public void LoadTilesInView()
@@ -56,6 +59,12 @@ public class Map : MonoBehaviour
 
             LoadGrid();
         }
+        OffsetBy(Input.mousePosition);
+    }
+
+    public void OffsetBy(Vector3 offset)
+    {
+        this.transform.Translate(this.transform.position.x - offset.x, offset.y - Input.mousePosition.y, 0.0f);
     }
 
     public void ZoomOut()
@@ -67,12 +76,11 @@ public class Map : MonoBehaviour
 
             LoadGrid();
         }
+        OffsetBy(Input.mousePosition);
     }
 
     private IEnumerator LoadTile(int zoom, int x, int y)
     {
-        //Vector3WGS wgs = ConvertCoordinates.Vector3WGS();       
-
         var solvedUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(solvedUrl);
         yield return www.SendWebRequest();
@@ -83,20 +91,41 @@ public class Map : MonoBehaviour
         }
         else
         {
-            var keyName = zoom + "/" + x + "/" + y;
-            Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            GenerateZoomLevelParent(zoom);
+            if (zoomLevelContainers.TryGetValue(zoom, out GameObject zoomLevelParent))
+            {
+                var keyName = zoom + "/" + x + "/" + y;
+                Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
 
-            GameObject newMapTile = new GameObject();
-            newMapTile.name = keyName;
-            Vector3 gridCoordinates = new Vector3(x,y, 0.0f);
+                GenerateTile(x, y, zoomLevelParent, keyName, texture);
+            }
+        }
+    }
 
-            RawImage rawImage = newMapTile.AddComponent<RawImage>();
-            rawImage.texture = texture;
-            rawImage.rectTransform.pivot = Vector2.zero;
+    private static void GenerateTile(int x, int y, GameObject zoomLevelParent, string keyName, Texture texture)
+    {
+        var newMapTile = new GameObject();
+        newMapTile.name = keyName;
 
-            rawImage.rectTransform.sizeDelta = new Vector2(1.0f, 1.0f);
-            newMapTile.transform.SetParent(transform, false);
-            newMapTile.transform.localPosition = gridCoordinates;
+        var gridCoordinates = new Vector3(x, y, 0.0f);
+
+        var rawImage = newMapTile.AddComponent<RawImage>();
+        rawImage.texture = texture;
+        rawImage.rectTransform.pivot = Vector2.zero;
+
+        rawImage.rectTransform.sizeDelta = new Vector2(1.0f, 1.0f);
+        newMapTile.transform.SetParent(zoomLevelParent.transform, false);
+        newMapTile.transform.localPosition = gridCoordinates;
+    }
+
+    private void GenerateZoomLevelParent(int zoom)
+    {
+        if (!zoomLevelContainers.ContainsKey(zoom))
+        {
+            var newZoomLevelParent = new GameObject();
+            newZoomLevelParent.name = zoom.ToString();
+            zoomLevelContainers.Add(zoom, newZoomLevelParent);
+            newZoomLevelParent.transform.SetParent(transform);
         }
     }
 }
