@@ -13,7 +13,7 @@ public static class Constants
     /// </summary>
     public const float MINIMAP_RD_BOTTOMLEFT_X = -285401.920f;
     public const float MINIMAP_RD_BOTTOMLEFT_Y = 22598.080f;
-    public const float MINIMAP_0_ZOOM_TILE_SIZE = 880803.84f;
+    public const float MINIMAP_BASE_SPAN = 41287.68f; // 880803.84f * 0.046875
 
     /// <summary>
     /// Swap data URL based on the branch type. Optionaly we can choose to use a relative path for WebGL.

@@ -7,6 +7,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+[System.Serializable]
+public struct LoadTile{
+    public GameObject loadedGameObject;
+    public IEnumerator loadingProgress;
+}
+
 public class Map : MonoBehaviour
 {
     [SerializeField]
@@ -16,40 +22,82 @@ public class Map : MonoBehaviour
     private int maxZoom = 16;
 
     private int zoom = 6;
-    private int x = 0; //8426
-    private int y = 0; //to 5392
 
-    private int gridColumns = 4;
+    private int gridColumns = 3;
+
+    private RectTransform mapArea;
 
     [SerializeField]
     private int tilePixelSize = 256;
 
     private Dictionary<int, GameObject> zoomLevelContainers;
+    private Dictionary<Vector2, LoadTile> currentLevelTiles;
 
     private void Start()
     {
-        GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
-        LoadGridTiles();
         zoomLevelContainers = new Dictionary<int, GameObject>();
+        currentLevelTiles = new Dictionary<Vector2, LoadTile>();
+
+        GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
+        LoadTilesInView();
     }
 
     public void LoadTilesInView()
     {
-        //calculate what tiles we need to load
-        //just check what zoomlevel we are at, and if the points in that grid level are in the view.
-        //load those
+        for (int i = 0; i < gridColumns; i++)
+        {
+            for (int j = 0; j < gridColumns; j++)
+            {
+                var key = new Vector2(i, j);
+
+                Rect tileRect = new Rect(i * tilePixelSize, j * tilePixelSize, tilePixelSize, tilePixelSize);
+                Debug.Log(tileRect + " overlap? " + mapArea.rect);
+                bool alreadyLoaded = currentLevelTiles.ContainsKey(key);
+
+                if (tileRect.Overlaps(mapArea.rect) && !alreadyLoaded)
+                {
+                    var tileLoad = new LoadTile();
+
+                    //If we are in view, load this tile (if wel arent already loading)
+                    IEnumerator progress = LoadTile(zoom, i, j, tileLoad);
+                    
+                    var newTileObject = new GameObject();
+                    newTileObject.name = i + "/" + j;
+
+                    //Add this to our dictionary
+                    tileLoad.loadedGameObject = newTileObject;
+                    tileLoad.loadingProgress = progress;
+                    currentLevelTiles.Add(key, tileLoad);
+
+                    StartCoroutine(progress);
+                }
+                else if(alreadyLoaded && currentLevelTiles.TryGetValue(key, out LoadTile loadedTile))
+                {
+                    StopCoroutine(loadedTile.loadingProgress);
+                    Destroy(loadedTile.loadedGameObject);
+                    currentLevelTiles.Remove(key);
+                }
+
+                //remove two levels below, and all top ones
+            }
+        }
     }
 
-    private void LoadGridTiles()
+    public void SetMapArea(RectTransform area)
+    {
+        mapArea = area;
+    }
+
+    /*private void LoadGridTiles()
     {        
         for (int i = 0; i < gridColumns; i++)
         {
             for (int j = 0; j < gridColumns; j++)
             {
-                StartCoroutine(LoadTile(zoom, x + i, y + j));
+                StartCoroutine(LoadTile(zoom, i, j));
             }
         }
-    }
+    }*/
 
     public void ZoomIn(bool useMousePosition = false)
     {
@@ -58,7 +106,7 @@ public class Map : MonoBehaviour
             zoom++;
             gridColumns *= 2;
             this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
-            LoadGridTiles();
+            LoadTilesInView();
         }
     }
     public void ZoomOut(bool useMousePosition = false)
@@ -68,7 +116,7 @@ public class Map : MonoBehaviour
             zoom--;
             gridColumns /= 2;
             this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
-            LoadGridTiles();
+            LoadTilesInView();
         }
     }
 
@@ -77,12 +125,12 @@ public class Map : MonoBehaviour
         this.transform.Translate(this.transform.position.x - offset.x, offset.y - Input.mousePosition.y, 0.0f);
     }
 
-    private IEnumerator LoadTile(int zoom, int x, int y)
+    private IEnumerator LoadTile(int zoom, int x, int y, LoadTile targetLoadTile)
     {
         var solvedUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(solvedUrl);
         yield return www.SendWebRequest();
-        Debug.Log("Load: " + solvedUrl);
+
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.Log(www.error);
@@ -92,10 +140,8 @@ public class Map : MonoBehaviour
             GenerateZoomLevelParent(zoom);
             if (zoomLevelContainers.TryGetValue(zoom, out GameObject zoomLevelParent))
             {
-                var keyName = zoom + "/" + x + "/" + y;
                 Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-
-                GenerateTile(x, y, zoomLevelParent, keyName, texture);
+                LoadedTexture(x, y, zoomLevelParent, targetLoadTile.loadedGameObject, texture);
             }
         }
     }
@@ -111,11 +157,8 @@ public class Map : MonoBehaviour
             newZoomLevelParent.SetParent(transform,false);
         }
     }
-    private static void GenerateTile(int x, int y, GameObject zoomLevelParent, string keyName, Texture texture)
+    private static void LoadedTexture(int x, int y, GameObject zoomLevelParent, GameObject newMapTile, Texture texture)
     {
-        var newMapTile = new GameObject();
-        newMapTile.name = keyName;
-
         var gridCoordinates = new Vector3(x, y, 0.0f);
 
         var rawImage = newMapTile.AddComponent<RawImage>();

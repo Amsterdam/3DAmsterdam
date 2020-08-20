@@ -25,18 +25,16 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerCli
     private Vector2 defaultSize;
     [SerializeField]
     private Vector2 hoverSize;
-
+    [SerializeField]
     private Vector3 bottomLeftUnityCoordinates, topRightUnityCoordinates;
 
     private void Awake()
     {
         rectTransform = this.GetComponent<RectTransform>();
         CalculateMapCoordinates();
-    }
 
-    private void Start()
-    {
         map = GetComponentInChildren<Map>();
+        map.SetMapArea(rectTransform);
         defaultSize = rectTransform.sizeDelta;
         navigation.gameObject.SetActive(false);
     }
@@ -48,7 +46,7 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerCli
     private void CalculateMapCoordinates()
     {
         bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(Constants.MINIMAP_RD_BOTTOMLEFT_X, Constants.MINIMAP_RD_BOTTOMLEFT_Y, 0.0f));
-        topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(Constants.MINIMAP_RD_BOTTOMLEFT_X + Constants.MINIMAP_0_ZOOM_TILE_SIZE, Constants.MINIMAP_RD_BOTTOMLEFT_Y + Constants.MINIMAP_0_ZOOM_TILE_SIZE, 0.0f));
+        topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(Constants.MINIMAP_RD_BOTTOMLEFT_X + Constants.MINIMAP_BASE_SPAN, Constants.MINIMAP_RD_BOTTOMLEFT_Y + Constants.MINIMAP_BASE_SPAN, 0.0f));
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
