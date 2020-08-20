@@ -16,7 +16,7 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerCli
     private float hoverResizeSpeed = 1.0f;
 
     [SerializeField]
-    private Transform dragTarget;
+    private RectTransform dragTarget;
     [SerializeField]
     private RectTransform pointer;
     [SerializeField]
@@ -34,7 +34,7 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerCli
         CalculateMapCoordinates();
 
         map = GetComponentInChildren<Map>();
-        map.SetMapArea(rectTransform);
+        map.SetMapArea(dragTarget);
         defaultSize = rectTransform.sizeDelta;
         navigation.gameObject.SetActive(false);
     }

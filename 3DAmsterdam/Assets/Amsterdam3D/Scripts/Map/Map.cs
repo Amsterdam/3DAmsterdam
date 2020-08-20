@@ -25,7 +25,9 @@ public class Map : MonoBehaviour
 
     private int gridColumns = 3;
 
-    private RectTransform mapArea;
+    private RectTransform dragArea;
+
+    private RectTransform rectTransform;
 
     [SerializeField]
     private int tilePixelSize = 256;
@@ -38,34 +40,40 @@ public class Map : MonoBehaviour
         zoomLevelContainers = new Dictionary<int, GameObject>();
         currentLevelTiles = new Dictionary<Vector2, LoadTile>();
 
+        rectTransform = GetComponent<RectTransform>();
+
         GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
         LoadTilesInView();
     }
 
     public void LoadTilesInView()
     {
-        for (int i = 0; i < gridColumns; i++)
+        for (int x = 0; x < gridColumns; x++)
         {
-            for (int j = 0; j < gridColumns; j++)
+            for (int y = 0; y < gridColumns; y++)
             {
-                var key = new Vector2(i, j);
+                var key = new Vector2(x, y);
 
-                Rect tileRect = new Rect(i * tilePixelSize, j * tilePixelSize, tilePixelSize, tilePixelSize);
-                Debug.Log(tileRect + " overlap? " + mapArea.rect);
+                Rect tileRect = new Rect(
+                    rectTransform.anchoredPosition.x + (x * tilePixelSize),
+                    rectTransform.anchoredPosition.y + (y * tilePixelSize), 
+                    tilePixelSize, tilePixelSize
+                );
+                Debug.Log(tileRect + " overlap? " + dragArea.rect);
+
                 bool alreadyLoaded = currentLevelTiles.ContainsKey(key);
 
-                if (tileRect.Overlaps(mapArea.rect) && !alreadyLoaded)
+                if (tileRect.Overlaps(dragArea.rect) && !alreadyLoaded)
                 {
                     var tileLoad = new LoadTile();
+                    var newTileObject = new GameObject();
+                    newTileObject.name = x + "/" + y;
+                    tileLoad.loadedGameObject = newTileObject;
 
                     //If we are in view, load this tile (if wel arent already loading)
-                    IEnumerator progress = LoadTile(zoom, i, j, tileLoad);
-                    
-                    var newTileObject = new GameObject();
-                    newTileObject.name = i + "/" + j;
-
+                    IEnumerator progress = LoadTile(zoom, x, y, tileLoad);               
                     //Add this to our dictionary
-                    tileLoad.loadedGameObject = newTileObject;
+
                     tileLoad.loadingProgress = progress;
                     currentLevelTiles.Add(key, tileLoad);
 
@@ -85,7 +93,7 @@ public class Map : MonoBehaviour
 
     public void SetMapArea(RectTransform area)
     {
-        mapArea = area;
+        dragArea = area;
     }
 
     /*private void LoadGridTiles()
