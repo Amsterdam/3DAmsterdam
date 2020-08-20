@@ -23,7 +23,7 @@ public class Map : MonoBehaviour
 
     private int zoom = 6;
 
-    private int gridColumns = 3;
+    private int gridCells = 3;
 
     private RectTransform tilesDraggableContainer;
     private RectTransform viewBoundsArea;
@@ -45,9 +45,9 @@ public class Map : MonoBehaviour
 
     public void LoadTilesInView()
     {
-        for (int x = 0; x < gridColumns; x++)
+        for (int x = 0; x < gridCells; x++)
         {
-            for (int y = 0; y < gridColumns; y++)
+            for (int y = 0; y < gridCells; y++)
             {
                 var key = new Vector2(x, y);
 
@@ -114,7 +114,7 @@ public class Map : MonoBehaviour
         if (zoom < maxZoom)
         {
             zoom++;
-            gridColumns *= 2;
+            gridCells *= 2;
             this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
             LoadTilesInView();
         }
@@ -124,7 +124,7 @@ public class Map : MonoBehaviour
         if (zoom > minZoom)
         {
             zoom--;
-            gridColumns /= 2;
+            gridCells /= 2;
             this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
             LoadTilesInView();
         }
