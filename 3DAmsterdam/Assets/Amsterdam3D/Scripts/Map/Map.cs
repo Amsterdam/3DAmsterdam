@@ -25,9 +25,8 @@ public class Map : MonoBehaviour
 
     private int gridColumns = 3;
 
-    private RectTransform dragArea;
-
-    private RectTransform rectTransform;
+    private RectTransform tilesDraggableContainer;
+    private RectTransform viewBoundsArea;
 
     [SerializeField]
     private int tilePixelSize = 256;
@@ -39,8 +38,6 @@ public class Map : MonoBehaviour
     {
         zoomLevelContainers = new Dictionary<int, GameObject>();
         currentLevelTiles = new Dictionary<Vector2, LoadTile>();
-
-        rectTransform = GetComponent<RectTransform>();
 
         GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
         LoadTilesInView();
@@ -55,15 +52,19 @@ public class Map : MonoBehaviour
                 var key = new Vector2(x, y);
 
                 Rect tileRect = new Rect(
-                    rectTransform.anchoredPosition.x + (x * tilePixelSize),
-                    rectTransform.anchoredPosition.y + (y * tilePixelSize), 
+                    tilesDraggableContainer.anchoredPosition.x + (x * tilePixelSize),
+                    tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize), 
                     tilePixelSize, tilePixelSize
                 );
-                Debug.Log(tileRect + " overlap? " + dragArea.rect);
+               
 
-                bool alreadyLoaded = currentLevelTiles.ContainsKey(key);
+                var alreadyLoaded = currentLevelTiles.ContainsKey(key);
+                var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
 
-                if (tileRect.Overlaps(dragArea.rect) && !alreadyLoaded)
+                Debug.Log(tileRect + " overlap? " + viewBoundsArea.rect + " ->" + tileIsInView);
+
+
+                if (tileIsInView && !alreadyLoaded)
                 {
                     var tileLoad = new LoadTile();
                     var newTileObject = new GameObject();
@@ -91,9 +92,10 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void SetMapArea(RectTransform area)
+    public void SetMapAreas(RectTransform view, RectTransform drag)
     {
-        dragArea = area;
+        tilesDraggableContainer = drag;
+        viewBoundsArea = view;
     }
 
     /*private void LoadGridTiles()

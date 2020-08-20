@@ -34,7 +34,7 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerCli
         CalculateMapCoordinates();
 
         map = GetComponentInChildren<Map>();
-        map.SetMapArea(dragTarget);
+        map.SetMapAreas(rectTransform,dragTarget);
         defaultSize = rectTransform.sizeDelta;
         navigation.gameObject.SetActive(false);
     }
