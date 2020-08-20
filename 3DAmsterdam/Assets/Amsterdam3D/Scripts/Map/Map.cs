@@ -28,7 +28,7 @@ public class Map : MonoBehaviour
 
     private void Start()
     {
-        LoadGrid();
+        LoadGridTiles();
         zoomLevelContainers = new Dictionary<int, GameObject>();
     }
 
@@ -39,7 +39,7 @@ public class Map : MonoBehaviour
         //load those
     }
 
-    private void LoadGrid()
+    private void LoadGridTiles()
     {        
         for (int i = 0; i < gridColumns; i++)
         {
@@ -50,23 +50,16 @@ public class Map : MonoBehaviour
         }
     }
 
-    public void ZoomIn()
+    public void ZoomIn(bool useMousePosition = false)
     {
         if (zoom < maxZoom)
         {
             zoom++;
             gridColumns *= 2;
 
-            LoadGrid();
+            LoadGridTiles();
         }
-        OffsetBy(Input.mousePosition);
     }
-
-    public void OffsetBy(Vector3 offset)
-    {
-        this.transform.Translate(this.transform.position.x - offset.x, offset.y - Input.mousePosition.y, 0.0f);
-    }
-
     public void ZoomOut()
     {
         if (zoom > minZoom)
@@ -74,9 +67,13 @@ public class Map : MonoBehaviour
             zoom--;
             gridColumns /= 2;
 
-            LoadGrid();
+            LoadGridTiles();
         }
-        OffsetBy(Input.mousePosition);
+    }
+
+    public void OffsetBy(Vector3 offset)
+    {
+        this.transform.Translate(this.transform.position.x - offset.x, offset.y - Input.mousePosition.y, 0.0f);
     }
 
     private IEnumerator LoadTile(int zoom, int x, int y)

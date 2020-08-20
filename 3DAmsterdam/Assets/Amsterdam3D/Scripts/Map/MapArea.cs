@@ -15,6 +15,8 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
     private float hoverResizeSpeed = 1.0f;
 
     [SerializeField]
+    private RectTransform pointer;
+    [SerializeField]
     private RectTransform navigation;
 
     private Vector2 defaultSize;
@@ -38,6 +40,25 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
         dragOffset = map.transform.position - Input.mousePosition;
     }
 
+    public void OnDrag(PointerEventData eventData)
+    {
+        map.transform.position = Input.mousePosition + dragOffset;
+
+        //pointer //Move pointer to right position
+
+        map.LoadTilesInView();
+    }
+    public void OnScroll(PointerEventData eventData)
+    {
+        if (eventData.scrollDelta.y > 0)
+        {
+            map.ZoomIn();
+        }
+        else if (eventData.scrollDelta.y < 0)
+        {
+            map.ZoomOut();
+        }
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         navigation.gameObject.SetActive(true);
@@ -60,24 +81,6 @@ public class MapArea : MonoBehaviour, IBeginDragHandler,IDragHandler, IScrollHan
         {
             rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
             yield return null;
-        }
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        map.transform.position = Input.mousePosition + dragOffset;
-        map.LoadTilesInView();
-    }
-
-    public void OnScroll(PointerEventData eventData)
-    {
-        if(eventData.scrollDelta.y > 0)
-        {
-            map.ZoomIn();
-        }
-        else if (eventData.scrollDelta.y < 0)
-        {
-            map.ZoomOut();
         }
     }
 }
