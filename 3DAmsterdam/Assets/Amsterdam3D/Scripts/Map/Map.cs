@@ -65,10 +65,12 @@ public class Map : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerClickHa
         if (eventData.scrollDelta.y > 0)
         {
             mapTiles.ZoomIn();
+            pointer.localScale = Vector3.one / dragTarget.localScale.x;
         }
         else if (eventData.scrollDelta.y < 0)
         {
             mapTiles.ZoomOut();
+            pointer.localScale = Vector3.one / dragTarget.localScale.x;
         }
     }
     public void OnPointerClick(PointerEventData eventData)

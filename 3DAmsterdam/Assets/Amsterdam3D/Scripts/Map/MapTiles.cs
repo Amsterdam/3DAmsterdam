@@ -142,21 +142,36 @@ public class MapTiles : MonoBehaviour
         {
             zoom++;
             gridCells *= 2;
-            this.transform.localScale = Vector3.one * (Zoom - minZoom + 1);
-            tilesDraggableContainer.Translate(-(transform.localScale.x/4), -(transform.localScale.y / 4),0);
-            LoadTilesInView();
+            ZoomTowardsLocation();
+            //LoadTilesInView();
         }
     }
+
     public void ZoomOut(bool useMousePosition = false)
     {
         if (Zoom > minZoom)
         {
             zoom--;
             gridCells /= 2;
-            this.transform.localScale = Vector3.one * (Zoom - minZoom + 1);
-            tilesDraggableContainer.Translate(transform.localScale.x * 4, transform.localScale.y * 4, 0);
-            LoadTilesInView();
+            ZoomTowardsLocation();
         }
+    }
+
+    private void ZoomTowardsLocation()
+    {
+        ScaleOverOrigin(tilesDraggableContainer.gameObject, Input.mousePosition, Vector3.one * (Zoom - minZoom + 1));
+    }
+
+    public void ScaleOverOrigin(GameObject target, Vector3 scaleOrigin, Vector3 newScale)
+    {
+        var targetPosition = target.transform.position;
+        var origin = scaleOrigin;
+        var newOrigin = targetPosition - origin; 
+        var relativeScale = newScale.x / target.transform.localScale.x; 
+        var finalPosition = origin + newOrigin * relativeScale;
+
+        target.transform.localScale = newScale;
+        target.transform.position = finalPosition;
     }
 
     private IEnumerator LoadTile(int zoom, int x, int y, LoadTile targetLoadTile)
