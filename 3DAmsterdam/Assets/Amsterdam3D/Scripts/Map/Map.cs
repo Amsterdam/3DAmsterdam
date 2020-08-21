@@ -4,178 +4,99 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
-[System.Serializable]
-public struct LoadTile{
-    public GameObject loadedGameObject;
-    public IEnumerator loadingProgress;
-}
-
-public class Map : MonoBehaviour
+public class Map : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerClickHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField]
-    private string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
-
-    private int minZoom = 6;
-    private int maxZoom = 16;
-
-    private int zoom = 6;
-
-    private int gridCells = 3;
-
-    private RectTransform tilesDraggableContainer;
-    private RectTransform viewBoundsArea;
+    private Vector3 dragOffset;
 
     [SerializeField]
-    private int tilePixelSize = 256;
+    private MapTiles mapTiles;
 
-    private Dictionary<int, GameObject> zoomLevelContainers;
-    private Dictionary<Vector2, LoadTile> currentLevelTiles;
+    private RectTransform rectTransform;
+
+    [SerializeField]
+    private float hoverResizeSpeed = 1.0f;
+
+    [SerializeField]
+    private RectTransform dragTarget;
+    [SerializeField]
+    private RectTransform pointer;
+    [SerializeField]
+    private RectTransform navigation;
+
+    private Vector2 defaultSize;
+    [SerializeField]
+    private Vector2 hoverSize;
 
     private void Start()
     {
-        zoomLevelContainers = new Dictionary<int, GameObject>();
-        currentLevelTiles = new Dictionary<Vector2, LoadTile>();
+        rectTransform = this.GetComponent<RectTransform>();
+        defaultSize = rectTransform.sizeDelta;
+        navigation.gameObject.SetActive(false);
 
-        GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
-        LoadTilesInView();
+        mapTiles.Initialize(rectTransform, dragTarget);
     }
 
-    public void LoadTilesInView()
+    void Update()
     {
-        for (int x = 0; x < gridCells; x++)
+        PositionPointer();
+    }
+
+    private void PositionPointer()
+    {
+        var posX = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.x, mapTiles.TopRightUnityCoordinates.x, Camera.main.transform.position.x);
+        var posY = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.z, mapTiles.TopRightUnityCoordinates.z, Camera.main.transform.position.z);
+
+        pointer.anchorMin = pointer.anchorMax = new Vector3(posX, posY, 0);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        dragOffset = dragTarget.position - Input.mousePosition;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        dragTarget.position = Input.mousePosition + dragOffset;
+        //map.LoadTilesInView();
+    }
+    public void OnScroll(PointerEventData eventData)
+    {
+        if (eventData.scrollDelta.y > 0)
         {
-            for (int y = 0; y < gridCells; y++)
-            {
-                var key = new Vector2(x, y);
-
-                Rect tileRect = new Rect(
-                    tilesDraggableContainer.anchoredPosition.x + (x * tilePixelSize),
-                    tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize), 
-                    tilePixelSize, tilePixelSize
-                );
-               
-
-                var alreadyLoaded = currentLevelTiles.ContainsKey(key);
-                var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
-
-                Debug.Log(tileRect + " overlap? " + viewBoundsArea.rect + " ->" + tileIsInView);
-
-
-                if (tileIsInView && !alreadyLoaded)
-                {
-                    var tileLoad = new LoadTile();
-                    var newTileObject = new GameObject();
-                    newTileObject.name = x + "/" + y;
-                    tileLoad.loadedGameObject = newTileObject;
-
-                    //If we are in view, load this tile (if wel arent already loading)
-                    IEnumerator progress = LoadTile(zoom, x, y, tileLoad);               
-                    //Add this to our dictionary
-
-                    tileLoad.loadingProgress = progress;
-                    currentLevelTiles.Add(key, tileLoad);
-
-                    StartCoroutine(progress);
-                }
-                else if(alreadyLoaded && currentLevelTiles.TryGetValue(key, out LoadTile loadedTile))
-                {
-                    StopCoroutine(loadedTile.loadingProgress);
-                    Destroy(loadedTile.loadedGameObject);
-                    currentLevelTiles.Remove(key);
-                }
-
-                //remove two levels below, and all top ones
-            }
+            mapTiles.ZoomIn();
+        }
+        else if (eventData.scrollDelta.y < 0)
+        {
+            mapTiles.ZoomOut();
         }
     }
-
-    public void SetMapAreas(RectTransform view, RectTransform drag)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        tilesDraggableContainer = drag;
-        viewBoundsArea = view;
+        Debug.Log("Clicked mimimap at:" + eventData.position);
+    }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        navigation.gameObject.SetActive(true);
+
+        StopAllCoroutines();
+        StartCoroutine(HoverResize(hoverSize));
     }
 
-    /*private void LoadGridTiles()
-    {        
-        for (int i = 0; i < gridColumns; i++)
-        {
-            for (int j = 0; j < gridColumns; j++)
-            {
-                StartCoroutine(LoadTile(zoom, i, j));
-            }
-        }
-    }*/
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        navigation.gameObject.SetActive(false);
 
-    public void ZoomIn(bool useMousePosition = false)
-    {
-        if (zoom < maxZoom)
-        {
-            zoom++;
-            gridCells *= 2;
-            this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
-            LoadTilesInView();
-        }
-    }
-    public void ZoomOut(bool useMousePosition = false)
-    {
-        if (zoom > minZoom)
-        {
-            zoom--;
-            gridCells /= 2;
-            this.transform.localScale = tilePixelSize * (Vector3.one * (zoom - minZoom + 1));
-            LoadTilesInView();
-        }
+        StopAllCoroutines();
+        StartCoroutine(HoverResize(defaultSize));
     }
 
-    public void OffsetBy(Vector3 offset)
+    IEnumerator HoverResize(Vector2 targetScale)
     {
-        this.transform.Translate(this.transform.position.x - offset.x, offset.y - Input.mousePosition.y, 0.0f);
-    }
-
-    private IEnumerator LoadTile(int zoom, int x, int y, LoadTile targetLoadTile)
-    {
-        var solvedUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(solvedUrl);
-        yield return www.SendWebRequest();
-
-        if (www.isNetworkError || www.isHttpError)
+        while (Vector2.Distance(targetScale, transform.localScale) > 0.01f)
         {
-            Debug.Log(www.error);
+            rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
+            yield return null;
         }
-        else
-        {
-            GenerateZoomLevelParent(zoom);
-            if (zoomLevelContainers.TryGetValue(zoom, out GameObject zoomLevelParent))
-            {
-                Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                LoadedTexture(x, y, zoomLevelParent, targetLoadTile.loadedGameObject, texture);
-            }
-        }
-    }
-    private void GenerateZoomLevelParent(int zoom)
-    {
-        if (!zoomLevelContainers.ContainsKey(zoom))
-        {
-            var newZoomLevelParent = new GameObject().AddComponent<RectTransform>();
-            newZoomLevelParent.name = zoom.ToString();
-            zoomLevelContainers.Add(zoom, newZoomLevelParent.gameObject);
-            newZoomLevelParent.pivot = Vector2.zero;
-            newZoomLevelParent.localScale = Vector3.one * Mathf.Pow(2,-(zoom-minZoom));
-            newZoomLevelParent.SetParent(transform,false);
-        }
-    }
-    private static void LoadedTexture(int x, int y, GameObject zoomLevelParent, GameObject newMapTile, Texture texture)
-    {
-        var gridCoordinates = new Vector3(x, y, 0.0f);
-
-        var rawImage = newMapTile.AddComponent<RawImage>();
-        rawImage.texture = texture;
-        rawImage.rectTransform.pivot = Vector2.zero;
-        rawImage.rectTransform.sizeDelta = Vector2.one;
-        newMapTile.transform.SetParent(zoomLevelParent.transform, false);
-        newMapTile.transform.localPosition = gridCoordinates;
     }
 }

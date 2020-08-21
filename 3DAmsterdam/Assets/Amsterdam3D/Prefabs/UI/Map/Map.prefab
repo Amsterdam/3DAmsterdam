@@ -49,6 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilesUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
+  startCellX: 28
+  startCellY: 32
+  zoom: 6
+  gridCells: 3
   tilePixelSize: 256
 --- !u!1 &1457532842470798073
 GameObject:
@@ -509,7 +513,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -333.75, y: -256.75003}
+  m_AnchoredPosition: {x: -400, y: -340}
   m_SizeDelta: {x: 768, y: 768}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &4373258711491771124
@@ -615,11 +619,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9356d64e9f0ff1d4f8f6da6e1966ccb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapTiles: {fileID: 6213940126322550762}
   hoverResizeSpeed: 10
   dragTarget: {fileID: 7864502592279721921}
   pointer: {fileID: 7273606764847681180}
   navigation: {fileID: 4246756423207461256}
   hoverSize: {x: 222, y: 222}
+  bottomLeftUnityCoordinates: {x: 0, y: 0, z: 0}
+  topRightUnityCoordinates: {x: 0, y: 0, z: 0}
 --- !u!114 &8150110172445628717
 MonoBehaviour:
   m_ObjectHideFlags: 0

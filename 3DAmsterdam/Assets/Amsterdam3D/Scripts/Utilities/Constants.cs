@@ -11,9 +11,9 @@ public static class Constants
     /// <summary>
     /// The minimap coordinates (starting from the bottom left)
     /// </summary>
-    public const float MINIMAP_RD_BOTTOMLEFT_X = -285401.920f;
-    public const float MINIMAP_RD_BOTTOMLEFT_Y = 22598.080f;
-    public const float MINIMAP_BASE_SPAN = 41287.68f; // 880803.84f * 0.046875
+    public const float MINIMAP_RD_BOTTOMLEFT_X = -285401.920f; // zoomlevel 0 at RD WMTS
+    public const float MINIMAP_RD_BOTTOMLEFT_Y = 22598.080f; // zoomlevel 0 at RD WMTS
+    public const float MINIMAP_RD_ZOOM_0_TILESIZE = 880803.84f; // zoomlevel 0 width/height of tiles 
 
     /// <summary>
     /// Swap data URL based on the branch type. Optionaly we can choose to use a relative path for WebGL.
