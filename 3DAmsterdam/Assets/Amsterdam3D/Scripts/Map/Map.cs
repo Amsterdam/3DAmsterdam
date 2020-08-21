@@ -47,7 +47,7 @@ public class Map : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerClickHa
         var posX = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.x, mapTiles.TopRightUnityCoordinates.x, Camera.main.transform.position.x);
         var posY = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.z, mapTiles.TopRightUnityCoordinates.z, Camera.main.transform.position.z);
 
-        pointer.anchorMin = pointer.anchorMax = new Vector3(posX, posY, 0);
+        pointer.localPosition = new Vector3(posX * 256 * 3.0f * mapTiles.transform.localScale.x, posY * 256 * 3.0f * mapTiles.transform.localScale.y, 0.0f);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

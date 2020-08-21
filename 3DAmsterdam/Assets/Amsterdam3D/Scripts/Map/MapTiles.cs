@@ -62,7 +62,6 @@ public class MapTiles : MonoBehaviour
         viewBoundsArea = view;
 
         zoomLevelContainers = new Dictionary<int, GameObject>();
-        GetComponent<RectTransform>().localScale = new Vector2(tilePixelSize, tilePixelSize);
 
         CalculateMapCoordinates();
         LoadTilesInView();        
@@ -79,6 +78,9 @@ public class MapTiles : MonoBehaviour
 
     public void LoadTilesInView()
     {
+        //Make sure we dont continue loading other zoom level stuff
+        StopAllCoroutines();
+
         // Calculate new offset for grid
         var keyTileSize = Constants.MINIMAP_RD_ZOOM_0_TILESIZE / Mathf.Pow(2, Zoom);
 
@@ -114,9 +116,9 @@ public class MapTiles : MonoBehaviour
 
                 //Posotion it in our parent according to x an y grid
                 newTileObject.transform.SetParent(zoomLevelParent, false);
-                newTileObject.transform.localPosition = new Vector3(x, y, 0);
+                newTileObject.transform.localPosition = new Vector3(x * tilePixelSize, y*tilePixelSize, 0);
                 rawImage.rectTransform.pivot = Vector2.zero;
-                rawImage.rectTransform.sizeDelta = Vector2.one;
+                rawImage.rectTransform.sizeDelta = Vector2.one * tilePixelSize;
                 rawImage.enabled = false;
 
                 //Construct for our dictionary object (to avoid double loading)
@@ -140,7 +142,8 @@ public class MapTiles : MonoBehaviour
         {
             zoom++;
             gridCells *= 2;
-            this.transform.localScale = tilePixelSize * (Vector3.one * (Zoom - minZoom + 1));
+            this.transform.localScale = Vector3.one * (Zoom - minZoom + 1);
+            tilesDraggableContainer.Translate(-(transform.localScale.x/4), -(transform.localScale.y / 4),0);
             LoadTilesInView();
         }
     }
@@ -150,7 +153,8 @@ public class MapTiles : MonoBehaviour
         {
             zoom--;
             gridCells /= 2;
-            this.transform.localScale = tilePixelSize * (Vector3.one * (Zoom - minZoom + 1));
+            this.transform.localScale = Vector3.one * (Zoom - minZoom + 1);
+            tilesDraggableContainer.Translate(transform.localScale.x * 4, transform.localScale.y * 4, 0);
             LoadTilesInView();
         }
     }

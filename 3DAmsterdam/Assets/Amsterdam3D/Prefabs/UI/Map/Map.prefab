@@ -26,7 +26,7 @@ RectTransform:
   m_GameObject: {fileID: 564829643174307332}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 256, y: 256, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7864502592279721921}
   m_RootOrder: 0
@@ -514,7 +514,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -400, y: -340}
-  m_SizeDelta: {x: 768, y: 768}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &4373258711491771124
 GameObject:
@@ -625,8 +625,6 @@ MonoBehaviour:
   pointer: {fileID: 7273606764847681180}
   navigation: {fileID: 4246756423207461256}
   hoverSize: {x: 222, y: 222}
-  bottomLeftUnityCoordinates: {x: 0, y: 0, z: 0}
-  topRightUnityCoordinates: {x: 0, y: 0, z: 0}
 --- !u!114 &8150110172445628717
 MonoBehaviour:
   m_ObjectHideFlags: 0
