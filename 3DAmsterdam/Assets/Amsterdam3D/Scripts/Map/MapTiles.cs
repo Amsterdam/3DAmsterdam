@@ -60,7 +60,6 @@ public class MapTiles : MonoBehaviour
     {
         tilesDraggableContainer = drag;
         viewBoundsArea = view;
-
         zoomLevelContainers = new Dictionary<int, GameObject>();
 
         CalculateMapCoordinates();
@@ -136,30 +135,40 @@ public class MapTiles : MonoBehaviour
         }
     }
 
-    public void ZoomIn(bool useMousePosition = false)
+    public void ZoomIn(bool useMousePosition = true)
     {
         if (Zoom < maxZoom)
         {
             zoom++;
             gridCells *= 2;
-            ZoomTowardsLocation();
+
+            ZoomTowardsLocation(useMousePosition);
             //LoadTilesInView();
         }
     }
 
-    public void ZoomOut(bool useMousePosition = false)
+    public void ZoomOut(bool useMousePosition = true)
     {
         if (Zoom > minZoom)
         {
             zoom--;
             gridCells /= 2;
-            ZoomTowardsLocation();
+            ZoomTowardsLocation(useMousePosition);
+            //LoadTilesInView();
         }
     }
 
-    private void ZoomTowardsLocation()
+    private void ZoomTowardsLocation(bool useMouse = true)
     {
-        ScaleOverOrigin(tilesDraggableContainer.gameObject, Input.mousePosition, Vector3.one * (Zoom - minZoom + 1));
+        var zoomTarget = Vector3.zero;
+        if(useMouse)
+        {
+            zoomTarget = Input.mousePosition;
+        }
+        else{
+            zoomTarget = viewBoundsArea.position + new Vector3(viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
+        }
+        ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * (Zoom - minZoom + 1));
     }
 
     public void ScaleOverOrigin(GameObject target, Vector3 scaleOrigin, Vector3 newScale)
