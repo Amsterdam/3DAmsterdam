@@ -106,20 +106,20 @@ namespace Amsterdam3D.Interface
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
-
                     Rect tileRect = new Rect(
-                       tilesDraggableContainer.anchoredPosition.x + (x * tilePixelSize),
-                       tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize),
-                       tilePixelSize, tilePixelSize
+                       tilesDraggableContainer.anchoredPosition.x + (x * (tilePixelSize / transform.localScale.x)),
+                       tilesDraggableContainer.anchoredPosition.y + (y * (tilePixelSize / transform.localScale.x)),
+                       tilePixelSize / transform.localScale.x, tilePixelSize / transform.localScale.x
                     );
-                    if (tileRect.Overlaps(viewBoundsArea.rect) && !loadedTiles.ContainsKey(key))
+                    var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
+                    if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
                         mapTile.Initialize(zoomLevelParent, viewBoundsArea, Zoom, tilePixelSize, x, y, key);
                         loadedTiles.Add(key, mapTile);
                     }
-                    else if (loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
+                    else if (!tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
                     {
                         loadedTiles.Remove(key);
                         Destroy(mapTile.gameObject);

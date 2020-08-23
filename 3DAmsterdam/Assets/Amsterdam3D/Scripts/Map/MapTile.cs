@@ -17,6 +17,8 @@ namespace Amsterdam3D.Interface
 		private RectTransform visibleMaskedArea;
 		private Vector2 tileKey;
 
+		private const float fadeSpeed = 0.5f;
+
 		public void Initialize(Transform parentTo, RectTransform maskedArea, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key)
 		{
 			tileKey = key;
@@ -52,6 +54,16 @@ namespace Amsterdam3D.Interface
 				Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
 				textureTargetRawImage.texture = texture;
 				textureTargetRawImage.enabled = true;
+				textureTargetRawImage.color = Color.clear;
+				StartCoroutine(FadeInRawImage());
+			}
+		}
+
+		IEnumerator FadeInRawImage(){
+			while(textureTargetRawImage.color.a < 1.0f)
+			{
+				textureTargetRawImage.color = new Color(textureTargetRawImage.color.r, textureTargetRawImage.color.g, textureTargetRawImage.color.b, textureTargetRawImage.color.a + fadeSpeed);
+				yield return new WaitForEndOfFrame();
 			}
 		}
 
