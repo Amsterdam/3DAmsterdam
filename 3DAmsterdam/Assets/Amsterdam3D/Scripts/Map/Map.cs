@@ -5,100 +5,120 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Map : MonoBehaviour, IBeginDragHandler,IDragHandler,IPointerClickHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
+namespace Amsterdam3D.Interface
 {
-    private Vector3 dragOffset;
-
-    [SerializeField]
-    private MapTiles mapTiles;
-
-    private RectTransform rectTransform;
-
-    [SerializeField]
-    private float hoverResizeSpeed = 1.0f;
-
-    [SerializeField]
-    private RectTransform dragTarget;
-    [SerializeField]
-    private RectTransform pointer;
-    [SerializeField]
-    private RectTransform navigation;
-
-    private Vector2 defaultSize;
-    [SerializeField]
-    private Vector2 hoverSize;
-
-    private void Start()
+    public class Map : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        rectTransform = this.GetComponent<RectTransform>();
-        defaultSize = rectTransform.sizeDelta;
-        navigation.gameObject.SetActive(false);
+        private Vector3 dragOffset;
 
-        mapTiles.Initialize(rectTransform, dragTarget);
-    }
+        [SerializeField]
+        private MapTiles mapTiles;
 
-    void Update()
-    {
-        PositionPointer();
-    }
+        private RectTransform rectTransform;
 
-    private void PositionPointer()
-    {
-        var posX = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.x, mapTiles.TopRightUnityCoordinates.x, Camera.main.transform.position.x);
-        var posY = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.z, mapTiles.TopRightUnityCoordinates.z, Camera.main.transform.position.z);
+        [SerializeField]
+        private float hoverResizeSpeed = 1.0f;
 
-        pointer.localPosition = new Vector3(posX * 256 * 3.0f * mapTiles.transform.localScale.x, posY * 256 * 3.0f * mapTiles.transform.localScale.y, 0.0f);
-    }
+        [SerializeField]
+        private RectTransform dragTarget;
+        [SerializeField]
+        private RectTransform pointer;
+        [SerializeField]
+        private RectTransform navigation;
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        dragOffset = dragTarget.position - Input.mousePosition;
-    }
+        private Vector2 defaultSize;
+        [SerializeField]
+        private Vector2 hoverSize;
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        dragTarget.position = Input.mousePosition + dragOffset;
-        //map.LoadTilesInView();
-    }
-    public void OnScroll(PointerEventData eventData)
-    {
-        if (eventData.scrollDelta.y > 0)
+        private bool dragging = false;
+        private bool pointerLeftMap = true;
+        private void Start()
         {
-            mapTiles.ZoomIn();
-            pointer.localScale = Vector3.one / dragTarget.localScale.x;
+            rectTransform = this.GetComponent<RectTransform>();
+            defaultSize = rectTransform.sizeDelta;
+            navigation.gameObject.SetActive(false);
+
+            mapTiles.Initialize(rectTransform, dragTarget);
         }
-        else if (eventData.scrollDelta.y < 0)
+
+        void Update()
         {
-            mapTiles.ZoomOut();
-            pointer.localScale = Vector3.one / dragTarget.localScale.x;
+            PositionPointer();
         }
-    }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Clicked mimimap at:" + eventData.position);
-    }
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        navigation.gameObject.SetActive(true);
 
-        StopAllCoroutines();
-        StartCoroutine(HoverResize(hoverSize));
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        navigation.gameObject.SetActive(false);
-
-        StopAllCoroutines();
-        StartCoroutine(HoverResize(defaultSize));
-    }
-
-    IEnumerator HoverResize(Vector2 targetScale)
-    {
-        while (Vector2.Distance(targetScale, transform.localScale) > 0.01f)
+        private void PositionPointer()
         {
-            rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
-            yield return null;
+            var posX = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.x, mapTiles.TopRightUnityCoordinates.x, Camera.main.transform.position.x);
+            var posY = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.z, mapTiles.TopRightUnityCoordinates.z, Camera.main.transform.position.z);
+
+            pointer.localPosition = new Vector3(posX * 256 * 3.0f * mapTiles.transform.localScale.x, posY * 256 * 3.0f * mapTiles.transform.localScale.y, 0.0f);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            dragging = true;
+            dragOffset = dragTarget.position - Input.mousePosition;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            dragTarget.position = Input.mousePosition + dragOffset;
+            //map.LoadTilesInView();
+        }
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            dragging = false;
+        }
+        public void OnScroll(PointerEventData eventData)
+        {
+            if (eventData.scrollDelta.y > 0)
+            {
+                mapTiles.ZoomIn();
+                pointer.localScale = Vector3.one / dragTarget.localScale.x;
+            }
+            else if (eventData.scrollDelta.y < 0)
+            {
+                mapTiles.ZoomOut();
+                pointer.localScale = Vector3.one / dragTarget.localScale.x;
+            }
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Debug.Log("Clicked mimimap at:" + eventData.position);
+        }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            pointerLeftMap = false;
+            navigation.gameObject.SetActive(true);
+
+            StopAllCoroutines();
+            StartCoroutine(HoverResize(hoverSize));
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!dragging)
+            {
+                StoppedMapInteraction();
+            }
+            pointerLeftMap = true;
+        }
+
+        private void StoppedMapInteraction()
+        {
+            navigation.gameObject.SetActive(false);
+
+            StopAllCoroutines();
+            StartCoroutine(HoverResize(defaultSize));
+        }
+
+        IEnumerator HoverResize(Vector2 targetScale)
+        {
+            while (Vector2.Distance(targetScale, transform.localScale) > 0.01f)
+            {
+                rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
+                yield return null;
+            }
         }
     }
 }
