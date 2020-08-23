@@ -10,14 +10,6 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-    [System.Serializable]
-    public struct LoadTile
-    {
-        public GameObject loadedGameObject;
-        public IEnumerator loadingProgress;
-        public RawImage rawImage;
-    }
-
     public class MapTiles : MonoBehaviour
     {
         private int minZoom = 6;
@@ -27,6 +19,9 @@ namespace Amsterdam3D.Interface
         private int startCellX = 28;
         [SerializeField]
         private int startCellY = 32;
+
+        [SerializeField]
+        private RectTransform pointer;
 
         private Vector2 mapBottomLeftRDCoordinates;
         private Vector2 mapTopRightRDCoordinates;
@@ -111,7 +106,6 @@ namespace Amsterdam3D.Interface
             {
                 zoom++;
                 gridCells *= 2;
-
                 ZoomTowardsLocation(useMousePosition);
                 //LoadTilesInView();
             }
@@ -140,6 +134,9 @@ namespace Amsterdam3D.Interface
                 zoomTarget = viewBoundsArea.position + new Vector3(viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
             }
             ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * (Zoom - minZoom + 1));
+
+            //Match pointer scale to resized container
+            pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
         }
 
         public void ScaleOverOrigin(GameObject target, Vector3 scaleOrigin, Vector3 newScale)
