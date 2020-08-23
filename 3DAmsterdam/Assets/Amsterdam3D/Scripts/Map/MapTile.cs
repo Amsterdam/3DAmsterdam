@@ -14,23 +14,17 @@ namespace Amsterdam3D.Interface
 		private RawImage rawImage;
 		public RawImage textureTargetRawImage { get => rawImage; private set => rawImage = value; }
 
-		public static List<MapTile> currentZoomLevelMapTiles;
-
 		private RectTransform visibleMaskedArea;
-
-		private void Awake()
-		{
-			if (currentZoomLevelMapTiles == null) currentZoomLevelMapTiles = new List<MapTile>();
-			currentZoomLevelMapTiles.Add(this);
-		}
+		private Vector2 tileKey;
 
 		public void Initialize(Transform parentTo, RectTransform maskedArea, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key)
 		{
+			tileKey = key;
+			name = tileKey.x + "/" + tileKey.y;
+
 			visibleMaskedArea = maskedArea;
 
 			transform.SetParent(parentTo, false);
-
-			name = key.x + "/" + key.y;
 
 			//generate a new rawimage
 			textureTargetRawImage = this.gameObject.AddComponent<RawImage>();
@@ -43,21 +37,10 @@ namespace Amsterdam3D.Interface
 			StartCoroutine(LoadTexture(zoomLevel, (int)key.x, (int)key.y));
 		}
 
-		private void Update()
-		{
-			if (!textureTargetRawImage.rectTransform.rect.Overlaps(visibleMaskedArea.rect))
-			{
-				textureTargetRawImage.color = Color.red;
-			}
-			else{
-				textureTargetRawImage.color = Color.white;
-			}
-		}
-
 		private IEnumerator LoadTexture(int zoom, int x, int y)
 		{
-			var solvedUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
-			UnityWebRequest www = UnityWebRequestTexture.GetTexture(solvedUrl);
+			var tileImageUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
+			UnityWebRequest www = UnityWebRequestTexture.GetTexture(tileImageUrl);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -75,8 +58,9 @@ namespace Amsterdam3D.Interface
 		private void OnDestroy()
 		{
 			StopAllCoroutines();
+
 			//Cleanup texture from memory
-			if(textureTargetRawImage.texture)
+			if (textureTargetRawImage.texture)
 				Destroy(textureTargetRawImage.texture);
 			Destroy(textureTargetRawImage);
 		}
