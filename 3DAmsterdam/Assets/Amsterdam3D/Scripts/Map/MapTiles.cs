@@ -55,12 +55,15 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private int tilePixelSize = 256;
 
+        [SerializeField]
+        private int maxTilesToLoad = 6;
+
         private Dictionary<int, GameObject> zoomLevelContainers;
-        private Dictionary<Vector2, MapTile> currentZoomLevelMapTiles;
+        private Dictionary<Vector2, MapTile> loadedTiles;
 
         public void Initialize(RectTransform view, RectTransform drag)
         {
-            currentZoomLevelMapTiles = new Dictionary<Vector2, MapTile>();
+            loadedTiles = new Dictionary<Vector2, MapTile>();
 
             tilesDraggableContainer = drag;
             viewBoundsArea = view;
@@ -109,16 +112,16 @@ namespace Amsterdam3D.Interface
                        tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize),
                        tilePixelSize, tilePixelSize
                     );
-                    if (tileRect.Overlaps(viewBoundsArea.rect) && !currentZoomLevelMapTiles.ContainsKey(key))
+                    if (tileRect.Overlaps(viewBoundsArea.rect) && !loadedTiles.ContainsKey(key))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
                         mapTile.Initialize(zoomLevelParent, viewBoundsArea, Zoom, tilePixelSize, x, y, key);
-                        currentZoomLevelMapTiles.Add(key, mapTile);
+                        loadedTiles.Add(key, mapTile);
                     }
-                    else if (currentZoomLevelMapTiles.ContainsKey(key) && currentZoomLevelMapTiles.TryGetValue(key, out MapTile mapTile))
+                    else if (loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
                     {
-                        currentZoomLevelMapTiles.Remove(key);
+                        loadedTiles.Remove(key);
                         Destroy(mapTile.gameObject);
                     }
                 }
