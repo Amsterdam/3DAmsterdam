@@ -27,6 +27,9 @@ namespace Amsterdam3D.Interface
         private Vector2 mapTopRightRDCoordinates;
 
         [SerializeField]
+        private Image testImage;
+
+        [SerializeField]
         private int zoom = 6;
         [SerializeField]
         private int gridCells = 3;
@@ -107,10 +110,13 @@ namespace Amsterdam3D.Interface
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
                     Rect tileRect = new Rect(
-                       tilesDraggableContainer.anchoredPosition.x + (x * (tilePixelSize / transform.localScale.x)),
-                       tilesDraggableContainer.anchoredPosition.y + (y * (tilePixelSize / transform.localScale.x)),
-                       tilePixelSize / transform.localScale.x, tilePixelSize / transform.localScale.x
-                    );
+                       (tilesDraggableContainer.anchoredPosition.x + (x * tilePixelSize)) / tilesDraggableContainer.transform.localScale.x,
+                       (tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize)) / tilesDraggableContainer.transform.localScale.x,
+                       tilePixelSize / tilesDraggableContainer.transform.localScale.x, tilePixelSize / tilesDraggableContainer.transform.localScale.x
+                    ); 
+                    testImage.rectTransform.anchoredPosition = tileRect.position;
+                    testImage.rectTransform.sizeDelta = tileRect.size;  
+
                     var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
                     if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
                     {
@@ -119,7 +125,7 @@ namespace Amsterdam3D.Interface
                         mapTile.Initialize(zoomLevelParent, viewBoundsArea, Zoom, tilePixelSize, x, y, key);
                         loadedTiles.Add(key, mapTile);
                     }
-                    else if (!tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
+                    else if (zoom != minZoom && !tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
                     {
                         loadedTiles.Remove(key);
                         Destroy(mapTile.gameObject);
@@ -163,7 +169,8 @@ namespace Amsterdam3D.Interface
             {
                 zoomTarget = viewBoundsArea.position + new Vector3(viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
             }
-            ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * (Zoom - minZoom + 1));
+            var zoomFactor = (Zoom - minZoom + 1);
+            ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * zoomFactor * zoomFactor);
 
             //Match pointer scale to resized container
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
