@@ -37,7 +37,7 @@ namespace Amsterdam3D.CameraMotion
         private float mouseVertical;
         private float dragSpeed;
 
-        public bool canMove = true;
+        private bool modifier = false;
         private bool canUseFunction = true;
         private bool hitCollider = false;
 
@@ -84,18 +84,16 @@ namespace Amsterdam3D.CameraMotion
 				canUseFunction = true;
 			}
 
-			// als spatie wordt ingedrukt wordt de huidige actie gestopt
-			if (!(Input.GetKey(KeyCode.Space)))
-			{
-				StandardMovement();
-				Rotation();
+            modifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-				if (canUseFunction)
-				{
-					Zooming();
-					Dragging();
-					FocusPoint();
-				}
+            HandleTranslationInput();
+			HandleRotationInput();
+
+			if (canUseFunction)
+			{
+				Zooming();
+				Dragging();
+				FocusPoint();
 			}
 		}
 
@@ -130,22 +128,22 @@ namespace Amsterdam3D.CameraMotion
             this.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
         }
 
-        void StandardMovement()
+        void HandleTranslationInput()
         {         
             moveSpeed = Mathf.Sqrt(camera.transform.position.y) * speedFactor;
 
-            if (canMove)
+            if (!modifier)
             {
                 // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
                 moveDirection = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
 
                 // vooruit/achteruit bewegen (gebaseerd op rotatie van camera)
-                if (Input.GetKey(KeyCode.UpArrow)) camera.transform.position += MoveForward();
-                if (Input.GetKey(KeyCode.DownArrow)) camera.transform.position -= MoveBackward();
+                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) camera.transform.position += MoveForward();
+                if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) camera.transform.position -= MoveBackward();
 
                 // zijwaarts bewegen (gebaseerd op rotatie van camera)
-                if (Input.GetKey(KeyCode.LeftArrow)) camera.transform.position -= MoveLeft();
-                if (Input.GetKey(KeyCode.RightArrow)) camera.transform.position += MoveRight();
+                if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) camera.transform.position -= MoveLeft();
+                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) camera.transform.position += MoveRight();
             }
         }
         private Vector3 MoveRight()
@@ -165,47 +163,17 @@ namespace Amsterdam3D.CameraMotion
             return moveDirection * moveSpeed;
         }
 
-        private void Rotation()
+        private void HandleRotationInput()
         {
-            // rotatie met control knop
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-            {
-                currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
-                canMove = false;
+            currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
 
-                // roteren naar links/rechts met control knop
-                if (Input.GetKey(KeyCode.LeftArrow)) camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
-                if (Input.GetKey(KeyCode.RightArrow)) camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
+            if ((modifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q)) camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
+            if ((modifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)) camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
 
-                // de camera kan niet verder geroteerd worden dan de min en max angle
-                camera.transform.rotation = Quaternion.Euler(new Vector3(ClampAngle(camera.transform.eulerAngles.x, minAngle, maxAngle),
-                                                                                 camera.transform.eulerAngles.y, camera.transform.eulerAngles.z));
+            if ((modifier && Input.GetKey(KeyCode.UpArrow)) || Input.GetKey(KeyCode.R)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, -rotationSpeed);
+            if ((modifier && Input.GetKey(KeyCode.DownArrow)) || Input.GetKey(KeyCode.F)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
 
-                // roteren omhoog/omlaag
-                if (Input.GetKey(KeyCode.UpArrow)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, -rotationSpeed);
-                if (Input.GetKey(KeyCode.DownArrow)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
-            }
-
-            // rotatie met shift knop
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-            {
-                currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
-
-                canMove = false;
-
-                // roteren naar links/recht met shift knop.
-                if (Input.GetKey(KeyCode.LeftArrow)) camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
-                if (Input.GetKey(KeyCode.RightArrow)) camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
-            }
-
-            // bewegingsfunctionaliteit wordt weer actief als control/shift losgelaten wordt.
-            if (Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.RightControl) ||
-                Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
-            {
-                canMove = true;
-            }
-
-            // camera roteren doormiddel van rechter muisknop
+            //Middle mouse rotation
             if (Input.GetMouseButton(1))
             {
                 mouseHorizontal = Input.GetAxis("Mouse X");
@@ -224,6 +192,15 @@ namespace Amsterdam3D.CameraMotion
                 //// de rotatie van de camera wordt aangepast
                 camera.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
             }
+
+            ClampRotation();
+        }
+
+        private void ClampRotation()
+        {
+            camera.transform.rotation = Quaternion.Euler(new Vector3(
+                ClampAngle(camera.transform.eulerAngles.x, minAngle, maxAngle),
+                camera.transform.eulerAngles.y, camera.transform.eulerAngles.z));
         }
 
         /// <summary>
