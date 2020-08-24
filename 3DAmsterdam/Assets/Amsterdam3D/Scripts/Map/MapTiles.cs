@@ -14,7 +14,7 @@ namespace Amsterdam3D.Interface
     public class MapTiles : MonoBehaviour
     {
         private int minZoom = 6;
-        private int maxZoom = 16;
+        private int maxZoom = 12;
 
         [SerializeField]
         private int startCellX = 28;
