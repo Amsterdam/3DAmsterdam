@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Amsterdam3D.Interface
 {
-    public class Map : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
+    public class Map : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
     {
         private Vector3 dragOffset;
 
@@ -22,8 +22,6 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private RectTransform dragTarget;
         [SerializeField]
-        private RectTransform pointer;
-        [SerializeField]
         private RectTransform navigation;
 
         private Vector2 defaultSize;
@@ -32,26 +30,14 @@ namespace Amsterdam3D.Interface
 
         private bool dragging = false;
         private bool pointerLeftMap = true;
-        private void Start()
+
+        private void Awake()
         {
             rectTransform = this.GetComponent<RectTransform>();
             defaultSize = rectTransform.sizeDelta;
             navigation.gameObject.SetActive(false);
 
             mapTiles.Initialize(rectTransform, dragTarget);
-        }
-
-        void Update()
-        {
-            PositionPointer();
-        }
-
-        private void PositionPointer()
-        {
-            var posX = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.x, mapTiles.TopRightUnityCoordinates.x, Camera.main.transform.position.x);
-            var posY = Mathf.InverseLerp(mapTiles.BottomLeftUnityCoordinates.z, mapTiles.TopRightUnityCoordinates.z, Camera.main.transform.position.z);
-
-            pointer.localPosition = new Vector3(posX * 256 * 3.0f * mapTiles.transform.localScale.x, posY * 256 * 3.0f * mapTiles.transform.localScale.y, 0.0f);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -79,10 +65,6 @@ namespace Amsterdam3D.Interface
             {
                 mapTiles.ZoomOut();
             }
-        }
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            Debug.Log("Clicked mimimap at:" + eventData.position);
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
