@@ -48,9 +48,10 @@ namespace Amsterdam3D.Interface
 
         public void OnDrag(PointerEventData eventData)
         {
-            dragTarget.position = Input.mousePosition + dragOffset;
+            mapTiles.ClampInViewBounds(Input.mousePosition + dragOffset);
             mapTiles.LoadTilesInView();
         }
+
         public void OnEndDrag(PointerEventData eventData)
         {
             dragging = false;

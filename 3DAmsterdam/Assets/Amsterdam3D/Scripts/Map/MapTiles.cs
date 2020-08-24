@@ -46,6 +46,7 @@ namespace Amsterdam3D.Interface
         public int StartCellX { get => startCellX; }
         public int StartCellY { get => startCellY; }
         public int TilePixelSize { get => tilePixelSize;  }
+        public int MapPixelWidth { get => mapPixelWidth; }
 
         private float keyTileSize;
         private float distanceX;
@@ -101,6 +102,15 @@ namespace Amsterdam3D.Interface
             var posY = Mathf.InverseLerp(mapBottomLeftRDCoordinates.y, mapTopRightRDCoordinates.y, (float)cameraRDPosition.y);
 
             pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, posY * mapPixelWidth * transform.localScale.y, 0.0f);
+        }
+
+        public void ClampInViewBounds(Vector3 targetPosition)
+        {
+            tilesDraggableContainer.position = new Vector3()
+            {
+                x = Mathf.Clamp(targetPosition.x, viewBoundsArea.position.x - (MapPixelWidth * tilesDraggableContainer.localScale.x), viewBoundsArea.position.x - TilePixelSize),
+                y = Mathf.Clamp(targetPosition.y, viewBoundsArea.position.y - (MapPixelWidth * tilesDraggableContainer.localScale.y) + TilePixelSize, viewBoundsArea.position.y)
+            };
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -210,17 +220,20 @@ namespace Amsterdam3D.Interface
         private void ZoomTowardsLocation(bool useMouse = true)
         {
             var zoomTarget = Vector3.zero;
+            var zoomFactor = Mathf.Pow(2.0f, (Zoom - minZoom));
+
             if (useMouse)
             {
                 zoomTarget = Input.mousePosition;
             }
             else
             {
-                zoomTarget = viewBoundsArea.position + new Vector3(viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
+                zoomTarget = viewBoundsArea.position + new Vector3(-viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
             }
 
-            var zoomFactor = Mathf.Pow(2.0f,(Zoom - minZoom));
             ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * zoomFactor);
+
+            ClampInViewBounds(tilesDraggableContainer.transform.position);
 
             //Match pointer scale to resized container
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
