@@ -10,8 +10,6 @@
   </head>
 
   <body>
-	<div id="mapdiv" style="opacity: 0;"></div>
-	<div id="queryresults" style="display:none;"></div>
 	<div id="objUploadClickRegisterArea" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange='ReadOBJ(this)' multiple>
 	</div>
@@ -31,7 +29,6 @@
       return;
     }
     const loader = document.querySelector("#loader");
-	const mapdiv = document.querySelector("#mapdiv");
     if (!unityInstance.progress) {
       const progress = document.querySelector("#loader .progress");
       progress.style.display = "block";
@@ -42,7 +39,6 @@
     if (progress === 1 && !unityInstance.removeTimeout) {
       unityInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
-		  mapdiv.style.opacity = "1.0";
       }, 2000);
     }
   }
@@ -105,27 +101,6 @@
         return true;
     }   
   
-	</script>
-  
-	<script src="https://map.data.amsterdam.nl/dist/polyfill.min.js"></script>
-	<script src="https://map.data.amsterdam.nl/appendPolyfill.js"></script>
-	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-	<script src="https://map.data.amsterdam.nl/dist/pointquery.iife.js"></script>
-	<script>
-	  //Leaflet minimap related scripts
-	  function writeQueryResults(d) {
-		unityInstance.SendMessage('MainCamera','ChangedPointFromMinimap',d.query.latitude +","+d.query.longitude);
-		console.log('Latitude: '+ d.query.latitude + ', Longitude: ' + d.query.longitude);
-	  }
-	  
-	  let map = pointquery.createMap({
-		target: 'mapdiv',
-		layer: 'standaard',
-		marker: true,
-		search: true,
-		zoom: 14,
-		onQueryResult: writeQueryResults
-	  });
 	</script>
 </html>
 
