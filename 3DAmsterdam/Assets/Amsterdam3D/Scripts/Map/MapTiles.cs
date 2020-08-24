@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-    public class MapTiles : MonoBehaviour
+    public class MapTiles : MonoBehaviour, IPointerClickHandler
     {
         private int minZoom = 6;
         private int maxZoom = 12;
@@ -32,6 +32,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private int gridCells = 3;
 
+        private int baseGridCells = 3;
+
         public Vector2 MapBottomLeftRDCoordinates { get => mapBottomLeftRDCoordinates; }
         public Vector2 MapTopRightRDCoordinates { get => mapTopRightRDCoordinates; }
 
@@ -43,6 +45,7 @@ namespace Amsterdam3D.Interface
         public int GridCells { get => gridCells; }
         public int StartCellX { get => startCellX; }
         public int StartCellY { get => startCellY; }
+        public int TilePixelSize { get => tilePixelSize;  }
 
         private float keyTileSize;
         private float distanceX;
@@ -50,12 +53,14 @@ namespace Amsterdam3D.Interface
         private float tileOffsetX;
         private float tileOffsetY;
 
+        private Rect tileArea;
+
         private RectTransform tilesDraggableContainer;
         private RectTransform viewBoundsArea;
         private RectTransform zoomLevelParent;
 
-        [SerializeField]
-        private int tilePixelSize = 256;
+        private int tilePixelSize = 256; //Width/height pixels
+        private int mapPixelWidth;
 
         [SerializeField]
         private int maxTilesToLoad = 6;
@@ -65,16 +70,46 @@ namespace Amsterdam3D.Interface
 
         public void Initialize(RectTransform view, RectTransform drag)
         {
-            loadedTiles = new Dictionary<Vector2, MapTile>();
-
             tilesDraggableContainer = drag;
             viewBoundsArea = view;
+
+            mapPixelWidth = TilePixelSize * baseGridCells;
+
+            loadedTiles = new Dictionary<Vector2, MapTile>();
+            tileArea = new Rect();
+
             zoomLevelContainers = new Dictionary<int, GameObject>();
             zoomLevelParent = GetZoomLevelParent(Zoom);
 
             CalculateMapCoordinates();
             LoadTilesInView();
+
+            pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
         }
+
+        void Update()
+        {
+            PositionPointer();
+        }
+
+        private void PositionPointer()
+        {
+            var posX = Mathf.InverseLerp(BottomLeftUnityCoordinates.x, TopRightUnityCoordinates.x, Camera.main.transform.position.x);
+            var posY = Mathf.InverseLerp(BottomLeftUnityCoordinates.z, TopRightUnityCoordinates.z, Camera.main.transform.position.z);
+
+            pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, posY * mapPixelWidth * transform.localScale.y, 0.0f);
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Vector3 localPosition = transform.InverseTransformPoint(eventData.position);     
+
+            Camera.main.transform.position = new Vector3(
+                Mathf.Lerp(BottomLeftUnityCoordinates.x, TopRightUnityCoordinates.x, localPosition.x / mapPixelWidth),
+                Camera.main.transform.position.y,
+                Mathf.Lerp(BottomLeftUnityCoordinates.z, TopRightUnityCoordinates.z, localPosition.y / mapPixelWidth)
+            );
+        }
+
         private void CalculateMapCoordinates()
         {
             var gridCellTileSize = Constants.MINIMAP_RD_ZOOM_0_TILESIZE / Mathf.Pow(2, Zoom);
@@ -98,23 +133,20 @@ namespace Amsterdam3D.Interface
 
         public void LoadTilesInView()
         {
-            // Calculate new offset for grid
-            Debug.Log($"zoom:{Zoom}, keyTileSize: {keyTileSize}, distanceX: {distanceX}, distanceY: {distanceY}, tileOffsetX: {tileOffsetX}, , tileOffsetY: {tileOffsetY}");
-
             for (int x = 0; x < GridCells; x++)
             {
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
                     var tileSize = tilePixelSize * zoomLevelParent.transform.localScale.x;
-                   
+
                     //TODO: Refactor to something faster for checking overlap of quads
-                    Rect tileRect = new Rect(
-                       tilesDraggableContainer.anchoredPosition.x + ((x * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize/2.0f),
-                       tilesDraggableContainer.anchoredPosition.y + ((y * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize/2.0f),
-                       tileSize * tilesDraggableContainer.localScale.x*2.0f, tileSize * tilesDraggableContainer.localScale.x * 2.0f
-                    );
-                    var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
+                    tileArea.position = new Vector2(
+                        tilesDraggableContainer.anchoredPosition.x + ((x * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize / 2.0f),
+                        tilesDraggableContainer.anchoredPosition.y + ((y * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize / 2.0f));
+                    tileArea.size = new Vector2(tileSize * tilesDraggableContainer.localScale.x * 2.0f, tileSize * tilesDraggableContainer.localScale.x * 2.0f);
+
+                    var tileIsInView = tileArea.Overlaps(viewBoundsArea.rect);
 
                     if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
                     {
@@ -140,7 +172,6 @@ namespace Amsterdam3D.Interface
             var itemsToRemove = zoomLevelContainers.Where(f => (f.Key < zoom - 1 || f.Key > zoom) && f.Key != minZoom).ToArray();
             foreach (var zoomLevelContainer in itemsToRemove)
             {
-                print("DESTROYING");
                 Destroy(zoomLevelContainer.Value);
                 zoomLevelContainers.Remove(zoomLevelContainer.Key);   
             }
