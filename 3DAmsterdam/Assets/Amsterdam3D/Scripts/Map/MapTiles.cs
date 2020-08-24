@@ -95,20 +95,26 @@ namespace Amsterdam3D.Interface
 
         private void PositionPointer()
         {
-            var posX = Mathf.InverseLerp(BottomLeftUnityCoordinates.x, TopRightUnityCoordinates.x, Camera.main.transform.position.x);
-            var posY = Mathf.InverseLerp(BottomLeftUnityCoordinates.z, TopRightUnityCoordinates.z, Camera.main.transform.position.z);
+            var cameraRDPosition = CoordConvert.UnitytoRD(Camera.main.transform.position);
+
+            var posX = Mathf.InverseLerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, (float)cameraRDPosition.x);
+            var posY = Mathf.InverseLerp(mapBottomLeftRDCoordinates.y, mapTopRightRDCoordinates.y, (float)cameraRDPosition.y);
 
             pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, posY * mapPixelWidth * transform.localScale.y, 0.0f);
         }
+
         public void OnPointerClick(PointerEventData eventData)
         {
-            Vector3 localPosition = transform.InverseTransformPoint(eventData.position);     
+            Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
 
-            Camera.main.transform.position = new Vector3(
-                Mathf.Lerp(BottomLeftUnityCoordinates.x, TopRightUnityCoordinates.x, localPosition.x / mapPixelWidth),
-                Camera.main.transform.position.y,
-                Mathf.Lerp(BottomLeftUnityCoordinates.z, TopRightUnityCoordinates.z, localPosition.y / mapPixelWidth)
-            );
+            var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
+            {
+                x = Mathf.Lerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, localClickPosition.x / mapPixelWidth),
+                y = Mathf.Lerp(MapBottomLeftRDCoordinates.y, MapTopRightRDCoordinates.y, localClickPosition.y / mapPixelWidth),
+                z = 0.0
+            });
+            RDcoordinate.y = Camera.main.transform.position.y;
+            Camera.main.transform.position = RDcoordinate;
         }
 
         private void CalculateMapCoordinates()
