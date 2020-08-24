@@ -60,6 +60,7 @@ namespace Amsterdam3D.Interface
         private RectTransform zoomLevelParent;
 
         private int tilePixelSize = 256; //Width/height pixels
+        private float currentRelativeTileSize;
         private int mapPixelWidth;
 
         [SerializeField]
@@ -138,15 +139,7 @@ namespace Amsterdam3D.Interface
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
-                    var tileSize = tilePixelSize * zoomLevelParent.transform.localScale.x;
-
-                    //TODO: Refactor to something faster for checking overlap of quads
-                    tileArea.position = new Vector2(
-                        tilesDraggableContainer.anchoredPosition.x + ((x * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize / 2.0f),
-                        tilesDraggableContainer.anchoredPosition.y + ((y * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize / 2.0f));
-                    tileArea.size = new Vector2(tileSize * tilesDraggableContainer.localScale.x * 2.0f, tileSize * tilesDraggableContainer.localScale.x * 2.0f);
-
-                    var tileIsInView = tileArea.Overlaps(viewBoundsArea.rect);
+                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < 500.0f && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
 
                     if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
                     {
@@ -249,10 +242,12 @@ namespace Amsterdam3D.Interface
                 newZoomLevelParent.pivot = Vector2.zero;
                 newZoomLevelParent.localScale = Vector3.one * Mathf.Pow(2, -(zoom - minZoom));
                 newZoomLevelParent.SetParent(transform, false);
+                currentRelativeTileSize = tilePixelSize * newZoomLevelParent.transform.localScale.x * tilesDraggableContainer.localScale.x;
                 return newZoomLevelParent;
             }
             else if (zoomLevelContainers.TryGetValue(zoom, out GameObject existingZoomLevelParent))
             {
+                currentRelativeTileSize = tilePixelSize * existingZoomLevelParent.transform.localScale.x * tilesDraggableContainer.localScale.x;
                 return existingZoomLevelParent.GetComponent<RectTransform>();
             }
             return null;
