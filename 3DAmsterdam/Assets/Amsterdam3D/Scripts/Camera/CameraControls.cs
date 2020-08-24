@@ -16,53 +16,54 @@ namespace Amsterdam3D.CameraMotion
 
         public float zoomSpeed = 0.5f;
         private const float maxZoomOut = 2500f;
-        private const float maxZoomIn = 47f;
+
         private const float rotationSpeed = 1f;
-        private const float maxRotate = 50f;
+
         private const float minAngle = -10f;
         private const float maxAngle = 89f;
         private const float speedFactor = 0.5f;
         public float dragFactor = 2f;
         private const float rotationSensitivity = 5f;
-        private const float maxYAngle = 80f;
+
         private const float floorOffset = 1.8f;
 
         [SerializeField]
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
 
         private float scrollDelta;
-        private float zoomDistance;
+  
         private float moveSpeed;
         private float mouseHorizontal;
         private float mouseVertical;
-        private float dragSpeed;
 
-        private bool modifier = false;
+
+        private bool translationModifier = false;
+        private bool firstPersonModifier = false;
+
         private bool canUseFunction = true;
-        private bool hitCollider = false;
 
         public bool LockFunctions = false;
 
 		private bool interactionOverruled = false;
 
-        private Quaternion startRotation = Quaternion.Euler(45f, 0, 0);
         private Vector3 zoomPoint;
         private Vector3 zoomDirection;
-        private Vector3 zoom;
-        private Vector3 direction;
+
         private Vector3 dragOrigin;
         private Vector3 moveDirection;
         private Vector3 rotatePoint;
-        private Vector3 camOffSet;
 
         private Vector2 currentRotation;
 
         public delegate void FocusPointChanged(Vector3 pointerPosition);
         public static FocusPointChanged focusPointChanged;
 
+        private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
+
         void Awake()
         {
             camera = GetComponent<Camera>();
+
         }
 
         void Start()
@@ -84,17 +85,21 @@ namespace Amsterdam3D.CameraMotion
 				canUseFunction = true;
 			}
 
-            modifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
-            HandleTranslationInput();
-			HandleRotationInput();
+            if (!Input.GetKey(KeyCode.Space))
+            {
+                HandleTranslationInput();
+                HandleRotationInput();
 
-			if (canUseFunction)
-			{
-				Zooming();
-				Dragging();
-				FocusPoint();
-			}
+                if (canUseFunction)
+                {
+                    Zooming();
+                    Dragging();
+                    FocusPoint();
+                }
+            }
 		}
 
 		private bool InteractionOverruled()
@@ -132,7 +137,7 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(camera.transform.position.y) * speedFactor;
 
-            if (!modifier)
+            if (!translationModifier)
             {
                 // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
                 moveDirection = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
@@ -167,14 +172,14 @@ namespace Amsterdam3D.CameraMotion
         {
             currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
 
-            if ((modifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q)) camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
-            if ((modifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)) camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
+            if ((translationModifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q)) camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
+            if ((translationModifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)) camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
 
-            if ((modifier && Input.GetKey(KeyCode.UpArrow)) || Input.GetKey(KeyCode.R)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, -rotationSpeed);
-            if ((modifier && Input.GetKey(KeyCode.DownArrow)) || Input.GetKey(KeyCode.F)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
+            if ((translationModifier && Input.GetKey(KeyCode.UpArrow)) || Input.GetKey(KeyCode.R)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, -rotationSpeed);
+            if ((translationModifier && Input.GetKey(KeyCode.DownArrow)) || Input.GetKey(KeyCode.F)) camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
 
             //Middle mouse rotation
-            if (Input.GetMouseButton(1))
+            if (firstPersonModifier && Input.GetMouseButton(0))
             {
                 mouseHorizontal = Input.GetAxis("Mouse X");
                 mouseVertical = Input.GetAxis("Mouse Y");
@@ -252,30 +257,29 @@ namespace Amsterdam3D.CameraMotion
             camera.transform.Translate(zoomDirection * zoomSpeed * scrollDelta * heightSpeed,Space.World);
         }
 
+        private float dist;
+        private Vector3 startMouseDrag;
+
         private void Dragging()
         {
-            dragSpeed = Mathf.Sqrt(camera.transform.position.y) * dragFactor * Time.deltaTime;
-
-            if (!(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+            if (!translationModifier && !firstPersonModifier)
             {
-                // het punt vanaf waar gesleept wordt, wordt opgeslagen als de muis ingedrukt wordt
-                if (Input.GetMouseButtonDown(0)) dragOrigin = Input.mousePosition;
-
-                // als de muis niet ingedrukt wordt, wordt de methode verlaten
-                if (!Input.GetMouseButton(0)) return;
-
-                // de positie waar de muis heen beweegt wordt bijgehouden
-                Vector2 updatedPos = camera.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
-
-                // de bewegingsfactor voor de camera wordt berekent
-                Vector3 camMove = new Vector3(updatedPos.x * dragSpeed, 0, updatedPos.y * dragSpeed);
-
-                // de bewegingsfactor verandert gebaseerd op hoeveel de camera gedraaid is
-                camMove = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * camMove;
-
-                // de bewegingfactor wordt van de positie afgetrokken zodat de camera de andere kant op beweegt
-                camera.transform.position -= camMove;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    startMouseDrag = GetMousePositionInWorld();
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    transform.position -= (GetMousePositionInWorld() - startMouseDrag);
+                }
             }
+        }
+
+        private Vector3 GetMousePositionInWorld()
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);            
+            worldPlane.Raycast(ray, out float distance);
+            return ray.GetPoint(distance);
         }
 
         private void FocusPoint()
