@@ -86,28 +86,6 @@
 		width: 100%;
 		opacity: 0;
 	  } 
-	  #mapdiv{
-		position: fixed !important;
-		height:104px;
-		width:222px;
-		z-index: 1;
-		right: 30px;
-		bottom: 30px;
-		border: 1px solid #adaead;
-		transition: all .2s ease-in-out;
-	 }
-	 #mapdiv:hover{
-		height:222px;
-	 }
-	 .leaflet-control-container{
-		display: none;
-	 }
-	 #mapdiv:hover .leaflet-control-container{
-		display: block;
-	 }
-	 .embed-search{
-		display:none;
-	 }
 	 
       @keyframes spinner-spin {
         0% {
