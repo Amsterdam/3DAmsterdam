@@ -102,23 +102,21 @@ namespace Amsterdam3D.Interface
             // Calculate new offset for grid
             Debug.Log($"zoom:{Zoom}, keyTileSize: {keyTileSize}, distanceX: {distanceX}, distanceY: {distanceY}, tileOffsetX: {tileOffsetX}, , tileOffsetY: {tileOffsetY}");
 
-            //Make sure we have a parent for our tiles
-            var zoomLevelParent = GetZoomLevelParent(Zoom);
-
             for (int x = 0; x < GridCells; x++)
             {
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
+                    var tileSize = tilePixelSize * zoomLevelParent.transform.localScale.x;
+                   
+                    //TODO: Refactor to something faster for checking overlap of quads
                     Rect tileRect = new Rect(
-                       (tilesDraggableContainer.anchoredPosition.x + (x * tilePixelSize)) / tilesDraggableContainer.transform.localScale.x,
-                       (tilesDraggableContainer.anchoredPosition.y + (y * tilePixelSize)) / tilesDraggableContainer.transform.localScale.x,
-                       tilePixelSize / tilesDraggableContainer.transform.localScale.x, tilePixelSize / tilesDraggableContainer.transform.localScale.x
-                    ); 
-                    testImage.rectTransform.anchoredPosition = tileRect.position;
-                    testImage.rectTransform.sizeDelta = tileRect.size;  
-
+                       tilesDraggableContainer.anchoredPosition.x + ((x * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize/2.0f),
+                       tilesDraggableContainer.anchoredPosition.y + ((y * tileSize * tilesDraggableContainer.localScale.x)) + (tileSize/2.0f),
+                       tileSize * tilesDraggableContainer.localScale.x*2.0f, tileSize * tilesDraggableContainer.localScale.x * 2.0f
+                    );
                     var tileIsInView = tileRect.Overlaps(viewBoundsArea.rect);
+
                     if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
                     {
                         var newTileObject = new GameObject();
