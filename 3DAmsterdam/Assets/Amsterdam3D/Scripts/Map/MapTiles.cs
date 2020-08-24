@@ -28,9 +28,6 @@ namespace Amsterdam3D.Interface
         private Vector2 mapTopRightRDCoordinates;
 
         [SerializeField]
-        private Image testImage;
-
-        [SerializeField]
         private int zoom = 6;
         [SerializeField]
         private int gridCells = 3;
@@ -55,6 +52,7 @@ namespace Amsterdam3D.Interface
 
         private RectTransform tilesDraggableContainer;
         private RectTransform viewBoundsArea;
+        private RectTransform zoomLevelParent;
 
         [SerializeField]
         private int tilePixelSize = 256;
@@ -72,6 +70,7 @@ namespace Amsterdam3D.Interface
             tilesDraggableContainer = drag;
             viewBoundsArea = view;
             zoomLevelContainers = new Dictionary<int, GameObject>();
+            zoomLevelParent = GetZoomLevelParent(Zoom);
 
             CalculateMapCoordinates();
             LoadTilesInView();
@@ -158,6 +157,8 @@ namespace Amsterdam3D.Interface
                 gridCells *= 2;
                 ZoomTowardsLocation(useMousePosition);
                 CalculateGridOffset();
+                zoomLevelParent = GetZoomLevelParent(Zoom);
+                ClearZoomLevelContainers();
                 LoadTilesInView();
             }
         }
@@ -170,6 +171,8 @@ namespace Amsterdam3D.Interface
                 gridCells /= 2;
                 ZoomTowardsLocation(useMousePosition);
                 CalculateGridOffset();
+                zoomLevelParent = GetZoomLevelParent(Zoom);
+                ClearZoomLevelContainers();
                 LoadTilesInView();
             }
         }
@@ -185,8 +188,9 @@ namespace Amsterdam3D.Interface
             {
                 zoomTarget = viewBoundsArea.position + new Vector3(viewBoundsArea.sizeDelta.x * 0.5f, viewBoundsArea.sizeDelta.y * 0.5f);
             }
-            var zoomFactor = (Zoom - minZoom + 1);
-            ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * zoomFactor * zoomFactor);
+
+            var zoomFactor = Mathf.Pow(2.0f,(Zoom - minZoom));
+            ScaleOverOrigin(tilesDraggableContainer.gameObject, zoomTarget, Vector3.one * zoomFactor);
 
             //Match pointer scale to resized container
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
