@@ -13,6 +13,8 @@ namespace Amsterdam3D.Interface
 {
     public class MapTiles : MonoBehaviour, IPointerClickHandler
     {
+        private bool loadedBottomLayer = false;
+
         private int minZoom = 6;
         private int maxZoom = 12;
 
@@ -157,7 +159,7 @@ namespace Amsterdam3D.Interface
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
                     var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < 500.0f && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
 
-                    if ((tileIsInView || zoom == minZoom) && !loadedTiles.ContainsKey(key))
+                    if ((tileIsInView || (zoom == minZoom && !loadedBottomLayer)) && !loadedTiles.ContainsKey(key))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
@@ -171,6 +173,11 @@ namespace Amsterdam3D.Interface
                             Destroy(mapTile.gameObject);
                     }
                 }
+            }
+            //We only load the base layer once, because it will never be destroyed
+            if(minZoom == zoom)
+            {
+                loadedBottomLayer = true;
             }
         }
 
