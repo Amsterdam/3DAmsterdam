@@ -80,7 +80,7 @@ namespace Amsterdam3D.UserLayers
 			newOBJ.gameObject.AddComponent<Draggable>();
 			newOBJ.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJ.GetComponent<MeshFilter>().sharedMesh;
 
-			customObjectPlacer.AtPointer(newOBJ.gameObject);
+			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJ.gameObject);
 
 			//hide panel and loading screen after loading
 			gameObject.SetActive(false);

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
@@ -9,9 +10,14 @@ namespace Amsterdam3D.Interface
 	{
 		[SerializeField]
 		private CustomLayer customObjectLayerPrefab;
+		[SerializeField]
+		private CustomLayer annotationLayerPrefab;
 
 		[SerializeField]
 		private RectTransform layersContainer;
+
+		[SerializeField]
+		private RectTransform annotationsContainer;
 
 		private Animator animator;
 		private bool toggledVisible = false;
@@ -23,6 +29,7 @@ namespace Amsterdam3D.Interface
 		void Awake()
 		{
 			animator = GetComponent<Animator>();
+			annotationsContainer.gameObject.SetActive(false);
 		}
 
 		/// <summary>
@@ -53,11 +60,22 @@ namespace Amsterdam3D.Interface
 		/// <param name="linkedWorldObject">The GameObject that is linked to this interface layer</param>
 		/// <param name="type">The layer/object type</param>
 
-		public void AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
+		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
 		{
-			CustomLayer newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
-			newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
-			newCustomlayer.transform.SetSiblingIndex(0);
+			CustomLayer newCustomlayer;
+			if(type == LayerType.ANNOTATION)
+			{
+				newCustomlayer = Instantiate(annotationLayerPrefab, layersContainer);
+				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
+
+				newCustomlayer.transform.SetParent(annotationsContainer);
+				annotationsContainer.gameObject.SetActive(true);
+			}
+			else{
+				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
+				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
+			}
+			return newCustomlayer;
 		}
 	}
 }

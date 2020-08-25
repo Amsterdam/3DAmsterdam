@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
 		BASICSHAPE,
 		OBJMODEL,
 		STATIC,
-		DYNAMIC_MATERIALS
+		ANNOTATION
 	}
 	
 	public class InterfaceLayer : MonoBehaviour
@@ -33,7 +33,7 @@ namespace Amsterdam3D.Interface
 		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
-		private Image visualOptionsButton;
+		private Image layerOptionsButton;
 		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
@@ -44,6 +44,10 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
+		public void EnableOptions(bool enabled)
+		{
+			layerOptionsButton.gameObject.SetActive(enabled);
+		}
 
 		/// <summary>
 		/// Grab all the starting colors for this layer, so we can always reset it back during runtime
@@ -99,7 +103,7 @@ namespace Amsterdam3D.Interface
 		public void UpdateLayerPrimaryColor()
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
-				visualOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
+				layerOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 		}
 
 		/// <summary>
