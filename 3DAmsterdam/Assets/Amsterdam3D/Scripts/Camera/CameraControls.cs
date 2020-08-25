@@ -62,8 +62,25 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
 
+        #region Singleton
+        private static CameraControls instance;
+        public static CameraControls Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    throw new System.Exception("No camera controls object instance found. Make it is active in your scene.");
+                }
+
+                return instance;
+            }
+        }
+        #endregion
+
         void Awake()
         {
+            instance = this;
             camera = GetComponent<Camera>();
         }
 
