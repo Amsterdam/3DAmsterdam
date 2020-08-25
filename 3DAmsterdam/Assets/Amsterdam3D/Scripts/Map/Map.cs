@@ -31,6 +31,8 @@ namespace Amsterdam3D.Interface
         private bool dragging = false;
         private bool pointerLeftMap = true;
 
+        private bool interactingWithMap = false;
+
         private void Awake()
         {
             rectTransform = this.GetComponent<RectTransform>();
@@ -38,6 +40,33 @@ namespace Amsterdam3D.Interface
             navigation.gameObject.SetActive(false);
 
             mapTiles.Initialize(rectTransform, dragTarget);
+        }
+
+        void Update()
+        {
+            if(!interactingWithMap)
+            {
+                mapTiles.CenterMapOnPointer();
+            }
+        }
+
+        private void StartedMapInteraction()
+        {
+            interactingWithMap = true;
+            pointerLeftMap = false;
+            navigation.gameObject.SetActive(true);
+
+            StopAllCoroutines();
+            StartCoroutine(HoverResize(hoverSize));
+        }
+
+        private void StoppedMapInteraction()
+        {
+            interactingWithMap = false;
+            navigation.gameObject.SetActive(false);
+
+            StopAllCoroutines();
+            StartCoroutine(HoverResize(defaultSize));
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -69,11 +98,7 @@ namespace Amsterdam3D.Interface
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
-            pointerLeftMap = false;
-            navigation.gameObject.SetActive(true);
-
-            StopAllCoroutines();
-            StartCoroutine(HoverResize(hoverSize));
+            StartedMapInteraction();
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -85,13 +110,6 @@ namespace Amsterdam3D.Interface
             pointerLeftMap = true;
         }
 
-        private void StoppedMapInteraction()
-        {
-            navigation.gameObject.SetActive(false);
-
-            StopAllCoroutines();
-            StartCoroutine(HoverResize(defaultSize));
-        }
 
         IEnumerator HoverResize(Vector2 targetScale)
         {

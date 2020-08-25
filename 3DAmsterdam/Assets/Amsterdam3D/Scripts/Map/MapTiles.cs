@@ -91,12 +91,17 @@ namespace Amsterdam3D.Interface
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
         }
 
-        void Update()
+        public void CenterMapOnPointer()
         {
-            PositionPointer();
+            tilesDraggableContainer.anchoredPosition = -pointer.transform.localPosition* tilesDraggableContainer.localScale.x;
         }
 
-        private void PositionPointer()
+        void Update()
+        {
+            PutPointerOnCameraLocation();
+        }
+
+        private void PutPointerOnCameraLocation()
         {
             var cameraRDPosition = CoordConvert.UnitytoRD(Camera.main.transform.position);
 
@@ -127,6 +132,9 @@ namespace Amsterdam3D.Interface
             });
             RDcoordinate.y = Camera.main.transform.position.y;
             Camera.main.transform.position = RDcoordinate;
+
+            //PutPointerOnCameraLocation(); //TODO: Needs a smooth transition to not be disturbing
+            //CenterMapOnPointer();
         }
 
         private void CalculateMapCoordinates()

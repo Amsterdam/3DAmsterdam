@@ -229,18 +229,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1113047245 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7574671657171450474, guid: 551dff695a15b634a97abe62e9edd824,
-    type: 3}
-  m_PrefabInstance: {fileID: 2124185597603950387}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1284067768 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8941351697136137547, guid: 551dff695a15b634a97abe62e9edd824,
-    type: 3}
-  m_PrefabInstance: {fileID: 2124185597603950387}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1502487568 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3550877397508480405, guid: 551dff695a15b634a97abe62e9edd824,
@@ -5113,7 +5101,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1284067768}
+      objectReference: {fileID: 0}
     - target: {fileID: 7845136789571299351, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_ChildForceExpandWidth
@@ -5654,7 +5642,7 @@ PrefabInstance:
         type: 3}
       propertyPath: clickedOn.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1113047245}
+      objectReference: {fileID: 0}
     - target: {fileID: 8838776831519267859, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
