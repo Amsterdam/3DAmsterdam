@@ -43,13 +43,6 @@ namespace Amsterdam3D.Interface.Search
             }
         }
 
-        private CameraControls cameraControls;
-
-        private void Start()
-        {
-            cameraControls = FindObjectOfType<CameraControls>();
-        }
-
         public void ClickedResult(){
             ParentList.AutocompleteSearchText(ResultText);
             StartCoroutine(FindLocationByIDLookup());
@@ -80,7 +73,7 @@ namespace Amsterdam3D.Interface.Search
                     Vector3 targetLocation = ExtractUnityLocation(ref locationData);
 
                     ParentList.ShowResultsList(false);
-                    cameraControls.MoveAndFocusOnLocation(targetLocation);
+                    CameraControls.Instance.MoveAndFocusOnLocation(targetLocation);
                 }
             }
         }

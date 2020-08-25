@@ -15,7 +15,7 @@ namespace Amsterdam3D.Interface
         private ContentSizeFitter contentSizeFitter;
 
         #region Singleton
-        public static TooltipDialog instance;
+        private static TooltipDialog instance;
         public static TooltipDialog Instance
         {
             get
@@ -30,7 +30,7 @@ namespace Amsterdam3D.Interface
         }
         #endregion
 
-        private void Start()
+        private void Awake()
         {
             instance = this;
 
