@@ -23,7 +23,6 @@ namespace Amsterdam3D.CameraMotion
         private const float maxAngle = 89f;
         private const float speedFactor = 0.5f;
 
-        private float momentumBreak = 10.0f;
         public float dragFactor = 2f;
         private const float rotationSensitivity = 5f;
 
@@ -39,6 +38,9 @@ namespace Amsterdam3D.CameraMotion
         private float moveSpeed;
         private float mouseHorizontal;
         private float mouseVertical;
+
+        private float deceleration = 10.0f;
+        private Vector3 dragMomentum = Vector3.zero;
 
 
         private bool translationModifier = false;
@@ -305,7 +307,6 @@ namespace Amsterdam3D.CameraMotion
             camera.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
         }
 
-        private Vector3 dragMomentum = Vector3.zero;
         private void Dragging()
         {
             if (!translationModifier && !firstPersonModifier)
@@ -321,7 +322,7 @@ namespace Amsterdam3D.CameraMotion
                 }
                 else {
                     //Slide forward in dragged direction
-                    dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * momentumBreak);
+                    dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
                     if (dragMomentum.magnitude > 0.0f)
                     {
                         this.transform.position -= dragMomentum;
