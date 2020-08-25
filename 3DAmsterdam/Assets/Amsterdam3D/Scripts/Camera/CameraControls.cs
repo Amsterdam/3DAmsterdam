@@ -1,6 +1,7 @@
 ﻿using ConvertCoordinates;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -41,6 +42,7 @@ namespace Amsterdam3D.CameraMotion
         private bool firstPersonModifier = false;
 
         private bool canUseMouseRelatedFunctions = true;
+        private bool blockedByTextInput = false;
 
         public bool LockFunctions = false;
 
@@ -93,6 +95,10 @@ namespace Amsterdam3D.CameraMotion
             }
 		}
 
+        private bool BlockedByTextInput(){
+            return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
+        }
+
 		private bool InteractionOverruled()
 		{
 			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || ObjectManipulation.manipulatingObject)
@@ -134,12 +140,12 @@ namespace Amsterdam3D.CameraMotion
                 moveDirection = Quaternion.AngleAxis(camera.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
 
                 // vooruit/achteruit bewegen (gebaseerd op rotatie van camera)
-                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) camera.transform.position += MoveForward();
-                if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) camera.transform.position -= MoveBackward();
+                if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && !BlockedByTextInput()) camera.transform.position += MoveForward();
+                if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))&& !BlockedByTextInput()) camera.transform.position -= MoveBackward();
 
                 // zijwaarts bewegen (gebaseerd op rotatie van camera)
-                if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) camera.transform.position -= MoveLeft();
-                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) camera.transform.position += MoveRight();
+                if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && !BlockedByTextInput()) camera.transform.position -= MoveLeft();
+                if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && !BlockedByTextInput()) camera.transform.position += MoveRight();
             }
         }
         private Vector3 MoveRight()
@@ -163,19 +169,20 @@ namespace Amsterdam3D.CameraMotion
         {
             currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
 
-            if ((translationModifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q))
+            if (((translationModifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q)) && !BlockedByTextInput())
             {
                 camera.transform.RotateAround(camera.transform.position, Vector3.up, -rotationSpeed);
             }
-            else if ((translationModifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)){
+            else if (((translationModifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)) && !BlockedByTextInput())
+            {
                 camera.transform.RotateAround(camera.transform.position, Vector3.up, rotationSpeed);
             }
 
-            if ((translationModifier && Input.GetKey(KeyCode.UpArrow)) || (!translationModifier && Input.GetKey(KeyCode.R)))
+            if (((translationModifier && Input.GetKey(KeyCode.UpArrow)) || (!translationModifier && Input.GetKey(KeyCode.R))) && !BlockedByTextInput())
             {
                 camera.transform.RotateAround(camera.transform.position, camera.transform.right, -rotationSpeed);
             }
-            if ((translationModifier && Input.GetKey(KeyCode.DownArrow)) || (!translationModifier && Input.GetKey(KeyCode.F))) 
+            if (((translationModifier && Input.GetKey(KeyCode.DownArrow)) || (!translationModifier && Input.GetKey(KeyCode.F))) && !BlockedByTextInput()) 
             { 
                 camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
             }
@@ -252,12 +259,12 @@ namespace Amsterdam3D.CameraMotion
         {
             if (translationModifier)
             {
-                if (Input.GetKey(KeyCode.R))
+                if ((Input.GetKey(KeyCode.R)) && !BlockedByTextInput())
                 {
                     var zoomPoint = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
                     ZoomInDirection(Time.deltaTime, zoomPoint);
                 }
-                else if (Input.GetKey(KeyCode.F))
+                else if ((Input.GetKey(KeyCode.F)) && !BlockedByTextInput())
                 {
                     var zoomPoint = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
                     ZoomInDirection(-Time.deltaTime, zoomPoint);
