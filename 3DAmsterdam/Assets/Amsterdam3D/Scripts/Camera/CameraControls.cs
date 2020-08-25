@@ -1,12 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using ConvertCoordinates;
 using UnityEngine;
-using TMPro;
 using UnityEngine.EventSystems;
-using System.Runtime.CompilerServices;
-using System;
-using Amsterdam3D.FreeShape;
-using ConvertCoordinates;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -46,7 +40,7 @@ namespace Amsterdam3D.CameraMotion
         private bool translationModifier = false;
         private bool firstPersonModifier = false;
 
-        private bool canUseFunction = true;
+        private bool canUseMouseRelatedFunctions = true;
 
         public bool LockFunctions = false;
 
@@ -80,15 +74,7 @@ namespace Amsterdam3D.CameraMotion
 		{
 			if (InteractionOverruled()) return;
 
-			// checkt of de muis oven een UI element zit (zo ja, dan kunnen bepaalde functies niet gebruikt worden)
-			if (EventSystem.current.IsPointerOverGameObject() || LockFunctions)
-			{
-				canUseFunction = false;
-			}
-			else
-			{
-				canUseFunction = true;
-			}
+			canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
 
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
@@ -98,7 +84,7 @@ namespace Amsterdam3D.CameraMotion
                 HandleTranslationInput();
                 HandleRotationInput();
 
-                if (canUseFunction)
+                if (canUseMouseRelatedFunctions)
                 {
                     Zooming();
                     Dragging();
