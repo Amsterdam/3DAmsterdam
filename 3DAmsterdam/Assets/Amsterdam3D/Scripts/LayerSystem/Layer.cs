@@ -6,6 +6,7 @@ namespace LayerSystem
     public class Layer : MonoBehaviour
     {
         [SerializeField]
+        public Material DefaultMaterial;
         public int tileSize = 1000;
         public int layerPriority = 0;
         public List<DataSet> Datasets = new List<DataSet>();

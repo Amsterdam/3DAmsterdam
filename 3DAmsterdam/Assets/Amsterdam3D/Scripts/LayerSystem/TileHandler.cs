@@ -52,22 +52,30 @@ namespace LayerSystem
         // Update is called once per frame
         void Update()
         {
-            if (HasCameraViewChanged())
-            {
+            //if (HasCameraViewChanged())
+            //{
                 UpdateViewRange();
                 GetTilesizes();
                 getPossibleTiles();
                 GetTileChanges();
-            }
+                RemoveOUtOfViewTiles();
+            //}
 
             if (pendingTileChanges.Count==0){return;}
 
             if (activeTileChanges.Count<maximumConcurrentDownloads)
             {
                 TileChange highestPriorityTIleChange = FindHighestPriorityTileChange();
-                activeTileChanges.Add(new Vector3Int(highestPriorityTIleChange.X, highestPriorityTIleChange.Y, highestPriorityTIleChange.layerIndex), highestPriorityTIleChange);
-                pendingTileChanges.Remove(highestPriorityTIleChange);
-                HandleTile(highestPriorityTIleChange);
+                Vector3Int tilekey = new Vector3Int(highestPriorityTIleChange.X, highestPriorityTIleChange.Y, highestPriorityTIleChange.layerIndex);
+                if (activeTileChanges.ContainsKey(tilekey) == false)
+                {
+                    activeTileChanges.Add(tilekey, highestPriorityTIleChange);
+                    pendingTileChanges.Remove(highestPriorityTIleChange);
+                    HandleTile(highestPriorityTIleChange);
+                }
+                
+                
+                
             }
             // only if viewRange has changed:
             // check which tiles are required in view for each tilesize and add to TileDistances (key: X-bottom-left,Y-bottom-left,tilesize)
@@ -101,40 +109,140 @@ namespace LayerSystem
                     break;
                 case TileAction.Downgrade:
                     lod = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD - 1;
-                    
+                    if (lod<0)
+                    {
+                        Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
+                        layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
+                        return;
+                    }
                     break;
                 case TileAction.Remove:
+                    Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
+                    layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+                    activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
+                    return;
                     break;
                 default:
                     break;
             }
-            url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
-            url = url.Replace("{x}", tileChange.X.ToString());
-            url = url.Replace("{y}", tileChange.Y.ToString());
-            url = url.Replace("{lod}", lod.ToString());
-            StartCoroutine(DownloadTile(url, tileChange));
+
+            if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
+            {
+                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                url = url.Replace("{x}", tileChange.X.ToString());
+                url = url.Replace("{y}", tileChange.Y.ToString());
+                url = url.Replace("{lod}", lod.ToString());
+                StartCoroutine(DownloadTile(url, tileChange));
+
+            }
+            
         }
 
         private IEnumerator DownloadTile(string url, TileChange tileChange)
         {
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
+                
+                Vector2Int tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+                Tile tile;
+                if (tileChange.action == TileAction.Create)
+                {
+                    tile = new Tile();
+                    tile.LOD = 0;
+                    tile.tileKey = tileKey;
+                    tile.gameObject = new GameObject();
+                    tile.gameObject.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+                    tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
+                    layers[tileChange.layerIndex].tiles.Add(tileKey, tile);
+                }
+                else
+                {
+                    tile = layers[tileChange.layerIndex].tiles[tileKey];
+                }
+
                 yield return uwr.SendWebRequest();
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
+                    if (tile.assetBundle is null)
+                    {
+
+                    }
+                    else
+                    {
+                        tile.assetBundle.Unload(true);
+                    }
                 }
                 else
                 {
-                    // Get downloaded asset bundle
-                    //AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    //tileData.assetBundle = bundle;
-                    //activeDownloads.Remove(tileData.tileID);
-                    //pendingBuilds.Add(tileData.tileID);
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    GameObject newTile = buildNewTile(newAssetBundle, tileChange);
+                    if (tileChange.action == TileAction.Downgrade)
+                    {
+                        layers[tileChange.layerIndex].tiles[tileKey].LOD--;
+                    }
+                    if (tileChange.action == TileAction.Upgrade)
+                    {
+                        layers[tileChange.layerIndex].tiles[tileKey].LOD++;
+                    }
+                    Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
+                    layers[tileChange.layerIndex].tiles[tileKey].gameObject = newTile;
+                    
                 }
+                activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
             }
             yield return null;
+
+        }
+
+        private GameObject buildNewTile(AssetBundle assetBundle, TileChange tileChange)
+        {
+            GameObject container = new GameObject();
+            container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
+            container.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+            container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X+500, tileChange.Y+500));
+            Material material = layers[tileChange.layerIndex].DefaultMaterial;
+            Mesh[] meshesInAssetbundle = new Mesh[0];
+            try
+            {
+                meshesInAssetbundle = assetBundle.LoadAllAssets<Mesh>();
+            }
+            catch (Exception)
+            {
+                Destroy(container);
+                assetBundle.Unload(true);
+            }
+
+            foreach (Mesh mesh in meshesInAssetbundle)
+            {
+                Mesh newMesh = new Mesh();
+                newMesh.vertices = mesh.vertices;
+                newMesh.triangles = mesh.triangles;
+                newMesh.normals = mesh.normals;
+                newMesh.name = mesh.name;
+                GameObject subObject = new GameObject();
+                subObject.transform.parent = container.transform;
+
+                
+                float X = float.Parse(mesh.name.Split('_')[0]);
+                float Y = float.Parse(mesh.name.Split('_')[1]);
+
+                //positioning container
+                Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
+                double OriginOffset = 500;
+                Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
+                Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+                subObject.transform.position = unityOrigin;
+                double Rotatie = CoordConvert.RDRotation(origin);
+                subObject.transform.Rotate(Vector3.up, (float)Rotatie);
+
+                //subObject.transform.localPosition = Vector3.zero;
+                subObject.AddComponent<MeshFilter>().mesh = newMesh;
+                subObject.AddComponent<MeshRenderer>().sharedMaterial = material;
+            }
+            assetBundle.Unload(true);
+            return container;
 
         }
         private TileChange FindHighestPriorityTileChange()
@@ -252,14 +360,14 @@ namespace LayerSystem
 
             foreach (DataSet dataSet in layer.Datasets)
             {
-                if (dataSet.maximumDistanceSquared>tiledistance.z)
+                if (dataSet.maximumDistanceSquared > tiledistance.z)
                 {
                     lod = dataSet.lod;
-                    return lod;
+
                 }
             }
-
             return lod;
+            
         }
 
         private void GetTileChanges()
@@ -333,6 +441,37 @@ namespace LayerSystem
            
         }
 
+        private void RemoveOUtOfViewTiles()
+        {
+            for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
+            {
+                Layer layer = layers[layerIndex];
+                if (layer.gameObject.activeSelf == false) { continue; }
+                int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
+                List<Vector3Int> neededTileSizesDistance = TileDistances[tilesizeIndex];
+                List<Vector2Int> neededTileSizes = new List<Vector2Int>();
+                foreach (var neededTileSize in neededTileSizesDistance)
+                {
+                    neededTileSizes.Add(new Vector2Int(neededTileSize.x, neededTileSize.y));
+                }
+
+                List<Vector2Int> activeTiles = new List<Vector2Int>(layer.tiles.Keys);
+                foreach (Vector2Int activeTile in activeTiles)
+                {
+                    if (neededTileSizes.Contains(activeTile) == false)
+                    {
+                        TileChange tileChange = new TileChange();
+                        tileChange.action = TileAction.Remove;
+                        tileChange.X = activeTile.x;
+                        tileChange.Y = activeTile.y;
+                        tileChange.layerIndex = layerIndex;
+                        tileChange.priorityScore = 0;
+                        pendingTileChanges.Add(tileChange);
+                    }
+                }
+
+            }
+        }
     }
     [Serializable]
     public class DataSet
