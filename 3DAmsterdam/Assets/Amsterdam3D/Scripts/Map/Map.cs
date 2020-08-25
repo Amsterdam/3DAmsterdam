@@ -42,7 +42,7 @@ namespace Amsterdam3D.Interface
             mapTiles.Initialize(rectTransform, dragTarget);
         }
 
-        void Update()
+        void LateUpdate()
         {
             if(!interactingWithMap)
             {
