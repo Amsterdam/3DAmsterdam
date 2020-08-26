@@ -221,15 +221,5 @@ namespace Amsterdam3D.FreeShape
 			}
 			return Vector3.zero;
 		}
-#if UNITY_EDITOR
-		private void OnDrawGizmos()
-		{
-			if (!customMesh) return;
-			for (int i = 0; i < customMesh.vertices.Length; i++)
-			{
-				Handles.Label(this.transform.position + customMesh.vertices[i] + Vector3.up * i, "<b>vert:" + i + "</b>", new GUIStyle() { richText = true });
-			}
-		}
-#endif
 	}
 }
