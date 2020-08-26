@@ -7,7 +7,7 @@ namespace Amsterdam3D.CameraMotion
 {
     public class CameraControls : MonoBehaviour
     {
-        private Camera camera;
+        public Camera camera;
 
         public float zoomSpeed = 0.5f;
         private const float maxZoomOut = 2500f;
@@ -131,8 +131,8 @@ namespace Amsterdam3D.CameraMotion
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation)
 		{
-            Camera.main.transform.position = targetLocation + cameraOffsetForTargetLocation;
-            Camera.main.transform.LookAt(targetLocation, Vector3.up);
+            camera.transform.position = targetLocation + cameraOffsetForTargetLocation;
+            camera.transform.LookAt(targetLocation, Vector3.up);
 
             focusPointChanged(targetLocation);
         }
@@ -343,7 +343,7 @@ namespace Amsterdam3D.CameraMotion
 
         private Vector3 GetMousePositionInWorld()
         {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);            
+            var ray = camera.ScreenPointToRay(Input.mousePosition);            
             worldPlane.Raycast(ray, out float distance);
             return ray.GetPoint(distance);
         }

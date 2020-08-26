@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ public class ObjectManipulation : MonoBehaviour
 	private void Update()
 	{
 		if(screenSize > 0)
-			this.transform.localScale = Vector3.one * Vector3.Distance(Camera.main.transform.position, transform.position) * screenSize;
+			this.transform.localScale = Vector3.one * Vector3.Distance(CameraControls.Instance.camera.transform.position, transform.position) * screenSize;
 	}
 
 	public virtual void OnMouseDown()
@@ -38,13 +39,13 @@ public class ObjectManipulation : MonoBehaviour
 
 	public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldYPosition)
 	{
-		var ray = Camera.main.ScreenPointToRay(screenPosition);
+		var ray = CameraControls.Instance.camera.ScreenPointToRay(screenPosition);
 
 		var planeNormal = Vector3.up;
 		if (AxisConstraint == Vector3.up)
 		{
 			//Up handle uses a plane looking at camera, flattened on the Y, so we can drag something up
-			planeNormal = Camera.main.transform.position - this.transform.position;
+			planeNormal = CameraControls.Instance.camera.transform.position - this.transform.position;
 			planeNormal.y = 0;
 		}
 

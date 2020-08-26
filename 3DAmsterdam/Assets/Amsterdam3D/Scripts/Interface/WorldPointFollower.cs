@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class WorldPointFollower : MonoBehaviour
 
     void Update()
     {
-        var viewportPosition = Camera.main.WorldToViewportPoint(WorldPosition);
+        var viewportPosition = CameraControls.Instance.camera.WorldToViewportPoint(WorldPosition);
         rectTransform.anchorMin = viewportPosition;
         rectTransform.anchorMax = viewportPosition;
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Amsterdam3D.CameraMotion;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -34,7 +35,7 @@ namespace Amsterdam3D.Interface
         public void OnDrag(PointerEventData eventData)
         {
             groundPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
 
             if (groundPlane.Raycast(ray, out float enter))
             {
