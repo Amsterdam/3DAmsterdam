@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +17,6 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private InputField editInputField;
 
-        private Plane groundPlane;
         private float lastClickTime = 0;
         private float doubleClickTime = 0.2f;
 
@@ -24,25 +24,28 @@ namespace Amsterdam3D.Interface
 
         private void Start()
         {
-            PointLine();
+            StartCoroutine(StickToMouse());
         }
 
-        private void PointLine()
+        IEnumerator StickToMouse()
         {
-            //If we have colliders in our models, we can draw a line pointing to the exact location
+            //Keep following mouse untill we clicked, than start to edit the text
+            while (!Input.GetMouseButton(0))
+            {
+                FollowMousePointer();
+                yield return new WaitForEndOfFrame();
+            }
+            StartEditingText();
+        }
+
+        private void FollowMousePointer()
+        {
+            AlignWithWorldPosition(CameraControls.Instance.GetMousePositionInWorld());
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            groundPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
-            var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
-
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                AlignWithWorldPosition(hitPoint);
-            }
-            PointLine();
+            FollowMousePointer();
         }
 
         public void OnPointerClick(PointerEventData eventData)

@@ -42,13 +42,11 @@ namespace Amsterdam3D.CameraMotion
         private bool firstPersonModifier = false;
 
         private bool canUseMouseRelatedFunctions = true;
-        private bool blockedByTextInput = false;
 
         public bool LockFunctions = false;
 
 		private bool interactionOverruled = false;
 
-        private Vector3 zoomPoint;
         private Vector3 zoomDirection;
 
         private Vector3 dragOrigin;
@@ -341,7 +339,7 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        private Vector3 GetMousePositionInWorld()
+        public Vector3 GetMousePositionInWorld()
         {
             var ray = camera.ScreenPointToRay(Input.mousePosition);            
             worldPlane.Raycast(ray, out float distance);
