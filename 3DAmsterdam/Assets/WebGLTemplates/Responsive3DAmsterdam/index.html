@@ -11,7 +11,7 @@
 
   <body>
 	<div id="objUploadClickRegisterArea" style="display:none;">
-		<input id="obj" type="file" accept=".obj,.mtl" onchange='ReadOBJ(this)' multiple>
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadOBJ(this)" multiple>
 	</div>
     <div id="gameContainer"></div>
     <div id="loader">
@@ -39,6 +39,9 @@
     if (progress === 1 && !unityInstance.removeTimeout) {
       unityInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
+		  if(window.location.hash){
+			unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.Replace("#",""));
+		  }
       }, 2000);
     }
   }
@@ -52,9 +55,9 @@
   var dataType = 0;
   
   function LoadInUnity(){
-	unityInstance.SendMessage(unityObjectName, 'LoadOBJFromJavascript');
+	unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
 	//Reset file selection
-	document.getElementById('obj').value = '';
+	document.getElementById("obj").value = "";
   }
   
   function ReadOBJ(fileInput) {
@@ -63,9 +66,9 @@
             objTextReader = new FileReader();
 			mtlTextReader = new FileReader();
         } else {
-            alert('Bestanden uploaden wordt helaas niet ondersteund door deze browser.');
+            alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
         }
-		unityInstance.SendMessage(unityObjectName, 'SetOBJFileName', fileInput.files.item(0).name);
+		unityInstance.SendMessage(unityObjectName, "SetOBJFileName", fileInput.files.item(0).name);
 		
 		//If we selected at least one file
         if(fileInput.files && fileInput.files[0]) { 
@@ -89,7 +92,7 @@
 			
 			//Read the obj in the file input
 			for (var i = 0; i < fileInput.files.length; i++) {
-				var extension = fileInput.files[i].name.split('.').pop().toLowerCase();
+				var extension = fileInput.files[i].name.split(".").pop().toLowerCase();
                 if(extension == "mtl"){
 					mtlFileSelectionIndex = i;
 				}
