@@ -56,7 +56,7 @@ namespace Amsterdam3D.CameraMotion
         private Vector2 currentRotation;
 
         public delegate void FocusPointChanged(Vector3 pointerPosition);
-        public static FocusPointChanged focusPointChanged;
+        public static FocusPointChanged focusingOnTargetPoint;
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
 
@@ -105,7 +105,7 @@ namespace Amsterdam3D.CameraMotion
                 {
                     Zooming();
                     Dragging();
-                    FocusPoint();
+                    RotationAroundPoint();
                 }
             }
 		}
@@ -132,7 +132,7 @@ namespace Amsterdam3D.CameraMotion
             camera.transform.position = targetLocation + cameraOffsetForTargetLocation;
             camera.transform.LookAt(targetLocation, Vector3.up);
 
-            focusPointChanged(targetLocation);
+            focusingOnTargetPoint(targetLocation);
         }
 
         public void ChangedPointFromMinimap(string latLong)
@@ -311,8 +311,8 @@ namespace Amsterdam3D.CameraMotion
         {
             var heightSpeed = camera.transform.position.y; //The higher we are, the faster we zoom
             zoomDirection = (zoomDirectionPoint - camera.transform.position).normalized;
-
             camera.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
+            focusingOnTargetPoint.Invoke(zoomDirectionPoint);
         }
 
         private void Dragging()
@@ -346,7 +346,7 @@ namespace Amsterdam3D.CameraMotion
             return ray.GetPoint(distance);
         }
 
-        private void FocusPoint()
+        private void RotationAroundPoint()
         {
             RaycastHit hit;
             var ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -357,11 +357,11 @@ namespace Amsterdam3D.CameraMotion
                 if (Physics.Raycast(ray, out hit))
                 {
                     rotatePoint = hit.point;
-                    focusPointChanged(rotatePoint);
+                    focusingOnTargetPoint(rotatePoint);
                 }
                 else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter)){
                     rotatePoint = ray.GetPoint(enter);
-                    focusPointChanged(rotatePoint);
+                    focusingOnTargetPoint(rotatePoint);
                 }
             }
 
@@ -374,6 +374,8 @@ namespace Amsterdam3D.CameraMotion
                 camera.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
 
                 currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
+
+                focusingOnTargetPoint.Invoke(rotatePoint);
             }
         }
 
