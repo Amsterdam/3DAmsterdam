@@ -39,12 +39,20 @@
     if (progress === 1 && !unityInstance.removeTimeout) {
       unityInstance.removeTimeout = setTimeout(function() {
           loader.style.display = "none";
+		  
+		  window.onhashchange = locationHashChanged;
 		  if(window.location.hash){
-			unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.Replace("#",""));
+			locationHashChanged();
 		  }
       }, 2000);
     }
   }
+  
+  function locationHashChanged() {
+	unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.replace("#",""));
+  }
+
+  
   
   var objTextReader;
   var mtlTextReader;
