@@ -135,7 +135,7 @@ namespace Amsterdam3D.CameraMotion
             focusingOnTargetPoint(targetLocation);
         }
 
-        public void ChangedPointFromMinimap(string latLong)
+        public void ChangedPointFromUrl(string latLong)
         {
             string[] coordinates = latLong.Split(',');
             var lat = double.Parse(coordinates[0]);
