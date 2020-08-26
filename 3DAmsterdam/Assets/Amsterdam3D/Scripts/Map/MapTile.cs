@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BruTile.Wms;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,18 +14,16 @@ namespace Amsterdam3D.Interface
 
 		private RawImage rawImage;
 		public RawImage textureTargetRawImage { get => rawImage; private set => rawImage = value; }
-
-		private RectTransform visibleMaskedArea;
 		private Vector2 tileKey;
 
 		private const float fadeSpeed = 3.0f;
+		UnityWebRequest uwr;
 
-		public void Initialize(Transform parentTo, RectTransform maskedArea, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key)
+		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key)
 		{
 			tileKey = key;
 			name = tileKey.x + "/" + tileKey.y;
 
-			visibleMaskedArea = maskedArea;
 
 			transform.SetParent(parentTo, false);
 
@@ -42,20 +41,23 @@ namespace Amsterdam3D.Interface
 		private IEnumerator LoadTexture(int zoom, int x, int y)
 		{
 			var tileImageUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
-			UnityWebRequest www = UnityWebRequestTexture.GetTexture(tileImageUrl);
-			yield return www.SendWebRequest();
+			
+			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))
+			{
+				yield return uwr.SendWebRequest();
 
-			if (www.isNetworkError || www.isHttpError)
-			{
-				Debug.Log(www.error);
-			}
-			else
-			{
-				Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-				textureTargetRawImage.texture = texture;
-				textureTargetRawImage.enabled = true;
-				textureTargetRawImage.color = new Color(1.0f,1.0f,1.0f,0.0f);
-				StartCoroutine(FadeInRawImage());
+				if (uwr.isNetworkError || uwr.isHttpError)
+				{
+					Debug.Log(uwr.error);
+				}
+				else
+				{
+					var texture = DownloadHandlerTexture.GetContent(uwr);
+					textureTargetRawImage.texture = texture;
+					textureTargetRawImage.enabled = true;
+					textureTargetRawImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+					StartCoroutine(FadeInRawImage());
+				}
 			}
 		}
 
@@ -71,9 +73,14 @@ namespace Amsterdam3D.Interface
 		{
 			StopAllCoroutines();
 
+			//Makes sure the UnityWebRequestTexture is disposed of
+			//It holds an internal Texture2D that cant be GC'd
+			if (uwr != null) uwr.Dispose();
+
 			//Cleanup texture from memory
-			if (textureTargetRawImage.texture)
-				Destroy(textureTargetRawImage.texture);
+			Destroy(textureTargetRawImage.texture);
+			textureTargetRawImage.texture = null;
+
 			Destroy(textureTargetRawImage);
 		}
 	}
