@@ -13,7 +13,7 @@ public class ObjectManipulation : MonoBehaviour
 	public float screenSize = 0.0f;
 
 	[HideInInspector]
-	public Vector3 clickOffset;
+	public Vector3 clickOffsetOnWorldPlane;
 
 	private void Update()
 	{
@@ -23,13 +23,8 @@ public class ObjectManipulation : MonoBehaviour
 
 	public virtual void OnMouseDown()
 	{
-		SetClickOffset();
+		clickOffsetOnWorldPlane = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - this.transform.position;
 		manipulatingObject = true;
-	}
-
-	public void SetClickOffset()
-	{
-		clickOffset = GetWorldPositionOnPlane(Input.mousePosition, this.transform.position.y) - this.transform.position;
 	}
 
 	public virtual void OnMouseUp()

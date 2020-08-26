@@ -12,10 +12,12 @@ public class Draggable : ObjectManipulation
 
 	[Tooltip("Optional origin to use as center to place object on ground")]
 	[SerializeField]
-	private Transform pointToPutOnGround;
+	private Transform optionalOffsetPoint;
+	private Vector3 offset;
 
 	private bool snapToGround = true;
-	private float dropDownDistance = 300.0f;
+
+	[SerializeField]
 	private bool stickToMouseOnSpawn = true;
 
 	[SerializeField]
@@ -23,6 +25,9 @@ public class Draggable : ObjectManipulation
 
 	private void Start()
 	{
+		if (optionalOffsetPoint)
+			offset = optionalOffsetPoint.localPosition;
+
 		collider = GetComponent<Collider>();
 		if (stickToMouseOnSpawn)
 		{
@@ -46,50 +51,36 @@ public class Draggable : ObjectManipulation
 	{
 		if (EventSystem.current.IsPointerOverGameObject()) return;
 
-		collider.enabled = false;
-		StopAllCoroutines();
 		FollowMousePointer();
 	}
 
-	private void OnMouseUp()
+	public override void OnMouseDown(){
+		collider.enabled = false;
+		base.OnMouseDown();
+	}
+	public override void OnMouseUp()
 	{
+		base.OnMouseUp();
 		collider.enabled = true;
 	}
 
 	private void FollowMousePointer()
 	{
-		RaycastHit hit;
-		var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
-
-		/*if (Input.GetMouseButtonDown(0))
-		{
-			//Check if a collider is under our mouse, if not get a point on NAP~0
-			if (Physics.Raycast(ray, out hit))
-			{
-				rotatePoint = hit.point;
-				focusPointChanged(rotatePoint);
-			}
-			else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter))
-			{
-				rotatePoint = ray.GetPoint(enter);
-				focusPointChanged(rotatePoint);
-			}
-		}*/
-
-		this.transform.position = GetWorldPositionOnPlane(Input.mousePosition, Constants.ZERO_GROUND_LEVEL_Y) - clickOffset;
-		if (snapToGround)
-			DropDownOnGround();
+		this.transform.position = GetMousePointOnLayerMask() - offset;
 	}
 
-	private void DropDownOnGround()
+	private Vector3 GetMousePointOnLayerMask()
 	{
-		//Try to see if we can fall down on the ground
-		if (Physics.Raycast(this.transform.position + Vector3.up * 150.0f, Vector3.down, out RaycastHit hit, dropDownDistance, dropTargetLayerMask.value))
+		RaycastHit hit;
+
+		var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
+		if (snapToGround && Physics.Raycast(ray, out hit, CameraControls.Instance.camera.farClipPlane, dropTargetLayerMask.value))
 		{
-			print("DROPPING ON :" + hit.transform.name);
-			this.transform.position = hit.point;
-			/*if (pointToPutOnGround)
-				this.transform.Translate(-pointToPutOnGround.localPosition);*/
+			return hit.point;
+		}
+		else
+		{
+			return CameraControls.Instance.GetMousePositionInWorld();
 		}
 	}
 }

@@ -58,7 +58,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void MoveHandleIntoDragDirection()
 		{
-			var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, startObjectY) - clickOffset;
+			var dragTargetPosition = GetWorldPositionOnPlane(Input.mousePosition, startObjectY) - clickOffsetOnWorldPlane;
 			var originalLocalPosition = transform.localPosition;
 			transform.position = dragTargetPosition;
 
