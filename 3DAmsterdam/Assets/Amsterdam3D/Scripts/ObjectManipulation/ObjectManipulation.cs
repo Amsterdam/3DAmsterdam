@@ -32,6 +32,12 @@ public class ObjectManipulation : MonoBehaviour
 		manipulatingObject = false;
 	}
 
+	/// <summary>
+	/// Returns the world point on a plane.
+	/// </summary>
+	/// <param name="screenPosition">The point inside the screen</param>
+	/// <param name="planeWorldYPosition">The Y position of our plane</param>
+	/// <returns></returns>
 	public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldYPosition)
 	{
 		var ray = CameraControls.Instance.camera.ScreenPointToRay(screenPosition);

@@ -27,9 +27,13 @@ namespace Amsterdam3D.Interface
             StartCoroutine(StickToMouse());
         }
 
+        /// <summary>
+        /// Stick to the mouse pointer untill we click. 
+        /// Starts editing after the click.
+        /// </summary>
+        /// <returns></returns>
         IEnumerator StickToMouse()
         {
-            //Keep following mouse untill we clicked, than start to edit the text
             while (!Input.GetMouseButton(0))
             {
                 FollowMousePointer();
@@ -38,6 +42,9 @@ namespace Amsterdam3D.Interface
             StartEditingText();
         }
 
+        /// <summary>
+        /// Align the annotation with the mouse pointer position
+        /// </summary>
         private void FollowMousePointer()
         {
             AlignWithWorldPosition(CameraControls.Instance.GetMousePositionInWorld());
@@ -57,6 +64,9 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
+        /// <summary>
+        /// Start editing the annotation body text
+        /// </summary>
         public void StartEditingText()
         {
             editInputField.gameObject.SetActive(true);
@@ -65,12 +75,19 @@ namespace Amsterdam3D.Interface
             editInputField.Select();
         }
 
+        /// <summary>
+        /// Apply the text from the editor directly to the balloon
+        /// and the layer name.
+        /// </summary>
         public void EditText()
         {
             balloonText.text = editInputField.text;
             interfaceLayer.RenameLayer(balloonText.text);
         }
 
+        /// <summary>
+        /// Hides the editor, and applies the last text inputs to the balloon and layer name
+        /// </summary>
         public void StopEditingText()
         {
             balloonText.text = editInputField.text;

@@ -36,6 +36,11 @@ public class Draggable : ObjectManipulation
 		}
 	}
 
+	/// <summary>
+	/// Makes the new object stick to the mouse untill we click.
+	/// Enable the collider, so raycasts can pass through the object while dragging.
+	/// </summary>
+	/// <returns></returns>
 	IEnumerator StickToMouse()
 	{
 		//Keep following mouse untill we clicked
@@ -69,6 +74,12 @@ public class Draggable : ObjectManipulation
 		this.transform.position = GetMousePointOnLayerMask() - offset;
 	}
 
+
+	/// <summary>
+	/// Returns the mouse position on the layer.
+	/// If the raycast fails (didnt hit anything) we use plane set at average ground height.
+	/// </summary>
+	/// <returns>The world point where our mouse is</returns>
 	private Vector3 GetMousePointOnLayerMask()
 	{
 		RaycastHit hit;
