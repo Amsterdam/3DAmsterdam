@@ -167,11 +167,12 @@ namespace Amsterdam3D.Interface
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
                     var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < 500.0f && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
 
-                    if ((tileIsInView || (zoom == minZoom && !loadedBottomLayer)) && !loadedTiles.ContainsKey(key))
+                    //Only load a tile if its the initial bottom layer, or if it is in view and didnt load yet 
+                    if ((zoom == minZoom && !loadedBottomLayer) || (zoom != minZoom && tileIsInView && !loadedTiles.ContainsKey(key)))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
-                        mapTile.Initialize(zoomLevelParent, viewBoundsArea, Zoom, tilePixelSize, x, y, key);
+                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, y, key);
                         loadedTiles.Add(key, mapTile);
                     }
                     else if (zoom != minZoom && !tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
