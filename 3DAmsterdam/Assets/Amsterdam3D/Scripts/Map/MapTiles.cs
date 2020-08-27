@@ -57,13 +57,13 @@ namespace Amsterdam3D.Interface
         private float tileOffsetX;
         private float tileOffsetY;
 
-        private Rect tileArea;
+        private const float viewLoadMargin = 500.0f;
 
         private RectTransform tilesDraggableContainer;
         private RectTransform viewBoundsArea;
         private RectTransform zoomLevelParent;
 
-        private int tilePixelSize = 256; //Width/height pixels
+        private const int tilePixelSize = 256; //Width/height pixels
         private float currentRelativeTileSize;
         private int mapPixelWidth;
 
@@ -73,6 +73,8 @@ namespace Amsterdam3D.Interface
         private Dictionary<int, GameObject> zoomLevelContainers;
         private Dictionary<Vector2, MapTile> loadedTiles;
 
+        private Vector3 lastDraggedPointerPosition;
+
         public void Initialize(RectTransform view, RectTransform drag)
         {
             tilesDraggableContainer = drag;
@@ -81,7 +83,6 @@ namespace Amsterdam3D.Interface
             mapPixelWidth = TilePixelSize * baseGridCells;
 
             loadedTiles = new Dictionary<Vector2, MapTile>();
-            tileArea = new Rect();
 
             zoomLevelContainers = new Dictionary<int, GameObject>();
             zoomLevelParent = GetZoomLevelParent(Zoom);
@@ -95,6 +96,11 @@ namespace Amsterdam3D.Interface
         public void CenterMapOnPointer()
         {
             tilesDraggableContainer.anchoredPosition = -pointer.transform.localPosition* tilesDraggableContainer.localScale.x;
+
+            if (Vector3.Distance(lastDraggedPointerPosition, tilesDraggableContainer.localPosition) > tilePixelSize / tilesDraggableContainer.localScale.y)
+            {
+                LoadTilesInView();
+            }
         }
 
         void Update()
@@ -161,19 +167,20 @@ namespace Amsterdam3D.Interface
 
         public void LoadTilesInView()
         {
+            lastDraggedPointerPosition = tilesDraggableContainer.localPosition;
             for (int x = 0; x < GridCells; x++)
             {
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
-                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < 500.0f && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
+                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < viewLoadMargin && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
 
                     //Only load a tile if its the initial bottom layer, or if it is in view and didnt load yet 
                     if ((zoom == minZoom && !loadedBottomLayer) || (zoom != minZoom && tileIsInView && !loadedTiles.ContainsKey(key)))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
-                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, y, key);
+                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, y, key, (zoom == minZoom));
                         loadedTiles.Add(key, mapTile);
                     }
                     else if (zoom != minZoom && !tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
