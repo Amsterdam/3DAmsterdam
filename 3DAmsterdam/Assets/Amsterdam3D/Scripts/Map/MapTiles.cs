@@ -215,8 +215,9 @@ namespace Amsterdam3D.Interface
                 ZoomTowardsLocation(useMousePosition);
                 CalculateGridOffset();
                 zoomLevelParent = GetZoomLevelParent(Zoom);
-                ClearZoomLevelContainers();
-                LoadTilesInView();
+
+                StopAllCoroutines();
+                StartCoroutine(DelayLoadingTiles());
             }
         }
 
@@ -229,9 +230,17 @@ namespace Amsterdam3D.Interface
                 ZoomTowardsLocation(useMousePosition);
                 CalculateGridOffset();
                 zoomLevelParent = GetZoomLevelParent(Zoom);
-                ClearZoomLevelContainers();
-                LoadTilesInView();
+
+                StopAllCoroutines();
+                StartCoroutine(DelayLoadingTiles());
             }
+        }
+
+        IEnumerator DelayLoadingTiles()
+        {
+            yield return new WaitForSeconds(0.2f);
+            ClearZoomLevelContainers();
+            LoadTilesInView();
         }
 
         private void ZoomTowardsLocation(bool useMouse = true)
