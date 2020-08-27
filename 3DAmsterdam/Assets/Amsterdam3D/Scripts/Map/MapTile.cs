@@ -19,16 +19,16 @@ namespace Amsterdam3D.Interface
 		private const float fadeSpeed = 3.0f;
 		UnityWebRequest uwr;
 
-		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key)
+		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key, bool rayCastTile)
 		{
 			tileKey = key;
 			name = tileKey.x + "/" + tileKey.y;
-
 
 			transform.SetParent(parentTo, false);
 
 			//generate a new rawimage
 			textureTargetRawImage = this.gameObject.AddComponent<RawImage>();
+			textureTargetRawImage.raycastTarget = rayCastTile;
 			textureTargetRawImage.rectTransform.pivot = Vector2.zero;
 			textureTargetRawImage.rectTransform.sizeDelta = Vector2.one * size;
 			textureTargetRawImage.enabled = false;
