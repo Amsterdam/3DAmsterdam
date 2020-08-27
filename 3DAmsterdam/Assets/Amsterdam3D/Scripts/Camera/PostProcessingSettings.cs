@@ -22,6 +22,10 @@ namespace Amsterdam3D.Rendering
             universalCameraData = CameraControls.Instance.camera.GetComponent<UniversalAdditionalCameraData>();
         }
 
+        /// <summary>
+        /// Toggles antialiasing on or off.
+        /// </summary>
+        /// <param name="antiAliasingOn"></param>
         public void ToggleAA(bool antiAliasingOn)
         {
             antiAliasing = antiAliasingOn;
@@ -38,6 +42,7 @@ namespace Amsterdam3D.Rendering
 
             SetPostProcessing();
         }
+
 
         public void TogglePostEffects(bool effectsOn)
         {
