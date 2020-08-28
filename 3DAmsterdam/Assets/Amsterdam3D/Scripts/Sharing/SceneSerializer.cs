@@ -56,9 +56,9 @@ namespace Amsterdam3D.Sharing
 
         IEnumerator GetSharedScene(string sceneId)
         {
-            Debug.Log(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/scene.json");
+            Debug.Log(Constants.SHARE_URL + sceneId + "_scene.json");
 
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/scene.json");
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + sceneId + "_scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.isNetworkError)
@@ -141,8 +141,8 @@ namespace Amsterdam3D.Sharing
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
         {
             
-            Debug.Log(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/" + token + ".dat");
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + "customDownload.php?name=" + sceneId + "/" + token + ".dat");
+            Debug.Log(Constants.SHARE_URL + token + ".dat");
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
             if (getModelRequest.isNetworkError)
