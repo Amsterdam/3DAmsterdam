@@ -27,14 +27,12 @@ public static class Constants
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
         public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version; 
-        public static string SHARE_URL = "";
+        public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
 #else
     //USE DEVELOPMENT PATH BY DEFAULT
     public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
-    public static string SHARE_URL = "";
+    public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
     public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/webmap/web/index.html?view=";
-
-
 #endif
 }
