@@ -10,6 +10,7 @@ namespace Amsterdam3D.Sharing
     {
         public string sceneId;
         public string sceneUrl;
+        public string objectStoreReturn;
         public ModelUploadToken[] modelUploadTokens;
     }
 

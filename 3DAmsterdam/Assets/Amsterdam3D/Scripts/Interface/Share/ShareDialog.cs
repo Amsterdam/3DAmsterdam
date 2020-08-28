@@ -69,8 +69,7 @@ namespace Amsterdam3D.Interface.Sharing
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
 
-			Debug.Log("Scene return:");
-			Debug.Log(sceneSaveRequest.downloadHandler.text);
+			Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
 
 			//Check if we got some tokens for model uploads
 			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
@@ -89,8 +88,7 @@ namespace Amsterdam3D.Interface.Sharing
 					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 					yield return modelSaveRequest.SendWebRequest();
 
-					Debug.Log("Model return:");
-					Debug.Log(modelSaveRequest.downloadHandler.text);
+					Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
 
 					currentModel++;
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
