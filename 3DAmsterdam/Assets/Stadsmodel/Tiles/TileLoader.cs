@@ -10,9 +10,7 @@ using UnityEngine.Networking;
 
 using System;
 using ConvertCoordinates;
-
-
-
+using Amsterdam3D.CameraMotion;
 
 public class TileLoader : MonoBehaviour
 {
@@ -57,7 +55,7 @@ public class TileLoader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CV = Camera.main.GetComponent<CameraView>();
+        CV = CameraControls.Instance.camera.GetComponent<CameraView>();
         terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
     }
 
@@ -302,7 +300,7 @@ public class TileLoader : MonoBehaviour
         LocatieUnity.y = (float)CoordConvert.ReferenceWGS84.h;
         LocatieUnity.z = (float)((Lat - CoordConvert.ReferenceWGS84.lat) * CoordConvert.UnitsPerDegreeY);
         //LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-        Vector3 afstand3D = LocatieUnity - Camera.main.transform.localPosition;
+        Vector3 afstand3D = LocatieUnity - CameraControls.Instance.camera.transform.localPosition;
         double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
         return afstand;
     }

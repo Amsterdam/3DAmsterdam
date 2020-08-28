@@ -1,4 +1,5 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.CameraMotion;
+using ConvertCoordinates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -109,7 +110,7 @@ namespace Amsterdam3D.Interface
 
         private void PutPointerOnCameraLocation()
         {
-            var cameraRDPosition = CoordConvert.UnitytoRD(Camera.main.transform.position);
+            var cameraRDPosition = CoordConvert.UnitytoRD(CameraControls.Instance.camera.transform.position);
 
             var posX = Mathf.InverseLerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, (float)cameraRDPosition.x);
             var posY = Mathf.InverseLerp(mapBottomLeftRDCoordinates.y, mapTopRightRDCoordinates.y, (float)cameraRDPosition.y);
@@ -136,8 +137,8 @@ namespace Amsterdam3D.Interface
                 y = Mathf.Lerp(MapBottomLeftRDCoordinates.y, MapTopRightRDCoordinates.y, localClickPosition.y / mapPixelWidth),
                 z = 0.0
             });
-            RDcoordinate.y = Camera.main.transform.position.y;
-            Camera.main.transform.position = RDcoordinate;
+            RDcoordinate.y = CameraControls.Instance.camera.transform.position.y;
+            CameraControls.Instance.camera.transform.position = RDcoordinate;
 
             //PutPointerOnCameraLocation(); //TODO: Needs a smooth transition to not be disturbing
             //CenterMapOnPointer();
