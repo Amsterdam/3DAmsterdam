@@ -16,6 +16,10 @@ namespace Amsterdam3D.Interface
 
         private Pointer pointer;
 
+        [SerializeField]
+        [Tooltip("Leave empty to place object in root")]
+        private Transform targetParent;
+
         private void Start()
         {
             pointer = FindObjectOfType<Pointer>();
@@ -26,17 +30,26 @@ namespace Amsterdam3D.Interface
         /// Move existing GameObject to the pointer and create a linked interface layer
         /// </summary>
         /// <param name="existingGameobject">Reference to existing GameObject</param>
-        public void AtPointer(GameObject existingGameobject) {
+        public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
             existingGameobject.transform.position = pointer.WorldPosition;
             layers.AddNewCustomObjectLayer(existingGameobject, layerType);
         }
         /// <summary>
         /// Spawn the customObject prefab at the pointer location and create a linked interface layer
         /// </summary>
-        public void AtPointer()
+        public void SpawnNewObjectAtPointer()
         {
-            GameObject newObject = Instantiate(customObject, pointer.WorldPosition, Quaternion.identity);
-            layers.AddNewCustomObjectLayer(newObject, layerType);
+            GameObject newObject = Instantiate(customObject, targetParent);
+            CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(newObject, layerType);
+
+            if (layerType == LayerType.ANNOTATION)
+            {
+                var annotation = newObject.GetComponent<Annotation>();
+                annotation.interfaceLayer = interfaceLayer;
+            }
+            else{
+                newObject.transform.position = pointer.WorldPosition;
+            }
         }
     }
 }

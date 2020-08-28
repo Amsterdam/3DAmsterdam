@@ -1,32 +1,46 @@
 ﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Pointer : MonoBehaviour
+public class Pointer : WorldPointFollower
 {
-    private CameraControls cameraControls;
-    private RectTransform rectTransform;
+    private Image pointerImage;
 
     [SerializeField]
-    private Vector3 worldPosition = Vector3.zero;
-
-    public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
+    private float fadeOutTime = 0.3f;
 
     void Start()
     {
-        cameraControls = FindObjectOfType<CameraControls>();
-        rectTransform = GetComponent<RectTransform>();
-
-        CameraControls.focusPointChanged += MovePointerToPosition;
-    }
-        
-    public void MovePointerToPosition(Vector3 newPosition){
-        WorldPosition = newPosition;
+        CameraControls.focusingOnTargetPoint += Show;
+        pointerImage = GetComponent<Image>();
+        pointerImage.color = Color.clear;
     }
 
-    void Update()
+    /// <summary>
+    /// Makes the 2D pointer appear at this world location with full opacity, and start fading out
+    /// </summary>
+    /// <param name="atPosition">World position to follow</param>
+    public void Show(Vector3 atPosition)
     {
-        var viewportPosition = Camera.main.WorldToViewportPoint(WorldPosition);
-        rectTransform.anchorMin = viewportPosition;
-        rectTransform.anchorMax = viewportPosition;
+        AlignWithWorldPosition(atPosition);
+
+        pointerImage.color = Color.white;
+
+        StopAllCoroutines();
+        StartCoroutine(FadeOutImage());
+    }
+
+    IEnumerator FadeOutImage()
+    {
+        var elapsedTime = 0.0f;
+        while (elapsedTime < fadeOutTime)
+        {
+            yield return new WaitForEndOfFrame();
+            elapsedTime += Time.deltaTime;
+            var newColor = pointerImage.color;
+            newColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeOutTime);
+            pointerImage.color = newColor;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BruTile;
+﻿using Amsterdam3D.CameraMotion;
+using BruTile;
 using ConvertCoordinates;
 using System;
 using System.Collections;
@@ -48,7 +49,7 @@ public class BuildingTileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cameraViewExtent = Camera.main.GetComponent<CameraView>();
+        cameraViewExtent = CameraControls.Instance.camera.GetComponent<CameraView>();
 
     }
 
@@ -78,7 +79,7 @@ public class BuildingTileManager : MonoBehaviour
     private void UpdateActiveTileList(Extent wGSExtent)
     {
         Extent rDExtent = ConvertWGSExtentToRDExtent(wGSExtent);
-        Vector3RD camlocation3RD = CoordConvert.UnitytoRD(Camera.main.transform.localPosition);
+        Vector3RD camlocation3RD = CoordConvert.UnitytoRD(CameraControls.Instance.camera.transform.localPosition);
         Vector3 camlocationRD = new Vector3((float)camlocation3RD.x, (float)camlocation3RD.y, (float)camlocation3RD.z);
         
         Dictionary<Vector3, int> BuildingTilesNeeded = new Dictionary<Vector3, int>();

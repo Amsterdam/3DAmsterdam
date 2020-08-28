@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
 		BASICSHAPE,
 		OBJMODEL,
 		STATIC,
-		DYNAMIC_MATERIALS
+		ANNOTATION
 	}
 	
 	public class InterfaceLayer : MonoBehaviour
@@ -19,42 +19,57 @@ namespace Amsterdam3D.Interface
 		protected LayerType layerType = LayerType.STATIC;
 		public LayerType LayerType { get => layerType; }
 
-		private bool active = true;
-		public bool Active
-		{
-			get
-			{
-				return active;
-			}
-			set
-			{
-				active = value;
-				toggleActiveLayer.isOn = active;
-			}
-		}
-
 		[SerializeField]
-		private GameObject linkedObject;
-		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
+		protected GameObject linkedObject;
 
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
+		public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
+
+		private List<Color> resetColorValues;
 
 		[SerializeField]
-		private Toggle toggleActiveLayer;
+		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
-		protected InterfaceLayers parentInterfaceLayers;
-
-		[SerializeField]
-		private Image visualOptionsButton;
-		private void Start()
+		private Image layerOptionsButton;
+		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
-			if (LinkedObject){
+			if (linkedObject)
+			{
 				UpdateLayerPrimaryColor();
+				GetResetColorValues();
 			}
+		}
+
+		public void EnableOptions(bool enabled)
+		{
+			layerOptionsButton.gameObject.SetActive(enabled);
+		}
+
+		/// <summary>
+		/// Grab all the starting colors for this layer, so we can always reset it back during runtime
+		/// </summary>
+		private void GetResetColorValues()
+		{
+			//Store all the colors for the materials so we can reset to it later
+			resetColorValues = new List<Color>();
+			foreach (Material material in uniqueLinkedObjectMaterials)
+				resetColorValues.Add(material.GetColor("_BaseColor"));
+		}
+
+		/// <summary>
+		/// Reset all the linked materials their color back to their starting values
+		/// </summary>
+		public void ResetAllColors()
+		{
+			for (int i = 0; i < uniqueLinkedObjectMaterials.Count; i++)
+			{
+				uniqueLinkedObjectMaterials[i].SetColor("_BaseColor", resetColorValues[i]);
+			}
+			UpdateLayerPrimaryColor();
 		}
 
 		/// <summary>
@@ -63,21 +78,22 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="newLinkedObject">The GameObject to be linked</param>
 		public void LinkObject(GameObject newLinkedObject){
-			LinkedObject = newLinkedObject;
+			linkedObject = newLinkedObject;
 
 			switch(layerType)
 			{
 				case LayerType.BASICSHAPE:
-					//Create a clone so we can change this specific material
-					uniqueLinkedObjectMaterials.Add(LinkedObject.GetComponent<MeshRenderer>().material);
+					//Target the main material of a basic shape
+					uniqueLinkedObjectMaterials.Add(linkedObject.GetComponent<MeshRenderer>().material);
 					break;
 				case LayerType.OBJMODEL:
 					//Get all the nested materials in this OBJ
-					FetchUniqueNestedMaterials();
+					GetUniqueNestedMaterials();
 					break;
 			}
 
 			UpdateLayerPrimaryColor();
+			GetResetColorValues();
 		}
 
 		/// <summary>
@@ -87,16 +103,16 @@ namespace Amsterdam3D.Interface
 		public void UpdateLayerPrimaryColor()
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
-				visualOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
+				layerOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 		}
 
 		/// <summary>
 		/// Fetch all the nested Materials found in renderers within the linked GameObject.
 		/// </summary>
-		public void FetchUniqueNestedMaterials(){
+		public void GetUniqueNestedMaterials(){
 			uniqueLinkedObjectMaterials = new List<Material>();
-
-			Renderer[] linkedObjectRenderers = LinkedObject.GetComponentsInChildren<Renderer>(true);
+			
+			Renderer[] linkedObjectRenderers = linkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
 				foreach (Material sharedMaterial in renderer.sharedMaterials)
@@ -115,13 +131,7 @@ namespace Amsterdam3D.Interface
 		/// <param name="isOn"></param>
 		public void ToggleLinkedObject(bool isOn)
 		{
-			active = isOn;
-			LinkedObject.SetActive(active);
-		}
-
-		public void SetMaterialProperties(int slotId, Color color)
-		{
-			uniqueLinkedObjectMaterials[slotId].SetColor("_BaseColor",color);
+			linkedObject.SetActive(isOn);
 		}
 
 		/// <summary>

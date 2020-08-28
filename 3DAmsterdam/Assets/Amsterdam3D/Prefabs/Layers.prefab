@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4498901013071965063}
   - component: {fileID: 4498901013071965060}
+  - component: {fileID: 1814701005}
   m_Layer: 0
   m_Name: Buildings
   m_TagString: Untagged
@@ -38,7 +39,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4498901013071965061}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4214f956c7198246a26fbd85ca682eb, type: 3}
   m_Name: 
@@ -46,11 +47,45 @@ MonoBehaviour:
   dataFolder: buildings
   defaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
   highLightMaterial: {fileID: 2100000, guid: cd867c0d1d193d04e89dcecaef7cb1fd, type: 2}
-  maximumDistanceLOD2: 500
-  maximumDistanceLOD1: 1000
+  maximumDistanceLOD2: 2000
+  maximumDistanceLOD1: 3000
   maximumDistanceLOD0: 6000
   maximumConcurrentDownloads: 5
   layerName: Panden
+--- !u!114 &1814701005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013071965061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601c8c3306aa1b249a9997e8681ad08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
+  tileSize: 1000
+  layerPriority: 0
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: buildings/buildings_{x}_{y}.0
+    maximumDistance: 6000
+    maximumDistanceSquared: 0
+    enabled: 0
+  - Description: LOD1
+    lod: 1
+    path: buildings/buildings_{x}_{y}.1
+    maximumDistance: 3000
+    maximumDistanceSquared: 0
+    enabled: 0
+  - Description: LOD2
+    lod: 2
+    path: buildings/buildings_{x}_{y}.2
+    maximumDistance: 1500
+    maximumDistanceSquared: 0
+    enabled: 0
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,6 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013433943612}
+  - component: {fileID: 4498901014617163852}
   m_Layer: 0
   m_Name: Layers
   m_TagString: Untagged
@@ -132,6 +168,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4498901014617163852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013433943613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bf815e09f26f1845a92ef4f3860d415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maximumConcurrentDownloads: 5
+  layers:
+  - {fileID: 1814701005}
 --- !u!1 &4498901013737045302
 GameObject:
   m_ObjectHideFlags: 0

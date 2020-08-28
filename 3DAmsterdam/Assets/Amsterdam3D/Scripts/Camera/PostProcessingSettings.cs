@@ -1,51 +1,61 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class PostProcessingSettings : MonoBehaviour
+namespace Amsterdam3D.Rendering
 {
-    private bool antiAliasing = true;
-    private bool postEffects = true;
-
-    private UniversalAdditionalCameraData universalCameraData;
-
-    [SerializeField]
-    private Volume postProcessingVolume;
-
-    private void Start()
+    public class PostProcessingSettings : MonoBehaviour
     {
-        universalCameraData = Camera.main.GetComponent<UniversalAdditionalCameraData>();
-    }
+        private bool antiAliasing = true;
+        private bool postEffects = true;
 
-    public void ToggleAA(bool antiAliasingOn)
-    {
-        antiAliasing = antiAliasingOn;
+        private UniversalAdditionalCameraData universalCameraData;
 
-        //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
-        if (universalCameraData)
+        [SerializeField]
+        private Volume postProcessingVolume;
+
+        private void Start()
         {
-            universalCameraData.antialiasing = (antiAliasing) ? AntialiasingMode.FastApproximateAntialiasing : AntialiasingMode.None;
-        }
-        else
-        {
-            QualitySettings.antiAliasing = (antiAliasing) ? 2 : 0;
+            universalCameraData = CameraControls.Instance.camera.GetComponent<UniversalAdditionalCameraData>();
         }
 
-        SetPostProcessing();
-    }
+        /// <summary>
+        /// Toggles antialiasing on or off.
+        /// </summary>
+        /// <param name="antiAliasingOn"></param>
+        public void ToggleAA(bool antiAliasingOn)
+        {
+            antiAliasing = antiAliasingOn;
 
-    public void TogglePostEffects(bool effectsOn){
-        postEffects = effectsOn;
-        postProcessingVolume.enabled = postEffects;
+            //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
+            if (universalCameraData)
+            {
+                universalCameraData.antialiasing = (antiAliasing) ? AntialiasingMode.FastApproximateAntialiasing : AntialiasingMode.None;
+            }
+            else
+            {
+                QualitySettings.antiAliasing = (antiAliasing) ? 2 : 0;
+            }
 
-        SetPostProcessing();
-    }
+            SetPostProcessing();
+        }
 
-    private void SetPostProcessing()
-    {
-        //Post processing can be disabled entirely if there are no AA or effects enabled
-        universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
+
+        public void TogglePostEffects(bool effectsOn)
+        {
+            postEffects = effectsOn;
+            postProcessingVolume.enabled = postEffects;
+
+            SetPostProcessing();
+        }
+
+        private void SetPostProcessing()
+        {
+            //Post processing can be disabled entirely if there are no AA or effects enabled
+            universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
+        }
     }
 }

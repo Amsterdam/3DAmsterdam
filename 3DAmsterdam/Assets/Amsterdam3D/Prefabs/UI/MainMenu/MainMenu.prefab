@@ -117,8 +117,8 @@ RectTransform:
   m_Children:
   - {fileID: 666169196225268121}
   - {fileID: 6208576110711713744}
-  - {fileID: 8352668803557960838}
   - {fileID: 5646125440362248867}
+  - {fileID: 7772712063144033589}
   - {fileID: 430206690417847781}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -304,19 +304,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: Download gebied
---- !u!114 &2820642117835837362
+--- !u!114 &7025696427273182039
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8352668803557960841}
+  m_GameObject: {fileID: 7772712063144033594}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipText: Delen
+  tooltipText: Zonnestand
 --- !u!1 &8905483317947638939
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &779004038142812362
+--- !u!1001 &1367696252443046265
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -401,18 +401,23 @@ PrefabInstance:
     - target: {fileID: 8729436290598581140, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 27
+      value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 8729436290598581140, guid: 39658359fa9dff740a6639817b1915a4,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 26
       objectReference: {fileID: 0}
     - target: {fileID: 8729436290598581141, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: d3e12e940bb8b934599be6d59a2b8ff3,
+      objectReference: {fileID: 21300000, guid: dfe3a07045f9fa34995cb9fbf09bd4ba,
         type: 3}
     - target: {fileID: 8729436291002256451, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_Name
-      value: ButtonShare
+      value: ButtonSun
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -452,7 +457,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -516,17 +521,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39658359fa9dff740a6639817b1915a4, type: 3}
---- !u!1 &8352668803557960841 stripped
+--- !u!1 &7772712063144033594 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8729436291002256451, guid: 39658359fa9dff740a6639817b1915a4,
     type: 3}
-  m_PrefabInstance: {fileID: 779004038142812362}
+  m_PrefabInstance: {fileID: 1367696252443046265}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &8352668803557960838 stripped
+--- !u!224 &7772712063144033589 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
     type: 3}
-  m_PrefabInstance: {fileID: 779004038142812362}
+  m_PrefabInstance: {fileID: 1367696252443046265}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3390219972602323868
 PrefabInstance:
@@ -716,7 +721,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256460, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}

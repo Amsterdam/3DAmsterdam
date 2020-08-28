@@ -1,4 +1,5 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.CameraMotion;
+using ConvertCoordinates;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -62,14 +63,14 @@ namespace Amsterdam3D.Interface
 
         private void PositionPointer()
         {
-            var posX = Mathf.InverseLerp(bottomLeftUnityCoordinates.x, topRightUnityCoordinates.x, Camera.main.transform.position.x);
-            var posY = Mathf.InverseLerp(bottomLeftUnityCoordinates.z, topRightUnityCoordinates.z, Camera.main.transform.position.z);
+            var posX = Mathf.InverseLerp(bottomLeftUnityCoordinates.x, topRightUnityCoordinates.x, CameraControls.Instance.camera.transform.position.x);
+            var posY = Mathf.InverseLerp(bottomLeftUnityCoordinates.z, topRightUnityCoordinates.z, CameraControls.Instance.camera.transform.position.z);
             minimapPointer.anchorMin = minimapPointer.anchorMax = new Vector3(posX, posY, 0);
         }
 
         private void RotatePointerToCameraLookDirection()
         {
-            direction.z = Camera.main.transform.eulerAngles.y;
+            direction.z = CameraControls.Instance.camera.transform.eulerAngles.y;
             minimapPointer.localEulerAngles = direction * -1.0f;
         }
 
@@ -141,7 +142,7 @@ namespace Amsterdam3D.Interface
         public void MoveToLocationOnMap(Vector3 locationOnRectTransform){
             var clickedWorldPositionX = Mathf.Lerp(bottomLeftUnityCoordinates.x, topRightUnityCoordinates.x, locationOnRectTransform.x);
             var clickedWorldPositionZ = Mathf.Lerp(bottomLeftUnityCoordinates.z, topRightUnityCoordinates.z, locationOnRectTransform.y);
-            Camera.main.transform.position = new Vector3(clickedWorldPositionX, Camera.main.transform.position.y, clickedWorldPositionZ);
+            CameraControls.Instance.camera.transform.position = new Vector3(clickedWorldPositionX, CameraControls.Instance.camera.transform.position.y, clickedWorldPositionZ);
         }
     }
 }
