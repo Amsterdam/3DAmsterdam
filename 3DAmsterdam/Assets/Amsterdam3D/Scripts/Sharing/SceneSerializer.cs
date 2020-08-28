@@ -105,7 +105,7 @@ namespace Amsterdam3D.Sharing
                     newCustomLayer.ViewingOnly(true);
                 }
                 newCustomLayer.Active = customLayer.active;
-                newCustomLayer.FetchUniqueNestedMaterials();
+                newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
 
                 StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
