@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6188447834923614755}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 190, y: -185, z: 0}
+  m_LocalPosition: {x: -794.02783, y: 677.8898, z: -1082.045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -43,14 +43,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19ca48cf59c2fa147999c7ae041f8794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appVersion: 0.0.1
+  appVersion: 0.2.2.1
   interfaceLayers: {fileID: 0}
   customLayerContainer: {fileID: 0}
   buildingsLayer: {fileID: 0}
   treesLayer: {fileID: 0}
   groundLayer: {fileID: 0}
   urlViewIDVariable: ?view=
-  savedScenePath: uploads
   sharedSceneId: 
   sourceMaterialForParsedMeshes: {fileID: 2100000, guid: c819d018e5b8b174d84f338b2ebb7dec,
     type: 2}
+  removeObjectsWhenViewing:
+  - {fileID: 0}

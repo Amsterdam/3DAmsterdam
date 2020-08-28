@@ -222,7 +222,7 @@ namespace Amsterdam3D.Sharing
 
             var dataStructure = new SerializableScene
             {
-                appVersion = Application.version + "-" + appVersion, //Set in SceneSerializer
+                appVersion = Application.version, //Set in SceneSerializer
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
                 virtualTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Will be our virtual world time, linked to the Sun
