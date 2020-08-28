@@ -13,9 +13,6 @@ namespace Amsterdam3D.Sharing
     public class SceneSerializer : MonoBehaviour
     {
         [SerializeField]
-        private string appVersion = "0.0.1";
-
-        [SerializeField]
         private InterfaceLayers interfaceLayers;
 
         [SerializeField]
@@ -196,7 +193,7 @@ namespace Amsterdam3D.Sharing
             {
                 sceneId = sceneId,
                 meshToken = meshToken,
-                version = appVersion,
+                version = Application.version,
                 meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
                 verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
                 //uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv), //No texture support yet. So we dont need these yet.
