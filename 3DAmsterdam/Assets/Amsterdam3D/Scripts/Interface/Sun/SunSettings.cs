@@ -97,6 +97,8 @@ public class SunSettings : MonoBehaviour
     }
     public void SetDateTimeFromString(string dateTimeString)
     {
+        if (dateTimeNow == null) dateTimeNow = DateTime.Now;
+
         DateTime.TryParse(dateTimeString, out dateTimeNow);
     }
 

@@ -113,12 +113,16 @@ namespace Amsterdam3D.Sharing
             {
                 //Create the 2D annotation
                 var annotationData = scene.annotations[i];
+
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
 
                 //Create a custom annotation layer
                 CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION);
+                newCustomAnnotationLayer.RenameLayer(annotationData.bodyText);
+                annotation.interfaceLayer = newCustomAnnotationLayer;
+
                 if (!scene.allowSceneEdit)
                 {
                     newCustomAnnotationLayer.ViewingOnly(true);
@@ -127,9 +131,9 @@ namespace Amsterdam3D.Sharing
             }
 
             //Create all custom layers with meshes
-            for (int i = 0; i < scene.customMeshLayers.Length; i++)
+            for (int i = 0; i < scene.customLayers.Length; i++)
             {
-                SerializableScene.CustomLayer customLayer = scene.customMeshLayers[i];
+                SerializableScene.CustomLayer customLayer = scene.customLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
                 ApplyLayerMaterialsToObject(customLayer, customObject);
@@ -277,7 +281,7 @@ namespace Amsterdam3D.Sharing
                     rotation = new SerializableScene.Quaternion { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
                 annotations  = GetAnnotations(),
-                customMeshLayers = GetCustomMeshLayers(),
+                customLayers = GetCustomMeshLayers(),
                 fixedLayers = new SerializableScene.FixedLayers {
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
@@ -311,6 +315,7 @@ namespace Amsterdam3D.Sharing
             {
                 annotationsData.Add(new SerializableScene.Annotation
                 {
+                    active = annotation.interfaceLayer.Active,
                     position = new SerializableScene.Vector3 { x = annotation.WorldPosition.x, y = annotation.WorldPosition.y, z = annotation.WorldPosition.z },
                     bodyText = annotation.BodyText
                 });
