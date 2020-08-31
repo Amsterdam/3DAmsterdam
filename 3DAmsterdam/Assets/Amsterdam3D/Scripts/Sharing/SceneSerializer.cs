@@ -119,7 +119,7 @@ namespace Amsterdam3D.Sharing
                 annotation.BodyText = annotationData.bodyText;
 
                 //Create a custom annotation layer
-                CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION);
+                CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION, false);
                 newCustomAnnotationLayer.RenameLayer(annotationData.bodyText);
                 annotation.interfaceLayer = newCustomAnnotationLayer;
 
@@ -138,7 +138,7 @@ namespace Amsterdam3D.Sharing
                 customObject.name = customLayer.layerName;
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
-                CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL);
+                CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
                 if (!scene.allowSceneEdit)
                 {
                     newCustomLayer.ViewingOnly(true);

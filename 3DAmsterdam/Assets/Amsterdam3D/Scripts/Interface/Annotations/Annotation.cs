@@ -31,7 +31,7 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        private void Start()
+        public void PlaceUsingMouse()
         {
             StartCoroutine(StickToMouse());
         }
