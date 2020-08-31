@@ -140,6 +140,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: (Tijdelijk uitgeschakeld)
+--- !u!114 &117727496 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2389478210589887073, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158c17ece47f7eb4087d15656ec02ab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &150834279 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6207915289941001662, guid: 551dff695a15b634a97abe62e9edd824,
@@ -348,6 +360,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f7bd053eada1064e9e58e50aa8dac2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1763915816 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5016678837279879556, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1814701004 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013071965061, guid: 1686781c0bba69b41bd5102479f39f29,
@@ -6283,6 +6301,22 @@ PrefabInstance:
       propertyPath: removeObjectsWhenViewing.Array.data[0]
       value: 
       objectReference: {fileID: 1167389101}
+    - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
+        type: 3}
+      propertyPath: sunSettings
+      value: 
+      objectReference: {fileID: 117727496}
+    - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
+        type: 3}
+      propertyPath: annotationsContainer
+      value: 
+      objectReference: {fileID: 1763915816}
+    - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
+        type: 3}
+      propertyPath: annotationPrefab
+      value: 
+      objectReference: {fileID: 462819011154374467, guid: 4e54c1e7bafa0d74e8429caaf7a63ad0,
+        type: 3}
     - target: {fileID: 4437516830654672952, guid: 62959bc94378b334691032ece604518e,
         type: 3}
       propertyPath: m_LocalPosition.x

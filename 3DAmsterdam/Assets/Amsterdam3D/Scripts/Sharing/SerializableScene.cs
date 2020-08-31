@@ -6,15 +6,23 @@
         public string appVersion;
         public string buildType;
         public string timeStamp;
-        public string virtualTimeStamp;
+        public string sunTimeStamp; //Time used to set the sun position
         public bool allowSceneEdit;
 
-        public Weather weather;
         public PostProcessing postProcessing;
         public Camera camera;
 
-        public CustomLayer[] customLayers;
+        public Annotation[] annotations;
+        public CustomLayer[] customMeshLayers;
         public FixedLayers fixedLayers;
+
+        [System.Serializable]
+        public struct Annotation
+        {
+            public bool active;
+            public string bodyText;
+            public Vector3 position;
+        }
 
         [System.Serializable]
         public struct FixedLayers{ 
@@ -48,8 +56,6 @@
             public Material[] materials;
         }
 
-        [System.Serializable]
-        public struct Weather{}
         [System.Serializable]
         public struct PostProcessing { }
         [System.Serializable]
