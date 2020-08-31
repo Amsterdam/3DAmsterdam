@@ -13,7 +13,7 @@
         public Camera camera;
 
         public Annotation[] annotations;
-        public CustomLayer[] customMeshLayers;
+        public CustomLayer[] customLayers;
         public FixedLayers fixedLayers;
 
         [System.Serializable]
