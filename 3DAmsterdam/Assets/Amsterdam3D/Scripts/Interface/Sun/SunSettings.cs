@@ -91,6 +91,15 @@ public class SunSettings : MonoBehaviour
         UpdateNumericInputs();
     }
 
+    public string GetDateTimeAsString()
+    {
+        return dateTimeNow.ToString();
+    }
+    public void SetDateTimeFromString(string dateTimeString)
+    {
+        DateTime.TryParse(dateTimeString, out dateTimeNow);
+    }
+
     /// <summary>
     /// Set the time of the day directly as string
     /// </summary>
