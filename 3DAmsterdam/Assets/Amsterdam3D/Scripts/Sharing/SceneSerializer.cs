@@ -1,4 +1,5 @@
-﻿using Amsterdam3D.Interface;
+﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,11 @@ namespace Amsterdam3D.Sharing
 
         [SerializeField]
         private RectTransform customLayerContainer;
+
+        [SerializeField]
+        private RectTransform annotationsContainer;
+        [SerializeField]
+        private Annotation annotationPrefab;
 
         [SerializeField]
         private SunSettings sunSettings;
@@ -54,6 +60,11 @@ namespace Amsterdam3D.Sharing
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
 
+        /// <summary>
+        /// Download a shared scene JSON file from the objectstore using a unique ID.
+        /// </summary>
+        /// <param name="sceneId">The unique sharing ID</param>
+        /// <returns></returns>
         IEnumerator GetSharedScene(string sceneId)
         {
             Debug.Log(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + sceneId + "_scene.json");
@@ -74,6 +85,11 @@ namespace Amsterdam3D.Sharing
             yield return null;
         }
 
+        /// <summary>
+        /// Recreates a scene based on parsed JSON data (SerializableScene).
+        /// </summary>
+        /// <param name="scene">The scene data we parsed from JSON</param>
+        /// <param name="sceneId">The unique ID of the scene, used for downloading custom objects</param>
         public void ParseSerializableScene(SerializableScene scene, string sceneId)
         {
             if (!scene.allowSceneEdit)
@@ -81,20 +97,39 @@ namespace Amsterdam3D.Sharing
                 RemoveObjectsForViewing();
             }
 
-            Camera.main.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
-            Camera.main.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
+            CameraControls.Instance.camera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
+            CameraControls.Instance.camera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
-            var cameraRotation = Camera.main.transform.rotation;
+            //Apply sunlight settings
+            sunSettings.SetDateTimeFromString(scene.sunTimeStamp);
 
             //Fixed layer settings
             buildingsLayer.Active = scene.fixedLayers.buildings.active;
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
 
-            //Create all custom layers
-            for (int i = 0; i < scene.customLayers.Length; i++)
+            //Create annotations
+            for (int i = 0; i < scene.annotations.Length; i++)
             {
-                SerializableScene.CustomLayer customLayer = scene.customLayers[i];
+                //Create the 2D annotation
+                var annotationData = scene.annotations[i];
+                Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
+                annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
+                annotation.BodyText = annotationData.bodyText;
+
+                //Create a custom annotation layer
+                CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION);
+                if (!scene.allowSceneEdit)
+                {
+                    newCustomAnnotationLayer.ViewingOnly(true);
+                }
+                newCustomAnnotationLayer.Active = annotationData.active;
+            }
+
+            //Create all custom layers with meshes
+            for (int i = 0; i < scene.customMeshLayers.Length; i++)
+            {
+                SerializableScene.CustomLayer customLayer = scene.customMeshLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
                 ApplyLayerMaterialsToObject(customLayer, customObject);
@@ -218,26 +253,31 @@ namespace Amsterdam3D.Sharing
             return subMeshes;
         }
 
+        /// <summary>
+        /// Serialize the scene into a SerializableScene, so we can turn it into JSON data and share it.
+        /// </summary>
+        /// <param name="allowSceneEditAfterSharing">Should the user be able to edit the scene when viewing this scene?</param>
+        /// <returns></returns>
         public SerializableScene SerializeScene(bool allowSceneEditAfterSharing = false)
         {
-            var cameraPosition = Camera.main.transform.position;
-            var cameraRotation = Camera.main.transform.rotation;
+            var cameraPosition = CameraControls.Instance.camera.transform.position;
+            var cameraRotation = CameraControls.Instance.camera.transform.rotation;
 
             var dataStructure = new SerializableScene
             {
                 appVersion = Application.version, //Set in SceneSerializer
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
-                virtualTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Will be our virtual world time, linked to the Sun
-                allowSceneEdit = allowSceneEditAfterSharing,
-                weather = new SerializableScene.Weather { },
+                sunTimeStamp = sunSettings.GetDateTimeAsString(), //Will be our virtual world time, linked to the Sun
+                allowSceneEdit = allowSceneEditAfterSharing,                
                 postProcessing = new SerializableScene.PostProcessing { },
                 camera = new SerializableScene.Camera
                 {
                     position = new SerializableScene.Vector3 { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
                     rotation = new SerializableScene.Quaternion { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
-                customLayers = GetCustomLayers(),
+                annotations  = GetAnnotations(),
+                customMeshLayers = GetCustomMeshLayers(),
                 fixedLayers = new SerializableScene.FixedLayers {
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
@@ -257,7 +297,28 @@ namespace Amsterdam3D.Sharing
             };
             return dataStructure;
         }
-        private SerializableScene.CustomLayer[] GetCustomLayers()
+
+        /// <summary>
+        /// Gets all the annotations and turn in into serializable data
+        /// </summary>
+        /// <returns>Array containing serialized data</returns>
+        private SerializableScene.Annotation[] GetAnnotations()
+        {
+            var annotations = annotationsContainer.GetComponentsInChildren<Annotation>(true);
+            var annotationsData = new List<SerializableScene.Annotation>();
+            
+            foreach (var annotation in annotations)
+            {
+                annotationsData.Add(new SerializableScene.Annotation
+                {
+                    position = new SerializableScene.Vector3 { x = annotation.WorldPosition.x, y = annotation.WorldPosition.y, z = annotation.WorldPosition.z },
+                    bodyText = annotation.BodyText
+                });
+            }
+
+            return annotationsData.ToArray();
+        }
+        private SerializableScene.CustomLayer[] GetCustomMeshLayers()
         {
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
             var customLayersData = new List<SerializableScene.CustomLayer>();
