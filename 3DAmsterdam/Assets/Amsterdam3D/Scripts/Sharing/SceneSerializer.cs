@@ -19,6 +19,9 @@ namespace Amsterdam3D.Sharing
         private RectTransform customLayerContainer;
 
         [SerializeField]
+        private SunSettings sunSettings;
+
+        [SerializeField]
         private InterfaceLayer buildingsLayer;
         [SerializeField]
         private InterfaceLayer treesLayer;
