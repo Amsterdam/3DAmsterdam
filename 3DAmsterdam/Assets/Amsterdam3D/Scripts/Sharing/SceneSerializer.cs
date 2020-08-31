@@ -169,6 +169,9 @@ namespace Amsterdam3D.Sharing
             customObject.AddComponent<MeshRenderer>().materials = materials;
         }
 
+        /// <summary>
+        /// Removes a list of objects we do not want to show in viewmode
+        /// </summary>
         private void RemoveObjectsForViewing()
         {
             foreach(GameObject gameObject in removeObjectsWhenViewing)
