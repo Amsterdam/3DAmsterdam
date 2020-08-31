@@ -86,6 +86,17 @@
 		width: 100%;
 		opacity: 0;
 	  } 
+
+      #sharedUrl{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-left: 109px;
+        margin-top: 150px;
+        z-index: 2;
+        width: 170px;
+        height: 40px;
+      }      
 	 
       @keyframes spinner-spin {
         0% {
