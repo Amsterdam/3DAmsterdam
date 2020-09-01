@@ -61,10 +61,7 @@ public class SunSettings : MonoBehaviour
 
     public void Start()
     {
-        //Get the GPS coordinates for our world centre
-        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
-        longitude = coordinates.lon;
-        latitude = coordinates.lat;
+        SetGPSCoordinates();
 
         //Receive changes from wheel input
         sunDragWheel.deltaTurn += SunPositionChangedFromWheel;
@@ -75,7 +72,16 @@ public class SunSettings : MonoBehaviour
         monthInput.addedOffset += ChangedMonth;
         yearInput.addedOffset += ChangedYear;
 
-        ResetTimeToNow();
+        if (dateTimeNow == null)
+            ResetTimeToNow();
+    }
+
+    private void SetGPSCoordinates()
+    {
+        //Get the GPS coordinates for our world centre
+        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
+        longitude = coordinates.lon;
+        latitude = coordinates.lat;
     }
 
     private void ChangedTime(int withOffset)
@@ -100,6 +106,10 @@ public class SunSettings : MonoBehaviour
         if (dateTimeNow == null) dateTimeNow = DateTime.Now;
 
         DateTime.TryParse(dateTimeString, out dateTimeNow);
+
+        SetGPSCoordinates();
+        UpdateNumericInputs();
+        ChangeSunPosition();
     }
 
     /// <summary>
