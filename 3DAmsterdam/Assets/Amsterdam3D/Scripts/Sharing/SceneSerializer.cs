@@ -44,8 +44,13 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private Material sourceMaterialForParsedMeshes;
 
+        [Tooltip("Remove these objects when we are looking at a shared scene with editing allowed")]
         [SerializeField]
-        private GameObject[] removeObjectsWhenViewing;
+        private GameObject[] objectsRemovedInEditMode;
+
+        [Tooltip("Remove these objects when we are looking at a shared scene with editing not allowed")]
+        [SerializeField]
+        private GameObject[] objectsRemovedInViewMode;
 
         private void Start()
         {
@@ -92,10 +97,7 @@ namespace Amsterdam3D.Sharing
         /// <param name="sceneId">The unique ID of the scene, used for downloading custom objects</param>
         public void ParseSerializableScene(SerializableScene scene, string sceneId)
         {
-            if (!scene.allowSceneEdit)
-            {
-                RemoveObjectsForViewing();
-            }
+            HideObjectsInViewMode(scene.allowSceneEdit);
 
             CameraControls.Instance.camera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
             CameraControls.Instance.camera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
@@ -170,13 +172,23 @@ namespace Amsterdam3D.Sharing
         }
 
         /// <summary>
-        /// Removes a list of objects we do not want to show in viewmode
+        /// Removes a list of objects we do not want to show in view or edit mode
         /// </summary>
-        private void RemoveObjectsForViewing()
+        private void HideObjectsInViewMode(bool editAllowed = false)
         {
-            foreach(GameObject gameObject in removeObjectsWhenViewing)
+            if (editAllowed)
             {
-                Destroy(gameObject);
+                foreach (GameObject gameObject in objectsRemovedInEditMode)
+                {
+                    Destroy(gameObject);
+                }
+            }
+            else
+            {
+                foreach (GameObject gameObject in objectsRemovedInViewMode)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
 
