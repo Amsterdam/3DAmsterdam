@@ -31,7 +31,7 @@ namespace cityJSON
                         buildingname = item.value;
                     }
                 }
-                //objMap.Objectmap.Add(buildingnumber, buildingname);
+                objMap.Objectmap.Add(buildingnumber, buildingname);
                 objMap.BagID.Add(buildingname);
                 buildingnumber++;
                 List<SurfaceData> surfaces = SortSurfacesBySemantics(building, identifiername,buildingnumber);

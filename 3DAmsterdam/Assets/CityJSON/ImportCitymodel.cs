@@ -9,8 +9,8 @@ using UnityEngine;
 public class ImportCitymodel: MonoBehaviour
 {
 
-    [MenuItem("GameObject/CityJSON/Import Citymodel",false,10)]
-    static void importeer()
+    
+    public void Start()
     {
         int Xmin = 105000;
         int Ymin = 475000;
@@ -19,46 +19,65 @@ public class ImportCitymodel: MonoBehaviour
 
         int stepSize = 1000;
 
-        string basefilepath = "D:/CityGmlFromDBV2/";
+        string basefilepath = "E:/brondata/LOD2Buildings/";
         string filepath = "";
         string filename = "gebouwenLOD2.json";
         int LOD = 2;
 
         //testpurpose
-        Xmin = 129000;
+        //Xmin = 129000;
+        //Xmax = 130000;
+        //Ymin = 185000;
+        //Ymax = 186000;
         //Ymax = 476000;
 
-        for (int X = 0; X < (Xmax-Xmin)/stepSize; X++)
-        {
-            for (int Y = 0; Y < (Ymax - Ymin) / stepSize; Y++)
-            {
-                filepath = basefilepath + "tile_" + Y + "_" + X + "/";
+        //for (int X = 0; X < (Xmax-Xmin)/stepSize; X++)
+        //{
+        //    for (int Y = 0; Y < (Ymax - Ymin) / stepSize; Y++)
+        //    {
+        //        filepath = basefilepath + "tile_" + Y + "_" + X + "/";
+        //        Debug.Log(filepath);
+        //        double originX = (X * stepSize) + Xmin;
+        //        double originY = (Y * stepSize) + Ymin;
+        //        CreateTile(filepath, filename, LOD, originX, originY);
+        //    }
+        //}
+        int X = 12;
+        int Y = 1;
+
+                    filepath = basefilepath + "tile_" + Y + "_" + X + "/";
                 Debug.Log(filepath);
-                double originX = (X * stepSize) + Xmin;
-                double originY = (Y * stepSize) + Ymin;
-                CreateTile(filepath, filename, LOD, originX, originY);
-            }
-        }
-    
-    //GameObject go = Selection.activeGameObject;
+        double originX = (X * stepSize) + Xmin;
+        double originY = (Y * stepSize) + Ymin;
+        CreateTile(filepath, filename, LOD, originX, originY);
+
+
+        //GameObject go = Selection.activeGameObject;
         //CityJSONSettings settings = go.GetComponent<CityJSONSettings>();
 
         //CreateTile(settings.filepath, settings.filename, settings.LOD, settings.Origin.x, settings.Origin.y);
 
     }
 
-   static void CreateTile(string filepath, string filename,int LOD, double X, double Y)
+
+
+
+    static void CreateTile(string filepath, string filename,int LOD, double X, double Y)
     {
         CityModel Citymodel = new CityModel(filepath, filename);
         List<Building> buildings = Citymodel.LoadBuildings(LOD);
-        Citymodel = null;
+        
 
-        CreateGameObjectsV2 objCreatorV2 = new CreateGameObjectsV2();
+        CreateBuildingSurface createBuildingSurface = new CreateBuildingSurface();
         GameObject container;
-        container = objCreatorV2.CreateMeshesByIdentifier(buildings, "name",new ConvertCoordinates.Vector3RD(X+500,Y+500,0));
-        objCreatorV2 = null;
+        container = createBuildingSurface.CreateMesh(Citymodel, new ConvertCoordinates.Vector3RD(X, Y, 0));
+        
         SavePrefab(container, X.ToString(), Y.ToString(), LOD);
         buildings = null;
+        Citymodel = null;
+
+        
+
     }
 
     static void SavePrefab(GameObject container, string X, string Y, int LOD)
@@ -69,6 +88,25 @@ public class ImportCitymodel: MonoBehaviour
         string SquareFolder = CreateAssetFolder(LODfolder, X + "_" + Y);
         string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
         string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
+        string dataFolder = CreateAssetFolder(SquareFolder, "data");
+        ObjectMappingClass objectMappingClass = ScriptableObject.CreateInstance<ObjectMappingClass>();
+        objectMappingClass.ids = container.GetComponent<ObjectMapping>().BagID;
+        objectMappingClass.triangleCount = container.GetComponent<ObjectMapping>().TriangleCount;
+        Vector2[] meshUV = container.GetComponent<MeshFilter>().mesh.uv;
+        objectMappingClass.vectorMap = container.GetComponent<ObjectMapping>().vectorIDs;
+        List <Vector2> mappedUVs = new List<Vector2>();
+        Vector2Int TextureSize = ObjectIDMapping.GetTextureSize(objectMappingClass.ids.Count);
+        for (int i = 0; i < objectMappingClass.ids.Count; i++)
+        {
+            mappedUVs.Add(ObjectIDMapping.GetUV(i, TextureSize));
+        }
+
+        objectMappingClass.mappedUVs = mappedUVs;
+        objectMappingClass.TextureSize = TextureSize;
+        objectMappingClass.uvs = meshUV;
+        
+        container.GetComponent<MeshFilter>().mesh.uv = null;
+        AssetDatabase.CreateAsset(objectMappingClass, dataFolder + "/data.asset");
         int meshcounter = 0;
         foreach (MeshFilter mf in mfs)
         {
