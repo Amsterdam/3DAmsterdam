@@ -77,11 +77,11 @@ namespace Amsterdam3D.Interface.Sharing
 			if (serverReturn.modelUploadTokens.Length > 0)
 			{
 				progressBar.SetMessage("Objecten opslaan..");
+				progressBar.Percentage(0.3f);
 				var currentModel = 0;
 				while (currentModel < serverReturn.modelUploadTokens.Length)
 				{
 					progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-					progressBar.Percentage(0.3f);
 					var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel,serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token),false);						
 
 					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
@@ -92,7 +92,8 @@ namespace Amsterdam3D.Interface.Sharing
 
 					currentModel++;
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
-					var currentModelLoadPercentage = (float)currentModel / (float)serverReturn.modelUploadTokens.Length - 1;
+					var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
+					Debug.Log("Model load percentage: " + currentModelLoadPercentage);
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 					yield return new WaitForSeconds(0.2f);
 				}
