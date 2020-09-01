@@ -59,6 +59,8 @@ public class SunSettings : MonoBehaviour
 
     private string previousTimeString = "";
 
+    private bool usingSharedSceneTime = false;
+
     public void Start()
     {
         SetGPSCoordinates();
@@ -72,8 +74,7 @@ public class SunSettings : MonoBehaviour
         monthInput.addedOffset += ChangedMonth;
         yearInput.addedOffset += ChangedYear;
 
-        if (dateTimeNow == null)
-            ResetTimeToNow();
+        if (!usingSharedSceneTime) ResetTimeToNow();
     }
 
     private void SetGPSCoordinates()
@@ -103,9 +104,10 @@ public class SunSettings : MonoBehaviour
     }
     public void SetDateTimeFromString(string dateTimeString)
     {
-        if (dateTimeNow == null) dateTimeNow = DateTime.Now;
-
+        dateTimeNow = DateTime.Now;
         DateTime.TryParse(dateTimeString, out dateTimeNow);
+
+        usingSharedSceneTime = true;
 
         SetGPSCoordinates();
         UpdateNumericInputs();
