@@ -106,15 +106,15 @@ public class ImportCitymodel: MonoBehaviour
         objectMappingClass.uvs = meshUV;
         
         container.GetComponent<MeshFilter>().mesh.uv = null;
-        AssetDatabase.CreateAsset(objectMappingClass, dataFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + "-data.asset");
+        AssetDatabase.CreateAsset(objectMappingClass, dataFolder +"/"+ X + "_" + Y + "_buildings_LOD" + LOD + "-data.asset");
         AssetDatabase.SaveAssets();
-        AssetImporter.GetAtPath(dataFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + "-data.asset").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD+"-data", "");
+        AssetImporter.GetAtPath(dataFolder+"/"  + X + "_" + Y + "_buildings_LOD" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_buildings_LOD" + LOD + "-data", "");
         int meshcounter = 0;
         foreach (MeshFilter mf in mfs)
         {
-            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/mesh_" + X + "-"+Y+"-LOD"+LOD+".mesh");
+            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_"+Y+"_buildings_LOD"+LOD+".mesh");
             AssetDatabase.SaveAssets();
-            AssetImporter.GetAtPath(MeshFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD,"");
+            AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_buildings_LOD" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD,"");
             meshcounter++;
         }
         AssetDatabase.SaveAssets();
