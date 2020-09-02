@@ -116,6 +116,7 @@ namespace Amsterdam3D.Interface.Sharing
 		/// <param name="newState">What sharing state should the panel be in.</param>
 		public void ChangeState(SharingState newState)
 		{
+			state = newState;
 			switch (newState)
 			{
 				case SharingState.SHARING_OPTIONS:
