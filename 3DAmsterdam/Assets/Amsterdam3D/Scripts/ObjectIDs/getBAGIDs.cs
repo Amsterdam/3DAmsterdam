@@ -88,7 +88,7 @@ namespace objectIDs
             string dataName = name.Replace(" Instance","");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") +"-data";
-            string dataURL = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+dataName;
+            string dataURL = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/objectdata"+dataName;
             Debug.Log(dataURL);
             ObjectMappingClass data;
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))

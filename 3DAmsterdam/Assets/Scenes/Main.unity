@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingContainer: {fileID: 1525088194}
+  BuildingContainer: {fileID: 1814701004}
   defaultMaterial: {fileID: 0}
   isBusy: 0
   id: 
@@ -324,7 +324,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1525088195
 Transform:
   m_ObjectHideFlags: 0
@@ -6164,6 +6164,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[0].path
+      value: LOD0/buildings_{x}_{y}.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[1].path
+      value: LOD1/buildings_{x}_{y}.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[2].path
+      value: LOD2/building_{x}_{y}_lod2
+      objectReference: {fileID: 0}
     - target: {fileID: 4498901013071965061, guid: 1686781c0bba69b41bd5102479f39f29,
         type: 3}
       propertyPath: m_IsActive

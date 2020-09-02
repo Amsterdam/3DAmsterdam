@@ -131,7 +131,7 @@ namespace LayerSystem
             {
                 url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
                 // temp
-                //url = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+ layers[tileChange.layerIndex].Datasets[lod].path;
+                url = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+ layers[tileChange.layerIndex].Datasets[lod].path;
 
 
                 url = url.Replace("{x}", tileChange.X.ToString());
