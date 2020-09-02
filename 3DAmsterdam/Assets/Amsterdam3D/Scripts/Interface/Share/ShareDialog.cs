@@ -49,20 +49,24 @@ namespace Amsterdam3D.Interface.Sharing
 			JavascriptMethodCaller.ShowUniqueShareToken(false);
 		}
 
+		/// <summary>
+		/// Start uploading scene settings and models to a unique URL/session ID file.
+		/// </summary>
 		public void GenerateURL()
 		{
-			//Start uploading scene settings, and models to unique URL/session ID
 			StartCoroutine(Share());
 		}
 
-
+		/// <summary>
+		/// The complete upload bar progress.
+		/// </summary>
 		private IEnumerator Share()
 		{
 			progressBar.SetMessage("Instellingen opslaan..");
 			progressBar.Percentage(0.2f);
+
 			ChangeState(SharingState.SHARING_SCENE);
 			yield return new WaitForEndOfFrame(); 
-
 			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
 			//Post basic scene, and optionaly get unique tokens in return
 			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php", jsonScene);
@@ -71,9 +75,8 @@ namespace Amsterdam3D.Interface.Sharing
 
 			Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
 
-			//Check if we got some tokens for model uploads
+			//Check if we got some tokens for model upload, and download them 1 at a time.
 			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
-
 			if (serverReturn.modelUploadTokens.Length > 0)
 			{
 				progressBar.SetMessage("Objecten opslaan..");
@@ -87,29 +90,30 @@ namespace Amsterdam3D.Interface.Sharing
 					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 					yield return modelSaveRequest.SendWebRequest();
-
 					Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
 
 					currentModel++;
 					sceneSerializer.sharedSceneId = serverReturn.sceneId;
 					var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
-					Debug.Log("Model load percentage: " + currentModelLoadPercentage);
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 					yield return new WaitForSeconds(0.2f);
 				}
 			}
-			//SERVER: Finalize and place json file
+			
+			//Make sure the progressbar shows 100% before jumping to the next state
 			progressBar.Percentage(1.0f);
-
 			yield return new WaitForSeconds(0.1f);
 
 			ChangeState(SharingState.SHOW_URL);
 			Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
 			JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
-
 			yield return null;
 		}
 
+		/// <summary>
+		/// Changes the state our sharing panel is in.
+		/// </summary>
+		/// <param name="newState">What sharing state should the panel be in.</param>
 		public void ChangeState(SharingState newState)
 		{
 			switch (newState)
