@@ -31,25 +31,25 @@ public class ImportCitymodel: MonoBehaviour
         //Ymax = 186000;
         //Ymax = 476000;
 
-        //for (int X = 0; X < (Xmax-Xmin)/stepSize; X++)
-        //{
-        //    for (int Y = 0; Y < (Ymax - Ymin) / stepSize; Y++)
-        //    {
-        //        filepath = basefilepath + "tile_" + Y + "_" + X + "/";
-        //        Debug.Log(filepath);
-        //        double originX = (X * stepSize) + Xmin;
-        //        double originY = (Y * stepSize) + Ymin;
-        //        CreateTile(filepath, filename, LOD, originX, originY);
-        //    }
-        //}
-        int X = 12;
-        int Y = 1;
-
-                    filepath = basefilepath + "tile_" + Y + "_" + X + "/";
+        for (int X = 0; X < (Xmax - Xmin) / stepSize; X++)
+        {
+            for (int Y = 0; Y < (Ymax - Ymin) / stepSize; Y++)
+            {
+                filepath = basefilepath + "tile_" + Y + "_" + X + "/";
                 Debug.Log(filepath);
-        double originX = (X * stepSize) + Xmin;
-        double originY = (Y * stepSize) + Ymin;
-        CreateTile(filepath, filename, LOD, originX, originY);
+                double originX = (X * stepSize) + Xmin;
+                double originY = (Y * stepSize) + Ymin;
+                CreateTile(filepath, filename, LOD, originX, originY);
+            }
+        }
+        //int X = 12;
+        //int Y = 1;
+
+        //            filepath = basefilepath + "tile_" + Y + "_" + X + "/";
+        //        Debug.Log(filepath);
+        //double originX = (X * stepSize) + Xmin;
+        //double originY = (Y * stepSize) + Ymin;
+        //CreateTile(filepath, filename, LOD, originX, originY);
 
 
         //GameObject go = Selection.activeGameObject;
@@ -87,7 +87,7 @@ public class ImportCitymodel: MonoBehaviour
         string LODfolder = CreateAssetFolder("Assets/Buildings","LOD"+LOD);
         string SquareFolder = CreateAssetFolder(LODfolder, X + "_" + Y);
         string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
-        string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
+        //string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
         string dataFolder = CreateAssetFolder(SquareFolder, "data");
         ObjectMappingClass objectMappingClass = ScriptableObject.CreateInstance<ObjectMappingClass>();
         objectMappingClass.ids = container.GetComponent<ObjectMapping>().BagID;
