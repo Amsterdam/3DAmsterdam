@@ -23,6 +23,8 @@ public class Draggable : ObjectManipulation
 	[SerializeField]
 	private Collider collider;
 
+	private Vector3 clickOffset3D;
+
 	private void Start()
 	{
 		if (optionalOffsetPoint)
@@ -62,6 +64,10 @@ public class Draggable : ObjectManipulation
 	public override void OnMouseDown(){
 		collider.enabled = false;
 		base.OnMouseDown();
+
+		//We want a semi 2D offset based on where we clicked on the ground/other colliders
+		clickOffset3D = this.transform.position - GetMousePointOnLayerMask();
+		clickOffset3D.y = 0;
 	}
 	public override void OnMouseUp()
 	{
@@ -71,7 +77,7 @@ public class Draggable : ObjectManipulation
 
 	private void FollowMousePointer()
 	{
-		this.transform.position = GetMousePointOnLayerMask() - offset;
+		this.transform.position = GetMousePointOnLayerMask() - offset + clickOffset3D;
 	}
 
 
