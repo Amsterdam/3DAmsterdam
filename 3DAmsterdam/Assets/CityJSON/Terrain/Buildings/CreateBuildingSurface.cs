@@ -72,7 +72,11 @@ namespace cityJSON
         private List<Vector3> GetVerts(CityModel cityModel, Vector3RD origin)
         {
             List<Vector3> verts = new List<Vector3>();
-            Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+            Vector3RD tileCenter = origin;
+            tileCenter.x += 500;
+            tileCenter.y += 500;
+
+            Vector3 unityOrigin = CoordConvert.RDtoUnity(tileCenter);
             Vector3RD vertexCoordinate = new Vector3RD();
             foreach (Vector3Double vertex in cityModel.vertices)
             {

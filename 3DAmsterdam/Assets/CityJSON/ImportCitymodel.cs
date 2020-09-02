@@ -37,8 +37,8 @@ public class ImportCitymodel: MonoBehaviour
             {
                 filepath = basefilepath + "tile_" + Y + "_" + X + "/";
                 Debug.Log(filepath);
-                double originX = (X * stepSize) + Xmin+(stepSize/2);
-                double originY = (Y * stepSize) + Ymin + (stepSize / 2);
+                double originX = (X * stepSize) + Xmin;
+                double originY = (Y * stepSize) + Ymin;
                 CreateTile(filepath, filename, LOD, originX, originY);
             }
         }
