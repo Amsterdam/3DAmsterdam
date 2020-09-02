@@ -106,18 +106,20 @@ public class ImportCitymodel: MonoBehaviour
         objectMappingClass.uvs = meshUV;
         
         container.GetComponent<MeshFilter>().mesh.uv = null;
-        AssetDatabase.CreateAsset(objectMappingClass, dataFolder + "/data.asset");
+        AssetDatabase.CreateAsset(objectMappingClass, dataFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + "-data.asset");
+        AssetDatabase.SaveAssets();
+        AssetImporter.GetAtPath(dataFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + "-data.asset").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD+"-data", "");
         int meshcounter = 0;
         foreach (MeshFilter mf in mfs)
         {
-            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/mesh_" + meshcounter + ".mesh");
+            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/mesh_" + X + "-"+Y+"-LOD"+LOD+".mesh");
             AssetDatabase.SaveAssets();
-            AssetImporter.GetAtPath(MeshFolder + "/mesh_" + meshcounter + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD,"");
+            AssetImporter.GetAtPath(MeshFolder + "/mesh_" + X + "-" + Y + "-LOD" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD,"");
             meshcounter++;
         }
         AssetDatabase.SaveAssets();
-        PrefabUtility.SaveAsPrefabAssetAndConnect(container, PrefabFolder + "/" + container.name + ".prefab",InteractionMode.AutomatedAction);
-        AssetImporter.GetAtPath(PrefabFolder + "/" + container.name + ".prefab").SetAssetBundleNameAndVariant("Building_" + X + "_" +Y + "_LOD" + LOD, "");
+        //PrefabUtility.SaveAsPrefabAssetAndConnect(container, PrefabFolder + "/" + container.name + ".prefab",InteractionMode.AutomatedAction);
+        //AssetImporter.GetAtPath(PrefabFolder + "/" + container.name + ".prefab").SetAssetBundleNameAndVariant("Building_" + X + "_" +Y + "_LOD" + LOD, "");
     }
 
     static string CreateAssetFolder(string folderpath, string foldername)
