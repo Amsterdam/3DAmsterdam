@@ -221,6 +221,11 @@ namespace LayerSystem
             foreach (Mesh mesh in meshesInAssetbundle)
             {
                 Mesh newMesh = new Mesh();
+                if (mesh.vertexCount>55000)
+                {
+                    newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                }
+                
                 newMesh.vertices = mesh.vertices;
                 newMesh.triangles = mesh.triangles;
                 newMesh.normals = mesh.normals;
