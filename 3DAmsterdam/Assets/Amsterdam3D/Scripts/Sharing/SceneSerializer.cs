@@ -60,10 +60,16 @@ namespace Amsterdam3D.Sharing
             customMeshObjects = new List<GameObject>();
         }
 
-        [ContextMenu("Load last saved ID")]
+        #if UNITY_EDITOR
+        /// <summary>
+        /// This test method allows you to right click this MonoBehaviour in the editor.
+        /// And test the downloading of a specific sharedSceneId.
+        /// </summary>
+        [ContextMenu("Load last saved ID")] 
         public void GetTestId(){
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
+        #endif
 
         /// <summary>
         /// Download a shared scene JSON file from the objectstore using a unique ID.
@@ -158,6 +164,11 @@ namespace Amsterdam3D.Sharing
             SetFixedLayerProperties(groundLayer, scene.fixedLayers.ground);
         }
 
+        /// <summary>
+        /// Apply the materials found in our downloaded scene/layer and onto our GameObject's MeshRenderer
+        /// </summary>
+        /// <param name="customLayer"></param>
+        /// <param name="customObject"></param>
         private void ApplyLayerMaterialsToObject(SerializableScene.CustomLayer customLayer, GameObject customObject)
         {
             Material[] materials = new Material[customLayer.materials.Length];
@@ -172,7 +183,7 @@ namespace Amsterdam3D.Sharing
         }
 
         /// <summary>
-        /// Removes a list of objects we do not want to show in view or edit mode
+        /// Removes a list of objects we do not want to show in view or edit mode.
         /// </summary>
         private void HideObjectsInViewMode(bool editAllowed = false)
         {
@@ -192,6 +203,16 @@ namespace Amsterdam3D.Sharing
             }
         }
 
+        /// <summary>
+        /// Download a custom mesh object, and put it onto a target object.
+        /// </summary>
+        /// <param name="gameObjectTarget">The target GameObject where to mesh will be added to</param>
+        /// <param name="sceneId">The unique scene ID this mesh is part of</param>
+        /// <param name="token">The unqiue token received from the server we can use to download this mesh</param>
+        /// <param name="position">The new position for the target GameObject</param>
+        /// <param name="rotation">The new rotation for the target GameObject</param>
+        /// <param name="scale">The new scale for the target GameObject</param>
+        /// <returns></returns>
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
         {
             
@@ -214,9 +235,13 @@ namespace Amsterdam3D.Sharing
             }
 
             yield return null;
-            //interfaceLayers.AddNewCustomObjectLayer(, LayerType.OBJMODEL);
         }
 
+        /// <summary>
+        /// Parse a mesh object we downloaded
+        /// </summary>
+        /// <param name="serializableMesh">The data object we use to construct our mesh</param>
+        /// <returns></returns>
         private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
             Mesh parsedMesh = new Mesh();
             parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
@@ -233,6 +258,11 @@ namespace Amsterdam3D.Sharing
             return parsedMesh;
         }
 
+        /// <summary>
+        /// Apply all the properties from the scene we loaded onto the fixed layer
+        /// </summary>
+        /// <param name="targetLayer">The target fixed layer</param>
+        /// <param name="fixedLayerProperties">The data object containing the loaded properties</param>
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
         {
             for (int i = 0; i < fixedLayerProperties.materials.Length; i++)
@@ -243,6 +273,13 @@ namespace Amsterdam3D.Sharing
             targetLayer.UpdateLayerPrimaryColor();
         }
 
+        /// <summary>
+        /// Serialize a custom object its mesh, so we can save it
+        /// </summary>
+        /// <param name="customMeshIndex">The custom object index in our serialized scene</param>
+        /// <param name="sceneId">The unique ID of our scene</param>
+        /// <param name="meshToken">The unique token we received from the server for our custom mesh object</param>
+        /// <returns></returns>
         public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
             
@@ -320,7 +357,7 @@ namespace Amsterdam3D.Sharing
         /// <summary>
         /// Gets all the annotations and turn in into serializable data
         /// </summary>
-        /// <returns>Array containing serialized data</returns>
+        /// <returns>Array containing serializeable data</returns>
         private SerializableScene.Annotation[] GetAnnotations()
         {
             var annotations = annotationsContainer.GetComponentsInChildren<Annotation>(true);
@@ -338,6 +375,11 @@ namespace Amsterdam3D.Sharing
 
             return annotationsData.ToArray();
         }
+
+        /// <summary>
+        /// Gets all the custom mesh layers, and turns them into a serializable data object.
+        /// </summary>
+        /// <returns>Array containing serializeable data</returns>
         private SerializableScene.CustomLayer[] GetCustomMeshLayers()
         {
             var customLayers = customLayerContainer.GetComponentsInChildren<CustomLayer>(true);
@@ -371,6 +413,12 @@ namespace Amsterdam3D.Sharing
             }
             return customLayersData.ToArray();
         }
+
+        /// <summary>
+        /// Turns a list with materials into serializable data
+        /// </summary>
+        /// <param name="materialList">A list containing Materials</param>
+        /// <returns>And array containing seriazable materials data</returns>
         private SerializableScene.Material[] GetMaterialsAsData(List<Material> materialList)
         {
             var materialData = new List<SerializableScene.Material>();
