@@ -65,6 +65,6 @@ public static class ObjectIDMapping
         int columnNumber = itemNumber % itemsPerRow;
         int rowNumber = (itemNumber - columnNumber) / itemsPerRow;
 
-        return new Vector2Int(columnNumber, rowNumber);
+        return new Vector2Int(columnNumber*2, rowNumber*2);
     }
 }

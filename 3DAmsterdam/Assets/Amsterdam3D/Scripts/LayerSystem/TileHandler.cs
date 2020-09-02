@@ -130,6 +130,10 @@ namespace LayerSystem
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
                 url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                // temp
+                //url = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+ layers[tileChange.layerIndex].Datasets[lod].path;
+
+
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
                 url = url.Replace("{lod}", lod.ToString());

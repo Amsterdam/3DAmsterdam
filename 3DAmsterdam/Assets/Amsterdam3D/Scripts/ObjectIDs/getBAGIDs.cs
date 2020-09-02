@@ -85,8 +85,11 @@ namespace objectIDs
             selectedTile = Hit.collider.gameObject;
             string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
             Debug.Log(name);
-            string dataName = name + "data";
-            string dataURL = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/building_118000_485000_data";
+            string dataName = name.Replace(" Instance","");
+            dataName = dataName.Replace("mesh", "building");
+            dataName = dataName.Replace("-", "_") +"-data";
+            string dataURL = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+dataName;
+            Debug.Log(dataURL);
             ObjectMappingClass data;
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
             {
@@ -132,6 +135,7 @@ namespace objectIDs
             Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count);
             Texture2D texture = new Texture2D(textureSize.x, textureSize.y);
             Color defaultColor = Color.white;
+            defaultColor.a = 0;
 
             Color highlightColor = Color.red;
 
@@ -157,7 +161,7 @@ namespace objectIDs
             }
             texture.Apply();
             selectedTile.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",texture);
-            //selectedTile.GetComponent<MeshFilter>().mesh.uv = objectData.uvs;
+            selectedTile.GetComponent<MeshFilter>().mesh.uv = objectData.uvs;
         }
     }
 }

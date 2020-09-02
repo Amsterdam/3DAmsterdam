@@ -15,7 +15,7 @@ public class LoadDemoTIle : MonoBehaviour
         string buildingURL = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/building_117000_476000_lod2";
         TileChange tiledata = new TileChange();
         tiledata.X = 117000;
-        tiledata.Y = 485000;
+        tiledata.Y = 476000;
         tiledata.action = TileAction.Create;
 
         StartCoroutine(DownloadTile(buildingURL, tiledata));
