@@ -8,9 +8,12 @@ namespace objectIDs
     public class getBAGIDs : MonoBehaviour
     {
         public GameObject BuildingContainer;
+        public Material defaultMaterial;
         public bool isBusy = false;
         private Ray ray;
         public string id = "";
+        public GameObject selectedTile;
+            
         // Start is called before the first frame update
         void Start()
         {
@@ -23,6 +26,8 @@ namespace objectIDs
             if (id != "")
             {
                 Debug.Log(id);
+               
+                CreateTexture();
                 id = "";
                 return;
             }
@@ -39,6 +44,7 @@ namespace objectIDs
             }
  
             id = "";
+            selectedTile = null;
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             StartCoroutine(LoadMeshColliders());
 
@@ -76,6 +82,7 @@ namespace objectIDs
                 yield break;
 
             }
+            selectedTile = Hit.collider.gameObject;
             string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
             Debug.Log(name);
             string dataName = name + "data";
@@ -119,5 +126,38 @@ namespace objectIDs
             isBusy = false;
         }
 
+        private void CreateTexture()
+        {
+            ObjectData objectData = selectedTile.GetComponent<ObjectData>();
+            Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count);
+            Texture2D texture = new Texture2D(textureSize.x, textureSize.y);
+            Color defaultColor = Color.white;
+
+            Color highlightColor = Color.red;
+
+
+            Color idColor;
+            Vector2Int pixelPosition;
+
+            for (int i = 0; i < objectData.ids.Count; i++)
+            {
+                pixelPosition = ObjectIDMapping.GetBottomLeftPixel(textureSize, i);
+                if (objectData.ids[i]==id)
+                {
+                    idColor = highlightColor;
+                }
+                else
+                {
+                    idColor = defaultColor;
+                }
+                texture.SetPixel(pixelPosition.x, pixelPosition.y,idColor);
+                texture.SetPixel(pixelPosition.x, pixelPosition.y+1, idColor);
+                texture.SetPixel(pixelPosition.x+1, pixelPosition.y, idColor);
+                texture.SetPixel(pixelPosition.x+1, pixelPosition.y+1, idColor);
+            }
+            texture.Apply();
+            selectedTile.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",texture);
+            //selectedTile.GetComponent<MeshFilter>().mesh.uv = objectData.uvs;
+        }
     }
 }
