@@ -45,6 +45,9 @@ public class ExpandGroup : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Calculates a new size for the group, and transition to this new size
+	/// </summary>
 	private void CalculateNewHeightAndResize()
 	{
 		if (calculateHeightBasedOnChildren)
