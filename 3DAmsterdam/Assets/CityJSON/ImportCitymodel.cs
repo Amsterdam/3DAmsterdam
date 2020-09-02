@@ -37,8 +37,8 @@ public class ImportCitymodel: MonoBehaviour
             {
                 filepath = basefilepath + "tile_" + Y + "_" + X + "/";
                 Debug.Log(filepath);
-                double originX = (X * stepSize) + Xmin;
-                double originY = (Y * stepSize) + Ymin;
+                double originX = (X * stepSize) + Xmin+(stepSize/2);
+                double originY = (Y * stepSize) + Ymin + (stepSize / 2);
                 CreateTile(filepath, filename, LOD, originX, originY);
             }
         }
@@ -106,15 +106,15 @@ public class ImportCitymodel: MonoBehaviour
         objectMappingClass.uvs = meshUV;
         
         container.GetComponent<MeshFilter>().mesh.uv = null;
-        AssetDatabase.CreateAsset(objectMappingClass, dataFolder +"/"+ X + "_" + Y + "_buildings_LOD" + LOD + "-data.asset");
+        AssetDatabase.CreateAsset(objectMappingClass, dataFolder +"/"+ X + "_" + Y + "_buildings_lod" + LOD + "-data.asset");
         AssetDatabase.SaveAssets();
-        AssetImporter.GetAtPath(dataFolder+"/"  + X + "_" + Y + "_buildings_LOD" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_buildings_LOD" + LOD + "-data", "");
+        AssetImporter.GetAtPath(dataFolder+"/"  + X + "_" + Y + "_buildings_lod" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_buildings_lod" + LOD + "-data", "");
         int meshcounter = 0;
         foreach (MeshFilter mf in mfs)
         {
-            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_"+Y+"_buildings_LOD"+LOD+".mesh");
+            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_"+Y+"_buildings_lod"+LOD+".mesh");
             AssetDatabase.SaveAssets();
-            AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_buildings_LOD" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_LOD" + LOD,"");
+            AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_buildings_lod" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_lod" + LOD,"");
             meshcounter++;
         }
         AssetDatabase.SaveAssets();
