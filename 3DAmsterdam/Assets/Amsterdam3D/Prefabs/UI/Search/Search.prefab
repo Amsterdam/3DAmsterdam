@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 712693447504430857}
   - component: {fileID: 712693447504430858}
   - component: {fileID: 712693447504430859}
+  - component: {fileID: 8650501972237492533}
   m_Layer: 5
   m_Name: SearchInputField
   m_TagString: Untagged
@@ -174,6 +175,19 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+--- !u!114 &8650501972237492533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712693447504430861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 2
 --- !u!1 &712693447523462671
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,6 +430,7 @@ GameObject:
   - component: {fileID: 712693449112873877}
   - component: {fileID: 712693449112873878}
   - component: {fileID: 712693449112873879}
+  - component: {fileID: 5383455638417254398}
   m_Layer: 5
   m_Name: SearchButton
   m_TagString: Untagged
@@ -534,6 +549,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5383455638417254398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712693449112873897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &712693449117882653
 GameObject:
   m_ObjectHideFlags: 0
