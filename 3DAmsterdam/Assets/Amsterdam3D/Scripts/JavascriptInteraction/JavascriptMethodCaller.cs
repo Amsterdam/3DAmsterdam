@@ -43,9 +43,11 @@ namespace Amsterdam3D.JavascriptConnection
 		}
 		public static void ChangeCursor(string cursorName)
 		{
-			#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_EDITOR
+			Debug.Log("Change CSS pointer to " + cursorName);
+#elif UNITY_WEBGL && !UNITY_EDITOR
 				SetCSSCursor(cursorName);
-			#endif
+#endif
 		}
 	}
 }
