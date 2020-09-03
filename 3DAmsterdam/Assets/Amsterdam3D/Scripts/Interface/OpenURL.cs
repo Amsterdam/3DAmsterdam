@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
@@ -10,6 +12,12 @@ namespace Amsterdam3D.Interface
 	{
 		public void OnPointerDown(PointerEventData eventData)
 		{
+			/*
+			 * Release any UI items, so they will not get stuck to 
+			 * the mouse when we return.
+			*/
+			EventSystem.current.SetSelectedGameObject(null);
+
 			OpenURLByGameObjectName();
 		}
 
