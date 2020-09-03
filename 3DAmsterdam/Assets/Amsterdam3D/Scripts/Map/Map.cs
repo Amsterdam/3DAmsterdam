@@ -93,7 +93,7 @@ namespace Amsterdam3D.Interface
         {
             dragging = false;
 
-            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
+            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
         }
         public void OnScroll(PointerEventData eventData)
         {
