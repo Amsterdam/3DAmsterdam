@@ -22,10 +22,10 @@ public static class Constants
         public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
 #elif PRODUCTION
         public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
-        public const string FEATURE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
+        //public const string FEATURE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
 #elif DEVELOPMENT_FEATURE
     //version contains branch name, for example feature/new-feature-name
-    public static string FEATURE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version;
+    //public static string FEATURE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version;
     
     //USE DEVELOPMENT PATH BY DEFAULT
     public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";

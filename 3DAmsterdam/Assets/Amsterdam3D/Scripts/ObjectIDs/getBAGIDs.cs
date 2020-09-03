@@ -88,7 +88,7 @@ namespace objectIDs
             string dataName = name.Replace(" Instance","");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") +"-data";
-            string dataURL = Constants.FEATURE_DATA_URL + "Buildings/objectdata/" +dataName;
+            string dataURL = "https://acc.3d.amsterdam.nl/webmap/data/feature-Link-BAGid/buildings/objectdata/" +dataName;
             Debug.Log(dataURL);
             ObjectMappingClass data;
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))

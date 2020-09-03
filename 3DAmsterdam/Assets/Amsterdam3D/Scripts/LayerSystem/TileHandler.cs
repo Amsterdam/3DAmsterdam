@@ -129,9 +129,9 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                url = Constants.FEATURE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                //url = Constants.FEATURE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
                 // temp
-                url = "file://E:/UnityData/Assetbundles/WebGL/BuildingData/"+ layers[tileChange.layerIndex].Datasets[lod].path;
+                url = "https://acc.3d.amsterdam.nl/webmap/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
 
 
                 url = url.Replace("{x}", tileChange.X.ToString());
