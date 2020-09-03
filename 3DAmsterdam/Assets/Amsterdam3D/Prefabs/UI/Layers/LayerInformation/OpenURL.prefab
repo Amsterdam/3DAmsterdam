@@ -119,18 +119,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8765961240359428977}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6539943944506145079}
-        m_MethodName: OpenURLByGameObjectName
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: https://
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &6539943944506145079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0343da181f0cba54c9b9fe944a2127b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &7438627870890378906
 GameObject:
   m_ObjectHideFlags: 0
