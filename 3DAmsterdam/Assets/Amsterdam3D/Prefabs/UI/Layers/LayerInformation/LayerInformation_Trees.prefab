@@ -80,7 +80,7 @@ PrefabInstance:
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -3.8
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
@@ -90,12 +90,7 @@ PrefabInstance:
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 132.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 19.4
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
@@ -662,12 +657,142 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b3ecbea8cee707449cb450fd9fa0d27, type: 3}
+--- !u!224 &3220960625171613606 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 9120692304692497459, guid: 7b3ecbea8cee707449cb450fd9fa0d27,
+    type: 3}
+  m_PrefabInstance: {fileID: 5917751678669032341}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6337880026208132938 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 420171229029717215, guid: 7b3ecbea8cee707449cb450fd9fa0d27,
     type: 3}
   m_PrefabInstance: {fileID: 5917751678669032341}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6072214369214386945
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3220960625171613606}
+    m_Modifications:
+    - target: {fileID: 505049854215563464, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_Name
+      value: https://maps.amsterdam.nl
+      objectReference: {fileID: 0}
+    - target: {fileID: 6501122292602982175, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: https://www.amsterdam.nl/stelselpedia/luchtfoto-index/
+      objectReference: {fileID: 0}
+    - target: {fileID: 6501122292602982175, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 282
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d896974338d836f49bd659afd1f9b57f, type: 3}
 --- !u!1001 &8705150082866019433
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -748,7 +873,7 @@ PrefabInstance:
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 136.6
+      value: 137
       objectReference: {fileID: 0}
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
@@ -758,7 +883,7 @@ PrefabInstance:
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 173.2
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 7580810217633662187, guid: d896974338d836f49bd659afd1f9b57f,
         type: 3}

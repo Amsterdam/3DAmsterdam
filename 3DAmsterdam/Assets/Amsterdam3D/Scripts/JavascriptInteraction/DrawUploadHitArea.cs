@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class DrawUploadHitArea : JavascriptMethodCaller
+namespace Amsterdam3D.JavascriptConnection
 {
-    #if UNITY_WEBGL && !UNITY_EDITOR
+    public class DrawUploadHitArea : JavascriptMethodCaller
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
     private void OnEnable()
     {
         DisplayOBJUploadButtonHitArea(true);
@@ -14,5 +16,6 @@ public class DrawUploadHitArea : JavascriptMethodCaller
     {
         DisplayOBJUploadButtonHitArea(false);
     }
-    #endif
+#endif
+    }
 }

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Amsterdam3D.JavascriptConnection;
 
-public class OpenURL : MonoBehaviour
+public class OpenURL : ChangePointerStyleHandler
 {
 	public void OpenURLByGameObjectName()
 	{

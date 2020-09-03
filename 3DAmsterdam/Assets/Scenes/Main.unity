@@ -372,6 +372,24 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 14124236300293750, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Text
+      value: "3D Amsterdam toont bomen die in beheer zijn bij de gemeente. Dat betekent
+        dat niet elke boom in\r Amsterdam is weergegeven. De bomen op begraafplaatsen,
+        de volkstuincomplexen, grote groengebieden\r en rond sportvelden zijn niet
+        allemaal in beheer van de gemeente. \nOok de circa 150.000 bomen in het\r
+        Amsterdamse Bos zijn weliswaar van de gemeente Amsterdam, maar staan op grond
+        van de gemeente\r Amstelveen en staan daarom nog maar deels op 3D Amsterdam.
+        \nTot slot staan er nog tienduizenden\r bomen op terreinen van woningbouwcorporaties,
+        ProRail, Rijkswaterstaat en in de duizenden particuliere\r tuinen.\r\n\nDe
+        weergave van bomen op 3D Amsterdam is niet `real-time` en loopt \xE9\xE9n
+        tot drie jaar achter. Voor het\r meest actuele overzicht verwijzen wij u
+        naar <color=#0000FF>maps.amsterdam.nl</color>. \n\nBomen zijn abstract weergegeven
+        per boomsoort conform bomentabel die is opgesteld door Wageningen\r\nUniversity
+        & Research. Bron voor de boomgrootte is maps.amsterdam.nl. Bomen worden zichtbaar
+        binnen\r een afstand van 2000m tot de camera."
+      objectReference: {fileID: 0}
     - target: {fileID: 59528723831125940, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -1938,6 +1956,27 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2461509007641291117, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Bomenbestand
+
+        Gemeente Amsterdam, GISIB - Beheersysteem Openbare
+        Ruimte
+
+        2019
+
+        <color=#0000FF>maps.amsterdam.nl</color> |
+        <color=#0000FF>www.amsterdam.nl/bomen</color>
+
+        Nap-hoogte van boomlocaties
+        bepalen m.b.v. maaiveldbestand boomsoort koppelen aan boommodellen
+
+
+
+        Gemeente
+        Amsterdam'
+      objectReference: {fileID: 0}
     - target: {fileID: 2490797990510468616, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -2012,6 +2051,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2571528295030465081, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2583478837706539561, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2382,6 +2426,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3120198450429614375, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3151923267112676023, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3486,17 +3535,17 @@ PrefabInstance:
     - target: {fileID: 4790686141894061377, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4790686141894061377, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4790686141894061377, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -6.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4828820690425661325, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3668,6 +3717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4978998752911935832, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5006456185563957038, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3878,6 +3932,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=512&crs=EPSG%3A4326&srs=EPSG%3A4326
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400480609873260953, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400480609873260953, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5439274804239795661, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4127,22 +4191,22 @@ PrefabInstance:
     - target: {fileID: 5779373848206804379, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5779373848206804379, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5779373848206804379, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 42.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5779373848206804379, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5812306904247381725, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5244,7 +5308,7 @@ PrefabInstance:
     - target: {fileID: 7565784572154020295, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.33188695
+      value: -0.000012700189
       objectReference: {fileID: 0}
     - target: {fileID: 7567205953923215386, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5269,12 +5333,12 @@ PrefabInstance:
     - target: {fileID: 7611874822567447329, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7611874822567447329, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7670520945700140324, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5486,6 +5550,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7960100056194564458, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0000063214143
+      objectReference: {fileID: 0}
     - target: {fileID: 7975138437633582615, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_Name
@@ -5674,22 +5743,22 @@ PrefabInstance:
     - target: {fileID: 8145236493903460273, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145236493903460273, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145236493903460273, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 220
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145236493903460273, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145256295967564350, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5729,7 +5798,7 @@ PrefabInstance:
     - target: {fileID: 8156875914746973712, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 256
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8156875914746973712, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5739,7 +5808,7 @@ PrefabInstance:
     - target: {fileID: 8156875914746973712, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0001621224
+      value: 0.0000011771917
       objectReference: {fileID: 0}
     - target: {fileID: 8182871065121173822, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5971,6 +6040,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8540088467575377403, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8567588584028816475, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -6059,7 +6133,7 @@ PrefabInstance:
     - target: {fileID: 8627752592454880957, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000013440847
+      value: -0.00002994231
       objectReference: {fileID: 0}
     - target: {fileID: 8653690005029593085, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -6099,6 +6173,11 @@ PrefabInstance:
     - target: {fileID: 8723343052983358908, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8730672639663282371, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8746359810610513230, guid: 551dff695a15b634a97abe62e9edd824,
