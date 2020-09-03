@@ -11,7 +11,8 @@ namespace Amsterdam3D.JavascriptConnection {
             POINTER,
             TEXT,
             GRAB,
-            GRABBING
+            GRABBING,
+            ERESIZE
         }
 
         [SerializeField]
@@ -41,6 +42,9 @@ namespace Amsterdam3D.JavascriptConnection {
                     break;
                 case Style.GRABBING:
                     cursorString = "grabbing";
+                    break;
+                case Style.ERESIZE:
+                    cursorString = "e-resize";
                     break;
             }
             JavascriptMethodCaller.ChangeCursor(cursorString);
