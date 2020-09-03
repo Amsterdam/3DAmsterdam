@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.JavascriptConnection;
 using ConvertCoordinates;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface.Search
 {
-    public class SearchResult : MonoBehaviour
+    public class SearchResult : ChangePointerStyleHandler
     {
         private const string REPLACEMENT_STRING = "{ID}";
         private const string lookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
