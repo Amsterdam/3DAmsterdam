@@ -19,6 +19,11 @@ namespace Amsterdam3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
+		[DllImport("__Internal")]
+		private static extern string OpenURLInNewWindow(string openUrl = "https://");
+
+		
+
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
 		/// The user will click the hidden file input dialog in the index.html template file that is drawn on top of our WebGL canvas.
@@ -47,6 +52,15 @@ namespace Amsterdam3D.JavascriptConnection
 			Debug.Log("Change CSS pointer to " + cursorName);
 #elif UNITY_WEBGL && !UNITY_EDITOR
 				SetCSSCursor(cursorName);
+#endif
+		}
+
+		public static void OpenURL(string url)
+		{
+#if UNITY_EDITOR
+			Application.OpenURL(url);
+#elif UNITY_WEBGL && !UNITY_EDITOR
+			OpenURLInNewWindow(url);
 #endif
 		}
 	}

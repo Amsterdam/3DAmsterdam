@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
 
-public class OpenURL : ChangePointerStyleHandler
+namespace Amsterdam3D.Interface
 {
-	public void OpenURLByGameObjectName()
+	public class OpenURL : ChangePointerStyleHandler
 	{
-		Application.OpenURL(gameObject.name);
+		public void OpenURLByGameObjectName()
+		{
+			JavascriptMethodCaller.OpenURL(gameObject.name);
+		}
 	}
 }
