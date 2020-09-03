@@ -1,4 +1,5 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.JavascriptConnection;
+using ConvertCoordinates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,6 +57,8 @@ namespace Amsterdam3D.Interface
             pointerLeftMap = false;
             navigation.gameObject.SetActive(true);
 
+            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
+
             StopAllCoroutines();
             StartCoroutine(HoverResize(hoverSize));
         }
@@ -65,6 +68,8 @@ namespace Amsterdam3D.Interface
             interactingWithMap = false;
             navigation.gameObject.SetActive(false);
 
+            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
+
             StopAllCoroutines();
             StartCoroutine(HoverResize(defaultSize));
         }
@@ -72,6 +77,9 @@ namespace Amsterdam3D.Interface
         public void OnBeginDrag(PointerEventData eventData)
         {
             dragging = true;
+
+            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
+
             dragOffset = dragTarget.position - Input.mousePosition;
         }
 
@@ -84,6 +92,8 @@ namespace Amsterdam3D.Interface
         public void OnEndDrag(PointerEventData eventData)
         {
             dragging = false;
+
+            ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
         }
         public void OnScroll(PointerEventData eventData)
         {
