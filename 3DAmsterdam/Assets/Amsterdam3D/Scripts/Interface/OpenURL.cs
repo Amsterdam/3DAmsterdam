@@ -14,7 +14,7 @@ namespace Amsterdam3D.Interface
 		{
 			/*
 			 * Release any UI items, so they will not get stuck to 
-			 * the mouse when we return.
+			 * the mouse when we return to the tab with our Unity canvas. (needs a click to release)
 			*/
 			EventSystem.current.SetSelectedGameObject(null);
 
