@@ -386,9 +386,9 @@ PrefabInstance:
         weergave van bomen op 3D Amsterdam is niet `real-time` en loopt \xE9\xE9n
         tot drie jaar achter. Voor het\r meest actuele overzicht verwijzen wij u
         naar <color=#0000FF>maps.amsterdam.nl</color>. \n\nBomen zijn abstract weergegeven
-        per boomsoort conform bomentabel die is opgesteld door Wageningen\r\nUniversity
-        & Research. Bron voor de boomgrootte is maps.amsterdam.nl. Bomen worden zichtbaar
-        binnen\r een afstand van 2000m tot de camera."
+        per boomsoort conform <color=#0000FF>bomentabel</color> die is opgesteld
+        door Wageningen\r\nUniversity & Research. Bron voor de boomgrootte is <color=#0000FF>maps.amsterdam.nl</color>.
+        Bomen worden zichtbaar binnen\r een afstand van 2000m tot de camera."
       objectReference: {fileID: 0}
     - target: {fileID: 59528723831125940, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -719,6 +719,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598507316417868498, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Name
+      value: https://maps.amsterdam.nl/bomen/?LANG=nl)
       objectReference: {fileID: 0}
     - target: {fileID: 614613255888159779, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -1967,10 +1972,10 @@ PrefabInstance:
         2019
 
         <color=#0000FF>maps.amsterdam.nl</color> |
-        <color=#0000FF>www.amsterdam.nl/bomen</color>
+        <color=#0000FF>www.amsterdam.nl/bomen</color> | <color=#0000FF>bomentabel</color>
 
-        Nap-hoogte van boomlocaties
-        bepalen m.b.v. maaiveldbestand boomsoort koppelen aan boommodellen
+        Nap-hoogte
+        van boomlocaties bepalen m.b.v. maaiveldbestand boomsoort koppelen aan boommodellen
 
 
 
@@ -3487,6 +3492,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4734250262068309261, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4750962003626788149, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -3588,6 +3598,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 229ae30b459401c408901f9c7189aa5d,
         type: 3}
+    - target: {fileID: 4868409701655218677, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4882352722392557629, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -3646,17 +3661,17 @@ PrefabInstance:
     - target: {fileID: 4968327466787483116, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4968327466787483116, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4968327466787483116, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -6.5
       objectReference: {fileID: 0}
     - target: {fileID: 4968806447845258539, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5014,6 +5029,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6843096735196390007, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6852224972476124720, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_Interactable
@@ -5313,7 +5333,7 @@ PrefabInstance:
     - target: {fileID: 7565784572154020295, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000012700189
+      value: -0.00053825753
       objectReference: {fileID: 0}
     - target: {fileID: 7567205953923215386, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5558,7 +5578,7 @@ PrefabInstance:
     - target: {fileID: 7960100056194564458, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000063214143
+      value: -0.22718036
       objectReference: {fileID: 0}
     - target: {fileID: 7975138437633582615, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5583,12 +5603,12 @@ PrefabInstance:
     - target: {fileID: 8010263241408842636, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8010263241408842636, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8010263241408842636, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -5813,7 +5833,7 @@ PrefabInstance:
     - target: {fileID: 8156875914746973712, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0000011771917
+      value: -0.00013372407
       objectReference: {fileID: 0}
     - target: {fileID: 8182871065121173822, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -6128,12 +6148,12 @@ PrefabInstance:
     - target: {fileID: 8627752592454880957, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 224
       objectReference: {fileID: 0}
     - target: {fileID: 8627752592454880957, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00002994231
+      value: -0.00010163626
       objectReference: {fileID: 0}
     - target: {fileID: 8653690005029593085, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
