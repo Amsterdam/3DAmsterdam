@@ -7,8 +7,7 @@ public abstract class ImportAPI : MonoBehaviour
 {
     public string dataResult;
     // Start is called before the first frame update
-    string test;
-    public virtual IEnumerator CallAPI(string apiUrl, string bogIndexInt, int resultIndex)
+    public IEnumerator CallAPI(string apiUrl, string bogIndexInt, int resultIndex)
     {
         
         // voegt data ID en url samen tot één geheel
@@ -22,7 +21,6 @@ public abstract class ImportAPI : MonoBehaviour
             if (request.isDone && !request.isHttpError)
             {
                 dataResult = request.downloadHandler.text;
-                //DataReceived(dataResult);
             }
         }
     }
