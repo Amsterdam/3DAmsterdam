@@ -6,15 +6,14 @@ using UnityEngine.Networking;
 public class ImportBAG : ImportAPI
 {
     // Start is called before the first frame update
-
+    public string BAG_ID_TEST = "0363100012171966";
     public Pand.Rootobject hoofdData;
     void Start()
     {
-        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", "0363100012171698", 0, RetrieveType.Pand));
-        
+        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", BAG_ID_TEST, RetrieveType.Pand));
     }
 
-    public IEnumerator CallAPI(string apiUrl, string bogIndexInt, int resultIndex, RetrieveType type)
+    public IEnumerator CallAPI(string apiUrl, string bogIndexInt, RetrieveType type)
     {
         // voegt data ID en url samen tot één geheel
         string url = apiUrl + bogIndexInt;
@@ -33,16 +32,23 @@ public class ImportBAG : ImportAPI
                 switch (type)
                 {
                     case RetrieveType.Pand:
+                        // haalt alleen het pand op
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=", "0363100012171698", 0, RetrieveType.Nummeraanduiding));
+                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=", bogIndexInt, RetrieveType.NummeraanduidingList));
                         break;
-                    case RetrieveType.Nummeraanduiding:
+                    case RetrieveType.NummeraanduidingList:
+                        // voegt de nummeraanduiding toe aan het pand
                         hoofdData += JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                        DisplayData.Instance.ShowData(hoofdData);
+                        DisplayBAGData.Instance.ShowData(hoofdData);
+                        break;
+                    case RetrieveType.NummeraanduidingInstance:
+                        // voegt de nummeraanduiding toe aan het pand
+                        hoofdData += JsonUtility.FromJson<Pand.Rootobject>(dataResult);
+                        DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
                     default:
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                    break;
+                        break;
                 }
             }
         }
@@ -51,7 +57,8 @@ public class ImportBAG : ImportAPI
 public enum RetrieveType
 {
     Pand,
-    Nummeraanduiding
+    NummeraanduidingInstance,
+    NummeraanduidingList
 }
 
 
@@ -94,8 +101,6 @@ public class Pand
 
         public static Pand.Rootobject operator +(Rootobject a, Rootobject b)
         {
-            Rootobject temp = new Rootobject();
-            temp = a;
             a.count = b.count;
             a.results = b.results;
             return a;
@@ -234,6 +239,7 @@ public class Pand
     public class Result
     {
         public NummerLinks _links = new NummerLinks();
+        public PandInstance adresGegevens = new PandInstance();
         public string _display;
         public string landelijk_id;
         public string type_adres;
@@ -253,6 +259,39 @@ public class Pand
 
 
 
-   
 
+
+    [System.Serializable]
+    public class PandInstance
+    {
+        public string _display;
+        public string nummeraanduidingidentificatie;
+        public string date_modified;
+        public string document_mutatie;
+        public string document_nummer;
+        public string begin_geldigheid;
+        public object einde_geldigheid;
+        public string status;
+        public object bron;
+        public string adres;
+        public string postcode;
+        public int huisnummer;
+        public string huisletter;
+        public string huisnummer_toevoeging;
+        public string type;
+       // public Openbare_Ruimte openbare_ruimte;
+        public string type_adres;
+        public object ligplaats;
+        public object standplaats;
+        public string verblijfsobject;
+        //public Buurt buurt;
+        //public Buurtcombinatie buurtcombinatie;
+        //public Gebiedsgerichtwerken gebiedsgerichtwerken;
+        public object grootstedelijkgebied;
+        //public Stadsdeel stadsdeel;
+        //public Woonplaats woonplaats;
+        public Bouwblok bouwblok;
+        //public _Geometrie _geometrie;
+        public string dataset;
+    }
 }
