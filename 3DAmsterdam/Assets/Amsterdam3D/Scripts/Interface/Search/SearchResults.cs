@@ -12,6 +12,9 @@ namespace Amsterdam3D.Interface.Search
 		private RectTransform searchResultsContainer;
 
 		[SerializeField]
+		private GameObject noResultsWarning;
+
+		[SerializeField]
 		private SearchResult searchResultPrefab;
 
 		[SerializeField]
@@ -72,7 +75,26 @@ namespace Amsterdam3D.Interface.Search
 				firstResultItem.ClickedResult();
 				firstResultItem.GetComponent<Button>().Select();
 			}
+			else
+			{
+				//Show a warning that now results have been found.
+				NoResultsWarning();
+			}
 		}
+
+		private void NoResultsWarning()
+		{
+			noResultsWarning.SetActive(true);
+			StopAllCoroutines();
+			StartCoroutine(HideWarningAfterTimer());
+		}
+
+		IEnumerator HideWarningAfterTimer()
+		{
+			yield return new WaitForSeconds(5.0f);
+			noResultsWarning.SetActive(false);
+		}
+
 
 		private void NoSearchResults()
 		{
