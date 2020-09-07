@@ -1,4 +1,5 @@
-﻿using Amsterdam3D.Sharing;
+﻿using Amsterdam3D.JavascriptConnection;
+using Amsterdam3D.Sharing;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;

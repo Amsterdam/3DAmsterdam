@@ -17,6 +17,9 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
+		private static extern string DisplayUniqueShareURL(string uniqueToken = "");
+
+		[DllImport("__Internal")]
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
@@ -35,6 +38,18 @@ namespace Amsterdam3D.JavascriptConnection
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
          UploadButtonCSSDisplay((display) ? "inline" : "none");
+#endif
+		}
+
+		public static void ShowUniqueShareToken(bool show, string uniqueToken = "")
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			 if(show){
+				DisplayUniqueShareURL(uniqueToken);
+			 }
+			 else {
+				HideUniqueShareURL();
+			}
 #endif
 		}
 
