@@ -19,6 +19,8 @@ namespace Amsterdam3D.Interface
 		private const float fadeSpeed = 3.0f;
 		UnityWebRequest uwr;
 
+		private const float minByteSize = 1000.0f; //an extra safety check if the file is big enough for an image
+
 		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key, bool rayCastTile)
 		{
 			tileKey = key;
@@ -46,7 +48,7 @@ namespace Amsterdam3D.Interface
 			{
 				yield return uwr.SendWebRequest();
 
-				if (uwr.isNetworkError || uwr.isHttpError)
+				if (uwr.isNetworkError || uwr.isHttpError || uwr.downloadedBytes < minByteSize)
 				{
 					Debug.Log(uwr.error);
 				}
