@@ -20,6 +20,9 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string DisplayUniqueShareURL(string uniqueToken = "");
 
 		[DllImport("__Internal")]
+		private static extern string HideUniqueShareURL();
+
+		[DllImport("__Internal")]
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
