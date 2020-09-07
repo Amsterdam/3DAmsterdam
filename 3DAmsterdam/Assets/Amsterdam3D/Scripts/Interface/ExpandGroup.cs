@@ -21,7 +21,9 @@ public class ExpandGroup : ChangePointerStyleHandler
 	[SerializeField]
 	private bool openGroup = true;
 
-	private int defaultChildCount = 0;
+	[Tooltip("Group will be empty with this amount of children")]
+	[SerializeField]
+	private int defaultChildCount = 1;
 
 	[SerializeField]
 	private GameObject openGraphic;
@@ -32,44 +34,68 @@ public class ExpandGroup : ChangePointerStyleHandler
 	{
 		rectTransform = GetComponent<RectTransform>();
 		closedHeight = rectTransform.sizeDelta.y;
-		defaultChildCount = transform.childCount;
 
-		if (ShowIfHasChildren())
+		ActiveIfGroupHasChildren();
+	}
+
+	private void OnEnable()
+	{
+		if (ActiveIfGroupHasChildren())
 		{
-			ShowOpenCloseGraphic();
-			StartCoroutine(Open(openGroup));
+			CalculateNewHeightAndResize();
 		}
 	}
 
+	/// <summary>
+	/// Calculates a new size for the group, and transition to this new size
+	/// </summary>
+	private void CalculateNewHeightAndResize()
+	{
+		if (calculateHeightBasedOnChildren)
+		{
+			CalculateMaximumHeight();
+		}
+		ShowOpenCloseGraphic();
+
+		StopAllCoroutines();
+		StartCoroutine(Open(openGroup));
+	}
+
+	/// <summary>
+	/// Shows the correct caret direction
+	/// </summary>
 	private void ShowOpenCloseGraphic()
 	{
 		openGraphic.SetActive(openGroup);
 		closeGraphic.SetActive(!openGroup);
 	}
 
-	private bool ShowIfHasChildren()
+	/// <summary>
+	/// Return if the group has children, and activates/deactivates accordingly.
+	/// </summary>
+	/// <returns>If this group have children</returns>
+	private bool ActiveIfGroupHasChildren()
 	{
-		var hasChildren = !(transform.childCount <= defaultChildCount);
+		var hasChildren = transform.childCount > defaultChildCount;
 		gameObject.SetActive(hasChildren);
 
 		return hasChildren;
 	}
 
+	/// <summary>
+	/// Catches changes in the child hierarchy
+	/// </summary>
 	void OnTransformChildrenChanged()
 	{
-		if (ShowIfHasChildren())
-		{
-			if (calculateHeightBasedOnChildren)
-			{
-				CalculateMaximumHeight();
-			}
-			ShowOpenCloseGraphic();
+		ActiveIfGroupHasChildren();
 
-			StopAllCoroutines();
-			StartCoroutine(Open(openGroup));
-		}
+		if (gameObject.activeInHierarchy)
+			CalculateNewHeightAndResize();
 	}
 
+	/// <summary>
+	/// Toggle open/close for this group
+	/// </summary>
 	public void ToggleGroup()
 	{
 		openGroup = !openGroup;

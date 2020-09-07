@@ -76,6 +76,8 @@ namespace Amsterdam3D.FreeShape
 			FitScaleHandesInView();
 			UpdateShape();
 			ApplyShappeOriginOffset();
+
+			HideAllHandles();
 			DisplayHandles(true);
 		}
 
@@ -86,11 +88,15 @@ namespace Amsterdam3D.FreeShape
 
 		public void OnMouseDown()
 		{
+			HideAllHandles();
+			DisplayHandles(true);
+		}
+
+		private static void HideAllHandles()
+		{
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
 			foreach (FreeShape freeShape in shapes)
 				freeShape.DisplayHandles(false);
-
-			DisplayHandles(true);
 		}
 
 		private void FitScaleHandesInView()
@@ -105,6 +111,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void DisplayHandles(bool display)
 		{
+			//All children are handles, so simply activate those.
 			foreach (Transform child in transform)
 				child.gameObject.SetActive(display);
 		}

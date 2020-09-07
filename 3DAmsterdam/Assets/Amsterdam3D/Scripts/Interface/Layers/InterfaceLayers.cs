@@ -60,7 +60,7 @@ namespace Amsterdam3D.Interface
 		/// <param name="linkedWorldObject">The GameObject that is linked to this interface layer</param>
 		/// <param name="type">The layer/object type</param>
 
-		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type)
+		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type, bool createdByUser = true)
 		{
 			CustomLayer newCustomlayer;
 			if(type == LayerType.ANNOTATION)
@@ -70,6 +70,9 @@ namespace Amsterdam3D.Interface
 
 				newCustomlayer.transform.SetParent(annotationsContainer);
 				annotationsContainer.gameObject.SetActive(true);
+
+				if(createdByUser)
+					linkedWorldObject.GetComponent<Annotation>().PlaceUsingMouse();
 			}
 			else{
 				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);

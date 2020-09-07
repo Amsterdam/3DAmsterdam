@@ -17,6 +17,12 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
+		private static extern string DisplayUniqueShareURL(string uniqueToken = "");
+
+		[DllImport("__Internal")]
+		private static extern string HideUniqueShareURL();
+
+		[DllImport("__Internal")]
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
@@ -38,6 +44,18 @@ namespace Amsterdam3D.JavascriptConnection
 #endif
 		}
 
+		public static void ShowUniqueShareToken(bool show, string uniqueToken = "")
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			 if(show){
+				DisplayUniqueShareURL(uniqueToken);
+			 }
+			 else {
+				HideUniqueShareURL();
+			}
+#endif
+		}
+
 		public static string FetchOBJDataAsString()
 		{
 			return FetchOBJData();
@@ -48,9 +66,7 @@ namespace Amsterdam3D.JavascriptConnection
 		}
 		public static void ChangeCursor(string cursorName)
 		{
-#if UNITY_EDITOR
-			Debug.Log("Change CSS pointer to " + cursorName);
-#elif UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
 				SetCSSCursor(cursorName);
 #endif
 		}
