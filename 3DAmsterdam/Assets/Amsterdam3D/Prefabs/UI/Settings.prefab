@@ -240,6 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 314885772}
   - component: {fileID: 314885773}
+  - component: {fileID: 3089201333499863979}
   m_Layer: 5
   m_Name: ToggleMinimap
   m_TagString: Untagged
@@ -315,6 +316,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &3089201333499863979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314885771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &389074475
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +564,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1124960528}
   - component: {fileID: 1124960529}
+  - component: {fileID: 6575523793972576339}
   m_Layer: 5
   m_Name: TogglePostProcessing
   m_TagString: Untagged
@@ -625,6 +640,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &6575523793972576339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124960527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &1180512514
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,6 +814,7 @@ GameObject:
   - component: {fileID: 1750715271}
   - component: {fileID: 1750715270}
   - component: {fileID: 1750715269}
+  - component: {fileID: 3490289645507746688}
   m_Layer: 5
   m_Name: ButtonCloseWindow
   m_TagString: Untagged
@@ -892,6 +921,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3490289645507746688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750715267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &1777816649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,6 +1663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4753115520425333802}
   - component: {fileID: 4968041921715350288}
+  - component: {fileID: 5618012694953901750}
   m_Layer: 5
   m_Name: ToggleFPS
   m_TagString: Untagged
@@ -1696,6 +1739,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &5618012694953901750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2203421401240617088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &2251604959443154869
 GameObject:
   m_ObjectHideFlags: 0
@@ -1706,6 +1762,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8984009992890849018}
   - component: {fileID: 6484531252233001476}
+  - component: {fileID: 384699880588369973}
   m_Layer: 5
   m_Name: ToggleFXAA
   m_TagString: Untagged
@@ -1781,6 +1838,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &384699880588369973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251604959443154869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &2686628688392636300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,6 +1942,7 @@ GameObject:
   - component: {fileID: 7658282146787424611}
   - component: {fileID: 2035366873615078837}
   - component: {fileID: 6053510530940339156}
+  - component: {fileID: 3783058402339103501}
   m_Layer: 5
   m_Name: ButtonResetKleuren
   m_TagString: Untagged
@@ -1992,6 +2063,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: "Reset laagkleuren naar \nhun originele waarden"
+--- !u!114 &3783058402339103501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2799033009641837429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &2862180150008817975
 GameObject:
   m_ObjectHideFlags: 0
@@ -2457,6 +2541,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5964967912692560334}
   - component: {fileID: 4199572591880089997}
+  - component: {fileID: 8351571194513723728}
   m_Layer: 5
   m_Name: ToggleSunlight
   m_TagString: Untagged
@@ -2532,3 +2617,16 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &8351571194513723728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256515222007544739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1

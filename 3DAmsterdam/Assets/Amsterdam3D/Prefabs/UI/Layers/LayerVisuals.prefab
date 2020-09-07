@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 8099498892125900334}
   - component: {fileID: 4077098992557183204}
   - component: {fileID: 7227480859896872405}
+  - component: {fileID: 4393624564332712166}
   m_Layer: 5
   m_Name: ResetColorsButton
   m_TagString: Untagged
@@ -376,6 +377,19 @@ MonoBehaviour:
   tooltipText: 'Reset kleur
 
     Shift+Klik: Reset alle kleuren'
+--- !u!114 &4393624564332712166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538942557354523066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &673723483040217475
 GameObject:
   m_ObjectHideFlags: 0
@@ -540,6 +554,7 @@ GameObject:
   - component: {fileID: 2441899045869104020}
   - component: {fileID: 433275809947432894}
   - component: {fileID: 2899662676325430322}
+  - component: {fileID: 6142871240182118183}
   m_Layer: 5
   m_Name: Pipette
   m_TagString: Untagged
@@ -676,6 +691,19 @@ MonoBehaviour:
   selectionPointer: {fileID: 4581350743387392476}
   activeImageIcon: {fileID: 2441899045869104020}
   activeIconColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
+--- !u!114 &6142871240182118183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894039922996019997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &2042001055311714516
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,6 +1022,7 @@ GameObject:
   - component: {fileID: 441411830344665995}
   - component: {fileID: 7250597308613602815}
   - component: {fileID: 6441819321257435748}
+  - component: {fileID: 2126392873240080022}
   m_Layer: 5
   m_Name: HexColorField
   m_TagString: Untagged
@@ -1156,6 +1185,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputTextField: {fileID: 7250597308613602815}
+--- !u!114 &2126392873240080022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2660055003587506494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 2
 --- !u!1 &2670736040088308368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,6 +1408,7 @@ GameObject:
   - component: {fileID: 291104494350625673}
   - component: {fileID: 7819427800614610018}
   - component: {fileID: 541239095638259917}
+  - component: {fileID: 5419583370507119791}
   m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
@@ -1429,6 +1472,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5419583370507119791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2927860164914639108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &3625117073939248503
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,6 +2324,7 @@ GameObject:
   - component: {fileID: 4720184283198576134}
   - component: {fileID: 5378868481691101379}
   - component: {fileID: 8233069379332049490}
+  - component: {fileID: 4703754411578956780}
   m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
@@ -2332,6 +2389,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4703754411578956780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7786331926700753977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &7963402126755127022
 GameObject:
   m_ObjectHideFlags: 0
