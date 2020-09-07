@@ -119,7 +119,7 @@ namespace Amsterdam3D.CameraMotion
 
 		private bool InteractionOverruled()
 		{
-			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || (EventSystem.current.currentSelectedGameObject && EventSystem.current.currentSelectedGameObject.CompareTag("BlockCameraControls")) || ObjectManipulation.manipulatingObject)
+			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || ObjectManipulation.manipulatingObject)
 			{
 				interactionOverruled = true;
 			}
