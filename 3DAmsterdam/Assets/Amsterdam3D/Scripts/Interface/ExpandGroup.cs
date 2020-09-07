@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.JavascriptConnection;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ExpandGroup : MonoBehaviour
+public class ExpandGroup : ChangePointerStyleHandler
 {
 	[SerializeField]
 	private bool hideWhenEmpty = true;

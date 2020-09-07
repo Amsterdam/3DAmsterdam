@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Amsterdam3D.JavascriptConnection;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ namespace Amsterdam3D.Interface
 		ANNOTATION
 	}
 	
-	public class InterfaceLayer : MonoBehaviour
+	public class InterfaceLayer : ChangePointerStyleHandler
 	{
 		[SerializeField]
 		protected LayerType layerType = LayerType.STATIC;

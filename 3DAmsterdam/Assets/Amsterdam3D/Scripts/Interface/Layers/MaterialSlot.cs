@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amsterdam3D.JavascriptConnection;
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-	public class MaterialSlot : MonoBehaviour, IPointerClickHandler
+	public class MaterialSlot : ChangePointerStyleHandler, IPointerClickHandler
 	{
 		[SerializeField]
 		private Material transparentMaterialSource;
