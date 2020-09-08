@@ -100,10 +100,7 @@ namespace cityJSON
                 cityObjectType = cityObject["type"];
 
                 // Skip non-Buildings
-                if (cityObjectType != "Building")
-                {
-                    continue;
-                }
+                
                 string objectID = GetObjectID("bagpandid", cityObject);
                 if (objectID == "")
                 {
