@@ -29,20 +29,14 @@ public class DisplayBAGData : MonoBehaviour
         if (pandData.results.Length > 0)
         {
             indexBAGText.text = pandData.results[0].landelijk_id;
-            // zet de data om in een text object dat wordt geïnstantieerd
-            /*GameObject temp = Instantiate(pandUIPrefab, transform.position, transform.rotation);
-            temp.transform.SetParent(transform);
-            // reset de transform naar het midden
-            //temp.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
-            PandObject tempPand = temp.GetComponent<PandObject>();
-            // stuurt de pand data door
-            tempPand.SetText(pandData);*/
+            // is er meer dan één pand, dan laat hij alle adressen zien
             if (pandData.results.Length > 1)
             {
                 // maakt een knop aan voor elk adres
                 for (int i = 0; i < pandData.results.Length; i++)
                 {
                     GameObject temp = Instantiate(pandUIButton, buttonObjectTargetSpawn.position, buttonObjectTargetSpawn.rotation);
+                    //temp.name = pandData.results[i]._display;
                     temp.transform.SetParent(buttonObjectTargetSpawn);
                     PandButton tempButton = temp.GetComponent<PandButton>();
                     // zet de knop in de lijst met buttons
