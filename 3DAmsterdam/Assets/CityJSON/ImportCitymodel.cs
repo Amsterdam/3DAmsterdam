@@ -10,20 +10,28 @@ public class ImportCitymodel: MonoBehaviour
 {
     public int LOD = 1;
     public string objectType = "Buildings";
-    
+
+    private string basefilepath;
+    private string filename;
     public void Start()
     {
 
         if (LOD==2 && objectType == "Buildings")
         {
+            basefilepath = "E:/brondata/LOD2Buildings/";
+            filename = "gebouwenLOD2.json";
             ImportBuildingsLOD2();
         }
         if (LOD == 1 && objectType=="Buildings")
         {
+            basefilepath = "E:/TiledData/BuildingsLOD1/";
+            filename = "buildingsLOD1.json";
             ImportBuildingsLOD1();
         }
         if (LOD == 1 && objectType == "Bridges")
         {
+            basefilepath = "E:/TiledData/BridgesLOD1/";
+            filename = "BridgesLOD1.json";
             ImportBuildingsLOD1();
         }
         //int X = 12;
@@ -50,10 +58,7 @@ public class ImportCitymodel: MonoBehaviour
         int Ymax = 501000;
 
         int stepSize = 1000;
-
-        string basefilepath = "E:/TiledData/BuildingsLOD1/";
         string filepath = "";
-        string filename = "buildingsLOD1.json";
         int LOD = 1;
 
 
@@ -78,9 +83,9 @@ public class ImportCitymodel: MonoBehaviour
 
         int stepSize = 1000;
 
-        string basefilepath = "E:/brondata/LOD2Buildings/";
+        
         string filepath = "";
-        string filename = "gebouwenLOD2.json";
+        
         int LOD = 2;
 
         //testpurpose
