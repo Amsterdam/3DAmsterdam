@@ -8,9 +8,64 @@ using UnityEngine;
 
 public class ImportCitymodel: MonoBehaviour
 {
-
+    public int LOD = 1;
     
     public void Start()
+    {
+
+        if (LOD==2)
+        {
+            ImportBuildingsLOD2();
+        }
+        if (LOD == 1)
+        {
+            ImportBuildingsLOD1();
+        }
+
+        //int X = 12;
+        //int Y = 1;
+
+        //            filepath = basefilepath + "tile_" + Y + "_" + X + "/";
+        //        Debug.Log(filepath);
+        //double originX = (X * stepSize) + Xmin;
+        //double originY = (Y * stepSize) + Ymin;
+        //CreateTile(filepath, filename, LOD, originX, originY);
+
+
+        //GameObject go = Selection.activeGameObject;
+        //CityJSONSettings settings = go.GetComponent<CityJSONSettings>();
+
+        //CreateTile(settings.filepath, settings.filename, settings.LOD, settings.Origin.x, settings.Origin.y);
+
+    }
+    private void ImportBuildingsLOD1()
+    {
+        int Xmin = 109000;
+        int Ymin = 474000;
+        int Xmax = 141000;
+        int Ymax = 501000;
+
+        int stepSize = 1000;
+
+        string basefilepath = "E:/TiledData/BuildingsLOD1/";
+        string filepath = "";
+        string filename = "buildingsLOD1.json";
+        int LOD = 1;
+
+
+        for (int X = Xmin; X < Xmax; X+=stepSize)
+        {
+            for (int Y = Ymin; Y < Ymax; Y+=stepSize)
+            {
+                filepath = basefilepath + "tile_" + X + ".0_" + Y + ".0/";
+                Debug.Log(filepath);
+                double originX = X;
+                double originY = Y;
+                CreateTile(filepath, filename, LOD, originX, originY);
+            }
+        }
+    }
+    private void ImportBuildingsLOD2()
     {
         int Xmin = 105000;
         int Ymin = 475000;
@@ -42,24 +97,7 @@ public class ImportCitymodel: MonoBehaviour
                 CreateTile(filepath, filename, LOD, originX, originY);
             }
         }
-        //int X = 12;
-        //int Y = 1;
-
-        //            filepath = basefilepath + "tile_" + Y + "_" + X + "/";
-        //        Debug.Log(filepath);
-        //double originX = (X * stepSize) + Xmin;
-        //double originY = (Y * stepSize) + Ymin;
-        //CreateTile(filepath, filename, LOD, originX, originY);
-
-
-        //GameObject go = Selection.activeGameObject;
-        //CityJSONSettings settings = go.GetComponent<CityJSONSettings>();
-
-        //CreateTile(settings.filepath, settings.filename, settings.LOD, settings.Origin.x, settings.Origin.y);
-
     }
-
-
 
 
     static void CreateTile(string filepath, string filename,int LOD, double X, double Y)
