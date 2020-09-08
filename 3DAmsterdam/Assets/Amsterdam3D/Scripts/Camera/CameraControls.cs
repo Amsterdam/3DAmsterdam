@@ -92,7 +92,9 @@ namespace Amsterdam3D.CameraMotion
 		{
 			if (InteractionOverruled()) return;
 
-			canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
+            
+
+            canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
 
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);

@@ -75,8 +75,12 @@ namespace Amsterdam3D.Interface
 
         private Vector3 lastDraggedPointerPosition;
 
+        private Canvas canvas;
+
         public void Initialize(RectTransform view, RectTransform drag)
         {
+            canvas = transform.root.GetComponent<Canvas>();
+
             tilesDraggableContainer = drag;
             viewBoundsArea = view;
 
@@ -122,8 +126,8 @@ namespace Amsterdam3D.Interface
         {
             tilesDraggableContainer.position = new Vector3()
             {
-                x = Mathf.Clamp(targetPosition.x, viewBoundsArea.position.x - (MapPixelWidth * tilesDraggableContainer.localScale.x), viewBoundsArea.position.x - TilePixelSize),
-                y = Mathf.Clamp(targetPosition.y, viewBoundsArea.position.y - (MapPixelWidth * tilesDraggableContainer.localScale.y) + TilePixelSize, viewBoundsArea.position.y)
+                x = Mathf.Clamp(targetPosition.x, viewBoundsArea.position.x - (MapPixelWidth * tilesDraggableContainer.localScale.x * canvas.scaleFactor), viewBoundsArea.position.x - TilePixelSize),
+                y = Mathf.Clamp(targetPosition.y, viewBoundsArea.position.y - (MapPixelWidth * tilesDraggableContainer.localScale.y * canvas.scaleFactor) + TilePixelSize, viewBoundsArea.position.y)
             };
         }
 

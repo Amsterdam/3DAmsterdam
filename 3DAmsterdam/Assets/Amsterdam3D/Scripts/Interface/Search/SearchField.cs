@@ -14,6 +14,9 @@ namespace Amsterdam3D.Interface.Search
 	public class SearchField : MonoBehaviour, ISelectHandler
 	{
 		[SerializeField]
+		private GameObject clearButton;
+
+		[SerializeField]
 		private int charactersNeededBeforeSearch = 2;
 
 		[SerializeField]
@@ -36,9 +39,17 @@ namespace Amsterdam3D.Interface.Search
 			searchResultsList.ShowResultsList(false);
 		}
 
-		public void GetSuggestions(string textInput)
+		public void ClearInput()
+		{
+			searchInputField.text = "";
+			GetSuggestions();
+		}
+
+		public void GetSuggestions(string textInput = "")
 		{
 			var inputNotEmpty = (textInput != "");
+
+			clearButton.SetActive(inputNotEmpty);
 			searchResultsList.ShowResultsList(inputNotEmpty);
 
 			StopAllCoroutines();
