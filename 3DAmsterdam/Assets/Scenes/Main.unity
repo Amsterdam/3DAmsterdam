@@ -300,6 +300,54 @@ Light:
     type: 3}
   m_PrefabInstance: {fileID: 1602667573}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1762898673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1762898675}
+  - component: {fileID: 1762898674}
+  m_Layer: 0
+  m_Name: getBagidsGameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1762898674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762898673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildingContainer: {fileID: 1814701004}
+  defaultMaterial: {fileID: 0}
+  isBusy: 0
+  id: 
+  selectedTile: {fileID: 0}
+--- !u!4 &1762898675
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762898673}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -794.02783, y: 677.8898, z: -1082.045}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1814701004 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013071965061, guid: 1686781c0bba69b41bd5102479f39f29,
@@ -6636,6 +6684,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[0].path
+      value: buildings/LOD0/buildings_{x}_{y}.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[1].path
+      value: buildings/LOD1/buildings_{x}_{y}.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814701005, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}
+      propertyPath: Datasets.Array.data[2].path
+      value: buildings/LOD2/building_{x}_{y}_lod2
+      objectReference: {fileID: 0}
     - target: {fileID: 4498901013433943612, guid: 1686781c0bba69b41bd5102479f39f29,
         type: 3}
       propertyPath: m_LocalPosition.x
