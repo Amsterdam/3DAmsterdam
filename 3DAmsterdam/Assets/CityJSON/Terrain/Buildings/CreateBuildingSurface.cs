@@ -104,8 +104,12 @@ namespace cityJSON
                 {
                     continue;
                 }
-
-                string objectID = GetObjectID("name", cityObject);
+                string objectID = GetObjectID("bagpandid", cityObject);
+                if (objectID == "")
+                {
+                    objectID = GetObjectID("name", cityObject);
+                }
+               
                 if (triangleList.ContainsKey(objectID) == true)
                 {
                     triangleList[objectID].AddRange(ReadTriangles(cityObject));
@@ -123,7 +127,7 @@ namespace cityJSON
         private string GetObjectID(string attributeName, JSONNode cityobject)
         {
             string objectid = "";
-            objectid = cityobject["attributes"]["name"].Value;
+            objectid = cityobject["attributes"][attributeName].Value;
 
             return objectid;
         }
