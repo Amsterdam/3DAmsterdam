@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 260, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3594763073575650829
 CanvasRenderer:
@@ -136,9 +136,6 @@ MonoBehaviour:
   btn: {fileID: 3594763073575650831}
   btnText: {fileID: 3594763074790676784}
   pandResult:
-    _links:
-      self:
-        href: 
     count: 0
     results: []
     _display: 
@@ -163,43 +160,28 @@ MonoBehaviour:
     _monumenten:
       href: 
     bouwblok:
-      _links:
-        self:
-          href: 
       _display: 
       id: 
       dataset: 
     begin_geldigheid: 
     einde_geldigheid: 
     _buurt:
-      _links:
-        self:
-          href: 
       _display: 
       code: 
       naam: 
       dataset: 
     _buurtcombinatie:
-      _links:
-        self:
-          href: 
       _display: 
       naam: 
       vollcode: 
       dataset: 
     _stadsdeel:
-      _links:
-        self:
-          href: 
       _display: 
       code: 
       naam: 
       dataset: 
     _gemeente:
       _display: 
-      _links:
-        self:
-          href: 
       naam: 
       code: 
       dataset: 
