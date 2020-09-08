@@ -1,4 +1,5 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.JavascriptConnection;
+using ConvertCoordinates;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -322,11 +323,15 @@ namespace Amsterdam3D.CameraMotion
                 if (Input.GetMouseButtonDown(0))
                 {
                     startMouseDrag = GetMousePositionInWorld();
+                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
                 }
                 else if (Input.GetMouseButton(0))
                 {
                     dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
                     transform.position -= dragMomentum;
+                }
+                else if (Input.GetMouseButtonUp(0)){
+                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
                 }
                 else {
                     //Slide forward in dragged direction

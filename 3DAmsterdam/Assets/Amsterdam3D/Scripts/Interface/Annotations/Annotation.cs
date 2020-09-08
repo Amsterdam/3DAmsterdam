@@ -22,7 +22,16 @@ namespace Amsterdam3D.Interface
 
         public CustomLayer interfaceLayer { get; set; }
 
-        private void Start()
+        public string BodyText {
+            get{
+                return balloonText.text;
+            }
+            set{
+                balloonText.text = value;
+            }
+        }
+
+        public void PlaceUsingMouse()
         {
             StartCoroutine(StickToMouse());
         }
@@ -70,7 +79,7 @@ namespace Amsterdam3D.Interface
         public void StartEditingText()
         {
             editInputField.gameObject.SetActive(true);
-            editInputField.text = balloonText.text;
+            editInputField.text = BodyText;
 
             editInputField.Select();
         }
@@ -81,8 +90,8 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void EditText()
         {
-            balloonText.text = editInputField.text;
-            interfaceLayer.RenameLayer(balloonText.text);
+            BodyText = editInputField.text;
+            interfaceLayer.RenameLayer(BodyText);
         }
 
         /// <summary>
@@ -90,8 +99,8 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void StopEditingText()
         {
-            balloonText.text = editInputField.text;
-            interfaceLayer.RenameLayer(balloonText.text);
+            BodyText = editInputField.text;
+            interfaceLayer.RenameLayer(BodyText);
             editInputField.gameObject.SetActive(false);
         }
     }

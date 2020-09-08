@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 2368847773628918914}
   - component: {fileID: 2368847773628918915}
   - component: {fileID: 2368847773628918940}
+  - component: {fileID: 4861695227570059662}
   m_Layer: 5
   m_Name: AddObjectButton
   m_TagString: Untagged
@@ -360,6 +361,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4861695227570059662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2368847773628918942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursorType: pointer
 --- !u!114 &6129827094324895780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1592,11 +1606,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Gebouwen
-      objectReference: {fileID: 0}
-    - target: {fileID: 7914545870203704338, guid: 32f3e4803b3fc694e8315e3b551adfe0,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32f3e4803b3fc694e8315e3b551adfe0, type: 3}
