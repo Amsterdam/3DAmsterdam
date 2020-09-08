@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amsterdam3D.JavascriptConnection;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,11 +45,13 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     public void OnPointerEnter(PointerEventData eventData)
     {
         StartCoroutine(RotateWheelByScrollInput());
+        ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.ERESIZE);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         StopAllCoroutines();
+        ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
     }
 
     /// <summary>

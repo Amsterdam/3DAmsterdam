@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using Amsterdam3D.JavascriptConnection;
 
 namespace Amsterdam3D.UserLayers
 {

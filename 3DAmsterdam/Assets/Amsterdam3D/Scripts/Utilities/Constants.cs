@@ -19,17 +19,23 @@ public static class Constants
     /// Swap data URL based on the branch type. Optionaly we can choose to use a relative path for WebGL.
     /// </summary>
 #if !UNITY_EDITOR && RELATIVE_BASE_PATH
-        public const string BASE_DATA_URL = "./AssetBundles/WebGL/";
+        public const string BASE_DATA_URL = "./web/data/";
 #elif PRODUCTION
         public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
-        //public const string FEATURE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
+        public static string SHARE_URL = "https://3d.amsterdam.nl/";
+        public static string SHARE_OBJECTSTORE_PATH = "web/userUploads/";
+        public static string SHARED_VIEW_URL = "https://3d.amsterdam.nl/web/app/index.html?view=";
 #elif DEVELOPMENT_FEATURE
-    //version contains branch name, for example feature/new-feature-name
-    //public static string FEATURE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/" + Application.version;
-    
+        //version contains branch name, for example feature/new-feature-name
+        public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/" + Application.version; 
+        public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
+        public static string SHARE_OBJECTSTORE_PATH = "webmap/userUploads/";
+        public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
+#else
     //USE DEVELOPMENT PATH BY DEFAULT
-    public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/webmap/data/develop/";
-
-    
+        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/develop/";
+        public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
+        public static string SHARE_OBJECTSTORE_PATH = "webmap/userUploads/";
+        public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 #endif
 }
