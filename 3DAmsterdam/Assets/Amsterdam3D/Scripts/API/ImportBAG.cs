@@ -8,12 +8,23 @@ public class ImportBAG : ImportAPI
 {
     public string BAG_ID_TEST = "0363100012171966"; // dit is test data
     public Pand.Rootobject hoofdData;
+
+    public static ImportBAG Instance = null;
+
+    private void Awake()
+    {
+        // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
         // dit is een test, verwijder dit in de officiele build of als je hem wilts gebruiken.
-        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", BAG_ID_TEST, RetrieveType.Pand));
+        //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", BAG_ID_TEST, RetrieveType.Pand));
     }
-
     public IEnumerator CallAPI(string apiUrl, string bogIndexInt, RetrieveType type)
     {
         // voegt data ID en url samen tot één geheel

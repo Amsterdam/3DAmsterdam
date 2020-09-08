@@ -33,8 +33,9 @@ public static class Constants
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 #else
     //USE DEVELOPMENT PATH BY DEFAULT
-        public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/develop/";
-        public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
+    // public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/develop/";
+    public const string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
+    public static string SHARE_URL = "https://acc.3d.amsterdam.nl/";
         public static string SHARE_OBJECTSTORE_PATH = "webmap/userUploads/";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 #endif

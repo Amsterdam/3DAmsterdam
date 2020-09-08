@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class DisplayBAGData : MonoBehaviour
 {
+    public GameObject ui;
+
     [SerializeField] private Text indexBAGText = default;
     
     [SerializeField] private Transform pandObjectTargetSpawn = default;
     public GameObject pandUIPrefab;
     [SerializeField] private Transform buttonObjectTargetSpawn = default;
     public GameObject pandUIButton;
-    private List<PandButton> pandButtons = new List<PandButton>();
+    [SerializeField] private List<PandButton> pandButtons = new List<PandButton>();
 
     public static DisplayBAGData Instance = null;
 
@@ -21,14 +23,19 @@ public class DisplayBAGData : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
-        }   
+        }
+        ui.SetActive(false);    
     }
 
     public void ShowData(Pand.Rootobject pandData)
     {
+        ui.SetActive(true);
+        RemoveButtons();
         if (pandData.results.Length > 0)
         {
-            indexBAGText.text = pandData.results[0].landelijk_id;
+            // starts ui en cleans up all previous buttons
+
+            indexBAGText.text = pandData._display;
             // is er meer dan één pand, dan laat hij alle adressen zien
             if (pandData.results.Length > 1)
             {
@@ -63,4 +70,14 @@ public class DisplayBAGData : MonoBehaviour
         // stuurt de pand data door
         tempPand.SetText(pandData, index);
     }
+
+    public void RemoveButtons()
+    {
+        foreach(PandButton btn in pandButtons)
+        {
+            Destroy(btn.gameObject);
+            pandButtons.Remove(btn);
+        }
+    }
 }
+

@@ -129,7 +129,11 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                //url = Constants.FEATURE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                // temp
+                url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
+
+
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
                 url = url.Replace("{lod}", lod.ToString());
@@ -217,6 +221,11 @@ namespace LayerSystem
             foreach (Mesh mesh in meshesInAssetbundle)
             {
                 Mesh newMesh = new Mesh();
+                if (mesh.vertexCount>55000)
+                {
+                    newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                }
+                
                 newMesh.vertices = mesh.vertices;
                 newMesh.triangles = mesh.triangles;
                 newMesh.normals = mesh.normals;
