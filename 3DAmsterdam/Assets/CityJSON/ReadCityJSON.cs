@@ -81,19 +81,14 @@ namespace cityJSON
             LOD = lod;
             foreach (JSONNode node in cityjsonNode["CityObjects"])
             {
-                switch (node["type"].Value)
-                {
-                    case "Building":
+
                         Building bldg = ReadBuilding(node);
                         if (bldg !=null)
 
                         {
                             buildings.Add(bldg);
                         }
-                        break;
-                    default:
-                        break;
-                }
+
             }
             return buildings;
         }

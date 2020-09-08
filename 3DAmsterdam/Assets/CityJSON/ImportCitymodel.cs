@@ -9,19 +9,23 @@ using UnityEngine;
 public class ImportCitymodel: MonoBehaviour
 {
     public int LOD = 1;
+    public string objectType = "Buildings";
     
     public void Start()
     {
 
-        if (LOD==2)
+        if (LOD==2 && objectType == "Buildings")
         {
             ImportBuildingsLOD2();
         }
-        if (LOD == 1)
+        if (LOD == 1 && objectType=="Buildings")
         {
             ImportBuildingsLOD1();
         }
-
+        if (LOD == 1 && objectType == "Bridges")
+        {
+            ImportBuildingsLOD1();
+        }
         //int X = 12;
         //int Y = 1;
 
@@ -61,7 +65,7 @@ public class ImportCitymodel: MonoBehaviour
                 Debug.Log(filepath);
                 double originX = X;
                 double originY = Y;
-                CreateTile(filepath, filename, LOD, originX, originY);
+                CreateTile(filepath, filename, LOD, originX, originY, objectType);
             }
         }
     }
@@ -94,13 +98,13 @@ public class ImportCitymodel: MonoBehaviour
                 Debug.Log(filepath);
                 double originX = (X * stepSize) + Xmin;
                 double originY = (Y * stepSize) + Ymin;
-                CreateTile(filepath, filename, LOD, originX, originY);
+                CreateTile(filepath, filename, LOD, originX, originY, objectType);
             }
         }
     }
 
 
-    static void CreateTile(string filepath, string filename,int LOD, double X, double Y)
+    static void CreateTile(string filepath, string filename,int LOD, double X, double Y, string objectType)
     {
         CityModel Citymodel = new CityModel(filepath, filename);
         List<Building> buildings = Citymodel.LoadBuildings(LOD);
@@ -110,7 +114,7 @@ public class ImportCitymodel: MonoBehaviour
         GameObject container;
         container = createBuildingSurface.CreateMesh(Citymodel, new ConvertCoordinates.Vector3RD(X, Y, 0));
         
-        SavePrefab(container, X.ToString(), Y.ToString(), LOD);
+        SavePrefab(container, X.ToString(), Y.ToString(), LOD, objectType);
         buildings = null;
         Citymodel = null;
 
@@ -118,11 +122,12 @@ public class ImportCitymodel: MonoBehaviour
 
     }
 
-    static void SavePrefab(GameObject container, string X, string Y, int LOD)
+    static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)
     {
 
         MeshFilter[] mfs = container.GetComponentsInChildren<MeshFilter>();
-        string LODfolder = CreateAssetFolder("Assets/Buildings","LOD"+LOD);
+        string objectFolder = CreateAssetFolder("Assets", objectType);
+        string LODfolder = CreateAssetFolder(objectFolder,"LOD"+LOD);
         string SquareFolder = CreateAssetFolder(LODfolder, X + "_" + Y);
         string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
         //string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
@@ -142,17 +147,19 @@ public class ImportCitymodel: MonoBehaviour
         objectMappingClass.mappedUVs = mappedUVs;
         objectMappingClass.TextureSize = TextureSize;
         objectMappingClass.uvs = meshUV;
-        
+
+        string typeName = objectType.ToLower();
+
         container.GetComponent<MeshFilter>().mesh.uv = null;
-        AssetDatabase.CreateAsset(objectMappingClass, dataFolder +"/"+ X + "_" + Y + "_buildings_lod" + LOD + "-data.asset");
+        AssetDatabase.CreateAsset(objectMappingClass, dataFolder +"/"+ X + "_" + Y + "_"+typeName+"_lod" + LOD + "-data.asset");
         AssetDatabase.SaveAssets();
-        AssetImporter.GetAtPath(dataFolder+"/"  + X + "_" + Y + "_buildings_lod" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_buildings_lod" + LOD + "-data", "");
+        AssetImporter.GetAtPath(dataFolder+"/"  + X + "_" + Y + "_"+typeName+"_lod" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_"+typeName+"_lod" + LOD + "-data", "");
         int meshcounter = 0;
         foreach (MeshFilter mf in mfs)
         {
-            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_"+Y+"_buildings_lod"+LOD+".mesh");
+            AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_"+Y+"_"+typeName+"_lod"+LOD+".mesh");
             AssetDatabase.SaveAssets();
-            AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_buildings_lod" + LOD + ".mesh").SetAssetBundleNameAndVariant("Building_" + X + "_" + Y + "_lod" + LOD,"");
+            AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_"+typeName+"_lod" + LOD + ".mesh").SetAssetBundleNameAndVariant(typeName+"_" + X + "_" + Y + "_lod" + LOD,"");
             meshcounter++;
         }
         AssetDatabase.SaveAssets();
