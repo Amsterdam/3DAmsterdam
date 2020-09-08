@@ -131,7 +131,7 @@ namespace LayerSystem
             {
                 //url = Constants.FEATURE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
                 // temp
-                url = "https://acc.3d.amsterdam.nl/webmap/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
+                url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
 
 
                 url = url.Replace("{x}", tileChange.X.ToString());
