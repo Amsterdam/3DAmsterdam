@@ -10,7 +10,7 @@ public class ImportCitymodel: MonoBehaviour
 {
     public int LOD = 1;
     public string objectType = "Buildings";
-
+    public Material DefaultMaterial;
     private string basefilepath;
     private string filename;
     public void Start()
@@ -34,6 +34,11 @@ public class ImportCitymodel: MonoBehaviour
             filename = "BridgesLOD1.json";
             ImportBuildingsLOD1();
         }
+        if (objectType == "Single")
+        {
+            filename = "E:/brondata/dePijpLOD3/pijp_lod3_origineel.json";
+            ImportSingleFile();
+        }
         //int X = 12;
         //int Y = 1;
 
@@ -50,6 +55,20 @@ public class ImportCitymodel: MonoBehaviour
         //CreateTile(settings.filepath, settings.filename, settings.LOD, settings.Origin.x, settings.Origin.y);
 
     }
+    private void ImportSingleFile()
+    {
+        int originX = 120000;
+        int originY = 490000;
+
+        CityModel Citymodel = new CityModel("", filename);
+        List<Building> buildings = Citymodel.LoadBuildings(LOD);
+        CreateGameObjects creator = new CreateGameObjects();
+        //creator.CreateMeshesByIdentifier(buildings, "name", new ConvertCoordinates.Vector3RD(originX, originY, 0));
+        creator.CreateBuildings(buildings, new Vector3Double(originX, originY, 0), DefaultMaterial, this.gameObject);
+        //CreateTile("", filename, LOD, originX, originY, objectType);
+
+    }
+
     private void ImportBuildingsLOD1()
     {
         int Xmin = 109000;
