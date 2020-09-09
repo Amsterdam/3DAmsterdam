@@ -29,7 +29,8 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
 		/// <summary>
-		/// Some interface items are drawn as HTML DOM elements on top of the Unity3D canvas
+		/// Some interface items are drawn as HTML DOM elements on top of the Unity3D canvas.
+		/// This methods scales those elements with the Unity canvas.
 		/// </summary>
 		/// <param name="scale">The new multiplier value for the UI scale</param>
 		/// <returns></returns>
