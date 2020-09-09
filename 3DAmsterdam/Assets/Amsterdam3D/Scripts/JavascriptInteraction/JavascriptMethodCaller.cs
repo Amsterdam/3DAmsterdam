@@ -28,7 +28,13 @@ namespace Amsterdam3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
-		
+		/// <summary>
+		/// Some interface items are drawn as HTML DOM elements on top of the Unity3D canvas
+		/// </summary>
+		/// <param name="scale">The new multiplier value for the UI scale</param>
+		/// <returns></returns>
+		[DllImport("__Internal")]
+		private static extern string ChangeInterfaceScale(float scale);
 
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
@@ -64,6 +70,14 @@ namespace Amsterdam3D.JavascriptConnection
 		{
 			return FetchMTLData();
 		}
+
+		public static void SetInterfaceScale(float scale)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			ChangeInterfaceScale(scale);
+#endif
+		}
+
 		public static void ChangeCursor(string cursorName)
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
