@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amsterdam3D.JavascriptConnection;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,6 +40,7 @@ public class CanvasSettings : MonoBehaviour
     {
         canvasScaler.scaleFactor = Mathf.Clamp(Screen.width / referenceWidth, 0.0f, 2.0f);
         canvasScaleSlider.value = canvasScaler.scaleFactor;
+        JavascriptMethodCaller.SetInterfaceScale(canvasScaler.scaleFactor);
     }
 
     /// <summary>
@@ -49,5 +51,6 @@ public class CanvasSettings : MonoBehaviour
     {
         canvasScaler.scaleFactor = scaleFactor;
         PlayerPrefs.SetFloat(canvasScaleFactorKey, scaleFactor);
+        JavascriptMethodCaller.SetInterfaceScale(canvasScaler.scaleFactor);
     }
 }
