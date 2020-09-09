@@ -8,10 +8,11 @@ using System;
 using UnityEngine.EventSystems;
 using BruTile.Wms;
 using System.Text.RegularExpressions;
+using UnityEngine.UIElements;
 
 namespace Amsterdam3D.Interface.Search
 {
-	public class SearchField : MonoBehaviour, ISelectHandler
+	public class SearchField : MonoBehaviour
 	{
 		[SerializeField]
 		private GameObject clearButton;
@@ -32,6 +33,9 @@ namespace Amsterdam3D.Interface.Search
 		private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
 
 		private SearchData searchData;
+
+		[SerializeField]
+		private Outline focusOutline;
 
 		private void Start()
 		{
@@ -62,11 +66,7 @@ namespace Amsterdam3D.Interface.Search
 		public void EndEdit()
 		{
 			//searchResultsList.gameObject.SetActive(false);
-		}
-		public void OnSelect(BaseEventData data)
-		{
-			print("Selected search input field");
-			searchResultsList.ShowResultsList(true);
+			focusOutline.enabled = false;
 		}
 
 		IEnumerator FindSearchSuggestions(string searchTerm)
