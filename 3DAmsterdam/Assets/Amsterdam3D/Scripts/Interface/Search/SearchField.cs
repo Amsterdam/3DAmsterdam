@@ -34,9 +34,6 @@ namespace Amsterdam3D.Interface.Search
 
 		private SearchData searchData;
 
-		[SerializeField]
-		private Outline focusOutline;
-
 		private void Start()
 		{
 			searchResultsList = GetComponent<SearchResults>();
@@ -66,7 +63,6 @@ namespace Amsterdam3D.Interface.Search
 		public void EndEdit()
 		{
 			//searchResultsList.gameObject.SetActive(false);
-			focusOutline.enabled = false;
 		}
 
 		IEnumerator FindSearchSuggestions(string searchTerm)
