@@ -76,8 +76,9 @@ public class DisplayBAGData : MonoBehaviour
         foreach(PandButton btn in pandButtons)
         {
             Destroy(btn.gameObject);
-            pandButtons.Remove(btn);
+           
         }
+        pandButtons.Clear();
     }
 }
 
