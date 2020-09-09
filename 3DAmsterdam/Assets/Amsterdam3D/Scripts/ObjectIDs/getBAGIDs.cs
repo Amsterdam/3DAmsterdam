@@ -141,27 +141,68 @@ namespace objectIDs
 
 
             Color idColor;
-            Vector2Int pixelPosition;
 
+            Vector2 highlightUV = new Vector2(0.33f, 0.5f);
+            Vector2 defaultUV = new Vector2(0.66f, 0.5f);
+
+            Texture2D highlightTexture = new Texture2D(4, 2);
+            Vector2Int pixelPosition;
+            Vector2[] highlightUVs = new Vector2[objectData.vectorMap.Count];
+
+            highlightTexture.SetPixel(0, 0, highlightColor);
+            highlightTexture.SetPixel(1, 0, highlightColor);
+            highlightTexture.SetPixel(0, 1, highlightColor);
+            highlightTexture.SetPixel(1, 1, highlightColor);
+
+            highlightTexture.SetPixel(2, 0, defaultColor);
+            highlightTexture.SetPixel(3, 0, defaultColor);
+            highlightTexture.SetPixel(2, 1, defaultColor);
+            highlightTexture.SetPixel(3, 1, defaultColor);
+
+            highlightTexture.Apply();
+
+            int objectindex = 0;
             for (int i = 0; i < objectData.ids.Count; i++)
             {
-                pixelPosition = ObjectIDMapping.GetBottomLeftPixel(textureSize, i);
-                if (objectData.ids[i]==id)
+                if (objectData.ids[i] == id)
                 {
-                    idColor = highlightColor;
+                    objectindex = i;
+                }
+            }
+
+            for (int i = 0; i < objectData.vectorMap.Count; i++)
+            {
+                if (objectData.vectorMap[i] == objectindex)
+                {
+                    highlightUVs[i] = highlightUV;
                 }
                 else
                 {
-                    idColor = defaultColor;
+                    highlightUVs[i] = defaultUV;
                 }
-                texture.SetPixel(pixelPosition.x, pixelPosition.y,idColor);
-                texture.SetPixel(pixelPosition.x, pixelPosition.y+1, idColor);
-                texture.SetPixel(pixelPosition.x+1, pixelPosition.y, idColor);
-                texture.SetPixel(pixelPosition.x+1, pixelPosition.y+1, idColor);
             }
-            texture.Apply();
-            selectedTile.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",texture);
-            selectedTile.GetComponent<MeshFilter>().mesh.uv = objectData.uvs;
+
+            //for (int i = 0; i < objectData.ids.Count; i++)
+            //{
+            //    pixelPosition = ObjectIDMapping.GetBottomLeftPixel(textureSize, i);
+            //    if (objectData.ids[i]==id)
+            //    {
+                    
+            //        idColor = highlightColor;
+            //    }
+            //    else
+            //    {
+                    
+            //        idColor = defaultColor;
+            //    }
+            //    texture.SetPixel(pixelPosition.x, pixelPosition.y,idColor);
+            //    texture.SetPixel(pixelPosition.x, pixelPosition.y+1, idColor);
+            //    texture.SetPixel(pixelPosition.x+1, pixelPosition.y, idColor);
+            //    texture.SetPixel(pixelPosition.x+1, pixelPosition.y+1, idColor);
+            //}
+            //texture.Apply();
+            selectedTile.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",highlightTexture);
+            selectedTile.GetComponent<MeshFilter>().mesh.uv = highlightUVs;
         }
     }
 }
