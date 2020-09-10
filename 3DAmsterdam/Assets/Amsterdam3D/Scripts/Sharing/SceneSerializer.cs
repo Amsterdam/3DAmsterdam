@@ -118,6 +118,10 @@ namespace Amsterdam3D.Sharing
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
 
+            buildingsLayer.EnableOptions(scene.allowSceneEdit);
+            treesLayer.EnableOptions(scene.allowSceneEdit);
+            groundLayer.EnableOptions(scene.allowSceneEdit);
+
             //Create annotations
             for (int i = 0; i < scene.annotations.Length; i++)
             {
@@ -147,10 +151,9 @@ namespace Amsterdam3D.Sharing
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomLayer.ViewingOnly(true);
-                }
+                newCustomLayer.ViewingOnly(!scene.allowSceneEdit);
+                newCustomLayer.EnableOptions(scene.allowSceneEdit);
+
                 newCustomLayer.Active = customLayer.active;
                 newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
