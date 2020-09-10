@@ -34,6 +34,8 @@ namespace Amsterdam3D.Interface.Search
 
 		private SearchData searchData;
 
+		public bool IsFocused => searchInputField.isFocused;
+
 		private void Start()
 		{
 			searchResultsList = GetComponent<SearchResults>();
@@ -46,14 +48,26 @@ namespace Amsterdam3D.Interface.Search
 			GetSuggestions();
 		}
 
+		IEnumerator CatchEnter(){
+			while (IsFocused && !(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Break)))
+			{
+				yield return null;
+			}
+			searchResultsList.ApplySearch();
+		}
+
 		public void GetSuggestions(string textInput = "")
 		{
+			searchResultsList.HideWarning();
+
 			var inputNotEmpty = (textInput != "");
 
 			clearButton.SetActive(inputNotEmpty);
 			searchResultsList.ShowResultsList(inputNotEmpty);
 
 			StopAllCoroutines();
+			StartCoroutine(CatchEnter());
+
 			if (textInput.Length > charactersNeededBeforeSearch)
 			{
 				StartCoroutine(FindSearchSuggestions(textInput));
@@ -62,7 +76,7 @@ namespace Amsterdam3D.Interface.Search
 
 		public void EndEdit()
 		{
-			//searchResultsList.gameObject.SetActive(false);
+			//No need to catch
 		}
 
 		IEnumerator FindSearchSuggestions(string searchTerm)
