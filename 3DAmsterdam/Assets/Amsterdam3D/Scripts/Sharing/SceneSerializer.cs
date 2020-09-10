@@ -127,16 +127,14 @@ namespace Amsterdam3D.Sharing
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
+                annotation.AllowEdit = scene.allowSceneEdit;
 
                 //Create a custom annotation layer
                 CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION, false);
                 newCustomAnnotationLayer.RenameLayer(annotationData.bodyText);
                 annotation.interfaceLayer = newCustomAnnotationLayer;
+                newCustomAnnotationLayer.ViewingOnly(!scene.allowSceneEdit);
 
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomAnnotationLayer.ViewingOnly(true);
-                }
                 newCustomAnnotationLayer.Active = annotationData.active;
             }
 
