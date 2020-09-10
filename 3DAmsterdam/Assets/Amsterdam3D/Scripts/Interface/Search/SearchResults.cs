@@ -49,15 +49,6 @@ namespace Amsterdam3D.Interface.Search
 			}
 		}
 
-		private void Update()
-		{
-			//If we press enter when the list is active, apply the search
-			if(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
-			{
-				ApplySearch();
-			}
-		}
-
 		/// <summary>
 		/// Draw the list with all the search results/suggestions
 		/// </summary>
@@ -121,9 +112,13 @@ namespace Amsterdam3D.Interface.Search
 		IEnumerator HideWarningAfterTimer()
 		{
 			yield return new WaitForSeconds(5.0f);
-			noResultsWarning.SetActive(false);
+			HideWarning();
 		}
 
+		public void HideWarning()
+		{
+			noResultsWarning.SetActive(false);
+		}
 
 		private void NoSearchResults()
 		{
