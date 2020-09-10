@@ -117,6 +117,8 @@ namespace Amsterdam3D.CameraMotion
                     Dragging();
                     RotationAroundPoint();
                 }
+
+                ClampRotation();
             }
 		}
 
@@ -211,7 +213,7 @@ namespace Amsterdam3D.CameraMotion
             { 
                 camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
             }
-            //Middle mouse rotation
+            //FPS Look
             if (firstPersonModifier && Input.GetMouseButton(0))
             {
                 mouseHorizontal = Input.GetAxis("Mouse X");
@@ -224,8 +226,6 @@ namespace Amsterdam3D.CameraMotion
                 //// de rotatie van de camera wordt aangepast
                 camera.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
             }
-
-            ClampRotation();
         }
 
         private void ClampRotation()
