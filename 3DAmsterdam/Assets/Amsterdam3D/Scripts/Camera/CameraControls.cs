@@ -1,6 +1,5 @@
 ﻿using Amsterdam3D.JavascriptConnection;
 using ConvertCoordinates;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
