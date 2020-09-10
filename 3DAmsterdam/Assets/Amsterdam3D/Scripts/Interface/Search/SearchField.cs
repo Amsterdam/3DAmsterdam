@@ -46,6 +46,7 @@ namespace Amsterdam3D.Interface.Search
 		{
 			searchInputField.text = "";
 			GetSuggestions();
+
 		}
 
 		IEnumerator CatchEnter(){
@@ -66,11 +67,17 @@ namespace Amsterdam3D.Interface.Search
 			searchResultsList.ShowResultsList(inputNotEmpty);
 
 			StopAllCoroutines();
-			StartCoroutine(CatchEnter());
 
-			if (textInput.Length > charactersNeededBeforeSearch)
+			if (inputNotEmpty)
 			{
-				StartCoroutine(FindSearchSuggestions(textInput));
+				StartCoroutine(CatchEnter());
+				if (textInput.Length > charactersNeededBeforeSearch)
+				{
+					StartCoroutine(FindSearchSuggestions(textInput));
+				}
+			}
+			else{
+				searchResultsList.ClearOldResults();
 			}
 		}
 
