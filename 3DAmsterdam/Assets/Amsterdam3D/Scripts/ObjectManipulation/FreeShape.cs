@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -75,6 +76,8 @@ namespace Amsterdam3D.FreeShape
 			FitScaleHandesInView();
 			UpdateShape();
 			ApplyShappeOriginOffset();
+
+			HideAllHandles();
 			DisplayHandles(true);
 		}
 
@@ -85,11 +88,15 @@ namespace Amsterdam3D.FreeShape
 
 		public void OnMouseDown()
 		{
+			HideAllHandles();
+			DisplayHandles(true);
+		}
+
+		private static void HideAllHandles()
+		{
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
 			foreach (FreeShape freeShape in shapes)
 				freeShape.DisplayHandles(false);
-
-			DisplayHandles(true);
 		}
 
 		private void FitScaleHandesInView()
@@ -98,12 +105,13 @@ namespace Amsterdam3D.FreeShape
 				return;
 			
 			foreach(ScaleHandle handle in scaleHandles){
-				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(Camera.main.transform.position, this.transform.position)) * shapeScreenStartScale;
+				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(CameraControls.Instance.camera.transform.position, this.transform.position)) * shapeScreenStartScale;
 			}
 		}
 
 		private void DisplayHandles(bool display)
 		{
+			//All children are handles, so simply activate those.
 			foreach (Transform child in transform)
 				child.gameObject.SetActive(display);
 		}
@@ -155,10 +163,10 @@ namespace Amsterdam3D.FreeShape
 			numberTextMesh.transform.localPosition = Vector3.Lerp(fromPosition, toPosition, 0.5f);
 
 			//Always turn to camera
-			numberTextMesh.transform.rotation = Camera.main.transform.rotation;
+			numberTextMesh.transform.rotation = CameraControls.Instance.camera.transform.rotation;
 
 			if (numberScreenSize > 0)
-				numberTextMesh.transform.localScale = Vector3.one * Vector3.Distance(Camera.main.transform.position, numberTextMesh.transform.position) * numberScreenSize;
+				numberTextMesh.transform.localScale = Vector3.one * Vector3.Distance(CameraControls.Instance.camera.transform.position, numberTextMesh.transform.position) * numberScreenSize;
 		}
 
 		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f)
@@ -220,15 +228,5 @@ namespace Amsterdam3D.FreeShape
 			}
 			return Vector3.zero;
 		}
-#if UNITY_EDITOR
-		private void OnDrawGizmos()
-		{
-			if (!customMesh) return;
-			for (int i = 0; i < customMesh.vertices.Length; i++)
-			{
-				Handles.Label(this.transform.position + customMesh.vertices[i] + Vector3.up * i, "<b>vert:" + i + "</b>", new GUIStyle() { richText = true });
-			}
-		}
-#endif
 	}
 }

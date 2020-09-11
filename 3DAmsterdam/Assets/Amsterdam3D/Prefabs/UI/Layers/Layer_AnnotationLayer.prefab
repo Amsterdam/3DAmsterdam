@@ -86,12 +86,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba66686873f93ce4994d1549d25cbd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerType: 0
+  styleOnHover: 1
+  layerType: 3
   linkedObject: {fileID: 0}
   uniqueLinkedObjectMaterials: []
+  toggleActiveLayer: {fileID: 3150839955489429213}
   parentInterfaceLayers: {fileID: 0}
   layerOptionsButton: {fileID: 6127638215869061687}
   layerNameText: {fileID: 3120468878744700904}
+  removeButton: {fileID: 9167334700763667975}
 --- !u!1001 &1551344271662849246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -264,6 +267,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4551514889304313384, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -378,6 +386,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &9167334700763667975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7692026339836838617, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3150839955489429213 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4484867641558895107, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1551344271662849246}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &6127638215869061687 stripped

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,12 +56,12 @@ public class ZoomButtons : MonoBehaviour
     public void ZoomIn()
     { 
         // er kan alleen gezoomd worden als het niet op de maximale waarde zit.
-        if (Camera.main.transform.position.y != maxZoomIn) cam.transform.position += zoom;
+        if (CameraControls.Instance.camera.transform.position.y != maxZoomIn) cam.transform.position += zoom;
     }
 
     public void ZoomOut()
     {
         // er kan alleen gezoomd worden als het niet op de maximale waarde zit.
-        if (Camera.main.transform.position.y != maxZoomOut) cam.transform.position -= zoom;
+        if (CameraControls.Instance.camera.transform.position.y != maxZoomOut) cam.transform.position -= zoom;
     }
 }

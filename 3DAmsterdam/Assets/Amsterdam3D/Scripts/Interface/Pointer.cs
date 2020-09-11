@@ -12,18 +12,21 @@ public class Pointer : WorldPointFollower
 
     void Start()
     {
-        CameraControls.focusPointChanged += AlignWithWorldPosition;
+        CameraControls.focusingOnTargetPoint += Show;
         pointerImage = GetComponent<Image>();
+        pointerImage.color = Color.clear;
     }
 
-    public void Show()
+    /// <summary>
+    /// Makes the 2D pointer appear at this world location with full opacity, and start fading out
+    /// </summary>
+    /// <param name="atPosition">World position to follow</param>
+    public void Show(Vector3 atPosition)
     {
-        StopAllCoroutines();
+        AlignWithWorldPosition(atPosition);
+
         pointerImage.color = Color.white;
-    }
 
-    public void FadeOut()
-    {
         StopAllCoroutines();
         StartCoroutine(FadeOutImage());
     }
@@ -36,7 +39,7 @@ public class Pointer : WorldPointFollower
             yield return new WaitForEndOfFrame();
             elapsedTime += Time.deltaTime;
             var newColor = pointerImage.color;
-            newColor.a = Mathf.Clamp01(elapsedTime / fadeOutTime);
+            newColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeOutTime);
             pointerImage.color = newColor;
         }
     }

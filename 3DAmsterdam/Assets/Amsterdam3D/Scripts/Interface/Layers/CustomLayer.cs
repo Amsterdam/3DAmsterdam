@@ -11,11 +11,21 @@ namespace Amsterdam3D.Interface
     {               
         [SerializeField]
         private Text layerNameText;
+        public string GetName => layerNameText.text;
+
+        [SerializeField]
+        private GameObject removeButton;
 
         private float lastClickTime = 0;
         private float doubleClickTime = 0.2f;
 
         private int maxNameLength = 24;
+
+        private void Start()
+        {
+            //Make sure we always add from the top (minus add button, and annotation group)
+            this.transform.SetSiblingIndex(2);
+        }
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -24,12 +34,12 @@ namespace Amsterdam3D.Interface
             {
                 if (layerType == LayerType.ANNOTATION)
                 {
-                    Annotation annotation = linkedObject.GetComponent<Annotation>();
+                    Annotation annotation = LinkedObject.GetComponent<Annotation>();
                     CameraControls.Instance.MoveAndFocusOnLocation(annotation.WorldPosition);
                     annotation.StartEditingText();
                 }
                 else{
-                    CameraControls.Instance.MoveAndFocusOnLocation(linkedObject.transform.position);
+                    CameraControls.Instance.MoveAndFocusOnLocation(LinkedObject.transform.position);
                 }
             }
             lastClickTime = Time.time;
@@ -37,9 +47,6 @@ namespace Amsterdam3D.Interface
 
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
-            //Move me to first place in parent hierarchy
-            transform.SetSiblingIndex(0);
-
             layerType = type;
             layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
             LinkObject(link);
@@ -54,6 +61,14 @@ namespace Amsterdam3D.Interface
 
             layerNameText.text = newName;
         }
+        /// <summary>
+        /// Enable or disable layer options based on view mode
+        /// </summary>
+        /// <param name="viewOnly">Only view mode enabled</param>
+        public void ViewingOnly(bool viewOnly)
+        {
+            removeButton.SetActive(!viewOnly);
+        }
 
         public void Remove()
         {
@@ -64,7 +79,7 @@ namespace Amsterdam3D.Interface
 
         private void OnDestroy()
         {
-            GameObject.Destroy(linkedObject);
+            GameObject.Destroy(LinkedObject);
         }
     }
 }

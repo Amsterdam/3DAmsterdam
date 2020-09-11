@@ -58,13 +58,11 @@ public class SunSettings : MonoBehaviour
     private DateTime dateTimeNow;
 
     private string previousTimeString = "";
+    private bool usingSharedSceneTime = false;
 
     public void Start()
     {
-        //Get the GPS coordinates for our world centre
-        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
-        longitude = coordinates.lon;
-        latitude = coordinates.lat;
+        SetGPSCoordinates();
 
         //Receive changes from wheel input
         sunDragWheel.deltaTurn += SunPositionChangedFromWheel;
@@ -75,7 +73,17 @@ public class SunSettings : MonoBehaviour
         monthInput.addedOffset += ChangedMonth;
         yearInput.addedOffset += ChangedYear;
 
-        ResetTimeToNow();
+        //Check if we loaded a shared scene, and got our time from there.
+        if (!usingSharedSceneTime || dateTimeNow == DateTime.MinValue) 
+            ResetTimeToNow();
+    }
+
+    private void SetGPSCoordinates()
+    {
+        //Get the GPS coordinates for our world centre
+        var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
+        longitude = coordinates.lon;
+        latitude = coordinates.lat;
     }
 
     private void ChangedTime(int withOffset)
@@ -89,6 +97,25 @@ public class SunSettings : MonoBehaviour
             dateTimeNow = dateTimeNow.AddHours(withOffset);
         }
         UpdateNumericInputs();
+    }
+
+    public string GetDateTimeAsString()
+    {
+        return dateTimeNow.ToString();
+    }
+    public void SetDateTimeFromString(string dateTimeString)
+    {
+        dateTimeNow = DateTime.Now;
+        DateTime.TryParse(dateTimeString, out dateTimeNow);
+        usingSharedSceneTime = true;
+
+        //Check if the shared datetime was set (otherwise, it will be the min datetime value)
+        if (dateTimeNow != DateTime.MinValue)
+        {
+            SetGPSCoordinates();
+            UpdateNumericInputs();
+            ChangeSunPosition();
+        }
     }
 
     /// <summary>

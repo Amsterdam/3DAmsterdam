@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 465399373360844520}
   - component: {fileID: 912797556926425456}
   - component: {fileID: -2078267290102013595}
-  m_Layer: 0
-  m_Name: BasicShape
+  m_Layer: 8
+  m_Name: Basisvorm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,7 +152,11 @@ MonoBehaviour:
   axisContraint: {x: 0, y: 0, z: 0}
   screenSize: 0
   clickOffset: {x: 0, y: 0, z: 0}
-  snapToGround: 0
+  dropTargetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1792
+  optionalOffsetPoint: {fileID: 4107352103656051828}
+  collider: {fileID: 0}
 --- !u!1 &2269356427172999513
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,7 +168,7 @@ GameObject:
   - component: {fileID: 3797556065816733700}
   - component: {fileID: 8127905934431639451}
   - component: {fileID: 7783554342168861219}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LengthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +261,7 @@ GameObject:
   - component: {fileID: 3610698051427288698}
   - component: {fileID: 7854892847407650519}
   - component: {fileID: 1314850539555842738}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HeightText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4107352103656051828}
   - component: {fileID: 7058576503864266393}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FloorOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,7 +402,7 @@ GameObject:
   - component: {fileID: 7004644916205004554}
   - component: {fileID: 6993078373848273499}
   - component: {fileID: 3257649693444342009}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DepthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -732,6 +736,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandleXMinus
       objectReference: {fileID: 0}
+    - target: {fileID: 4687267695197096033, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 417b40145563a4649862ffe6974aea3a, type: 3}
 --- !u!4 &1162732927152086222 stripped
@@ -927,6 +936,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandleZMinus
       objectReference: {fileID: 0}
+    - target: {fileID: 4687267695197096033, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 417b40145563a4649862ffe6974aea3a, type: 3}
 --- !u!4 &801730857477303646 stripped
@@ -1026,6 +1040,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HandleZPlus
+      objectReference: {fileID: 0}
+    - target: {fileID: 4687267695197096033, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 417b40145563a4649862ffe6974aea3a, type: 3}
@@ -1207,6 +1226,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandleXPlus
       objectReference: {fileID: 0}
+    - target: {fileID: 4687267695197096033, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 417b40145563a4649862ffe6974aea3a, type: 3}
 --- !u!4 &8880083981021142124 stripped
@@ -1306,6 +1330,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HandleY
+      objectReference: {fileID: 0}
+    - target: {fileID: 4687267695197096033, guid: 417b40145563a4649862ffe6974aea3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 417b40145563a4649862ffe6974aea3a, type: 3}

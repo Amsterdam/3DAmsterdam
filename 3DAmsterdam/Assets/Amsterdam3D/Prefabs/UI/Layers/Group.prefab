@@ -65,6 +65,7 @@ MonoBehaviour:
   calculateHeightBasedOnChildren: 1
   moveSpeed: 5
   openGroup: 1
+  defaultChildCount: 1
   openGraphic: {fileID: 1250319579643181634}
   closeGraphic: {fileID: 7992128270542755543}
 --- !u!114 &8692519148950634201
@@ -145,7 +146,7 @@ GameObject:
   - component: {fileID: 537368401295207920}
   - component: {fileID: 6645592974310348565}
   m_Layer: 5
-  m_Name: Chevron_Closed (1)
+  m_Name: Chevron_Closed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -454,7 +455,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Annotaties
+  m_Text: Opmerkingen
 --- !u!1 &5306816686697516958
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +542,7 @@ GameObject:
   - component: {fileID: 6082241691027487395}
   - component: {fileID: 8052127272342362095}
   m_Layer: 5
-  m_Name: Chevron
+  m_Name: Chevron_Open
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

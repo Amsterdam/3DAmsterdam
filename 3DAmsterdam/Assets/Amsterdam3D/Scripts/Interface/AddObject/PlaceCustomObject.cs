@@ -45,9 +45,7 @@ namespace Amsterdam3D.Interface
             if (layerType == LayerType.ANNOTATION)
             {
                 var annotation = newObject.GetComponent<Annotation>();
-                annotation.AlignWithWorldPosition(pointer.WorldPosition);
                 annotation.interfaceLayer = interfaceLayer;
-                annotation.StartEditingText();
             }
             else{
                 newObject.transform.position = pointer.WorldPosition;

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -15,33 +17,66 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private InputField editInputField;
 
-        private Plane groundPlane;
         private float lastClickTime = 0;
         private float doubleClickTime = 0.2f;
 
         public CustomLayer interfaceLayer { get; set; }
 
-        private void Start()
-        {
-            PointLine();
+        private bool allowEdit = true;
+        public bool AllowEdit {
+            set
+            {
+                allowEdit = value;
+                balloon.raycastTarget = allowEdit; //Allows passing rays through ballons for drag/drop
+            }
+            get
+            {
+                return allowEdit;
+            }
         }
 
-        private void PointLine()
+        public string BodyText {
+            get{
+                return balloonText.text;
+            }
+            set{
+                balloonText.text = value;
+            }
+        }
+
+        public void PlaceUsingMouse()
         {
-            //If we have colliders in our models, we can draw a line pointing to the exact location
+            StartCoroutine(StickToMouse());
+        }
+
+        /// <summary>
+        /// Stick to the mouse pointer untill we click. 
+        /// Starts editing after the click.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator StickToMouse()
+        {
+            while (!Input.GetMouseButton(0))
+            {
+                FollowMousePointer();
+                yield return new WaitForEndOfFrame();
+            }
+            StartEditingText();
+        }
+
+        /// <summary>
+        /// Align the annotation with the mouse pointer position
+        /// </summary>
+        private void FollowMousePointer()
+        {
+            AlignWithWorldPosition(CameraControls.Instance.GetMousePositionInWorld());
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            groundPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (!allowEdit) return; 
 
-            if (groundPlane.Raycast(ray, out float enter))
-            {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                AlignWithWorldPosition(hitPoint);
-            }
-            PointLine();
+            FollowMousePointer();
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -53,24 +88,36 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
+        /// <summary>
+        /// Start editing the annotation body text
+        /// </summary>
         public void StartEditingText()
         {
+            if (!allowEdit) return;
+
             editInputField.gameObject.SetActive(true);
-            editInputField.text = balloonText.text;
+            editInputField.text = BodyText;
 
             editInputField.Select();
         }
 
+        /// <summary>
+        /// Apply the text from the editor directly to the balloon
+        /// and the layer name.
+        /// </summary>
         public void EditText()
         {
-            balloonText.text = editInputField.text;
-            interfaceLayer.RenameLayer(balloonText.text);
+            BodyText = editInputField.text;
+            interfaceLayer.RenameLayer(BodyText);
         }
 
+        /// <summary>
+        /// Hides the editor, and applies the last text inputs to the balloon and layer name
+        /// </summary>
         public void StopEditingText()
         {
-            balloonText.text = editInputField.text;
-            interfaceLayer.RenameLayer(balloonText.text);
+            BodyText = editInputField.text;
+            interfaceLayer.RenameLayer(BodyText);
             editInputField.gameObject.SetActive(false);
         }
     }
