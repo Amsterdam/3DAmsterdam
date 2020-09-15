@@ -70,7 +70,14 @@ public class PandObject : MonoBehaviour
         categorieOnderwerp.text = "GEBRUIKS OPPERVLAKTE";
         categorieTitel.text = "GEBRUIKS OPPERVLAKTE";
         categorieURL.text = "GEBRUIKS OPPERVLAKTE";
-        monument.text = pandData.monumenten.results[0].monumentnaam;
+        if (pandData.monumenten.results.Length > 0)
+        {
+            monument.gameObject.transform.parent.gameObject.SetActive(true);
+            monument.text = pandData.monumenten.results[0].monumentnummer;
+        }
+        else { 
+            monument.gameObject.transform.parent.gameObject.SetActive(false);
+        }
         typeBeperking.text = pandData.status;
         beperkingID.text = "GEBRUIKS OPPERVLAKTE";
         woningcorperatieNaam.text = "GEBRUIKS OPPERVLAKTE";

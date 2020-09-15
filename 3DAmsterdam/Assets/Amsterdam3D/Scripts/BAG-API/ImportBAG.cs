@@ -63,9 +63,7 @@ public class ImportBAG : ImportAPI
 
                         // vervangt de pand resultaten lijst met de geordende lijst
                         hoofdData.results = tempPandResults.ToArray<Pand.PandResults>();
-
-                        // toont de resultaten in de lijst
-                        DisplayBAGData.Instance.ShowData(hoofdData);
+                        
                         break;
 
                     case RetrieveType.NummeraanduidingInstance:
@@ -85,10 +83,15 @@ public class ImportBAG : ImportAPI
                         foreach (Pand.PandResults result in hoofdData.results)
                         {
                             StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
+                            StartCoroutine(CallAPI("https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=", result.verblijfsobject.verblijfsobjectidentificatie, RetrieveType.VerblijfsobjectInstance));
                         }
 
                         // voegt monumentele data toe aan het pand
                         StartCoroutine(CallAPI("https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=", hoofdData.pandidentificatie, RetrieveType.Monumenten));
+
+
+                        // toont de resultaten in de lijst
+                        
                         break;
 
                     case RetrieveType.VerblijfsobjectInstance:
@@ -100,6 +103,9 @@ public class ImportBAG : ImportAPI
                             {
                                 // voegt verblijfs gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
                                 result.verblijfsobject = tempVerblijf;
+                               // string[] id = tempVerblijf.beperkingen.href.Split('=');
+                               // Debug.Log(id[0]);
+                               //StartCoroutine(CallAPI(tempVerblijf.beperkingen.href, "", RetrieveType.WKBP));
                             }
                         }
                         break;
@@ -108,6 +114,23 @@ public class ImportBAG : ImportAPI
                         // voegt monumentele data toe aan het pand
                         Pand.Monumenten tempMonument = JsonUtility.FromJson<Pand.Monumenten>(dataResult);
                         hoofdData.monumenten = tempMonument;
+
+                        DisplayBAGData.Instance.ShowData(hoofdData);
+                        break;
+
+                    case RetrieveType.WKBP:
+                        // voegt monumentele data toe aan het pand
+                        WKBP.RootBeperkingen wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(dataResult);
+
+                        foreach (Pand.PandResults result in hoofdData.results)
+                        {
+                          //  if (result?.verblijfsobject.)
+                           // {
+                                // voegt verblijfs gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
+                           //     result.verblijfsobject = tempVerblijf;
+                          //  }
+                        }
+                        //hoofdData. = tempMonument;
                         break;
 
                     default:
@@ -130,7 +153,8 @@ public enum RetrieveType
     NummeraanduidingList,
     VerblijfsobjectList,
     VerblijfsobjectInstance,
-    Monumenten
+    Monumenten,
+    WKBP
 }
 
 [System.Serializable]
@@ -558,7 +582,7 @@ public class Pand
         //   public Panden panden;
         //   public Kadastrale_Objecten kadastrale_objecten;
         //   public Rechten rechten;
-        //   public Beperkingen beperkingen;
+        public Beperkingen beperkingen;
         //   public Bouwblok bouwblok;
         public string indicatie_geconstateerd;
         public string aanduiding_in_onderzoek;
@@ -653,12 +677,13 @@ public class Pand
         public int count;
         public string href;
     }
-
+    */
     public class Beperkingen
     {
         public int count;
         public string href;
     }
+    /*
 
     public class Bouwblok
     {
@@ -810,16 +835,16 @@ public class Pand
     {
         //public _Links1 _links;
         public string identificerende_sleutel_monument;
-        public int monumentnummer;
+        public string monumentnummer;
         public string monumentnaam;
         public string monumentstatus;
-        public object monument_aanwijzingsdatum;
+        public string monument_aanwijzingsdatum;
         //public Betreft_Pand[] betreft_pand;
         public string _display;
-        public object heeft_als_grondslag_beperking;
+        public string heeft_als_grondslag_beperking;
         //public Heeft_Situeringen heeft_situeringen;
         //public Monumentcoordinaten monumentcoordinaten;
-        public object ligt_in_complex;
+        public string ligt_in_complex;
         public string in_onderzoek;
     }
     /*
@@ -861,6 +886,10 @@ public class Pand
         public string href;
     }
     */
+
+
+
+
 
 }
 

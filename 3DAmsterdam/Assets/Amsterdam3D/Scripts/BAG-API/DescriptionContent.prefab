@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 6627270924607162551}
   - component: {fileID: 694446315862011726}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: Categorie Titel Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 5940405523887220243}
   - component: {fileID: 9018018208981610288}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: Categorie URL Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -952,7 +952,7 @@ GameObject:
   - component: {fileID: 1495129112379494756}
   - component: {fileID: 1940773159641678558}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: ' Beperking id Text'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1398,7 +1398,7 @@ GameObject:
   - component: {fileID: 8222209983864861843}
   - component: {fileID: 3676874837545397711}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: Woning Corperatie Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1620,7 +1620,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: BAG ID
+  m_Text: 00011
 --- !u!1 &5173290596755091845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1789,7 +1789,7 @@ GameObject:
   - component: {fileID: 9122841960277005097}
   - component: {fileID: 2798663796469146847}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: ' Beperking TYpe Text'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2027,7 +2027,7 @@ GameObject:
   - component: {fileID: 8677309642225427914}
   - component: {fileID: 2567996203343687813}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: ' Monument Text'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2835,7 +2835,7 @@ GameObject:
   - component: {fileID: 3108074536161227043}
   - component: {fileID: 8285578912239394341}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: Categorie Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3229,7 +3229,7 @@ GameObject:
   - component: {fileID: 4269823857566271262}
   - component: {fileID: 6877443442064097294}
   m_Layer: 5
-  m_Name: NummerAanduidingText
+  m_Name: Categorie Onderwerp Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3972,14 +3972,14 @@ MonoBehaviour:
   bestemmingsPlan: {fileID: 525794116155753849}
   functie: {fileID: 6100286848967129418}
   gebruiksOppervlakte: {fileID: 615222348268614647}
-  categorieVergunning: {fileID: 0}
-  categorieOnderwerp: {fileID: 0}
-  categorieTitel: {fileID: 0}
-  categorieURL: {fileID: 0}
-  monument: {fileID: 0}
-  typeBeperking: {fileID: 0}
-  beperkingID: {fileID: 0}
-  woningcorperatieNaam: {fileID: 0}
+  categorieVergunning: {fileID: 8285578912239394341}
+  categorieOnderwerp: {fileID: 6877443442064097294}
+  categorieTitel: {fileID: 694446315862011726}
+  categorieURL: {fileID: 9018018208981610288}
+  monument: {fileID: 2567996203343687813}
+  typeBeperking: {fileID: 2798663796469146847}
+  beperkingID: {fileID: 1940773159641678558}
+  woningcorperatieNaam: {fileID: 3676874837545397711}
   closeButton: {fileID: 181130743651723399}
 --- !u!114 &4138529262258800444
 MonoBehaviour:
