@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -20,7 +21,20 @@ using UnityEngine;
 
     [SerializeField]
     private GameObject GodviewCam;
-    
+
+    //idk if public events in a singleton are the best idea
+    // Maybe make these ScriptableObject eventhandlers instead?
+    public delegate void OnFirstPersonMode();
+    public event OnFirstPersonMode OnFirstPersonModeEvent;
+
+
+    public delegate void OnGodViewMode();
+    public event OnGodViewMode OnGodViewModeEvent;
+
+
+    private Quaternion oldGodViewRotation;
+
+
 
     public CameraMode CameraMode { get; private set; }
 
@@ -43,29 +57,49 @@ using UnityEngine;
 
         Vector3 oldPosition = currentCamera.transform.position;
         Quaternion oldRotation = currentCamera.transform.rotation;
+        oldGodViewRotation = currentCamera.transform.rotation;
         currentCamera.SetActive(false);
         currentCamera = streetView.EnableFPSCam();
         currentCamera.transform.position = oldPosition;
         currentCamera.transform.rotation = oldRotation;
         currentCameraComponent = currentCamera.GetComponent<Camera>();
         CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
+        OnFirstPersonModeEvent?.Invoke();
         MoveCameraToStreet(currentCamera.transform, position, rotation);
     }
 
 
-    public void ChangeCamera(GameObject camera) 
+
+    public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false) 
     {
-        if (currentCamera != null) 
+
+        if (reverse)
         {
-            currentCamera.SetActive(false);
+            StartCoroutine(streetView.MoveToPositionReverse(cameraTransform, position, rotation));
         }
-        CurrentCameraExtends = camera.GetComponent<ICameraExtents>();
-        currentCamera = camera;
+
+        else
+        {
+            StartCoroutine(streetView.MoveToPosition(cameraTransform, position, rotation));
+        }
     }
 
-    public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation) 
+    
+
+    public void GodViewMode() 
     {
-        StartCoroutine(streetView.MoveToPosition(cameraTransform, position, rotation));
+        this.CameraMode = CameraMode.GodView;
+        Vector3 currentPosition = currentCamera.transform.position;
+        Quaternion rot = currentCamera.transform.rotation;
+        currentCamera.SetActive(false);
+        currentCamera = GodviewCam;
+        currentCamera.transform.position = currentPosition;
+        currentCamera.transform.rotation = rot;
+        currentCamera.SetActive(true);
+        CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
+        currentCameraComponent = currentCamera.GetComponent<Camera>();
+        OnGodViewModeEvent?.Invoke();
+        MoveCameraToStreet(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
     }
 }
 

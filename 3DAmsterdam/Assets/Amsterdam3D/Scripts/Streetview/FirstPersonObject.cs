@@ -16,13 +16,20 @@ using UnityEngine.UI;
     private void Awake()
     {
         manager = CameraManager.instance;
+        manager.OnGodViewModeEvent += EnableObject;
     }
 
+    private void EnableObject() 
+    {
+        gameObject.SetActive(true);
+    }
+    
     private void OnMouseDown()
     {
         if (placed)
         {
             manager.FirstPersonMode(transform.position, transform.rotation);
+            gameObject.SetActive(false);
         }
     }
 

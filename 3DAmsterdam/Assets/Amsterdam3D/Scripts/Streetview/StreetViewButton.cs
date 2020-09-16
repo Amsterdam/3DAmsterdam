@@ -12,9 +12,12 @@ public class StreetViewButton : MonoBehaviour
     private StreetViewSpawnObject spawnObject;
     void Start()
     {
+        //Note: Should this be in a button class? Or should there be some abstraction layer
         spawnObject = FindObjectOfType<StreetViewSpawnObject>();
         buttonh = GetComponent<Button>();
         buttonh.onClick.AddListener(h);
+        CameraManager.instance.OnFirstPersonModeEvent += DisableObject;
+        CameraManager.instance.OnGodViewModeEvent += EnableObject;
     }
 
     // Update is called once per frame
@@ -26,5 +29,15 @@ public class StreetViewButton : MonoBehaviour
     public void h() 
     {
         spawnObject.SpawnFirstPersonPrefab();
+    }
+
+    private void DisableObject() 
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void EnableObject() 
+    {
+        gameObject.SetActive(true);
     }
 }

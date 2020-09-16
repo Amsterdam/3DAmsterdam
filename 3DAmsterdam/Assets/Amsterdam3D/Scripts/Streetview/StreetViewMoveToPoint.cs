@@ -27,6 +27,8 @@ namespace Amsterdam3D.CameraMotion
 
         public UnityEvent OnMoved;
 
+        public UnityEvent OnReverseMoved;
+
 
         private void Awake()
         {
@@ -79,6 +81,7 @@ namespace Amsterdam3D.CameraMotion
                 objectToMove.rotation = Quaternion.Lerp(objectToMove.rotation, rotation, lerpSpeed * Time.deltaTime);
                 yield return null;
             }
+            OnReverseMoved.Invoke();
         }
 
       public  IEnumerator MoveToPosition(Transform objectToMove, Vector3 position, Quaternion rotation)
