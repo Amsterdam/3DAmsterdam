@@ -79,15 +79,17 @@ public class ImportBAG : ImportAPI
                             }
                         }
 
+                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=", hoofdData.pandidentificatie, RetrieveType.Monumenten));
                         // voegt verblijfsobject data toe per adres
+                        /*
                         foreach (Pand.PandResults result in hoofdData.results)
                         {
                             StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
-                            StartCoroutine(CallAPI("https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=", result.verblijfsobject.verblijfsobjectidentificatie, RetrieveType.VerblijfsobjectInstance));
+                           
                         }
+                        */
 
                         // voegt monumentele data toe aan het pand
-                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=", hoofdData.pandidentificatie, RetrieveType.Monumenten));
 
 
                         // toont de resultaten in de lijst
@@ -102,10 +104,56 @@ public class ImportBAG : ImportAPI
                             if (result?.nummeraanduiding._display == tempVerblijf?._display)
                             {
                                 // voegt verblijfs gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
+
                                 result.verblijfsobject = tempVerblijf;
-                               // string[] id = tempVerblijf.beperkingen.href.Split('=');
-                               // Debug.Log(id[0]);
-                               //StartCoroutine(CallAPI(tempVerblijf.beperkingen.href, "", RetrieveType.WKBP));
+                                string wkbpURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=" + tempVerblijf.verblijfsobjectidentificatie;
+                                string wkbpResult = "";
+                                WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
+                                var WKPBRequest = UnityWebRequest.Get(wkbpURL);
+                                {
+                                    yield return WKPBRequest.SendWebRequest();
+
+                                    if (WKPBRequest.isDone && !WKPBRequest.isHttpError)
+                                    {
+                                        // vangt de data op in text bestand.
+                                        wkbpResult = WKPBRequest.downloadHandler.text;
+
+                                        wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(wkbpResult);
+                                        
+
+                                        tempVerblijf.wkbpBeperkingen = wkbpBeperkingen;
+                                        result.verblijfsobject = tempVerblijf;
+
+                                    }
+
+                                }
+                                for (int i = 0; i < wkbpBeperkingen.results.Length; i++)
+                                {
+                                    string wkbpInstanceURL = wkbpBeperkingen.results[i]._links.self.href;
+                                    string wkbpInstanceResult = "";
+                                    var WKPBInstanceRequest = UnityWebRequest.Get(wkbpInstanceURL);
+                                    {
+                                        yield return WKPBInstanceRequest.SendWebRequest();
+
+                                        if (WKPBInstanceRequest.isDone && !WKPBInstanceRequest.isHttpError)
+                                        {
+                                            // vangt de data op in text bestand.
+                                            wkbpInstanceResult = WKPBInstanceRequest.downloadHandler.text;
+                                        }
+
+                                    }
+                                    WKBP.Beperking beperkingInstance = JsonUtility.FromJson<WKBP.Beperking>(wkbpInstanceResult);
+                                    wkbpBeperkingen.results[i].beperking = beperkingInstance;
+                                    tempVerblijf.wkbpBeperkingen = wkbpBeperkingen;
+                                    result.verblijfsobject = tempVerblijf;
+                                }
+
+
+
+                                //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=", result.verblijfsobject.verblijfsobjectidentificatie, RetrieveType.VerblijfsobjectInstance));
+                                // string[] id = tempVerblijf.beperkingen.href.Split('=');
+                                // Debug.Log(id[0]);
+                                //StartCoroutine(CallAPI(tempVerblijf.beperkingen.href, "", RetrieveType.WKBP));
                             }
                         }
                         break;
@@ -116,21 +164,6 @@ public class ImportBAG : ImportAPI
                         hoofdData.monumenten = tempMonument;
 
                         DisplayBAGData.Instance.ShowData(hoofdData);
-                        break;
-
-                    case RetrieveType.WKBP:
-                        // voegt monumentele data toe aan het pand
-                        WKBP.RootBeperkingen wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(dataResult);
-
-                        foreach (Pand.PandResults result in hoofdData.results)
-                        {
-                          //  if (result?.verblijfsobject.)
-                           // {
-                                // voegt verblijfs gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
-                           //     result.verblijfsobject = tempVerblijf;
-                          //  }
-                        }
-                        //hoofdData. = tempMonument;
                         break;
 
                     default:
@@ -582,7 +615,8 @@ public class Pand
         //   public Panden panden;
         //   public Kadastrale_Objecten kadastrale_objecten;
         //   public Rechten rechten;
-        public Beperkingen beperkingen;
+        public URLBeperkingen beperkingen = new URLBeperkingen();
+        public WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
         //   public Bouwblok bouwblok;
         public string indicatie_geconstateerd;
         public string aanduiding_in_onderzoek;
@@ -678,7 +712,7 @@ public class Pand
         public string href;
     }
     */
-    public class Beperkingen
+    public class URLBeperkingen
     {
         public int count;
         public string href;

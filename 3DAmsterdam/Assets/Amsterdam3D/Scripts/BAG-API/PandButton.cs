@@ -28,5 +28,6 @@ public class PandButton : MonoBehaviour
     private void ShowPand()
     {
         DisplayBAGData.Instance.PlacePand(pandResult, pandIndex);
+        Debug.Log(pandIndex);
     }
 }

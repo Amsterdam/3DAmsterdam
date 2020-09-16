@@ -37,6 +37,7 @@ public class PandObject : MonoBehaviour
     private void Start()
     {
         closeButton.onClick.AddListener(CloseObject);
+        
     }
 
     private void OnDisable()
@@ -46,8 +47,11 @@ public class PandObject : MonoBehaviour
 
     public void SetText(Pand.Rootobject pandData, int adresIndex)
     {
+        if(pandData.results.Length == 1)
+        {
+            closeButton.gameObject.SetActive(false);
+        }
         //Zet alle pand data en displayed het in de UI.
-        //indexBAGText.text = pandData.results[0].landelijk_id;
         nummerAanduidingText.text = pandData.results[adresIndex].nummeraanduiding.nummeraanduidingidentificatie;
         adresText.text = pandData.results[adresIndex].nummeraanduiding.adres;
         postcodeText.text = pandData.results[adresIndex].nummeraanduiding.postcode;

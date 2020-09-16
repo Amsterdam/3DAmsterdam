@@ -7,9 +7,11 @@ public class ImportWKBP : ImportAPI
 
 }
 
+[System.Serializable]
 public class WKBP
 {
     //https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=0363010000802188
+    [System.Serializable]
     public class RootBeperkingen
     {
         //public _Links _links;
@@ -39,6 +41,7 @@ public class WKBP
         public object href;
     }
     */
+    [System.Serializable]
     public class Result
     {
         public BeperkingLink _links = new BeperkingLink();
@@ -46,17 +49,17 @@ public class WKBP
         public string _display;
         public int inschrijfnummer;
     }
-
+    [System.Serializable]
     public class BeperkingLink
     {
         public BeperkingURL self = new BeperkingURL();
     }
-
+    [System.Serializable]
     public class BeperkingURL
     {
         public string href;
     }
-
+    [System.Serializable]
     public class Beperking
     {
         //public _Links _links;
@@ -69,29 +72,30 @@ public class WKBP
         public Documenten documenten = new Documenten();
         public Beperkingcode beperkingcode = new Beperkingcode();
     }
-/*
-    public class _Links
-    {
-        public Self self;
-    }
+    /*
+        public class _Links
+        {
+            public Self self;
+        }
 
-    public class Self
-    {
-        public string href;
-    }
-    */
+        public class Self
+        {
+            public string href;
+        }
+        */
+    [System.Serializable]
     public class Kadastrale_Objecten
     {
         public int count;
         public string href;
     }
-
+    [System.Serializable]
     public class Documenten
     {
         public int count;
         public string href;
     }
-
+    [System.Serializable]
     public class Beperkingcode
     {
         public string code;

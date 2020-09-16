@@ -62,6 +62,7 @@ public class DisplayBAGData : MonoBehaviour
 
     public void PlacePand(Pand.Rootobject pandData, int index)
     {
+        StartCoroutine(ImportBAG.Instance.CallAPI(ImportBAG.Instance.hoofdData.results[index].nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
         GameObject temp = Instantiate(pandUIPrefab, pandObjectTargetSpawn.position, pandObjectTargetSpawn.rotation);
         temp.transform.SetParent(pandObjectTargetSpawn);
         // reset de transform naar het midden
@@ -70,6 +71,20 @@ public class DisplayBAGData : MonoBehaviour
         // stuurt de pand data door
         tempPand.SetText(pandData, index);
     }
+    /*
+    IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
+    {
+        // wacht tot alle data binnen is
+        yield return StartCoroutine(ImportBAG.Instance.CallAPI(ImportBAG.Instance.hoofdData.results[index].nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
+        GameObject temp = Instantiate(pandUIPrefab, pandObjectTargetSpawn.position, pandObjectTargetSpawn.rotation);
+        temp.transform.SetParent(pandObjectTargetSpawn);
+        // reset de transform naar het midden
+        temp.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
+        PandObject tempPand = temp.GetComponent<PandObject>();
+        // stuurt de pand data door
+        tempPand.SetText(pandData, index);
+    }
+    */
 
     public void RemoveButtons()
     {
