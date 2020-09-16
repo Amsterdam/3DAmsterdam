@@ -146,9 +146,9 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		public void SetMaterialProperties(int slotId, Color color)
+		public Material GetMaterialFromSlot(int slotId)
 		{
-			uniqueLinkedObjectMaterials[slotId].SetColor("_BaseColor", color);
+			return uniqueLinkedObjectMaterials[slotId];
 		}
 
 		/// <summary>

@@ -42,7 +42,9 @@ namespace Amsterdam3D.Sharing
         public string sharedSceneId = "";
 
         [SerializeField]
-        private Material sourceMaterialForParsedMeshes;
+        private Material opaqueMaterialSource;
+        [SerializeField]
+        private Material transparentMaterialSource;
 
         [Tooltip("Remove these objects when we are looking at a shared scene with editing allowed")]
         [SerializeField]
@@ -116,6 +118,10 @@ namespace Amsterdam3D.Sharing
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
 
+            buildingsLayer.EnableOptions(scene.allowSceneEdit);
+            treesLayer.EnableOptions(scene.allowSceneEdit);
+            groundLayer.EnableOptions(scene.allowSceneEdit);
+
             //Create annotations
             for (int i = 0; i < scene.annotations.Length; i++)
             {
@@ -125,16 +131,14 @@ namespace Amsterdam3D.Sharing
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
+                annotation.AllowEdit = scene.allowSceneEdit;
 
                 //Create a custom annotation layer
                 CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION, false);
                 newCustomAnnotationLayer.RenameLayer(annotationData.bodyText);
                 annotation.interfaceLayer = newCustomAnnotationLayer;
+                newCustomAnnotationLayer.ViewingOnly(!scene.allowSceneEdit);
 
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomAnnotationLayer.ViewingOnly(true);
-                }
                 newCustomAnnotationLayer.Active = annotationData.active;
             }
 
@@ -147,10 +151,9 @@ namespace Amsterdam3D.Sharing
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomLayer.ViewingOnly(true);
-                }
+                newCustomLayer.ViewingOnly(!scene.allowSceneEdit);
+                newCustomLayer.EnableOptions(scene.allowSceneEdit);
+
                 newCustomLayer.Active = customLayer.active;
                 newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
@@ -174,7 +177,8 @@ namespace Amsterdam3D.Sharing
             Material[] materials = new Material[customLayer.materials.Length];
             foreach (SerializableScene.Material material in customLayer.materials)
             {
-                var newMaterial = new Material(sourceMaterialForParsedMeshes);
+                var newMaterial = (material.a == 1) ? new Material(opaqueMaterialSource) : new Material(transparentMaterialSource);
+                newMaterial.SetFloat("_Surface", (material.a == 1) ? 0 : 1); //0 Opaque, 1 Alpha
                 newMaterial.SetColor("_BaseColor", new Color(material.r, material.g, material.b, material.a));
                 newMaterial.name = material.slotName;
                 materials[material.slotId] = newMaterial;
@@ -265,11 +269,24 @@ namespace Amsterdam3D.Sharing
         /// <param name="fixedLayerProperties">The data object containing the loaded properties</param>
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
         {
+            //Apply all materials
             for (int i = 0; i < fixedLayerProperties.materials.Length; i++)
             {
                 var materialProperties = fixedLayerProperties.materials[i];
-                targetLayer.SetMaterialProperties(materialProperties.slotId, new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
+
+                Material materialInSlot = targetLayer.GetMaterialFromSlot(materialProperties.slotId);
+                if(materialProperties.a == 1)
+                {
+                    materialInSlot.CopyPropertiesFromMaterial(opaqueMaterialSource);
+                    materialInSlot.SetFloat("_Surface", 0); //0 Opaque
+                }
+                else{
+                    materialInSlot.CopyPropertiesFromMaterial(transparentMaterialSource);
+                    materialInSlot.SetFloat("_Surface", 1); //0 Alpha
+                }
+                materialInSlot.SetColor("_BaseColor",new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }
+
             targetLayer.UpdateLayerPrimaryColor();
         }
 
@@ -434,7 +451,7 @@ namespace Amsterdam3D.Sharing
                     g = color.g,
                     b = color.b,
                     a = color.a
-                }); ;
+                });
             }
             return materialData.ToArray();
         }

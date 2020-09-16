@@ -8,10 +8,11 @@ using System;
 using UnityEngine.EventSystems;
 using BruTile.Wms;
 using System.Text.RegularExpressions;
+using UnityEngine.UIElements;
 
 namespace Amsterdam3D.Interface.Search
 {
-	public class SearchField : MonoBehaviour, ISelectHandler
+	public class SearchField : MonoBehaviour
 	{
 		[SerializeField]
 		private GameObject clearButton;
@@ -33,6 +34,8 @@ namespace Amsterdam3D.Interface.Search
 
 		private SearchData searchData;
 
+		public bool IsFocused => searchInputField.isFocused;
+
 		private void Start()
 		{
 			searchResultsList = GetComponent<SearchResults>();
@@ -43,30 +46,44 @@ namespace Amsterdam3D.Interface.Search
 		{
 			searchInputField.text = "";
 			GetSuggestions();
+
+		}
+
+		IEnumerator CatchEnter(){
+			while (IsFocused && !(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Break)))
+			{
+				yield return null;
+			}
+			searchResultsList.ApplySearch();
 		}
 
 		public void GetSuggestions(string textInput = "")
 		{
+			searchResultsList.HideWarning();
+
 			var inputNotEmpty = (textInput != "");
 
 			clearButton.SetActive(inputNotEmpty);
 			searchResultsList.ShowResultsList(inputNotEmpty);
 
 			StopAllCoroutines();
-			if (textInput.Length > charactersNeededBeforeSearch)
+
+			if (inputNotEmpty)
 			{
-				StartCoroutine(FindSearchSuggestions(textInput));
+				StartCoroutine(CatchEnter());
+				if (textInput.Length > charactersNeededBeforeSearch)
+				{
+					StartCoroutine(FindSearchSuggestions(textInput));
+				}
+			}
+			else{
+				searchResultsList.ClearOldResults();
 			}
 		}
 
 		public void EndEdit()
 		{
-			//searchResultsList.gameObject.SetActive(false);
-		}
-		public void OnSelect(BaseEventData data)
-		{
-			print("Selected search input field");
-			searchResultsList.ShowResultsList(true);
+			//No need to catch
 		}
 
 		IEnumerator FindSearchSuggestions(string searchTerm)
