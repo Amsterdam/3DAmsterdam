@@ -8,7 +8,7 @@ using Amsterdam3D.CameraMotion;
 /// <summary>
 /// bepaalt elke frame welk deel van amsterdam in beeld is en stelt in als public Brutile.Extent in WGS84 beschikbaar
 /// </summary>
-public class CameraView : MonoBehaviour
+public class CameraView : MonoBehaviour, ICameraExtents
 {
     private enum Corners{
         TOP_LEFT,
@@ -122,5 +122,15 @@ public class CameraView : MonoBehaviour
         Gizmos.color = Color.green;
         foreach(var corner in corners)
             Gizmos.DrawLine(CameraControls.Instance.camera.transform.position, corner);
+    }
+
+    public Extent GetExtent()
+    {
+        return cameraExtent;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 }
