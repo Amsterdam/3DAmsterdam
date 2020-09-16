@@ -38,7 +38,7 @@ namespace LayerSystem
         // y= minimum Y-coordinate in RD
         // z= size in X-direction in M.
         // w= size in Y-direction in M.
-        private CameraView CV;
+        public ICameraExtents CV;
         private Vector3Int cameraPosition;
         private Extent previousCameraViewExtent;
 
@@ -46,7 +46,7 @@ namespace LayerSystem
         // Start is called before the first frame update
         void Start()
         {
-            CV = Camera.main.GetComponent<CameraView>();
+            CV = Camera.main.GetComponent<ICameraExtents>();
         }
 
         // Update is called once per frame
@@ -263,15 +263,15 @@ namespace LayerSystem
 
         private void UpdateViewRange()
         {
-            Vector3RD bottomleft = CoordConvert.WGS84toRD(CV.cameraExtent.MinX, CV.cameraExtent.MinY);
-            Vector3RD topright = CoordConvert.WGS84toRD(CV.cameraExtent.MaxX, CV.cameraExtent.MaxY);
+            Vector3RD bottomleft = CoordConvert.WGS84toRD(CV.GetExtent().MinX, CV.GetExtent().MinY);
+            Vector3RD topright = CoordConvert.WGS84toRD(CV.GetExtent().MaxX, CV.GetExtent().MaxY);
 
             viewRange.x = (float)bottomleft.x;
             viewRange.y = (float)bottomleft.y;
             viewRange.z = (float)(topright.x -bottomleft.x);
             viewRange.w = (float)(topright.y-bottomleft.y);
 
-            Vector3RD cameraPositionRD = CoordConvert.UnitytoRD(CV.gameObject.transform.position);
+            Vector3RD cameraPositionRD = CoordConvert.UnitytoRD(CV.GetPosition());
             cameraPosition.x = (int)cameraPositionRD.x;
             cameraPosition.y = (int)cameraPositionRD.y;
             cameraPosition.z = (int)cameraPositionRD.z;
@@ -280,10 +280,10 @@ namespace LayerSystem
         private bool HasCameraViewChanged()
         {
             bool cameraviewChanged = false;
-            if (previousCameraViewExtent.CenterX != CV.cameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.cameraExtent.CenterY)
+            if (previousCameraViewExtent.CenterX != CV.GetExtent().CenterX || previousCameraViewExtent.CenterY != CV.GetExtent().CenterY)
             {
                 cameraviewChanged = true;
-                previousCameraViewExtent = CV.cameraExtent;
+                previousCameraViewExtent = CV.GetExtent();
             }
             return cameraviewChanged;
         }

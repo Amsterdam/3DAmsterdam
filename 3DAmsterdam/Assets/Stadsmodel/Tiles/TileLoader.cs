@@ -16,7 +16,7 @@ public class TileLoader : MonoBehaviour
 {
     private Boolean UpdateTerrainTilesFinished = true;
     public Material DeFaultMaterial;
-    private CameraView CV;
+    public ICameraExtents CV;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     [SerializeField] private string dataFolder = "terrain";
     private string terrainUrl;
@@ -68,7 +68,7 @@ public class TileLoader : MonoBehaviour
         {
             if (UpdateTerrainTilesFinished)
             {
-                previousCameraViewExtent = CV.cameraExtent;
+                previousCameraViewExtent = CV.GetExtent();
                 StartCoroutine(UpdateTerrainTiles(previousCameraViewExtent));
             }
         }
@@ -91,7 +91,7 @@ public class TileLoader : MonoBehaviour
     bool HasCameraViewChanged()
     {
         bool cameraviewChanged = false;
-        if (previousCameraViewExtent.CenterX != CV.cameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.cameraExtent.CenterY)
+        if (previousCameraViewExtent.CenterX != CV.GetExtent().CenterX|| previousCameraViewExtent.CenterY != CV.GetExtent().CenterY)
         {
             cameraviewChanged=true;
         }
@@ -399,28 +399,28 @@ public class TileLoader : MonoBehaviour
 
         // Add bottom-left tile.
         newTile = new Vector3(parentTile.x * 2, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add botton-riht tile.
         newTile = new Vector3((parentTile.x * 2) + 1, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
 
             TileKeys.Add(newTile);
         }
         // Add top-left tile.
         newTile = new Vector3(parentTile.x * 2, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add top-right tile
         newTile = new Vector3((parentTile.x * 2) + 1, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
 
             TileKeys.Add(newTile);
