@@ -11,7 +11,8 @@ namespace Amsterdam3D.Interface
 		BASICSHAPE,
 		OBJMODEL,
 		STATIC,
-		ANNOTATION
+		ANNOTATION,
+		CAMERA
 	}
 	
 	public class InterfaceLayer : ChangePointerStyleHandler
