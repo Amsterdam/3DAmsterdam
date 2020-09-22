@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PandObject : MonoBehaviour
 {
     //[SerializeField] private Text indexBAGText = default;
+    [Header("Main Properties")]
     [SerializeField] private Text nummerAanduidingText = default;
     [SerializeField] private Text adresText = default;
     [SerializeField] private Text postcodeText = default;
@@ -23,7 +24,7 @@ public class PandObject : MonoBehaviour
     [SerializeField] private Text verdiepingToegang = default;
     [SerializeField] private Text bestemmingsPlan = default;
     [SerializeField] private Text functie = default;
-    [SerializeField] private Text gebruiksOppervlakte = default;
+    //[SerializeField] private Text gebruiksOppervlakte = default;
     [SerializeField] private Text categorieVergunning = default;
     [SerializeField] private Text categorieOnderwerp = default;
     [SerializeField] private Text categorieTitel = default;
@@ -32,7 +33,14 @@ public class PandObject : MonoBehaviour
     [SerializeField] private Text typeBeperking = default;
     [SerializeField] private Text beperkingID = default;
     [SerializeField] private Text woningcorperatieNaam = default;
+
+    [Header("Beperkingen")]
+    [SerializeField] private GameObject wkbpInstancePlacer = default;
+    [SerializeField] private GameObject wkbpObject = default;
+
+    [Header("Button")]
     [SerializeField] private Button closeButton = default;
+
 
     private void Start()
     {
@@ -67,24 +75,33 @@ public class PandObject : MonoBehaviour
         hoogsteBouwlaag.text = pandData.hoogste_bouwlaag;
         laagsteBouwlaag.text = pandData.laagste_bouwlaag;
         verdiepingToegang.text = pandData.results[adresIndex].verblijfsobject.verdieping_toegang;
-        bestemmingsPlan.text = "BESTEMMINGS PLAN";
-        functie.text = "FUNCTIE";
-        gebruiksOppervlakte.text = "GEBRUIKS OPPERVLAKTE";
-        categorieVergunning.text = "GEBRUIKS OPPERVLAKTE";
-        categorieOnderwerp.text = "GEBRUIKS OPPERVLAKTE";
-        categorieTitel.text = "GEBRUIKS OPPERVLAKTE";
-        categorieURL.text = "GEBRUIKS OPPERVLAKTE";
+        bestemmingsPlan.text = "ONTBREEKT";
+        functie.text = "ONTBREEKT";
+        //gebruiksOppervlakte.text = pandData.results[adresIndex].verblijfsobject.oppervlakte + " M²";
+        categorieVergunning.text = "ONTBREEKT";
+        categorieOnderwerp.text = "ONTBREEKT";
+        categorieTitel.text = "ONTBREEKT";
+        categorieURL.text = "ONTBREEKT";
         if (pandData.monumenten.results.Length > 0)
         {
             monument.gameObject.transform.parent.gameObject.SetActive(true);
             monument.text = pandData.monumenten.results[0].monumentnummer;
         }
-        else { 
+        else 
+        { 
             monument.gameObject.transform.parent.gameObject.SetActive(false);
         }
         typeBeperking.text = pandData.status;
+        
+        foreach(WKBP.Result result in pandData.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
+        {
+            Debug.Log("Poep");
+            GameObject tempBeperkingObj = Instantiate(wkbpObject, wkbpInstancePlacer.transform.position, wkbpInstancePlacer.transform.rotation);
+            tempBeperkingObj.transform.SetParent(wkbpInstancePlacer.transform);
+            tempBeperkingObj.GetComponent<WKBPObject>().Initialize(result);
+        }
         beperkingID.text = "GEBRUIKS OPPERVLAKTE";
-        woningcorperatieNaam.text = "GEBRUIKS OPPERVLAKTE";
+        woningcorperatieNaam.text = pandData.results[adresIndex].verblijfsobject.eigendomsverhouding;
     }
 
     private void CloseObject()

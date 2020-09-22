@@ -55,7 +55,8 @@ public class DisplayBAGData : MonoBehaviour
             else
             {
                 // als er maar één adres is dan laat hij er maar één zien ipv alle buttons
-                PlacePand(pandData, 0);
+                //PlacePand(pandData, 0);
+                StartCoroutine(PlaceCoroutine(pandData, 0));
             }
         }
     }
@@ -71,8 +72,8 @@ public class DisplayBAGData : MonoBehaviour
         // stuurt de pand data door
         tempPand.SetText(pandData, index);
     }
-    /*
-    IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
+    
+    public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
     {
         // wacht tot alle data binnen is
         yield return StartCoroutine(ImportBAG.Instance.CallAPI(ImportBAG.Instance.hoofdData.results[index].nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
@@ -84,7 +85,7 @@ public class DisplayBAGData : MonoBehaviour
         // stuurt de pand data door
         tempPand.SetText(pandData, index);
     }
-    */
+    
 
     public void RemoveButtons()
     {

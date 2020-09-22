@@ -25,10 +25,10 @@ public class ImportBAG : ImportAPI
         // dit is een test, verwijder dit in de officiele build of als je hem wilts gebruiken.
         //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", BAG_ID_TEST, RetrieveType.Pand));
     }
-    public IEnumerator CallAPI(string apiUrl, string bogIndexInt, RetrieveType type)
+    public IEnumerator CallAPI(string apiUrl, string bagIndexInt, RetrieveType type)
     {
         // voegt data ID en url samen tot één geheel
-        string url = apiUrl + bogIndexInt;
+        string url = apiUrl + bagIndexInt;
         // stuurt een HTTP request naar de pagina
         var request = UnityWebRequest.Get(url);
         {
@@ -44,7 +44,7 @@ public class ImportBAG : ImportAPI
                     case RetrieveType.Pand:
                         // haalt het pand op
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=", bogIndexInt, RetrieveType.NummeraanduidingList));
+                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=", bagIndexInt, RetrieveType.NummeraanduidingList));
                         break;
 
                     case RetrieveType.NummeraanduidingList:
@@ -127,6 +127,7 @@ public class ImportBAG : ImportAPI
                                     }
 
                                 }
+                                
                                 for (int i = 0; i < wkbpBeperkingen.results.Length; i++)
                                 {
                                     string wkbpInstanceURL = wkbpBeperkingen.results[i]._links.self.href;
@@ -140,15 +141,13 @@ public class ImportBAG : ImportAPI
                                             // vangt de data op in text bestand.
                                             wkbpInstanceResult = WKPBInstanceRequest.downloadHandler.text;
                                         }
-
                                     }
                                     WKBP.Beperking beperkingInstance = JsonUtility.FromJson<WKBP.Beperking>(wkbpInstanceResult);
                                     wkbpBeperkingen.results[i].beperking = beperkingInstance;
                                     tempVerblijf.wkbpBeperkingen = wkbpBeperkingen;
                                     result.verblijfsobject = tempVerblijf;
                                 }
-
-
+                                
 
                                 //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=", result.verblijfsobject.verblijfsobjectidentificatie, RetrieveType.VerblijfsobjectInstance));
                                 // string[] id = tempVerblijf.beperkingen.href.Split('=');
@@ -165,7 +164,6 @@ public class ImportBAG : ImportAPI
 
                         DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
-
                     default:
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
                         break;
