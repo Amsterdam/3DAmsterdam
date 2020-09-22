@@ -21,6 +21,11 @@ namespace LayerSystem
             }
         }
 
+        public void UnHighlightAll()
+        {
+            StartCoroutine(PrivateHighlight("null"));
+        }
+
         public void Highlight(string id)
         {
             StartCoroutine(PrivateHighlight(id));
@@ -44,8 +49,22 @@ namespace LayerSystem
                     }
                     
                     objectdata.highlightIDs.Clear();
-                    objectdata.highlightIDs.Add(id);
-                    UVs = objectdata.GetUVs();
+                    if (id == "null")
+                    {
+                        Vector2 uv = new Vector2(0.66f, 0.5f);
+                        int count = objectdata.gameObject.GetComponent<MeshFilter>().mesh.vertexCount;
+                        UVs = new Vector2[count];
+
+                        for (int i = 0; i < count; i++)
+                        {
+                            UVs[i] = uv;
+                        }
+                    }
+                    else
+                    {
+                        objectdata.highlightIDs.Add(id);
+                        UVs = objectdata.GetUVs();
+                    }
                     objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
                     yield return null;
                 }

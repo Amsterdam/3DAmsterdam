@@ -28,7 +28,14 @@ using LayerSystem;
             {
                 Debug.Log(id);
 
-            BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+                if (id == "null")
+                {
+                     BuildingContainer.GetComponent<LayerSystem.Layer>().UnHighlightAll();
+                }
+                else
+                {
+                    BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+                }
                 id = "";
                 return;
             }
@@ -60,6 +67,8 @@ using LayerSystem;
         if (meshFilters == null)
         {
             tileHandler.pauseLoading = false;
+            isBusy = false;
+            id = "null";
             yield break;
         }
             foreach (MeshFilter meshFilter in meshFilters)
@@ -67,7 +76,8 @@ using LayerSystem;
             if (meshFilter == null)
             {
                 tileHandler.pauseLoading = false;
-                yield break;
+                isBusy = false;
+                id = "null";
             }
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
                 if (meshCollider != null)
@@ -90,6 +100,7 @@ using LayerSystem;
 
             if (Physics.Raycast(ray, out Hit, 10000) == false)
             {
+            id = "null";
                 isBusy = false;
             tileHandler.pauseLoading = false;
             yield break;
@@ -110,7 +121,7 @@ using LayerSystem;
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
-               
+                    id = "null";
             }
                 else
                 {
@@ -143,11 +154,4 @@ using LayerSystem;
         isBusy = false;
         }
 
-        //private void CreateTexture()
-        //{
-        //    ObjectData objectData = selectedTile.GetComponent<ObjectData>();
-        //    Vector2[] highlightUVs = objectData.GetUVs();
-        //    selectedTile.GetComponent<MeshRenderer>().sharedMaterial = HighlightMaterial;
-        //    selectedTile.GetComponent<MeshFilter>().mesh.uv2 = highlightUVs;
-        //}
     }
