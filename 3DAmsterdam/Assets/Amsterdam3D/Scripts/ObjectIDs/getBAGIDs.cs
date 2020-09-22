@@ -6,39 +6,20 @@ using LayerSystem;
 
     public class getBAGIDs : MonoBehaviour
     {
-    public TileHandler tileHandler;
+        public TileHandler tileHandler;
         public GameObject BuildingContainer;
-        public Material HighlightMaterial;
-        public Material defaultMaterial;
         public bool isBusy = false;
         private Ray ray;
-        public string id = "";
-        public GameObject selectedTile;
-            
-        // Start is called before the first frame update
-        void Start()
-        {
+        private string id = "";
+        private GameObject selectedTile;
 
-        }
+
+        private bool meshCollidersAttached = false;
+        
 
         // Update is called once per frame
         void Update()
         {
-            if (id != "")
-            {
-                Debug.Log(id);
-
-                if (id == "null")
-                {
-                     BuildingContainer.GetComponent<LayerSystem.Layer>().UnHighlightAll();
-                }
-                else
-                {
-                    BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
-                }
-                id = "";
-                return;
-            }
 
             if (isBusy)
             {
@@ -50,15 +31,29 @@ using LayerSystem;
             {
                 return;
             }
-        isBusy = true;
-        tileHandler.pauseLoading = true;
-        id = "";
-            selectedTile = null;
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            StartCoroutine(LoadMeshColliders());
-
+        GetBagID();
+       
         }
 
+    private void GetBagID()
+    {
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        isBusy = true;
+        StartCoroutine(getIDData(ray, (value) => { UseObjectID(value); }));
+    }
+
+    private void UseObjectID(string id)
+    {
+        if (id == "null")
+        {
+            BuildingContainer.GetComponent<LayerSystem.Layer>().UnHighlightAll();
+        }
+        else
+        {
+            BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+        }
+        isBusy = false;
+    }
         IEnumerator LoadMeshColliders()
         {
             // add meshcolliders
@@ -69,6 +64,7 @@ using LayerSystem;
             tileHandler.pauseLoading = false;
             isBusy = false;
             id = "null";
+            meshCollidersAttached = true;
             yield break;
         }
             foreach (MeshFilter meshFilter in meshFilters)
@@ -77,32 +73,40 @@ using LayerSystem;
             {
                 tileHandler.pauseLoading = false;
                 isBusy = false;
+                
                 id = "null";
+                
             }
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-                if (meshCollider = null)
+                if (meshCollider == null)
                 {
                 meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
             }
-                
 
-                yield return null;
+            
+            yield return null;
             }
-
-            Debug.Log("MeshColliders attached");
-            StartCoroutine(getIDData());
+        meshCollidersAttached = true;
+        Debug.Log("MeshColliders attached");
+           // StartCoroutine(getIDData());
         }
 
-        IEnumerator getIDData()
+        IEnumerator getIDData(Ray ray, System.Action<string> callback)
         {
-
-            RaycastHit Hit;
+        tileHandler.pauseLoading = true;
+        meshCollidersAttached = false;
+        StartCoroutine(LoadMeshColliders());
+        yield return new WaitUntil(() => meshCollidersAttached == true);
+        yield return null;
+        RaycastHit Hit;
 
             if (Physics.Raycast(ray, out Hit, 10000) == false)
             {
+            
             id = "null";
-                isBusy = false;
+            isBusy = false;
             tileHandler.pauseLoading = false;
+            callback("null");
             yield break;
 
             }
@@ -121,7 +125,8 @@ using LayerSystem;
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    id = "null";
+                callback("null");
+                id = "null";
             }
                 else
                 {
@@ -148,10 +153,11 @@ using LayerSystem;
 
                 }
             }
-
-            yield return null;
+        
+        yield return null;
         tileHandler.pauseLoading = false;
         isBusy = false;
-        }
+        callback(id);
+    }
 
     }
