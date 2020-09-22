@@ -7,6 +7,7 @@ namespace LayerSystem
     {
         [SerializeField]
         public Material DefaultMaterial;
+        public Material HighlightMaterial;
         public int tileSize = 1000;
         public int layerPriority = 0;
         public List<DataSet> Datasets = new List<DataSet>();
@@ -20,5 +21,37 @@ namespace LayerSystem
             }
         }
 
+        public void Highlight(string id)
+        {
+            StartCoroutine(PrivateHighlight(id));
+        }
+        private IEnumerator PrivateHighlight(string id)
+        {
+            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            ObjectData objectdata;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectdata != null)
+                {
+                    if (objectdata.ids.Contains(id)==false)
+                    {
+                        if (objectdata.highlightIDs.Count == 0)
+                        {
+                            continue;
+                        }
+                    }
+                    
+                    objectdata.highlightIDs.Clear();
+                    objectdata.highlightIDs.Add(id);
+                    UVs = objectdata.GetUVs();
+                    objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
+                    yield return null;
+                }
+            }
+            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+            
+        }
     }
 }
