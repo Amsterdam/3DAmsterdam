@@ -59,7 +59,7 @@ namespace LayerSystem
                 GetTilesizes();
                 getPossibleTiles();
                 GetTileChanges();
-                //RemoveOUtOfViewTiles();
+                RemoveOUtOfViewTiles();
             //}
 
             if (pendingTileChanges.Count==0){return;}
