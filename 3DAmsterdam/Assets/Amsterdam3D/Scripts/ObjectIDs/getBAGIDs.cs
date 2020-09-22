@@ -80,11 +80,11 @@ using LayerSystem;
                 id = "null";
             }
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-                if (meshCollider != null)
+                if (meshCollider = null)
                 {
-                    DestroyImmediate(meshCollider);
-                }
                 meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+            }
+                
 
                 yield return null;
             }
