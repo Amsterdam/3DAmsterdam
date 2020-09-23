@@ -12,7 +12,7 @@ public abstract class ImportAPI : MonoBehaviour
         
         // voegt data ID en url samen tot één geheel
         string url = apiUrl + bogIndexInt + "/";
-        Debug.Log(url);
+        //Debug.Log(url);
         // stuurt een HTTP request naar de pagina
         var request = UnityWebRequest.Get(url);
         {

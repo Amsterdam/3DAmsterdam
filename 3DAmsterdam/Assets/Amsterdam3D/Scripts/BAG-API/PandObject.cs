@@ -95,7 +95,6 @@ public class PandObject : MonoBehaviour
         
         foreach(WKBP.Result result in pandData.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
         {
-            Debug.Log("Poep");
             GameObject tempBeperkingObj = Instantiate(wkbpObject, wkbpInstancePlacer.transform.position, wkbpInstancePlacer.transform.rotation);
             tempBeperkingObj.transform.SetParent(wkbpInstancePlacer.transform);
             tempBeperkingObj.GetComponent<WKBPObject>().Initialize(result);
