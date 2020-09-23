@@ -137,7 +137,11 @@ namespace LayerSystem
                     }
                     break;
                 case TileAction.Remove:
-                    Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>().mesh);
+                    MeshFilter mf = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>();
+                    if (mf != null)
+                    {
+                        DestroyImmediate(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>().mesh,true);
+                    }
                     Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
                     layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
                     activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
@@ -270,7 +274,7 @@ namespace LayerSystem
                     objectMapping.vectorMap = data.vectorMap;
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
-                    int vertexcount = newTile.GetComponent<MeshFilter>().mesh.vertexCount;
+                    //int vertexcount = newTile.GetComponent<MeshFilter>().mesh.vertexCount;
                     objectMapping.SetUVs();
                     //newTile.GetComponent<MeshFilter>().mesh.uv2 = objectMapping.GetUVs();
                     newAssetBundle.Unload(true);
@@ -310,16 +314,16 @@ namespace LayerSystem
             //newMesh.triangles = mesh.triangles;
             //newMesh.normals = mesh.normals;
             //newMesh.name = mesh.name;
-            Vector2 uv = new Vector2(0.66f, 0.5f);
+            Vector2 uv = new Vector2(0.33f, 0.5f);
             int count = mesh.vertexCount;
-            Vector2[] uvs = new Vector2[count];
+            //Vector2[] uvs = new Vector2[count];
 
-            for (int i = 0; i < count; i++)
-            {
-                uvs[i] = uv;
-            }
-            //Vector2[] uvs = Enumerable.Repeat(new Vector2(0.66f, 0.5f), mesh.vertices.Length).ToArray();
-           mesh.uv2 = uvs;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    uvs[i] = uv;
+            //}
+            //Vector2[] uvs = Enumerable.Repeat(uv, count).ToArray();
+            //mesh.uv2 = uvs;
                 float X = float.Parse(mesh.name.Split('_')[0]);
                 float Y = float.Parse(mesh.name.Split('_')[1]);
 

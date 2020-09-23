@@ -61,7 +61,7 @@ using LayerSystem;
             MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
         if (meshFilters == null)
         {
-            tileHandler.pauseLoading = false;
+
             isBusy = false;
             id = "null";
             meshCollidersAttached = true;
@@ -71,11 +71,18 @@ using LayerSystem;
             {
             if (meshFilter == null)
             {
-                tileHandler.pauseLoading = false;
+
                 isBusy = false;
                 
                 id = "null";
                 
+            }
+                if(meshFilter == null)
+            {
+
+                isBusy = false;
+
+                id = "null";
             }
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
                 if (meshCollider == null)
