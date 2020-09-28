@@ -27,14 +27,18 @@ using LayerSystem;
             return;
         }
 
-        if (Input.GetMouseButtonDown(0) == false)
+        if (Input.GetMouseButtonDown(0))
         {
-            return;
+            if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
+            {
+                GetBagID();
+            }
+            //return;
         }
-        if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
-        {
-            GetBagID();
-        }
+        //if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
+        //{
+        //    GetBagID();
+        //}
     }
 
     private void GetBagID()

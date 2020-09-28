@@ -6,28 +6,38 @@ using UnityEngine.Events;
 
 public class WKBPObject : MonoBehaviour
 {
-    [SerializeField] private Text displayText = default;
-    [SerializeField] private Text idText = default;
-    [SerializeField] private Text inschrijfnummerText = default;
-    [SerializeField] private Text datum_in_werkingText = default;
-    [SerializeField] private Text documentUrlText = default;
-    [SerializeField] private Button documentUrlButton = default;
-    private string url = "";
+    [SerializeField] private Transform spawnPoint = default;
+    [SerializeField] private GameObject wkbpParent = default;
+    [SerializeField] private GameObject wkbpPrefab = default;
+    [SerializeField] private Toggle wkbpToggle = default;
+    private List<WKBPInstance> WKBPList = new List<WKBPInstance>();
 
-    public void Initialize(WKBP.Result result)
+    private void Start()
     {
-        displayText.text = result._display;
-        idText.text = result.beperking.id;
-        inschrijfnummerText.text = result.beperking.inschrijfnummer;
-        datum_in_werkingText.text = result.beperking.datum_in_werking;
-        //datum_in_werkingText.text = result.beperking.datum_einde;
-        documentUrlText.text = result.beperking.documenten.href;
-        url = result.beperking.documenten.href;
-        documentUrlButton.onClick.AddListener(OpenLink);
+        wkbpParent.SetActive(false);
+        wkbpToggle.gameObject.SetActive(false);
     }
-
-    public void OpenLink()
+    public IEnumerator LoadWKBP(Pand.Rootobject thisPand, int adresIndex)
     {
-        Application.OpenURL(url);
+        if(WKBPList.Count > 0)
+        {
+            foreach(WKBPInstance inst in WKBPList)
+            {
+                Destroy(inst.gameObject);
+            }
+            WKBPList.Clear();
+        }
+        yield return StartCoroutine(ImportWKBP.Instance.CallWKBP(thisPand.results[adresIndex]));
+        foreach (WKBP.Result result in thisPand.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
+        {
+            GameObject tempBeperkingObj = Instantiate(wkbpPrefab, spawnPoint.position, spawnPoint.rotation);
+            tempBeperkingObj.transform.SetParent(spawnPoint);
+            WKBPInstance tempWKBP = tempBeperkingObj.GetComponent<WKBPInstance>();
+            WKBPList.Add(tempWKBP);
+            tempWKBP.Initialize(result);
+        }
+        wkbpParent.SetActive(true);
+        wkbpToggle.gameObject.SetActive(true);
+        wkbpToggle.isOn = true;
     }
 }

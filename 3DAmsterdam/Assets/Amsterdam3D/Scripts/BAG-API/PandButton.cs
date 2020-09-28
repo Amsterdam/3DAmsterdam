@@ -14,7 +14,6 @@ public class PandButton : MonoBehaviour
     private void Start()
     {
         btn = GetComponent<Button>();
-        
         btn.onClick.AddListener(ShowPand);
     }
 
@@ -27,7 +26,7 @@ public class PandButton : MonoBehaviour
 
     private void ShowPand()
     {
-        //DisplayBAGData.Instance.PlacePand(pandResult, pandIndex);
-        StartCoroutine(DisplayBAGData.Instance.PlaceCoroutine(pandResult, pandIndex));
+        DisplayBAGData.Instance.PlacePand(pandResult, pandIndex); // snelle data open methode maar hij checkt niet of de data al binnen is
+        //StartCoroutine(DisplayBAGData.Instance.PlaceCoroutine(pandResult, pandIndex)); // indien hij de data niet goed ophaalt, roep dit script aan, deze wacht tot de data eerst binnen is
     }
 }

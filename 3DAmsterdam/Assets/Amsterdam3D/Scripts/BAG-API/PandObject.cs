@@ -30,39 +30,42 @@ public class PandObject : MonoBehaviour
     [SerializeField] private Text categorieTitel = default;
     [SerializeField] private Text categorieURL = default;
     [SerializeField] private Text monument = default;
-    [SerializeField] private Text typeBeperking = default;
-    [SerializeField] private Text beperkingID = default;
+    [SerializeField] private Button beperking = default;
     [SerializeField] private Text woningcorperatieNaam = default;
 
-    [Header("Beperkingen")]
-    [SerializeField] private GameObject wkbpInstancePlacer = default;
-    [SerializeField] private GameObject wkbpObject = default;
-
-    [Header("Button")]
+    [Header("Buttons")]
     [SerializeField] private Button closeButton = default;
+    [SerializeField] private Toggle straatnaam = default;
+    [SerializeField] private Text straatText = default;
+
+    private int adresIndex = 0;
+    private Pand.Rootobject thisPand = new Pand.Rootobject();
 
 
     private void Start()
     {
         closeButton.onClick.AddListener(CloseObject);
-        
+        beperking.onClick.AddListener(LoadWKBP);
     }
 
-    private void OnDisable()
-    {
-        Destroy(this.gameObject); // mogenlijk kan dit ook worden geobject pooled voor latere optimalisatie
-    }
 
-    public void SetText(Pand.Rootobject pandData, int adresIndex)
+    public void SetText(Pand.Rootobject pandData, int Index)
     {
-        if(pandData.results.Length == 1)
+        // zet de pand data
+        thisPand = pandData;
+        adresIndex = Index;
+        straatnaam.gameObject.SetActive(true);
+        straatnaam.isOn = true;
+        straatText.text = pandData.results[adresIndex].nummeraanduiding.adres;
+        // zet de terug knop uit als er maar één pand is
+        if (pandData.results.Length == 1)
         {
             closeButton.gameObject.SetActive(false);
         }
         //Zet alle pand data en displayed het in de UI.
         nummerAanduidingText.text = pandData.results[adresIndex].nummeraanduiding.nummeraanduidingidentificatie;
-        adresText.text = pandData.results[adresIndex].nummeraanduiding.adres;
-        postcodeText.text = pandData.results[adresIndex].nummeraanduiding.postcode;
+        adresText.text = pandData.results[adresIndex].nummeraanduiding.adres + " " + pandData.results[adresIndex].nummeraanduiding.postcode + " " + "Amsterdam";
+        ///postcodeText.text = pandData.results[adresIndex].nummeraanduiding.postcode;
         woningTypeText.text = pandData.results[adresIndex].nummeraanduiding.type_adres;
         bouwJaarText.text = pandData.oorspronkelijk_bouwjaar;
         buurt.text = pandData._buurt.naam;
@@ -82,29 +85,26 @@ public class PandObject : MonoBehaviour
         categorieOnderwerp.text = "ONTBREEKT";
         categorieTitel.text = "ONTBREEKT";
         categorieURL.text = "ONTBREEKT";
+        // kijkt of er wel monumenten zijn
         if (pandData.monumenten.results.Length > 0)
         {
-            monument.gameObject.transform.parent.gameObject.SetActive(true);
-            monument.text = pandData.monumenten.results[0].monumentnummer;
+            monument.text = "Ja, " + pandData.monumenten.results[0].monumentnummer;
         }
         else 
-        { 
-            monument.gameObject.transform.parent.gameObject.SetActive(false);
-        }
-        typeBeperking.text = pandData.status;
-        
-        foreach(WKBP.Result result in pandData.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
         {
-            GameObject tempBeperkingObj = Instantiate(wkbpObject, wkbpInstancePlacer.transform.position, wkbpInstancePlacer.transform.rotation);
-            tempBeperkingObj.transform.SetParent(wkbpInstancePlacer.transform);
-            tempBeperkingObj.GetComponent<WKBPObject>().Initialize(result);
+            monument.text = "Nee";
         }
-        beperkingID.text = "GEBRUIKS OPPERVLAKTE";
         woningcorperatieNaam.text = pandData.results[adresIndex].verblijfsobject.eigendomsverhouding;
+    }
+
+    public void LoadWKBP()
+    {
+        StartCoroutine(DisplayBAGData.Instance.wkbp.LoadWKBP(thisPand, adresIndex));
     }
 
     private void CloseObject()
     {
-        Destroy(this.gameObject); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie
+        this.gameObject.SetActive(false); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie
+        straatnaam.gameObject.SetActive(false);
     }
 }

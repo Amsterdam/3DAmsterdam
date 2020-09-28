@@ -6,10 +6,8 @@ using System.Linq; // dit wordt gebruikt voor op lijn 49
 
 public class ImportBAG : ImportAPI
 {
-    public string BAG_ID_TEST = "0363100012171966"; // dit is test data
-    public Pand.Rootobject hoofdData;
-
     public static ImportBAG Instance = null;
+    public Pand.Rootobject hoofdData;
 
     private void Awake()
     {
@@ -20,11 +18,6 @@ public class ImportBAG : ImportAPI
         }
     }
 
-    void Start()
-    {
-        // dit is een test, verwijder dit in de officiele build of als je hem wilts gebruiken.
-        //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", BAG_ID_TEST, RetrieveType.Pand));
-    }
     public IEnumerator CallAPI(string apiUrl, string bagIndexInt, RetrieveType type)
     {
         // voegt data ID en url samen tot één geheel
@@ -63,7 +56,8 @@ public class ImportBAG : ImportAPI
 
                         // vervangt de pand resultaten lijst met de geordende lijst
                         hoofdData.results = tempPandResults.ToArray<Pand.PandResults>();
-                        
+                        // toont de resultaten in de lijst
+                        DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
 
                     case RetrieveType.NummeraanduidingInstance:
@@ -76,23 +70,12 @@ public class ImportBAG : ImportAPI
                             {
                                 // voegt adres gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
                                 result.nummeraanduiding = tempPand;
+                                // voegt verblijfsobject data toe aan huidig adres
+                                StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
                             }
                         }
-
+                        // haalt monumentele data op van dit pand
                         StartCoroutine(CallAPI("https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=", hoofdData.pandidentificatie, RetrieveType.Monumenten));
-                        // voegt verblijfsobject data toe per adres
-                        /*
-                        foreach (Pand.PandResults result in hoofdData.results)
-                        {
-                            StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
-                           
-                        }
-                        */
-
-                        // voegt monumentele data toe aan het pand
-
-
-                        // toont de resultaten in de lijst
                         
                         break;
 
@@ -103,56 +86,8 @@ public class ImportBAG : ImportAPI
                         {
                             if (result?.nummeraanduiding._display == tempVerblijf?._display)
                             {
-                                // voegt verblijfs gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
-
+                                // voegt het verblijfsobject toe aan huidig pand
                                 result.verblijfsobject = tempVerblijf;
-                                string wkbpURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=" + tempVerblijf.verblijfsobjectidentificatie;
-                                string wkbpResult = "";
-                                WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
-                                var WKPBRequest = UnityWebRequest.Get(wkbpURL);
-                                {
-                                    yield return WKPBRequest.SendWebRequest();
-
-                                    if (WKPBRequest.isDone && !WKPBRequest.isHttpError)
-                                    {
-                                        // vangt de data op in text bestand.
-                                        wkbpResult = WKPBRequest.downloadHandler.text;
-
-                                        wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(wkbpResult);
-                                        
-
-                                        tempVerblijf.wkbpBeperkingen = wkbpBeperkingen;
-                                        result.verblijfsobject = tempVerblijf;
-
-                                    }
-
-                                }
-                                
-                                for (int i = 0; i < wkbpBeperkingen.results.Length; i++)
-                                {
-                                    string wkbpInstanceURL = wkbpBeperkingen.results[i]._links.self.href;
-                                    string wkbpInstanceResult = "";
-                                    var WKPBInstanceRequest = UnityWebRequest.Get(wkbpInstanceURL);
-                                    {
-                                        yield return WKPBInstanceRequest.SendWebRequest();
-
-                                        if (WKPBInstanceRequest.isDone && !WKPBInstanceRequest.isHttpError)
-                                        {
-                                            // vangt de data op in text bestand.
-                                            wkbpInstanceResult = WKPBInstanceRequest.downloadHandler.text;
-                                        }
-                                    }
-                                    WKBP.Beperking beperkingInstance = JsonUtility.FromJson<WKBP.Beperking>(wkbpInstanceResult);
-                                    wkbpBeperkingen.results[i].beperking = beperkingInstance;
-                                    tempVerblijf.wkbpBeperkingen = wkbpBeperkingen;
-                                    result.verblijfsobject = tempVerblijf;
-                                }
-                                
-
-                                //StartCoroutine(CallAPI("https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=", result.verblijfsobject.verblijfsobjectidentificatie, RetrieveType.VerblijfsobjectInstance));
-                                // string[] id = tempVerblijf.beperkingen.href.Split('=');
-                                // Debug.Log(id[0]);
-                                //StartCoroutine(CallAPI(tempVerblijf.beperkingen.href, "", RetrieveType.WKBP));
                             }
                         }
                         break;
@@ -161,20 +96,14 @@ public class ImportBAG : ImportAPI
                         // voegt monumentele data toe aan het pand
                         Pand.Monumenten tempMonument = JsonUtility.FromJson<Pand.Monumenten>(dataResult);
                         hoofdData.monumenten = tempMonument;
-
-                        DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
+
                     default:
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
                         break;
                 }
             }
         }
-    }
-
-    public void GetAllData(string data)
-    {
-
     }
 }
 public enum RetrieveType
@@ -184,8 +113,7 @@ public enum RetrieveType
     NummeraanduidingList,
     VerblijfsobjectList,
     VerblijfsobjectInstance,
-    Monumenten,
-    WKBP
+    Monumenten
 }
 
 [System.Serializable]

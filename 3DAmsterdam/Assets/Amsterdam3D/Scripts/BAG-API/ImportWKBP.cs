@@ -1,10 +1,65 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ImportWKBP : ImportAPI
 {
+    public static ImportWKBP Instance = null;
+    public WKBP.RootBeperkingen wkbpData;
 
+    private void Awake()
+    {
+        // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
+    public IEnumerator CallWKBP(Pand.PandResults tempVerblijf)
+    {
+        string wkbpURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=" + tempVerblijf.verblijfsobject.verblijfsobjectidentificatie;
+        string wkbpResult = "";
+        WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
+        var WKPBRequest = UnityWebRequest.Get(wkbpURL);
+        {
+            yield return WKPBRequest.SendWebRequest();
+
+            if (WKPBRequest.isDone && !WKPBRequest.isHttpError)
+            {
+                // vangt de data op in text bestand.
+                wkbpResult = WKPBRequest.downloadHandler.text;
+
+                wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(wkbpResult);
+
+
+                tempVerblijf.verblijfsobject.wkbpBeperkingen = wkbpBeperkingen;
+            }
+
+        }
+
+        for (int i = 0; i < wkbpBeperkingen.results.Length; i++)
+        {
+            string wkbpInstanceURL = wkbpBeperkingen.results[i]._links.self.href;
+            string wkbpInstanceResult = "";
+            var WKPBInstanceRequest = UnityWebRequest.Get(wkbpInstanceURL);
+            {
+                yield return WKPBInstanceRequest.SendWebRequest();
+
+                if (WKPBInstanceRequest.isDone && !WKPBInstanceRequest.isHttpError)
+                {
+                    // vangt de data op in text bestand.
+                    wkbpInstanceResult = WKPBInstanceRequest.downloadHandler.text;
+                }
+            }
+            WKBP.Beperking beperkingInstance = JsonUtility.FromJson<WKBP.Beperking>(wkbpInstanceResult);
+            wkbpBeperkingen.results[i].beperking = beperkingInstance;
+            tempVerblijf.verblijfsobject.wkbpBeperkingen = wkbpBeperkingen;
+            wkbpData = wkbpBeperkingen;
+        }
+
+    }
 }
 
 [System.Serializable]

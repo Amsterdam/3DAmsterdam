@@ -9,12 +9,14 @@ public class DisplayBAGData : MonoBehaviour
 
     [SerializeField] private Text indexBAGText = default;
     
-    [SerializeField] private Transform pandObjectTargetSpawn = default;
-    public GameObject pandUIPrefab;
     [SerializeField] private Transform buttonObjectTargetSpawn = default;
     public GameObject pandUIButton;
     [SerializeField] private List<PandButton> pandButtons = new List<PandButton>();
 
+    [SerializeField] private Toggle straatToggle = default;
+
+    public PandObject pand;
+    public WKBPObject wkbp;
     public static DisplayBAGData Instance = null;
 
     private void Awake()
@@ -24,7 +26,9 @@ public class DisplayBAGData : MonoBehaviour
         {
             Instance = this;
         }
-        ui.SetActive(false);    
+        ui.SetActive(false);
+        pand.gameObject.SetActive(false);
+        straatToggle.gameObject.SetActive(false);
     }
 
     public void ShowData(Pand.Rootobject pandData)
@@ -63,27 +67,25 @@ public class DisplayBAGData : MonoBehaviour
 
     public void PlacePand(Pand.Rootobject pandData, int index)
     {
-        StartCoroutine(ImportBAG.Instance.CallAPI(ImportBAG.Instance.hoofdData.results[index].nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
-        GameObject temp = Instantiate(pandUIPrefab, pandObjectTargetSpawn.position, pandObjectTargetSpawn.rotation);
-        temp.transform.SetParent(pandObjectTargetSpawn);
-        // reset de transform naar het midden
-        temp.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
-        PandObject tempPand = temp.GetComponent<PandObject>();
+        StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
+
         // stuurt de pand data door
-        tempPand.SetText(pandData, index);
+
+        pand.gameObject.SetActive(true);
+        //straatToggle.isOn = true;
+        pand.SetText(pandData, index);
     }
     
     public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
     {
         // wacht tot alle data binnen is
-        yield return StartCoroutine(ImportBAG.Instance.CallAPI(ImportBAG.Instance.hoofdData.results[index].nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
-        GameObject temp = Instantiate(pandUIPrefab, pandObjectTargetSpawn.position, pandObjectTargetSpawn.rotation);
-        temp.transform.SetParent(pandObjectTargetSpawn);
-        // reset de transform naar het midden
-        temp.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
-        PandObject tempPand = temp.GetComponent<PandObject>();
+        yield return StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
+
         // stuurt de pand data door
-        tempPand.SetText(pandData, index);
+        //straatToggle.gameObject.SetActive(true);
+        pand.gameObject.SetActive(true);
+        //straatToggle.isOn = true;
+        pand.SetText(pandData, index);
     }
     
 
