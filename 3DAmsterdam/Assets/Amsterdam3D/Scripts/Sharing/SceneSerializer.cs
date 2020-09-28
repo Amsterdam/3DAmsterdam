@@ -21,8 +21,15 @@ namespace Amsterdam3D.Sharing
 
         [SerializeField]
         private RectTransform annotationsContainer;
+
+        [SerializeField]
+        private RectTransform cameraContainer;
+
         [SerializeField]
         private Annotation annotationPrefab;
+
+        [SerializeField]
+        GameObject cameraPrefab;
 
         [SerializeField]
         private SunSettings sunSettings;
@@ -33,6 +40,9 @@ namespace Amsterdam3D.Sharing
         private InterfaceLayer treesLayer;
         [SerializeField]
         private InterfaceLayer groundLayer;
+
+        [SerializeField]
+        private RectTransform cameraParent;
 
         [SerializeField]
         private string urlViewIDVariable = "?view=";
@@ -159,6 +169,20 @@ namespace Amsterdam3D.Sharing
                 newCustomLayer.UpdateLayerPrimaryColor();
 
                 StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
+            }
+
+            // create all custom camera points
+            for (int i = 0; i < scene.cameraPoints.Length; i++) 
+            {
+                SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
+                GameObject cameraObject = Instantiate(cameraPrefab);
+                cameraObject.name = cameraPoint.name;
+                cameraObject.transform.SetParent(cameraParent, false);
+                cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
+                cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
+                cameraObject.GetComponent<FirstPersonObject>().placed = true;
+                CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
+                newCustomLayer.Active = true;
             }
 
             //Set material properties for fixed layers
@@ -351,6 +375,7 @@ namespace Amsterdam3D.Sharing
                 },
                 annotations  = GetAnnotations(),
                 customLayers = GetCustomMeshLayers(),
+                cameraPoints = GetCameras(),
                 fixedLayers = new SerializableScene.FixedLayers {
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
@@ -391,6 +416,28 @@ namespace Amsterdam3D.Sharing
             }
 
             return annotationsData.ToArray();
+        }
+
+
+        private SerializableScene.CameraPoint[] GetCameras()
+        {
+              var annotations = cameraContainer.GetComponentsInChildren<CustomLayer>(true);
+              var annotationsData = new List<SerializableScene.CameraPoint>();
+              
+
+              foreach (var camera in annotations)
+              {
+                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
+                var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
+                annotationsData.Add(new SerializableScene.CameraPoint
+                {
+                    position = follower.WorldPosition,
+                    rotation = firstPersonObject.savedRotation,
+                    name = camera.LinkedObject.name
+                });
+              }
+
+              return annotationsData.ToArray(); 
         }
 
         /// <summary>

@@ -1,22 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Amsterdam3D.CameraMotion
 {
+
     public class StreetViewMoveToPoint : MonoBehaviour
     {
         private bool moveToStreet = false;
         private bool canClick = false;
         private bool instanCam = false;
-        public GameObject streetcamButton;
-        public GameObject GodviewButton;
+       // public GameObject streetcamButton;
+      //  public GameObject GodviewButton;
 
         private Vector3 endPos;
         private Vector3 mousePos;
 
         public Camera FPSCam;
-        public CameraControls camcontroller;
+       // public CameraControls camcontroller;
 
         private float stopHeight = 60f;
         private float lerpSpeed = 3f;
@@ -28,6 +30,7 @@ namespace Amsterdam3D.CameraMotion
         public UnityEvent OnMoved;
 
         public UnityEvent OnReverseMoved;
+        public RotationEvent OnMovedRotation;
 
 
         private void Awake()
@@ -95,8 +98,17 @@ namespace Amsterdam3D.CameraMotion
             moveToStreet = false;
             instanCam = false;
             OnMoved.Invoke();
+            OnMovedRotation.Invoke(rotation);
         }
 
+
+    }
+
+
+
+    [Serializable]
+    public class RotationEvent : UnityEvent<Quaternion>
+    {
 
     }
 }

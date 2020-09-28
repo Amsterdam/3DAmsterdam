@@ -15,6 +15,12 @@ public class CanvasSettings : MonoBehaviour
 
     private float referenceWidth = 1920.0f;
 
+    [SerializeField]
+    private GameObject mainMenu;
+
+    [SerializeField]
+    private GameObject layers;
+
     void Start()
     {
         canvasScaler = GetComponent<CanvasScaler>();
@@ -26,6 +32,14 @@ public class CanvasSettings : MonoBehaviour
         else{
             SetPreferableScale();
         }
+
+        CameraManager.instance.OnFirstPersonModeEvent += DisableObject;
+    }
+
+    void DisableObject() 
+    {
+        layers.SetActive(false);
+        mainMenu.SetActive(false);
     }
 
     [ContextMenu("Clear the stored Canvas settings PlayerPrefs")]

@@ -19,6 +19,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform annotationsContainer;
 
+		[SerializeField]
+		private RectTransform cameraContainer;
+
 		private Animator animator;
 		private bool toggledVisible = false;
 
@@ -30,6 +33,7 @@ namespace Amsterdam3D.Interface
 		{
 			animator = GetComponent<Animator>();
 			annotationsContainer.gameObject.SetActive(false);
+			cameraContainer.gameObject.SetActive(false);
 		}
 
 		/// <summary>
@@ -63,7 +67,8 @@ namespace Amsterdam3D.Interface
 		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type, bool createdByUser = true)
 		{
 			CustomLayer newCustomlayer;
-			if(type == LayerType.ANNOTATION)
+			// make a Dict of Layertypes for this?
+			if (type == LayerType.ANNOTATION)
 			{
 				newCustomlayer = Instantiate(annotationLayerPrefab, layersContainer);
 				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
@@ -71,10 +76,19 @@ namespace Amsterdam3D.Interface
 				newCustomlayer.transform.SetParent(annotationsContainer);
 				annotationsContainer.gameObject.SetActive(true);
 
-				if(createdByUser)
+				if (createdByUser)
 					linkedWorldObject.GetComponent<Annotation>().PlaceUsingMouse();
 			}
-			else{
+
+			else if (type == LayerType.CAMERA) 
+			{
+				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
+				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
+				newCustomlayer.transform.SetParent(cameraContainer);
+				cameraContainer.gameObject.SetActive(true);
+			}
+			else
+			{
 				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
 				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
 			}

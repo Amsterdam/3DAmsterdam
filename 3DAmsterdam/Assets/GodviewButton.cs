@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GodviewButton : MonoBehaviour
 {
@@ -8,7 +9,10 @@ public class GodviewButton : MonoBehaviour
     void Start()
     {
         CameraManager.instance.OnFirstPersonModeEvent += EnableObject;
+        CameraManager.instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
+        Button button = GetComponent<Button>();
+        button.onClick.AddListener(CameraManager.instance.GodViewMode);
     }
 
     // Update is called once per frame
@@ -20,5 +24,10 @@ public class GodviewButton : MonoBehaviour
     public void EnableObject() 
     {
         gameObject.SetActive(true);
+    }
+
+    public void DisableObject() 
+    {
+        gameObject.SetActive(false);
     }
 }

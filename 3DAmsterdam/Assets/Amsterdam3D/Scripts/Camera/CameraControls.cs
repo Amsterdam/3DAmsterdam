@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.CameraMotion
 {
-    public class CameraControls : MonoBehaviour
+    public class CameraControls : MonoBehaviour, ICameraControls
     {
         public Camera camera;
 
@@ -138,7 +138,7 @@ namespace Amsterdam3D.CameraMotion
 			return interactionOverruled;
 		}
 
-		public void MoveAndFocusOnLocation(Vector3 targetLocation)
+		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
 		{
             camera.transform.position = targetLocation + cameraOffsetForTargetLocation;
             camera.transform.LookAt(targetLocation, Vector3.up);

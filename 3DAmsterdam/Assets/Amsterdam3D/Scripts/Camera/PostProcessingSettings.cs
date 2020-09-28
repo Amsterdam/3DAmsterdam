@@ -13,7 +13,6 @@ namespace Amsterdam3D.Rendering
         private bool postEffects = true;
 
         private UniversalAdditionalCameraData universalCameraData;
-
         [SerializeField]
         private Volume postProcessingVolume;
 

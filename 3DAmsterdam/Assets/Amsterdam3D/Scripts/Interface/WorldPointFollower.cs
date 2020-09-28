@@ -24,7 +24,7 @@ public class WorldPointFollower : MonoBehaviour
 
     void Update()
     {
-        var viewportPosition = CameraControls.Instance.camera.WorldToViewportPoint(WorldPosition);
+        var viewportPosition = CameraManager.instance.currentCameraComponent.WorldToViewportPoint(worldPosition);
         rectTransform.anchorMin = viewportPosition;
         rectTransform.anchorMax = viewportPosition;
     }

@@ -9,13 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-   public class CameraManager:MonoBehaviour
-    {
-
-
+public class CameraManager : MonoBehaviour
+{
     public ICameraExtents CurrentCameraExtends { get; private set; }
     [SerializeField]
     private GameObject currentCamera;
+    // instead of Camera, make this some kind of interface that both CameraControls.cs and FirstPersonMouselook.cs implement
+    public ICameraControls currentCameraControlsComponent { get; private set; }
     public Camera currentCameraComponent { get; private set; }
     private StreetViewMoveToPoint streetView;
 
@@ -45,13 +45,14 @@ using UnityEngine;
     {
         streetView = FindObjectOfType<StreetViewMoveToPoint>();
         currentCamera = GodviewCam;
-        currentCameraComponent = currentCamera.GetComponent<Camera>();
+        currentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
         CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
+        currentCameraComponent = currentCamera.GetComponent<Camera>();
         instance = this;
     }
 
 
-    public void FirstPersonMode(Vector3 position, Quaternion rotation) 
+    public void FirstPersonMode(Vector3 position, Quaternion rotation)
     {
         this.CameraMode = CameraMode.StreetView;
 
@@ -62,6 +63,7 @@ using UnityEngine;
         currentCamera = streetView.EnableFPSCam();
         currentCamera.transform.position = oldPosition;
         currentCamera.transform.rotation = oldRotation;
+        currentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
         currentCameraComponent = currentCamera.GetComponent<Camera>();
         CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
         OnFirstPersonModeEvent?.Invoke();
@@ -70,7 +72,7 @@ using UnityEngine;
 
 
 
-    public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false) 
+    public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
     {
 
         if (reverse)
@@ -84,9 +86,9 @@ using UnityEngine;
         }
     }
 
-    
 
-    public void GodViewMode() 
+
+    public void GodViewMode()
     {
         this.CameraMode = CameraMode.GodView;
         Vector3 currentPosition = currentCamera.transform.position;
@@ -97,13 +99,14 @@ using UnityEngine;
         currentCamera.transform.rotation = rot;
         currentCamera.SetActive(true);
         CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
+        currentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
         currentCameraComponent = currentCamera.GetComponent<Camera>();
         OnGodViewModeEvent?.Invoke();
         MoveCameraToStreet(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
     }
 }
 
-public enum CameraMode 
+public enum CameraMode
 {
     GodView,
     StreetView,

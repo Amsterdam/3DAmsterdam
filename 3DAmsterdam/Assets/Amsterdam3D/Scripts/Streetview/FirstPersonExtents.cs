@@ -14,20 +14,13 @@ public class FirstPersonExtents : MonoBehaviour, ICameraExtents
     private UnityEngine.Vector3 bottomLeft = new UnityEngine.Vector3(-100, 0, -100);
 
 
-    // quick fix to get extent data there, should be replaced   
-    [SerializeField]
-    private TileHandler tileHandler;
 
-    [SerializeField]
-    private TileLoader tileLoader;
 
     public Extent currentExtent;
 
     // Use this for initialization
     void Start()
     {
-        tileHandler.CV = this;
-        tileLoader.CV = this;
     }
 
     private void Awake()

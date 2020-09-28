@@ -13,12 +13,19 @@ using UnityEngine;
     [SerializeField]
     GameObject streetViewPrefab;
 
+    [SerializeField]
+    Transform UIParent;
+
+
+    int currentIndex = 1;
+
     bool canClick = false;
 
     public float offset = 1.8f;
 
     private GameObject currentObject;
     private FirstPersonObject currentObjectComponent;
+    private WorldPointFollower follower;
 
     private Pointer pointer;
 
@@ -37,7 +44,7 @@ using UnityEngine;
             RaycastHit hit;
           Ray ray =   CameraManager.instance.currentCameraComponent.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 9999, 1 << LayerMask.NameToLayer("Terrain"))){
-                currentObject.transform.position = hit.point + Vector3.up * offset;
+               follower.WorldPosition = hit.point + Vector3.up * offset;
                 if (Input.GetMouseButtonDown(0))
                 {
                     canClick = false;
@@ -51,11 +58,30 @@ using UnityEngine;
     public void SpawnFirstPersonPrefab() 
     {
         currentObject = Instantiate(streetViewPrefab);
-        currentObject.transform.position = pointer.WorldPosition;
+        currentObject.name = "Camera punt " + currentIndex;
+        currentIndex++;
         layers.AddNewCustomObjectLayer(currentObject, LayerType.CAMERA, true);
+        currentObject.transform.SetParent(UIParent, false);
         currentObjectComponent = currentObject.GetComponent<FirstPersonObject>();
+        follower = currentObject.GetComponent<WorldPointFollower>();
+        follower.WorldPosition = pointer.WorldPosition;
         canClick = true;
 
+    }
+
+    public void SpawnFirstPersonAtPosition(Vector3 position, Quaternion rotation) 
+    {
+        currentObject = Instantiate(streetViewPrefab);
+        currentObject.name = "Camera punt " + currentIndex;
+        currentIndex++;
+        layers.AddNewCustomObjectLayer(currentObject, LayerType.CAMERA, true);
+        currentObject.transform.SetParent(UIParent, false);
+        currentObjectComponent = currentObject.GetComponent<FirstPersonObject>();
+        follower = currentObject.GetComponent<WorldPointFollower>();
+        follower.WorldPosition = position;
+        currentObjectComponent.placed = true;
+        currentObjectComponent.savedRotation = rotation;
+        currentObject.gameObject.SetActive(false);
     }
 
 }
