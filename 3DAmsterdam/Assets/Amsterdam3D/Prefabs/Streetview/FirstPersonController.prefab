@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6092253054437786300}
   - component: {fileID: -2973703697061191893}
   - component: {fileID: -2249622592331462921}
+  - component: {fileID: 7008712636139494169}
   m_Layer: 0
   m_Name: FirstPersonController
   m_TagString: Untagged
@@ -60,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd73c13c2739cc4ba881917b614a0f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundOffset: 0
+  groundOffset: 1.8
   velocity: {x: 0, y: 0, z: 0}
   isgrounded: 0
   rayDistance: 0.1
@@ -81,6 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileHandler: {fileID: 0}
+  tileLoader: {fileID: 0}
 --- !u!114 &-2973703697061191893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,3 +157,16 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!65 &7008712636139494169
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101375191303853095}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.8, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
