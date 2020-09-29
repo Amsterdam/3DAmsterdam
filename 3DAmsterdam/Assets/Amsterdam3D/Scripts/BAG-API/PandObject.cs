@@ -86,6 +86,7 @@ public class PandObject : MonoBehaviour
         categorieTitel.text = "ONTBREEKT";
         categorieURL.text = "ONTBREEKT";
         // kijkt of er wel monumenten zijn
+        /*
         if (pandData.monumenten.results.Length > 0)
         {
             monument.text = "Ja, " + pandData.monumenten.results[0].monumentnummer;
@@ -94,6 +95,7 @@ public class PandObject : MonoBehaviour
         {
             monument.text = "Nee";
         }
+        */
         woningcorperatieNaam.text = pandData.results[adresIndex].verblijfsobject.eigendomsverhouding;
     }
 

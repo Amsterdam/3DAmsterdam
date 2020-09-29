@@ -22,6 +22,19 @@ namespace Amsterdam3D.Interface
 
         public CustomLayer interfaceLayer { get; set; }
 
+        private bool allowEdit = true;
+        public bool AllowEdit {
+            set
+            {
+                allowEdit = value;
+                balloon.raycastTarget = allowEdit; //Allows passing rays through ballons for drag/drop
+            }
+            get
+            {
+                return allowEdit;
+            }
+        }
+
         public string BodyText {
             get{
                 return balloonText.text;
@@ -61,6 +74,8 @@ namespace Amsterdam3D.Interface
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (!allowEdit) return; 
+
             FollowMousePointer();
         }
 
@@ -78,6 +93,8 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void StartEditingText()
         {
+            if (!allowEdit) return;
+
             editInputField.gameObject.SetActive(true);
             editInputField.text = BodyText;
 

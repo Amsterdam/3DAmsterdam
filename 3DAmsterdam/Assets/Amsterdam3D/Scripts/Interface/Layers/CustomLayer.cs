@@ -21,6 +21,12 @@ namespace Amsterdam3D.Interface
 
         private int maxNameLength = 24;
 
+        private void Start()
+        {
+            //Make sure we always add from the top (minus add button, and annotation group)
+            this.transform.SetSiblingIndex(2);
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             //Catch double click on layer, to move camera to the linked object
@@ -41,9 +47,6 @@ namespace Amsterdam3D.Interface
 
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
-            //Move me to first place in parent hierarchy
-            transform.SetSiblingIndex(0);
-
             layerType = type;
             layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
             LinkObject(link);
