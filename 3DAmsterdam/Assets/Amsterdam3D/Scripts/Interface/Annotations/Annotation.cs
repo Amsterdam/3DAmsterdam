@@ -61,6 +61,10 @@ namespace Amsterdam3D.Interface
                 FollowMousePointer();
                 yield return new WaitForEndOfFrame();
             }
+            if(CameraManager.instance.CameraMode == CameraMode.StreetView) 
+            {
+                // put comment on clicked object instead of world position
+            }
             StartEditingText();
         }
 
@@ -69,7 +73,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         private void FollowMousePointer()
         {
-            AlignWithWorldPosition(CameraControls.Instance.GetMousePositionInWorld());
+            AlignWithWorldPosition(CameraManager.instance.currentCameraControlsComponent.GetMousePositionInWorld());
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -109,6 +113,40 @@ namespace Amsterdam3D.Interface
         {
             BodyText = editInputField.text;
             interfaceLayer.RenameLayer(BodyText);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+            if (CameraManager.instance.CameraMode == CameraMode.StreetView)
+            {
+                var distance = WorldPosition - CameraManager.instance.currentCameraComponent.transform.position;
+                var viewportPosition = CameraManager.instance.currentCameraComponent.WorldToViewportPoint(WorldPosition);
+                //Alternate way, connect annotations to world tiles?
+
+                if (viewportPosition.x- > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1) 
+                {
+                    balloon.gameObject.SetActive(false);
+                    balloonText.gameObject.SetActive(false);
+                }
+                else if (distance.x > 50 || distance.z > 50 || distance.x < -50 || distance.z < -50)
+                {
+                    balloon.gameObject.SetActive(false);
+                    balloonText.gameObject.SetActive(false);
+                }
+                else
+                {
+                    balloon.gameObject.SetActive(true);
+                    balloonText.gameObject.SetActive(true);
+                }
+
+            }
+
+            else 
+            {
+                balloon.gameObject.SetActive(true);
+                balloonText.gameObject.SetActive(true);
+            }
         }
 
         /// <summary>

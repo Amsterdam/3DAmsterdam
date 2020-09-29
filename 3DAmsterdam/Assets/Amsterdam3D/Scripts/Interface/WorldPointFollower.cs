@@ -22,7 +22,7 @@ public class WorldPointFollower : MonoBehaviour
         WorldPosition = newWorldPosition;
     }
 
-    void Update()
+   protected virtual void Update()
     {
         var viewportPosition = CameraManager.instance.currentCameraComponent.WorldToViewportPoint(worldPosition);
         rectTransform.anchorMin = viewportPosition;

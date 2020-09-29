@@ -25,12 +25,18 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
     [SerializeField]
     GameObject Layers;
 
+    private Camera camera;
+
+    private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
+    private Ray ray;
+    private RaycastHit hit;
 
 
     private void OnEnable()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        camera = GetComponent<Camera>();
         Layers.SetActive(false);
         MainMenu.SetActive(false);
         inMenus = false;
@@ -126,5 +132,21 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
         }
 
         this.rotation = rotationEuler;
+    }
+
+    public Vector3 GetMousePositionInWorld()
+    {
+        ray = camera.ScreenPointToRay(Input.mousePosition);
+        float distance = 100;
+        if (Physics.Raycast(ray, out hit, distance))
+        {
+            return hit.point;
+        }
+        else 
+        {
+            // return end of mouse ray if nothing collides
+            return ray.origin + ray.direction * distance;
+        }
+      
     }
 }
