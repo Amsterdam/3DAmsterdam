@@ -44,6 +44,11 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation) 
     {
+        if (targetLocation.y < Constants.ZERO_GROUND_LEVEL_Y + 1.8f) 
+        {
+            targetLocation.y = Constants.ZERO_GROUND_LEVEL_Y + 1.81f;
+        }
+        
         transform.position = targetLocation;
         transform.rotation = rotation;
         Vector2 rotationEuler = rotation.eulerAngles;
@@ -57,6 +62,8 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
             rotationEuler.x += 360f;
         }
         this.rotation = rotationEuler;
+
+        
 
     }
 
@@ -137,7 +144,7 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
     public Vector3 GetMousePositionInWorld()
     {
         ray = camera.ScreenPointToRay(Input.mousePosition);
-        float distance = 100;
+        float distance = 99;
         if (Physics.Raycast(ray, out hit, distance))
         {
             return hit.point;
