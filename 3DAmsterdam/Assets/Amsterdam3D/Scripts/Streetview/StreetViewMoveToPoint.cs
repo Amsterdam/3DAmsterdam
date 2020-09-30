@@ -89,6 +89,12 @@ namespace Amsterdam3D.CameraMotion
 
       public  IEnumerator MoveToPosition(Transform objectToMove, Vector3 position, Quaternion rotation)
         {
+            //small hack to make sure quaterion.lerp actually does something
+            if (rotation.eulerAngles.x == 0 && rotation.eulerAngles.y == 0 && rotation.eulerAngles.z == 0) 
+            {
+                rotation = Quaternion.Euler(0.1f, 0.1f, 0.1f);
+            }
+            
             while (objectToMove.position.y > position.y + 0.1f)
             {
                 objectToMove.position = Vector3.Lerp(objectToMove.position, position, lerpSpeed * Time.deltaTime);

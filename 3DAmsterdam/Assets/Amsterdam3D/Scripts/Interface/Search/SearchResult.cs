@@ -74,7 +74,7 @@ namespace Amsterdam3D.Interface.Search
                     Vector3 targetLocation = ExtractUnityLocation(ref locationData);
 
                     ParentList.ShowResultsList(false);
-                    CameraManager.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(targetLocation, new Quaternion());
+                    CameraModeChanger.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(targetLocation, new Quaternion());
                 }
             }
         }

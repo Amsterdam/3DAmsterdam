@@ -42,7 +42,7 @@ using UnityEngine;
         if (canClick) 
         {
             RaycastHit hit;
-          Ray ray =   CameraManager.instance.currentCameraComponent.ScreenPointToRay(Input.mousePosition);
+          Ray ray =   CameraModeChanger.instance.currentCameraComponent.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 9999, 1 << LayerMask.NameToLayer("Terrain"))){
                follower.WorldPosition = hit.point + Vector3.up * offset;
                 if (Input.GetMouseButtonDown(0))

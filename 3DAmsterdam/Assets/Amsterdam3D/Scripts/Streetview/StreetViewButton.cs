@@ -16,8 +16,8 @@ public class StreetViewButton : MonoBehaviour
         spawnObject = FindObjectOfType<StreetViewSpawnObject>();
         buttonh = GetComponent<Button>();
         buttonh.onClick.AddListener(h);
-        CameraManager.instance.OnFirstPersonModeEvent += DisableObject;
-        CameraManager.instance.OnGodViewModeEvent += EnableObject;
+        CameraModeChanger.instance.OnFirstPersonModeEvent += DisableObject;
+        CameraModeChanger.instance.OnGodViewModeEvent += EnableObject;
     }
 
     // Update is called once per frame

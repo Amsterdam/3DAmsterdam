@@ -11,7 +11,7 @@ using UnityEngine.UI;
     public class FirstPersonObject:MonoBehaviour, IPointerClickHandler
     {
 
-    CameraManager manager;
+    CameraModeChanger manager;
 
     public bool placed = false;
     private WorldPointFollower follower;
@@ -19,7 +19,7 @@ using UnityEngine.UI;
 
     private void Awake()
     {
-        manager = CameraManager.instance;
+        manager = CameraModeChanger.instance;
         manager.OnGodViewModeEvent += EnableObject;
         manager.OnFirstPersonModeEvent += DisableObject;
         follower = GetComponent<WorldPointFollower>();

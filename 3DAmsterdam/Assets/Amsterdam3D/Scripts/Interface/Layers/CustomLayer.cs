@@ -35,7 +35,7 @@ namespace Amsterdam3D.Interface
                 if (layerType == LayerType.ANNOTATION)
                 {
                     Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                    CameraManager.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(annotation.WorldPosition, new Quaternion());
+                    CameraModeChanger.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(annotation.WorldPosition, new Quaternion());
                     annotation.StartEditingText();
                 }
 
@@ -43,11 +43,11 @@ namespace Amsterdam3D.Interface
                 {
                     WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
                     FirstPersonObject obj = LinkedObject.GetComponent<FirstPersonObject>();
-                    CameraManager.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
+                    CameraModeChanger.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
                 }
                 else
                 {
-                    CameraManager.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
+                    CameraModeChanger.instance.currentCameraControlsComponent.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
                 }
             }
             lastClickTime = Time.time;

@@ -33,7 +33,7 @@ public class CanvasSettings : MonoBehaviour
             SetPreferableScale();
         }
 
-        CameraManager.instance.OnFirstPersonModeEvent += DisableObject;
+        CameraModeChanger.instance.OnFirstPersonModeEvent += DisableObject;
     }
 
     void DisableObject() 

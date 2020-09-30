@@ -55,15 +55,15 @@ public class TileLoader : MonoBehaviour
     // Start is called before the first frame update
     private void OnCameraChanged() 
     {
-        CV = CameraManager.instance.CurrentCameraExtends;
+        CV = CameraModeChanger.instance.CurrentCameraExtends;
     }
     
     void Start()
     {
         CV = CameraControls.Instance.camera.GetComponent<CameraView>();
         terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
-        CameraManager.instance.OnFirstPersonModeEvent += OnCameraChanged;
-        CameraManager.instance.OnGodViewModeEvent += OnCameraChanged;
+        CameraModeChanger.instance.OnFirstPersonModeEvent += OnCameraChanged;
+        CameraModeChanger.instance.OnGodViewModeEvent += OnCameraChanged;
     }
 
     // Update is called once per frame
