@@ -152,7 +152,7 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
         else 
         {
             // return end of mouse ray if nothing collides
-            return ray.origin + ray.direction * distance;
+            return ray.origin + ray.direction * (distance / 10);
         }
       
     }
