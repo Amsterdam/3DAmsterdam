@@ -13,7 +13,6 @@ namespace ExLumina.Examples.SketchUp.API
             new SU.Point3D(-2, 0, 2),
             new SU.Point3D(-2, 0, -2)
         };
-
     
         public void Start()
         {
@@ -54,6 +53,8 @@ namespace ExLumina.Examples.SketchUp.API
             SU.GeometryInputFaceSetFrontMaterial(geometry, 0, materialInput);
 
             SU.EntitiesFill(entities, geometry, true);
+
+            
 
             SUHelper.Finalize(Application.dataPath + "testRedQuad.skp");
         }
