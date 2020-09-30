@@ -61,7 +61,7 @@ namespace Amsterdam3D.Interface
                 FollowMousePointer();
                 yield return new WaitForEndOfFrame();
             }
-            if(CameraManager.instance.CameraMode == CameraMode.StreetView) 
+            if(CameraModeChanger.instance.CameraMode == CameraMode.StreetView) 
             {
                 // put comment on clicked object instead of world position
             }
@@ -73,7 +73,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         private void FollowMousePointer()
         {
-            AlignWithWorldPosition(CameraManager.instance.currentCameraControlsComponent.GetMousePositionInWorld());
+            AlignWithWorldPosition(CameraModeChanger.instance.currentCameraControlsComponent.GetMousePositionInWorld());
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -118,18 +118,18 @@ namespace Amsterdam3D.Interface
         protected override void Update()
         {
             base.Update();
-            if (CameraManager.instance.CameraMode == CameraMode.StreetView)
+            if (CameraModeChanger.instance.CameraMode == CameraMode.StreetView)
             {
-                var distance = WorldPosition - CameraManager.instance.currentCameraComponent.transform.position;
-                var viewportPosition = CameraManager.instance.currentCameraComponent.WorldToViewportPoint(WorldPosition);
+                var distance = WorldPosition - CameraModeChanger.instance.currentCameraComponent.transform.position;
+                var viewportPosition = CameraModeChanger.instance.currentCameraComponent.WorldToViewportPoint(WorldPosition);
                 //Alternate way, connect annotations to world tiles?
-
-                if (viewportPosition.x- > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1) 
+                // World space canvas instead of using canvas space?
+                if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0) 
                 {
                     balloon.gameObject.SetActive(false);
                     balloonText.gameObject.SetActive(false);
                 }
-                else if (distance.x > 50 || distance.z > 50 || distance.x < -50 || distance.z < -50)
+                else if (distance.x > 100 || distance.z > 100 || distance.x < -100 || distance.z < -100)
                 {
                     balloon.gameObject.SetActive(false);
                     balloonText.gameObject.SetActive(false);
