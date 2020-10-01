@@ -84,7 +84,6 @@ namespace Amsterdam3D.UserLayers
 			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJ.gameObject);
 
 			//hide panel and loading screen after loading
-			gameObject.SetActive(false);
 			loadingObjScreen.Hide();
 
 			yield return false;
