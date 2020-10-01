@@ -7,7 +7,7 @@ namespace Amsterdam3D.JavascriptConnection
 	public class JavascriptMethodCaller
 	{
 		[DllImport("__Internal")]
-		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", int x = 0, int y = 0);
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", int x = 0, int y = 0, int width = 0, int height = 0);
 
 		[DllImport("__Internal")]
 		private static extern string FetchOBJData();
@@ -46,7 +46,7 @@ namespace Amsterdam3D.JavascriptConnection
 		public static void DisplayWithID(string id, bool display, int x = 0, int y = 0, int width = 0, int height = 0 )
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-         DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y);
+         DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
 #endif
 		}
 

@@ -15,7 +15,7 @@ namespace Amsterdam3D.JavascriptConnection
         private Image image;
 
         [SerializeField]
-        private bool followEveryUpdate = false;
+        private bool alignEveryUpdate = false;
 
         private Rect screenSpaceRectangle;
 
@@ -26,7 +26,7 @@ namespace Amsterdam3D.JavascriptConnection
 
         private void Update()
         {
-            if (followEveryUpdate)
+            if (alignEveryUpdate)
                 AlignHTMLOverlay();
         }
 
@@ -39,7 +39,7 @@ namespace Amsterdam3D.JavascriptConnection
         private Rect GetScreenSpaceRectangle()
         {
             var size = Vector2.Scale(image.rectTransform.rect.size, image.rectTransform.lossyScale);
-            screenSpaceRectangle = new Rect(image.rectTransform.position.x, Screen.height - image.rectTransform.position.y, size.x, size.y);
+            screenSpaceRectangle = new Rect(image.rectTransform.position.x, image.rectTransform.position.y, size.x, size.y);
             screenSpaceRectangle.x -= (image.rectTransform.pivot.x * size.x);
             screenSpaceRectangle.y -= ((1.0f - image.rectTransform.pivot.y) * size.y);
             return screenSpaceRectangle;
