@@ -45,7 +45,7 @@ namespace Amsterdam3D.JavascriptConnection
             return screenSpaceRectangle;
         }
 
-#if UNITY_WEBGL && UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
         private void OnEnable()
         {
             AlignHTMLOverlay();
