@@ -4,11 +4,10 @@ using Amsterdam3D.UserLayers;
 
 namespace Amsterdam3D.JavascriptConnection
 {
-	public class JavascriptMethodCaller : MonoBehaviour
+	public class JavascriptMethodCaller
 	{
-
 		[DllImport("__Internal")]
-		private static extern void UploadButtonCSSDisplay(string display = "none");
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", int x = 0, int y = 0);
 
 		[DllImport("__Internal")]
 		private static extern string FetchOBJData();
@@ -44,10 +43,10 @@ namespace Amsterdam3D.JavascriptConnection
 		/// Faking a click through JavaScript is not allowed.
 		/// </summary>
 		/// <param name="display">Sets the hitarea CSS of the input HTML node to inline, or none</param>
-		public static void DisplayOBJUploadButtonHitArea(bool display)
+		public static void DisplayWithID(string id, bool display, int x = 0, int y = 0, int width = 0, int height = 0 )
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-         UploadButtonCSSDisplay((display) ? "inline" : "none");
+         DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y);
 #endif
 		}
 
