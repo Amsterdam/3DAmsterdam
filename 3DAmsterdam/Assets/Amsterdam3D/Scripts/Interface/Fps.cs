@@ -7,26 +7,34 @@ namespace Amsterdam3D.Interface
 	public class Fps : MonoBehaviour
 	{
 		private Text fpsCounter;
-		private float count;
+
+		public float updateInterval = 0.5f;
+		private double lastInterval;
+		private int frames = 0;
+		private float fps;
 
 		private void Awake()
 		{
 			fpsCounter = GetComponent<Text>();
+			lastInterval = Time.realtimeSinceStartup;
+			frames = 0;
 		}
 
-		IEnumerator Start()
+		private void Update()
 		{
-			while (true)
+			++frames;
+			float timeNow = Time.realtimeSinceStartup;
+			if (timeNow > lastInterval + updateInterval)
 			{
-				DrawFps();
-				yield return new WaitForSeconds(0.5f);
+				DrawFps((float)(frames / (timeNow - lastInterval)));
+				frames = 0;
+				lastInterval = timeNow;
 			}
 		}
 
-		private void DrawFps()
+		private void DrawFps(float fps)
 		{
-			count = (1 / Time.deltaTime);
-			fpsCounter.text = Mathf.Round(count).ToString();
+			fpsCounter.text = Mathf.Round(fps).ToString();
 		}
 	}
 }
