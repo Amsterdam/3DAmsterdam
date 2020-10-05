@@ -20,109 +20,122 @@
       <div class="progress"><div class="full"></div></div>
     </div>
   </body>
-
+  <script src="line-navigator.js"></script>
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
-  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
-  var objTextReader;
-  var mtlTextReader;
-  
-  var unityObjectName = "FileUploads";
-  var objData = "";
-  var mtlData = "";
-  var dataType = 0;
-  
-  document.addEventListener("dragover", function(event) {
-    event.preventDefault();
-  });
-  document.addEventListener("drop", function(event) {
-	event.stopPropagation();
-	event.preventDefault();
+	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
+	  
+	  var unityObjectName = "FileUploads";
+	  var objData = "";
+	  var mtlData = "";
+	  var dataType = 0;
+	  
+	  document.addEventListener("dragover", function(event) {
+		event.preventDefault();
+	  });
+	  document.addEventListener("drop", function(event) {
+		event.stopPropagation();
+		event.preventDefault();
 
-	ReadFiles(event.dataTransfer.files);
-  });
+		ReadFiles(event.dataTransfer.files);
+	  });
 
-  function UnityProgress(unityInstance, progress) {
-    if (!unityInstance.Module) {
-      return;
-    }
-    const loader = document.querySelector("#loader");
-    if (!unityInstance.progress) {
-      const progress = document.querySelector("#loader .progress");
-      progress.style.display = "block";
-      unityInstance.progress = progress.querySelector(".full");
-      loader.querySelector(".spinner").style.display = "none";
-    }
-    unityInstance.progress.style.transform = `scaleX(${progress})`;
-    if (progress === 1 && !unityInstance.removeTimeout) {
-      unityInstance.removeTimeout = setTimeout(function() {
-          loader.style.display = "none";
-		  
-		  window.onhashchange = locationHashChanged;
-		  if(window.location.hash){
-			locationHashChanged();
-		  }
-      }, 2000);
-    }
-  }
-  
-  function locationHashChanged() {
-	unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.replace("#",""));
-  }
+	  function UnityProgress(unityInstance, progress) {
+		if (!unityInstance.Module) {
+		  return;
+		}
+		const loader = document.querySelector("#loader");
+		if (!unityInstance.progress) {
+		  const progress = document.querySelector("#loader .progress");
+		  progress.style.display = "block";
+		  unityInstance.progress = progress.querySelector(".full");
+		  loader.querySelector(".spinner").style.display = "none";
+		}
+		unityInstance.progress.style.transform = `scaleX(${progress})`;
+		if (progress === 1 && !unityInstance.removeTimeout) {
+		  unityInstance.removeTimeout = setTimeout(function() {
+			  loader.style.display = "none";
+			  
+			  window.onhashchange = locationHashChanged;
+			  if(window.location.hash){
+				locationHashChanged();
+			  }
+		  }, 2000);
+		}
+	  }
+	  
+	  function locationHashChanged() {
+		unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.replace("#",""));
+	  }
 
-  function SelectSharedURL() {
-    window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
-  }  
-  
-  function LoadInUnity(){
-	unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
-	//Reset file selection
-	document.getElementById("obj").value = "";
-  }
-  
-  function ReadFiles(selectedFiles) {
-		//Check browser support
-		if (window.File && window.FileReader && window.FileList && window.Blob) {
-            objTextReader = new FileReader();
-			mtlTextReader = new FileReader();
-        } else {
-            alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
-        }
-		unityInstance.SendMessage(unityObjectName, "SetOBJFileName", selectedFiles.item(0).name);
-		
-		//If we selected at least one file
-        if(selectedFiles && selectedFiles[0]) { 
-			//parse obj and optionaly the mtl file
-			var mtlFileSelectionIndex = -1;
+	  function SelectSharedURL() {
+		window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
+	  }  
+	  
+	  function UnityReadLines(){
+		unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+		//Reset file selection
+		document.getElementById("obj").value = "";
+	  }
+	  
+	  function LoadInUnity(){
+		unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+		//Reset file selection
+		document.getElementById("obj").value = "";
+	  }
+	  
+	  function ReadFiles(selectedFiles) {
+			unityInstance.SendMessage(unityObjectName, "StartObjectParsing", selectedFiles.item(0).name);
 			
-			objTextReader.onload = function (e) {
-				objData = e.target.result;
-				if(mtlFileSelectionIndex > -1){
-					//Load material after loading obj (optionaly)
-					mtlTextReader.onload = function (e) {
-						mtlData = e.target.result;
-						LoadInUnity();
-					};
-					mtlTextReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
+			//If we selected at least one file
+			if(selectedFiles && selectedFiles[0]) { 				
+				//Read the obj in the file input
+				for (var i = 0; i < selectedFiles.length; i++) {
+					var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
+					if(extension == "mtl"){
+						ReadFileLinesToUnity(selectedFiles[i],extension);
+					}
+					else if(extension == "obj"){
+						ReadFileLinesToUnity(selectedFiles[i],extension);
+					}
 				}
-				else{
-					LoadInUnity();
-				}
-            };
+				LoadInUnity();
+			}	
+			return true;
+		} 
+
+		function ReadFileLinesToUnity(file, extension) {		
+			var navigator = new FileNavigator(file);
+			var indexToStartWith = 0;
+			var countLines = 0;
 			
-			//Read the obj in the file input
-			for (var i = 0; i < selectedFiles.length; i++) {
-				var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
-                if(extension == "mtl"){
-					mtlFileSelectionIndex = i;
+			navigator.readSomeLines(indexToStartWith, function linesReadHandler(err, index, lines, eof, progress) {
+				if (err) { 
+					finished = new Date();
+					console.log('Error: ' + err);
+					return;
+				}				
+				countLines += lines.length;
+				
+				if(extension == "mtl"){
+					mtlData = lines.join("");
+					unityInstance.SendMessage(unityObjectName, "FetchPartialOBJData");
 				}
 				else if(extension == "obj"){
-					objTextReader.readAsText(selectedFiles[i]);
+					objData = lines.join("");
+					unityInstance.SendMessage(unityObjectName, "FetchPartialMTLData");
 				}
-            }
-        }	
-        return true;
-    }   
+				
+				if (eof)  {
+					console.log('Total ' + countLines + ' lines read:');
+					LoadInUnity();
+					return;
+				}
+				
+				navigator.readSomeLines(index + lines.length, linesReadHandler);
+			});
+		}
+		
 	</script>
 </html>
 
