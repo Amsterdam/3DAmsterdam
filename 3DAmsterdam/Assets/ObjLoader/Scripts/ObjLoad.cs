@@ -59,18 +59,22 @@ public class ObjLoad : MonoBehaviour
 	/// Sets the obj string and turns it into an array with every newline
 	/// </summary>
 	/// <param name="data">obj string</param>
-	public void SetGeometryData(string data)
+	public void SetGeometryData(ref string data)
 	{
 		objLines = data.Split("\n".ToCharArray());
+		data = null;
+
 		parseLinePointer = 0;
 	}
 	/// <summary>
 	/// Sets the material string and turns in into an array with every newline
 	/// </summary>
 	/// <param name="data">obj string</param>
-	public void SetMaterialData(string data)
+	public void SetMaterialData(ref string data)
 	{
 		mtlLines = data.Split("\n".ToCharArray());
+		data = null;
+
 		parseLinePointer = 0;
 		materialData = new List<MaterialData>();
 	}
@@ -239,14 +243,11 @@ public class ObjLoad : MonoBehaviour
 
 		if (md.IllumType == 2)
 		{
-			string shaderName = (md.BumpTex != null) ? "Bumped Specular" : "Specular";
 			newMaterial = new Material(sourceMaterial);
-			newMaterial.SetColor("_SpecColor", md.Specular);
-			newMaterial.SetFloat("_Shininess", md.Shininess);
+			newMaterial.SetFloat("_EmissionColor", md.Shininess);
 		}
 		else
 		{
-			string shaderName = (md.BumpTex != null) ? "Bumped Diffuse" : "Diffuse";
 			newMaterial = new Material(sourceMaterial);
 		}
 
@@ -408,6 +409,10 @@ public class ObjLoad : MonoBehaviour
 
 	public void Build(Material defaultMaterial)
 	{
+		//Clear our large arrays
+		mtlLines = null;
+		objLines = null;
+
 		var materialLibrary = new Dictionary<string, Material>();
 		if (!string.IsNullOrEmpty(mtllib) && materialData != null)
 		{

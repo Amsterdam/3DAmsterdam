@@ -22,6 +22,10 @@ namespace Amsterdam3D.UserLayers
 
 		private string objModelName = "model";
 
+
+		[SerializeField]
+		private int maxLinesPerFrame = 100;
+
 		private void Start()
 		{
 			loadingObjScreen.Hide();
@@ -63,15 +67,47 @@ namespace Amsterdam3D.UserLayers
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
 			//Display loading message covering entire screen
-			loadingObjScreen.ShowMessage("Loading " + objModelName + "...");
+			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForSeconds(0.1f);
 
+			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJ = new GameObject().AddComponent<ObjLoad>();
-			if (mtlText != "")
-				newOBJ.SetMaterialData(mtlText);
+			float remainingLinesToParse;
+			float totalLines;
+			float percentage; 
 
-			newOBJ.SetGeometryData(objText);
+			//Optionaly parse the mtl file first, filling our material library
+			if (mtlText != "")
+			{
+				newOBJ.SetMaterialData(ref mtlText);
+				remainingLinesToParse = newOBJ.ParseNextMtlLines(1);
+				totalLines = remainingLinesToParse;
+
+				loadingObjScreen.ShowMessage("Materialen worden geladen...");
+				while (remainingLinesToParse > 0)
+				{
+					remainingLinesToParse = newOBJ.ParseNextMtlLines(maxLinesPerFrame);
+					percentage = 1.0f - (remainingLinesToParse / totalLines);
+					loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+					loadingObjScreen.ProgressBar.Percentage(percentage);
+					yield return null;
+				}
+			}
+
+			//Parse the obj line by line
+			newOBJ.SetGeometryData(ref objText);
+			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			remainingLinesToParse = newOBJ.ParseNextObjLines(1);
+			totalLines = remainingLinesToParse;
+			while (remainingLinesToParse > 0)
+			{
+				remainingLinesToParse = newOBJ.ParseNextObjLines(maxLinesPerFrame);
+				percentage = 1.0f - (remainingLinesToParse / totalLines);
+				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+				loadingObjScreen.ProgressBar.Percentage(percentage);
+				yield return null;
+			}
 			newOBJ.Build(defaultLoadedObjectsMaterial);
 			
 			//Make interactable
