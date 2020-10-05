@@ -56,7 +56,7 @@ namespace Amsterdam3D.UserLayers
 				));
 		}
 #endif
-		public void SetOBJFileName(string fileName)
+		public void StartObjectParsing(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
 		}
