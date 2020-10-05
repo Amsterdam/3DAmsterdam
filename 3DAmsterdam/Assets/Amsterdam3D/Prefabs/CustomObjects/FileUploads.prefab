@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7590023009504579814}
   - component: {fileID: 7590023009504579809}
+  - component: {fileID: 2243999760766328421}
   m_Layer: 0
   m_Name: FileUploads
   m_TagString: Untagged
@@ -46,4 +47,19 @@ MonoBehaviour:
   defaultLoadedObjectsMaterial: {fileID: 2100000, guid: c819d018e5b8b174d84f338b2ebb7dec,
     type: 2}
   loadingObjScreen: {fileID: 0}
-  customObjectPlacer: {fileID: 0}
+  customObjectPlacer: {fileID: 2243999760766328421}
+--- !u!114 &2243999760766328421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7590023009504579808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8253b97eeb205343b3c7fd7dc1a9f0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customObject: {fileID: 0}
+  layerType: 0
+  targetParent: {fileID: 0}
