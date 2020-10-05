@@ -10,6 +10,11 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", int x = 0, int y = 0, int width = 0, int height = 0);
 
 		[DllImport("__Internal")]
+		private static extern string FetchPartialOBJData();
+		[DllImport("__Internal")]
+		private static extern string FetchPartialMTLData();
+
+		[DllImport("__Internal")]
 		private static extern string FetchOBJData();
 
 		[DllImport("__Internal")]
@@ -60,6 +65,15 @@ namespace Amsterdam3D.JavascriptConnection
 				HideUniqueShareURL();
 			}
 #endif
+		}
+
+		public static string FetchPartialOBJDataAsString()
+		{
+			return FetchPartialOBJData();
+		}
+		public static string FetchPartialMTLDataAsString()
+		{
+			return FetchPartialOBJData();
 		}
 
 		public static string FetchOBJDataAsString()
