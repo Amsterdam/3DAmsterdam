@@ -167,6 +167,7 @@ MonoBehaviour:
   wkbpPrefab: {fileID: 5124065014853157883, guid: 39c4879c45e854842a791ae4e622b92d,
     type: 3}
   wkbpToggle: {fileID: 4009816062475761185}
+  slider: {fileID: 4009816061862261446}
 --- !u!1 &4009816061640946618
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4009816061640946619
 RectTransform:
   m_ObjectHideFlags: 0
@@ -773,7 +774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4009816061905748505
 RectTransform:
   m_ObjectHideFlags: 0
@@ -847,7 +848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4009816061934218071
 RectTransform:
   m_ObjectHideFlags: 0
@@ -944,7 +945,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 92, y: 40}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4009816061938487080
 MonoBehaviour:
@@ -1623,7 +1624,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 102, y: 40}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4009816062475761185
 MonoBehaviour:
@@ -1999,6 +2000,7 @@ GameObject:
   - component: {fileID: 4009816062744092218}
   - component: {fileID: 4009816062744092217}
   - component: {fileID: 4009816062744092216}
+  - component: {fileID: 691946311}
   m_Layer: 5
   m_Name: PandObject2.0
   m_TagString: Untagged
@@ -2090,6 +2092,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!225 &691946311
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4009816062744092222}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4009816062752107390
 GameObject:
   m_ObjectHideFlags: 0
@@ -2874,11 +2888,11 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 20
-  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
+  m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
 --- !u!114 &4009816063113117108
 MonoBehaviour:
@@ -2970,7 +2984,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Straatnaam
+  m_Text: StraatnaamStraatnaam
 --- !u!1 &4009816063199356771
 GameObject:
   m_ObjectHideFlags: 0
@@ -3307,6 +3321,28 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 4009816061938487091}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4009816062475761184}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4009816063345242157
 GameObject:
   m_ObjectHideFlags: 0
@@ -3443,7 +3479,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 86, y: 40}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4009816063373427695
 MonoBehaviour:
@@ -4055,6 +4091,11 @@ PrefabInstance:
       propertyPath: straatnaam
       value: 
       objectReference: {fileID: 4009816061938487080}
+    - target: {fileID: 6811906008994244546, guid: 52751aab5e9e65a4d86b8688bee10b9a,
+        type: 3}
+      propertyPath: scroll
+      value: 
+      objectReference: {fileID: 6763903955422982672}
     - target: {fileID: 7012985720077648839, guid: 52751aab5e9e65a4d86b8688bee10b9a,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -4419,6 +4460,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4009816061610792312}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6763903955422982672 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7672881116406032232, guid: 52751aab5e9e65a4d86b8688bee10b9a,
+    type: 3}
+  m_PrefabInstance: {fileID: 4009816061610792312}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4009816063015868954
 PrefabInstance:
   m_ObjectHideFlags: 0

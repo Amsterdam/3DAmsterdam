@@ -22,7 +22,7 @@ public class WKBPInstance : MonoBehaviour
         //datum_in_werkingText.text = result.beperking.datum_einde;
         documentUrlText.text = result.beperking.documenten.href;
         url = result.beperking.documenten.href;
-        documentUrlButton.onClick.AddListener(OpenLink);
+        documentUrlButton.name = url;
     }
 
     public void OpenLink()

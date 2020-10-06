@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DisplayBAGData : MonoBehaviour
 {
     public GameObject ui;
+    public GameObject loadingCirle;
 
     [SerializeField] private Text indexBAGText = default;
     
@@ -14,10 +15,12 @@ public class DisplayBAGData : MonoBehaviour
     [SerializeField] private List<PandButton> pandButtons = new List<PandButton>();
 
     [SerializeField] private Toggle straatToggle = default;
+    [SerializeField] private Scrollbar scroll = default;
 
     public PandObject pand;
     public WKBPObject wkbp;
     public static DisplayBAGData Instance = null;
+
 
     private void Awake()
     {
@@ -29,12 +32,14 @@ public class DisplayBAGData : MonoBehaviour
         ui.SetActive(false);
         pand.gameObject.SetActive(false);
         straatToggle.gameObject.SetActive(false);
+        loadingCirle.SetActive(false);
     }
 
     public void ShowData(Pand.Rootobject pandData)
     {
         ui.SetActive(true);
         RemoveButtons();
+        scroll.value = 1f;
         if (pandData.results.Length > 0)
         {
             // starts ui en cleans up all previous buttons
@@ -55,6 +60,7 @@ public class DisplayBAGData : MonoBehaviour
                     // voegt de data aan de knop
                     tempButton.Initiate(pandData, i);
                 }
+                loadingCirle.SetActive(false);
             }
             else
             {
@@ -74,6 +80,9 @@ public class DisplayBAGData : MonoBehaviour
         pand.gameObject.SetActive(true);
         //straatToggle.isOn = true;
         pand.SetText(pandData, index);
+
+        if(loadingCirle.activeSelf)
+            loadingCirle.SetActive(false);
     }
     
     public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
@@ -86,6 +95,9 @@ public class DisplayBAGData : MonoBehaviour
         pand.gameObject.SetActive(true);
         //straatToggle.isOn = true;
         pand.SetText(pandData, index);
+
+        if (loadingCirle.activeSelf)
+            loadingCirle.SetActive(false);
     }
     
 

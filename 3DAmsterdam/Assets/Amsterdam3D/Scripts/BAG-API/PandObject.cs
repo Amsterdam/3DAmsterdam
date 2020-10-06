@@ -35,6 +35,7 @@ public class PandObject : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button closeButton = default;
+    [SerializeField] private Scrollbar scroll = default;
     [SerializeField] private Toggle straatnaam = default;
     [SerializeField] private Text straatText = default;
 
@@ -44,6 +45,7 @@ public class PandObject : MonoBehaviour
 
     private void Start()
     {
+        closeButton.gameObject.SetActive(true);
         closeButton.onClick.AddListener(CloseObject);
         beperking.onClick.AddListener(LoadWKBP);
     }
@@ -52,15 +54,22 @@ public class PandObject : MonoBehaviour
     public void SetText(Pand.Rootobject pandData, int Index)
     {
         // zet de pand data
+        scroll.value = 1f;
         thisPand = pandData;
         adresIndex = Index;
         straatnaam.gameObject.SetActive(true);
         straatnaam.isOn = true;
         straatText.text = pandData.results[adresIndex].nummeraanduiding.adres;
         // zet de terug knop uit als er maar één pand is
-        if (pandData.results.Length == 1)
+        if (pandData.results.Length <= 1)
         {
-            closeButton.gameObject.SetActive(false);
+            if (closeButton.gameObject.activeSelf)
+                closeButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            if(!closeButton.gameObject.activeSelf)
+                closeButton.gameObject.SetActive(true);
         }
         //Zet alle pand data en displayed het in de UI.
         nummerAanduidingText.text = pandData.results[adresIndex].nummeraanduiding.nummeraanduidingidentificatie;
@@ -73,18 +82,18 @@ public class PandObject : MonoBehaviour
         stadsdeel.text = pandData._stadsdeel.naam;
         huur.text = pandData.results[adresIndex].nummeraanduiding.type_adres;
         oppervlakte.text = pandData.results[adresIndex].verblijfsobject.oppervlakte + " M²";
-        aantalKamers.text = pandData.results[adresIndex].verblijfsobject.aantal_kamers;
-        aantalBouwlagen.text = pandData.bouwlagen;
-        hoogsteBouwlaag.text = pandData.hoogste_bouwlaag;
-        laagsteBouwlaag.text = pandData.laagste_bouwlaag;
-        verdiepingToegang.text = pandData.results[adresIndex].verblijfsobject.verdieping_toegang;
-        bestemmingsPlan.text = "ONTBREEKT";
-        functie.text = "ONTBREEKT";
+        aantalKamers.text = string.IsNullOrEmpty(pandData.results[adresIndex].verblijfsobject.aantal_kamers) ? "Onbekend" : pandData.results[adresIndex].verblijfsobject.aantal_kamers;
+        aantalBouwlagen.text = string.IsNullOrEmpty(pandData.bouwlagen) ? "Onbekend" : pandData.bouwlagen;
+        hoogsteBouwlaag.text = string.IsNullOrEmpty(pandData.hoogste_bouwlaag) ? "Onbekend" : pandData.hoogste_bouwlaag;
+        laagsteBouwlaag.text = string.IsNullOrEmpty(pandData.laagste_bouwlaag) ? "Onbekend" : pandData.laagste_bouwlaag;
+        verdiepingToegang.text = string.IsNullOrEmpty(pandData.results[adresIndex].verblijfsobject.verdieping_toegang) ? "Onbekend" : pandData.results[adresIndex].verblijfsobject.verdieping_toegang;
+        bestemmingsPlan.text = "Onbekend";
+        functie.text = "Onbekend";
         //gebruiksOppervlakte.text = pandData.results[adresIndex].verblijfsobject.oppervlakte + " M²";
-        categorieVergunning.text = "ONTBREEKT";
-        categorieOnderwerp.text = "ONTBREEKT";
-        categorieTitel.text = "ONTBREEKT";
-        categorieURL.text = "ONTBREEKT";
+        categorieVergunning.text = "Onbekend";
+        categorieOnderwerp.text = "Onbekend";
+        categorieTitel.text = "Onbekend";
+        categorieURL.text = "Onbekend";
         // kijkt of er wel monumenten zijn
         /*
         if (pandData.monumenten.results.Length > 0)
@@ -97,10 +106,12 @@ public class PandObject : MonoBehaviour
         }
         */
         woningcorperatieNaam.text = pandData.results[adresIndex].verblijfsobject.eigendomsverhouding;
+        DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
     }
 
     public void LoadWKBP()
     {
+        DisplayBAGData.Instance.loadingCirle.SetActive(true); // loading bar
         StartCoroutine(DisplayBAGData.Instance.wkbp.LoadWKBP(thisPand, adresIndex));
     }
 

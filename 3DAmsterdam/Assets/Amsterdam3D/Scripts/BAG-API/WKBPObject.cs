@@ -10,6 +10,7 @@ public class WKBPObject : MonoBehaviour
     [SerializeField] private GameObject wkbpParent = default;
     [SerializeField] private GameObject wkbpPrefab = default;
     [SerializeField] private Toggle wkbpToggle = default;
+    [SerializeField] private Scrollbar slider = default;
     private List<WKBPInstance> WKBPList = new List<WKBPInstance>();
 
     private void Start()
@@ -38,6 +39,8 @@ public class WKBPObject : MonoBehaviour
         }
         wkbpParent.SetActive(true);
         wkbpToggle.gameObject.SetActive(true);
+        slider.value = 1f; // reset slider
         wkbpToggle.isOn = true;
+        DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
     }
 }

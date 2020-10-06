@@ -29,10 +29,13 @@ using LayerSystem;
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
+            //if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
+            //{
+            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
                 GetBagID();
             }
+            //}
             //return;
         }
         //if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
@@ -46,6 +49,7 @@ using LayerSystem;
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
         StartCoroutine(getIDData(ray, (value) => { UseObjectID(value); }));
+        DisplayBAGData.Instance.loadingCirle.SetActive(true);
     }
 
     private void UseObjectID(string id)
@@ -106,6 +110,7 @@ using LayerSystem;
 
         IEnumerator getIDData(Ray ray, System.Action<string> callback)
         {
+
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
         StartCoroutine(LoadMeshColliders());
