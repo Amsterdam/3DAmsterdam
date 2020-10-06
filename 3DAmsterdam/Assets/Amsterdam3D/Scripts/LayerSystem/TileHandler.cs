@@ -424,7 +424,7 @@ namespace LayerSystem
             delta = center.y - cameraPosition.y;
             distance += (delta * delta);
             delta = cameraPosition.z * cameraPosition.z;
-            distance += (delta*delta);
+            distance += (delta);
 
             //Vector3Int difference = new Vector3Int(, tileID.y+centerOffset, 0) - cameraPosition;
             //distance = difference.magnitude;
@@ -459,7 +459,7 @@ namespace LayerSystem
 
             foreach (DataSet dataSet in layer.Datasets)
             {
-                if (dataSet.maximumDistanceSquared > (tiledistance.z*tiledistance.z))
+                if (dataSet.maximumDistanceSquared > (tiledistance.z))
                 {
                     lod = dataSet.lod;
 
