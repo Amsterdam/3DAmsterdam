@@ -45,7 +45,6 @@ public class PandObject : MonoBehaviour
 
     private void Start()
     {
-        closeButton.gameObject.SetActive(true);
         closeButton.onClick.AddListener(CloseObject);
         beperking.onClick.AddListener(LoadWKBP);
     }
