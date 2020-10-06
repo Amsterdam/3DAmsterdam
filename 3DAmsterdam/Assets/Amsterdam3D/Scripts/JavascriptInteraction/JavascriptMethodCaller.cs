@@ -66,7 +66,6 @@ namespace Amsterdam3D.JavascriptConnection
 			}
 #endif
 		}
-
 		public static string FetchPartialOBJDataAsString()
 		{
 			return FetchPartialOBJData();

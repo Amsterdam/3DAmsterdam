@@ -56,156 +56,134 @@ public class ObjLoad : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Sets the obj string and turns it into an array with every newline
-	/// </summary>
-	/// <param name="data">obj string</param>
-	public void SetGeometryData(ref string data)
-	{
-		objLines = data.Split("\n".ToCharArray());
-
-		parseLinePointer = 0;
-	}
-	/// <summary>
-	/// Sets the material string and turns in into an array with every newline
-	/// </summary>
-	/// <param name="data">obj string</param>
-	public void SetMaterialData(ref string data)
-	{
-		mtlLines = data.Split("\n".ToCharArray());
-
-		parseLinePointer = 0;
-		materialData = new List<MaterialData>();
-	}
-
-	/// <summary>
 	/// Read the next obj line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public int ParseNextObjLines(int maxLines = 0)
+	public void ParseNextObjLines(string data)
 	{
-		var maxLinesLimit = (maxLines == 0) ? objLines.Length : maxLines; 
-		for (int i = 0; i < maxLinesLimit; i++)
+		objLines = data.Split("\n".ToCharArray());
+		for (int i = 0; i < objLines.Length; i++)
 		{
-			if (parseLinePointer < objLines.Length)
-			{
-				line = objLines[parseLinePointer].Trim();
-				linePart = regexWhitespaces.Split(line);
-				switch (linePart[0])
-				{
-					case O:
-						//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
-						//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
-						break;
-					case V:
-						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-						break;
-					case VT:
-						buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
-						break;
-					case VN:
-						buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-						break;
-					case F:
-						var faces = new FaceIndices[linePart.Length - 1];
-						GetFaceIndices(faces, linePart);
-						if (linePart.Length == 4)
-						{
-							//tris
-							buffer.PushFace(faces[0]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[2]);
-						}
-						else if (linePart.Length == 5)
-						{
-							//quad
-							buffer.PushFace(faces[0]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[3]);
-							buffer.PushFace(faces[3]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[2]);
-						}
-						else
-						{
-							//ngons
-							Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
-						}
-						break;
-					case MTLLIB:
-						mtllib = line.Substring(linePart[0].Length + 1).Trim();
-						break;
-					case USEMTL:
-						buffer.AddSubMeshGroup(linePart[1].Trim());
-						break;
-				}
-				parseLinePointer++;
-			}
+			line = objLines[i].Trim();
+			ParseObjLine(line);
 		}
-		return objLines.Length - parseLinePointer;
 	}
 
 	/// <summary>
 	/// Read the next mtl line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public int ParseNextMtlLines(int maxLines = 0)
+	public void ParseNextMtlLines(string data)
 	{
-		var maxLinesLimit = (maxLines == 0) ? mtlLines.Length : maxLines;
-		for (int i = 0; i < maxLinesLimit; i++)
+		mtlLines = data.Split("\n".ToCharArray());
+		for (int i = 0; i < mtlLines.Length; i++)
 		{
-			if (parseLinePointer < mtlLines.Length)
-			{
-				var currentMaterialData = new MaterialData();
-				line = mtlLines[parseLinePointer].Trim();
+			line = mtlLines[i].Trim();
+			ParseMtlLine(line);
+		}
+	}
 
-				if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
-				linePart = regexWhitespaces.Split(line);
-
-				if (linePart[0].Trim() != "")
+	public void ParseObjLine(string line)
+	{
+		linePart = regexWhitespaces.Split(line);
+		switch (linePart[0])
+		{
+			case O:
+				//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
+				//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
+				break;
+			case V:
+				buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case VT:
+				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
+				break;
+			case VN:
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case F:
+				var faces = new FaceIndices[linePart.Length - 1];
+				GetFaceIndices(faces, linePart);
+				if (linePart.Length == 4)
 				{
-					switch (linePart[0])
-					{
-						case NML:
-							currentMaterialData = new MaterialData();
-							currentMaterialData.Name = linePart[1].Trim();
-							materialData.Add(currentMaterialData);
-							break;
-						case KA:
-							currentMaterialData.Ambient = gc(linePart);
-							break;
-						case KD:
-							currentMaterialData.Diffuse = gc(linePart);
-							break;
-						case KS:
-							currentMaterialData.Specular = gc(linePart);
-							break;
-						case NS:
-							currentMaterialData.Shininess = cf(linePart[1]) / 1000;
-							break;
-						case D:
-						case TR:
-							currentMaterialData.Alpha = cf(linePart[1]);
-							break;
-						case MAP_KD:
-							currentMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
-							break;
-						case MAP_BUMP:
-						case BUMP:
-							BumpParameter(currentMaterialData, linePart);
-							break;
-						case ILLUM:
-							currentMaterialData.IllumType = ci(linePart[1]);
-							break;
-						default:
-							Debug.Log("this line was not processed :" + line);
-							break;
-					}
+					//tris
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
 				}
-				parseLinePointer++;
+				else if (linePart.Length == 5)
+				{
+					//quad
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
+				}
+				else
+				{
+					//ngons
+					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+				}
+				break;
+			case MTLLIB:
+				mtllib = line.Substring(linePart[0].Length + 1).Trim();
+				break;
+			case USEMTL:
+				buffer.AddSubMeshGroup(linePart[1].Trim());
+				break;
+		}
+	}
+
+	public void ParseMtlLine(string line)
+	{
+		var currentMaterialData = new MaterialData();
+
+		if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
+		linePart = regexWhitespaces.Split(line);
+
+		if (linePart[0].Trim() != "")
+		{
+			switch (linePart[0])
+			{
+				case NML:
+					currentMaterialData = new MaterialData();
+					currentMaterialData.Name = linePart[1].Trim();
+					materialData.Add(currentMaterialData);
+					break;
+				case KA:
+					currentMaterialData.Ambient = gc(linePart);
+					break;
+				case KD:
+					currentMaterialData.Diffuse = gc(linePart);
+					break;
+				case KS:
+					currentMaterialData.Specular = gc(linePart);
+					break;
+				case NS:
+					currentMaterialData.Shininess = cf(linePart[1]) / 1000;
+					break;
+				case D:
+				case TR:
+					currentMaterialData.Alpha = cf(linePart[1]);
+					break;
+				case MAP_KD:
+					currentMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
+					break;
+				case MAP_BUMP:
+				case BUMP:
+					BumpParameter(currentMaterialData, linePart);
+					break;
+				case ILLUM:
+					currentMaterialData.IllumType = ci(linePart[1]);
+					break;
+				default:
+					Debug.Log("this line was not processed :" + line);
+					break;
 			}
 		}
-
-		return mtlLines.Length - parseLinePointer;
+		parseLinePointer++;
 	}
 
 	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)

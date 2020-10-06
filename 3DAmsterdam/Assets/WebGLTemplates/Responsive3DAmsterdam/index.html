@@ -88,19 +88,18 @@
 				for (var i = 0; i < selectedFiles.length; i++) {
 					var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
 					if(extension == "mtl"){
-						ReadFileChunkInUnity(selectedFiles[i],0);
+						ReadFileChunkInUnity(selectedFiles[i],0,false);
 					}
 					else if(extension == "obj"){
-						ReadFileChunkInUnity(selectedFiles[i],1);
+						ReadFileChunkInUnity(selectedFiles[i],1,(i == selectedFiles.length-1));
 					}
 				}
-				BuildInUnity();
 			}	
 			return true;
 		} 
 
-		function ReadFileChunkInUnity(file, extension) {		
-			var navigator = new LineNavigator(file);
+		function ReadFileChunkInUnity(file, extension,lastfile) {		
+			var navigator = new LineNavigator(file,{chunkSize:1024*1024});
 			var indexToStartWith = 0;
 			var countLines = 0;
 			
@@ -112,17 +111,30 @@
 				}				
 				countLines += lines.length;
 				
+				var fullLine = lines.join("\n"); //adding newline required by unity to split
+				unityInstance.SendMessage(unityObjectName, "ShowProgress", progress);
+				
 				if(extension == 0){
-					mtlData = lines.join("");
-					
-					unityInstance.SendMessage(unityObjectName, "ParseMTLChunk", progress);
+					unityInstance.SendMessage(unityObjectName, "ParseMTLChunk", fullLine);
 				}
 				else if(extension == 1){
-					objData = lines.join("");
-					unityInstance.SendMessage(unityObjectName, "ParseOBJChunk", progress);
+					unityInstance.SendMessage(unityObjectName, "ParseOBJChunk", fullLine);
 				}
+				/*
+				for (var i = 0; i < lines.length; i++) {
+					if(extension == 0){
+						unityInstance.SendMessage(unityObjectName, "ParseMTLChunk", lines[i]);
+					}
+					else if(extension == 1){
+						unityInstance.SendMessage(unityObjectName, "ParseOBJChunk", lines[i]);
+					}
+				}	*/
 				
 				if (eof)  {
+					if(lastfile)
+					{
+						BuildInUnity();
+					}
 					console.log('Total ' + countLines + ' lines read:');
 					return;
 				}
