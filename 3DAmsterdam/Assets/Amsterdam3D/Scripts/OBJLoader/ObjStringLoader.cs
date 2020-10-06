@@ -25,6 +25,13 @@ namespace Amsterdam3D.UserLayers
 
 		[SerializeField]
 		private int maxLinesPerFrame = 100;
+		private float remainingLinesToParse;
+		private float totalLines;
+		private float percentage;
+
+		private ObjLoad newObjParser;
+
+		private string parsableChunk = "";
 
 		private void Start()
 		{
@@ -55,15 +62,55 @@ namespace Amsterdam3D.UserLayers
 				""
 				));
 		}
-#endif
-		public void StartObjectParsing(string fileName)
-		{
-			objModelName = Path.GetFileNameWithoutExtension(fileName);
-		}
 		public void LoadOBJFromJavascript()
 		{
 			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
+#endif
+		public void StartObjectParsing(string fileName)
+		{
+			objModelName = Path.GetFileNameWithoutExtension(fileName);
+			newObjParser = new GameObject().AddComponent<ObjLoad>();
+			newObjParser.name = objModelName;
+		}
+
+		public void ParseOBJChunk(int progress)
+		{
+			parsableChunk = JavascriptMethodCaller.FetchPartialOBJDataAsString();
+			newObjParser.SetGeometryData(ref parsableChunk);
+			parsableChunk = "";
+
+			loadingObjScreen.ShowMessage("Objecten worden geladen..." + progress);
+
+			newObjParser.ParseNextObjLines();
+		}
+		public void ParseMTLChunk(int progress)
+		{
+			parsableChunk = JavascriptMethodCaller.FetchPartialMTLDataAsString(); 
+			newObjParser.SetMaterialData(ref parsableChunk);
+			parsableChunk = "";
+
+			loadingObjScreen.ShowMessage("Materialen worden geladen..." + progress);
+
+			newObjParser.ParseNextMtlLines();
+		}
+
+		public void FinishParsing()
+		{
+			newObjParser.Build(defaultLoadedObjectsMaterial);
+
+			newObjParser.transform.Rotate(0, 90, 0);
+			newObjParser.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+
+			newObjParser.gameObject.AddComponent<Draggable>();
+			newObjParser.gameObject.AddComponent<MeshCollider>().sharedMesh = newObjParser.GetComponent<MeshFilter>().sharedMesh;
+
+			customObjectPlacer.PlaceExistingObjectAtPointer(newObjParser.gameObject);
+
+			//hide panel and loading screen after loading
+			loadingObjScreen.Hide();
+		}
+
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
 			//Display loading message covering entire screen
@@ -72,10 +119,7 @@ namespace Amsterdam3D.UserLayers
 			yield return new WaitForSeconds(0.1f);
 
 			//Create a new gameobject that parses OBJ lines one by one
-			var newOBJ = new GameObject().AddComponent<ObjLoad>();
-			float remainingLinesToParse;
-			float totalLines;
-			float percentage; 
+			var newOBJ = new GameObject().AddComponent<ObjLoad>();	
 
 			//Optionaly parse the mtl file first, filling our material library
 			if (mtlText != "")

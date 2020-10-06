@@ -73,7 +73,7 @@ namespace Amsterdam3D.JavascriptConnection
 		}
 		public static string FetchPartialMTLDataAsString()
 		{
-			return FetchPartialOBJData();
+			return FetchPartialMTLData();
 		}
 
 		public static string FetchOBJDataAsString()

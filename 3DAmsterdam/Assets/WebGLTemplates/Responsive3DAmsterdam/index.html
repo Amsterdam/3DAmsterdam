@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>%UNITY_WEB_NAME%</title>
 	<link rel="stylesheet" href="style.css" />
+	<script src="file-wrapper.js"></script>
+	<script src="line-navigator.js"></script>
   </head>
 
   <body>
@@ -19,8 +21,7 @@
       <div class="spinner"></div>
       <div class="progress"><div class="full"></div></div>
     </div>
-  </body>
-  <script src="line-navigator.js"></script>
+  </body> 
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
@@ -71,15 +72,9 @@
 	  function SelectSharedURL() {
 		window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
 	  }  
-	  
-	  function UnityReadLines(){
-		unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
-		//Reset file selection
-		document.getElementById("obj").value = "";
-	  }
-	  
-	  function LoadInUnity(){
-		unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+	  	  
+	  function BuildInUnity(){
+		unityInstance.SendMessage(unityObjectName, "FinishParsing");
 		//Reset file selection
 		document.getElementById("obj").value = "";
 	  }
@@ -93,19 +88,19 @@
 				for (var i = 0; i < selectedFiles.length; i++) {
 					var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
 					if(extension == "mtl"){
-						ReadFileLinesToUnity(selectedFiles[i],extension);
+						ReadFileChunkInUnity(selectedFiles[i],0);
 					}
 					else if(extension == "obj"){
-						ReadFileLinesToUnity(selectedFiles[i],extension);
+						ReadFileChunkInUnity(selectedFiles[i],1);
 					}
 				}
-				LoadInUnity();
+				BuildInUnity();
 			}	
 			return true;
 		} 
 
-		function ReadFileLinesToUnity(file, extension) {		
-			var navigator = new FileNavigator(file);
+		function ReadFileChunkInUnity(file, extension) {		
+			var navigator = new LineNavigator(file);
 			var indexToStartWith = 0;
 			var countLines = 0;
 			
@@ -117,18 +112,18 @@
 				}				
 				countLines += lines.length;
 				
-				if(extension == "mtl"){
+				if(extension == 0){
 					mtlData = lines.join("");
-					unityInstance.SendMessage(unityObjectName, "FetchPartialOBJData");
+					
+					unityInstance.SendMessage(unityObjectName, "ParseMTLChunk", progress);
 				}
-				else if(extension == "obj"){
+				else if(extension == 1){
 					objData = lines.join("");
-					unityInstance.SendMessage(unityObjectName, "FetchPartialMTLData");
+					unityInstance.SendMessage(unityObjectName, "ParseOBJChunk", progress);
 				}
 				
 				if (eof)  {
 					console.log('Total ' + countLines + ' lines read:');
-					LoadInUnity();
 					return;
 				}
 				

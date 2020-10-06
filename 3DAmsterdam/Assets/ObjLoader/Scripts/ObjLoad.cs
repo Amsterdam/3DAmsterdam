@@ -62,7 +62,6 @@ public class ObjLoad : MonoBehaviour
 	public void SetGeometryData(ref string data)
 	{
 		objLines = data.Split("\n".ToCharArray());
-		data = null;
 
 		parseLinePointer = 0;
 	}
@@ -73,7 +72,6 @@ public class ObjLoad : MonoBehaviour
 	public void SetMaterialData(ref string data)
 	{
 		mtlLines = data.Split("\n".ToCharArray());
-		data = null;
 
 		parseLinePointer = 0;
 		materialData = new List<MaterialData>();
@@ -83,9 +81,10 @@ public class ObjLoad : MonoBehaviour
 	/// Read the next obj line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public int ParseNextObjLines(int maxLines)
+	public int ParseNextObjLines(int maxLines = 0)
 	{
-		for (int i = 0; i < maxLines; i++)
+		var maxLinesLimit = (maxLines == 0) ? objLines.Length : maxLines; 
+		for (int i = 0; i < maxLinesLimit; i++)
 		{
 			if (parseLinePointer < objLines.Length)
 			{
@@ -149,9 +148,10 @@ public class ObjLoad : MonoBehaviour
 	/// Read the next mtl line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public int ParseNextMtlLines(int maxLines)
+	public int ParseNextMtlLines(int maxLines = 0)
 	{
-		for (int i = 0; i < maxLines; i++)
+		var maxLinesLimit = (maxLines == 0) ? mtlLines.Length : maxLines;
+		for (int i = 0; i < maxLinesLimit; i++)
 		{
 			if (parseLinePointer < mtlLines.Length)
 			{
