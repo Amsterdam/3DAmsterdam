@@ -30,6 +30,54 @@ namespace LayerSystem
         {
             StartCoroutine(PrivateHighlight(id));
         }
+
+        public void Hide(string id) 
+        {
+            StartCoroutine(PrivateHide(id));
+        }
+
+        public void UnhideAll() 
+        {
+            StartCoroutine(PrivateHide("null"));
+        }
+
+        private IEnumerator PrivateHide(string id) 
+        {
+            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            ObjectData objectdata;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectdata != null)
+                {
+                    if (objectdata.ids.Contains(id) == false)
+                    {
+                        if (objectdata.hideIDs.Count == 0)
+                        {
+                            continue;
+                        }
+                    }
+
+   
+                    if (id == "null")
+                    {
+                        objectdata.hideIDs.Clear();
+                        objectdata.SetUVs();
+                    }
+                    else
+                    {
+                        objectdata.hideIDs.Add(id);
+                        objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
+                        objectdata.SetHideUVs();
+                    }
+                    //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
+                    yield return null;
+                }
+            }
+            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+        }
+
         private IEnumerator PrivateHighlight(string id)
         {
             transform.GetComponentInParent<TileHandler>().pauseLoading = true;
@@ -51,15 +99,7 @@ namespace LayerSystem
                     objectdata.highlightIDs.Clear();
                     if (id == "null")
                     {
-                        //Vector2 uv = new Vector2(0.66f, 0.5f);
-                        //int count = objectdata.gameObject.GetComponent<MeshFilter>().mesh.vertexCount;
-                        //UVs = new Vector2[count];
-
-                        //for (int i = 0; i < count; i++)
-                        //{
-                        //    UVs[i] = uv;
-                        //}
-                        objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = null;
+                        objectdata.SetUVs();
                     }
                     else
                     {

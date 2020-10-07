@@ -12,6 +12,7 @@ using LayerSystem;
         private Ray ray;
         private string id = "";
         private GameObject selectedTile;
+        private string selectedID = "null";
 
 
         private bool meshCollidersAttached = false;
@@ -27,10 +28,24 @@ using LayerSystem;
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0) == false)
-            {
-                return;
-            }
+
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.H))
+        {
+            BuildingContainer.GetComponent<LayerSystem.Layer>().UnhideAll();
+        }
+
+        else if (Input.GetKeyDown(KeyCode.H) && selectedID != "null")
+        {
+            BuildingContainer.GetComponent<LayerSystem.Layer>().Hide(selectedID);
+        }
+
+       
+
+        if (Input.GetMouseButtonDown(0) == false)
+        {
+            return;
+        }
         GetBagID();
        
         }
@@ -51,6 +66,7 @@ using LayerSystem;
         else
         {
             BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+            selectedID = id;
         }
         isBusy = false;
     }
