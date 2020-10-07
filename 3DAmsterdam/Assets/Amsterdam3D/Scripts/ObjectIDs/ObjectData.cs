@@ -20,8 +20,9 @@ using UnityEngine;
     }
     private IEnumerator determineUVs()
     {
-        Vector2 defaultUV = new Vector2(0.33f, 0.5f);
-        Vector2 highlightUV = new Vector2(0.66f, 0.5f);
+        Vector2 defaultUV = new Vector2(0.33f, 1f);
+        Vector2 highlightUV = new Vector2(0.66f, 0.9f);
+        Vector2 hideUV = new Vector2(0.3f, 0.7f);
         int vertexcount = mesh.vertexCount;
         int idcount = ids.Count;
         List<Vector2> itemUVs = new List<Vector2>();
@@ -29,7 +30,8 @@ using UnityEngine;
         {
             if (highlightIDs.Contains(ids[i]))
             {
-                itemUVs.Add(highlightUV);
+                itemUVs.Add(highlightUV
+                    );
             }
             else
             {
@@ -39,6 +41,7 @@ using UnityEngine;
 
         Vector2[] itemUVArray = itemUVs.ToArray();
         Vector2[] highlightUVs = new Vector2[vertexcount];
+
         
         int item = 0;
         foreach (int vectormap in vectorMap)
@@ -54,6 +57,8 @@ using UnityEngine;
            
 
         mesh.uv2 = highlightUVs;
+       // mesh.uv3 = itemUVArray;
+        //mesh.uv3 = highlightUVs;
 
     }
 
