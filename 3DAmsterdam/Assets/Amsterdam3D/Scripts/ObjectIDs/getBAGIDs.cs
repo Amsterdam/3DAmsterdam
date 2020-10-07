@@ -12,7 +12,7 @@ using LayerSystem;
         private Ray ray;
         private string id = "";
         private GameObject selectedTile;
-
+        private bool mouseReleased = true;
 
         private bool meshCollidersAttached = false;
         
@@ -29,11 +29,16 @@ using LayerSystem;
 
             if (Input.GetMouseButtonDown(0) == false)
             {
+                mouseReleased = true;
                 return;
             }
-        GetBagID();
-       
-        }
+            if (mouseReleased == true)
+            {
+                mouseReleased = false;
+                GetBagID();
+            }
+
+    }
 
     private void GetBagID()
     {
