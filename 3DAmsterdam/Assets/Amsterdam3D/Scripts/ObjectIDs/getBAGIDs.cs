@@ -12,7 +12,7 @@ using LayerSystem;
         private Ray ray;
         private string id = "";
         private GameObject selectedTile;
-
+        private bool mouseReleased = true;
 
         private bool meshCollidersAttached = false;
 
@@ -26,22 +26,20 @@ using LayerSystem;
 
             return;
         }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            //if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
-            //{
-            if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        { 
+            if (Input.GetMouseButtonDown(0) == false)
             {
+                mouseReleased = true;
+                return;
+            }
+            if (mouseReleased == true)
+            {
+                mouseReleased = false;
+
                 GetBagID();
             }
-            //}
-            //return;
         }
-        //if (!DisplayBAGData.Instance.ui.activeSelf) // checkt of de UI al niet aanstaat
-        //{
-        //    GetBagID();
-        //}
     }
 
     private void GetBagID()
@@ -94,6 +92,7 @@ using LayerSystem;
 
                 id = "null";
             }
+
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
                 if (meshCollider == null)
                 {
@@ -101,7 +100,7 @@ using LayerSystem;
             }
 
             
-            yield return null;
+            
             }
         meshCollidersAttached = true;
         Debug.Log("MeshColliders attached");
@@ -110,7 +109,6 @@ using LayerSystem;
 
         IEnumerator getIDData(Ray ray, System.Action<string> callback)
         {
-
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
         StartCoroutine(LoadMeshColliders());
