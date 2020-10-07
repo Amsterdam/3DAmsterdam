@@ -59,13 +59,13 @@ public class ObjLoad : MonoBehaviour
 	/// Read the next obj line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public void ParseNextObjLines(string data)
+	public void ParseNextObjLines(ref string data)
 	{
 		objLines = data.Split("\n".ToCharArray());
 		for (int i = 0; i < objLines.Length; i++)
 		{
 			line = objLines[i].Trim();
-			ParseObjLine(line);
+			ParseObjLine(ref line);
 		}
 	}
 
@@ -73,17 +73,17 @@ public class ObjLoad : MonoBehaviour
 	/// Read the next mtl line
 	/// </summary>
 	/// <returns>How many lines remain to be parsed</returns>
-	public void ParseNextMtlLines(string data)
+	public void ParseNextMtlLines(ref string data)
 	{
 		mtlLines = data.Split("\n".ToCharArray());
 		for (int i = 0; i < mtlLines.Length; i++)
 		{
 			line = mtlLines[i].Trim();
-			ParseMtlLine(line);
+			ParseMtlLine(ref line);
 		}
 	}
 
-	public void ParseObjLine(string line)
+	public void ParseObjLine(ref string line)
 	{
 		linePart = regexWhitespaces.Split(line);
 		switch (linePart[0])
@@ -124,7 +124,8 @@ public class ObjLoad : MonoBehaviour
 				else
 				{
 					//ngons
-					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+					//Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+					//Disabled warning message for now, since its realy heavy
 				}
 				break;
 			case MTLLIB:
@@ -136,7 +137,7 @@ public class ObjLoad : MonoBehaviour
 		}
 	}
 
-	public void ParseMtlLine(string line)
+	public void ParseMtlLine(ref string line)
 	{
 		var currentMaterialData = new MaterialData();
 
@@ -179,7 +180,7 @@ public class ObjLoad : MonoBehaviour
 					currentMaterialData.IllumType = ci(linePart[1]);
 					break;
 				default:
-					Debug.Log("this line was not processed :" + line);
+					//Debug.Log("this line was not processed :" + line);
 					break;
 			}
 		}

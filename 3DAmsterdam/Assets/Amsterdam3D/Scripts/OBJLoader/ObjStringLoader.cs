@@ -82,11 +82,11 @@ namespace Amsterdam3D.UserLayers
 
 		public void ParseOBJChunk(string lines)
 		{
-			newObjParser.ParseNextObjLines(lines);
+			newObjParser.ParseNextObjLines(ref lines);
 		}
 		public void ParseMTLChunk(string lines)
 		{
-			newObjParser.ParseNextMtlLines(lines);
+			newObjParser.ParseNextMtlLines(ref lines);
 		}
 
 		public void FinishParsing()
