@@ -84,6 +84,7 @@ using LayerSystem;
 
                 id = "null";
             }
+
                 meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
                 if (meshCollider == null)
                 {
@@ -91,7 +92,7 @@ using LayerSystem;
             }
 
             
-            yield return null;
+            
             }
         meshCollidersAttached = true;
         Debug.Log("MeshColliders attached");
