@@ -47,7 +47,7 @@ public class ObjLoad : MonoBehaviour
 
 	private GeometryBuffer buffer;
 	// Materials
-	private List<MaterialData> materialData;
+	private List<MaterialData> materialDataSlots;
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -62,8 +62,8 @@ public class ObjLoad : MonoBehaviour
 	public void SetGeometryData(ref string data)
 	{
 		objLines = data.Split("\n".ToCharArray());
-		data = null;
-
+		data = "";
+		
 		parseLinePointer = 0;
 	}
 	/// <summary>
@@ -73,10 +73,10 @@ public class ObjLoad : MonoBehaviour
 	public void SetMaterialData(ref string data)
 	{
 		mtlLines = data.Split("\n".ToCharArray());
-		data = null;
+		data = "";
 
 		parseLinePointer = 0;
-		materialData = new List<MaterialData>();
+		materialDataSlots = new List<MaterialData>();
 	}
 
 	/// <summary>
@@ -90,59 +90,64 @@ public class ObjLoad : MonoBehaviour
 			if (parseLinePointer < objLines.Length)
 			{
 				line = objLines[parseLinePointer].Trim();
-				linePart = regexWhitespaces.Split(line);
-				switch (linePart[0])
-				{
-					case O:
-						//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
-						//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
-						break;
-					case V:
-						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-						break;
-					case VT:
-						buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
-						break;
-					case VN:
-						buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-						break;
-					case F:
-						var faces = new FaceIndices[linePart.Length - 1];
-						GetFaceIndices(faces, linePart);
-						if (linePart.Length == 4)
-						{
-							//tris
-							buffer.PushFace(faces[0]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[2]);
-						}
-						else if (linePart.Length == 5)
-						{
-							//quad
-							buffer.PushFace(faces[0]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[3]);
-							buffer.PushFace(faces[3]);
-							buffer.PushFace(faces[1]);
-							buffer.PushFace(faces[2]);
-						}
-						else
-						{
-							//ngons
-							Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
-						}
-						break;
-					case MTLLIB:
-						mtllib = line.Substring(linePart[0].Length + 1).Trim();
-						break;
-					case USEMTL:
-						buffer.AddSubMeshGroup(linePart[1].Trim());
-						break;
-				}
+				ParseObjLine(ref line);
 				parseLinePointer++;
 			}
 		}
 		return objLines.Length - parseLinePointer;
+	}
+
+	private void ParseObjLine(ref string objline)
+	{
+		linePart = regexWhitespaces.Split(objline);
+		switch (linePart[0])
+		{
+			case O:
+				//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
+				//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
+				break;
+			case V:
+				buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case VT:
+				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
+				break;
+			case VN:
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case F:
+				var faces = new FaceIndices[linePart.Length - 1];
+				GetFaceIndices(faces, linePart);
+				if (linePart.Length == 4)
+				{
+					//tris
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
+				}
+				else if (linePart.Length == 5)
+				{
+					//quad
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
+				}
+				else
+				{
+					//ngons
+					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+				}
+				break;
+			case MTLLIB:
+				mtllib = line.Substring(linePart[0].Length + 1).Trim();
+				break;
+			case USEMTL:
+				buffer.AddSubMeshGroup(linePart[1].Trim());
+				break;
+		}
 	}
 
 	/// <summary>
@@ -157,55 +162,59 @@ public class ObjLoad : MonoBehaviour
 			{
 				var currentMaterialData = new MaterialData();
 				line = mtlLines[parseLinePointer].Trim();
-
-				if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
-				linePart = regexWhitespaces.Split(line);
-
-				if (linePart[0].Trim() != "")
-				{
-					switch (linePart[0])
-					{
-						case NML:
-							currentMaterialData = new MaterialData();
-							currentMaterialData.Name = linePart[1].Trim();
-							materialData.Add(currentMaterialData);
-							break;
-						case KA:
-							currentMaterialData.Ambient = gc(linePart);
-							break;
-						case KD:
-							currentMaterialData.Diffuse = gc(linePart);
-							break;
-						case KS:
-							currentMaterialData.Specular = gc(linePart);
-							break;
-						case NS:
-							currentMaterialData.Shininess = cf(linePart[1]) / 1000;
-							break;
-						case D:
-						case TR:
-							currentMaterialData.Alpha = cf(linePart[1]);
-							break;
-						case MAP_KD:
-							currentMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
-							break;
-						case MAP_BUMP:
-						case BUMP:
-							BumpParameter(currentMaterialData, linePart);
-							break;
-						case ILLUM:
-							currentMaterialData.IllumType = ci(linePart[1]);
-							break;
-						default:
-							Debug.Log("this line was not processed :" + line);
-							break;
-					}
-				}
+				ParseMtlLine(currentMaterialData);
 				parseLinePointer++;
 			}
 		}
 
 		return mtlLines.Length - parseLinePointer;
+	}
+
+	private void ParseMtlLine(MaterialData newMaterialData)
+	{
+		if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
+		linePart = regexWhitespaces.Split(line);
+
+		if (linePart[0].Trim() != "")
+		{
+			switch (linePart[0])
+			{
+				case NML:
+					newMaterialData = new MaterialData();
+					newMaterialData.Name = linePart[1].Trim();
+					materialDataSlots.Add(newMaterialData);
+					break;
+				case KA:
+					newMaterialData.Ambient = gc(linePart);
+					break;
+				case KD:
+					newMaterialData.Diffuse = gc(linePart);
+					break;
+				case KS:
+					newMaterialData.Specular = gc(linePart);
+					break;
+				case NS:
+					newMaterialData.Shininess = cf(linePart[1]) / 1000;
+					break;
+				case D:
+				case TR:
+					newMaterialData.Alpha = cf(linePart[1]);
+					break;
+				case MAP_KD:
+					newMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
+					break;
+				case MAP_BUMP:
+				case BUMP:
+					BumpParameter(newMaterialData, linePart);
+					break;
+				case ILLUM:
+					newMaterialData.IllumType = ci(linePart[1]);
+					break;
+				default:
+					Debug.Log("this line was not processed :" + line);
+					break;
+			}
+		}
 	}
 
 	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
@@ -414,9 +423,9 @@ public class ObjLoad : MonoBehaviour
 		objLines = null;
 
 		var materialLibrary = new Dictionary<string, Material>();
-		if (!string.IsNullOrEmpty(mtllib) && materialData != null)
+		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)
 		{
-			foreach (MaterialData md in materialData)
+			foreach (MaterialData md in materialDataSlots)
 			{
 				if (materialLibrary.ContainsKey(md.Name))
 				{

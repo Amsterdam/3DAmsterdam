@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
+using UnityEngine.Events;
 
 namespace Amsterdam3D.UserLayers
 {
@@ -18,13 +19,15 @@ namespace Amsterdam3D.UserLayers
 		private LoadingScreen loadingObjScreen;
 
 		[SerializeField]
+		private UnityEvent doneLoadingModel;
+
+		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
 
 		private string objModelName = "model";
 
-
 		[SerializeField]
-		private int maxLinesPerFrame = 100;
+		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
 
 		private void Start()
 		{
@@ -34,20 +37,21 @@ namespace Amsterdam3D.UserLayers
 #if UNITY_EDITOR
 		private void Update()
 		{
+			//Only used for in editor testing
 			if (Input.GetKeyDown(KeyCode.L))
 				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
 				));
 			if (Input.GetKeyDown(KeyCode.K))
 				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.mtl")
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.mtl")
 				));
 			if (Input.GetKeyDown(KeyCode.H))
 				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.mtl")
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.mtl")
 				));
 			if (Input.GetKeyDown(KeyCode.J))
 				StartCoroutine(ParseOBJFromString(
@@ -122,7 +126,11 @@ namespace Amsterdam3D.UserLayers
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
 
-			yield return false;
+			//Invoke done event
+			doneLoadingModel.Invoke();
+
+			//Remove this loader from finished object
+			Destroy(this);
 		}
 	}
 }
