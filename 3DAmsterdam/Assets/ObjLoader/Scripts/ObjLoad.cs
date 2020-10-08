@@ -185,6 +185,7 @@ public class ObjLoad : MonoBehaviour
 					targetMaterialData = new MaterialData();
 					targetMaterialData.Name = linePart[1].Trim();
 					materialDataSlots.Add(targetMaterialData);
+					Debug.Log("Loaded new material from library: " + targetMaterialData.Name);
 					break;
 				case KA:
 					targetMaterialData.Ambient = gc(linePart);
