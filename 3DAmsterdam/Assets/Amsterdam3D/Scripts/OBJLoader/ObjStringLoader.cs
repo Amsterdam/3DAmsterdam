@@ -55,7 +55,7 @@ namespace Amsterdam3D.UserLayers
 				));
 			if (Input.GetKeyDown(KeyCode.J))
 				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
+				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.obj"),
 				""
 				));
 		}
@@ -63,6 +63,9 @@ namespace Amsterdam3D.UserLayers
 		public void SetOBJFileName(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
+			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
+			loadingObjScreen.ProgressBar.SetMessage("1%");
+			loadingObjScreen.ProgressBar.Percentage(1);
 		}
 		public void LoadOBJFromJavascript()
 		{
@@ -71,57 +74,57 @@ namespace Amsterdam3D.UserLayers
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
 			//Display loading message covering entire screen
-			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForSeconds(0.1f);
 
 			//Create a new gameobject that parses OBJ lines one by one
-			var newOBJ = new GameObject().AddComponent<ObjLoad>();
+			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
 			float remainingLinesToParse;
 			float totalLines;
 			float percentage; 
 
-			//Optionaly parse the mtl file first, filling our material library
-			if (mtlText != "")
-			{
-				newOBJ.SetMaterialData(ref mtlText);
-				remainingLinesToParse = newOBJ.ParseNextMtlLines(1);
-				totalLines = remainingLinesToParse;
-
-				loadingObjScreen.ShowMessage("Materialen worden geladen...");
-				while (remainingLinesToParse > 0)
-				{
-					remainingLinesToParse = newOBJ.ParseNextMtlLines(maxLinesPerFrame);
-					percentage = 1.0f - (remainingLinesToParse / totalLines);
-					loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-					loadingObjScreen.ProgressBar.Percentage(percentage);
-					yield return null;
-				}
-			}
-
 			//Parse the obj line by line
-			newOBJ.SetGeometryData(ref objText);
+			newOBJLoader.SetGeometryData(ref objText);
 			loadingObjScreen.ShowMessage("Objecten worden geladen...");
-			remainingLinesToParse = newOBJ.ParseNextObjLines(1);
+			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
 			totalLines = remainingLinesToParse;
 			while (remainingLinesToParse > 0)
 			{
-				remainingLinesToParse = newOBJ.ParseNextObjLines(maxLinesPerFrame);
+				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
 				percentage = 1.0f - (remainingLinesToParse / totalLines);
 				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
 				loadingObjScreen.ProgressBar.Percentage(percentage);
 				yield return null;
 			}
-			newOBJ.Build(defaultLoadedObjectsMaterial);
+
+			//Parse the mtl file, filling our material library
+			if (mtlText != "")
+			{
+				newOBJLoader.SetMaterialData(ref mtlText);
+				remainingLinesToParse = newOBJLoader.ParseNextMtlLines(1);
+				totalLines = remainingLinesToParse;
+
+				loadingObjScreen.ShowMessage("Materialen worden geladen...");
+				while (remainingLinesToParse > 0)
+				{
+					remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
+					percentage = 1.0f - (remainingLinesToParse / totalLines);
+					//loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+					loadingObjScreen.ProgressBar.Percentage(percentage);
+					yield return null;
+				}
+			}
+
+			newOBJLoader.Build(defaultLoadedObjectsMaterial);
 			
 			//Make interactable
-			newOBJ.transform.Rotate(0, 90, 0);
-			newOBJ.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
-;			newOBJ.name = objModelName;
-			newOBJ.gameObject.AddComponent<Draggable>();
-			newOBJ.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJ.GetComponent<MeshFilter>().sharedMesh;
+			newOBJLoader.transform.Rotate(0, 90, 0);
+			newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+;			newOBJLoader.name = objModelName;
+			newOBJLoader.gameObject.AddComponent<Draggable>();
+			newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 
-			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJ.gameObject);
+			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
 
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
@@ -130,7 +133,7 @@ namespace Amsterdam3D.UserLayers
 			doneLoadingModel.Invoke();
 
 			//Remove this loader from finished object
-			Destroy(this);
+			Destroy(newOBJLoader);
 		}
 	}
 }
