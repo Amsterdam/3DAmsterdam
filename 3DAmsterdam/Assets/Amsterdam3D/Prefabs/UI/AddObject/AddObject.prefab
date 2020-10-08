@@ -753,10 +753,10 @@ MonoBehaviour:
     m_LineSpacing: 1.2
   m_Text: '-Wavefront OBJ formaat
 
-    -Maximaal 30MB bestandsgrootte
+    -Maximaal 100MB bestandsgrootte
 
-    -1 unit
-    gelijk aan 1 meter'
+    -Triangulated
+    faces'
 --- !u!1 &3156676976055470576
 GameObject:
   m_ObjectHideFlags: 0
@@ -2177,4 +2177,18 @@ MonoBehaviour:
     Zorg dat het 3D model aan de
     volgende eisen voldoet:
 
-'
+
+
+
+
+
+
+    <b>Vanuit SketchUp:</b>
+
+    File > Export
+    > 3D Model
+
+    Selecteer OBJ File (*.obj)
+
+    Onder ''Opties'' ''Triangulate
+    all faces'' aan'
