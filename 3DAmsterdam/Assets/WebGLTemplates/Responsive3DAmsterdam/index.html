@@ -24,8 +24,7 @@
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
   var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
-  var objTextReader;
-  var mtlTextReader;
+  var fileReader;
   
   var unityObjectName = "FileUploads";
   var objData = "";
@@ -83,43 +82,52 @@
   function ReadFiles(selectedFiles) {
 		//Check browser support
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
-            objTextReader = new FileReader();
-			mtlTextReader = new FileReader();
+            fileReader = new FileReader();
         } else {
             alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
         }
+		
+		//Set the obj name to display in Unity, and open progress overlay
 		unityInstance.SendMessage(unityObjectName, "SetOBJFileName", selectedFiles.item(0).name);
 		
 		//If we selected at least one file
         if(selectedFiles && selectedFiles[0]) { 
 			//parse obj and optionaly the mtl file
 			var mtlFileSelectionIndex = -1;
+			var objFileSelectionIndex = -1;
 			
-			objTextReader.onload = function (e) {
-				objData = e.target.result;
-				if(mtlFileSelectionIndex > -1){
-					//Load material after loading obj (optionaly)
-					mtlTextReader.onload = function (e) {
-						mtlData = e.target.result;
-						LoadInUnity();
-					};
-					mtlTextReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
-				}
-				else{
-					LoadInUnity();
-				}
-            };
-			
-			//Read the obj in the file input
+			//Check what index is the obj file, and optionaly the mtl file
 			for (var i = 0; i < selectedFiles.length; i++) {
 				var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
                 if(extension == "mtl"){
 					mtlFileSelectionIndex = i;
 				}
 				else if(extension == "obj"){
-					objTextReader.readAsText(selectedFiles[i]);
+					objFileSelectionIndex = i;
 				}
             }
+			
+			//What to do when files are done loading
+			fileReader.onload = function (e) {
+				//After reading the text for the OBJ
+				objData = e.target.result;
+				if(mtlFileSelectionIndex > -1){
+					//Load material after loading obj (optionaly)
+					fileReader.onload = function (e) {
+						mtlData = e.target.result;
+						LoadInUnity();
+					};
+					fileReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
+				}
+				else{
+					LoadInUnity();
+				}
+            };
+			
+			//Start loading the obj file
+			if(objFileSelectionIndex != -1){
+				fileReader.readAsText(selectedFiles[objFileSelectionIndex])
+			};
         }	
         return true;
     }   
