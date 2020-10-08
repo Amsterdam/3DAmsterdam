@@ -73,7 +73,8 @@
     window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
   }  
   
-  function LoadInUnity(){
+  function BuildInUnity(){
+	console.log("Build model in Unity");
 	unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
 	//Reset file selection
 	document.getElementById("obj").value = "";
@@ -100,27 +101,31 @@
 			for (var i = 0; i < selectedFiles.length; i++) {
 				var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
                 if(extension == "mtl"){
+					console.log("MTL file");
 					mtlFileSelectionIndex = i;
 				}
 				else if(extension == "obj"){
+					console.log("OBJ file");
 					objFileSelectionIndex = i;
 				}
             }
 			
 			//What to do when files are done loading
 			fileReader.onload = function (e) {
+				console.log("OBJ file loaded.");
 				//After reading the text for the OBJ
 				objData = e.target.result;
 				if(mtlFileSelectionIndex > -1){
 					//Load material after loading obj (optionaly)
 					fileReader.onload = function (e) {
+						console.log("MTL file loaded.");
 						mtlData = e.target.result;
-						LoadInUnity();
+						BuildInUnity();
 					};
 					fileReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
 				}
 				else{
-					LoadInUnity();
+					BuildInUnity();
 				}
             };
 			
