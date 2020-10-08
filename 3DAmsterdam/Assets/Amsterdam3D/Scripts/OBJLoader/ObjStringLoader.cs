@@ -63,9 +63,9 @@ namespace Amsterdam3D.UserLayers
 		public void SetOBJFileName(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
+			loadingObjScreen.ProgressBar.SetMessage("0%");
+			loadingObjScreen.ProgressBar.Percentage(0);
 			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
-			loadingObjScreen.ProgressBar.SetMessage("1%");
-			loadingObjScreen.ProgressBar.Percentage(1);
 		}
 		public void LoadOBJFromJavascript()
 		{
@@ -73,29 +73,11 @@ namespace Amsterdam3D.UserLayers
 		}
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
-			//Display loading message covering entire screen
-			yield return new WaitForEndOfFrame();
-			yield return new WaitForSeconds(0.1f);
-
 			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
 			float remainingLinesToParse;
 			float totalLines;
-			float percentage; 
-
-			//Parse the obj line by line
-			newOBJLoader.SetGeometryData(ref objText);
-			loadingObjScreen.ShowMessage("Objecten worden geladen...");
-			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
-			totalLines = remainingLinesToParse;
-			while (remainingLinesToParse > 0)
-			{
-				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
-				percentage = 1.0f - (remainingLinesToParse / totalLines);
-				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-				loadingObjScreen.ProgressBar.Percentage(percentage);
-				yield return null;
-			}
+			float percentage;
 
 			//Parse the mtl file, filling our material library
 			if (mtlText != "")
@@ -109,10 +91,23 @@ namespace Amsterdam3D.UserLayers
 				{
 					remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
 					percentage = 1.0f - (remainingLinesToParse / totalLines);
-					//loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-					loadingObjScreen.ProgressBar.Percentage(percentage);
+					loadingObjScreen.ProgressBar.Percentage(percentage/100.0f); //Show first percent
 					yield return null;
 				}
+			}
+
+			//Parse the obj line by line
+			newOBJLoader.SetGeometryData(ref objText);
+			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
+			totalLines = remainingLinesToParse;
+			while (remainingLinesToParse > 0)
+			{
+				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
+				percentage = 1.0f - (remainingLinesToParse / totalLines);
+				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+				loadingObjScreen.ProgressBar.Percentage(percentage);
+				yield return null;
 			}
 
 			newOBJLoader.Build(defaultLoadedObjectsMaterial);
