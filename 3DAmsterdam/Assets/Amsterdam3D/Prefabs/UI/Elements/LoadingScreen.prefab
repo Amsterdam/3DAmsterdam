@@ -215,7 +215,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 25
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -234,6 +234,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4008264158185257893}
     m_Modifications:
+    - target: {fileID: 934387114472175832, guid: 338360f30c1a7ed40be5fd4e1cbf7ed7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -26
+      objectReference: {fileID: 0}
     - target: {fileID: 2092176209769015332, guid: 338360f30c1a7ed40be5fd4e1cbf7ed7,
         type: 3}
       propertyPath: m_Name
