@@ -6,6 +6,9 @@ mergeInto(LibraryManager.library, {
 		var bufferSize = lengthBytesUTF8(objData) + 1;
 		var buffer = _malloc(bufferSize);
 		stringToUTF8(objData, buffer, bufferSize);
+		
+		objData = "";
+		
 		return buffer;
 	},
 	/*
@@ -15,6 +18,9 @@ mergeInto(LibraryManager.library, {
 		var bufferSize = lengthBytesUTF8(mtlData) + 1;
 		var buffer = _malloc(bufferSize);
 		stringToUTF8(mtlData, buffer, bufferSize);
+		
+		mtlData = "";
+		
 		return buffer;
 	}	
 });
