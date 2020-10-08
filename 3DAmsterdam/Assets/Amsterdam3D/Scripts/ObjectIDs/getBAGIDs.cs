@@ -47,7 +47,7 @@ using LayerSystem;
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
         StartCoroutine(getIDData(ray, (value) => { UseObjectID(value); }));
-        DisplayBAGData.Instance.loadingCirle.SetActive(true);
+        DisplayBAGData.Instance.PrepareUI();
     }
 
     private void UseObjectID(string id)

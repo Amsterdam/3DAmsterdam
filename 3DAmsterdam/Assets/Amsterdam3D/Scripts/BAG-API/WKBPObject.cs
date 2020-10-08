@@ -7,9 +7,9 @@ using UnityEngine.Events;
 public class WKBPObject : MonoBehaviour
 {
     [SerializeField] private Transform spawnPoint = default;
-    [SerializeField] private GameObject wkbpParent = default;
+    [SerializeField] public GameObject wkbpParent = default;
     [SerializeField] private GameObject wkbpPrefab = default;
-    [SerializeField] private Toggle wkbpToggle = default;
+    [SerializeField] public Toggle wkbpToggle = default;
     [SerializeField] private Scrollbar slider = default;
     private List<WKBPInstance> WKBPList = new List<WKBPInstance>();
 

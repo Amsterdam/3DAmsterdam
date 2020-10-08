@@ -10,7 +10,7 @@ public class DisplayBAGData : MonoBehaviour
 
     [SerializeField] private Text indexBAGText = default;
     
-    [SerializeField] private Transform buttonObjectTargetSpawn = default;
+    [SerializeField] public Transform buttonObjectTargetSpawn = default;
     public GameObject pandUIButton;
     [SerializeField] private List<PandButton> pandButtons = new List<PandButton>();
 
@@ -30,14 +30,26 @@ public class DisplayBAGData : MonoBehaviour
             Instance = this;
         }
         ui.SetActive(false);
-        pand.gameObject.SetActive(false);
+        //pand.gameObject.SetActive(false);
+        pand.pandGameObject.SetActive(false);
         straatToggle.gameObject.SetActive(false);
         loadingCirle.SetActive(false);
     }
 
+    public void PrepareUI()
+    {
+        wkbp.wkbpToggle.gameObject.SetActive(false);
+        wkbp.wkbpParent.SetActive(false);
+        //pand.gameObject.SetActive(false);
+        pand.CloseObject();
+        ui.SetActive(true);
+        loadingCirle.SetActive(true);
+        RemoveButtons();
+        buttonObjectTargetSpawn.gameObject.SetActive(true);
+    }
+
     public void ShowData(Pand.Rootobject pandData)
     {
-        ui.SetActive(true);
         RemoveButtons();
         scroll.value = 1f;
         if (pandData.results.Length > 0)
@@ -77,7 +89,8 @@ public class DisplayBAGData : MonoBehaviour
 
         // stuurt de pand data door
 
-        pand.gameObject.SetActive(true);
+        //pand.gameObject.SetActive(true);
+        pand.pandGameObject.SetActive(true);
         //straatToggle.isOn = true;
         pand.SetText(pandData, index);
 
@@ -92,7 +105,8 @@ public class DisplayBAGData : MonoBehaviour
 
         // stuurt de pand data door
         //straatToggle.gameObject.SetActive(true);
-        pand.gameObject.SetActive(true);
+        //pand.gameObject.SetActive(true);
+        pand.pandGameObject.SetActive(true);
         //straatToggle.isOn = true;
         pand.SetText(pandData, index);
 

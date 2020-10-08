@@ -20,6 +20,7 @@ public class ImportBAG : ImportAPI
 
     public IEnumerator CallAPI(string apiUrl, string bagIndexInt, RetrieveType type)
     {
+       
         // voegt data ID en url samen tot één geheel
         string url = apiUrl + bagIndexInt;
         // stuurt een HTTP request naar de pagina

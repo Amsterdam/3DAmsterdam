@@ -29,5 +29,6 @@ public class PandButton : MonoBehaviour
         DisplayBAGData.Instance.loadingCirle.SetActive(true);
         DisplayBAGData.Instance.PlacePand(pandResult, pandIndex); // snelle data open methode maar hij checkt niet of de data al binnen is
         //StartCoroutine(DisplayBAGData.Instance.PlaceCoroutine(pandResult, pandIndex)); // indien hij de data niet goed ophaalt, roep dit script aan, deze wacht tot de data eerst binnen is
+        DisplayBAGData.Instance.buttonObjectTargetSpawn.gameObject.SetActive(false);
     }
 }

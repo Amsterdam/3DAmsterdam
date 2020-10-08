@@ -42,6 +42,8 @@ public class PandObject : MonoBehaviour
     private int adresIndex = 0;
     private Pand.Rootobject thisPand = new Pand.Rootobject();
 
+    public GameObject pandGameObject = default;
+
 
     private void Start()
     {
@@ -104,6 +106,7 @@ public class PandObject : MonoBehaviour
             monument.text = "Nee";
         }
         */
+        monument.text = "Onbekend";
         woningcorperatieNaam.text = pandData.results[adresIndex].verblijfsobject.eigendomsverhouding;
         DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
     }
@@ -112,11 +115,17 @@ public class PandObject : MonoBehaviour
     {
         DisplayBAGData.Instance.loadingCirle.SetActive(true); // loading bar
         StartCoroutine(DisplayBAGData.Instance.wkbp.LoadWKBP(thisPand, adresIndex));
+        pandGameObject.gameObject.SetActive(false);
     }
 
-    private void CloseObject()
+    private void OnDisable()
     {
-        this.gameObject.SetActive(false); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie
+        straatnaam.gameObject.SetActive(false);
+    }
+
+    public void CloseObject()
+    {
+        pandGameObject.SetActive(false); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie
         straatnaam.gameObject.SetActive(false);
     }
 }
