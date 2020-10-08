@@ -41,8 +41,11 @@ public class ObjLoad : MonoBehaviour
 	private string line;
 	private string[] linePart;
 
-	private Regex regexWhitespaces = new Regex(@"\s+");
+	private const char faceSplitChar = '/';
+	private const char lineSplitChar = '\n';
+	private const char linePartSplitChar = ' ';
 
+	private MaterialData targetMaterialData;
 	private int parseLinePointer = 0;
 
 	private GeometryBuffer buffer;
@@ -61,7 +64,7 @@ public class ObjLoad : MonoBehaviour
 	/// <param name="data">obj string</param>
 	public void SetGeometryData(ref string data)
 	{
-		objLines = data.Split("\n".ToCharArray());
+		objLines = data.Split(lineSplitChar);
 		data = "";
 		
 		parseLinePointer = 0;
@@ -72,7 +75,7 @@ public class ObjLoad : MonoBehaviour
 	/// <param name="data">obj string</param>
 	public void SetMaterialData(ref string data)
 	{
-		mtlLines = data.Split("\n".ToCharArray());
+		mtlLines = data.Split(lineSplitChar);
 		data = "";
 
 		parseLinePointer = 0;
@@ -89,7 +92,7 @@ public class ObjLoad : MonoBehaviour
 		{
 			if (parseLinePointer < objLines.Length)
 			{
-				line = objLines[parseLinePointer].Trim();
+				line = objLines[parseLinePointer];
 				ParseObjLine(ref line);
 				parseLinePointer++;
 			}
@@ -99,7 +102,7 @@ public class ObjLoad : MonoBehaviour
 
 	private void ParseObjLine(ref string objline)
 	{
-		linePart = regexWhitespaces.Split(objline);
+		linePart = objline.Trim().Split(linePartSplitChar);
 		switch (linePart[0])
 		{
 			case O:
@@ -135,11 +138,11 @@ public class ObjLoad : MonoBehaviour
 					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
 				}
-				else
+				/*else
 				{
-					//ngons
+					//ngons warning disabled for WebGL
 					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
-				}
+				}*/
 				break;
 			case MTLLIB:
 				mtllib = line.Substring(linePart[0].Length + 1).Trim();
@@ -160,9 +163,8 @@ public class ObjLoad : MonoBehaviour
 		{
 			if (parseLinePointer < mtlLines.Length)
 			{
-				var currentMaterialData = new MaterialData();
-				line = mtlLines[parseLinePointer].Trim();
-				ParseMtlLine(currentMaterialData);
+				line = mtlLines[parseLinePointer];
+				ParseMtlLine(ref line);
 				parseLinePointer++;
 			}
 		}
@@ -170,58 +172,59 @@ public class ObjLoad : MonoBehaviour
 		return mtlLines.Length - parseLinePointer;
 	}
 
-	private void ParseMtlLine(MaterialData newMaterialData)
+	private void ParseMtlLine(ref string mtlLine)
 	{
-		if (line.IndexOf("#") != -1) line = line.Substring(0, line.IndexOf("#"));
-		linePart = regexWhitespaces.Split(line);
+		if (mtlLine.IndexOf("#") != -1) mtlLine = line.Substring(0, mtlLine.IndexOf("#"));
+		linePart = mtlLine.Trim().Split(linePartSplitChar);
 
 		if (linePart[0].Trim() != "")
 		{
 			switch (linePart[0])
 			{
 				case NML:
-					newMaterialData = new MaterialData();
-					newMaterialData.Name = linePart[1].Trim();
-					materialDataSlots.Add(newMaterialData);
+					targetMaterialData = new MaterialData();
+					targetMaterialData.Name = linePart[1].Trim();
+					materialDataSlots.Add(targetMaterialData);
 					break;
 				case KA:
-					newMaterialData.Ambient = gc(linePart);
+					targetMaterialData.Ambient = gc(linePart);
 					break;
 				case KD:
-					newMaterialData.Diffuse = gc(linePart);
+					targetMaterialData.Diffuse = gc(linePart);
 					break;
 				case KS:
-					newMaterialData.Specular = gc(linePart);
+					targetMaterialData.Specular = gc(linePart);
 					break;
 				case NS:
-					newMaterialData.Shininess = cf(linePart[1]) / 1000;
+					targetMaterialData.Shininess = cf(linePart[1]) / 1000;
 					break;
 				case D:
 				case TR:
-					newMaterialData.Alpha = cf(linePart[1]);
+					targetMaterialData.Alpha = cf(linePart[1]);
 					break;
 				case MAP_KD:
-					newMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
+					targetMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
 					break;
 				case MAP_BUMP:
 				case BUMP:
-					BumpParameter(newMaterialData, linePart);
+					BumpParameter(targetMaterialData, linePart);
 					break;
 				case ILLUM:
-					newMaterialData.IllumType = ci(linePart[1]);
+					targetMaterialData.IllumType = ci(linePart[1]);
 					break;
-				default:
-					Debug.Log("this line was not processed :" + line);
-					break;
+				/*default:
+					Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
+					break;*/
 			}
 		}
 	}
 
 	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
 	{
+		string[] indices;
 		for (int i = 1; i < linePart.Length; i++)
 		{
-			string[] indices = linePart[i].Trim().Split("/".ToCharArray());
+			indices = linePart[i].Trim().Split(faceSplitChar);
 			var faceIndices = new FaceIndices();
 			// vertex
 			int vertexIndex = ci(indices[0]);
@@ -419,8 +422,9 @@ public class ObjLoad : MonoBehaviour
 	public void Build(Material defaultMaterial)
 	{
 		//Clear our large arrays
-		mtlLines = null;
-		objLines = null;
+		if (mtlLines != null)
+			Array.Clear(mtlLines, 0, mtlLines.Length);			
+		Array.Clear(objLines, 0, objLines.Length);
 
 		var materialLibrary = new Dictionary<string, Material>();
 		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)
@@ -439,6 +443,7 @@ public class ObjLoad : MonoBehaviour
 		var gameObjects = new GameObject[buffer.NumberOfObjects];
 		if (buffer.NumberOfObjects == 1)
 		{
+			//Single gameobject, single mesh
 			gameObject.AddComponent(typeof(MeshFilter));
 			gameObject.AddComponent(typeof(MeshRenderer));
 			gameObjects[0] = gameObject;
@@ -447,6 +452,7 @@ public class ObjLoad : MonoBehaviour
 		{
 			for (int i = 0; i < buffer.NumberOfObjects; i++)
 			{
+				//Multi object with nested children
 				var go = new GameObject();
 				go.transform.parent = gameObject.transform;
 				go.AddComponent(typeof(MeshFilter));
