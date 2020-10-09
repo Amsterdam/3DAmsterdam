@@ -17,7 +17,7 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
     bool inMenus = false;
 
 
-    // quick hack to disable UI elements for demo
+    
 
     [SerializeField]
     GameObject MainMenu;

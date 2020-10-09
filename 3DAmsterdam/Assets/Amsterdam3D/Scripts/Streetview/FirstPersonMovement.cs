@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.EventSystems;
 public class FirstPersonMovement : MonoBehaviour
 {
 
@@ -32,6 +32,8 @@ public class FirstPersonMovement : MonoBehaviour
 
     [SerializeField]
     float runspeed = 3;
+
+    private bool inMenus = false;
     void Start()
     {
         col = GetComponent<BoxCollider>();
@@ -43,8 +45,26 @@ public class FirstPersonMovement : MonoBehaviour
 
 
 
-        CheckPhysics();
-        CheckInput();
+        if (!inMenus)
+        {
+            CheckPhysics();
+            CheckInput();
+
+
+            //TODO: Refactor this to have some more global menu state, now each class is checking for menu state seperately 
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                inMenus = true;
+            }
+        }
+
+        else 
+        {
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 
+            {
+                inMenus = false;
+            }
+        }
 
      
 
