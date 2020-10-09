@@ -11,19 +11,19 @@ public class FirstPersonMouseLook : MonoBehaviour, ICameraControls
 
    
     
-    Vector2 rotation = new Vector2(0, 0);
+    private Vector2 rotation = new Vector2(0, 0);
     public float speed = 3;
 
-    bool inMenus = false;
+    private bool inMenus = false;
 
 
     
 
     [SerializeField]
-    GameObject MainMenu;
+    private GameObject MainMenu;
 
     [SerializeField]
-    GameObject Layers;
+    private GameObject Layers;
 
     private Camera camera;
 

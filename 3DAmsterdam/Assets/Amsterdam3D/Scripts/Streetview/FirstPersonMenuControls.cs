@@ -5,12 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-   public class FirstPersonMenuControls:MonoBehaviour
-    {
-
-    private void Update()
-    {
-        
-    }
-
+public class FirstPersonMenuControls:MonoBehaviour
+{
 }

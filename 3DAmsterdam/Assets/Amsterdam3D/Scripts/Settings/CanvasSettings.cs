@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Amsterdam3D.CameraMotion;
 public class CanvasSettings : MonoBehaviour
 {
     private CanvasScaler canvasScaler;

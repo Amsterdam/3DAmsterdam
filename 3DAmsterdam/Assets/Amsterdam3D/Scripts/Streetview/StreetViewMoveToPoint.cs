@@ -9,35 +9,13 @@ namespace Amsterdam3D.CameraMotion
     public class StreetViewMoveToPoint : MonoBehaviour
     {
 
-
-
-        private Vector3 endPos;
-        private Vector3 mousePos;
-
         public Camera FPSCam;
-
-        private float stopHeight = 60f;
         private float lerpSpeed = 3f;
-        private Quaternion Endrotation;
-
-        private Vector3 oldPosition;
-        private Quaternion oldRotation;
 
         public UnityEvent OnMoved;
 
         public UnityEvent OnReverseMoved;
         public RotationEvent OnMovedRotation;
-
-
-        private void Awake()
-        {
-            
-        }
-
-        private void LateUpdate()
-        {
-        }
-
         public GameObject EnableFPSCam() 
         {
             FPSCam.gameObject.SetActive(true);

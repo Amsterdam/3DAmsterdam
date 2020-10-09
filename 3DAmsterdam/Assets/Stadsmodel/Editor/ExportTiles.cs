@@ -16,7 +16,7 @@ public class ExportTiles
     private static void ExporteerOBJ()
     {
         GameObject Parent = GameObject.Find("Exportgebouwen");
-        GameObject Subparent; ;
+        GameObject Subparent;
         for (int i = 0; i < Parent.transform.childCount; i++)
         {
             

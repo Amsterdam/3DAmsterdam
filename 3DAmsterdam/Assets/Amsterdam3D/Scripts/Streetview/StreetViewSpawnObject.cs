@@ -58,11 +58,11 @@ using Amsterdam3D.CameraMotion;
 
     public void SpawnFirstPersonPrefab() 
     {
-        SpawnFirstPersonAtPosition(pointer.WorldPosition, Quaternion.Euler(0, 0, 0));
+        SpawnFirstPersonAtPosition(pointer.WorldPosition, Quaternion.Euler(0, 0, 0), true);
 
     }
 
-    public void SpawnFirstPersonAtPosition(Vector3 position, Quaternion rotation) 
+    public void SpawnFirstPersonAtPosition(Vector3 position, Quaternion rotation, bool manualPlace = false) 
     {
         currentObject = Instantiate(streetViewPrefab);
         currentObject.name = "Camera punt " + currentIndex;
@@ -72,9 +72,16 @@ using Amsterdam3D.CameraMotion;
         currentObjectComponent = currentObject.GetComponent<FirstPersonObject>();
         follower = currentObject.GetComponent<WorldPointFollower>();
         follower.WorldPosition = position;
-        currentObjectComponent.placed = true;
-        currentObjectComponent.savedRotation = rotation;
-        currentObject.gameObject.SetActive(false);
+        if (manualPlace)
+        {
+            canClick = true;
+        }
+        else
+        {
+            currentObjectComponent.placed = true;
+            currentObjectComponent.savedRotation = rotation;
+            currentObject.gameObject.SetActive(false);
+        }
     }
 
 }
