@@ -33,7 +33,7 @@ public class PremisesButton : MonoBehaviour
     private void ShowPremises()
     {
         DisplayBAGData.Instance.loadingCirle.SetActive(true);
-        DisplayBAGData.Instance.PlacePremises(pandResult, premisesIndex); // snelle data open methode maar hij checkt niet of de data al binnen is
+        DisplayBAGData.Instance.PlacePremises(pandResult, premisesIndex); // Quick method but doesn't check if all the data is there (It loads pretty fast)
         DisplayBAGData.Instance.buttonObjectTargetSpawn.gameObject.SetActive(false);
     }
 }

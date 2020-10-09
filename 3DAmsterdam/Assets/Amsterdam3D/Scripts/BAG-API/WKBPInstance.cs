@@ -24,7 +24,6 @@ public class WKBPInstance : MonoBehaviour
         idText.text = result.beperking.id;
         inschrijfnummerText.text = result.beperking.inschrijfnummer;
         datum_in_werkingText.text = result.beperking.datum_in_werking;
-        //datum_in_werkingText.text = result.beperking.datum_einde;
         documentUrlText.text = result.beperking.documenten.href;
         url = result.beperking.documenten.href;
         documentUrlButton.name = url;

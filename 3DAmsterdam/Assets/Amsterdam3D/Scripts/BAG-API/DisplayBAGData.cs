@@ -58,26 +58,26 @@ public class DisplayBAGData : MonoBehaviour
         {
             // starts ui en cleans up all previous buttons
             indexBAGText.text = pandData._display;
-            // is er meer dan één pand, dan laat hij alle adressen zien
+            // check if there's more than one adress
+
             if (pandData.results.Length > 1)
             {
-                // maakt een knop aan voor elk adres
+                // creates a button for each adress
                 for (int i = 0; i < pandData.results.Length; i++)
                 {
                     GameObject temp = Instantiate(premisesUIButton, buttonObjectTargetSpawn.position, buttonObjectTargetSpawn.rotation);
-                    //temp.name = pandData.results[i]._display;
                     temp.transform.SetParent(buttonObjectTargetSpawn);
                     PremisesButton tempButton = temp.GetComponent<PremisesButton>();
-                    // zet de knop in de lijst met buttons
+                    // puts the buttons in a list
                     premisesButtons.Add(tempButton);
-                    // voegt de data aan de knop
+                    // adds the data to the button
                     tempButton.Initiate(pandData, i);
                 }
                 loadingCirle.SetActive(false);
             }
             else
             {
-                // als er maar één adres is dan laat hij er maar één zien ipv alle buttons
+                // if there is only one adress, then show the only adress available
                 StartCoroutine(PlaceCoroutine(pandData, 0));
             }
         }
@@ -106,7 +106,7 @@ public class DisplayBAGData : MonoBehaviour
     /// <returns></returns>
     public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
     {
-        // wacht tot alle data binnen is
+        // waits till all the data is ready
         yield return StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
 
         // stuurt de pand data door

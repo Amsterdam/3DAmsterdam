@@ -65,7 +65,7 @@ public class PremisesObject : MonoBehaviour
         streetName.gameObject.SetActive(true);
         streetName.isOn = true;
         streetText.text = premisesData.results[adressIndex].nummeraanduiding.adres;
-        // zet de terug knop uit als er maar één pand is
+        // disables button if there's only one premises
         if (premisesData.results.Length <= 1)
         {
             if (closeButton.gameObject.activeSelf)
@@ -76,7 +76,7 @@ public class PremisesObject : MonoBehaviour
             if(!closeButton.gameObject.activeSelf)
                 closeButton.gameObject.SetActive(true);
         }
-        //Zet alle pand data en displayed het in de UI.
+        //Display all premises data in the UI
         numberIndexText.text = premisesData.results[adressIndex].nummeraanduiding.nummeraanduidingidentificatie;
         adressText.text = premisesData.results[adressIndex].nummeraanduiding.adres + " " + premisesData.results[adressIndex].nummeraanduiding.postcode + " " + "Amsterdam";
         zipText.text = premisesData.results[adressIndex].nummeraanduiding.postcode;
@@ -94,12 +94,11 @@ public class PremisesObject : MonoBehaviour
         floorAccess.text = string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.verdieping_toegang) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.verdieping_toegang;
         destinationPlan.text = "Onbekend";
         function.text = "Onbekend";
-        //gebruiksOppervlakte.text = premisesData.results[adresIndex].verblijfsobject.oppervlakte + " M²";
         categoryPermits.text = "Onbekend";
         categoryTopic.text = "Onbekend";
         categoryTitle.text = "Onbekend";
         categoryURL.text = "Onbekend";
-        // kijkt of er wel monumenten zijn
+        // when we start using WFS, this will be used again (DO NOT DELETE)
         /*
         if (premisesData.monumenten.results.Length > 0)
         {
@@ -133,7 +132,7 @@ public class PremisesObject : MonoBehaviour
     /// </summary>
     public void CloseObject()
     {
-        premisesGameObject.SetActive(false); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie
+        premisesGameObject.SetActive(false);
         streetName.gameObject.SetActive(false);
     }
 }

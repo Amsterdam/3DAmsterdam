@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Linq; // dit wordt gebruikt voor op lijn 49
+using System.Linq; 
 
 public class ImportBAG : ImportAPI
 {
@@ -15,7 +15,7 @@ public class ImportBAG : ImportAPI
 
     private void Awake()
     {
-        // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
+        // creates a singleton which can be called on every corner
         if (Instance == null)
         {
             Instance = this;
@@ -25,28 +25,28 @@ public class ImportBAG : ImportAPI
     public IEnumerator CallAPI(string apiUrl, string bagIndexInt, RetrieveType type)
     {
        
-        // voegt data ID en url samen tot één geheel
+        // adds data id and url in one string
         string url = apiUrl + bagIndexInt;
-        // stuurt een HTTP request naar de pagina
+        // send http request
         var request = UnityWebRequest.Get(url);
         {
             yield return request.SendWebRequest();
 
             if (request.isDone && !request.isHttpError)
             {
-                // vangt de data op in text bestand.
+                // catches the data
                 dataResult = request.downloadHandler.text;
 
                 switch (type)
                 {
                     case RetrieveType.Pand:
-                        // haalt het pand op
+                        // retrieves premises
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
                         StartCoroutine(CallAPI(numberIndicatorURL, bagIndexInt, RetrieveType.NummeraanduidingList));
                         break;
 
                     case RetrieveType.NummeraanduidingList:
-                        // voegt de nummeraanduiding toe aan het pand, (basis gegevens zoals bouwjaar, appartement nummer, etc)
+                        // adds the number instance to the premises, (basic things such as zip, construction year etc) 
                         hoofdData += JsonUtility.FromJson<Pand.Rootobject>(dataResult);
 
                         foreach (Pand.PandResults result in hoofdData.results)
@@ -56,49 +56,48 @@ public class ImportBAG : ImportAPI
 
                         // sorteert de array alfabetisch en numeriek
                         var tempPandResults = from pand in hoofdData.results
-                                              orderby pand._display // _display is de adres naam, hij sorteert hem dus van A - Z 0 - 999
+                                              orderby pand._display // _display is the adres name, sorts it from A - Z 0 - 999
                                               select pand;
 
-                        // vervangt de pand resultaten lijst met de geordende lijst
+                        // replaces the premises results list and sorts them
                         hoofdData.results = tempPandResults.ToArray<Pand.PandResults>();
-                        // toont de resultaten in de lijst
+                        // shows results in the list
                         DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
 
                     case RetrieveType.NummeraanduidingInstance:
-
-                        // voegt de nummeraanduiding toe aan het pand, haalt alle adres gegevens op (Postcode, huisnummer, juiste pand type etc)
+                        // adds the number instances to the premises and retrieves all info such as zip, adress number etc for the current chosen premises
                         Pand.PandInstance tempPand = JsonUtility.FromJson<Pand.PandInstance>(dataResult);
                         foreach (Pand.PandResults result in hoofdData.results)
                         {
                             if (result.landelijk_id == tempPand.nummeraanduidingidentificatie)
                             {
-                                // voegt adres gegevens toe als het gebouwID matcht met het adres ID (vrij logisch)
+                                // checks if the id matches and then adds the data
                                 result.nummeraanduiding = tempPand;
-                                // voegt verblijfsobject data toe aan huidig adres
+                                // adds accomodation data to the current adress
                                 StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
                             }
                         }
-                        // haalt monumentele data op van dit pand
+                        // retrieves monument data from this premises
                         StartCoroutine(CallAPI(monumentURL, hoofdData.pandidentificatie, RetrieveType.Monumenten));
                         
                         break;
 
                     case RetrieveType.VerblijfsobjectInstance:
-                        // voegt oegt verblijfsobject data toe per adres en kijkt of het adres overeenkomt met het juiste adres uit de adressen lijst
+                        // adds accommodation data for this adress 
                         Pand.VerblijfsInstance tempVerblijf = JsonUtility.FromJson<Pand.VerblijfsInstance>(dataResult);
                         foreach (Pand.PandResults result in hoofdData.results)
                         {
                             if (result?.nummeraanduiding._display == tempVerblijf?._display)
                             {
-                                // voegt het verblijfsobject toe aan huidig pand
+                                // adds accommodation data for this adress 
                                 result.verblijfsobject = tempVerblijf;
                             }
                         }
                         break;
 
                     case RetrieveType.Monumenten:
-                        // voegt monumentele data toe aan het pand
+                        // adds monument data to this premises
                         Pand.Monumenten tempMonument = JsonUtility.FromJson<Pand.Monumenten>(dataResult);
                         hoofdData.monumenten = tempMonument;
                         break;

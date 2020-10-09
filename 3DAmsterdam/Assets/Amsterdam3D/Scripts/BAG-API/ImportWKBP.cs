@@ -11,7 +11,6 @@ public class ImportWKBP : ImportAPI
 
     private void Awake()
     {
-        // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
         if (Instance == null)
         {
             Instance = this;
@@ -29,7 +28,7 @@ public class ImportWKBP : ImportAPI
 
             if (WKPBRequest.isDone && !WKPBRequest.isHttpError)
             {
-                // vangt de data op in text bestand.
+                // stores data in text file
                 wkbpResult = WKPBRequest.downloadHandler.text;
 
                 wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(wkbpResult);
@@ -50,7 +49,7 @@ public class ImportWKBP : ImportAPI
 
                 if (WKPBInstanceRequest.isDone && !WKPBInstanceRequest.isHttpError)
                 {
-                    // vangt de data op in text bestand.
+                    // stores data in text file
                     wkbpInstanceResult = WKPBInstanceRequest.downloadHandler.text;
                 }
             }
