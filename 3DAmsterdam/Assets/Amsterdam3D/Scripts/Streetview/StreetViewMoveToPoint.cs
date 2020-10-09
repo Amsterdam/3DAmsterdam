@@ -80,6 +80,12 @@ namespace Amsterdam3D.CameraMotion
         {
             while(objectToMove.position.y < position.y - 0.1f)
             {
+                if (Input.GetMouseButtonDown(0)) 
+                {
+                    objectToMove.rotation = rotation;
+                    break;
+                }
+                
                 objectToMove.position = Vector3.Lerp(objectToMove.position, position, lerpSpeed * Time.deltaTime);
                 objectToMove.rotation = Quaternion.Lerp(objectToMove.rotation, rotation, lerpSpeed * Time.deltaTime);
                 yield return null;
@@ -97,6 +103,13 @@ namespace Amsterdam3D.CameraMotion
             
             while (objectToMove.position.y > position.y + 0.1f)
             {
+                if (Input.GetMouseButton(0)) 
+                {
+                    objectToMove.position = position;
+                    objectToMove.rotation = rotation;
+                    break;
+                }
+                
                 objectToMove.position = Vector3.Lerp(objectToMove.position, position, lerpSpeed * Time.deltaTime);
                 objectToMove.rotation = Quaternion.Lerp(objectToMove.rotation, rotation, lerpSpeed * Time.deltaTime);
                 yield return null;
