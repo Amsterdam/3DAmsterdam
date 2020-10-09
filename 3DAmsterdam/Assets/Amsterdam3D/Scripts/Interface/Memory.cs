@@ -21,10 +21,18 @@ public class Memory : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Draws the GC total memory as MB in the Text component
+	/// </summary>
 	private void DrawMemoryUsageInHeap(){
 		memoryOutput.text = ConvertBytesToMegabytes(System.GC.GetTotalMemory(false)).ToString("F2") + "MB";
 	}
 	
+	/// <summary>
+	/// Convert bytes to megabytes (easier to read)
+	/// </summary>
+	/// <param name="bytes">Number of bytes</param>
+	/// <returns></returns>
     private double ConvertBytesToMegabytes(long bytes)
     {
         return (bytes / 1024f) / 1024f;
