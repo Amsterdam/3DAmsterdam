@@ -21,10 +21,10 @@ namespace Amsterdam3D.Interface
 
 		private void Update()
 		{
-			CalculateAverageFps();
+			CalculateAverageFPS();
 		}
 
-		private void CalculateAverageFps()
+		private void CalculateAverageFPS()
 		{
 			++frames;
 			var timeNow = Time.realtimeSinceStartup;
