@@ -18,6 +18,12 @@ public class WKBPObject : MonoBehaviour
         wkbpParent.SetActive(false);
         wkbpToggle.gameObject.SetActive(false);
     }
+    /// <summary>
+    /// Loads the wkbp objects and removes all the old wkbp objects
+    /// </summary>
+    /// <param name="thisPand"></param>
+    /// <param name="adressIndex"></param>
+    /// <returns></returns>
     public IEnumerator LoadWKBP(Pand.Rootobject thisPand, int adressIndex)
     {
         if(WKBPList.Count > 0)

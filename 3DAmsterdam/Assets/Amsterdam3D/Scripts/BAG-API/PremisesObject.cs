@@ -51,7 +51,11 @@ public class PremisesObject : MonoBehaviour
         restrictions.onClick.AddListener(LoadWKBP);
     }
 
-
+    /// <summary>
+    /// Sets text for the premis
+    /// </summary>
+    /// <param name="premisesData"></param>
+    /// <param name="Index"></param>
     public void SetText(Pand.Rootobject premisesData, int Index)
     {
         // zet de pand data
@@ -110,7 +114,9 @@ public class PremisesObject : MonoBehaviour
         housingCorporationName.text = premisesData.results[adressIndex].verblijfsobject.eigendomsverhouding;
         DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
     }
-
+    /// <summary>
+    /// loads WKBP Objects
+    /// </summary>
     public void LoadWKBP()
     {
         DisplayBAGData.Instance.loadingCirle.SetActive(true); // loading bar
@@ -122,7 +128,9 @@ public class PremisesObject : MonoBehaviour
     {
         streetName.gameObject.SetActive(false);
     }
-
+    /// <summary>
+    /// Closes the premises object
+    /// </summary>
     public void CloseObject()
     {
         premisesGameObject.SetActive(false); // later kan je dit object poolen als optimalisatie maar als nog één malig instantieren ipv alles tegelijkertijd, scheelt mogenlijk optimalisatie

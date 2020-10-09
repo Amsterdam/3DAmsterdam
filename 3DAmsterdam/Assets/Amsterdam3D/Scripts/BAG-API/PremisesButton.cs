@@ -16,14 +16,20 @@ public class PremisesButton : MonoBehaviour
         button = GetComponent<Button>();
         button.onClick.AddListener(ShowPremises);
     }
-
+    /// <summary>
+    /// Sets all text for the button
+    /// </summary>
+    /// <param name="pandObject"></param>
+    /// <param name="index"></param>
     public void Initiate(Pand.Rootobject pandObject, int index)
     {
         premisesIndex = index;
         pandResult = pandObject;
         buttonText.text = pandObject.results[premisesIndex]._display;
     }
-
+    /// <summary>
+    /// Starts a script taht displays the current chosen Premises
+    /// </summary>
     private void ShowPremises()
     {
         DisplayBAGData.Instance.loadingCirle.SetActive(true);

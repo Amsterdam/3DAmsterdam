@@ -33,7 +33,9 @@ public class DisplayBAGData : MonoBehaviour
         streetToggle.gameObject.SetActive(false);
         loadingCirle.SetActive(false);
     }
-
+    /// <summary>
+    /// cleans up the ui and disables all elements except for the main premises list UI screen
+    /// </summary>
     public void PrepareUI()
     {
         wkbp.wkbpToggle.gameObject.SetActive(false);
@@ -41,7 +43,6 @@ public class DisplayBAGData : MonoBehaviour
         premises.CloseObject();
         ui.SetActive(true);
         loadingCirle.SetActive(true);
-        /// removes all the old buttons from the main Premises UI Screen
         RemoveButtons();
         buttonObjectTargetSpawn.gameObject.SetActive(true);
     }
@@ -78,7 +79,11 @@ public class DisplayBAGData : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Places premises but doesn't wait for it to be completed due to the data loading fast
+    /// </summary>
+    /// <param name="pandData"></param>
+    /// <param name="index"></param>
     public void PlacePremises(Pand.Rootobject pandData, int index)
     {
         StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
@@ -90,7 +95,12 @@ public class DisplayBAGData : MonoBehaviour
         if(loadingCirle.activeSelf)
             loadingCirle.SetActive(false);
     }
-    
+    /// <summary>
+    /// waits for the premises data to be loaded and then loads it in
+    /// </summary>
+    /// <param name="pandData"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
     {
         // wacht tot alle data binnen is
@@ -104,7 +114,9 @@ public class DisplayBAGData : MonoBehaviour
             loadingCirle.SetActive(false);
     }
     
-
+    /// <summary>
+    /// removes all the old premises buttons from the main ui hub
+    /// </summary>
     public void RemoveButtons()
     {
         foreach(PremisesButton btn in premisesButtons)

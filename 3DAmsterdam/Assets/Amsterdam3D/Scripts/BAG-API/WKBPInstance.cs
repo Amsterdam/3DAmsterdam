@@ -13,6 +13,10 @@ public class WKBPInstance : MonoBehaviour
     [SerializeField] private Button documentUrlButton = default;
     private string url = "";
 
+    /// <summary>
+    /// Adds all data to the WKBP Instance Object
+    /// </summary>
+    /// <param name="result"></param>
     public void Initialize(WKBP.Result result)
     {
         // displays all the wkbp instances
