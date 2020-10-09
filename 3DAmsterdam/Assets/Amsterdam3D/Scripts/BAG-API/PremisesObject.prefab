@@ -2185,35 +2185,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5eff7ae4e06b1f488474da1f76581dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nummerAanduidingText: {fileID: 8322194975448773563}
-  adresText: {fileID: 6919446798672323791}
-  postcodeText: {fileID: 809289879053668933}
-  woningTypeText: {fileID: 6919446798208866801}
-  bouwJaarText: {fileID: 6919446798197977976}
-  buurt: {fileID: 5103768232398491138}
-  buurtCombinatie: {fileID: 3865618986745079145}
-  stadsdeel: {fileID: 3175265634399454634}
-  huur: {fileID: 6511424946563373869}
-  oppervlakte: {fileID: 7341092675891512332}
-  aantalKamers: {fileID: 1216950114868380289}
-  aantalBouwlagen: {fileID: 8194294896655001982}
-  hoogsteBouwlaag: {fileID: 8289764875186896847}
-  laagsteBouwlaag: {fileID: 2180182112945191497}
-  verdiepingToegang: {fileID: 8319302009177104950}
-  bestemmingsPlan: {fileID: 3525830878859350017}
-  functie: {fileID: 7137405957228440626}
-  categorieVergunning: {fileID: 4997289597999811421}
-  categorieOnderwerp: {fileID: 7553711032865494390}
-  categorieTitel: {fileID: 4469419419616885302}
-  categorieURL: {fileID: 5369370195371358792}
+  numberIndexText: {fileID: 8322194975448773563}
+  adressText: {fileID: 6919446798672323791}
+  zipText: {fileID: 809289879053668933}
+  houseTypeText: {fileID: 6919446798208866801}
+  constructionYearText: {fileID: 6919446798197977976}
+  neighbourhood: {fileID: 5103768232398491138}
+  neighbourhoodCombination: {fileID: 3865618986745079145}
+  district: {fileID: 3175265634399454634}
+  rent: {fileID: 6511424946563373869}
+  surface: {fileID: 7341092675891512332}
+  roomCount: {fileID: 1216950114868380289}
+  buildingLayerCount: {fileID: 8194294896655001982}
+  highestBuildingLayer: {fileID: 8289764875186896847}
+  lowestBuildingLayer: {fileID: 2180182112945191497}
+  floorAccess: {fileID: 8319302009177104950}
+  destinationPlan: {fileID: 3525830878859350017}
+  function: {fileID: 7137405957228440626}
+  categoryPermits: {fileID: 4997289597999811421}
+  categoryTopic: {fileID: 7553711032865494390}
+  categoryTitle: {fileID: 4469419419616885302}
+  categoryURL: {fileID: 5369370195371358792}
   monument: {fileID: 1443087598396220925}
-  beperking: {fileID: 4243170514966574272}
-  woningcorperatieNaam: {fileID: 334207938803579063}
+  restrictions: {fileID: 4243170514966574272}
+  housingCorporationName: {fileID: 334207938803579063}
   closeButton: {fileID: 3829813426586451455}
   scroll: {fileID: 6763903955422982672}
-  straatnaam: {fileID: 4009816061938487080}
-  straatText: {fileID: 4009816063122911042}
-  pandGameObject: {fileID: 6763903956642830036}
+  streetName: {fileID: 4009816061938487080}
+  streetText: {fileID: 4009816063122911042}
+  premisesGameObject: {fileID: 6763903956642830036}
 --- !u!1 &4009816062744092222
 GameObject:
   m_ObjectHideFlags: 0
@@ -2228,7 +2228,7 @@ GameObject:
   - component: {fileID: 4009816062744092216}
   - component: {fileID: 691946311}
   m_Layer: 5
-  m_Name: PandObject
+  m_Name: PremisesObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4708,7 +4708,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6811906008994244546, guid: 52751aab5e9e65a4d86b8688bee10b9a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 52751aab5e9e65a4d86b8688bee10b9a, type: 3}
 --- !u!114 &8322194975448773563 stripped
 MonoBehaviour:

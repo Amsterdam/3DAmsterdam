@@ -51,14 +51,6 @@ namespace LayerSystem
                     objectdata.highlightIDs.Clear();
                     if (id == "null")
                     {
-                        //Vector2 uv = new Vector2(0.66f, 0.5f);
-                        //int count = objectdata.gameObject.GetComponent<MeshFilter>().mesh.vertexCount;
-                        //UVs = new Vector2[count];
-
-                        //for (int i = 0; i < count; i++)
-                        //{
-                        //    UVs[i] = uv;
-                        //}
                         objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = null;
                     }
                     else

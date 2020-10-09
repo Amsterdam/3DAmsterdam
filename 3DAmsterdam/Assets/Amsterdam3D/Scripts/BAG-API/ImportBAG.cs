@@ -9,6 +9,10 @@ public class ImportBAG : ImportAPI
     public static ImportBAG Instance = null;
     public Pand.Rootobject hoofdData;
 
+    public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=";
+    public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";
+    public string monumentURL = "https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=";
+
     private void Awake()
     {
         // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
@@ -38,7 +42,7 @@ public class ImportBAG : ImportAPI
                     case RetrieveType.Pand:
                         // haalt het pand op
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=", bagIndexInt, RetrieveType.NummeraanduidingList));
+                        StartCoroutine(CallAPI(numberIndicatorURL, bagIndexInt, RetrieveType.NummeraanduidingList));
                         break;
 
                     case RetrieveType.NummeraanduidingList:
@@ -47,7 +51,7 @@ public class ImportBAG : ImportAPI
 
                         foreach (Pand.PandResults result in hoofdData.results)
                         {
-                            StartCoroutine(CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", result.landelijk_id, RetrieveType.NummeraanduidingInstance));
+                            StartCoroutine(CallAPI(numberIndicatorInstanceURL, result.landelijk_id, RetrieveType.NummeraanduidingInstance));
                         }
 
                         // sorteert de array alfabetisch en numeriek
@@ -76,7 +80,7 @@ public class ImportBAG : ImportAPI
                             }
                         }
                         // haalt monumentele data op van dit pand
-                        StartCoroutine(CallAPI("https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=", hoofdData.pandidentificatie, RetrieveType.Monumenten));
+                        StartCoroutine(CallAPI(monumentURL, hoofdData.pandidentificatie, RetrieveType.Monumenten));
                         
                         break;
 

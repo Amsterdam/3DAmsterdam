@@ -18,7 +18,7 @@ public class WKBPObject : MonoBehaviour
         wkbpParent.SetActive(false);
         wkbpToggle.gameObject.SetActive(false);
     }
-    public IEnumerator LoadWKBP(Pand.Rootobject thisPand, int adresIndex)
+    public IEnumerator LoadWKBP(Pand.Rootobject thisPand, int adressIndex)
     {
         if(WKBPList.Count > 0)
         {
@@ -28,13 +28,13 @@ public class WKBPObject : MonoBehaviour
             }
             WKBPList.Clear(); // clears the old wkbp list
         }
-        yield return StartCoroutine(ImportWKBP.Instance.CallWKBP(thisPand.results[adresIndex]));
-        foreach (WKBP.Result result in thisPand.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
+        yield return StartCoroutine(ImportWKBP.Instance.CallWKBP(thisPand.results[adressIndex]));
+        foreach (WKBP.Result result in thisPand.results[adressIndex].verblijfsobject.wkbpBeperkingen.results)
         {
             // adds new wkbp elements
-            GameObject tempBeperkingObj = Instantiate(wkbpPrefab, spawnPoint.position, spawnPoint.rotation);
-            tempBeperkingObj.transform.SetParent(spawnPoint);
-            WKBPInstance tempWKBP = tempBeperkingObj.GetComponent<WKBPInstance>();
+            GameObject tempConstraintsObj = Instantiate(wkbpPrefab, spawnPoint.position, spawnPoint.rotation);
+            tempConstraintsObj.transform.SetParent(spawnPoint);
+            WKBPInstance tempWKBP = tempConstraintsObj.GetComponent<WKBPInstance>();
             WKBPList.Add(tempWKBP);
             tempWKBP.Initialize(result);
         }

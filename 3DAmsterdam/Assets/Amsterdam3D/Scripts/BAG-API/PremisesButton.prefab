@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3594763073575650831}
   - component: {fileID: 6192208361958803446}
   m_Layer: 5
-  m_Name: PandButton
+  m_Name: PremisesButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,8 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be63ec5704b7aae40aea8cc61462d1a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 3594763073575650831}
-  btnText: {fileID: 3594763074790676784}
+  button: {fileID: 0}
+  buttonText: {fileID: 3594763074790676784}
   pandResult:
     count: 0
     results: []
@@ -185,7 +185,7 @@ MonoBehaviour:
       code: 
       dataset: 
     dataset: 
-  pandIndex: 0
+  premisesIndex: 0
 --- !u!1 &3594763074790676786
 GameObject:
   m_ObjectHideFlags: 0

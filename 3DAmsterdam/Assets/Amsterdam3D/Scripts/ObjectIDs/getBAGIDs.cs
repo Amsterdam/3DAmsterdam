@@ -4,17 +4,17 @@ using UnityEngine;
 using UnityEngine.Networking;
 using LayerSystem;
 
-    public class getBAGIDs : MonoBehaviour
-    {
-        public TileHandler tileHandler;
-        public GameObject BuildingContainer;
-        public bool isBusy = false;
-        private Ray ray;
-        private string id = "";
-        private GameObject selectedTile;
-        private bool mouseReleased = true;
+public class GetBAGIDs : MonoBehaviour
+{
+    public TileHandler tileHandler;
+    public GameObject BuildingContainer;
+    public bool isBusy = false;
+    private Ray ray;
+    private string id = "";
+    private GameObject selectedTile;
+    private bool mouseReleased = true;
 
-        private bool meshCollidersAttached = false;
+    private bool meshCollidersAttached = false;
 
 
     // Update is called once per frame
@@ -27,7 +27,7 @@ using LayerSystem;
             return;
         }
         if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
-        { 
+        {
             if (Input.GetMouseButtonDown(0) == false)
             {
                 mouseReleased = true;
@@ -62,11 +62,11 @@ using LayerSystem;
         }
         isBusy = false;
     }
-        IEnumerator LoadMeshColliders()
-        {
-            // add meshcolliders
-            MeshCollider meshCollider;
-            MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
+    IEnumerator LoadMeshColliders()
+    {
+        // add meshcolliders
+        MeshCollider meshCollider;
+        MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
         if (meshFilters == null)
         {
 
@@ -75,17 +75,17 @@ using LayerSystem;
             meshCollidersAttached = true;
             yield break;
         }
-            foreach (MeshFilter meshFilter in meshFilters)
-            {
+        foreach (MeshFilter meshFilter in meshFilters)
+        {
             if (meshFilter == null)
             {
 
                 isBusy = false;
-                
+
                 id = "null";
-                
+
             }
-                if(meshFilter == null)
+            if (meshFilter == null)
             {
 
                 isBusy = false;
@@ -93,22 +93,18 @@ using LayerSystem;
                 id = "null";
             }
 
-                meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-                if (meshCollider == null)
-                {
+            meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+            if (meshCollider == null)
+            {
                 meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
             }
-
-            
-            
-            }
+        }
         meshCollidersAttached = true;
         Debug.Log("MeshColliders attached");
-           // StartCoroutine(getIDData());
-        }
+    }
 
-        IEnumerator getIDData(Ray ray, System.Action<string> callback)
-        {
+    IEnumerator getIDData(Ray ray, System.Action<string> callback)
+    {
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
         StartCoroutine(LoadMeshColliders());
@@ -116,65 +112,65 @@ using LayerSystem;
         yield return null;
         RaycastHit Hit;
 
-            if (Physics.Raycast(ray, out Hit, 10000) == false)
-            {
-            
+        if (Physics.Raycast(ray, out Hit, 10000) == false)
+        {
+
             id = "null";
             isBusy = false;
             tileHandler.pauseLoading = false;
             callback("null");
             yield break;
 
-            }
-            selectedTile = Hit.collider.gameObject;
-            string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
-            Debug.Log(name);
-            string dataName = name.Replace(" Instance","");
-            dataName = dataName.Replace("mesh", "building");
-            dataName = dataName.Replace("-", "_") +"-data";
-            string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" +dataName;
-            Debug.Log(dataURL);
-            ObjectMappingClass data;
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-            {
-                yield return uwr.SendWebRequest();
+        }
+        selectedTile = Hit.collider.gameObject;
+        string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
+        Debug.Log(name);
+        string dataName = name.Replace(" Instance", "");
+        dataName = dataName.Replace("mesh", "building");
+        dataName = dataName.Replace("-", "_") + "-data";
+        string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" + dataName;
+        Debug.Log(dataURL);
+        ObjectMappingClass data;
+        using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+        {
+            yield return uwr.SendWebRequest();
 
-                if (uwr.isNetworkError || uwr.isHttpError)
-                {
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
                 callback("null");
                 id = "null";
             }
-                else
+            else
+            {
+
+                ObjectData objectMapping = Hit.collider.gameObject.GetComponent<ObjectData>();
+                if (objectMapping is null)
                 {
-
-                    ObjectData objectMapping = Hit.collider.gameObject.GetComponent<ObjectData>();
-                    if (objectMapping is null)
-                    {
-                        objectMapping = Hit.collider.gameObject.AddComponent<ObjectData>();
-                    }
-
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    int vertexIndex = Hit.triangleIndex * 3;
-                    int idIndex = data.vectorMap[vertexIndex];
-                    id = data.ids[idIndex];
-                    StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", id, RetrieveType.Pand)); // laat het BAG UI element zien
-                    objectMapping.highlightIDs.Clear();
-                    objectMapping.highlightIDs.Add(id);
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
-                    objectMapping.mappedUVs = data.mappedUVs;
-
-                    newAssetBundle.Unload(true);
-
+                    objectMapping = Hit.collider.gameObject.AddComponent<ObjectData>();
                 }
+
+                AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                int vertexIndex = Hit.triangleIndex * 3;
+                int idIndex = data.vectorMap[vertexIndex];
+                id = data.ids[idIndex];
+                StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", id, RetrieveType.Pand)); // laat het BAG UI element zien
+                objectMapping.highlightIDs.Clear();
+                objectMapping.highlightIDs.Add(id);
+                objectMapping.ids = data.ids;
+                objectMapping.uvs = data.uvs;
+                objectMapping.vectorMap = data.vectorMap;
+                objectMapping.mappedUVs = data.mappedUVs;
+
+                newAssetBundle.Unload(true);
+
             }
-        
+        }
+
         yield return null;
         tileHandler.pauseLoading = false;
         isBusy = false;
         callback(id);
     }
 
-    }
+}

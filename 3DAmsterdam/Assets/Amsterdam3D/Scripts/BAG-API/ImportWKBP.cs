@@ -7,6 +7,7 @@ public class ImportWKBP : ImportAPI
 {
     public static ImportWKBP Instance = null;
     public WKBP.RootBeperkingen wkbpData;
+    public string premisesConstraintsURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=";
 
     private void Awake()
     {
@@ -19,7 +20,7 @@ public class ImportWKBP : ImportAPI
 
     public IEnumerator CallWKBP(Pand.PandResults tempVerblijf)
     {
-        string wkbpURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=" + tempVerblijf.verblijfsobject.verblijfsobjectidentificatie;
+        string wkbpURL = premisesConstraintsURL + tempVerblijf.verblijfsobject.verblijfsobjectidentificatie;
         string wkbpResult = "";
         WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
         var WKPBRequest = UnityWebRequest.Get(wkbpURL);

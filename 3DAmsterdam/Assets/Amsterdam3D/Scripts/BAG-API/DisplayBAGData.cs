@@ -11,28 +11,26 @@ public class DisplayBAGData : MonoBehaviour
     [SerializeField] private Text indexBAGText = default;
     
     [SerializeField] public Transform buttonObjectTargetSpawn = default;
-    public GameObject pandUIButton;
-    [SerializeField] private List<PandButton> pandButtons = new List<PandButton>();
+    public GameObject premisesUIButton;
+    [SerializeField] private List<PremisesButton> premisesButtons = new List<PremisesButton>();
 
-    [SerializeField] private Toggle straatToggle = default;
+    [SerializeField] private Toggle streetToggle = default;
     [SerializeField] private Scrollbar scroll = default;
 
-    public PandObject pand;
+    public PremisesObject premises;
     public WKBPObject wkbp;
     public static DisplayBAGData Instance = null;
 
 
     private void Awake()
     {
-        // maak een singleton zodat je deze class contant kan aanroepen vanuit elke hoek
         if(Instance == null)
         {
             Instance = this;
         }
         ui.SetActive(false);
-        //pand.gameObject.SetActive(false);
-        pand.pandGameObject.SetActive(false);
-        straatToggle.gameObject.SetActive(false);
+        premises.premisesGameObject.SetActive(false);
+        streetToggle.gameObject.SetActive(false);
         loadingCirle.SetActive(false);
     }
 
@@ -40,10 +38,10 @@ public class DisplayBAGData : MonoBehaviour
     {
         wkbp.wkbpToggle.gameObject.SetActive(false);
         wkbp.wkbpParent.SetActive(false);
-        //pand.gameObject.SetActive(false);
-        pand.CloseObject();
+        premises.CloseObject();
         ui.SetActive(true);
         loadingCirle.SetActive(true);
+        /// removes all the old buttons from the main Premises UI Screen
         RemoveButtons();
         buttonObjectTargetSpawn.gameObject.SetActive(true);
     }
@@ -55,7 +53,6 @@ public class DisplayBAGData : MonoBehaviour
         if (pandData.results.Length > 0)
         {
             // starts ui en cleans up all previous buttons
-
             indexBAGText.text = pandData._display;
             // is er meer dan één pand, dan laat hij alle adressen zien
             if (pandData.results.Length > 1)
@@ -63,12 +60,12 @@ public class DisplayBAGData : MonoBehaviour
                 // maakt een knop aan voor elk adres
                 for (int i = 0; i < pandData.results.Length; i++)
                 {
-                    GameObject temp = Instantiate(pandUIButton, buttonObjectTargetSpawn.position, buttonObjectTargetSpawn.rotation);
+                    GameObject temp = Instantiate(premisesUIButton, buttonObjectTargetSpawn.position, buttonObjectTargetSpawn.rotation);
                     //temp.name = pandData.results[i]._display;
                     temp.transform.SetParent(buttonObjectTargetSpawn);
-                    PandButton tempButton = temp.GetComponent<PandButton>();
+                    PremisesButton tempButton = temp.GetComponent<PremisesButton>();
                     // zet de knop in de lijst met buttons
-                    pandButtons.Add(tempButton);
+                    premisesButtons.Add(tempButton);
                     // voegt de data aan de knop
                     tempButton.Initiate(pandData, i);
                 }
@@ -77,22 +74,18 @@ public class DisplayBAGData : MonoBehaviour
             else
             {
                 // als er maar één adres is dan laat hij er maar één zien ipv alle buttons
-                //PlacePand(pandData, 0);
                 StartCoroutine(PlaceCoroutine(pandData, 0));
             }
         }
     }
 
-    public void PlacePand(Pand.Rootobject pandData, int index)
+    public void PlacePremises(Pand.Rootobject pandData, int index)
     {
         StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
 
         // stuurt de pand data door
-
-        //pand.gameObject.SetActive(true);
-        pand.pandGameObject.SetActive(true);
-        //straatToggle.isOn = true;
-        pand.SetText(pandData, index);
+        premises.premisesGameObject.SetActive(true);
+        premises.SetText(pandData, index);
 
         if(loadingCirle.activeSelf)
             loadingCirle.SetActive(false);
@@ -104,11 +97,8 @@ public class DisplayBAGData : MonoBehaviour
         yield return StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
 
         // stuurt de pand data door
-        //straatToggle.gameObject.SetActive(true);
-        //pand.gameObject.SetActive(true);
-        pand.pandGameObject.SetActive(true);
-        //straatToggle.isOn = true;
-        pand.SetText(pandData, index);
+        premises.premisesGameObject.SetActive(true);
+        premises.SetText(pandData, index);
 
         if (loadingCirle.activeSelf)
             loadingCirle.SetActive(false);
@@ -117,12 +107,12 @@ public class DisplayBAGData : MonoBehaviour
 
     public void RemoveButtons()
     {
-        foreach(PandButton btn in pandButtons)
+        foreach(PremisesButton btn in premisesButtons)
         {
             Destroy(btn.gameObject);
            
         }
-        pandButtons.Clear();
+        premisesButtons.Clear();
     }
 }
 
