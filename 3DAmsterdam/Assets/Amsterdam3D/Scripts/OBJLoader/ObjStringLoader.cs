@@ -35,29 +35,18 @@ namespace Amsterdam3D.Parsing
 		}
 
 #if UNITY_EDITOR
-		private void Update()
+		/// <summary>
+		/// For Editor testing only.
+		/// This method loads a obj and a mtl file.
+		/// </summary>
+		[ContextMenu("Load test models")]
+		private void LoadTestModels()
 		{
-			//Only used for in editor testing loading of local model files
-			if (Input.GetKeyDown(KeyCode.L))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.K))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.H))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.J))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/suzanne.obj"),
-				""
-				));
+			if (!Application.isPlaying) return;
+			StartCoroutine(ParseOBJFromString(
+				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.obj"),
+				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.mtl")
+			));
 		}
 #endif
 		/// <summary>
@@ -128,13 +117,11 @@ namespace Amsterdam3D.Parsing
 			newOBJLoader.Build(defaultLoadedObjectsMaterial);
 			
 			//Make interactable
-			newOBJLoader.transform.Rotate(0, 90, 0);
 			newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
 ;			newOBJLoader.name = objModelName;
 			newOBJLoader.gameObject.AddComponent<Draggable>();
 			newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
-			newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-
+			
 			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
 
 			//hide panel and loading screen after loading
