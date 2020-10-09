@@ -8,7 +8,7 @@ using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.Events;
 
-namespace Amsterdam3D.UserLayers
+namespace Amsterdam3D.Parsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
@@ -37,7 +37,7 @@ namespace Amsterdam3D.UserLayers
 #if UNITY_EDITOR
 		private void Update()
 		{
-			//Only used for in editor testing
+			//Only used for in editor testing loading of local model files
 			if (Input.GetKeyDown(KeyCode.L))
 				StartCoroutine(ParseOBJFromString(
 				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/Source/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
@@ -60,6 +60,10 @@ namespace Amsterdam3D.UserLayers
 				));
 		}
 #endif
+		/// <summary>
+		/// Allows setting the model file name from Javascript and opening the loading screen
+		/// </summary>
+		/// <param name="fileName">The OBJ filename to be shown in the loading screen</param>
 		public void SetOBJFileName(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
@@ -67,10 +71,21 @@ namespace Amsterdam3D.UserLayers
 			loadingObjScreen.ProgressBar.Percentage(0);
 			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 		}
+
+		/// <summary>
+		/// Start the parsing of the OBJ, fetching the obj and mtl strings from Javascript
+		/// </summary>
 		public void LoadOBJFromJavascript()
 		{
 			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
+
+		/// <summary>
+		/// Start the parsing of OBJ and MTL strings
+		/// </summary>
+		/// <param name="objText">The OBJ string data</param>
+		/// <param name="mtlText">The MTL string data</param>
+		/// <returns></returns>
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
 			//Create a new gameobject that parses OBJ lines one by one

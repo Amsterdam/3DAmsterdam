@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Runtime.InteropServices;
-using Amsterdam3D.UserLayers;
 
 namespace Amsterdam3D.JavascriptConnection
 {
