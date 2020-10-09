@@ -9,34 +9,39 @@ public class FirstPersonMovement : MonoBehaviour
 
 
     [SerializeField]
-    float groundOffset;
+    private float groundOffset;
 
 
     [SerializeField]
-    Vector3 velocity;
+    private Vector3 velocity;
 
     [SerializeField]
-    bool isgrounded;
+    private bool isgrounded;
 
     [SerializeField]
-    float rayDistance = 0.1f;
+    private float rayDistance = 0.1f;
 
     [SerializeField]
-    BoxCollider col;
+    private BoxCollider referenceCollider;
 
     [SerializeField]
-    float gravity = -9.81f;
+    private float gravity = -9.81f;
 
     [SerializeField]
-    float moveSpeed = 1;
+    private float moveSpeed = 2;
 
     [SerializeField]
-    float runspeed = 3;
+    private float runspeed = 4;
 
     private bool inMenus = false;
+
+
+    private Ray ray;
+
+    private RaycastHit hit;
     void Start()
     {
-        col = GetComponent<BoxCollider>();
+        referenceCollider = GetComponent<BoxCollider>();
     }
 
     // Update is called once per frame
@@ -49,8 +54,6 @@ public class FirstPersonMovement : MonoBehaviour
         {
             CheckPhysics();
             CheckInput();
-
-
             //TODO: Refactor this to have some more global menu state, now each class is checking for menu state seperately 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -86,10 +89,9 @@ public class FirstPersonMovement : MonoBehaviour
 
         if (velocity.y <= 0)
         {
-            Vector3 center = transform.TransformPoint(new Vector3(col.center.x, col.center.y, col.center.z));
-            Ray ray = new Ray(center, -Vector3.up);
+            Vector3 center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
+            ray = new Ray(center, -Vector3.up);
             rayDistance = 0.1f - (velocity.y * Time.deltaTime) + groundOffset;
-            RaycastHit hit;
             Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.blue, 10);
             if (Physics.Raycast(ray, out hit, rayDistance))
             {

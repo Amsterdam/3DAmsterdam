@@ -6,20 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Amsterdam3D.CameraMotion;
 
 
     public class StreetViewSpawnObject:MonoBehaviour
     {
     [SerializeField]
-    GameObject streetViewPrefab;
+    private GameObject streetViewPrefab;
 
     [SerializeField]
-    Transform UIParent;
+    private Transform UIParent;
 
 
-    int currentIndex = 1;
+    private int currentIndex = 1;
 
-    bool canClick = false;
+    private bool canClick = false;
 
     public float offset = 1.8f;
 
@@ -42,7 +43,7 @@ using UnityEngine;
         if (canClick) 
         {
             RaycastHit hit;
-          Ray ray =   CameraModeChanger.instance.currentCameraComponent.ScreenPointToRay(Input.mousePosition);
+          Ray ray =   CameraModeChanger.instance.CurrentCameraComponent.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 9999, 1 << LayerMask.NameToLayer("Terrain"))){
                follower.WorldPosition = hit.point + Vector3.up * offset;
                 if (Input.GetMouseButtonDown(0))
@@ -57,15 +58,7 @@ using UnityEngine;
 
     public void SpawnFirstPersonPrefab() 
     {
-        currentObject = Instantiate(streetViewPrefab);
-        currentObject.name = "Camera punt " + currentIndex;
-        currentIndex++;
-        layers.AddNewCustomObjectLayer(currentObject, LayerType.CAMERA, true);
-        currentObject.transform.SetParent(UIParent, false);
-        currentObjectComponent = currentObject.GetComponent<FirstPersonObject>();
-        follower = currentObject.GetComponent<WorldPointFollower>();
-        follower.WorldPosition = pointer.WorldPosition;
-        canClick = true;
+        SpawnFirstPersonAtPosition(pointer.WorldPosition, Quaternion.Euler(0, 0, 0));
 
     }
 

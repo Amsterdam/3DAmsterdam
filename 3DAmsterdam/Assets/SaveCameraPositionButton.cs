@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Amsterdam3D.CameraMotion;
 public class SaveCameraPositionButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    StreetViewSpawnObject objSpawner;
+    private StreetViewSpawnObject objSpawner;
     void Start()
     {
         //todo, make these event handlers all a seperate monobehaviour
@@ -35,8 +35,8 @@ public class SaveCameraPositionButton : MonoBehaviour
 
     public void OnCLick() 
     {
-        Vector3 pos = CameraModeChanger.instance.currentCameraComponent.transform.position;
-        Quaternion rot = CameraModeChanger.instance.currentCameraComponent.transform.rotation;
+        Vector3 pos = CameraModeChanger.instance.CurrentCameraComponent.transform.position;
+        Quaternion rot = CameraModeChanger.instance.CurrentCameraComponent.transform.rotation;
         objSpawner.SpawnFirstPersonAtPosition(pos, rot);
     }
 }

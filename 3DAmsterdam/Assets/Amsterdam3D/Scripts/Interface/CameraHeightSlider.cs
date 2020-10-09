@@ -30,7 +30,7 @@ public class CameraHeightSlider : MonoBehaviour
 
     void LateUpdate()
     {
-        heightText.text = Mathf.Round(cameraManager.currentCameraControlsComponent.GetCameraHeight()) + textSuffix;
-        slider.normalizedValue = cameraManager.currentCameraControlsComponent.GetNormalizedCameraHeight();
+        heightText.text = Mathf.Round(cameraManager.CurrentCameraControlsComponent.GetCameraHeight()) + textSuffix;
+        slider.normalizedValue = cameraManager.CurrentCameraControlsComponent.GetNormalizedCameraHeight();
     }
 }

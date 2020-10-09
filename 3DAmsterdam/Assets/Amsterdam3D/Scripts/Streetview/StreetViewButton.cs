@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using Amsterdam3D.CameraMotion;
 public class StreetViewButton : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Button buttonh;
+    private Button firstPersonPrefabButton;
 
     private StreetViewSpawnObject spawnObject;
     void Start()
     {
         //Note: Should this be in a button class? Or should there be some abstraction layer
         spawnObject = FindObjectOfType<StreetViewSpawnObject>();
-        buttonh = GetComponent<Button>();
-        buttonh.onClick.AddListener(h);
+        firstPersonPrefabButton = GetComponent<Button>();
+        firstPersonPrefabButton.onClick.AddListener(SpawnFirstPersonPrefab);
         CameraModeChanger.instance.OnFirstPersonModeEvent += DisableObject;
         CameraModeChanger.instance.OnGodViewModeEvent += EnableObject;
     }
@@ -26,7 +26,7 @@ public class StreetViewButton : MonoBehaviour
         
     }
 
-    public void h() 
+    public void SpawnFirstPersonPrefab() 
     {
         spawnObject.SpawnFirstPersonPrefab();
     }

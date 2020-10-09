@@ -11,7 +11,7 @@ using UnityEngine.UI;
     public class FirstPersonObject:MonoBehaviour, IPointerClickHandler
     {
 
-    CameraModeChanger manager;
+    private CameraModeChanger manager;
 
     public bool placed = false;
     private WorldPointFollower follower;

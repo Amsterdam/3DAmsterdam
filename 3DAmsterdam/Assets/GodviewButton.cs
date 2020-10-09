@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Amsterdam3D.CameraMotion;
 public class GodviewButton : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -14,13 +14,6 @@ public class GodviewButton : MonoBehaviour
         Button button = GetComponent<Button>();
         button.onClick.AddListener(CameraModeChanger.instance.GodViewMode);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void EnableObject() 
     {
         gameObject.SetActive(true);

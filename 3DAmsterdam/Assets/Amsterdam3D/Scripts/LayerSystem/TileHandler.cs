@@ -6,6 +6,7 @@ using BruTile;
 using ConvertCoordinates;
 using System.Linq;
 using UnityEngine.Networking;
+using Amsterdam3D.CameraMotion;
 
 namespace LayerSystem
 {
