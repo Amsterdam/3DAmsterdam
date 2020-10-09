@@ -11,7 +11,6 @@ namespace Amsterdam3D.Interface
 		public float updateInterval = 0.5f;
 		private double lastInterval;
 		private int frames = 0;
-		private float fps;
 
 		private void Awake()
 		{
@@ -22,8 +21,13 @@ namespace Amsterdam3D.Interface
 
 		private void Update()
 		{
+			CalculateAverageFps();
+		}
+
+		private void CalculateAverageFps()
+		{
 			++frames;
-			float timeNow = Time.realtimeSinceStartup;
+			var timeNow = Time.realtimeSinceStartup;
 			if (timeNow > lastInterval + updateInterval)
 			{
 				DrawFps((float)(frames / (timeNow - lastInterval)));
