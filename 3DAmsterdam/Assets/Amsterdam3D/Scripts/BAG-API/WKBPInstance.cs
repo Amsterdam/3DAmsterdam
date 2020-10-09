@@ -15,6 +15,7 @@ public class WKBPInstance : MonoBehaviour
 
     public void Initialize(WKBP.Result result)
     {
+        // displays all the wkbp instances
         displayText.text = result._display;
         idText.text = result.beperking.id;
         inschrijfnummerText.text = result.beperking.inschrijfnummer;
@@ -27,6 +28,7 @@ public class WKBPInstance : MonoBehaviour
 
     public void OpenLink()
     {
+        // old display URL
         Application.OpenURL(url);
     }
 }

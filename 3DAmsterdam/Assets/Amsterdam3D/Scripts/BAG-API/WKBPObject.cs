@@ -26,11 +26,12 @@ public class WKBPObject : MonoBehaviour
             {
                 Destroy(inst.gameObject);
             }
-            WKBPList.Clear();
+            WKBPList.Clear(); // clears the old wkbp list
         }
         yield return StartCoroutine(ImportWKBP.Instance.CallWKBP(thisPand.results[adresIndex]));
         foreach (WKBP.Result result in thisPand.results[adresIndex].verblijfsobject.wkbpBeperkingen.results)
         {
+            // adds new wkbp elements
             GameObject tempBeperkingObj = Instantiate(wkbpPrefab, spawnPoint.position, spawnPoint.rotation);
             tempBeperkingObj.transform.SetParent(spawnPoint);
             WKBPInstance tempWKBP = tempBeperkingObj.GetComponent<WKBPInstance>();

@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class ImportWFS : MonoBehaviour
 {
+    /*
+        More info:
+    
+        For getting all filter codes, specified, greater, lesse than etc
+        https://mapserver.org/ogc/filter_encoding.html#tests 
+    
+        Gets a value based on a specific parameter 
+        https://map.data.amsterdam.nl/maps/monumenten?service=WFS&version=2.0.0&request=GetFeature&typeName=ms:monument_coordinaten&Filter=%3CFilter%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eexternal_id%3C/PropertyName%3E%3CLiteral%3E55d301fb-6cec-4fd4-817a-042a107fd380%3C/Literal%3E%3C/PropertyIsEqualTo%3E%3C/Filter%3E&outputFormat=geojson
+    */
+
     public class WFS
     {
         public class Rootobject
