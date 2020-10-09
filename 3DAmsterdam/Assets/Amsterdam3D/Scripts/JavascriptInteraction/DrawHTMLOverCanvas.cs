@@ -30,12 +30,19 @@ namespace Amsterdam3D.JavascriptConnection
                 AlignHTMLOverlay();
         }
 
+        /// <summary>
+        /// Tell JavaScript to make a DOM object with htmlObjectID to align with the Image component
+        /// </summary>
         private void AlignHTMLOverlay()
         {
             var screenSpaceRectangle = GetScreenSpaceRectangle();
             JavascriptMethodCaller.DisplayWithID(htmlObjectID, true, Mathf.RoundToInt(screenSpaceRectangle.x), Mathf.RoundToInt(screenSpaceRectangle.y), Mathf.RoundToInt(screenSpaceRectangle.width), Mathf.RoundToInt(screenSpaceRectangle.height));
         }
 
+        /// <summary>
+        /// Get the Image its rectangle in screenspace
+        /// </summary>
+        /// <returns>Rectangle with screenspace position, width and height</returns>
         private Rect GetScreenSpaceRectangle()
         {
             var size = Vector2.Scale(image.rectTransform.rect.size, image.rectTransform.lossyScale);
