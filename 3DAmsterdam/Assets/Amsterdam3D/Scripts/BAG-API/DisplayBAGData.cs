@@ -46,7 +46,10 @@ public class DisplayBAGData : MonoBehaviour
         RemoveButtons();
         buttonObjectTargetSpawn.gameObject.SetActive(true);
     }
-
+    /// <summary>
+    /// Generates all premises buttons. If there is only 1 premises it will show just that premises
+    /// </summary>
+    /// <param name="pandData"></param>
     public void ShowData(Pand.Rootobject pandData)
     {
         RemoveButtons();
