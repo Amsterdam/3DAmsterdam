@@ -140,6 +140,9 @@ public class FirstPersonMovement : MonoBehaviour
     
     private void LateUpdate()
     {
-        transform.position += velocity * Time.deltaTime;
+        if (!inMenus)
+        {
+            transform.position += velocity * Time.deltaTime;
+        }
     }
 }
