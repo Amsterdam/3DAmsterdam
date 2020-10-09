@@ -12,13 +12,17 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Text progressStepText;
 
+        /// <summary>
+        /// Sets the accompanying message to explain the progress bar status
+        /// </summary>
+        /// <param name="message">For example "15%" or "Loading data.."</param>
         public void SetMessage(string message)
         {
             progressStepText.text = message;
         }
 
         /// <summary>
-        /// Sets the amount the bar is filled
+        /// Sets the fill amount of the progressbar
         /// </summary>
         /// <param name="normalisedPercentage">Value from 0.0 to 1.0</param>
         public void Percentage(float normalisedPercentage){
