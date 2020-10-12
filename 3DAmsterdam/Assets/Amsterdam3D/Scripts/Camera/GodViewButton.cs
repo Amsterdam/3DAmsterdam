@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Amsterdam3D.CameraMotion;
-public class GodviewButton : MonoBehaviour
+public class GodViewButton : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
