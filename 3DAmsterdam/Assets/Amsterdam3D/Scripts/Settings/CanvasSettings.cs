@@ -38,7 +38,7 @@ public class CanvasSettings : MonoBehaviour
     /// </summary>
     private void SetPreferableScale()
     {
-        canvasScaler.scaleFactor = Mathf.Clamp(Screen.width / referenceWidth, 0.0f, 2.0f);
+        canvasScaler.scaleFactor = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, 2.0f);
         canvasScaleSlider.value = canvasScaler.scaleFactor;
         JavascriptMethodCaller.SetInterfaceScale(canvasScaler.scaleFactor);
     }
