@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Amsterdam3D.CameraMotion;
 public class SaveCameraPositionButton : MonoBehaviour
 {
-    private StreetViewSpawnObject objSpawner;
+    private StreetViewSpawnObject streetViewSpawnObject;
     void Start()
     {
         //todo, make these event handlers all a seperate monobehaviour
@@ -13,7 +13,7 @@ public class SaveCameraPositionButton : MonoBehaviour
         CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
         Button button = GetComponent<Button>();
-        objSpawner = FindObjectOfType<StreetViewSpawnObject>();
+        streetViewSpawnObject = FindObjectOfType<StreetViewSpawnObject>();
         button.onClick.AddListener(OnClick);
     }
 
@@ -31,6 +31,6 @@ public class SaveCameraPositionButton : MonoBehaviour
     {
         Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
         Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-        objSpawner.SpawnFirstPersonAtPosition(pos, rot);
+        streetViewSpawnObject.SpawnFirstPersonAtPosition(pos, rot);
     }
 }
