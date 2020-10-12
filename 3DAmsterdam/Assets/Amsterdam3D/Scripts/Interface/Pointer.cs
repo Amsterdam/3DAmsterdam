@@ -12,7 +12,7 @@ public class Pointer : WorldPointFollower
 
     void Start()
     {
-        CameraControls.focusingOnTargetPoint += Show;
+        GodViewCamera.focusingOnTargetPoint += Show;
         pointerImage = GetComponent<Image>();
         pointerImage.color = Color.clear;
     }

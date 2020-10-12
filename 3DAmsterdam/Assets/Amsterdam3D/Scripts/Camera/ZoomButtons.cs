@@ -56,12 +56,12 @@ public class ZoomButtons : MonoBehaviour
     public void ZoomIn()
     { 
         // er kan alleen gezoomd worden als het niet op de maximale waarde zit.
-        if (CameraControls.Instance.camera.transform.position.y != maxZoomIn) cam.transform.position += zoom;
+        if (CameraModeChanger.Instance.ActiveCamera.transform.position.y != maxZoomIn) cam.transform.position += zoom;
     }
 
     public void ZoomOut()
     {
         // er kan alleen gezoomd worden als het niet op de maximale waarde zit.
-        if (CameraControls.Instance.camera.transform.position.y != maxZoomOut) cam.transform.position -= zoom;
+        if (CameraModeChanger.Instance.ActiveCamera.transform.position.y != maxZoomOut) cam.transform.position -= zoom;
     }
 }

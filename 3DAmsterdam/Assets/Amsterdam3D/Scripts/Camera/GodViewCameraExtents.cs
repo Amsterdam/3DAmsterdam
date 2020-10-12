@@ -8,7 +8,7 @@ using Amsterdam3D.CameraMotion;
 /// <summary>
 /// bepaalt elke frame welk deel van amsterdam in beeld is en stelt in als public Brutile.Extent in WGS84 beschikbaar
 /// </summary>
-public class CameraView : MonoBehaviour
+public class GodViewCameraExtents : MonoBehaviour, ICameraExtents
 {
     private enum Corners{
         TOP_LEFT,
@@ -72,28 +72,28 @@ public class CameraView : MonoBehaviour
         switch (corner)
         {
             case Corners.TOP_LEFT:
-                screenPosition.x = CameraControls.Instance.camera.pixelRect.xMin;
-                screenPosition.y = CameraControls.Instance.camera.pixelRect.yMax;
+                screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
+                screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
                 break;
             case Corners.TOP_RIGHT:
-                screenPosition.x = CameraControls.Instance.camera.pixelRect.xMax;
-                screenPosition.y = CameraControls.Instance.camera.pixelRect.yMax;
+                screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
+                screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
                 break;
             case Corners.BOTTOM_LEFT:
-                screenPosition.x = CameraControls.Instance.camera.pixelRect.xMin;
-                screenPosition.y = CameraControls.Instance.camera.pixelRect.yMin;
+                screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
+                screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
                 break;
             case Corners.BOTTOM_RIGHT:
-                screenPosition.x = CameraControls.Instance.camera.pixelRect.xMax;
-                screenPosition.y = CameraControls.Instance.camera.pixelRect.yMin;
+                screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
+                screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
                 break;
             default:
                 break;
         }
         var output = new Vector3();
 
-        var topLeftCornerStart = CameraControls.Instance.camera.transform.position; 
-        var topLeftCornerFar = CameraControls.Instance.camera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
+        var topLeftCornerStart = CameraModeChanger.Instance.ActiveCamera.transform.position; 
+        var topLeftCornerFar = CameraModeChanger.Instance.ActiveCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
         
         // Calculate direction vector
         Vector3 direction = topLeftCornerStart - topLeftCornerFar;
@@ -104,13 +104,13 @@ public class CameraView : MonoBehaviour
         }
         else
         {
-            factor = ((CameraControls.Instance.camera.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
+            factor = ((CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
         }
 
         // Determine the X, Y, en Z location where the viewline ends
-        output.x = CameraControls.Instance.camera.transform.localPosition.x - Mathf.Clamp((factor * direction.x),-1 * maximumViewDistance, maximumViewDistance);
-        output.y = CameraControls.Instance.camera.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
-        output.z = CameraControls.Instance.camera.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
+        output.x = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.x - Mathf.Clamp((factor * direction.x),-1 * maximumViewDistance, maximumViewDistance);
+        output.y = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
+        output.z = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
 
         return output;
     }
@@ -121,6 +121,16 @@ public class CameraView : MonoBehaviour
 
         Gizmos.color = Color.green;
         foreach(var corner in corners)
-            Gizmos.DrawLine(CameraControls.Instance.camera.transform.position, corner);
+            Gizmos.DrawLine(CameraModeChanger.Instance.ActiveCamera.transform.position, corner);
+    }
+
+    public Extent GetExtent()
+    {
+        return cameraExtent;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Amsterdam3D.CameraMotion;
 public class CanvasSettings : MonoBehaviour
 {
     private CanvasScaler canvasScaler;
@@ -14,6 +14,12 @@ public class CanvasSettings : MonoBehaviour
     private Slider canvasScaleSlider;
 
     private float referenceWidth = 1920.0f;
+
+    [SerializeField]
+    private GameObject mainMenu;
+
+    [SerializeField]
+    private GameObject layers;
 
     void Start()
     {
@@ -26,6 +32,14 @@ public class CanvasSettings : MonoBehaviour
         else{
             SetPreferableScale();
         }
+
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableObject;
+    }
+
+    void DisableObject() 
+    {
+        layers.SetActive(false);
+        mainMenu.SetActive(false);
     }
 
     [ContextMenu("Clear the stored Canvas settings PlayerPrefs")]

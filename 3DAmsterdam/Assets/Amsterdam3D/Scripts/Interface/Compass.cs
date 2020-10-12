@@ -8,7 +8,7 @@ public class Compass : MonoBehaviour
     private Vector3 direction = Vector3.zero;
     void Update()
     {
-        direction.z = CameraControls.Instance.camera.transform.eulerAngles.y;
+        direction.z = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles.y;
         transform.localEulerAngles = direction * -1.0f;
     }
 }

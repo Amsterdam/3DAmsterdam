@@ -12,6 +12,7 @@
         public PostProcessing postProcessing;
         public Camera camera;
 
+        public CameraPoint[] cameraPoints;
         public Annotation[] annotations;
         public CustomLayer[] customLayers;
         public FixedLayers fixedLayers;
@@ -69,8 +70,22 @@
             public float a;
         }
         [System.Serializable]
+
+
+
+        
         public struct Vector3
         {
+            public static implicit operator Vector3(UnityEngine.Vector3 value)
+            {
+                return new Vector3 { x = value.x, y= value.y, z = value.z};
+            }
+
+            public static implicit operator UnityEngine.Vector3(Vector3 value) 
+            {
+                return new UnityEngine.Vector3(value.x, value.y, value.z);
+            }
+
             public float x;
             public float y;
             public float z;
@@ -78,6 +93,16 @@
         [System.Serializable]
         public struct Quaternion
         {
+            public static implicit operator Quaternion(UnityEngine.Quaternion value) 
+            {
+                return new Quaternion { x = value.x, y = value.y, z = value.z, w = value.w };
+            }
+
+            public static implicit operator UnityEngine.Quaternion(Quaternion value) 
+            {
+                return new UnityEngine.Quaternion { x = value.x, y = value.y, z = value.z, w = value.w };
+            }
+            
             public float x;
             public float y;
             public float z;
@@ -87,6 +112,15 @@
         public struct Camera{
             public Vector3 position;
             public Quaternion rotation;
+        }
+
+        [System.Serializable]
+        public struct CameraPoint
+        {
+            public Vector3 position;
+            public Quaternion rotation;
+            public string name;
+            public bool active;
         }
     }
 }

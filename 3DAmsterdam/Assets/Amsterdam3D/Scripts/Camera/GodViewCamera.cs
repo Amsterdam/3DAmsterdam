@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.CameraMotion
 {
-    public class CameraControls : MonoBehaviour
+    public class GodViewCamera : MonoBehaviour, ICameraControls
     {
+        [HideInInspector]
         public Camera camera;
 
         [SerializeField]
@@ -68,26 +69,9 @@ namespace Amsterdam3D.CameraMotion
         public static FocusPointChanged focusingOnTargetPoint;
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
-
-        #region Singleton
-        private static CameraControls instance;
-        public static CameraControls Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    throw new System.Exception("No camera controls object instance found. Make it is active in your scene.");
-                }
-
-                return instance;
-            }
-        }
-        #endregion
-
+        
         void Awake()
         {
-            instance = this;
             camera = GetComponent<Camera>();
         }
 
@@ -138,7 +122,7 @@ namespace Amsterdam3D.CameraMotion
 			return interactionOverruled;
 		}
 
-		public void MoveAndFocusOnLocation(Vector3 targetLocation)
+		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
 		{
             camera.transform.position = targetLocation + cameraOffsetForTargetLocation;
             camera.transform.LookAt(targetLocation, Vector3.up);
