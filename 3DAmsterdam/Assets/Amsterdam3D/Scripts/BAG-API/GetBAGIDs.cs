@@ -17,13 +17,28 @@ public class GetBAGIDs : MonoBehaviour
     private GameObject selectedTile;
     private bool meshCollidersAttached = false;
 
+    private float mouseClickTime;
+    private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
+    private Vector2 mousePosition;
+    [SerializeField]
+    private float clickTimer = 0.3f;
+
+    [SerializeField]
+    private LayerMask clickCheckLayerMask;
+
     void Update()
     {
         if (isBusy)
         {
             return;
         }
-        if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            mouseClickTime = Time.time;
+            mousePosition = Input.mousePosition;
+        }
+        else if ((Time.time-mouseClickTime) < clickTimer && Vector3.Distance(mousePosition,Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
             GetBagID();
         }
@@ -65,18 +80,9 @@ public class GetBAGIDs : MonoBehaviour
             {
 
                 isBusy = false;
-
                 id = "null";
 
             }
-            if (meshFilter == null)
-            {
-
-                isBusy = false;
-
-                id = "null";
-            }
-
             meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
             if (meshCollider == null)
             {
@@ -96,7 +102,7 @@ public class GetBAGIDs : MonoBehaviour
         yield return null;
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 10000) == false)
+        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
             id = "null";
             isBusy = false;
@@ -113,7 +119,7 @@ public class GetBAGIDs : MonoBehaviour
         string dataName = name.Replace(" Instance", "");
         dataName = dataName.Replace("mesh", "building");
         dataName = dataName.Replace("-", "_") + "-data";
-        string dataURL = Constants.TILE_DATA_URL + dataName;
+        string dataURL = Constants.TILE_METADATA_URL + dataName;
         Debug.Log(dataURL);
         ObjectMappingClass data;
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
