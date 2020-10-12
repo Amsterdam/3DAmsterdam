@@ -53,14 +53,11 @@ namespace LayerSystem
         // Update is called once per frame
         void Update()
         {
-            //if (HasCameraViewChanged())
-            //{
-                UpdateViewRange();
-                GetTilesizes();
-                getPossibleTiles();
-                GetTileChanges();
-                RemoveOUtOfViewTiles();
-            //}
+            UpdateViewRange();
+            GetTilesizes();
+            getPossibleTiles();
+            GetTileChanges();
+            RemoveOUtOfViewTiles();
 
             if (pendingTileChanges.Count==0){return;}
 
@@ -74,28 +71,7 @@ namespace LayerSystem
                     pendingTileChanges.Remove(highestPriorityTIleChange);
                     HandleTile(highestPriorityTIleChange);
                 }
-                
-                
-                
             }
-
-            //debugging
-            //CheckForObjectData();
-
-            // only if viewRange has changed:
-            // check which tiles are required in view for each tilesize and add to TileDistances (key: X-bottom-left,Y-bottom-left,tilesize)
-            // calculate distance for each tile in TileDistances
-                
-            // for each active Layer:
-                // check which tiles can be destroyed
-                // check which tiles can be removed from DownloadQueue
-
-                // only for tiles that have status.Ready:
-                // check required LOD for each tile
-                // up- or downgrade LOD and set status.pendingdownload
-
-            // only for tiles that have status.pendingdownload:
-            //start the download, prioritize bij LOD and layer-priority
         }
 
         private void CheckForObjectData()
@@ -153,16 +129,12 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                //url = Constants.FEATURE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
-                // temp
                 url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
-
 
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
                 url = url.Replace("{lod}", lod.ToString());
                 StartCoroutine(DownloadTile(url, tileChange));
-
             }
             
         }
@@ -207,7 +179,7 @@ namespace LayerSystem
                 {
                     AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                     yield return new WaitUntil(() => pauseLoading==false);
-                    GameObject newTile = buildNewTile(newAssetBundle, tileChange);
+                    GameObject newTile = BuildNewTile(newAssetBundle, tileChange);
                     objectDataLoaded = false;
                     
                     StartCoroutine(UpdateHighlight(tile, newTile));
@@ -262,30 +234,25 @@ namespace LayerSystem
                 }
                 else
                 {
-
                     ObjectData objectMapping = newTile.AddComponent<ObjectData>();
                     AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                     data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    
-                    
+                             
                     objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
                     objectMapping.ids = data.ids;
                     objectMapping.uvs = data.uvs;
                     objectMapping.vectorMap = data.vectorMap;
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
-                    //int vertexcount = newTile.GetComponent<MeshFilter>().mesh.vertexCount;
                     objectMapping.SetUVs();
-                    //newTile.GetComponent<MeshFilter>().mesh.uv2 = objectMapping.GetUVs();
                     newAssetBundle.Unload(true);
-                    //newTile.GetComponent<MeshRenderer>().sharedMaterial = oldTile.layer.HighlightMaterial;
                 }
                 objectDataLoaded = true;
             }
 
             yield return null;
         }
-        private GameObject buildNewTile(AssetBundle assetBundle, TileChange tileChange)
+        private GameObject BuildNewTile(AssetBundle assetBundle, TileChange tileChange)
         {
             GameObject container = new GameObject();
             container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
@@ -303,42 +270,24 @@ namespace LayerSystem
                 assetBundle.Unload(true);
             }
             Mesh mesh = meshesInAssetbundle[0];
-
-            //Mesh newMesh = new Mesh();
-            //if (mesh.vertexCount>55000)
-            //{
-            //    newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //}
-
-            //newMesh.vertices = mesh.vertices;
-            //newMesh.triangles = mesh.triangles;
-            //newMesh.normals = mesh.normals;
-            //newMesh.name = mesh.name;
             Vector2 uv = new Vector2(0.33f, 0.5f);
             int count = mesh.vertexCount;
-            //Vector2[] uvs = new Vector2[count];
 
-            //for (int i = 0; i < count; i++)
-            //{
-            //    uvs[i] = uv;
-            //}
-            //Vector2[] uvs = Enumerable.Repeat(uv, count).ToArray();
-            //mesh.uv2 = uvs;
-                float X = float.Parse(mesh.name.Split('_')[0]);
-                float Y = float.Parse(mesh.name.Split('_')[1]);
+            float X = float.Parse(mesh.name.Split('_')[0]);
+            float Y = float.Parse(mesh.name.Split('_')[1]);
 
-                //positioning container
-                Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
-                double OriginOffset = 500;
-                Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
-                Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
-                container.transform.position = unityOrigin;
-                double Rotatie = CoordConvert.RDRotation(origin);
-                container.transform.Rotate(Vector3.up, (float)Rotatie);
+            //positioning container
+            Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
+            double OriginOffset = 500;
+            Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
+            Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+            container.transform.position = unityOrigin;
+            double Rotatie = CoordConvert.RDRotation(origin);
+            container.transform.Rotate(Vector3.up, (float)Rotatie);
 
-                //subObject.transform.localPosition = Vector3.zero;
-                container.AddComponent<MeshFilter>().mesh = mesh;
-                container.AddComponent<MeshRenderer>().sharedMaterial = material;
+            //subObject.transform.localPosition = Vector3.zero;
+            container.AddComponent<MeshFilter>().mesh = mesh;
+            container.AddComponent<MeshRenderer>().sharedMaterial = material;
             
             assetBundle.Unload(false);
             return container;

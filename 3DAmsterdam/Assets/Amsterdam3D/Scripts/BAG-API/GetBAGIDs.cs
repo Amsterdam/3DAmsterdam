@@ -18,25 +18,13 @@ public class GetBAGIDs : MonoBehaviour
 
     void Update()
     {
-
         if (isBusy)
         {
-
             return;
         }
-        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0))
         {
-            if (Input.GetMouseButtonDown(0) == false)
-            {
-                mouseReleased = true;
-                return;
-            }
-            if (mouseReleased == true)
-            {
-                mouseReleased = false;
-
-                GetBagID();
-            }
+            GetBagID();
         }
     }
 
@@ -45,7 +33,6 @@ public class GetBAGIDs : MonoBehaviour
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
         StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
-        DisplayBAGData.Instance.PrepareUI();
     }
 
     private void UseObjectID(string id)
@@ -62,12 +49,10 @@ public class GetBAGIDs : MonoBehaviour
     }
     IEnumerator LoadMeshColliders()
     {
-        // add meshcolliders
         MeshCollider meshCollider;
         MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
         if (meshFilters == null)
         {
-
             isBusy = false;
             id = "null";
             meshCollidersAttached = true;
@@ -112,14 +97,15 @@ public class GetBAGIDs : MonoBehaviour
 
         if (Physics.Raycast(ray, out Hit, 10000) == false)
         {
-
             id = "null";
             isBusy = false;
             tileHandler.pauseLoading = false;
             callback("null");
             yield break;
-
         }
+
+        DisplayBAGData.Instance.PrepareUI();
+
         selectedTile = Hit.collider.gameObject;
         string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
         Debug.Log(name);
@@ -140,7 +126,6 @@ public class GetBAGIDs : MonoBehaviour
             }
             else
             {
-
                 ObjectData objectMapping = Hit.collider.gameObject.GetComponent<ObjectData>();
                 if (objectMapping is null)
                 {
@@ -161,7 +146,6 @@ public class GetBAGIDs : MonoBehaviour
                 objectMapping.mappedUVs = data.mappedUVs;
 
                 newAssetBundle.Unload(true);
-
             }
         }
 

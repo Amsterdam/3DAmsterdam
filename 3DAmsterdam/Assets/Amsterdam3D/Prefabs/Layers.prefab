@@ -74,19 +74,19 @@ MonoBehaviour:
     lod: 0
     path: buildings/LOD0/buildings_{x}_{y}.0
     maximumDistance: 6000
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 36000000
     enabled: 0
   - Description: LOD1
     lod: 1
-    path: buildings/LOD1/buildings_{x}_{y}.1
+    path: buildings/LOD1/building_{x}_{y}_lod1
     maximumDistance: 3000
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 9000000
     enabled: 0
   - Description: LOD2
     lod: 2
-    path: buildings/LOD2/buildings_{x}_{y}.2
+    path: buildings/LOD2/building_{x}_{y}_lod2
     maximumDistance: 1500
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 2250000
     enabled: 0
 --- !u!114 &2619376247858438739
 MonoBehaviour:
