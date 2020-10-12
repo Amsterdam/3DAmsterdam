@@ -9,18 +9,12 @@ public class SaveCameraPositionButton : MonoBehaviour
     void Start()
     {
         //todo, make these event handlers all a seperate monobehaviour
-        CameraModeChanger.instance.OnFirstPersonModeEvent += EnableObject;
-        CameraModeChanger.instance.OnGodViewModeEvent += DisableObject;
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
+        CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
         Button button = GetComponent<Button>();
         objSpawner = FindObjectOfType<StreetViewSpawnObject>();
-        button.onClick.AddListener(OnCLick);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        button.onClick.AddListener(OnClick);
     }
 
     public void EnableObject()
@@ -33,10 +27,10 @@ public class SaveCameraPositionButton : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OnCLick() 
+    public void OnClick() 
     {
-        Vector3 pos = CameraModeChanger.instance.CurrentCameraComponent.transform.position;
-        Quaternion rot = CameraModeChanger.instance.CurrentCameraComponent.transform.rotation;
+        Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
         objSpawner.SpawnFirstPersonAtPosition(pos, rot);
     }
 }

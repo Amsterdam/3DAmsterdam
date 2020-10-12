@@ -8,11 +8,11 @@ public class GodviewButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CameraModeChanger.instance.OnFirstPersonModeEvent += EnableObject;
-        CameraModeChanger.instance.OnGodViewModeEvent += DisableObject;
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
+        CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
         Button button = GetComponent<Button>();
-        button.onClick.AddListener(CameraModeChanger.instance.GodViewMode);
+        button.onClick.AddListener(CameraModeChanger.Instance.GodViewMode);
     }
     public void EnableObject() 
     {
