@@ -12,6 +12,8 @@ namespace Amsterdam3D.Interface
 		private CustomLayer customObjectLayerPrefab;
 		[SerializeField]
 		private CustomLayer annotationLayerPrefab;
+		[SerializeField]
+		private CustomLayer camerasLayerPrefab;
 
 		[SerializeField]
 		private RectTransform layersContainer;
@@ -67,7 +69,7 @@ namespace Amsterdam3D.Interface
 		public CustomLayer AddNewCustomObjectLayer(GameObject linkedWorldObject, LayerType type, bool createdByUser = true)
 		{
 			CustomLayer newCustomlayer;
-			// make a Dict of Layertypes for this?
+			
 			if (type == LayerType.ANNOTATION)
 			{
 				newCustomlayer = Instantiate(annotationLayerPrefab, layersContainer);
@@ -79,10 +81,9 @@ namespace Amsterdam3D.Interface
 				if (createdByUser)
 					linkedWorldObject.GetComponent<Annotation>().PlaceUsingMouse();
 			}
-
 			else if (type == LayerType.CAMERA) 
 			{
-				newCustomlayer = Instantiate(customObjectLayerPrefab, layersContainer);
+				newCustomlayer = Instantiate(camerasLayerPrefab, layersContainer);
 				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
 				newCustomlayer.transform.SetParent(cameraContainer);
 				cameraContainer.gameObject.SetActive(true);
