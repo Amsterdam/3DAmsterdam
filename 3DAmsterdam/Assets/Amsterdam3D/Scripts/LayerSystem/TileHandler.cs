@@ -162,6 +162,7 @@ namespace LayerSystem
                     tile.layer = layers[tileChange.layerIndex];
                     tile.gameObject = new GameObject();
                     tile.gameObject.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+                    tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
                     tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
                     layers[tileChange.layerIndex].tiles.Add(tileKey, tile);
                 }
@@ -265,6 +266,7 @@ namespace LayerSystem
             GameObject container = new GameObject();
             container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
             container.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+            container.layer = container.transform.parent.gameObject.layer;
             container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X+500, tileChange.Y+500));
             Material material = layers[tileChange.layerIndex].DefaultMaterial;
             Mesh[] meshesInAssetbundle = new Mesh[0];
