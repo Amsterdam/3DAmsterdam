@@ -13,7 +13,7 @@ public class ExportToPrefab
     {
         int volgnummer = 0;
         GameObject Subparent;
-        GameObject Parent = GameObject.Find("Panden");
+        GameObject Parent = GameObject.Find("Buildings");
         for (int i = 0; i < Parent.transform.childCount; i++)
         {
             Subparent = Parent.transform.GetChild(i).gameObject;

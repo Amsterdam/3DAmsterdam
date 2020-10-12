@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4498901013071965060}
   - component: {fileID: 1814701005}
   - component: {fileID: 2619376247858438739}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Buildings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,6 +103,10 @@ MonoBehaviour:
   tileHandler: {fileID: 4498901014617163852}
   BuildingContainer: {fileID: 4498901013071965061}
   isBusy: 0
+  clickTimer: 0.3
+  clickCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0

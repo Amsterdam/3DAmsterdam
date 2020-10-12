@@ -4,18 +4,27 @@ using UnityEngine;
 using UnityEngine.Networking;
 using LayerSystem;
 using Amsterdam3D.CameraMotion;
+using UnityEngine.EventSystems;
 
 public class GetBAGIDs : MonoBehaviour
 {
-    public TileHandler tileHandler;
+	private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
+	public TileHandler tileHandler;
     public GameObject BuildingContainer;
     public bool isBusy = false;
     private Ray ray;
     private string id = "";
     private GameObject selectedTile;
-    private bool mouseReleased = true;
-
     private bool meshCollidersAttached = false;
+
+    private float mouseClickTime;
+    private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
+    private Vector2 mousePosition;
+    [SerializeField]
+    private float clickTimer = 0.3f;
+
+    [SerializeField]
+    private LayerMask clickCheckLayerMask;
 
     void Update()
     {
@@ -23,7 +32,13 @@ public class GetBAGIDs : MonoBehaviour
         {
             return;
         }
-        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            mouseClickTime = Time.time;
+            mousePosition = Input.mousePosition;
+        }
+        else if ((Time.time-mouseClickTime) < clickTimer && Vector3.Distance(mousePosition,Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
             GetBagID();
         }
@@ -65,18 +80,9 @@ public class GetBAGIDs : MonoBehaviour
             {
 
                 isBusy = false;
-
                 id = "null";
 
             }
-            if (meshFilter == null)
-            {
-
-                isBusy = false;
-
-                id = "null";
-            }
-
             meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
             if (meshCollider == null)
             {
@@ -94,9 +100,9 @@ public class GetBAGIDs : MonoBehaviour
         StartCoroutine(LoadMeshColliders());
         yield return new WaitUntil(() => meshCollidersAttached == true);
         yield return null;
-        RaycastHit Hit;
+        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out Hit, 10000) == false)
+        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
             id = "null";
             isBusy = false;
@@ -107,13 +113,13 @@ public class GetBAGIDs : MonoBehaviour
 
         DisplayBAGData.Instance.PrepareUI();
 
-        selectedTile = Hit.collider.gameObject;
-        string name = Hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
+        selectedTile = hit.collider.gameObject;
+        string name = hit.collider.gameObject.GetComponent<MeshFilter>().mesh.name;
         Debug.Log(name);
         string dataName = name.Replace(" Instance", "");
         dataName = dataName.Replace("mesh", "building");
         dataName = dataName.Replace("-", "_") + "-data";
-        string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" + dataName;
+        string dataURL = Constants.TILE_METADATA_URL + dataName;
         Debug.Log(dataURL);
         ObjectMappingClass data;
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
@@ -127,18 +133,18 @@ public class GetBAGIDs : MonoBehaviour
             }
             else
             {
-                ObjectData objectMapping = Hit.collider.gameObject.GetComponent<ObjectData>();
+                ObjectData objectMapping = hit.collider.gameObject.GetComponent<ObjectData>();
                 if (objectMapping is null)
                 {
-                    objectMapping = Hit.collider.gameObject.AddComponent<ObjectData>();
+                    objectMapping = hit.collider.gameObject.AddComponent<ObjectData>();
                 }
 
                 AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                 data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                int vertexIndex = Hit.triangleIndex * 3;
+                int vertexIndex = hit.triangleIndex * 3;
                 int idIndex = data.vectorMap[vertexIndex];
                 id = data.ids[idIndex];
-                StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/pand/", id, RetrieveType.Pand)); // laat het BAG UI element zien
+                StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, id, RetrieveType.Pand)); // laat het BAG UI element zien
                 objectMapping.highlightIDs.Clear();
                 objectMapping.highlightIDs.Add(id);
                 objectMapping.ids = data.ids;

@@ -137,7 +137,7 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
+                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
 
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
@@ -162,6 +162,7 @@ namespace LayerSystem
                     tile.layer = layers[tileChange.layerIndex];
                     tile.gameObject = new GameObject();
                     tile.gameObject.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+                    tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
                     tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
                     layers[tileChange.layerIndex].tiles.Add(tileKey, tile);
                 }
@@ -229,7 +230,7 @@ namespace LayerSystem
             string dataName = name.Replace(" Instance", "");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") + "-data";
-            string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" + dataName;
+            string dataURL = Constants.TILE_METADATA_URL + dataName;
             Debug.Log(dataURL);
             ObjectMappingClass data;
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
@@ -265,6 +266,7 @@ namespace LayerSystem
             GameObject container = new GameObject();
             container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
             container.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
+            container.layer = container.transform.parent.gameObject.layer;
             container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X+500, tileChange.Y+500));
             Material material = layers[tileChange.layerIndex].DefaultMaterial;
             Mesh[] meshesInAssetbundle = new Mesh[0];
