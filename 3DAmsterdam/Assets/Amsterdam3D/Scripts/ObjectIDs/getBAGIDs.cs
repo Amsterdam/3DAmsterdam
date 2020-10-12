@@ -44,7 +44,7 @@ public class GetBAGIDs : MonoBehaviour
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
-        StartCoroutine(getIDData(ray, (value) => { UseObjectID(value); }));
+        StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
         DisplayBAGData.Instance.PrepareUI();
     }
 
@@ -101,7 +101,7 @@ public class GetBAGIDs : MonoBehaviour
         Debug.Log("MeshColliders attached");
     }
 
-    IEnumerator getIDData(Ray ray, System.Action<string> callback)
+    IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
