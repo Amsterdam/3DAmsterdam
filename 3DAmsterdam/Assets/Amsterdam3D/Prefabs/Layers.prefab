@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4498901013071965063}
   - component: {fileID: 4498901013071965060}
   - component: {fileID: 1814701005}
-  m_Layer: 0
+  - component: {fileID: 2619376247858438739}
+  m_Layer: 8
   m_Name: Buildings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,27 +66,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
+  HighlightMaterial: {fileID: 0}
   tileSize: 1000
   layerPriority: 0
   Datasets:
   - Description: LOD0
     lod: 0
-    path: buildings/buildings_{x}_{y}.0
+    path: buildings/LOD0/buildings_{x}_{y}.0
     maximumDistance: 6000
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 36000000
     enabled: 0
   - Description: LOD1
     lod: 1
-    path: buildings/buildings_{x}_{y}.1
+    path: buildings/LOD1/building_{x}_{y}_lod1
     maximumDistance: 3000
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 9000000
     enabled: 0
   - Description: LOD2
     lod: 2
-    path: buildings/buildings_{x}_{y}.2
+    path: buildings/LOD2/building_{x}_{y}_lod2
     maximumDistance: 1500
-    maximumDistanceSquared: 0
+    maximumDistanceSquared: 2250000
     enabled: 0
+--- !u!114 &2619376247858438739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013071965061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileHandler: {fileID: 4498901014617163852}
+  BuildingContainer: {fileID: 4498901013071965061}
+  isBusy: 0
+  clickTimer: 0.3
+  clickCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,6 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf815e09f26f1845a92ef4f3860d415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseLoading: 0
   maximumConcurrentDownloads: 5
   layers:
   - {fileID: 1814701005}

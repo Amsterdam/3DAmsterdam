@@ -80,7 +80,6 @@ public class Draggable : ObjectManipulation
 		this.transform.position = GetMousePointOnLayerMask() - offset + clickOffset3D;
 	}
 
-
 	/// <summary>
 	/// Returns the mouse position on the layer.
 	/// If the raycast fails (didnt hit anything) we use plane set at average ground height.
@@ -90,14 +89,14 @@ public class Draggable : ObjectManipulation
 	{
 		RaycastHit hit;
 
-		var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
-		if (snapToGround && Physics.Raycast(ray, out hit, CameraControls.Instance.camera.farClipPlane, dropTargetLayerMask.value))
+		var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+		if (snapToGround && Physics.Raycast(ray, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 		{
 			return hit.point;
 		}
 		else
 		{
-			return CameraControls.Instance.GetMousePositionInWorld();
+			return CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
 		}
 	}
 }

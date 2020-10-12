@@ -31,7 +31,7 @@ public class BuildingTileManager : MonoBehaviour
     [SerializeField] private float maximumDistanceLOD2 = 500;
     [SerializeField] private float maximumDistanceLOD1 = 1000;
     [SerializeField] private float maximumDistanceLOD0 = 3000;
-    private CameraView cameraViewExtent;
+    private GodViewCameraExtents cameraViewExtent;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     public int maximumConcurrentDownloads = 5;
 
@@ -49,7 +49,7 @@ public class BuildingTileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cameraViewExtent = CameraControls.Instance.camera.GetComponent<CameraView>();
+        cameraViewExtent = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
 
     }
 
@@ -79,7 +79,7 @@ public class BuildingTileManager : MonoBehaviour
     private void UpdateActiveTileList(Extent wGSExtent)
     {
         Extent rDExtent = ConvertWGSExtentToRDExtent(wGSExtent);
-        Vector3RD camlocation3RD = CoordConvert.UnitytoRD(CameraControls.Instance.camera.transform.localPosition);
+        Vector3RD camlocation3RD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.localPosition);
         Vector3 camlocationRD = new Vector3((float)camlocation3RD.x, (float)camlocation3RD.y, (float)camlocation3RD.z);
         
         Dictionary<Vector3, int> BuildingTilesNeeded = new Dictionary<Vector3, int>();

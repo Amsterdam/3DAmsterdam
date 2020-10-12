@@ -13,13 +13,12 @@ namespace Amsterdam3D.Rendering
         private bool postEffects = true;
 
         private UniversalAdditionalCameraData universalCameraData;
-
         [SerializeField]
         private Volume postProcessingVolume;
 
         private void Start()
         {
-            universalCameraData = CameraControls.Instance.camera.GetComponent<UniversalAdditionalCameraData>();
+            universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
         }
 
         /// <summary>

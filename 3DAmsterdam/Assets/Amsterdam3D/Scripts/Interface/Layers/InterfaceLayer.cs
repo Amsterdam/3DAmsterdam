@@ -11,7 +11,8 @@ namespace Amsterdam3D.Interface
 		BASICSHAPE,
 		OBJMODEL,
 		STATIC,
-		ANNOTATION
+		ANNOTATION,
+		CAMERA
 	}
 	
 	public class InterfaceLayer : ChangePointerStyleHandler
@@ -123,7 +124,11 @@ namespace Amsterdam3D.Interface
 		public void UpdateLayerPrimaryColor()
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
-				layerOptionsButton.color = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
+			{
+				var primaryColor = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
+				primaryColor.a = 1.0f;
+				layerOptionsButton.color = primaryColor;
+			}
 		}
 
 		/// <summary>

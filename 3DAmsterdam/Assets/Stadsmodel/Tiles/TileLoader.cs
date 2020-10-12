@@ -16,7 +16,7 @@ public class TileLoader : MonoBehaviour
 {
     private Boolean UpdateTerrainTilesFinished = true;
     public Material DeFaultMaterial;
-    private CameraView CV;
+    public ICameraExtents CV;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     [SerializeField] private string dataFolder = "terrain";
     private string terrainUrl;
@@ -27,7 +27,7 @@ public class TileLoader : MonoBehaviour
 
     readonly Dictionary<Vector3, GameObject> activeTiles = new Dictionary<Vector3, GameObject>();
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
-    const int maxParallelRequests = 8;
+    const int maxParallelRequests = 5;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
@@ -53,10 +53,17 @@ public class TileLoader : MonoBehaviour
     }
 
     // Start is called before the first frame update
+    private void OnCameraChanged() 
+    {
+        CV = CameraModeChanger.Instance.CurrentCameraExtends;
+    }
+    
     void Start()
     {
-        CV = CameraControls.Instance.camera.GetComponent<CameraView>();
+        CV = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
         terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
+        CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
     }
 
     // Update is called once per frame
@@ -68,7 +75,7 @@ public class TileLoader : MonoBehaviour
         {
             if (UpdateTerrainTilesFinished)
             {
-                previousCameraViewExtent = CV.cameraExtent;
+                previousCameraViewExtent = CV.GetExtent();
                 StartCoroutine(UpdateTerrainTiles(previousCameraViewExtent));
             }
         }
@@ -91,7 +98,7 @@ public class TileLoader : MonoBehaviour
     bool HasCameraViewChanged()
     {
         bool cameraviewChanged = false;
-        if (previousCameraViewExtent.CenterX != CV.cameraExtent.CenterX || previousCameraViewExtent.CenterY != CV.cameraExtent.CenterY)
+        if (previousCameraViewExtent.CenterX != CV.GetExtent().CenterX|| previousCameraViewExtent.CenterY != CV.GetExtent().CenterY)
         {
             cameraviewChanged=true;
         }
@@ -300,7 +307,7 @@ public class TileLoader : MonoBehaviour
         LocatieUnity.y = (float)CoordConvert.ReferenceWGS84.h;
         LocatieUnity.z = (float)((Lat - CoordConvert.ReferenceWGS84.lat) * CoordConvert.UnitsPerDegreeY);
         //LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-        Vector3 afstand3D = LocatieUnity - CameraControls.Instance.camera.transform.localPosition;
+        Vector3 afstand3D = LocatieUnity - CameraModeChanger.Instance.ActiveCamera.transform.localPosition;
         double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
         return afstand;
     }
@@ -320,7 +327,7 @@ public class TileLoader : MonoBehaviour
                 double tileSizeInDegrees = 180 / (Math.Pow(2, tileKey.z));
 
                 double tileDistance = GetMinimumDistance(tileKey.x + 0.5f, tileKey.y + 0.5f, tileKey.z);
-                double minafstand = 50* Math.Pow(2, (19 - tileKey.z));
+                double minafstand = 60* Math.Pow(2, (19 - tileKey.z));
                 if (tileDistance < minafstand && tileKey.z < 18)
                 {
                     AddSubtilesToTileKeys(tileKey, requiredTileKeys);
@@ -399,28 +406,28 @@ public class TileLoader : MonoBehaviour
 
         // Add bottom-left tile.
         newTile = new Vector3(parentTile.x * 2, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add botton-riht tile.
         newTile = new Vector3((parentTile.x * 2) + 1, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
 
             TileKeys.Add(newTile);
         }
         // Add top-left tile.
         newTile = new Vector3(parentTile.x * 2, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add top-right tile
         newTile = new Vector3((parentTile.x * 2) + 1, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.cameraExtent))
+        if (IsInsideExtent(newTile, CV.GetExtent()))
         {
 
             TileKeys.Add(newTile);

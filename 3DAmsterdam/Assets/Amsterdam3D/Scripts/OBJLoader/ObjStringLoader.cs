@@ -6,8 +6,9 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
+using UnityEngine.Events;
 
-namespace Amsterdam3D.UserLayers
+namespace Amsterdam3D.Parsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
@@ -18,9 +19,15 @@ namespace Amsterdam3D.UserLayers
 		private LoadingScreen loadingObjScreen;
 
 		[SerializeField]
+		private UnityEvent doneLoadingModel;
+
+		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
 
 		private string objModelName = "model";
+
+		[SerializeField]
+		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
 
 		private void Start()
 		{
@@ -28,66 +35,103 @@ namespace Amsterdam3D.UserLayers
 		}
 
 #if UNITY_EDITOR
-		private void Update()
+		/// <summary>
+		/// For Editor testing only.
+		/// This method loads a obj and a mtl file.
+		/// </summary>
+		[ContextMenu("Load test models")]
+		private void LoadTestModels()
 		{
-			if (Input.GetKeyDown(KeyCode.L))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/KRZNoord_OBJ/Testgebied_3DAmsterdam.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.K))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/SketchUp_OBJexport_triangulated/25052020 MV 3D Model Marineterrein.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.H))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.mtl")
-				));
-			if (Input.GetKeyDown(KeyCode.J))
-				StartCoroutine(ParseOBJFromString(
-				File.ReadAllText("C:/Projects/GemeenteAmsterdam/TestModels/wetransfer-73a599/suzanne.obj"),
-				""
-				));
+			if (!Application.isPlaying) return;
+			StartCoroutine(ParseOBJFromString(
+				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.obj"),
+				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.mtl")
+			));
 		}
 #endif
+		/// <summary>
+		/// Allows setting the model file name from Javascript and opening the loading screen
+		/// </summary>
+		/// <param name="fileName">The OBJ filename to be shown in the loading screen</param>
 		public void SetOBJFileName(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
+			loadingObjScreen.ProgressBar.SetMessage("0%");
+			loadingObjScreen.ProgressBar.Percentage(0);
+			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 		}
+
+		/// <summary>
+		/// Start the parsing of the OBJ, fetching the obj and mtl strings from Javascript
+		/// </summary>
 		public void LoadOBJFromJavascript()
 		{
 			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
+
+		/// <summary>
+		/// Start the parsing of OBJ and MTL strings
+		/// </summary>
+		/// <param name="objText">The OBJ string data</param>
+		/// <param name="mtlText">The MTL string data</param>
+		/// <returns></returns>
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
-			//Display loading message covering entire screen
-			loadingObjScreen.ShowMessage("Loading " + objModelName + "...");
-			yield return new WaitForEndOfFrame();
-			yield return new WaitForSeconds(0.1f);
+			//Create a new gameobject that parses OBJ lines one by one
+			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
+			float remainingLinesToParse;
+			float totalLines;
+			float percentage;
 
-			var newOBJ = new GameObject().AddComponent<ObjLoad>();
+			//Parse the mtl file, filling our material library
 			if (mtlText != "")
-				newOBJ.SetMaterialData(mtlText);
+			{
+				newOBJLoader.SetMaterialData(ref mtlText);
+				remainingLinesToParse = newOBJLoader.ParseNextMtlLines(1);
+				totalLines = remainingLinesToParse;
 
-			newOBJ.SetGeometryData(objText);
-			newOBJ.Build(defaultLoadedObjectsMaterial);
+				loadingObjScreen.ShowMessage("Materialen worden geladen...");
+				while (remainingLinesToParse > 0)
+				{
+					remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
+					percentage = 1.0f - (remainingLinesToParse / totalLines);
+					loadingObjScreen.ProgressBar.Percentage(percentage/100.0f); //Show first percent
+					yield return null;
+				}
+			}
+
+			//Parse the obj line by line
+			newOBJLoader.SetGeometryData(ref objText);
+			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
+			totalLines = remainingLinesToParse;
+			while (remainingLinesToParse > 0)
+			{
+				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
+				percentage = 1.0f - (remainingLinesToParse / totalLines);
+				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+				loadingObjScreen.ProgressBar.Percentage(percentage);
+				yield return null;
+			}
+
+			newOBJLoader.Build(defaultLoadedObjectsMaterial);
 			
 			//Make interactable
-			newOBJ.transform.Rotate(0, 90, 0);
-			newOBJ.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
-;			newOBJ.name = objModelName;
-			newOBJ.gameObject.AddComponent<Draggable>();
-			newOBJ.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJ.GetComponent<MeshFilter>().sharedMesh;
-
-			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJ.gameObject);
+			newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+;			newOBJLoader.name = objModelName;
+			newOBJLoader.gameObject.AddComponent<Draggable>();
+			newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
+			
+			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
 
 			//hide panel and loading screen after loading
-			gameObject.SetActive(false);
 			loadingObjScreen.Hide();
 
-			yield return false;
+			//Invoke done event
+			doneLoadingModel.Invoke();
+
+			//Remove this loader from finished object
+			Destroy(newOBJLoader);
 		}
 	}
 }
