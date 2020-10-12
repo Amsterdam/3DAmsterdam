@@ -8,53 +8,55 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-    public class FirstPersonObject:MonoBehaviour, IPointerClickHandler
-    {
+public class FirstPersonObject : MonoBehaviour, IPointerClickHandler
+{
 
-    private CameraModeChanger manager;
+	private CameraModeChanger manager;
 
-    public bool placed = false;
-    private WorldPointFollower follower;
-    public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
+	public bool placed = false;
+	private WorldPointFollower follower;
 
-    private void Awake()
-    {
-        manager = CameraModeChanger.Instance;
-        manager.OnGodViewModeEvent += EnableObject;
-        manager.OnFirstPersonModeEvent += DisableObject;
-        follower = GetComponent<WorldPointFollower>();
-    }
+	[HideInInspector]
+	public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
 
-    private void EnableObject() 
-    {
-        gameObject.SetActive(true);
-    }
+	private void Awake()
+	{
+		manager = CameraModeChanger.Instance;
+		manager.OnGodViewModeEvent += EnableObject;
+		manager.OnFirstPersonModeEvent += DisableObject;
+		follower = GetComponent<WorldPointFollower>();
+	}
 
-    private void DisableObject() 
-    {
-        gameObject.SetActive(false);
-    }
-    private void OnMouseDown()
-    {
-        if (placed)
-        {
-            manager.FirstPersonMode(follower.WorldPosition, savedRotation);
-            gameObject.SetActive(false);
-        }
-    }
+	private void EnableObject()
+	{
+		gameObject.SetActive(true);
+	}
 
-    private void OnDestroy()
-    {
-        manager.OnGodViewModeEvent -= EnableObject;
-        manager.OnFirstPersonModeEvent -= DisableObject;
-    }
+	private void DisableObject()
+	{
+		gameObject.SetActive(false);
+	}
+	private void OnMouseDown()
+	{
+		if (placed)
+		{
+			manager.FirstPersonMode(follower.WorldPosition, savedRotation);
+			gameObject.SetActive(false);
+		}
+	}
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (placed)
-        {
-            manager.FirstPersonMode(follower.WorldPosition, savedRotation);
-            gameObject.SetActive(false);
-        }
-    }
+	private void OnDestroy()
+	{
+		manager.OnGodViewModeEvent -= EnableObject;
+		manager.OnFirstPersonModeEvent -= DisableObject;
+	}
+
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		if (placed)
+		{
+			manager.FirstPersonMode(follower.WorldPosition, savedRotation);
+			gameObject.SetActive(false);
+		}
+	}
 }
