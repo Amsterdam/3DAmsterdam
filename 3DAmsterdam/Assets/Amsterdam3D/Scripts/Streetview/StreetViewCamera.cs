@@ -32,9 +32,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation) 
     {
-        if (targetLocation.y < 1.8f) 
+        if (targetLocation.y < Constants.ZERO_GROUND_LEVEL_Y+1.8f) 
         {
-            targetLocation.y = 1.81f;
+            targetLocation.y = Constants.ZERO_GROUND_LEVEL_Y + 1.81f;
         }
         
         transform.position = targetLocation;
