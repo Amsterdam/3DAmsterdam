@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3984125772440461850}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 42.070675, y: 12.431506, z: 34.64014}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -155,8 +155,8 @@ MonoBehaviour:
       code: 
       dataset: 
     dataset: 
-  nummerIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=
-  nummerIndicatorInstanceURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/
+  numberIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=
+  numberIndicatorInstanceURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/
   monumentURL: https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=
 --- !u!114 &3984125772440461849
 MonoBehaviour:
@@ -174,7 +174,7 @@ MonoBehaviour:
   wkbpData:
     count: 0
     results: []
-  beperkingURL: https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=
+  premisesConstraintsURL: https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=
 --- !u!114 &3984125772440461846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,10 +193,10 @@ MonoBehaviour:
   buttonObjectTargetSpawn: {fileID: 0}
   premisesUIButton: {fileID: 3594763073575650825, guid: 224bae334fc81c54ab4749ba81cc1b0e,
     type: 3}
-  pandButtons: []
+  premisesButtons: []
   streetToggle: {fileID: 0}
   scroll: {fileID: 0}
-  pand: {fileID: 0}
+  premises: {fileID: 0}
   wkbp: {fileID: 0}
 --- !u!114 &3984125772440461845
 MonoBehaviour:
