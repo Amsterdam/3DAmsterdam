@@ -23,8 +23,6 @@ namespace Amsterdam3D.CameraMotion
         }
         
 
-
-
        public IEnumerator MoveToPositionReverse(Transform objectToMove ,Vector3 position, Quaternion rotation) 
         {
             while(objectToMove.position.y < position.y - 0.1f)
@@ -66,15 +64,10 @@ namespace Amsterdam3D.CameraMotion
             OnMoved.Invoke();
             OnMovedRotation.Invoke(rotation);
         }
-
-
     }
-
-
 
     [Serializable]
     public class RotationEvent : UnityEvent<Quaternion>
     {
-
     }
 }
