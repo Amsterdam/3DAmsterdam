@@ -43,7 +43,7 @@ public class BoomTileManager : MonoBehaviour
 
         [SerializeField] private string dataFolder = "trees";
 
-        private CameraView CV;
+        private GodViewCameraExtents CV;
         private Extent vorigeCV = new Extent(0, 0, 0, 0);
         public int MAX_Concurrent_Downloads = 5;
         private Boolean BijwerkenGereed = true;
@@ -58,7 +58,7 @@ public class BoomTileManager : MonoBehaviour
         // Start is called before the first frame update
         void Start()
         {
-            CV = CameraControls.Instance.camera.GetComponent<CameraView>();
+            CV = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
             //Add(new Vector3(105000, 471000, 0));
             //Add(new Vector3(105000, 473000, 0));
         }
@@ -97,7 +97,7 @@ public class BoomTileManager : MonoBehaviour
             int Y1 = ((int)Math.Floor(RDExtent.MaxY / tegelgrootte) * tegelgrootte);
 
             // cameralocatie omzetten naar RD-locatie
-            Vector3RD Camlocation3RD = CoordConvert.UnitytoRD(CameraControls.Instance.camera.transform.localPosition);
+            Vector3RD Camlocation3RD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.localPosition);
             Vector3 CamlocationRD = new Vector3((float)Camlocation3RD.x, (float)Camlocation3RD.y, (float)Camlocation3RD.z);
 
 

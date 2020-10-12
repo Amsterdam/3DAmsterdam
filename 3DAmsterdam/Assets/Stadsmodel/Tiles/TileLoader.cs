@@ -55,15 +55,15 @@ public class TileLoader : MonoBehaviour
     // Start is called before the first frame update
     private void OnCameraChanged() 
     {
-        CV = CameraModeChanger.instance.CurrentCameraExtends;
+        CV = CameraModeChanger.Instance.CurrentCameraExtends;
     }
     
     void Start()
     {
-        CV = CameraControls.Instance.camera.GetComponent<CameraView>();
+        CV = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
         terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
-        CameraModeChanger.instance.OnFirstPersonModeEvent += OnCameraChanged;
-        CameraModeChanger.instance.OnGodViewModeEvent += OnCameraChanged;
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
+        CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
     }
 
     // Update is called once per frame
@@ -214,7 +214,7 @@ public class TileLoader : MonoBehaviour
                 meshFilter.mesh.uv = terrainTile.GetUV(0);
                 meshFilter.mesh.RecalculateNormals();
 
-                //activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
@@ -307,7 +307,7 @@ public class TileLoader : MonoBehaviour
         LocatieUnity.y = (float)CoordConvert.ReferenceWGS84.h;
         LocatieUnity.z = (float)((Lat - CoordConvert.ReferenceWGS84.lat) * CoordConvert.UnitsPerDegreeY);
         //LocatieUnity = CoordConvert.WGS84toUnity(locatieWGS);
-        Vector3 afstand3D = LocatieUnity - CameraControls.Instance.camera.transform.localPosition;
+        Vector3 afstand3D = LocatieUnity - CameraModeChanger.Instance.ActiveCamera.transform.localPosition;
         double afstand = Math.Sqrt(Math.Pow(afstand3D.x, 2) + Math.Pow(afstand3D.y, 2) + Math.Pow(afstand3D.z, 2));
         return afstand;
     }
