@@ -3,14 +3,8 @@ using System.Collections;
 using UnityEngine.EventSystems;
 public class FirstPersonMovement : MonoBehaviour
 {
-
-    // Use this for initialization
-
-
-
     [SerializeField]
     private float groundOffset;
-
 
     [SerializeField]
     private Vector3 velocity;
@@ -35,7 +29,6 @@ public class FirstPersonMovement : MonoBehaviour
 
     private bool inMenus = false;
 
-
     private Ray ray;
 
     private RaycastHit hit;
@@ -44,12 +37,8 @@ public class FirstPersonMovement : MonoBehaviour
         referenceCollider = GetComponent<BoxCollider>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-
-
-
         if (!inMenus)
         {
             CheckPhysics();
@@ -68,12 +57,6 @@ public class FirstPersonMovement : MonoBehaviour
                 inMenus = false;
             }
         }
-
-     
-
-
-
-
     }
 
 
@@ -82,9 +65,6 @@ public class FirstPersonMovement : MonoBehaviour
         if (!isgrounded)
         {
             velocity -= -Vector3.up * gravity * Time.deltaTime;
-
-
-
         }
 
         if (velocity.y <= 0)
@@ -92,14 +72,12 @@ public class FirstPersonMovement : MonoBehaviour
             Vector3 center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
             ray = new Ray(center, -Vector3.up);
             rayDistance = 0.1f - (velocity.y * Time.deltaTime) + groundOffset;
-            Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.blue, 10);
             if (Physics.Raycast(ray, out hit, rayDistance))
             {
                 transform.position = new Vector3(transform.position.x, hit.point.y + groundOffset, transform.position.z);
                 velocity = new Vector3(velocity.x, 0, velocity.z);
                 isgrounded = true;
             }
-
             else
             {
                 isgrounded = false;
@@ -114,18 +92,14 @@ public class FirstPersonMovement : MonoBehaviour
             velocity.x = Input.GetAxis("Horizontal") * runspeed;
             velocity.z = Input.GetAxis("Vertical") * runspeed;
         }
-
         else 
-        {
-            
-            
+        {    
             velocity.x = Input.GetAxis("Horizontal") * moveSpeed;
             velocity.z = Input.GetAxis("Vertical") * moveSpeed;
         }
 
         if (isgrounded)
         {
-
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 velocity.y = 5;
