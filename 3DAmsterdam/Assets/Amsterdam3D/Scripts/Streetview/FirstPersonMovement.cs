@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.UI;
+
 public class FirstPersonMovement : MonoBehaviour
 {
     [SerializeField]
@@ -49,7 +51,6 @@ public class FirstPersonMovement : MonoBehaviour
                 inMenus = true;
             }
         }
-
         else 
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 
@@ -57,6 +58,11 @@ public class FirstPersonMovement : MonoBehaviour
                 inMenus = false;
             }
         }
+
+        if(transform.position.y < 0)
+        {
+            this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
+		}
     }
 
 
