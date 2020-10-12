@@ -16,8 +16,6 @@ public class GetBAGIDs : MonoBehaviour
 
     private bool meshCollidersAttached = false;
 
-
-    // Update is called once per frame
     void Update()
     {
 
