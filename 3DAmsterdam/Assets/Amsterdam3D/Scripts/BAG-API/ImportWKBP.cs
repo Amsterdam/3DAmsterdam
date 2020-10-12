@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class ImportWKBP : ImportAPI
 {
     public static ImportWKBP Instance = null;
-    public WKBP.RootBeperkingen wkbpData;
+    private WKBP.RootBeperkingen wkbpData;
     public string premisesConstraintsURL = "https://api.data.amsterdam.nl/wkpb/beperking/?verblijfsobjecten__id=";
 
     private void Awake()

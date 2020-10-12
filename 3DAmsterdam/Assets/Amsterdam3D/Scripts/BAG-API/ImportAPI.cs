@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 public abstract class ImportAPI : MonoBehaviour
 {
+    [HideInInspector]
     public string dataResult;
     // Start is called before the first frame update
     public IEnumerator CallAPI(string apiUrl, string bogIndexInt, int resultIndex)

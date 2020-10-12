@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class DisplayBAGData : MonoBehaviour
 {
-    public GameObject ui;
+    public GameObject premisesInterfacePanel;
     public GameObject loadingCirle;
 
     [SerializeField] private Text indexBAGText = default;
     
     [SerializeField] public Transform buttonObjectTargetSpawn = default;
     public GameObject premisesUIButton;
-    [SerializeField] private List<PremisesButton> premisesButtons = new List<PremisesButton>();
+    private List<PremisesButton> premisesButtons = new List<PremisesButton>();
 
     [SerializeField] private Toggle streetToggle = default;
     [SerializeField] private Scrollbar scroll = default;
@@ -28,7 +28,7 @@ public class DisplayBAGData : MonoBehaviour
         {
             Instance = this;
         }
-        ui.SetActive(false);
+        premisesInterfacePanel.SetActive(false);
         premises.premisesGameObject.SetActive(false);
         streetToggle.gameObject.SetActive(false);
         loadingCirle.SetActive(false);
@@ -41,7 +41,7 @@ public class DisplayBAGData : MonoBehaviour
         wkbp.wkbpToggle.gameObject.SetActive(false);
         wkbp.wkbpParent.SetActive(false);
         premises.CloseObject();
-        ui.SetActive(true);
+        premisesInterfacePanel.SetActive(true);
         loadingCirle.SetActive(true);
         RemoveButtons();
         buttonObjectTargetSpawn.gameObject.SetActive(true);
