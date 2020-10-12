@@ -27,7 +27,7 @@ public class TileLoader : MonoBehaviour
 
     readonly Dictionary<Vector3, GameObject> activeTiles = new Dictionary<Vector3, GameObject>();
     Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
-    const int maxParallelRequests = 8;
+    const int maxParallelRequests = 5;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
 
@@ -214,7 +214,7 @@ public class TileLoader : MonoBehaviour
                 meshFilter.mesh.uv = terrainTile.GetUV(0);
                 meshFilter.mesh.RecalculateNormals();
 
-                activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                //activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
@@ -327,7 +327,7 @@ public class TileLoader : MonoBehaviour
                 double tileSizeInDegrees = 180 / (Math.Pow(2, tileKey.z));
 
                 double tileDistance = GetMinimumDistance(tileKey.x + 0.5f, tileKey.y + 0.5f, tileKey.z);
-                double minafstand = 50* Math.Pow(2, (19 - tileKey.z));
+                double minafstand = 60* Math.Pow(2, (19 - tileKey.z));
                 if (tileDistance < minafstand && tileKey.z < 18)
                 {
                     AddSubtilesToTileKeys(tileKey, requiredTileKeys);

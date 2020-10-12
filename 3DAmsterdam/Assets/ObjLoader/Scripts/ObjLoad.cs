@@ -33,9 +33,24 @@ public class ObjLoad : MonoBehaviour
 	const string MAP_BUMP = "map_bump"; // Bump map texture
 	const string BUMP = "bump"; // Bump map texture
 
-	string basepath;
 	string mtllib;
-	GeometryBuffer buffer;
+
+	private string[] objLines;
+	private string[] mtlLines;
+
+	private string line;
+	private string[] linePart;
+
+	private const char faceSplitChar = '/';
+	private const char lineSplitChar = '\n';
+	private const char linePartSplitChar = ' ';
+
+	private MaterialData targetMaterialData;
+	private int parseLinePointer = 0;
+
+	private GeometryBuffer buffer;
+	// Materials
+	private List<MaterialData> materialDataSlots;
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -43,11 +58,174 @@ public class ObjLoad : MonoBehaviour
 		buffer = new GeometryBuffer();
 	}
 
+	/// <summary>
+	/// Sets the obj string and turns it into an array with every newline
+	/// </summary>
+	/// <param name="data">obj string</param>
+	public void SetGeometryData(ref string data)
+	{
+		objLines = data.Split(lineSplitChar);
+		data = "";
+		
+		parseLinePointer = 0;
+	}
+	/// <summary>
+	/// Sets the material string and turns in into an array with every newline
+	/// </summary>
+	/// <param name="data">obj string</param>
+	public void SetMaterialData(ref string data)
+	{
+		mtlLines = data.Split(lineSplitChar);
+		data = "";
+
+		parseLinePointer = 0;
+		materialDataSlots = new List<MaterialData>();
+	}
+
+	/// <summary>
+	/// Read the next obj line
+	/// </summary>
+	/// <returns>How many lines remain to be parsed</returns>
+	public int ParseNextObjLines(int maxLines)
+	{
+		for (int i = 0; i < maxLines; i++)
+		{
+			if (parseLinePointer < objLines.Length)
+			{
+				line = objLines[parseLinePointer];
+				ParseObjLine(ref line);
+				parseLinePointer++;
+			}
+		}
+		return objLines.Length - parseLinePointer;
+	}
+
+	private void ParseObjLine(ref string objline)
+	{
+		linePart = objline.Trim().Split(linePartSplitChar);
+		switch (linePart[0])
+		{
+			case O:
+				//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
+				//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
+				break;
+			case V:
+				buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case VT:
+				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
+				break;
+			case VN:
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				break;
+			case F:
+				var faces = new FaceIndices[linePart.Length - 1];
+				GetFaceIndices(faces, linePart);
+				if (linePart.Length == 4)
+				{
+					//tris
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
+				}
+				else if (linePart.Length == 5)
+				{
+					//quad
+					buffer.PushFace(faces[0]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[3]);
+					buffer.PushFace(faces[1]);
+					buffer.PushFace(faces[2]);
+				}
+				/*else
+				{
+					//ngons warning disabled for WebGL
+					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+				}*/
+				break;
+			case MTLLIB:
+				mtllib = line.Substring(linePart[0].Length + 1).Trim();
+				break;
+			case USEMTL:
+				buffer.AddSubMeshGroup(linePart[1].Trim());
+				break;
+		}
+	}
+
+	/// <summary>
+	/// Read the next mtl line
+	/// </summary>
+	/// <returns>How many lines remain to be parsed</returns>
+	public int ParseNextMtlLines(int maxLines)
+	{
+		for (int i = 0; i < maxLines; i++)
+		{
+			if (parseLinePointer < mtlLines.Length)
+			{
+				line = mtlLines[parseLinePointer];
+				ParseMtlLine(ref line);
+				parseLinePointer++;
+			}
+		}
+
+		return mtlLines.Length - parseLinePointer;
+	}
+
+	private void ParseMtlLine(ref string mtlLine)
+	{
+		if (mtlLine.IndexOf("#") != -1) mtlLine = line.Substring(0, mtlLine.IndexOf("#"));
+		linePart = mtlLine.Trim().Split(linePartSplitChar);
+
+		if (linePart[0].Trim() != "")
+		{
+			switch (linePart[0])
+			{
+				case NML:
+					targetMaterialData = new MaterialData();
+					targetMaterialData.Name = linePart[1].Trim();
+					materialDataSlots.Add(targetMaterialData);
+					Debug.Log("Loaded new material from library: " + targetMaterialData.Name);
+					break;
+				case KA:
+					targetMaterialData.Ambient = gc(linePart);
+					break;
+				case KD:
+					targetMaterialData.Diffuse = gc(linePart);
+					break;
+				case KS:
+					targetMaterialData.Specular = gc(linePart);
+					break;
+				case NS:
+					targetMaterialData.Shininess = cf(linePart[1]) / 1000;
+					break;
+				case D:
+				case TR:
+					targetMaterialData.Alpha = cf(linePart[1]);
+					break;
+				case MAP_KD:
+					targetMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
+					break;
+				case MAP_BUMP:
+				case BUMP:
+					BumpParameter(targetMaterialData, linePart);
+					break;
+				case ILLUM:
+					targetMaterialData.IllumType = ci(linePart[1]);
+					break;
+				/*default:
+					Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
+					break;*/
+			}
+		}
+	}
+
 	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
 	{
+		string[] indices;
 		for (int i = 1; i < linePart.Length; i++)
 		{
-			string[] indices = linePart[i].Trim().Split("/".ToCharArray());
+			indices = linePart[i].Trim().Split(faceSplitChar);
 			var faceIndices = new FaceIndices();
 			// vertex
 			int vertexIndex = ci(indices[0]);
@@ -72,68 +250,47 @@ public class ObjLoad : MonoBehaviour
 		}
 	}
 
-
-	public void SetGeometryData(string data)
+	static Material GetMaterial(MaterialData md, Material sourceMaterial)
 	{
-		string[] lines = data.Split("\n".ToCharArray());
-		var regexWhitespaces = new Regex(@"\s+");
+		Material newMaterial;
 
-		for (int i = 0; i < lines.Length; i++)
+		if (md.IllumType == 2)
 		{
-			string line = lines[i].Trim();
+			newMaterial = new Material(sourceMaterial);
+			newMaterial.SetFloat("_EmissionColor", md.Shininess);
+		}
+		else
+		{
+			newMaterial = new Material(sourceMaterial);
+		}
 
-			if (line.IndexOf("#") != -1)
-			{ 
-				continue;
-			}
-			string[] linePart = regexWhitespaces.Split(line);
-			switch (linePart[0])
-			{
-				case O:
-					//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count
-					break;
-				case V:
-					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-					break;
-				case VT:
-					buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
-					break;
-				case VN:
-					buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
-					break;
-				case F:
-					var faces = new FaceIndices[linePart.Length - 1];
-					GetFaceIndices(faces, linePart);
-					if (linePart.Length == 4)
-					{
-						//tris
-						buffer.PushFace(faces[0]);
-						buffer.PushFace(faces[1]);
-						buffer.PushFace(faces[2]);
-					}
-					else if (linePart.Length == 5)
-					{
-						//quad
-						buffer.PushFace(faces[0]);
-						buffer.PushFace(faces[1]);
-						buffer.PushFace(faces[3]);
-						buffer.PushFace(faces[3]);
-						buffer.PushFace(faces[1]);
-						buffer.PushFace(faces[2]);
-					}
-					else
-					{
-						//ngons
-						Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
-					}
-					break;
-				case MTLLIB:
-					mtllib = line.Substring(linePart[0].Length + 1).Trim();
-					break;
-				case USEMTL:
-					buffer.AddSubMeshGroup(linePart[1].Trim());
-					break;
-			}
+		if (md.DiffuseTex != null)
+		{
+			newMaterial.SetTexture("_MainTex", md.DiffuseTex);
+		}
+		else
+		{
+			newMaterial.SetColor("_BaseColor", md.Diffuse);
+		}
+		if (md.BumpTex != null) newMaterial.SetTexture("_BumpMap", md.BumpTex);
+
+		newMaterial.name = md.Name;
+
+		return newMaterial;
+	}
+
+	class BumpParamDef
+	{
+		public string OptionName;
+		public string ValueType;
+		public int ValueNumMin;
+		public int ValueNumMax;
+		public BumpParamDef(string name, string type, int numMin, int numMax)
+		{
+			OptionName = name;
+			ValueType = type;
+			ValueNumMin = numMin;
+			ValueNumMax = numMax;
 		}
 	}
 
@@ -163,8 +320,6 @@ public class ObjLoad : MonoBehaviour
 		}
 	}
 
-	// Materials
-	List<MaterialData> materialData;
 	class MaterialData
 	{
 		public string Name;
@@ -178,109 +333,6 @@ public class ObjLoad : MonoBehaviour
 		public string BumpTexPath;
 		public Texture2D DiffuseTex;
 		public Texture2D BumpTex;
-	}
-
-	public void SetMaterialData(string data)
-	{
-		string[] lines = data.Split("\n".ToCharArray());
-
-		materialData = new List<MaterialData>();
-		var currentMaterialData = new MaterialData();
-		var regexWhitespaces = new Regex(@"\s+");
-
-		for (int i = 0; i < lines.Length; i++)
-		{
-			string l = lines[i].Trim();
-
-			if (l.IndexOf("#") != -1) l = l.Substring(0, l.IndexOf("#"));
-			string[] p = regexWhitespaces.Split(l);
-			if (p[0].Trim() == "") continue;
-
-			switch (p[0])
-			{
-				case NML:
-					currentMaterialData = new MaterialData();
-					currentMaterialData.Name = p[1].Trim();
-					materialData.Add(currentMaterialData);
-					break;
-				case KA:
-					currentMaterialData.Ambient = gc(p);
-					break;
-				case KD:
-					currentMaterialData.Diffuse = gc(p);
-					break;
-				case KS:
-					currentMaterialData.Specular = gc(p);
-					break;
-				case NS:
-					currentMaterialData.Shininess = cf(p[1]) / 1000;
-					break;
-				case D:
-				case TR:
-					currentMaterialData.Alpha = cf(p[1]);
-					break;
-				case MAP_KD:
-					currentMaterialData.DiffuseTexPath = p[p.Length - 1].Trim();
-					break;
-				case MAP_BUMP:
-				case BUMP:
-					BumpParameter(currentMaterialData, p);
-					break;
-				case ILLUM:
-					currentMaterialData.IllumType = ci(p[1]);
-					break;
-				default:
-					Debug.Log("this line was not processed :" + l);
-					break;
-			}
-		}
-	}
-
-	static Material GetMaterial(MaterialData md, Material sourceMaterial)
-	{
-		Material m;
-
-		if (md.IllumType == 2)
-		{
-			string shaderName = (md.BumpTex != null) ? "Bumped Specular" : "Specular";
-			m = new Material(sourceMaterial);
-			m.SetColor("_SpecColor", md.Specular);
-			m.SetFloat("_Shininess", md.Shininess);
-		}
-		else
-		{
-			string shaderName = (md.BumpTex != null) ? "Bumped Diffuse" : "Diffuse";
-			m = new Material(sourceMaterial);
-		}
-
-		if (md.DiffuseTex != null)
-		{
-			m.SetTexture("_MainTex", md.DiffuseTex);
-		}
-		else
-		{
-			m.SetColor("_BaseColor", md.Diffuse);
-		}
-		if (md.BumpTex != null) m.SetTexture("_BumpMap", md.BumpTex);
-
-		m.name = md.Name;
-
-		return m;
-	}
-
-	class BumpParamDef
-	{
-		public string OptionName;
-		public string ValueType;
-		public int ValueNumMin;
-		public int ValueNumMax;
-		public BumpParamDef(string name, string type, int numMin, int numMax)
-		{
-			OptionName = name;
-			ValueType = type;
-			ValueNumMin = numMin;
-			ValueNumMax = numMax;
-		}
 	}
 
 	static void BumpParameter(MaterialData m, string[] p)
@@ -370,10 +422,15 @@ public class ObjLoad : MonoBehaviour
 
 	public void Build(Material defaultMaterial)
 	{
+		//Clear our large arrays
+		if (mtlLines != null)
+			Array.Clear(mtlLines, 0, mtlLines.Length);			
+		Array.Clear(objLines, 0, objLines.Length);
+
 		var materialLibrary = new Dictionary<string, Material>();
-		if (!string.IsNullOrEmpty(mtllib) && materialData != null)
+		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)
 		{
-			foreach (MaterialData md in materialData)
+			foreach (MaterialData md in materialDataSlots)
 			{
 				if (materialLibrary.ContainsKey(md.Name))
 				{
@@ -387,6 +444,7 @@ public class ObjLoad : MonoBehaviour
 		var gameObjects = new GameObject[buffer.NumberOfObjects];
 		if (buffer.NumberOfObjects == 1)
 		{
+			//Single gameobject, single mesh
 			gameObject.AddComponent(typeof(MeshFilter));
 			gameObject.AddComponent(typeof(MeshRenderer));
 			gameObjects[0] = gameObject;
@@ -395,6 +453,7 @@ public class ObjLoad : MonoBehaviour
 		{
 			for (int i = 0; i < buffer.NumberOfObjects; i++)
 			{
+				//Multi object with nested children
 				var go = new GameObject();
 				go.transform.parent = gameObject.transform;
 				go.AddComponent(typeof(MeshFilter));

@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine.Networking;
 using Amsterdam3D.CameraMotion;
 
+
 namespace LayerSystem
 {
     public enum TileAction
@@ -20,7 +21,7 @@ namespace LayerSystem
     public class TileHandler : MonoBehaviour
     {
 
-
+        public bool pauseLoading = false;
         public int maximumConcurrentDownloads = 5;
         public List<Layer> layers = new List<Layer>();
         private List<int> tileSizes = new List<int>();
@@ -43,7 +44,7 @@ namespace LayerSystem
         private Vector3Int cameraPosition;
         private Extent previousCameraViewExtent;
 
-
+        private bool objectDataLoaded = false;
         // Start is called before the first frame update
         public void OnCameraChanged() 
         {
@@ -60,14 +61,11 @@ namespace LayerSystem
         // Update is called once per frame
         void Update()
         {
-            //if (HasCameraViewChanged())
-            //{
-                UpdateViewRange();
-                GetTilesizes();
-                getPossibleTiles();
-                GetTileChanges();
-                RemoveOUtOfViewTiles();
-            //}
+            UpdateViewRange();
+            GetTilesizes();
+            getPossibleTiles();
+            GetTileChanges();
+            RemoveOUtOfViewTiles();
 
             if (pendingTileChanges.Count==0){return;}
 
@@ -81,24 +79,21 @@ namespace LayerSystem
                     pendingTileChanges.Remove(highestPriorityTIleChange);
                     HandleTile(highestPriorityTIleChange);
                 }
-                
-                
-                
             }
-            // only if viewRange has changed:
-            // check which tiles are required in view for each tilesize and add to TileDistances (key: X-bottom-left,Y-bottom-left,tilesize)
-            // calculate distance for each tile in TileDistances
-                
-            // for each active Layer:
-                // check which tiles can be destroyed
-                // check which tiles can be removed from DownloadQueue
+        }
 
-                // only for tiles that have status.Ready:
-                // check required LOD for each tile
-                // up- or downgrade LOD and set status.pendingdownload
-
-            // only for tiles that have status.pendingdownload:
-            //start the download, prioritize bij LOD and layer-priority
+        private void CheckForObjectData()
+        {
+            foreach (Layer layer in layers)
+            {
+                foreach (KeyValuePair< Vector2Int, Tile> kvp in layer.tiles)
+                {
+                    if (kvp.Value.gameObject.GetComponent<ObjectData>() !=null)
+                    {
+                        Debug.Log(kvp.Value.tileKey);
+                    }
+                }
+            }
         }
 
         private void HandleTile(TileChange tileChange)
@@ -126,6 +121,11 @@ namespace LayerSystem
                     }
                     break;
                 case TileAction.Remove:
+                    MeshFilter mf = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>();
+                    if (mf != null)
+                    {
+                        DestroyImmediate(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>().mesh,true);
+                    }
                     Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
                     layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
                     activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
@@ -137,12 +137,12 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
+                url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
+
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
                 url = url.Replace("{lod}", lod.ToString());
                 StartCoroutine(DownloadTile(url, tileChange));
-
             }
             
         }
@@ -159,6 +159,7 @@ namespace LayerSystem
                     tile = new Tile();
                     tile.LOD = 0;
                     tile.tileKey = tileKey;
+                    tile.layer = layers[tileChange.layerIndex];
                     tile.gameObject = new GameObject();
                     tile.gameObject.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
                     tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
@@ -185,7 +186,12 @@ namespace LayerSystem
                 else
                 {
                     AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    GameObject newTile = buildNewTile(newAssetBundle, tileChange);
+                    yield return new WaitUntil(() => pauseLoading==false);
+                    GameObject newTile = BuildNewTile(newAssetBundle, tileChange);
+                    objectDataLoaded = false;
+                    
+                    StartCoroutine(UpdateHighlight(tile, newTile));
+                    yield return new WaitUntil(() => objectDataLoaded);
                     if (tileChange.action == TileAction.Downgrade)
                     {
                         layers[tileChange.layerIndex].tiles[tileKey].LOD--;
@@ -204,7 +210,57 @@ namespace LayerSystem
 
         }
 
-        private GameObject buildNewTile(AssetBundle assetBundle, TileChange tileChange)
+        private IEnumerator UpdateHighlight(Tile oldTile, GameObject newTile)
+        {
+            ObjectData oldObjectMapping = oldTile.gameObject.GetComponent<ObjectData>();
+            if (oldObjectMapping == null)
+            {
+                objectDataLoaded = true;
+                yield break;
+            }
+            if (oldObjectMapping.highlightIDs.Count==0)
+            {
+                objectDataLoaded = true;
+                yield break;
+            }
+            yield return null;
+            string name =  newTile.GetComponent<MeshFilter>().mesh.name;
+            Debug.Log(name);
+            string dataName = name.Replace(" Instance", "");
+            dataName = dataName.Replace("mesh", "building");
+            dataName = dataName.Replace("-", "_") + "-data";
+            string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" + dataName;
+            Debug.Log(dataURL);
+            ObjectMappingClass data;
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+
+                }
+                else
+                {
+                    ObjectData objectMapping = newTile.AddComponent<ObjectData>();
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                             
+                    objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+                    objectMapping.mappedUVs = data.mappedUVs;
+                    objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
+                    objectMapping.SetUVs();
+                    newAssetBundle.Unload(true);
+                }
+                objectDataLoaded = true;
+            }
+
+            yield return null;
+        }
+        private GameObject BuildNewTile(AssetBundle assetBundle, TileChange tileChange)
         {
             GameObject container = new GameObject();
             container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
@@ -221,35 +277,27 @@ namespace LayerSystem
                 Destroy(container);
                 assetBundle.Unload(true);
             }
+            Mesh mesh = meshesInAssetbundle[0];
+            Vector2 uv = new Vector2(0.33f, 0.5f);
+            int count = mesh.vertexCount;
 
-            foreach (Mesh mesh in meshesInAssetbundle)
-            {
-                Mesh newMesh = new Mesh();
-                newMesh.vertices = mesh.vertices;
-                newMesh.triangles = mesh.triangles;
-                newMesh.normals = mesh.normals;
-                newMesh.name = mesh.name;
-                GameObject subObject = new GameObject();
-                subObject.transform.parent = container.transform;
+            float X = float.Parse(mesh.name.Split('_')[0]);
+            float Y = float.Parse(mesh.name.Split('_')[1]);
 
-                
-                float X = float.Parse(mesh.name.Split('_')[0]);
-                float Y = float.Parse(mesh.name.Split('_')[1]);
+            //positioning container
+            Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
+            double OriginOffset = 500;
+            Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
+            Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+            container.transform.position = unityOrigin;
+            double Rotatie = CoordConvert.RDRotation(origin);
+            container.transform.Rotate(Vector3.up, (float)Rotatie);
 
-                //positioning container
-                Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
-                double OriginOffset = 500;
-                Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
-                Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
-                subObject.transform.position = unityOrigin;
-                double Rotatie = CoordConvert.RDRotation(origin);
-                subObject.transform.Rotate(Vector3.up, (float)Rotatie);
-
-                //subObject.transform.localPosition = Vector3.zero;
-                subObject.AddComponent<MeshFilter>().mesh = newMesh;
-                subObject.AddComponent<MeshRenderer>().sharedMaterial = material;
-            }
-            assetBundle.Unload(true);
+            //subObject.transform.localPosition = Vector3.zero;
+            container.AddComponent<MeshFilter>().mesh = mesh;
+            container.AddComponent<MeshRenderer>().sharedMaterial = material;
+            
+            assetBundle.Unload(false);
             return container;
 
         }
@@ -329,11 +377,11 @@ namespace LayerSystem
             int centerOffset = (int)tileID.z / 2;
             Vector3Int center = new Vector3Int(tileID.x + centerOffset, tileID.y + centerOffset, 0);
             float delta = center.x - cameraPosition.x;
-            distance += delta * delta;
+            distance += (delta * delta);
             delta = center.y - cameraPosition.y;
-            distance += delta * delta;
+            distance += (delta * delta);
             delta = cameraPosition.z * cameraPosition.z;
-            distance += delta;
+            distance += (delta);
 
             //Vector3Int difference = new Vector3Int(, tileID.y+centerOffset, 0) - cameraPosition;
             //distance = difference.magnitude;
@@ -368,7 +416,7 @@ namespace LayerSystem
 
             foreach (DataSet dataSet in layer.Datasets)
             {
-                if (dataSet.maximumDistanceSquared > tiledistance.z)
+                if (dataSet.maximumDistanceSquared > (tiledistance.z))
                 {
                     lod = dataSet.lod;
 
@@ -495,6 +543,7 @@ namespace LayerSystem
 
     public class Tile
     {
+        public Layer layer;
         public int LOD;
         public GameObject gameObject;
         public AssetBundle assetBundle;

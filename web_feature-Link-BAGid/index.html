@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Amsterdam</title>
+	<link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
+	<div id="objUploadClickRegisterArea" style="display:none;">
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadOBJ(this)" multiple>
+	</div>
+    <div id="gameContainer"></div>
+    <div id="loader">
+      <img class="logo" src="logo.png">
+      <div class="spinner"></div>
+      <div class="progress"><div class="full"></div></div>
+    </div>
+  </body>
+
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+  var unityInstance = UnityLoader.instantiate("gameContainer", "Build/web_feature-Link-BAGid.json", {onProgress: UnityProgress});
+  var objTextReader;
+  var mtlTextReader;
+  
+  var unityObjectName = "AddObject";
+  var objData = "";
+  var mtlData = "";
+  var dataType = 0;
+  
+  function UnityProgress(unityInstance, progress) {
+    if (!unityInstance.Module) {
+      return;
+    }
+    const loader = document.querySelector("#loader");
+    if (!unityInstance.progress) {
+      const progress = document.querySelector("#loader .progress");
+      progress.style.display = "block";
+      unityInstance.progress = progress.querySelector(".full");
+      loader.querySelector(".spinner").style.display = "none";
+    }
+    unityInstance.progress.style.transform = `scaleX(${progress})`;
+    if (progress === 1 && !unityInstance.removeTimeout) {
+      unityInstance.removeTimeout = setTimeout(function() {
+          loader.style.display = "none";
+		  
+		  window.onhashchange = locationHashChanged;
+		  if(window.location.hash){
+			locationHashChanged();
+		  }
+      }, 2000);
+    }
+  }
+  
+  function locationHashChanged() {
+	unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.replace("#",""));
+  }
+
+  function SelectSharedURL() {
+    window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
+  }  
+  
+  function LoadInUnity(){
+	unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+	//Reset file selection
+	document.getElementById("obj").value = "";
+  }
+  
+  function ReadOBJ(fileInput) {
+		//Check browser support
+		if (window.File && window.FileReader && window.FileList && window.Blob) {
+            objTextReader = new FileReader();
+			mtlTextReader = new FileReader();
+        } else {
+            alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
+        }
+		unityInstance.SendMessage(unityObjectName, "SetOBJFileName", fileInput.files.item(0).name);
+		
+		//If we selected at least one file
+        if(fileInput.files && fileInput.files[0]) { 
+			//parse obj and optionaly the mtl file
+			var mtlFileSelectionIndex = -1;
+			
+			objTextReader.onload = function (e) {
+				objData = e.target.result;
+				if(mtlFileSelectionIndex > -1){
+					//Load material after loading obj (optionaly)
+					mtlTextReader.onload = function (e) {
+						mtlData = e.target.result;
+						LoadInUnity();
+					};
+					mtlTextReader.readAsText(fileInput.files[mtlFileSelectionIndex]);
+				}
+				else{
+					LoadInUnity();
+				}
+            };
+			
+			//Read the obj in the file input
+			for (var i = 0; i < fileInput.files.length; i++) {
+				var extension = fileInput.files[i].name.split(".").pop().toLowerCase();
+                if(extension == "mtl"){
+					mtlFileSelectionIndex = i;
+				}
+				else if(extension == "obj"){
+					objTextReader.readAsText(fileInput.files[i]);
+				}
+            }
+        }	
+        return true;
+    }   
+	</script>
+</html>
+
