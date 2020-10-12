@@ -42,6 +42,6 @@ public static class Constants
         public static string SHARE_OBJECTSTORE_PATH = "customScene.php?id=";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 
-        public static string TILE_METADATA_URL = "https://acc.3d.amsterdam.nl/web/data/buildings/objectdata/";
+        public static string TILE_METADATA_URL = "https://acc.3d.amsterdam.nl/web/data/develop/buildings/objectdata/";
 #endif
 }
