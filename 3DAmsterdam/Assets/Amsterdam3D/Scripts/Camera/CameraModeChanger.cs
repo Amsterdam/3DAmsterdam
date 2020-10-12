@@ -15,45 +15,37 @@ namespace Amsterdam3D.CameraMotion
     public class CameraModeChanger : MonoBehaviour
     {
         public ICameraExtents CurrentCameraExtends { get; private set; }
-        [SerializeField]
+
         private GameObject currentCamera;
-        // instead of Camera, make this some kind of interface that both CameraControls.cs and FirstPersonMouselook.cs implement
-        public ICameraControls CurrentCameraControlsComponent { get; private set; }
-        public Camera CurrentCameraComponent { get; private set; }
+
+        public ICameraControls CurrentCameraControls { get; private set; }
+        public Camera ActiveCamera { get; private set; }
         private StreetViewMoveToPoint streetView;
 
         [SerializeField]
-        private GameObject godviewCam;
+        private GameObject godViewCam;
 
-        //idk if public events in a singleton are the best idea
-        // Maybe make these ScriptableObject eventhandlers instead?
         public delegate void OnFirstPersonMode();
         public event OnFirstPersonMode OnFirstPersonModeEvent;
-
 
         public delegate void OnGodViewMode();
         public event OnGodViewMode OnGodViewModeEvent;
 
-
         private Quaternion oldGodViewRotation;
-
-
 
         public CameraMode CameraMode { get; private set; }
 
-
-        public static CameraModeChanger instance;
+        public static CameraModeChanger Instance;
 
         private void Awake()
         {
             streetView = FindObjectOfType<StreetViewMoveToPoint>();
-            currentCamera = godviewCam;
-            CurrentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
+            currentCamera = godViewCam;
+            CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
-            CurrentCameraComponent = currentCamera.GetComponent<Camera>();
-            instance = this;
+            ActiveCamera = currentCamera.GetComponent<Camera>();
+            Instance = this;
         }
-
 
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
         {
@@ -66,14 +58,12 @@ namespace Amsterdam3D.CameraMotion
             currentCamera = streetView.EnableFPSCam();
             currentCamera.transform.position = oldPosition;
             currentCamera.transform.rotation = oldRotation;
-            CurrentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
-            CurrentCameraComponent = currentCamera.GetComponent<Camera>();
+            CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
+            ActiveCamera = currentCamera.GetComponent<Camera>();
             CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             OnFirstPersonModeEvent?.Invoke();
             MoveCameraToStreet(currentCamera.transform, position, rotation);
         }
-
-
 
         public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
         {
@@ -89,21 +79,19 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-
-
         public void GodViewMode()
         {
             this.CameraMode = CameraMode.GodView;
             Vector3 currentPosition = currentCamera.transform.position;
             Quaternion rot = currentCamera.transform.rotation;
             currentCamera.SetActive(false);
-            currentCamera = godviewCam;
+            currentCamera = godViewCam;
             currentCamera.transform.position = currentPosition;
             currentCamera.transform.rotation = rot;
             currentCamera.SetActive(true);
             CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
-            CurrentCameraControlsComponent = currentCamera.GetComponent<ICameraControls>();
-            CurrentCameraComponent = currentCamera.GetComponent<Camera>();
+            CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
+            ActiveCamera = currentCamera.GetComponent<Camera>();
             OnGodViewModeEvent?.Invoke();
             MoveCameraToStreet(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
         }

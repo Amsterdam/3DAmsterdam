@@ -61,7 +61,7 @@ namespace Amsterdam3D.Interface
                 FollowMousePointer();
                 yield return new WaitForEndOfFrame();
             }
-            if(CameraModeChanger.instance.CameraMode == CameraMode.StreetView) 
+            if(CameraModeChanger.Instance.CameraMode == CameraMode.StreetView) 
             {
                 // put comment on clicked object instead of world position
             }
@@ -73,7 +73,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         private void FollowMousePointer()
         {
-            AlignWithWorldPosition(CameraModeChanger.instance.CurrentCameraControlsComponent.GetMousePositionInWorld());
+            AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -118,10 +118,10 @@ namespace Amsterdam3D.Interface
         protected override void Update()
         {
             base.Update();
-            if (CameraModeChanger.instance.CameraMode == CameraMode.StreetView)
+            if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
             {
-                var distance = WorldPosition - CameraModeChanger.instance.CurrentCameraComponent.transform.position;
-                var viewportPosition = CameraModeChanger.instance.CurrentCameraComponent.WorldToViewportPoint(WorldPosition);
+                var distance = WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
+                var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPosition);
                 //Alternate way, connect annotations to world tiles?
                 // World space canvas instead of using canvas space?
                 if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0) 

@@ -117,8 +117,8 @@ namespace Amsterdam3D.Sharing
         {
             HideObjectsInViewMode(scene.allowSceneEdit);
 
-            CameraControls.Instance.camera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
-            CameraControls.Instance.camera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
+            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
+            CameraModeChanger.Instance.ActiveCamera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
             //Apply sunlight settings
             sunSettings.SetDateTimeFromString(scene.sunTimeStamp);
@@ -357,8 +357,8 @@ namespace Amsterdam3D.Sharing
         /// <returns></returns>
         public SerializableScene SerializeScene(bool allowSceneEditAfterSharing = false)
         {
-            var cameraPosition = CameraControls.Instance.camera.transform.position;
-            var cameraRotation = CameraControls.Instance.camera.transform.rotation;
+            var cameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
+            var cameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
             var dataStructure = new SerializableScene
             {

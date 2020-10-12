@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using LayerSystem;
+using Amsterdam3D.CameraMotion;
 
 public class GetBAGIDs : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class GetBAGIDs : MonoBehaviour
         {
             return;
         }
-        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0))
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
             GetBagID();
         }
@@ -30,7 +31,7 @@ public class GetBAGIDs : MonoBehaviour
 
     private void GetBagID()
     {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
         StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
     }

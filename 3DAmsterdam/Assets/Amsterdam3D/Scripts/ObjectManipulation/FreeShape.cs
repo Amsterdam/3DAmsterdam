@@ -105,7 +105,7 @@ namespace Amsterdam3D.FreeShape
 				return;
 			
 			foreach(ScaleHandle handle in scaleHandles){
-				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(CameraControls.Instance.camera.transform.position, this.transform.position)) * shapeScreenStartScale;
+				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, this.transform.position)) * shapeScreenStartScale;
 			}
 		}
 
@@ -163,10 +163,10 @@ namespace Amsterdam3D.FreeShape
 			numberTextMesh.transform.localPosition = Vector3.Lerp(fromPosition, toPosition, 0.5f);
 
 			//Always turn to camera
-			numberTextMesh.transform.rotation = CameraControls.Instance.camera.transform.rotation;
+			numberTextMesh.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
 			if (numberScreenSize > 0)
-				numberTextMesh.transform.localScale = Vector3.one * Vector3.Distance(CameraControls.Instance.camera.transform.position, numberTextMesh.transform.position) * numberScreenSize;
+				numberTextMesh.transform.localScale = Vector3.one * Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, numberTextMesh.transform.position) * numberScreenSize;
 		}
 
 		private void OverrideVertPosition(int[] arrayPositions, float newX = 0.0f, float newY = 0.0f, float newZ = 0.0f)

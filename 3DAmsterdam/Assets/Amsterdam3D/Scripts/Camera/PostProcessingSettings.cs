@@ -18,7 +18,7 @@ namespace Amsterdam3D.Rendering
 
         private void Start()
         {
-            universalCameraData = CameraControls.Instance.camera.GetComponent<UniversalAdditionalCameraData>();
+            universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
         }
 
         /// <summary>

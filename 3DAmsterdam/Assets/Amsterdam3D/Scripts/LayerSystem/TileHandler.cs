@@ -48,14 +48,14 @@ namespace LayerSystem
         // Start is called before the first frame update
         public void OnCameraChanged() 
         {
-            CV = CameraModeChanger.instance.CurrentCameraExtends;
+            CV = CameraModeChanger.Instance.CurrentCameraExtends;
         }
         
         void Start()
         {
-            CV = CameraModeChanger.instance.CurrentCameraExtends;
-            CameraModeChanger.instance.OnFirstPersonModeEvent += OnCameraChanged;
-            CameraModeChanger.instance.OnGodViewModeEvent += OnCameraChanged;
+            CV = CameraModeChanger.Instance.CurrentCameraExtends;
+            CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
+            CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
         }
 
         // Update is called once per frame
