@@ -26,7 +26,7 @@ public static class Constants
         public static string SHARE_OBJECTSTORE_PATH = "customScene.php?id=";
         public static string SHARED_VIEW_URL = "https://3d.amsterdam.nl/web/app/index.html?view=";
 
-        public static string TILE_DATA_URL = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
+        public static string TILE_METADATA_URL = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
 #elif DEVELOPMENT_FEATURE
         //version contains branch name, for example feature/new-feature-name
         public static string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/" + Application.version; 
@@ -34,7 +34,7 @@ public static class Constants
         public static string SHARE_OBJECTSTORE_PATH = "customScene.php?id=";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 
-        public static string TILE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/";
+        public static string TILE_METADATA_URL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/";
 #else
     //USE DEVELOPMENT PATH BY DEFAULT
         public const string BASE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/develop/";
@@ -42,6 +42,6 @@ public static class Constants
         public static string SHARE_OBJECTSTORE_PATH = "customScene.php?id=";
         public static string SHARED_VIEW_URL = "https://acc.3d.amsterdam.nl/web/app/index.html?view=";
 
-        public static string TILE_DATA_URL = "https://acc.3d.amsterdam.nl/web/data/buildings/objectdata/";
+        public static string TILE_METADATA_URL = "https://acc.3d.amsterdam.nl/web/data/buildings/objectdata/";
 #endif
 }

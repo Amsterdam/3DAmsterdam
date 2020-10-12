@@ -137,7 +137,7 @@ namespace LayerSystem
 
             if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
             {
-                url = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/" + layers[tileChange.layerIndex].Datasets[lod].path;
+                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
 
                 url = url.Replace("{x}", tileChange.X.ToString());
                 url = url.Replace("{y}", tileChange.Y.ToString());
@@ -229,7 +229,7 @@ namespace LayerSystem
             string dataName = name.Replace(" Instance", "");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") + "-data";
-            string dataURL = "https://acc.3d.amsterdam.nl/web/data/feature-Link-BAGid/buildings/objectdata/" + dataName;
+            string dataURL = Constants.TILE_METADATA_URL + dataName;
             Debug.Log(dataURL);
             ObjectMappingClass data;
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
