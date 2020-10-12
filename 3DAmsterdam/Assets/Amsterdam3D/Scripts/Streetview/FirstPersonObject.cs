@@ -19,11 +19,10 @@ using UnityEngine.UI;
 
     private void Awake()
     {
-        manager = CameraModeChanger.instance;
+        manager = CameraModeChanger.Instance;
         manager.OnGodViewModeEvent += EnableObject;
         manager.OnFirstPersonModeEvent += DisableObject;
         follower = GetComponent<WorldPointFollower>();
-        
     }
 
     private void EnableObject() 
@@ -44,11 +43,6 @@ using UnityEngine.UI;
         }
     }
 
-    private void OnMouseEnter()
-    {
-        
-    }
-
     private void OnDestroy()
     {
         manager.OnGodViewModeEvent -= EnableObject;
@@ -63,6 +57,4 @@ using UnityEngine.UI;
             gameObject.SetActive(false);
         }
     }
-
-  
 }
