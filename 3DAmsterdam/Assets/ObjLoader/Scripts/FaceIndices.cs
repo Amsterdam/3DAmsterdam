@@ -1,4 +1,4 @@
-public struct FaceIndices
+public class FaceIndices
 {
 	public int vertexIndex;
 	public int vertexUV;
