@@ -48,6 +48,7 @@ public class ObjLoad : MonoBehaviour
 	private MaterialData targetMaterialData;
 	private int parseLinePointer = 0;
 
+	[SerializeField]
 	private GeometryBuffer buffer;
 	// Materials
 	private List<MaterialData> materialDataSlots;
@@ -109,6 +110,12 @@ public class ObjLoad : MonoBehaviour
 				//buffer.AddObject(linePart[1].Trim()); We skip object seperation, to reduce object count.
 				//Importing large SketchupUp generated OBJ files results in an enormous amount of objects, making WebGL builds explode. 
 				break;
+			case MTLLIB:
+				mtllib = line.Substring(linePart[0].Length + 1).Trim();
+				break;
+			case USEMTL:
+				buffer.AddSubMeshGroup(linePart[1].Trim());
+				break;
 			case V:
 				buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
 				break;
@@ -143,12 +150,6 @@ public class ObjLoad : MonoBehaviour
 					//ngons warning disabled for WebGL
 					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
 				}*/
-				break;
-			case MTLLIB:
-				mtllib = line.Substring(linePart[0].Length + 1).Trim();
-				break;
-			case USEMTL:
-				buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 		}
 	}
@@ -185,7 +186,6 @@ public class ObjLoad : MonoBehaviour
 					targetMaterialData = new MaterialData();
 					targetMaterialData.Name = linePart[1].Trim();
 					materialDataSlots.Add(targetMaterialData);
-					Debug.Log("Loaded new material from library: " + targetMaterialData.Name);
 					break;
 				case KA:
 					targetMaterialData.Ambient = gc(linePart);
@@ -425,6 +425,7 @@ public class ObjLoad : MonoBehaviour
 		//Clear our large arrays
 		if (mtlLines != null)
 			Array.Clear(mtlLines, 0, mtlLines.Length);			
+
 		Array.Clear(objLines, 0, objLines.Length);
 
 		var materialLibrary = new Dictionary<string, Material>();
@@ -461,6 +462,8 @@ public class ObjLoad : MonoBehaviour
 				gameObjects[i] = go;
 			}
 		}
+
+		buffer.Trace();
 
 		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
 	}
