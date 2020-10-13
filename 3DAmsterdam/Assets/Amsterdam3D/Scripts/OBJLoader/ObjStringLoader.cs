@@ -44,8 +44,8 @@ namespace Amsterdam3D.Parsing
 		{
 			if (!Application.isPlaying) return;
 			StartCoroutine(ParseOBJFromString(
-				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.obj"),
-				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.mtl")
+				File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.obj"),
+				File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.mtl")
 			));
 		}
 #endif
