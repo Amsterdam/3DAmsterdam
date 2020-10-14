@@ -163,7 +163,7 @@ public class GeometryBuffer
 			{
 				allVertices[j] = Vertices[objectData.AllFacesIndices[j].vertexIndex];
 				allUVs[j] = Uvs[objectData.AllFacesIndices[j].vertexUV];
-				allNormals[j] = Uvs[objectData.AllFacesIndices[j].vertexNormal];
+				allNormals[j] = Normals[objectData.AllFacesIndices[j].vertexNormal];
 
 				//set new unique id's
 				var faceIndices = objectData.AllFacesIndices[j];
@@ -193,8 +193,10 @@ public class GeometryBuffer
 				}
 
 				var triangles = new int[firstSubMeshGroup.FaceIndices.Count];
-				for (int j = 0; j < triangles.Length; j++) triangles[j] = j;
-
+				for (int j = 0; j < triangles.Length; j++)
+				{
+					triangles[j] = firstSubMeshGroup.FaceIndices[j].vertexIndex;
+				}
 				mesh.triangles = triangles;
 			}
 			else
@@ -232,7 +234,8 @@ public class GeometryBuffer
 				gameObjects[i].GetComponent<Renderer>().materials = materials;
 			}
 
-			mesh.RecalculateNormals();
+			if(!objectHasNormals)
+				mesh.RecalculateNormals();
 		}
 	}
 }
