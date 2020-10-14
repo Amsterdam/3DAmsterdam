@@ -72,8 +72,6 @@ public class GeometryBuffer
 	{
 		if (currentObjectData.SubMeshGroups.TryGetValue(name, out currentSubMeshGroup))
 		{
-			//This submeshgroup already exists. Select it.
-			Debug.Log("Write faces to existing submesh:" + currentSubMeshGroup.Name);
 			return true;
 		}
 		var newGroup = new SubMeshGroupData();
@@ -83,7 +81,6 @@ public class GeometryBuffer
 			UnnamedGroupIndex++;
 		}
 		newGroup.Name = name;
-		Debug.Log("Created new submesh to write next faces to:" + newGroup.Name);
 		currentObjectData.SubMeshGroups.Add(newGroup.Name, newGroup);
 		currentSubMeshGroup = newGroup;
 
@@ -107,7 +104,6 @@ public class GeometryBuffer
 
 	public void PushFace(FaceIndices f)
 	{
-		Debug.Log("Adding face indice to submesh: " + currentSubMeshGroup.Name);
 		currentSubMeshGroup.FaceIndices.Add(f);
 		currentObjectData.AllFacesIndices.Add(f);
 		if (f.vertexNormal >= 0)
@@ -236,8 +232,7 @@ public class GeometryBuffer
 				gameObjects[i].GetComponent<Renderer>().materials = materials;
 			}
 
-			if(!HasNormals)
-				mesh.RecalculateNormals();
+			mesh.RecalculateNormals();
 		}
 	}
 }
