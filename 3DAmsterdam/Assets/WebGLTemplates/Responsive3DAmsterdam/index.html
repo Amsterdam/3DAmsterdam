@@ -21,7 +21,7 @@
     </div>
   </body>
 
-  <script src="Build/UnityLoader.js"></script>
+  <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
   var unityInstance = UnityLoader.instantiate("gameContainer", "Build/build.json", {onProgress: UnityProgress});
   var fileReader;
@@ -170,4 +170,3 @@ document.addEventListener("onblur", window.focus());
     }   
 	</script>
 </html>
-
