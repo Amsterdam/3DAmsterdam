@@ -47,10 +47,10 @@ namespace Amsterdam3D.CameraMotion
             {
                 rotation = Quaternion.Euler(0.1f, 0.1f, 0.1f);
             }
-            
+            yield return null;
             while (objectToMove.position.y > position.y + 0.1f)
             {
-                if (Input.GetMouseButton(0)) 
+                if (Input.GetMouseButtonDown(0)) 
                 {
                     objectToMove.position = position;
                     objectToMove.rotation = rotation;
