@@ -43,10 +43,11 @@ namespace Amsterdam3D.Parsing
 		private void LoadTestModels()
 		{
 			if (!Application.isPlaying) return;
-			StartCoroutine(ParseOBJFromString(
-				File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.obj"),
-				File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.mtl")
-			));
+				StartCoroutine(ParseOBJFromString(
+					File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.obj"),
+					File.ReadAllText(Application.dataPath + "/../TestModels/Woning11m_test02_Triangulated.mtl")
+				));
+
 		}
 #endif
 		/// <summary>
