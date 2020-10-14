@@ -137,11 +137,7 @@ public class ObjLoad : MonoBehaviour
 					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
 				}
-				else{
-					Debug.Log("--------Non triangulated OBJ");
-					return false; //Return failure. Not triangulated.
-				}
-				/*else if (linePart.Length == 5)
+				else if (linePart.Length == 5)
 				{
 					//quad
 					buffer.PushFace(faces[0]);
@@ -154,7 +150,8 @@ public class ObjLoad : MonoBehaviour
 				else
 				{
 					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
-				}*/
+					return false; //Return failure. Not triangulated.
+				}
 				break;
 		}
 		return true;
