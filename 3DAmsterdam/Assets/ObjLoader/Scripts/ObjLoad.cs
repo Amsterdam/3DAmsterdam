@@ -94,14 +94,16 @@ public class ObjLoad : MonoBehaviour
 			if (parseLinePointer < objLines.Length)
 			{
 				line = objLines[parseLinePointer];
-				ParseObjLine(ref line);
+				if(!ParseObjLine(ref line)){
+					return -1;
+				}
 				parseLinePointer++;
 			}
 		}
 		return objLines.Length - parseLinePointer;
 	}
 
-	private void ParseObjLine(ref string objline)
+	private bool ParseObjLine(ref string objline)
 	{
 		linePart = objline.Trim().Split(linePartSplitChar);
 		switch (linePart[0])
@@ -135,7 +137,11 @@ public class ObjLoad : MonoBehaviour
 					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
 				}
-				else if (linePart.Length == 5)
+				else{
+					Debug.Log("--------Non triangulated OBJ");
+					return false; //Return failure. Not triangulated.
+				}
+				/*else if (linePart.Length == 5)
 				{
 					//quad
 					buffer.PushFace(faces[0]);
@@ -145,13 +151,13 @@ public class ObjLoad : MonoBehaviour
 					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
 				}
-				/*else
+				else
 				{
-					//ngons warning disabled for WebGL
 					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
 				}*/
 				break;
 		}
+		return true;
 	}
 
 	/// <summary>
