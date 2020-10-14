@@ -12,7 +12,8 @@ namespace Amsterdam3D.JavascriptConnection {
             TEXT,
             GRAB,
             GRABBING,
-            ERESIZE
+            ERESIZE,
+            PROGRESS
         }
 
         [SerializeField]
@@ -46,6 +47,9 @@ namespace Amsterdam3D.JavascriptConnection {
                 case Style.ERESIZE:
                     cursorString = "e-resize";
                     break;
+                case Style.PROGRESS:
+                    cursorString = "progress";
+                    break;
             }
             JavascriptMethodCaller.ChangeCursor(cursorString);
         }
@@ -60,5 +64,10 @@ namespace Amsterdam3D.JavascriptConnection {
             //Always change back cursor to CSS default 'auto'
             ChangeCursor(Style.AUTO);
         }
-    }
+
+		public void OnDisable()
+		{
+            ChangeCursor(Style.AUTO);
+        }
+	}
 }

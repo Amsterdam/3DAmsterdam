@@ -18,7 +18,7 @@ public class ObjectManipulation : MonoBehaviour
 	private void Update()
 	{
 		if(screenSize > 0)
-			this.transform.localScale = Vector3.one * Vector3.Distance(CameraControls.Instance.camera.transform.position, transform.position) * screenSize;
+			this.transform.localScale = Vector3.one * Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * screenSize;
 	}
 
 	public virtual void OnMouseDown()
@@ -40,13 +40,13 @@ public class ObjectManipulation : MonoBehaviour
 	/// <returns></returns>
 	public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float planeWorldYPosition)
 	{
-		var ray = CameraControls.Instance.camera.ScreenPointToRay(screenPosition);
+		var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenPosition);
 
 		var planeNormal = Vector3.up;
 		if (AxisConstraint == Vector3.up)
 		{
 			//Up handle uses a plane looking at camera, flattened on the Y, so we can drag something up
-			planeNormal = CameraControls.Instance.camera.transform.position - this.transform.position;
+			planeNormal = CameraModeChanger.Instance.ActiveCamera.transform.position - this.transform.position;
 			planeNormal.y = 0;
 		}
 

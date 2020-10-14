@@ -12,16 +12,6 @@ namespace Amsterdam3D.Rendering
         private bool antiAliasing = true;
         private bool postEffects = true;
 
-        private UniversalAdditionalCameraData universalCameraData;
-
-        [SerializeField]
-        private Volume postProcessingVolume;
-
-        private void Start()
-        {
-            universalCameraData = CameraControls.Instance.camera.GetComponent<UniversalAdditionalCameraData>();
-        }
-
         /// <summary>
         /// Toggles antialiasing on or off.
         /// </summary>
@@ -30,6 +20,8 @@ namespace Amsterdam3D.Rendering
         {
             antiAliasing = antiAliasingOn;
 
+            UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
+            
             //Enables or disables antialiasing on the camera, depending on what kind of camera we use.
             if (universalCameraData)
             {
@@ -47,7 +39,6 @@ namespace Amsterdam3D.Rendering
         public void TogglePostEffects(bool effectsOn)
         {
             postEffects = effectsOn;
-            postProcessingVolume.enabled = postEffects;
 
             SetPostProcessing();
         }
@@ -55,6 +46,8 @@ namespace Amsterdam3D.Rendering
         private void SetPostProcessing()
         {
             //Post processing can be disabled entirely if there are no AA or effects enabled
+            UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
+
             universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
         }
     }

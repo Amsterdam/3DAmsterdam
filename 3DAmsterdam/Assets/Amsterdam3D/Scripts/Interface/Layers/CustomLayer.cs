@@ -21,6 +21,12 @@ namespace Amsterdam3D.Interface
 
         private int maxNameLength = 24;
 
+        private void Start()
+        {
+            //Make sure we always add from the top (minus add button, and annotation group)
+            this.transform.SetSiblingIndex(2);
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             //Catch double click on layer, to move camera to the linked object
@@ -29,11 +35,19 @@ namespace Amsterdam3D.Interface
                 if (layerType == LayerType.ANNOTATION)
                 {
                     Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                    CameraControls.Instance.MoveAndFocusOnLocation(annotation.WorldPosition);
+                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPosition, new Quaternion());
                     annotation.StartEditingText();
                 }
-                else{
-                    CameraControls.Instance.MoveAndFocusOnLocation(LinkedObject.transform.position);
+
+                else if (layerType == LayerType.CAMERA) 
+                {
+                    WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
+                    FirstPersonObject obj = LinkedObject.GetComponent<FirstPersonObject>();
+                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
+                }
+                else
+                {
+                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
                 }
             }
             lastClickTime = Time.time;
@@ -41,9 +55,6 @@ namespace Amsterdam3D.Interface
 
         public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
-            //Move me to first place in parent hierarchy
-            transform.SetSiblingIndex(0);
-
             layerType = type;
             layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
             LinkObject(link);

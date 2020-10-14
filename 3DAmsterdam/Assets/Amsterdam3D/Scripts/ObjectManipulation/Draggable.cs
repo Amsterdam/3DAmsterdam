@@ -68,18 +68,32 @@ public class Draggable : ObjectManipulation
 		//We want a semi 2D offset based on where we clicked on the ground/other colliders
 		clickOffset3D = this.transform.position - GetMousePointOnLayerMask();
 		clickOffset3D.y = 0;
+
+		StartCoroutine(ScrollToChangeOffset());
 	}
 	public override void OnMouseUp()
 	{
 		base.OnMouseUp();
 		collider.enabled = true;
+
+		StopAllCoroutines();
+	}
+
+	private IEnumerator ScrollToChangeOffset()
+	{
+		float scrollDelta;
+		while (true)
+		{
+			scrollDelta = Input.GetAxis("Mouse ScrollWheel");
+			offset += new Vector3(0, -scrollDelta, 0);
+			yield return new WaitForEndOfFrame();
+		}
 	}
 
 	private void FollowMousePointer()
 	{
 		this.transform.position = GetMousePointOnLayerMask() - offset + clickOffset3D;
 	}
-
 
 	/// <summary>
 	/// Returns the mouse position on the layer.
@@ -90,14 +104,14 @@ public class Draggable : ObjectManipulation
 	{
 		RaycastHit hit;
 
-		var ray = CameraControls.Instance.camera.ScreenPointToRay(Input.mousePosition);
-		if (snapToGround && Physics.Raycast(ray, out hit, CameraControls.Instance.camera.farClipPlane, dropTargetLayerMask.value))
+		var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+		if (snapToGround && Physics.Raycast(ray, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 		{
 			return hit.point;
 		}
 		else
 		{
-			return CameraControls.Instance.GetMousePositionInWorld();
+			return CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
 		}
 	}
 }

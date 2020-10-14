@@ -117,21 +117,38 @@ namespace Amsterdam3D.Interface
 			{
 				return;
 			}
-			else if (opacity < 1.0f)
-			{
-				targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
-				var color = colorImage.color;
-				color.a = materialOpacity;
-				targetMaterial.SetFloat("_Surface", 1); //1 Alpha
-				targetMaterial.SetColor("_BaseColor", color);
+			else{
+				materialOpacity = opacity;
+				SwitchShaderAccordingToOpacity();
 			}
-			else {
-				targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
-				targetMaterial.SetFloat("_Surface", 0); //0 Opaque
-				targetMaterial.SetColor("_BaseColor", colorImage.color);
-			}
+		}
 
-			materialOpacity = opacity;
+		private void SwitchShaderAccordingToOpacity()
+		{
+			if (materialOpacity < 1.0f)
+			{
+				SwapShaderToTransparent();
+			}
+			else
+			{
+				SwapShaderToOpaque();
+			}
+		}
+
+		private void SwapShaderToOpaque()
+		{
+			targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
+			targetMaterial.SetFloat("_Surface", 0); //0 Opaque
+			targetMaterial.SetColor("_BaseColor", colorImage.color);
+		}
+
+		private void SwapShaderToTransparent()
+		{
+			targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
+			var color = colorImage.color;
+			color.a = materialOpacity;
+			targetMaterial.SetFloat("_Surface", 1); //1 Alpha
+			targetMaterial.SetColor("_BaseColor", color);
 		}
 	}
 }

@@ -78,6 +78,8 @@ namespace Amsterdam3D.Interface.Sharing
 
 			//Check if we got some tokens for model upload, and download them 1 at a time.
 			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
+			sceneSerializer.sharedSceneId = serverReturn.sceneId;
+
 			if (serverReturn.modelUploadTokens.Length > 0)
 			{
 				progressBar.SetMessage("Objecten opslaan..");
@@ -94,7 +96,6 @@ namespace Amsterdam3D.Interface.Sharing
 					Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
 
 					currentModel++;
-					sceneSerializer.sharedSceneId = serverReturn.sceneId;
 					var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
 					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
 					yield return new WaitForSeconds(0.2f);

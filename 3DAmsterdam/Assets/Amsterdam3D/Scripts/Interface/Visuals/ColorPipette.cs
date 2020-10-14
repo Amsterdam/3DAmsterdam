@@ -54,7 +54,7 @@ public class ColorPipette : MonoBehaviour
         parentCanvasGraphicRaycaster.enabled = false;
 
         //We create a new texture once, for the sake of performance
-        viewRectangle = CameraControls.Instance.camera.pixelRect;
+        viewRectangle = CameraModeChanger.Instance.ActiveCamera.pixelRect;
         screenTexture = new Texture2D((int)viewRectangle.width, (int)viewRectangle.height, TextureFormat.RGB24, false);
 
         activeImageIcon.color = activeIconColor;

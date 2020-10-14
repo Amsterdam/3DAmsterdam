@@ -21,8 +21,15 @@ namespace Amsterdam3D.Sharing
 
         [SerializeField]
         private RectTransform annotationsContainer;
+
+        [SerializeField]
+        private RectTransform cameraContainer;
+
         [SerializeField]
         private Annotation annotationPrefab;
+
+        [SerializeField]
+        GameObject cameraPrefab;
 
         [SerializeField]
         private SunSettings sunSettings;
@@ -35,6 +42,9 @@ namespace Amsterdam3D.Sharing
         private InterfaceLayer groundLayer;
 
         [SerializeField]
+        private RectTransform cameraParent;
+
+        [SerializeField]
         private string urlViewIDVariable = "?view=";
 
         private List<GameObject> customMeshObjects;
@@ -42,7 +52,9 @@ namespace Amsterdam3D.Sharing
         public string sharedSceneId = "";
 
         [SerializeField]
-        private Material sourceMaterialForParsedMeshes;
+        private Material opaqueMaterialSource;
+        [SerializeField]
+        private Material transparentMaterialSource;
 
         [Tooltip("Remove these objects when we are looking at a shared scene with editing allowed")]
         [SerializeField]
@@ -105,8 +117,8 @@ namespace Amsterdam3D.Sharing
         {
             HideObjectsInViewMode(scene.allowSceneEdit);
 
-            CameraControls.Instance.camera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
-            CameraControls.Instance.camera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
+            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
+            CameraModeChanger.Instance.ActiveCamera.transform.rotation = new Quaternion(scene.camera.rotation.x, scene.camera.rotation.y, scene.camera.rotation.z, scene.camera.rotation.w);
 
             //Apply sunlight settings
             sunSettings.SetDateTimeFromString(scene.sunTimeStamp);
@@ -115,6 +127,10 @@ namespace Amsterdam3D.Sharing
             buildingsLayer.Active = scene.fixedLayers.buildings.active;
             treesLayer.Active = scene.fixedLayers.trees.active;
             groundLayer.Active = scene.fixedLayers.ground.active;
+
+            buildingsLayer.EnableOptions(scene.allowSceneEdit);
+            treesLayer.EnableOptions(scene.allowSceneEdit);
+            groundLayer.EnableOptions(scene.allowSceneEdit);
 
             //Create annotations
             for (int i = 0; i < scene.annotations.Length; i++)
@@ -125,16 +141,14 @@ namespace Amsterdam3D.Sharing
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
                 annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
+                annotation.AllowEdit = scene.allowSceneEdit;
 
                 //Create a custom annotation layer
                 CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION, false);
                 newCustomAnnotationLayer.RenameLayer(annotationData.bodyText);
                 annotation.interfaceLayer = newCustomAnnotationLayer;
+                newCustomAnnotationLayer.ViewingOnly(!scene.allowSceneEdit);
 
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomAnnotationLayer.ViewingOnly(true);
-                }
                 newCustomAnnotationLayer.Active = annotationData.active;
             }
 
@@ -147,15 +161,28 @@ namespace Amsterdam3D.Sharing
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
-                if (!scene.allowSceneEdit)
-                {
-                    newCustomLayer.ViewingOnly(true);
-                }
+                newCustomLayer.ViewingOnly(!scene.allowSceneEdit);
+                newCustomLayer.EnableOptions(scene.allowSceneEdit);
+
                 newCustomLayer.Active = customLayer.active;
                 newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
 
                 StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
+            }
+
+            // create all custom camera points
+            for (int i = 0; i < scene.cameraPoints.Length; i++) 
+            {
+                SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
+                GameObject cameraObject = Instantiate(cameraPrefab);
+                cameraObject.name = cameraPoint.name;
+                cameraObject.transform.SetParent(cameraParent, false);
+                cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
+                cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
+                cameraObject.GetComponent<FirstPersonObject>().placed = true;
+                CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
+                newCustomLayer.Active = true;
             }
 
             //Set material properties for fixed layers
@@ -174,7 +201,8 @@ namespace Amsterdam3D.Sharing
             Material[] materials = new Material[customLayer.materials.Length];
             foreach (SerializableScene.Material material in customLayer.materials)
             {
-                var newMaterial = new Material(sourceMaterialForParsedMeshes);
+                var newMaterial = (material.a == 1) ? new Material(opaqueMaterialSource) : new Material(transparentMaterialSource);
+                newMaterial.SetFloat("_Surface", (material.a == 1) ? 0 : 1); //0 Opaque, 1 Alpha
                 newMaterial.SetColor("_BaseColor", new Color(material.r, material.g, material.b, material.a));
                 newMaterial.name = material.slotName;
                 materials[material.slotId] = newMaterial;
@@ -265,11 +293,24 @@ namespace Amsterdam3D.Sharing
         /// <param name="fixedLayerProperties">The data object containing the loaded properties</param>
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
         {
+            //Apply all materials
             for (int i = 0; i < fixedLayerProperties.materials.Length; i++)
             {
                 var materialProperties = fixedLayerProperties.materials[i];
-                targetLayer.SetMaterialProperties(materialProperties.slotId, new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
+
+                Material materialInSlot = targetLayer.GetMaterialFromSlot(materialProperties.slotId);
+                if(materialProperties.a == 1)
+                {
+                    materialInSlot.CopyPropertiesFromMaterial(opaqueMaterialSource);
+                    materialInSlot.SetFloat("_Surface", 0); //0 Opaque
+                }
+                else{
+                    materialInSlot.CopyPropertiesFromMaterial(transparentMaterialSource);
+                    materialInSlot.SetFloat("_Surface", 1); //0 Alpha
+                }
+                materialInSlot.SetColor("_BaseColor",new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }
+
             targetLayer.UpdateLayerPrimaryColor();
         }
 
@@ -316,8 +357,8 @@ namespace Amsterdam3D.Sharing
         /// <returns></returns>
         public SerializableScene SerializeScene(bool allowSceneEditAfterSharing = false)
         {
-            var cameraPosition = CameraControls.Instance.camera.transform.position;
-            var cameraRotation = CameraControls.Instance.camera.transform.rotation;
+            var cameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
+            var cameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
             var dataStructure = new SerializableScene
             {
@@ -334,6 +375,7 @@ namespace Amsterdam3D.Sharing
                 },
                 annotations  = GetAnnotations(),
                 customLayers = GetCustomMeshLayers(),
+                cameraPoints = GetCameras(),
                 fixedLayers = new SerializableScene.FixedLayers {
                     buildings = new SerializableScene.FixedLayer {
                         active = buildingsLayer.Active,
@@ -374,6 +416,28 @@ namespace Amsterdam3D.Sharing
             }
 
             return annotationsData.ToArray();
+        }
+
+
+        private SerializableScene.CameraPoint[] GetCameras()
+        {
+              var annotations = cameraContainer.GetComponentsInChildren<CustomLayer>(true);
+              var annotationsData = new List<SerializableScene.CameraPoint>();
+              
+
+              foreach (var camera in annotations)
+              {
+                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
+                var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
+                annotationsData.Add(new SerializableScene.CameraPoint
+                {
+                    position = follower.WorldPosition,
+                    rotation = firstPersonObject.savedRotation,
+                    name = camera.LinkedObject.name
+                });
+              }
+
+              return annotationsData.ToArray(); 
         }
 
         /// <summary>
@@ -434,7 +498,7 @@ namespace Amsterdam3D.Sharing
                     g = color.g,
                     b = color.b,
                     a = color.a
-                }); ;
+                });
             }
             return materialData.ToArray();
         }

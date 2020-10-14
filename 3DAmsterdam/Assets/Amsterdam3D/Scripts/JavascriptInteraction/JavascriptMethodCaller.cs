@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Runtime.InteropServices;
-using Amsterdam3D.UserLayers;
 
 namespace Amsterdam3D.JavascriptConnection
 {
-	public class JavascriptMethodCaller : MonoBehaviour
+	public class JavascriptMethodCaller
 	{
-
 		[DllImport("__Internal")]
-		private static extern void UploadButtonCSSDisplay(string display = "none");
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", int x = 0, int y = 0, int width = 0, int height = 0);
 
 		[DllImport("__Internal")]
 		private static extern string FetchOBJData();
@@ -26,9 +24,19 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
+		private static extern string ShowAlertMessage(string alertMessage = "");
+
+		[DllImport("__Internal")]
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
-		
+		/// <summary>
+		/// Some interface items are drawn as HTML DOM elements on top of the Unity3D canvas.
+		/// This methods scales those elements with the Unity canvas.
+		/// </summary>
+		/// <param name="scale">The new multiplier value for the UI scale</param>
+		/// <returns></returns>
+		[DllImport("__Internal")]
+		private static extern string ChangeInterfaceScale(float scale);
 
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
@@ -37,10 +45,10 @@ namespace Amsterdam3D.JavascriptConnection
 		/// Faking a click through JavaScript is not allowed.
 		/// </summary>
 		/// <param name="display">Sets the hitarea CSS of the input HTML node to inline, or none</param>
-		public static void DisplayOBJUploadButtonHitArea(bool display)
+		public static void DisplayWithID(string id, bool display, int x = 0, int y = 0, int width = 0, int height = 0 )
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-         UploadButtonCSSDisplay((display) ? "inline" : "none");
+			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
 #endif
 		}
 
@@ -64,10 +72,25 @@ namespace Amsterdam3D.JavascriptConnection
 		{
 			return FetchMTLData();
 		}
+
+		public static void SetInterfaceScale(float scale)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			ChangeInterfaceScale(scale);
+#endif
+		}
+
 		public static void ChangeCursor(string cursorName)
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
 				SetCSSCursor(cursorName);
+#endif
+		}
+
+		public static void Alert(string alertMessage)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+				ShowAlertMessage(alertMessage);
 #endif
 		}
 

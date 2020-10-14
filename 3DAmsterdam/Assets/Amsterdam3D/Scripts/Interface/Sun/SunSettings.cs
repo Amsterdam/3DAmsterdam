@@ -73,8 +73,8 @@ public class SunSettings : MonoBehaviour
         monthInput.addedOffset += ChangedMonth;
         yearInput.addedOffset += ChangedYear;
 
-        //Check if we loaded a shared scene, and got our time from there
-        if (!usingSharedSceneTime || dateTimeNow != DateTime.MinValue) 
+        //Check if we loaded a shared scene, and got our time from there.
+        if (!usingSharedSceneTime || dateTimeNow == DateTime.MinValue) 
             ResetTimeToNow();
     }
 

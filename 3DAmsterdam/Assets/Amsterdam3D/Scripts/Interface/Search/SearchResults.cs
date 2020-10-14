@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface.Search
@@ -12,14 +13,23 @@ namespace Amsterdam3D.Interface.Search
 		private RectTransform searchResultsContainer;
 
 		[SerializeField]
+		private GameObject noResultsWarning;
+
+		[SerializeField]
 		private SearchResult searchResultPrefab;
+
+		private SearchResult selectedResultItem;
 
 		[SerializeField]
 		private int maxSearchResults = 8;
 
-		private SearchResult firstResultItem;
 		private SearchField searchField;
 
+		/// <summary>
+		/// Draws all the search result suggestions in the list.
+		/// </summary>
+		/// <param name="results">The serialized results list from the search API</param>
+		/// <param name="usedInputField">The search field we used to find these results</param>
 		public void DrawResults(SearchData.Response.Docs[] results, SearchField usedInputField)
 		{
 			searchField = usedInputField;
@@ -39,39 +49,75 @@ namespace Amsterdam3D.Interface.Search
 			}
 		}
 
-		private void Update()
-		{
-			if(Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
-			{
-				SelectFirstItem();
-			}
-		}
-
+		/// <summary>
+		/// Draw the list with all the search results/suggestions
+		/// </summary>
+		/// <param name="show">Showing enables the list GameObject</param>
 		public void ShowResultsList(bool show)
 		{
 			searchResultsContainer.gameObject.SetActive(show);
 		}
 
+		/// <summary>
+		/// Fill the searchtext with the contents of the suggestion
+		/// </summary>
+		/// <param name="inputText">The new input text value</param>
 		public void AutocompleteSearchText(string inputText)
 		{
 			searchField.SearchInput = inputText;
 		}
 
+		/// <summary>
+		/// Destroys all the results in the list
+		/// </summary>
 		public void ClearOldResults()
 		{
-			firstResultItem = null;
 			foreach (Transform child in searchResultsContainer)
 				Destroy(child.gameObject);
 		}
 
-		public void SelectFirstItem()
+		/// <summary>
+		/// Searches the active suggestion/search result, or shows a warning when its empty
+		/// </summary>
+		public void ApplySearch()
 		{
-			if (firstResultItem)
+			//Check if the current EventSystem selection is one of the search results.
+			//Otherwise, leave it as it is.
+			var currentFocusObject = EventSystem.current.currentSelectedGameObject?.GetComponent<SearchResult>();
+			if (currentFocusObject) selectedResultItem = currentFocusObject;
+
+			if (selectedResultItem)
 			{
 				ShowResultsList(true); //The results contain the coroutines, make sure they are active
-				firstResultItem.ClickedResult();
-				firstResultItem.GetComponent<Button>().Select();
+				selectedResultItem.ClickedResult();
+				selectedResultItem.GetComponent<Button>().Select();
 			}
+			else
+			{
+				//Show a warning that now results have been found.
+				NoResultsWarning();
+			}
+		}
+
+		/// <summary>
+		/// Draws a warning for 5 seconds showing no search results were found
+		/// </summary>
+		private void NoResultsWarning()
+		{
+			noResultsWarning.SetActive(true);
+			StopAllCoroutines();
+			StartCoroutine(HideWarningAfterTimer());
+		}
+
+		IEnumerator HideWarningAfterTimer()
+		{
+			yield return new WaitForSeconds(5.0f);
+			HideWarning();
+		}
+
+		public void HideWarning()
+		{
+			noResultsWarning.SetActive(false);
 		}
 
 		private void NoSearchResults()
@@ -79,6 +125,12 @@ namespace Amsterdam3D.Interface.Search
 			Debug.Log("No search results");
 		}
 
+		/// <summary>
+		/// Spawns a new search item in the suggestions/results list, and sets focus on the selected one.
+		/// </summary>
+		/// <param name="result">The serialized results list from the search API</param>
+		/// <param name="searchTerm">The text used to get there results</param>
+		/// <param name="select">Focus on this result with the EventSystem</param>
 		public void CreateNewResult(SearchData.Response.Docs result, string searchTerm, bool select)
 		{
 			var resultName = result.weergavenaam.Replace("\"", "");
@@ -96,7 +148,10 @@ namespace Amsterdam3D.Interface.Search
 			newSearchResult.ID = resultID;
 			newSearchResult.ParentList = this;
 
-			if (select) firstResultItem = newSearchResult;
+			if (select)
+			{
+				selectedResultItem = newSearchResult;
+			}
 		}
 	}
 }
