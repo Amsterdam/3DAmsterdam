@@ -11,31 +11,32 @@ public class GeometryBuffer
 	public List<Vector3> Normals;
 	public int UnnamedGroupIndex = 1; // naming index for unnamed group. like "Unnamed-1"
 
-	ObjectData current;
+	SubMeshGroupData currentSubMeshGroup;
+	ObjectData currentObjectData;
+
 	class ObjectData
 	{
 		public string Name;
 		public Dictionary<string, SubMeshGroupData> SubMeshGroups;
-		public List<FaceIndices> AllFaces;
+		public List<FaceIndices> AllFacesIndices;
 		public int NormalCount;
 		public ObjectData()
 		{
 			SubMeshGroups = new Dictionary<string, SubMeshGroupData>();
-			AllFaces = new List<FaceIndices>();
+			AllFacesIndices = new List<FaceIndices>();
 			NormalCount = 0;
 		}
 	}
 
-	SubMeshGroupData currentSubMeshGroup;
 	class SubMeshGroupData
 	{
 		public string Name;
-		public List<FaceIndices> Faces;
+		public List<FaceIndices> FaceIndices;
 		public SubMeshGroupData()
 		{
-			Faces = new List<FaceIndices>();
+			FaceIndices = new List<FaceIndices>();
 		}
-		public bool IsEmpty { get { return Faces.Count == 0; } }
+		public bool IsEmpty { get { return FaceIndices.Count == 0; } }
 	}
 
 	public GeometryBuffer()
@@ -44,7 +45,7 @@ public class GeometryBuffer
 		var d = new ObjectData();
 		d.Name = "default";
 		Objects.Add(d);
-		current = d;
+		currentObjectData = d;
 
 		Vertices = new List<Vector3>();
 		Uvs = new List<Vector2>();
@@ -54,7 +55,7 @@ public class GeometryBuffer
 	public void AddObject(string name)
 	{
 		Debug.Log("Adding new object " + name + ". Current is empty: " + IsEmpty);
-		if (IsEmpty) Objects.Remove(current);
+		if (IsEmpty) Objects.Remove(currentObjectData);
 
 		// Object Data
 		var newObjectData = new ObjectData();
@@ -64,16 +65,15 @@ public class GeometryBuffer
 		// Group Data
 		AddSubMeshGroup("default");
 
-		current = newObjectData;
+		currentObjectData = newObjectData;
 	}
 
 	public bool AddSubMeshGroup(string name)
 	{
-		if (current.SubMeshGroups.TryGetValue(name, out currentSubMeshGroup))
-		{	
+		if (currentObjectData.SubMeshGroups.TryGetValue(name, out currentSubMeshGroup))
+		{
 			return true;
 		}
-
 		var newGroup = new SubMeshGroupData();
 		if (name == null)
 		{
@@ -81,7 +81,7 @@ public class GeometryBuffer
 			UnnamedGroupIndex++;
 		}
 		newGroup.Name = name;
-		current.SubMeshGroups.Add(newGroup.Name, newGroup);
+		currentObjectData.SubMeshGroups.Add(newGroup.Name, newGroup);
 		currentSubMeshGroup = newGroup;
 
 		return false;
@@ -104,11 +104,11 @@ public class GeometryBuffer
 
 	public void PushFace(FaceIndices f)
 	{
-		currentSubMeshGroup.Faces.Add(f);
-		current.AllFaces.Add(f);
+		currentSubMeshGroup.FaceIndices.Add(f);
+		currentObjectData.AllFacesIndices.Add(f);
 		if (f.vertexNormal >= 0)
 		{
-			current.NormalCount++;
+			currentObjectData.NormalCount++;
 		}
 	}
 
@@ -123,7 +123,7 @@ public class GeometryBuffer
 			Debug.Log(od.Name + " has " + od.SubMeshGroups.Count + " group(s)");
 			foreach (KeyValuePair<string,SubMeshGroupData> subMeshGroupData in od.SubMeshGroups)
 			{
-				Debug.Log(od.Name + "/" + subMeshGroupData.Value.Name + " has " + subMeshGroupData.Value.Faces.Count + " faces(s)");
+				Debug.Log(od.Name + "/" + subMeshGroupData.Value.Name + " has " + subMeshGroupData.Value.FaceIndices.Count/3 + " tri's");
 			}
 		}
 	}
@@ -151,31 +151,32 @@ public class GeometryBuffer
 			bool objectHasNormals = (HasNormals && objectData.NormalCount > 0);
 
 			if (objectData.Name != "default") gameObjects[i].name = objectData.Name;
-			// Debug.Log("PopulateMeshes object name: " + od.Name);
+		
+			//Some OBJ's will reuse verts, uvs or normals.
+			//Our faces are in the lead. Lets make copies and rewrite ID's so our 
+			//Unity arrays can all be the same length.
+			var allVertices = new Vector3[objectData.AllFacesIndices.Count];
+			var allUVs = new Vector3[objectData.AllFacesIndices.Count];
+			var allNormals = new Vector3[objectData.AllFacesIndices.Count];
 
-			var tvertices = new Vector3[objectData.AllFaces.Count];
-			var tuvs = new Vector2[objectData.AllFaces.Count];
-			var tnormals = new Vector3[objectData.AllFaces.Count];
-
-			int k = 0;
-			foreach (FaceIndices fi in objectData.AllFaces)
+			for (int j = 0; j < objectData.AllFacesIndices.Count; j++)
 			{
-				if (k >= MaxVerticesLimit)
-				{
-					Debug.LogWarning("Maximum vertex number for a mesh exceeded for object: " + gameObjects[i].name);
-					break;
-				}
-				tvertices[k] = Vertices[fi.vertexIndex];
-				if (HasUVs) tuvs[k] = Uvs[fi.vertexUV];
-				if (HasNormals && fi.vertexNormal >= 0) tnormals[k] = Normals[fi.vertexNormal];
-				k++;
+				allVertices[j] = Vertices[objectData.AllFacesIndices[j].vertexIndex];
+				allUVs[j] = Uvs[objectData.AllFacesIndices[j].vertexUV];
+				allNormals[j] = Normals[objectData.AllFacesIndices[j].vertexNormal];
+
+				//set new unique id's
+				var faceIndices = objectData.AllFacesIndices[j];
+				faceIndices.vertexIndex = j;
+				faceIndices.vertexUV = j;
+				faceIndices.vertexNormal = j;
 			}
 
 			Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
 			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; //Supports 4 billion verts instead of 65535
-			mesh.vertices = tvertices;
-			if (HasUVs) mesh.uv = tuvs;
-			if (objectHasNormals) mesh.normals = tnormals;
+			mesh.vertices = allVertices;
+			mesh.SetUVs(0, allUVs);
+			mesh.SetNormals(allNormals);
 
 			if (objectData.SubMeshGroups.Count == 1)
 			{
@@ -191,9 +192,11 @@ public class GeometryBuffer
 					gameObjects[i].GetComponent<Renderer>().material = defaultMaterial;
 				}
 
-				var triangles = new int[firstSubMeshGroup.Faces.Count];
-				for (int j = 0; j < triangles.Length; j++) triangles[j] = j;
-
+				var triangles = new int[firstSubMeshGroup.FaceIndices.Count];
+				for (int j = 0; j < triangles.Length; j++)
+				{
+					triangles[j] = firstSubMeshGroup.FaceIndices[j].vertexIndex;
+				}
 				mesh.triangles = triangles;
 			}
 			else
@@ -201,13 +204,11 @@ public class GeometryBuffer
 				int subMeshCount = objectData.SubMeshGroups.Count;
 				var materials = new Material[subMeshCount];
 				mesh.subMeshCount = subMeshCount;
-				int c = 0;
-				int submeshIndex = -1;
+
+				int submeshIndex = 0;
 				Debug.Log("PopulateMeshes group count: " + subMeshCount);
 				foreach (KeyValuePair<string, SubMeshGroupData> subMesh in objectData.SubMeshGroups)
 				{
-					submeshIndex++;
-
 					string matName = subMesh.Value.Name;
 					if (materialDictionary.ContainsKey(matName))
 					{
@@ -220,19 +221,21 @@ public class GeometryBuffer
 						Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
 					}
 
-					var triangles = new int[subMesh.Value.Faces.Count];
-					int l = subMesh.Value.Faces.Count + c;
-					int s = 0;
-					for (; c < l; c++, s++) triangles[s] = c;
+					var triangles = new int[subMesh.Value.FaceIndices.Count];
+					for (int v = 0; v < subMesh.Value.FaceIndices.Count; v++)
+					{
+						triangles[v] = subMesh.Value.FaceIndices[v].vertexIndex;
+					}
+
 					mesh.SetTriangles(triangles, submeshIndex);
+					submeshIndex++;
 				}
 
 				gameObjects[i].GetComponent<Renderer>().materials = materials;
 			}
-			if (!objectHasNormals)
-			{
+
+			if(!objectHasNormals)
 				mesh.RecalculateNormals();
-			}
 		}
 	}
 }

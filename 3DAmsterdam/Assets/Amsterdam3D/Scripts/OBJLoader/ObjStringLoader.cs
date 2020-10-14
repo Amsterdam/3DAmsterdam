@@ -43,10 +43,11 @@ namespace Amsterdam3D.Parsing
 		private void LoadTestModels()
 		{
 			if (!Application.isPlaying) return;
-			StartCoroutine(ParseOBJFromString(
-				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.obj"),
-				File.ReadAllText(Application.dataPath + "/../TestModels/testModel.mtl")
-			));
+				StartCoroutine(ParseOBJFromString(
+					File.ReadAllText(Application.dataPath + "/../TestModels/Text.obj"),
+					File.ReadAllText(Application.dataPath + "/../TestModels/Text.mtl")
+				));
+
 		}
 #endif
 		/// <summary>
@@ -103,27 +104,39 @@ namespace Amsterdam3D.Parsing
 			//Parse the obj line by line
 			newOBJLoader.SetGeometryData(ref objText);
 			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+
+			var parsingSucceeded = true;
 			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
 			totalLines = remainingLinesToParse;
 			while (remainingLinesToParse > 0)
 			{
 				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
-				percentage = 1.0f - (remainingLinesToParse / totalLines);
-				loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-				loadingObjScreen.ProgressBar.Percentage(percentage);
+				if (remainingLinesToParse == -1)
+				{
+					//Failed to parse the line. Probably not a triangulated OBJ
+					parsingSucceeded = false;
+					JavascriptMethodCaller.Alert("Het is niet gelukt dit model te importeren.\nZorg dat de OBJ is opgeslagen met 'Triangulated' als instelling.");
+				}
+				else
+				{
+					percentage = 1.0f - (remainingLinesToParse / totalLines);
+					loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+					loadingObjScreen.ProgressBar.Percentage(percentage);
+				}
 				yield return null;
 			}
+			if (parsingSucceeded)
+			{
+				newOBJLoader.Build(defaultLoadedObjectsMaterial);
 
-			newOBJLoader.Build(defaultLoadedObjectsMaterial);
-			
-			//Make interactable
-			newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
-;			newOBJLoader.name = objModelName;
-			newOBJLoader.gameObject.AddComponent<Draggable>();
-			newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
-			
-			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				//Make interactable
+				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+				newOBJLoader.name = objModelName;
+				newOBJLoader.gameObject.AddComponent<Draggable>();
+				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 
+				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+			}
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
 

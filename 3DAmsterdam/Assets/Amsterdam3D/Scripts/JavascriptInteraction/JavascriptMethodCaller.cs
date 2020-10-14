@@ -24,6 +24,9 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
+		private static extern string ShowAlertMessage(string alertMessage = "");
+
+		[DllImport("__Internal")]
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
 		/// <summary>
@@ -81,6 +84,13 @@ namespace Amsterdam3D.JavascriptConnection
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
 				SetCSSCursor(cursorName);
+#endif
+		}
+
+		public static void Alert(string alertMessage)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+				ShowAlertMessage(alertMessage);
 #endif
 		}
 
