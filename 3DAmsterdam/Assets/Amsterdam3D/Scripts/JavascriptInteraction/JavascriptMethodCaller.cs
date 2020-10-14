@@ -38,6 +38,10 @@ namespace Amsterdam3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string ChangeInterfaceScale(float scale);
 
+
+		[DllImport("__Internal")]
+		private static extern void LockCursorInternal();
+
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
 		/// The user will click the hidden file input dialog in the index.html template file that is drawn on top of our WebGL canvas.
@@ -100,6 +104,14 @@ namespace Amsterdam3D.JavascriptConnection
 			Application.OpenURL(url);
 #elif UNITY_WEBGL && !UNITY_EDITOR
 			OpenURLInNewWindow(url);
+#endif
+		}
+		public static void LockCursor() 
+		{
+#if UNITY_EDITOR
+			Cursor.lockState = CursorLockMode.Locked;
+#elif UNITY_WEBGL && !UNITY_EDITOR
+			LockCursorInternal();
 #endif
 		}
 	}

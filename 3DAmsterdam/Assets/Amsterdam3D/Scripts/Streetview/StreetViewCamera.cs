@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using Amsterdam3D.JavascriptConnection;
 
 public class StreetViewCamera : MonoBehaviour, ICameraControls
 {
@@ -22,12 +23,26 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
     private void OnEnable()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         camera = GetComponent<Camera>();
-        Layers.SetActive(false);
-        MainMenu.SetActive(false);
+        if (!inMenus)
+        {
+            Layers.SetActive(false);
+            MainMenu.SetActive(false);
+        }
+    }
+    private void OnDisable()
+    {
         inMenus = false;
+    }
+
+    public void EnableMenus() 
+    {
+        inMenus = true;
+        Layers.SetActive(true);
+        MainMenu.SetActive(true);
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+
     }
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation) 
@@ -60,22 +75,31 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             rotation.x += -Input.GetAxis("Mouse Y") * speed;
             rotation.x = ClampAngle(rotation.x, -90, 90);
             transform.eulerAngles = (Vector2)rotation;
-
+                
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                inMenus = true;
-                Layers.SetActive(true);
-                MainMenu.SetActive(true);
+                EnableMenus();
+
+            }
+
+            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked) 
+            {
+                JavascriptMethodCaller.LockCursor();
             }
         }
         else 
         {
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EnableMenus();
+
+            }
+
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 
             {
                 Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                JavascriptMethodCaller.LockCursor();
                 Layers.SetActive(false);
                 MainMenu.SetActive(false);
                 inMenus = false;

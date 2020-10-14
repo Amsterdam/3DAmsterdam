@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Amsterdam3D.CameraMotion;
+using UnityEngine.EventSystems;
+
 public class StreetViewButton : MonoBehaviour
 {
     private Button firstPersonPrefabButton;
@@ -32,5 +34,15 @@ public class StreetViewButton : MonoBehaviour
     private void EnableObject() 
     {
         gameObject.SetActive(true);
+    }
+}
+
+
+public class CursorLockButton : UnityEngine.UI.Button 
+{
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        base.OnPointerDown(eventData);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }
