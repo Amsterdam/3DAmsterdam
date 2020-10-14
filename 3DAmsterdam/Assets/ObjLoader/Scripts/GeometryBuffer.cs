@@ -162,8 +162,12 @@ public class GeometryBuffer
 			for (int j = 0; j < objectData.AllFacesIndices.Count; j++)
 			{
 				allVertices[j] = Vertices[objectData.AllFacesIndices[j].vertexIndex];
-				allUVs[j] = Uvs[objectData.AllFacesIndices[j].vertexUV];
-				allNormals[j] = Normals[objectData.AllFacesIndices[j].vertexNormal];
+				
+				if(HasUVs)
+					allUVs[j] = Uvs[objectData.AllFacesIndices[j].vertexUV];
+
+				if(HasNormals)
+					allNormals[j] = Normals[objectData.AllFacesIndices[j].vertexNormal];
 
 				//set new unique id's
 				var faceIndices = objectData.AllFacesIndices[j];
@@ -175,8 +179,10 @@ public class GeometryBuffer
 			Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
 			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; //Supports 4 billion verts instead of 65535
 			mesh.vertices = allVertices;
-			mesh.SetUVs(0, allUVs);
-			mesh.SetNormals(allNormals);
+			if (HasUVs)
+				mesh.SetUVs(0, allUVs);
+			if(HasNormals)
+				mesh.SetNormals(allNormals);
 
 			if (objectData.SubMeshGroups.Count == 1)
 			{
