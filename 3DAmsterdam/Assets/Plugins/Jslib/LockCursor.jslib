@@ -5,6 +5,5 @@ mergeInto(LibraryManager.library, {
 	*/
 	LockCursorInternal: function() {
 		 document.getElementById("#canvas").requestPointerLock();
-         console.log("In cursor lock internal js function");
 	}
 });

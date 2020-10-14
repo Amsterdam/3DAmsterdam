@@ -96,8 +96,6 @@ namespace Amsterdam3D.JavascriptConnection
 			OpenURLInNewWindow(url);
 #endif
 		}
-
-
 		public static void LockCursor() 
 		{
 #if UNITY_EDITOR

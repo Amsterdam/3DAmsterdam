@@ -24,11 +24,16 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     private void OnEnable()
     {
         camera = GetComponent<Camera>();
-        Layers.SetActive(false);
-        MainMenu.SetActive(false);
+        if (!inMenus)
+        {
+            Layers.SetActive(false);
+            MainMenu.SetActive(false);
+        }
+    }
+    private void OnDisable()
+    {
         inMenus = false;
     }
-
 
     public void EnableMenus() 
     {
