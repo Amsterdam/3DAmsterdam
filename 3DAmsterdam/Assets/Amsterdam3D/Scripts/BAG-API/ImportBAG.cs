@@ -69,16 +69,18 @@ public class ImportBAG : ImportAPI
                     case RetrieveType.NummeraanduidingInstance:
                         // adds the number instances to the premises and retrieves all info such as zip, adress number etc for the current chosen premises
                         Pand.PandInstance tempPand = JsonUtility.FromJson<Pand.PandInstance>(dataResult);
-                        foreach (Pand.PandResults result in hoofdData.results)
-                        {
-                            if (result.landelijk_id == tempPand.nummeraanduidingidentificatie)
+                        if (hoofdData.results != null){ 
+                            foreach (Pand.PandResults result in hoofdData.results)
                             {
-                                // checks if the id matches and then adds the data
-                                result.nummeraanduiding = tempPand;
-                                // adds accomodation data to the current adress
-                                StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
+                                if (result.landelijk_id == tempPand.nummeraanduidingidentificatie)
+                                {
+                                    // checks if the id matches and then adds the data
+                                    result.nummeraanduiding = tempPand;
+                                    // adds accomodation data to the current adress
+                                    StartCoroutine(CallAPI(result.nummeraanduiding.verblijfsobject, "", RetrieveType.VerblijfsobjectInstance));
+                                }
                             }
-                        }
+                         }
                         // retrieves monument data from this premises
                         StartCoroutine(CallAPI(monumentURL, hoofdData.pandidentificatie, RetrieveType.Monumenten));
                         
@@ -87,12 +89,15 @@ public class ImportBAG : ImportAPI
                     case RetrieveType.VerblijfsobjectInstance:
                         // adds accommodation data for this adress 
                         Pand.VerblijfsInstance tempVerblijf = JsonUtility.FromJson<Pand.VerblijfsInstance>(dataResult);
-                        foreach (Pand.PandResults result in hoofdData.results)
+                        if (hoofdData.results != null)
                         {
-                            if (result?.nummeraanduiding._display == tempVerblijf?._display)
+                            foreach (Pand.PandResults result in hoofdData.results)
                             {
-                                // adds accommodation data for this adress 
-                                result.verblijfsobject = tempVerblijf;
+                                if (result?.nummeraanduiding._display == tempVerblijf?._display)
+                                {
+                                    // adds accommodation data for this adress 
+                                    result.verblijfsobject = tempVerblijf;
+                                }
                             }
                         }
                         break;
