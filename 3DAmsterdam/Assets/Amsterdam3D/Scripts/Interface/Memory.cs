@@ -12,8 +12,16 @@ public class Memory : MonoBehaviour
 		memoryOutput = GetComponent<Text>();
 	}
 
-	IEnumerator Start()
+	private void OnEnable()
 	{
+		StartCoroutine(MemoryTick());
+	}
+	private void OnDisable()
+	{
+		StopAllCoroutines();
+	}
+
+	IEnumerator MemoryTick(){
 		while (true)
 		{
 			DrawMemoryUsageInHeap();
