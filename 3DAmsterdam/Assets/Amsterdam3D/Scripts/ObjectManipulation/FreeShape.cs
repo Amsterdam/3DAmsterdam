@@ -68,10 +68,7 @@ namespace Amsterdam3D.FreeShape
 			collider = shape.GetComponent<MeshCollider>();
 			scaleHandles = GetComponentsInChildren<ScaleHandle>();
 			shape = GetComponent<MeshFilter>();
-		}
 
-		private void Start()
-		{			
 			CreateCustomMesh();
 			FitScaleHandesInView();
 			UpdateShape();
@@ -92,6 +89,12 @@ namespace Amsterdam3D.FreeShape
 			DisplayHandles(true);
 		}
 
+		private void OnDestroy()
+		{
+			Destroy(customMesh);
+			Destroy(GetComponent<MeshRenderer>().material);
+		}
+
 		private static void HideAllHandles()
 		{
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
@@ -105,7 +108,7 @@ namespace Amsterdam3D.FreeShape
 				return;
 			
 			foreach(ScaleHandle handle in scaleHandles){
-				handle.transform.localPosition = (handle.transform.localPosition * Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, this.transform.position)) * shapeScreenStartScale;
+				handle.transform.localPosition = handle.transform.localPosition * (CameraModeChanger.Instance.ActiveCamera.transform.position.y) * shapeScreenStartScale;
 			}
 		}
 

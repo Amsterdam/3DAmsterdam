@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 893245956948469509}
   - component: {fileID: 5175667602179568161}
   - component: {fileID: -5861045808506588389}
+  - component: {fileID: -3394169075420353282}
   m_Layer: 0
   m_Name: Camera_SavePoint
   m_TagString: Untagged
@@ -103,3 +104,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &-3394169075420353282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3104785432663551129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1

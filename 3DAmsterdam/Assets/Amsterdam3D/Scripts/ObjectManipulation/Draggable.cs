@@ -68,11 +68,26 @@ public class Draggable : ObjectManipulation
 		//We want a semi 2D offset based on where we clicked on the ground/other colliders
 		clickOffset3D = this.transform.position - GetMousePointOnLayerMask();
 		clickOffset3D.y = 0;
+
+		StartCoroutine(ScrollToChangeOffset());
 	}
 	public override void OnMouseUp()
 	{
 		base.OnMouseUp();
 		collider.enabled = true;
+
+		StopAllCoroutines();
+	}
+
+	private IEnumerator ScrollToChangeOffset()
+	{
+		float scrollDelta;
+		while (true)
+		{
+			scrollDelta = Input.GetAxis("Mouse ScrollWheel");
+			offset += new Vector3(0, -scrollDelta, 0);
+			yield return new WaitForEndOfFrame();
+		}
 	}
 
 	private void FollowMousePointer()

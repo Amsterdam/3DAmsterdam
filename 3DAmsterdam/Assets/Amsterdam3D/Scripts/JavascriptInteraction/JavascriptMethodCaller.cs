@@ -24,6 +24,9 @@ namespace Amsterdam3D.JavascriptConnection
 		private static extern string SetCSSCursor(string cursorName = "pointer");
 
 		[DllImport("__Internal")]
+		private static extern string ShowAlertMessage(string alertMessage = "");
+
+		[DllImport("__Internal")]
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
 		/// <summary>
@@ -34,6 +37,10 @@ namespace Amsterdam3D.JavascriptConnection
 		/// <returns></returns>
 		[DllImport("__Internal")]
 		private static extern string ChangeInterfaceScale(float scale);
+
+
+		[DllImport("__Internal")]
+		private static extern void LockCursorInternal();
 
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
@@ -84,12 +91,27 @@ namespace Amsterdam3D.JavascriptConnection
 #endif
 		}
 
+		public static void Alert(string alertMessage)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+				ShowAlertMessage(alertMessage);
+#endif
+		}
+
 		public static void OpenURL(string url)
 		{
 #if UNITY_EDITOR
 			Application.OpenURL(url);
 #elif UNITY_WEBGL && !UNITY_EDITOR
 			OpenURLInNewWindow(url);
+#endif
+		}
+		public static void LockCursor() 
+		{
+#if UNITY_EDITOR
+			Cursor.lockState = CursorLockMode.Locked;
+#elif UNITY_WEBGL && !UNITY_EDITOR
+			LockCursorInternal();
 #endif
 		}
 	}

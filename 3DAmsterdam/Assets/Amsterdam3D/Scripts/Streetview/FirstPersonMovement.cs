@@ -39,6 +39,11 @@ public class FirstPersonMovement : MonoBehaviour
         referenceCollider = GetComponent<BoxCollider>();
     }
 
+    public void EnableMenusMovement()
+    {
+        inMenus = true;
+    }
+
     void Update()
     {
         if (!inMenus)
@@ -48,7 +53,7 @@ public class FirstPersonMovement : MonoBehaviour
             //TODO: Refactor this to have some more global menu state, now each class is checking for menu state seperately 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                inMenus = true;
+                EnableMenusMovement();
             }
         }
         else 

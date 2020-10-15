@@ -67,12 +67,10 @@ namespace Amsterdam3D.CameraMotion
 
         public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
         {
-
             if (reverse)
             {
                 StartCoroutine(streetView.MoveToPositionReverse(cameraTransform, position, rotation));
             }
-
             else
             {
                 StartCoroutine(streetView.MoveToPosition(cameraTransform, position, rotation));
