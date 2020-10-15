@@ -49,6 +49,12 @@ namespace LayerSystem
         private int lod = 10;
         private string url;
 
+        private Vector3RD bottomLeft;
+        private Vector3RD topRight;
+        private Vector3RD cameraPositionRD;
+
+        private Vector2Int tileKey;
+
         public void OnCameraChanged() 
         {
             CV = CameraModeChanger.Instance.CurrentCameraExtends;
@@ -66,21 +72,21 @@ namespace LayerSystem
         {
             UpdateViewRange();
             GetTilesizes();
-            getPossibleTiles();
+            GetPossibleTiles();
             GetTileChanges();
-            RemoveOUtOfViewTiles();
+            RemoveOutOfViewTiles();
 
             if (pendingTileChanges.Count==0){return;}
 
             if (activeTileChanges.Count<maximumConcurrentDownloads)
             {
-                TileChange highestPriorityTIleChange = FindHighestPriorityTileChange();
-                Vector3Int tilekey = new Vector3Int(highestPriorityTIleChange.X, highestPriorityTIleChange.Y, highestPriorityTIleChange.layerIndex);
+                TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
+                Vector3Int tilekey = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
                 if (activeTileChanges.ContainsKey(tilekey) == false)
                 {
-                    activeTileChanges.Add(tilekey, highestPriorityTIleChange);
-                    pendingTileChanges.Remove(highestPriorityTIleChange);
-                    HandleTile(highestPriorityTIleChange);
+                    activeTileChanges.Add(tilekey, highestPriorityTileChange);
+                    pendingTileChanges.Remove(highestPriorityTileChange);
+                    HandleTile(highestPriorityTileChange);
                 }
             }
         }
@@ -323,15 +329,15 @@ namespace LayerSystem
 
         private void UpdateViewRange()
         {
-            Vector3RD bottomleft = CoordConvert.WGS84toRD(CV.GetExtent().MinX, CV.GetExtent().MinY);
-            Vector3RD topright = CoordConvert.WGS84toRD(CV.GetExtent().MaxX, CV.GetExtent().MaxY);
+            bottomLeft = CoordConvert.WGS84toRD(CV.GetExtent().MinX, CV.GetExtent().MinY);
+            topRight = CoordConvert.WGS84toRD(CV.GetExtent().MaxX, CV.GetExtent().MaxY);
 
-            viewRange.x = (float)bottomleft.x;
-            viewRange.y = (float)bottomleft.y;
-            viewRange.z = (float)(topright.x -bottomleft.x);
-            viewRange.w = (float)(topright.y-bottomleft.y);
+            viewRange.x = (float)bottomLeft.x;
+            viewRange.y = (float)bottomLeft.y;
+            viewRange.z = (float)(topRight.x - bottomLeft.x);
+            viewRange.w = (float)(topRight.y- bottomLeft.y);
 
-            Vector3RD cameraPositionRD = CoordConvert.UnitytoRD(CV.GetPosition());
+            cameraPositionRD = CoordConvert.UnitytoRD(CV.GetPosition());
             cameraPosition.x = (int)cameraPositionRD.x;
             cameraPosition.y = (int)cameraPositionRD.y;
             cameraPosition.z = (int)cameraPositionRD.z;
@@ -348,7 +354,7 @@ namespace LayerSystem
             return cameraviewChanged;
         }
 
-        private void getPossibleTiles()
+        private void GetPossibleTiles()
         {
             TileDistances.Clear();
 
@@ -356,9 +362,11 @@ namespace LayerSystem
             int startY;
             int endX;
             int endY;
+
+            List<Vector3Int> tileList;
             foreach (int tileSize in tileSizes)
             {
-                List<Vector3Int> tileList = new List<Vector3Int>();
+                tileList = new List<Vector3Int>();
                 startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
                 startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
                 endX = (int)Math.Ceiling((viewRange.x+viewRange.z) / tileSize) * tileSize;
@@ -437,11 +445,11 @@ namespace LayerSystem
             for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
             {
                 Layer layer = layers[layerIndex];
-            if (layer.gameObject.activeSelf==false){continue;}
+                if (layer.gameObject.activeSelf==false){continue;}
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
                 foreach (Vector3Int tileDistance in TileDistances[tilesizeIndex])
                 {
-                    Vector2Int tileKey = new Vector2Int(tileDistance.x, tileDistance.y);
+                    tileKey = new Vector2Int(tileDistance.x, tileDistance.y);
                     
                     if (activeTileChanges.ContainsKey(new Vector3Int(tileKey.x, tileKey.y, layerIndex)))
                     {
@@ -501,21 +509,24 @@ namespace LayerSystem
            
         }
 
-        private void RemoveOUtOfViewTiles()
+        private void RemoveOutOfViewTiles()
         {
+            List<Vector3Int> neededTileSizesDistance;
+            List<Vector2Int> neededTileSizes = new List<Vector2Int>();
+            List<Vector2Int> activeTiles;
             for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
             {
                 Layer layer = layers[layerIndex];
                 if (layer.gameObject.activeSelf == false) { continue; }
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
-                List<Vector3Int> neededTileSizesDistance = TileDistances[tilesizeIndex];
-                List<Vector2Int> neededTileSizes = new List<Vector2Int>();
+                neededTileSizesDistance = TileDistances[tilesizeIndex];
+                neededTileSizes.Clear();
                 foreach (var neededTileSize in neededTileSizesDistance)
                 {
                     neededTileSizes.Add(new Vector2Int(neededTileSize.x, neededTileSize.y));
                 }
 
-                List<Vector2Int> activeTiles = new List<Vector2Int>(layer.tiles.Keys);
+                activeTiles = new List<Vector2Int>(layer.tiles.Keys);
                 foreach (Vector2Int activeTile in activeTiles)
                 {
                     if (neededTileSizes.Contains(activeTile) == false)
