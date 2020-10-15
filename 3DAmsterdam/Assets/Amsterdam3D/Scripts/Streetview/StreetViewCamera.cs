@@ -155,4 +155,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             return ray.origin + ray.direction * (distance / 10);
         }
     }
+
+	public void SetNormalizedCameraHeight(float height)
+	{
+		//TODO: Determine if we want to expose the height slider.
+	}
 }
