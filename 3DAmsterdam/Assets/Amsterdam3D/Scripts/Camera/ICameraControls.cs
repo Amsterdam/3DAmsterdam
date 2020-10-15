@@ -7,17 +7,14 @@ using UnityEngine;
 
    public interface ICameraControls
     {
-    float GetNormalizedCameraHeight();
+        float GetNormalizedCameraHeight();
+        
+        float GetCameraHeight();
 
-    float GetCameraHeight();
+        void SetNormalizedCameraHeight(float height);
 
-    void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
+        void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
-    Vector3 GetMousePositionInWorld();
-
-
-
-
-
+        Vector3 GetMousePositionInWorld();
 }
 
