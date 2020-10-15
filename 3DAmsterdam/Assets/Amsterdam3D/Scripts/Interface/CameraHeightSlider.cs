@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class CameraHeightSlider : MonoBehaviour
 {
-    private CameraModeChanger cameraManager;
     private Slider slider;
     [SerializeField]
     private Text heightText;
@@ -19,18 +18,13 @@ public class CameraHeightSlider : MonoBehaviour
         slider = GetComponent<Slider>();
     }
 
-    void Start()
-    {
-        cameraManager = CameraModeChanger.Instance;
-    }
-
     public void HeightSliderChanged(float sliderValue){
-       // cameraControls.SetNormalizedCameraHeight(sliderValue);
+        CameraModeChanger.Instance.CurrentCameraControls.SetNormalizedCameraHeight(sliderValue);
     }
 
     void LateUpdate()
     {
-        heightText.text = Mathf.Round(cameraManager.CurrentCameraControls.GetCameraHeight()) + textSuffix;
-        slider.normalizedValue = cameraManager.CurrentCameraControls.GetNormalizedCameraHeight();
+        heightText.text = Mathf.Round(CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight()) + textSuffix;
+        slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
     }
 }
