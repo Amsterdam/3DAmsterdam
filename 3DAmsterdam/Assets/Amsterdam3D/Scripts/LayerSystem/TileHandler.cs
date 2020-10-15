@@ -45,7 +45,10 @@ namespace LayerSystem
         private Extent previousCameraViewExtent;
 
         private bool objectDataLoaded = false;
-        // Start is called before the first frame update
+
+        private int lod = 10;
+        private string url;
+
         public void OnCameraChanged() 
         {
             CV = CameraModeChanger.Instance.CurrentCameraExtends;
@@ -98,8 +101,7 @@ namespace LayerSystem
 
         private void HandleTile(TileChange tileChange)
         {
-            int lod=10;
-            string url;
+            lod = 10;
             switch (tileChange.action)
             {
                 case TileAction.Create:
