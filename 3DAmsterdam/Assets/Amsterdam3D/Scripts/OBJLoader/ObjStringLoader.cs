@@ -134,7 +134,7 @@ namespace Amsterdam3D.Parsing
 				newOBJLoader.name = objModelName;
 				newOBJLoader.gameObject.AddComponent<Draggable>();
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
-
+				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
 			}
 			//hide panel and loading screen after loading
