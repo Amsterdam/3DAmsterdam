@@ -87,8 +87,7 @@ public class GenerateTreeData : MonoBehaviour
 			if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
 			{
 				string[] coordinates = file.Name.Split('_');
-				Debug.Log("Placing tile at RD coordinates:" + coordinates[0] + "," + coordinates[1]);
-
+				//Debug.Log("Placing tile at RD coordinates:" + coordinates[0] + "," + coordinates[1]);
 				//Tile name coordinates are bottom left, but origin is at center of tile, so we add 500m
 				Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
 				Vector3RD tileRDCoordinatesCenter = new Vector3RD(tileRDCoordinatesBottomLeft.x + tileSize/2.0, tileRDCoordinatesBottomLeft.y + tileSize/2.0, 0);
@@ -114,8 +113,7 @@ public class GenerateTreeData : MonoBehaviour
 				newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesBottomLeft);
 
 				GameObject treeRoot = new GameObject();
-				treeRoot.name = "Trees";
-				treeRoot.transform.SetParent(newTile.transform);
+				treeRoot.name = file.Name.Replace("terrain","trees");
 				treeRoot.transform.localPosition = Vector3.zero;
 
 				StartCoroutine(SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft));
@@ -126,7 +124,10 @@ public class GenerateTreeData : MonoBehaviour
 	private IEnumerator SpawnTreesInTile(GameObject parentTile, Vector3RD tileCoordinates)
 	{
 		//TODO: Add all trees within this time (1x1km)
+		yield return new WaitForEndOfFrame(); //make sure collider is there
+
 		int treeChecked = 0;
+
 		while(treeChecked < trees.Count-1){
 			Tree tree = trees[treeChecked];
 
@@ -143,10 +144,24 @@ public class GenerateTreeData : MonoBehaviour
 				//Debug.Log("Tree placed with coordinates " + tree.RD.x + ", " + tree.RD.y + " in tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
 			}
 			treeChecked++;
-			yield return null;
 		}
 
 		StaticBatchingUtility.Combine(parentTile);
+
+		//Snatch the batched mesh and use it as our tile
+		var batchedMesh = new Mesh(); //Always generate a mesh. Even if it will be empty.
+		var meshFilter = parentTile.GetComponentInChildren<MeshFilter>();
+		string assetName = "Assets/TreeTiles/" + parentTile.name + ".asset";
+
+		if (meshFilter != null)
+		{
+			batchedMesh = parentTile.GetComponentInChildren<MeshFilter>().mesh;
+			#if UNITY_EDITOR
+			AssetDatabase.CreateAsset(batchedMesh, assetName);
+			AssetDatabase.SaveAssets();
+			#endif
+		}
+		yield return null;
 	}
 
 	[Serializable]
