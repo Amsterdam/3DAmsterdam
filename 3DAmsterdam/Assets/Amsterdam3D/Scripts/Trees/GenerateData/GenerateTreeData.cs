@@ -131,7 +131,7 @@ public class GenerateTreeData : MonoBehaviour
 			{
 				GameObject newTreeInstance = Instantiate(treeTypes.items[0], parentTile.transform);
 				float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
-				if (Physics.Raycast(tree.position, Vector3.down, out RaycastHit hit, Mathf.Infinity))
+				if (Physics.Raycast(tree.position + Vector3.up*1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 				{
 					raycastHitY = hit.point.y;
 				}
