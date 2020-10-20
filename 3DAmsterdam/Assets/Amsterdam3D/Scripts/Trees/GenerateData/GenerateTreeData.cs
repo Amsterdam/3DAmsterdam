@@ -83,7 +83,7 @@ public class GenerateTreeData : MonoBehaviour
 		foreach (var file in fileInfo)
 		{
 			Debug.Log(file.Name);
-			if (!file.Name.Contains(".manifest"))
+			if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
 			{
 				string[] coordinates = file.Name.Split('_');
 				Debug.Log("Placing tile at RD coordinates:" + coordinates[0] + "," + coordinates[1]);
@@ -105,14 +105,14 @@ public class GenerateTreeData : MonoBehaviour
 				}
 
 
-				GameObject newTreeObject = new GameObject();
-				newTreeObject.name = file.Name;
-				newTreeObject.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
-				newTreeObject.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
-				newTreeObject.AddComponent<MeshRenderer>().material = previewMaterial;
-				newTreeObject.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesCenter);
+				GameObject newTile = new GameObject();
+				newTile.name = file.Name;
+				newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
+				newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
+				newTile.AddComponent<MeshRenderer>().material = previewMaterial;
+				newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesCenter);
 	
-				SpawnTreesInTile(newTreeObject, tileRDCoordinatesBottomLeft);
+				StartCoroutine(SpawnTreesInTile(newTile, tileRDCoordinatesBottomLeft));
 			}
 		}
 	}
@@ -121,13 +121,18 @@ public class GenerateTreeData : MonoBehaviour
 	{
 		//TODO: Add all trees within this time (1x1km)
 		int treeChecked = 0;
-		while(treeChecked < trees.Count){
+		while(treeChecked < trees.Count-1){
 			Tree tree = trees[treeChecked];
 
 			if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 			{
 				GameObject newTreeInstance = Instantiate(treeTypes.items[0], parentTile.transform);
-				newTreeInstance.transform.position = tree.position;
+				float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
+				if (Physics.Raycast(tree.position, Vector3.down, out RaycastHit hit, Mathf.Infinity))
+				{
+					raycastHitY = hit.point.y;
+				}
+				newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
 			}
 			treeChecked++;
 			yield return null;
