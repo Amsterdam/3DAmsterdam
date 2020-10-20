@@ -31,11 +31,12 @@ public class GenerateTreeData : MonoBehaviour
 	{
 		foreach (var csvData in bomenCsvDataFiles)
 		{
-			string[] lines = csvData.text.Split(char.Parse(Environment.NewLine));
+			string[] lines = csvData.text.Split('\n');
 			Debug.Log("Parsing " + lines.Length + " trees from " + csvData.name);
 			for (int i = 1; i < lines.Length; i++)
 			{
-				ParseTree(lines[i]);
+				if(lines[i].Contains(";"))
+					ParseTree(lines[i]);
 			}
 		}
 
@@ -124,6 +125,8 @@ public class GenerateTreeData : MonoBehaviour
 		while(treeChecked < trees.Count-1){
 			Tree tree = trees[treeChecked];
 
+			//Debug.Log("Checking if tree with coordinates " + tree.RD.x + ", " + tree.RD.y + " is within tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
+
 			if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 			{
 				GameObject newTreeInstance = Instantiate(treeTypes.items[0], parentTile.transform);
@@ -133,6 +136,9 @@ public class GenerateTreeData : MonoBehaviour
 					raycastHitY = hit.point.y;
 				}
 				newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
+
+				Debug.Log("Tree placed with coordinates " + tree.RD.x + ", " + tree.RD.y + " in tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
+
 			}
 			treeChecked++;
 			yield return null;
