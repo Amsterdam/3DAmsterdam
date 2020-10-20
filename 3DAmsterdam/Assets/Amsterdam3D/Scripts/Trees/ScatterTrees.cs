@@ -29,11 +29,12 @@ public class ScatterTrees : MonoBehaviour
 		{
 			if (currentVert >= sharedMesh.vertexCount)
 			{
+				StaticBatchingUtility.Combine(this.gameObject);
 				Destroy(this);
 			}
 			else
 			{
-				Instantiate(treeTypes[Random.Range(0, treeTypes.Length)], this.transform).transform.localPosition = sharedMesh.vertices[currentVert];
+				Instantiate(treeTypes[(currentVert % treeTypes.Length)], this.transform).transform.localPosition = sharedMesh.vertices[currentVert];
 				currentVert++;
 			}
 		}
