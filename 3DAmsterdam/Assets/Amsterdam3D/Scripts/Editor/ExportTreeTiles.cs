@@ -24,7 +24,7 @@ public class ExportTreeTiles
 				buildMap[0].assetBundleName = file.Name.Replace(".asset", "");
 				buildMap[0].assetNames = assetNames;
 
-				BuildPipeline.BuildAssetBundles("Assets/TreeTilesAssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
+				BuildPipeline.BuildAssetBundles("TreeTilesAssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
 			}
 		}
 	}

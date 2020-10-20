@@ -146,19 +146,28 @@ public class GenerateTreeData : MonoBehaviour
 			treeChecked++;
 		}
 
-		StaticBatchingUtility.Combine(parentTile);
+		//StaticBatchingUtility.Combine(parentTile);
 
 		//Snatch the batched mesh and use it as our tile
-		var batchedMesh = new Mesh(); //Always generate a mesh. Even if it will be empty.
-		var meshFilter = parentTile.GetComponentInChildren<MeshFilter>();
+		MeshFilter[] meshFilters = parentTile.GetComponentsInChildren<MeshFilter>();
 		string assetName = "Assets/TreeTiles/" + parentTile.name + ".asset";
 
-		if (meshFilter != null)
+		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+		for (int i = 0; i < combine.Length; i++)
 		{
-			batchedMesh = parentTile.GetComponentInChildren<MeshFilter>().mesh;
+			combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+		}
+
+		if (meshFilters.Length > 0)
+		{
+			Mesh newCombinedMesh = new Mesh();
+			newCombinedMesh.CombineMeshes(combine,true);
+			parentTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
+			parentTile.AddComponent<MeshRenderer>().material = previewMaterial;
+
 			#if UNITY_EDITOR
-			AssetDatabase.CreateAsset(batchedMesh, assetName);
-			AssetDatabase.SaveAssets();
+			/*AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+			AssetDatabase.SaveAssets();*/
 			#endif
 		}
 		yield return null;
