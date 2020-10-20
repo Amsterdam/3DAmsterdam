@@ -297,11 +297,20 @@ namespace LayerSystem
             //positioning container
             Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
-            Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
+            Vector3RD origin = new Vector3RD(hoekpunt.x + OriginOffset, hoekpunt.y + OriginOffset, 0);
             Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
+            
+            if (container.transform.parent.name != "Trees")
+            { 
+                double Rotatie = CoordConvert.RDRotation(origin);
+                container.transform.Rotate(Vector3.up, (float)Rotatie);
+            }
+            else{
+                unityOrigin.y = -Constants.ZERO_GROUND_LEVEL_Y;
+                unityOrigin.x -= 500;
+                unityOrigin.z -= 500;
+            }
             container.transform.position = unityOrigin;
-            double Rotatie = CoordConvert.RDRotation(origin);
-            container.transform.Rotate(Vector3.up, (float)Rotatie);
 
             //subObject.transform.localPosition = Vector3.zero;
             container.AddComponent<MeshFilter>().mesh = mesh;

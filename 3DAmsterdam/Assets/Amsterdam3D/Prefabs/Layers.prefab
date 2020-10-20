@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataFolder: buildings
   defaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  highLightMaterial: {fileID: 2100000, guid: cd867c0d1d193d04e89dcecaef7cb1fd, type: 2}
+  highLightMaterial: {fileID: 0}
   maximumDistanceLOD2: 2000
   maximumDistanceLOD1: 3000
   maximumDistanceLOD0: 6000
@@ -205,6 +205,7 @@ MonoBehaviour:
   maximumConcurrentDownloads: 5
   layers:
   - {fileID: 1814701005}
+  - {fileID: 995301146926089980}
 --- !u!1 &4498901013737045302
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,6 +216,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4498901013737045448}
   - component: {fileID: 4498901013737045449}
+  - component: {fileID: 995301146926089980}
   m_Layer: 0
   m_Name: Trees
   m_TagString: Untagged
@@ -253,3 +255,26 @@ MonoBehaviour:
   Max_Afstand: 1000
   dataFolder: trees
   MAX_Concurrent_Downloads: 5
+--- !u!114 &995301146926089980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013737045302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601c8c3306aa1b249a9997e8681ad08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultMaterial: {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
+  HighlightMaterial: {fileID: 0}
+  tileSize: 1000
+  layerPriority: 0
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: trees/LOD0/{x}_{y}_trees_lod0
+    maximumDistance: 6000
+    maximumDistanceSquared: 36000000
+    enabled: 0

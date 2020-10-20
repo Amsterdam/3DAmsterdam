@@ -18,6 +18,9 @@ public class GenerateTreeData : MonoBehaviour
 
 	[SerializeField]
 	private Material previewMaterial;
+	[SerializeField]
+	private Material treesMaterial;
+
 	private double tileSize = 1000.0;
 
 	public void Start()
@@ -114,14 +117,14 @@ public class GenerateTreeData : MonoBehaviour
 
 				GameObject treeRoot = new GameObject();
 				treeRoot.name = file.Name.Replace("terrain","trees");
-				treeRoot.transform.localPosition = Vector3.zero;
+				treeRoot.transform.position = newTile.transform.position;
 
 				StartCoroutine(SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft));
 			}
 		}
 	}
 
-	private IEnumerator SpawnTreesInTile(GameObject parentTile, Vector3RD tileCoordinates)
+	private IEnumerator SpawnTreesInTile(GameObject treeTile, Vector3RD tileCoordinates)
 	{
 		//TODO: Add all trees within this time (1x1km)
 		yield return new WaitForEndOfFrame(); //make sure collider is there
@@ -134,7 +137,7 @@ public class GenerateTreeData : MonoBehaviour
 			//Debug.Log("Checking if tree with coordinates " + tree.RD.x + ", " + tree.RD.y + " is within tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
 			if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 			{
-				GameObject newTreeInstance = Instantiate(treeTypes.items[UnityEngine.Random.Range(0,treeTypes.items.Length)], parentTile.transform);
+				GameObject newTreeInstance = Instantiate(treeTypes.items[UnityEngine.Random.Range(0,treeTypes.items.Length)], treeTile.transform);
 				float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
 				if (Physics.Raycast(tree.position + Vector3.up*1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 				{
@@ -146,30 +149,36 @@ public class GenerateTreeData : MonoBehaviour
 			treeChecked++;
 		}
 
-		//StaticBatchingUtility.Combine(parentTile);
+		Vector3 worldPosition = treeTile.transform.position;
+		treeTile.transform.position = Vector3.zero;
 
 		//Snatch the batched mesh and use it as our tile
-		MeshFilter[] meshFilters = parentTile.GetComponentsInChildren<MeshFilter>();
-		string assetName = "Assets/TreeTiles/" + parentTile.name + ".asset";
+		MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
+		string assetName = "Assets/TreeTiles/" + treeTile.name + ".asset";
 
 		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 		for (int i = 0; i < combine.Length; i++)
 		{
 			combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+			combine[i].mesh = meshFilters[i].sharedMesh;
+			meshFilters[i].gameObject.SetActive(false);
 		}
 
 		if (meshFilters.Length > 0)
 		{
 			Mesh newCombinedMesh = new Mesh();
+			newCombinedMesh.name = treeTile.name;
 			newCombinedMesh.CombineMeshes(combine,true);
-			parentTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
-			parentTile.AddComponent<MeshRenderer>().material = previewMaterial;
+			treeTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
+			treeTile.AddComponent<MeshRenderer>().material = treesMaterial;
 
 			#if UNITY_EDITOR
-			/*AssetDatabase.CreateAsset(newCombinedMesh, assetName);
-			AssetDatabase.SaveAssets();*/
+			AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+			AssetDatabase.SaveAssets();
 			#endif
 		}
+		treeTile.transform.position = worldPosition;
+
 		yield return null;
 	}
 
