@@ -111,9 +111,14 @@ public class GenerateTreeData : MonoBehaviour
 				newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
 				newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
 				newTile.AddComponent<MeshRenderer>().material = previewMaterial;
-				newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesCenter);
-	
-				StartCoroutine(SpawnTreesInTile(newTile, tileRDCoordinatesBottomLeft));
+				newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesBottomLeft);
+
+				GameObject treeRoot = new GameObject();
+				treeRoot.name = "Trees";
+				treeRoot.transform.SetParent(newTile.transform);
+				treeRoot.transform.localPosition = Vector3.zero;
+
+				StartCoroutine(SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft));
 			}
 		}
 	}
@@ -126,23 +131,22 @@ public class GenerateTreeData : MonoBehaviour
 			Tree tree = trees[treeChecked];
 
 			//Debug.Log("Checking if tree with coordinates " + tree.RD.x + ", " + tree.RD.y + " is within tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
-
 			if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 			{
-				GameObject newTreeInstance = Instantiate(treeTypes.items[0], parentTile.transform);
+				GameObject newTreeInstance = Instantiate(treeTypes.items[UnityEngine.Random.Range(0,treeTypes.items.Length)], parentTile.transform);
 				float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
 				if (Physics.Raycast(tree.position + Vector3.up*1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 				{
 					raycastHitY = hit.point.y;
 				}
 				newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
-
-				Debug.Log("Tree placed with coordinates " + tree.RD.x + ", " + tree.RD.y + " in tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
-
+				//Debug.Log("Tree placed with coordinates " + tree.RD.x + ", " + tree.RD.y + " in tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
 			}
 			treeChecked++;
 			yield return null;
 		}
+
+		StaticBatchingUtility.Combine(parentTile);
 	}
 
 	[Serializable]
