@@ -48,17 +48,25 @@ public class GenerateTreeData : MonoBehaviour
 			}
 		}
 		Debug.Log("Tree dataset contains " + treeLines.Count);
+
 		StartCoroutine(ParseTreeLines());
 	}
 
 	IEnumerator ParseTreeLines()
 	{
 		var lineNr = 0;
+		Debug.Log("Started parsing tree dataset..");
+		yield return new WaitForEndOfFrame();
+
 		while (lineNr < treeLines.Count)
 		{
 			ParseTree(treeLines[lineNr]);
 			lineNr++;
-			yield return null;
+			if (lineNr % 10000 == 0)
+			{
+				Debug.Log("Parsing tree line nr: " + lineNr);
+				yield return new WaitForEndOfFrame();
+			}
 		}
 		Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
 		TraverseTileFiles();
