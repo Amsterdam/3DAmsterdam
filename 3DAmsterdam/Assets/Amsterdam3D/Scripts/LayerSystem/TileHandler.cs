@@ -129,14 +129,18 @@ namespace LayerSystem
                     }
                     break;
                 case TileAction.Remove:
-                    MeshFilter mf = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>();
-                    if (mf != null)
+                    var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+                    if (layers[tileChange.layerIndex].tiles.ContainsKey(tileKey))
                     {
-                        DestroyImmediate(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>().mesh,true);
+                        MeshFilter mf = layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>();
+                        if (mf != null)
+                        {
+                            DestroyImmediate(layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>().mesh, true);
+                        }
+                        Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
+                        layers[tileChange.layerIndex].tiles.Remove(tileKey);
+                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
                     }
-                    Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
-                    layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
-                    activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
                     return;
                     break;
                 default:
