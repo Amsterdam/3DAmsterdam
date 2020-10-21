@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using ConvertCoordinates;
-using System.Security.Policy;
 
 public class GenerateTreeData : MonoBehaviour
 {
@@ -15,7 +14,10 @@ public class GenerateTreeData : MonoBehaviour
 	[SerializeField]
 	private TextAsset[] bomenCsvDataFiles;
 
+	[SerializeField]
 	private List<Tree> trees;
+
+	private List<string> treeLines;
 
 	[SerializeField]
 	private Material previewMaterial;
@@ -27,8 +29,9 @@ public class GenerateTreeData : MonoBehaviour
 	public void Start()
 	{
 		trees = new List<Tree>();
+		treeLines = new List<string>();
+
 		ParseTreeData();
-		TraverseTileFiles();
 	}
 
 	private void ParseTreeData()
@@ -36,24 +39,42 @@ public class GenerateTreeData : MonoBehaviour
 		foreach (var csvData in bomenCsvDataFiles)
 		{
 			string[] lines = csvData.text.Split('\n');
-			Debug.Log("Parsing " + lines.Length + " trees from " + csvData.name);
 			for (int i = 1; i < lines.Length; i++)
 			{
-				if(lines[i].Contains(";"))
-					ParseTree(lines[i]);
+				if (lines[i].Contains(";"))
+				{
+					treeLines.Add(lines[i]);
+				}
 			}
 		}
-
-		Debug.Log(trees.Count + " trees in database");
+		Debug.Log("Tree dataset contains " + treeLines.Count);
+		StartCoroutine(ParseTreeLines());
 	}
 
+	IEnumerator ParseTreeLines()
+	{
+		var lineNr = 0;
+		while (lineNr < treeLines.Count)
+		{
+			ParseTree(treeLines[lineNr]);
+			lineNr++;
+			yield return null;
+		}
+		Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
+		TraverseTileFiles();
+
+		yield return null;
+	}
+
+	/// <summary>
+	/// Parse a tree from a string line to a new List item containing the following ; seperated fields:
+	/// OBJECTNUMMER;Soortnaam_NL;Boomnummer;Soortnaam_WTS;Boomtype;Boomhoogte;Plantjaar;Eigenaar;Beheerder;Categorie;SOORT_KORT;SDVIEW;RADIUS;WKT_LNG_LAT;WKT_LAT_LNG;LNG;LAT;
+	/// </summary>
+	/// <param name="line">Text line matching the same fields as the header</param>
 	private void ParseTree(string line)
 	{
 		string[] cell = line.Split(';');
 
-		//A comma seperated file has the following values:
-		//OBJECTNUMMER;Soortnaam_NL;Boomnummer;Soortnaam_WTS;Boomtype;Boomhoogte;Plantjaar;
-		//Eigenaar;Beheerder;Categorie;SOORT_KORT;SDVIEW;RADIUS;WKT_LNG_LAT;WKT_LAT_LNG;LNG;LAT;
 		Tree newTree = new Tree()
 		{
 			OBJECTNUMMER = int.Parse(cell[0]),
@@ -75,13 +96,45 @@ public class GenerateTreeData : MonoBehaviour
 			LAT = double.Parse(cell[16])
 		};
 
+		//Extra generated tree data
 		newTree.RD = CoordConvert.WGS84toRD(newTree.LNG, newTree.LAT);
 		newTree.position = CoordConvert.WGS84toUnity(newTree.LNG, newTree.LAT);
-		newTree.averageTreeHeight = EstimateTreeHeight(cell[5]);
+		newTree.averageTreeHeight = EstimateTreeHeight(newTree.Boomhoogte);
+		newTree.prefab = FindClosestPrefabTypeByName(newTree.Soortnaam_NL);
 
 		trees.Add(newTree);
 	}
 
+	/// <summary>
+	/// Find a prefab in our list of tree prefabs that has a substring matching a part of our prefab name.
+	/// Make sure prefab names are unique to get unique results.
+	/// </summary>
+	/// <param name="treeTypeDescription">The string containing the tree type word</param>
+	/// <returns>The prefab with a matching substring</returns>
+	private GameObject FindClosestPrefabTypeByName(string treeTypeDescription)
+	{
+		string[] treeNameParts = treeTypeDescription.Replace("\"","").Split(' ');
+		string treeTypeName = treeNameParts[0].ToLower();
+
+		foreach (var namePart in treeNameParts)
+		{
+			foreach (GameObject tree in treeTypes.items)
+			{
+				if (tree.name.ToLower().Contains(treeTypeName))
+				{
+					return tree;
+				}
+			}
+		}
+		return treeTypes.items[3];
+	}
+
+	/// <summary>
+	/// Estimate the tree height according to the height description.
+	/// We try to parse every number found, and use the average.
+	/// </summary>
+	/// <param name="description">For example: "6 to 8 m"</param>
+	/// <returns></returns>
 	private float EstimateTreeHeight(string description)
 	{
 		float treeHeight = 10.0f;
@@ -133,7 +186,6 @@ public class GenerateTreeData : MonoBehaviour
 					assetBundleTile.Unload(true);
 				}
 
-
 				GameObject newTile = new GameObject();
 				newTile.name = file.Name;
 				newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
@@ -163,7 +215,9 @@ public class GenerateTreeData : MonoBehaviour
 			//Debug.Log("Checking if tree with coordinates " + tree.RD.x + ", " + tree.RD.y + " is within tile coordinates " + tileCoordinates.x + " " + tileCoordinates.y);
 			if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 			{
-				GameObject newTreeInstance = Instantiate(treeTypes.items[UnityEngine.Random.Range(0,treeTypes.items.Length)], treeTile.transform);
+				GameObject newTreeInstance = Instantiate(tree.prefab, treeTile.transform);
+				newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
+
 				float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
 				if (Physics.Raycast(tree.position + Vector3.up*1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 				{
