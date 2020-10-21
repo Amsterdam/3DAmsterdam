@@ -150,7 +150,14 @@ public class GenerateTreeData : MonoBehaviour
 		}
 
 		Vector3 worldPosition = treeTile.transform.position;
-		treeTile.transform.position = Vector3.zero;
+		
+		//Calculate offset
+		Vector3RD convertedOffset = CoordConvert.UnitytoRD(Vector3.zero);
+		convertedOffset.x -= 500;
+		convertedOffset.y -= 500;
+		convertedOffset.z -= 43;
+
+		treeTile.transform.position = CoordConvert.RDtoUnity(convertedOffset);
 
 		//Snatch the batched mesh and use it as our tile
 		MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
