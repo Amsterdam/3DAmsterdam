@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using ConvertCoordinates;
+using System.Security.Policy;
 
 public class GenerateTreeData : MonoBehaviour
 {
@@ -76,8 +77,33 @@ public class GenerateTreeData : MonoBehaviour
 
 		newTree.RD = CoordConvert.WGS84toRD(newTree.LNG, newTree.LAT);
 		newTree.position = CoordConvert.WGS84toUnity(newTree.LNG, newTree.LAT);
+		newTree.averageTreeHeight = EstimateTreeHeight(cell[5]);
 
 		trees.Add(newTree);
+	}
+
+	private float EstimateTreeHeight(string description)
+	{
+		float treeHeight = 10.0f;
+
+		string[] numbers = description.Split(' ');
+		int numbersFoundInString = 0;
+		float averageHeight = 0;
+		foreach(string nr in numbers)
+		{
+			float parsedNumber = 10;
+
+			if (float.TryParse(nr, out parsedNumber))
+			{
+				numbersFoundInString++;
+				averageHeight += parsedNumber;
+			}
+		}
+		if(numbersFoundInString > 0){
+			treeHeight = averageHeight / numbersFoundInString;
+		}
+
+		return treeHeight;
 	}
 
 	private void TraverseTileFiles()
@@ -156,13 +182,11 @@ public class GenerateTreeData : MonoBehaviour
 		convertedOffset.x -= 500;
 		convertedOffset.y -= 500;
 		convertedOffset.z -= 43;
-
 		treeTile.transform.position = CoordConvert.RDtoUnity(convertedOffset);
 
-		//Snatch the batched mesh and use it as our tile
+		//Combine child meshes in a new single mesh
 		MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 		string assetName = "Assets/TreeTiles/" + treeTile.name + ".asset";
-
 		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 		for (int i = 0; i < combine.Length; i++)
 		{
@@ -170,20 +194,20 @@ public class GenerateTreeData : MonoBehaviour
 			combine[i].mesh = meshFilters[i].sharedMesh;
 			meshFilters[i].gameObject.SetActive(false);
 		}
-
+		Mesh newCombinedMesh = new Mesh();
 		if (meshFilters.Length > 0)
 		{
-			Mesh newCombinedMesh = new Mesh();
 			newCombinedMesh.name = treeTile.name;
 			newCombinedMesh.CombineMeshes(combine,true);
-			treeTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
-			treeTile.AddComponent<MeshRenderer>().material = treesMaterial;
-
-			#if UNITY_EDITOR
-			AssetDatabase.CreateAsset(newCombinedMesh, assetName);
-			AssetDatabase.SaveAssets();
-			#endif
 		}
+
+		treeTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
+		treeTile.AddComponent<MeshRenderer>().material = treesMaterial;
+		#if UNITY_EDITOR
+		AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+		AssetDatabase.SaveAssets();
+		#endif
+
 		treeTile.transform.position = worldPosition;
 
 		yield return null;
@@ -212,6 +236,7 @@ public class GenerateTreeData : MonoBehaviour
 
 		public Vector3RD RD;
 		public Vector3 position;
+		public float averageTreeHeight;
 
 		public GameObject prefab;
 	}
