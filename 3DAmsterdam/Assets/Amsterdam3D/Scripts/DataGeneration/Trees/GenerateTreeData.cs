@@ -61,7 +61,7 @@ namespace Amsterdam3D.DataGeneration
 		private string treeTypeName = "";
 
 		[SerializeField]
-		private Dictionary<string, string> noPrefabFoundNames;
+		private List<string> noPrefabFoundNames;
 
 		private Vector3RD tileOffset;
 
@@ -75,8 +75,7 @@ namespace Amsterdam3D.DataGeneration
 
 			trees = new List<Tree>();
 			treeLines = new List<string>();
-			noPrefabFoundNames = new Dictionary<string, string>();
-
+			noPrefabFoundNames = new List<string>();
 			ParseTreeData();
 		}
 
@@ -122,8 +121,8 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			Debug.Log("No prefabs were found for the following tree names: ");
-			string listOfNamesNotFound = string.Join(";", noPrefabFoundNames.Select(x => x.Key).ToArray());
-			Debug.Log(listOfNamesNotFound);
+			string listOfNamesNotFound = string.Join("\n", noPrefabFoundNames);
+			File.WriteAllText(Application.dataPath + "/TreesNotFound.csv", listOfNamesNotFound);
 
 			Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
 
@@ -192,7 +191,7 @@ namespace Amsterdam3D.DataGeneration
 					}
 				}
 			}
-			noPrefabFoundNames[treeTypeDescription] = treeTypeDescription;
+			noPrefabFoundNames.Add(treeTypeDescription);
 			return treeTypes.items[3]; //Just use an average tree prefab as default
 		}
 
