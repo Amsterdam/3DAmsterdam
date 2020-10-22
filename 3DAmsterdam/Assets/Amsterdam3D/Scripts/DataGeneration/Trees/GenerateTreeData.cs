@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using ConvertCoordinates;
+using System.Linq;
 
 namespace Amsterdam3D.DataGeneration
 {
@@ -111,9 +112,8 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			Debug.Log("No prefabs were found for the following tree names: ");
-			foreach (KeyValuePair<string, string> treeDescription in noPrefabFoundNames) {
-				Debug.Log(treeDescription.Key);
-			}
+			string listOfNamesNotFound = string.Join(";", noPrefabFoundNames.Select(x => x.Key + "=" + x.Value).ToArray());
+			Debug.Log(listOfNamesNotFound);
 
 			Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
 
@@ -183,7 +183,7 @@ namespace Amsterdam3D.DataGeneration
 				}
 			}
 			noPrefabFoundNames[treeTypeDescription] = treeTypeDescription;
-			return treeTypes.items[3];
+			return treeTypes.items[3]; //Just use an average tree prefab as default
 		}
 
 		/// <summary>
