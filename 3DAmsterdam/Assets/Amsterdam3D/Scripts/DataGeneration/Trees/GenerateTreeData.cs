@@ -333,7 +333,13 @@ namespace Amsterdam3D.DataGeneration
 			for (int i = 0; i < combine.Length; i++)
 			{
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-				combine[i].mesh = meshFilters[i].sharedMesh;
+
+				Mesh treeMesh = meshFilters[i].mesh;						
+				if (treeMesh.vertexCount > 0)
+				{
+					AddIDToMeshUV(treeMesh, int.Parse(meshFilters[i].name));
+				}
+				combine[i].mesh = treeMesh;
 				meshFilters[i].gameObject.SetActive(false);
 			}
 
@@ -352,6 +358,21 @@ namespace Amsterdam3D.DataGeneration
 #endif
 
 			treeTile.transform.position = worldPosition;
+		}
+
+		/// <summary>
+		/// Adds a specific number to a mesh UV slot for all the verts
+		/// </summary>
+		/// <param name="treeMesh">The mesh to assign the ID to</param>
+		/// <param name="objectNumber">The number to inject into the UV slot</param>
+		private void AddIDToMeshUV(Mesh treeMesh, float objectNumber)
+		{
+			treeMesh.uv3 = new Vector2[treeMesh.vertexCount];
+			Vector2 uvIds = new Vector2() { x = objectNumber, y = 0 };
+			for (int j = 0; j < treeMesh.uv3.Length; j++)
+			{
+				treeMesh.uv3[j] = uvIds;
+			}
 		}
 	}
 }
