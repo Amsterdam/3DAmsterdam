@@ -90,7 +90,7 @@ public class TileLoader : MonoBehaviour
 
             //fire request
 
-            StartCoroutine(requestQMTile(request.Url, request.TileId));
+            StartCoroutine(RequestQMTile(request.Url, request.TileId));
 
         }
     }
@@ -112,7 +112,7 @@ public class TileLoader : MonoBehaviour
         tile.transform.parent = transform;
         tile.name = $"tile/{t.x.ToString()}/{t.y.ToString()}/{t.z.ToString()}";
         tile.transform.position = GetTilePosition(t);
-        
+        tile.transform.Translate(Vector3.down * 0.01f);
         tile.transform.localScale = new Vector3(ComputeScaleFactorX(int.Parse(t.z.ToString())), 1, ComputeScaleFactorY(int.Parse(t.z.ToString())));
         return tile;
     }
@@ -186,7 +186,7 @@ public class TileLoader : MonoBehaviour
         }
     }
 
-    private IEnumerator requestQMTile(string url, Vector3 tileId)
+    private IEnumerator RequestQMTile(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
         TerrainTile terrainTile;
@@ -225,35 +225,6 @@ public class TileLoader : MonoBehaviour
                 loc.y = 0;
                 activeTiles[tileId].transform.localPosition = loc;
                 activeTiles[tileId].layer = 9;
-
-                if (textureUrl != "")
-                {
-                    var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-                    Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
-                    string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-                    if (tileId.z >= 17)
-                    {
-                        wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
-                    }
-                    www = UnityWebRequestTexture.GetTexture(wmsUrl);
-                    yield return www.SendWebRequest();
-
-                    if (!www.isNetworkError && !www.isHttpError)
-                    {
-                        if (activeTiles.ContainsKey(tileId))
-                        {
-                            Destroy(meshRenderer.material.GetTexture("_BaseMap"));
-
-                            var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                            loadedTexture.wrapMode = TextureWrapMode.Clamp;
-                            meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
-                    }
-                }
             }
         }
         else
@@ -261,6 +232,36 @@ public class TileLoader : MonoBehaviour
             Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
             Debug.Log(www.error);
         }
+        if (textureUrl != "")
+        {
+            var schema = new Terrain.TmsGlobalGeodeticTileSchema();
+            Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
+            string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
+            if (tileId.z >= 17)
+            {
+                wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
+            }
+            www = UnityWebRequestTexture.GetTexture(wmsUrl);
+            yield return www.SendWebRequest();
+
+            if (!www.isNetworkError && !www.isHttpError)
+            {
+                if (activeTiles.ContainsKey(tileId))
+                {
+                    meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                    Destroy(meshRenderer.material.GetTexture("_BaseMap"));
+
+                    var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                    loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                    meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
+            }
+        }
+
         activeDownloads.Remove(url);
     }
 
