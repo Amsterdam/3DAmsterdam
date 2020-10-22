@@ -23,12 +23,12 @@ namespace Amsterdam3D.DataGeneration
 					//Create asset bundle from mesh we just made
 					AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
 					string[] assetNames = new string[1];
-					assetNames[0] = "Assets/TreeTiles/" + file.Name;
+					assetNames[0] = "TreeTileAssets/" + file.Name;
 
 					buildMap[0].assetBundleName = file.Name.Replace(".asset", "");
 					buildMap[0].assetNames = assetNames;
 
-					BuildPipeline.BuildAssetBundles("TreeTilesAssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
+					BuildPipeline.BuildAssetBundles("TreeTileAssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
 				}
 			}
 		}

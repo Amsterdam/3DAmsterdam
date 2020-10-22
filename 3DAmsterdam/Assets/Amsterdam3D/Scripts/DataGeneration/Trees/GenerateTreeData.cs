@@ -287,7 +287,7 @@ namespace Amsterdam3D.DataGeneration
 
 			Vector3 worldPosition = treeTile.transform.position;
 
-			//Calculate offset
+			//Calculate offset. ( Our viewer expects tiles with the origin in the center )
 			Vector3RD convertedOffset = CoordConvert.UnitytoRD(Vector3.zero);
 			convertedOffset.x -= 500;
 			convertedOffset.y -= 500;
@@ -328,11 +328,10 @@ namespace Amsterdam3D.DataGeneration
 		/// <param name="worldPosition">The position to move the tile to when it is done (for previewing purposes)</param>
 		private void CreateTreeTile(GameObject treeTile, Vector3 worldPosition)
 		{
-			string assetName = "Assets/TreeTiles/" + treeTile.name + ".asset";
+			string assetName = "TreeTileAssets/" + treeTile.name + ".asset";
 
 			MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
 			for (int i = 0; i < combine.Length; i++)
 			{
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
