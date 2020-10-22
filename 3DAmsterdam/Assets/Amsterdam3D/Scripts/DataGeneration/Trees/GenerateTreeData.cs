@@ -57,10 +57,14 @@ namespace Amsterdam3D.DataGeneration
 		private double tileSize = 1000.0;
 		private string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
 
+		[SerializeField]
+		private Dictionary<string, string> noPrefabFoundNames;
+		
 		public void Start()
 		{
 			trees = new List<Tree>();
 			treeLines = new List<string>();
+			noPrefabFoundNames = new Dictionary<string, string>();
 
 			ParseTreeData();
 		}
@@ -101,11 +105,18 @@ namespace Amsterdam3D.DataGeneration
 				lineNr++;
 				if (lineNr % 10000 == 0)
 				{
-					Debug.Log("Parsing tree line nr: " + lineNr);
+					Debug.Log("Parsing tree line nr: " + lineNr + "/" + treeLines.Count);
 					yield return new WaitForEndOfFrame();
 				}
 			}
+
+			Debug.Log("No prefabs were found for the following tree names: ");
+			foreach (KeyValuePair<string, string> treeDescription in noPrefabFoundNames) {
+				Debug.Log(treeDescription.Key);
+			}
+
 			Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
+
 			TraverseTileFiles();
 
 			yield return null;
@@ -171,6 +182,7 @@ namespace Amsterdam3D.DataGeneration
 					}
 				}
 			}
+			noPrefabFoundNames[treeTypeDescription] = treeTypeDescription;
 			return treeTypes.items[3];
 		}
 
@@ -207,7 +219,7 @@ namespace Amsterdam3D.DataGeneration
 
 		/// <summary>
 		/// Load all the large ground tiles from AssetBundles, spawn it in our world, and start filling it with the trees that match the tile
-		/// its RD coordinate rectangle.
+		/// its RD coordinate rectangle. The tiles are named after the RD coordinates in origin at the bottomleft of the tile.
 		/// </summary>
 		private void TraverseTileFiles()
 		{
@@ -215,12 +227,11 @@ namespace Amsterdam3D.DataGeneration
 			var fileInfo = info.GetFiles();
 			foreach (var file in fileInfo)
 			{
-				Debug.Log(file.Name);
 				if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
 				{
+					Debug.Log(file.Name);
 					string[] coordinates = file.Name.Split('_');
 					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
-					Vector3RD tileRDCoordinatesCenter = new Vector3RD(tileRDCoordinatesBottomLeft.x + tileSize / 2.0, tileRDCoordinatesBottomLeft.y + tileSize / 2.0, 0);
 
 					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
 					Mesh[] meshesInAssetbundle = new Mesh[0];
