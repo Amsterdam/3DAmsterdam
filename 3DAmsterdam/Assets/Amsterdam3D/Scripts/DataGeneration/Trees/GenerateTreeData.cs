@@ -328,7 +328,7 @@ namespace Amsterdam3D.DataGeneration
 		/// <param name="worldPosition">The position to move the tile to when it is done (for previewing purposes)</param>
 		private void CreateTreeTile(GameObject treeTile, Vector3 worldPosition)
 		{
-			string assetName = "TreeTileAssets/" + treeTile.name + ".asset";
+			string assetName = "Assets/TreeTileAssets/" + treeTile.name + ".asset";
 
 			MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
