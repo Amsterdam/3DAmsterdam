@@ -62,9 +62,17 @@ namespace Amsterdam3D.DataGeneration
 
 		[SerializeField]
 		private Dictionary<string, string> noPrefabFoundNames;
-		
+
+		private Vector3RD tileOffset;
+
 		public void Start()
 		{
+			//Calculate offset. ( Our viewer expects tiles with the origin in the center )
+			tileOffset = CoordConvert.referenceRD;
+			tileOffset.x -= 500;
+			tileOffset.y -= 500;
+			tileOffset.z -= 43;
+
 			trees = new List<Tree>();
 			treeLines = new List<string>();
 			noPrefabFoundNames = new Dictionary<string, string>();
@@ -328,18 +336,12 @@ namespace Amsterdam3D.DataGeneration
 				treeChecked--;
 			}
 
-			Vector3 worldPosition = treeTile.transform.position;
-
-			//Calculate offset. ( Our viewer expects tiles with the origin in the center )
-			Vector3RD convertedOffset = CoordConvert.UnitytoRD(Vector3.zero);
-			convertedOffset.x -= 500;
-			convertedOffset.y -= 500;
-			convertedOffset.z -= 43;
-			treeTile.transform.position = CoordConvert.RDtoUnity(convertedOffset);
+			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Constants.ZERO_GROUND_LEVEL_Y;
+			treeTile.transform.position = CoordConvert.RDtoUnity(tileOffset);
 
 			//yield return new WaitForEndOfFrame();
 
-			CreateTreeTile(treeTile, worldPosition);
+			CreateTreeTile(treeTile, previewPosition);
 
 			//yield return null;
 		}
