@@ -261,16 +261,17 @@ namespace Amsterdam3D.DataGeneration
 			//TODO: Add all trees within this time (1x1km)
 			yield return new WaitForEndOfFrame(); //make sure collider is there
 
-			int treeChecked = 0;
-			while (treeChecked < trees.Count - 1)
+			int treeChecked = trees.Count -1;
+			while (treeChecked >= 0)
 			{
 				Tree tree = trees[treeChecked];
 
 				if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 				{
 					SpawnTreeOnGround(treeTile, tree);
+					trees.RemoveAt(treeChecked);
 				}
-				treeChecked++;
+				treeChecked--;
 			}
 
 			Vector3 worldPosition = treeTile.transform.position;
@@ -296,6 +297,7 @@ namespace Amsterdam3D.DataGeneration
 		{
 			GameObject newTreeInstance = Instantiate(tree.prefab, treeTile.transform);
 			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
+			newTreeInstance.transform.Rotate(0, UnityEngine.Random.value * 360.0f, 0);
 
 			float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
 			if (Physics.Raycast(tree.position + Vector3.up * 1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
