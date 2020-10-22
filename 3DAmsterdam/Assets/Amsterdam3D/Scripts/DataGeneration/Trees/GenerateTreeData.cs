@@ -45,7 +45,6 @@ namespace Amsterdam3D.DataGeneration
 		[SerializeField]
 		private TextAsset[] bomenCsvDataFiles;
 
-		[SerializeField]
 		private List<Tree> trees;
 
 		private List<string> treeLines;
@@ -57,6 +56,9 @@ namespace Amsterdam3D.DataGeneration
 
 		private double tileSize = 1000.0;
 		private string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
+
+		private string[] treeNameParts;
+		private string treeTypeName = "";
 
 		[SerializeField]
 		private Dictionary<string, string> noPrefabFoundNames;
@@ -112,12 +114,12 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			Debug.Log("No prefabs were found for the following tree names: ");
-			string listOfNamesNotFound = string.Join(";", noPrefabFoundNames.Select(x => x.Key + "=" + x.Value).ToArray());
+			string listOfNamesNotFound = string.Join(";", noPrefabFoundNames.Select(x => x.Key).ToArray());
 			Debug.Log(listOfNamesNotFound);
 
 			Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
 
-			TraverseTileFiles();
+			StartCoroutine(TraverseTileFiles());
 
 			yield return null;
 		}
@@ -169,8 +171,8 @@ namespace Amsterdam3D.DataGeneration
 		/// <returns>The prefab with a matching substring</returns>
 		private GameObject FindClosestPrefabTypeByName(string treeTypeDescription)
 		{
-			string[] treeNameParts = treeTypeDescription.Replace("\"", "").Split(' ');
-			string treeTypeName = treeNameParts[0].ToLower();
+			treeNameParts = treeTypeDescription.Replace("\"", "").Split(' ');
+			treeTypeName = treeNameParts[0].ToLower();
 
 			foreach (var namePart in treeNameParts)
 			{
@@ -221,10 +223,51 @@ namespace Amsterdam3D.DataGeneration
 		/// Load all the large ground tiles from AssetBundles, spawn it in our world, and start filling it with the trees that match the tile
 		/// its RD coordinate rectangle. The tiles are named after the RD coordinates in origin at the bottomleft of the tile.
 		/// </summary>
-		private void TraverseTileFiles()
+		private IEnumerator TraverseTileFiles()
 		{
 			var info = new DirectoryInfo(sourceGroundTilesFolder);
 			var fileInfo = info.GetFiles();
+
+			var currentFile = 0;
+			while(currentFile < fileInfo.Length)
+			{
+				FileInfo file = fileInfo[currentFile];
+				if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
+				{
+					Debug.Log("Filling tile" + file.Name);
+					yield return new WaitForEndOfFrame();
+
+					string[] coordinates = file.Name.Split('_');
+					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
+
+					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
+					Mesh[] meshesInAssetbundle = new Mesh[0];
+					try
+					{
+						meshesInAssetbundle = assetBundleTile.LoadAllAssets<Mesh>();
+					}
+					catch (Exception)
+					{
+						Debug.Log("Could not find a mesh in this assetbundle.");
+						assetBundleTile.Unload(true);
+					}
+
+					GameObject newTile = new GameObject();
+					newTile.name = file.Name;
+					newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
+					newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
+					newTile.AddComponent<MeshRenderer>().material = previewMaterial;
+					newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesBottomLeft);
+
+					GameObject treeRoot = new GameObject();
+					treeRoot.name = file.Name.Replace("terrain", "trees");
+					treeRoot.transform.position = newTile.transform.position;
+
+					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
+				}
+				currentFile++;
+			}
+
 			foreach (var file in fileInfo)
 			{
 				if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
@@ -256,7 +299,7 @@ namespace Amsterdam3D.DataGeneration
 					treeRoot.name = file.Name.Replace("terrain", "trees");
 					treeRoot.transform.position = newTile.transform.position;
 
-					StartCoroutine(SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft));
+					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
 				}
 			}
 		}
@@ -267,10 +310,10 @@ namespace Amsterdam3D.DataGeneration
 		/// <param name="treeTile">The target 1x1 km ground tile</param>
 		/// <param name="tileCoordinates">RD Coordinates of the tile</param>
 		/// <returns></returns>
-		private IEnumerator SpawnTreesInTile(GameObject treeTile, Vector3RD tileCoordinates)
+		private void SpawnTreesInTile(GameObject treeTile, Vector3RD tileCoordinates)
 		{
 			//TODO: Add all trees within this time (1x1km)
-			yield return new WaitForEndOfFrame(); //make sure collider is there
+			//yield return new WaitForEndOfFrame(); //make sure collider is there
 
 			int treeChecked = trees.Count -1;
 			while (treeChecked >= 0)
@@ -294,9 +337,11 @@ namespace Amsterdam3D.DataGeneration
 			convertedOffset.z -= 43;
 			treeTile.transform.position = CoordConvert.RDtoUnity(convertedOffset);
 
+			//yield return new WaitForEndOfFrame();
+
 			CreateTreeTile(treeTile, worldPosition);
 
-			yield return null;
+			//yield return null;
 		}
 
 		/// <summary>

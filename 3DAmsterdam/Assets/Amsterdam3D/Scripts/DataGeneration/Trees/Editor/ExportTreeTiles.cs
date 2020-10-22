@@ -10,10 +10,10 @@ namespace Amsterdam3D.DataGeneration
 		/// <summary>
 		/// Converts all the data files found in the TreeTiles folder to AssetBundles
 		/// </summary>
-		[MenuItem("Tools/Genereer Bomen naar AssetBundles")]
+		[MenuItem("Tools/Exporteer Bomen naar AssetBundles")]
 		public static void GenerateAssetBundles()
 		{
-			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + "/TreeTiles");
+			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + "/TreeTileAssets");
 			var fileInfo = directory.GetFiles();
 			foreach (var file in fileInfo)
 			{
