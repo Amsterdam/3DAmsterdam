@@ -31,7 +31,7 @@ public class loadtest : MonoBehaviour
     void Start()
     {
         StartCoroutine(ProcessTiles());
-        Debug.Log("finished");
+        
        // ConvertTile(121000,487000);
     }
     IEnumerator ProcessTiles()
@@ -42,7 +42,7 @@ public class loadtest : MonoBehaviour
         int Ymin = 475000;
         int Ymax = 497000;
 
-        int totalCount = (Xmax - Xmin) - (Ymax - Ymin);
+        int totalCount = ((Xmax - Xmin+1)/1000) * ((Ymax - Ymin+1)/1000);
         int counter = 0;
         for (int X = Xmin; X < Xmax; X+=tileSize)
         {
@@ -56,6 +56,8 @@ public class loadtest : MonoBehaviour
                 ConvertTile(X, Y);
 
             }
+
+            Debug.Log("finishes");
         }
     }
     
@@ -96,6 +98,10 @@ public class loadtest : MonoBehaviour
     IEnumerator SaveDXF(int X, int Y)
     {
         yield return new WaitUntil(() => buildingsDone == true);
+        terrainDone = false;
+        StartCoroutine(LoadTerrain(X, Y, (myReturnValue) => {
+            if (myReturnValue) { AddTerrain(X, Y); };
+        }));
         yield return new WaitUntil(() => terrainDone == true);
         string file = "E:/exporttest/" + X.ToString() + "-" + Y.ToString() + "-LOD" + buildingsLOD + ".dxf";
         doc.Save(file, true);
@@ -141,7 +147,12 @@ public class loadtest : MonoBehaviour
 
         for (int i = 0; i < blockparts.Length; i++)
         {
-            Block blok = new Block(objectlists[0].ids[i], blockparts[i]);
+            string blockname = objectlists[0].ids[i];
+            if (blockname =="")
+            {
+                blockname = "noID";
+            }
+            Block blok = new Block(blockname, blockparts[i]);
             blok.Layer = gebouwenlaag;
             doc.Blocks.Add(blok);
             Insert blokInsert = new Insert(blok, new netDxf.Vector3(RDOrigin.x, RDOrigin.y, RDOrigin.z), 1);
@@ -175,20 +186,20 @@ public class loadtest : MonoBehaviour
             
             UnityEngine.Vector3 vertex = vertices[Indexes[i]] + UnityOffset;
             Vector3RD coordinate = CoordConvert.UnitytoRD(vertex);
-            netDxf.Vector3 vertex1 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z - RDOrigin.z);
+            netDxf.Vector3 vertex1 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z -UnityOffset.y);
             vertex = vertices[Indexes[i + 1]] + UnityOffset;
             coordinate = CoordConvert.UnitytoRD(vertex);
-            netDxf.Vector3 vertex2 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z - RDOrigin.z);
+            netDxf.Vector3 vertex2 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z - UnityOffset.y);
             vertex = vertices[Indexes[i + 2]] + UnityOffset;
             coordinate = CoordConvert.UnitytoRD(vertex);
-            netDxf.Vector3 vertex3 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z - RDOrigin.z);
+            netDxf.Vector3 vertex3 = new netDxf.Vector3(coordinate.x - RDOrigin.x, coordinate.y - RDOrigin.y, coordinate.z - UnityOffset.y);
             face = new Face3d(vertex1, vertex2, vertex3);
             blockparts.Add(face);
         }
         Block blok = new Block("terrain", blockparts);
         blok.Layer = terreinLaag;
         doc.Blocks.Add(blok);
-        Insert blokInsert = new Insert(blok, new netDxf.Vector3(RDOrigin.x-500, RDOrigin.y-500, RDOrigin.z), 1);
+        Insert blokInsert = new Insert(blok, new netDxf.Vector3(RDOrigin.x-500, RDOrigin.y-500, 0), 1);
         blokInsert.Layer = terreinLaag;
         doc.AddEntity(blokInsert);
         terrainDone = true;
