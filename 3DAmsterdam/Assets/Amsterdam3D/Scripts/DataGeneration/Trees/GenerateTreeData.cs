@@ -13,7 +13,7 @@ namespace Amsterdam3D.DataGeneration
 		[Serializable]
 		private class Tree
 		{
-			public int OBJECTNUMMER;
+			public string OBJECTNUMMER;
 			public string Soortnaam_NL;
 			public string Boomnummer;
 			public string Soortnaam_WTS;
@@ -133,7 +133,7 @@ namespace Amsterdam3D.DataGeneration
 
 			Tree newTree = new Tree()
 			{
-				OBJECTNUMMER = int.Parse(cell[0]),
+				OBJECTNUMMER = cell[0],
 				Soortnaam_NL = cell[1],
 				Boomnummer = cell[2],
 				Soortnaam_WTS = cell[3],
@@ -307,6 +307,9 @@ namespace Amsterdam3D.DataGeneration
 		private void SpawnTreeOnGround(GameObject treeTile, Tree tree)
 		{
 			GameObject newTreeInstance = Instantiate(tree.prefab, treeTile.transform);
+
+			//Apply properties/variations based on tree data
+			newTreeInstance.name = tree.OBJECTNUMMER;
 			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
 			newTreeInstance.transform.Rotate(0, UnityEngine.Random.value * 360.0f, 0);
 
