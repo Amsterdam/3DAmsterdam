@@ -243,7 +243,7 @@ namespace Amsterdam3D.DataGeneration
 				FileInfo file = fileInfo[currentFile];
 				if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
 				{
-					Debug.Log("Filling tile" + file.Name);
+					Debug.Log("Filling tile " + currentFile + "/" + fileInfo.Length);
 					yield return new WaitForEndOfFrame();
 
 					string[] coordinates = file.Name.Split('_');
@@ -275,41 +275,6 @@ namespace Amsterdam3D.DataGeneration
 					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
 				}
 				currentFile++;
-			}
-
-			foreach (var file in fileInfo)
-			{
-				if (!file.Name.Contains(".manifest") && file.Name.Contains("_"))
-				{
-					Debug.Log(file.Name);
-					string[] coordinates = file.Name.Split('_');
-					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
-
-					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
-					Mesh[] meshesInAssetbundle = new Mesh[0];
-					try
-					{
-						meshesInAssetbundle = assetBundleTile.LoadAllAssets<Mesh>();
-					}
-					catch (Exception)
-					{
-						Debug.Log("Could not find a mesh in this assetbundle.");
-						assetBundleTile.Unload(true);
-					}
-
-					GameObject newTile = new GameObject();
-					newTile.name = file.Name;
-					newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
-					newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
-					newTile.AddComponent<MeshRenderer>().material = previewMaterial;
-					newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesBottomLeft);
-
-					GameObject treeRoot = new GameObject();
-					treeRoot.name = file.Name.Replace("terrain", "trees");
-					treeRoot.transform.position = newTile.transform.position;
-
-					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
-				}
 			}
 		}
 
