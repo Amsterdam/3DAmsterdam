@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using System;
 using ConvertCoordinates;
 using Amsterdam3D.CameraMotion;
+using UnityEngine.Rendering;
 
 public class TileLoader : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class TileLoader : MonoBehaviour
     const int maxParallelRequests = 5;
     Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
+
+    public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.Off;
 
     public enum TileService
     {
@@ -218,7 +221,7 @@ public class TileLoader : MonoBehaviour
 
                 activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
-                meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                meshRenderer.shadowCastingMode = tileShadowCastingMode;
 
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
@@ -363,6 +366,8 @@ public class TileLoader : MonoBehaviour
             {
                 if (TeVerwijderenTiles.ContainsKey(activeTile) == false)
                 {
+                    //Move down tile a notch to avoid Z-fighting in overlapping tiles
+                    activeTiles[activeTile].transform.position = new Vector3(activeTiles[activeTile].transform.position.x, activeTiles[activeTile].transform.position.y-0.01f, activeTiles[activeTile].transform.position.z);
                     TeVerwijderenTiles.Add(activeTile, activeTiles[activeTile]);
                 }
                 
