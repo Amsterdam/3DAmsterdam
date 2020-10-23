@@ -335,7 +335,7 @@ namespace Amsterdam3D.DataGeneration
 				treeChecked--;
 			}
 
-			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Constants.ZERO_GROUND_LEVEL_Y;
+			Vector3 previewPosition = treeTile.transform.position;
 			treeTile.transform.position = CoordConvert.RDtoUnity(tileOffset);
 
 			//yield return new WaitForEndOfFrame();
