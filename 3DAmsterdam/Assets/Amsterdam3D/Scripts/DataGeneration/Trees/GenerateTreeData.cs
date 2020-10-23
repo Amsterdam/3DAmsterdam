@@ -72,7 +72,7 @@ namespace Amsterdam3D.DataGeneration
 			tileOffset = CoordConvert.referenceRD;
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
-			tileOffset.z -= 43;
+			//tileOffset.z -= 43;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
@@ -181,10 +181,10 @@ namespace Amsterdam3D.DataGeneration
 		private GameObject FindClosestPrefabTypeByName(string treeTypeDescription)
 		{
 			treeNameParts = treeTypeDescription.Replace("\"", "").Split(' ');
-			treeTypeName = treeNameParts[0].ToLower();
 
 			foreach (var namePart in treeNameParts)
 			{
+				treeTypeName = namePart.ToLower();
 				foreach (GameObject tree in treeTypes.items)
 				{
 					if (tree.name.ToLower().Contains(treeTypeName))
