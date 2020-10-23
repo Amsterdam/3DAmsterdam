@@ -15,11 +15,11 @@ namespace Amsterdam3D.DataGeneration
 		{
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + "/TreeTileAssets");
 			var fileInfo = directory.GetFiles();
+
 			foreach (var file in fileInfo)
 			{
 				if (!file.Name.Contains(".meta"))
 				{
-					Debug.Log("Exporting tile: " + file.Name);
 					//Create asset bundle from mesh we just made
 					AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
 					string[] assetNames = new string[1];
