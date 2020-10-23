@@ -14,9 +14,9 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 1, g: 1, b: 1, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
@@ -172,6 +172,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 923e575a502e8b74c924756c6eb5341d, type: 3}
   previewMaterial: {fileID: 2100000, guid: c819d018e5b8b174d84f338b2ebb7dec, type: 2}
   treesMaterial: {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
+  noPrefabFoundNames: []
 --- !u!1 &723764306
 GameObject:
   m_ObjectHideFlags: 0

@@ -121,6 +121,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: a6184d81acebd6d4dbd37680b6441ab6, type: 2}
+--- !u!114 &58988083 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3885991637372011334, guid: 551dff695a15b634a97abe62e9edd824,
+    type: 3}
+  m_PrefabInstance: {fileID: 2124185597603950387}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc99f9dec8005e442b69b78d710325b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &436937297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 371378253, guid: 551dff695a15b634a97abe62e9edd824,
@@ -353,11 +365,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4268685763077478048, guid: 221d545c4d79dd445b031a06c6945bbd,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
       propertyPath: m_RootOrder
@@ -2547,13 +2554,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1814701004}
-    - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: ToggleLinkedObject
       objectReference: {fileID: 0}
     - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2564,6 +2566,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2524414970234950642, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -4379,11 +4386,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 616626445}
+      objectReference: {fileID: 58988083}
     - target: {fileID: 4668658410030122076, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: ToggleLinkedObject
       objectReference: {fileID: 0}
     - target: {fileID: 4668658410030122076, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -7962,6 +7969,11 @@ PrefabInstance:
     - target: {fileID: 8699433069668790714, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723292996684127190, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723343052983358908, guid: 551dff695a15b634a97abe62e9edd824,
