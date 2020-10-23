@@ -64,6 +64,7 @@ namespace Amsterdam3D.DataGeneration
 		private List<string> noPrefabFoundNames;
 
 		private Vector3RD tileOffset;
+		private Vector3 unityTileOffset;
 
 		public void Start()
 		{
@@ -72,6 +73,7 @@ namespace Amsterdam3D.DataGeneration
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
 			tileOffset.z -= 43;
+			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
 			treeLines = new List<string>();
@@ -319,9 +321,7 @@ namespace Amsterdam3D.DataGeneration
 		/// <returns></returns>
 		private void SpawnTreesInTile(GameObject treeTile, Vector3RD tileCoordinates)
 		{
-			//TODO: Add all trees within this time (1x1km)
-			//yield return new WaitForEndOfFrame(); //make sure collider is there
-
+			//TODO: Add all trees within this tile (1x1km)
 			int treeChecked = trees.Count -1;
 			while (treeChecked >= 0)
 			{
@@ -335,14 +335,12 @@ namespace Amsterdam3D.DataGeneration
 				treeChecked--;
 			}
 
-			Vector3 previewPosition = treeTile.transform.position;
-			treeTile.transform.position = CoordConvert.RDtoUnity(tileOffset);
+			//Define a preview position to preview the tree tile in our scene
+			Vector3 previewPosition = treeTile.transform.position + Vector3.up*Constants.ZERO_GROUND_LEVEL_Y;
 
-			//yield return new WaitForEndOfFrame();
+			treeTile.transform.position = unityTileOffset;
 
 			CreateTreeTile(treeTile, previewPosition);
-
-			//yield return null;
 		}
 
 		/// <summary>
