@@ -325,7 +325,8 @@ namespace Amsterdam3D.DataGeneration
 			float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
 			if (Physics.Raycast(tree.position + Vector3.up * 1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 			{
-				raycastHitY = hit.point.y;
+				//Add a little random variation in our hitpoint, to avoid z-fighting on the same trees that are intersecting with eachother
+				raycastHitY = hit.point.y + UnityEngine.Random.value* raycastYRandomOffsetRange;
 			}
 			newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
 		}
