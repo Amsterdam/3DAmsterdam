@@ -348,6 +348,8 @@ namespace Amsterdam3D.DataGeneration
 
 			MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+			var totalVertexCount = 0;
 			for (int i = 0; i < combine.Length; i++)
 			{
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
@@ -355,6 +357,7 @@ namespace Amsterdam3D.DataGeneration
 				Mesh treeMesh = meshFilters[i].mesh;						
 				if (treeMesh.vertexCount > 0)
 				{
+					totalVertexCount += treeMesh.vertexCount;
 					AddIDToMeshUV(treeMesh, int.Parse(meshFilters[i].name));
 				}
 				combine[i].mesh = treeMesh;
@@ -362,6 +365,9 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			Mesh newCombinedMesh = new Mesh();
+			if (totalVertexCount > 65536) //In case we go over the 16bit ( 2^16 ) index count, increase the indexformat.
+				newCombinedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
 			if (meshFilters.Length > 0)
 			{
 				newCombinedMesh.name = treeTile.name;
