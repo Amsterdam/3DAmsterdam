@@ -74,7 +74,7 @@ namespace Amsterdam3D.DataGeneration
 			tileOffset = CoordConvert.referenceRD;
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
-			tileOffset.z += Constants.ZERO_GROUND_LEVEL_Y;
+			tileOffset.z -= Constants.ZERO_GROUND_LEVEL_Y;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
