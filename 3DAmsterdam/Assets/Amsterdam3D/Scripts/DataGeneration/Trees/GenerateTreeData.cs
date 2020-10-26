@@ -263,6 +263,7 @@ namespace Amsterdam3D.DataGeneration
 					}
 
 					GameObject newTile = new GameObject();
+					newTile.isStatic = true;
 					newTile.name = file.Name;
 					newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
 					newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
@@ -272,6 +273,8 @@ namespace Amsterdam3D.DataGeneration
 					GameObject treeRoot = new GameObject();
 					treeRoot.name = file.Name.Replace("terrain", "trees");
 					treeRoot.transform.position = newTile.transform.position;
+
+					yield return new WaitForEndOfFrame(); //Make sure collider is processed
 
 					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
 				}
@@ -302,8 +305,7 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			//Define a preview position to preview the tree tile in our scene
-			Vector3 previewPosition = treeTile.transform.position + Vector3.up*Constants.ZERO_GROUND_LEVEL_Y;
-
+			Vector3 previewPosition = treeTile.transform.position;
 			treeTile.transform.position = unityTileOffset;
 
 			CreateTreeTile(treeTile, previewPosition);
@@ -323,14 +325,14 @@ namespace Amsterdam3D.DataGeneration
 			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
 			newTreeInstance.transform.Rotate(0, UnityEngine.Random.value * 360.0f, 0);
 
-			float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
+			float raycastHitY = 0;
 			if (Physics.Raycast(tree.position + Vector3.up * 1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 			{
 				raycastHitY = hit.point.y;
 			}
 
 			//Add a little random variation in our hitpoint, to avoid z-fighting on the same trees that are intersecting with eachother
-			raycastHitY += UnityEngine.Random.value * raycastYRandomOffsetRange;
+			raycastHitY -= UnityEngine.Random.value * raycastYRandomOffsetRange;
 			
 			newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
 		}
