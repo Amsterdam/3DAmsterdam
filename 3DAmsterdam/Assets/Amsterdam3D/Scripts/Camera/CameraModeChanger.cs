@@ -78,13 +78,13 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        public void ChangedPointFromUrl(string latLong)
+        public void ChangedPointFromUrl(string latitudeLongitude)
         {
-            string[] coordinates = latLong.Split(',');
-            var lat = double.Parse(coordinates[0]);
-            var lon = double.Parse(coordinates[1]);
+            string[] coordinates = latitudeLongitude.Split(',');
+            var latitude = double.Parse(coordinates[0]);
+            var longitude = double.Parse(coordinates[1]);
 
-            var convertedCoordinate = CoordConvert.WGS84toUnity(lon, lat);
+            var convertedCoordinate = CoordConvert.WGS84toUnity(longitude, latitude);
             currentCamera.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
         }
 
