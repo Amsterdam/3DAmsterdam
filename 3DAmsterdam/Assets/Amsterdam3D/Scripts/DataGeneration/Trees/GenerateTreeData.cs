@@ -66,7 +66,7 @@ namespace Amsterdam3D.DataGeneration
 		private List<string> noPrefabFoundNames;
 
 		private Vector3RD tileOffset;
-		private Vector3 unityTileOffset;
+		private Vector3 unityTileOffset; 
 
 		public void Start()
 		{
@@ -74,6 +74,7 @@ namespace Amsterdam3D.DataGeneration
 			tileOffset = CoordConvert.referenceRD;
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
+			tileOffset.y += Constants.ZERO_GROUND_LEVEL_Y;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
@@ -305,7 +306,7 @@ namespace Amsterdam3D.DataGeneration
 			}
 
 			//Define a preview position to preview the tree tile in our scene
-			Vector3 previewPosition = treeTile.transform.position;
+			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Constants.ZERO_GROUND_LEVEL_Y;
 			treeTile.transform.position = unityTileOffset;
 
 			CreateTreeTile(treeTile, previewPosition);
