@@ -18,7 +18,7 @@ namespace Amsterdam3D.DataGeneration
 
 			foreach (var file in fileInfo)
 			{
-				if (!file.Name.Contains(".meta"))
+				if (!file.Name.Contains(".meta") && !File.ReadAllText(file.FullName).Contains("vertexCount: 0"))
 				{
 					//Create asset bundle from mesh we just made
 					AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
@@ -31,6 +31,8 @@ namespace Amsterdam3D.DataGeneration
 					BuildPipeline.BuildAssetBundles("TreeTileAssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
 				}
 			}
+
+			Debug.Log("Done exporting Tree tile AssetBundles");
 		}
 	}
 }
