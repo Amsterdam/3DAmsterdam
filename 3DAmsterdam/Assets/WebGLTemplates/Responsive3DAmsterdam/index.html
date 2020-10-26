@@ -72,7 +72,7 @@
 				  if (window.location.hash) {
 					  locationHashChanged();
 				  }
-			  }, 2000);
+			  }, 300);
 		  }
 	  }
 
@@ -91,7 +91,7 @@
 	  }
 
 	  function locationHashChanged() {
-		  unityInstance.SendMessage("MainCamera", "ChangedPointFromUrl", window.location.hash.replace("#", ""));
+		  unityInstance.SendMessage("CameraModeChanger", "ChangedPointFromUrl", window.location.hash.replace("#", ""));
 	  }
 
 	  function SelectSharedURL() {
