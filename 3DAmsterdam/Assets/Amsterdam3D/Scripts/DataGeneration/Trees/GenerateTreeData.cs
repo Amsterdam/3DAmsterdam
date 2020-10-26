@@ -39,6 +39,8 @@ namespace Amsterdam3D.DataGeneration
 			public GameObject prefab;
 		}
 
+		private const string treeTileAssetsFolder = "Assets/TreeTileAssets/";
+		private const float raycastYRandomOffsetRange = 0.03f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;
 
@@ -72,7 +74,6 @@ namespace Amsterdam3D.DataGeneration
 			tileOffset = CoordConvert.referenceRD;
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
-			//tileOffset.z -= 43;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
@@ -338,7 +339,7 @@ namespace Amsterdam3D.DataGeneration
 		/// <param name="worldPosition">The position to move the tile to when it is done (for previewing purposes)</param>
 		private void CreateTreeTile(GameObject treeTile, Vector3 worldPosition)
 		{
-			string assetName = "Assets/TreeTileAssets/" + treeTile.name + ".asset";
+			string assetName = treeTileAssetsFolder + treeTile.name + ".asset";
 
 			MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
