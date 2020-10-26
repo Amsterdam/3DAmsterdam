@@ -40,7 +40,7 @@ namespace Amsterdam3D.DataGeneration
 		}
 
 		private const string treeTileAssetsFolder = "Assets/TreeTileAssets/";
-		private const float raycastYRandomOffsetRange = 0.03f;
+		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;
 
@@ -323,12 +323,16 @@ namespace Amsterdam3D.DataGeneration
 			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
 			newTreeInstance.transform.Rotate(0, UnityEngine.Random.value * 360.0f, 0);
 
-			float raycastHitY = Constants.ZERO_GROUND_LEVEL_Y;
+			float raycastHitY = 0;
 			if (Physics.Raycast(tree.position + Vector3.up * 1000.0f, Vector3.down, out RaycastHit hit, Mathf.Infinity))
 			{
-				//Add a little random variation in our hitpoint, to avoid z-fighting on the same trees that are intersecting with eachother
-				raycastHitY = hit.point.y + UnityEngine.Random.value* raycastYRandomOffsetRange;
+				raycastHitY = hit.point.y;
+				if (raycastHitY > 10.0f) raycastHitY = 0;
 			}
+
+			//Add a little random variation in our hitpoint, to avoid z-fighting on the same trees that are intersecting with eachother
+			raycastHitY += UnityEngine.Random.value * raycastYRandomOffsetRange;
+			
 			newTreeInstance.transform.position = new Vector3(tree.position.x, raycastHitY, tree.position.z);
 		}
 
