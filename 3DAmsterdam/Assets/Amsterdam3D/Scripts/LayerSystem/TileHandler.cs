@@ -26,7 +26,7 @@ namespace LayerSystem
         public List<Layer> layers = new List<Layer>();
         private List<int> tileSizes = new List<int>();
 
-        private List<List<Vector3Int>> TileDistances = new List<List<Vector3Int>>();
+        private List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
         
         private List<TileChange> pendingTileChanges = new List<TileChange>();
         private Dictionary<Vector3Int, TileChange> activeTileChanges = new Dictionary<Vector3Int, TileChange>();
@@ -356,7 +356,7 @@ namespace LayerSystem
 
         private void GetPossibleTiles()
         {
-            TileDistances.Clear();
+            tileDistances.Clear();
 
             int startX;
             int startY;
@@ -379,7 +379,7 @@ namespace LayerSystem
                         tileList.Add(new Vector3Int(x,y, (int)GetTileDistanceSquared(tileID)));
                     }
                 }
-                TileDistances.Add(tileList);
+                tileDistances.Add(tileList);
             }
         }
 
@@ -445,7 +445,7 @@ namespace LayerSystem
                 Layer layer = layers[layerIndex];
                 if (layer.gameObject.activeSelf==false){continue;}
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
-                foreach (Vector3Int tileDistance in TileDistances[tilesizeIndex])
+                foreach (Vector3Int tileDistance in tileDistances[tilesizeIndex])
                 {
                     tileKey = new Vector2Int(tileDistance.x, tileDistance.y);
                     
@@ -517,7 +517,7 @@ namespace LayerSystem
                 Layer layer = layers[layerIndex];
                 if (layer.gameObject.activeSelf == false) { continue; }
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
-                neededTileSizesDistance = TileDistances[tilesizeIndex];
+                neededTileSizesDistance = tileDistances[tilesizeIndex];
                 neededTileSizes.Clear();
                 foreach (var neededTileSize in neededTileSizesDistance)
                 {
