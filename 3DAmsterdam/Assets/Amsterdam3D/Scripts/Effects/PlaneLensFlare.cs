@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LensFlare : MonoBehaviour
+public class PlaneLensFlare : MonoBehaviour
 {
     [SerializeField]
     private Transform sun;
