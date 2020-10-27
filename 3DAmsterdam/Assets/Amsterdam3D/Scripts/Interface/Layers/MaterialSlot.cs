@@ -146,6 +146,8 @@ namespace Amsterdam3D.Interface
 			targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
 			targetMaterial.SetFloat("_Surface", 0); //0 Opaque
 			targetMaterial.SetColor("_BaseColor", colorImage.color);
+
+			targetMaterial.shader = opaqueMaterialSource.shader;
 		}
 
 		private void SwapShaderToTransparent()
@@ -155,6 +157,8 @@ namespace Amsterdam3D.Interface
 			color.a = materialOpacity;
 			targetMaterial.SetFloat("_Surface", 1); //1 Alpha
 			targetMaterial.SetColor("_BaseColor", color);
+
+			targetMaterial.shader = transparentMaterialSource.shader;
 		}
 	}
 }
