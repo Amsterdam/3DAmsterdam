@@ -36,10 +36,36 @@ namespace LayerSystem
             StartCoroutine(PrivateHide(id));
         }
 
+        public void Hide(List<string> ids) 
+        {
+            StartCoroutine(PrivateHide(ids));
+        }
+
         public void UnhideAll() 
         {
             StartCoroutine(PrivateHide("null"));
         }
+
+        private IEnumerator PrivateHide(List<string> id)
+        {
+            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            ObjectData objectdata;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectdata != null)
+                {
+                    objectdata.hideIDs.AddRange(id);
+                    objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
+                    objectdata.SetHideUVs();
+                //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
+                yield return null;
+                }
+            }
+            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+        }
+
 
         private IEnumerator PrivateHide(string id) 
         {

@@ -19,6 +19,8 @@ public class FirstPersonObject : MonoBehaviour, IPointerClickHandler
 	[HideInInspector]
 	public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
 
+
+
 	private void Awake()
 	{
 		manager = CameraModeChanger.Instance;

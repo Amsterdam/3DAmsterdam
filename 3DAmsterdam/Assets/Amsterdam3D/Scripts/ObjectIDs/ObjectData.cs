@@ -13,7 +13,9 @@ using UnityEngine;
         public List<int> vectorMap;
         public List<Vector2> mappedUVs;
         public Mesh mesh;
+    public List<int> triangleCount;
     
+
 
     public void SetUVs()
     {
@@ -24,6 +26,8 @@ using UnityEngine;
     {
         StartCoroutine(hideUVs());
     }
+
+
     private IEnumerator determineUVs()
     {
         Vector2 defaultUV = new Vector2(0.33f, 0.6f);
