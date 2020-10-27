@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Rendering;
 
 public class GeometryBuffer
 {
@@ -177,7 +178,7 @@ public class GeometryBuffer
 			}
 
 			Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
-			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; //Supports 4 billion verts instead of 65535
+			mesh.indexFormat = (allVertices.Length > 65536) ? IndexFormat.UInt32 : IndexFormat.UInt32; //Supports 4 billion verts for larger models
 			mesh.vertices = allVertices;
 			if (HasUVs)
 				mesh.SetUVs(0, allUVs);
@@ -190,12 +191,12 @@ public class GeometryBuffer
 				string matName = firstSubMeshGroup.Name;
 				if (materialDictionary.ContainsKey(matName))
 				{ 
-					Debug.Log("Assigning " + materialDictionary[matName]);
 					gameObjects[i].GetComponent<Renderer>().material = materialDictionary[matName];
 				}
 				else
 				{
-					gameObjects[i].GetComponent<Renderer>().material = defaultMaterial;
+					gameObjects[i].GetComponent<Renderer>().material = new Material(defaultMaterial);
+					gameObjects[i].GetComponent<Renderer>().material.name = firstSubMeshGroup.Name;
 				}
 
 				var triangles = new int[firstSubMeshGroup.FaceIndices.Count];
@@ -223,7 +224,8 @@ public class GeometryBuffer
 					}
 					else
 					{
-						materials[submeshIndex] = defaultMaterial;
+						materials[submeshIndex] = new Material(defaultMaterial);
+						materials[submeshIndex].name = matName;
 						Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
 					}
 
