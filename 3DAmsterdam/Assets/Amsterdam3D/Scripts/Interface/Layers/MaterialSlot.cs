@@ -23,6 +23,8 @@ namespace Amsterdam3D.Interface
 
 		public float materialOpacity = 1.0f;
 
+		private bool overrideShaderSources = false;
+
 		private const string EXPLANATION_TEXT = "\nShift+Klik: Multi-select";
 
 		public bool Selected
@@ -59,9 +61,21 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="target">The Material this slot targets</param>
 		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals)
+		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null)
 		{
 			targetMaterial = target;
+
+			//Optional non standard shader type overrides ( for layers with custom shaders )
+			if (transparentMaterialSourceOverride)
+			{
+				transparentMaterialSource = transparentMaterialSourceOverride;
+				overrideShaderSources = true;
+			}
+			if (opaqueMaterialSourceOverride)
+			{
+				overrideShaderSources = true;
+				opaqueMaterialSource = opaqueMaterialSourceOverride;
+			}
 
 			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
@@ -137,17 +151,31 @@ namespace Amsterdam3D.Interface
 
 		private void SwapShaderToOpaque()
 		{
-			targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
-			targetMaterial.SetFloat("_Surface", 0); //0 Opaque
+			if (overrideShaderSources)
+			{
+				targetMaterial.shader = opaqueMaterialSource.shader;
+			}
+			else
+			{
+				targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
+				targetMaterial.SetFloat("_Surface", 0); //0 Opaque
+			}
 			targetMaterial.SetColor("_BaseColor", colorImage.color);
 		}
 
 		private void SwapShaderToTransparent()
 		{
-			targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
+			if (overrideShaderSources)
+			{
+				targetMaterial.shader = transparentMaterialSource.shader;
+			}
+			else
+			{
+				targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
+				targetMaterial.SetFloat("_Surface", 1); //1 Alpha
+			}
 			var color = colorImage.color;
 			color.a = materialOpacity;
-			targetMaterial.SetFloat("_Surface", 1); //1 Alpha
 			targetMaterial.SetColor("_BaseColor", color);
 		}
 	}
