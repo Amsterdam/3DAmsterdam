@@ -59,9 +59,15 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="target">The Material this slot targets</param>
 		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals)
+		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null)
 		{
 			targetMaterial = target;
+
+			//Optional non standard shader type overrides ( for layers with custom shaders )
+			if(transparentMaterialSourceOverride)
+				transparentMaterialSource = transparentMaterialSourceOverride;
+			if(opaqueMaterialSourceOverride)
+				opaqueMaterialSource = opaqueMaterialSourceOverride;
 
 			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
