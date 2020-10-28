@@ -26,12 +26,8 @@ namespace Amsterdam3D.Interface
 			var url = gameObject.name.Substring(httpPosition, gameObject.name.Length-httpPosition);
 			JavascriptMethodCaller.OpenURL(url);
 
-			var button = GetComponent<Button>();
-			if (button)
-			{
-				//Make sure out release is triggered if this is a button, because our release is probably being blocked by a new browser window)
-				button.onClick.Invoke();
-			}
+			//Make sure to release everything manually (release event is blocked by our new browser window)
+			EventSystem.current.SetSelectedGameObject(null);
 		}
 	}
 }
