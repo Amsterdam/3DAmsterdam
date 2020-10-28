@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
@@ -23,7 +22,16 @@ namespace Amsterdam3D.Interface
 
 		private void OpenURLByGameObjectName()
 		{
-			JavascriptMethodCaller.OpenURL(gameObject.name);
+			var httpPosition = gameObject.name.IndexOf("http");
+			var url = gameObject.name.Substring(httpPosition, gameObject.name.Length-httpPosition);
+			JavascriptMethodCaller.OpenURL(url);
+
+			var button = GetComponent<Button>();
+			if (button)
+			{
+				//Make sure out release is triggered if this is a button, because our release is probably being blocked by a new browser window)
+				button.onClick.Invoke();
+			}
 		}
 	}
 }
