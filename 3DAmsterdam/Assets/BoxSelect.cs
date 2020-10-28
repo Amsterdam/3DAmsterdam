@@ -45,7 +45,6 @@ public class BoxSelect : SelectionTool
         toolType = ToolType.Box;
     }
 
-    // Update is called once per frame
     public override void Update()
     {
 
