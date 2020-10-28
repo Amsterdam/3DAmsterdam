@@ -121,12 +121,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: a6184d81acebd6d4dbd37680b6441ab6, type: 2}
---- !u!224 &362065335 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6316824707481797829, guid: 551dff695a15b634a97abe62e9edd824,
+--- !u!114 &58988083 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3885991637372011334, guid: 551dff695a15b634a97abe62e9edd824,
     type: 3}
   m_PrefabInstance: {fileID: 2124185597603950387}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc99f9dec8005e442b69b78d710325b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &436937297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 371378253, guid: 551dff695a15b634a97abe62e9edd824,
@@ -168,6 +174,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4498901013737045302, guid: 1686781c0bba69b41bd5102479f39f29,
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &907123088 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5737273050869481566, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1602667573}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &960615113
 PrefabInstance:
@@ -328,80 +340,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1479398281
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1479398282}
-  - component: {fileID: 1479398284}
-  - component: {fileID: 1479398283}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1479398282
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1479398281}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 362065335}
-  m_RootOrder: 24
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -910, y: -590}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1479398283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1479398281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.25490198}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6693154f941f3f54285476928477513e, type: 3}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1479398284
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1479398281}
-  m_CullTransparentMesh: 0
 --- !u!114 &1502487568 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3550877397508480405, guid: 551dff695a15b634a97abe62e9edd824,
@@ -478,59 +416,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2124185597603950387}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2146464480
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2146464481}
-  - component: {fileID: 2146464482}
-  m_Layer: 5
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2146464481
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146464480}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 362065335}
-  m_RootOrder: 23
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2146464482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146464480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ce29053efcdef64499fff9bd5254b1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionBox: {fileID: 1479398282}
-  BuildingContainer: {fileID: 1814701004}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!1001 &2124185597603950387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -651,24 +536,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 14124236300293750, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_Text
-      value: "3D Amsterdam toont bomen die in beheer zijn bij de gemeente. Dat betekent
-        dat niet elke boom in\r Amsterdam is weergegeven. De bomen op begraafplaatsen,
-        de volkstuincomplexen, grote groengebieden\r en rond sportvelden zijn niet
-        allemaal in beheer van de gemeente. \nOok de circa 150.000 bomen in het\r
-        Amsterdamse Bos zijn weliswaar van de gemeente Amsterdam, maar staan op grond
-        van de gemeente\r Amstelveen en staan daarom nog maar deels op 3D Amsterdam.
-        \nTot slot staan er nog tienduizenden\r bomen op terreinen van woningbouwcorporaties,
-        ProRail, Rijkswaterstaat en in de duizenden particuliere\r tuinen.\r\n\nDe
-        weergave van bomen op 3D Amsterdam is niet `real-time` en loopt \xE9\xE9n
-        tot drie jaar achter. Voor het\r meest actuele overzicht verwijzen wij u
-        naar <color=#0000FF>maps.amsterdam.nl</color>. \n\nBomen zijn abstract weergegeven
-        per boomsoort conform <color=#0000FF>bomentabel</color> die is opgesteld
-        door Wageningen\r\nUniversity & Research. Bron voor de boomgrootte is <color=#0000FF>maps.amsterdam.nl</color>.
-        Bomen worden zichtbaar binnen\r een afstand van 2000m tot de camera."
       objectReference: {fileID: 0}
     - target: {fileID: 59528723831125940, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2669,13 +2536,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1814701004}
-    - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: ToggleLinkedObject
       objectReference: {fileID: 0}
     - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -2686,6 +2548,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2522379489265615524, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2524414970234950642, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3450,7 +3317,7 @@ PrefabInstance:
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -3500,6 +3367,31 @@ PrefabInstance:
     - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 907123088}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366804078555429999, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3366804079452426397, guid: 551dff695a15b634a97abe62e9edd824,
@@ -4012,16 +3904,6 @@ PrefabInstance:
       propertyPath: linkedObject
       value: 
       objectReference: {fileID: 616626445}
-    - target: {fileID: 3885991637372011334, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: uniqueLinkedObjectMaterials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: af29b84ec03afb14a8811735af53ed43, type: 2}
-    - target: {fileID: 3885991637372011334, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: uniqueLinkedObjectMaterials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: 149038e7565fb6a4b98404331c54c6fe, type: 2}
     - target: {fileID: 3980617012050425848, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_Layer
@@ -4476,11 +4358,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 616626445}
+      objectReference: {fileID: 58988083}
     - target: {fileID: 4668658410030122076, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: ToggleLinkedObject
       objectReference: {fileID: 0}
     - target: {fileID: 4668658410030122076, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -6119,11 +6001,6 @@ PrefabInstance:
       propertyPath: linkedObject
       value: 
       objectReference: {fileID: 1814701004}
-    - target: {fileID: 6207915289941001662, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: uniqueLinkedObjectMaterials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
     - target: {fileID: 6228117308396591722, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6725,11 +6602,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    - target: {fileID: 6852224972476124720, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_Interactable
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6852224972476124721, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -6755,20 +6627,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
+    - target: {fileID: 6852224972476124734, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: m_Color.r
-      value: 0.5754717
-      objectReference: {fileID: 0}
-    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0.5754717
-      objectReference: {fileID: 0}
-    - target: {fileID: 6852224972612432360, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0.5754717
+      propertyPath: m_Name
+      value: 'ButtonDownload: https://3d.amsterdam.nl/web/downloads/index.html'
       objectReference: {fileID: 0}
     - target: {fileID: 6882877639433519796, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -8061,6 +7923,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8723292996684127190, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8723343052983358908, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -8075,11 +7942,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8746359810610513230, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: tooltipText
-      value: Download gebied (Tijdelijk uitgeschakeld)
       objectReference: {fileID: 0}
     - target: {fileID: 8755696137091218894, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -8543,6 +8405,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Layers
+      objectReference: {fileID: 0}
+    - target: {fileID: 4498901013737045449, guid: 1686781c0bba69b41bd5102479f39f29,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1686781c0bba69b41bd5102479f39f29, type: 3}

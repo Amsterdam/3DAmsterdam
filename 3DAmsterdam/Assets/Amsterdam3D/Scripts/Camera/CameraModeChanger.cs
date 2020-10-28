@@ -1,5 +1,6 @@
 ﻿
 using BruTile.Wms;
+using ConvertCoordinates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,16 +68,24 @@ namespace Amsterdam3D.CameraMotion
 
         public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
         {
-
             if (reverse)
             {
                 StartCoroutine(streetView.MoveToPositionReverse(cameraTransform, position, rotation));
             }
-
             else
             {
                 StartCoroutine(streetView.MoveToPosition(cameraTransform, position, rotation));
             }
+        }
+
+        public void ChangedPointFromUrl(string latitudeLongitude)
+        {
+            string[] coordinates = latitudeLongitude.Split(',');
+            var latitude = double.Parse(coordinates[0]);
+            var longitude = double.Parse(coordinates[1]);
+
+            var convertedCoordinate = CoordConvert.WGS84toUnity(longitude, latitude);
+            currentCamera.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
         }
 
         public void GodViewMode()

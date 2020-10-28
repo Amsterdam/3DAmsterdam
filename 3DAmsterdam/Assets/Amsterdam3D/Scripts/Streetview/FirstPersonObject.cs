@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FirstPersonObject : MonoBehaviour, IPointerClickHandler
+public class FirstPersonObject : MonoBehaviour, IPointerDownHandler
 {
 
 	private CameraModeChanger manager;
@@ -53,12 +53,13 @@ public class FirstPersonObject : MonoBehaviour, IPointerClickHandler
 		manager.OnFirstPersonModeEvent -= DisableObject;
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+	public void OnPointerDown(PointerEventData eventData)
 	{
 		if (placed)
 		{
 			manager.FirstPersonMode(follower.WorldPosition, savedRotation);
 			gameObject.SetActive(false);
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
 }

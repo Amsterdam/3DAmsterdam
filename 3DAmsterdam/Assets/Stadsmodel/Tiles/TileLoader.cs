@@ -11,12 +11,13 @@ using UnityEngine.Networking;
 using System;
 using ConvertCoordinates;
 using Amsterdam3D.CameraMotion;
+using UnityEngine.Rendering;
 
 public class TileLoader : MonoBehaviour
 {
-    private Boolean UpdateTerrainTilesFinished = true;
-    public Material DeFaultMaterial;
-    public ICameraExtents CV;
+    private Boolean updateTerrainTilesFinished = true;
+    public Material defaultMaterial;
+    public ICameraExtents cameraExtents;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     [SerializeField] private string dataFolder = "terrain";
     private string terrainUrl;
@@ -26,10 +27,14 @@ public class TileLoader : MonoBehaviour
     private const int tilesize = 180;
 
     readonly Dictionary<Vector3, GameObject> activeTiles = new Dictionary<Vector3, GameObject>();
-    Dictionary<Vector3, GameObject> TeVerwijderenTiles = new Dictionary<Vector3, GameObject>();
-    const int maxParallelRequests = 5;
-    Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
+    private Dictionary<Vector3, GameObject> tilesToRemove = new Dictionary<Vector3, GameObject>();
+    private const int maxParallelRequests = 5;
+	private const float pushTileDownDistance = 0.03f;
+
+	Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
     public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
+
+    public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.Off;
 
     public enum TileService
     {
@@ -55,12 +60,12 @@ public class TileLoader : MonoBehaviour
     // Start is called before the first frame update
     private void OnCameraChanged() 
     {
-        CV = CameraModeChanger.Instance.CurrentCameraExtends;
+        cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
     }
     
     void Start()
     {
-        CV = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
+        cameraExtents = CameraModeChanger.Instance.ActiveCamera.GetComponent<GodViewCameraExtents>();
         terrainUrl = Constants.BASE_DATA_URL + dataFolder + "/{z}/{x}/{y}.terrain";
         CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
         CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
@@ -73,9 +78,9 @@ public class TileLoader : MonoBehaviour
 
         if (HasCameraViewChanged())
         {
-            if (UpdateTerrainTilesFinished)
+            if (updateTerrainTilesFinished)
             {
-                previousCameraViewExtent = CV.GetExtent();
+                previousCameraViewExtent = cameraExtents.GetExtent();
                 StartCoroutine(UpdateTerrainTiles(previousCameraViewExtent));
             }
         }
@@ -90,7 +95,7 @@ public class TileLoader : MonoBehaviour
 
             //fire request
 
-            StartCoroutine(requestQMTile(request.Url, request.TileId));
+            StartCoroutine(RequestQMTile(request.Url, request.TileId));
 
         }
     }
@@ -98,7 +103,7 @@ public class TileLoader : MonoBehaviour
     bool HasCameraViewChanged()
     {
         bool cameraviewChanged = false;
-        if (previousCameraViewExtent.CenterX != CV.GetExtent().CenterX|| previousCameraViewExtent.CenterY != CV.GetExtent().CenterY)
+        if (previousCameraViewExtent.CenterX != cameraExtents.GetExtent().CenterX|| previousCameraViewExtent.CenterY != cameraExtents.GetExtent().CenterY)
         {
             cameraviewChanged=true;
         }
@@ -112,7 +117,7 @@ public class TileLoader : MonoBehaviour
         tile.transform.parent = transform;
         tile.name = $"tile/{t.x.ToString()}/{t.y.ToString()}/{t.z.ToString()}";
         tile.transform.position = GetTilePosition(t);
-        
+        tile.transform.Translate(Vector3.down * 0.01f);
         tile.transform.localScale = new Vector3(ComputeScaleFactorX(int.Parse(t.z.ToString())), 1, ComputeScaleFactorY(int.Parse(t.z.ToString())));
         return tile;
     }
@@ -186,7 +191,7 @@ public class TileLoader : MonoBehaviour
         }
     }
 
-    private IEnumerator requestQMTile(string url, Vector3 tileId)
+    private IEnumerator RequestQMTile(string url, Vector3 tileId)
     {
         DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
         TerrainTile terrainTile;
@@ -196,6 +201,8 @@ public class TileLoader : MonoBehaviour
 
         www.downloadHandler = handler;
         yield return www.SendWebRequest();
+
+        MeshRenderer meshRenderer;
 
         if (!www.isNetworkError && !www.isHttpError)
         {
@@ -215,6 +222,9 @@ public class TileLoader : MonoBehaviour
                 meshFilter.mesh.RecalculateNormals();
 
                 activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                meshRenderer.shadowCastingMode = tileShadowCastingMode;
+
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
                 loc.y = 0;
@@ -227,7 +237,6 @@ public class TileLoader : MonoBehaviour
             Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
             Debug.Log(www.error);
         }
-
         if (textureUrl != "")
         {
             var schema = new Terrain.TmsGlobalGeodeticTileSchema();
@@ -244,7 +253,7 @@ public class TileLoader : MonoBehaviour
             {
                 if (activeTiles.ContainsKey(tileId))
                 {
-                    var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                    meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
                     Destroy(meshRenderer.material.GetTexture("_BaseMap"));
 
                     var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
@@ -271,8 +280,6 @@ public class TileLoader : MonoBehaviour
         return (float)(CoordConvert.UnitsPerDegreeY / Math.Pow(2, z));
     }
 
-
-    
 
     private List<Vector3> SetBasicTilekeys(Extent TempExtent)
     {
@@ -313,7 +320,7 @@ public class TileLoader : MonoBehaviour
     }
     IEnumerator UpdateTerrainTiles(Extent Tempextent)
     {
-        UpdateTerrainTilesFinished = false;
+        updateTerrainTilesFinished = false;
         List<Vector3> requiredTileKeys = SetBasicTilekeys(Tempextent);
         bool subTilesAdded = true;
         var schema = new Terrain.TmsGlobalGeodeticTileSchema();
@@ -357,9 +364,11 @@ public class TileLoader : MonoBehaviour
             }
             if (tileIsRequired == false)
             {
-                if (TeVerwijderenTiles.ContainsKey(activeTile) == false)
+                if (tilesToRemove.ContainsKey(activeTile) == false)
                 {
-                    TeVerwijderenTiles.Add(activeTile, activeTiles[activeTile]);
+                    //Move down tile a notch to avoid Z-fighting in overlapping tiles
+                    activeTiles[activeTile].transform.position = new Vector3(activeTiles[activeTile].transform.position.x, activeTiles[activeTile].transform.position.y- pushTileDownDistance, activeTiles[activeTile].transform.position.z);
+                    tilesToRemove.Add(activeTile, activeTiles[activeTile]);
                 }
                 
             }
@@ -396,7 +405,7 @@ public class TileLoader : MonoBehaviour
             }
 
         }
-        UpdateTerrainTilesFinished = true;
+        updateTerrainTilesFinished = true;
     }
 
 
@@ -406,28 +415,28 @@ public class TileLoader : MonoBehaviour
 
         // Add bottom-left tile.
         newTile = new Vector3(parentTile.x * 2, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.GetExtent()))
+        if (IsInsideExtent(newTile, cameraExtents.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add botton-riht tile.
         newTile = new Vector3((parentTile.x * 2) + 1, parentTile.y * 2, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.GetExtent()))
+        if (IsInsideExtent(newTile, cameraExtents.GetExtent()))
         {
 
             TileKeys.Add(newTile);
         }
         // Add top-left tile.
         newTile = new Vector3(parentTile.x * 2, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.GetExtent()))
+        if (IsInsideExtent(newTile, cameraExtents.GetExtent()))
         {
             TileKeys.Add(newTile);
         }
 
         // Add top-right tile
         newTile = new Vector3((parentTile.x * 2) + 1, (parentTile.y * 2) + 1, parentTile.z + 1);
-        if (IsInsideExtent(newTile, CV.GetExtent()))
+        if (IsInsideExtent(newTile, cameraExtents.GetExtent()))
         {
 
             TileKeys.Add(newTile);
@@ -487,18 +496,18 @@ public class TileLoader : MonoBehaviour
 
     void RemoveTiles()
     {
-        Vector3[] tilesToBeRemoved = TeVerwijderenTiles.Keys.ToArray();
+        Vector3[] tilesToBeRemoved = tilesToRemove.Keys.ToArray();
         downloadRequest[] downloadRequests = downloadQueue.ToArray();
 
         foreach (Vector3 tileToBeRemoved in tilesToBeRemoved)
         {
             if (IsReplacementTileInDownloadQueue(tileToBeRemoved,downloadRequests)==false)
             {
-                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material.GetTexture("_BaseMap"));
-                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshRenderer>().material);
-                Destroy(TeVerwijderenTiles[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
-                Destroy(TeVerwijderenTiles[tileToBeRemoved]);
-                TeVerwijderenTiles.Remove(tileToBeRemoved);
+                Destroy(tilesToRemove[tileToBeRemoved].GetComponent<MeshRenderer>().material.GetTexture("_BaseMap"));
+                Destroy(tilesToRemove[tileToBeRemoved].GetComponent<MeshRenderer>().material);
+                Destroy(tilesToRemove[tileToBeRemoved].GetComponent<MeshFilter>().mesh);
+                Destroy(tilesToRemove[tileToBeRemoved]);
+                tilesToRemove.Remove(tileToBeRemoved);
                 activeTiles.Remove(tileToBeRemoved);
             }
         }

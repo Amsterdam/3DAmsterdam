@@ -114,7 +114,7 @@ namespace Amsterdam3D.Interface
 				var uniqueMaterial = targetInterfaceLayer.UniqueLinkedObjectMaterials[i];
 
 				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, materialSlotsContainer);
-				newMaterialSlot.Init(uniqueMaterial, targetInterfaceLayer.ResetColorValues[i], this);
+				newMaterialSlot.Init(uniqueMaterial, targetInterfaceLayer.ResetColorValues[i], this, targetInterfaceLayer.transparentShaderSourceOverride, targetInterfaceLayer.opaqueShaderSourceOverride);
 
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}

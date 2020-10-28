@@ -301,12 +301,26 @@ namespace Amsterdam3D.Sharing
                 Material materialInSlot = targetLayer.GetMaterialFromSlot(materialProperties.slotId);
                 if(materialProperties.a == 1)
                 {
-                    materialInSlot.CopyPropertiesFromMaterial(opaqueMaterialSource);
-                    materialInSlot.SetFloat("_Surface", 0); //0 Opaque
+                    if (targetLayer.opaqueShaderSourceOverride)
+                    {
+                        materialInSlot.shader = targetLayer.opaqueShaderSourceOverride.shader;
+                    }
+                    else
+                    {
+                        materialInSlot.CopyPropertiesFromMaterial(opaqueMaterialSource);
+                        materialInSlot.SetFloat("_Surface", 0); //0 Opaque
+                    }
                 }
                 else{
-                    materialInSlot.CopyPropertiesFromMaterial(transparentMaterialSource);
-                    materialInSlot.SetFloat("_Surface", 1); //0 Alpha
+                    if (targetLayer.transparentShaderSourceOverride)
+                    {
+                        materialInSlot.shader = targetLayer.transparentShaderSourceOverride.shader;
+                    }
+                    else
+                    {
+                        materialInSlot.CopyPropertiesFromMaterial(transparentMaterialSource);
+                        materialInSlot.SetFloat("_Surface", 1); //0 Alpha
+                    }
                 }
                 materialInSlot.SetColor("_BaseColor",new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }

@@ -89,6 +89,12 @@ namespace Amsterdam3D.FreeShape
 			DisplayHandles(true);
 		}
 
+		private void OnDestroy()
+		{
+			Destroy(customMesh);
+			Destroy(GetComponent<MeshRenderer>().material);
+		}
+
 		private static void HideAllHandles()
 		{
 			FreeShape[] shapes = FindObjectsOfType<FreeShape>();
