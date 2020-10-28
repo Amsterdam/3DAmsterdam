@@ -48,8 +48,8 @@ namespace ConvertCoordinates
         //referenceWGS84 and referenceRD are connected, both represent the coordinate in their coordinatesystem corresponding to UnityCoordinates 0,0
         //referenceWGS84 is used for conversions to and from Unity-coordinates
         //referenceRD can be used to check de desired origin, and to set referenceWGS84
-        private static Vector3WGS referenceWGS84 = new Vector3WGS(4.892504, 52.373043,0);
-        private static Vector3RD referenceRD = new Vector3RD(121311.223, 487355.782,-42.962);
+        public static Vector3WGS referenceWGS84 = new Vector3WGS(4.892504, 52.373043,0);
+        public static Vector3RD referenceRD = new Vector3RD(121311.223, 487355.782,-42.962);
 
         //scalefactors for converting WGS84 to Unity
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude

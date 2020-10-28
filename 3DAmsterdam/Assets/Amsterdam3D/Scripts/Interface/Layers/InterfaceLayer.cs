@@ -25,6 +25,9 @@ namespace Amsterdam3D.Interface
 		private GameObject linkedObject;
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
+		public Material opaqueShaderSourceOverride;
+		public Material transparentShaderSourceOverride;
+
 		[SerializeField]
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }

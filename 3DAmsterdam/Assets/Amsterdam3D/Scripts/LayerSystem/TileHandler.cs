@@ -26,7 +26,7 @@ namespace LayerSystem
         public List<Layer> layers = new List<Layer>();
         private List<int> tileSizes = new List<int>();
 
-        private List<List<Vector3Int>> TileDistances = new List<List<Vector3Int>>();
+        private List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
         
         private List<TileChange> pendingTileChanges = new List<TileChange>();
         private Dictionary<Vector3Int, TileChange> activeTileChanges = new Dictionary<Vector3Int, TileChange>();
@@ -40,7 +40,7 @@ namespace LayerSystem
         // y= minimum Y-coordinate in RD
         // z= size in X-direction in M.
         // w= size in Y-direction in M.
-        public ICameraExtents CV;
+        public ICameraExtents cameraExtents;
         private Vector3Int cameraPosition;
         private Extent previousCameraViewExtent;
 
@@ -57,17 +57,16 @@ namespace LayerSystem
 
         public void OnCameraChanged() 
         {
-            CV = CameraModeChanger.Instance.CurrentCameraExtends;
+            cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
         }
         
         void Start()
         {
-            CV = CameraModeChanger.Instance.CurrentCameraExtends;
+            cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
             CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
             CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
         }
 
-        // Update is called once per frame
         void Update()
         {
             UpdateViewRange();
@@ -129,14 +128,18 @@ namespace LayerSystem
                     }
                     break;
                 case TileAction.Remove:
-                    MeshFilter mf = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>();
-                    if (mf != null)
+                    var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+                    if (layers[tileChange.layerIndex].tiles.ContainsKey(tileKey))
                     {
-                        DestroyImmediate(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject.GetComponent<MeshFilter>().mesh,true);
+                        MeshFilter mf = layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>();
+                        if (mf != null)
+                        {
+                            DestroyImmediate(layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>().sharedMesh, true);
+                        }
+                        Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
+                        layers[tileChange.layerIndex].tiles.Remove(tileKey);
+                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
                     }
-                    Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
-                    layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
-                    activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
                     return;
                     break;
                 default:
@@ -295,15 +298,12 @@ namespace LayerSystem
             float Y = float.Parse(mesh.name.Split('_')[1]);
 
             //positioning container
-            Vector3RD hoekpunt = new Vector3RD(X, Y, 0);
+            Vector3RD cornerPoint = new Vector3RD(X, Y, 0);
             double OriginOffset = 500;
-            Vector3RD origin = new Vector3RD(hoekpunt.x+OriginOffset, hoekpunt.y+OriginOffset, 0);
+            Vector3RD origin = new Vector3RD(cornerPoint.x + OriginOffset, cornerPoint.y + OriginOffset, 0);
             Vector3 unityOrigin = CoordConvert.RDtoUnity(origin);
             container.transform.position = unityOrigin;
-            double Rotatie = CoordConvert.RDRotation(origin);
-            container.transform.Rotate(Vector3.up, (float)Rotatie);
 
-            //subObject.transform.localPosition = Vector3.zero;
             container.AddComponent<MeshFilter>().mesh = mesh;
             container.AddComponent<MeshRenderer>().sharedMaterial = material;
             
@@ -329,15 +329,15 @@ namespace LayerSystem
 
         private void UpdateViewRange()
         {
-            bottomLeft = CoordConvert.WGS84toRD(CV.GetExtent().MinX, CV.GetExtent().MinY);
-            topRight = CoordConvert.WGS84toRD(CV.GetExtent().MaxX, CV.GetExtent().MaxY);
+            bottomLeft = CoordConvert.WGS84toRD(cameraExtents.GetExtent().MinX, cameraExtents.GetExtent().MinY);
+            topRight = CoordConvert.WGS84toRD(cameraExtents.GetExtent().MaxX, cameraExtents.GetExtent().MaxY);
 
             viewRange.x = (float)bottomLeft.x;
             viewRange.y = (float)bottomLeft.y;
             viewRange.z = (float)(topRight.x - bottomLeft.x);
             viewRange.w = (float)(topRight.y- bottomLeft.y);
 
-            cameraPositionRD = CoordConvert.UnitytoRD(CV.GetPosition());
+            cameraPositionRD = CoordConvert.UnitytoRD(cameraExtents.GetPosition());
             cameraPosition.x = (int)cameraPositionRD.x;
             cameraPosition.y = (int)cameraPositionRD.y;
             cameraPosition.z = (int)cameraPositionRD.z;
@@ -346,17 +346,17 @@ namespace LayerSystem
         private bool HasCameraViewChanged()
         {
             bool cameraviewChanged = false;
-            if (previousCameraViewExtent.CenterX != CV.GetExtent().CenterX || previousCameraViewExtent.CenterY != CV.GetExtent().CenterY)
+            if (previousCameraViewExtent.CenterX != cameraExtents.GetExtent().CenterX || previousCameraViewExtent.CenterY != cameraExtents.GetExtent().CenterY)
             {
                 cameraviewChanged = true;
-                previousCameraViewExtent = CV.GetExtent();
+                previousCameraViewExtent = cameraExtents.GetExtent();
             }
             return cameraviewChanged;
         }
 
         private void GetPossibleTiles()
         {
-            TileDistances.Clear();
+            tileDistances.Clear();
 
             int startX;
             int startY;
@@ -379,7 +379,7 @@ namespace LayerSystem
                         tileList.Add(new Vector3Int(x,y, (int)GetTileDistanceSquared(tileID)));
                     }
                 }
-                TileDistances.Add(tileList);
+                tileDistances.Add(tileList);
             }
         }
 
@@ -395,8 +395,6 @@ namespace LayerSystem
             delta = cameraPosition.z * cameraPosition.z;
             distance += (delta);
 
-            //Vector3Int difference = new Vector3Int(, tileID.y+centerOffset, 0) - cameraPosition;
-            //distance = difference.magnitude;
             return distance;
         }
 
@@ -447,7 +445,7 @@ namespace LayerSystem
                 Layer layer = layers[layerIndex];
                 if (layer.gameObject.activeSelf==false){continue;}
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
-                foreach (Vector3Int tileDistance in TileDistances[tilesizeIndex])
+                foreach (Vector3Int tileDistance in tileDistances[tilesizeIndex])
                 {
                     tileKey = new Vector2Int(tileDistance.x, tileDistance.y);
                     
@@ -519,7 +517,7 @@ namespace LayerSystem
                 Layer layer = layers[layerIndex];
                 if (layer.gameObject.activeSelf == false) { continue; }
                 int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
-                neededTileSizesDistance = TileDistances[tilesizeIndex];
+                neededTileSizesDistance = tileDistances[tilesizeIndex];
                 neededTileSizes.Clear();
                 foreach (var neededTileSize in neededTileSizesDistance)
                 {
