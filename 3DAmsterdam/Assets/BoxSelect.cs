@@ -7,108 +7,131 @@ using Amsterdam3D.CameraMotion;
 using System.Linq;
 using Assets.Amsterdam3D.Scripts.Camera;
 using UnityEngine.Events;
+using Assets.Amsterdam3D.Scripts.SelectionTools;
 
-public class BoxSelect : MonoBehaviour
+[CreateAssetMenu]
+public class BoxSelect : SelectionTool
 {
-    // Start is called before the first frame update
-    private Pointer pointer;
+
     [SerializeField]
+    private GameObject selectionBoxPrefab;
     private RectTransform selectionBox;
-    public GameObject BuildingContainer;
+
     Vector2 startPos;
-
-    [SerializeField]
-    private LayerMask layerMask;
     Vector3 startPosWorld;
-
-    private List<string> testList = new List<string>();
+    Vector2 newSizeData = new Vector2();
 
     private RayCastBehaviour raycastBehaviour;
     
 
     private bool inBoxSelect;
-
-    private Bounds currentBounds;
-
-    public UnityEvent onSelection;
+    private bool enabled;
     
-    
-    public Bounds GetCurrentSelection()
-    {
 
-        return currentBounds;
-    }
-    void Start()
+    public override void EnableTool()
     {
-        pointer = FindObjectOfType<Pointer>();
         raycastBehaviour = FindObjectOfType<RayCastBehaviour>();
+        GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
+        selectionBox =  selectionBoxObj.GetComponent<RectTransform>();
+        selectionBox.SetParent(Canvas.transform);
+        selectionBoxObj.SetActive(true);
         inBoxSelect = false;
+        enabled = true;
 
+    }
+
+    private void OnEnable()
+    {
+        toolType = ToolType.Box;
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        if (!inBoxSelect)
-        {
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                
-                if (raycastBehaviour.RayCast(out startPosWorld))
-                {
-                    startPos = Input.mousePosition;
-                    selectionBox.gameObject.SetActive(true);
-                    inBoxSelect = true;
-                }
 
+        if (enabled)
+        {
+            if (!inBoxSelect)
+            {
+
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+
+                        if (raycastBehaviour.RayCast(out startPosWorld))
+                        {
+                            startPos = Input.mousePosition;
+                            selectionBox.gameObject.SetActive(true);
+                            inBoxSelect = true;
+                        }
+
+                    }
+                }
             }
-        }
-        else 
-        {
-            selectionBox.sizeDelta = new Vector2(Input.mousePosition.x - startPos.x, Input.mousePosition.y - startPos.y);
-            selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
-            if (Input.GetKeyDown(KeyCode.H)) 
+            else
             {
-                selectionBox.gameObject.SetActive(false);
-                inBoxSelect = false;
-                Vector3 currentWorldPos;
-                raycastBehaviour.RayCast(out currentWorldPos);
-                Vector2 currentMousePos = Input.mousePosition;
-                Vector3 min = new Vector3();
-                Vector3 max = new Vector3();
-                if (currentWorldPos.z < startPosWorld.z)
+                selectionBox.sizeDelta = new Vector2(Input.mousePosition.x - startPos.x, Input.mousePosition.y - startPos.y);
+                selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
+                Debug.Log(selectionBox.sizeDelta);
+              /*  if (selectionBox.sizeDelta.x < 0) 
                 {
-                    min.z = currentWorldPos.z;
-                    max.z = startPosWorld.z;
+                    selectionBox.position = new Vector2((selectionBox.position.x + selectionBox.sizeDelta.x) / 2, selectionBox.position.y);
+                    selectionBox.sizeDelta = new Vector2(selectionBox.sizeDelta.x * -1, selectionBox.sizeDelta.y);
+                    
 
                 }
-                else 
+                if (selectionBox.sizeDelta.y < 0) 
                 {
-                    min.z = startPosWorld.z;
-                    max.z = currentWorldPos.z;
-                }
+                    selectionBox.position = new Vector2(selectionBox.position.x, (selectionBox.position.y + selectionBox.sizeDelta.y) / 2);
+                    selectionBox.sizeDelta = new Vector2(selectionBox.sizeDelta.x, newSizeData.y = selectionBox.sizeDelta.y * -1);
+                } */
+                if (Input.GetMouseButtonUp(0))
+                {
+                    selectionBox.gameObject.SetActive(false);
+                    inBoxSelect = false;
+                    Vector3 currentWorldPos;
+                    raycastBehaviour.RayCast(out currentWorldPos);
+                    Vector2 currentMousePos = Input.mousePosition;
+                    Vector3 min = new Vector3();
+                    Vector3 max = new Vector3();
+                    if (currentWorldPos.z < startPosWorld.z)
+                    {
+                        min.z = currentWorldPos.z;
+                        max.z = startPosWorld.z;
 
-                if (currentWorldPos.x < startPosWorld.x)
-                {
-                    min.x = currentWorldPos.x;
-                    max.x = startPosWorld.x;
+                    }
+                    else
+                    {
+                        min.z = startPosWorld.z;
+                        max.z = currentWorldPos.z;
+                    }
+
+                    if (currentWorldPos.x < startPosWorld.x)
+                    {
+                        min.x = currentWorldPos.x;
+                        max.x = startPosWorld.x;
+                    }
+                    else
+                    {
+                        min.x = startPosWorld.x;
+                        max.x = currentWorldPos.x;
+                    }
+                    Debug.Log("Min: " + min + " Max: " + max);
+                    bounds.min = min;
+                    bounds.max = max;
+                    vertexes.Add(min);
+                    vertexes.Add(max);
+                    onSelectionCompleted?.Invoke();
                 }
-                else 
-                {
-                    min.x = startPosWorld.x;
-                    max.x = currentWorldPos.x;
-                }
-                Debug.Log("Min: " + min + " Max: " + max);
-                currentBounds.min = min;
-                currentBounds.max = max;
-                onSelection?.Invoke();
-                //StartCoroutine(GetAllBagIDsInRange(min, max, (value) => { BuildingContainer.GetComponent<LayerSystem.Layer>().Hide(value); }));
             }
         }
     }
 
-
-
-
-
+    public override void DisableTool()
+    {
+        enabled = false;
+        inBoxSelect = false;
+        selectionBox.gameObject.SetActive(false);
+    }
 }

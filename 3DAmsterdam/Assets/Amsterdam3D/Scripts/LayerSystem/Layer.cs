@@ -46,6 +46,34 @@ namespace LayerSystem
             StartCoroutine(PrivateHide("null"));
         }
 
+
+        public void LoadMeshColliders(System.Action<bool> callback) 
+        {
+            StartCoroutine(LoadMeshCollidersRoutine(callback));
+        }
+        
+        private IEnumerator LoadMeshCollidersRoutine(System.Action<bool> callback)
+        {
+            MeshCollider meshCollider;
+            MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+            if (meshFilters == null)
+            {
+                callback(true);
+                yield break;
+            }
+            foreach (MeshFilter meshFilter in meshFilters)
+            {
+                meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                if (meshCollider == null)
+                {
+                    meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                }
+            }
+            callback(true);
+            Debug.Log("MeshColliders attached");
+        }
+
+
         private IEnumerator PrivateHide(List<string> id)
         {
             transform.GetComponentInParent<TileHandler>().pauseLoading = true;

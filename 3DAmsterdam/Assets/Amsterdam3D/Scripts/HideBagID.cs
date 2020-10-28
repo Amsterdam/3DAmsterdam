@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Linq;
+using Assets.Amsterdam3D.Scripts.SelectionTools;
 
 namespace Assets.Amsterdam3D.Scripts
 {
@@ -13,24 +14,41 @@ namespace Assets.Amsterdam3D.Scripts
         // Use this for initialization
 
         [SerializeField]
-        BoxSelect boxSelect;
+        SelectionToolBehaviour boxSelect;
 
         [SerializeField]
         LayerSystem.Layer buildingLayer;
+
+
+        private Bounds selectedBounds;
         void Start()
         {
-
+           boxSelect =  FindObjectOfType<SelectionToolBehaviour>();
+           buildingLayer = FindObjectOfType<LayerSystem.Layer>();
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.H)) 
+            {
+                OnBoxSelect();
+            }
         }
 
         public void OnBoxSelect() 
         {
-            StartCoroutine(GetAllBagIDsInRange(boxSelect.GetCurrentSelection(), buildingLayer.Hide));
+            if (boxSelect.inSelection)
+            {
+                buildingLayer.LoadMeshColliders(callback => { selectedBounds = boxSelect.GetBounds(); });
+                StartCoroutine(GetAllBagIDsInRange(selectedBounds, HideIDs));
+            }
+           
+        }
+
+        private void HideIDs(List<string> ids) 
+        {
+            buildingLayer.Hide(ids);
         }
 
 

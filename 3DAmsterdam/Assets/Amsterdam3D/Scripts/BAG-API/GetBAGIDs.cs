@@ -82,41 +82,17 @@ public class GetBAGIDs : MonoBehaviour
         }
         isBusy = false;
     }
-    IEnumerator LoadMeshColliders()
+
+    private void OnMeshColliderAttached(bool value) 
     {
-        MeshCollider meshCollider;
-        MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
-        if (meshFilters == null)
-        {
-            isBusy = false;
-            id = "null";
-            meshCollidersAttached = true;
-            yield break;
-        }
-        foreach (MeshFilter meshFilter in meshFilters)
-        {
-            if (meshFilter == null)
-            {
-
-                isBusy = false;
-                id = "null";
-
-            }
-            meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-            if (meshCollider == null)
-            {
-                meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
-            }
-        }
-        meshCollidersAttached = true;
-        Debug.Log("MeshColliders attached");
+        meshCollidersAttached = value;
     }
-
+    
     IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
-        StartCoroutine(LoadMeshColliders());
+        BuildingContainer.GetComponent<LayerSystem.Layer>().LoadMeshColliders(OnMeshColliderAttached);
         yield return new WaitUntil(() => meshCollidersAttached == true);
         yield return null;
         RaycastHit hit;
