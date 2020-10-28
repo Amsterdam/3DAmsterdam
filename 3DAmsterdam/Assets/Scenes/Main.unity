@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -536,24 +536,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 14124236300293750, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_Text
-      value: "3D Amsterdam toont bomen die in beheer zijn bij de gemeente. Dat betekent
-        dat niet elke boom in\r Amsterdam is weergegeven. De bomen op begraafplaatsen,
-        de volkstuincomplexen, grote groengebieden\r en rond sportvelden zijn niet
-        allemaal in beheer van de gemeente. \nOok de circa 150.000 bomen in het\r
-        Amsterdamse Bos zijn weliswaar van de gemeente Amsterdam, maar staan op grond
-        van de gemeente\r Amstelveen en staan daarom nog maar deels op 3D Amsterdam.
-        \nTot slot staan er nog tienduizenden\r bomen op terreinen van woningbouwcorporaties,
-        ProRail, Rijkswaterstaat en in de duizenden particuliere\r tuinen.\r\n\nDe
-        weergave van bomen op 3D Amsterdam is niet `real-time` en loopt \xE9\xE9n
-        tot drie jaar achter. Voor het\r meest actuele overzicht verwijzen wij u
-        naar <color=#0000FF>maps.amsterdam.nl</color>. \n\nBomen zijn abstract weergegeven
-        per boomsoort conform <color=#0000FF>bomentabel</color> die is opgesteld
-        door Wageningen\r\nUniversity & Research. Bron voor de boomgrootte is <color=#0000FF>maps.amsterdam.nl</color>.
-        Bomen worden zichtbaar binnen\r een afstand van 2000m tot de camera."
       objectReference: {fileID: 0}
     - target: {fileID: 59528723831125940, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -7364,7 +7346,7 @@ PrefabInstance:
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 44.5
       objectReference: {fileID: 0}
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
