@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Linq;
-using Assets.Amsterdam3D.Scripts.SelectionTools;
+using Amsterdam3D.SelectionTools;
 
 namespace Assets.Amsterdam3D.Scripts
 {
