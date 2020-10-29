@@ -259,11 +259,13 @@ namespace LayerSystem
                     data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
                              
                     objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
+                    objectMapping.hideIDs = oldObjectMapping.hideIDs;
                     objectMapping.ids = data.ids;
                     objectMapping.uvs = data.uvs;
                     objectMapping.vectorMap = data.vectorMap;
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
+                    objectMapping.triangleCount = data.triangleCount;
                     objectMapping.SetUVs();
                     newAssetBundle.Unload(true);
                 }
@@ -293,6 +295,14 @@ namespace LayerSystem
             Mesh mesh = meshesInAssetbundle[0];
             Vector2 uv = new Vector2(0.33f, 0.5f);
             int count = mesh.vertexCount;
+            List<Vector2> uvs = new List<Vector2>();
+            Vector2 defaultUV = new Vector2(0.33f, 0.6f);
+            for (int i = 0; i < count; i++)
+            {
+                uvs.Add(defaultUV);
+            }
+            mesh.uv2 = uvs.ToArray();
+
 
             float X = float.Parse(mesh.name.Split('_')[0]);
             float Y = float.Parse(mesh.name.Split('_')[1]);

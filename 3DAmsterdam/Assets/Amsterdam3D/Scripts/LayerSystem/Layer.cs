@@ -30,6 +30,108 @@ namespace LayerSystem
         {
             StartCoroutine(PrivateHighlight(id));
         }
+
+        public void Hide(string id) 
+        {
+            StartCoroutine(PrivateHide(id));
+        }
+
+        public void Hide(List<string> ids) 
+        {
+            StartCoroutine(PrivateHide(ids));
+        }
+
+        public void UnhideAll() 
+        {
+            StartCoroutine(PrivateHide("null"));
+        }
+
+
+        public void LoadMeshColliders(System.Action<bool> callback) 
+        {
+            StartCoroutine(LoadMeshCollidersRoutine(callback));
+        }
+        
+        private IEnumerator LoadMeshCollidersRoutine(System.Action<bool> callback)
+        {
+            MeshCollider meshCollider;
+            MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+            if (meshFilters == null)
+            {
+                callback(true);
+                yield break;
+            }
+            foreach (MeshFilter meshFilter in meshFilters)
+            {
+                meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                if (meshCollider == null)
+                {
+                    meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                }
+            }
+            callback(true);
+            Debug.Log("MeshColliders attached");
+        }
+
+
+        private IEnumerator PrivateHide(List<string> id)
+        {
+            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            ObjectData objectdata;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectdata != null)
+                {
+                    objectdata.hideIDs.AddRange(id);
+                    objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
+                    objectdata.SetHideUVs();
+                //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
+                yield return null;
+                }
+            }
+            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+        }
+
+
+        private IEnumerator PrivateHide(string id) 
+        {
+            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            ObjectData objectdata;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectdata != null)
+                {
+                    if (objectdata.ids.Contains(id) == false)
+                    {
+                        if (objectdata.hideIDs.Count == 0)
+                        {
+                            continue;
+                        }
+                    }
+
+   
+                    if (id == "null")
+                    {
+                        objectdata.hideIDs.Clear();
+                        objectdata.SetUVs();
+                    }
+                    else
+                    {
+                        objectdata.hideIDs.Add(id);
+                        objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
+                        objectdata.SetHideUVs();
+                    }
+                    //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
+                    yield return null;
+                }
+            }
+            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+        }
+
         private IEnumerator PrivateHighlight(string id)
         {
             transform.GetComponentInParent<TileHandler>().pauseLoading = true;
@@ -51,7 +153,7 @@ namespace LayerSystem
                     objectdata.highlightIDs.Clear();
                     if (id == "null")
                     {
-                        objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = null;
+                        objectdata.SetUVs();
                     }
                     else
                     {

@@ -16,6 +16,7 @@ public class GetBAGIDs : MonoBehaviour
     private string id = "";
     private GameObject selectedTile;
     private bool meshCollidersAttached = false;
+    private string selectedID = "";
 
     private float mouseClickTime;
     private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
@@ -33,12 +34,29 @@ public class GetBAGIDs : MonoBehaviour
             return;
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+
+                BuildingContainer.GetComponent<Layer>().UnhideAll();
+            }
+        }
+
+       else if (Input.GetKeyDown(KeyCode.G))
+        {
+
+            BuildingContainer.GetComponent<Layer>().Hide(selectedID);
+        }
+
+
+        if (Input.GetMouseButtonDown(0))
         {
             mouseClickTime = Time.time;
             mousePosition = Input.mousePosition;
         }
-        else if ((Time.time-mouseClickTime) < clickTimer && Vector3.Distance(mousePosition,Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+        else if ((Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
             GetBagID();
         }
@@ -60,44 +78,21 @@ public class GetBAGIDs : MonoBehaviour
         else
         {
             BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+            selectedID = id;
         }
         isBusy = false;
     }
-    IEnumerator LoadMeshColliders()
+
+    private void OnMeshColliderAttached(bool value) 
     {
-        MeshCollider meshCollider;
-        MeshFilter[] meshFilters = BuildingContainer.GetComponentsInChildren<MeshFilter>();
-        if (meshFilters == null)
-        {
-            isBusy = false;
-            id = "null";
-            meshCollidersAttached = true;
-            yield break;
-        }
-        foreach (MeshFilter meshFilter in meshFilters)
-        {
-            if (meshFilter == null)
-            {
-
-                isBusy = false;
-                id = "null";
-
-            }
-            meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-            if (meshCollider == null)
-            {
-                meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
-            }
-        }
-        meshCollidersAttached = true;
-        Debug.Log("MeshColliders attached");
+        meshCollidersAttached = value;
     }
-
+    
     IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
-        StartCoroutine(LoadMeshColliders());
+        BuildingContainer.GetComponent<LayerSystem.Layer>().LoadMeshColliders(OnMeshColliderAttached);
         yield return new WaitUntil(() => meshCollidersAttached == true);
         yield return null;
         RaycastHit hit;
@@ -161,5 +156,7 @@ public class GetBAGIDs : MonoBehaviour
         isBusy = false;
         callback(id);
     }
+
+   
 
 }
