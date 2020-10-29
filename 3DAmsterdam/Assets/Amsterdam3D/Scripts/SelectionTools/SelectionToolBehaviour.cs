@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using Assets.Amsterdam3D.Scripts.Camera;
 
-namespace Assets.Amsterdam3D.Scripts.SelectionTools
+namespace Amsterdam3D.SelectionTools
 {
     // currently works as MVP, still has a bunch of TODOs for better usage.
 
@@ -24,12 +24,6 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
         private List<Vector3> vertices;
 
         public bool inSelection;
-
-
-        [SerializeField]
-        RayCastBehaviour rayCast;
-
-        GameObject selectionRange;
         
         
         // Gets 
@@ -54,7 +48,6 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
 
         private void OnEnable()
         {
-            rayCast = FindObjectOfType<RayCastBehaviour>();
             tool.Canvas = canvas;
             tool.onSelectionCompleted.AddListener(onSelectionFunction);
             tool.EnableTool();
@@ -68,14 +61,6 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
         {
         inSelection = true; 
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-
     }
 
     public enum ToolType 

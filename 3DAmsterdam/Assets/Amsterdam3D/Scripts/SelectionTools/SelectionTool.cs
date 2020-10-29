@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-namespace Assets.Amsterdam3D.Scripts.SelectionTools
+namespace Amsterdam3D.SelectionTools
 {
     public abstract class SelectionTool : MonoBehaviour
     {
