@@ -12,17 +12,6 @@ namespace Assets.Amsterdam3D.Scripts.Camera
         [SerializeField]
         LayerMask layerMask;
 
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
        public bool RayCast(out Vector3 hitpos)
         {
             RaycastHit hit;
