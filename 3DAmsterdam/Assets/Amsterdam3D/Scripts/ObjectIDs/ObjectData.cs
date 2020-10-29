@@ -15,8 +15,6 @@ using UnityEngine;
         public Mesh mesh;
     public List<int> triangleCount;
     
-
-
     public void SetUVs()
     {
         StartCoroutine(determineUVs());
@@ -40,8 +38,7 @@ using UnityEngine;
         {
             if (highlightIDs.Contains(ids[i]))
             {
-                itemUVs.Add(highlightUV
-                    );
+                itemUVs.Add(highlightUV);
             }
 
             else if (hideIDs.Contains(ids[i])) 
@@ -89,8 +86,7 @@ using UnityEngine;
         {
             if (hideIDs.Contains(ids[i]))
             {
-                itemUVs.Add(hideUV
-                    );
+                itemUVs.Add(hideUV);
             }
             else
             {
@@ -116,45 +112,7 @@ using UnityEngine;
 
 
         mesh.uv2 = highlightUVs;
-        // mesh.uv3 = itemUVArray;
-        //mesh.uv3 = highlightUVs;
 
-    }
-
-    public Vector2[] GetUVs()
-    {
-        Vector2 defaultUV = new Vector2(0.33f, 0.1f);
-        Vector2 highlightUV = new Vector2(0.66f, 0.6f);
-
-        List<Vector2> itemUVs = new List<Vector2>();
-        for (int i = 0; i < ids.Count; i++)
-        {
-            if (highlightIDs.Contains(ids[i]))
-            {
-                itemUVs.Add(highlightUV);
-            }
-            else
-            {
-                itemUVs.Add(defaultUV);
-            }
-        }
-
-        Vector2[] itemUVArray = itemUVs.ToArray();
-        Vector2[] highlightUVs = new Vector2[vectorMap.Count];
-
-
-
-        int item = 0;
-        
-        
-            foreach (int vectormap in vectorMap)
-        {
-            highlightUVs[item] = itemUVArray[vectormap];
-            item++;
-        }
-
-       
-            return highlightUVs;
     }
     }
 
