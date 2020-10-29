@@ -135,6 +135,8 @@ namespace Amsterdam3D.Interface
 				materialOpacity = opacity;
 				SwitchShaderAccordingToOpacity();
 			}
+
+			targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
 		}
 
 		private void SwitchShaderAccordingToOpacity()
