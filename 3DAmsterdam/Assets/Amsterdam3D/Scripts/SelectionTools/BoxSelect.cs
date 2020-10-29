@@ -19,9 +19,9 @@ namespace Amsterdam3D.SelectionTools
         private GameObject selectionBoxPrefab;
         private RectTransform selectionBox;
 
-        Vector2 startPos;
-        Vector3 startPosWorld;
-        Vector2 newSizeData = new Vector2();
+        private Vector2 startPos;
+        private Vector3 startPosWorld;
+        private Vector2 newSizeData = new Vector2();
 
         private RayCastBehaviour raycastBehaviour;
 
