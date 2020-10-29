@@ -69,8 +69,6 @@ using UnityEngine;
            
 
         mesh.uv2 = highlightUVs;
-       // mesh.uv3 = itemUVArray;
-        //mesh.uv3 = highlightUVs;
 
     }
 
