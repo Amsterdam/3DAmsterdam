@@ -28,8 +28,8 @@ public class CameraHeightSlider : MonoBehaviour
     void LateUpdate()
     {
         heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y + (float)CoordConvert.referenceRD.z);
-
         heightText.text = heightInNAP + textSuffix;
+
         slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
     }
 }
