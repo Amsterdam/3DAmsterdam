@@ -62,22 +62,11 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
 
         private void OnDisable()
         {
-            tool.DisableTool();
+         tool.DisableTool();
         }
         private void onSelectionFunction() 
         {
-
-            Vector3 hitPos;
-            if (rayCast.RayCast(out hitPos))
-            {
-                bounds = tool.bounds;
-                vertices = tool.vertexes;
-                selectionRange = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                selectionRange.transform.position = new Vector3(bounds.center.x, hitPos.y + 1.8f, bounds.center.z);
-                selectionRange.transform.localScale = bounds.extents;
-                selectionRange.GetComponent<Renderer>().material.color = new Color(Color.red.r, Color.red.g, Color.red.b, 0.1f); 
-                inSelection = true; 
-            }
+        inSelection = true; 
         }
 
         // Update is called once per frame
