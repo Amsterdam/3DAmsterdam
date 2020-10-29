@@ -9,7 +9,6 @@ using Assets.Amsterdam3D.Scripts.Camera;
 using UnityEngine.Events;
 using Assets.Amsterdam3D.Scripts.SelectionTools;
 
-[CreateAssetMenu]
 public class BoxSelect : SelectionTool
 {
 
@@ -45,7 +44,7 @@ public class BoxSelect : SelectionTool
         toolType = ToolType.Box;
     }
 
-    public override void Update()
+    public void Update()
     {
 
         if (enabled)
@@ -70,12 +69,12 @@ public class BoxSelect : SelectionTool
             }
             else
             {
-                selectionBox.sizeDelta = new Vector2(Input.mousePosition.x - startPos.x, Input.mousePosition.y - startPos.y);
+                selectionBox.localScale = new Vector3((Input.mousePosition.x - startPos.x) / 100, (Input.mousePosition.y - startPos.y) / 100, 1);
                 selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
                 Debug.Log(selectionBox.sizeDelta);
-              /*  if (selectionBox.sizeDelta.x < 0) 
+             /*   if (selectionBox.sizeDelta.x < 0) 
                 {
-                    selectionBox.position = new Vector2((selectionBox.position.x + selectionBox.sizeDelta.x) / 2, selectionBox.position.y);
+                    selectionBox.position = selectionBox.position * -1;
                     selectionBox.sizeDelta = new Vector2(selectionBox.sizeDelta.x * -1, selectionBox.sizeDelta.y);
                     
 
@@ -84,7 +83,7 @@ public class BoxSelect : SelectionTool
                 {
                     selectionBox.position = new Vector2(selectionBox.position.x, (selectionBox.position.y + selectionBox.sizeDelta.y) / 2);
                     selectionBox.sizeDelta = new Vector2(selectionBox.sizeDelta.x, newSizeData.y = selectionBox.sizeDelta.y * -1);
-                } */
+                }  */
                 if (Input.GetMouseButtonUp(0))
                 {
                     selectionBox.gameObject.SetActive(false);

@@ -83,7 +83,7 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
         // Update is called once per frame
         void Update()
         {
-            tool.Update();
+
         }
 
 

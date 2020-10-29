@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Assets.Amsterdam3D.Scripts.SelectionTools
 {
-    public abstract class SelectionTool : ScriptableObject
+    public abstract class SelectionTool : MonoBehaviour
     {
 
 
@@ -18,9 +18,5 @@ namespace Assets.Amsterdam3D.Scripts.SelectionTools
         // Use this for initialization
         public abstract void EnableTool();
         public abstract void DisableTool();
-
-
-        // Update is called once per frame
-        public abstract void Update();
     }
 }
