@@ -111,6 +111,18 @@ namespace Amsterdam3D.SelectionTools
                             min.x = startPosWorld.x;
                             max.x = currentWorldPos.x;
                         }
+                        if (currentWorldPos.y < startPosWorld.y)
+                        {
+                            min.y = currentWorldPos.y;
+                            max.y = startPosWorld.y;
+                        }
+                        else
+                        {
+                            min.y = startPosWorld.y;
+                            max.y = currentWorldPos.y;
+                        }
+
+
                         Debug.Log("Min: " + min + " Max: " + max);
                         bounds.min = min;
                         bounds.max = max;
