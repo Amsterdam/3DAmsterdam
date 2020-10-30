@@ -26,7 +26,8 @@ namespace Amsterdam3D.CameraMotion
         private const float speedFactor = 0.5f;
 
         private float maxClickDragDistance = 5000.0f;
-        
+        private float maxTravelDistance = 20.0f;
+
         [SerializeField]
         private float dragFactor = 2f;
         private const float rotationSensitivity = 5f;
@@ -70,6 +71,8 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
         
+
+
         void Awake()
         {
             camera = GetComponent<Camera>();
@@ -103,9 +106,16 @@ namespace Amsterdam3D.CameraMotion
 
                 ClampRotation();
             }
+
+            LimitPosition();
 		}
 
-        private bool BlockedByTextInput(){
+		private void LimitPosition()
+		{
+            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), this.transform.position.y, Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+		}
+
+		private bool BlockedByTextInput(){
             return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
         }
 
