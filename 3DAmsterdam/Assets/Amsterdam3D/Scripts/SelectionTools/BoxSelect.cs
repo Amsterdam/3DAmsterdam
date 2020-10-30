@@ -74,14 +74,19 @@ namespace Amsterdam3D.SelectionTools
                 {
                     selectionBox.localScale = new Vector3((Input.mousePosition.x - startPos.x) / 100, (Input.mousePosition.y - startPos.y) / 100, 1);
                     selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
-                    Debug.Log(selectionBox.sizeDelta);
                     if (Input.GetMouseButtonUp(0))
                     {
+                        
                         selectionBox.gameObject.SetActive(false);
                         inBoxSelect = false;
+                        Vector2 currentMousePos = Input.mousePosition;
+                        if (((startPos.x - currentMousePos.x < 10) && (startPos.x - currentMousePos.x > -10)) || ((startPos.y - currentMousePos.y < 10) && (startPos.y - currentMousePos.y > -10))) 
+                        {
+                            return;
+                        }
+
                         Vector3 currentWorldPos;
                         raycastBehaviour.RayCast(out currentWorldPos);
-                        Vector2 currentMousePos = Input.mousePosition;
                         Vector3 min = new Vector3();
                         Vector3 max = new Vector3();
                         if (currentWorldPos.z < startPosWorld.z)
