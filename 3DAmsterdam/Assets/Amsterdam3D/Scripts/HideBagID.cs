@@ -24,7 +24,6 @@ namespace Assets.Amsterdam3D.Scripts
         void Start()
         {
            boxSelect =  FindObjectOfType<SelectionToolBehaviour>();
-           buildingLayer = FindObjectOfType<LayerSystem.Layer>();
         }
 
         // Update is called once per frame
@@ -42,6 +41,7 @@ namespace Assets.Amsterdam3D.Scripts
             {
                 buildingLayer.LoadMeshColliders(callback => { selectedBounds = boxSelect.GetBounds(); });
                 StartCoroutine(GetAllBagIDsInRange(selectedBounds, HideIDs));
+                
             }
            
         }
