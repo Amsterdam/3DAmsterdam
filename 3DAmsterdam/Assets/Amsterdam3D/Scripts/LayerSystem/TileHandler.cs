@@ -48,7 +48,7 @@ namespace LayerSystem
 
         private int lod = 10;
         private string url;
-
+        private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
         private Vector3RD bottomLeft;
         private Vector3RD topRight;
         private Vector3RD cameraPositionRD;
@@ -104,6 +104,59 @@ namespace LayerSystem
             }
         }
 
+
+
+
+        public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        {
+            StartCoroutine(AddObjectData(obj, vertexIndex, callback));
+        }
+        private IEnumerator AddObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        {
+            string name = obj.GetComponent<MeshFilter>().mesh.name;
+            Debug.Log(name);
+            string dataName = name.Replace(" Instance", "");
+            dataName = dataName.Replace("mesh", "building");
+            dataName = dataName.Replace("-", "_") + "-data";
+            string dataURL = Constants.TILE_METADATA_URL + dataName;
+            Debug.Log(dataURL);
+            ObjectMappingClass data;
+            string id = "null";
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                }
+                else
+                {
+                    ObjectData objectMapping = obj.GetComponent<ObjectData>();
+                    if (objectMapping is null)
+                    {
+                        objectMapping = obj.AddComponent<ObjectData>();
+                    }
+
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                    int idIndex = data.vectorMap[vertexIndex];
+                    id = data.ids[idIndex];
+                    objectMapping.highlightIDs.Clear();
+                    objectMapping.highlightIDs.Add(id);
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+                    objectMapping.mappedUVs = data.mappedUVs;
+
+                    newAssetBundle.Unload(true);
+                }
+            }
+
+            yield return null;
+            pauseLoading = false;
+            callback(id);
+        }
+        
         private void HandleTile(TileChange tileChange)
         {
             lod = 10;
