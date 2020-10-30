@@ -158,6 +158,7 @@ namespace LayerSystem
                     else
                     {
                         objectdata.highlightIDs.Add(id);
+                        objectdata.hideIDs.Remove(id);
                         objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
                         objectdata.SetUVs();
                     }
