@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class GetBAGIDs : MonoBehaviour
 {
-	public TileHandler tileHandler;
+    public TileHandler tileHandler;
     public GameObject BuildingContainer;
     public bool isBusy = false;
     private Ray ray;
@@ -43,7 +43,7 @@ public class GetBAGIDs : MonoBehaviour
             }
         }
 
-       else if (Input.GetKeyDown(KeyCode.H))
+        else if (Input.GetKeyDown(KeyCode.H))
         {
 
             BuildingContainer.GetComponent<Layer>().Hide(selectedID);
@@ -83,11 +83,11 @@ public class GetBAGIDs : MonoBehaviour
         isBusy = false;
     }
 
-    private void OnMeshColliderAttached(bool value) 
+    private void OnMeshColliderAttached(bool value)
     {
         meshCollidersAttached = value;
     }
-    
+
     IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
@@ -108,15 +108,33 @@ public class GetBAGIDs : MonoBehaviour
 
 
         Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-        Vector2 uv = mesh.uv2[hit.triangleIndex];
+        Vector2 uv = mesh.uv2[hit.triangleIndex * 3];
+        GameObject gameObjectToHighlight = hit.collider.gameObject;
+        bool hitVisibleObject = false;
 
-        DisplayBAGData.Instance.PrepareUI();
+        if (uv.y == 0.2f)
+        {
+            RaycastHit[] hits = Physics.RaycastAll(ray, 10000, clickCheckLayerMask.value);
+            foreach (var localHit in hits)
+            {
+                mesh = localHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+                
+                uv = mesh.uv2[localHit.triangleIndex * 3];
+                if (uv.y != 0.2f)
+                {
+                    gameObjectToHighlight = localHit.collider.gameObject;
+                    hit = localHit;
+                    hitVisibleObject = true;
+                    break;
+                }
+            }
+        }
 
-        selectedTile = hit.collider.gameObject;
-        tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3, UseObjectID);
-       
+            DisplayBAGData.Instance.PrepareUI();
+            tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, UseObjectID);
+
+        }
+
+
+
     }
-
-   
-
-}
