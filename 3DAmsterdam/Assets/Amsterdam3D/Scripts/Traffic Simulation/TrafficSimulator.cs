@@ -8,6 +8,10 @@ public class TrafficSimulator : MonoBehaviour
     public GameObject carPrefab;
     public static TrafficSimulator Instance = null;
     private int frames;
+
+    public bool enableBoundsSimulation = false;
+    [SerializeField] private Bounds boundsSimulation = new Bounds(new Vector3(0,0,0), new Vector3(0,0,0));
+    private Amsterdam3D.SelectionTools.SelectionToolBehaviour selectionTool = default;
     private void Awake()
     {
         if(Instance == null)
@@ -16,20 +20,36 @@ public class TrafficSimulator : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKey(KeyCode.O))
-        {
-            Bounds boundsTest = new Bounds(new Vector3(1471.478f, 14.64141f, -3588.487f), new Vector3(757f, 132f, -3170f));
-            SimulateInBounds(boundsTest);
-        }
+        selectionTool = FindObjectOfType<Amsterdam3D.SelectionTools.SelectionToolBehaviour>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            enableBoundsSimulation = !enableBoundsSimulation;
+        }
+        if (enableBoundsSimulation == true)
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                boundsSimulation = selectionTool.GetBounds();
+            }
+            
+            if (boundsSimulation.size != new Vector3(0,0,0)) // 0,0,0 is actually the "null" for the vector in this case
+            {
+                SimulateInBounds(boundsSimulation);
+            }
+        }
+    }
     public void PlaceCar(RoadObject currentRoadObject)
     {
-        GameObject tempCar = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
-        tempCar.GetComponent<Car>().currentRoad = currentRoadObject;
-        allCars.Add(tempCar.GetComponent<Car>());
+        GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        Car tempCar = tempCarObject.GetComponent<Car>();
+        tempCar.currentRoad = currentRoadObject;
+        allCars.Add(tempCar);
     }
 
     public void SimulateInBounds(Bounds bound)
@@ -37,13 +57,25 @@ public class TrafficSimulator : MonoBehaviour
         frames++;
         if (frames % 10 == 0)
         {
+            Bounds correctedBounds = bound;
+            correctedBounds.min = new Vector3(correctedBounds.min.x, -60f, correctedBounds.min.z);
+            correctedBounds.max = new Vector3(correctedBounds.max.x, 60f, correctedBounds.max.z);
+            Debug.Log(correctedBounds.min + " " + correctedBounds.max);
+
             foreach (Car car in allCars)
             {
-                if (!bound.Contains(car.transform.position))
+                if (car.debugCar)
                 {
+                    Debug.Log(bound.Contains(car.transform.position));
+                }
+                if (!bound.Contains(car.gameObject.transform.position))
+                {
+                    if (car.debugCar)
+                    {
+                        Debug.Log(car.transform.position);
+                    }
                     car.gameObject.SetActive(false);
                 }
-
             }
         }
     }
