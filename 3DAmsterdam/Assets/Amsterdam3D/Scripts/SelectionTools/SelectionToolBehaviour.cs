@@ -59,6 +59,7 @@ namespace Amsterdam3D.SelectionTools
         }
         private void onSelectionFunction() 
         {
+         bounds = tool.bounds;
         inSelection = true; 
         }
     }
