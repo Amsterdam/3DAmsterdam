@@ -134,7 +134,7 @@ namespace LayerSystem
                         MeshFilter mf = layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>();
                         if (mf != null)
                         {
-                            DestroyImmediate(layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>().mesh, true);
+                            DestroyImmediate(layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>().sharedMesh, true);
                         }
                         Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
                         layers[tileChange.layerIndex].tiles.Remove(tileKey);

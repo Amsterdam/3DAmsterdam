@@ -214,10 +214,8 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
         /// <param name="normalizedHeight">Range from 0 to 1</param>
         public void SetNormalizedCameraHeight(float normalizedHeight){
-            var newHeight = Mathf.Lerp(floorOffset, maxZoomOut, normalizedHeight);
+            var newHeight = Mathf.Lerp(-(float)CoordConvert.referenceRD.z, maxZoomOut, normalizedHeight);
             camera.transform.position = new Vector3(camera.transform.position.x, newHeight, camera.transform.position.z);
-
-            ClampToGround();
         }
 
         /// <summary>
@@ -225,7 +223,7 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
         /// <returns>Normalized 0 to 1 value of the camera height</returns>
         public float GetNormalizedCameraHeight(){
-            return Mathf.InverseLerp(floorOffset, maxZoomOut, camera.transform.position.y);
+            return Mathf.InverseLerp(-(float)CoordConvert.referenceRD.z, maxZoomOut, camera.transform.position.y);
         }
 
         public float GetCameraHeight()
