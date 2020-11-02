@@ -128,14 +128,22 @@ public class Car : MonoBehaviour
                     // finds new road segment based on distance
                     if (distance < Mathf.Round(Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
                     {
+                        if(debugCar)
+                            Debug.Log(distance);
+
                         // MAYBE DELETE CUZ ITS THE SAME THING AS ABOVE
                         if (Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates) < Vector3.Distance(transform.position, obj.roadPoints[obj.roadPoints.Count - 1].pointCoordinates))
                         {
-                            // assigns the newly found road
-                            lastRoad = currentRoad;
-                            currentRoad = obj;
-                            nextRoad = obj;
-                            break;
+                            // checks if the point is infront of the player or behind so the car doesn't do "illegal" weird turns
+                            Vector3 toTarget = (obj.roadPoints[0].pointCoordinates - transform.position).normalized;
+                            if (Vector3.Dot(toTarget, transform.forward) > 0)
+                            {
+                                // assigns the newly found road
+                                lastRoad = currentRoad;
+                                currentRoad = obj;
+                                nextRoad = obj;
+                                break;
+                            }
                         }
                     }
                     else if (Time.time > carResetTimeStamp)
