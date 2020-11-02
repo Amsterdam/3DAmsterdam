@@ -8,20 +8,14 @@ public class FirstPersonMovement : MonoBehaviour
     [SerializeField]
     private float groundOffset;
 
-    [SerializeField]
     private Vector3 velocity;
 
-    [SerializeField]
     private bool isgrounded;
 
-    [SerializeField]
     private float rayDistance = 0.1f;
 
     [SerializeField]
     private BoxCollider referenceCollider;
-
-    [SerializeField]
-    private float gravity = -9.81f;
 
     [SerializeField]
     private float moveSpeed = 2;
@@ -63,39 +57,32 @@ public class FirstPersonMovement : MonoBehaviour
                 inMenus = false;
             }
         }
-
-
-        //Failsafe if we fall through the world
-        if(transform.position.y < 0)
-        {
-            velocity = Vector3.zero;
-            this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
-		}
     }
-
-
-    private void CheckPhysics() 
+	private void CheckPhysics() 
     {
-        if (!isgrounded)
+        //Find grounding
+        var center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
+        ray = new Ray(center, -Vector3.up);
+        if (Physics.Raycast(ray, out hit, 1000.0f))
         {
-            velocity -= -Vector3.up * gravity * Time.deltaTime;
-        }
+            //If we have ground to fall to, and we are not grounded, fall!
+            isgrounded = Vector3.Distance(hit.point, center) <= groundOffset;
 
-        if (velocity.y <= 0)
-        {
-            Vector3 center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
-            ray = new Ray(center, -Vector3.up);
-            rayDistance = 0.1f - (velocity.y * Time.deltaTime) + groundOffset;
-            if (Physics.Raycast(ray, out hit, rayDistance))
+            if (!isgrounded)
             {
-                transform.position = new Vector3(transform.position.x, hit.point.y + groundOffset, transform.position.z);
-                velocity = new Vector3(velocity.x, 0, velocity.z);
-                isgrounded = true;
+                velocity -= -Vector3.up * Physics.gravity.y * Time.deltaTime;
             }
             else
             {
-                isgrounded = false;
+                transform.position = new Vector3(transform.position.x, hit.point.y + groundOffset, transform.position.z);
+                velocity = new Vector3(velocity.x, 0, velocity.z);
             }
+        }
+        else{
+            //We are not grounded, but have no ground to fall to.
+            isgrounded = false;
+            this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
+            velocity = new Vector3(velocity.x, 0, velocity.z);
         }
     }
 
