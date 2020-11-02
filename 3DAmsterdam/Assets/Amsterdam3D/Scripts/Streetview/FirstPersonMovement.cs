@@ -64,8 +64,11 @@ public class FirstPersonMovement : MonoBehaviour
             }
         }
 
+
+        //Failsafe if we fall through the world
         if(transform.position.y < 0)
         {
+            velocity = 0;
             this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
 		}
     }
