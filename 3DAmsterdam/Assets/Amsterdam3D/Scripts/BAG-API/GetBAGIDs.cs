@@ -70,13 +70,13 @@ public class GetBAGIDs : MonoBehaviour
 
     private void UseObjectID(string id)
     {
-        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, id, RetrieveType.Pand)); // laat het BAG UI element zien
         if (id == "null")
         {
             BuildingContainer.GetComponent<LayerSystem.Layer>().UnHighlightAll();
         }
         else
         {
+            StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, id, RetrieveType.Pand)); // laat het BAG UI element zien
             BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
             selectedID = id;
         }
