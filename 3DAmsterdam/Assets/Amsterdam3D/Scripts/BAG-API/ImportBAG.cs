@@ -33,7 +33,11 @@ public class ImportBAG : ImportAPI
         {
             yield return request.SendWebRequest();
 
-            if (request.isDone && !request.isHttpError)
+            if (request.isNetworkError || request.isHttpError)
+            {
+                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de server kan de BAG informatie tijdelijk niet worden geladen.");
+            }
+            else
             {
                 // catches the data
                 dataResult = request.downloadHandler.text;
