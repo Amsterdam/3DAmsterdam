@@ -19,8 +19,15 @@ public class WarningDialogs : MonoBehaviour
     /// Spawns a new warning prefab with a message. Leave blank for default server warning.
     /// </summary>
     /// <param name="message">Optional custom message</param>
-    public void ShowNewDialog(string message = "")
+    /// <param name="clearOldWarnings">Deletes all existing warnings</param>
+    public void ShowNewDialog(string message = "", bool clearOldWarnings = true)
     {
+        if(clearOldWarnings)
+        {
+            foreach (Transform child in transform)
+                Destroy(child.gameObject);
+		}
+
         var bodyText = Instantiate(warningPrefab, this.transform);
         bodyText.SetMessage(message);
     }

@@ -34,6 +34,7 @@ RectTransform:
   - {fileID: 6985064829336391676}
   - {fileID: 1165244236194922893}
   - {fileID: 6249830153668677254}
+  - {fileID: 692993078161963545}
   - {fileID: 3271796436114325490}
   - {fileID: 2712057682244656203}
   m_Father: {fileID: 0}
@@ -298,13 +299,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5915439149433378031}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -35.2, y: -13.2}
-  m_SizeDelta: {x: 103.1, y: 26.1}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 103.6, y: 95.3}
+  m_SizeDelta: {x: 103.1, y: 26.100006}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &6405950841243049544
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -326,7 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -539,7 +540,7 @@ GameObject:
   - component: {fileID: 524797359621958663}
   - component: {fileID: 2334859570067598517}
   m_Layer: 5
-  m_Name: WarningText
+  m_Name: DynamicBodyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,7 +562,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 7, y: -23.5}
+  m_AnchoredPosition: {x: 7, y: 0.69999695}
   m_SizeDelta: {x: -86, y: -119}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &524797359621958663
@@ -604,15 +605,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Sorry, door een probleem op de server is deze actie tijdelijk niet mogelijk.
-
-
-
-    Krijgt
-    u deze melding vaker?
-
-    Laat het ons dan weten via de <color=#0000FF>contact
-    pagina</color>.'
+  m_Text: Sorry, door een probleem op de server is deze actie tijdelijk niet mogelijk.
 --- !u!1 &7041575672232331657
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,11 +638,11 @@ RectTransform:
   m_Children:
   - {fileID: 1342386470415023103}
   m_Father: {fileID: 5915439149433378031}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 28.799988}
+  m_AnchoredPosition: {x: 0, y: 28}
   m_SizeDelta: {x: 170, y: 40}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1450862927842781568
@@ -743,3 +736,84 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &7696599139064428174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 692993078161963545}
+  - component: {fileID: 8934984456791330737}
+  - component: {fileID: 7297203505875489902}
+  m_Layer: 5
+  m_Name: StaticText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &692993078161963545
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7696599139064428174}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5915439149433378031}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 7, y: -4}
+  m_SizeDelta: {x: 294, y: 241}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!222 &8934984456791330737
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7696599139064428174}
+  m_CullTransparentMesh: 0
+--- !u!114 &7297203505875489902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7696599139064428174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Krijgt u deze melding vaker?
+
+    Laat het ons dan weten via de <color=#0000FF>contact
+    pagina</color>.'

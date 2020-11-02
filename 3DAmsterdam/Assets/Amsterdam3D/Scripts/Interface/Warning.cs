@@ -8,8 +8,6 @@ public class Warning : MonoBehaviour
     [SerializeField]
     private Text bodyText;
 
-    [SerializeField]
-    private RectTransform contactUrl;
 
     /// <summary>
     /// Leave empty to show the default message
@@ -20,7 +18,6 @@ public class Warning : MonoBehaviour
         if (message != "")
         {
             bodyText.text = message;
-            Destroy(contactUrl.gameObject);
         }
     }
 
