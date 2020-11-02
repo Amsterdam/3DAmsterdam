@@ -95,9 +95,9 @@ namespace Amsterdam3D.Sharing
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + sceneId + "_scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError)
+            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
-                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene met deze code is helaas verlopen\nDit gebeurt automatisch na 14 dagen.");
+                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
