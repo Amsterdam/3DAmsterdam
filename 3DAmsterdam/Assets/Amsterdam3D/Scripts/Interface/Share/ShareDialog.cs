@@ -22,9 +22,6 @@ namespace Amsterdam3D.Interface.Sharing
 		}
 
 		[SerializeField]
-		private RectTransform serverProblem;
-
-		[SerializeField]
 		private RectTransform shareOptions;
 
 		[SerializeField]
@@ -141,32 +138,26 @@ namespace Amsterdam3D.Interface.Sharing
 			switch (newState)
 			{
 				case SharingState.SERVER_PROBLEM:
-					serverProblem.gameObject.SetActive(true);
-
-					shareOptions.gameObject.SetActive(false);
-					progressFeedback.gameObject.SetActive(false);
-					generatedURL.gameObject.SetActive(false);
+					WarningDialogs.Instance.ShowNewDialog();
+					gameObject.SetActive(false);
 					break;
 				case SharingState.SHARING_OPTIONS:
 					shareOptions.gameObject.SetActive(true);
 
 					progressFeedback.gameObject.SetActive(false);
 					generatedURL.gameObject.SetActive(false);
-					serverProblem.gameObject.SetActive(false);
 					break;
 				case SharingState.SHARING_SCENE:
 					progressFeedback.gameObject.SetActive(true);
 
 					shareOptions.gameObject.SetActive(false);
 					generatedURL.gameObject.SetActive(false);
-					serverProblem.gameObject.SetActive(false);
 					break;
 				case SharingState.SHOW_URL:
 					generatedURL.gameObject.SetActive(true);
 
 					shareOptions.gameObject.SetActive(false);
 					progressFeedback.gameObject.SetActive(false);
-					serverProblem.gameObject.SetActive(false);
 					break;
 				default:
 					break;

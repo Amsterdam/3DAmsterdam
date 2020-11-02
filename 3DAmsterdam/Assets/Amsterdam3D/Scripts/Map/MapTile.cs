@@ -48,7 +48,7 @@ namespace Amsterdam3D.Interface
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
-					Debug.Log(uwr.error);
+					Debug.Log("Could not find minimap tile :" + tileImageUrl);
 				}
 				else
 				{

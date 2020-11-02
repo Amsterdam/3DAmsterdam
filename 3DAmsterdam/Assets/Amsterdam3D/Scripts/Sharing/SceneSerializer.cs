@@ -95,9 +95,9 @@ namespace Amsterdam3D.Sharing
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + sceneId + "_scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError)
+            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
-                Debug.Log("Error: " + getSceneRequest.error);
+                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
@@ -248,9 +248,9 @@ namespace Amsterdam3D.Sharing
             UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
-            if (getModelRequest.isNetworkError)
+            if (getModelRequest.isNetworkError || getModelRequest.isHttpError)
             {
-                Debug.Log("Error: " + getModelRequest.error);
+                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
             }
             else
             {

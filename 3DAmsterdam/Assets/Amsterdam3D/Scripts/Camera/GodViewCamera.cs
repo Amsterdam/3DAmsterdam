@@ -117,7 +117,7 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
 		private void LimitPosition()
 		{
-            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, 0, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, Constants.ZERO_GROUND_LEVEL_Y, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
 		}
 
 		private bool BlockedByTextInput(){
@@ -384,7 +384,7 @@ namespace Amsterdam3D.CameraMotion
                 camera.transform.RotateAround(rotatePoint, camera.transform.right, -mouseY * 5f);
                 camera.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
 
-                if(camera.transform.position.y < rotatePoint.y)
+                if (camera.transform.position.y < rotatePoint.y)
                 {
                     //Do not let the camera go beyond the rotationpoint height
                     camera.transform.position = previousPosition;

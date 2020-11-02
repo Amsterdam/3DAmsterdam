@@ -128,6 +128,7 @@ namespace LayerSystem
 
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
+                    WarningDialogs.Instance.ShowNewDialog("The metadata for tile " + obj.name + " could not be found. Are you still online?");
                 }
                 else
                 {
