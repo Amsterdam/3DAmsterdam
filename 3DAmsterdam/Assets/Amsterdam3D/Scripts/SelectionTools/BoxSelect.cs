@@ -80,7 +80,7 @@ namespace Amsterdam3D.SelectionTools
                 }
                 else
                 {
-                    selectionBox.localScale = new Vector3((Input.mousePosition.x - startPos.x) / 100, (Input.mousePosition.y - startPos.y) / 100, 1);
+                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((Input.mousePosition.x - startPos.x)), Mathf.Abs(Input.mousePosition.y - startPos.y), 1);
                     selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
                     if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
                     {

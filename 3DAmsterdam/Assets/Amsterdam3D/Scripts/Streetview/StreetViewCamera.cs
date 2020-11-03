@@ -89,11 +89,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         }
         else 
         {
-
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 EnableMenus();
-
             }
 
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 

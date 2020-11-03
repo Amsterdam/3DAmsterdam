@@ -96,9 +96,9 @@ namespace Amsterdam3D.Interface.Search
 				// Request and wait for the desired page.
 				yield return webRequest.SendWebRequest();
 
-				if (webRequest.isNetworkError)
+				if (webRequest.isNetworkError || webRequest.isHttpError)
 				{
-					Debug.Log("Error: " + webRequest.error);
+					WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de server is zoeken tijdelijk niet mogelijk.");
 				}
 				else
 				{
