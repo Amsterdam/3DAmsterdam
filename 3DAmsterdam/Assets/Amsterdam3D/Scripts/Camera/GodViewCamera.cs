@@ -324,7 +324,9 @@ namespace Amsterdam3D.CameraMotion
                 else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
                 {
                     dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
-                    transform.position -= dragMomentum;
+
+                    if(dragMomentum.magnitude > 0.1f)
+                        transform.position -= dragMomentum;
 
                     //Filter out extreme swings
                     if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.zero;
