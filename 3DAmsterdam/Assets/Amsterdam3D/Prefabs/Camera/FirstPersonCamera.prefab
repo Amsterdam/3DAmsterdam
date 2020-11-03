@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7008712636139494169}
   - component: {fileID: 5730179703894242732}
   - component: {fileID: 3080695639790331529}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FirstPersonCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,6 +66,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundOffset: 1.8
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1793
   referenceCollider: {fileID: 0}
   moveSpeed: 5
   runspeed: 8
