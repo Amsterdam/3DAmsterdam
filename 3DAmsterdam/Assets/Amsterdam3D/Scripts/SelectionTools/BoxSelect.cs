@@ -68,13 +68,21 @@ namespace Amsterdam3D.SelectionTools
                             }
 
                         }
+                        else if (Input.GetMouseButtonDown(1)) 
+                        {
+                            if (raycastBehaviour.RayCast(out startPosWorld))
+                            {
+                                bool value = this.ContainsPoint(startPosWorld);
+                                Debug.Log("In Bounds: " + value);
+                            }
+                        }
                     }
                 }
                 else
                 {
                     selectionBox.localScale = new Vector3((Input.mousePosition.x - startPos.x) / 100, (Input.mousePosition.y - startPos.y) / 100, 1);
                     selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
-                    if (Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         
                         selectionBox.gameObject.SetActive(false);
@@ -122,13 +130,37 @@ namespace Amsterdam3D.SelectionTools
                             max.y = currentWorldPos.y;
                         }
 
+                        // screen space code
+
+
+                        Vector2 p2Screen = new Vector2(startPos.x, currentMousePos.y);
+                        Vector2 p4Screen = new Vector2(currentMousePos.x, startPos.y);
 
                         Debug.Log("Min: " + min + " Max: " + max);
-                        bounds.min = min;
-                        bounds.max = max;
-                        vertexes.Add(min);
-                        vertexes.Add(max);
-                        onSelectionCompleted?.Invoke();
+                        Vector3 p2;
+                        Vector3 p4;
+                        if (raycastBehaviour.RayCast(out p2, p2Screen) && raycastBehaviour.RayCast(out p4, p4Screen)) 
+                        {
+
+                            Debug.Log("P2: " + p2);
+                            Debug.Log("P4: " + p4);
+                            DrawBounds(min, p2, max, p4);
+                            vertexes.Clear();
+                            vertexes.Add(min);
+                            vertexes.Add(p2);
+                            vertexes.Add(max);
+                            vertexes.Add(p4);
+                            onSelectionCompleted?.Invoke();
+                        }
+
+
+
+
+
+
+
+
+
                     }
                 }
             }
@@ -140,5 +172,22 @@ namespace Amsterdam3D.SelectionTools
             inBoxSelect = false;
             selectionBox.gameObject.SetActive(false);
         }
+
+        private void DrawBounds(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float delay = 100)
+        {
+
+
+            Debug.DrawLine(p1, p2, Color.blue, delay);
+            Debug.DrawLine(p2, p3, Color.red, delay);
+            Debug.DrawLine(p3, p4, Color.yellow, delay);
+            Debug.DrawLine(p4, p1, Color.magenta, delay);
+
+            // top
+
+        }
+
+
+
+
     }
 }
