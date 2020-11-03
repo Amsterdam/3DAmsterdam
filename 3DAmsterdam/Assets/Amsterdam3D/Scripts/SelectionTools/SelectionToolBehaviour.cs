@@ -38,6 +38,11 @@ namespace Amsterdam3D.SelectionTools
         {
             return bounds;
         }
+        // NOTE: Only checks for X and Z positions, Y isn't taken into account
+        public bool Contains(Vector3 position) 
+        {
+            return tool.ContainsPoint(position);
+        }
 
         public ToolType GetCurrentToolType() 
         {
@@ -58,7 +63,7 @@ namespace Amsterdam3D.SelectionTools
 
               foreach (var collider in hits) 
               {
-                  tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3, callback => { });
+                  tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3);
               } 
         }
 
