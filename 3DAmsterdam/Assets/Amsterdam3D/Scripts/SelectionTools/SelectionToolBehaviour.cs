@@ -51,7 +51,17 @@ namespace Amsterdam3D.SelectionTools
             returnValue.AddRange(vertices);
             return returnValue;
         }
-        
+
+        public void EnableObjectColliders() 
+        {
+            var hits =   Physics.BoxCastAll(bounds.center, bounds.extents, -Vector3.up);
+
+              foreach (var collider in hits) 
+              {
+                  tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3, callback => { });
+              } 
+        }
+
 
         private void OnEnable()
         {
@@ -66,15 +76,8 @@ namespace Amsterdam3D.SelectionTools
         }
         private void onSelectionFunction() 
         {
-         bounds = tool.bounds;
-         var hits =   Physics.BoxCastAll(bounds.center, bounds.extents, -Vector3.up);
-
-            foreach (var collider in hits) 
-            {
-                tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3, callback => { });
-            }
-
-        inSelection = true; 
+            EnableObjectColliders();
+            inSelection = true; 
         }
     }
 
