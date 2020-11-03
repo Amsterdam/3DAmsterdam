@@ -23,7 +23,10 @@ namespace Amsterdam3D.Sharing
         private RectTransform annotationsContainer;
 
         [SerializeField]
-        private RectTransform cameraContainer;
+        private RectTransform camerasContainer;
+
+        [SerializeField]
+        private RectTransform cameraLayersGroup;
 
         [SerializeField]
         private Annotation annotationPrefab;
@@ -40,9 +43,6 @@ namespace Amsterdam3D.Sharing
         private InterfaceLayer treesLayer;
         [SerializeField]
         private InterfaceLayer groundLayer;
-
-        [SerializeField]
-        private RectTransform cameraParent;
 
         [SerializeField]
         private string urlViewIDVariable = "?view=";
@@ -177,7 +177,7 @@ namespace Amsterdam3D.Sharing
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
                 GameObject cameraObject = Instantiate(cameraPrefab);
                 cameraObject.name = cameraPoint.name;
-                cameraObject.transform.SetParent(cameraParent, false);
+                cameraObject.transform.SetParent(camerasContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
                 cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
                 cameraObject.GetComponent<FirstPersonObject>().placed = true;
@@ -435,15 +435,14 @@ namespace Amsterdam3D.Sharing
 
         private SerializableScene.CameraPoint[] GetCameras()
         {
-              var annotations = cameraContainer.GetComponentsInChildren<CustomLayer>(true);
-              var annotationsData = new List<SerializableScene.CameraPoint>();
+              var cameraPoints = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
+              var cameraPointsData = new List<SerializableScene.CameraPoint>();
               
-
-              foreach (var camera in annotations)
+              foreach (var camera in cameraPoints)
               {
                 var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
                 var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
-                annotationsData.Add(new SerializableScene.CameraPoint
+                cameraPointsData.Add(new SerializableScene.CameraPoint
                 {
                     position = follower.WorldPosition,
                     rotation = firstPersonObject.savedRotation,
@@ -451,7 +450,7 @@ namespace Amsterdam3D.Sharing
                 });
               }
 
-              return annotationsData.ToArray(); 
+              return cameraPointsData.ToArray(); 
         }
 
         /// <summary>
