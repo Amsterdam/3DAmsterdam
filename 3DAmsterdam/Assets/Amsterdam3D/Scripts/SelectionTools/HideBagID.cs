@@ -74,8 +74,7 @@ namespace Assets.Amsterdam3D.Scripts
             else
             {
                 string dataString = hideRequest.downloadHandler.text;
-                Debug.Log(dataString);
-
+                
                 var csv = splitCSV(dataString);
                 int returnCounter = 0;
                 // hard coded for this api request
