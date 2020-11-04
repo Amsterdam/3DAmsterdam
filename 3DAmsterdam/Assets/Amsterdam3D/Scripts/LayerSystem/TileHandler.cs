@@ -48,7 +48,7 @@ namespace LayerSystem
 
         private int lod = 10;
         private string url;
-
+        private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
         private Vector3RD bottomLeft;
         private Vector3RD topRight;
         private Vector3RD cameraPositionRD;
@@ -104,6 +104,61 @@ namespace LayerSystem
             }
         }
 
+
+
+
+        public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        {
+            StartCoroutine(AddObjectData(obj, vertexIndex, callback));
+        }
+        private IEnumerator AddObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        {
+            string name = obj.GetComponent<MeshFilter>().mesh.name;
+            Debug.Log(name);
+            string dataName = name.Replace(" Instance", "");
+            dataName = dataName.Replace("mesh", "building");
+            dataName = dataName.Replace("-", "_") + "-data";
+            string dataURL = Constants.TILE_METADATA_URL + dataName;
+            Debug.Log(dataURL);
+            ObjectMappingClass data;
+            string id = "null";
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                    //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
+                    //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
+                }
+                else
+                {
+                    ObjectData objectMapping = obj.GetComponent<ObjectData>();
+                    if (objectMapping is null)
+                    {
+                        objectMapping = obj.AddComponent<ObjectData>();
+                    }
+
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                    int idIndex = data.vectorMap[vertexIndex];
+                    id = data.ids[idIndex];
+                    objectMapping.highlightIDs.Clear();
+                    objectMapping.highlightIDs.Add(id);
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+                    objectMapping.mappedUVs = data.mappedUVs;
+
+                    newAssetBundle.Unload(true);
+                }
+            }
+
+            yield return null;
+            pauseLoading = false;
+            callback(id);
+        }
+        
         private void HandleTile(TileChange tileChange)
         {
             lod = 10;
@@ -259,11 +314,13 @@ namespace LayerSystem
                     data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
                              
                     objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
+                    objectMapping.hideIDs = oldObjectMapping.hideIDs;
                     objectMapping.ids = data.ids;
                     objectMapping.uvs = data.uvs;
                     objectMapping.vectorMap = data.vectorMap;
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
+                    objectMapping.triangleCount = data.triangleCount;
                     objectMapping.SetUVs();
                     newAssetBundle.Unload(true);
                 }
@@ -293,6 +350,14 @@ namespace LayerSystem
             Mesh mesh = meshesInAssetbundle[0];
             Vector2 uv = new Vector2(0.33f, 0.5f);
             int count = mesh.vertexCount;
+            List<Vector2> uvs = new List<Vector2>();
+            Vector2 defaultUV = new Vector2(0.33f, 0.6f);
+            for (int i = 0; i < count; i++)
+            {
+                uvs.Add(defaultUV);
+            }
+            mesh.uv2 = uvs.ToArray();
+
 
             float X = float.Parse(mesh.name.Split('_')[0]);
             float Y = float.Parse(mesh.name.Split('_')[1]);

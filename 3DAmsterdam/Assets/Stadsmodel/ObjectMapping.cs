@@ -132,6 +132,7 @@ public class ObjectMapping : MonoBehaviour
         PandenMesh.subMeshCount = HighlightObjecten.Count+1;
         PandenMesh.vertices = Tempmesh.verts;
         PandenMesh.uv2 = Tempmesh.uv2;
+        PandenMesh.uv3 = Tempmesh.uv3;
         //ms.SetTriangles( Totaalmesh.triangles,0);
         PandenMesh.SetTriangles(Totaalmesh.triangles,  0);
         for (int i = 0; i < HighlightObjecten.Count; i++)
@@ -153,4 +154,5 @@ class SubObject
     public Vector3[] verts;
     public int[] triangles;
     public Vector2[] uv2;
+    public Vector2[] uv3;
 }

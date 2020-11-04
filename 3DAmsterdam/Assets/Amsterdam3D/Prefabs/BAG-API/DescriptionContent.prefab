@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2125414162570169005}
   - component: {fileID: 5838590042739301308}
   m_Layer: 5
-  m_Name: Woningcorperatie naam
+  m_Name: Woningcorporatie naam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Woningcorperatie naam
+  m_Text: Woningcorporatie naam
 --- !u!1 &787518703136605025
 GameObject:
   m_ObjectHideFlags: 0
@@ -1477,7 +1477,7 @@ GameObject:
   - component: {fileID: 8222209983864861843}
   - component: {fileID: 3676874837545397711}
   m_Layer: 5
-  m_Name: Woning Corperatie Text
+  m_Name: Woning Corporatie Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3739,8 +3739,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7672881118159642923}
   m_HandleRect: {fileID: 7672881118159642922}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.4628866
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3873,33 +3873,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5eff7ae4e06b1f488474da1f76581dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nummerAanduidingText: {fileID: 4961799426677778115}
-  adresText: {fileID: 6315007948496335287}
-  postcodeText: {fileID: 4368094362658637629}
-  woningTypeText: {fileID: 6315007948422876297}
-  bouwJaarText: {fileID: 6315007948401305088}
-  buurt: {fileID: 8174455931598183290}
-  buurtCombinatie: {fileID: 144349977882505233}
-  stadsdeel: {fileID: 1996630875522273490}
-  huur: {fileID: 7924224332974345813}
-  oppervlakte: {fileID: 5928274855405015412}
-  aantalKamers: {fileID: 2830164748412016633}
-  aantalBouwlagen: {fileID: 5049170414876326918}
-  hoogsteBouwlaag: {fileID: 4949055000252902071}
-  laagsteBouwlaag: {fileID: 3018584251398729521}
-  verdiepingToegang: {fileID: 4958924361894885198}
-  bestemmingsPlan: {fileID: 525794116155753849}
-  functie: {fileID: 6100286848967129418}
-  categorieVergunning: {fileID: 8285578912239394341}
-  categorieOnderwerp: {fileID: 6877443442064097294}
-  categorieTitel: {fileID: 694446315862011726}
-  categorieURL: {fileID: 9018018208981610288}
+  numberIndexText: {fileID: 0}
+  adressText: {fileID: 0}
+  zipText: {fileID: 0}
+  houseTypeText: {fileID: 0}
+  constructionYearText: {fileID: 0}
+  neighbourhood: {fileID: 0}
+  neighbourhoodCombination: {fileID: 0}
+  district: {fileID: 0}
+  rent: {fileID: 0}
+  surface: {fileID: 0}
+  roomCount: {fileID: 0}
+  buildingLayerCount: {fileID: 0}
+  highestBuildingLayer: {fileID: 0}
+  lowestBuildingLayer: {fileID: 0}
+  floorAccess: {fileID: 0}
+  destinationPlan: {fileID: 0}
+  function: {fileID: 0}
+  categoryPermits: {fileID: 0}
+  categoryTopic: {fileID: 0}
+  categoryTitle: {fileID: 0}
+  categoryURL: {fileID: 0}
   monument: {fileID: 2567996203343687813}
-  beperking: {fileID: 956873550609375672}
-  woningcorperatieNaam: {fileID: 3676874837545397711}
+  restrictions: {fileID: 0}
+  housingCorporationName: {fileID: 0}
   closeButton: {fileID: 181130743651723399}
-  straatnaam: {fileID: 0}
-  straatText: {fileID: 0}
+  scroll: {fileID: 0}
+  streetName: {fileID: 0}
+  streetText: {fileID: 0}
+  premisesGameObject: {fileID: 0}
 --- !u!114 &4138529262258800444
 MonoBehaviour:
   m_ObjectHideFlags: 0

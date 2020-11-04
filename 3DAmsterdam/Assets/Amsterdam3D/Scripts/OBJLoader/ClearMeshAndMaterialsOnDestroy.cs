@@ -15,7 +15,7 @@ namespace Amsterdam3D.Parsing
 			}
 
 			var meshFilter = GetComponent<MeshFilter>();
-			Destroy(meshFilter.mesh);
+			Destroy(meshFilter.sharedMesh);
 		}
 	}
 }

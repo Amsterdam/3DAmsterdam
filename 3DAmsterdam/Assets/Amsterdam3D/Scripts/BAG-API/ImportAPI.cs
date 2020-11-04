@@ -7,28 +7,22 @@ public abstract class ImportAPI : MonoBehaviour
 {
     [HideInInspector]
     public string dataResult;
-    // Start is called before the first frame update
+
     public IEnumerator CallAPI(string apiUrl, string bogIndexInt, int resultIndex)
     {
-        
-        // voegt data ID en url samen tot één geheel
         string url = apiUrl + bogIndexInt + "/";
-        //Debug.Log(url);
-        // stuurt een HTTP request naar de pagina
+
         var request = UnityWebRequest.Get(url);
         {
             yield return request.SendWebRequest();
 
-            if (request.isDone && !request.isHttpError)
+            if (request.isNetworkError || request.isHttpError)
             {
+                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de server kan de informatie tijdelijk niet worden geladen.");
+            }
+            else{
                 dataResult = request.downloadHandler.text;
             }
         }
     }
-   
-    //public virtual void DataReceived(string dataResult, params string[] values)
-    //{
-    //    // do something here
-    //}
-
 }

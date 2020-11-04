@@ -26,7 +26,11 @@ public class ImportWKBP : ImportAPI
         {
             yield return WKPBRequest.SendWebRequest();
 
-            if (WKPBRequest.isDone && !WKPBRequest.isHttpError)
+            if (WKPBRequest.isNetworkError || WKPBRequest.isHttpError)
+            {
+                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de gemeentelijke beperkingenregistratie server kan de informatie tijdelijk niet worden geladen.");
+            }
+            else
             {
                 // stores data in text file
                 wkbpResult = WKPBRequest.downloadHandler.text;

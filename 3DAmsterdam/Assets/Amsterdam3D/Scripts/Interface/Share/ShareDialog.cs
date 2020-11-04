@@ -17,7 +17,8 @@ namespace Amsterdam3D.Interface.Sharing
 		{
 			SHARING_OPTIONS,
 			SHARING_SCENE,
-			SHOW_URL
+			SHOW_URL,
+			SERVER_PROBLEM
 		}
 
 		[SerializeField]
@@ -74,42 +75,57 @@ namespace Amsterdam3D.Interface.Sharing
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
 
-			Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
-
-			//Check if we got some tokens for model upload, and download them 1 at a time.
-			ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
-			sceneSerializer.sharedSceneId = serverReturn.sceneId;
-
-			if (serverReturn.modelUploadTokens.Length > 0)
+			if (sceneSaveRequest.isNetworkError || sceneSaveRequest.isHttpError || !sceneSaveRequest.downloadHandler.text.StartsWith("{"))
 			{
-				progressBar.SetMessage("Objecten opslaan..");
-				progressBar.Percentage(0.3f);
-				var currentModel = 0;
-				while (currentModel < serverReturn.modelUploadTokens.Length)
-				{
-					progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-					var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel,serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token),false);						
-
-					UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
-					modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
-					yield return modelSaveRequest.SendWebRequest();
-					Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
-
-					currentModel++;
-					var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
-					progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
-					yield return new WaitForSeconds(0.2f);
-				}
+				ChangeState(SharingState.SERVER_PROBLEM);
+				yield break;
 			}
-			
-			//Make sure the progressbar shows 100% before jumping to the next state
-			progressBar.Percentage(1.0f);
-			yield return new WaitForSeconds(0.1f);
+			else
+			{
+				//Check if we got some tokens for model upload, and download them 1 at a time.
+				ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
+				sceneSerializer.sharedSceneId = serverReturn.sceneId;
+				Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
 
-			ChangeState(SharingState.SHOW_URL);
-			Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
-			JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
-			yield return null;
+				if (serverReturn.modelUploadTokens.Length > 0)
+				{
+					progressBar.SetMessage("Objecten opslaan..");
+					progressBar.Percentage(0.3f);
+					var currentModel = 0;
+					while (currentModel < serverReturn.modelUploadTokens.Length)
+					{
+						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
+						var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token), false);
+
+						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Constants.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
+						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
+						yield return modelSaveRequest.SendWebRequest();
+
+						if (modelSaveRequest.isNetworkError || modelSaveRequest.isHttpError)
+						{
+							ChangeState(SharingState.SERVER_PROBLEM);
+							yield break;
+						}
+						else
+						{
+							Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
+							currentModel++;
+							var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
+							progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
+							yield return new WaitForSeconds(0.2f);
+						}
+					}
+				}
+
+				//Make sure the progressbar shows 100% before jumping to the next state
+				progressBar.Percentage(1.0f);
+				yield return new WaitForSeconds(0.1f);
+
+				ChangeState(SharingState.SHOW_URL);
+				Debug.Log(Constants.SHARED_VIEW_URL + serverReturn.sceneId);
+				JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
+				yield return null;
+			}
 		}
 
 		/// <summary>
@@ -121,6 +137,10 @@ namespace Amsterdam3D.Interface.Sharing
 			state = newState;
 			switch (newState)
 			{
+				case SharingState.SERVER_PROBLEM:
+					WarningDialogs.Instance.ShowNewDialog();
+					gameObject.SetActive(false);
+					break;
 				case SharingState.SHARING_OPTIONS:
 					shareOptions.gameObject.SetActive(true);
 
