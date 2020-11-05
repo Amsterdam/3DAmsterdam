@@ -141,7 +141,7 @@ public class TileLoader : MonoBehaviour
 
     public void UpdateTerrainTextures(string newTextureURL)
     {
-        textureUrl = newTextureURL;
+        textureUrl = Constants.BASE_DATA_URL + newTextureURL;
         List<KeyValuePair<Vector3,GameObject>> temp = activeTiles.ToList();
         StopAllCoroutines();
         for (int i = 0; i < temp.Count; i++)
@@ -152,7 +152,6 @@ public class TileLoader : MonoBehaviour
 
     private IEnumerator UpdateTerrainTexture(string url, Vector3 tileId)
     {
-        DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
         var meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
         var baseMap = meshRenderer.material.GetTexture("_BaseMap");
         if (url.Length == 0)
@@ -163,15 +162,8 @@ public class TileLoader : MonoBehaviour
             yield break;
         }
 
-        //get tile texture data
-        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
-        string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-        if (tileId.z == 17)
-        {
-            wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
-        }
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(wmsUrl);
+        string tileTextureUrl = Constants.BASE_DATA_URL + textureUrl.Replace("{z}", tileId.z.ToString()).Replace("{x}", tileId.x.ToString()).Replace("{y}", tileId.y.ToString());
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(tileTextureUrl);
         yield return www.SendWebRequest();
 
         if (!www.isNetworkError && !www.isHttpError)
@@ -240,14 +232,8 @@ public class TileLoader : MonoBehaviour
         }
         if (textureUrl != "")
         {
-            var schema = new Terrain.TmsGlobalGeodeticTileSchema();
-            Extent subtileExtent = TileTransform.TileToWorld(new TileRange(int.Parse(tileId.x.ToString()), int.Parse(tileId.y.ToString())), tileId.z.ToString(), schema);
-            string wmsUrl = textureUrl.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-            if (tileId.z >= 17)
-            {
-                wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
-            }
-            www = UnityWebRequestTexture.GetTexture(wmsUrl);
+            string tileTextureUrl = Constants.BASE_DATA_URL + textureUrl.Replace("{z}", tileId.z.ToString()).Replace("{x}", tileId.x.ToString()).Replace("{y}", tileId.y.ToString());
+            www = UnityWebRequestTexture.GetTexture(tileTextureUrl);
             yield return www.SendWebRequest();
 
             if (!www.isNetworkError && !www.isHttpError)
@@ -265,7 +251,7 @@ public class TileLoader : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + wmsUrl);
+                Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + tileTextureUrl);
             }
         }
 
