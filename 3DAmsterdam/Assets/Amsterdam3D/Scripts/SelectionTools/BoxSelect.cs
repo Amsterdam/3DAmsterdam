@@ -36,7 +36,7 @@ namespace Amsterdam3D.SelectionTools
             GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
             selectionBox = selectionBoxObj.GetComponent<RectTransform>();
             selectionBox.SetParent(Canvas.transform);
-            selectionBoxObj.SetActive(true);
+            selectionBoxObj.SetActive(false);
             inBoxSelect = false;
             enabled = true;
 
