@@ -18,6 +18,8 @@ public class GenerateRoads : MonoBehaviour
 
     public Transform mainCameraTransform = default;
 
+    private int shuffleFrameCount;
+
     private void Awake()
     {
         if (Instance == null)
@@ -36,9 +38,13 @@ public class GenerateRoads : MonoBehaviour
 
     private void Update()
     {
-        if (allLoadedRoads.Count > 0)
+        shuffleFrameCount++;
+        if (shuffleFrameCount % 60 == 0)
         {
-            shuffledRoadsList = GenerateRoads.Instance.allLoadedRoads.OrderBy(x => Random.value).ToList();
+            if (allLoadedRoads.Count > 0)
+            {
+                shuffledRoadsList = GenerateRoads.Instance.allLoadedRoads.OrderBy(x => Random.value).ToList();
+            }
         }
     }
 

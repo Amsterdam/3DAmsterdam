@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using Assets.Amsterdam3D.Scripts.Camera;
-
+using LayerSystem;
+using Amsterdam3D.CameraMotion;
 namespace Amsterdam3D.SelectionTools
 {
     // currently works as MVP, still has a bunch of TODOs for better usage.
@@ -23,10 +24,16 @@ namespace Amsterdam3D.SelectionTools
         private Bounds bounds;
         private List<Vector3> vertices;
 
+        [SerializeField]
+        private TileHandler tileHandler;
+
         public bool inSelection;
-        
-        
-        // Gets 
+
+
+        private void Start()
+        {
+            tileHandler = FindObjectOfType<TileHandler>();
+        }
         public Bounds GetBounds() 
         {
             return bounds;
@@ -60,6 +67,13 @@ namespace Amsterdam3D.SelectionTools
         private void onSelectionFunction() 
         {
          bounds = tool.bounds;
+         var hits =   Physics.BoxCastAll(bounds.center, bounds.extents, -Vector3.up);
+
+            foreach (var collider in hits) 
+            {
+                tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3, callback => { });
+            }
+
         inSelection = true; 
         }
     }

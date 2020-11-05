@@ -52,7 +52,6 @@ namespace Assets.Amsterdam3D.Scripts
         }
 
 
-
         IEnumerator GetAllBagIDsInRange(Bounds bounds, System.Action<List<string>> callback)
         {
 
@@ -64,16 +63,18 @@ namespace Assets.Amsterdam3D.Scripts
             // construct url string
             url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
 
-            var h = UnityWebRequest.Get(url);
+            var hideRequest = UnityWebRequest.Get(url);
 
-            yield return h.SendWebRequest();
+            yield return hideRequest.SendWebRequest();
 
-            if (h.isDone && !h.isHttpError)
+            if (hideRequest.isNetworkError || hideRequest.isHttpError)
             {
-
-                string dataString = h.downloadHandler.text;
-                Debug.Log(dataString);
-
+                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+            }
+            else
+            {
+                string dataString = hideRequest.downloadHandler.text;
+                
                 var csv = splitCSV(dataString);
                 int returnCounter = 0;
                 // hard coded for this api request
@@ -89,7 +90,6 @@ namespace Assets.Amsterdam3D.Scripts
                     }
                 }
             }
-
 
             callback(ids);
             yield return null;

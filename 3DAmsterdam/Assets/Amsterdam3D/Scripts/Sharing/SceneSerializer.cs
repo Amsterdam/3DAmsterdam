@@ -23,7 +23,10 @@ namespace Amsterdam3D.Sharing
         private RectTransform annotationsContainer;
 
         [SerializeField]
-        private RectTransform cameraContainer;
+        private RectTransform camerasContainer;
+
+        [SerializeField]
+        private RectTransform cameraLayersGroup;
 
         [SerializeField]
         private Annotation annotationPrefab;
@@ -40,9 +43,6 @@ namespace Amsterdam3D.Sharing
         private InterfaceLayer treesLayer;
         [SerializeField]
         private InterfaceLayer groundLayer;
-
-        [SerializeField]
-        private RectTransform cameraParent;
 
         [SerializeField]
         private string urlViewIDVariable = "?view=";
@@ -95,9 +95,9 @@ namespace Amsterdam3D.Sharing
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + sceneId + "_scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError)
+            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
-                Debug.Log("Error: " + getSceneRequest.error);
+                WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
@@ -177,7 +177,7 @@ namespace Amsterdam3D.Sharing
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
                 GameObject cameraObject = Instantiate(cameraPrefab);
                 cameraObject.name = cameraPoint.name;
-                cameraObject.transform.SetParent(cameraParent, false);
+                cameraObject.transform.SetParent(camerasContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
                 cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
                 cameraObject.GetComponent<FirstPersonObject>().placed = true;
@@ -248,9 +248,9 @@ namespace Amsterdam3D.Sharing
             UnityWebRequest getModelRequest = UnityWebRequest.Get(Constants.SHARE_URL + Constants.SHARE_OBJECTSTORE_PATH + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
-            if (getModelRequest.isNetworkError)
+            if (getModelRequest.isNetworkError || getModelRequest.isHttpError)
             {
-                Debug.Log("Error: " + getModelRequest.error);
+                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
             }
             else
             {
@@ -435,15 +435,14 @@ namespace Amsterdam3D.Sharing
 
         private SerializableScene.CameraPoint[] GetCameras()
         {
-              var annotations = cameraContainer.GetComponentsInChildren<CustomLayer>(true);
-              var annotationsData = new List<SerializableScene.CameraPoint>();
+              var cameraPoints = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
+              var cameraPointsData = new List<SerializableScene.CameraPoint>();
               
-
-              foreach (var camera in annotations)
+              foreach (var camera in cameraPoints)
               {
                 var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
                 var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
-                annotationsData.Add(new SerializableScene.CameraPoint
+                cameraPointsData.Add(new SerializableScene.CameraPoint
                 {
                     position = follower.WorldPosition,
                     rotation = firstPersonObject.savedRotation,
@@ -451,7 +450,7 @@ namespace Amsterdam3D.Sharing
                 });
               }
 
-              return annotationsData.ToArray(); 
+              return cameraPointsData.ToArray(); 
         }
 
         /// <summary>

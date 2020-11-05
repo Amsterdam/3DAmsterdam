@@ -31,8 +31,8 @@ public class TileLoader : MonoBehaviour
     private const int maxParallelRequests = 5;
 	private const float pushTileDownDistance = 0.03f;
 
-	Queue<downloadRequest> downloadQueue = new Queue<downloadRequest>();
-    public Dictionary<string, downloadRequest> activeDownloads = new Dictionary<string, downloadRequest>(maxParallelRequests);
+	Queue<DownloadRequest> downloadQueue = new Queue<DownloadRequest>();
+    public Dictionary<string, DownloadRequest> activeDownloads = new Dictionary<string, DownloadRequest>(maxParallelRequests);
 
     public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.Off;
 
@@ -42,14 +42,14 @@ public class TileLoader : MonoBehaviour
         QM
     }
 
-    public struct downloadRequest
+    public struct DownloadRequest
     {
 
         public string Url;
         public TileService Service;
         public Vector3 TileId;
 
-        public downloadRequest(string url, TileService service, Vector3 tileId)
+        public DownloadRequest(string url, TileService service, Vector3 tileId)
         {
             Url = url;
             Service = service;
@@ -224,6 +224,7 @@ public class TileLoader : MonoBehaviour
                 activeTiles[tileId].AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
                 meshRenderer.shadowCastingMode = tileShadowCastingMode;
+                meshRenderer.enabled = false;
 
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
@@ -259,6 +260,7 @@ public class TileLoader : MonoBehaviour
                     var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
                     loadedTexture.wrapMode = TextureWrapMode.Clamp;
                     meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                    meshRenderer.enabled = true;
                 }
             }
             else
@@ -375,9 +377,9 @@ public class TileLoader : MonoBehaviour
         }
 
         // update downloadqueue
-        downloadRequest[] downloadRequests = downloadQueue.ToArray();
-        Queue<downloadRequest> tempQueue = new Queue<downloadRequest>();
-        foreach (downloadRequest downloadRequest in downloadRequests)
+        DownloadRequest[] downloadRequests = downloadQueue.ToArray();
+        Queue<DownloadRequest> tempQueue = new Queue<DownloadRequest>();
+        foreach (DownloadRequest downloadRequest in downloadRequests)
         {
                 tileIsRequired = false;
                 foreach (var requiredTileKey in requiredTileKeys)
@@ -401,7 +403,7 @@ public class TileLoader : MonoBehaviour
                 GameObject tile = DrawPlaceHolder(newTileKey);
                 activeTiles.Add(newTileKey, tile);
                 var qmUrl = terrainUrl.Replace("{x}", newTileKey.x.ToString()).Replace("{y}", newTileKey.y.ToString()).Replace("{z}", int.Parse(newTileKey.z.ToString()).ToString());
-                downloadQueue.Enqueue(new downloadRequest(qmUrl, TileService.QM, newTileKey));
+                downloadQueue.Enqueue(new DownloadRequest(qmUrl, TileService.QM, newTileKey));
             }
 
         }
@@ -461,7 +463,7 @@ public class TileLoader : MonoBehaviour
 
    
 
-    private bool IsReplacementTileInDownloadQueue(Vector3 currentTileKey, downloadRequest[] downloadQueue )
+    private bool IsReplacementTileInDownloadQueue(Vector3 currentTileKey, DownloadRequest[] downloadQueue )
     {
         bool replacementInQueue = false;
 
@@ -497,7 +499,7 @@ public class TileLoader : MonoBehaviour
     void RemoveTiles()
     {
         Vector3[] tilesToBeRemoved = tilesToRemove.Keys.ToArray();
-        downloadRequest[] downloadRequests = downloadQueue.ToArray();
+        DownloadRequest[] downloadRequests = downloadQueue.ToArray();
 
         foreach (Vector3 tileToBeRemoved in tilesToBeRemoved)
         {

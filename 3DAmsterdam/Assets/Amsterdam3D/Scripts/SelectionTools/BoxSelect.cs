@@ -36,7 +36,7 @@ namespace Amsterdam3D.SelectionTools
             GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
             selectionBox = selectionBoxObj.GetComponent<RectTransform>();
             selectionBox.SetParent(Canvas.transform);
-            selectionBoxObj.SetActive(true);
+            selectionBoxObj.SetActive(false);
             inBoxSelect = false;
             enabled = true;
 
@@ -72,7 +72,7 @@ namespace Amsterdam3D.SelectionTools
                 }
                 else
                 {
-                    selectionBox.localScale = new Vector3((Input.mousePosition.x - startPos.x) / 100, (Input.mousePosition.y - startPos.y) / 100, 1);
+                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((Input.mousePosition.x - startPos.x)), Mathf.Abs(Input.mousePosition.y - startPos.y), 1);
                     selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
                     if (Input.GetMouseButtonUp(0))
                     {
@@ -111,6 +111,18 @@ namespace Amsterdam3D.SelectionTools
                             min.x = startPosWorld.x;
                             max.x = currentWorldPos.x;
                         }
+                        if (currentWorldPos.y < startPosWorld.y)
+                        {
+                            min.y = currentWorldPos.y;
+                            max.y = startPosWorld.y;
+                        }
+                        else
+                        {
+                            min.y = startPosWorld.y;
+                            max.y = currentWorldPos.y;
+                        }
+
+
                         Debug.Log("Min: " + min + " Max: " + max);
                         bounds.min = min;
                         bounds.max = max;

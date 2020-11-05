@@ -21,12 +21,13 @@ namespace Amsterdam3D.CameraMotion
 
         private const float rotationSpeed = 1f;
 
-        private const float minAngle = 10f;
+        private const float minAngle = -89f;
         private const float maxAngle = 89f;
         private const float speedFactor = 0.5f;
 
         private float maxClickDragDistance = 5000.0f;
-        
+        private float maxTravelDistance = 20000.0f;
+
         [SerializeField]
         private float dragFactor = 2f;
         private const float rotationSensitivity = 5f;
@@ -47,6 +48,8 @@ namespace Amsterdam3D.CameraMotion
         private float deceleration = 10.0f;
         private Vector3 dragMomentum = Vector3.zero;
         private float maxMomentum = 1000.0f;
+        private bool requireMouseClickBeforeDrag = false;
+
 
         private bool translationModifier = false;
         private bool firstPersonModifier = false;
@@ -70,6 +73,8 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
         
+
+
         void Awake()
         {
             camera = GetComponent<Camera>();
@@ -103,9 +108,19 @@ namespace Amsterdam3D.CameraMotion
 
                 ClampRotation();
             }
+
+            LimitPosition();
 		}
 
-        private bool BlockedByTextInput(){
+        /// <summary>
+        /// Clamps the camera within the max travel distance bounding box
+        /// </summary>
+		private void LimitPosition()
+		{
+            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, Constants.ZERO_GROUND_LEVEL_Y, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+		}
+
+		private bool BlockedByTextInput(){
             return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
         }
 
@@ -186,22 +201,30 @@ namespace Amsterdam3D.CameraMotion
             { 
                 camera.transform.RotateAround(camera.transform.position, camera.transform.right, rotationSpeed);
             }
-            //FPS Look
+            
             if (firstPersonModifier && Input.GetMouseButton(0))
-            {
-                mouseHorizontal = Input.GetAxis("Mouse X");
-                mouseVertical = Input.GetAxis("Mouse Y");
+			{
+				FirstPersonLook();
+			}
+		}
 
-                // berekent rotatie van camera gebaseerd op beweging van muis
-                currentRotation.x += mouseHorizontal * rotationSensitivity;
-                currentRotation.y -= mouseVertical * rotationSensitivity;
+		private void FirstPersonLook()
+		{
+			mouseHorizontal = Input.GetAxis("Mouse X");
+			mouseVertical = Input.GetAxis("Mouse Y");
 
-                //// de rotatie van de camera wordt aangepast
-                camera.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
-            }
+			//Convert mouse position into local rotations
+			currentRotation.x += mouseHorizontal * rotationSensitivity;
+			currentRotation.y -= mouseVertical * rotationSensitivity;
+
+			//Adjust camera rotation
+			camera.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
+
+            //Require a mouse release, before we register drag events again
+            requireMouseClickBeforeDrag = true;
         }
 
-        private void ClampRotation()
+		private void ClampRotation()
         {
             camera.transform.rotation = Quaternion.Euler(new Vector3(
                 ClampAngle(camera.transform.localEulerAngles.x, minAngle, maxAngle),
@@ -294,13 +317,16 @@ namespace Amsterdam3D.CameraMotion
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    requireMouseClickBeforeDrag = false;
                     startMouseDrag = GetMousePositionInWorld();
                     ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
                 }
-                else if (Input.GetMouseButton(0))
+                else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
                 {
                     dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
-                    transform.position -= dragMomentum;
+
+                    if(dragMomentum.magnitude > 0.1f)
+                        transform.position -= dragMomentum;
 
                     //Filter out extreme swings
                     if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.zero;
@@ -354,8 +380,18 @@ namespace Amsterdam3D.CameraMotion
                 var mouseX = Input.GetAxis("Mouse X");
                 var mouseY = Input.GetAxis("Mouse Y");
 
+                var previousPosition = camera.transform.position;
+                var previousRotation = camera.transform.rotation;
+
                 camera.transform.RotateAround(rotatePoint, camera.transform.right, -mouseY * 5f);
                 camera.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+
+                if (camera.transform.position.y < rotatePoint.y)
+                {
+                    //Do not let the camera go beyond the rotationpoint height
+                    camera.transform.position = previousPosition;
+                    camera.transform.rotation = previousRotation;
+                }
 
                 currentRotation = new Vector2(camera.transform.rotation.eulerAngles.y, camera.transform.rotation.eulerAngles.x);
 

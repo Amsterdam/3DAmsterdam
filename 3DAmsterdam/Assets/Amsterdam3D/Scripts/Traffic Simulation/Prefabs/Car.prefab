@@ -53,6 +53,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentRoad: {fileID: 0}
   speed: 20
+  minimumCarRenderDistance: 200
+  mediumCarRenderDistance: 500
+  maximumCarRenderDistance: 1000
+  startCar: 0
   cars:
   - {fileID: 6729640118978963247}
   - {fileID: 1999589462839953491}
@@ -62,6 +66,7 @@ MonoBehaviour:
   - {fileID: 1674866967397203522}
   - {fileID: 9018458958485606183}
   - {fileID: 1978068461219427575}
+  debugCar: 0
 --- !u!1001 &1692950850885760258
 PrefabInstance:
   m_ObjectHideFlags: 0
