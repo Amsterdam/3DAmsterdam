@@ -32,21 +32,37 @@ public class DownloadAllTerrainTextures : MonoBehaviour
     private int downloadSlots;
 
     [SerializeField]
-    private bool generatePythonDownloadScript = true;
+    private bool generateDownloadList = true;
 
-    void Start()
-    {
+    private const string downloadList = "_download_list.txt";
+    private const string failedUnityDownloads = "_failed_unity_downloads.txt";
+
+    protected StreamReader reader = null;
+    protected string readLine = "";
+
+    private int maxLinesPerFrame = 1000;
+	private bool overwrite = false;
+
+	private void Start()
+	{
         schema = new Terrain.TmsGlobalGeodeticTileSchema();
-        StartCoroutine(DownloadAll());
+    }
 
-        if (generatePythonDownloadScript)
-        {
-            streamLogWriter = File.CreateText(localTileFilesFolder + "autodownload.py");
-            streamLogWriter.WriteLine("import requests");
-        }
-        else{
-            streamLogWriter = File.CreateText(localTileFilesFolder + "failed_unity_downloads.txt");
-        }
+	[ContextMenu("Download all texture files")]
+    public void DownloadAllTextureFiles()
+    {
+        
+        generateDownloadList = false;
+        streamLogWriter = File.CreateText(localTileFilesFolder + failedUnityDownloads);
+        StartCoroutine(DownloadAll());
+    }
+
+   [ContextMenu("Only create a download list")]
+    public void WriteAllDownloadUrlsToList()
+    {
+        generateDownloadList = true;
+        streamLogWriter = File.CreateText(localTileFilesFolder + downloadList);
+        StartCoroutine(DownloadAll());
     }
 
     /// <summary>
@@ -55,14 +71,12 @@ public class DownloadAllTerrainTextures : MonoBehaviour
     /// <returns></returns>
 	private IEnumerator DownloadAll()
     {
-        Debug.Log("Downloading. Logging every 500 file..");
+        Debug.Log("Working....");
         yield return new WaitForEndOfFrame();
 
         string[] zDirs = Directory.GetDirectories(localTileFilesFolder);
         foreach (var zDir in zDirs)
         {
-            streamLogWriter.WriteLine("print (r\"" + zDir + "\")");
-
             string[] xDirs = Directory.GetDirectories(zDir);
             foreach (var xDir in xDirs)
             {
@@ -70,8 +84,6 @@ public class DownloadAllTerrainTextures : MonoBehaviour
                 downloadSlots = maxConcurrentDownloads;
                 foreach (var yFile in yFiles)
                 {
-                    
-
                     var tileId = new Vector3(
                        int.Parse(Path.GetFileNameWithoutExtension(xDir)),
                        int.Parse(Path.GetFileNameWithoutExtension(yFile)),
@@ -87,12 +99,9 @@ public class DownloadAllTerrainTextures : MonoBehaviour
                         wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
                     }
 
-                    if (generatePythonDownloadScript)
+                    if (generateDownloadList)
                     {
-                        streamLogWriter.WriteLine("url = r\"" + wmsUrl + "\"");
-                        streamLogWriter.WriteLine("downloaded_obj = requests.get(url)");
-                        streamLogWriter.WriteLine("with open(r\"" + yFile.Replace(".terrain", ".jpg").Replace("terrain", "terrain_textures") + "\", \"wb\") as file:");
-                        streamLogWriter.WriteLine("    file.write(downloaded_obj.content)");
+                        streamLogWriter.WriteLine(wmsUrl + " " + yFile.Replace(".terrain", ".jpg").Replace("terrain", "terrain_textures"));
                         filesDownloaded++;
                      }
                     else
@@ -114,6 +123,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
+        Debug.Log("Done");
         streamLogWriter.Close();
     }
 
@@ -136,9 +146,69 @@ public class DownloadAllTerrainTextures : MonoBehaviour
         }
         else
         {
-            if(!generatePythonDownloadScript)
+            if(!generateDownloadList)
                 streamLogWriter.WriteLine(wmsUrl + " - " + targetFile.Replace(".terrain", ".jpg").Replace("terrain", "terrain_textures"));
         }
+        yield return new WaitForEndOfFrame();
+    }
+
+    [ContextMenu("Download all urls in text list to files")]
+    private void DownloadAllFromList(){
+        StartCoroutine(DownloadListedURLs());
+	}
+    private IEnumerator DownloadListedURLs(){
+        if (!File.Exists(localTileFilesFolder + downloadList)) {
+            Debug.Log(localTileFilesFolder + downloadList + " not there. Please generate, or add it first.");
+            yield break;
+        }
+        
+        FileInfo downloadListFileInfo = new FileInfo(localTileFilesFolder + downloadList);
+        reader = downloadListFileInfo.OpenText();
+
+        int downloadsDone = 0;
+        int downloadsFailed = 0;
+        int downloadsStarted = 0;
+        while (readLine != null)
+        {
+            for (int i = 0; i < maxLinesPerFrame; i++)
+            {
+                readLine = reader.ReadLine();
+                if(readLine != null)
+                {
+                    string[] filePaths = readLine.Split(' ');
+                    if (overwrite || !File.Exists(filePaths[1]))
+                    {
+                        downloadsStarted++;
+                        UnityWebRequest www = UnityWebRequest.Get(filePaths[0]);
+                        yield return www.SendWebRequest();
+                        if (!www.isNetworkError && !www.isHttpError)
+                        {
+                            downloadsDone++;
+                            var loadedTextureData = www.downloadHandler.data;
+                            if (www.downloadHandler.data.Length > 15)
+                            {
+                                File.WriteAllBytes(filePaths[1], loadedTextureData);
+                            }
+                            else{
+                                downloadsFailed++;
+                            }
+                        }
+                        else {
+                            downloadsFailed++;
+                        }
+                    }
+                    if (downloadsDone % maxLinesPerFrame == 0)
+                    {
+                        Debug.Log(downloadsStarted + " downloads started." + downloadsDone + " downloaded. " + downloadsFailed + " failed.");
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+                else{
+                    break;
+				}
+            }
+        }
+        Debug.Log("All lines read.");
         yield return new WaitForEndOfFrame();
     }
 }
