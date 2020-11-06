@@ -32,20 +32,20 @@ public class DownloadAllTerrainTextures : MonoBehaviour
     private int downloadSlots;
 
     [SerializeField]
-    private bool writeDownloadCommandsInsteadOfFailedFiles = true;
+    private bool generatePythonDownloadScript = true;
 
     void Start()
     {
         schema = new Terrain.TmsGlobalGeodeticTileSchema();
         StartCoroutine(DownloadAll());
 
-        if (writeDownloadCommandsInsteadOfFailedFiles)
+        if (generatePythonDownloadScript)
         {
             streamLogWriter = File.CreateText(localTileFilesFolder + "autodownload.py");
             streamLogWriter.WriteLine("import requests");
         }
         else{
-            streamLogWriter = File.CreateText(localTileFilesFolder + "log.txt");
+            streamLogWriter = File.CreateText(localTileFilesFolder + "failed_unity_downloads.txt");
         }
     }
 
@@ -61,8 +61,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
         string[] zDirs = Directory.GetDirectories(localTileFilesFolder);
         foreach (var zDir in zDirs)
         {
-            //Use this if you only want to read a specific folder
-            //if (!(Path.GetFileNameWithoutExtension(zDir) == "18")) continue;
+            streamLogWriter.WriteLine("print (r\"" + zDir + "\")");
 
             string[] xDirs = Directory.GetDirectories(zDir);
             foreach (var xDir in xDirs)
@@ -88,13 +87,12 @@ public class DownloadAllTerrainTextures : MonoBehaviour
                         wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
                     }
 
-                    if (writeDownloadCommandsInsteadOfFailedFiles)
+                    if (generatePythonDownloadScript)
                     {
                         streamLogWriter.WriteLine("url = r\"" + wmsUrl + "\"");
                         streamLogWriter.WriteLine("downloaded_obj = requests.get(url)");
                         streamLogWriter.WriteLine("with open(r\"" + yFile.Replace(".terrain", ".jpg").Replace("terrain", "terrain_textures") + "\", \"wb\") as file:");
                         streamLogWriter.WriteLine("    file.write(downloaded_obj.content)");
-                        streamLogWriter.WriteLine("print (url)");
                         filesDownloaded++;
                      }
                     else
@@ -138,7 +136,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
         }
         else
         {
-            if(!writeDownloadCommandsInsteadOfFailedFiles)
+            if(!generatePythonDownloadScript)
                 streamLogWriter.WriteLine(wmsUrl + " - " + targetFile.Replace(".terrain", ".jpg").Replace("terrain", "terrain_textures"));
         }
         yield return new WaitForEndOfFrame();
