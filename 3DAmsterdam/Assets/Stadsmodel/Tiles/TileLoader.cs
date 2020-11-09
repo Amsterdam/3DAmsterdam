@@ -175,7 +175,8 @@ public class TileLoader : MonoBehaviour
 
                 var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
                 loadedTexture.wrapMode = TextureWrapMode.Clamp;
-                meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                if(meshRenderer)
+                    meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
             }
         }
         else
