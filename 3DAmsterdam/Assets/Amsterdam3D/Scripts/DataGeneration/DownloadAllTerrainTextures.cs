@@ -94,7 +94,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
                     var tileRange = new TileRange(UnityEngine.Mathf.RoundToInt(tileId.x), UnityEngine.Mathf.RoundToInt(tileId.y));
                     Extent subtileExtent = TileTransform.TileToWorld(tileRange, tileId.z.ToString(), schema);
                     string wmsUrl = url.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
-                    if (tileId.z == 17)
+                    if (tileId.z >= 17)
                     {
                         wmsUrl = wmsUrl.Replace("width=256", "width=1024").Replace("height=256", "height=1024");
                     }
