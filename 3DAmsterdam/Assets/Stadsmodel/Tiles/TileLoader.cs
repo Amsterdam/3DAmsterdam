@@ -21,8 +21,9 @@ public class TileLoader : MonoBehaviour
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     [SerializeField] private string dataFolder = "terrain";
     private string terrainUrl;
+
     public string textureUrl = "https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/topografie.map&REQUEST=GetMap&VERSION=1.1.0&SERVICE=wms&styles=&layers=basiskaart-zwartwit&format=image%2Fpng&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326&crs=EPSG%3A4326";
-   
+
     public GameObject placeholderTile;
     private const int tilesize = 180;
 
@@ -141,7 +142,7 @@ public class TileLoader : MonoBehaviour
 
     public void UpdateTerrainTextures(string newTextureURL)
     {
-        textureUrl = Constants.BASE_DATA_URL + newTextureURL;
+        textureUrl = newTextureURL;
         List<KeyValuePair<Vector3,GameObject>> temp = activeTiles.ToList();
         StopAllCoroutines();
         for (int i = 0; i < temp.Count; i++)
