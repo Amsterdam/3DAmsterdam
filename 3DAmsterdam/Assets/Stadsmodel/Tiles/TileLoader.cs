@@ -221,7 +221,9 @@ public class TileLoader : MonoBehaviour
 
                 activeTiles[tileId].transform.localScale = new Vector3(ComputeScaleFactorX((int)tileId.z), 1, ComputeScaleFactorY((int)tileId.z));
                 Vector3 loc = activeTiles[tileId].transform.localPosition;
-                loc.y = 0;
+                
+                if(tileId.z > 14)
+                    loc.y = 0;
                 activeTiles[tileId].transform.localPosition = loc;
                 activeTiles[tileId].layer = 9;
             }
