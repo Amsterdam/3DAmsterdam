@@ -38,6 +38,8 @@ namespace Amsterdam3D.SelectionTools
 
         private bool collidersLoaded;
 
+        private Vector3 GroundLevel = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
+
         private void Start()
         {
             tileHandler = FindObjectOfType<TileHandler>();
@@ -88,8 +90,7 @@ namespace Amsterdam3D.SelectionTools
             Vector3 extends = max - min;
 
             layer.LoadMeshColliders(callback => { collidersLoaded = true; });
-            var hits = Physics.BoxCastAll(center, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), 9999, buildingLayer);
-            Debug.Log("Box cast pos: " + center);
+            var hits = Physics.BoxCastAll(center + GroundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
 
             foreach (var hit in hits)
             {
