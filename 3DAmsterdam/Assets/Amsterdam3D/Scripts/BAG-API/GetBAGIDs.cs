@@ -153,7 +153,6 @@ public class GetBAGIDs : MonoBehaviour
                 }
                 yield return new WaitForSeconds(1f);
             }
-            //Physics.queriesHitBackfaces = false;
         }
 
         hit = lastHit;
