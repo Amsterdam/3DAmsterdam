@@ -162,10 +162,5 @@ public class GetBAGIDs : MonoBehaviour
             DisplayBAGData.Instance.PrepareUI();
         }
         tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, UseObjectID);
-
-
     }
-
-
-
-    }
+}
