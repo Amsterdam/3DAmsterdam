@@ -27,7 +27,7 @@ namespace Amsterdam3D.SelectionTools
 
 
         private bool inBoxSelect;
-        private bool enabled;
+        private bool inSelection = false;
 
 
         public override void EnableTool()
@@ -68,13 +68,21 @@ namespace Amsterdam3D.SelectionTools
                             }
 
                         }
-                        else if (Input.GetMouseButtonDown(1)) 
+                        else if (Input.GetMouseButtonDown(1))
                         {
                             if (raycastBehaviour.RayCast(out startPosWorld))
                             {
                                 bool value = this.ContainsPoint(startPosWorld);
                                 Debug.Log("In Bounds: " + value);
                             }
+                        }
+                    }
+                    else if (Input.GetMouseButtonDown(0)) 
+                    {
+                        if (inSelection) 
+                        {
+                            inSelection = false;
+                            OnDeselect?.Invoke();
                         }
                     }
                 }
@@ -150,6 +158,7 @@ namespace Amsterdam3D.SelectionTools
                             vertexes.Add(p2);
                             vertexes.Add(max);
                             vertexes.Add(p4);
+                            inSelection = true;
                             onSelectionCompleted?.Invoke();
                         }
 
