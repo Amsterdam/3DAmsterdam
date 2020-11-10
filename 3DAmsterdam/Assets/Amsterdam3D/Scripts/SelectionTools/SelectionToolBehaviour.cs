@@ -72,13 +72,13 @@ namespace Amsterdam3D.SelectionTools
         {
             tool.Canvas = canvas;
             tool.onSelectionCompleted.AddListener(OnSelectionFunction);
-            tool.OnDeselect.AddListener(onDeselect);
+            tool.OnDeselect.AddListener(OnDeselect);
             tool.EnableTool();
         }
 
         private void OnDisable()
         {
-         tool.DisableTool();
+            tool.DisableTool();
         }
 
         private void OnSelectionFunction() 
@@ -91,7 +91,6 @@ namespace Amsterdam3D.SelectionTools
 
             layer.LoadMeshColliders(callback => { collidersLoaded = true; });
             var hits = Physics.BoxCastAll(center + GroundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
-
             foreach (var hit in hits)
             {
                 tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
@@ -99,7 +98,7 @@ namespace Amsterdam3D.SelectionTools
             inSelection = true; 
         }
 
-        private void onDeselect() 
+        private void OnDeselect() 
         {
             inSelection = false;
         }

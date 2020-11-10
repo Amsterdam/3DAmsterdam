@@ -123,7 +123,6 @@ namespace Assets.Amsterdam3D.Scripts
             return splitString;
         }
 
-        // source: 
         private static string GetNumbers(string input)
         {
             return new string(input.Where(c => char.IsDigit(c)).ToArray());

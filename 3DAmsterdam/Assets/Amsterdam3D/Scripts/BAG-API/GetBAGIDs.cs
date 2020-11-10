@@ -86,11 +86,17 @@ public class GetBAGIDs : MonoBehaviour
         isBusyGettingBagID = false;
     }
 
+        private void OnMeshColliderAttached(bool value)
+    {
+        meshCollidersAttached = value;
+    }
 
     IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
-        containerLayer.LoadMeshColliders();
+        meshCollidersAttached = false;
+        containerLayer.LoadMeshColliders(OnMeshColliderAttached);
+        yield return new WaitUntil(() => meshCollidersAttached == true);
 
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)

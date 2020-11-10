@@ -222,6 +222,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4518846611004482354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5266161009993413227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0343da181f0cba54c9b9fe944a2127b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &6004568392046146167
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,7 +846,7 @@ PrefabInstance:
     - target: {fileID: 4708324657163485237, guid: 1eab0c6915750b645ab7da15af9a9796,
         type: 3}
       propertyPath: m_Name
-      value: Download
+      value: 'Download: https://3d.amsterdam.nl/web/downloads/index.html'
       objectReference: {fileID: 0}
     - target: {fileID: 7041143620459781932, guid: 1eab0c6915750b645ab7da15af9a9796,
         type: 3}
@@ -842,6 +855,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1eab0c6915750b645ab7da15af9a9796, type: 3}
+--- !u!1 &5266161009993413227 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4708324657163485237, guid: 1eab0c6915750b645ab7da15af9a9796,
+    type: 3}
+  m_PrefabInstance: {fileID: 595176493200061022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5266161009993413226 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4708324657163485236, guid: 1eab0c6915750b645ab7da15af9a9796,
