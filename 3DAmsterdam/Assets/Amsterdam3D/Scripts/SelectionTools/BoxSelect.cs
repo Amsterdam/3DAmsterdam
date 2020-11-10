@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using Amsterdam3D.CameraMotion;
 using System.Linq;
 using Assets.Amsterdam3D.Scripts.Camera;
+using Amsterdam3D.CameraMotion;
 using UnityEngine.Events;
 
 
@@ -27,7 +28,7 @@ namespace Amsterdam3D.SelectionTools
 
 
         private bool inBoxSelect;
-        private bool enabled;
+        private bool inSelection = false;
 
 
         public override void EnableTool()
@@ -60,13 +61,21 @@ namespace Amsterdam3D.SelectionTools
                         if (Input.GetMouseButtonDown(0))
                         {
 
-                            if (raycastBehaviour.RayCast(out startPosWorld))
-                            {
-                                startPos = Input.mousePosition;
-                                selectionBox.gameObject.SetActive(true);
-                                inBoxSelect = true;
-                            }
 
+                            startPosWorld = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+                            startPos = Input.mousePosition;
+                            selectionBox.gameObject.SetActive(true);
+                            inBoxSelect = true;
+ 
+
+                        }
+                    }
+                    else if (Input.GetMouseButtonDown(0)) 
+                    {
+                        if (inSelection) 
+                        {
+                            inSelection = false;
+                            OnDeselect?.Invoke();
                         }
                     }
                 }
@@ -74,7 +83,7 @@ namespace Amsterdam3D.SelectionTools
                 {
                     selectionBox.sizeDelta = new Vector3(Mathf.Abs((Input.mousePosition.x - startPos.x)), Mathf.Abs(Input.mousePosition.y - startPos.y), 1);
                     selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
-                    if (Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         
                         selectionBox.gameObject.SetActive(false);
@@ -85,8 +94,7 @@ namespace Amsterdam3D.SelectionTools
                             return;
                         }
 
-                        Vector3 currentWorldPos;
-                        raycastBehaviour.RayCast(out currentWorldPos);
+                        Vector3 currentWorldPos = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
                         Vector3 min = new Vector3();
                         Vector3 max = new Vector3();
                         if (currentWorldPos.z < startPosWorld.z)
@@ -122,13 +130,38 @@ namespace Amsterdam3D.SelectionTools
                             max.y = currentWorldPos.y;
                         }
 
+                        // screen space code
+
+
+                        Vector2 p2Screen = new Vector2(startPos.x, currentMousePos.y);
+                        Vector2 p4Screen = new Vector2(currentMousePos.x, startPos.y);
 
                         Debug.Log("Min: " + min + " Max: " + max);
-                        bounds.min = min;
-                        bounds.max = max;
-                        vertexes.Add(min);
-                        vertexes.Add(max);
-                        onSelectionCompleted?.Invoke();
+                        Vector3 p2;
+                        Vector3 p4;
+                        if (raycastBehaviour.RayCast(out p2, p2Screen) && raycastBehaviour.RayCast(out p4, p4Screen)) 
+                        {
+
+                            Debug.Log("P2: " + p2);
+                            Debug.Log("P4: " + p4);
+                            DrawBounds(min, p2, max, p4);
+                            vertexes.Clear();
+                            vertexes.Add(min);
+                            vertexes.Add(p2);
+                            vertexes.Add(max);
+                            vertexes.Add(p4);
+                            inSelection = true;
+                            onSelectionCompleted?.Invoke();
+                        }
+
+
+
+
+
+
+
+
+
                     }
                 }
             }
@@ -140,5 +173,22 @@ namespace Amsterdam3D.SelectionTools
             inBoxSelect = false;
             selectionBox.gameObject.SetActive(false);
         }
+
+        private void DrawBounds(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float delay = 100)
+        {
+
+
+            Debug.DrawLine(p1, p2, Color.blue, delay);
+            Debug.DrawLine(p2, p3, Color.red, delay);
+            Debug.DrawLine(p3, p4, Color.yellow, delay);
+            Debug.DrawLine(p4, p1, Color.magenta, delay);
+
+            // top
+
+        }
+
+
+
+
     }
 }

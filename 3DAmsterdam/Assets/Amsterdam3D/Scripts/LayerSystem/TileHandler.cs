@@ -107,7 +107,7 @@ namespace LayerSystem
 
 
 
-        public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback = null) 
         {
             StartCoroutine(AddObjectData(obj, vertexIndex, callback));
         }
@@ -153,10 +153,9 @@ namespace LayerSystem
                     newAssetBundle.Unload(true);
                 }
             }
-
+            callback?.Invoke(id);
             yield return null;
             pauseLoading = false;
-            callback(id);
         }
         
         private void HandleTile(TileChange tileChange)
