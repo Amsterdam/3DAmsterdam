@@ -68,14 +68,6 @@ namespace Amsterdam3D.SelectionTools
                             }
 
                         }
-                        else if (Input.GetMouseButtonDown(1))
-                        {
-                            if (raycastBehaviour.RayCast(out startPosWorld))
-                            {
-                                bool value = this.ContainsPoint(startPosWorld);
-                                Debug.Log("In Bounds: " + value);
-                            }
-                        }
                     }
                     else if (Input.GetMouseButtonDown(0)) 
                     {
