@@ -8,13 +8,11 @@ public class FirstPersonMovement : MonoBehaviour
     [SerializeField]
     private float groundOffset;
 
-    private Vector3 velocity;
-
-    private bool isgrounded;
-
-    private float rayDistance = 0.1f;
-
     [SerializeField]
+    private LayerMask layerMask;
+
+    private Vector3 velocity;
+    private bool isgrounded;
     private BoxCollider referenceCollider;
 
     [SerializeField]
@@ -62,8 +60,8 @@ public class FirstPersonMovement : MonoBehaviour
     {
         //Find grounding
         var center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
-        ray = new Ray(center, -Vector3.up);
-        if (Physics.Raycast(ray, out hit, 1000.0f))
+        ray = new Ray(center + Vector3.up*100.0f, -Vector3.up);
+        if (Physics.Raycast(ray, out hit, 1000.0f, layerMask.value))
         {
             //If we have ground to fall to, and we are not grounded, fall!
             isgrounded = Vector3.Distance(hit.point, center) <= groundOffset;

@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: -2249622592331462921}
   - component: {fileID: 7008712636139494169}
   - component: {fileID: 5730179703894242732}
-  m_Layer: 0
+  - component: {fileID: 3080695639790331529}
+  m_Layer: 11
   m_Name: FirstPersonCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,11 +66,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundOffset: 1.8
-  velocity: {x: 0, y: 0, z: 0}
-  isgrounded: 0
-  rayDistance: 0.1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1793
   referenceCollider: {fileID: 0}
-  gravity: -9.81
   moveSpeed: 5
   runspeed: 8
 --- !u!114 &6092253054437786300
@@ -188,3 +188,20 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 2e6c3ed42a5d76c4d8e1d1a0efd077c7, type: 2}
+--- !u!114 &3080695639790331529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101375191303853095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc3e69948dc9f604bbe45cfe4dca91a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  universalRenderPipelineAsset: {fileID: 11400000, guid: a3db453ecc13d9d4f9d5df47f85c7ed8,
+    type: 2}
+  range: 200
+  maxShadowDistance: 4000
+  useFixedValue: 1
