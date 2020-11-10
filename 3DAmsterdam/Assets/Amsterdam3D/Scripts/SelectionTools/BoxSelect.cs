@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using Amsterdam3D.CameraMotion;
 using System.Linq;
 using Assets.Amsterdam3D.Scripts.Camera;
+using Amsterdam3D.CameraMotion;
 using UnityEngine.Events;
 
 
@@ -60,12 +61,12 @@ namespace Amsterdam3D.SelectionTools
                         if (Input.GetMouseButtonDown(0))
                         {
 
-                            if (raycastBehaviour.RayCast(out startPosWorld))
-                            {
-                                startPos = Input.mousePosition;
-                                selectionBox.gameObject.SetActive(true);
-                                inBoxSelect = true;
-                            }
+
+                            startPosWorld = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+                            startPos = Input.mousePosition;
+                            selectionBox.gameObject.SetActive(true);
+                            inBoxSelect = true;
+ 
 
                         }
                     }
@@ -93,8 +94,7 @@ namespace Amsterdam3D.SelectionTools
                             return;
                         }
 
-                        Vector3 currentWorldPos;
-                        raycastBehaviour.RayCast(out currentWorldPos);
+                        Vector3 currentWorldPos = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
                         Vector3 min = new Vector3();
                         Vector3 max = new Vector3();
                         if (currentWorldPos.z < startPosWorld.z)
