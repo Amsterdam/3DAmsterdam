@@ -47,7 +47,10 @@ public class ImportBAG : ImportAPI
                     case RetrieveType.Pand:
                         // retrieves premises
                         hoofdData = JsonUtility.FromJson<Pand.Rootobject>(dataResult);
-                        StartCoroutine(CallAPI(numberIndicatorURL, bagIndexInt, RetrieveType.NummeraanduidingList));
+                        if (gameObject.activeSelf)
+                        {
+                            StartCoroutine(CallAPI(numberIndicatorURL, bagIndexInt, RetrieveType.NummeraanduidingList));
+                        }
                         break;
 
                     case RetrieveType.NummeraanduidingList:

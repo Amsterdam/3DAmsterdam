@@ -36,7 +36,7 @@ public class GetBAGIDs : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
 
-            if (Input.GetKeyDown(KeyCode.H))
+            if (Input.GetKeyDown(KeyCode.G))
             {
 
                 BuildingContainer.GetComponent<Layer>().UnhideAll();
@@ -63,6 +63,7 @@ public class GetBAGIDs : MonoBehaviour
 
     private void GetBagID()
     {
+        selectedID = "";
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         isBusy = true;
         StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
@@ -108,32 +109,61 @@ public class GetBAGIDs : MonoBehaviour
 
 
         Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-        Vector2 uv = mesh.uv2[hit.triangleIndex * 3];
+        int vertexIndex = hit.triangleIndex * 3;
+        if (vertexIndex > mesh.uv2.Length) 
+        {
+            Debug.LogWarning("UV index out of bounds");
+            yield break;
+        }
+        Vector2 uv = mesh.uv2[vertexIndex];
         GameObject gameObjectToHighlight = hit.collider.gameObject;
-        bool hitVisibleObject = false;
+        bool hitVisibleObject = true;
+        RaycastHit newHit = hit;
+        RaycastHit lastHit = hit;
+        Debug.Log(hit.point);
 
         if (uv.y == 0.2f)
         {
-            RaycastHit[] hits = Physics.RaycastAll(ray, 10000, clickCheckLayerMask.value);
-            foreach (var localHit in hits)
+            hitVisibleObject = false;
+            //Physics.queriesHitBackfaces = true;
+            Vector3 lastPoint = hit.point;
+            while (uv.y == 0.2f)
             {
-                mesh = localHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+                Vector3 h = newHit.point + (ray.direction * 0.01f);
                 
-                uv = mesh.uv2[localHit.triangleIndex * 3];
-                if (uv.y != 0.2f)
+                Debug.Log("Ray point: " + h);
+                ray = new Ray(h, ray.direction);
+                if (Physics.Raycast(ray, out newHit, 10000, clickCheckLayerMask.value))
                 {
-                    gameObjectToHighlight = localHit.collider.gameObject;
-                    hit = localHit;
-                    hitVisibleObject = true;
+                    uv = mesh.uv2[newHit.triangleIndex * 3];
+                    //Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue, 1000);
+                    Debug.DrawLine(lastPoint, newHit.point, Color.blue, 1000);
+                    lastPoint = newHit.point;
+                    lastHit = newHit;
+                    if (uv.y != 0.2f) 
+                    {
+                        hitVisibleObject = true;
+                        Debug.Log("Hit visible");
+                    }
+                }
+                else 
+                {
                     break;
                 }
+                yield return new WaitForSeconds(1f);
             }
+            //Physics.queriesHitBackfaces = false;
         }
 
+        hit = lastHit;
+        if (hitVisibleObject) 
+        {
             DisplayBAGData.Instance.PrepareUI();
-            tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, UseObjectID);
-
         }
+        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, UseObjectID);
+
+
+    }
 
 
 

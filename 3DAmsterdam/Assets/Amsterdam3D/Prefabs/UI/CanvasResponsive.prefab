@@ -1909,11 +1909,6 @@ PrefabInstance:
       propertyPath: uniqueLinkedObjectMaterials.Array.data[1]
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1534932381897018262, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Text
-      value: Luchtfoto recent
-      objectReference: {fileID: 0}
     - target: {fileID: 1593283887738346573, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2374,11 +2369,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.0002584574
       objectReference: {fileID: 0}
-    - target: {fileID: 3767657445167039188, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Text
-      value: Kaart
-      objectReference: {fileID: 0}
     - target: {fileID: 3778720578339373459, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
       propertyPath: m_Type
@@ -2694,6 +2684,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6448555333043537191, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4927855026980420799}
+    - target: {fileID: 6448555333043537191, guid: ff13554cc39e8a149adab3002a55054e,
+        type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: UpdateTerrainTextures
       objectReference: {fileID: 0}
@@ -2717,11 +2712,6 @@ PrefabInstance:
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 6448555333043537191, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 4927855026980420799}
     - target: {fileID: 6448555333043537191, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -3001,65 +2991,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateTerrainTextures
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=512&crs=EPSG%3A4326&srs=EPSG%3A4326
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 4927855026980420799}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: set_sprite
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 21300000, guid: e84f69c5b68aa5441ace3982ca0dc35f,
-        type: 3}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Sprite, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681139402090220645, guid: ff13554cc39e8a149adab3002a55054e,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8704823609143240232, guid: ff13554cc39e8a149adab3002a55054e,
         type: 3}
       propertyPath: m_AnchorMin.y
