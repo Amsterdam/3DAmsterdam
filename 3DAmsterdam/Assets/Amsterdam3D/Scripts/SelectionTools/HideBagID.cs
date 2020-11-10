@@ -40,7 +40,7 @@ namespace Assets.Amsterdam3D.Scripts
             if (boxSelect.inSelection)
             {
                 buildingLayer.LoadMeshColliders(callback => { selectedBounds = boxSelect.GetBounds(); });
-                var vertices = boxSelect.GetVertexes();
+                var vertices = boxSelect.GetVertices();
                 StartCoroutine(GetAllBagIDsInRange(vertices[0], vertices[2], HideIDs));
                 
             }

@@ -59,7 +59,7 @@ namespace Amsterdam3D.SelectionTools
             return tool.toolType;
         }
 
-        public List<Vector3> GetVertexes() 
+        public List<Vector3> GetVertices() 
         {
             // copy selection and return copy
             List<Vector3> returnValue = new List<Vector3>();
@@ -71,7 +71,7 @@ namespace Amsterdam3D.SelectionTools
         private void OnEnable()
         {
             tool.Canvas = canvas;
-            tool.onSelectionCompleted.AddListener(onSelectionFunction);
+            tool.onSelectionCompleted.AddListener(OnSelectionFunction);
             tool.OnDeselect.AddListener(onDeselect);
             tool.EnableTool();
         }
@@ -81,7 +81,7 @@ namespace Amsterdam3D.SelectionTools
          tool.DisableTool();
         }
 
-        private void onSelectionFunction() 
+        private void OnSelectionFunction() 
         {
             //Hard coded for now, should be calculated later based on what type of selection tool etc?
             var min = tool.vertices[0];
