@@ -63,7 +63,7 @@ namespace Amsterdam3D.SelectionTools
         {
             // copy selection and return copy
             List<Vector3> returnValue = new List<Vector3>();
-            returnValue.AddRange(tool.vertexes);
+            returnValue.AddRange(tool.vertices);
             return returnValue;
         }
 
@@ -84,8 +84,8 @@ namespace Amsterdam3D.SelectionTools
         private void onSelectionFunction() 
         {
             //Hard coded for now, should be calculated later based on what type of selection tool etc?
-            var min = tool.vertexes[0];
-            var max = tool.vertexes[2];
+            var min = tool.vertices[0];
+            var max = tool.vertices[2];
             Vector3 center = (min + max) / 2;
             Vector3 extends = max - min;
 
