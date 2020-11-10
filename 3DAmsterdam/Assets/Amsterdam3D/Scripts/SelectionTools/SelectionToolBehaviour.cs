@@ -29,6 +29,14 @@ namespace Amsterdam3D.SelectionTools
 
         public bool inSelection;
 
+        [SerializeField]
+        private LayerMask buildingLayer;
+
+
+        [SerializeField]
+        private Layer layer;
+
+        private bool collidersLoaded;
 
         private void Start()
         {
@@ -53,18 +61,8 @@ namespace Amsterdam3D.SelectionTools
         {
             // copy selection and return copy
             List<Vector3> returnValue = new List<Vector3>();
-            returnValue.AddRange(vertices);
+            returnValue.AddRange(tool.vertexes);
             return returnValue;
-        }
-
-        public void EnableObjectColliders() 
-        {
-            var hits =   Physics.BoxCastAll(bounds.center, bounds.extents, -Vector3.up);
-
-              foreach (var collider in hits) 
-              {
-                  tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3);
-              } 
         }
 
 
@@ -72,6 +70,7 @@ namespace Amsterdam3D.SelectionTools
         {
             tool.Canvas = canvas;
             tool.onSelectionCompleted.AddListener(onSelectionFunction);
+            tool.OnDeselect.AddListener(onDeselect);
             tool.EnableTool();
         }
 
@@ -79,10 +78,29 @@ namespace Amsterdam3D.SelectionTools
         {
          tool.DisableTool();
         }
+
         private void onSelectionFunction() 
         {
-            EnableObjectColliders();
+            //Hard coded for now, should be calculated later based on what type of selection tool etc?
+            var min = tool.vertexes[0];
+            var max = tool.vertexes[2];
+            Vector3 center = (min + max) / 2;
+            Vector3 extends = max - min;
+
+            layer.LoadMeshColliders(callback => { collidersLoaded = true; });
+            var hits = Physics.BoxCastAll(center, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), 9999, buildingLayer);
+            Debug.Log("Box cast pos: " + center);
+
+            foreach (var hit in hits)
+            {
+                tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
+            }
             inSelection = true; 
+        }
+
+        private void onDeselect() 
+        {
+            inSelection = false;
         }
     }
 
