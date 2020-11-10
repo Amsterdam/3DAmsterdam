@@ -25,27 +25,30 @@ public class GetBAGIDs : MonoBehaviour
     [SerializeField]
     private LayerMask clickCheckLayerMask;
 
-    void Update()
-    {
-        if (isBusy)
-        {
-            return;
-        }
+    private Layer containerLayer;
 
+	private void Start()
+	{
+        containerLayer = gameObject.GetComponent<Layer>();
+    }
+
+	void Update()
+    {
+        if (isBusyGettingBagID)
+            return;
+ 
         if (Input.GetKey(KeyCode.LeftControl))
         {
 
             if (Input.GetKeyDown(KeyCode.G))
             {
 
-                BuildingContainer.GetComponent<Layer>().UnhideAll();
+                containerLayer.UnhideAll();
             }
         }
-
         else if (Input.GetKeyDown(KeyCode.H))
         {
-
-            BuildingContainer.GetComponent<Layer>().Hide(selectedID);
+            containerLayer.Hide(selectedID);
         }
 
 
@@ -64,7 +67,7 @@ public class GetBAGIDs : MonoBehaviour
     {
         selectedID = "";
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        isBusy = true;
+        isBusyGettingBagID = true;
         StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
     }
 
@@ -114,17 +117,16 @@ public class GetBAGIDs : MonoBehaviour
             Debug.LogWarning("UV index out of bounds");
             yield break;
         }
-        Vector2 uv = mesh.uv2[vertexIndex];
-        GameObject gameObjectToHighlight = hit.collider.gameObject;
-        bool hitVisibleObject = true;
-        RaycastHit newHit = hit;
-        RaycastHit lastHit = hit;
-        Debug.Log(hit.point);
+        var uv = mesh.uv2[vertexIndex];
+        var gameObjectToHighlight = hit.collider.gameObject;
+        var hitVisibleObject = true;
+
+        var newHit = hit;
+        var lastHit = hit;
 
         if (uv.y == 0.2f)
         {
             hitVisibleObject = false;
-            //Physics.queriesHitBackfaces = true;
             Vector3 lastPoint = hit.point;
             while (uv.y == 0.2f)
             {
