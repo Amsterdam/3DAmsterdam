@@ -75,40 +75,32 @@ public class GetBAGIDs : MonoBehaviour
     {
         if (id == "null")
         {
-            BuildingContainer.GetComponent<LayerSystem.Layer>().UnHighlightAll();
+            containerLayer.UnHighlightAll();
         }
         else
         {
             StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, id, RetrieveType.Pand)); // laat het BAG UI element zien
-            BuildingContainer.GetComponent<LayerSystem.Layer>().Highlight(id);
+            containerLayer.Highlight(id);
             selectedID = id;
         }
-        isBusy = false;
+        isBusyGettingBagID = false;
     }
 
-    private void OnMeshColliderAttached(bool value)
-    {
-        meshCollidersAttached = value;
-    }
 
     IEnumerator GetIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
-        meshCollidersAttached = false;
-        BuildingContainer.GetComponent<LayerSystem.Layer>().LoadMeshColliders(OnMeshColliderAttached);
-        yield return new WaitUntil(() => meshCollidersAttached == true);
-        yield return null;
-        RaycastHit hit;
+        containerLayer.LoadMeshColliders();
 
+        RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
             id = "null";
-            isBusy = false;
+            isBusyGettingBagID = false;
             tileHandler.pauseLoading = false;
             callback("null");
             yield break;
         }
-
 
         Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
         int vertexIndex = hit.triangleIndex * 3;
