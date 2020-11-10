@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ContextPointerMenu : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class ContextPointerMenu : MonoBehaviour
     
     void Update()
     {
-        if(Input.GetMouseButtonDown(1)){
+        if(Input.GetMouseButtonUp(1) && !EventSystem.current.IsPointerOverGameObject())
+        {
             RetrieveOptions();  
 		}
     }
