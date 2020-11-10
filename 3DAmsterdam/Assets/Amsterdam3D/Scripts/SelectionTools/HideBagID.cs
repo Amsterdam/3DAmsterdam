@@ -40,7 +40,8 @@ namespace Assets.Amsterdam3D.Scripts
             if (boxSelect.inSelection)
             {
                 buildingLayer.LoadMeshColliders(callback => { selectedBounds = boxSelect.GetBounds(); });
-                StartCoroutine(GetAllBagIDsInRange(selectedBounds, HideIDs));
+                var vertices = boxSelect.GetVertexes();
+                StartCoroutine(GetAllBagIDsInRange(vertices[0], vertices[2], HideIDs));
                 
             }
            
@@ -52,11 +53,11 @@ namespace Assets.Amsterdam3D.Scripts
         }
 
 
-        IEnumerator GetAllBagIDsInRange(Bounds bounds, System.Action<List<string>> callback)
+        IEnumerator GetAllBagIDsInRange(Vector3 min, Vector3 max, System.Action<List<string>> callback)
         {
 
-            var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(bounds.min);
-            var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(bounds.max);
+            var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(min);
+            var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
 
             List<string> ids = new List<string>();
             string url = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
@@ -74,7 +75,6 @@ namespace Assets.Amsterdam3D.Scripts
             else
             {
                 string dataString = hideRequest.downloadHandler.text;
-                Debug.Log(dataString);
 
                 var csv = splitCSV(dataString);
                 int returnCounter = 0;
