@@ -11,6 +11,7 @@ namespace Amsterdam3D.SelectionTools
 
         public GameObject Canvas;
         public UnityEvent onSelectionCompleted;
+        public UnityEvent OnDeselect;
         public ToolType toolType { get; protected set; }
         public List<Vector3> vertexes = new List<Vector3>();
 
