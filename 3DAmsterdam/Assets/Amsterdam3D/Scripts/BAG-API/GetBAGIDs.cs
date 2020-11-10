@@ -9,8 +9,7 @@ using UnityEngine.EventSystems;
 public class GetBAGIDs : MonoBehaviour
 {
     public TileHandler tileHandler;
-    public GameObject BuildingContainer;
-    public bool isBusy = false;
+    public bool isBusyGettingBagID = false;
     private Ray ray;
     private string id = "";
     private GameObject selectedTile;
