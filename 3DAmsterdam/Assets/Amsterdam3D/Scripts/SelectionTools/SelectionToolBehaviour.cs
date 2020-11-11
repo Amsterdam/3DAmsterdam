@@ -29,6 +29,16 @@ namespace Amsterdam3D.SelectionTools
 
         public bool inSelection;
 
+        [SerializeField]
+        private LayerMask buildingLayer;
+
+
+        [SerializeField]
+        private Layer layer;
+
+        private bool collidersLoaded;
+
+        private Vector3 GroundLevel = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
 
         private void Start()
         {
@@ -37,6 +47,11 @@ namespace Amsterdam3D.SelectionTools
         public Bounds GetBounds() 
         {
             return bounds;
+        }
+        // NOTE: Only checks for X and Z positions, Y isn't taken into account
+        public bool Contains(Vector3 position) 
+        {
+            return tool.ContainsPoint(position);
         }
 
         public ToolType GetCurrentToolType() 
@@ -48,15 +63,16 @@ namespace Amsterdam3D.SelectionTools
         {
             // copy selection and return copy
             List<Vector3> returnValue = new List<Vector3>();
-            returnValue.AddRange(vertices);
+            returnValue.AddRange(tool.vertices);
             return returnValue;
         }
-        
+
 
         private void OnEnable()
         {
             tool.Canvas = canvas;
             tool.onSelectionCompleted.AddListener(onSelectionFunction);
+            tool.OnDeselect.AddListener(onDeselect);
             tool.EnableTool();
         }
 
@@ -64,17 +80,28 @@ namespace Amsterdam3D.SelectionTools
         {
          tool.DisableTool();
         }
+
         private void onSelectionFunction() 
         {
-         bounds = tool.bounds;
-         var hits =   Physics.BoxCastAll(bounds.center, bounds.extents, -Vector3.up);
+            //Hard coded for now, should be calculated later based on what type of selection tool etc?
+            var min = tool.vertices[0];
+            var max = tool.vertices[2];
+            Vector3 center = (min + max) / 2;
+            Vector3 extends = max - min;
 
-            foreach (var collider in hits) 
+            layer.LoadMeshColliders(callback => { collidersLoaded = true; });
+            var hits = Physics.BoxCastAll(center + GroundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
+
+            foreach (var hit in hits)
             {
-                tileHandler.GetIDData(collider.collider.gameObject, collider.triangleIndex * 3, callback => { });
+                tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
             }
+            inSelection = true; 
+        }
 
-        inSelection = true; 
+        private void onDeselect() 
+        {
+            inSelection = false;
         }
     }
 
