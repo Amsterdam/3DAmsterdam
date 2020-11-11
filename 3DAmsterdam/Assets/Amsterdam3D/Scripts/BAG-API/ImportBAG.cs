@@ -25,7 +25,6 @@ public class ImportBAG : ImportAPI
 
     public IEnumerator CallAPI(string apiUrl, string bagIndexInt, RetrieveType type)
     {
-       
         // adds data id and url in one string
         string url = apiUrl + bagIndexInt;
         // send http request
