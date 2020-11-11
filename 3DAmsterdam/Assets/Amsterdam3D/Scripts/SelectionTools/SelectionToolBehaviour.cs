@@ -89,7 +89,7 @@ namespace Amsterdam3D.SelectionTools
             Vector3 center = (min + max) / 2;
             Vector3 extends = max - min;
 
-            layer.LoadMeshColliders(callback => { collidersLoaded = true; });
+            layer.AddMeshColliders();
             var hits = Physics.BoxCastAll(center + GroundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
             foreach (var hit in hits)
             {

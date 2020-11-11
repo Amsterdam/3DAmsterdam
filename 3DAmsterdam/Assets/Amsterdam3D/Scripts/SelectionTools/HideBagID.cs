@@ -4,21 +4,16 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Linq;
-using Amsterdam3D.SelectionTools;
 
-namespace Assets.Amsterdam3D.Scripts
+namespace Amsterdam3D.SelectionTools
 {
     public class HideBagID : MonoBehaviour
     {
-
-        // Use this for initialization
-
         [SerializeField]
         SelectionToolBehaviour boxSelect;
 
         [SerializeField]
         LayerSystem.Layer buildingLayer;
-
 
         private Bounds selectedBounds;
         void Start()
@@ -39,12 +34,11 @@ namespace Assets.Amsterdam3D.Scripts
         {
             if (boxSelect.inSelection)
             {
-                buildingLayer.LoadMeshColliders(callback => { selectedBounds = boxSelect.GetBounds(); });
+                buildingLayer.AddMeshColliders();
+                selectedBounds = boxSelect.GetBounds();
                 var vertices = boxSelect.GetVertices();
                 StartCoroutine(GetAllBagIDsInRange(vertices[0], vertices[2], HideIDs));
-                
             }
-           
         }
 
         private void HideIDs(List<string> ids) 
@@ -67,7 +61,6 @@ namespace Assets.Amsterdam3D.Scripts
             var hideRequest = UnityWebRequest.Get(url);
 
             yield return hideRequest.SendWebRequest();
-
             if (hideRequest.isNetworkError || hideRequest.isHttpError)
             {
                 WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");

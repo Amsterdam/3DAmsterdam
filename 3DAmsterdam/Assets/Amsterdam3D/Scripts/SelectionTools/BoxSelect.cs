@@ -132,7 +132,6 @@ namespace Amsterdam3D.SelectionTools
                         Vector3 p4;
                         if (raycastBehaviour.RayCast(out p2, p2Screen) && raycastBehaviour.RayCast(out p4, p4Screen)) 
                         {
-
                             Debug.Log("P2: " + p2);
                             Debug.Log("P4: " + p4);
                             DrawBounds(min, p2, max, p4);

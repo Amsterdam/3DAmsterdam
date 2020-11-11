@@ -46,20 +46,13 @@ namespace LayerSystem
             StartCoroutine(PrivateHide("null"));
         }
 
-
-        public void LoadMeshColliders(System.Action<bool> callback) 
-        {
-            StartCoroutine(LoadMeshCollidersRoutine(callback));
-        }
-        
-        private IEnumerator LoadMeshCollidersRoutine(System.Action<bool> callback)
+        public void AddMeshColliders() 
         {
             MeshCollider meshCollider;
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
             if (meshFilters == null)
             {
-                callback(true);
-                yield break;
+                return;
             }
             foreach (MeshFilter meshFilter in meshFilters)
             {
@@ -69,10 +62,7 @@ namespace LayerSystem
                     meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
                 }
             }
-            callback(true);
-            Debug.Log("MeshColliders attached");
         }
-
 
         private IEnumerator PrivateHide(List<string> id)
         {
