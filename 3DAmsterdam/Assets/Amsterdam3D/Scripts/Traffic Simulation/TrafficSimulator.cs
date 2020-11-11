@@ -9,6 +9,8 @@ public class TrafficSimulator : MonoBehaviour
     public static TrafficSimulator Instance = null;
     private int frames;
 
+    public int carSpeed = 20;
+
     public bool enableBoundsSimulation = false;
     [SerializeField] private Bounds boundsSimulation = new Bounds(new Vector3(0,0,0), new Vector3(0,0,0));
     private Amsterdam3D.SelectionTools.SelectionToolBehaviour selectionTool = default;
@@ -49,6 +51,7 @@ public class TrafficSimulator : MonoBehaviour
         GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
         Car tempCar = tempCarObject.GetComponent<Car>();
         tempCar.currentRoad = currentRoadObject;
+        tempCarObject.transform.SetParent(this.transform);
         allCars.Add(tempCar);
     }
 
@@ -80,11 +83,16 @@ public class TrafficSimulator : MonoBehaviour
         }
     }
 
-    public void StartSimulation()
+    public void StartSimulation(bool value)
     {
         foreach (Car car in allCars)
         {
-            car.startCar = !car.startCar;
+            car.startCar = value;
         }
+    }
+
+    public void UpdateCarSpeed(int speed)
+    {
+        carSpeed = speed;
     }
 }

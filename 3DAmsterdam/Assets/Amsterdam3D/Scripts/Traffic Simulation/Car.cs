@@ -40,6 +40,7 @@ public class Car : MonoBehaviour
         }
         // Chooses a random car out of all the car objects.
         cars[Random.Range(0, cars.Length - 1)].SetActive(true);
+        speed = TrafficSimulator.Instance.carSpeed;
     }
 
     // Update is called once per frame
@@ -49,6 +50,12 @@ public class Car : MonoBehaviour
         {
             startCar = !startCar;
         }
+
+        if(startCar && speed != TrafficSimulator.Instance.carSpeed)
+        {
+            speed = TrafficSimulator.Instance.carSpeed;
+        }
+
         float DistanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
         if (DistanceToCar < minimumCarRenderDistance ||
             DistanceToCar < mediumCarRenderDistance && DistanceToCar > minimumCarRenderDistance && updateCarFrames % 10 == 0 ||
@@ -164,9 +171,9 @@ public class Car : MonoBehaviour
                         // if the car is stuck, it will reset the position to a random road on the map
                         lastRoad = currentRoad;
                         currentRoad = obj;
-                        nextRoad = obj;
-
                         transform.position = obj.roadPoints[0].pointCoordinates;
+                        nextRoad = obj;
+                        Debug.Log("CAN'T FIND ROAD DOING REST", gameObject);
                         break;
                     }
                 }
@@ -175,7 +182,8 @@ public class Car : MonoBehaviour
             {
                 // moves the car to the next roads starting point
                 Vector3 tempLook = new Vector3(currentRoad.roadPoints[0].pointCoordinates.x, compensationVector.y, currentRoad.roadPoints[0].pointCoordinates.z);
-                if (Vector3.Distance(transform.position, tempLook) > 1f)
+                float distanceToRoadPoint = Vector3.Distance(transform.position, tempLook);
+                if (distanceToRoadPoint > 1f)
                 {
                     transform.position = compensationVector;
                     // looks at the point where the car is driving
