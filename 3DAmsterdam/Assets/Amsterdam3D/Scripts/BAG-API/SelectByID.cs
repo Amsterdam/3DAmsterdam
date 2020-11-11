@@ -12,8 +12,9 @@ public class SelectByID : MonoBehaviour
     public bool isBusyGettingBagID = false;
     private Ray ray;
 
-    private bool meshCollidersAttached = false;
     private string selectedID = "";
+    private List<int> selectedIDs;
+
     private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
     private float mouseClickTime;
     private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
@@ -23,11 +24,13 @@ public class SelectByID : MonoBehaviour
 
     [SerializeField]
     private LayerMask clickCheckLayerMask;
-
     private Layer containerLayer;
 
-	private void Start()
+    private bool multiSelection = false;
+
+	private void Awake()
 	{
+        selectedIDs = new List<int>();
         containerLayer = gameObject.GetComponent<Layer>();
     }
 
@@ -45,6 +48,7 @@ public class SelectByID : MonoBehaviour
             containerLayer.Hide(selectedID);
         }
 
+        multiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -68,7 +72,7 @@ public class SelectByID : MonoBehaviour
 
     private void HighlightSelectedID(string id)
     {
-        if (id == "null")
+        if (!multiSelection && id == "null")
         {
             containerLayer.UnHighlightAll();
         }
@@ -88,6 +92,11 @@ public class SelectByID : MonoBehaviour
         }
     }
 
+    public void ClearSelection()
+    {
+        selectedIDs.Clear();
+    }
+
     public void ShowBAGDataForSelectedID()
     {
         DisplayBAGData.Instance.PrepareUI();
@@ -97,10 +106,7 @@ public class SelectByID : MonoBehaviour
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
         isBusyGettingBagID = true;
-
         tileHandler.pauseLoading = true;
-        meshCollidersAttached = false;
-
         containerLayer.AddMeshColliders();
 
         //Didn't hit anything
