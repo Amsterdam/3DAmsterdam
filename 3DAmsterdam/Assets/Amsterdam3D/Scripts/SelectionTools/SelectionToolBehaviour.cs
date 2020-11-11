@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
-using Assets.Amsterdam3D.Scripts.Camera;
 using LayerSystem;
 using Amsterdam3D.CameraMotion;
+
 namespace Amsterdam3D.SelectionTools
 {
     // currently works as MVP, still has a bunch of TODOs for better usage.

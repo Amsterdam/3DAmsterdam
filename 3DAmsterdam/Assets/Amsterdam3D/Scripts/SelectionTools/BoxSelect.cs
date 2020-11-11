@@ -1,13 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 using Amsterdam3D.CameraMotion;
-using System.Linq;
-using Assets.Amsterdam3D.Scripts.Camera;
-using Amsterdam3D.CameraMotion;
-using UnityEngine.Events;
 
 
 namespace Amsterdam3D.SelectionTools
