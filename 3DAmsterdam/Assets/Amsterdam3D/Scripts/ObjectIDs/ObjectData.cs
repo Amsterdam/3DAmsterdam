@@ -17,16 +17,15 @@ using UnityEngine;
     
     public void SetUVs()
     {
-        StartCoroutine(determineUVs());
+        StartCoroutine(DetermineUVs());
     }
 
     public void SetHideUVs() 
     {
-        StartCoroutine(hideUVs());
+        StartCoroutine(HideUVs());
     }
 
-
-    private IEnumerator determineUVs()
+    private IEnumerator DetermineUVs()
     {
         Vector2 defaultUV = new Vector2(0.33f, 0.6f);
         Vector2 highlightUV = new Vector2(0.66f, 0.9f);
@@ -73,7 +72,7 @@ using UnityEngine;
     }
 
 
-    private IEnumerator hideUVs()
+    private IEnumerator HideUVs()
     {
         Vector2 defaultUV = new Vector2(0.33f, 0.6f);
         Vector2 hideUV = new Vector2(0.3f, 0.2f);
