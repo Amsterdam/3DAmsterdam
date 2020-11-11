@@ -6,13 +6,12 @@ using LayerSystem;
 using Amsterdam3D.CameraMotion;
 using UnityEngine.EventSystems;
 
-public class GetBAGIDs : MonoBehaviour
+public class SelectByID : MonoBehaviour
 {
     public TileHandler tileHandler;
     public bool isBusyGettingBagID = false;
     private Ray ray;
-    private string id = "";
-    private GameObject selectedTile;
+
     private bool meshCollidersAttached = false;
     private string selectedID = "";
     private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
@@ -37,14 +36,9 @@ public class GetBAGIDs : MonoBehaviour
         if (isBusyGettingBagID)
             return;
  
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
         {
-
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-
-                containerLayer.UnhideAll();
-            }
+            containerLayer.UnhideAll();
         }
         else if (Input.GetKeyDown(KeyCode.H))
         {
@@ -57,21 +51,22 @@ public class GetBAGIDs : MonoBehaviour
             mouseClickTime = Time.time;
             mousePosition = Input.mousePosition;
         }
-        else if ((Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+        else if (Input.GetMouseButtonUp(1) || ((Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView))
         {
-            GetBagID();
+            FindSelectedID();
         }
     }
 
-    private void GetBagID()
+    private void FindSelectedID()
     {
         selectedID = "";
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-        isBusyGettingBagID = true;
-        StartCoroutine(GetIDData(ray, (value) => { UseObjectID(value); }));
+
+        //Try to find a selected mesh ID and highlight it
+        StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
     }
 
-    private void UseObjectID(string id)
+    private void HighlightSelectedID(string id)
     {
         if (id == "null")
         {
@@ -79,35 +74,46 @@ public class GetBAGIDs : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, id, RetrieveType.Pand)); // laat het BAG UI element zien
             containerLayer.Highlight(id);
             selectedID = id;
         }
         isBusyGettingBagID = false;
     }
 
-        private void OnMeshColliderAttached(bool value)
+    public void HideSelectedID()
     {
-        meshCollidersAttached = value;
+        if (selectedID != "null")
+        {
+            containerLayer.Hide(selectedID);
+        }
     }
 
-    IEnumerator GetIDData(Ray ray, System.Action<string> callback)
+    public void ShowBAGDataForSelectedID()
     {
+        DisplayBAGData.Instance.PrepareUI();
+        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, selectedID, RetrieveType.Pand)); // laat het BAG UI element zien
+    }
+
+    IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
+    {
+        isBusyGettingBagID = true;
+
         tileHandler.pauseLoading = true;
         meshCollidersAttached = false;
-        containerLayer.LoadMeshColliders(OnMeshColliderAttached);
-        yield return new WaitUntil(() => meshCollidersAttached == true);
 
+        containerLayer.AddMeshColliders();
+
+        //Didn't hit anything
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
-            id = "null";
             isBusyGettingBagID = false;
             tileHandler.pauseLoading = false;
             callback("null");
             yield break;
         }
 
+        //Get the mesh we selected and check if it has an ID stored in the UV2 slot
         Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
         int vertexIndex = hit.triangleIndex * 3;
         if (vertexIndex > mesh.uv2.Length) 
@@ -118,24 +124,21 @@ public class GetBAGIDs : MonoBehaviour
         var uv = mesh.uv2[vertexIndex];
         var gameObjectToHighlight = hit.collider.gameObject;
         var hitVisibleObject = true;
-
         var newHit = hit;
         var lastHit = hit;
 
+        //Keep piercing forward with raycasts untill we find a visible UV
         if (uv.y == 0.2f)
         {
             hitVisibleObject = false;
             Vector3 lastPoint = hit.point;
             while (uv.y == 0.2f)
             {
-                Vector3 h = newHit.point + (ray.direction * 0.01f);
-                
-                Debug.Log("Ray point: " + h);
-                ray = new Ray(h, ray.direction);
+                Vector3 hitPoint = newHit.point + (ray.direction * 0.01f);
+                ray = new Ray(hitPoint, ray.direction);
                 if (Physics.Raycast(ray, out newHit, 10000, clickCheckLayerMask.value))
                 {
                     uv = mesh.uv2[newHit.triangleIndex * 3];
-                    //Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue, 1000);
                     Debug.DrawLine(lastPoint, newHit.point, Color.blue, 1000);
                     lastPoint = newHit.point;
                     lastHit = newHit;
@@ -149,15 +152,12 @@ public class GetBAGIDs : MonoBehaviour
                 {
                     break;
                 }
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForEndOfFrame();
             }
         }
-
         hit = lastHit;
-        if (hitVisibleObject) 
-        {
-            DisplayBAGData.Instance.PrepareUI();
-        }
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, UseObjectID);
+
+        //Not retrieve the selected BAG ID tied to the selected triangle
+        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
     }
 }
