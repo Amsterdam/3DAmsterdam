@@ -692,12 +692,14 @@ namespace LayerSystem
                     {
                         if (tileHasHighlight(tileChange))
                         {
-                            //download id-mapping
-                            yield return new WaitUntil(() => pauseLoading == false);
+                            StartCoroutine(downloadIDMappingData(tileChange, newGameobject));
                         }
-                        RemoveGameObjectFromTile(tileChange);
-                        layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
-                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y,tileChange.layerIndex));
+                        else
+                        {
+                            RemoveGameObjectFromTile(tileChange);
+                            layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
+                            activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
+                        }
                     }
                     else
                     {
@@ -707,8 +709,50 @@ namespace LayerSystem
                 }
             }
         }
-        private IEnumerator downloadIDMappingData(TileChange tileChange)
+        private IEnumerator downloadIDMappingData(TileChange tileChange, GameObject newGameobject)
         {
+            Tile tile = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+            ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
+            GameObject newTile = newGameobject;
+            string name = newTile.GetComponent<MeshFilter>().mesh.name;
+            Debug.Log(name);
+            string dataName = name.Replace(" Instance", "");
+            dataName = dataName.Replace("mesh", "building");
+            dataName = dataName.Replace("-", "_") + "-data";
+            string dataURL = Constants.TILE_METADATA_URL + dataName;
+            Debug.Log(dataURL);
+            ObjectMappingClass data;
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+
+                }
+                else
+                {
+                    ObjectData objectMapping = newTile.AddComponent<ObjectData>();
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+
+                    objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
+                    objectMapping.hideIDs = oldObjectMapping.hideIDs;
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+                    objectMapping.mappedUVs = data.mappedUVs;
+                    objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
+                    objectMapping.triangleCount = data.triangleCount;
+                    objectMapping.SetUVs();
+                    newAssetBundle.Unload(true);
+                }
+                objectDataLoaded = true;
+            }
+            yield return new WaitUntil(() => pauseLoading == false);
+            RemoveGameObjectFromTile(tileChange);
+            layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
+            activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
             yield return null;
 
         }
@@ -761,7 +805,10 @@ namespace LayerSystem
                 {
                     return;
                 }
-
+                if (tile.gameObject == null)
+                {
+                    return;
+                }
                 MeshFilter mf = tile.gameObject.GetComponent<MeshFilter>();
                 if (mf != null)
                 {
