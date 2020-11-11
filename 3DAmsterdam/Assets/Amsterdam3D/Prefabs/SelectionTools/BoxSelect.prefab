@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7712936662410202953}
   - component: {fileID: 7712936662410202952}
+  - component: {fileID: 2461888256320666569}
   m_Layer: 5
   m_Name: BoxSelect
   m_TagString: Untagged
@@ -52,9 +53,32 @@ MonoBehaviour:
   onSelectionCompleted:
     m_PersistentCalls:
       m_Calls: []
+  OnDeselect:
+    m_PersistentCalls:
+      m_Calls: []
+  vertices: []
+  selectionBoxPrefab: {fileID: 512989760704592006, guid: 655df1717a6d0b94285b89a50e555f86,
+    type: 3}
+--- !u!114 &2461888256320666569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7712936662410202955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5b389907a348cb41b129f5b4cd38e1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  tool: {fileID: 7712936662410202952}
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  vertexes: []
-  selectionBoxPrefab: {fileID: 512989760704592006, guid: 655df1717a6d0b94285b89a50e555f86,
-    type: 3}
+  tileHandler: {fileID: 0}
+  inSelection: 0
+  buildingLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  layer: {fileID: 0}
