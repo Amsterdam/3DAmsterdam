@@ -104,9 +104,6 @@ namespace LayerSystem
             }
         }
 
-
-
-
         public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback = null) 
         {
             StartCoroutine(AddObjectData(obj, vertexIndex, callback));
