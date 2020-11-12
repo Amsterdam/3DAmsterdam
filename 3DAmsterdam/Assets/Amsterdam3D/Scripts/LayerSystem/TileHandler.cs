@@ -110,45 +110,59 @@ namespace LayerSystem
         }
         private IEnumerator AddObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
         {
-            string name = obj.GetComponent<MeshFilter>().mesh.name;
-            string dataName = name.Replace(" Instance", "");
-            dataName = dataName.Replace("mesh", "building");
-            dataName = dataName.Replace("-", "_") + "-data";
-            string dataURL = Constants.TILE_METADATA_URL + dataName;
-            ObjectMappingClass data;
-            string id = "null";
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+            //Download objectdata if the object is still there, we do not have data yet, and add the selected object ID
+            if (!obj) yield break;
+            
+            ObjectData objectMapping = obj.GetComponent<ObjectData>();
+            string objectId = "null";
+
+            if (!objectMapping)
             {
-                yield return uwr.SendWebRequest();
+                string name = obj.GetComponent<MeshFilter>().mesh.name;
+                string dataName = name.Replace(" Instance", "");
+                dataName = dataName.Replace("mesh", "building");
+                dataName = dataName.Replace("-", "_") + "-data";
+                string dataURL = Constants.TILE_METADATA_URL + dataName;
 
-                if (uwr.isNetworkError || uwr.isHttpError)
+                ObjectMappingClass downloadObjectData;
+                using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
                 {
-                    //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
-                    //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
-                }
-                else
-                {
-                    ObjectData objectMapping = obj.GetComponent<ObjectData>();
-                    if (objectMapping is null)
+                    yield return uwr.SendWebRequest();
+
+                    if (!uwr.isNetworkError || !uwr.isHttpError)
                     {
+                        //Add objectdata if we received it
                         objectMapping = obj.AddComponent<ObjectData>();
+                        AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                        if(!newAssetBundle)
+                        {
+                            //Something is wrong in our data. Just return a null id.
+                            callback?.Invoke(objectId);
+                            yield break;
+                        }
+                        downloadObjectData = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                        objectMapping.ids = downloadObjectData.ids;
+                        objectMapping.uvs = downloadObjectData.uvs;
+                        objectMapping.vectorMap = downloadObjectData.vectorMap;
+                        objectMapping.mappedUVs = downloadObjectData.mappedUVs;
+
+                        newAssetBundle.Unload(true);
                     }
-
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    int idIndex = data.vectorMap[vertexIndex];
-                    id = data.ids[idIndex];
-                    objectMapping.highlightIDs.Add(id);
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
-                    objectMapping.mappedUVs = data.mappedUVs;
-
-                    newAssetBundle.Unload(true);
+                    else{
+                        //If we somehow failed to get any objectdata break out.
+                        callback?.Invoke(objectId);
+                        yield break;
+					}
                 }
             }
-            callback?.Invoke(id);
-            yield return null;
+
+            //Get the id based on the vert in the vectormap
+            if (objectMapping.vectorMap.Count > 0)
+            {
+                int idIndex = objectMapping.vectorMap[vertexIndex];
+                objectId = objectMapping.ids[idIndex];
+            }
+            callback?.Invoke(objectId);
             pauseLoading = false;
         }
         
@@ -203,7 +217,6 @@ namespace LayerSystem
                 url = url.Replace("{lod}", lod.ToString());
                 StartCoroutine(DownloadTile(url, tileChange));
             }
-            
         }
 
         private IEnumerator DownloadTile(string url, TileChange tileChange)
