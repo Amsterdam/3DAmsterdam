@@ -4621,28 +4621,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1814701005}
+    - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UnhideAll
       objectReference: {fileID: 0}
     - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 4498901014617163851}
-    - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UnhideAll
       objectReference: {fileID: 0}
     - target: {fileID: 4389202244684512737, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -7950,7 +7940,7 @@ PrefabInstance:
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 44.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8023135222976148137, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
