@@ -74,8 +74,14 @@ namespace LayerSystem
                 objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectData != null)
                 {
-                    objectData.highlightIDs = ids;
- 
+                    if (ids.Count > 0)
+                    {
+                        objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
+                    }
+                    else
+                    {
+                         objectData.highlightIDs.Clear();
+                    }
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
                     objectData.UpdateUVs();
                 }
