@@ -51,7 +51,9 @@ public class SelectByID : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(1) || ((Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView))
         {
-            FindSelectedID();
+            //Right mouse selects an object if our selection list is empty
+            if(selectedIDs.Count == 0)
+                FindSelectedID();
         }
         else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
@@ -82,7 +84,6 @@ public class SelectByID : MonoBehaviour
         var vertices = selectionTools.GetVertices();
         var bounds = selectionTools.GetBounds();
         containerLayer.AddMeshColliders();
-
         StartCoroutine(GetAllIDsInRange(vertices[0], vertices[2], HighlightSelectionIDs));
     }
 
