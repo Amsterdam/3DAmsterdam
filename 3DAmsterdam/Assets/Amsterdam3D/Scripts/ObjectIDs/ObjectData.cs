@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class ObjectData : MonoBehaviour
 {
 	public List<string> highlightIDs = new List<string>();
@@ -14,6 +12,10 @@ public class ObjectData : MonoBehaviour
 	public List<Vector2> mappedUVs;
 	public Mesh mesh;
 	public List<int> triangleCount;
+
+	private Vector2 defaultUV = new Vector2(0.33f, 0.6f);
+	private Vector2 highlightUV = new Vector2(0.66f, 0.9f);
+	private Vector2 hideUV = new Vector2(0.3f, 0.2f);
 
 	public void UpdateUVs()
 	{
@@ -27,9 +29,6 @@ public class ObjectData : MonoBehaviour
 	/// </summary>
 	private IEnumerator DetermineUVs()
 	{
-		Vector2 defaultUV = new Vector2(0.33f, 0.6f);
-		Vector2 highlightUV = new Vector2(0.66f, 0.9f);
-		Vector2 hideUV = new Vector2(0.3f, 0.2f);
 		int vertexcount = mesh.vertexCount;
 		int idcount = ids.Count;
 		List<Vector2> itemUVs = new List<Vector2>();
