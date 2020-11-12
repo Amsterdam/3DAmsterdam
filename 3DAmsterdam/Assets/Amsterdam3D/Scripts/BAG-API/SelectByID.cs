@@ -29,9 +29,9 @@ public class SelectByID : MonoBehaviour
     private LayerMask clickCheckLayerMask;
     private Layer containerLayer;
 
-    private bool multiSelection = false;
-
     private const string emptyID = "null";
+
+    private bool doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
     private void Awake()
 	{
@@ -41,7 +41,7 @@ public class SelectByID : MonoBehaviour
 
 	void Update()
     {
-        multiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -51,12 +51,12 @@ public class SelectByID : MonoBehaviour
         else if (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
             //If we did a left mouse click without dragging, find a selected object
-            FindSelectedID(multiSelection);
+            FindSelectedID();
         }
-        else if (Input.GetMouseButtonUp(1)){
-            //Right mouse always does a multiselect, so our existing selection isnt cleared
-            multiSelection = true;
-            FindSelectedID(multiSelection);
+        else if (Input.GetMouseButtonUp(1) && selectedIDs.Count <= 1){
+            //Right mouse only does a selection when our list 1 or empty.
+            doingMultiSelection = false;
+            FindSelectedID();
         }
         else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
@@ -70,9 +70,10 @@ public class SelectByID : MonoBehaviour
     /// <summary>
     /// Select a mesh ID underneath the pointer
     /// </summary>
-    private void FindSelectedID(bool addToSelection)
+    private void FindSelectedID()
     {
-        if (!addToSelection) selectedIDs.Clear();
+        //Clear selected ids if we are not adding to a multiselection
+        if (!doingMultiSelection) selectedIDs.Clear();
 
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
@@ -92,18 +93,19 @@ public class SelectByID : MonoBehaviour
         StartCoroutine(GetAllIDsInRange(vertices[0], vertices[2], HighlightSelectionIDs));
     }
 
+    /// <summary>
+    /// Add a single object to highlight selection. If we clicked an empty ID, clear the selection if we are not in multiselect
+    /// </summary>
+    /// <param name="id">The object ID</param>
     private void HighlightSelectedID(string id)
     {
-        if (id != emptyID)
+        if (id == emptyID && !doingMultiSelection)
         {
-            selectedIDs.Add(id);
-            lastSelectedID = id;
-
-            HighlightSelectionIDs(selectedIDs);
-            isWorkingOnSelection = false;
+            ClearSelection();  
         }
         else{
-            ClearSelection();
+            HighlightSelectionIDs(new List<string> { id });
+            isWorkingOnSelection = false;
         }
     }
 
@@ -118,7 +120,7 @@ public class SelectByID : MonoBehaviour
 	{
 		lastSelectedID = emptyID;
 		selectedIDs.Clear();
-        HighlightSelectionIDs(selectedIDs);
+        containerLayer.Highlight(selectedIDs);
     }
 
     public void HideSelectedIDs()
@@ -127,6 +129,7 @@ public class SelectByID : MonoBehaviour
         {
             //Adds selected ID's to our hidding objects of our layer
             containerLayer.Hide(selectedIDs);
+            selectedIDs.Clear();
         }
     }
     public void UnhideAll()
