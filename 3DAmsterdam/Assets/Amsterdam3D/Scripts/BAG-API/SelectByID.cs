@@ -49,11 +49,10 @@ public class SelectByID : MonoBehaviour
             mouseClickTime = Time.time;
             mousePosition = Input.mousePosition;
         }
-        else if (Input.GetMouseButtonUp(1) || ((Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0) && CameraModeChanger.Instance.CameraMode == CameraMode.GodView))
+        else if ((Input.GetMouseButtonUp(1) && (selectedIDs.Count == 0)) || (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView))
         {
-            //Right mouse selects an object if our selection list is empty
-            if(selectedIDs.Count == 0)
-                FindSelectedID();
+            //If we did a left mouse click, or a right mouse click with no existing selection, find the selected ID under our pointer
+            FindSelectedID();
         }
         else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
