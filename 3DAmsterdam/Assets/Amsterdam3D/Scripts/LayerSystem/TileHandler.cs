@@ -159,7 +159,7 @@ namespace LayerSystem
             }
 
             //Get the id based on the vert in the vectormap
-            if (objectMapping.vectorMap.Count > 0)
+            if (objectMapping && objectMapping.vectorMap.Count > 0)
             {
                 int idIndex = objectMapping.vectorMap[vertexIndex];
                 objectId = objectMapping.ids[idIndex];
