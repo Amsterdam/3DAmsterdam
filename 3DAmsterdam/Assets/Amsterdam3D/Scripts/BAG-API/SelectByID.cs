@@ -5,15 +5,19 @@ using UnityEngine.Networking;
 using LayerSystem;
 using Amsterdam3D.CameraMotion;
 using UnityEngine.EventSystems;
+using System.Linq;
+using Amsterdam3D.Interface;
 
 public class SelectByID : MonoBehaviour
 {
     public TileHandler tileHandler;
-    public bool isBusyGettingBagID = false;
+
+    private bool isWorkingOnSelection = false;
+
     private Ray ray;
 
-    private string selectedID = "";
-    private List<int> selectedIDs;
+    private string lastSelectedID = "";
+    private List<string> selectedIDs;
 
     private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
     private float mouseClickTime;
@@ -28,28 +32,18 @@ public class SelectByID : MonoBehaviour
 
     private bool multiSelection = false;
 
-	private void Awake()
+    private const string emptyID = "null";
+
+    private void Awake()
 	{
-        selectedIDs = new List<int>();
+        selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
     }
 
 	void Update()
     {
-        if (isBusyGettingBagID)
-            return;
- 
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
-        {
-            containerLayer.UnhideAll();
-        }
-        else if (Input.GetKeyDown(KeyCode.H))
-        {
-            containerLayer.Hide(selectedID);
-        }
-
         multiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
+ 
         if (Input.GetMouseButtonDown(0))
         {
             mouseClickTime = Time.time;
@@ -59,53 +53,90 @@ public class SelectByID : MonoBehaviour
         {
             FindSelectedID();
         }
+        else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+        {
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                HideSelectedIDs();
+            }
+        }
     }
 
+    /// <summary>
+    /// Select a mesh ID underneath the pointer
+    /// </summary>
     private void FindSelectedID()
     {
-        selectedID = "";
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-
         //Try to find a selected mesh ID and highlight it
         StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
     }
 
-    private void HighlightSelectedID(string id)
+    /// <summary>
+    /// Find selected ID's based on a area selection done by our selectiontools.
+    /// We find BAG id's within an area using a WebRequest and an API.
+    /// </summary>
+    public void FindSelectedIDsInArea()
     {
-        if (!multiSelection && id == "null")
-        {
-            containerLayer.UnHighlightAll();
-        }
-        else
-        {
-            containerLayer.Highlight(id);
-            selectedID = id;
-        }
-        isBusyGettingBagID = false;
+        SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
+        var vertices = selectionTools.GetVertices();
+        var bounds = selectionTools.GetBounds();
+        containerLayer.AddMeshColliders();
+
+        StartCoroutine(GetAllIDsInRange(vertices[0], vertices[2], HighlightSelectionIDs));
     }
 
-    public void HideSelectedID()
+    private void HighlightSelectedID(string id)
     {
-        if (selectedID != "null")
-        {
-            containerLayer.Hide(selectedID);
+        if (!multiSelection)
+		{
+            //Not multiselecting? Always clear our previous selection list.
+            selectedIDs.Clear();
         }
+        if (id != emptyID)
+        {
+            selectedIDs.Add(id);
+            lastSelectedID = id;
+
+            HighlightSelectionIDs(selectedIDs);
+            isWorkingOnSelection = false;
+        }
+        else{
+            ClearSelection();
+        }
+    }
+
+    private void HighlightSelectionIDs(List<string> ids)
+    {
+        selectedIDs.AddRange(ids);
+        lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
+        containerLayer.Highlight(selectedIDs);
     }
 
     public void ClearSelection()
+	{
+		lastSelectedID = emptyID;
+		selectedIDs.Clear();
+        HighlightSelectionIDs(selectedIDs);
+    }
+
+    public void HideSelectedIDs()
     {
-        selectedIDs.Clear();
+        if (selectedIDs.Count > 0)
+        {
+            containerLayer.Hide(selectedIDs);
+        }
     }
 
     public void ShowBAGDataForSelectedID()
     {
         DisplayBAGData.Instance.PrepareUI();
-        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, selectedID, RetrieveType.Pand)); // laat het BAG UI element zien
+        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, lastSelectedID, RetrieveType.Pand)); // laat het BAG UI element zien
     }
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        isBusyGettingBagID = true;
+        isWorkingOnSelection = true;
         tileHandler.pauseLoading = true;
         containerLayer.AddMeshColliders();
 
@@ -113,9 +144,9 @@ public class SelectByID : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
-            isBusyGettingBagID = false;
+            isWorkingOnSelection = false;
             tileHandler.pauseLoading = false;
-            callback("null");
+            callback(emptyID);
             yield break;
         }
 
@@ -165,5 +196,77 @@ public class SelectByID : MonoBehaviour
 
         //Not retrieve the selected BAG ID tied to the selected triangle
         tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+    }
+
+    IEnumerator GetAllIDsInRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
+    {
+        var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(min);
+        var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
+
+        List<string> ids = new List<string>();
+        string url = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+        // construct url string
+        url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
+        var hideRequest = UnityWebRequest.Get(url);
+
+        yield return hideRequest.SendWebRequest();
+        if (hideRequest.isNetworkError || hideRequest.isHttpError)
+        {
+            WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+        }
+        else
+        {
+            string dataString = hideRequest.downloadHandler.text;
+
+            var csv = SplitCSV(dataString);
+            int returnCounter = 0;
+            // hard coded for this api request
+            for (int i = 3; i < csv.Count; i += 2)
+            {
+                var numberOnlyString = GetNumbers(csv[i]);
+                ids.Add(numberOnlyString);
+                returnCounter++;
+                if (returnCounter > 100)
+                {
+                    yield return null;
+                    returnCounter = 0;
+                }
+            }
+        }
+
+        callback?.Invoke(ids);
+        yield return null;
+    }
+
+
+    public List<string> SplitCSV(string csv)
+    {
+        List<string> splitString = new List<string>();
+        bool inBracket = false;
+        int startIndex = 0;
+
+        for (int i = 0; i < csv.Length; i++)
+        {
+            if (csv[i] == '"')
+            {
+                inBracket = !inBracket;
+            }
+
+            else if (!inBracket)
+            {
+                if (csv[i] == ',' || csv[i] == '\n')
+                {
+                    splitString.Add(csv.Substring(startIndex, i - startIndex));
+                    startIndex = i + 1;
+                }
+            }
+        }
+
+        return splitString;
+    }
+
+    private static string GetNumbers(string input)
+    {
+        return new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 }
