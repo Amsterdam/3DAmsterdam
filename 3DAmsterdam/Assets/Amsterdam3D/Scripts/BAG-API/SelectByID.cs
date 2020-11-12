@@ -31,7 +31,7 @@ public class SelectByID : MonoBehaviour
 
     private const string emptyID = "null";
 
-    private bool doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+    private bool doingMultiSelection = false;
 
     private void Awake()
 	{
