@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 namespace LayerSystem
 {
@@ -13,22 +14,25 @@ namespace LayerSystem
         public List<DataSet> Datasets = new List<DataSet>();
         public Dictionary<Vector2Int, Tile> tiles = new Dictionary<Vector2Int, Tile>();
 
+        private TileHandler tileHandler;
+
         void Start()
         {
+            tileHandler = GetComponentInParent<TileHandler>();
+
             foreach (DataSet dataset in Datasets)
             {
                 dataset.maximumDistanceSquared = dataset.maximumDistance * dataset.maximumDistance;
             }
         }
 
-        public void UnHighlightAll()
-        {
-            StartCoroutine(PrivateHighlight("null"));
-        }
-
         public void Highlight(string id)
         {
             StartCoroutine(PrivateHighlight(id));
+        }
+        public void Highlight(List<string> ids)
+        {
+            StartCoroutine(HighlightIDsOneTilePerFrame(ids));
         }
 
         public void Hide(string id) 
@@ -66,7 +70,7 @@ namespace LayerSystem
 
         private IEnumerator PrivateHide(List<string> id)
         {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            tileHandler.pauseLoading = true;
             ObjectData objectdata;
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
@@ -81,13 +85,13 @@ namespace LayerSystem
                 yield return null;
                 }
             }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+            tileHandler.pauseLoading = false;
         }
 
 
         private IEnumerator PrivateHide(string id) 
         {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
+            tileHandler.pauseLoading = true;
             ObjectData objectdata;
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
@@ -103,7 +107,6 @@ namespace LayerSystem
                         }
                     }
 
-   
                     if (id == "null")
                     {
                         objectdata.hideIDs.Clear();
@@ -119,45 +122,60 @@ namespace LayerSystem
                     yield return null;
                 }
             }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+            tileHandler.pauseLoading = false;
         }
 
         private IEnumerator PrivateHighlight(string id)
         {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
-            ObjectData objectdata;
+            tileHandler.pauseLoading = true;
+            ObjectData objectData;
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
-                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
-                if (objectdata != null)
+                objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectData != null)
                 {
-                    if (objectdata.ids.Contains(id)==false)
+                    if (objectData.ids.Contains(id)==false)
                     {
-                        if (objectdata.highlightIDs.Count == 0)
+                        if (objectData.highlightIDs.Count == 0)
                         {
                             continue;
                         }
                     }
-                    
-                    objectdata.highlightIDs.Clear();
                     if (id == "null")
                     {
-                        objectdata.SetUVs();
+                        objectData.SetUVs();
                     }
                     else
                     {
-                        objectdata.highlightIDs.Add(id);
-                        objectdata.hideIDs.Remove(id);
-                        objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
-                        objectdata.SetUVs();
+                        objectData.highlightIDs.Add(id);
+                        objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
+                        objectData.SetUVs();
                     }
-                    //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
                     yield return null;
                 }
+                yield return new WaitForEndOfFrame();
             }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
-            
+            tileHandler.pauseLoading = false;   
+        }
+
+        private IEnumerator HighlightIDsOneTilePerFrame(List<string> ids)
+        {
+            tileHandler.pauseLoading = true;
+            ObjectData objectData;
+            Vector2[] UVs;
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectData != null)
+                {
+                    objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
+                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
+                    objectData.SetUVs();
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            tileHandler.pauseLoading = false;
         }
     }
 }
