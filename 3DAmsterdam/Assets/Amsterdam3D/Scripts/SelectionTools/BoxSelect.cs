@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 using Amsterdam3D.CameraMotion;
 
-
-namespace Amsterdam3D.SelectionTools
+namespace Amsterdam3D.Interface
 {
-
     public class BoxSelect : SelectionTool
     {
         [SerializeField]
@@ -20,12 +18,12 @@ namespace Amsterdam3D.SelectionTools
         private bool inBoxSelect;
         private bool inSelection = false;
 
-        public override void EnableTool()
+		public override void EnableTool()
         {
             raycastBehaviour = FindObjectOfType<RayCastBehaviour>();
             GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
             selectionBox = selectionBoxObj.GetComponent<RectTransform>();
-            selectionBox.SetParent(Canvas.transform);
+            selectionBox.SetParent(canvas.transform);
             selectionBoxObj.SetActive(false);
             inBoxSelect = false;
             enabled = true;
@@ -52,14 +50,6 @@ namespace Amsterdam3D.SelectionTools
                             startPos = Input.mousePosition;
                             selectionBox.gameObject.SetActive(true);
                             inBoxSelect = true;
-                        }
-                    }
-                    else if (Input.GetMouseButtonDown(0)) 
-                    {
-                        if (inSelection) 
-                        {
-                            inSelection = false;
-                            OnDeselect?.Invoke();
                         }
                     }
                 }
