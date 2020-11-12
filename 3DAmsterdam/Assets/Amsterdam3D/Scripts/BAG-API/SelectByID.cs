@@ -43,16 +43,21 @@ public class SelectByID : MonoBehaviour
 	void Update()
     {
         multiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
- 
+
         if (Input.GetMouseButtonDown(0))
         {
             mouseClickTime = Time.time;
             mousePosition = Input.mousePosition;
         }
-        else if ((Input.GetMouseButtonUp(1) && (selectedIDs.Count == 0)) || (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView))
+        else if (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
         {
-            //If we did a left mouse click, or a right mouse click with no existing selection, find the selected ID under our pointer
-            FindSelectedID();
+            //If we did a left mouse click without dragging, find a selected object
+            FindSelectedID(multiSelection);
+        }
+        else if (Input.GetMouseButtonUp(1)){
+            //Right mouse always does a multiselect, so our existing selection isnt cleared
+            multiSelection = true;
+            FindSelectedID(multiSelection);
         }
         else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
@@ -66,8 +71,10 @@ public class SelectByID : MonoBehaviour
     /// <summary>
     /// Select a mesh ID underneath the pointer
     /// </summary>
-    private void FindSelectedID()
+    private void FindSelectedID(bool addToSelection)
     {
+        if (!addToSelection) selectedIDs.Clear();
+
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
         StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
@@ -88,11 +95,6 @@ public class SelectByID : MonoBehaviour
 
     private void HighlightSelectedID(string id)
     {
-        if (!multiSelection)
-		{
-            //Not multiselecting? Always clear our previous selection list.
-            selectedIDs.Clear();
-        }
         if (id != emptyID)
         {
             selectedIDs.Add(id);
@@ -124,6 +126,7 @@ public class SelectByID : MonoBehaviour
     {
         if (selectedIDs.Count > 0)
         {
+            //Adds selected ID's to our hidding objects of our layer
             containerLayer.Hide(selectedIDs);
         }
     }
