@@ -33,6 +33,7 @@ namespace LayerSystem
         /// <param name="ids">List of unique (BAG) id's we want to highlight</param>
         public void Highlight(List<string> ids)
         {
+            StopAllCoroutines();
             StartCoroutine(HighlightIDsOneTilePerFrame(ids));
         }
 
@@ -42,6 +43,7 @@ namespace LayerSystem
         /// <param name="ids">List of unique (BAG) id's we want to hide</param>
         public void Hide(List<string> ids) 
         {
+            StopAllCoroutines();
             StartCoroutine(HideIDsOneTilePerFrame(ids));
         }
 
@@ -75,8 +77,8 @@ namespace LayerSystem
                     objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
                     objectData.SetUVs();
+                    yield return new WaitForEndOfFrame();
                 }
-                yield return new WaitForEndOfFrame();
             }
             tileHandler.pauseLoading = false;
         }
@@ -84,16 +86,16 @@ namespace LayerSystem
         private IEnumerator HideIDsOneTilePerFrame(List<string> ids)
         {
             tileHandler.pauseLoading = true;
-            ObjectData objectdata;
+            ObjectData objectData;
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
-                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
-                if (objectdata != null)
+                objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectData != null)
                 {
-                    objectdata.hideIDs = ids;
-                    objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectdata.SetHideUVs();
+                    objectData.hideIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>(); ;
+                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
+                    objectData.SetHideUVs();
                     yield return new WaitForEndOfFrame();
                 }
             }
