@@ -76,7 +76,7 @@ namespace LayerSystem
                 {
                     objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.SetUVs();
+                    objectData.UpdateUVs();
                     yield return new WaitForEndOfFrame();
                 }
             }
@@ -93,9 +93,16 @@ namespace LayerSystem
                 objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectData != null)
                 {
-                    objectData.hideIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>(); ;
+                    if (ids.Count > 0)
+                    {
+                        objectData.hideIDs.AddRange(ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>());
+                    }
+                    else{
+                        objectData.hideIDs.Clear();
+
+                    }
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.SetHideUVs();
+                    objectData.UpdateUVs();
                     yield return new WaitForEndOfFrame();
                 }
             }
