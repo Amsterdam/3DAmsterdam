@@ -3,13 +3,12 @@ using System.Collections;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-namespace Amsterdam3D.SelectionTools
+namespace Amsterdam3D.Interface
 {
     public abstract class SelectionTool : MonoBehaviour
     {
-        public GameObject Canvas;
+        public GameObject canvas;
         public UnityEvent onSelectionCompleted;
-        public UnityEvent OnDeselect;
         public ToolType toolType { get; protected set; }
         public List<Vector3> vertices = new List<Vector3>();
 

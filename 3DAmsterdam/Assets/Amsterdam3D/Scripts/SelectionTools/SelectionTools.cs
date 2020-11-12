@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using LayerSystem;
 using Amsterdam3D.CameraMotion;
 
-namespace Amsterdam3D.SelectionTools
+namespace Amsterdam3D.Interface
 {
     // currently works as MVP, still has a bunch of TODOs for better usage.
 
