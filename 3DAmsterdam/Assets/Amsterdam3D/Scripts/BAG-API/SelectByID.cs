@@ -13,11 +13,10 @@ public class SelectByID : MonoBehaviour
     public TileHandler tileHandler;
 
     private bool isWorkingOnSelection = false;
-
     private Ray ray;
-
     private string lastSelectedID = "";
-    private List<string> selectedIDs;
+
+    public static List<string> selectedIDs;
 
     private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
     private float mouseClickTime;
@@ -165,7 +164,7 @@ public class SelectByID : MonoBehaviour
         int vertexIndex = hit.triangleIndex * 3;
         if (vertexIndex > mesh.uv2.Length) 
         {
-            Debug.LogWarning("UV index out of bounds");
+            Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
             yield break;
         }
         var uv = mesh.uv2[vertexIndex];
