@@ -34,7 +34,7 @@ namespace LayerSystem
         public void Highlight(List<string> ids)
         {
             StopAllCoroutines();
-            StartCoroutine(HighlightIDsOneTilePerFrame(ids));
+            StartCoroutine(HighlightIDs(ids));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LayerSystem
         public void Hide(List<string> ids) 
         {
             StopAllCoroutines();
-            StartCoroutine(HideIDsOneTilePerFrame(ids));
+            StartCoroutine(HideIDs(ids));
         }
 
         public void AddMeshColliders() 
@@ -64,7 +64,7 @@ namespace LayerSystem
                 }
             }
         }
-        private IEnumerator HighlightIDsOneTilePerFrame(List<string> ids)
+        private IEnumerator HighlightIDs(List<string> ids)
         {
             tileHandler.pauseLoading = true;
             ObjectData objectData;
@@ -74,16 +74,17 @@ namespace LayerSystem
                 objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectData != null)
                 {
-                    objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
+                    objectData.highlightIDs = ids;
+ 
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
                     objectData.UpdateUVs();
-                    yield return new WaitForEndOfFrame();
                 }
             }
             tileHandler.pauseLoading = false;
+            yield return null;
         }
 
-        private IEnumerator HideIDsOneTilePerFrame(List<string> ids)
+        private IEnumerator HideIDs(List<string> ids)
         {
             tileHandler.pauseLoading = true;
             ObjectData objectData;
@@ -99,14 +100,13 @@ namespace LayerSystem
                     }
                     else{
                         objectData.hideIDs.Clear();
-
                     }
                     objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
                     objectData.UpdateUVs();
-                    yield return new WaitForEndOfFrame();
                 }
             }
             tileHandler.pauseLoading = false;
+            yield return null;
         }
     }
 }
