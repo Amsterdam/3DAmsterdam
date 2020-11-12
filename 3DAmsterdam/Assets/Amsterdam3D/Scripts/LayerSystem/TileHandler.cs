@@ -131,6 +131,8 @@ namespace LayerSystem
 
                     if (!uwr.isNetworkError || !uwr.isHttpError)
                     {
+                        if (!obj) yield break;
+
                         //Add objectdata if we received it
                         objectMapping = obj.AddComponent<ObjectData>();
                         AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
@@ -163,7 +165,6 @@ namespace LayerSystem
                 objectId = objectMapping.ids[idIndex];
             }
             callback?.Invoke(objectId);
-            pauseLoading = false;
         }
         
         private void HandleTile(TileChange tileChange)
