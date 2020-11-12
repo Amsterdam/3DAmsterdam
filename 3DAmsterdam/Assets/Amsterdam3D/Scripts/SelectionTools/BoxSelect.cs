@@ -16,7 +16,6 @@ namespace Amsterdam3D.Interface
         private RayCastBehaviour raycastBehaviour;
 
         private bool inBoxSelect;
-        private bool inSelection = false;
 
 		public override void EnableTool()
         {
@@ -48,6 +47,8 @@ namespace Amsterdam3D.Interface
                         {
                             startPosWorld = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
                             startPos = Input.mousePosition;
+                            selectionBox.position = startPos;
+
                             selectionBox.gameObject.SetActive(true);
                             inBoxSelect = true;
                         }
@@ -55,14 +56,20 @@ namespace Amsterdam3D.Interface
                 }
                 else
                 {
-                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((Input.mousePosition.x - startPos.x)), Mathf.Abs(Input.mousePosition.y - startPos.y), 1);
-                    selectionBox.position = startPos + new Vector2((Input.mousePosition.x - startPos.x) / 2, (Input.mousePosition.y - startPos.y) / 2);
+                    Vector2 currentMousePos = Input.mousePosition;
+                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((currentMousePos.x - startPos.x)), Mathf.Abs(currentMousePos.y - startPos.y), 1) / CanvasSettings.canvasScale;
+                    //Move anchor to allow drawing negative direction selectionboxes
+                    selectionBox.pivot = new Vector2(
+                        ((currentMousePos.x - startPos.x) > 0.0) ? 0 : 1,
+                        ((currentMousePos.y - startPos.y) > 0.0) ? 0 : 1
+                    );
+
                     if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         
                         selectionBox.gameObject.SetActive(false);
                         inBoxSelect = false;
-                        Vector2 currentMousePos = Input.mousePosition;
+                        
                         if (((startPos.x - currentMousePos.x < 10) && (startPos.x - currentMousePos.x > -10)) || ((startPos.y - currentMousePos.y < 10) && (startPos.y - currentMousePos.y > -10))) 
                         {
                             return;
@@ -122,7 +129,6 @@ namespace Amsterdam3D.Interface
                             vertices.Add(p2);
                             vertices.Add(max);
                             vertices.Add(p4);
-                            inSelection = true;
                             onSelectionCompleted?.Invoke();
                         }
                     }
