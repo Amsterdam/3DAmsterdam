@@ -111,12 +111,10 @@ namespace LayerSystem
         private IEnumerator AddObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
         {
             string name = obj.GetComponent<MeshFilter>().mesh.name;
-            Debug.Log(name);
             string dataName = name.Replace(" Instance", "");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") + "-data";
             string dataURL = Constants.TILE_METADATA_URL + dataName;
-            Debug.Log(dataURL);
             ObjectMappingClass data;
             string id = "null";
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
@@ -140,7 +138,6 @@ namespace LayerSystem
                     data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
                     int idIndex = data.vectorMap[vertexIndex];
                     id = data.ids[idIndex];
-                    objectMapping.highlightIDs.Clear();
                     objectMapping.highlightIDs.Add(id);
                     objectMapping.ids = data.ids;
                     objectMapping.uvs = data.uvs;
