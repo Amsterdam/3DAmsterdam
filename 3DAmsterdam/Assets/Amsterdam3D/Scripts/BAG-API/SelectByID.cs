@@ -127,6 +127,13 @@ public class SelectByID : MonoBehaviour
             containerLayer.Hide(selectedIDs);
         }
     }
+    public void UnhideAll()
+    {
+        lastSelectedID = emptyID;
+        selectedIDs.Clear();
+        containerLayer.Hide(selectedIDs);
+    }
+
 
     public void ShowBAGDataForSelectedID()
     {
