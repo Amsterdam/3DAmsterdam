@@ -24,8 +24,6 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TileHandler tileHandler;
 
-        public bool inSelection;
-
         [SerializeField]
         private LayerMask buildingLayer;
 
@@ -66,27 +64,29 @@ namespace Amsterdam3D.Interface
             return returnValue;
         }
 
-        private void OnSelectionFunction() 
-        {
-            //Hard coded for now, should be calculated later based on what type of selection tool etc?
-            var min = selectionTool.vertices[0];
-            var max = selectionTool.vertices[2];
-            Vector3 center = (min + max) / 2;
-            Vector3 extends = max - min;
+        private void OnSelectionFunction()
+		{
+			//Hard coded for now, should be calculated later based on what type of selection tool etc?
+			var min = selectionTool.vertices[0];
+			var max = selectionTool.vertices[2];
+			Vector3 center = (min + max) / 2;
+			Vector3 extends = max - min;
 
-            layer.AddMeshColliders();
-            var hits = Physics.BoxCastAll(center + groundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
-            foreach (var hit in hits)
-            {
-                tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
-            }
-            inSelection = true; 
-        }
+			layer.AddMeshColliders();
+			StartCoroutine(BoxCastToFindTilesInRange(center, extends));
+		}
 
-        private void OnDeselect() 
-        {
-            inSelection = false;
-        }
+		private IEnumerator BoxCastToFindTilesInRange(Vector3 center, Vector3 extends)
+		{
+            //We wait one frame to make sure the colliders are there.
+            yield return new WaitForEndOfFrame();
+
+			var hits = Physics.BoxCastAll(center + groundLevel, extends, -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
+			foreach (var hit in hits)
+			{
+				tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
+			}
+		}
     }
 
     public enum ToolType 
