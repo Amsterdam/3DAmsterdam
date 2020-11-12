@@ -76,7 +76,8 @@ public class FirstPersonMovement : MonoBehaviour
                 velocity = new Vector3(velocity.x, 0, velocity.z);
             }
         }
-        else{
+        else
+        {
             //We are not grounded, but have no ground to fall to.
             isgrounded = false;
             this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);

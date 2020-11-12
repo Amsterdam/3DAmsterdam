@@ -10,15 +10,12 @@ namespace Amsterdam3D.SelectionTools
     // currently works as MVP, still has a bunch of TODOs for better usage.
 
     //TODO: Move Single click tool to this class, or to a selection tool?
-    public class SelectionToolBehaviour : MonoBehaviour
+    public class SelectionTools : MonoBehaviour
     {
-
-        // Use this for initialization
-
         [SerializeField]
         private GameObject canvas;
         [SerializeField]
-        private SelectionTool tool;
+        private SelectionTool selectionTool;
 
         [SerializeField]
         private Bounds bounds;
@@ -36,13 +33,15 @@ namespace Amsterdam3D.SelectionTools
         [SerializeField]
         private Layer layer;
 
-        private bool collidersLoaded;
-
-        private Vector3 GroundLevel = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
+        private Vector3 groundLevel = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
 
         private void Start()
         {
             tileHandler = FindObjectOfType<TileHandler>();
+
+            selectionTool.canvas = canvas;
+            selectionTool.onSelectionCompleted.AddListener(OnSelectionFunction);
+            selectionTool.EnableTool();
         }
         public Bounds GetBounds() 
         {
@@ -51,46 +50,32 @@ namespace Amsterdam3D.SelectionTools
         // NOTE: Only checks for X and Z positions, Y isn't taken into account
         public bool Contains(Vector3 position) 
         {
-            return tool.ContainsPoint(position);
+            return selectionTool.ContainsPoint(position);
         }
 
         public ToolType GetCurrentToolType() 
         {
-            return tool.toolType;
+            return selectionTool.toolType;
         }
 
         public List<Vector3> GetVertices() 
         {
             // copy selection and return copy
             List<Vector3> returnValue = new List<Vector3>();
-            returnValue.AddRange(tool.vertices);
+            returnValue.AddRange(selectionTool.vertices);
             return returnValue;
-        }
-
-
-        private void OnEnable()
-        {
-            tool.Canvas = canvas;
-            tool.onSelectionCompleted.AddListener(OnSelectionFunction);
-            tool.OnDeselect.AddListener(OnDeselect);
-            tool.EnableTool();
-        }
-
-        private void OnDisable()
-        {
-            tool.DisableTool();
         }
 
         private void OnSelectionFunction() 
         {
             //Hard coded for now, should be calculated later based on what type of selection tool etc?
-            var min = tool.vertices[0];
-            var max = tool.vertices[2];
+            var min = selectionTool.vertices[0];
+            var max = selectionTool.vertices[2];
             Vector3 center = (min + max) / 2;
             Vector3 extends = max - min;
 
             layer.AddMeshColliders();
-            var hits = Physics.BoxCastAll(center + GroundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
+            var hits = Physics.BoxCastAll(center + groundLevel, extends,  -Vector3.up, Quaternion.Euler(Vector3.zero), (center.y + Constants.ZERO_GROUND_LEVEL_Y), buildingLayer);
             foreach (var hit in hits)
             {
                 tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
@@ -106,7 +91,7 @@ namespace Amsterdam3D.SelectionTools
 
     public enum ToolType 
     {
-        Invaild,
+        Invalid,
         Box,
         Polygon,
         Circle
