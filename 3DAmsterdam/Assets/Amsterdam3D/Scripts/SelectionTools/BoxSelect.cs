@@ -7,6 +7,7 @@ namespace Amsterdam3D.Interface
     {
         [SerializeField]
         private GameObject selectionBoxPrefab;
+
         private RectTransform selectionBox;
 
         private Vector2 startPos;
@@ -16,6 +17,10 @@ namespace Amsterdam3D.Interface
         private RayCastBehaviour raycastBehaviour;
 
         private bool inBoxSelect;
+
+        [Tooltip("If the graphic contains extra pixels (for maybe a dropshadow) ignore those when calculating the graphic size.")]
+        [SerializeField]
+        private float selectionGraphicwCorrection = 10.0f;
 
 		public override void EnableTool()
         {
@@ -57,7 +62,7 @@ namespace Amsterdam3D.Interface
                 else
                 {
                     Vector2 currentMousePos = Input.mousePosition;
-                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((currentMousePos.x - startPos.x)), Mathf.Abs(currentMousePos.y - startPos.y), 1) / CanvasSettings.canvasScale;
+                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((currentMousePos.x - startPos.x)) + selectionGraphicwCorrection, Mathf.Abs(currentMousePos.y - startPos.y) + selectionGraphicwCorrection, 1) / CanvasSettings.canvasScale;
                     //Move anchor to allow drawing negative direction selectionboxes
                     selectionBox.pivot = new Vector2(
                         ((currentMousePos.x - startPos.x) > 0.0) ? 0 : 1,
