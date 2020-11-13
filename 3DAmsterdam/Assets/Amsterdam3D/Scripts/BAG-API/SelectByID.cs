@@ -33,7 +33,10 @@ public class SelectByID : MonoBehaviour
 
     private bool doingMultiSelection = false;
 
-    private void Awake()
+    [SerializeField]
+	private string bagIdRequestServiceUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+
+	private void Awake()
 	{
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
@@ -109,6 +112,10 @@ public class SelectByID : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add list of ID's to our selected objects list
+    /// </summary>
+    /// <param name="ids">List of IDs to add to our selection</param>
     private void HighlightSelectionIDs(List<string> ids)
     {
         selectedIDs.AddRange(ids);
@@ -116,6 +123,9 @@ public class SelectByID : MonoBehaviour
         containerLayer.Highlight(selectedIDs);
     }
 
+    /// <summary>
+    /// Clear our list of selected objects, and update the highlights
+    /// </summary>
     public void ClearSelection()
 	{
 		lastSelectedID = emptyID;
@@ -123,6 +133,9 @@ public class SelectByID : MonoBehaviour
         containerLayer.Highlight(selectedIDs);
     }
 
+    /// <summary>
+    /// Hides all objects that matches the list of ID's, and remove them from our selection list.
+    /// </summary>
     public void HideSelectedIDs()
     {
         if (selectedIDs.Count > 0)
@@ -132,6 +145,10 @@ public class SelectByID : MonoBehaviour
             selectedIDs.Clear();
         }
     }
+
+    /// <summary>
+    /// Shows all hidden objects by clearing our selection and hiding that empty list
+    /// </summary>
     public void UnhideAll()
     {
         lastSelectedID = emptyID;
@@ -139,7 +156,9 @@ public class SelectByID : MonoBehaviour
         containerLayer.Hide(selectedIDs);
     }
 
-
+    /// <summary>
+    /// Method to allow other objects to display the information panel for the last ID we selected here.
+    /// </summary>
     public void ShowBAGDataForSelectedID()
     {
         DisplayBAGData.Instance.PrepareUI();
@@ -216,7 +235,7 @@ public class SelectByID : MonoBehaviour
         var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
 
         List<string> ids = new List<string>();
-        string url = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+        string url = bagIdRequestServiceUrl;
         // construct url string
         url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
         var hideRequest = UnityWebRequest.Get(url);
