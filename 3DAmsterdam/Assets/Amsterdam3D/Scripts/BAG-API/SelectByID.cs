@@ -7,6 +7,7 @@ using Amsterdam3D.CameraMotion;
 using UnityEngine.EventSystems;
 using System.Linq;
 using Amsterdam3D.Interface;
+using System;
 
 public class SelectByID : MonoBehaviour
 {
@@ -34,9 +35,13 @@ public class SelectByID : MonoBehaviour
     private bool doingMultiSelection = false;
 
     [SerializeField]
-	private string bagIdRequestServiceUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
 
-	private void Awake()
+    [SerializeField]
+    private string bagIdRequestServicePolygonUrl = "https://api.data.amsterdam.nl/dataselectie/bag/?page=1&dataset=ves&shape=";
+
+
+    private void Awake()
 	{
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
@@ -93,7 +98,12 @@ public class SelectByID : MonoBehaviour
         var vertices = selectionTools.GetVertices();
         var bounds = selectionTools.GetBounds();
         containerLayer.AddMeshColliders();
-        StartCoroutine(GetAllIDsInRange(vertices[0], vertices[2], HighlightSelectionIDs));
+
+        //Bounding box (does not support rotations)
+        //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionIDs));
+        //Polygon selection
+        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionIDs));
+
     }
 
     /// <summary>
@@ -195,8 +205,6 @@ public class SelectByID : MonoBehaviour
         var newHit = hit;
         var lastHit = hit;
 
-        mesh.uv = mesh.uv2;
-
         //Keep piercing forward with raycasts untill we find a visible UV
         if (uv.y == 0.2f)
         {
@@ -228,8 +236,8 @@ public class SelectByID : MonoBehaviour
         hit = lastHit;
 
         //Not retrieve the selected BAG ID tied to the selected triangle
-        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(gameObjectToHighlight, mesh, hit); });
+        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(gameObjectToHighlight, mesh, hit); });
     }
 
     private void PaintSelectionPixel(GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
@@ -259,13 +267,13 @@ public class SelectByID : MonoBehaviour
         gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",vectorMapTexture);
     }
 
-    IEnumerator GetAllIDsInRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
+    IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
     {
         var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(min);
         var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
 
         List<string> ids = new List<string>();
-        string url = bagIdRequestServiceUrl;
+        string url = bagIdRequestServiceBoundingBoxUrl;
         // construct url string
         url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
         var hideRequest = UnityWebRequest.Get(url);
@@ -299,7 +307,56 @@ public class SelectByID : MonoBehaviour
         yield return null;
     }
 
+    public BagDataSelection bagDataSelection;
+    IEnumerator GetAllIDsInPolygonRange(Vector3[] points, System.Action<List<string>> callback = null)
+    {
+        
+        List<string> ids = new List<string>();
+        string url_array = "[";
+        // construct url string
+		for (int i = 0; i < points.Length; i++)
+		{
+            //convert Unity to WGS84
+            var coordinate = ConvertCoordinates.CoordConvert.UnitytoWGS84(points[i]);
+            if (i != 0) url_array += ",";
+            url_array += "[" + coordinate.lon + "," + coordinate.lat + "]";
+        }
+        url_array += "]";
+        var hideRequest = UnityWebRequest.Get(bagIdRequestServicePolygonUrl + Uri.EscapeDataString(url_array));
 
+        Debug.Log(bagIdRequestServicePolygonUrl + Uri.EscapeDataString(url_array));
+        yield return hideRequest.SendWebRequest();
+        if (hideRequest.isNetworkError || hideRequest.isHttpError)
+        {
+            WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+        }
+        else
+        {
+            Debug.Log(hideRequest.downloadHandler.text);
+            bagDataSelection = JsonUtility.FromJson<BagDataSelection>(hideRequest.downloadHandler.text);
+            foreach(var data_object in bagDataSelection.object_list)
+            {
+                ids.Add(data_object.nummeraanduiding_id);
+            }
+            callback?.Invoke(ids);
+        }
+
+        callback?.Invoke(ids);
+        yield return null;
+    }
+
+    //Api bag data selection return format (selective)
+    [System.Serializable]
+    public class BagDataSelection
+    {
+        public BagDataObjects[] object_list;
+
+        [System.Serializable]
+        public class BagDataObjects
+        {
+            public string nummeraanduiding_id = "";
+        }
+    }
     public List<string> SplitCSV(string csv)
     {
         List<string> splitString = new List<string>();
