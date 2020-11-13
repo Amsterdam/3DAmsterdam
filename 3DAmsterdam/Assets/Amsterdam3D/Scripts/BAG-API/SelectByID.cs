@@ -195,6 +195,8 @@ public class SelectByID : MonoBehaviour
         var newHit = hit;
         var lastHit = hit;
 
+        mesh.uv = mesh.uv2;
+
         //Keep piercing forward with raycasts untill we find a visible UV
         if (uv.y == 0.2f)
         {
@@ -226,7 +228,35 @@ public class SelectByID : MonoBehaviour
         hit = lastHit;
 
         //Not retrieve the selected BAG ID tied to the selected triangle
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(gameObjectToHighlight, mesh, hit); });
+    }
+
+    private void PaintSelectionPixel(GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
+    {
+        print("Adding texture with colored pixel");
+        //Create a main texture on click
+        Texture2D vectorMapTexture = (Texture2D)gameObjectToHighlight.GetComponent<MeshRenderer>().material.GetTexture("_BaseMap");
+        //TODO: Calculate texture size. This will differ per tile, according to the objectdata vectorMap length
+        float textureSize = 1024.0f;
+        if (!vectorMapTexture)
+        {   
+            //Create a texture, without mipmapping or filtering
+            vectorMapTexture = new Texture2D((int)textureSize, (int)textureSize, TextureFormat.RGB24,false);
+            vectorMapTexture.filterMode = FilterMode.Point;
+        }
+
+        Vector2 drawPixelTarget = new Vector2(hit.textureCoord.x * textureSize, hit.textureCoord.y * textureSize);
+        Debug.Log("Setting pixel " + drawPixelTarget.x + "," + drawPixelTarget.y);
+
+		for (int i = 0; i < 200; i++)
+		{
+            vectorMapTexture.SetPixel((int)drawPixelTarget.x, (int)drawPixelTarget.y, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
+        }
+
+        vectorMapTexture.Apply();
+
+        gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",vectorMapTexture);
     }
 
     IEnumerator GetAllIDsInRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
