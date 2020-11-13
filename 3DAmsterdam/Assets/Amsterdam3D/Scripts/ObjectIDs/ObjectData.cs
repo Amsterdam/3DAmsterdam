@@ -29,6 +29,8 @@ public class ObjectData : MonoBehaviour
 	/// </summary>
 	private IEnumerator DetermineUVs()
 	{
+		if (ids == null) yield break;
+
 		int vertexcount = mesh.vertexCount;
 		int idcount = ids.Count;
 		List<Vector2> itemUVs = new List<Vector2>();
