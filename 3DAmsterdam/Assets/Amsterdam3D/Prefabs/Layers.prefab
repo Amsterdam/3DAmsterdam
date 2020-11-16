@@ -106,7 +106,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
-  bagIdRequestServicePolygonUrl: https://api.data.amsterdam.nl/dataselectie/bag/?dataset=ves&page=1&shape=
+  bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&within=
   bagDataSelection:
     object_list: []
     object_count: 0
