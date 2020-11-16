@@ -34,12 +34,8 @@ public class SelectByID : MonoBehaviour
 
     private bool doingMultiSelection = false;
 
-    [SerializeField]
-	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&within=";
-
-    [SerializeField]
-    private string bagIdRequestServicePolygonUrl = "https://api.data.amsterdam.nl/dataselectie/bag/?page=1&dataset=ves&shape=";
-
+	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&cql_filter=";
 
     private void Awake()
 	{
@@ -109,7 +105,7 @@ public class SelectByID : MonoBehaviour
     /// Add a single object to highlight selection. If we clicked an empty ID, clear the selection if we are not in multiselect
     /// </summary>
     /// <param name="id">The object ID</param>
-    private void HighlightSelectedID(string id)
+    public void HighlightSelectedID(string id)
     {
         if (id == emptyID && !doingMultiSelection)
         {
@@ -276,7 +272,7 @@ public class SelectByID : MonoBehaviour
         // construct url string
         url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
         var hideRequest = UnityWebRequest.Get(url);
-
+        print(url);
         yield return hideRequest.SendWebRequest();
         if (hideRequest.isNetworkError || hideRequest.isHttpError)
         {
@@ -285,7 +281,7 @@ public class SelectByID : MonoBehaviour
         else
         {
             string dataString = hideRequest.downloadHandler.text;
-
+            print(dataString);
             var csv = SplitCSV(dataString);
             int returnCounter = 0;
             // hard coded for this api request
@@ -311,7 +307,7 @@ public class SelectByID : MonoBehaviour
     {
         
         List<string> ids = new List<string>();
-        string url_array = "[";
+        /*string url_array = "[";
         // construct url string
 		for (int i = 0; i < points.Length; i++)
 		{
@@ -320,49 +316,51 @@ public class SelectByID : MonoBehaviour
             if (i != 0) url_array += ",";
             url_array += "[" + coordinate.lon + "," + coordinate.lat + "]";
         }
-        url_array += "]";
-        
-        int page = 1;
-        int availablePages = 2;
-        while (page <= availablePages)
+        url_array += "]";*/
+
+        /*var filter = @"<Filter>
+                    <PropertyIsEqualTo>
+                    <PropertyName>external_id</PropertyName>
+                    <Literal>55d301fb-6cec-4fd4-817a-042a107fd380</Literal>
+                    </PropertyIsEqualTo>
+                    </Filter>";*/
+
+        var filter = "Within(verblijfsobject,POLYGON((";
+        for (int i = 0; i < points.Length; i++)
         {
-            //Keep requesting the url untill we have all the pages
-            var requestUrl = bagIdRequestServicePolygonUrl.Replace("page=1","page="+page) + Uri.EscapeDataString(url_array);
-            var hideRequest = UnityWebRequest.Get(requestUrl);
-            Debug.Log(requestUrl);
-            yield return hideRequest.SendWebRequest();
+            //convert Unity to WGS84
+            var coordinate = ConvertCoordinates.CoordConvert.UnitytoRD(points[i]);
+            if (i != 0) filter += ",";
+            filter += coordinate.x + " " + coordinate.y;
+        }
+        filter += ")))";
 
-            if (hideRequest.isNetworkError || hideRequest.isHttpError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
-            }
-            else
-            {
-                Debug.Log(hideRequest.downloadHandler.text);
-                bagDataSelection = JsonUtility.FromJson<BagDataSelection>(hideRequest.downloadHandler.text);
-                availablePages = bagDataSelection.page_count;
-                foreach (var data_object in bagDataSelection.object_list)
-                {
-                    if(!ids.Contains(data_object.panden))
-                        ids.Add(data_object.panden);
-                }
+        var requestUrl = bagIdRequestServicePolygonUrl + filter;
+        var hideRequest = UnityWebRequest.Get(requestUrl);
+        Debug.Log(requestUrl);
+        yield return hideRequest.SendWebRequest();
 
-                //Keep requesting the url if we have more pages in our result
-                if (availablePages >= page)
+        if (hideRequest.isNetworkError || hideRequest.isHttpError)
+        {
+            WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
+        }
+        else
+        {
+            string dataString = hideRequest.downloadHandler.text;
+            print(dataString);
+            var csv = SplitCSV(dataString);
+            int returnCounter = 0;
+            // hard coded for this api request
+            for (int i = 3; i < csv.Count; i += 2)
+            {
+                var numberOnlyString = GetNumbers(csv[i]);
+                ids.Add(numberOnlyString);
+                returnCounter++;
+                if (returnCounter > 100)
                 {
-                    page++;
-                    print("new page " + page + " / "+ availablePages);
                     yield return null;
+                    returnCounter = 0;
                 }
-                else{
-                    yield return null;
-                    callback?.Invoke(ids);
-                    yield break;
-                }
-                               
-                yield return null;
-                callback?.Invoke(ids);
-                yield break;
             }
         }
         callback?.Invoke(ids);
@@ -380,7 +378,7 @@ public class SelectByID : MonoBehaviour
         [System.Serializable]
         public class BagDataObjects
         {
-            public string panden = "";
+            public string _id = "";
         }
     }
     public List<string> SplitCSV(string csv)
