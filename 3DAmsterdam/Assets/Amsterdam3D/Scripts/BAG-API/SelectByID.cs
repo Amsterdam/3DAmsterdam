@@ -35,7 +35,7 @@ public class SelectByID : MonoBehaviour
     private bool doingMultiSelection = false;
 
     [SerializeField]
-	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
+	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&within=";
 
     [SerializeField]
     private string bagIdRequestServicePolygonUrl = "https://api.data.amsterdam.nl/dataselectie/bag/?page=1&dataset=ves&shape=";
@@ -100,10 +100,9 @@ public class SelectByID : MonoBehaviour
         containerLayer.AddMeshColliders();
 
         //Bounding box (does not support rotations)
-        //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionIDs));
+        StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
         //Polygon selection
-        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionIDs));
-
+        //StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionRegionIDs));
     }
 
     /// <summary>
@@ -117,7 +116,7 @@ public class SelectByID : MonoBehaviour
             ClearSelection();  
         }
         else{
-            HighlightSelectionIDs(new List<string> { id });
+            HighlightSelectionRegionIDs(new List<string> { id });
             isWorkingOnSelection = false;
         }
     }
@@ -126,7 +125,7 @@ public class SelectByID : MonoBehaviour
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightSelectionIDs(List<string> ids)
+    private void HighlightSelectionRegionIDs(List<string> ids)
     {
         selectedIDs.AddRange(ids);
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
@@ -322,25 +321,50 @@ public class SelectByID : MonoBehaviour
             url_array += "[" + coordinate.lon + "," + coordinate.lat + "]";
         }
         url_array += "]";
-        var hideRequest = UnityWebRequest.Get(bagIdRequestServicePolygonUrl + Uri.EscapeDataString(url_array));
+        
+        int page = 1;
+        int availablePages = 2;
+        while (page <= availablePages)
+        {
+            //Keep requesting the url untill we have all the pages
+            var requestUrl = bagIdRequestServicePolygonUrl.Replace("page=1","page="+page) + Uri.EscapeDataString(url_array);
+            var hideRequest = UnityWebRequest.Get(requestUrl);
+            Debug.Log(requestUrl);
+            yield return hideRequest.SendWebRequest();
 
-        Debug.Log(bagIdRequestServicePolygonUrl + Uri.EscapeDataString(url_array));
-        yield return hideRequest.SendWebRequest();
-        if (hideRequest.isNetworkError || hideRequest.isHttpError)
-        {
-            WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
-        }
-        else
-        {
-            Debug.Log(hideRequest.downloadHandler.text);
-            bagDataSelection = JsonUtility.FromJson<BagDataSelection>(hideRequest.downloadHandler.text);
-            foreach(var data_object in bagDataSelection.object_list)
+            if (hideRequest.isNetworkError || hideRequest.isHttpError)
             {
-                ids.Add(data_object.nummeraanduiding_id);
+                WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
-            callback?.Invoke(ids);
-        }
+            else
+            {
+                Debug.Log(hideRequest.downloadHandler.text);
+                bagDataSelection = JsonUtility.FromJson<BagDataSelection>(hideRequest.downloadHandler.text);
+                availablePages = bagDataSelection.page_count;
+                foreach (var data_object in bagDataSelection.object_list)
+                {
+                    if(!ids.Contains(data_object.panden))
+                        ids.Add(data_object.panden);
+                }
 
+                //Keep requesting the url if we have more pages in our result
+                if (availablePages >= page)
+                {
+                    page++;
+                    print("new page " + page + " / "+ availablePages);
+                    yield return null;
+                }
+                else{
+                    yield return null;
+                    callback?.Invoke(ids);
+                    yield break;
+                }
+                               
+                yield return null;
+                callback?.Invoke(ids);
+                yield break;
+            }
+        }
         callback?.Invoke(ids);
         yield return null;
     }
@@ -350,11 +374,13 @@ public class SelectByID : MonoBehaviour
     public class BagDataSelection
     {
         public BagDataObjects[] object_list;
+        public int object_count;
+        public int page_count;
 
         [System.Serializable]
         public class BagDataObjects
         {
-            public string nummeraanduiding_id = "";
+            public string panden = "";
         }
     }
     public List<string> SplitCSV(string csv)
