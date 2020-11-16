@@ -66,10 +66,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundOffset: 1.8
-  layerMask:
+  layerMaskGround:
     serializedVersion: 2
-    m_Bits: 1793
-  referenceCollider: {fileID: 0}
+    m_Bits: 512
+  layerMaskCustom:
+    serializedVersion: 2
+    m_Bits: 1025
   moveSpeed: 5
   runspeed: 8
 --- !u!114 &6092253054437786300
