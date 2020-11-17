@@ -71,6 +71,10 @@ namespace LayerSystem
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
+                if (kvp.Value.gameObject == null)
+                {
+                    continue;
+                }
                 objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectData != null)
                 {
@@ -97,6 +101,10 @@ namespace LayerSystem
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
+                if (kvp.Value.gameObject == null)
+                {
+                    continue;
+                }
                 objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectData != null)
                 {
