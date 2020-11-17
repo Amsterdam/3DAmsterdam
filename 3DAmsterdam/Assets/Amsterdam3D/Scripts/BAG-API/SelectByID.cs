@@ -45,6 +45,9 @@ public class SelectByID : MonoBehaviour
 
 	void Update()
     {
+        //We only allow selectiontools in Godview now
+        if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;        
+
         doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
         if (Input.GetMouseButtonDown(0))
