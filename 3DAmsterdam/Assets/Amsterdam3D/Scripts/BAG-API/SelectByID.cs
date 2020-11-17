@@ -35,7 +35,7 @@ public class SelectByID : MonoBehaviour
     private bool doingMultiSelection = false;
 
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&cql_filter=";
+    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
     private void Awake()
 	{
@@ -96,9 +96,9 @@ public class SelectByID : MonoBehaviour
         containerLayer.AddMeshColliders();
 
         //Bounding box (does not support rotations)
-        StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
+        //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
         //Polygon selection
-        //StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionRegionIDs));
+        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionRegionIDs));
     }
 
     /// <summary>
@@ -232,34 +232,36 @@ public class SelectByID : MonoBehaviour
 
         //Not retrieve the selected BAG ID tied to the selected triangle
         tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
-        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(gameObjectToHighlight, mesh, hit); });
+        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit); });
     }
 
-    private void PaintSelectionPixel(GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
+    private void PaintSelectionPixel(string objectId, GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
     {
         print("Adding texture with colored pixel");
+        int objectIndex = hit.triangleIndex * 3;
+
+        var objectData = gameObjectToHighlight.GetComponent<ObjectData>();
+        Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count);
+
+        //Reapply the mesh collider so it has the new proper UV's
+        mesh.uv = objectData.uvs;
+        gameObjectToHighlight.GetComponent<MeshCollider>().sharedMesh = mesh;
+
+        //Create a texture, without mipmapping or filtering
+        Vector2 uvCoordinate = ObjectIDMapping.GetUV(objectIndex, textureSize);
+
         //Create a main texture on click
-        Texture2D vectorMapTexture = (Texture2D)gameObjectToHighlight.GetComponent<MeshRenderer>().material.GetTexture("_BaseMap");
-        //TODO: Calculate texture size. This will differ per tile, according to the objectdata vectorMap length
-        float textureSize = 1024.0f;
-        if (!vectorMapTexture)
-        {   
-            //Create a texture, without mipmapping or filtering
-            vectorMapTexture = new Texture2D((int)textureSize, (int)textureSize, TextureFormat.RGB24,false);
-            vectorMapTexture.filterMode = FilterMode.Point;
+        Texture2D colorTexture = (Texture2D)gameObjectToHighlight.GetComponent<MeshRenderer>().material.GetTexture("_BaseMap");        
+        if (!colorTexture)
+        {
+            colorTexture = new Texture2D(textureSize.x / 2, textureSize.y / 2, TextureFormat.ARGB32,false);
+            colorTexture.filterMode = FilterMode.Point;
         }
 
-        Vector2 drawPixelTarget = new Vector2(hit.textureCoord.x * textureSize, hit.textureCoord.y * textureSize);
-        Debug.Log("Setting pixel " + drawPixelTarget.x + "," + drawPixelTarget.y);
+        colorTexture.SetPixel(Mathf.FloorToInt(uvCoordinate.x), Mathf.FloorToInt(uvCoordinate.y), new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f));
+        colorTexture.Apply();
 
-		for (int i = 0; i < 200; i++)
-		{
-            vectorMapTexture.SetPixel((int)drawPixelTarget.x, (int)drawPixelTarget.y, new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value));
-        }
-
-        vectorMapTexture.Apply();
-
-        gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",vectorMapTexture);
+        gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",colorTexture);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
@@ -280,11 +282,11 @@ public class SelectByID : MonoBehaviour
         }
         else
         {
+            //Filter out the list of ID's from our returned CSV           
             string dataString = hideRequest.downloadHandler.text;
-            print(dataString);
             var csv = SplitCSV(dataString);
             int returnCounter = 0;
-            // hard coded for this api request
+            
             for (int i = 3; i < csv.Count; i += 2)
             {
                 var numberOnlyString = GetNumbers(csv[i]);
@@ -305,37 +307,23 @@ public class SelectByID : MonoBehaviour
     public BagDataSelection bagDataSelection;
     IEnumerator GetAllIDsInPolygonRange(Vector3[] points, System.Action<List<string>> callback = null)
     {
-        
         List<string> ids = new List<string>();
-        /*string url_array = "[";
-        // construct url string
+
+        //Create a string array of coordinates for our filter XML
+        string coordinates = "";
 		for (int i = 0; i < points.Length; i++)
 		{
             //convert Unity to WGS84
-            var coordinate = ConvertCoordinates.CoordConvert.UnitytoWGS84(points[i]);
-            if (i != 0) url_array += ",";
-            url_array += "[" + coordinate.lon + "," + coordinate.lat + "]";
-        }
-        url_array += "]";*/
-
-        /*var filter = @"<Filter>
-                    <PropertyIsEqualTo>
-                    <PropertyName>external_id</PropertyName>
-                    <Literal>55d301fb-6cec-4fd4-817a-042a107fd380</Literal>
-                    </PropertyIsEqualTo>
-                    </Filter>";*/
-
-        var filter = "Within(verblijfsobject,POLYGON((";
-        for (int i = 0; i < points.Length; i++)
-        {
-            //convert Unity to WGS84
             var coordinate = ConvertCoordinates.CoordConvert.UnitytoRD(points[i]);
-            if (i != 0) filter += ",";
-            filter += coordinate.x + " " + coordinate.y;
+            if (i != 0) coordinates += ",";
+            coordinates += coordinate.x + " " + coordinate.y;
         }
-        filter += ")))";
+        coordinates += "";
 
-        var requestUrl = bagIdRequestServicePolygonUrl + filter;
+        //Our filter according to https://www.mapserver.org/ogc/filter_encoding.html , the type of WFS server used by the API.
+        var filter = $"<Filter><Within><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Within></Filter>";
+
+        var requestUrl = bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
         var hideRequest = UnityWebRequest.Get(requestUrl);
         Debug.Log(requestUrl);
         yield return hideRequest.SendWebRequest();
@@ -346,11 +334,11 @@ public class SelectByID : MonoBehaviour
         }
         else
         {
+            //Filter out the list of ID's from our returned CSV
             string dataString = hideRequest.downloadHandler.text;
-            print(dataString);
             var csv = SplitCSV(dataString);
             int returnCounter = 0;
-            // hard coded for this api request
+            
             for (int i = 3; i < csv.Count; i += 2)
             {
                 var numberOnlyString = GetNumbers(csv[i]);
