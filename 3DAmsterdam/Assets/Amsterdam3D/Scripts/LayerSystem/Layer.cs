@@ -81,6 +81,10 @@ namespace LayerSystem
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
+                if (kvp.Value.gameObject == null)
+                {
+                    continue;
+                }
                 objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectdata != null)
                 {
@@ -102,9 +106,17 @@ namespace LayerSystem
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
+                if (kvp.Value.gameObject == null)
+                {
+                    continue;
+                }
                 objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectdata != null)
                 {
+                    if (kvp.Value.gameObject == null)
+                    {
+                        continue;
+                    }
                     if (objectdata.ids.Contains(id) == false)
                     {
                         if (objectdata.hideIDs.Count == 0)
@@ -139,6 +151,10 @@ namespace LayerSystem
             Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
+                if (kvp.Value.gameObject==null)
+                {
+                    continue;
+                }
                 objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
                 if (objectdata != null)
                 {
