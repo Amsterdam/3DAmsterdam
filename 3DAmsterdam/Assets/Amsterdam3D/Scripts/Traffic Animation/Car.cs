@@ -172,7 +172,8 @@ public class Car : MonoBehaviour
                         lastRoad = currentRoad;
                         currentRoad = obj;
                         transform.position = obj.roadPoints[0].pointCoordinates;
-                        nextRoad = obj;
+                        currentRoadIndex = 0;
+                        nextRoad = null;
                         Debug.Log("CAN'T FIND ROAD DOING REST", gameObject);
                         break;
                     }
