@@ -73,13 +73,10 @@ namespace LayerSystem
             GetPossibleTiles();
             
             GetTileChanges();
-            int pendingTileChangesCount = pendingTileChanges.Count;
+
             RemoveOutOfViewTiles();
-            int addedchanges = pendingTileChanges.Count - pendingTileChangesCount;
-            if (addedchanges>0)
-            {
-                Debug.Log(addedchanges);
-            }
+
+
 
             if (pendingTileChanges.Count==0){return;}
 
@@ -164,123 +161,9 @@ namespace LayerSystem
             pauseLoading = false;
         }
         
-        private void HandleTile_Old(TileChange tileChange)
-        {
-            lod = 10;
-            switch (tileChange.action)
-            {
-                case TileAction.Create:
-                    lod = 0;
+        
 
-                    break;
-                case TileAction.Upgrade:
-                    lod = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD + 1;
-                    
-                    break;
-                case TileAction.Downgrade:
-                    lod = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD - 1;
-                    if (lod<0)
-                    {
-                        Destroy(layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
-                        layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
-                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
-                        return;
-                    }
-                    break;
-                case TileAction.Remove:
-                    var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
-                    if (layers[tileChange.layerIndex].tiles.ContainsKey(tileKey))
-                    {
-                        MeshFilter mf = layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>();
-                        if (mf != null)
-                        {
-                            DestroyImmediate(layers[tileChange.layerIndex].tiles[tileKey].gameObject.GetComponent<MeshFilter>().sharedMesh, true);
-                        }
-                        Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
-                        layers[tileChange.layerIndex].tiles.Remove(tileKey);
-                        activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
-                    }
-                    return;
-                    break;
-                default:
-                    break;
-            }
 
-            if (lod >=0 && lod< layers[tileChange.layerIndex].Datasets.Count)
-            {
-                url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
-
-                url = url.Replace("{x}", tileChange.X.ToString());
-                url = url.Replace("{y}", tileChange.Y.ToString());
-                url = url.Replace("{lod}", lod.ToString());
-                StartCoroutine(DownloadTile(url, tileChange));
-            }
-            
-        }
-
-        private IEnumerator DownloadTile(string url, TileChange tileChange)
-        {
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
-            {
-                
-                Vector2Int tileKey = new Vector2Int(tileChange.X, tileChange.Y);
-                Tile tile;
-                if (tileChange.action == TileAction.Create)
-                {
-                    tile = new Tile();
-                    tile.LOD = 0;
-                    tile.tileKey = tileKey;
-                    tile.layer = layers[tileChange.layerIndex];
-                    tile.gameObject = new GameObject();
-                    tile.gameObject.transform.parent = layers[tileChange.layerIndex].gameObject.transform;
-                    tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
-                    tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
-                    layers[tileChange.layerIndex].tiles.Add(tileKey, tile);
-                }
-                else
-                {
-                    tile = layers[tileChange.layerIndex].tiles[tileKey];
-                }
-
-                yield return uwr.SendWebRequest();
-
-                if (uwr.isNetworkError || uwr.isHttpError)
-                {
-                    if (tile.assetBundle is null)
-                    {
-
-                    }
-                    else
-                    {
-                        tile.assetBundle.Unload(true);
-                    }
-                }
-                else
-                {
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    yield return new WaitUntil(() => pauseLoading==false);
-                    GameObject newTile = BuildNewTile(newAssetBundle, tileChange);
-                    objectDataLoaded = false;
-                    
-                    StartCoroutine(UpdateHighlight(tile, newTile));
-                    yield return new WaitUntil(() => objectDataLoaded);
-                    if (tileChange.action == TileAction.Downgrade)
-                    {
-                        layers[tileChange.layerIndex].tiles[tileKey].LOD--;
-                    }
-                    if (tileChange.action == TileAction.Upgrade)
-                    {
-                        layers[tileChange.layerIndex].tiles[tileKey].LOD++;
-                    }
-                    Destroy(layers[tileChange.layerIndex].tiles[tileKey].gameObject);
-                    layers[tileChange.layerIndex].tiles[tileKey].gameObject = newTile;
-                    
-                }
-                activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
-            }
-            yield return null;
-
-        }
 
         private IEnumerator UpdateHighlight(Tile oldTile, GameObject newTile)
         {
@@ -670,7 +553,6 @@ namespace LayerSystem
         private IEnumerator DownloadAssetBundle(TileChange tileChange)
         {
             int lod = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
-            Debug.Log(lod);
             string url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
             url = url.Replace("{x}", tileChange.X.ToString());
             url = url.Replace("{y}", tileChange.Y.ToString());
@@ -692,7 +574,7 @@ namespace LayerSystem
                     {
                         if (tileHasHighlight(tileChange))
                         {
-                            StartCoroutine(downloadIDMappingData(tileChange, newGameobject));
+                            StartCoroutine(DownloadIDMappingData(tileChange, newGameobject));
                         }
                         else
                         {
@@ -709,7 +591,7 @@ namespace LayerSystem
                 }
             }
         }
-        private IEnumerator downloadIDMappingData(TileChange tileChange, GameObject newGameobject)
+        private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject)
         {
             Tile tile = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)];
             ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
