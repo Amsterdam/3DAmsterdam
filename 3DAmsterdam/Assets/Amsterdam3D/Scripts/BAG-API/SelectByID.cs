@@ -261,6 +261,8 @@ public class SelectByID : MonoBehaviour
         colorTexture.SetPixel(Mathf.FloorToInt(uvCoordinate.x), Mathf.FloorToInt(uvCoordinate.y), new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f));
         colorTexture.Apply();
 
+        //TODO: change shader
+
         gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",colorTexture);
     }
 
