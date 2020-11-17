@@ -112,11 +112,23 @@ public class SelectByID : MonoBehaviour
     {
         if (id == emptyID && !doingMultiSelection)
         {
-            ClearSelection();  
+            ClearSelection();
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
         else{
-            HighlightSelectionRegionIDs(new List<string> { id });
+            List<string> singleIdList = new List<string>();
+            //Allow clicking a single object multiple times to move them in and out of our selection
+            if (doingMultiSelection && selectedIDs.Contains(id))
+            {
+                selectedIDs.Remove(id);
+            }
+            else{
+                singleIdList.Add(id);
+            }
+
+            HighlightSelectionRegionIDs(singleIdList);
             isWorkingOnSelection = false;
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
         }
     }
 
