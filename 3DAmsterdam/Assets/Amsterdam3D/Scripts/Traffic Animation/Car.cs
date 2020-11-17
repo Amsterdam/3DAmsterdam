@@ -11,11 +11,8 @@ public class Car : MonoBehaviour
     private RoadObject nextRoad = null;
     private int currentRoadIndex = 0;
     public int speed = 20;
-    public int minimumCarRenderDistance = 500;
-    public int mediumCarRenderDistance = 1000;
-    public int maximumCarRenderDistance = 1500;
 
-    public bool startCar = false;
+    //public bool startCar = false;
 
     public GameObject[] cars;
 
@@ -46,27 +43,21 @@ public class Car : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            startCar = !startCar;
-        }
-
-        if(startCar && speed != TrafficSimulator.Instance.carSpeed)
+        if(TrafficSimulator.Instance.enableCarSimulation && speed != TrafficSimulator.Instance.carSpeed)
         {
             speed = TrafficSimulator.Instance.carSpeed;
         }
-
+        updateCarFrames++;
         float DistanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
-        if (DistanceToCar < minimumCarRenderDistance ||
-            DistanceToCar < mediumCarRenderDistance && DistanceToCar > minimumCarRenderDistance && updateCarFrames % 10 == 0 ||
-            DistanceToCar > mediumCarRenderDistance && updateCarFrames % 10 == 0)
-
+        if (DistanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
+             DistanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && DistanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
+            DistanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
         {
             if (!gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
             {
                 gameObject.SetActive(true);
             }
-            if (startCar)
+            if (TrafficSimulator.Instance.enableCarSimulation)
             {
                 if (currentRoad != null)
                 {

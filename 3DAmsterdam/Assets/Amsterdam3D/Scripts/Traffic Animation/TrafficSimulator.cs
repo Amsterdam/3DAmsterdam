@@ -11,9 +11,14 @@ public class TrafficSimulator : MonoBehaviour
 
     public int carSpeed = 20;
 
+    public bool enableCarSimulation = false;
     public bool enableBoundsSimulation = false;
     [SerializeField] private Bounds boundsSimulation = new Bounds(new Vector3(0,0,0), new Vector3(0,0,0));
     private Amsterdam3D.SelectionTools.SelectionToolBehaviour selectionTool = default;
+
+    public int minimumCarRenderDistance = 500;
+    public int mediumCarRenderDistance = 1000;
+    public int maximumCarRenderDistance = 1500;
     private void Awake()
     {
         if(Instance == null)
@@ -25,6 +30,7 @@ public class TrafficSimulator : MonoBehaviour
     private void Start()
     {
         selectionTool = FindObjectOfType<Amsterdam3D.SelectionTools.SelectionToolBehaviour>();
+        StartSimulation(true);
     }
 
     private void Update()
@@ -85,10 +91,7 @@ public class TrafficSimulator : MonoBehaviour
 
     public void StartSimulation(bool value)
     {
-        foreach (Car car in allCars)
-        {
-            car.startCar = value;
-        }
+        enableCarSimulation = value;
     }
 
     public void UpdateCarSpeed(int speed)
