@@ -326,7 +326,7 @@ public class SelectByID : MonoBehaviour
         coordinates += "";
 
         //Our filter according to https://www.mapserver.org/ogc/filter_encoding.html , the type of WFS server used by the API.
-        var filter = $"<Filter><Within><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Within></Filter>";
+        var filter = $"<Filter><Intersects><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Intersects></Filter>";
 
         var requestUrl = bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
         var hideRequest = UnityWebRequest.Get(requestUrl);
