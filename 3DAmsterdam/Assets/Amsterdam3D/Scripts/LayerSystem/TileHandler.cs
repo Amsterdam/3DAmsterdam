@@ -209,7 +209,7 @@ namespace LayerSystem
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
                     objectMapping.triangleCount = data.triangleCount;
-                    objectMapping.SetUVs();
+                    objectMapping.UpdateUVs();
                     newAssetBundle.Unload(true);
                 }
                 objectDataLoaded = true;
