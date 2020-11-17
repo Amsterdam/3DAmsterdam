@@ -6,7 +6,8 @@ namespace Amsterdam3D.Interface
 {
     public class BoxSelect : SelectionTool
     {
-        [SerializeField]
+		private const float requiredPixelDragDistance = 10.0f;
+		[SerializeField]
         private GameObject selectionBoxPrefab;
 
         private RectTransform selectionBox;
@@ -79,26 +80,32 @@ namespace Amsterdam3D.Interface
                 }
                 else
                 {
-                    //Resize our visual selection box. Flipping the anchor to allow for negative direction drawn boxes.
                     Vector2 currentMousePosition = Input.mousePosition;
-                    selectionBox.sizeDelta = new Vector3(Mathf.Abs((currentMousePosition.x - startMousePosition.x)) + selectionGraphicCorrection, Mathf.Abs(currentMousePosition.y - startMousePosition.y) + selectionGraphicCorrection, 1) / CanvasSettings.canvasScale;
-                    selectionBox.pivot = new Vector2(
-                        ((currentMousePosition.x - startMousePosition.x) > 0.0) ? 0 : 1,
-                        ((currentMousePosition.y - startMousePosition.y) > 0.0) ? 0 : 1
-                    );
+                    bool enoughDistanceDragged = Vector3.Distance(startMousePosition, currentMousePosition) > requiredPixelDragDistance;
+
+                    //Resize our visual selection box. Flipping the anchor to allow for negative direction drawn boxes.
+                    if(enoughDistanceDragged){ 
+                        selectionBox.sizeDelta = new Vector3(Mathf.Abs((currentMousePosition.x - startMousePosition.x)) + selectionGraphicCorrection, Mathf.Abs(currentMousePosition.y - startMousePosition.y) + selectionGraphicCorrection, 1) / CanvasSettings.canvasScale;
+                        selectionBox.pivot = new Vector2(
+                            ((currentMousePosition.x - startMousePosition.x) > 0.0) ? 0 : 1,
+                            ((currentMousePosition.y - startMousePosition.y) > 0.0) ? 0 : 1
+                        );
+                    }
+                    selectionBox.gameObject.SetActive(enoughDistanceDragged);
 
                     //On release, check our selected area
                     if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
                     {
+                        //Avoid 1 frame flicker when we are enabled again (UI scales are a bit late)
+                        selectionBox.sizeDelta = Vector3.zero;
+
                         //Remove visual bounding box
                         selectionBox.gameObject.SetActive(false);
                         inBoxSelect = false;
                         
-                        //Too small selections are ignored.
-                        if (((startMousePosition.x - currentMousePosition.x < 10) && (startMousePosition.x - currentMousePosition.x > -10)) || ((startMousePosition.y - currentMousePosition.y < 10) && (startMousePosition.y - currentMousePosition.y > -10))) 
-                        {
+                        //Too small selections are ignored, so we bail out and do not invoke a selection
+                        if (!enoughDistanceDragged)
                             return;
-                        }
 
                         //Our for corners of the bounding box as points on our world plane
                         Vector3 point1 = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld(startMousePosition);
