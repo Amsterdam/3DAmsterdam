@@ -149,6 +149,9 @@ public class SelectByID : MonoBehaviour
             containerLayer.Hide(selectedIDs);
             selectedIDs.Clear();
         }
+
+        //If we hide something, make sure our context menu is reset to default again.
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
     }
 
     /// <summary>
