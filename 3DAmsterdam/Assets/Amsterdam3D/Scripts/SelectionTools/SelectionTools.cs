@@ -76,6 +76,19 @@ namespace Amsterdam3D.Interface
 			StartCoroutine(BoxCastToFindTilesInRange(center, extends));
 		}
 
+		private Vector3 GetPointsCentroid()
+		{
+			Vector3 centroid = new Vector3(0, 0, 0);
+			foreach (var point in vertices)
+			{
+				centroid += point;
+			}
+
+			centroid /= vertices.Count;
+
+			return centroid;
+		}
+
 		private IEnumerator BoxCastToFindTilesInRange(Vector3 center, Vector3 extends)
 		{
 			//We wait one frame to make sure the colliders are there.
