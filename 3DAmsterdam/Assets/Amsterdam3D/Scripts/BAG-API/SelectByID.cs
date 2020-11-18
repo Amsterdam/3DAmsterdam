@@ -253,13 +253,15 @@ public class SelectByID : MonoBehaviour
         //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit); });
     }
 
+    //Paints a pixel for a specific subobject, for highlighting or coloring specific buildings
     private void PaintSelectionPixel(string objectId, GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
     {
         print("Adding texture with colored pixel");
         int objectIndex = hit.triangleIndex * 3;
-
         var objectData = gameObjectToHighlight.GetComponent<ObjectData>();
         Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count);
+
+        Debug.Log("Texture size: " + textureSize);
 
         //Reapply the mesh collider so it has the new proper UV's
         mesh.uv = objectData.uvs;
@@ -267,6 +269,7 @@ public class SelectByID : MonoBehaviour
 
         //Create a texture, without mipmapping or filtering
         Vector2 uvCoordinate = ObjectIDMapping.GetUV(objectIndex, textureSize);
+        Debug.Log("Setting uv: " + uvCoordinate);
 
         //Create a main texture on click
         Texture2D colorTexture = (Texture2D)gameObjectToHighlight.GetComponent<MeshRenderer>().material.GetTexture("_BaseMap");        
