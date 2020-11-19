@@ -43,9 +43,6 @@ namespace LayerSystem
         private Vector3Int cameraPosition;
         private Extent previousCameraViewExtent;
 
-        private bool objectDataLoaded = false;
-
-        private int lod = 10;
         private string url;
         private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
         private Vector3RD bottomLeft;
@@ -75,8 +72,6 @@ namespace LayerSystem
             GetTileChanges();
 
             RemoveOutOfViewTiles();
-
-
 
             if (pendingTileChanges.Count==0){return;}
 
@@ -162,16 +157,11 @@ namespace LayerSystem
         private IEnumerator UpdateHighlight(Tile oldTile, GameObject newTile)
         {
             ObjectData oldObjectMapping = oldTile.gameObject.GetComponent<ObjectData>();
-            if (oldObjectMapping == null)
+            if (oldObjectMapping == null || oldObjectMapping.highlightIDs.Count == 0)
             {
-                objectDataLoaded = true;
                 yield break;
             }
-            if (oldObjectMapping.highlightIDs.Count==0)
-            {
-                objectDataLoaded = true;
-                yield break;
-            }
+
             yield return null;
             string name =  newTile.GetComponent<MeshFilter>().mesh.name;
             Debug.Log(name);
@@ -206,7 +196,6 @@ namespace LayerSystem
                     objectMapping.UpdateUVs();
                     newAssetBundle.Unload(true);
                 }
-                objectDataLoaded = true;
             }
 
             yield return null;
@@ -509,9 +498,7 @@ namespace LayerSystem
                     activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
                     RemoveGameObjectFromTile(tileChange);
                     layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
-                    
                     return;
-                    break;
                 default:
                     break;
             }
@@ -617,7 +604,6 @@ namespace LayerSystem
                     objectMapping.UpdateUVs();
                     newAssetBundle.Unload(true);
                 }
-                objectDataLoaded = true;
             }
             yield return new WaitUntil(() => pauseLoading == false);
             RemoveGameObjectFromTile(tileChange);
