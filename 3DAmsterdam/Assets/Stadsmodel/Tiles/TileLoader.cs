@@ -1,10 +1,10 @@
 ﻿using BruTile;
-using Terrain.ExtensionMethods;
+using QuantizedMeshTerrain.ExtensionMethods;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terrain.Tiles;
+using QuantizedMeshTerrain.Tiles;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -315,7 +315,7 @@ public class TileLoader : MonoBehaviour
         updateTerrainTilesFinished = false;
         List<Vector3> requiredTileKeys = SetBasicTilekeys(Tempextent);
         bool subTilesAdded = true;
-        var schema = new Terrain.TmsGlobalGeodeticTileSchema();
+        var schema = new QuantizedMeshTerrain.TmsGlobalGeodeticTileSchema();
         while (subTilesAdded)
         {
             yield return null;

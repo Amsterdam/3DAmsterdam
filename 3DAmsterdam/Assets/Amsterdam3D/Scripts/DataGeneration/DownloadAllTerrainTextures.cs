@@ -1,10 +1,10 @@
 ﻿using BruTile;
-using Terrain.ExtensionMethods;
+using QuantizedMeshTerrain.ExtensionMethods;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terrain.Tiles;
+using QuantizedMeshTerrain.Tiles;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,7 +20,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
     [SerializeField]
     private string localTileFilesFolder = "C:\\Users\\Sam\\Desktop\\terrain";
 
-    private Terrain.TmsGlobalGeodeticTileSchema schema;
+    private QuantizedMeshTerrain.TmsGlobalGeodeticTileSchema schema;
     private int filesDownloaded = 0;
     private int fileDownloadsStarted = 0;
 
@@ -45,7 +45,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
 
 	private void Start()
 	{
-        schema = new Terrain.TmsGlobalGeodeticTileSchema();
+        schema = new QuantizedMeshTerrain.TmsGlobalGeodeticTileSchema();
     }
 
 	[ContextMenu("Download all texture files")]
@@ -92,7 +92,7 @@ public class DownloadAllTerrainTextures : MonoBehaviour
 
                     fileDownloadsStarted++;
                     var tileRange = new TileRange(UnityEngine.Mathf.RoundToInt(tileId.x), UnityEngine.Mathf.RoundToInt(tileId.y));
-                    Extent subtileExtent = TileTransform.TileToWorld(tileRange, tileId.z.ToString(), schema);
+                    Extent subtileExtent = TileTransform.TileToWorld(tileRange, (int)tileId.z, schema);
                     string wmsUrl = url.Replace("{xMin}", subtileExtent.MinX.ToString()).Replace("{yMin}", subtileExtent.MinY.ToString()).Replace("{xMax}", subtileExtent.MaxX.ToString()).Replace("{yMax}", subtileExtent.MaxY.ToString()).Replace(",", ".");
                     if (tileId.z >= 17)
                     {

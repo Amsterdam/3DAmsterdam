@@ -107,9 +107,6 @@ namespace LayerSystem
             }
         }
 
-
-
-
         public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback = null) 
         {
             StartCoroutine(AddObjectData(obj, vertexIndex, callback));
@@ -136,6 +133,7 @@ namespace LayerSystem
                 }
                 else
                 {
+                    
                     ObjectData objectMapping = obj.GetComponent<ObjectData>();
                     if (objectMapping is null)
                     {
@@ -161,10 +159,6 @@ namespace LayerSystem
             pauseLoading = false;
         }
         
-        
-
-
-
         private IEnumerator UpdateHighlight(Tile oldTile, GameObject newTile)
         {
             ObjectData oldObjectMapping = oldTile.gameObject.GetComponent<ObjectData>();
@@ -209,7 +203,7 @@ namespace LayerSystem
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
                     objectMapping.triangleCount = data.triangleCount;
-                    objectMapping.SetUVs();
+                    objectMapping.UpdateUVs();
                     newAssetBundle.Unload(true);
                 }
                 objectDataLoaded = true;
@@ -495,12 +489,6 @@ namespace LayerSystem
             }
         }
 
-
-
-
-
-
-
         private void HandleTile(TileChange tileChange)
         {
             
@@ -626,7 +614,7 @@ namespace LayerSystem
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
                     objectMapping.triangleCount = data.triangleCount;
-                    objectMapping.SetUVs();
+                    objectMapping.UpdateUVs();
                     newAssetBundle.Unload(true);
                 }
                 objectDataLoaded = true;

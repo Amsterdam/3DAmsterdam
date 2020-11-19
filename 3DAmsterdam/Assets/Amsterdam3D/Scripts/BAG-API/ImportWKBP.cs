@@ -37,10 +37,8 @@ public class ImportWKBP : ImportAPI
 
                 wkbpBeperkingen = JsonUtility.FromJson<WKBP.RootBeperkingen>(wkbpResult);
 
-
                 tempVerblijf.verblijfsobject.wkbpBeperkingen = wkbpBeperkingen;
             }
-
         }
 
         for (int i = 0; i < wkbpBeperkingen.results.Length; i++)

@@ -2,13 +2,10 @@
 using System.Collections;
 using Amsterdam3D.CameraMotion;
 
-namespace Assets.Amsterdam3D.Scripts.Camera
+namespace Amsterdam3D.CameraMotion
 {
     public class RayCastBehaviour : MonoBehaviour
     {
-
-        // Use this for initialization
-
         [SerializeField]
         LayerMask layerMask;
 

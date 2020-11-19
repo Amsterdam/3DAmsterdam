@@ -70,6 +70,8 @@ public class Draggable : ObjectManipulation
 		clickOffset3D.y = 0;
 
 		StartCoroutine(ScrollToChangeOffset());
+
+		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
 	public override void OnMouseUp()
 	{

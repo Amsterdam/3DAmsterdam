@@ -15,6 +15,6 @@ using UnityEngine;
 
         void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
-        Vector3 GetMousePositionInWorld();
+        Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
 }
 

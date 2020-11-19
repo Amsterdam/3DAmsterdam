@@ -75,6 +75,9 @@ namespace Amsterdam3D.Interface.Search
 
                     ParentList.ShowResultsList(false);
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
+
+                    print(jsonStringResult);
+                    FindObjectOfType<SelectByID>().HighlightSelectedID(lookupData.response.docs[0].nummeraanduiding_id);
                 }
             }
         }

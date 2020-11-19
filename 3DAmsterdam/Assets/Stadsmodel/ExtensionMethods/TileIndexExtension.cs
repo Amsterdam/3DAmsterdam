@@ -1,6 +1,6 @@
 ﻿using BruTile;
 
-namespace Terrain.ExtensionMethods
+namespace QuantizedMeshTerrain.ExtensionMethods
 {
     public static class TileIndexExtension
     {

@@ -345,9 +345,12 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        public Vector3 GetMousePositionInWorld()
+        public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var ray = camera.ScreenPointToRay(Input.mousePosition);            
+            var pointerPosition = Input.mousePosition;
+            if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+
+            var ray = camera.ScreenPointToRay(pointerPosition);            
             worldPlane.Raycast(ray, out float distance);
 
             var samplePoint = ray.GetPoint(Mathf.Min(maxClickDragDistance, distance));
