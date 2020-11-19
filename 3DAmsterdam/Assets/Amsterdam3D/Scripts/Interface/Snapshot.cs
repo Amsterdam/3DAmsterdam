@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Snapshot : MonoBehaviour
 {
+    /*
     [SerializeField]
     private int width = 1920;
     [SerializeField]
@@ -21,7 +22,7 @@ public class Snapshot : MonoBehaviour
 
     void OnEnable()
     {
-       /* Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+        Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
         snapshotCamera.Render();
         RenderTexture.active = screenshotRenderTexture;
         screenshotRenderTexture.tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
@@ -30,8 +31,8 @@ public class Snapshot : MonoBehaviour
         Destroy(screenshotRenderTexture);
         byte[] bytes = screenShot.EncodeToPNG();
         string filename = "Screenshot";
-        System.IO.File.WriteAllBytes(filename, bytes);*/
+        System.IO.File.WriteAllBytes(filename, bytes);
+        
     }
-
-    
+    */
 }

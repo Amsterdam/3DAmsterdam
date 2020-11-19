@@ -34,9 +34,6 @@ namespace Amsterdam3D.Interface
 
         private bool holdAndZoom = false;
 
-        [SerializeField]
-        private bool moveCameraOnDrag = false;
-
         private void Start()
         {
             defaultScale = transform.localScale;

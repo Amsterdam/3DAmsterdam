@@ -68,7 +68,7 @@ namespace LayerSystem
         {
             tileHandler.pauseLoading = true;
             ObjectData objectData;
-            Vector2[] UVs;
+
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
                 if (kvp.Value.gameObject == null)
@@ -98,7 +98,6 @@ namespace LayerSystem
         {
             tileHandler.pauseLoading = true;
             ObjectData objectData;
-            Vector2[] UVs;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
                 if (kvp.Value.gameObject == null)

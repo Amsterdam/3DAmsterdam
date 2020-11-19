@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using LayerSystem;
 using Amsterdam3D.CameraMotion;
+using ConvertCoordinates;
 
 namespace Amsterdam3D.Interface
 {
@@ -27,11 +28,8 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private LayerMask buildingLayer;
 
-
 		[SerializeField]
 		private Layer layer;
-
-		private Vector3 groundLevel = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
 
 		private void Start()
 		{

@@ -13,10 +13,6 @@ namespace Amsterdam3D.Interface
         private RectTransform selectionBox;
 
         private Vector2 startMousePosition;
-        private Vector3 startPosWorld;
-        private Vector2 newSizeData = new Vector2();
-
-        private RayCastBehaviour raycastBehaviour;
 
         private bool inBoxSelect;
 
@@ -26,7 +22,6 @@ namespace Amsterdam3D.Interface
 
 		public override void EnableTool()
         {
-            raycastBehaviour = FindObjectOfType<RayCastBehaviour>();
             GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
             selectionBox = selectionBoxObj.GetComponent<RectTransform>();
             selectionBox.SetParent(canvas.transform);
@@ -69,7 +64,6 @@ namespace Amsterdam3D.Interface
                         {
                             vertices.Clear();
 
-                            startPosWorld = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
                             startMousePosition = Input.mousePosition;
                             selectionBox.position = startMousePosition;
 

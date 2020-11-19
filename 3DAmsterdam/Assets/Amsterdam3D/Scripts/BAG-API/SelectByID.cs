@@ -13,7 +13,6 @@ public class SelectByID : MonoBehaviour
 {
     public TileHandler tileHandler;
 
-    private bool isWorkingOnSelection = false;
     private Ray ray;
     private string lastSelectedID = "";
 
@@ -127,7 +126,7 @@ public class SelectByID : MonoBehaviour
             }
 
             HighlightSelectionRegionIDs(singleIdList);
-            isWorkingOnSelection = false;
+            
             ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
         }
     }
@@ -190,7 +189,6 @@ public class SelectByID : MonoBehaviour
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        isWorkingOnSelection = true;
         tileHandler.pauseLoading = true;
         containerLayer.AddMeshColliders();
 
@@ -198,7 +196,6 @@ public class SelectByID : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
-            isWorkingOnSelection = false;
             tileHandler.pauseLoading = false;
             callback(emptyID);
             yield break;
@@ -214,14 +211,12 @@ public class SelectByID : MonoBehaviour
         }
         var uv = mesh.uv2[vertexIndex];
         var gameObjectToHighlight = hit.collider.gameObject;
-        var hitVisibleObject = true;
         var newHit = hit;
         var lastHit = hit;
 
         //Keep piercing forward with raycasts untill we find a visible UV
         if (uv.y == 0.2f)
         {
-            hitVisibleObject = false;
             Vector3 lastPoint = hit.point;
             while (uv.y == 0.2f)
             {
@@ -235,7 +230,6 @@ public class SelectByID : MonoBehaviour
                     lastHit = newHit;
                     if (uv.y != 0.2f) 
                     {
-                        hitVisibleObject = true;
                         Debug.Log("Hit visible");
                     }
                 }

@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField]
-	private float horizontalIncrement = 5.0f;
-	[SerializeField]
 	private float scrollWheelSensitivity = 1.0f;
 
 	[SerializeField]

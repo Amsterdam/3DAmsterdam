@@ -25,7 +25,7 @@ namespace Amsterdam3D.Sun
         private int minutes;
 
         private DateTime time;
-        private Light light;
+        private Light sunLight;
 
         [SerializeField]
         private float timeSpeed = 1;
@@ -60,7 +60,7 @@ namespace Amsterdam3D.Sun
 
         private void Start()
         {
-            light = GetComponent<Light>();
+            sunLight = GetComponent<Light>();
             time = DateTime.Now;
             hour = time.Hour;
             minutes = time.Minute;
@@ -90,7 +90,7 @@ namespace Amsterdam3D.Sun
             angles.y = (float)azi * Mathf.Rad2Deg;
             //UnityEngine.Debug.Log(angles);
             transform.localRotation = Quaternion.Euler(angles);
-            light.intensity = Mathf.InverseLerp(-12, 0, angles.x);
+            sunLight.intensity = Mathf.InverseLerp(-12, 0, angles.x);
         }        
     }
 }
