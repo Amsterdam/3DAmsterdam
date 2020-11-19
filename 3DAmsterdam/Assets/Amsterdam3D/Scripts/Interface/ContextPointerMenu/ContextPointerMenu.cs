@@ -41,6 +41,7 @@ public class ContextPointerMenu : MonoBehaviour
 		}
 		contextItemsPanel.gameObject.SetActive(false);
 
+		//Add a listener to every containing button that closes our context menu on click
 		Button[] buttons = contextItemsPanel.GetComponentsInChildren<Button>();
 		foreach (Button button in buttons)
 			button.onClick.AddListener(CloseContextMenu);
