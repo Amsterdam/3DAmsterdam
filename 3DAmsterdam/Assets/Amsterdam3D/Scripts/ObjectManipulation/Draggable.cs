@@ -21,7 +21,7 @@ public class Draggable : ObjectManipulation
 	private bool stickToMouseOnSpawn = true;
 
 	[SerializeField]
-	private Collider collider;
+	private Collider meshCollider;
 
 	private Vector3 clickOffset3D;
 
@@ -30,10 +30,10 @@ public class Draggable : ObjectManipulation
 		if (optionalOffsetPoint)
 			offset = optionalOffsetPoint.localPosition;
 
-		collider = GetComponent<Collider>();
+		meshCollider = GetComponent<Collider>();
 		if (stickToMouseOnSpawn)
 		{
-			collider.enabled = false;
+			meshCollider.enabled = false;
 			StartCoroutine(StickToMouse());
 		}
 	}
@@ -51,7 +51,7 @@ public class Draggable : ObjectManipulation
 			FollowMousePointer();
 			yield return new WaitForEndOfFrame();
 		}
-		collider.enabled = true;
+		meshCollider.enabled = true;
 	}
 
 	private void OnMouseDrag()
@@ -62,7 +62,7 @@ public class Draggable : ObjectManipulation
 	}
 
 	public override void OnMouseDown(){
-		collider.enabled = false;
+		meshCollider.enabled = false;
 		base.OnMouseDown();
 
 		//We want a semi 2D offset based on where we clicked on the ground/other colliders
@@ -76,7 +76,7 @@ public class Draggable : ObjectManipulation
 	public override void OnMouseUp()
 	{
 		base.OnMouseUp();
-		collider.enabled = true;
+		meshCollider.enabled = true;
 
 		StopAllCoroutines();
 	}
