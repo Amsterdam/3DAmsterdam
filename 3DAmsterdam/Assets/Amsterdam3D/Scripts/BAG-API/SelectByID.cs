@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using Amsterdam3D.Interface;
 using System;
+using System.Globalization;
 
 public class SelectByID : MonoBehaviour
 {
@@ -333,7 +334,7 @@ public class SelectByID : MonoBehaviour
             //convert Unity to WGS84
             var coordinate = ConvertCoordinates.CoordConvert.UnitytoRD(points[i]);
             if (i != 0) coordinates += ",";
-            coordinates += coordinate.x + " " + coordinate.y;
+            coordinates += coordinate.x.ToString(CultureInfo.InvariantCulture) + " " + coordinate.y.ToString(CultureInfo.InvariantCulture);
         }
         coordinates += "";
 
