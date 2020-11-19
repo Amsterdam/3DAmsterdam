@@ -52,6 +52,10 @@ public class TrafficSimulator : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Places a car on a roadobject
+    /// </summary>
+    /// <param name="currentRoadObject"></param>
     public void PlaceCar(RoadObject currentRoadObject)
     {
         GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
@@ -60,7 +64,10 @@ public class TrafficSimulator : MonoBehaviour
         tempCarObject.transform.SetParent(this.transform);
         allCars.Add(tempCar);
     }
-
+    /// <summary>
+    /// Simulates all cars inside the bounds
+    /// </summary>
+    /// <param name="bound"></param>
     public void SimulateInBounds(Bounds bound)
     {
         frames++;
@@ -88,12 +95,18 @@ public class TrafficSimulator : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Enables/Disables all the cars from driving
+    /// </summary>
+    /// <param name="value"></param>
     public void StartSimulation(bool value)
     {
         enableCarSimulation = value;
     }
-
+    /// <summary>
+    /// Updates the car speed of all cars
+    /// </summary>
+    /// <param name="speed"></param>
     public void UpdateCarSpeed(int speed)
     {
         carSpeed = speed;

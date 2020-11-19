@@ -83,22 +83,16 @@ public class LongitudeLatitude
     public double longitude;
     public double latitude;
 
+    //Another Contructor
     public LongitudeLatitude(double[] inputcords)
     {
         longitude = inputcords[0];
         latitude = inputcords[1];
     }
+    // Constructor
     public LongitudeLatitude()
     {
         
     }
-    /*
-    public static LonLat operator +(LonLat outputcords, string[] inputcords)
-    {
-        LonLat coordinates = new LonLat();
-        coordinates.lon = inputcords[0];
-        coordinates.lat = inputcords[1];
-        return coordinates;
-    }
-    */
+  
 }

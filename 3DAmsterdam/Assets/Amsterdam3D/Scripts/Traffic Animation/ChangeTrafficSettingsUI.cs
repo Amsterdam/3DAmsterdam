@@ -17,12 +17,18 @@ public class ChangeTrafficSettingsUI : MonoBehaviour
         startCarToggle.onValueChanged.AddListener(delegate { StartCars(); });
     }
 
+    /// <summary>
+    /// Changes the vehicle speed through an UI element
+    /// </summary>
     public void UpdateVehicleSpeed()
     {
         speedText.text = speedSlider.value.ToString();
         TrafficSimulator.Instance.carSpeed = Mathf.RoundToInt(speedSlider.value);
     }
 
+    /// <summary>
+    /// Start/Stops all cars through an UI element
+    /// </summary>
     public void StartCars()
     {
         TrafficSimulator.Instance.StartSimulation(startCarToggle.isOn);

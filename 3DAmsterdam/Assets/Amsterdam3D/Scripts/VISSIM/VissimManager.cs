@@ -47,7 +47,11 @@ public class VissimManager : MonoBehaviour
         
     }
 
-
+    /// <summary>
+    /// Converts the VISSIM RD coordinate string into a Vector3
+    /// </summary>
+    /// <param name="stringVector"></param>
+    /// <returns></returns>
     public Vector3 convertStringToVector(string stringVector)
     {
         //0 value is X

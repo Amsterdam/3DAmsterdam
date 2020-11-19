@@ -9,6 +9,10 @@ public class RoadObject : MonoBehaviour
 
     public List<RoadPoint> roadPoints = new List<RoadPoint>();
 
+    /// <summary>
+    /// Creates a roadobject and loads in all the roadpoints
+    /// </summary>
+    /// <param name="tempRoad"></param>
     public void Intiate(RoadItem tempRoad)
     {
         road = tempRoad;

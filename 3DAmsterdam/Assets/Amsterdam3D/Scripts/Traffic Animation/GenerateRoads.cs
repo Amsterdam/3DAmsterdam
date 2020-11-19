@@ -48,6 +48,11 @@ public class GenerateRoads : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// retrieves the road json (FROM THE WEBSERVER, NOT OSM)
+    /// </summary>
+    /// <param name="apiUrl"></param>
+    /// <returns></returns>
     public IEnumerator GetRoadsJson(string apiUrl)
     {
         // send http request
@@ -63,7 +68,10 @@ public class GenerateRoads : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Retrieves the Json data to start the road generation
+    /// </summary>
+    /// <param name="jsonData"></param>
     public void StartRoadGeneration(string jsonData)
     {
         string jsonString = jsonData;

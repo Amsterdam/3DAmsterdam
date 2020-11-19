@@ -10,7 +10,5 @@ public class TrafficButton : MonoBehaviour
     void Start()
     {
         carButton = GetComponent<Button>();
-        //carButton.onClick.AddListener(TrafficSimulator.Instance.StartSimulation);
     }
-
 }

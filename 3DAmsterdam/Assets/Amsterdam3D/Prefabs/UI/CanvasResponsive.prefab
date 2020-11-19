@@ -7582,9 +7582,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6316824707481797829}
     m_Modifications:
+    - target: {fileID: 53829778019445645, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 53829778019445645, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 53829778019445645, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -6.5
+      objectReference: {fileID: 0}
     - target: {fileID: 95915451261718329, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
       propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 432162923308215148, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 987511070270524461, guid: 0a68c256127c6cc4b8b4587db84d29a5,
@@ -7607,10 +7627,25 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -20
       objectReference: {fileID: 0}
+    - target: {fileID: 1779167399308399763, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1926316185427960854, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2166298656557793347, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
       propertyPath: m_Size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166298656557793347, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2304649330701264119, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
@@ -7626,6 +7661,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: -6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127219557594025453, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127219557594025453, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127219557594025453, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3209268409533005319, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
@@ -7650,12 +7700,17 @@ PrefabInstance:
     - target: {fileID: 3220960625171613606, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 224
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 3220960625171613606, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 3744700352142395612, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 208
       objectReference: {fileID: 0}
     - target: {fileID: 3756813669408588439, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
@@ -7666,6 +7721,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3846118850787752564, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4006015341154517907, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
@@ -7772,6 +7832,42 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4935412543241310231, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_Text
+      value: "Brondata: \nEigenaar:\nDatum inwinning:\r\nLink:\nBewerking:\n\nBrondata:\nEigenaar:\nBewerking:\n\nBrondata:\nEigenaar:\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6337880026208132938, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 208
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573817509206712173, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_Text
+      value: "We onderzoeken hoe we in 3D Amsterdam animaties kunnen toevoegen. Eerste
+        doel is om de stad \u2018aan te kleden\u2019, waarbij we in eerste instantie
+        naar autoverkeer kijken. Deze kaartlaag bevat voor een gebied van 2000 x
+        2000 m een eerste opzet voor het animeren van verkeer.\r\nEr zijn verschillende
+        methodes om verkeer toe te voegen. Wij kiezen voor het gebruik van Open Street
+        Map data (OSM). Door het toevoegen van simpele 3D automodellen die de rijlijnen
+        uit het OSM bestand volgen, worden verkeersstromen zichtbaar gemaakt. Een
+        translatie van 2D rijlijnen uit OSM data naar het 3D maaiveld doen we \u2018on
+        the fly\u2019. \r\nHet betreft een eerste onderzoek naar de mogelijkheid
+        animatie toe te voegen. We blijven onderzoeken wat de beste methode is en
+        wat de beste performance geeft. Indien we dit voor autoverkeer gevonden hebben,
+        voegen we nieuwe (verkeers)animaties op eenzelfde wijze toe aan 3D Amsterdam."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6786287396337877933, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050415320189497002, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_Name
+      value: https://www.openstreetmap.org/
+      objectReference: {fileID: 0}
     - target: {fileID: 8414877565509578671, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
       propertyPath: m_Name
@@ -7786,6 +7882,35 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8728469468420202614, guid: 0a68c256127c6cc4b8b4587db84d29a5,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Open Street Map
+
+        -
+
+        2020
+
+        <color=#0000FF>https://www.openstreetmap.org/</color>
+
+        Geen
+
+
+        3D
+        automodellen
+
+        Gemeente Amsterdam
+
+        Low-poly transformatie
+
+
+        Animatie
+        en transformatie 2D-3D via C#
+
+        Gemeente Amsterdam
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 8917973871161333179, guid: 0a68c256127c6cc4b8b4587db84d29a5,
         type: 3}
