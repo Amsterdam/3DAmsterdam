@@ -17,14 +17,14 @@ namespace Amsterdam3D.FreeShape
 		[SerializeField]
 		private Material hoverMaterial;
 
-		private MeshRenderer renderer;
+		private MeshRenderer meshRenderer;
 
 		private void Awake()
 		{
 			freeShape = GetComponentInParent<FreeShape>();
-			renderer = GetComponent<MeshRenderer>();
-			if (renderer)
-				renderer.material = defaultMaterial;
+			meshRenderer = GetComponent<MeshRenderer>();
+			if (meshRenderer)
+				meshRenderer.material = defaultMaterial;
 		}
 
 		public override void OnMouseDown()
@@ -36,19 +36,19 @@ namespace Amsterdam3D.FreeShape
 		public override void OnMouseUp()
 		{
 			base.OnMouseUp();
-			if (renderer)
-				renderer.material = defaultMaterial;
+			if (meshRenderer)
+				meshRenderer.material = defaultMaterial;
 			dragging = false;
 		}
 		private void OnMouseEnter()
 		{
-			if (renderer)
-				renderer.material = hoverMaterial;
+			if (meshRenderer)
+				meshRenderer.material = hoverMaterial;
 		}
 		private void OnMouseExit()
 		{
-			if (dragging || !renderer) return;
-			renderer.material = defaultMaterial;
+			if (dragging || !meshRenderer) return;
+			meshRenderer.material = defaultMaterial;
 		}
 
 		private void OnMouseDrag()
