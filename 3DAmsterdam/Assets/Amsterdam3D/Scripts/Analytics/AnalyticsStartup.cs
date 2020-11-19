@@ -12,6 +12,7 @@ public class AnalyticsStartup
         [RuntimeInitializeOnLoadMethod]
         static void FilterAnalitics()
         {
+            Debug.Log("Analytics: Sending developer filter event.");
             Analytics.CustomEvent("DevelopmentBuild", new Dictionary<string, object> {
                 {"developer", Debug.isDebugBuild}
             });
