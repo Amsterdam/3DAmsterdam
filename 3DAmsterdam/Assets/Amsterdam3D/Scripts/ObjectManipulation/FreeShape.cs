@@ -43,7 +43,7 @@ namespace Amsterdam3D.FreeShape
 		private Vector3[] shapeVertices;
 
 		private Mesh customMesh;
-		private MeshCollider collider;
+		private MeshCollider meshCollider;
 
 		private ScaleHandle[] scaleHandles;
 
@@ -65,7 +65,7 @@ namespace Amsterdam3D.FreeShape
 
 		private void Awake()
 		{
-			collider = shape.GetComponent<MeshCollider>();
+			meshCollider = shape.GetComponent<MeshCollider>();
 			scaleHandles = GetComponentsInChildren<ScaleHandle>();
 			shape = GetComponent<MeshFilter>();
 
@@ -199,7 +199,7 @@ namespace Amsterdam3D.FreeShape
 			rotationHandle3.localPosition = Vector3.Lerp(shapeVertices[18], shapeVertices[19], 0.5f);
 			rotationHandle4.localPosition = Vector3.Lerp(shapeVertices[22], shapeVertices[23], 0.5f);
 
-			collider.sharedMesh = customMesh;
+			meshCollider.sharedMesh = customMesh;
 		}
 
 		private void AlignOtherScaleHandles(ScaleHandle ignoreHandle)

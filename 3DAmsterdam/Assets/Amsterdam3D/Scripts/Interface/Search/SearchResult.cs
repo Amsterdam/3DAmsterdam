@@ -26,6 +26,8 @@ namespace Amsterdam3D.Interface.Search
 
         private LookupData lookupData;
 
+        private SelectByID selectByID;
+
         public string ResultText { 
             get => resultText;
             set
@@ -44,7 +46,12 @@ namespace Amsterdam3D.Interface.Search
             }
         }
 
-        public void ClickedResult(){
+		private void Start()
+		{
+            selectByID = FindObjectOfType<SelectByID>();
+        }
+
+		public void ClickedResult(){
             ParentList.AutocompleteSearchText(ResultText);
             StartCoroutine(FindLocationByIDLookup());
         }
@@ -75,6 +82,9 @@ namespace Amsterdam3D.Interface.Search
 
                     ParentList.ShowResultsList(false);
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
+
+                    if(selectByID)
+                        selectByID.HighlightSelectedID(lookupData.response.docs[0].nummeraanduiding_id);
                 }
             }
         }

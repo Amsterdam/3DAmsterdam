@@ -1,6 +1,6 @@
 ﻿using BruTile;
 
-namespace Terrain
+namespace QuantizedMeshTerrain
 {
     public class TmsGlobalGeodeticTileSchema : TileSchema
     {
@@ -14,7 +14,7 @@ namespace Terrain
 
             for (var p = 0; p <= 20; p++)
             {
-                Resolutions.Add(p.ToString(), new Resolution(p.ToString(), f));
+                Resolutions.Add((int)p, new Resolution((int)p, f));
                 f = f / 2;
             }
 

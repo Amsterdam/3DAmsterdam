@@ -30,7 +30,6 @@ namespace Amsterdam3D.Interface
         private Vector2 hoverSize;
 
         private bool dragging = false;
-        private bool pointerLeftMap = true;
 
         private bool interactingWithMap = false;
 
@@ -54,7 +53,6 @@ namespace Amsterdam3D.Interface
         private void StartedMapInteraction()
         {
             interactingWithMap = true;
-            pointerLeftMap = false;
             navigation.gameObject.SetActive(true);
 
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
@@ -117,7 +115,6 @@ namespace Amsterdam3D.Interface
             {
                 StoppedMapInteraction();
             }
-            pointerLeftMap = true;
         }
 
 
