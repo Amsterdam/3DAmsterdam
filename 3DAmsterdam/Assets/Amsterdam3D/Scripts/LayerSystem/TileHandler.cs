@@ -117,36 +117,36 @@ namespace LayerSystem
             Debug.Log(dataURL);
             ObjectMappingClass data;
             string id = "null";
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-            {
-                yield return uwr.SendWebRequest();
 
-                if (uwr.isNetworkError || uwr.isHttpError)
+            ObjectData objectMapping = obj.GetComponent<ObjectData>();
+            if (!objectMapping)
+            {
+                using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
                 {
-                    //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
-                    //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
-                }
-                else
-                {
-                    
-                    ObjectData objectMapping = obj.GetComponent<ObjectData>();
-                    if (objectMapping is null)
+                    yield return uwr.SendWebRequest();
+
+                    if (uwr.isNetworkError || uwr.isHttpError)
+                    {
+                        //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
+                        //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
+                    }
+                    else
                     {
                         objectMapping = obj.AddComponent<ObjectData>();
+
+                        AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                        data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                        int idIndex = data.vectorMap[vertexIndex];
+                        id = data.ids[idIndex];
+                        objectMapping.highlightIDs.Clear();
+                        objectMapping.highlightIDs.Add(id);
+                        objectMapping.ids = data.ids;
+                        objectMapping.uvs = data.uvs;
+                        objectMapping.vectorMap = data.vectorMap;
+                        objectMapping.mappedUVs = data.mappedUVs;
+
+                        newAssetBundle.Unload(true);
                     }
-
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    int idIndex = data.vectorMap[vertexIndex];
-                    id = data.ids[idIndex];
-                    objectMapping.highlightIDs.Clear();
-                    objectMapping.highlightIDs.Add(id);
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
-                    objectMapping.mappedUVs = data.mappedUVs;
-
-                    newAssetBundle.Unload(true);
                 }
             }
             callback?.Invoke(id);
