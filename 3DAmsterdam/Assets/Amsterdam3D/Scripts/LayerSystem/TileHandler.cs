@@ -119,7 +119,7 @@ namespace LayerSystem
             string id = "null";
 
             ObjectData objectMapping = obj.GetComponent<ObjectData>();
-            if (!objectMapping)
+            if (!objectMapping || objectMapping.ids.Count == 0)
             {
                 using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
                 {
@@ -130,9 +130,9 @@ namespace LayerSystem
                         //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
                         //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
                     }
-                    else
-                    {
-                        objectMapping = obj.AddComponent<ObjectData>();
+                    else{                     
+                        if(!objectMapping)
+                            objectMapping = obj.AddComponent<ObjectData>();
 
                         AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                         data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
