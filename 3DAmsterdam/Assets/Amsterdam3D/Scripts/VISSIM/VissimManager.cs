@@ -41,12 +41,6 @@ public class VissimManager : MonoBehaviour
         allData.Add(data);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// Converts the VISSIM RD coordinate string into a Vector3
     /// </summary>

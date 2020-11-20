@@ -13,8 +13,7 @@ public class GenerateRoads : MonoBehaviour
     public List<RoadObject> shuffledRoadsList = new List<RoadObject>();
     public static GenerateRoads Instance = null;
 
-    public static string trafficFolderName = "traffic";
-    public static string roadsFileName = "/road_line.geojson";
+    public const string roadsFileName = "traffic/road_line.geojson";
 
     public Transform mainCameraTransform = default;
 
@@ -31,8 +30,7 @@ public class GenerateRoads : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(GetRoadsJson(Constants.BASE_DATA_URL + "develop/" + trafficFolderName + roadsFileName));
-        StartCoroutine(GetRoadsJson("https://acc.3d.amsterdam.nl/web/data/develop/traffic/road_line.geojson"));
+        StartCoroutine(GetRoadsJson(Constants.BASE_DATA_URL + roadsFileName));
         mainCameraTransform = Camera.main.transform;
     }
 

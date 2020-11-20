@@ -5,7 +5,6 @@ using System.Linq;
 
 public class Car : MonoBehaviour
 {
-    private Transform thisCar = default;
     public RoadObject currentRoad;
     private RoadObject lastRoad = null;
     private RoadObject nextRoad = null;
@@ -47,18 +46,18 @@ public class Car : MonoBehaviour
             speed = TrafficSimulator.Instance.carSpeed;
         }
         updateCarFrames++;
-        float DistanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
-        if (DistanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
+        float distanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
+        if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
             vehicleFrameSpeedCompensator = 1f;
-        else if (DistanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && DistanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
+        else if (distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
             vehicleFrameSpeedCompensator = 5f;
-        else if (DistanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+        else if (distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
             vehicleFrameSpeedCompensator = 10f;
 
 
-        if (DistanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
-             DistanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && DistanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
-            DistanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+        if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
+             distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
+            distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
         {
             if (!gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
             {
@@ -74,9 +73,33 @@ public class Car : MonoBehaviour
                         currentRoadIndex++;
                     }
 
+
+
+
+
+                    var layerMask = ~0;
+                    //RaycastHit[] hit = new RaycastHit[1];
                     RaycastHit hit;
                     Vector3 temp = transform.position;
                     temp.y = 50f;
+                    /*
+                    int hits = Physics.RaycastNonAlloc(temp, -Vector3.up, hit, Mathf.Infinity, layerMask);
+                    for (int i = 0; i < hits; i++)
+                    {
+                        Debug.Log("Hit " + hit[i].collider.gameObject.name);
+                        MoveCar(hit[i].point);
+                    }
+                    if (hits == 0)
+                    {
+                        if (currentRoad.roadPoints.Count > currentRoadIndex)
+                        {
+                            // if the car cant find an underground
+                            temp.y = lastRecordedHeight;
+                            MoveCar(temp);
+                        }
+                    }
+                    */
+                    
                     if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
                     {
                         // if the map tiles are loaded beneath the car
@@ -91,15 +114,9 @@ public class Car : MonoBehaviour
                             MoveCar(temp);
                         }
                     }
+                    
 
                 }
-            }
-        }
-        else
-        {
-            if (gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
-            {
-                
             }
         }
     }
@@ -148,10 +165,6 @@ public class Car : MonoBehaviour
                     // finds new road segment based on distance
                     if (distance < Mathf.Round(Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
                     {
-                        if(debugCar)
-                            Debug.Log(distance);
-
-                        // MAYBE DELETE CUZ ITS THE SAME THING AS ABOVE
                         if (Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates) < Vector3.Distance(transform.position, obj.roadPoints[obj.roadPoints.Count - 1].pointCoordinates))
                         {
                             // checks if the point is infront of the player or behind so the car doesn't do "illegal" weird turns
@@ -200,4 +213,5 @@ public class Car : MonoBehaviour
             }
         }
     }
+
 }

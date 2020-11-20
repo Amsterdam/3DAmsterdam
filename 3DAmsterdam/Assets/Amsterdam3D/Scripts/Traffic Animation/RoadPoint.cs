@@ -8,7 +8,7 @@ public class RoadPoint : MonoBehaviour
     public void Initiate(double longitude, double latitude)
     {
         Vector3 tempCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(longitude, latitude);
-        tempCoordinates.y = 45f; // random height to make sure its somewhat close to the map.
+        tempCoordinates.y = Constants.ZERO_GROUND_LEVEL_Y; 
         pointCoordinates = tempCoordinates;
         transform.position = pointCoordinates;
     }
