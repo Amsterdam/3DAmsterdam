@@ -101,12 +101,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileHandler: {fileID: 4498901014617163852}
-  BuildingContainer: {fileID: 4498901013071965061}
-  isBusy: 0
   clickTimer: 0.3
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
+  bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&within=
+  bagDataSelection:
+    object_list: []
+    object_count: 0
+    page_count: 0
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,9 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cdf445e47d5ac4f93e93702f5bd739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DeFaultMaterial: {fileID: 0}
+  defaultMaterial: {fileID: 0}
   dataFolder: terrain
-  textureUrl: https://saturnus.geodan.nl/mapproxy/bgt/service?crs=EPSG%3A3857&service=WMS&version=1.1.1&request=GetMap&styles=&format=image%2Fjpeg&layers=bgt&bbox={xMin}%2C{yMin}%2C{xMax}%2C{yMax}&width=256&height=256&srs=EPSG%3A4326
+  textureUrl: terrain_textures/{z}/{x}/{y}.jpg
   placeholderTile: {fileID: 1983436932115830, guid: 503bdea8ef3e023468133e2f91b32d3f,
     type: 3}
   tileShadowCastingMode: 0

@@ -1,7 +1,7 @@
-﻿using Terrain.Tiles;
+﻿using QuantizedMeshTerrain.Tiles;
 using UnityEngine;
 
-namespace Terrain.ExtensionMethods
+namespace QuantizedMeshTerrain.ExtensionMethods
 {
     public static class TerrainTileExtension
     {
@@ -21,9 +21,9 @@ namespace Terrain.ExtensionMethods
                 var yCoor = verts.v[i];
                 var height = verts.height[i];
 
-                var x1 = Terrain.Tiles.Mathf.Lerp(-90, 90, ((double)(xCoor) / MAX));
-                var y1 = Terrain.Tiles.Mathf.Lerp(-90, 90, ((double)(yCoor) / MAX));
-                var h1 = Terrain.Tiles.Mathf.Lerp(MinHeight, MaxHeight, ((double)height / MAX));
+                var x1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(-90, 90, ((double)(xCoor) / MAX));
+                var y1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(-90, 90, ((double)(yCoor) / MAX));
+                var h1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(MinHeight, MaxHeight, ((double)height / MAX));
 
                 vertices[i] = new Vector3((float)x1, (float)h1, (float)y1);
             }
@@ -43,9 +43,9 @@ namespace Terrain.ExtensionMethods
                 var yCoor = vertData.v[i];
                 var height = vertData.height[i];
 
-                var x1 = Terrain.Tiles.Mathf.Lerp(-90, 90, ((double)(xCoor) / MAX));
-                var y1 = Terrain.Tiles.Mathf.Lerp(-90, 90, ((double)(yCoor) / MAX));
-                var h1 = Terrain.Tiles.Mathf.Lerp(MinHeight, MaxHeight, ((double)height / MAX));
+                var x1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(-90, 90, ((double)(xCoor) / MAX));
+                var y1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(-90, 90, ((double)(yCoor) / MAX));
+                var h1 = QuantizedMeshTerrain.Tiles.Mathf.Lerp(MinHeight, MaxHeight, ((double)height / MAX));
 
                 uvs[i] = new Vector2((float)((x1 + 90) / 180), (float)((y1 + 90) / 180));
             }

@@ -16,14 +16,14 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private GameObject Layers;
 
-    private Camera camera;
+    private Camera cameraComponent;
 
     private Ray ray;
     private RaycastHit hit;
 
     private void OnEnable()
     {
-        camera = GetComponent<Camera>();
+        cameraComponent = GetComponent<Camera>();
         if (!inMenus)
         {
             Layers.SetActive(false);
@@ -139,9 +139,12 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         this.rotation = rotationEuler;
     }
 
-    public Vector3 GetMousePositionInWorld()
+    public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
     {
-        ray = camera.ScreenPointToRay(Input.mousePosition);
+        var pointerPosition = Input.mousePosition;
+        if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+
+        ray = cameraComponent.ScreenPointToRay(pointerPosition);
         float distance = 99;
         if (Physics.Raycast(ray, out hit, distance))
         {

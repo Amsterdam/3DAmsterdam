@@ -6,9 +6,6 @@ using UnityEngine.EventSystems;
 public class ExpandGroup : ChangePointerStyleHandler
 {
 	[SerializeField]
-	private bool hideWhenEmpty = true;
-
-	[SerializeField]
 	private bool calculateHeightBasedOnChildren = true;
 
 	private RectTransform rectTransform;

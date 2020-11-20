@@ -46,7 +46,6 @@ public class BoomTileManager : MonoBehaviour
         private GodViewCameraExtents CV;
         private Extent vorigeCV = new Extent(0, 0, 0, 0);
         public int MAX_Concurrent_Downloads = 5;
-        private Boolean BijwerkenGereed = true;
 
         private Dictionary<string, float> gebouwenlijst = new Dictionary<string, float>();
         private Dictionary<Vector3, TileData> buildingTiles = new Dictionary<Vector3, TileData>();
@@ -76,7 +75,6 @@ public class BoomTileManager : MonoBehaviour
             //{
             if (PendingDestroy.Count > 0 || PendingBuilds.Count > 0 || PendingDownloads.Count > 0)
             {
-                BijwerkenGereed = false;
                 StartCoroutine(TilesBijwerken());
             }
 
@@ -216,7 +214,6 @@ public class BoomTileManager : MonoBehaviour
 
             }
             yield return new WaitForSeconds(0.1f);
-            BijwerkenGereed = true;
         }
 
         /// <summary>

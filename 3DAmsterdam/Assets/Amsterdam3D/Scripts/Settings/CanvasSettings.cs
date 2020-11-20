@@ -13,6 +13,11 @@ public class CanvasSettings : MonoBehaviour
     [SerializeField]
     private Slider canvasScaleSlider;
 
+    //static scale we can request through class
+    public static float canvasScale = 1.0f;
+
+    private float maxAutoWidth = 1.5f;
+
     private float referenceWidth = 1920.0f;
 
     [SerializeField]
@@ -26,8 +31,9 @@ public class CanvasSettings : MonoBehaviour
         canvasScaler = GetComponent<CanvasScaler>();
         if (PlayerPrefs.HasKey(canvasScaleFactorKey))
         {
-            canvasScaler.scaleFactor = PlayerPrefs.GetFloat(canvasScaleFactorKey, 1.0f);
-            canvasScaleSlider.value = canvasScaler.scaleFactor;
+            canvasScale = PlayerPrefs.GetFloat(canvasScaleFactorKey, 1.0f);
+            canvasScaler.scaleFactor = canvasScale;
+            canvasScaleSlider.value = canvasScale;
         }
         else{
             SetPreferableScale();
@@ -49,12 +55,14 @@ public class CanvasSettings : MonoBehaviour
 
     /// <summary>
     /// Scale up the canvas when we have a screen width high DPI like a 4k monitor or ultrawide.
+    /// Do not go all the way up to 2x, but it is allowed through the settings menu.
     /// </summary>
     private void SetPreferableScale()
     {
-        canvasScaler.scaleFactor = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, 2.0f);
-        canvasScaleSlider.value = canvasScaler.scaleFactor;
-        JavascriptMethodCaller.SetInterfaceScale(canvasScaler.scaleFactor);
+        canvasScale = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, maxAutoWidth);
+        canvasScaler.scaleFactor = canvasScale;
+        canvasScaleSlider.value = canvasScale;
+        JavascriptMethodCaller.SetInterfaceScale(canvasScale);
     }
 
     /// <summary>
@@ -63,8 +71,9 @@ public class CanvasSettings : MonoBehaviour
     /// <param name="scaleFactor"></param>
     public void ChangeCanvasScale(float scaleFactor)
     {
-        canvasScaler.scaleFactor = scaleFactor;
-        PlayerPrefs.SetFloat(canvasScaleFactorKey, scaleFactor);
-        JavascriptMethodCaller.SetInterfaceScale(canvasScaler.scaleFactor);
+        canvasScale = scaleFactor;
+        canvasScaler.scaleFactor = canvasScale;
+        PlayerPrefs.SetFloat(canvasScaleFactorKey, canvasScale);
+        JavascriptMethodCaller.SetInterfaceScale(canvasScale);
     }
 }
