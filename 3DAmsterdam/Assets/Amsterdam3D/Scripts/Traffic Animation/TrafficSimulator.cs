@@ -13,8 +13,6 @@ public class TrafficSimulator : MonoBehaviour
 
     public bool enableCarSimulation = false;
     public bool enableBoundsSimulation = false;
-    [SerializeField] private Bounds boundsSimulation = new Bounds(new Vector3(0,0,0), new Vector3(0,0,0));
-    private Amsterdam3D.SelectionTools.SelectionToolBehaviour selectionTool = default;
 
     public int minimumCarRenderDistance = 500;
     public int mediumCarRenderDistance = 1000;
@@ -29,28 +27,12 @@ public class TrafficSimulator : MonoBehaviour
 
     private void Start()
     {
-        selectionTool = FindObjectOfType<Amsterdam3D.SelectionTools.SelectionToolBehaviour>();
         StartSimulation(true);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            enableBoundsSimulation = !enableBoundsSimulation;
-        }
-        if (enableBoundsSimulation == true)
-        {
-            if (Input.GetMouseButtonUp(0))
-            {
-                boundsSimulation = selectionTool.GetBounds();
-            }
-            
-            if (boundsSimulation.size != new Vector3(0,0,0)) // 0,0,0 is actually the "null" for the vector in this case
-            {
-                SimulateInBounds(boundsSimulation);
-            }
-        }
+
     }
     /// <summary>
     /// Places a car on a roadobject
