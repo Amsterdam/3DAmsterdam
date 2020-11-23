@@ -9,6 +9,11 @@ public static class Constants
     public const float ZERO_GROUND_LEVEL_Y = 43.0f;
 
     /// <summary>
+    /// Main TileLoader tile sizes (square, x and z axes length)
+    /// </summary>
+    public static float TILE_SIZE = 1000.0f;
+
+    /// <summary>
     /// The minimap coordinates (starting from the bottom left)
     /// </summary>
     public const float MINIMAP_RD_BOTTOMLEFT_X = -285401.920f; // zoomlevel 0 at RD WMTS
