@@ -506,7 +506,7 @@ namespace LayerSystem
         }
 
 
-        private bool tileHasHighlight(TileChange tileChange)
+        private bool TileHasHighlight(TileChange tileChange)
         {
             Tile tile = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)];
             if (tile.gameObject == null)
@@ -547,7 +547,7 @@ namespace LayerSystem
                     GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
                     if (newGameobject!=null)
                     {
-                        if (tileHasHighlight(tileChange))
+                        if (TileHasHighlight(tileChange))
                         {
                             StartCoroutine(DownloadIDMappingData(tileChange, newGameobject));
                         }
