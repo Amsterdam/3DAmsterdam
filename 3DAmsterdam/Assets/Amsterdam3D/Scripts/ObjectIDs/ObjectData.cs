@@ -19,6 +19,13 @@ public class ObjectData : MonoBehaviour
 	public Mesh mesh;
 	public List<int> triangleCount;
 
+	private Texture2D colorIDMap;
+
+	private void OnDestroy()
+	{
+		if (colorIDMap) Destroy(colorIDMap);	
+	}
+
 	/// <summary>
 	/// Applies the highlighted/hidden lists to their corresponding pixels in the texture map
 	/// </summary>
@@ -37,12 +44,12 @@ public class ObjectData : MonoBehaviour
 
 		//create a texturemap if it doesnt exists
 		var meshRenderer = GetComponent<MeshRenderer>();
-		//Create a main texture on click
-		Texture2D colorTexture = (Texture2D)meshRenderer.material.GetTexture("_HighLightMap");
-		if (!colorTexture)
+		//Create an ID map if it doesnt exist yet
+		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighLightMap");
+		if (!colorIDMap)
 		{
-			colorTexture = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
-			colorTexture.filterMode = FilterMode.Point;
+			colorIDMap = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
+			colorIDMap.filterMode = FilterMode.Point;
 		}
 
 		Color pixelColor;
@@ -66,13 +73,13 @@ public class ObjectData : MonoBehaviour
 			}
 			
 			Vector2 uvCoordinate = ObjectIDMapping.GetUV(i, textureSize);
-			colorTexture.SetPixel(Mathf.FloorToInt(uvCoordinate.x * textureSize.x), Mathf.FloorToInt(uvCoordinate.y * textureSize.y), pixelColor);
+			colorIDMap.SetPixel(Mathf.FloorToInt(uvCoordinate.x * textureSize.x), Mathf.FloorToInt(uvCoordinate.y * textureSize.y), pixelColor);
 		}
 		
-		colorTexture.Apply();
+		colorIDMap.Apply();
 
 		//Apply our texture to the highlightmap slot
-		meshRenderer.material.SetTexture("_HighLightMap", colorTexture);		
+		meshRenderer.material.SetTexture("_HighLightMap", colorIDMap);		
 	}
 }
 
