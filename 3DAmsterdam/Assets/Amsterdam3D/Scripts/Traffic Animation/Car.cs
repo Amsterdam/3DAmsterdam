@@ -23,6 +23,7 @@ public class Car : MonoBehaviour
     private float maxWaitingTime = 5f;
 
     private float lastRecordedHeight = 0.0f;
+    private RaycastHit hit;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,7 +55,6 @@ public class Car : MonoBehaviour
         else if (distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
             vehicleFrameSpeedCompensator = 10f;
 
-
         if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
              distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
             distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
@@ -73,32 +73,8 @@ public class Car : MonoBehaviour
                         currentRoadIndex++;
                     }
 
-
-
-
-
-                    var layerMask = ~0;
-                    //RaycastHit[] hit = new RaycastHit[1];
-                    RaycastHit hit;
                     Vector3 temp = transform.position;
                     temp.y = 50f;
-                    /*
-                    int hits = Physics.RaycastNonAlloc(temp, -Vector3.up, hit, Mathf.Infinity, layerMask);
-                    for (int i = 0; i < hits; i++)
-                    {
-                        Debug.Log("Hit " + hit[i].collider.gameObject.name);
-                        MoveCar(hit[i].point);
-                    }
-                    if (hits == 0)
-                    {
-                        if (currentRoad.roadPoints.Count > currentRoadIndex)
-                        {
-                            // if the car cant find an underground
-                            temp.y = lastRecordedHeight;
-                            MoveCar(temp);
-                        }
-                    }
-                    */
                     
                     if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
                     {
@@ -114,8 +90,6 @@ public class Car : MonoBehaviour
                             MoveCar(temp);
                         }
                     }
-                    
-
                 }
             }
         }
