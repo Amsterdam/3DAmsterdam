@@ -104,9 +104,20 @@ namespace LayerSystem
 
         public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback = null) 
         {
-            StartCoroutine(AddObjectData(obj, vertexIndex, callback));
+            ObjectData objectMapping = obj.GetComponent<ObjectData>();
+            if (!objectMapping || objectMapping.ids.Count == 0)
+            {
+                //No/empty object data? Download it and return the ID
+                StartCoroutine(DownloadObjectData(obj, vertexIndex, callback));
+            }
+            else{
+                //Return the ID directly
+                int idIndex = objectMapping.vectorMap[vertexIndex];
+                var id = objectMapping.ids[idIndex];
+                callback?.Invoke(id);
+            }
         }
-        private IEnumerator AddObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
+        private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
         {
             string name = obj.GetComponent<MeshFilter>().mesh.name;
             Debug.Log(name);
@@ -114,39 +125,31 @@ namespace LayerSystem
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") + "-data";
             string dataURL = Constants.TILE_METADATA_URL + dataName;
-            Debug.Log(dataURL);
+            
             ObjectMappingClass data;
             string id = "null";
 
-            ObjectData objectMapping = obj.GetComponent<ObjectData>();
-            if (!objectMapping || objectMapping.ids.Count == 0)
+            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
             {
-                using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+                yield return uwr.SendWebRequest();
+                Debug.Log(dataURL);
+                if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    yield return uwr.SendWebRequest();
+                    //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
+                    //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
+                }
+                else{
+                    ObjectData objectMapping = obj.AddComponent<ObjectData>();
+                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                    int idIndex = data.vectorMap[vertexIndex];
+                    id = data.ids[idIndex];
+                    objectMapping.ids = data.ids;
+                    objectMapping.uvs = data.uvs;
+                    objectMapping.vectorMap = data.vectorMap;
+                    objectMapping.mappedUVs = data.mappedUVs;
 
-                    if (uwr.isNetworkError || uwr.isHttpError)
-                    {
-                        //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
-                        //WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
-                    }
-                    else{                     
-                        if(!objectMapping)
-                            objectMapping = obj.AddComponent<ObjectData>();
-
-                        AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                        data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                        int idIndex = data.vectorMap[vertexIndex];
-                        id = data.ids[idIndex];
-                        objectMapping.highlightIDs.Clear();
-                        objectMapping.highlightIDs.Add(id);
-                        objectMapping.ids = data.ids;
-                        objectMapping.uvs = data.uvs;
-                        objectMapping.vectorMap = data.vectorMap;
-                        objectMapping.mappedUVs = data.mappedUVs;
-
-                        newAssetBundle.Unload(true);
-                    }
+                    newAssetBundle.Unload(true);
                 }
             }
             callback?.Invoke(id);
@@ -193,7 +196,7 @@ namespace LayerSystem
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
                     objectMapping.triangleCount = data.triangleCount;
-                    objectMapping.UpdateUVs();
+                    objectMapping.ApplyDataToIDsTexture();
                     newAssetBundle.Unload(true);
                 }
             }
@@ -601,7 +604,7 @@ namespace LayerSystem
                     objectMapping.mappedUVs = data.mappedUVs;
                     objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
                     objectMapping.triangleCount = data.triangleCount;
-                    objectMapping.UpdateUVs();
+                    objectMapping.ApplyDataToIDsTexture();
                     newAssetBundle.Unload(true);
                 }
             }

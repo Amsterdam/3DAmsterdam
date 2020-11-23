@@ -219,7 +219,7 @@ public class SelectByID : MonoBehaviour
         var lastHit = hit;
 
         //Keep piercing forward with raycasts untill we find a visible UV
-        if (uv.y == 0.2f)
+        /*if (uv.y == 0.2f)
         {
             Vector3 lastPoint = hit.point;
             while (uv.y == 0.2f)
@@ -243,54 +243,12 @@ public class SelectByID : MonoBehaviour
                 }
                 yield return new WaitForEndOfFrame();
             }
-        }
+        }*/
         hit = lastHit;
 
         //Not retrieve the selected BAG ID tied to the selected triangle
-        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit, Color.blue); });
-    }
-
-    //Paints a pixel for a specific subobject, for highlighting or coloring specific buildings
-    private void PaintSelectionPixel(string objectId, GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit, Color pixelColor)
-    {
-        print("Adding texture with colored pixel");
-        int vertIndex = hit.triangleIndex * 3;
-        var objectData = gameObjectToHighlight.GetComponent<ObjectData>();
-        Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count)/2;
-
-        Debug.Log("Texture size: " + textureSize);
-
-        //Reapply the mesh collider so it has the new proper UV's
-        mesh.uv2 = objectData.uvs;
-        gameObjectToHighlight.GetComponent<MeshCollider>().sharedMesh = mesh;
-
-        //Create a texture, without mipmapping or filtering
-        //Vector2 uvCoordinate = ObjectIDMapping.GetUV(objectIndex, textureSize);
-        Vector2 uvCoordinate = mesh.uv2[vertIndex];
-        Debug.Log("Setting uv: " + uvCoordinate);
-
-        var meshRenderer = gameObjectToHighlight.GetComponent<MeshRenderer>();
-
-        //Create a main texture on click
-        Texture2D colorTexture = (Texture2D)meshRenderer.material.GetTexture("_HighLightMap");        
-        if (!colorTexture)
-        {
-            colorTexture = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32,false);
-            Color[] pixels = colorTexture.GetPixels();
-            for (int i = 0; i < pixels.Length; ++i)
-            {
-                pixels[i] = Color.green;
-            }
-            colorTexture.SetPixels(pixels);
-            colorTexture.filterMode = FilterMode.Point;
-        }
-
-        colorTexture.SetPixel(Mathf.FloorToInt(uvCoordinate.x * textureSize.x), Mathf.FloorToInt(uvCoordinate.y * textureSize.y), pixelColor);
-        colorTexture.Apply();
-
-        //TODO: change shader
-        meshRenderer.material.SetTexture("_HighLightMap", colorTexture);
+        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit, Color.blue); });
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)

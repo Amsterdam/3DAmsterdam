@@ -108,8 +108,7 @@ namespace LayerSystem
                     {
                          objectData.highlightIDs.Clear();
                     }
-                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.UpdateUVs();
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
             tileHandler.pauseLoading = false;
@@ -136,8 +135,7 @@ namespace LayerSystem
                     else{
                         objectData.hideIDs.Clear();
                     }
-                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.UpdateUVs();
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
             tileHandler.pauseLoading = false;
