@@ -65,6 +65,8 @@ public class ObjectData : MonoBehaviour
 		}
 		mesh.uv2 = highlightUVs;
 	}
+
+
 }
 
 
