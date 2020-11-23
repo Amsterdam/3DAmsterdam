@@ -15,6 +15,8 @@ MonoBehaviour:
   styleOnHover: 1
   layerType: 2
   linkedObject: {fileID: 0}
+  opaqueShaderSourceOverride: {fileID: 0}
+  transparentShaderSourceOverride: {fileID: 0}
   uniqueLinkedObjectMaterials: []
   toggleActiveLayer: {fileID: 7914545870203704338}
   parentInterfaceLayers: {fileID: 0}
@@ -266,6 +268,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: IconInformation
+      objectReference: {fileID: 0}
+    - target: {fileID: 8849937383734652618, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a,
+        type: 3}
+      propertyPath: tooltipText
+      value: Kleur opties
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ff0f9ebef801c9449f4d40d66bb5a1a, type: 3}
