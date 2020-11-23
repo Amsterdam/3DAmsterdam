@@ -272,7 +272,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 94.20001, y: 0}
-  m_SizeDelta: {x: 188.4, y: 20}
+  m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7689655981020033205
 MonoBehaviour:
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 6835930623199787261}
   - component: {fileID: 1832961473550703102}
   m_Layer: 5
-  m_Name: Text (1)
+  m_Name: SpeedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,7 +358,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 119.7, y: 19.7}
+  m_AnchoredPosition: {x: 154.5, y: 19.7}
   m_SizeDelta: {x: 150, y: 70}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &6835930623199787261
@@ -1070,7 +1070,7 @@ PrefabInstance:
     - target: {fileID: 9120930591089685589, guid: 7859e241f2c4f4345943bbb961ba7591,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5
+      value: 14.9
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 449327706385837633, guid: 7859e241f2c4f4345943bbb961ba7591, type: 3}

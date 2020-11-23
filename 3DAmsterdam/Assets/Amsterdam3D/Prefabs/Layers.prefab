@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601c8c3306aa1b249a9997e8681ad08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
+  DefaultMaterial: {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   HighlightMaterial: {fileID: 0}
   tileSize: 1000
   layerPriority: 0
@@ -105,8 +105,6 @@ MonoBehaviour:
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
-  bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&within=
   bagDataSelection:
     object_list: []
     object_count: 0
