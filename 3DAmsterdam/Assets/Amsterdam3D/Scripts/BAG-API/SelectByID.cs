@@ -191,9 +191,12 @@ public class SelectByID : MonoBehaviour
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
-        containerLayer.AddMeshColliders();
 
-        //Didn't hit anything
+        //Check area that we clicked, and add the (heavy) mesh collider there
+        Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+        containerLayer.AddMeshColliders(planeHit);
+
+        //No fire a raycast towards our meshcolliders to see what face we hit
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
