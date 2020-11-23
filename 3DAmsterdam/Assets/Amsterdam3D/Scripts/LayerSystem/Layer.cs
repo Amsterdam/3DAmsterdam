@@ -63,7 +63,7 @@ namespace LayerSystem
                 {
                     foreach (MeshFilter meshFilter in meshFilters)
                     {
-                        if (Mathf.Abs(onlyTileUnderPosition.x - meshFilter.gameObject.transform.position.x) < Constants.TILE_SIZE * 0.5f && Mathf.Abs(onlyTileUnderPosition.z - meshFilter.gameObject.transform.position.z) < Constants.TILE_SIZE * 0.5f)
+                        if (Mathf.Abs(onlyTileUnderPosition.x - meshFilter.gameObject.transform.position.x) < Constants.TILE_SIZE && Mathf.Abs(onlyTileUnderPosition.z - meshFilter.gameObject.transform.position.z) < Constants.TILE_SIZE)
                         {
                             meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
                             if (meshCollider == null)
