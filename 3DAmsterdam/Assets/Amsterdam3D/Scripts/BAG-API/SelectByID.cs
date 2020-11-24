@@ -98,10 +98,10 @@ public class SelectByID : MonoBehaviour
         var bounds = selectionTools.GetBounds();
         containerLayer.AddMeshColliders();
 
-        //Bounding box (does not support rotations)
+        //Bounding box (does not support rotations/perspective)
         //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
         //Polygon selection
-        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionRegionIDs));
+        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightObjectsWithIDs));
     }
 
     /// <summary>
@@ -126,9 +126,7 @@ public class SelectByID : MonoBehaviour
                 singleIdList.Add(id);
             }
 
-            HighlightSelectionRegionIDs(singleIdList);
-            
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
+            HighlightObjectsWithIDs(singleIdList);
         }
     }
 
@@ -136,8 +134,10 @@ public class SelectByID : MonoBehaviour
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightSelectionRegionIDs(List<string> ids)
+    private void HighlightObjectsWithIDs(List<string> ids)
     {
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
+
         selectedIDs.AddRange(ids);
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
