@@ -98,10 +98,7 @@ public class SelectByID : MonoBehaviour
         SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
         var vertices = selectionTools.GetVertices();
         var bounds = selectionTools.GetBounds();
-        containerLayer.AddMeshColliders();
-
-        //Bounding box (does not support rotations/perspective)
-        //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
+       
         //Polygon selection
         StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightObjectsWithIDs));
     }
@@ -304,7 +301,7 @@ public class SelectByID : MonoBehaviour
 
         var requestUrl = bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
         var hideRequest = UnityWebRequest.Get(requestUrl);
-        Debug.Log(requestUrl);
+
         yield return hideRequest.SendWebRequest();
 
         if (hideRequest.isNetworkError || hideRequest.isHttpError)
@@ -330,6 +327,13 @@ public class SelectByID : MonoBehaviour
                 }
             }
         }
+
+        //Make sure all the metadata requests are done before we continue
+        while(TileHandler.runningTileDataRequests > 0)
+        {
+            yield return new WaitForEndOfFrame();
+		}
+
         callback?.Invoke(ids);
         yield return null;
     }
