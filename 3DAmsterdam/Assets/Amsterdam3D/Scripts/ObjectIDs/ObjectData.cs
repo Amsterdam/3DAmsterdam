@@ -43,7 +43,7 @@ public class ObjectData : MonoBehaviour
 		var meshRenderer = GetComponent<MeshRenderer>();
 
 		//Create an ID map if it doesnt exist yet, force a instance of the material to be created
-		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighLightMap");
+		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighlightMap");
 		if (!colorIDMap)
 		{
 			colorIDMap = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
@@ -78,7 +78,7 @@ public class ObjectData : MonoBehaviour
 		colorIDMap.Apply();
 
 		//Apply our texture to the highlightmap slot
-		meshRenderer.material.SetTexture("_HighLightMap", colorIDMap);		
+		meshRenderer.material.SetTexture("_HighlightMap", colorIDMap);		
 	}
 }
 
