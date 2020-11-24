@@ -121,9 +121,7 @@ namespace Amsterdam3D.Interface
 			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
 
 			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
-			{
 				CopyPropertiesToAllChildMaterials();
-			}
 		}
 
 		/// <summary>
@@ -134,7 +132,14 @@ namespace Amsterdam3D.Interface
 			MeshRenderer[] childRenderers = layerVisuals.targetInterfaceLayer.LinkedObject.GetComponentsInChildren<MeshRenderer>();
 			foreach(MeshRenderer meshRenderer in childRenderers)
 			{
-				meshRenderer.material.CopyPropertiesFromMaterial(targetMaterial);
+				if (meshRenderer.sharedMaterial != targetMaterial)
+				{
+					var optionalColorIDMap = meshRenderer.sharedMaterial.GetTexture("_HighlightMap");
+					meshRenderer.sharedMaterial.shader = targetMaterial.shader;
+					meshRenderer.sharedMaterial.CopyPropertiesFromMaterial(targetMaterial);
+					if (optionalColorIDMap)
+						meshRenderer.sharedMaterial.SetTexture("_HighlightMap", optionalColorIDMap);
+				}
 			}
 		}
 
@@ -154,6 +159,9 @@ namespace Amsterdam3D.Interface
 			}
 
 			targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
+
+			if (layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
+				CopyPropertiesToAllChildMaterials();
 		}
 
 		private void SwitchShaderAccordingToOpacity()
