@@ -42,7 +42,7 @@ public class ObjectData : MonoBehaviour
 		GetComponent<MeshFilter>().sharedMesh = mesh;
 		var meshRenderer = GetComponent<MeshRenderer>();
 
-		//Create an ID map if it doesnt exist yet, force a instance of the material to be created
+		//Create an ID map if it doesnt exist yet, referencing material here forces an instance of the material to be created. (Required, because our ID textures are unique)
 		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighlightMap");
 		if (!colorIDMap)
 		{
