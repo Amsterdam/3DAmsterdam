@@ -9,11 +9,14 @@ public class ChangeTrafficSettingsUI : MonoBehaviour
     [SerializeField] private Text speedText = default;
 
     [SerializeField] private Toggle startCarToggle = default;
+
+    [SerializeField] private TrafficSimulator trafficSimulator;
+
     // Start is called before the first frame update
     void Start()
     {
         speedSlider.onValueChanged.AddListener(delegate { UpdateVehicleSpeed(); });
-        speedSlider.value = TrafficSimulator.Instance.carSpeed;
+        speedSlider.value = trafficSimulator.carSpeed;
         startCarToggle.onValueChanged.AddListener(delegate { StartCars(); });
     }
 
@@ -23,7 +26,7 @@ public class ChangeTrafficSettingsUI : MonoBehaviour
     public void UpdateVehicleSpeed()
     {
         speedText.text = speedSlider.value.ToString();
-        TrafficSimulator.Instance.carSpeed = Mathf.RoundToInt(speedSlider.value);
+        trafficSimulator.carSpeed = Mathf.RoundToInt(speedSlider.value);
     }
 
     /// <summary>
@@ -31,6 +34,6 @@ public class ChangeTrafficSettingsUI : MonoBehaviour
     /// </summary>
     public void StartCars()
     {
-        TrafficSimulator.Instance.StartSimulation(startCarToggle.isOn);
+        trafficSimulator.StartSimulation(startCarToggle.isOn);
     }
 }
