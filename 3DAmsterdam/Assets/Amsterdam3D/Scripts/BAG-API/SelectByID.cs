@@ -215,28 +215,26 @@ public class SelectByID : MonoBehaviour
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
             yield break;
         }
-        var uv = mesh.uv2[vertexIndex];
+
+        var hitUvCoordinate = mesh.uv2[vertexIndex];
         var gameObjectToHighlight = hit.collider.gameObject;
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
         if(objectMapping && objectMapping.colorIDMap)
         {
-            Vector2 hitUvCoordinate = hit.textureCoord2;
-            Debug.Log("Checking UV " + hitUvCoordinate);
             Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
             int raysLooped = 0;
-
-            Debug.Log("COLOR: " + hitPixelColor);
             while (hitPixelColor == ObjectData.HIDDEN_COLOR && raysLooped < maximumRayPiercingLoops)
             {
                 Vector3 deeperHitPoint = hit.point + (ray.direction * 0.01f);
                 ray = new Ray(deeperHitPoint, ray.direction);
                 if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
                 {
-                    hitUvCoordinate = hit.textureCoord2;
+                    vertexIndex = hit.triangleIndex * 3;
+                    hitUvCoordinate = mesh.uv2[vertexIndex];
+
                     hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
-                    Debug.Log(raysLooped + " LOOP COLOR: " + hitPixelColor);
                 }
                 raysLooped++;
                 yield return new WaitForEndOfFrame();
