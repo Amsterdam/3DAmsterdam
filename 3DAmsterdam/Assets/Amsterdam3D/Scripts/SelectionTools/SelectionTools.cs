@@ -22,14 +22,16 @@ namespace Amsterdam3D.Interface
 		private Bounds bounds;
 		private List<Vector3> vertices;
 
-		[SerializeField]
 		private TileHandler tileHandler;
+
+		[SerializeField]
+		private Layer[] selectableLayers;
 
 		[SerializeField]
 		private LayerMask buildingLayer;
 
-		[SerializeField]
-		private Layer layer;
+
+		private Vector3 selectionCentroid;
 
 		private void Start()
 		{
@@ -66,36 +68,47 @@ namespace Amsterdam3D.Interface
 		{
 			vertices = GetVertices();
 
-			float extends = Vector3.Distance(selectionTool.vertices[0], selectionTool.vertices[1]) *0.5f;
-			layer.AddMeshColliders();
-			StartCoroutine(BoxCastToFindTilesInRange(GetPointsCentroid(), new Vector3(extends, extends, extends)));
+			GetPointsCentroid();
+			var maxDistance = 0.0f;
+			foreach (var position in vertices)
+			{ 
+				var distance = Vector3.Distance(position, selectionCentroid);
+				if (distance > maxDistance)
+				{
+					maxDistance = distance;
+				}
+			}
+
+			foreach (Layer layer in selectableLayers)
+			{
+				foreach (Transform tile in layer.transform)
+				{
+					if (Vector3.Distance(tile.transform.position, selectionCentroid) < (maxDistance + Constants.TILE_SIZE))
+					{
+						tileHandler.GetIDData(tile.gameObject, 0);
+					}
+				}
+			}
+		}
+
+		private void OnDrawGizmos()
+		{
+			Gizmos.DrawCube(selectionCentroid, Vector3.one * 100);
 		}
 
 		private Vector3 GetPointsCentroid()
 		{
 			if (vertices.Count <= 0) return default;
 
-			Vector3 centroid = new Vector3(0, 0, 0);
+			selectionCentroid = new Vector3(0, 0, 0);
 			foreach (var point in vertices)
 			{
-				centroid += point;
+				selectionCentroid += point;
 			}
 
-			centroid /= vertices.Count;
+			selectionCentroid /= vertices.Count;
 
-			return centroid;
-		}
-
-		private IEnumerator BoxCastToFindTilesInRange(Vector3 center, Vector3 extends)
-		{
-			//We wait one frame to make sure the colliders are there.
-			yield return new WaitForEndOfFrame();
-			var hits = Physics.BoxCastAll(center, extends, Vector3.down, Quaternion.identity, center.y + 1000.0f, buildingLayer);
-			foreach (var hit in hits)
-			{
-				Debug.Log("HIT " + hit.collider.name);
-				tileHandler.GetIDData(hit.collider.gameObject, hit.triangleIndex * 3);
-			}
+			return selectionCentroid;
 		}
 	}
 
