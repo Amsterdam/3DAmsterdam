@@ -57,9 +57,9 @@ public class ObjectData : MonoBehaviour
 		if(!instancedMaterial)
 			instancedMaterial = meshRenderer.material;
 
-		//Create an ID map if it doesnt exist yet 
+		//Create an ID map if it doesnt exist yet (our black placeholder is named "Black")
 		colorIDMap = (Texture2D)instancedMaterial.GetTexture("_HighlightMap");
-		if (!colorIDMap)
+		if (!colorIDMap || colorIDMap.name == "Black")
 		{
 			colorIDMap = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
 			colorIDMap.filterMode = FilterMode.Point;
