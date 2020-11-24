@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using ConvertCoordinates;
+﻿using UnityEngine;
+
 namespace sewer
 {
     public class Sewerpipes:MonoBehaviour
@@ -23,7 +21,7 @@ namespace sewer
         /// <param name="from">unity-coordinates of startpoint</param>
         /// <param name="to">unity-coordinates of endpoint</param>
         /// <param name="diameterMM">diameter in mm</param>
-        /// <param name="sewerPipeTemplate">GameObject with pipeTemplate, default length=1, default diameter = 1</param>
+        /// <param name="sewerPipeTemplate">GameObject with pipeTemplate, default length=1 (in x-direction), default diameter = 1 origin = 0,0.5,0.5</param>
         /// <returns>GameObject with sewerpipe</returns>
         public GameObject CreateSewerpipe(Vector3 from, Vector3 to, double diameterMM, GameObject sewerPipeTemplate)
         {
@@ -59,8 +57,15 @@ namespace sewer
             pipeScale.z *= (float)(diameterMM / 1000);
             sewerPipe.localScale = pipeScale;
 
+            /*determine vertical offset of pipe
+             * input elevation of the pipe is BOB (Binnen-Onderkant Buis / Inside-Bottom of the Pipe)
+             * thickness of the pipe-wall is unknown
+             * we estimate that the thickness of the wall is 10% of the diameter of the pipe
+             */
+            float BOBoffset = (float)(0.4 * diameterMM / 1000);
+
             //move pipe to correct location
-            sewerPipe.position = from - new Vector3(0, (float)(0.4 * diameterMM / 1000), 0);
+            sewerPipe.position = from + new Vector3(0, BOBoffset, 0);
             return newSewerPipe;
         }
     }
