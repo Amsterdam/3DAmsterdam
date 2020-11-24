@@ -9,7 +9,6 @@ public class ObjectData : MonoBehaviour
 	public List<string> hideIDs = new List<string>();
 	public Vector2[] uvs;
 
-
 	/// <summary>
 	/// The vectormap contains a list of numbers, with a number for every vertex. This number refers to the index in the ids list.
 	/// So vectorMap[9] would contain the index for the ids' list, with the object ID for vertices[9].
@@ -20,10 +19,13 @@ public class ObjectData : MonoBehaviour
 	public List<int> triangleCount;
 
 	private Texture2D colorIDMap;
+	private Material instancedMaterial;
 
 	private void OnDestroy()
 	{
-		if (colorIDMap) Destroy(colorIDMap);	
+		//Clean up the color ID map, and the instanced material, if we created it.
+		if (colorIDMap) Destroy(colorIDMap);
+		if (instancedMaterial) Destroy(instancedMaterial);
 	}
 
 	/// <summary>
@@ -42,8 +44,11 @@ public class ObjectData : MonoBehaviour
 		GetComponent<MeshFilter>().sharedMesh = mesh;
 		var meshRenderer = GetComponent<MeshRenderer>();
 
-		//Create an ID map if it doesnt exist yet, referencing material here forces an instance of the material to be created. (Required, because our ID textures are unique)
-		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighlightMap");
+		if(!instancedMaterial)
+			instancedMaterial = meshRenderer.material;
+
+		//Create an ID map if it doesnt exist yet 
+		colorIDMap = (Texture2D)instancedMaterial.GetTexture("_HighlightMap");
 		if (!colorIDMap)
 		{
 			colorIDMap = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
