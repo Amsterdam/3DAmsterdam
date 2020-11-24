@@ -37,6 +37,8 @@ public class SelectByID : MonoBehaviour
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
     private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
+    private const int maximumRayPiercingLoops = 10;
+
     private void Awake()
 	{
         selectedIDs = new List<string>();
@@ -215,40 +217,33 @@ public class SelectByID : MonoBehaviour
         }
         var uv = mesh.uv2[vertexIndex];
         var gameObjectToHighlight = hit.collider.gameObject;
-        var newHit = hit;
-        var lastHit = hit;
 
-        //Keep piercing forward with raycasts untill we find a visible UV
-        /*if (uv.y == 0.2f)
+        //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
+        ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
+        if(objectMapping && objectMapping.colorIDMap)
         {
-            Vector3 lastPoint = hit.point;
-            while (uv.y == 0.2f)
+            Vector2 hitUvCoordinate = hit.textureCoord2;
+            Debug.Log("Checking UV " + hitUvCoordinate);
+            Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
+            int raysLooped = 0;
+
+            Debug.Log("COLOR: " + hitPixelColor);
+            while (hitPixelColor == ObjectData.HIDDEN_COLOR && raysLooped < maximumRayPiercingLoops)
             {
-                Vector3 hitPoint = newHit.point + (ray.direction * 0.01f);
-                ray = new Ray(hitPoint, ray.direction);
-                if (Physics.Raycast(ray, out newHit, 10000, clickCheckLayerMask.value))
+                Vector3 deeperHitPoint = hit.point + (ray.direction * 0.01f);
+                ray = new Ray(deeperHitPoint, ray.direction);
+                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
                 {
-                    uv = mesh.uv2[newHit.triangleIndex * 3];
-                    Debug.DrawLine(lastPoint, newHit.point, Color.blue, 1000);
-                    lastPoint = newHit.point;
-                    lastHit = newHit;
-                    if (uv.y != 0.2f) 
-                    {
-                        Debug.Log("Hit visible");
-                    }
+                    hitUvCoordinate = hit.textureCoord2;
+                    hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
+                    Debug.Log(raysLooped + " LOOP COLOR: " + hitPixelColor);
                 }
-                else 
-                {
-                    break;
-                }
+                raysLooped++;
                 yield return new WaitForEndOfFrame();
             }
-        }*/
-        hit = lastHit;
-
+        }
         //Not retrieve the selected BAG ID tied to the selected triangle
         tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
-        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit, Color.blue); });
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)

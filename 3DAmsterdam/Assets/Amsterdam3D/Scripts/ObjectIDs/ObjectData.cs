@@ -18,8 +18,13 @@ public class ObjectData : MonoBehaviour
 	public Mesh mesh;
 	public List<int> triangleCount;
 
-	private Texture2D colorIDMap;
-	private Material instancedMaterial;
+	//Our color ID map has certain pixel colors assigned to certain properties in our shader:
+	public static Color NEUTRAL_COLOR = Color.green;
+	public static Color HIDDEN_COLOR = Color.red;
+	public static Color HIGHLIGHTED_COLOR = Color.blue;
+
+	public Texture2D colorIDMap;
+	public Material instancedMaterial;
 
 	private void OnDestroy()
 	{
@@ -28,15 +33,20 @@ public class ObjectData : MonoBehaviour
 		if (instancedMaterial) Destroy(instancedMaterial);
 	}
 
+	public Color GetUVColorID(Vector2 uvCoordinate)
+	{
+		if (!colorIDMap) Debug.LogWarning("Cant get UV color ID. There is no color ID map.");
+
+		return colorIDMap.GetPixel(Mathf.FloorToInt(uvCoordinate.x * colorIDMap.width), Mathf.FloorToInt(uvCoordinate.y * colorIDMap.height));
+	}
+
 	/// <summary>
 	/// Applies the highlighted/hidden lists to their corresponding pixels in the texture map
 	/// </summary>
 	public void ApplyDataToIDsTexture()
 	{
 		if (ids == null) return;
-
 		mesh = GetComponent<MeshFilter>().sharedMesh;
-
 		Vector2Int textureSize = ObjectIDMapping.GetTextureSize(ids.Count);
 
 		//Reapply the mesh collider so it has the new proper UV's
@@ -63,23 +73,19 @@ public class ObjectData : MonoBehaviour
 			
 			if(hideIDs.Contains(targetId))
 			{
-				//RED pixels are hidden in the shader
-				pixelColor = Color.red;
+				pixelColor = HIDDEN_COLOR;
 			}
 			else if(highlightIDs.Contains(targetId))
 			{
-				//BLUE pixels are highlighted in the shader
-				pixelColor = Color.blue;
+				pixelColor = HIGHLIGHTED_COLOR;
 			}
 			else{
-				//GREEN is default
-				pixelColor = Color.green;
+				pixelColor = NEUTRAL_COLOR;
 			}
 			
 			Vector2 uvCoordinate = ObjectIDMapping.GetUV(i, textureSize);
 			colorIDMap.SetPixel(Mathf.FloorToInt(uvCoordinate.x * textureSize.x), Mathf.FloorToInt(uvCoordinate.y * textureSize.y), pixelColor);
 		}
-		
 		colorIDMap.Apply();
 
 		//Apply our texture to the highlightmap slot
