@@ -119,6 +119,23 @@ namespace Amsterdam3D.Interface
 		{
 			colorImage.color = pickedColor;
 			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
+
+			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
+			{
+				CopyPropertiesToAllChildMaterials();
+			}
+		}
+
+		/// <summary>
+		/// Copies the target material of this material slot to all child materials found within the layer linked object
+		/// </summary>
+		private void CopyPropertiesToAllChildMaterials()
+		{
+			MeshRenderer[] childRenderers = layerVisuals.targetInterfaceLayer.LinkedObject.GetComponentsInChildren<MeshRenderer>();
+			foreach(MeshRenderer meshRenderer in childRenderers)
+			{
+				meshRenderer.material.CopyPropertiesFromMaterial(targetMaterial);
+			}
 		}
 
 		/// <summary>
