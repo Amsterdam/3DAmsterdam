@@ -40,11 +40,9 @@ public class ObjectData : MonoBehaviour
 		//Reapply the mesh collider so it has the new proper UV's
 		mesh.uv2 = uvs;
 		GetComponent<MeshFilter>().sharedMesh = mesh;
-
-
-		//create a texturemap if it doesnt exists
 		var meshRenderer = GetComponent<MeshRenderer>();
-		//Create an ID map if it doesnt exist yet
+
+		//Create an ID map if it doesnt exist yet, force a instance of the material to be created
 		colorIDMap = (Texture2D)meshRenderer.material.GetTexture("_HighLightMap");
 		if (!colorIDMap)
 		{
@@ -52,6 +50,7 @@ public class ObjectData : MonoBehaviour
 			colorIDMap.filterMode = FilterMode.Point;
 		}
 
+		//Compare out list of ID's with the highlighted, and hidden list, and give their pixels the corresponding color.
 		Color pixelColor;
 		for (int i = 0; i < ids.Count; i++)
 		{
