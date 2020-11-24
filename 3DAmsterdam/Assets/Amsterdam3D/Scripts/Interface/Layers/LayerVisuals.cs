@@ -25,7 +25,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform materialSlotsContainer;
 
-		private InterfaceLayer targetInterfaceLayer;
+		[HideInInspector]
+		public InterfaceLayer targetInterfaceLayer;
+
 		private List<MaterialSlot> selectedMaterialSlots;
 
 		[SerializeField]
