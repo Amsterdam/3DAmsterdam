@@ -37,7 +37,7 @@ public class SelectByID : MonoBehaviour
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
     private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
-    private const int maximumRayPiercingLoops = 10;
+    private const int maximumRayPiercingLoops = 20;
 
     private void Awake()
 	{
