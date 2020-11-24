@@ -8,7 +8,6 @@ using System.Linq;
 using UnityEngine.Networking;
 using Amsterdam3D.CameraMotion;
 
-
 namespace LayerSystem
 {
     public enum TileAction
@@ -50,6 +49,8 @@ namespace LayerSystem
         private Vector3RD cameraPositionRD;
 
         private Vector2Int tileKey;
+
+        public static int runningTileDataRequests = 0;
 
         public void OnCameraChanged() 
         {
@@ -119,8 +120,9 @@ namespace LayerSystem
         }
         private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback) 
         {
+            runningTileDataRequests++;
+
             string name = obj.GetComponent<MeshFilter>().mesh.name;
-            Debug.Log(name);
             string dataName = name.Replace(" Instance", "");
             dataName = dataName.Replace("mesh", "building");
             dataName = dataName.Replace("-", "_") + "-data";
@@ -132,7 +134,9 @@ namespace LayerSystem
             using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
             {
                 yield return uwr.SendWebRequest();
-                Debug.Log(dataURL);
+
+                runningTileDataRequests--;
+
                 if (uwr.isNetworkError || uwr.isHttpError)
                 {
                     //Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
