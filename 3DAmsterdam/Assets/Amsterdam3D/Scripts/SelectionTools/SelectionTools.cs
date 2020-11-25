@@ -91,11 +91,6 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void OnDrawGizmos()
-		{
-			Gizmos.DrawCube(selectionCentroid, Vector3.one * 100);
-		}
-
 		private Vector3 GetPointsCentroid()
 		{
 			if (vertices.Count <= 0) return default;
