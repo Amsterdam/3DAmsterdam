@@ -8,62 +8,89 @@ public class ObjectData : MonoBehaviour
 	public List<string> ids;
 	public List<string> hideIDs = new List<string>();
 	public Vector2[] uvs;
+
+	/// <summary>
+	/// The vectormap contains a list of numbers, with a number for every vertex. This number refers to the index in the ids list.
+	/// So vectorMap[9] would contain the index for the ids' list, with the object ID for vertices[9].
+	/// </summary>
 	public List<int> vectorMap;
 	public List<Vector2> mappedUVs;
 	public Mesh mesh;
 	public List<int> triangleCount;
 
-	private Vector2 defaultUV = new Vector2(0.33f, 0.6f);
-	private Vector2 highlightUV = new Vector2(0.66f, 0.9f);
-	private Vector2 hideUV = new Vector2(0.3f, 0.2f);
+	//Our color ID map has certain pixel colors assigned to certain properties in our shader:
+	public static Color NEUTRAL_COLOR = Color.green;
+	public static Color HIDDEN_COLOR = Color.red;
+	public static Color HIGHLIGHTED_COLOR = Color.blue;
 
-	public void UpdateUVs()
+	private Vector2Int textureSize;
+	public Texture2D colorIDMap;
+	public Material instancedMaterial;
+
+	private void OnDestroy()
 	{
-		StopAllCoroutines();
-		StartCoroutine(DetermineUVs());
+		//Clean up the color ID map, and the instanced material, if we created it.
+		if (colorIDMap) Destroy(colorIDMap);
+		if (instancedMaterial) Destroy(instancedMaterial);
+	}
+
+	public Color GetUVColorID(Vector2 uvCoordinate)
+	{
+		if (!colorIDMap) Debug.LogWarning("Cant get UV color ID. There is no color ID map.");
+
+		return colorIDMap.GetPixel(Mathf.FloorToInt(uvCoordinate.x * colorIDMap.width), Mathf.FloorToInt(uvCoordinate.y * colorIDMap.height));
 	}
 
 	/// <summary>
-	/// Determine whether the UV's should move to hidden, highlighted or default position.
-	/// Hidden should get prio over selected. (You cant select what you dont see)
+	/// Applies the highlighted/hidden lists to their corresponding pixels in the texture map
 	/// </summary>
-	private IEnumerator DetermineUVs()
+	public void ApplyDataToIDsTexture()
 	{
-		if (ids == null) yield break;
+		if (ids == null) return;
+		mesh = GetComponent<MeshFilter>().sharedMesh;
+		textureSize = ObjectIDMapping.GetTextureSize(ids.Count);
 
-		int vertexcount = mesh.vertexCount;
-		int idcount = ids.Count;
-		List<Vector2> itemUVs = new List<Vector2>();
-		for (int i = 0; i < idcount; i++)
+		//Reapply the mesh collider so it has the new proper UV's
+		mesh.uv2 = uvs;
+		GetComponent<MeshFilter>().sharedMesh = mesh;
+		var meshRenderer = GetComponent<MeshRenderer>();
+
+		if(!instancedMaterial)
+			instancedMaterial = meshRenderer.material;
+
+		//Create an ID map if it doesnt exist yet (our black placeholder is named "Black")
+		colorIDMap = (Texture2D)instancedMaterial.GetTexture("_HighlightMap");
+		if (!colorIDMap || colorIDMap.name == "Black")
 		{
-			if (hideIDs.Contains(ids[i]))
-			{
-				itemUVs.Add(hideUV);
-			}
-			else if(highlightIDs.Contains(ids[i]))
-			{
-				itemUVs.Add(highlightUV);
-			}
-			else
-			{
-				itemUVs.Add(defaultUV);
-			}
+			colorIDMap = new Texture2D(textureSize.x, textureSize.y, TextureFormat.RGBA32, false);
+			colorIDMap.filterMode = FilterMode.Point;
 		}
 
-		Vector2[] itemUVArray = itemUVs.ToArray();
-		Vector2[] highlightUVs = new Vector2[vertexcount];
-
-		int item = 0;
-		foreach (int vectormap in vectorMap)
+		//Compare out list of ID's with the highlighted, and hidden list, and give their pixels the corresponding color.
+		Color pixelColor;
+		for (int i = 0; i < ids.Count; i++)
 		{
-			highlightUVs[item] = itemUVArray[vectormap];
-			item++;
-			if (item % 10000 == 0)
+			var targetId = ids[i];
+			
+			if(hideIDs.Contains(targetId))
 			{
-				yield return null;
+				pixelColor = HIDDEN_COLOR;
 			}
+			else if(highlightIDs.Contains(targetId))
+			{
+				pixelColor = HIGHLIGHTED_COLOR;
+			}
+			else{
+				pixelColor = NEUTRAL_COLOR;
+			}
+			
+			Vector2 uvCoordinate = ObjectIDMapping.GetUV(i, textureSize);
+			colorIDMap.SetPixel(Mathf.FloorToInt(uvCoordinate.x * textureSize.x), Mathf.FloorToInt(uvCoordinate.y * textureSize.y), pixelColor);
 		}
-		mesh.uv2 = highlightUVs;
+		colorIDMap.Apply();
+
+		//Apply our texture to the highlightmap slot
+		meshRenderer.material.SetTexture("_HighlightMap", colorIDMap);		
 	}
 }
 
