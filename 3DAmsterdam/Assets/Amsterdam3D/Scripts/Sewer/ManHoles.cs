@@ -57,6 +57,8 @@ namespace sewer
             {
                 // set foundposition to hitpoint if terrain is found
                 foundPosition = hit.point;
+                // lift position a little bit for better visibility
+                foundPosition += new Vector3(0, 0.02f, 0);
             }
             else
             {
