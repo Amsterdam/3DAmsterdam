@@ -83,7 +83,7 @@ namespace Amsterdam3D.Interface
 			{
 				foreach (Transform tile in layer.transform)
 				{
-					if (Vector3.Distance(tile.transform.position, selectionCentroid) < (maxDistance + Constants.TILE_SIZE))
+					if (Vector3.Distance(tile.transform.position, selectionCentroid) < (maxDistance + layer.tileSize))
 					{
 						tileHandler.GetIDData(tile.gameObject, 0);
 					}
