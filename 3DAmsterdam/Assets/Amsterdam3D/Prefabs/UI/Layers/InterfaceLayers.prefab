@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8712473052922315097}
   - component: {fileID: 1414756029670093948}
   m_Layer: 5
-  m_Name: Layers
+  m_Name: InterfaceLayers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1248,6 +1248,21 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 4552215902803148149}
+    - target: {fileID: 7836637734682185785, guid: 32f3e4803b3fc694e8315e3b551adfe0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 7836637734682185785, guid: 32f3e4803b3fc694e8315e3b551adfe0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7836637734682185785, guid: 32f3e4803b3fc694e8315e3b551adfe0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7863905479170557223, guid: 32f3e4803b3fc694e8315e3b551adfe0,
         type: 3}
       propertyPath: m_Text
