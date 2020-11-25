@@ -8,7 +8,8 @@ using UnityEngine.Networking;
 
 public partial class SewerageGenerator : MonoBehaviour
 {
-    private const string sewerageWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
+    private const string seweragPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
+    private const string seweragManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
 
     [SerializeField]
     private SeweragePipes seweragePipes;
@@ -42,7 +43,7 @@ public partial class SewerageGenerator : MonoBehaviour
     IEnumerator GetSewerageManholesInBoundingBox(Vector3RD rdMin, Vector3RD rdMax)
     {
         List<string> ids = new List<string>();
-        string escapedUrl = sewerageWfsUrl;
+        string escapedUrl = seweragManholesWfsUrl;
         escapedUrl += UnityWebRequest.EscapeURL(rdMin.x + "," + rdMin.y + "," + rdMax.x + "," + rdMax.y);
         var sewerageRequest = UnityWebRequest.Get(escapedUrl);
         print(escapedUrl);
@@ -51,6 +52,7 @@ public partial class SewerageGenerator : MonoBehaviour
         if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
         {
             string dataString = sewerageRequest.downloadHandler.text;
+            Debug.Log(dataString);
             sewerageManholes = JsonUtility.FromJson<SewerageManholes>(dataString);
             doneLoadingManholes.Invoke();
         }
@@ -60,7 +62,7 @@ public partial class SewerageGenerator : MonoBehaviour
     IEnumerator GetSeweragePipesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
     {
         List<string> ids = new List<string>();
-        string escapedUrl = sewerageWfsUrl;
+        string escapedUrl = seweragPipesWfsUrl;
         escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x + "," + rdMinimum.y + "," + rdMaximum.x + "," + rdMaximum.y);
         var sewerageRequest = UnityWebRequest.Get(escapedUrl);
         print(escapedUrl);
@@ -113,9 +115,9 @@ public partial class SewerageGenerator : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-        Gizmos.color = Color.green;
         if (seweragePipes != null)
         {
+            Gizmos.color = Color.green;
             foreach (var feature in seweragePipes.features)
             {
                 Gizmos.DrawSphere(feature.geometry.unity_coordinates[0], 3);
@@ -123,8 +125,10 @@ public partial class SewerageGenerator : MonoBehaviour
                 Gizmos.DrawSphere(feature.geometry.unity_coordinates[1], 3);
             }
         }
+
         if (sewerageManholes != null)
         {
+            Gizmos.color = Color.blue;
             foreach (var feature in sewerageManholes.features)
             {
                 Vector3 manHoleCoordinate = new Vector3(feature.geometry.coordinates[0], feature.geometry.coordinates[1]);
