@@ -11,7 +11,7 @@ namespace sewer
         {
             //example
             CreateSewerpipe(new Vector3(0,1,0),new Vector3(10,2,5), 350, sewerPipePrefab);
-           
+            CreateSewerpipe(new Vector3(10, 1, 0), new Vector3(0, 2, 5), 350, sewerPipePrefab);
         }
 
 
