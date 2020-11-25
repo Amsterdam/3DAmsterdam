@@ -23,6 +23,7 @@ public class ObjectData : MonoBehaviour
 	public static Color HIDDEN_COLOR = Color.red;
 	public static Color HIGHLIGHTED_COLOR = Color.blue;
 
+	private Vector2Int textureSize;
 	public Texture2D colorIDMap;
 	public Material instancedMaterial;
 
@@ -47,7 +48,7 @@ public class ObjectData : MonoBehaviour
 	{
 		if (ids == null) return;
 		mesh = GetComponent<MeshFilter>().sharedMesh;
-		Vector2Int textureSize = ObjectIDMapping.GetTextureSize(ids.Count);
+		textureSize = ObjectIDMapping.GetTextureSize(ids.Count);
 
 		//Reapply the mesh collider so it has the new proper UV's
 		mesh.uv2 = uvs;
