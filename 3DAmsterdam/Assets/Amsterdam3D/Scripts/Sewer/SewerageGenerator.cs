@@ -42,23 +42,26 @@ namespace Amsterdam3D.Sewerage
         {
             //For testing purposes, just load a set area.
             //We want this to come from the tile/layer system
-            boundingBoxMinimum = new Vector3RD(123000, 483000, 0);
-            boundingBoxMaximum = new Vector3RD(124000, 484000, 0);
+            boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
+            boundingBoxMaximum = new Vector3RD(123000, 483000, 0);
 
-            Generate();
+            Generate(boundingBoxMinimum, boundingBoxMaximum);
         }
 
         /// <summary>
         /// Starts genering the sewage network based on the geometry data and points in a WFS service
         /// </summary>
-        /// <param name="rdMinimum">The RD coordinates min point of a bounding box area</param>
-        /// <param name="rdMaximum">The RD coordinates maximum point of a bounding box area</param>
-        public void Generate()
+        /// <param name="boxMinimum">The RD coordinates min point of a bounding box area</param>
+        /// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
+        public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
+            boundingBoxMinimum = boxMinimum;
+            boundingBoxMaximum = boxMaximum;
+
             StartCoroutine(GetSewerLinesInBoundingBox());
         }
 
-        private IEnumerator SpawnLines()
+        private IEnumerator SpawnLineObjects()
         {
             SewerLines.Feature sewerLineFeature;
 			for (int i = 0; i < sewerLines.features.Length; i++)
@@ -73,12 +76,12 @@ namespace Amsterdam3D.Sewerage
                 );
             }
 
-            //Lines are done. Start loading and spawing the manholes.
+            //Lines are done spawing. Start loading and spawing the manholes.
             StartCoroutine(GetSewerManholesInBoundingBox());
 
             yield return null;
 		}
-        private IEnumerator SpawnManholes()
+        private IEnumerator SpawnManholeObjects()
         {
             SewerManholes.Feature sewerManholeFeature;
             for (int i = 0; i < sewerManholes.features.Length; i++)
@@ -112,7 +115,7 @@ namespace Amsterdam3D.Sewerage
                 sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
 
                 yield return new WaitForEndOfFrame();
-                StartCoroutine(SpawnManholes());
+                StartCoroutine(SpawnManholeObjects());
             }
             yield return null;
         }
@@ -136,7 +139,7 @@ namespace Amsterdam3D.Sewerage
                 }
 
                 yield return new WaitForEndOfFrame();
-                StartCoroutine(SpawnLines());
+                StartCoroutine(SpawnLineObjects());
             }
             yield return null;
         }
