@@ -119,6 +119,28 @@ namespace Amsterdam3D.Interface
 		{
 			colorImage.color = pickedColor;
 			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
+
+			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
+				CopyPropertiesToAllChildMaterials();
+		}
+
+		/// <summary>
+		/// Copies the target material of this material slot to all child materials found within the layer linked object
+		/// </summary>
+		private void CopyPropertiesToAllChildMaterials()
+		{
+			MeshRenderer[] childRenderers = layerVisuals.targetInterfaceLayer.LinkedObject.GetComponentsInChildren<MeshRenderer>();
+			foreach(MeshRenderer meshRenderer in childRenderers)
+			{
+				if (meshRenderer.sharedMaterial != targetMaterial)
+				{
+					var optionalColorIDMap = meshRenderer.sharedMaterial.GetTexture("_HighlightMap");
+					meshRenderer.sharedMaterial.shader = targetMaterial.shader;
+					meshRenderer.sharedMaterial.CopyPropertiesFromMaterial(targetMaterial);
+					if (optionalColorIDMap)
+						meshRenderer.sharedMaterial.SetTexture("_HighlightMap", optionalColorIDMap);
+				}
+			}
 		}
 
 		/// <summary>
@@ -137,6 +159,9 @@ namespace Amsterdam3D.Interface
 			}
 
 			targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
+
+			if (layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
+				CopyPropertiesToAllChildMaterials();
 		}
 
 		private void SwitchShaderAccordingToOpacity()

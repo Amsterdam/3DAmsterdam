@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using ConvertCoordinates;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,20 +48,41 @@ namespace LayerSystem
             StartCoroutine(HideIDs(ids));
         }
 
-        public void AddMeshColliders() 
+        /// <summary>
+        /// Adds mesh colliders to the meshes found within this layer
+        /// </summary>
+        /// <param name="onlyTileUnderPosition">Optional world position where this tile should be close to</param>
+        public void AddMeshColliders(Vector3 onlyTileUnderPosition = default) 
         {
             MeshCollider meshCollider;
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-            if (meshFilters == null)
+
+            if (meshFilters != null)
             {
-                return;
-            }
-            foreach (MeshFilter meshFilter in meshFilters)
-            {
-                meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-                if (meshCollider == null)
+                if (onlyTileUnderPosition != default)
                 {
-                    meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                    foreach (MeshFilter meshFilter in meshFilters)
+                    {
+                        if (Mathf.Abs(onlyTileUnderPosition.x - meshFilter.gameObject.transform.position.x) < tileSize && Mathf.Abs(onlyTileUnderPosition.z - meshFilter.gameObject.transform.position.z) < tileSize)
+                        {
+                            meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                            if (meshCollider == null)
+                            {
+                                meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                //Just add all MeshColliders if no specific area was supplied
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                    if (meshCollider == null)
+                    {
+                        meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                    }
                 }
             }
         }
@@ -86,8 +108,7 @@ namespace LayerSystem
                     {
                          objectData.highlightIDs.Clear();
                     }
-                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.UpdateUVs();
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
             tileHandler.pauseLoading = false;
@@ -114,8 +135,7 @@ namespace LayerSystem
                     else{
                         objectData.hideIDs.Clear();
                     }
-                    objectData.mesh = objectData.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectData.UpdateUVs();
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
             tileHandler.pauseLoading = false;

@@ -10,5 +10,4 @@ using UnityEngine;
         public List<Vector2> mappedUVs;
         public Vector2[] uvs;
         public List<int> vectorMap;
-        public Vector3Int TextureSise;
     }

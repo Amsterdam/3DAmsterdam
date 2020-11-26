@@ -28,7 +28,6 @@ namespace Amsterdam3D.Interface
             selectionBoxObj.SetActive(false);
             inBoxSelect = false;
             enabled = true;
-
         }
 
         private void OnEnable()
