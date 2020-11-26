@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
-namespace sewer
+namespace Amsterdam3D.Sewerage
 {
-    public class Sewerpipes:MonoBehaviour
+    public class SewerPipeSpawner : MonoBehaviour
     {
         public GameObject sewerPipePrefab;
 
-        // Start is called before the first frame update
         void Start()
         {
             //example

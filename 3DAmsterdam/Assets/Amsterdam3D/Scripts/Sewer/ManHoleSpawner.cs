@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-namespace sewer
+
+namespace Amsterdam3D.Sewerage
 {
-    public class ManHoles : MonoBehaviour
+    public class ManHoleSpawner : MonoBehaviour
     {
         public GameObject manHolePrefab;
-        // Start is called before the first frame update
+
         void Start()
         {
             CreateManhole(new Vector3(0, 43, 0), manHolePrefab);
