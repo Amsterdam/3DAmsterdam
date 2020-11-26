@@ -29,7 +29,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 5080761621861139604}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,16 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawEditorGizmos: 0
-  sewerLines:
-    features: []
-  sewerManholes:
-    features: []
-  doneLoadingSewerLines:
-    m_PersistentCalls:
-      m_Calls: []
-  doneLoadingSewerManholes:
-    m_PersistentCalls:
-      m_Calls: []
   sewerPipeSpawner: {fileID: 9174684087536246476}
   sewerManholeSpawner: {fileID: 4487594249249443350}
 --- !u!114 &9174684087536246476
@@ -92,3 +83,78 @@ MonoBehaviour:
     m_Bits: 512
   manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
     type: 3}
+--- !u!1001 &1957317731273328531
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 40377333204744845}
+    m_Modifications:
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977608, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_Name
+      value: UndergroundPlane
+      objectReference: {fileID: 0}
+    - target: {fileID: 6749690629017977608, guid: 8ce46120571174f4c954e5e60666a781,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8ce46120571174f4c954e5e60666a781, type: 3}
+--- !u!4 &5080761621861139604 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6749690629017977607, guid: 8ce46120571174f4c954e5e60666a781,
+    type: 3}
+  m_PrefabInstance: {fileID: 1957317731273328531}
+  m_PrefabAsset: {fileID: 0}
