@@ -1,18 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Amsterdam3D.Sewerage
+namespace Amsterdam3D.Sewer
 {
-    public class SewerPipeSpawner : MonoBehaviour
+    public class SewerLineSpawner : MonoBehaviour
     {
-        public GameObject sewerPipePrefab;
-
-        void Start()
-        {
-            //example
-            CreateSewerpipe(new Vector3(0,1,0),new Vector3(10,2,5), 350, sewerPipePrefab);
-            CreateSewerpipe(new Vector3(10, 1, 0), new Vector3(0, 2, 5), 350, sewerPipePrefab);
-        }
-
+        public GameObject sewerLinePrefab;
 
         /// <summary>
         /// Create SewerPipe-GameObject from template and location-information
@@ -20,9 +12,9 @@ namespace Amsterdam3D.Sewerage
         /// <param name="from">unity-coordinates of startpoint</param>
         /// <param name="to">unity-coordinates of endpoint</param>
         /// <param name="diameterMM">diameter in mm</param>
-        /// <param name="sewerPipeTemplate">GameObject with pipeTemplate, default length=1 (in x-direction), default diameter = 1 origin = 0,0.5,0.5</param>
+        /// <param name="sewerLinePrefab">GameObject with pipeTemplate, default length=1 (in x-direction), default diameter = 1 origin = 0,0.5,0.5</param>
         /// <returns>GameObject with sewerpipe</returns>
-        public GameObject CreateSewerpipe(Vector3 from, Vector3 to, double diameterMM, GameObject sewerPipeTemplate)
+        public GameObject CreateSewerLine(Vector3 from, Vector3 to, double diameterMM)
         {
             //get 2d-vectors for rotation-calculation
             Vector2 startpositionXZ = new Vector2(from.x, from.z);
@@ -31,7 +23,7 @@ namespace Amsterdam3D.Sewerage
             float endHeight = to.y;
 
             //create new GameObject from sewerpipetemplate
-            GameObject newSewerPipe = Instantiate(sewerPipeTemplate);
+            GameObject newSewerPipe = Instantiate(sewerLinePrefab);
             Transform sewerPipe = newSewerPipe.transform;
 
             // rotate pipe in horizontally

@@ -1,33 +1,28 @@
 ﻿using UnityEngine;
 
-namespace Amsterdam3D.Sewerage
+namespace Amsterdam3D.Sewer
 {
-    public class ManHoleSpawner : MonoBehaviour
+    public class SewerManholeSpawner : MonoBehaviour
     {
-        public GameObject manHolePrefab;
+        public GameObject manholePrefab;
 
-        void Start()
-        {
-            CreateManhole(new Vector3(0, 43, 0), manHolePrefab);
-            CreateManhole(new Vector3(10, 45, 5), manHolePrefab);
-        }
         /// <summary>
         /// Create a Manhole (rioolput)
         /// uses TerrainHeight for elevation as default, uses y-value of param:position if no terrainheight found
         /// requiers sewerpipes to be present for accurate depth
         /// </summary>
         /// <param name="position">Unity-coordinates of the top-center of the manhole</param>
-        /// <param name="manHoleTemplate">GameObject with manholeTemplate, default height=1, origin = top-center, local x-direction is down</param>
+        /// <param name="manholePrefab">GameObject with manholeTemplate, default height=1, origin = top-center, local x-direction is down</param>
         /// <param name="defaultDepth">default manhole-depth if no sewerpipes are found</param>
         /// <returns></returns>
-        public GameObject CreateManhole(Vector3 position, GameObject manHoleTemplate, float defaultDepth=1.50f)
+        public GameObject CreateManhole(Vector3 position, float defaultDepth=1.50f)
         {
             // get top-center position
             Vector3 lidPosition = GetPositionAtSurface(position);
             // get manhole-height
             float depth =GetDepthAtPosition(lidPosition,defaultDepth);
             // create manhole
-            GameObject manHole = Instantiate(manHoleTemplate);
+            GameObject manHole = Instantiate(manholePrefab);
             // move manhole
             manHole.transform.localPosition = lidPosition;
             // scale manhole to correct height
