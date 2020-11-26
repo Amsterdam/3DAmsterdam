@@ -2,25 +2,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public partial class SewerageGenerator : MonoBehaviour
 {
-    private const string seweragPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
-    private const string seweragManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
+    private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
+    private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
 
     [SerializeField]
-    private SeweragePipes seweragePipes;
+    private SewerLines sewerLines;
 
     [SerializeField]
-    private SewerageManholes sewerageManholes;
+    private SewerManholes sewerManholes;
 
     [SerializeField]
-    private UnityEvent doneLoadingPipes;
+    private UnityEvent doneLoadingSewerLines;
     [SerializeField]
-    private UnityEvent doneLoadingManholes;
+    private UnityEvent doneLoadingSewerManholes;
 
     private void Start()
 	{
@@ -36,51 +37,45 @@ public partial class SewerageGenerator : MonoBehaviour
     /// <param name="rdMaximum">The RD coordinates maximum point of a bounding box area</param>
 	public void Generate(Vector3RD rdMinimum, Vector3RD rdMaximum)
     {
-        StartCoroutine(GetSeweragePipesInBoundingBox(rdMinimum, rdMaximum));
-        StartCoroutine(GetSewerageManholesInBoundingBox(rdMinimum, rdMaximum));
+        StartCoroutine(GetSewerPipesInBoundingBox(rdMinimum, rdMaximum));
+        StartCoroutine(GetSewerManholesInBoundingBox(rdMinimum, rdMaximum));
     }
 
-    IEnumerator GetSewerageManholesInBoundingBox(Vector3RD rdMin, Vector3RD rdMax)
+    IEnumerator GetSewerManholesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
     {
-        List<string> ids = new List<string>();
-        string escapedUrl = seweragManholesWfsUrl;
-        escapedUrl += UnityWebRequest.EscapeURL(rdMin.x + "," + rdMin.y + "," + rdMax.x + "," + rdMax.y);
+        string escapedUrl = sewerManholesWfsUrl;
+        escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.y.ToString(CultureInfo.InvariantCulture));
         var sewerageRequest = UnityWebRequest.Get(escapedUrl);
-        print(escapedUrl);
 
         yield return sewerageRequest.SendWebRequest();
         if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
         {
             string dataString = sewerageRequest.downloadHandler.text;
             Debug.Log(dataString);
-            sewerageManholes = JsonUtility.FromJson<SewerageManholes>(dataString);
-            doneLoadingManholes.Invoke();
+            sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
+            doneLoadingSewerManholes.Invoke();
         }
         yield return null;
     }
 
-    IEnumerator GetSeweragePipesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
+    IEnumerator GetSewerPipesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
     {
-        List<string> ids = new List<string>();
-        string escapedUrl = seweragPipesWfsUrl;
-        escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x + "," + rdMinimum.y + "," + rdMaximum.x + "," + rdMaximum.y);
+        string escapedUrl = sewerPipesWfsUrl;
+        escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.y.ToString(CultureInfo.InvariantCulture));
         var sewerageRequest = UnityWebRequest.Get(escapedUrl);
-        print(escapedUrl);
 
         yield return sewerageRequest.SendWebRequest();
         if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
         {
             //Replace multidimensional arrays with strings. JsonUtility doesnt support it (yet)   
             string dataString = sewerageRequest.downloadHandler.text.Replace("[[","\"").Replace("]]","\"");
-            seweragePipes = JsonUtility.FromJson<SeweragePipes>(dataString);
-            foreach (var feature in seweragePipes.features)
+            sewerLines = JsonUtility.FromJson<SewerLines>(dataString);
+            foreach (var feature in sewerLines.features)
             {
                 Vector3[] pointCoordinate = SplitToCoordinatesArray(feature.geometry.coordinates, feature.properties.bob_beginpunt, feature.properties.bob_eindpunt);
-
                 feature.geometry.unity_coordinates = pointCoordinate;
             }
-
-            doneLoadingPipes.Invoke();
+            doneLoadingSewerLines.Invoke();
         }
         yield return null;
     }
@@ -115,10 +110,10 @@ public partial class SewerageGenerator : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-        if (seweragePipes != null)
+        if (sewerLines != null)
         {
             Gizmos.color = Color.green;
-            foreach (var feature in seweragePipes.features)
+            foreach (var feature in sewerLines.features)
             {
                 Gizmos.DrawSphere(feature.geometry.unity_coordinates[0], 3);
                 Gizmos.DrawLine(feature.geometry.unity_coordinates[0], feature.geometry.unity_coordinates[1]);
@@ -126,10 +121,10 @@ public partial class SewerageGenerator : MonoBehaviour
             }
         }
 
-        if (sewerageManholes != null)
+        if (sewerManholes != null)
         {
             Gizmos.color = Color.blue;
-            foreach (var feature in sewerageManholes.features)
+            foreach (var feature in sewerManholes.features)
             {
                 Vector3 manHoleCoordinate = new Vector3(feature.geometry.coordinates[0], feature.geometry.coordinates[1]);
                 Gizmos.DrawSphere(manHoleCoordinate, 3);
