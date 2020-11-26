@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4639a373647a86d46aaf4ff8ce2a049e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawEditorGizmos: 0
   sewerLines:
     features: []
   sewerManholes:
@@ -83,5 +84,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ecdfc0c43e25e46a93411100947d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sewerHeightCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  terrainHeightCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
     type: 3}
