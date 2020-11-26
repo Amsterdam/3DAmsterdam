@@ -4,6 +4,12 @@ namespace Amsterdam3D.Sewerage
 {
     public class SewerManholeSpawner : MonoBehaviour
     {
+        [SerializeField]
+        private LayerMask sewerHeightCheckLayerMask;
+
+        [SerializeField]
+        private LayerMask terrainHeightCheckLayerMask;
+
         public GameObject manholePrefab;
 
         /// <summary>
@@ -43,13 +49,11 @@ namespace Amsterdam3D.Sewerage
 
             // setup raycast
             RaycastHit hit;
-            // set layerMask to terrain-only
-            int layerMask = 1<<LayerMask.NameToLayer("Terrain");
 
             // set RaycastOrigin to 10 above theoretical manhole-position
             Vector3 rayCastPosition = position + new Vector3(0, 10, 0);
 
-            if (Physics.Raycast(rayCastPosition, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(rayCastPosition, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, terrainHeightCheckLayerMask.value))
             {
                 // set foundposition to hitpoint if terrain is found
                 foundPosition = hit.point;
@@ -74,8 +78,7 @@ namespace Amsterdam3D.Sewerage
         {
             float height = defaultDepth;
             RaycastHit hit;
-            int layerMask = 1<<LayerMask.NameToLayer("Sewer");
-            if (Physics.Raycast(position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, sewerHeightCheckLayerMask.value))
             {
                 // if sewerpipe found, depth is distance between top-center and hit.point plus 0.5m for bottom-part of manhole
                 height = position.y-hit.point.y+0.5f;
