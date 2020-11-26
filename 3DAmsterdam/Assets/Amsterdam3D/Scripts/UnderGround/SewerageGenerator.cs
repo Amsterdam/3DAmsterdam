@@ -91,13 +91,14 @@ public partial class SewerageGenerator : MonoBehaviour
         string[] splitArray = coordinates.Split(new string[] { "],[" }, StringSplitOptions.None);
         List<Vector3> newVector2Array = new List<Vector3>();
 
+        //Convert string with RD coordinates into unity coordinates
 		for (int i = 0; i < splitArray.Length; i++)
 		{
             string[] vector2String = splitArray[i].Split(',');
-            Vector3 newRDVector3 = new Vector3(
-                    float.Parse(vector2String[0]),
-                    float.Parse(vector2String[1]),
-                    (i==0) ? float.Parse(startHeight) : float.Parse(endHeight)
+            Vector3RD newRDVector3 = new Vector3RD(
+                    double.Parse(vector2String[0]),
+                    double.Parse(vector2String[1]),
+                    (i==0) ? double.Parse(startHeight) : double.Parse(endHeight)
             );
 
             Vector3 unityCoordinate = CoordConvert.RDtoUnity(newRDVector3);
