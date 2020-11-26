@@ -17,16 +17,8 @@ namespace Amsterdam3D.Sewerage
         [SerializeField]
         private bool drawEditorGizmos = false;
 
-        [SerializeField]
         private SewerLines sewerLines;
-
-        [SerializeField]
         private SewerManholes sewerManholes;
-
-        [SerializeField]
-        private UnityEvent doneLoadingSewerLines;
-        [SerializeField]
-        private UnityEvent doneLoadingSewerManholes;
 
         [SerializeField]
         private SewerLineSpawner sewerPipeSpawner;
