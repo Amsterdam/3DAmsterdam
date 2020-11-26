@@ -35,11 +35,17 @@ namespace Amsterdam3D.Sewerage
 
         private const int maxSpawnsPerFrame = 100;
 
+        private Vector3RD boundingBoxMinimum;
+        private Vector3RD boundingBoxMaximum;
+
         private void Start()
         {
             //For testing purposes, just load a set area.
             //We want this to come from the tile/layer system
-            Generate(new Vector3RD(123000, 483000, 0), new Vector3RD(124000, 484000, 0));
+            boundingBoxMinimum = new Vector3RD(123000, 483000, 0);
+            boundingBoxMaximum = new Vector3RD(124000, 484000, 0);
+
+            Generate();
         }
 
         /// <summary>
@@ -47,10 +53,9 @@ namespace Amsterdam3D.Sewerage
         /// </summary>
         /// <param name="rdMinimum">The RD coordinates min point of a bounding box area</param>
         /// <param name="rdMaximum">The RD coordinates maximum point of a bounding box area</param>
-        public void Generate(Vector3RD rdMinimum, Vector3RD rdMaximum)
+        public void Generate()
         {
-            StartCoroutine(GetSewerLinesInBoundingBox(rdMinimum, rdMaximum));
-            StartCoroutine(GetSewerManholesInBoundingBox(rdMinimum, rdMaximum));
+            StartCoroutine(GetSewerLinesInBoundingBox());
         }
 
         private IEnumerator SpawnLines()
@@ -67,6 +72,10 @@ namespace Amsterdam3D.Sewerage
                     float.Parse(sewerLineFeature.properties.diameter)
                 );
             }
+
+            //Lines are done. Start loading and spawing the manholes.
+            StartCoroutine(GetSewerManholesInBoundingBox());
+
             yield return null;
 		}
         private IEnumerator SpawnManholes()
@@ -89,10 +98,10 @@ namespace Amsterdam3D.Sewerage
             yield return null;
         }
 
-        IEnumerator GetSewerManholesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
+        IEnumerator GetSewerManholesInBoundingBox()
         {
             string escapedUrl = sewerManholesWfsUrl;
-            escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.y.ToString(CultureInfo.InvariantCulture));
+            escapedUrl += UnityWebRequest.EscapeURL(boundingBoxMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.y.ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
@@ -108,10 +117,10 @@ namespace Amsterdam3D.Sewerage
             yield return null;
         }
 
-        IEnumerator GetSewerLinesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
+        IEnumerator GetSewerLinesInBoundingBox()
         {
             string escapedUrl = sewerPipesWfsUrl;
-            escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.y.ToString(CultureInfo.InvariantCulture));
+            escapedUrl += UnityWebRequest.EscapeURL(boundingBoxMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.y.ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
