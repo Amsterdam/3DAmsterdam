@@ -6,10 +6,10 @@
 [System.Serializable]
 public class SewerLines
 {
-    public Features[] features;
+    public Feature[] features;
 
     [System.Serializable]
-    public class Features
+    public class Feature
     {
         public string id;
         public Geometry geometry;

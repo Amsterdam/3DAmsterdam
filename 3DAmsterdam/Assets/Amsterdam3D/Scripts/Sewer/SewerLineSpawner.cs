@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Amsterdam3D.Sewer
+namespace Amsterdam3D.Sewerage
 {
     public class SewerLineSpawner : MonoBehaviour
     {
@@ -23,7 +23,7 @@ namespace Amsterdam3D.Sewer
             float endHeight = to.y;
 
             //create new GameObject from sewerpipetemplate
-            GameObject newSewerPipe = Instantiate(sewerLinePrefab);
+            GameObject newSewerPipe = Instantiate(sewerLinePrefab, this.transform);
             Transform sewerPipe = newSewerPipe.transform;
 
             // rotate pipe in horizontally

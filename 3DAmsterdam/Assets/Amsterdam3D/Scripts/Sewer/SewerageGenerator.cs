@@ -7,12 +7,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
-namespace Amsterdam3D.Sewer
+namespace Amsterdam3D.Sewerage
 {
     public partial class SewerageGenerator : MonoBehaviour
     {
         private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
         private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
+
+        [SerializeField]
+        private bool drawEditorGizmos = false;
 
         [SerializeField]
         private SewerLines sewerLines;
@@ -30,6 +33,8 @@ namespace Amsterdam3D.Sewer
         [SerializeField]
         private SewerManholeSpawner sewerManholeSpawner;
 
+        private const int maxSpawnsPerFrame = 100;
+
         private void Start()
         {
             //For testing purposes, just load a set area.
@@ -44,31 +49,44 @@ namespace Amsterdam3D.Sewer
         /// <param name="rdMaximum">The RD coordinates maximum point of a bounding box area</param>
         public void Generate(Vector3RD rdMinimum, Vector3RD rdMaximum)
         {
-            StartCoroutine(GetSewerPipesInBoundingBox(rdMinimum, rdMaximum));
+            StartCoroutine(GetSewerLinesInBoundingBox(rdMinimum, rdMaximum));
             StartCoroutine(GetSewerManholesInBoundingBox(rdMinimum, rdMaximum));
         }
 
-        private void SpawnLines()
+        private IEnumerator SpawnLines()
         {
-            foreach(var sewerLineFeature in sewerLines.features)
-            {
+            SewerLines.Feature sewerLineFeature;
+			for (int i = 0; i < sewerLines.features.Length; i++)
+			{
+                if ((i % maxSpawnsPerFrame) == 0) yield return new WaitForEndOfFrame();
+
+                sewerLineFeature = sewerLines.features[i];
                 sewerPipeSpawner.CreateSewerLine(
                     sewerLineFeature.geometry.unity_coordinates[0],
                     sewerLineFeature.geometry.unity_coordinates[1],
                     float.Parse(sewerLineFeature.properties.diameter)
                 );
-			}
+            }
+            yield return null;
 		}
-        private void SpawnManholes()
+        private IEnumerator SpawnManholes()
         {
-            foreach (var sewerManholeFeature in sewerLines.features)
+            SewerManholes.Feature sewerManholeFeature;
+            for (int i = 0; i < sewerManholes.features.Length; i++)
             {
-                sewerPipeSpawner.CreateSewerLine(
-                    sewerManholeFeature.geometry.unity_coordinates[0],
-                    sewerManholeFeature.geometry.unity_coordinates[1],
-                    float.Parse(sewerManholeFeature.properties.diameter)
+                if ((i % maxSpawnsPerFrame) == 0) yield return new WaitForEndOfFrame();
+
+                sewerManholeFeature = sewerManholes.features[i];
+                sewerManholeSpawner.CreateManhole(
+                    CoordConvert.RDtoUnity(new Vector3RD(
+                        sewerManholeFeature.geometry.coordinates[0],
+                        sewerManholeFeature.geometry.coordinates[1],
+                        float.Parse(sewerManholeFeature.properties.putdekselhoogte)
+                        )
+                    )
                 );
             }
+            yield return null;
         }
 
         IEnumerator GetSewerManholesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
@@ -84,12 +102,13 @@ namespace Amsterdam3D.Sewer
                 Debug.Log(dataString);
                 sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
 
-                doneLoadingSewerManholes.Invoke();
+                yield return new WaitForEndOfFrame();
+                StartCoroutine(SpawnManholes());
             }
             yield return null;
         }
 
-        IEnumerator GetSewerPipesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
+        IEnumerator GetSewerLinesInBoundingBox(Vector3RD rdMinimum, Vector3RD rdMaximum)
         {
             string escapedUrl = sewerPipesWfsUrl;
             escapedUrl += UnityWebRequest.EscapeURL(rdMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + rdMaximum.y.ToString(CultureInfo.InvariantCulture));
@@ -108,7 +127,7 @@ namespace Amsterdam3D.Sewer
                 }
 
                 yield return new WaitForEndOfFrame();
-                SpawnLines();
+                StartCoroutine(SpawnLines());
             }
             yield return null;
         }
@@ -142,8 +161,11 @@ namespace Amsterdam3D.Sewer
             return newVector2Array.ToArray();
         }
 
+        
         private void OnDrawGizmos()
         {
+            if (!drawEditorGizmos) return;    
+
             if (sewerLines != null)
             {
                 Gizmos.color = Color.green;

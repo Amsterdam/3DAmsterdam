@@ -55,6 +55,8 @@ MonoBehaviour:
   doneLoadingSewerManholes:
     m_PersistentCalls:
       m_Calls: []
+  sewerPipeSpawner: {fileID: 9174684087536246476}
+  sewerManholeSpawner: {fileID: 4487594249249443350}
 --- !u!114 &9174684087536246476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8341a7d046a9da34494525e0653a3675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sewerPipePrefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e,
+  sewerLinePrefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e,
     type: 3}
 --- !u!114 &4487594249249443350
 MonoBehaviour:
@@ -81,5 +83,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ecdfc0c43e25e46a93411100947d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manHolePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
+  manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
     type: 3}

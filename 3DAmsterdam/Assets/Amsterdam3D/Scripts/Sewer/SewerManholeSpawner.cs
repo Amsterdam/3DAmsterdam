@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Amsterdam3D.Sewer
+namespace Amsterdam3D.Sewerage
 {
     public class SewerManholeSpawner : MonoBehaviour
     {
@@ -22,7 +22,7 @@ namespace Amsterdam3D.Sewer
             // get manhole-height
             float depth =GetDepthAtPosition(lidPosition,defaultDepth);
             // create manhole
-            GameObject manHole = Instantiate(manholePrefab);
+            GameObject manHole = Instantiate(manholePrefab, this.transform);
             // move manhole
             manHole.transform.localPosition = lidPosition;
             // scale manhole to correct height
