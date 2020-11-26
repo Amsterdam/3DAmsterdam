@@ -160,9 +160,9 @@ namespace Amsterdam3D.Sewerage
             {
                 string[] vector2String = splitArray[i].Split(',');
                 Vector3RD newRDVector3 = new Vector3RD(
-                        double.Parse(vector2String[0]),
-                        double.Parse(vector2String[1]),
-                        (i == 0) ? double.Parse(startHeight) : double.Parse(endHeight)
+                        double.Parse(vector2String[0],CultureInfo.InvariantCulture),
+                        double.Parse(vector2String[1],CultureInfo.InvariantCulture),
+                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture) : double.Parse(endHeight, CultureInfo.InvariantCulture)
                 );
 
                 Vector3 unityCoordinate = CoordConvert.RDtoUnity(newRDVector3);
