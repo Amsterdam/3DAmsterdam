@@ -12,6 +12,8 @@ namespace Amsterdam3D.Sewerage
 
         public GameObject manholePrefab;
 
+        private const float maxRayCastDistance = 50.0f;
+
         /// <summary>
         /// Create a Manhole (rioolput)
         /// uses TerrainHeight for elevation as default, uses y-value of param:position if no terrainheight found
