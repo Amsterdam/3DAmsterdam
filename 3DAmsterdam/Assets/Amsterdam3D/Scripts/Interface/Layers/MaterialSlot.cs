@@ -27,6 +27,8 @@ namespace Amsterdam3D.Interface
 
 		private const string EXPLANATION_TEXT = "\nShift+Klik: Multi-select";
 
+		private const bool disableShadowsOnLoweredOpacity = false;
+
 		public bool Selected
 		{
 			get
@@ -117,9 +119,8 @@ namespace Amsterdam3D.Interface
 		/// <param name="pickedColor">The new color for the linked Material</param>
 		public void ChangeColor(Color pickedColor)
 		{
-			Vector3 normalizedColor = new Vector3(pickedColor.r, pickedColor.g, pickedColor.b).normalized;
-			colorImage.color = new Color(normalizedColor.x, normalizedColor.y, normalizedColor.z, 1.0f);
-			targetMaterial.SetColor("_BaseColor", new Color(normalizedColor.x, normalizedColor.y, normalizedColor.z, materialOpacity));
+			colorImage.color = pickedColor;
+			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
 
 			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
 				CopyPropertiesToAllChildMaterials();
@@ -159,6 +160,7 @@ namespace Amsterdam3D.Interface
 				SwitchShaderAccordingToOpacity();
 			}
 
+			//We may not have to do this if we can force the sunlight shadow to ignore cutout.
 			targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
 
 			if (layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
