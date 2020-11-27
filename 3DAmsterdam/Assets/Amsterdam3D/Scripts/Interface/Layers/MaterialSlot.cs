@@ -117,8 +117,9 @@ namespace Amsterdam3D.Interface
 		/// <param name="pickedColor">The new color for the linked Material</param>
 		public void ChangeColor(Color pickedColor)
 		{
-			colorImage.color = pickedColor;
-			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
+			Vector3 normalizedColor = new Vector3(pickedColor.r, pickedColor.g, pickedColor.b).normalized;
+			colorImage.color = new Color(normalizedColor.x, normalizedColor.y, normalizedColor.z, 1.0f);
+			targetMaterial.SetColor("_BaseColor", new Color(normalizedColor.x, normalizedColor.y, normalizedColor.z, materialOpacity));
 
 			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
 				CopyPropertiesToAllChildMaterials();
