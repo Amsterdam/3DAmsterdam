@@ -14,6 +14,8 @@ namespace Amsterdam3D.Sewerage
 
         private const float maxRayCastDistance = 50.0f;
 
+        private RaycastHit hit;
+
         /// <summary>
         /// Create a Manhole (rioolput)
         /// uses TerrainHeight for elevation as default, uses y-value of param:position if no terrainheight found
@@ -49,9 +51,6 @@ namespace Amsterdam3D.Sewerage
         {
             Vector3 foundPosition = new Vector3();
 
-            // setup raycast
-            RaycastHit hit;
-
             // set RaycastOrigin to 10 above theoretical manhole-position
             Vector3 rayCastPosition = position - new Vector3(0, 10, 0);
 
@@ -79,11 +78,11 @@ namespace Amsterdam3D.Sewerage
         private float GetDepthAtPosition(Vector3 position, float defaultDepth)
         {
             float height = defaultDepth;
-            RaycastHit hit;
+            
             if (Physics.Raycast(position + Vector3.down*10.0f, Vector3.up, out hit, maxRayCastDistance, sewerHeightCheckLayerMask.value))
             {
                 // if sewerpipe found, depth is distance between top-center and hit.point plus 0.5m for bottom-part of manhole
-                height = position.y-hit.point.y+0.5f;
+                height = (position.y-hit.point.y) - 0.5f;
             }
 
             return height;
