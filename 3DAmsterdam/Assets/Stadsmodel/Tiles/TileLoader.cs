@@ -228,37 +228,43 @@ public class TileLoader : MonoBehaviour
                 activeTiles[tileId].transform.localPosition = loc;
                 activeTiles[tileId].layer = 9;
             }
+
+            //Load texture
+            if (textureUrl != "")
+            {
+                string tileTextureUrl = Constants.BASE_DATA_URL + textureUrl.Replace("{z}", tileId.z.ToString()).Replace("{x}", tileId.x.ToString()).Replace("{y}", tileId.y.ToString());
+                www = UnityWebRequestTexture.GetTexture(tileTextureUrl);
+                yield return www.SendWebRequest();
+
+                if (!www.isNetworkError && !www.isHttpError)
+                {
+                    if (activeTiles.ContainsKey(tileId))
+                    {
+                        meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
+                        Destroy(meshRenderer.material.GetTexture("_BaseMap"));
+
+                        var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                        loadedTexture.wrapMode = TextureWrapMode.Clamp;
+                        meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
+                        meshRenderer.enabled = true;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + tileTextureUrl);
+                }
+            }
+            else if (activeTiles.ContainsKey(tileId))
+            {
+                activeTiles[tileId].GetComponent<MeshRenderer>().enabled = true;
+            }
         }
         else
         {
             Debug.Log("Tile: [" + tileId.z + "/" + tileId.x + "/" + tileId.y + "] Error loading height data");
             Debug.Log(www.error);
         }
-        if (textureUrl != "")
-        {
-            string tileTextureUrl = Constants.BASE_DATA_URL + textureUrl.Replace("{z}", tileId.z.ToString()).Replace("{x}", tileId.x.ToString()).Replace("{y}", tileId.y.ToString());
-            www = UnityWebRequestTexture.GetTexture(tileTextureUrl);
-            yield return www.SendWebRequest();
-
-            if (!www.isNetworkError && !www.isHttpError)
-            {
-                if (activeTiles.ContainsKey(tileId))
-                {
-                    meshRenderer = activeTiles[tileId].GetComponent<MeshRenderer>();
-                    Destroy(meshRenderer.material.GetTexture("_BaseMap"));
-
-                    var loadedTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                    loadedTexture.wrapMode = TextureWrapMode.Clamp;
-                    meshRenderer.material.SetTexture("_BaseMap", loadedTexture);
-                    meshRenderer.enabled = true;
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Tile: [" + tileId.x + " " + tileId.y + "] Error loading texture data: " + tileTextureUrl);
-            }
-        }
-
+        
         activeDownloads.Remove(url);
     }
 
