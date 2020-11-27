@@ -28,7 +28,7 @@ namespace Amsterdam3D.Sewerage
             // get top-center position
             Vector3 lidPosition = GetPositionAtSurface(position);
             // get manhole-height
-            float depth =GetDepthAtPosition(lidPosition,defaultDepth);
+            float depth = GetDepthAtPosition(lidPosition,defaultDepth);
             // create manhole
             GameObject manHole = Instantiate(manholePrefab, this.transform);
             // move manhole
@@ -41,7 +41,7 @@ namespace Amsterdam3D.Sewerage
             return manHole;
         }
         /// <summary>
-        /// get the position of top-center of the manhole, prioritize on terrain-layer
+        /// Get the position of top-center of the manhole, prioritize on terrain-layer
         /// </summary>
         /// <param name="position">Vector3 theoretical position of manhole according to WFS</param>
         /// <returns>Vector3 top-center position of the manhole</returns>
@@ -53,9 +53,9 @@ namespace Amsterdam3D.Sewerage
             RaycastHit hit;
 
             // set RaycastOrigin to 10 above theoretical manhole-position
-            Vector3 rayCastPosition = position + new Vector3(0, 10, 0);
+            Vector3 rayCastPosition = position - new Vector3(0, 10, 0);
 
-            if (Physics.Raycast(rayCastPosition, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, terrainHeightCheckLayerMask.value))
+            if (Physics.Raycast(rayCastPosition, Vector3.down, out hit, maxRayCastDistance, terrainHeightCheckLayerMask.value))
             {
                 // set foundposition to hitpoint if terrain is found
                 foundPosition = hit.point;
@@ -71,16 +71,16 @@ namespace Amsterdam3D.Sewerage
 
         }
         /// <summary>
-        /// get the required depth of the manhole
+        /// Get the required depth of the manhole
         /// </summary>
         /// <param name="position">Vector3 top-center postion of manhole</param>
-        /// <param name="defaultDepth">default depth if to sewerpipes are detected</param>
+        /// <param name="defaultDepth">Default depth if to sewerpipes are detected</param>
         /// <returns>required height of manhole</returns>
         private float GetDepthAtPosition(Vector3 position, float defaultDepth)
         {
             float height = defaultDepth;
             RaycastHit hit;
-            if (Physics.Raycast(position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, sewerHeightCheckLayerMask.value))
+            if (Physics.Raycast(position + Vector3.down*10.0f, Vector3.up, out hit, maxRayCastDistance, sewerHeightCheckLayerMask.value))
             {
                 // if sewerpipe found, depth is distance between top-center and hit.point plus 0.5m for bottom-part of manhole
                 height = position.y-hit.point.y+0.5f;
