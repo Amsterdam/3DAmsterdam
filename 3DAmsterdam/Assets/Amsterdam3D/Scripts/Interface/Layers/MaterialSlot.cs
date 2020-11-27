@@ -27,6 +27,8 @@ namespace Amsterdam3D.Interface
 
 		private const string EXPLANATION_TEXT = "\nShift+Klik: Multi-select";
 
+		private const bool disableShadowsOnLoweredOpacity = false;
+
 		public bool Selected
 		{
 			get
@@ -158,6 +160,7 @@ namespace Amsterdam3D.Interface
 				SwitchShaderAccordingToOpacity();
 			}
 
+			//We may not have to do this if we can force the sunlight shadow to ignore cutout.
 			targetMaterial.SetShaderPassEnabled("ShadowCaster", (opacity == 1.0f));
 
 			if (layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
