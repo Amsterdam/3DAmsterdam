@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013071965063}
-  - component: {fileID: 4498901013071965060}
   - component: {fileID: 1814701005}
   - component: {fileID: 2619376247858438739}
   m_Layer: 8
@@ -33,26 +32,6 @@ Transform:
   m_Father: {fileID: 4498901013433943612}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4498901013071965060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013071965061}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4214f956c7198246a26fbd85ca682eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dataFolder: buildings
-  defaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  highLightMaterial: {fileID: 0}
-  maximumDistanceLOD2: 2000
-  maximumDistanceLOD1: 3000
-  maximumDistanceLOD0: 6000
-  maximumConcurrentDownloads: 5
-  layerName: Panden
 --- !u!114 &1814701005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,7 +199,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013737045448}
-  - component: {fileID: 4498901013737045449}
   - component: {fileID: 995301146926089980}
   m_Layer: 0
   m_Name: Trees
@@ -243,23 +221,6 @@ Transform:
   m_Father: {fileID: 4498901013433943612}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4498901013737045449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013737045302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f95efd698380b3e4d80904009ab3540d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kruinmateriaal: {fileID: 2100000, guid: af29b84ec03afb14a8811735af53ed43, type: 2}
-  stammateriaal: {fileID: 2100000, guid: 149038e7565fb6a4b98404331c54c6fe, type: 2}
-  Max_Afstand: 1000
-  dataFolder: trees
-  MAX_Concurrent_Downloads: 5
 --- !u!114 &995301146926089980
 MonoBehaviour:
   m_ObjectHideFlags: 0

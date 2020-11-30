@@ -5,8 +5,11 @@ using UnityEngine;
 public class RuntimeMaskSphere : MonoBehaviour
 {
     [SerializeField]
-    private Transform targetMaterialsContainer;  
-    
+    private Transform targetMaterialsContainer;
+
+    [SerializeField]
+    private Material[] specificMaterials;
+
     [SerializeField]
     private Transform pointerFollower;
 
@@ -27,13 +30,27 @@ public class RuntimeMaskSphere : MonoBehaviour
     }
 
     void Update()
-    {
-        MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
-        maskVector.Set(pointerFollower.position.x, pointerFollower.position.y, pointerFollower.position.z, pointerFollower.localScale.x * maskScale);
+	{
+		UpdateDynamicCreatedInstancedMaterials();
+		UpdateSpecificMaterials();
+	}
 
-        foreach (MeshRenderer renderer in meshRenderers)
-        {
-            renderer.sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
-        }
-    }
+	private void UpdateSpecificMaterials()
+	{
+		foreach (Material sharedMaterial in specificMaterials)
+		{
+			sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
+		}
+	}
+
+	private void UpdateDynamicCreatedInstancedMaterials()
+	{
+		MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
+		maskVector.Set(pointerFollower.position.x, pointerFollower.position.y, pointerFollower.position.z, pointerFollower.localScale.x * maskScale);
+
+		foreach (MeshRenderer renderer in meshRenderers)
+		{
+			renderer.sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
+		}
+	}
 }
