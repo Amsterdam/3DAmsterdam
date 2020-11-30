@@ -335,7 +335,7 @@ namespace Amsterdam3D.CameraMotion
                 else {
                     //Slide forward in dragged direction
                     dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
-                    if (dragMomentum.magnitude > 0.0f)
+                    if (dragMomentum.magnitude > 0.1f)
                     {
                         this.transform.position -= dragMomentum;
                     }

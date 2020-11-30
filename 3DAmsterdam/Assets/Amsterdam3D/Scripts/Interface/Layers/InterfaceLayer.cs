@@ -49,6 +49,8 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
+		[Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
+		public bool usingRuntimeInstancedMaterials = false;
 
 		[SerializeField]
 		private Toggle toggleActiveLayer;

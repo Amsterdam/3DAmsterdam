@@ -37,6 +37,8 @@ public class SelectByID : MonoBehaviour
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
     private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
+    private const int maximumRayPiercingLoops = 20;
+
     private void Awake()
 	{
         selectedIDs = new List<string>();
@@ -96,12 +98,9 @@ public class SelectByID : MonoBehaviour
         SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
         var vertices = selectionTools.GetVertices();
         var bounds = selectionTools.GetBounds();
-        containerLayer.AddMeshColliders();
-
-        //Bounding box (does not support rotations)
-        //StartCoroutine(GetAllIDsInBoundingBoxRange(vertices[0], vertices[2], HighlightSelectionRegionIDs));
+       
         //Polygon selection
-        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightSelectionRegionIDs));
+        StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightObjectsWithIDs));
     }
 
     /// <summary>
@@ -126,9 +125,7 @@ public class SelectByID : MonoBehaviour
                 singleIdList.Add(id);
             }
 
-            HighlightSelectionRegionIDs(singleIdList);
-            
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
+            HighlightObjectsWithIDs(singleIdList);
         }
     }
 
@@ -136,8 +133,10 @@ public class SelectByID : MonoBehaviour
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightSelectionRegionIDs(List<string> ids)
+    private void HighlightObjectsWithIDs(List<string> ids)
     {
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
+
         selectedIDs.AddRange(ids);
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
@@ -191,9 +190,12 @@ public class SelectByID : MonoBehaviour
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
         tileHandler.pauseLoading = true;
-        containerLayer.AddMeshColliders();
 
-        //Didn't hit anything
+        //Check area that we clicked, and add the (heavy) mesh collider there
+        Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+        containerLayer.AddMeshColliders(planeHit);
+
+        //No fire a raycast towards our meshcolliders to see what face we hit
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
@@ -210,76 +212,33 @@ public class SelectByID : MonoBehaviour
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
             yield break;
         }
-        var uv = mesh.uv2[vertexIndex];
-        var gameObjectToHighlight = hit.collider.gameObject;
-        var newHit = hit;
-        var lastHit = hit;
 
-        //Keep piercing forward with raycasts untill we find a visible UV
-        if (uv.y == 0.2f)
+        var hitUvCoordinate = mesh.uv2[vertexIndex];
+        var gameObjectToHighlight = hit.collider.gameObject;
+
+        //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
+        ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
+        if(objectMapping && objectMapping.colorIDMap)
         {
-            Vector3 lastPoint = hit.point;
-            while (uv.y == 0.2f)
+            Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
+            int raysLooped = 0;
+            while (hitPixelColor == ObjectData.HIDDEN_COLOR && raysLooped < maximumRayPiercingLoops)
             {
-                Vector3 hitPoint = newHit.point + (ray.direction * 0.01f);
-                ray = new Ray(hitPoint, ray.direction);
-                if (Physics.Raycast(ray, out newHit, 10000, clickCheckLayerMask.value))
+                Vector3 deeperHitPoint = hit.point + (ray.direction * 0.01f);
+                ray = new Ray(deeperHitPoint, ray.direction);
+                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
                 {
-                    uv = mesh.uv2[newHit.triangleIndex * 3];
-                    Debug.DrawLine(lastPoint, newHit.point, Color.blue, 1000);
-                    lastPoint = newHit.point;
-                    lastHit = newHit;
-                    if (uv.y != 0.2f) 
-                    {
-                        Debug.Log("Hit visible");
-                    }
+                    vertexIndex = hit.triangleIndex * 3;
+                    hitUvCoordinate = mesh.uv2[vertexIndex];
+
+                    hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
                 }
-                else 
-                {
-                    break;
-                }
+                raysLooped++;
                 yield return new WaitForEndOfFrame();
             }
         }
-        hit = lastHit;
-
         //Not retrieve the selected BAG ID tied to the selected triangle
         tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
-        //tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, (value) => { PaintSelectionPixel(value, gameObjectToHighlight, mesh, hit); });
-    }
-
-    //Paints a pixel for a specific subobject, for highlighting or coloring specific buildings
-    private void PaintSelectionPixel(string objectId, GameObject gameObjectToHighlight, Mesh mesh, RaycastHit hit)
-    {
-        print("Adding texture with colored pixel");
-        int objectIndex = hit.triangleIndex * 3;
-        var objectData = gameObjectToHighlight.GetComponent<ObjectData>();
-        Vector2Int textureSize = ObjectIDMapping.GetTextureSize(objectData.ids.Count);
-
-        Debug.Log("Texture size: " + textureSize);
-
-        //Reapply the mesh collider so it has the new proper UV's
-        mesh.uv = objectData.uvs;
-        gameObjectToHighlight.GetComponent<MeshCollider>().sharedMesh = mesh;
-
-        //Create a texture, without mipmapping or filtering
-        Vector2 uvCoordinate = ObjectIDMapping.GetUV(objectIndex, textureSize);
-        Debug.Log("Setting uv: " + uvCoordinate);
-
-        //Create a main texture on click
-        Texture2D colorTexture = (Texture2D)gameObjectToHighlight.GetComponent<MeshRenderer>().material.GetTexture("_BaseMap");        
-        if (!colorTexture)
-        {
-            colorTexture = new Texture2D(textureSize.x / 2, textureSize.y / 2, TextureFormat.ARGB32,false);
-            colorTexture.filterMode = FilterMode.Point;
-        }
-
-        colorTexture.SetPixel(Mathf.FloorToInt(uvCoordinate.x), Mathf.FloorToInt(uvCoordinate.y), new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1.0f));
-        colorTexture.Apply();
-
-        //TODO: change shader
-
-        gameObjectToHighlight.GetComponent<MeshRenderer>().material.SetTexture("_BaseMap",colorTexture);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
@@ -336,14 +295,13 @@ public class SelectByID : MonoBehaviour
             if (i != 0) coordinates += ",";
             coordinates += coordinate.x.ToString(CultureInfo.InvariantCulture) + " " + coordinate.y.ToString(CultureInfo.InvariantCulture);
         }
-        coordinates += "";
 
         //Our filter according to https://www.mapserver.org/ogc/filter_encoding.html , the type of WFS server used by the API.
         var filter = $"<Filter><Intersects><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Intersects></Filter>";
 
         var requestUrl = bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
         var hideRequest = UnityWebRequest.Get(requestUrl);
-        Debug.Log(requestUrl);
+
         yield return hideRequest.SendWebRequest();
 
         if (hideRequest.isNetworkError || hideRequest.isHttpError)
@@ -369,6 +327,13 @@ public class SelectByID : MonoBehaviour
                 }
             }
         }
+
+        //Make sure all the metadata requests are done before we continue
+        while(TileHandler.runningTileDataRequests > 0)
+        {
+            yield return new WaitForEndOfFrame();
+		}
+
         callback?.Invoke(ids);
         yield return null;
     }
