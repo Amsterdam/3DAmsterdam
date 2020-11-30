@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ConvertCoordinates;
 
-public class VissimManager : MonoBehaviour
+public class ConvertZFP : MonoBehaviour
 {
     /* FOR THIS VISSIM SIMULATION, USE THE STANDARD TEMPLATE WITH THE FOLLOWING PARAMETERS ONLY.
      * 
@@ -12,31 +12,34 @@ public class VissimManager : MonoBehaviour
      * 
      */
 
-    public Dictionary<int, Car> vehicles = new Dictionary<int, Car>();
+    [SerializeField] private GameObject[] vissimCarPrefab = default;
 
-    public Dictionary<int, string> vehicleTypes = new Dictionary<int, string>() 
+    public Dictionary<int, GameObject[]> vehicleTypes = new Dictionary<int, GameObject[]>() 
     { 
-        { 100, "Auto" }, 
-        { 200, "Vrachtwagen" }, 
-        { 300, "Bus" }, 
-        { 400, "Tram" }, 
-        { 500, "Voetganger" }, 
-        { 600, "Fiets" }, 
-        { 700, "Bestelbus" } 
+        //{ 100, "Auto" }, 
+        //{ 200, "Vrachtwagen" }, 
+        //{ 300, "Bus" }, 
+        //{ 400, "Tram" }, 
+        //{ 500, "Voetganger" }, 
+        //{ 600, "Fiets" }, 
+        //{ 700, "Bestelbus" } 
     };
-
-    public List<VissimData> allData = new List<VissimData>();
-
-    [HideInInspector] //[TextArea]
-    public string textas;
-    public string fileLocationVISSIM = "921-929-autoluw-2030-ref+_005.fzp";
-
+    
     private string requiredTemplate = "$VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH";
+    public string fileLocationVISSIM = "921929autoluw2030ref005.fzp";
+
+    public List<VissimData> allVissimData = new List<VissimData>();
+
     private bool readyToConvert = false;
+
+    public bool finishedLoadingData = false;
+    public float frameCounter = 0.0f;
+    public float timeBetweenFrames = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" +  fileLocationVISSIM));
+        vehicleTypes.Add(100, vissimCarPrefab);
     }
 
     /// <summary>
@@ -45,6 +48,7 @@ public class VissimManager : MonoBehaviour
     /// <param name="text"></param>
     public void ReadFileFZP(string text)
     {
+        finishedLoadingData = false;
         string[] lines = text.Split(System.Environment.NewLine.ToCharArray());
         foreach (string line in lines)
         {
@@ -59,6 +63,11 @@ public class VissimManager : MonoBehaviour
             }
         }
         readyToConvert = false;
+        finishedLoadingData = true;
+
+        //sets  the current VISSIm file start parameters
+        //timeBetweenFrames = allVissimData[1].simsec - allVissimData[0].simsec; // This calculates the resoluation, since its always constant we use the 2nd one and the 1st and find the difference.
+        frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
     }
     /// <summary>
     /// Converts string into VissimData.
@@ -66,11 +75,10 @@ public class VissimManager : MonoBehaviour
     /// <param name="dataString"></param>
     public void AddVissimData(string dataString)
     {
-        Debug.Log(dataString);
         string[] arr = dataString.Split(';');
-        Debug.Log(arr[1]);
-        VissimData data = new VissimData(float.Parse(arr[0]), int.Parse(arr[1]), int.Parse(arr[2]), convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
-        allData.Add(data);
+        float simsec = float.Parse(arr[0].Replace(".", ","));
+        VissimData data = new VissimData(simsec, int.Parse(arr[1]), int.Parse(arr[2]), convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
+        allVissimData.Add(data);
     }
 
     /// <summary>
@@ -91,7 +99,8 @@ public class VissimManager : MonoBehaviour
         double y = double.Parse(splitString[1]);
         double z = double.Parse(splitString[2]);
         Vector3RD rdVector = new Vector3RD(x, y, z); // Creates the Double Vector
-
+        //ConvertCoordinates.CoordConvert.WGS84toUnity
+        //ConvertCoordinates.CoordConvert.RDtoUnity
         Vector3 convertedCoordinates = ConvertCoordinates.CoordConvert.RDtoUnity(rdVector); 
         // Y Coordinates will be calculated by the vehicle to connect with the Map (Maaiveld).
 
@@ -110,11 +119,9 @@ public class VissimManager : MonoBehaviour
         var request = UnityWebRequest.Get(apiUrl);
         {
             yield return request.SendWebRequest();
-            Debug.Log("SEND");
             if (request.isDone && !request.isHttpError)
             {
                 // catches the data
-                textas = request.downloadHandler.text;
                 ReadFileFZP(request.downloadHandler.text);
             }
         }
