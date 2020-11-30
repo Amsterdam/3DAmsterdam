@@ -81,6 +81,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MaskGrid:
+        m_Texture: {fileID: 2800000, guid: bdc87d6006b4f0b43ac1760790e50c94, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MaskMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -115,6 +119,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_56F722ED_Texture_1:
         m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_9750129E_Texture_1:
+        m_Texture: {fileID: 2800000, guid: d8b2ad7ea59f9e84889d717318ecdc44, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -190,6 +198,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Vector2_E33F02F7: {r: 100, g: 100, b: 0, a: 0}
+    - Vector2_FCF32060: {r: 0, g: 0, b: 0, a: 0}
     - Vector4_2A10A8B8: {r: 0.44, g: 0.72, b: -0.09, a: 4.87}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _ClippingMaskDome: {r: 0, g: 0, b: 0, a: 0}
