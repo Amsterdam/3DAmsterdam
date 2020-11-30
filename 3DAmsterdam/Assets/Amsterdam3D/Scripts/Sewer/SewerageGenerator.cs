@@ -78,6 +78,9 @@ namespace Amsterdam3D.Sewerage
             SewerManholes.Feature sewerManholeFeature;
             for (int i = 0; i < sewerManholes.features.Length; i++)
             {
+                //Speedy way to check if the string is not a 'Knikpunt' but a 'Regenwaterrioolput'
+                if (sewerManholes.features[i].properties.objectsoort.Length != 18) continue;
+
                 if ((i % maxSpawnsPerFrame) == 0) yield return new WaitForEndOfFrame();
 
                 sewerManholeFeature = sewerManholes.features[i];
@@ -98,6 +101,8 @@ namespace Amsterdam3D.Sewerage
             string escapedUrl = sewerManholesWfsUrl;
             escapedUrl += UnityWebRequest.EscapeURL(boundingBoxMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.y.ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
+
+            Debug.Log(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
             if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)

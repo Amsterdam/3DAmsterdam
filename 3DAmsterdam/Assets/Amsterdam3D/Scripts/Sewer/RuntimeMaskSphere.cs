@@ -32,19 +32,28 @@ public class RuntimeMaskSphere : MonoBehaviour
 
     void Update()
 	{
+		if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;
+
+		MoveMask();
+
+		UpdateDynamicCreatedInstancedMaterials();
+		UpdateSpecificMaterials();
+	}
+
+	private void MoveMask()
+	{
+		pointerFollower.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
 		pointerFollower.transform.localScale = Vector3.one * maskScale * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
 		maskVector.Set(
-			pointerFollower.position.x, 
-			pointerFollower.position.y, 
-			pointerFollower.position.z, 
+			pointerFollower.position.x,
+			pointerFollower.position.y,
+			pointerFollower.position.z,
 			(CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) ?
 			pointerFollower.transform.localScale.x * 0.47f : 0.0f
 		);
 
-		pointerFollower.gameObject.SetActive((maskVector.z != 0));
-
-		UpdateDynamicCreatedInstancedMaterials();
-		UpdateSpecificMaterials();
+		//Hide mask object if we are underground
+		pointerFollower.gameObject.SetActive(maskVector.z != 0.0f);
 	}
 
 	private void UpdateSpecificMaterials()
