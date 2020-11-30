@@ -5,10 +5,35 @@ using UnityEngine;
 public class RuntimeMaskSphere : MonoBehaviour
 {
     [SerializeField]
-    private Material groundMaterial;
+    private Transform targetMaterialsContainer;  
+    
+    [SerializeField]
+    private Transform pointerFollower;
+
+    [SerializeField]
+    private float maskScale = 2.0f;
+
+    Vector4 maskVector = default;
+
+
+	private void OnEnable()
+	{
+        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(true);
+    }
+
+    private void OnDisable()
+    {
+        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(false);
+    }
 
     void Update()
     {
-        groundMaterial.SetVector("_ClippingMaskDome", new Vector4(this.transform.position.x, this.transform.position.y, this.transform.position.z, this.transform.localScale.x-1));
+        MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
+        maskVector.Set(pointerFollower.position.x, pointerFollower.position.y, pointerFollower.position.z, pointerFollower.localScale.x * maskScale);
+
+        foreach (MeshRenderer renderer in meshRenderers)
+        {
+            renderer.sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
+        }
     }
 }
