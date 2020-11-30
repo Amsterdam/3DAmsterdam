@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class RuntimeMaskSphere : MonoBehaviour
     [SerializeField]
     private float maskScale = 2.0f;
 
-    Vector4 maskVector = default;
+	Vector4 maskVector = default;
 
 
 	private void OnEnable()
@@ -31,6 +32,17 @@ public class RuntimeMaskSphere : MonoBehaviour
 
     void Update()
 	{
+		pointerFollower.transform.localScale = Vector3.one * maskScale * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+		maskVector.Set(
+			pointerFollower.position.x, 
+			pointerFollower.position.y, 
+			pointerFollower.position.z, 
+			(CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) ?
+			pointerFollower.transform.localScale.x * 0.47f : 0.0f
+		);
+
+		pointerFollower.gameObject.SetActive((maskVector.z != 0));
+
 		UpdateDynamicCreatedInstancedMaterials();
 		UpdateSpecificMaterials();
 	}
@@ -46,7 +58,6 @@ public class RuntimeMaskSphere : MonoBehaviour
 	private void UpdateDynamicCreatedInstancedMaterials()
 	{
 		MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
-		maskVector.Set(pointerFollower.position.x, pointerFollower.position.y, pointerFollower.position.z, pointerFollower.localScale.x * maskScale);
 
 		foreach (MeshRenderer renderer in meshRenderers)
 		{
