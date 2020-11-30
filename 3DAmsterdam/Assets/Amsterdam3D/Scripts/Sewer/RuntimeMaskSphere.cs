@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RuntimeMaskSphere : MonoBehaviour
 {
@@ -28,7 +29,10 @@ public class RuntimeMaskSphere : MonoBehaviour
     private void OnDisable()
     {
         targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(false);
-    }
+
+		//make sure to reset mask shaders
+		UpdateSpecificMaterials(true);
+	}
 
     void Update()
 	{
@@ -48,19 +52,23 @@ public class RuntimeMaskSphere : MonoBehaviour
 			pointerFollower.position.x,
 			pointerFollower.position.y,
 			pointerFollower.position.z,
-			(CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) ?
+			((CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) && !EventSystem.current.IsPointerOverGameObject()) ?
 			pointerFollower.transform.localScale.x * 0.47f : 0.0f
 		);
 
 		//Hide mask object if we are underground
-		pointerFollower.gameObject.SetActive(maskVector.z != 0.0f);
+		pointerFollower.gameObject.SetActive((maskVector.w > 0.0f));
 	}
 
-	private void UpdateSpecificMaterials()
+	/// <summary>
+	/// Update specific shared materials that use the clipping mask subgraph
+	/// </summary>
+	/// <param name="resetToZero">Set all mask parameters to zero to make sure our editor does not change the materials</param>
+	private void UpdateSpecificMaterials(bool resetToZero = false)
 	{
 		foreach (Material sharedMaterial in specificMaterials)
 		{
-			sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
+			sharedMaterial.SetVector("_ClippingMaskDome", (resetToZero) ? Vector4.zero : maskVector);
 		}
 	}
 

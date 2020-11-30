@@ -1,4 +1,5 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.CameraMotion;
+using ConvertCoordinates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,25 +28,40 @@ namespace Amsterdam3D.Sewerage
 
         private const int maxSpawnsPerFrame = 100;
 
-        private Vector3RD boundingBoxMinimum;
-        private Vector3RD boundingBoxMaximum;
+        private Vector3RD boundingBoxMinimum  = default;
+        private Vector3RD boundingBoxMaximum = default;
 
         private void Start()
-        {
-            //For testing purposes, just load a set area.
-            //We want this to come from the tile/layer system
-            boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
-            boundingBoxMaximum = new Vector3RD(123000, 483000, 0);
+		{
+			//For testing purposes, just load a set area.
+			//We want this to come from the tile/layer system
+			GetBoundingBoxCameraIsIn();
 
-            Generate(boundingBoxMinimum, boundingBoxMaximum);
-        }
+			Generate(boundingBoxMinimum, boundingBoxMaximum);
+		}
 
-        /// <summary>
-        /// Starts genering the sewage network based on the geometry data and points in a WFS service
-        /// </summary>
-        /// <param name="boxMinimum">The RD coordinates min point of a bounding box area</param>
-        /// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
-        public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
+		private void GetBoundingBoxCameraIsIn()
+		{
+            Vector3RD cameraRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            cameraRD.x = Mathf.Round((float)cameraRD.x);
+            cameraRD.y = Mathf.Round((float)cameraRD.y);
+
+            //Outside our bounds? Load a new area
+            if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
+            {
+                
+			}
+
+            /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
+			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
+		}
+
+		/// <summary>
+		/// Starts genering the sewage network based on the geometry data and points in a WFS service
+		/// </summary>
+		/// <param name="boxMinimum">The RD coordinates min point of a bounding box area</param>
+		/// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
+		public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
             boundingBoxMinimum = boxMinimum;
             boundingBoxMaximum = boxMaximum;
