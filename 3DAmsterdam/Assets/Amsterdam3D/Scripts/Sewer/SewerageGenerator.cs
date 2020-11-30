@@ -31,6 +31,8 @@ namespace Amsterdam3D.Sewerage
         private Vector3RD boundingBoxMinimum  = default;
         private Vector3RD boundingBoxMaximum = default;
 
+        private double boundingBoxMargin = 2.0f;
+
         private void Start()
 		{
 			//For testing purposes, just load a set area.
@@ -46,7 +48,7 @@ namespace Amsterdam3D.Sewerage
             cameraRD.x = Mathf.Round((float)cameraRD.x);
             cameraRD.y = Mathf.Round((float)cameraRD.y);
 
-            //Outside our bounds? Load a new area
+            //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
                 
