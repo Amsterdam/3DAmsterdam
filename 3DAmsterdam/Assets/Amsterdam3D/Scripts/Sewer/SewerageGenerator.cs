@@ -38,8 +38,6 @@ namespace Amsterdam3D.Sewerage
 			//For testing purposes, just load a set area.
 			//We want this to come from the tile/layer system
 			GetBoundingBoxCameraIsIn();
-
-			Generate(boundingBoxMinimum, boundingBoxMaximum);
 		}
 
 		private void GetBoundingBoxCameraIsIn()
@@ -51,8 +49,10 @@ namespace Amsterdam3D.Sewerage
             //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
-                
-			}
+                //TODO. clean up and load up new area.
+
+                Generate(boundingBoxMinimum, boundingBoxMaximum);
+            }
 
             /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
 			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
