@@ -114,8 +114,8 @@ namespace Amsterdam3D.Sewerage
             SewerManholes.Feature sewerManholeFeature;
             for (int i = 0; i < sewerManholes.features.Length; i++)
             {
-                //Speedy way to check if the string is not a 'Knikpunt' but a 'Regenwaterrioolput'
-                if (sewerManholes.features[i].properties.objectsoort.Length != 18) continue;
+                //Speedy way to check if the string is not a 'Knikpunt'
+                if (sewerManholes.features[i].properties.objectsoort.Length == 8) continue;
 
                 if ((i % maxSpawnsPerFrame) == 0) yield return new WaitForEndOfFrame();
 
