@@ -38,8 +38,6 @@ namespace Amsterdam3D.Sewerage
 
         private void Update()
 		{
-			//For testing purposes, just load a set area.
-			//We want this to come from the tile/layer system
 			GetBoundingBoxCameraIsIn();
 		}
 
@@ -52,6 +50,9 @@ namespace Amsterdam3D.Sewerage
             //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
+                //Make sure to stop all ongoing requests
+                StopAllCoroutines();
+
                 //Set new area based on rounded camera position with a margin
                 boundingBoxMinimum.x = cameraRD.x - boundingBoxMargin;
                 boundingBoxMinimum.y = cameraRD.y + boundingBoxMargin;
@@ -59,12 +60,8 @@ namespace Amsterdam3D.Sewerage
                 boundingBoxMaximum.x = cameraRD.x + boundingBoxMargin;
                 boundingBoxMaximum.y = cameraRD.y - boundingBoxMargin;
 
-                ClearNetwork();
                 Generate(boundingBoxMinimum, boundingBoxMaximum);
             }
-
-            /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
-			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
 		}
 
         private void ClearNetwork()
@@ -169,6 +166,10 @@ namespace Amsterdam3D.Sewerage
                 }
 
                 yield return new WaitForEndOfFrame();
+
+                //We have a new network now that can start to spawn. Clear the old objects.
+                ClearNetwork();
+
                 StartCoroutine(SpawnLineObjects());
             }
             yield return null;
