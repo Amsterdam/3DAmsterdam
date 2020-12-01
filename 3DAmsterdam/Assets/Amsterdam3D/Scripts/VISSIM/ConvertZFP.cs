@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using ConvertCoordinates;
+using System.Globalization;
 
 public class ConvertZFP : MonoBehaviour
 {
@@ -107,7 +108,9 @@ public class ConvertZFP : MonoBehaviour
     public void AddVissimData(string dataString)
     {
         string[] arr = dataString.Split(';');
-        float simsec = float.Parse(arr[0].Replace(".", ","));
+        float simsec = float.Parse(arr[0], CultureInfo.InvariantCulture);
+        //arr[0] = arr[0].ToString(CultureInfo.InvariantCulture);
+        //float simsec = float.Parse(arr[0]);
         VissimData data = new VissimData(simsec, int.Parse(arr[1]), int.Parse(arr[2]), convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
         allVissimData.Add(data);
 
@@ -143,12 +146,12 @@ public class ConvertZFP : MonoBehaviour
         //0 value is X
         //1 value is Y
         //2 value is Z
-        stringVector = stringVector.Replace(".", ","); // Transforms decimal from US standard which uses a Period to European with a Comma
+        //stringVector = stringVector.Replace(".", ","); // Transforms decimal from US standard which uses a Period to European with a Comma
 
         string[] splitString = stringVector.Split(' '); // Splits the string into individual vectors
-        double x = double.Parse(splitString[0]);
-        double y = double.Parse(splitString[1]);
-        double z = double.Parse(splitString[2]);
+        double x = double.Parse(splitString[0], CultureInfo.InvariantCulture);
+        double y = double.Parse(splitString[1], CultureInfo.InvariantCulture);
+        double z = double.Parse(splitString[2], CultureInfo.InvariantCulture);
         Vector3RD rdVector = new Vector3RD(x, y, z); // Creates the Double Vector
         Vector3 convertedCoordinates = ConvertCoordinates.CoordConvert.RDtoUnity(rdVector); 
         // Y Coordinates will be calculated by the vehicle to connect with the Map (Maaiveld).
