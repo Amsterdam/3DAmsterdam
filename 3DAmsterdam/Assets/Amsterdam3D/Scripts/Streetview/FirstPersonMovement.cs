@@ -9,7 +9,10 @@ public class FirstPersonMovement : MonoBehaviour
     private float groundOffset;
 
     [SerializeField]
-    private LayerMask layerMask;
+    private LayerMask layerMaskGround;
+
+    [SerializeField]
+    private LayerMask layerMaskCustom;
 
     private Vector3 velocity;
     private bool isgrounded;
@@ -65,16 +68,27 @@ public class FirstPersonMovement : MonoBehaviour
 	private void CheckPhysics() 
     {
         //Find grounding
-        var center = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
-        ray = new Ray(center + Vector3.up*100.0f, -Vector3.up);
-        if (Physics.Raycast(ray, out hit, 1000.0f, layerMask.value))
+        var playerCenter = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
+        var rayGround = new Ray(playerCenter + Vector3.up*100.0f, Vector3.down);
+        var rayCustom = new Ray(playerCenter, Vector3.down);
+
+        //First check for custom colliders from center of player. Next, check for grounding above or under the player.
+        if (Physics.Raycast(rayCustom, out hit, 1000.0f, layerMaskCustom.value) || Physics.Raycast(rayGround, out hit, 1000.0f, layerMaskGround.value))
         {
             //If we have ground to fall to, and we are not grounded, fall!
-            isgrounded = Vector3.Distance(hit.point, center) <= groundOffset;
+            isgrounded = Vector3.Distance(hit.point, playerCenter) <= groundOffset;
 
             if (!isgrounded)
             {
-                velocity -= -Vector3.up * Physics.gravity.y * Time.deltaTime;
+                if (hit.point.y < playerCenter.y)
+                {
+                    //Fall down
+                    velocity -= -Vector3.up * Physics.gravity.y * Time.deltaTime;
+                }
+                else{
+                    //Move player up
+                    velocity += -Vector3.up * Physics.gravity.y * Time.deltaTime;
+                }
             }
             else
             {
@@ -82,8 +96,9 @@ public class FirstPersonMovement : MonoBehaviour
                 velocity = new Vector3(velocity.x, 0, velocity.z);
             }
         }
-        else{
-            //We are not grounded, but have no ground to fall to.
+        else
+        {
+            //We are not grounded, but have no ground to fall to. keep floating.
             isgrounded = false;
             this.transform.position = new Vector3(this.transform.position.x, Constants.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
             velocity = new Vector3(velocity.x, 0, velocity.z);

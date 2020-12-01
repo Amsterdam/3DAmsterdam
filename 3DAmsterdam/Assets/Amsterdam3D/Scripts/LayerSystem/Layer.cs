@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using ConvertCoordinates;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 namespace LayerSystem
 {
     public class Layer : MonoBehaviour
@@ -13,161 +16,130 @@ namespace LayerSystem
         public List<DataSet> Datasets = new List<DataSet>();
         public Dictionary<Vector2Int, Tile> tiles = new Dictionary<Vector2Int, Tile>();
 
+        private TileHandler tileHandler;
+
         void Start()
         {
+            tileHandler = GetComponentInParent<TileHandler>();
+
             foreach (DataSet dataset in Datasets)
             {
                 dataset.maximumDistanceSquared = dataset.maximumDistance * dataset.maximumDistance;
             }
         }
 
-        public void UnHighlightAll()
+        /// <summary>
+        /// Check object data of our tiles one frame at a time, and highlight matching ID's
+        /// </summary>
+        /// <param name="ids">List of unique (BAG) id's we want to highlight</param>
+        public void Highlight(List<string> ids)
         {
-            StartCoroutine(PrivateHighlight("null"));
+            StopAllCoroutines();
+            StartCoroutine(HighlightIDs(ids));
         }
 
-        public void Highlight(string id)
-        {
-            StartCoroutine(PrivateHighlight(id));
-        }
-
-        public void Hide(string id) 
-        {
-            StartCoroutine(PrivateHide(id));
-        }
-
+        /// <summary>
+        /// Hide mesh parts with the matching object data ID's
+        /// </summary>
+        /// <param name="ids">List of unique (BAG) id's we want to hide</param>
         public void Hide(List<string> ids) 
         {
-            StartCoroutine(PrivateHide(ids));
+            StopAllCoroutines();
+            StartCoroutine(HideIDs(ids));
         }
 
-        public void UnhideAll() 
-        {
-            StartCoroutine(PrivateHide("null"));
-        }
-
-
-        public void LoadMeshColliders(System.Action<bool> callback) 
-        {
-            StartCoroutine(LoadMeshCollidersRoutine(callback));
-        }
-        
-        private IEnumerator LoadMeshCollidersRoutine(System.Action<bool> callback)
+        /// <summary>
+        /// Adds mesh colliders to the meshes found within this layer
+        /// </summary>
+        /// <param name="onlyTileUnderPosition">Optional world position where this tile should be close to</param>
+        public void AddMeshColliders(Vector3 onlyTileUnderPosition = default) 
         {
             MeshCollider meshCollider;
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-            if (meshFilters == null)
+
+            if (meshFilters != null)
             {
-                callback(true);
-                yield break;
-            }
-            foreach (MeshFilter meshFilter in meshFilters)
-            {
-                meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
-                if (meshCollider == null)
+                if (onlyTileUnderPosition != default)
                 {
-                    meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
-                }
-            }
-            callback(true);
-            Debug.Log("MeshColliders attached");
-        }
-
-
-        private IEnumerator PrivateHide(List<string> id)
-        {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
-            ObjectData objectdata;
-            Vector2[] UVs;
-            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
-            {
-                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
-                if (objectdata != null)
-                {
-                    objectdata.hideIDs.AddRange(id);
-                    objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
-                    objectdata.SetHideUVs();
-                //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
-                yield return null;
-                }
-            }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
-        }
-
-
-        private IEnumerator PrivateHide(string id) 
-        {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
-            ObjectData objectdata;
-            Vector2[] UVs;
-            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
-            {
-                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
-                if (objectdata != null)
-                {
-                    if (objectdata.ids.Contains(id) == false)
+                    foreach (MeshFilter meshFilter in meshFilters)
                     {
-                        if (objectdata.hideIDs.Count == 0)
+                        if (Mathf.Abs(onlyTileUnderPosition.x - meshFilter.gameObject.transform.position.x) < tileSize && Mathf.Abs(onlyTileUnderPosition.z - meshFilter.gameObject.transform.position.z) < tileSize)
                         {
-                            continue;
+                            meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                            if (meshCollider == null)
+                            {
+                                meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                            }
                         }
                     }
+                    return;
+                }
 
-   
-                    if (id == "null")
+                //Just add all MeshColliders if no specific area was supplied
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                    if (meshCollider == null)
                     {
-                        objectdata.hideIDs.Clear();
-                        objectdata.SetUVs();
+                        meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                    }
+                }
+            }
+        }
+        private IEnumerator HighlightIDs(List<string> ids)
+        {
+            tileHandler.pauseLoading = true;
+            ObjectData objectData;
+
+            foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
+            {
+                if (kvp.Value.gameObject == null)
+                {
+                    continue;
+                }
+                objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectData != null)
+                {
+                    if (ids.Count > 0)
+                    {
+                        objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
                     }
                     else
                     {
-                        objectdata.hideIDs.Add(id);
-                        objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
-                        objectdata.SetHideUVs();
+                         objectData.highlightIDs.Clear();
                     }
-                    //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
-                    yield return null;
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
+            tileHandler.pauseLoading = false;
+            yield return null;
         }
 
-        private IEnumerator PrivateHighlight(string id)
+        private IEnumerator HideIDs(List<string> ids)
         {
-            transform.GetComponentInParent<TileHandler>().pauseLoading = true;
-            ObjectData objectdata;
-            Vector2[] UVs;
+            tileHandler.pauseLoading = true;
+            ObjectData objectData;
             foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
             {
-                objectdata = kvp.Value.gameObject.GetComponent<ObjectData>();
-                if (objectdata != null)
+                if (kvp.Value.gameObject == null)
                 {
-                    if (objectdata.ids.Contains(id)==false)
+                    continue;
+                }
+                objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
+                if (objectData != null)
+                {
+                    if (ids.Count > 0)
                     {
-                        if (objectdata.highlightIDs.Count == 0)
-                        {
-                            continue;
-                        }
+                        objectData.hideIDs.AddRange(ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>());
                     }
-                    
-                    objectdata.highlightIDs.Clear();
-                    if (id == "null")
-                    {
-                        objectdata.SetUVs();
+                    else{
+                        objectData.hideIDs.Clear();
                     }
-                    else
-                    {
-                        objectdata.highlightIDs.Add(id);
-                        objectdata.hideIDs.Remove(id);
-                        objectdata.mesh = objectdata.gameObject.GetComponent<MeshFilter>().mesh;
-                        objectdata.SetUVs();
-                    }
-                    //objectdata.gameObject.GetComponent<MeshFilter>().mesh.uv2 = UVs;
-                    yield return null;
+                    objectData.ApplyDataToIDsTexture();
                 }
             }
-            transform.GetComponentInParent<TileHandler>().pauseLoading = false;
-            
+            tileHandler.pauseLoading = false;
+            yield return null;
         }
     }
 }

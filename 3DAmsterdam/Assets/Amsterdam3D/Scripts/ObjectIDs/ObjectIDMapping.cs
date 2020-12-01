@@ -54,8 +54,6 @@ public static class ObjectIDMapping
             }
         }
 
-
-
         return textureSize;
     }
 

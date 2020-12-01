@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using Amsterdam3D.JavascriptConnection;
-using UnityEngine.InputSystem.Interactions;
 
 public class StreetViewCamera : MonoBehaviour, ICameraControls
 {
@@ -18,22 +16,14 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private GameObject Layers;
 
-    private Camera camera;
+    private Camera cameraComponent;
 
     private Ray ray;
     private RaycastHit hit;
 
-
-    public InputActionAsset actionAsset;
-    
-    private InputAction cameraMoveAction;
-    private UnityEngine.InputSystem.InputActionMap actionMap;
-
     private void OnEnable()
     {
-       actionMap =  actionAsset.FindActionMap("StreetView");
-        cameraMoveAction = actionMap.FindAction("Look");
-        camera = GetComponent<Camera>();
+        cameraComponent = GetComponent<Camera>();
         if (!inMenus)
         {
             Layers.SetActive(false);
@@ -50,7 +40,6 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         inMenus = true;
         Layers.SetActive(true);
         MainMenu.SetActive(true);
-        //actionMap.Disable();
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
@@ -82,14 +71,16 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     {
         if (!inMenus)
         {
-
-            var cameraRotation = cameraMoveAction.ReadValue<Vector2>();
-
-            rotation.y += cameraRotation.x * speed;
-            rotation.x += -cameraRotation.y * speed;
+            rotation.y += Input.GetAxis("Mouse X") * speed;
+            rotation.x += -Input.GetAxis("Mouse Y") * speed;
             rotation.x = ClampAngle(rotation.x, -90, 90);
             transform.eulerAngles = (Vector2)rotation;
-            
+                
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EnableMenus();
+
+            }
 
             if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked) 
             {
@@ -98,15 +89,18 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         }
         else 
         {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EnableMenus();
+            }
 
-            if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject()) 
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 
             {
                 Cursor.visible = false;
                 JavascriptMethodCaller.LockCursor();
                 Layers.SetActive(false);
                 MainMenu.SetActive(false);
                 inMenus = false;
-                actionMap.Enable();
             }
         }
     }
@@ -145,9 +139,12 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         this.rotation = rotationEuler;
     }
 
-    public Vector3 GetMousePositionInWorld()
+    public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
     {
-        ray = camera.ScreenPointToRay(Input.mousePosition);
+        var pointerPosition = Input.mousePosition;
+        if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+
+        ray = cameraComponent.ScreenPointToRay(pointerPosition);
         float distance = 99;
         if (Physics.Raycast(ray, out hit, distance))
         {
@@ -164,19 +161,4 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
 		//TODO: Determine if we want to expose the height slider.
 	}
-
-
-    public void InputTest(InputAction.CallbackContext context) 
-    {
-
-        if (context.performed)
-        {
-            if (context.interaction is HoldInteraction)
-            {
-                Debug.Log("Hold Interaction performed");
-            }
-        }
-
-        
-    }
 }

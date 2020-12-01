@@ -24,6 +24,7 @@ namespace Amsterdam3D.Interface.Search{
                 public string type = "";
                 public string id = "";
                 public string centroide_ll = "POINT(0.0 0.0)";
+                public string nummeraanduiding_id = "";
             }
         }
     }

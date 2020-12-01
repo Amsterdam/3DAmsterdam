@@ -21,7 +21,7 @@ public class DisplayBAGData : MonoBehaviour
     public WKBPObject wkbp;
     public static DisplayBAGData Instance = null;
 
-    private void Awake()
+    private void Start()
     {
         if(Instance == null)
         {
