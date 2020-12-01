@@ -156,7 +156,7 @@ namespace Amsterdam3D.Sewerage
         IEnumerator GetSewerLinesInBoundingBox()
         {
             string escapedUrl = sewerPipesWfsUrl;
-            escapedUrl += UnityWebRequest.EscapeURL(boundingBoxMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.y.ToString(CultureInfo.InvariantCulture));
+            escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
