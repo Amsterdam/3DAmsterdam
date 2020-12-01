@@ -47,8 +47,6 @@ public class ConvertZFP : MonoBehaviour
      */
     void Start()
     {
-        // Fetches Vissim data from the server (WILL BE REPLACED BY UPLOAD FEATURE)
-        //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" +  fileLocationVISSIM));
         // Based on the VISSIM Object Template
         vehicleTypes.Add(100, vissimCarPrefabs); // Car
         vehicleTypes.Add(200, vissimTruckPrefabs); // Truck
@@ -94,7 +92,7 @@ public class ConvertZFP : MonoBehaviour
         //sets  the current VISSIM file start parameters
         frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
         
-        /*
+        /* // continue with this after the code testing
         foreach(VissimData data in allVissimDataByVehicleID[244])
         {
             Debug.Log(data.simsec); // HIER MEE KAN JE PER VOERTUIG DE 
