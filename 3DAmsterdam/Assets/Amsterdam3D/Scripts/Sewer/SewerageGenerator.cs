@@ -30,16 +30,25 @@ namespace Amsterdam3D.Sewerage
         private SewerManholeSpawner sewerManholeSpawner;
 
         private const int maxSpawnsPerFrame = 100;
+        private const int maxParsesPerFrame = 500;
 
         private Vector3RD boundingBoxMinimum  = default;
         private Vector3RD boundingBoxMaximum = default;
 
         private double boundingBoxMargin = 500.0f;
 
-        private void Update()
+        private string[] splitArray;
+        private List<Vector3> newVector2Array;
+        private string[] vector2String;
+
+
+        private void Start()
 		{
-			//For testing purposes, just load a set area.
-			//We want this to come from the tile/layer system
+            newVector2Array = new List<Vector3>();
+        }
+
+		private void Update()
+		{
 			GetBoundingBoxCameraIsIn();
 		}
 
@@ -52,6 +61,9 @@ namespace Amsterdam3D.Sewerage
             //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
+                //Make sure to stop all ongoing requests
+                StopAllCoroutines();
+
                 //Set new area based on rounded camera position with a margin
                 boundingBoxMinimum.x = cameraRD.x - boundingBoxMargin;
                 boundingBoxMinimum.y = cameraRD.y + boundingBoxMargin;
@@ -59,12 +71,8 @@ namespace Amsterdam3D.Sewerage
                 boundingBoxMaximum.x = cameraRD.x + boundingBoxMargin;
                 boundingBoxMaximum.y = cameraRD.y - boundingBoxMargin;
 
-                ClearNetwork();
                 Generate(boundingBoxMinimum, boundingBoxMaximum);
             }
-
-            /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
-			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
 		}
 
         private void ClearNetwork()
@@ -162,15 +170,24 @@ namespace Amsterdam3D.Sewerage
                 //Replace multidimensional arrays with strings. JsonUtility doesnt support it (yet)   
                 string dataString = sewerageRequest.downloadHandler.text.Replace("[[", "\"").Replace("]]", "\"");
                 sewerLines = JsonUtility.FromJson<SewerLines>(dataString);
-                foreach (var feature in sewerLines.features)
-                {
+
+				for (int i = 0; i < sewerLines.features.Length; i++)
+				{
+                    //Smear out the heavy parsing over a few frames, to avoid spikes and memory issues in WebGL
+                    if ((i % maxParsesPerFrame) == 0) yield return new WaitForEndOfFrame();
+
+                    var feature = sewerLines.features[i];
                     Vector3[] pointCoordinate = SplitToCoordinatesArray(feature.geometry.coordinates, feature.properties.bob_beginpunt, feature.properties.bob_eindpunt);
                     feature.geometry.unity_coordinates = pointCoordinate;
                 }
 
                 yield return new WaitForEndOfFrame();
+
                 StartCoroutine(SpawnLineObjects());
             }
+            //We have a new network now that can start to spawn. Clear the old objects.
+            ClearNetwork();
+
             yield return null;
         }
 
@@ -182,13 +199,13 @@ namespace Amsterdam3D.Sewerage
         /// <returns>An array of unity coordinates</returns>
         private Vector3[] SplitToCoordinatesArray(string coordinates, string startHeight, string endHeight)
         {
-            string[] splitArray = coordinates.Split(new string[] { "],[" }, StringSplitOptions.None);
-            List<Vector3> newVector2Array = new List<Vector3>();
+            splitArray = coordinates.Split(new string[] { "],[" }, StringSplitOptions.None);
+            newVector2Array.Clear();
 
             //Convert string with RD coordinates into unity coordinates
             for (int i = 0; i < splitArray.Length; i++)
             {
-                string[] vector2String = splitArray[i].Split(',');
+                vector2String = splitArray[i].Split(',');
                 Vector3RD newRDVector3 = new Vector3RD(
                         double.Parse(vector2String[0],CultureInfo.InvariantCulture),
                         double.Parse(vector2String[1],CultureInfo.InvariantCulture),
@@ -199,7 +216,6 @@ namespace Amsterdam3D.Sewerage
                 newVector2Array.Add(unityCoordinate);
 
             }
-
             return newVector2Array.ToArray();
         }
     
