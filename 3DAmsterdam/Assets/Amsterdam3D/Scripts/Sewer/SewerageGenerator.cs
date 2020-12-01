@@ -183,11 +183,11 @@ namespace Amsterdam3D.Sewerage
 
                 yield return new WaitForEndOfFrame();
 
-                //We have a new network now that can start to spawn. Clear the old objects.
-                ClearNetwork();
-
                 StartCoroutine(SpawnLineObjects());
             }
+            //We have a new network now that can start to spawn. Clear the old objects.
+            ClearNetwork();
+
             yield return null;
         }
 
