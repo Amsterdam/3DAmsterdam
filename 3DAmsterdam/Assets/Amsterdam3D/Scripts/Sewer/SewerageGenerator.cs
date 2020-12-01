@@ -22,6 +22,9 @@ namespace Amsterdam3D.Sewerage
         private SewerManholes sewerManholes;
 
         [SerializeField]
+        private Transform networkContainer;
+
+        [SerializeField]
         private SewerLineSpawner sewerPipeSpawner;
         [SerializeField]
         private SewerManholeSpawner sewerManholeSpawner;
@@ -31,9 +34,9 @@ namespace Amsterdam3D.Sewerage
         private Vector3RD boundingBoxMinimum  = default;
         private Vector3RD boundingBoxMaximum = default;
 
-        private double boundingBoxMargin = 2.0f;
+        private double boundingBoxMargin = 500.0f;
 
-        private void Start()
+        private void Update()
 		{
 			//For testing purposes, just load a set area.
 			//We want this to come from the tile/layer system
@@ -42,20 +45,35 @@ namespace Amsterdam3D.Sewerage
 
 		private void GetBoundingBoxCameraIsIn()
 		{
-            Vector3RD cameraRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            var cameraRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
             cameraRD.x = Mathf.Round((float)cameraRD.x);
             cameraRD.y = Mathf.Round((float)cameraRD.y);
 
             //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
-                //TODO. clean up and load up new area.
+                //Set new area based on rounded camera position with a margin
+                boundingBoxMinimum.x = cameraRD.x - boundingBoxMargin;
+                boundingBoxMinimum.y = cameraRD.y + boundingBoxMargin;
 
+                boundingBoxMaximum.x = cameraRD.x + boundingBoxMargin;
+                boundingBoxMaximum.y = cameraRD.y - boundingBoxMargin;
+
+                ClearNetwork();
                 Generate(boundingBoxMinimum, boundingBoxMaximum);
             }
 
             /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
 			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
+		}
+
+        private void ClearNetwork()
+        {   
+            //Clears the network of spawned prefabs, so we can load a new area
+            foreach(Transform child in networkContainer)
+            {
+                Destroy(child.gameObject);
+			}
 		}
 
 		/// <summary>
@@ -117,7 +135,7 @@ namespace Amsterdam3D.Sewerage
         IEnumerator GetSewerManholesInBoundingBox()
         {
             string escapedUrl = sewerManholesWfsUrl;
-            escapedUrl += UnityWebRequest.EscapeURL(boundingBoxMinimum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMinimum.y.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.x.ToString(CultureInfo.InvariantCulture) + "," + boundingBoxMaximum.y.ToString(CultureInfo.InvariantCulture));
+            escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             Debug.Log(escapedUrl);
@@ -187,8 +205,7 @@ namespace Amsterdam3D.Sewerage
 
             return newVector2Array.ToArray();
         }
-
-        
+    
         private void OnDrawGizmos()
         {
             if (!drawEditorGizmos) return;    
