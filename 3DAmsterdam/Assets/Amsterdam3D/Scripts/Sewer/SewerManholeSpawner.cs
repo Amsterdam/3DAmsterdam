@@ -52,7 +52,7 @@ namespace Amsterdam3D.Sewerage
             Vector3 foundPosition = new Vector3();
 
             // set RaycastOrigin to 10 above theoretical manhole-position
-            Vector3 rayCastPosition = position - new Vector3(0, 10, 0);
+            Vector3 rayCastPosition = position + new Vector3(0, 10, 0);
 
             if (Physics.Raycast(rayCastPosition, Vector3.down, out hit, maxRayCastDistance, terrainHeightCheckLayerMask.value))
             {
