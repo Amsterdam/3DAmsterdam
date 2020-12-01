@@ -17,7 +17,8 @@ public class TileLoader : MonoBehaviour
 {
     private Boolean updateTerrainTilesFinished = true;
     public Material defaultMaterial;
-    public ICameraExtents cameraExtents;
+
+	public ICameraExtents cameraExtents;
     private Extent previousCameraViewExtent = new Extent(0, 0, 0, 0);
     [SerializeField] private string dataFolder = "terrain";
     private string terrainUrl;
@@ -71,8 +72,11 @@ public class TileLoader : MonoBehaviour
         CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
         CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
     }
+    public void EnableShadows(bool enabled)
+    {
+        tileShadowCastingMode = (enabled) ? ShadowCastingMode.On : ShadowCastingMode.Off;
+    }
 
-    // Update is called once per frame
     void Update()
     {
         RemoveTiles();
