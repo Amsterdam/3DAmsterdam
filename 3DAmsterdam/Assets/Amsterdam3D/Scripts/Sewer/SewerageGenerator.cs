@@ -138,13 +138,10 @@ namespace Amsterdam3D.Sewerage
             escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
-            Debug.Log(escapedUrl);
-
             yield return sewerageRequest.SendWebRequest();
             if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
             {
                 string dataString = sewerageRequest.downloadHandler.text;
-                Debug.Log(dataString);
                 sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
 
                 yield return new WaitForEndOfFrame();
