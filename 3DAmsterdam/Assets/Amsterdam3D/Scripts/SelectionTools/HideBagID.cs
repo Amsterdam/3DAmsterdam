@@ -29,7 +29,7 @@ namespace Assets.Amsterdam3D.Scripts
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.H)) 
+            if (UnityEngine.Input.GetKeyDown(KeyCode.H)) 
             {
                 OnBoxSelect();
             }

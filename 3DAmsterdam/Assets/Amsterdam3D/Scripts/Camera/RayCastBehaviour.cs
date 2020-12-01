@@ -15,7 +15,7 @@ namespace Assets.Amsterdam3D.Scripts.Camera
        public bool RayCast(out Vector3 hitpos)
         {
             RaycastHit hit;
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 9999, layerMask.value))
             {
                 hitpos = hit.point;

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df7bc5086d0d96244a69f2f55435ca5b, type: 3}
+  m_Name: New Action Map Asset
+  m_EditorClassIdentifier: 
+  actionMaps:
+  - m_Name: Element 0
+    m_Id: c55d48ed-ac10-40e0-9308-ec841b7d5503
+    m_Asset: {fileID: 0}
+    m_Actions:
+    - m_Name: hoi
+      m_Type: 1
+      m_ExpectedControlType: Button
+      m_Id: 7aa822ef-fd49-41c2-8d93-499c2fb8d27d
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Bindings:
+    - m_Name: 
+      m_Id: 6fdb6fad-4b86-4637-8e05-42cb26edceab
+      m_Path: <Keyboard>/anyKey
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: hoi
+      m_Flags: 0

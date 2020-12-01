@@ -175,6 +175,63 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4498901014617163849}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &642698217
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 642698219}
+  - component: {fileID: 642698218}
+  - component: {fileID: 642698220}
+  m_Layer: 0
+  m_Name: InputTester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &642698218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642698217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8da5f5b989710943aec5c528228435b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionMaps: {fileID: 0}
+--- !u!4 &642698219
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642698217}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1675.6259, y: 44.54027, z: -3331.0974}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &642698220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642698217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6eebbedfcf5fa640b9c3ca6fc46d1d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &907123088 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5737273050869481566, guid: 221d545c4d79dd445b031a06c6945bbd,
@@ -250,6 +307,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
         type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Actions.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Bindings.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
       propertyPath: MainMenu
       value: 
       objectReference: {fileID: 436937297}
@@ -258,6 +330,172 @@ PrefabInstance:
       propertyPath: Layers
       value: 
       objectReference: {fileID: 1936284609}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_Id
+      value: 7fdb8e03-dade-45ef-9b35-859290d31efd
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_Name
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[0].m_Name
+      value: 2D Vector
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 616ee8e7-99cd-461c-8353-953baeda0eb3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: 2DVector
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[0].m_Flags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[1].m_Name
+      value: up
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[1].m_Id
+      value: dba7aaf9-912a-498e-be3c-124a90730999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[1].m_Action
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[1].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[2].m_Name
+      value: down
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[2].m_Id
+      value: a34150aa-8d83-41b8-9b17-68728b5f05b2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[2].m_Action
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[2].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[3].m_Name
+      value: left
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[3].m_Id
+      value: 08487515-e666-43f9-8730-3b0cd52468d3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[3].m_Action
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[3].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[4].m_Name
+      value: right
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[4].m_Id
+      value: 811a4a7f-a755-4bc7-a56b-3ffb73b8f4cf
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[4].m_Action
+      value: Camera Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: cameraMoveAction.m_SingletonActionBindings.Array.data[4].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Id
+      value: 4045e9e0-bef3-4bd8-9109-8f4d9c5285d2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Name
+      value: Action Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Actions.Array.data[0].m_Name
+      value: New action
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Actions.Array.data[0].m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Actions.Array.data[0].m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Actions.Array.data[0].m_Id
+      value: baec239d-a3f2-49ef-a2f0-5cc3f741e0ce
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Bindings.Array.data[0].m_Id
+      value: 5d10d8c0-b809-49cf-b98e-d288055c27dc
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionMap.m_Bindings.Array.data[0].m_Action
+      value: New action
+      objectReference: {fileID: 0}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: actionAsset
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 2698d86e9a34ec84793773d62b42502d,
+        type: 3}
+    - target: {fileID: 4694849482603452138, guid: 2c1131b4803eb164eb80461beb38f2f1,
+        type: 3}
+      propertyPath: speed
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6563852588428898302, guid: 2c1131b4803eb164eb80461beb38f2f1,
         type: 3}
       propertyPath: UIParent
