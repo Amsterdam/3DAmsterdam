@@ -50,7 +50,9 @@ public class VissimPlayback : MonoBehaviour
                     }
                     else
                     {
-                        GameObject tempObject = Instantiate(vissimCarPrefab[Random.Range(0, vissimCarPrefab.Length)], transform.position, transform.rotation);
+                        // change 0 with i when you have more models
+                        GameObject tempObject = Instantiate(fileConverter.vehicleTypes[dataList[i].vehicleType][Random.Range(0, fileConverter.vehicleTypes[dataList[i].vehicleType].Length )], transform.position, transform.rotation);
+                        //GameObject tempObject = Instantiate(vissimCarPrefab[Random.Range(0, vissimCarPrefab.Length)], transform.position, transform.rotation);
                         VissimCar carInstance = tempObject.GetComponent<VissimCar>();
                         vehicles.Add(dataList[i].id, carInstance);
                         carInstance.ExecuteVISSIM(dataList[i]);
