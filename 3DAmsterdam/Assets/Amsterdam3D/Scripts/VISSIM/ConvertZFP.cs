@@ -74,7 +74,7 @@ public class ConvertZFP : MonoBehaviour
     public void ReadFileFZP(string text)
     {
         finishedLoadingData = false;
-        string[] lines = text.Split(System.Environment.NewLine.ToCharArray());
+        string[] lines = text.Split((System.Environment.NewLine + "\n" + "\r").ToCharArray());
         foreach (string line in lines)
         {
             // do something with each line
@@ -171,7 +171,7 @@ public class ConvertZFP : MonoBehaviour
         var request = UnityWebRequest.Get(apiUrl);
         {
             yield return request.SendWebRequest();
-            if (request.isDone && !request.isHttpError)
+            if (!request.isNetworkError && !request.isHttpError)
             {
                 // fetches the data
                 ReadFileFZP(request.downloadHandler.text);

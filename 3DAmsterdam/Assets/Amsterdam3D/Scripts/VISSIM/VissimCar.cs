@@ -43,5 +43,8 @@ public class VissimCar : MonoBehaviour
         // Moves the vehicle to the designated position
         transform.position = vehicleCommandData.coordRear;
         transform.LookAt(vehicleCommandData.coordFront);
+
+        //Laat de autos lerpen via een animation curve
+        // https://docs.unity3d.com/ScriptReference/AnimationClip.SetCurve.html
     }
 }
