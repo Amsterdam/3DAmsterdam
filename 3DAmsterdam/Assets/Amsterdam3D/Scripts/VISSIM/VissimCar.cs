@@ -7,38 +7,41 @@ public class VissimCar : MonoBehaviour
     public VissimData vehicleCommandData;
     public RaycastHit hit;
     private Vector3 lastRecordedHeight = default;
+    /// <summary>
+    /// Parses the VISSIM data to the vehicle and executes it
+    /// </summary>
+    /// <param name="commandData"></param>
     public void ExecuteVISSIM(VissimData commandData)
     {
+        vehicleCommandData = commandData;
+
         Vector3 temp = transform.position;
         temp.y = 50f;
 
         if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
         {
             lastRecordedHeight = hit.point; // stores the last height position
-            vehicleCommandData = commandData;
-            
             // puts the car on the road
-            commandData.coordRear.y = hit.point.y;
-            commandData.coordFront.y = hit.point.y; // misschien hier 2e raycast waarbij de auto naar dit punt kijkt? Alleen bij een weg die naar beneden gaat en hij nog boven staat krijg je dan rare artefacts
-            transform.position = commandData.coordRear;
-            transform.LookAt(commandData.coordFront);
+            MoveObject(hit.point);
         }
         else
         {
-            vehicleCommandData = commandData;
-            
             // puts the car on the road
-            // maak hier functie van
-            commandData.coordRear.y = lastRecordedHeight.y;
-            commandData.coordFront.y = lastRecordedHeight.y;
-            transform.position = commandData.coordRear;
-            transform.LookAt(commandData.coordFront);
+            MoveObject(lastRecordedHeight);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Moves the VISSIM Object
+    /// </summary>
+    public void MoveObject(Vector3 vectorCorrection)
     {
-        // if time since last execute order > 2, delete/disable object
+        // Corrects the vehicles Y position to the height of the map (Maaiveld)
+        vehicleCommandData.coordRear.y = vectorCorrection.y;
+        vehicleCommandData.coordFront.y = vectorCorrection.y; // misschien hier 2e raycast waarbij de auto naar dit punt kijkt? Alleen bij een weg die naar beneden gaat en hij nog boven staat krijg je dan rare artefacts
+        
+        // Moves the vehicle to the designated position
+        transform.position = vehicleCommandData.coordRear;
+        transform.LookAt(vehicleCommandData.coordFront);
     }
 }

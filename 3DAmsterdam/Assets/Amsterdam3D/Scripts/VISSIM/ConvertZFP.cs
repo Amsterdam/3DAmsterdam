@@ -11,35 +11,52 @@ public class ConvertZFP : MonoBehaviour
      *  $VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH
      * 
      */
+    public Dictionary<int, GameObject[]> vehicleTypes = new Dictionary<int, GameObject[]>();
 
-    [SerializeField] private GameObject[] vissimCarPrefab = default;
-
-    public Dictionary<int, GameObject[]> vehicleTypes = new Dictionary<int, GameObject[]>() 
-    { 
-        //{ 100, "Auto" }, 
-        //{ 200, "Vrachtwagen" }, 
-        //{ 300, "Bus" }, 
-        //{ 400, "Tram" }, 
-        //{ 500, "Voetganger" }, 
-        //{ 600, "Fiets" }, 
-        //{ 700, "Bestelbus" } 
-    };
-    
     private string requiredTemplate = "$VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH";
     public string fileLocationVISSIM = "921929autoluw2030ref005.fzp";
 
     public List<VissimData> allVissimData = new List<VissimData>();
+    public Dictionary<int, List<VissimData>> allVissimDataByVehicleID = new Dictionary<int, List<VissimData>>(); // Vehicle Sorting test, see SortDataByCar() function
 
     private bool readyToConvert = false;
 
     public bool finishedLoadingData = false;
     public float frameCounter = 0.0f;
     public float timeBetweenFrames = 0.0f;
-    // Start is called before the first frame update
+
+    [Header("VISSIM Object Prefabs")]
+    [SerializeField] private GameObject[] vissimCarPrefabs = default;
+    [SerializeField] private GameObject[] vissimTruckPrefabs = default;
+    [SerializeField] private GameObject[] vissimBusPrefabs = default;
+    [SerializeField] private GameObject[] vissimTramPrefabs = default;
+    [SerializeField] private GameObject[] vissimPedestrianPrefabs = default;
+    [SerializeField] private GameObject[] vissimCyclePrefabs = default;
+    [SerializeField] private GameObject[] vissimVanPrefabs = default;
+
+    /* VISSIM OBJECT TYPE TEMPLATE
+     * 
+     * 100 = Car
+     * 200 = Truck
+     * 300 = Bus
+     * 400 = Tram
+     * 500 = Pedestrian
+     * 600 = Cycle
+     * 700 = Van
+     * 
+     */
     void Start()
     {
+        // Fetches Vissim data from the server (WILL BE REPLACED BY UPLOAD FEATURE)
         StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" +  fileLocationVISSIM));
-        vehicleTypes.Add(100, vissimCarPrefab);
+        // Based on the VISSIM Object Template
+        vehicleTypes.Add(100, vissimCarPrefabs); // Car
+        vehicleTypes.Add(200, vissimTruckPrefabs); // Truck
+        vehicleTypes.Add(300, vissimBusPrefabs); // Bus
+        vehicleTypes.Add(400, vissimTramPrefabs); // Tram
+        vehicleTypes.Add(500, vissimPedestrianPrefabs); // Pedestrian
+        vehicleTypes.Add(600, vissimCyclePrefabs); // Cycle
+        vehicleTypes.Add(700, vissimVanPrefabs); // Van
     }
 
     /// <summary>
@@ -65,9 +82,16 @@ public class ConvertZFP : MonoBehaviour
         readyToConvert = false;
         finishedLoadingData = true;
 
-        //sets  the current VISSIm file start parameters
-        //timeBetweenFrames = allVissimData[1].simsec - allVissimData[0].simsec; // This calculates the resoluation, since its always constant we use the 2nd one and the 1st and find the difference.
+        //sets  the current VISSIM file start parameters
         frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
+        
+        /*
+        foreach(VissimData data in allVissimDataByVehicleID[244])
+        {
+            Debug.Log(data.simsec); // HIER MEE KAN JE PER VOERTUIG DE 
+        }
+        */
+        
     }
     /// <summary>
     /// Converts string into VissimData.
@@ -79,6 +103,26 @@ public class ConvertZFP : MonoBehaviour
         float simsec = float.Parse(arr[0].Replace(".", ","));
         VissimData data = new VissimData(simsec, int.Parse(arr[1]), int.Parse(arr[2]), convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
         allVissimData.Add(data);
+
+        SortDataByCar(data); // currently in test modes, can be removed later or kept for other functions.
+    }
+
+    /// <summary>
+    /// Sorts all the VISSIM data and groups them together based on the ID of the vehicle. This results in having multiple simsec simulation data available per specific vehicle id.
+    /// </summary>
+    /// <param name="data"></param>
+    public void SortDataByCar(VissimData data)
+    {
+        if (!allVissimDataByVehicleID.ContainsKey(data.id))
+        {
+            List<VissimData> temp = new List<VissimData>();
+            temp.Add(data);
+            allVissimDataByVehicleID.Add(data.id, temp);
+        }
+        else
+        {
+            allVissimDataByVehicleID[data.id].Add(data);
+        }
     }
 
     /// <summary>
@@ -99,8 +143,6 @@ public class ConvertZFP : MonoBehaviour
         double y = double.Parse(splitString[1]);
         double z = double.Parse(splitString[2]);
         Vector3RD rdVector = new Vector3RD(x, y, z); // Creates the Double Vector
-        //ConvertCoordinates.CoordConvert.WGS84toUnity
-        //ConvertCoordinates.CoordConvert.RDtoUnity
         Vector3 convertedCoordinates = ConvertCoordinates.CoordConvert.RDtoUnity(rdVector); 
         // Y Coordinates will be calculated by the vehicle to connect with the Map (Maaiveld).
 
@@ -121,20 +163,9 @@ public class ConvertZFP : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.isDone && !request.isHttpError)
             {
-                // catches the data
+                // fetches the data
                 ReadFileFZP(request.downloadHandler.text);
             }
         }
     }
 }
-
-/*
-
- $VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH
-600.1;60;100;117846.354 487305.272 0.000;117851.123 487308.912 0.000;2.00
-600.1;61;100;118362.231 487351.433 0.000;118368.039 487352.935 0.000;2.00
-600.1;62;100;118369.410 487353.164 0.000;118375.153 487354.902 0.000;2.00
-600.1;63;100;118377.358 487355.150 0.000;118382.877 487357.503 0.000;2.00
-
-
-*/

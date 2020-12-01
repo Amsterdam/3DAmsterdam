@@ -11,7 +11,7 @@ public class VissimPlayback : MonoBehaviour
     public int loopCounter = 0;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject[] vissimCarPrefab = default;
+    [SerializeField] private GameObject[] vissimCarPrefab = default; // REMOVE THIS LATER AFTER YOU GOT MORE MODELS
     // Start is called before the first frame update
     void Start()
     {
@@ -33,26 +33,7 @@ public class VissimPlayback : MonoBehaviour
         {
             timeCounter = Time.time + fileConverter.timeBetweenFrames; // runs the simulation at the imported simspeed
             fileConverter.frameCounter++;
-            /*
-            foreach (VissimData dataItem in dataList)
-            {
-                if (fileConverter.frameCounter == dataItem.simsec)
-                {
-                    if (vehicles.ContainsKey(dataItem.id))
-                    {
-                        // send vehicle command
-                        vehicles[dataItem.id].ExecuteVISSIM(dataItem);
-                    }
-                    else
-                    {
-                        GameObject tempObject = Instantiate(vissimCarPrefab[Random.Range(0, vissimCarPrefab.Length)], transform.position, transform.rotation);
-                        VissimCar carInstance = tempObject.GetComponent<VissimCar>();
-                        vehicles.Add(dataItem.id, carInstance);
-                        carInstance.ExecuteVISSIM(dataItem);
-                    }
-                }
-            }
-            */
+           
             for (int i = loopCounter; i < dataList.Count; i++)
             {
                 if(fileConverter.frameCounter != dataList[i].simsec)
