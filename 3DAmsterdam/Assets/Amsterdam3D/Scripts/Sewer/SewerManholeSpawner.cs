@@ -52,7 +52,7 @@ namespace Amsterdam3D.Sewerage
             Vector3 foundPosition = new Vector3();
 
             // set RaycastOrigin to 10 above theoretical manhole-position
-            Vector3 rayCastPosition = position - new Vector3(0, 10, 0);
+            Vector3 rayCastPosition = position + new Vector3(0, 10, 0);
 
             if (Physics.Raycast(rayCastPosition, Vector3.down, out hit, maxRayCastDistance, terrainHeightCheckLayerMask.value))
             {
@@ -79,10 +79,10 @@ namespace Amsterdam3D.Sewerage
         {
             float height = defaultDepth;
             
-            if (Physics.Raycast(position + Vector3.down*10.0f, Vector3.up, out hit, maxRayCastDistance, sewerHeightCheckLayerMask.value))
+            if (Physics.Raycast(position + Vector3.down*20.0f, Vector3.up, out hit, maxRayCastDistance, sewerHeightCheckLayerMask.value))
             {
                 // if sewerpipe found, depth is distance between top-center and hit.point plus 0.5m for bottom-part of manhole
-                height = (position.y-hit.point.y) - 0.5f;
+                height = (position.y-hit.point.y) + 0.5f;
             }
 
             return height;
