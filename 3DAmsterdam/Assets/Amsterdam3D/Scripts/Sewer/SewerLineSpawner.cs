@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using UnityEngine;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -12,7 +14,6 @@ namespace Amsterdam3D.Sewerage
         /// <param name="from">unity-coordinates of startpoint</param>
         /// <param name="to">unity-coordinates of endpoint</param>
         /// <param name="diameterMM">diameter in mm</param>
-        /// <param name="sewerLinePrefab">GameObject with pipeTemplate, default length=1 (in x-direction), default diameter = 1 origin = 0,0.5,0.5</param>
         /// <returns>GameObject with sewerpipe</returns>
         public GameObject CreateSewerLine(Vector3 from, Vector3 to, double diameterMM)
         {
@@ -58,6 +59,57 @@ namespace Amsterdam3D.Sewerage
             //move pipe to correct location
             sewerPipe.position = from + new Vector3(0, BOBoffset, 0);
             return newSewerPipe;
+        }
+
+
+        public GameObject CombineSewerLines()
+        {
+            MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>(true);
+            Debug.Log(meshFilters.Length);
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+            int i = 0;
+            while (i < meshFilters.Length)
+            {
+                combine[i].mesh = meshFilters[i].sharedMesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.SetActive(false);
+
+                i++;
+            }
+
+            //destroy all children
+            //Array to hold all child obj
+            
+            GameObject[] allChildren = new GameObject[transform.childCount];
+            int j = 0;
+            //Find all child obj and store to that array
+            foreach (Transform child in transform)
+            {
+                allChildren[j] = child.gameObject;
+                j++;
+            }
+
+           
+
+            GameObject sewerlines = Instantiate(sewerLinePrefab, this.transform);
+            sewerlines.SetActive(true);
+            MeshFilter mf = sewerlines.GetComponentInChildren<MeshFilter>();    
+            mf.mesh = new Mesh();
+            mf.mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mf.mesh.CombineMeshes(combine);
+            mf.gameObject.transform.rotation = Quaternion.identity;
+            mf.gameObject.transform.localScale = Vector3.one;
+            mf.gameObject.transform.localPosition = Vector3.zero;
+            //sewerlines.sewerlines
+
+            //Now destroy them
+            foreach (GameObject child in allChildren)
+            {
+                DestroyImmediate(child.gameObject);
+            }
+            return sewerlines;
+
         }
     }
 }
