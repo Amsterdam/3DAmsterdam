@@ -11,10 +11,10 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     private bool inMenus = false;
 
     [SerializeField]
-    private GameObject MainMenu;
+    private GameObject mainMenu;
 
     [SerializeField]
-    private GameObject Layers;
+    private GameObject interfaceLayers;
 
     private Camera cameraComponent;
 
@@ -26,8 +26,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         cameraComponent = GetComponent<Camera>();
         if (!inMenus)
         {
-            Layers.SetActive(false);
-            MainMenu.SetActive(false);
+            interfaceLayers.SetActive(false);
+            mainMenu.SetActive(false);
         }
     }
     private void OnDisable()
@@ -38,8 +38,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     public void EnableMenus() 
     {
         inMenus = true;
-        Layers.SetActive(true);
-        MainMenu.SetActive(true);
+        interfaceLayers.SetActive(true);
+        mainMenu.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
@@ -98,8 +98,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             {
                 Cursor.visible = false;
                 JavascriptMethodCaller.LockCursor();
-                Layers.SetActive(false);
-                MainMenu.SetActive(false);
+                interfaceLayers.SetActive(false);
+                mainMenu.SetActive(false);
                 inMenus = false;
             }
         }
