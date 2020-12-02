@@ -24,7 +24,7 @@ public class CanvasSettings : MonoBehaviour
     private GameObject mainMenu;
 
     [SerializeField]
-    private GameObject layers;
+    private GameObject interfaceLayers;
 
     void Start()
     {
@@ -39,12 +39,12 @@ public class CanvasSettings : MonoBehaviour
             SetPreferableScale();
         }
 
-        CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableObject;
+        CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
     }
 
-    void DisableObject() 
+    void DisableMainCanvasItems() 
     {
-        layers.SetActive(false);
+        interfaceLayers.SetActive(false);
         mainMenu.SetActive(false);
     }
 

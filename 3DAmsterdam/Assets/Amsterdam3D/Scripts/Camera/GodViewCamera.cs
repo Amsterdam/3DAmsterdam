@@ -70,8 +70,8 @@ namespace Amsterdam3D.CameraMotion
         public static FocusPointChanged focusingOnTargetPoint;
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
-        
 
+        private float minUndergroundY = 0.0f;
 
         void Awake()
         {
@@ -115,7 +115,7 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
 		private void LimitPosition()
 		{
-            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, Constants.ZERO_GROUND_LEVEL_Y, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
 		}
 
 		private bool BlockedByTextInput(){
@@ -235,7 +235,7 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
         /// <param name="normalizedHeight">Range from 0 to 1</param>
         public void SetNormalizedCameraHeight(float normalizedHeight){
-            var newHeight = Mathf.Lerp(-(float)CoordConvert.referenceRD.z, maxZoomOut, normalizedHeight);
+            var newHeight = Mathf.Lerp(minUndergroundY, maxZoomOut, normalizedHeight);
             cameraComponent.transform.position = new Vector3(cameraComponent.transform.position.x, newHeight, cameraComponent.transform.position.z);
         }
 
@@ -244,7 +244,7 @@ namespace Amsterdam3D.CameraMotion
         /// </summary>
         /// <returns>Normalized 0 to 1 value of the camera height</returns>
         public float GetNormalizedCameraHeight(){
-            return Mathf.InverseLerp(-(float)CoordConvert.referenceRD.z, maxZoomOut, cameraComponent.transform.position.y);
+            return Mathf.InverseLerp(minUndergroundY, maxZoomOut, cameraComponent.transform.position.y);
         }
 
         public float GetCameraHeight()
@@ -335,7 +335,7 @@ namespace Amsterdam3D.CameraMotion
                 else {
                     //Slide forward in dragged direction
                     dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
-                    if (dragMomentum.magnitude > 0.0f)
+                    if (dragMomentum.magnitude > 0.1f)
                     {
                         this.transform.position -= dragMomentum;
                     }
@@ -387,7 +387,7 @@ namespace Amsterdam3D.CameraMotion
                 cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseY * 5f);
                 cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
 
-                if (cameraComponent.transform.position.y < rotatePoint.y)
+                if (cameraComponent.transform.position.y < minUndergroundY )
                 {
                     //Do not let the camera go beyond the rotationpoint height
                     cameraComponent.transform.position = previousPosition;

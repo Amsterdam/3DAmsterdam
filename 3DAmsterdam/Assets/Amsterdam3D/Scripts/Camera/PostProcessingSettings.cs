@@ -50,5 +50,11 @@ namespace Amsterdam3D.Rendering
 
             universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
         }
+
+        public void SetRenderScale(float renderScale)
+        {
+            var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
+            urp.renderScale = Mathf.Lerp(0.25f,1.0f, renderScale);
+        }
     }
 }
