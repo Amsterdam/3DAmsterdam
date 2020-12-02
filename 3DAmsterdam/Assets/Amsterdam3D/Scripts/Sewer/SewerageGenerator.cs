@@ -12,8 +12,8 @@ namespace Amsterdam3D.Sewerage
 {
     public partial class SewerageGenerator : MonoBehaviour
     {
-        private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
-        private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
+        private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=";
+        private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
 
         [SerializeField]
         private bool drawEditorGizmos = false;
@@ -40,7 +40,7 @@ namespace Amsterdam3D.Sewerage
         private string[] splitArray;
         private List<Vector3> newVector2Array;
         private string[] vector2String;
-
+        private float napOffset;
 
         private void Start()
 		{
@@ -80,6 +80,7 @@ namespace Amsterdam3D.Sewerage
             //Clears the network of spawned prefabs, so we can load a new area
             foreach(Transform child in networkContainer)
             {
+                DestroyImmediate(child.GetComponentInChildren<MeshFilter>().sharedMesh);
                 Destroy(child.gameObject);
 			}
 		}
@@ -91,6 +92,7 @@ namespace Amsterdam3D.Sewerage
 		/// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
 		public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
+            napOffset = (float)(0 - CoordConvert.referenceRD.z);
             boundingBoxMinimum = boxMinimum;
             boundingBoxMaximum = boxMaximum;
 
@@ -119,6 +121,7 @@ namespace Amsterdam3D.Sewerage
 		}
         private IEnumerator SpawnManholeObjects()
         {
+            
             SewerManholes.Feature sewerManholeFeature;
             for (int i = 0; i < sewerManholes.features.Length; i++)
             {
@@ -129,14 +132,15 @@ namespace Amsterdam3D.Sewerage
 
                 sewerManholeFeature = sewerManholes.features[i];
                 sewerManholeSpawner.CreateManhole(
-                    CoordConvert.RDtoUnity(new Vector3RD(
+                    CoordConvert.WGS84toUnity(new Vector3WGS(
                         sewerManholeFeature.geometry.coordinates[0],
                         sewerManholeFeature.geometry.coordinates[1],
-                        float.Parse(sewerManholeFeature.properties.putdekselhoogte)
+                        (float.Parse(sewerManholeFeature.properties.putdekselhoogte, CultureInfo.InvariantCulture) +napOffset)
                         )
                     )
                 );
             }
+            sewerPipeSpawner.CombineSewerLines();
             yield return null;
         }
 
@@ -206,13 +210,13 @@ namespace Amsterdam3D.Sewerage
             for (int i = 0; i < splitArray.Length; i++)
             {
                 vector2String = splitArray[i].Split(',');
-                Vector3RD newRDVector3 = new Vector3RD(
+                Vector3WGS newWGSVector3 = new Vector3WGS(
                         double.Parse(vector2String[0],CultureInfo.InvariantCulture),
                         double.Parse(vector2String[1],CultureInfo.InvariantCulture),
-                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture) : double.Parse(endHeight, CultureInfo.InvariantCulture)
+                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture)+napOffset : double.Parse(endHeight, CultureInfo.InvariantCulture)+napOffset
                 );
 
-                Vector3 unityCoordinate = CoordConvert.RDtoUnity(newRDVector3);
+                Vector3 unityCoordinate = CoordConvert.WGS84toUnity(newWGSVector3);
                 newVector2Array.Add(unityCoordinate);
 
             }
