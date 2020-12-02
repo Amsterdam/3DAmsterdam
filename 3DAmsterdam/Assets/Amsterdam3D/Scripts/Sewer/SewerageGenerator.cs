@@ -80,7 +80,7 @@ namespace Amsterdam3D.Sewerage
             //Clears the network of spawned prefabs, so we can load a new area
             foreach(Transform child in networkContainer)
             {
-                DestroyImmediate(child.GetComponentInChildren<MeshFilter>().mesh);
+                DestroyImmediate(child.GetComponentInChildren<MeshFilter>().sharedMesh);
                 Destroy(child.gameObject);
 			}
 		}
