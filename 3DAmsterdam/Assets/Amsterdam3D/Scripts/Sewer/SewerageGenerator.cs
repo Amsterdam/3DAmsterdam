@@ -40,7 +40,7 @@ namespace Amsterdam3D.Sewerage
         private string[] splitArray;
         private List<Vector3> newVector2Array;
         private string[] vector2String;
-        float napoffset;
+        private float napOffset;
 
         private void Start()
 		{
@@ -92,7 +92,7 @@ namespace Amsterdam3D.Sewerage
 		/// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
 		public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
-            napoffset = (float)(0 - CoordConvert.referenceRD.z);
+            napOffset = (float)(0 - CoordConvert.referenceRD.z);
             boundingBoxMinimum = boxMinimum;
             boundingBoxMaximum = boxMaximum;
 
@@ -135,7 +135,7 @@ namespace Amsterdam3D.Sewerage
                     CoordConvert.WGS84toUnity(new Vector3WGS(
                         sewerManholeFeature.geometry.coordinates[0],
                         sewerManholeFeature.geometry.coordinates[1],
-                        (float.Parse(sewerManholeFeature.properties.putdekselhoogte, CultureInfo.InvariantCulture) +napoffset)
+                        (float.Parse(sewerManholeFeature.properties.putdekselhoogte, CultureInfo.InvariantCulture) +napOffset)
                         )
                     )
                 );
@@ -213,7 +213,7 @@ namespace Amsterdam3D.Sewerage
                 Vector3WGS newWGSVector3 = new Vector3WGS(
                         double.Parse(vector2String[0],CultureInfo.InvariantCulture),
                         double.Parse(vector2String[1],CultureInfo.InvariantCulture),
-                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture)+napoffset : double.Parse(endHeight, CultureInfo.InvariantCulture)+napoffset
+                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture)+napOffset : double.Parse(endHeight, CultureInfo.InvariantCulture)+napOffset
                 );
 
                 Vector3 unityCoordinate = CoordConvert.WGS84toUnity(newWGSVector3);
