@@ -22,7 +22,13 @@ namespace Amsterdam3D.Sewerage
         private SewerManholes sewerManholes;
 
         [SerializeField]
+        private Material sharedMaterial;
+
+        [SerializeField]
         private Transform networkContainer;
+
+        [SerializeField]
+        private Transform combinesMeshTileContainer;
 
         [SerializeField]
         private SewerLineSpawner sewerPipeSpawner;
@@ -41,6 +47,8 @@ namespace Amsterdam3D.Sewerage
         private List<Vector3> newVector2Array;
         private string[] vector2String;
         private float napOffset;
+
+
 
         private void Start()
 		{
@@ -80,10 +88,15 @@ namespace Amsterdam3D.Sewerage
             //Clears the network of spawned prefabs, so we can load a new area
             foreach(Transform child in networkContainer)
             {
-                DestroyImmediate(child.GetComponentInChildren<MeshFilter>().sharedMesh);
                 Destroy(child.gameObject);
 			}
-		}
+            foreach (Transform child in combinesMeshTileContainer)
+            {
+                //Make sure our combined meshes are destroyed
+                Destroy(child.GetComponentInChildren<MeshFilter>().sharedMesh);
+                Destroy(child.gameObject);
+            }
+        }
 
 		/// <summary>
 		/// Starts genering the sewage network based on the geometry data and points in a WFS service
@@ -140,7 +153,7 @@ namespace Amsterdam3D.Sewerage
                     )
                 );
             }
-            sewerPipeSpawner.CombineSewerLines();
+            CombineSewerage();
             yield return null;
         }
 
@@ -222,7 +235,52 @@ namespace Amsterdam3D.Sewerage
             }
             return newVector2Array.ToArray();
         }
-    
+
+        public GameObject CombineSewerage()
+        {
+            //Determine meshes to combine
+            MeshFilter[] meshFilters = networkContainer.GetComponentsInChildren<MeshFilter>(true);
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+            int i = 0;
+            while (i < meshFilters.Length)
+            {
+                combine[i].mesh = meshFilters[i].sharedMesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.SetActive(false);
+
+                i++;
+            }
+
+            GameObject[] allChildren = new GameObject[networkContainer.childCount];
+            int j = 0;
+            //Find all child obj and store to that array
+            foreach (Transform child in networkContainer)
+            {
+                allChildren[j] = child.gameObject;
+                j++;
+            }
+
+            //Own combined mesh
+            GameObject newCombinedTile = new GameObject();
+            newCombinedTile.name = "CombinedTile";
+            newCombinedTile.transform.SetParent(combinesMeshTileContainer);
+            newCombinedTile.AddComponent<MeshRenderer>().material = sharedMaterial;
+
+            Mesh newMesh = new Mesh
+            {
+                indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+            };			
+            newMesh.CombineMeshes(combine);
+            newCombinedTile.AddComponent<MeshFilter>().sharedMesh = newMesh;
+
+            //Now destroy our large amount of network children.
+            foreach (GameObject child in allChildren)
+            {
+                Destroy(child.gameObject);
+            }
+            return newCombinedTile;
+        }
+
         private void OnDrawGizmos()
         {
             if (!drawEditorGizmos) return;    
