@@ -56,15 +56,8 @@ public class ConvertZFP : MonoBehaviour
         vehicleTypes.Add(500, vissimPedestrianPrefabs); // Pedestrian
         vehicleTypes.Add(600, vissimCyclePrefabs); // Cycle
         vehicleTypes.Add(700, vissimVanPrefabs); // Van
-    }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            // Fetches Vissim data from the server (WILL BE REPLACED BY UPLOAD FEATURE)
-            StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" +  fileLocationVISSIM));
-        }
+        StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM));
     }
 
     /// <summary>
