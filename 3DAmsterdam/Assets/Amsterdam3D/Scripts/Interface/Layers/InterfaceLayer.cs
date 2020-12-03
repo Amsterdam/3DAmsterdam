@@ -60,6 +60,10 @@ namespace Amsterdam3D.Interface
 
 		[SerializeField]
 		private Image layerOptionsButton;
+
+		[Tooltip("Override shaders instead of copying material source properties")]
+		public bool overrideShaders = false;
+
 		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.

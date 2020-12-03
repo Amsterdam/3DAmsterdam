@@ -91,14 +91,14 @@ MonoBehaviour:
   linkedObject: {fileID: 0}
   opaqueShaderSourceOverride: {fileID: 2100000, guid: c4ea71ea5b038c6468053ee66935deac,
     type: 2}
-  transparentShaderSourceOverride: {fileID: 2100000, guid: e8f8020e315b9634dbae028547f39b39,
-    type: 2}
+  transparentShaderSourceOverride: {fileID: 0}
   uniqueLinkedObjectMaterials:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   usingRuntimeInstancedMaterials: 1
   toggleActiveLayer: {fileID: 278832539624214551}
   parentInterfaceLayers: {fileID: 1414756029670093948}
   layerOptionsButton: {fileID: 9037927257614245117}
+  overrideShaders: 1
 --- !u!114 &7370498977760890426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,6 +121,7 @@ MonoBehaviour:
   toggleActiveLayer: {fileID: 1400334838243756320}
   parentInterfaceLayers: {fileID: 1414756029670093948}
   layerOptionsButton: {fileID: 7916566590238901706}
+  overrideShaders: 0
 --- !u!1 &2368847772163807734
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,6 +658,7 @@ MonoBehaviour:
   toggleActiveLayer: {fileID: 6471825207164471653}
   parentInterfaceLayers: {fileID: 1414756029670093948}
   layerOptionsButton: {fileID: 2838179258680001935}
+  overrideShaders: 0
 --- !u!114 &2347195239016187575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,6 +697,7 @@ MonoBehaviour:
   toggleActiveLayer: {fileID: 6923649361155708655}
   parentInterfaceLayers: {fileID: 1414756029670093948}
   layerOptionsButton: {fileID: 2208461644608969221}
+  overrideShaders: 1
 --- !u!114 &9162417866103935576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1925,6 +1928,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3977643462888943060, guid: ac1c3d759f9fe0f45a53f4fa1bc07988,
+        type: 3}
+      propertyPath: transparentMaterialSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3977643462888943060, guid: ac1c3d759f9fe0f45a53f4fa1bc07988,
+        type: 3}
+      propertyPath: opaqueMaterialSource
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4077098992557183204, guid: ac1c3d759f9fe0f45a53f4fa1bc07988,
         type: 3}

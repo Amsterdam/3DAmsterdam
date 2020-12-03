@@ -63,19 +63,17 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="target">The Material this slot targets</param>
 		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null)
+		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null, bool overrideShader = false)
 		{
 			targetMaterial = target;
-
+			overrideShaderSources = overrideShader;
 			//Optional non standard shader type overrides ( for layers with custom shaders )
 			if (transparentMaterialSourceOverride)
 			{
 				transparentMaterialSource = transparentMaterialSourceOverride;
-				overrideShaderSources = true;
 			}
 			if (opaqueMaterialSourceOverride)
 			{
-				overrideShaderSources = true;
 				opaqueMaterialSource = opaqueMaterialSourceOverride;
 			}
 
