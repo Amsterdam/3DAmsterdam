@@ -83,8 +83,11 @@ namespace Amsterdam3D.Interface.Search
                     ParentList.ShowResultsList(false);
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
 
-                    if(selectByID)
-                        selectByID.HighlightSelectedID(lookupData.response.docs[0].nummeraanduiding_id);
+                    //If our buildings layer is active, try to highlight the matching building tied to this adress
+                    if (selectByID)
+                    {
+                        selectByID.HighlightByAdressIdAtLocation(targetLocation,lookupData.response.docs[0].adresseerbaarobject_id);
+                    }
                 }
             }
         }

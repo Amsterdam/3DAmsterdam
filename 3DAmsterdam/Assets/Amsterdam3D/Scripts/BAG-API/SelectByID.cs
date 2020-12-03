@@ -77,14 +77,41 @@ public class SelectByID : MonoBehaviour
     }
 
     /// <summary>
-    /// Select a mesh ID underneath the pointer
+    /// Finds a building ID tied to this adress bag ID, and highlights it when a LOD > 0 is available
     /// </summary>
-    private void FindSelectedID()
+    /// <param name="addressId">The adress BAG id</param>
+    public void HighlightByAdressIdAtLocation(Vector3 position, string addressId)
+	{
+        //Show a ray down to add a collider, and fetch the tile data
+        Ray ray = new Ray(position + Vector3.up * 200.0f,Vector3.down);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+        {
+            StartCoroutine(GetSelectedMeshIDData(ray, (value) => { 
+                if(value == emptyID)
+                {
+                    Debug.Log("Retrying to highlight building at search location..");
+                    HighlightByAdressIdAtLocation(position, addressId);
+                }
+                else{
+                    Debug.Log("BAG ID from search: " + addressId);
+                    Debug.Log("BAD ID we highlighted: " + value);
+                    HighlightSelectedID(value);
+                }
+           }));
+        }
+    }
+
+	/// <summary>
+	/// Select a mesh ID underneath the pointer
+	/// </summary>
+	private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
         if (!doingMultiSelection) selectedIDs.Clear();
 
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+
         //Try to find a selected mesh ID and highlight it
         StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
     }
