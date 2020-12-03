@@ -112,7 +112,8 @@ public class SelectByID : MonoBehaviour
             if (targetTileTransform && targetTileTransform.CompareTag(TileHandler.hasMetaDataTag))
             {
                 containerLayer.AddMeshColliders(lookupPosition);
-                
+                yield return new WaitForEndOfFrame();
+
                 foundAHighLODTile = true;
                 //Get the data for this ID, but do nothing with the ID we get back. Just use the one from our search result:
                 Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId);
