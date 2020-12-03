@@ -62,7 +62,7 @@ namespace Amsterdam3D.Interface
 		private Image layerOptionsButton;
 
 		[Tooltip("Override shaders instead of copying material source properties")]
-		public bool overrideShaders = false;
+		public bool swapTransparentMaterialSources = false;
 
 		private void Awake()
 		{

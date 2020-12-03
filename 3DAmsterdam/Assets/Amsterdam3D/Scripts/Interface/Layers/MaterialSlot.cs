@@ -23,7 +23,7 @@ namespace Amsterdam3D.Interface
 
 		public float materialOpacity = 1.0f;
 
-		private bool overrideShaderSources = false;
+		private bool swapLowOpacityMaterialProperties = false;
 
 		private const string EXPLANATION_TEXT = "\nShift+Klik: Multi-select";
 
@@ -63,20 +63,18 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		/// <param name="target">The Material this slot targets</param>
 		/// <param name="targetLayerVisuals">The target LayerVisuals where this slot is in</param>
-		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null, bool overrideShader = false)
+		public void Init(Material target, Color resetColor, LayerVisuals targetLayerVisuals, Material transparentMaterialSourceOverride = null, Material opaqueMaterialSourceOverride = null, bool swapMaterialSources = false)
 		{
 			targetMaterial = target;
-			overrideShaderSources = overrideShader;
+			swapLowOpacityMaterialProperties = swapMaterialSources;
+
 			//Optional non standard shader type overrides ( for layers with custom shaders )
-			if (transparentMaterialSourceOverride)
+			if (swapMaterialSources)
 			{
+				swapLowOpacityMaterialProperties = true;
 				transparentMaterialSource = transparentMaterialSourceOverride;
-			}
-			if (opaqueMaterialSourceOverride)
-			{
 				opaqueMaterialSource = opaqueMaterialSourceOverride;
 			}
-
 			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
 			GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
@@ -179,12 +177,8 @@ namespace Amsterdam3D.Interface
 
 		private void SwapShaderToOpaque()
 		{
-			if (overrideShaderSources)
-			{
-				targetMaterial.shader = opaqueMaterialSource.shader;
-			}
-			else
-			{
+			if (swapLowOpacityMaterialProperties)
+			{	 
 				targetMaterial.CopyPropertiesFromMaterial(opaqueMaterialSource);
 				targetMaterial.SetFloat("_Surface", 0); //0 Opaque
 			}
@@ -193,11 +187,7 @@ namespace Amsterdam3D.Interface
 
 		private void SwapShaderToTransparent()
 		{
-			if (overrideShaderSources)
-			{
-				targetMaterial.shader = transparentMaterialSource.shader;
-			}
-			else
+			if (swapLowOpacityMaterialProperties)
 			{
 				targetMaterial.CopyPropertiesFromMaterial(transparentMaterialSource);
 				targetMaterial.SetFloat("_Surface", 1); //1 Alpha
