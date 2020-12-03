@@ -87,35 +87,38 @@ public class SelectByID : MonoBehaviour
 	{
         StartCoroutine(HighlightBuildingAtPosition(position, addressId));
     }
-    private IEnumerator HighlightBuildingAtPosition(Vector3 position, string addressId)
+    private IEnumerator HighlightBuildingAtPosition(Vector3 lookupPosition, string addressId)
     {
         bool foundAHighLODTile = false;
-        yield return new WaitForSeconds(10.0f);
+        yield return new WaitForEndOfFrame();
 
         //Show a ray down untill we hit a building to add a collider, and fetch the tile data
         while (!foundAHighLODTile)
         {
-            //Wait for meshfilters in tileloader
-            List<GameObject> tilesCloseToPositionWithColliders = containerLayer.AddMeshColliders(position);
+            //Find the tile closest to our position (should be the tile with our search result)
             float distance = float.MaxValue;
-            GameObject targetTile = null;
-            foreach (GameObject tile in tilesCloseToPositionWithColliders)
+            Transform targetTileTransform = null;
+            foreach (Transform tile in transform)
             {
-                float tileDistance = Vector3.Distance(tile.transform.position, position);
+                float tileDistance = Vector3.Distance(tile.transform.position, lookupPosition);
                 if (tileDistance < distance)
                 {
                     distance = tileDistance;
-                    targetTile = tile;
+                    targetTileTransform = tile;
                 }
             }
-            if (targetTile && targetTile.CompareTag(TileHandler.hasMetaDataTag))
+
+            //Now if we found the closest tile, make sure it has the metadatatag (LOD is high enough)
+            if (targetTileTransform && targetTileTransform.CompareTag(TileHandler.hasMetaDataTag))
             {
+                containerLayer.AddMeshColliders(lookupPosition);
+                
                 foundAHighLODTile = true;
                 //Get the data for this ID, but do nothing with the ID we get back. Just use the one from our search result:
-                Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId, targetTile);
+                Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId);
 
                 //tileHandler.GetIDData(targetTile, 0, (value) => { HighlightSelectedID(addressId); });
-                Ray ray = new Ray(position + Vector3.up * 200.0f, Vector3.down);
+                Ray ray = new Ray(lookupPosition + Vector3.up * 200.0f, Vector3.down);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
                 {
@@ -134,7 +137,7 @@ public class SelectByID : MonoBehaviour
                     }));
                 }
                 else{
-                    Debug.Log("Raycast failed");
+                    Debug.Log("Noting found under raycast");
 				}
             }
             yield return new WaitForEndOfFrame();
