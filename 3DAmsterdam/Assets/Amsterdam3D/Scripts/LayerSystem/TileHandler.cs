@@ -52,6 +52,8 @@ namespace LayerSystem
 
 		public static int runningTileDataRequests = 0;
 
+		public const string hasMetaDataTag = "HasMetaData";
+
 		public void OnCameraChanged()
 		{
 			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
@@ -150,7 +152,6 @@ namespace LayerSystem
 				}
 				else if (obj != null)
 				{
-
 					ObjectData objectMapping = obj.AddComponent<ObjectData>();
 					AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
 					data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
@@ -497,22 +498,23 @@ namespace LayerSystem
 		{
 
 			TileAction action = tileChange.action;
+			Vector2Int tileKey = new Vector2Int(tileChange.X, tileChange.Y);
 			switch (action)
 			{
 				case TileAction.Create:
-					Tile newTile = createNewTile(tileChange);
-					layers[tileChange.layerIndex].tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					Tile newTile = CreateNewTile(tileChange);
+					layers[tileChange.layerIndex].tiles.Add(tileKey, newTile);
 					break;
 				case TileAction.Upgrade:
-					layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD++;
+					layers[tileChange.layerIndex].tiles[tileKey].LOD++;
 					break;
 				case TileAction.Downgrade:
-					layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD--;
+					layers[tileChange.layerIndex].tiles[tileKey].LOD--;
 					break;
 				case TileAction.Remove:
 					activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
 					RemoveGameObjectFromTile(tileChange);
-					layers[tileChange.layerIndex].tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+					layers[tileChange.layerIndex].tiles.Remove(tileKey);
 					return;
 				default:
 					break;
@@ -542,7 +544,8 @@ namespace LayerSystem
 
 		private IEnumerator DownloadAssetBundle(TileChange tileChange)
 		{
-			int lod = layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
+			Vector2Int tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+			int lod = layers[tileChange.layerIndex].tiles[tileKey].LOD;
 			string url = Constants.BASE_DATA_URL + layers[tileChange.layerIndex].Datasets[lod].path;
 			url = url.Replace("{x}", tileChange.X.ToString());
 			url = url.Replace("{y}", tileChange.Y.ToString());
@@ -569,7 +572,8 @@ namespace LayerSystem
 						else
 						{
 							RemoveGameObjectFromTile(tileChange);
-							layers[tileChange.layerIndex].tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
+							layers[tileChange.layerIndex].tiles[tileKey].gameObject = newGameobject;
+							layers[tileChange.layerIndex].tiles[tileKey].gameObject.tag = (layers[tileChange.layerIndex].tiles[tileKey].LOD > 0) ? hasMetaDataTag : "Untagged";
 							activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
 						}
 					}
@@ -689,7 +693,7 @@ namespace LayerSystem
 			}
 		}
 
-		private Tile createNewTile(TileChange tileChange)
+		private Tile CreateNewTile(TileChange tileChange)
 		{
 			Tile tile = new Tile();
 			tile.LOD = 0;

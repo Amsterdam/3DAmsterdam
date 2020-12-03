@@ -39,8 +39,11 @@ public class SelectByID : MonoBehaviour
 
     private const int maximumRayPiercingLoops = 20;
 
+    private Layer targetLayer;
+
     private void Awake()
 	{
+        targetLayer = GetComponent<Layer>();
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
     }
@@ -82,24 +85,87 @@ public class SelectByID : MonoBehaviour
     /// <param name="addressId">The adress BAG id</param>
     public void HighlightByAdressIdAtLocation(Vector3 position, string addressId)
 	{
-        //Show a ray down to add a collider, and fetch the tile data
-        Ray ray = new Ray(position + Vector3.up * 200.0f,Vector3.down);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+        StartCoroutine(HighlightBuildingAtPosition(position, addressId));
+    }
+    private IEnumerator HighlightBuildingAtPosition(Vector3 position, string addressId)
+    {
+        bool foundAHighLODTile = false;
+        yield return new WaitForSeconds(10.0f);
+
+        //Show a ray down untill we hit a building to add a collider, and fetch the tile data
+        while (!foundAHighLODTile)
         {
-            StartCoroutine(GetSelectedMeshIDData(ray, (value) => { 
-                if(value == emptyID)
+            //Wait for meshfilters in tileloader
+            List<GameObject> tilesCloseToPositionWithColliders = containerLayer.AddMeshColliders(position);
+            float distance = float.MaxValue;
+            GameObject targetTile = null;
+            foreach (GameObject tile in tilesCloseToPositionWithColliders)
+            {
+                float tileDistance = Vector3.Distance(tile.transform.position, position);
+                if (tileDistance < distance)
                 {
-                    Debug.Log("Retrying to highlight building at search location..");
-                    HighlightByAdressIdAtLocation(position, addressId);
+                    distance = tileDistance;
+                    targetTile = tile;
+                }
+            }
+            if (targetTile && targetTile.CompareTag(TileHandler.hasMetaDataTag))
+            {
+                foundAHighLODTile = true;
+                //Get the data for this ID, but do nothing with the ID we get back. Just use the one from our search result:
+                Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId, targetTile);
+
+                //tileHandler.GetIDData(targetTile, 0, (value) => { HighlightSelectedID(addressId); });
+                Ray ray = new Ray(position + Vector3.up * 200.0f, Vector3.down);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+                {
+                    StartCoroutine(GetSelectedMeshIDData(ray, (value) =>
+                    {
+                        if (value == emptyID)
+                        {
+                            Debug.Log("Empty ID found under raycast");
+                        }
+                        else
+                        {
+                            Debug.Log("BAG ID from search: " + addressId);
+                            Debug.Log("BAD ID we highlighted: " + value);
+                            HighlightSelectedID(value);
+                        }
+                    }));
                 }
                 else{
-                    Debug.Log("BAG ID from search: " + addressId);
-                    Debug.Log("BAD ID we highlighted: " + value);
-                    HighlightSelectedID(value);
-                }
-           }));
+                    Debug.Log("Raycast failed");
+				}
+            }
+            yield return new WaitForEndOfFrame();
         }
+        /*Ray ray = new Ray(position + Vector3.up * 200.0f, Vector3.down);
+        RaycastHit hit;
+        while (!foundABuilding && Input.GetMouseButtonDown(0))
+        {
+            if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+            {
+                foundABuilding = true;
+                StartCoroutine(GetSelectedMeshIDData(ray, (value) =>
+                {
+                    if (value == emptyID)
+                    {
+                        Debug.Log("Retrying to highlight building at search location..");
+                        HighlightByAdressIdAtLocation(position, addressId);
+                    }
+                    else
+                    {
+                        Debug.Log("BAG ID from search: " + addressId);
+                        Debug.Log("BAD ID we highlighted: " + value);
+                        HighlightSelectedID(value);
+                    }
+                }));
+            }
+            else
+            {
+                yield return new WaitForEndOfFrame();
+            }
+        }*/
     }
 
 	/// <summary>
