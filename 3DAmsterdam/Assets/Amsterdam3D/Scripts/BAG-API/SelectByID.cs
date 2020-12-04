@@ -143,33 +143,6 @@ public class SelectByID : MonoBehaviour
             }
             yield return new WaitForEndOfFrame();
         }
-        /*Ray ray = new Ray(position + Vector3.up * 200.0f, Vector3.down);
-        RaycastHit hit;
-        while (!foundABuilding && Input.GetMouseButtonDown(0))
-        {
-            if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
-            {
-                foundABuilding = true;
-                StartCoroutine(GetSelectedMeshIDData(ray, (value) =>
-                {
-                    if (value == emptyID)
-                    {
-                        Debug.Log("Retrying to highlight building at search location..");
-                        HighlightByAdressIdAtLocation(position, addressId);
-                    }
-                    else
-                    {
-                        Debug.Log("BAG ID from search: " + addressId);
-                        Debug.Log("BAD ID we highlighted: " + value);
-                        HighlightSelectedID(value);
-                    }
-                }));
-            }
-            else
-            {
-                yield return new WaitForEndOfFrame();
-            }
-        }*/
     }
 
 	/// <summary>
