@@ -81,13 +81,9 @@ namespace Amsterdam3D.Interface.Search
                     Vector3 targetLocation = ExtractUnityLocation(ref locationData);
 
                     ParentList.ShowResultsList(false);
+                    
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
-
-                    //If our buildings layer is active, try to highlight the matching building tied to this adress
-                    if (selectByID)
-                    {
-                        selectByID.HighlightByAdressIdAtLocation(targetLocation,lookupData.response.docs[0].adresseerbaarobject_id);
-                    }
+                    SearchResultMarker.Instance.Show(targetLocation, textField.text);
                 }
             }
         }
