@@ -16,7 +16,6 @@ public class SearchResultMarker : WorldPointFollower
         gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     public void Show(Vector3 locationInWorld, string searchResultText)
     {
         gameObject.SetActive(true);
