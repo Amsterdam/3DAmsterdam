@@ -39,6 +39,8 @@ namespace Amsterdam3D.Interface
 
         public void OpenPanel(string title)
         {
+            ClearGeneratedFields();
+
             objectPropertiesPanel.SetActive(true);
             pandTitlePrefix = title;
         }

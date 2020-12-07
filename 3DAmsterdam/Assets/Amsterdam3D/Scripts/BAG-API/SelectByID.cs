@@ -183,7 +183,7 @@ public class SelectByID : MonoBehaviour
     /// </summary>
     public void ShowBAGDataForSelectedID()
     {
-        DisplayBAGData.Instance.PrepareUI();
+        ObjectProperties.Instance.OpenPanel("Pand");
         StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, lastSelectedID, RetrieveType.Pand)); // laat het BAG UI element zien
     }
 
