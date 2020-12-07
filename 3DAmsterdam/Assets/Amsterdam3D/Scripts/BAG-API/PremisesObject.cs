@@ -3,136 +3,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PremisesObject : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-    //[SerializeField] private Text indexBAGText = default;
-    [Header("Main Properties")]
-    [SerializeField] private Text numberIndexText = default;
-    [SerializeField] private Text adressText = default;
-    [SerializeField] private Text zipText = default;
-    [SerializeField] private Text houseTypeText = default;
-    [SerializeField] private Text constructionYearText = default;
-    [SerializeField] private Text neighbourhood = default;
-    [SerializeField] private Text neighbourhoodCombination = default;
-    [SerializeField] private Text district = default;
-    [SerializeField] private Text rent = default;
-    [SerializeField] private Text surface = default;
-    [SerializeField] private Text roomCount = default;
-    [SerializeField] private Text buildingLayerCount = default;
-    [SerializeField] private Text highestBuildingLayer = default;
-    [SerializeField] private Text lowestBuildingLayer = default;
-    [SerializeField] private Text floorAccess = default;
-    [SerializeField] private Text destinationPlan = default;
-    [SerializeField] private Text function = default;
-    //[SerializeField] private Text gebruiksOppervlakte = default;
-    [SerializeField] private Text categoryPermits = default;
-    [SerializeField] private Text categoryTopic = default;
-    [SerializeField] private Text categoryTitle = default;
-    [SerializeField] private Text categoryURL = default;
-    [SerializeField] private Text monument = default;
-    [SerializeField] private Button restrictions = default;
-    [SerializeField] private Text housingCorporationName = default;
-
-    [Header("Buttons")]
-    [SerializeField] private Button closeButton = default;
-    [SerializeField] private Scrollbar scroll = default;
-    [SerializeField] private Toggle streetName = default;
-    [SerializeField] private Text streetText = default;
-
-    private int adressIndex = 0;
-    private Pand.Rootobject thisPremises = new Pand.Rootobject();
-
-    public GameObject premisesGameObject = default;
-
-
-    private void Start()
+    public class PremisesObject : MonoBehaviour
     {
-        closeButton.onClick.AddListener(CloseObject);
-        restrictions.onClick.AddListener(LoadWKBP);
-    }
+        [Header("Buttons")]
+        [SerializeField] private Button closeButton = default;
+        [SerializeField] private Scrollbar scroll = default;
+        [SerializeField] private Toggle streetName = default;
+        [SerializeField] private Text streetText = default;
 
-    /// <summary>
-    /// Sets text for the premis
-    /// </summary>
-    /// <param name="premisesData"></param>
-    /// <param name="Index"></param>
-    public void SetText(Pand.Rootobject premisesData, int Index)
-    {
-        // zet de pand data
-        scroll.value = 1f;
-        thisPremises = premisesData;
-        adressIndex = Index;
-        streetName.gameObject.SetActive(true);
-        streetName.isOn = true;
-        streetText.text = premisesData.results[adressIndex].nummeraanduiding.adres;
-        // disables button if there's only one premises
-        if (premisesData.results.Length <= 1)
+        private int adressIndex = 0;
+        private Pand.Rootobject thisPremises = new Pand.Rootobject();
+        public GameObject premisesGameObject = default;
+
+        private void Start()
         {
-            if (closeButton.gameObject.activeSelf)
-                closeButton.gameObject.SetActive(false);
+            closeButton.onClick.AddListener(CloseObject);
         }
-        else
-        {
-            if(!closeButton.gameObject.activeSelf)
-                closeButton.gameObject.SetActive(true);
-        }
-        //Display all premises data in the UI
-        numberIndexText.text = premisesData.results[adressIndex].nummeraanduiding.nummeraanduidingidentificatie;
-        adressText.text = premisesData.results[adressIndex].nummeraanduiding.adres + " " + premisesData.results[adressIndex].nummeraanduiding.postcode + " " + "Amsterdam";
-        zipText.text = premisesData.results[adressIndex].nummeraanduiding.postcode;
-        houseTypeText.text = premisesData.results[adressIndex].nummeraanduiding.type_adres;
-        constructionYearText.text = premisesData.oorspronkelijk_bouwjaar;
-        neighbourhood.text = premisesData._buurt.naam;
-        neighbourhoodCombination.text = premisesData._buurtcombinatie.naam;
-        district.text = premisesData._stadsdeel.naam;
-        rent.text = premisesData.results[adressIndex].nummeraanduiding.type_adres;
-        surface.text = premisesData.results[adressIndex].verblijfsobject.oppervlakte + " M²";
-        roomCount.text = string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.aantal_kamers) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.aantal_kamers;
-        buildingLayerCount.text = string.IsNullOrEmpty(premisesData.bouwlagen) ? "Onbekend" : premisesData.bouwlagen;
-        highestBuildingLayer.text = string.IsNullOrEmpty(premisesData.hoogste_bouwlaag) ? "Onbekend" : premisesData.hoogste_bouwlaag;
-        lowestBuildingLayer.text = string.IsNullOrEmpty(premisesData.laagste_bouwlaag) ? "Onbekend" : premisesData.laagste_bouwlaag;
-        floorAccess.text = string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.verdieping_toegang) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.verdieping_toegang;
-        destinationPlan.text = "Onbekend";
-        function.text = "Onbekend";
-        categoryPermits.text = "Onbekend";
-        categoryTopic.text = "Onbekend";
-        categoryTitle.text = "Onbekend";
-        categoryURL.text = "Onbekend";
-        // when we start using WFS, this will be used again (DO NOT DELETE)
-        /*
-        if (premisesData.monumenten.results.Length > 0)
-        {
-            monument.text = "Ja, " + premisesData.monumenten.results[0].monumentnummer;
-        }
-        else 
-        {
-            monument.text = "Nee";
-        }
-        */
-        monument.text = "Onbekend";
-        housingCorporationName.text = premisesData.results[adressIndex].verblijfsobject.eigendomsverhouding;
-        DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
-    }
-    /// <summary>
-    /// loads WKBP Objects
-    /// </summary>
-    public void LoadWKBP()
-    {
-        DisplayBAGData.Instance.loadingCirle.SetActive(true); // loading bar
-        StartCoroutine(DisplayBAGData.Instance.wkbp.LoadWKBP(thisPremises, adressIndex));
-        premisesGameObject.gameObject.SetActive(false);
-    }
 
-    private void OnDisable()
-    {
-        streetName.gameObject.SetActive(false);
-    }
-    /// <summary>
-    /// Closes the premises object
-    /// </summary>
-    public void CloseObject()
-    {
-        premisesGameObject.SetActive(false);
-        streetName.gameObject.SetActive(false);
+        /// <summary>
+        /// Sets text for the premis
+        /// </summary>
+        /// <param name="premisesData"></param>
+        /// <param name="Index"></param>
+        public void SetText(Pand.Rootobject premisesData, int Index)
+        {
+            // zet de pand data
+            scroll.value = 1f;
+            thisPremises = premisesData;
+            adressIndex = Index;
+            streetName.gameObject.SetActive(true);
+            streetName.isOn = true;
+            streetText.text = premisesData.results[adressIndex].nummeraanduiding.adres;
+            // disables button if there's only one premises
+            if (premisesData.results.Length <= 1)
+            {
+                if (closeButton.gameObject.activeSelf)
+                    closeButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (!closeButton.gameObject.activeSelf)
+                    closeButton.gameObject.SetActive(true);
+            }
+            //Display all premises data in the UI
+            ObjectProperties.Instance.AddDataField("BAG ID", premisesData.results[adressIndex].nummeraanduiding.nummeraanduidingidentificatie);
+            ObjectProperties.Instance.AddDataField("Adres", premisesData.results[adressIndex].nummeraanduiding.adres + " " + premisesData.results[adressIndex].nummeraanduiding.postcode + " " + "Amsterdam");
+            ObjectProperties.Instance.AddDataField("Postcode", premisesData.results[adressIndex].nummeraanduiding.postcode);
+            ObjectProperties.Instance.AddDataField("Woning type", premisesData.results[adressIndex].nummeraanduiding.type_adres);
+            ObjectProperties.Instance.AddDataField("Bouwjaar", premisesData.oorspronkelijk_bouwjaar);
+            ObjectProperties.Instance.AddDataField("Buurt", premisesData._buurt.naam);
+            ObjectProperties.Instance.AddDataField("Buutcombinatie", premisesData._buurtcombinatie.naam);
+            ObjectProperties.Instance.AddDataField("Stadsdeel", premisesData._stadsdeel.naam);
+            ObjectProperties.Instance.AddDataField("Huur", premisesData.results[adressIndex].nummeraanduiding.type_adres);
+            ObjectProperties.Instance.AddDataField("Gebruiks oppervlakte", premisesData.results[adressIndex].verblijfsobject.oppervlakte + " M²");
+            ObjectProperties.Instance.AddDataField("Aantal kamers", string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.aantal_kamers) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.aantal_kamers);
+            ObjectProperties.Instance.AddDataField("Aantal bouwlagen", string.IsNullOrEmpty(premisesData.bouwlagen) ? "Onbekend" : premisesData.bouwlagen);
+            ObjectProperties.Instance.AddDataField("Hoogste bouwlaag", string.IsNullOrEmpty(premisesData.hoogste_bouwlaag) ? "Onbekend" : premisesData.hoogste_bouwlaag);
+            ObjectProperties.Instance.AddDataField("Laagste bouwlaag", string.IsNullOrEmpty(premisesData.laagste_bouwlaag) ? "Onbekend" : premisesData.laagste_bouwlaag);
+            ObjectProperties.Instance.AddDataField("Verdieping toegang", string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.verdieping_toegang) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.verdieping_toegang);
+            ObjectProperties.Instance.AddDataField("Woning corporatie", premisesData.results[adressIndex].verblijfsobject.eigendomsverhouding);
+            DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
+        }
+
+        private void OnDisable()
+        {
+            streetName.gameObject.SetActive(false);
+        }
+        /// <summary>
+        /// Closes the premises object
+        /// </summary>
+        public void CloseObject()
+        {
+            premisesGameObject.SetActive(false);
+            streetName.gameObject.SetActive(false);
+        }
     }
 }
