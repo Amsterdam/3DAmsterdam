@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Linq;
+using Amsterdam3D.Interface;
 
 public class ImportBAG : ImportAPI
 {

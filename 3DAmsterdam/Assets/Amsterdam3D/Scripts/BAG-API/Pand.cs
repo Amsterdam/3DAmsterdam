@@ -423,8 +423,7 @@ public class Pand
         //   public Panden panden;
         //   public Kadastrale_Objecten kadastrale_objecten;
         //   public Rechten rechten;
-        public URLBeperkingen beperkingen = new URLBeperkingen();
-        public WKBP.RootBeperkingen wkbpBeperkingen = new WKBP.RootBeperkingen();
+        public URLLimitations beperkingen = new URLLimitations();
         //   public Bouwblok bouwblok;
         public string indicatie_geconstateerd;
         public string aanduiding_in_onderzoek;
@@ -520,7 +519,7 @@ public class Pand
         public string href;
     }
     */
-    public class URLBeperkingen
+    public class URLLimitations
     {
         public int count;
         public string href;
