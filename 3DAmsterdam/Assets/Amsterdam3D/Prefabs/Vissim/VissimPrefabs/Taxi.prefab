@@ -170,6 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1894024797116269658}
   - component: {fileID: 2249094431544212682}
+  - component: {fileID: -2560120244478387773}
   m_Layer: 0
   m_Name: Taxi
   m_TagString: Untagged
@@ -213,6 +214,22 @@ MonoBehaviour:
     vehicleType: 0
     coordFront: {x: 0, y: 0, z: 0}
     coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+--- !u!111 &-2560120244478387773
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225890765605297888}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &7809966389454282137
 GameObject:
   m_ObjectHideFlags: 0

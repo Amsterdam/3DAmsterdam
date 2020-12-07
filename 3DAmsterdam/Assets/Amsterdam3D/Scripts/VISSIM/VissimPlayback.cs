@@ -9,6 +9,7 @@ public class VissimPlayback : MonoBehaviour
 
     public float timeCounter;
     public int loopCounter = 0;
+    public int loopCounterFuture = 0;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject[] vissimCarPrefab = default; // REMOVE THIS LATER AFTER YOU GOT MORE MODELS
@@ -29,6 +30,7 @@ public class VissimPlayback : MonoBehaviour
 
     public void SendCommand(List<VissimData> dataList)
     {
+        
         if (Time.time > timeCounter)
         {
             timeCounter = Time.time + fileConverter.timeBetweenFrames; // runs the simulation at the imported simspeed
@@ -39,6 +41,7 @@ public class VissimPlayback : MonoBehaviour
                 if(fileConverter.frameCounter != dataList[i].simsec)
                 {
                     loopCounter = i;
+                    loopCounterFuture = i;
                     break;
                 }
                 else
@@ -46,7 +49,8 @@ public class VissimPlayback : MonoBehaviour
                     if (vehicles.ContainsKey(dataList[i].id))
                     {
                         // send vehicle command
-                        vehicles[dataList[i].id].ExecuteVISSIM(dataList[i]);
+                        //vehicles[dataList[i].id].ExecuteVISSIM(dataList[i]);
+                        vehicles[dataList[i].id].vehicleCommandData = dataList[i];
                     }
                     else
                     {
@@ -55,10 +59,31 @@ public class VissimPlayback : MonoBehaviour
                         tempObject.transform.SetParent(this.transform);
                         VissimCar carInstance = tempObject.GetComponent<VissimCar>();
                         vehicles.Add(dataList[i].id, carInstance);
-                        carInstance.ExecuteVISSIM(dataList[i]);
+                        //carInstance.ExecuteVISSIM(dataList[i]);
+                        vehicles[dataList[i].id].vehicleCommandData = dataList[i];
                     }
                 }
             }
+            // checks the point where the car is heading to
+            for (int i = loopCounterFuture; i < dataList.Count; i++)
+            {
+                if (fileConverter.frameCounter + fileConverter.timeBetweenFrames != dataList[i].simsec)
+                {
+                    break;
+                }
+                else
+                {
+                    if (vehicles.ContainsKey(dataList[i].id))
+                    {
+                        // send vehicle command
+                        vehicles[dataList[i].id].futurePosition = dataList[i].coordRear;
+                        vehicles[dataList[i].id].MoveAnimation(vehicles[dataList[i].id].vehicleCommandData.coordRear, vehicles[dataList[i].id].futurePosition, fileConverter.timeBetweenFrames);
+                    }
+                }
+            }
+
         }
+        
+
     }
 }

@@ -169,6 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4539037991019824432}
   - component: {fileID: 8237998057866881854}
+  - component: {fileID: 4255870656239226289}
   m_Layer: 0
   m_Name: SportsCar2
   m_TagString: Untagged
@@ -212,6 +213,22 @@ MonoBehaviour:
     vehicleType: 0
     coordFront: {x: 0, y: 0, z: 0}
     coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+--- !u!111 &4255870656239226289
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3870342148592050058}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5807020683217680518
 GameObject:
   m_ObjectHideFlags: 0

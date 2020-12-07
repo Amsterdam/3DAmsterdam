@@ -249,6 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7025806653878020962}
   - component: {fileID: 8224864938211438141}
+  - component: {fileID: 3720429462094510011}
   m_Layer: 0
   m_Name: NormalCar2
   m_TagString: Untagged
@@ -292,6 +293,22 @@ MonoBehaviour:
     vehicleType: 0
     coordFront: {x: 0, y: 0, z: 0}
     coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+--- !u!111 &3720429462094510011
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695382110483902936}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &8129722883267111180
 GameObject:
   m_ObjectHideFlags: 0

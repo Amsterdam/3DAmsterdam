@@ -249,6 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7025646410316414417}
   - component: {fileID: 1384779409806539346}
+  - component: {fileID: 8636137680663297088}
   m_Layer: 0
   m_Name: Cop
   m_TagString: Untagged
@@ -292,6 +293,22 @@ MonoBehaviour:
     vehicleType: 0
     coordFront: {x: 0, y: 0, z: 0}
     coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+--- !u!111 &8636137680663297088
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695469252762412907}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &8194969929369456306
 GameObject:
   m_ObjectHideFlags: 0
