@@ -8,6 +8,9 @@ namespace Amsterdam3D.Interface
     public class ObjectProperties : MonoBehaviour
     {
         [SerializeField]
+        private Camera thumbnailRenderer;
+
+        [SerializeField]
         private GameObject objectPropertiesPanel;
         [SerializeField]
         private Transform generatedFieldsContainer;
@@ -50,6 +53,13 @@ namespace Amsterdam3D.Interface
         public void ClosePanel()
         {
             objectPropertiesPanel.SetActive(false);
+        }
+
+        public void RenderThumbnailFromPosition(Vector3 from, Vector3 to)
+        {
+            thumbnailRenderer.transform.position = from;
+            thumbnailRenderer.transform.LookAt(to);
+            thumbnailRenderer.Render();
         }
 
         public void AddSubtitle(string titleText)
