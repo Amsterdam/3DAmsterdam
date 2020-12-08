@@ -39,8 +39,6 @@ public class FirstPersonMovement : MonoBehaviour
     void Start()
     {
         referenceCollider = GetComponent<BoxCollider>();
-        actionMap = actionAsset.FindActionMap("StreetView");
-        moveAction = actionMap.FindAction("Move");
 
     }
 

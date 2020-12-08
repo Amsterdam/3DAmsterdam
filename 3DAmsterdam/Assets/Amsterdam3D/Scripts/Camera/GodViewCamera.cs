@@ -3,7 +3,7 @@ using ConvertCoordinates;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using Amsterdam3D.InputHandler;
 namespace Amsterdam3D.CameraMotion
 {
     public class GodViewCamera : MonoBehaviour, ICameraControls
@@ -61,7 +61,6 @@ namespace Amsterdam3D.CameraMotion
         private Vector3 zoomDirection;
 
         private Vector3 dragOrigin;
-        private Vector3 moveDirection;
         private Vector3 rotatePoint;
 
         private Vector2 currentRotation;
@@ -70,6 +69,9 @@ namespace Amsterdam3D.CameraMotion
         public static FocusPointChanged focusingOnTargetPoint;
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
+
+        private IAction moveAction;
+        private IAction rotateAction;
         
 
 
@@ -81,6 +83,10 @@ namespace Amsterdam3D.CameraMotion
         void Start()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+            UnityEngine.InputSystem.InputAction testAction = ActionHandler.actions.GodView.MoveCamera;
+            moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
+            rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+            ActionHandler.actions.GodView.Enable();
         }
 
         void Update()
@@ -89,6 +95,7 @@ namespace Amsterdam3D.CameraMotion
 
             canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
 
+           //these shouldn't be needed anymore since unity input system has modifiers built in
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 
@@ -150,54 +157,28 @@ namespace Amsterdam3D.CameraMotion
             if (!translationModifier)
             {
                 // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
-                moveDirection = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * Vector3.forward;
 
-                // vooruit/achteruit bewegen (gebaseerd op rotatie van camera)
-                if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && !BlockedByTextInput()) cameraComponent.transform.position += MoveForward();
-                if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))&& !BlockedByTextInput()) cameraComponent.transform.position -= MoveBackward();
-
-                // zijwaarts bewegen (gebaseerd op rotatie van camera)
-                if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && !BlockedByTextInput()) cameraComponent.transform.position -= MoveLeft();
-                if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && !BlockedByTextInput()) cameraComponent.transform.position += MoveRight();
+                if (!BlockedByTextInput()) 
+                {
+                    Vector3 movement = moveAction.ReadValue<Vector2>();
+                    movement.z = movement.y;
+                      movement.y = 0;
+                      movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                      cameraComponent.transform.position += movement * moveSpeed; 
+                }
             }
-        }
-        private Vector3 MoveRight()
-        {
-            return cameraComponent.transform.right * moveSpeed;
-        }
-        private Vector3 MoveLeft()
-        {
-            return cameraComponent.transform.right * moveSpeed;
-        }
-        private Vector3 MoveBackward()
-        {
-            return moveDirection * moveSpeed;
-        }
-        private Vector3 MoveForward()
-        {
-            return moveDirection * moveSpeed;
         }
 
         private void HandleRotationInput()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-
-            if (((translationModifier && Input.GetKey(KeyCode.LeftArrow)) || Input.GetKey(KeyCode.Q)) && !BlockedByTextInput())
+            if (!BlockedByTextInput())
             {
-                cameraComponent.transform.RotateAround(cameraComponent.transform.position, Vector3.up, -rotationSpeed);
-            }
-            else if (((translationModifier && Input.GetKey(KeyCode.RightArrow)) || Input.GetKey(KeyCode.E)) && !BlockedByTextInput())
-            {
-                cameraComponent.transform.RotateAround(cameraComponent.transform.position, Vector3.up, rotationSpeed);
-            }
-
-            if (((translationModifier && Input.GetKey(KeyCode.UpArrow)) || (!translationModifier && Input.GetKey(KeyCode.R))) && !BlockedByTextInput())
-            {
-                cameraComponent.transform.RotateAround(cameraComponent.transform.position, cameraComponent.transform.right, -rotationSpeed);
-            }
-            if (((translationModifier && Input.GetKey(KeyCode.DownArrow)) || (!translationModifier && Input.GetKey(KeyCode.F))) && !BlockedByTextInput()) 
-            { 
-                cameraComponent.transform.RotateAround(cameraComponent.transform.position, cameraComponent.transform.right, rotationSpeed);
+                Vector2 rotationInput = rotateAction.ReadValue<Vector2>();
+                Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
+                rotation.y += rotationInput.x * rotationSpeed;
+                rotation.x += rotationInput.y * rotationSpeed;
+                cameraComponent.transform.eulerAngles = rotation;
             }
             
             if (firstPersonModifier && Input.GetMouseButton(0))

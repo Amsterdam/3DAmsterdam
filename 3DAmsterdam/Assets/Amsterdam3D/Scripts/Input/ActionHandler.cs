@@ -5,9 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-namespace Amsterdam3D.InputSystem
+namespace Amsterdam3D.InputHandler
 {
-   public class ActionHandler:MonoBehaviour
+    /// <summary>
+    /// Class that handles input events from Unity's input system. Subscribing to input events should be done in this class or in UnityAction, rather than in 
+    /// InputAction directly.
+    /// </summary>
+    /// 
+    //TODO: When old input system is needed, replace parts in this script that require new input system
+    public class ActionHandler:MonoBehaviour
     {
 
         public static _3DAmsterdam actions;
@@ -18,36 +24,52 @@ namespace Amsterdam3D.InputSystem
         public static ActionHandler instance;
 
 
-        public Dictionary<InputAction, UnityAction> ActionDictionary = new Dictionary<InputAction, UnityAction>();
+        public Dictionary<InputAction, UnityInputSystemAction> ActionDictionary = new Dictionary<InputAction, UnityInputSystemAction>();
         public List<UnityActionMap> unityActionMaps = new List<UnityActionMap>();
 
-        private void Start()
+
+        private bool inputEnabled = true;
+
+
+        private void Awake()
         {
 
             instance = this;
             actions = new _3DAmsterdam();
             actionMaps = actions.asset; 
-            actionMaps.Enable();
+           
             foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps) 
             {
                 UnityActionMap unityMap = new UnityActionMap(map);
                 foreach (var inputAction in map) 
                 {
-                    ActionDictionary.Add(inputAction, new UnityAction(inputAction.name));
+                    UnityInputSystemAction tmp = new UnityInputSystemAction(inputAction.name);
+
+                    ActionDictionary.Add(inputAction, tmp);
                     inputAction.performed += Inputaction_performed;
+                    inputAction.canceled += InputAction_canceled;
                     unityMap.boundActions.Add(ActionDictionary[inputAction]);
+                    ActionHandler.actions.StreetView.Disable();
                 }
                 unityActionMaps.Add(unityMap);
 
                 
                
-            }
+            } 
 
+        }
+
+        private void InputAction_canceled(InputAction.CallbackContext obj)
+        {
+            // could be faster if it didn't have to search a dictionary?
+            UnityInputSystemAction action = ActionDictionary[obj.action];
+            action.SetValue(obj.action.ReadValueAsObject());
         }
 
         private void Inputaction_performed(InputAction.CallbackContext obj)
         {
-            UnityAction action = ActionDictionary[obj.action];
+            // could be faster if it didn't have to search a dictionary?
+            UnityInputSystemAction action = ActionDictionary[obj.action];
             action.SetValue(obj.action.ReadValueAsObject());
 
             // Fire Event on UnityAction
@@ -55,13 +77,13 @@ namespace Amsterdam3D.InputSystem
         }
 
 
-        public bool subscribeToAction(string actionName, UnityAction.ActionDelegate func) 
+        public bool subscribeToAction(string actionName, UnityInputSystemAction.ActionDelegate func) 
         {
             foreach(var action in ActionDictionary.Keys) 
             {
                 if (action.name == actionName) 
                 {
-                    ActionDictionary[action].Subscribe(func, 0);
+                    ActionDictionary[action].Subscribe(func);
                     return true;
                 }
             }
@@ -72,13 +94,15 @@ namespace Amsterdam3D.InputSystem
 
 
 
-        public bool SubscribeToAction(InputAction action, UnityAction.ActionDelegate func, bool AddWhenNotExisting = false) 
+        public bool SubscribeToAction(InputAction action, UnityInputSystemAction.ActionDelegate func, bool AddWhenNotExisting = false) 
         {
             if (!ActionDictionary.ContainsKey(action)) 
             {
                 if (AddWhenNotExisting)
                 {
-                    ActionDictionary.Add(action, new UnityAction(action.name));
+                    UnityInputSystemAction newAction = new UnityInputSystemAction(action.name);
+                    ActionDictionary.Add(action, newAction);
+                    newAction.Subscribe(func);
                 }
                 else 
                 {
@@ -86,7 +110,7 @@ namespace Amsterdam3D.InputSystem
                 }
             }
 
-            ActionDictionary[action].OnUnityActionEvent += func;
+            ActionDictionary[action].Subscribe(func);
             return true;
         }
 
@@ -98,7 +122,7 @@ namespace Amsterdam3D.InputSystem
 
         public IAction GetAction(string actionName) 
         {
-            foreach (UnityAction action in ActionDictionary.Values) 
+            foreach (UnityInputSystemAction action in ActionDictionary.Values) 
             {
                 if (action.name == actionName) 
                 {
@@ -109,6 +133,7 @@ namespace Amsterdam3D.InputSystem
         }
 
 
+        //still a bit slow 
         public IActionMap GetActionMap(InputActionMap map) 
         {
             foreach (var actionMap in unityActionMaps) 
@@ -122,16 +147,11 @@ namespace Amsterdam3D.InputSystem
         }
 
 
-        public void DisableInputSystem() 
+        public void EnableInputSystem(bool enabled) 
         {
-
+            this.inputEnabled = enabled;
         }
-        public void Update()
-        {
-            //update input system manually, can be disabled if needed
-            UnityEngine.InputSystem.InputSystem.Update();
 
-        }
 
     }
 }

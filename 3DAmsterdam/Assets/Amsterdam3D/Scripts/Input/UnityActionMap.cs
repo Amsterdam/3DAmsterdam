@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.InputSystem;
-namespace Amsterdam3D.InputSystem
+namespace Amsterdam3D.InputHandler
 {
 
     public interface IActionMap 
     {
          string name { get; }
         bool enabled { get; }
+
+        List<IAction> boundActions { get; }
 
         void Enable();
          void Disable();
@@ -22,8 +24,7 @@ namespace Amsterdam3D.InputSystem
         public string name { get; private set; }
         public bool enabled { get; private set; }
 
-        public List<UnityAction> boundActions = new List<UnityAction>();
-        //decouple this part of the code
+        public List<IAction> boundActions { get; private set; }
         public UnityEngine.InputSystem.InputActionMap map;
 
 
@@ -44,6 +45,7 @@ namespace Amsterdam3D.InputSystem
         public UnityActionMap(InputActionMap map) 
         {
             this.map = map;
+            boundActions = new List<IAction>();
         }
 
 

@@ -797,17 +797,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Move Camera"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""d839b1e9-ff0e-49be-9609-14a519fd2146"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
                     ""name"": ""Rotate Camera"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""e8a038eb-55f9-4c5a-9cb4-473204ad92a0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -815,7 +815,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""name"": ""Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""8cfbe0b0-e14f-439f-ab30-7eb11467c459"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Double"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -830,26 +830,59 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""75586563-1e63-4731-af87-3ae107554b9b"",
-                    ""path"": """",
+                    ""name"": ""2D Vector"",
+                    ""id"": ""a42dab80-8229-46eb-9416-e8548582edf3"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move Camera"",
-                    ""isComposite"": false,
+                    ""action"": ""Rotate Camera"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""380b0863-4116-4776-8b9e-49f4975366e1"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": ""Hold(duration=0.6)"",
+                    ""name"": ""up"",
+                    ""id"": ""77acdb66-5878-431e-9516-f4fc6be00592"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Rotate Camera"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""06ffe534-b847-4b1d-a444-47737ace0cc2"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""0be60841-3593-4f0f-9ee6-4966e95e1a07"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""4f3930f9-d532-42c7-ad63-557b6adf4f21"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -876,7 +909,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""56fa7d08-f1f8-4a2b-8ed8-2603ebe551ef"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -894,6 +927,61 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""action"": ""Context menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""8c0b2440-c728-4365-8b4d-42574962d7c1"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""b851f0ac-755c-47a5-b76a-785c79f51e5f"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""c5473843-4acc-4be7-8ef0-078ba3614f90"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""33b66c13-a175-4554-a65c-5b620b6d6f8f"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""18095f86-8370-4ca6-bff1-6c1932c6eaf2"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -932,6 +1020,55 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""action"": ""TestActie"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""SelectionTool"",
+            ""id"": ""402bd2ad-ab88-4f3e-9dd3-032a690c2e47"",
+            ""actions"": [
+                {
+                    ""name"": ""StartSelection"",
+                    ""type"": ""Button"",
+                    ""id"": ""48b15302-b62b-4d37-ba27-65de37a2578e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.02)""
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""Left mouse button + shift"",
+                    ""id"": ""699717e1-25c3-428c-a6ed-38915bc36daa"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartSelection"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""5de6fc12-f6f8-4e0b-817f-f0e8ddad9e90"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""6b75d90b-01d5-46b0-8545-b180edbbcf8f"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -1026,6 +1163,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // Test
         m_Test = asset.FindActionMap("Test", throwIfNotFound: true);
         m_Test_TestActie = m_Test.FindAction("TestActie", throwIfNotFound: true);
+        // SelectionTool
+        m_SelectionTool = asset.FindActionMap("SelectionTool", throwIfNotFound: true);
+        m_SelectionTool_StartSelection = m_SelectionTool.FindAction("StartSelection", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1323,6 +1463,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     }
     public TestActions @Test => new TestActions(this);
+
+    // SelectionTool
+    private readonly InputActionMap m_SelectionTool;
+    private ISelectionToolActions m_SelectionToolActionsCallbackInterface;
+    private readonly InputAction m_SelectionTool_StartSelection;
+    public struct SelectionToolActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public SelectionToolActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @StartSelection => m_Wrapper.m_SelectionTool_StartSelection;
+        public InputActionMap Get() { return m_Wrapper.m_SelectionTool; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SelectionToolActions set) { return set.Get(); }
+        public void SetCallbacks(ISelectionToolActions instance)
+        {
+            if (m_Wrapper.m_SelectionToolActionsCallbackInterface != null)
+            {
+                @StartSelection.started -= m_Wrapper.m_SelectionToolActionsCallbackInterface.OnStartSelection;
+                @StartSelection.performed -= m_Wrapper.m_SelectionToolActionsCallbackInterface.OnStartSelection;
+                @StartSelection.canceled -= m_Wrapper.m_SelectionToolActionsCallbackInterface.OnStartSelection;
+            }
+            m_Wrapper.m_SelectionToolActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @StartSelection.started += instance.OnStartSelection;
+                @StartSelection.performed += instance.OnStartSelection;
+                @StartSelection.canceled += instance.OnStartSelection;
+            }
+        }
+    }
+    public SelectionToolActions @SelectionTool => new SelectionToolActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1398,5 +1571,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface ITestActions
     {
         void OnTestActie(InputAction.CallbackContext context);
+    }
+    public interface ISelectionToolActions
+    {
+        void OnStartSelection(InputAction.CallbackContext context);
     }
 }

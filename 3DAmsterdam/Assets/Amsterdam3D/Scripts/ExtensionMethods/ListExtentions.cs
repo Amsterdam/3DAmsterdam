@@ -73,10 +73,6 @@ public static class IListInsertIntoSortedListExtensions
 	}
 
 
-	public static void InsertIntoSortedList(this IList list, object valueToInsert, IComparable keyToCompare)
-	{
-		InsertIntoSortedList(list, valueToInsert, keyToCompare, (a, b) => a.CompareTo(b));
-	}
 
 
 
@@ -94,7 +90,7 @@ public static class IListInsertIntoSortedListExtensions
 		{
 			var windowSize = endIndex - startIndex;
 			var middleIndex = startIndex + (windowSize / 2);
-			var middleValue = (IComparable)list[middleIndex];
+			var middleValue = (IComparable)middleIndex;
 			var compareToResult = comparison(middleValue, keyToCompare);
 			if (compareToResult == 0)
 			{

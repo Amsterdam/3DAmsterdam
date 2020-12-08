@@ -4,19 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-namespace Amsterdam3D.InputSystem
+using UnityEngine.InputSystem;
+using Amsterdam3D.InputHandler;
+namespace Amsterdam3D.InputHandler
 {
   public  class ActionHandlerTest:MonoBehaviour
     {
 
-        IAction polledAction;
+        InputAction polledAction;
         bool gotAction;
         private void Update()
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) 
             {
-               Debug.Log( ActionHandler.instance.SubscribeToAction(ActionHandler.actions.StreetView.Move, Test));
+               // high priority action
+                 ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move).SubscribePerformed(Test, 0);
             }
+
 
             if (Input.GetKeyDown(KeyCode.KeypadEnter)) 
             {
@@ -35,18 +39,9 @@ namespace Amsterdam3D.InputSystem
 
             if (Input.GetKeyDown(KeyCode.Return)) 
             {
-                if (gotAction) 
-                {
-                    gotAction = false;
-                }
-                polledAction = ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move);
-                gotAction = true;
+                ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move).SubscribePerformed(LowPriorityTest, 1);
             }
 
-            if (gotAction) 
-            {
-                Debug.Log("Polled action value is: " + polledAction.ReadValue<Vector2>());
-            }
 
 
         }
@@ -58,9 +53,10 @@ namespace Amsterdam3D.InputSystem
           
         }
 
-        private void Test(UnityAction action) 
+        private void LowPriorityTest(IAction action) 
         {
-            
+            Debug.Log("Low priority Test event succeeded with value " + action.ReadValue<Vector2>() + "Is Used: " + action.Used);
         }
+
     }
 }
