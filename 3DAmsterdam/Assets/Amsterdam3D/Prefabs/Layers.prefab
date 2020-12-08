@@ -1,48 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2003904154926515589
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6030816391891915778}
-  - component: {fileID: 1314152562850724536}
-  m_Layer: 0
-  m_Name: Sewerage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6030816391891915778
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4498901013433943612}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1314152562850724536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4639a373647a86d46aaf4ff8ce2a049e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -52,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013071965063}
-  - component: {fileID: 4498901013071965060}
   - component: {fileID: 1814701005}
   - component: {fileID: 2619376247858438739}
   m_Layer: 8
@@ -76,26 +32,6 @@ Transform:
   m_Father: {fileID: 4498901013433943612}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4498901013071965060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013071965061}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4214f956c7198246a26fbd85ca682eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dataFolder: buildings
-  defaultMaterial: {fileID: 2100000, guid: a282db7e43f7e2441a7cb8fb06e4aaaa, type: 2}
-  highLightMaterial: {fileID: 0}
-  maximumDistanceLOD2: 2000
-  maximumDistanceLOD1: 3000
-  maximumDistanceLOD0: 6000
-  maximumConcurrentDownloads: 5
-  layerName: Panden
 --- !u!114 &1814701005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,7 +199,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013737045448}
-  - component: {fileID: 4498901013737045449}
   - component: {fileID: 995301146926089980}
   m_Layer: 0
   m_Name: Trees
@@ -286,23 +221,6 @@ Transform:
   m_Father: {fileID: 4498901013433943612}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4498901013737045449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013737045302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f95efd698380b3e4d80904009ab3540d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kruinmateriaal: {fileID: 2100000, guid: af29b84ec03afb14a8811735af53ed43, type: 2}
-  stammateriaal: {fileID: 2100000, guid: 149038e7565fb6a4b98404331c54c6fe, type: 2}
-  Max_Afstand: 1000
-  dataFolder: trees
-  MAX_Concurrent_Downloads: 5
 --- !u!114 &995301146926089980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,4 +323,84 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2656113440087731856, guid: 13decf1b360e8d14ab0d098ca5371ab0,
     type: 3}
   m_PrefabInstance: {fileID: 1655602355448839381}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5998426874923413135
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4498901013433943612}
+    m_Modifications:
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256260691515697930, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: m_Name
+      value: Sewerage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
+      propertyPath: targetMaterialsContainer
+      value: 
+      objectReference: {fileID: 4498901013376440831}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 25cc053d85d8e9648ae70ade3628dc63, type: 3}
+--- !u!4 &6030816391891915778 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
   m_PrefabAsset: {fileID: 0}
