@@ -28,25 +28,7 @@ namespace Amsterdam3D.Interface
         /// <param name="premisesData"></param>
         /// <param name="Index"></param>
         public void SetText(Pand.Rootobject premisesData, int Index)
-        {
-            // zet de pand data
-            scroll.value = 1f;
-            thisPremises = premisesData;
-            adressIndex = Index;
-            streetName.gameObject.SetActive(true);
-            streetName.isOn = true;
-            streetText.text = premisesData.results[adressIndex].nummeraanduiding.adres;
-            // disables button if there's only one premises
-            if (premisesData.results.Length <= 1)
-            {
-                if (closeButton.gameObject.activeSelf)
-                    closeButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                if (!closeButton.gameObject.activeSelf)
-                    closeButton.gameObject.SetActive(true);
-            }
+        { 
             //Display all premises data in the UI
             ObjectProperties.Instance.AddDataField("BAG ID", premisesData.results[adressIndex].nummeraanduiding.nummeraanduidingidentificatie);
             ObjectProperties.Instance.AddDataField("Adres", premisesData.results[adressIndex].nummeraanduiding.adres + " " + premisesData.results[adressIndex].nummeraanduiding.postcode + " " + "Amsterdam");

@@ -12,8 +12,7 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Transform generatedFieldsContainer;
 
-        [SerializeField]
-        DisplayBAGData displayBagData;
+        public DisplayBAGData displayBagData;
 
         public static ObjectProperties Instance = null;
 

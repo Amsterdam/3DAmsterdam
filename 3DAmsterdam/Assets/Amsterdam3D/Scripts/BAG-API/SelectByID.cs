@@ -184,7 +184,7 @@ public class SelectByID : MonoBehaviour
     public void ShowBAGDataForSelectedID()
     {
         ObjectProperties.Instance.OpenPanel("Pand");
-        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, lastSelectedID, RetrieveType.Pand)); // laat het BAG UI element zien
+        ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
     }
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
