@@ -185,7 +185,7 @@ public class SelectByID : MonoBehaviour
     /// </summary>
     public void ShowBAGDataForSelectedID()
     {
-        var thumbnailFrom = lastRaycastHit.point + (Vector3.up*20) + (Vector3.back*20);
+        var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
         var lookAtTarget = lastRaycastHit.point;
 
         ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
