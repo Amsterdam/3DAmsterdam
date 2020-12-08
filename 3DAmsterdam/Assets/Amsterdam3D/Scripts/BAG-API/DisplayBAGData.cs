@@ -9,9 +9,6 @@ namespace Amsterdam3D.Interface
     {
         private const string moreInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
 
-        [SerializeField]
-        private string pandTitlePrefix = "Pand: ";
-
         /// <summary>
         /// Generates all premises buttons. If there is only 1 premises it will show just that premises
         /// </summary>
