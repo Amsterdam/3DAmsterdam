@@ -185,7 +185,7 @@ public class SelectByID : MonoBehaviour
     /// </summary>
     public void ShowBAGDataForSelectedID()
     {
-        var thumbnailFrom = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        var thumbnailFrom = lastRaycastHit.point + (Vector3.up*20) + (Vector3.back*20);
         var lookAtTarget = lastRaycastHit.point;
 
         ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
