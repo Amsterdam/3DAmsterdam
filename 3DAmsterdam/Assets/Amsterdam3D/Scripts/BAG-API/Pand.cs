@@ -16,7 +16,7 @@ public class Pand
         public float[] bbox;
         //public Geometrie geometrie; 
         public string oorspronkelijk_bouwjaar;
-        public string bouwlagen;
+        public int bouwlagen;
         public string hoogste_bouwlaag;
         public string laagste_bouwlaag;
         public string pandnaam;

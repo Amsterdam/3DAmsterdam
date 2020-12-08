@@ -19,15 +19,18 @@ namespace Amsterdam3D.Interface
         public void ShowBuildingData(string bagId)
         {
             StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) => {
+                ObjectProperties.Instance.AddSubtitle("Pand " + buildingData._display);
+
                 ObjectProperties.Instance.AddDataField("BAG id", buildingData._display);
                 ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
                 ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
                 ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
                 ObjectProperties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-                ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen);
+                ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
                 ObjectProperties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
                 ObjectProperties.Instance.AddURLText("Meer informatie", moreInfoUrl.Replace("{bagid}", buildingData._display));
 
+                ObjectProperties.Instance.AddSeperatorLine();
                 //Load up the list of addresses tied to this building (in a Seperate API call)
                 ObjectProperties.Instance.AddSubtitle("Verblijfsobjecten");
                 StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) => {
