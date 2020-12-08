@@ -12,8 +12,8 @@ namespace Amsterdam3D.Sewerage
 {
     public partial class SewerageGenerator : MonoBehaviour
     {
-        private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolleidingen&bbox=";
-        private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&typeName=rioolknopen&bbox=";
+        private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=";
+        private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
 
         [SerializeField]
         private bool drawEditorGizmos = false;
@@ -22,7 +22,13 @@ namespace Amsterdam3D.Sewerage
         private SewerManholes sewerManholes;
 
         [SerializeField]
+        private Material sharedMaterial;
+
+        [SerializeField]
         private Transform networkContainer;
+
+        [SerializeField]
+        private Transform combinesMeshTileContainer;
 
         [SerializeField]
         private SewerLineSpawner sewerPipeSpawner;
@@ -30,16 +36,27 @@ namespace Amsterdam3D.Sewerage
         private SewerManholeSpawner sewerManholeSpawner;
 
         private const int maxSpawnsPerFrame = 100;
+        private const int maxParsesPerFrame = 500;
 
         private Vector3RD boundingBoxMinimum  = default;
         private Vector3RD boundingBoxMaximum = default;
 
         private double boundingBoxMargin = 500.0f;
 
-        private void Update()
+        private string[] splitArray;
+        private List<Vector3> newVector2Array;
+        private string[] vector2String;
+        private float napOffset;
+
+
+
+        private void Start()
 		{
-			//For testing purposes, just load a set area.
-			//We want this to come from the tile/layer system
+            newVector2Array = new List<Vector3>();
+        }
+
+		private void Update()
+		{
 			GetBoundingBoxCameraIsIn();
 		}
 
@@ -52,6 +69,9 @@ namespace Amsterdam3D.Sewerage
             //Outside our bounds? Load a new area (always load a bigger area)
             if(cameraRD.x < boundingBoxMinimum.x || cameraRD.y > boundingBoxMinimum.y || cameraRD.x > boundingBoxMaximum.x || cameraRD.y < boundingBoxMaximum.y)
             {
+                //Make sure to stop all ongoing requests
+                StopAllCoroutines();
+
                 //Set new area based on rounded camera position with a margin
                 boundingBoxMinimum.x = cameraRD.x - boundingBoxMargin;
                 boundingBoxMinimum.y = cameraRD.y + boundingBoxMargin;
@@ -59,12 +79,8 @@ namespace Amsterdam3D.Sewerage
                 boundingBoxMaximum.x = cameraRD.x + boundingBoxMargin;
                 boundingBoxMaximum.y = cameraRD.y - boundingBoxMargin;
 
-                ClearNetwork();
                 Generate(boundingBoxMinimum, boundingBoxMaximum);
             }
-
-            /*boundingBoxMinimum = new Vector3RD(122000, 484000, 0);
-			boundingBoxMaximum = new Vector3RD(123000, 483000, 0);*/
 		}
 
         private void ClearNetwork()
@@ -74,7 +90,13 @@ namespace Amsterdam3D.Sewerage
             {
                 Destroy(child.gameObject);
 			}
-		}
+            foreach (Transform child in combinesMeshTileContainer)
+            {
+                //Make sure our combined meshes are destroyed
+                Destroy(child.GetComponentInChildren<MeshFilter>().sharedMesh);
+                Destroy(child.gameObject);
+            }
+        }
 
 		/// <summary>
 		/// Starts genering the sewage network based on the geometry data and points in a WFS service
@@ -83,6 +105,7 @@ namespace Amsterdam3D.Sewerage
 		/// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
 		public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
+            napOffset = (float)(0 - CoordConvert.referenceRD.z);
             boundingBoxMinimum = boxMinimum;
             boundingBoxMaximum = boxMaximum;
 
@@ -111,6 +134,7 @@ namespace Amsterdam3D.Sewerage
 		}
         private IEnumerator SpawnManholeObjects()
         {
+            
             SewerManholes.Feature sewerManholeFeature;
             for (int i = 0; i < sewerManholes.features.Length; i++)
             {
@@ -121,14 +145,15 @@ namespace Amsterdam3D.Sewerage
 
                 sewerManholeFeature = sewerManholes.features[i];
                 sewerManholeSpawner.CreateManhole(
-                    CoordConvert.RDtoUnity(new Vector3RD(
+                    CoordConvert.WGS84toUnity(new Vector3WGS(
                         sewerManholeFeature.geometry.coordinates[0],
                         sewerManholeFeature.geometry.coordinates[1],
-                        float.Parse(sewerManholeFeature.properties.putdekselhoogte)
+                        (float.Parse(sewerManholeFeature.properties.putdekselhoogte, CultureInfo.InvariantCulture) +napOffset)
                         )
                     )
                 );
             }
+            CombineSewerage();
             yield return null;
         }
 
@@ -138,13 +163,10 @@ namespace Amsterdam3D.Sewerage
             escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
-            Debug.Log(escapedUrl);
-
             yield return sewerageRequest.SendWebRequest();
             if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
             {
                 string dataString = sewerageRequest.downloadHandler.text;
-                Debug.Log(dataString);
                 sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
 
                 yield return new WaitForEndOfFrame();
@@ -165,15 +187,24 @@ namespace Amsterdam3D.Sewerage
                 //Replace multidimensional arrays with strings. JsonUtility doesnt support it (yet)   
                 string dataString = sewerageRequest.downloadHandler.text.Replace("[[", "\"").Replace("]]", "\"");
                 sewerLines = JsonUtility.FromJson<SewerLines>(dataString);
-                foreach (var feature in sewerLines.features)
-                {
+
+				for (int i = 0; i < sewerLines.features.Length; i++)
+				{
+                    //Smear out the heavy parsing over a few frames, to avoid spikes and memory issues in WebGL
+                    if ((i % maxParsesPerFrame) == 0) yield return new WaitForEndOfFrame();
+
+                    var feature = sewerLines.features[i];
                     Vector3[] pointCoordinate = SplitToCoordinatesArray(feature.geometry.coordinates, feature.properties.bob_beginpunt, feature.properties.bob_eindpunt);
                     feature.geometry.unity_coordinates = pointCoordinate;
                 }
 
                 yield return new WaitForEndOfFrame();
+
                 StartCoroutine(SpawnLineObjects());
             }
+            //We have a new network now that can start to spawn. Clear the old objects.
+            ClearNetwork();
+
             yield return null;
         }
 
@@ -185,27 +216,71 @@ namespace Amsterdam3D.Sewerage
         /// <returns>An array of unity coordinates</returns>
         private Vector3[] SplitToCoordinatesArray(string coordinates, string startHeight, string endHeight)
         {
-            string[] splitArray = coordinates.Split(new string[] { "],[" }, StringSplitOptions.None);
-            List<Vector3> newVector2Array = new List<Vector3>();
+            splitArray = coordinates.Split(new string[] { "],[" }, StringSplitOptions.None);
+            newVector2Array.Clear();
 
             //Convert string with RD coordinates into unity coordinates
             for (int i = 0; i < splitArray.Length; i++)
             {
-                string[] vector2String = splitArray[i].Split(',');
-                Vector3RD newRDVector3 = new Vector3RD(
+                vector2String = splitArray[i].Split(',');
+                Vector3WGS newWGSVector3 = new Vector3WGS(
                         double.Parse(vector2String[0],CultureInfo.InvariantCulture),
                         double.Parse(vector2String[1],CultureInfo.InvariantCulture),
-                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture) : double.Parse(endHeight, CultureInfo.InvariantCulture)
+                        (i == 0) ? double.Parse(startHeight, CultureInfo.InvariantCulture)+napOffset : double.Parse(endHeight, CultureInfo.InvariantCulture)+napOffset
                 );
 
-                Vector3 unityCoordinate = CoordConvert.RDtoUnity(newRDVector3);
+                Vector3 unityCoordinate = CoordConvert.WGS84toUnity(newWGSVector3);
                 newVector2Array.Add(unityCoordinate);
 
             }
-
             return newVector2Array.ToArray();
         }
-    
+
+        public GameObject CombineSewerage()
+        {
+            //Determine meshes to combine
+            MeshFilter[] meshFilters = networkContainer.GetComponentsInChildren<MeshFilter>(true);
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+            int i = 0;
+            while (i < meshFilters.Length)
+            {
+                combine[i].mesh = meshFilters[i].sharedMesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.SetActive(false);
+
+                i++;
+            }
+
+            GameObject[] allChildren = new GameObject[networkContainer.childCount];
+            int j = 0;
+            //Find all child obj and store to that array
+            foreach (Transform child in networkContainer)
+            {
+                allChildren[j] = child.gameObject;
+                j++;
+            }
+
+            //Own combined mesh
+            GameObject newCombinedTile = new GameObject();
+            newCombinedTile.name = "CombinedTile";
+            newCombinedTile.transform.SetParent(combinesMeshTileContainer);
+            newCombinedTile.AddComponent<MeshRenderer>().material = sharedMaterial;
+
+            Mesh newMesh = new Mesh
+            {
+                indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+            };			
+            newMesh.CombineMeshes(combine);
+            newCombinedTile.AddComponent<MeshFilter>().sharedMesh = newMesh;
+
+            //Now destroy our large amount of network children.
+            foreach (GameObject child in allChildren)
+            {
+                Destroy(child.gameObject);
+            }
+            return newCombinedTile;
+        }
+
         private void OnDrawGizmos()
         {
             if (!drawEditorGizmos) return;    

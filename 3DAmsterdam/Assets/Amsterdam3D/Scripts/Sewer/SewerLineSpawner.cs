@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using UnityEngine;
 
 namespace Amsterdam3D.Sewerage
 {
     public class SewerLineSpawner : MonoBehaviour
     {
-        public GameObject sewerLinePrefab;
+        [SerializeField] 
+        private GameObject sewerLinePrefab;
 
         /// <summary>
         /// Create SewerPipe-GameObject from template and location-information
@@ -12,7 +15,6 @@ namespace Amsterdam3D.Sewerage
         /// <param name="from">unity-coordinates of startpoint</param>
         /// <param name="to">unity-coordinates of endpoint</param>
         /// <param name="diameterMM">diameter in mm</param>
-        /// <param name="sewerLinePrefab">GameObject with pipeTemplate, default length=1 (in x-direction), default diameter = 1 origin = 0,0.5,0.5</param>
         /// <returns>GameObject with sewerpipe</returns>
         public GameObject CreateSewerLine(Vector3 from, Vector3 to, double diameterMM)
         {
