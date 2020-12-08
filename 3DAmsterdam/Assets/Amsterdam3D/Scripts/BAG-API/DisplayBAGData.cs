@@ -7,79 +7,38 @@ namespace Amsterdam3D.Interface
 {
     public class DisplayBAGData : MonoBehaviour
     {
-        public GameObject premisesInterfacePanel;
-        public GameObject loadingCirle;
-
         [SerializeField] private Text objectPanelTitle = default;
 
-        [SerializeField] public Transform buttonObjectTargetSpawn = default;
-        public GameObject premisesUIButton;
-        private List<PremisesButton> premisesButtons = new List<PremisesButton>();
-
-        [SerializeField] private Toggle streetToggle = default;
-        [SerializeField] private Scrollbar scroll = default;
-
-        public PremisesObject premises;
-        public static DisplayBAGData Instance = null;
+        private const string moreInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
 
         [SerializeField]
         private string pandTitlePrefix = "Pand: ";
 
-        private void Start()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            premisesInterfacePanel.SetActive(false);
-            premises.premisesGameObject.SetActive(false);
-            streetToggle.gameObject.SetActive(false);
-            loadingCirle.SetActive(false);
-        }
-        /// <summary>
-        /// cleans up the ui and disables all elements except for the main premises list UI screen
-        /// </summary>
-        public void PrepareUI()
-        {
-            premises.CloseObject();
-            premisesInterfacePanel.SetActive(true);
-            loadingCirle.SetActive(true);
-            RemoveButtons();
-            buttonObjectTargetSpawn.gameObject.SetActive(true);
-        }
         /// <summary>
         /// Generates all premises buttons. If there is only 1 premises it will show just that premises
         /// </summary>
         /// <param name="pandData"></param>
         public void ShowData(Pand.Rootobject pandData)
         {
-            RemoveButtons();
-            scroll.value = 1f;
             if (pandData.results.Length > 0)
             {
                 // starts ui en cleans up all previous buttons
                 objectPanelTitle.text = pandTitlePrefix + pandData._display;
                 // check if there's more than one adress
-
                 if (pandData.results.Length > 1)
                 {
                     // creates a button for each adress
                     for (int i = 0; i < pandData.results.Length; i++)
                     {
-                        GameObject temp = Instantiate(premisesUIButton, buttonObjectTargetSpawn.position, buttonObjectTargetSpawn.rotation);
-                        temp.transform.SetParent(buttonObjectTargetSpawn);
-                        PremisesButton tempButton = temp.GetComponent<PremisesButton>();
-                        // puts the buttons in a list
-                        premisesButtons.Add(tempButton);
-                        // adds the data to the button
-                        tempButton.Initiate(pandData, i);
+                        ObjectProperties.Instance.AddDataField("BAG id", pandData._display);
+                        ObjectProperties.Instance.AddDataField("Stadsdeel", pandData._stadsdeel.naam);
+                        ObjectProperties.Instance.AddDataField("Wijk", pandData._buurtcombinatie.naam);
+                        ObjectProperties.Instance.AddDataField("Buurt", pandData._buurt.naam);
+                        ObjectProperties.Instance.AddDataField("Bouwjaar", pandData.oorspronkelijk_bouwjaar);
+                        ObjectProperties.Instance.AddDataField("Bouwlagen", pandData.bouwlagen);
+                        ObjectProperties.Instance.AddDataField("Verblijfsobjecten", pandData.verblijfsobjecten.count.ToString());
+                        ObjectProperties.Instance.AddURLText("Meer informatie", moreInfoUrl.Replace("{bagid}", pandData._display));
                     }
-                    loadingCirle.SetActive(false);
-                }
-                else
-                {
-                    // if there is only one adress, then show the only adress available
-                    StartCoroutine(PlaceCoroutine(pandData, 0));
                 }
             }
         }
@@ -91,44 +50,6 @@ namespace Amsterdam3D.Interface
         public void PlacePremises(Pand.Rootobject pandData, int index)
         {
             StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
-
-            // stuurt de pand data door
-            premises.premisesGameObject.SetActive(true);
-            premises.SetText(pandData, index);
-
-            if (loadingCirle.activeSelf)
-                loadingCirle.SetActive(false);
-        }
-        /// <summary>
-        /// waits for the premises data to be loaded and then loads it in
-        /// </summary>
-        /// <param name="pandData"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public IEnumerator PlaceCoroutine(Pand.Rootobject pandData, int index)
-        {
-            // waits till all the data is ready
-            yield return StartCoroutine(ImportBAG.Instance.CallAPI("https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/", ImportBAG.Instance.hoofdData.results[index].landelijk_id, RetrieveType.NummeraanduidingInstance));
-
-            // stuurt de pand data door
-            premises.premisesGameObject.SetActive(true);
-            premises.SetText(pandData, index);
-
-            if (loadingCirle.activeSelf)
-                loadingCirle.SetActive(false);
-        }
-
-        /// <summary>
-        /// removes all the old premises buttons from the main ui hub
-        /// </summary>
-        public void RemoveButtons()
-        {
-            foreach (PremisesButton btn in premisesButtons)
-            {
-                Destroy(btn.gameObject);
-
-            }
-            premisesButtons.Clear();
         }
     }
 }

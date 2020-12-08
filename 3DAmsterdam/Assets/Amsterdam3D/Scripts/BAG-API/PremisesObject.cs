@@ -64,7 +64,6 @@ namespace Amsterdam3D.Interface
             ObjectProperties.Instance.AddDataField("Laagste bouwlaag", string.IsNullOrEmpty(premisesData.laagste_bouwlaag) ? "Onbekend" : premisesData.laagste_bouwlaag);
             ObjectProperties.Instance.AddDataField("Verdieping toegang", string.IsNullOrEmpty(premisesData.results[adressIndex].verblijfsobject.verdieping_toegang) ? "Onbekend" : premisesData.results[adressIndex].verblijfsobject.verdieping_toegang);
             ObjectProperties.Instance.AddDataField("Woning corporatie", premisesData.results[adressIndex].verblijfsobject.eigendomsverhouding);
-            DisplayBAGData.Instance.loadingCirle.SetActive(false); // loading bar
         }
 
         private void OnDisable()

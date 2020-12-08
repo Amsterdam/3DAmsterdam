@@ -70,7 +70,7 @@ public class ImportBAG : ImportAPI
                         // replaces the premises results list and sorts them
                         hoofdData.results = tempPandResults.ToArray<Pand.PandResults>();
                         // shows results in the list
-                        DisplayBAGData.Instance.ShowData(hoofdData);
+                        //DisplayBAGData.Instance.ShowData(hoofdData);
                         break;
 
                     case RetrieveType.NummeraanduidingInstance:

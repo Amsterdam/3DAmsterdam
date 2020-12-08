@@ -22,7 +22,7 @@ public class Pand
         public string pandnaam;
         public string ligging;
         public string type_woonobject;
-        //public Verblijfsobjecten verblijfsobjecten;
+        public Verblijfsobjecten verblijfsobjecten;
         //public _Adressen _adressen;
         public Monumenten monumenten;
         public Bouwblok bouwblok;

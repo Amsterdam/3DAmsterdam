@@ -9,14 +9,16 @@ namespace Amsterdam3D.Interface
     {
         [SerializeField]
         private GameObject objectPropertiesPanel;
-
         [SerializeField]
         private Transform generatedFieldsContainer;
+
+        [SerializeField]
+        DisplayBAGData displayBagData;
 
         public static ObjectProperties Instance = null;
 
         [SerializeField]
-        private string pandTitlePrefix = "Pand: ";
+        private Text titleText;
 
         [Header("Generated field prefabs:")]
         [SerializeField]
@@ -25,6 +27,8 @@ namespace Amsterdam3D.Interface
         private DataKeyAndValue dataFieldPrefab;
         [SerializeField]
         private GameObject seperatorLinePrefab;
+        [SerializeField]
+        private NameAndURL urlPrefab;
 
         void Awake()
         {
@@ -42,7 +46,7 @@ namespace Amsterdam3D.Interface
             ClearGeneratedFields();
 
             objectPropertiesPanel.SetActive(true);
-            pandTitlePrefix = title;
+            titleText.text = title;
         }
         public void ClosePanel()
         {
@@ -60,6 +64,10 @@ namespace Amsterdam3D.Interface
         public void AddSeperatorLine()
         {
             Instantiate(seperatorLinePrefab, generatedFieldsContainer);
+        }
+        public void AddURLText(string urlText, string urlPath)
+        {
+            Instantiate(urlPrefab, generatedFieldsContainer).SetURL(urlText,urlPath);
         }
 
         public void ClearGeneratedFields()
