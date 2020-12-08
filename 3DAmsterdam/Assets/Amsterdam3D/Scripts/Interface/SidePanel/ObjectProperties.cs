@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,18 +33,33 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private NameAndURL urlPrefab;
 
+        private Camera thumbnailRenderer;
+
         void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
+		{
+			if (Instance == null)
+			{
+				Instance = this;
+			}
 
-            //Properties panel is disabled at startup
-            objectPropertiesPanel.SetActive(false);
-        }
+			//Properties panel is disabled at startup
+			objectPropertiesPanel.SetActive(false);
 
-        public void OpenPanel(string title)
+			CreateThumbnailRenderCamera();
+		}
+
+		private void CreateThumbnailRenderCamera()
+		{
+			//Our render camera for thumbnails. 
+            //We disable it so we cant manualy render a single frame using Camera.Render();
+			thumbnailRenderer = new GameObject().AddComponent<Camera>();
+			thumbnailRenderer.fieldOfView = 30;
+			thumbnailRenderer.farClipPlane = 5000;
+			thumbnailRenderer.targetTexture = thumbnailRenderTexture;
+			thumbnailRenderer.enabled = false;
+		}
+
+		public void OpenPanel(string title)
         {
             ClearGeneratedFields();
 
@@ -57,8 +73,6 @@ namespace Amsterdam3D.Interface
 
         public void RenderThumbnailFromPosition(Vector3 from, Vector3 to)
         {
-            var thumbnailRenderer = new Camera();
-            thumbnailRenderer.targetTexture = thumbnailRenderTexture;
             thumbnailRenderer.transform.position = from;
             thumbnailRenderer.transform.LookAt(to);
             thumbnailRenderer.Render();
