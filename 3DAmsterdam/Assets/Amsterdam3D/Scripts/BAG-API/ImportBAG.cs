@@ -19,7 +19,7 @@ public class ImportBAG
     /// </summary>
     /// <param name="bagId">The unique building BAG id</param>
     /// <param name="callback">The callback action containing the building data object</param>
-    public static IEnumerator GetBuildingData(string bagId, Action<Pand.Rootobject> callback)
+    public static IEnumerator GetBuildingData(string bagId, Action<BagData.Rootobject> callback)
     {
         // adds data id and url in one string
         string url = buildingUrl + bagId + "/?format=" + format;
@@ -36,7 +36,7 @@ public class ImportBAG
         }
         else
         {
-            callback?.Invoke(JsonUtility.FromJson<Pand.Rootobject>(request.downloadHandler.text));
+            callback?.Invoke(JsonUtility.FromJson<BagData.Rootobject>(request.downloadHandler.text));
         }
     }
 
@@ -45,7 +45,7 @@ public class ImportBAG
     /// </summary>
     /// <param name="bagId">The building Bag ID</param>
     /// <param name="callback">The callback action containing the building adresses data object</param>
-    public static IEnumerator GetBuildingAdresses(string bagId, Action<Pand.Rootobject> callback)
+    public static IEnumerator GetBuildingAdresses(string bagId, Action<BagData.Rootobject> callback)
     {
         // adds data id and url in one string
         string url = numberIndicatorURL + bagId + "&format=" + format;
@@ -61,7 +61,7 @@ public class ImportBAG
         }
         else
         {
-            callback?.Invoke(JsonUtility.FromJson<Pand.Rootobject>(request.downloadHandler.text));
+            callback?.Invoke(JsonUtility.FromJson<BagData.Rootobject>(request.downloadHandler.text));
         }
     }
 
@@ -71,7 +71,7 @@ public class ImportBAG
     /// <param name="bagId">The address Bag ID</param>
     /// <param name="callback">The callback action containing the adresses data object</param>
     /// <returns></returns>
-    public static IEnumerator GetAddressData(string bagId, Action<Pand.VerblijfsInstance> callback)
+    public static IEnumerator GetAddressData(string bagId, Action<BagData.AddressInstance> callback)
     {
         // adds data id and url in one string
         string url = numberIndicatorInstanceURL + bagId + "/?format=" + format;
@@ -87,7 +87,7 @@ public class ImportBAG
         }
         else
         {
-            callback?.Invoke(JsonUtility.FromJson<Pand.VerblijfsInstance>(request.downloadHandler.text));
+            callback?.Invoke(JsonUtility.FromJson<BagData.AddressInstance>(request.downloadHandler.text));
         }
     }
 }

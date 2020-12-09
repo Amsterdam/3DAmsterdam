@@ -15,11 +15,11 @@ namespace Amsterdam3D.Interface
         /// <param name="pandData"></param>
         public void ShowBuildingData(string bagId)
         {
-            ObjectProperties.Instance.AddSubtitle("Pand " + bagId);
+            ObjectProperties.Instance.AddTitle("Pand " + bagId);
             if (bagId.Length < 5) return;
 
             StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) => {
-                ObjectProperties.Instance.AddDataField("BAG id", buildingData._display);
+                ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
                 ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
                 ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
                 ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
@@ -31,7 +31,7 @@ namespace Amsterdam3D.Interface
                 ObjectProperties.Instance.AddSeperatorLine();
 
                 //Load up the list of addresses tied to this building (in a Seperate API call)
-                ObjectProperties.Instance.AddSubtitle("Verblijfsobjecten");
+                ObjectProperties.Instance.AddTitle("Adressen");
                 StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) => {
                    foreach(var address in addressList.results)
                    {
@@ -48,7 +48,12 @@ namespace Amsterdam3D.Interface
             //TODO, add groupable dropdrown that shows/hides the following fields at below the selected object
             StartCoroutine(ImportBAG.GetAddressData(addressId, (addressData) =>
             {
-                
+                ObjectProperties.Instance.CreateGroup().transform.SetSiblingIndex(selected.GetSiblingIndex());
+                ObjectProperties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
+                ObjectProperties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
+                ObjectProperties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
+                ObjectProperties.Instance.AddURLText("Meer informatie", moreInfoUrl.Replace("{bagid}", addressData._display));
+                ObjectProperties.Instance.CloseGroup();
             }));
         }
     }

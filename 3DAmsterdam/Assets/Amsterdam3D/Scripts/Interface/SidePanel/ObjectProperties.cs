@@ -11,7 +11,9 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject objectPropertiesPanel;
         [SerializeField]
-        private Transform generatedFieldsContainer;
+        private Transform generatedFieldsRootContainer;
+
+        private Transform targetFieldsContainer;
 
         [SerializeField]
         private RenderTexture thumbnailRenderTexture;
@@ -25,7 +27,9 @@ namespace Amsterdam3D.Interface
 
         [Header("Generated field prefabs:")]
         [SerializeField]
-        private GameObject subtitlePrefab;
+        private GameObject groupPrefab;
+        [SerializeField]
+        private GameObject titlePrefab;
         [SerializeField]
         private DataKeyAndValue dataFieldPrefab;
         [SerializeField]
@@ -42,8 +46,11 @@ namespace Amsterdam3D.Interface
 				Instance = this;
 			}
 
-			//Properties panel is disabled at startup
-			objectPropertiesPanel.SetActive(false);
+            //Start with our main container. Groups may change this target.
+            targetFieldsContainer = generatedFieldsRootContainer;
+
+            //Properties panel is disabled at startup
+            objectPropertiesPanel.SetActive(false);
 
 			CreateThumbnailRenderCamera();
 		}
@@ -78,32 +85,53 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer.Render();
         }
 
-        public void AddSubtitle(string titleText)
+        /// <summary>
+        /// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
+        /// </summary>
+        /// <returns>The new group object</returns>
+        public GameObject CreateGroup()
         {
-            Instantiate(subtitlePrefab, generatedFieldsContainer).GetComponent<Text>().text = titleText;
+            GameObject newGroup = Instantiate(groupPrefab, targetFieldsContainer);
+            targetFieldsContainer = newGroup.transform;
+            return newGroup;
         }
 
+        /// <summary>
+        /// Closes the adding of items to this group, changing the target container to the root again.
+        /// </summary>
+        public void CloseGroup()
+        {
+            //Jiggle our contentsize fitter to force a resize.
+            targetFieldsContainer.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            targetFieldsContainer = generatedFieldsRootContainer;
+        }
+
+        #region Methods for generating the main field types (spawning prefabs)
+        public void AddTitle(string titleText)
+        {
+            Instantiate(titlePrefab, targetFieldsContainer).GetComponent<Text>().text = titleText;
+        }
         public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
-            DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, generatedFieldsContainer);
+            DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, generatedFieldsRootContainer);
             dataKeyAndValue.SetTexts(keyTitle, valueText);
             return dataKeyAndValue;
         }
         public void AddSeperatorLine()
         {
-            Instantiate(seperatorLinePrefab, generatedFieldsContainer);
+            Instantiate(seperatorLinePrefab, targetFieldsContainer);
         }
         public void AddURLText(string urlText, string urlPath)
         {
-            Instantiate(urlPrefab, generatedFieldsContainer).SetURL(urlText,urlPath);
+            Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
         }
-
         public void ClearGeneratedFields()
         {
-            foreach (Transform field in generatedFieldsContainer)
+            foreach (Transform field in generatedFieldsRootContainer)
             {
                 Destroy(field.gameObject);
             }
         }
+        #endregion
     }
 }
