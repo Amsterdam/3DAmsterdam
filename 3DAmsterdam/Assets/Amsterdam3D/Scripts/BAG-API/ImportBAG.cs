@@ -40,6 +40,11 @@ public class ImportBAG
         }
     }
 
+    /// <summary>
+    /// Returns a list of addresses tied to a building Bag ID
+    /// </summary>
+    /// <param name="bagId">The building Bag ID</param>
+    /// <param name="callback">The callback action containing the building adresses data object</param>
     public static IEnumerator GetBuildingAdresses(string bagId, Action<Pand.Rootobject> callback)
     {
         // adds data id and url in one string
@@ -57,6 +62,32 @@ public class ImportBAG
         else
         {
             callback?.Invoke(JsonUtility.FromJson<Pand.Rootobject>(request.downloadHandler.text));
+        }
+    }
+
+    /// <summary>
+    /// Get all the data tied to a address Bag ID
+    /// </summary>
+    /// <param name="bagId">The address Bag ID</param>
+    /// <param name="callback">The callback action containing the adresses data object</param>
+    /// <returns></returns>
+    public static IEnumerator GetAddressData(string bagId, Action<Pand.VerblijfsInstance> callback)
+    {
+        // adds data id and url in one string
+        string url = numberIndicatorInstanceURL + bagId + "/?format=" + format;
+
+        Debug.Log(url);
+        // send http request
+        var request = UnityWebRequest.Get(url);
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
+        {
+            WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+        }
+        else
+        {
+            callback?.Invoke(JsonUtility.FromJson<Pand.VerblijfsInstance>(request.downloadHandler.text));
         }
     }
 }

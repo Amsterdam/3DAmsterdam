@@ -83,9 +83,11 @@ namespace Amsterdam3D.Interface
             Instantiate(subtitlePrefab, generatedFieldsContainer).GetComponent<Text>().text = titleText;
         }
 
-        public void AddDataField(string keyTitle, string valueText)
+        public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
-            Instantiate(dataFieldPrefab, generatedFieldsContainer).SetTexts(keyTitle, valueText);
+            DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, generatedFieldsContainer);
+            dataKeyAndValue.SetTexts(keyTitle, valueText);
+            return dataKeyAndValue;
         }
         public void AddSeperatorLine()
         {

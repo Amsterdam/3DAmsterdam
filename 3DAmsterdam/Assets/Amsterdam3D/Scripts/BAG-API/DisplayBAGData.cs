@@ -29,14 +29,26 @@ namespace Amsterdam3D.Interface
                 ObjectProperties.Instance.AddURLText("Meer informatie", moreInfoUrl.Replace("{bagid}", buildingData._display));
 
                 ObjectProperties.Instance.AddSeperatorLine();
+
                 //Load up the list of addresses tied to this building (in a Seperate API call)
                 ObjectProperties.Instance.AddSubtitle("Verblijfsobjecten");
                 StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) => {
                    foreach(var address in addressList.results)
                    {
-                        ObjectProperties.Instance.AddDataField(address._display, "( " + address.landelijk_id + " )");
-				   }
+                        //We create a field and make it clickable, so addresses cant contain more data
+                        var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "( " + address.landelijk_id + " )");
+                        dataKeyAndValue.GetComponent<Button>().onClick.AddListener((() => ShowAddressData(address.landelijk_id, dataKeyAndValue.transform)));
+                   }
                 }));
+            }));
+        }
+
+        private void ShowAddressData(string addressId, Transform selected)
+        {
+            //TODO, add groupable dropdrown that shows/hides the following fields at below the selected object
+            StartCoroutine(ImportBAG.GetAddressData(addressId, (addressData) =>
+            {
+                
             }));
         }
     }
