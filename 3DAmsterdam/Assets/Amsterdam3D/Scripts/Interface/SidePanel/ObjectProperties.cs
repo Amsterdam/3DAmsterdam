@@ -101,8 +101,9 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void CloseGroup()
         {
-            //Jiggle our contentsize fitter to force a resize.
-            targetFieldsContainer.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            //Force a layout refresh on our group so the contentsizefitter scales according to the children again
+            LayoutRebuilder.ForceRebuildLayoutImmediate(targetFieldsContainer.GetComponent<RectTransform>());
+
             targetFieldsContainer = generatedFieldsRootContainer;
         }
 
@@ -113,7 +114,7 @@ namespace Amsterdam3D.Interface
         }
         public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
-            DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, generatedFieldsRootContainer);
+            DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, targetFieldsContainer);
             dataKeyAndValue.SetTexts(keyTitle, valueText);
             return dataKeyAndValue;
         }

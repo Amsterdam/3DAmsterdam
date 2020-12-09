@@ -37,18 +37,32 @@ namespace Amsterdam3D.Interface
                    {
                         //We create a field and make it clickable, so addresses cant contain more data
                         var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "( " + address.landelijk_id + " )");
-                        dataKeyAndValue.GetComponent<Button>().onClick.AddListener((() => ShowAddressData(address.landelijk_id, dataKeyAndValue.transform)));
+                        var button = dataKeyAndValue.GetComponent<Button>();
+                        button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
                    }
                 }));
             }));
         }
 
-        private void ShowAddressData(string addressId, Transform selected)
+        private void ShowAddressData(string addressId, Button button)
         {
+            button.onClick.RemoveAllListeners();
+
             //TODO, add groupable dropdrown that shows/hides the following fields at below the selected object
             StartCoroutine(ImportBAG.GetAddressData(addressId, (addressData) =>
             {
-                ObjectProperties.Instance.CreateGroup().transform.SetSiblingIndex(selected.GetSiblingIndex());
+                //Create group under button
+                GameObject group = ObjectProperties.Instance.CreateGroup();
+                group.transform.SetSiblingIndex(button.transform.GetSiblingIndex() + 1);
+
+                //Next click closes (and removes) group again
+                button.onClick.AddListener((() =>
+                {
+                    Destroy(group.gameObject);
+                    button.onClick.RemoveAllListeners();
+                    button.onClick.AddListener((() => ShowAddressData(addressId, button)));
+                }));
+
                 ObjectProperties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
                 ObjectProperties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
                 ObjectProperties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);

@@ -364,7 +364,7 @@ public class BagData
     public class Betreft_Pand
     {
         public string pandidentificatie;
-        public _Links2 _links;
+        public _Links _links;
     }
 }
 
