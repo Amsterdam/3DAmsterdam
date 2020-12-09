@@ -9,9 +9,10 @@ using SimpleJSON;
 
 namespace cityJSON
 {
+
     public class CreateTerrainSurface : MonoBehaviour
     {
-
+        public List<string> fysiek_voorkomen = new List<string>();
         private List<Vector3> verts = new List<Vector3>();
         private Dictionary<string, List<int>> triangleLists;
         public GameObject CreateMesh(CityModel cityModel, Vector3RD origin)
@@ -35,9 +36,14 @@ namespace cityJSON
             foreach (var item in triangleLists)
             {
                 //terrainData.terrainTypes.Add(item.Key);
-                mesh.SetTriangles(item.Value.ToArray(),submeshnumber);
+                //if (submeshnumber==0 || submeshnumber==1)
+                //{
+                    mesh.SetTriangles(item.Value.ToArray(), submeshnumber);
+                    
+                //}
                 submeshnumber++;
             }
+            
             mesh.RecalculateNormals();
             mesh.Optimize();
             container.AddComponent<MeshFilter>().mesh = mesh;
@@ -74,7 +80,7 @@ namespace cityJSON
             triangleList.Add("TransportSquare", new List<int>());
             triangleList.Add("WaterBody", new List<int>());
             triangleList.Add("GenericCityObject", new List<int>());
-
+            triangleList.Add("Building", new List<int>());
 
 
             string cityObjectType = "";
@@ -83,20 +89,35 @@ namespace cityJSON
                 cityObjectType = cityObject["type"];
 
                 // Skip Buildings
-                if (cityObjectType =="Building")
-                {
-                    continue;
-                }
+                //if (cityObjectType =="Building")
+                //{
+                //    continue;
+                //}
                 // Skip Bridges
                 //if (cityObjectType == "Bridge")
                 //{
                 //    continue;
                 //}
 
+                if (cityObjectType == "LandUse")
+                {
+                    string property = cityObject["attributes"]["bgt_fysiekvoorkomen"].Value;
+                    property = cityObject["attributes"]["bgt_functie"].Value;
+                    if (fysiek_voorkomen.Contains(property) == false)
+                    {
+                        fysiek_voorkomen.Add(property);
+                    }
+                }
+
                 if (triangleList.ContainsKey(cityObjectType)==true)
                 {
                     triangleList[cityObjectType].AddRange(ReadTriangles(cityObject));
                 }
+                else
+                {
+                    Debug.Log("cityObject: " + cityObjectType);
+                }
+                
                 
             }
 

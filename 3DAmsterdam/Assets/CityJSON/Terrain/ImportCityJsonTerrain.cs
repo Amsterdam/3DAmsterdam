@@ -18,8 +18,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        //ImportSingle();
-        importeer();
+        ImportSingle();
+        //importeer();
     }
 
     // Update is called once per frame
@@ -35,14 +35,14 @@ public class ImportCityJsonTerrain : MonoBehaviour
         int Ymax = 501000;
 
         
-        string basefilepath = "E:/UnityData/3DBasisgegevens/";
+        string basefilepath = "E:/TiledData/TerrainLOD1/tile_121000.0_487000.0/";
         
-        string jsonfilename = "121000-483000-1x1.json";
+        string jsonfilename = "500x500.json";
         
         int LOD = 1;
         
         double originX = 121000;
-        double originY = 483000;
+        double originY = 487000;
 
         string filepath = basefilepath;
         Debug.Log(filepath);
@@ -53,15 +53,53 @@ public class ImportCityJsonTerrain : MonoBehaviour
             
         CityModel cm = new CityModel(filepath, jsonfilename);
 
-            CreateTerrainSurface surfaceCreator = new CreateTerrainSurface();
+            CreateTerrainSurface surfaceCreator = transform.gameObject.GetComponent<CreateTerrainSurface>();
 
             GameObject go = surfaceCreator.CreateMesh(cm, new ConvertCoordinates.Vector3RD(originX + 500, originY + 500, 0));
-            go.name = originX.ToString()+ "-" +originY.ToString()+"-LOD" + LOD;
-            go.transform.parent = transform;
-            go.GetComponent<MeshRenderer>().sharedMaterials = materialsArray;
-            SavePrefab("Terrain", go, originX.ToString(), originY.ToString(), 1);
-        
-        
+            //Mesh mesh = go.GetComponent<MeshFilter>().sharedMesh;
+            //UnityEngine.ProBuilder.MeshUtility.CollapseSharedVertices(mesh);
+            //mesh.Optimize();
+            //SavePrefab("Terrain_Original", go, originX.ToString(), originY.ToString(), 1);
+
+            //var DecimatedMesh = mesh;
+            //float quality = 0.02f;
+            //var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
+            //meshSimplifier.Initialize(DecimatedMesh);
+            //meshSimplifier.PreserveBorderEdges = true;
+            //meshSimplifier.MaxIterationCount = 500;
+            //meshSimplifier.SimplifyMesh(quality);
+            //DecimatedMesh = meshSimplifier.ToMesh();
+            //DecimatedMesh.RecalculateNormals();
+
+            //Debug.Log(DecimatedMesh.vertexCount);
+            //go.GetComponent<MeshFilter>().sharedMesh = DecimatedMesh;
+               
+            //go.name = originX.ToString()+ "-" +originY.ToString()+"-LOD" + LOD;
+            //go.transform.parent = transform;
+            //go.GetComponent<MeshRenderer>().sharedMaterials = materialsArray;
+            //SavePrefab("Terrain_2percent", go, originX.ToString(), originY.ToString(), 1);
+
+
+
+
+
+
+
+            //go = new GameObject("lod0");
+            //go.AddComponent<MeshFilter>();
+            //go.AddComponent<MeshRenderer>().materials = materialList.ToArray();
+            //meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
+            //meshSimplifier.Initialize(DecimatedMesh);
+            //meshSimplifier.PreserveBorderEdges = true;
+            //meshSimplifier.MaxIterationCount = 500;
+            //quality = 0.2f;
+            //meshSimplifier.SimplifyMesh(quality);
+            //DecimatedMesh = meshSimplifier.ToMesh();
+            //DecimatedMesh.RecalculateNormals();
+            //Debug.Log(DecimatedMesh.vertexCount);
+            //go.GetComponent<MeshFilter>().sharedMesh = DecimatedMesh;
+            //SavePrefab("Terrain_lod0", go, originX.ToString(), originY.ToString(), 1);
+
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿//	Poly2Mesh
 //
+// author: Joe Strout (http://luminaryapps.com/blog/triangulating-3d-polygons-in-unity/)
 //	This is a static class that wraps up all the details of creating a Mesh
 //	(or even an entire GameObject) out of a polygon.  The polygon must be
 //	planar, and should be well-behaved (no duplicate points, etc.), but it
