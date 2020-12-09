@@ -63,10 +63,12 @@ namespace Amsterdam3D.Interface
                     button.onClick.AddListener((() => ShowAddressData(addressId, button)));
                 }));
 
+                ObjectProperties.Instance.AddSeperatorLine();
                 ObjectProperties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
                 ObjectProperties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
                 ObjectProperties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
                 ObjectProperties.Instance.AddURLText("Meer informatie", moreInfoUrl.Replace("{bagid}", addressData._display));
+                ObjectProperties.Instance.AddSeperatorLine();
                 ObjectProperties.Instance.CloseGroup();
             }));
         }
