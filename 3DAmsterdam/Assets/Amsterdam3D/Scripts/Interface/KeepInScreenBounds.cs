@@ -16,8 +16,8 @@ public class KeepInScreenBounds : MonoBehaviour
 	void OnEnable()
     {
         limitedPosition = new Vector3(
-            Mathf.Clamp(this.transform.position.x, 0 , Screen.width - this.mainImage.rectTransform.sizeDelta.x),
-            Mathf.Clamp(this.transform.position.y, this.mainImage.rectTransform.sizeDelta.y, Screen.height),
+            Mathf.Clamp(this.transform.position.x, 0 , Screen.width - this.mainImage.rectTransform.sizeDelta.x* CanvasSettings.canvasScale),
+            Mathf.Clamp(this.transform.position.y, this.mainImage.rectTransform.sizeDelta.y * CanvasSettings.canvasScale, Screen.height),
             0
         );
 
