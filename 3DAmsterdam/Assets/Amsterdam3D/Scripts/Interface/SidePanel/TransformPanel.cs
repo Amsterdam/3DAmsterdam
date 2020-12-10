@@ -87,7 +87,7 @@ public class TransformPanel : MonoBehaviour
         ApplyScale();
 
         //Sets our RD translation offset
-        GetRDCoordinates();
+        UpdateRDCoordinates();
     }
 
     private void PreviewTranslation(string value = null)
@@ -103,6 +103,8 @@ public class TransformPanel : MonoBehaviour
         previewTranslation.z += double.Parse(translateZ.text);
 
         transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+
+        UpdateRDCoordinates();
     }
     private void PreviewRotation(string value = null)
     {
@@ -142,7 +144,7 @@ public class TransformPanel : MonoBehaviour
         scaleOffset = transformableTarget.transform.localScale;
     }
 
-    private void GetRDCoordinates()
+    private void UpdateRDCoordinates()
     {
         rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
         rdX.text = rdCoordinates.x.ToString(CultureInfo.InvariantCulture);
