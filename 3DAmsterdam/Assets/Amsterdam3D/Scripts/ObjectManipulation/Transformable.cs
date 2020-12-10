@@ -65,7 +65,7 @@ public class Transformable : MonoBehaviour
 		ContextPointerMenu.Instance.SetTargetObject(gameObject);
 
 		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
-		ObjectProperties.Instance.OpenPanel(gameObject.name.Replace("Clone", ""));
+		ObjectProperties.Instance.OpenPanel(gameObject.name);
 		ObjectProperties.Instance.AddTransformPanel(gameObject);
 		
 		meshCollider.enabled = true;
