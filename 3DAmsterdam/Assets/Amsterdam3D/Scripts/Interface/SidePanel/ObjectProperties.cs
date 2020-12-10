@@ -36,6 +36,8 @@ namespace Amsterdam3D.Interface
         private GameObject seperatorLinePrefab;
         [SerializeField]
         private NameAndURL urlPrefab;
+        [SerializeField]
+        private TransformPanel transformPanelPrefab;
 
         private Camera thumbnailRenderer;
 
@@ -66,9 +68,14 @@ namespace Amsterdam3D.Interface
 			thumbnailRenderer.enabled = false;
 		}
 
-		public void OpenPanel(string title)
+        public void AddTransformPanel(GameObject transformable)
         {
-            ClearGeneratedFields();
+            Instantiate(transformPanelPrefab, targetFieldsContainer).SetTarget(transformable);
+        }
+
+        public void OpenPanel(string title, bool clearOldfields = true)
+        {
+            if(clearOldfields) ClearGeneratedFields();
 
             objectPropertiesPanel.SetActive(true);
             titleText.text = title;
