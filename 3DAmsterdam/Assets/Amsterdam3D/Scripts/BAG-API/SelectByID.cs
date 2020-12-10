@@ -114,7 +114,7 @@ public class SelectByID : MonoBehaviour
         if (id == emptyID && !doingMultiSelection)
         {
             ClearSelection();
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
         else{
             List<string> singleIdList = new List<string>();
@@ -167,7 +167,7 @@ public class SelectByID : MonoBehaviour
         }
 
         //If we hide something, make sure our context menu is reset to default again.
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+        //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
     }
 
     /// <summary>
