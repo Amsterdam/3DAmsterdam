@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: -2.5, y: 0}
+  m_SizeDelta: {x: -25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4522106223284651879
 CanvasRenderer:
@@ -168,12 +168,12 @@ PrefabInstance:
     - target: {fileID: 1879366500849684656, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1879366500849684656, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1879366500849684656, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
@@ -205,20 +205,30 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5325049627302869765, guid: 61081fa387fdf80459a24562b944b4a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6279740006172515105, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -6
+      value: -8
       objectReference: {fileID: 0}
     - target: {fileID: 6279740006172515105, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -32
+      value: -36
+      objectReference: {fileID: 0}
+    - target: {fileID: 9186378092937858391, guid: 61081fa387fdf80459a24562b944b4a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9187073799274068982, guid: 61081fa387fdf80459a24562b944b4a8,
         type: 3}
       propertyPath: m_Text
-      value: 
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61081fa387fdf80459a24562b944b4a8, type: 3}

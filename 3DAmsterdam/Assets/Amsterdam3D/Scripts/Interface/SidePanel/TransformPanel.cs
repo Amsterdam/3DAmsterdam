@@ -102,7 +102,7 @@ public class TransformPanel : MonoBehaviour
         UpdateRDCoordinates();
     }
 
-    private string ForceStringToANumber(string input)
+    private string MakeInputParsable(string input)
     {
         if (string.IsNullOrEmpty(input)) return emptyStringDefault;
         if (input == "-") return "-" + emptyStringDefault;
@@ -112,9 +112,9 @@ public class TransformPanel : MonoBehaviour
     private void TranslationInputChanged(string value = null)
     {
         Vector3RD previewTranslation = basePosition;
-        previewTranslation.x += double.Parse(ForceStringToANumber(translateX.text), CultureInfo.InvariantCulture);
-        previewTranslation.y += double.Parse(ForceStringToANumber(translateY.text), CultureInfo.InvariantCulture);
-        previewTranslation.z += double.Parse(ForceStringToANumber(translateZ.text), CultureInfo.InvariantCulture);
+        previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
+        previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
+        previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
 
         transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
 
@@ -127,27 +127,30 @@ public class TransformPanel : MonoBehaviour
     {
         transformableTarget.transform.rotation = baseRotation;
         transformableTarget.transform.Rotate(
-            float.Parse(ForceStringToANumber(rotateX.text)),
-            float.Parse(ForceStringToANumber(rotateY.text)),
-            float.Parse(ForceStringToANumber(rotateZ.text))
+            float.Parse(MakeInputParsable(rotateX.text)),
+            float.Parse(MakeInputParsable(rotateY.text)),
+            float.Parse(MakeInputParsable(rotateZ.text))
         );
     }
     private void ScaleInputChanged(string value = null)
     {
-        transformableTarget.transform.localScale = new Vector3(
-            baseScale.x + float.Parse(ForceStringToANumber(scaleX.text)),
-            baseScale.y + float.Parse(ForceStringToANumber(scaleY.text)),
-            baseScale.z + float.Parse(ForceStringToANumber(scaleZ.text))
+        Vector3 normalisedScaler = new Vector3(
+            baseScale.x * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleX.text))),
+            baseScale.y * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleY.text))),
+            baseScale.z * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleZ.text)))
         );
+
+        transformableTarget.transform.localScale = normalisedScaler;
     }
     private void ApplyTranslation(string value = null)
     {
+        Debug.Log("End edit translation and apply");
         basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
         //Reset field values to 0
         translateX.text = "0";
-        translateX.text = "0";
-        translateX.text = "0";
+        translateY.text = "0";
+        translateZ.text = "0";
     }
     private void ApplyRotation(string value = null)
     {

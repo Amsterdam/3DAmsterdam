@@ -7,14 +7,14 @@ using UnityEngine;
 public class Transformable : MonoBehaviour
 {
     // Update is called once per frame
-    void OnMouseUp()
+    void OnMouseOver()
     {
+        
         //ActivateGizmo
-
-
-        //Activate Transform panel in sidemenu
-        ObjectProperties.Instance.OpenPanel(this.name);
-        ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position,this.transform.position);
-        ObjectProperties.Instance.AddTransformPanel(gameObject);
+        if(Input.GetMouseButtonDown(1)){
+            print("HOVER");
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
+            ContextPointerMenu.Instance.SetTargetObject(gameObject);
+        }
     }
 }
