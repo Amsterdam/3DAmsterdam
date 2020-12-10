@@ -12,7 +12,6 @@ public class Transformable : MonoBehaviour
         
         //ActivateGizmo
         if(Input.GetMouseButtonDown(1)){
-            print("HOVER");
             ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
             ContextPointerMenu.Instance.SetTargetObject(gameObject);
         }
