@@ -52,10 +52,25 @@ public class TransformPanel : MonoBehaviour
         translateX.onValueChanged.AddListener(PreviewTranslation);
         translateY.onValueChanged.AddListener(PreviewTranslation);
         translateZ.onValueChanged.AddListener(PreviewTranslation);
-
         translateX.onEndEdit.AddListener(ApplyTranslation);
         translateY.onEndEdit.AddListener(ApplyTranslation);
         translateZ.onEndEdit.AddListener(ApplyTranslation);
+
+        //Rotation preview and apply
+        rotateX.onValueChanged.AddListener(PreviewRotation);
+        rotateY.onValueChanged.AddListener(PreviewRotation);
+        rotateZ.onValueChanged.AddListener(PreviewRotation);
+        rotateX.onEndEdit.AddListener(ApplyRotation);
+        rotateY.onEndEdit.AddListener(ApplyRotation);
+        rotateZ.onEndEdit.AddListener(ApplyRotation);
+
+        //Scale preview and apply
+        scaleX.onValueChanged.AddListener(PreviewScale);
+        scaleY.onValueChanged.AddListener(PreviewScale);
+        scaleZ.onValueChanged.AddListener(PreviewScale);
+        scaleX.onEndEdit.AddListener(ApplyScale);
+        scaleY.onEndEdit.AddListener(ApplyScale);
+        scaleZ.onEndEdit.AddListener(ApplyScale);
 
         //Add listeners to change
         rdX.onValueChanged.AddListener(RDInputChanged);
@@ -66,6 +81,12 @@ public class TransformPanel : MonoBehaviour
     public void SetTarget(GameObject targetGameObject)
     {
         transformableTarget = targetGameObject;
+
+        ApplyRotation();
+        ApplyTranslation();
+        ApplyScale();
+
+        //Sets our RD translation offset
         GetRDCoordinates();
     }
 
@@ -83,6 +104,26 @@ public class TransformPanel : MonoBehaviour
 
         transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
     }
+    private void PreviewRotation(string value = null)
+    {
+        //Empty fields default to 0
+        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
+    }
+    private void PreviewScale(string value = null)
+    {
+        //Empty fields default to 0
+        if (string.IsNullOrEmpty(scaleX.text)) scaleX.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(scaleY.text)) scaleY.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(scaleZ.text)) scaleZ.text = emptyStringDefault;
+
+        scaleOffset.x += float.Parse(scaleX.text);
+        scaleOffset.y += float.Parse(scaleY.text);
+        scaleOffset.z += float.Parse(scaleZ.text);
+
+        transformableTarget.transform.localScale = scaleOffset;
+    }
     private void ApplyTranslation(string value = null)
     {
         moveOffset = CoordConvert.UnitytoRD(transformableTarget.transform.position);
@@ -92,6 +133,14 @@ public class TransformPanel : MonoBehaviour
         translateY.text = "0";
         translateZ.text = "0";
     }
+    private void ApplyRotation(string value = null)
+    {
+        rotationOffset = transformableTarget.transform.rotation;
+    }
+    private void ApplyScale(string value = null)
+    {
+        scaleOffset = transformableTarget.transform.localScale;
+    }
 
     private void GetRDCoordinates()
     {
@@ -99,6 +148,8 @@ public class TransformPanel : MonoBehaviour
         rdX.text = rdCoordinates.x.ToString(CultureInfo.InvariantCulture);
         rdY.text = rdCoordinates.y.ToString(CultureInfo.InvariantCulture);
         napZ.text = rdCoordinates.z.ToString(CultureInfo.InvariantCulture);
+
+        moveOffset = rdCoordinates;
     }
 
     private void RDInputChanged(string value = null)
