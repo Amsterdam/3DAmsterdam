@@ -40,34 +40,34 @@ public class TransformPanel : MonoBehaviour
     private GameObject transformableTarget;
     private Vector3RD rdCoordinates;
 
-    private Vector3RD moveOffset;
-    private Quaternion rotationOffset;
-    private Vector3 scaleOffset;
+    private Vector3RD basePosition;
+    private Quaternion baseRotation;
+    private Vector3 baseScale;
 
     private const string emptyStringDefault = "0";
 
     void Start()
     {
         //Store starting position so any transform changes can be added to that untill we lose focus
-        translateX.onValueChanged.AddListener(PreviewTranslation);
-        translateY.onValueChanged.AddListener(PreviewTranslation);
-        translateZ.onValueChanged.AddListener(PreviewTranslation);
+        translateX.onValueChanged.AddListener(TranslationInputChanged);
+        translateY.onValueChanged.AddListener(TranslationInputChanged);
+        translateZ.onValueChanged.AddListener(TranslationInputChanged);
         translateX.onEndEdit.AddListener(ApplyTranslation);
         translateY.onEndEdit.AddListener(ApplyTranslation);
         translateZ.onEndEdit.AddListener(ApplyTranslation);
 
         //Rotation preview and apply
-        rotateX.onValueChanged.AddListener(PreviewRotation);
-        rotateY.onValueChanged.AddListener(PreviewRotation);
-        rotateZ.onValueChanged.AddListener(PreviewRotation);
+        rotateX.onValueChanged.AddListener(RotationInputChanged);
+        rotateY.onValueChanged.AddListener(RotationInputChanged);
+        rotateZ.onValueChanged.AddListener(RotationInputChanged);
         rotateX.onEndEdit.AddListener(ApplyRotation);
         rotateY.onEndEdit.AddListener(ApplyRotation);
         rotateZ.onEndEdit.AddListener(ApplyRotation);
 
         //Scale preview and apply
-        scaleX.onValueChanged.AddListener(PreviewScale);
-        scaleY.onValueChanged.AddListener(PreviewScale);
-        scaleZ.onValueChanged.AddListener(PreviewScale);
+        scaleX.onValueChanged.AddListener(ScaleInputChanged);
+        scaleY.onValueChanged.AddListener(ScaleInputChanged);
+        scaleZ.onValueChanged.AddListener(ScaleInputChanged);
         scaleX.onEndEdit.AddListener(ApplyScale);
         scaleY.onEndEdit.AddListener(ApplyScale);
         scaleZ.onEndEdit.AddListener(ApplyScale);
@@ -90,68 +90,93 @@ public class TransformPanel : MonoBehaviour
         UpdateRDCoordinates();
     }
 
-    private void PreviewTranslation(string value = null)
+    /// <summary>
+    /// Something else transformed out target. Update all parameters.
+    /// </summary>
+    public void TargetWasTransformed()
     {
-        //Empty fields default to 0
-        if (string.IsNullOrEmpty(translateX.text)) translateX.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(translateY.text)) translateY.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(translateZ.text)) translateZ.text = emptyStringDefault;
-
-        Vector3RD previewTranslation = moveOffset;
-        previewTranslation.x += double.Parse(translateX.text);
-        previewTranslation.y += double.Parse(translateY.text);
-        previewTranslation.z += double.Parse(translateZ.text);
-
-        transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+        ApplyRotation();
+        ApplyTranslation();
+        ApplyScale();
 
         UpdateRDCoordinates();
     }
-    private void PreviewRotation(string value = null)
+
+    private string ForceStringToANumber(string input)
     {
-        //Empty fields default to 0
-        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(rotateX.text)) rotateX.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(input)) return emptyStringDefault;
+        if (input == "-") return "-" + emptyStringDefault;
+        return input;
+	}
+
+    private void TranslationInputChanged(string value = null)
+    {
+        Vector3RD previewTranslation = basePosition;
+        previewTranslation.x += double.Parse(ForceStringToANumber(translateX.text), CultureInfo.InvariantCulture);
+        previewTranslation.y += double.Parse(ForceStringToANumber(translateY.text), CultureInfo.InvariantCulture);
+        previewTranslation.z += double.Parse(ForceStringToANumber(translateZ.text), CultureInfo.InvariantCulture);
+
+        transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+
+        //Preview the RD coordinates directly in the RD input
+        rdX.text = previewTranslation.x.ToString(CultureInfo.InvariantCulture);
+        rdY.text = previewTranslation.y.ToString(CultureInfo.InvariantCulture);
+        napZ.text = previewTranslation.z.ToString(CultureInfo.InvariantCulture);
     }
-    private void PreviewScale(string value = null)
+    private void RotationInputChanged(string value = null)
     {
-        //Empty fields default to 0
-        if (string.IsNullOrEmpty(scaleX.text)) scaleX.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(scaleY.text)) scaleY.text = emptyStringDefault;
-        if (string.IsNullOrEmpty(scaleZ.text)) scaleZ.text = emptyStringDefault;
-
-        scaleOffset.x += float.Parse(scaleX.text);
-        scaleOffset.y += float.Parse(scaleY.text);
-        scaleOffset.z += float.Parse(scaleZ.text);
-
-        transformableTarget.transform.localScale = scaleOffset;
+        transformableTarget.transform.rotation = baseRotation;
+        transformableTarget.transform.Rotate(
+            float.Parse(ForceStringToANumber(rotateX.text)),
+            float.Parse(ForceStringToANumber(rotateY.text)),
+            float.Parse(ForceStringToANumber(rotateZ.text))
+        );
+    }
+    private void ScaleInputChanged(string value = null)
+    {
+        transformableTarget.transform.localScale = new Vector3(
+            baseScale.x + float.Parse(ForceStringToANumber(scaleX.text)),
+            baseScale.y + float.Parse(ForceStringToANumber(scaleY.text)),
+            baseScale.z + float.Parse(ForceStringToANumber(scaleZ.text))
+        );
     }
     private void ApplyTranslation(string value = null)
     {
-        moveOffset = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+        basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
         //Reset field values to 0
         translateX.text = "0";
-        translateY.text = "0";
-        translateZ.text = "0";
+        translateX.text = "0";
+        translateX.text = "0";
     }
     private void ApplyRotation(string value = null)
     {
-        rotationOffset = transformableTarget.transform.rotation;
+        baseRotation = transformableTarget.transform.rotation;
+
+        //Reset field values to 0
+        rotateX.text = "0";
+        rotateY.text = "0";
+        rotateZ.text = "0";
     }
     private void ApplyScale(string value = null)
     {
-        scaleOffset = transformableTarget.transform.localScale;
+        baseScale = transformableTarget.transform.localScale;
+
+        //Reset field values to 0
+        scaleX.text = "0";
+        scaleY.text = "0";
+        scaleZ.text = "0";
     }
 
     private void UpdateRDCoordinates()
     {
+        Debug.Log("Base RD position set");
         rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
         rdX.text = rdCoordinates.x.ToString(CultureInfo.InvariantCulture);
         rdY.text = rdCoordinates.y.ToString(CultureInfo.InvariantCulture);
         napZ.text = rdCoordinates.z.ToString(CultureInfo.InvariantCulture);
 
-        moveOffset = rdCoordinates;
+        basePosition = rdCoordinates;
     }
 
     private void RDInputChanged(string value = null)
