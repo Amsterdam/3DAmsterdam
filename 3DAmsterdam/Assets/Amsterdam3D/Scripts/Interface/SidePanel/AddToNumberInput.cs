@@ -11,13 +11,17 @@ public class AddToNumberInput : MonoBehaviour, IScrollHandler
 	private InputField inputField;
 
 	[SerializeField]
-	private float addWithScroll = 1.0f;
+	private float addAmount = 1.0f;
 
-	public void AddValue(float amount)
+	[SerializeField]
+	private float modifierAmount = 15.0f;
+
+	public void AddValue(float multiply)
     {
+		var add = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? modifierAmount*multiply : addAmount * multiply;
 		if (double.TryParse(inputField.text, out double inputValue))
 		{
-			inputValue += amount;
+			inputValue += add;
 			inputField.text = inputValue.ToString(CultureInfo.InvariantCulture);
 
 			//Force a value change event
@@ -29,11 +33,11 @@ public class AddToNumberInput : MonoBehaviour, IScrollHandler
 	{
 		if (eventData.scrollDelta.y > 0)
 		{
-			AddValue(addWithScroll);
+			AddValue(1.0f);
 		}
 		else if (eventData.scrollDelta.y < 0)
 		{
-			AddValue(-addWithScroll);
+			AddValue(-1.0f);
 		}
 	}
 }
