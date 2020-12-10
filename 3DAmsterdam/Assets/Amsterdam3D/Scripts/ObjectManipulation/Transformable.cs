@@ -9,10 +9,6 @@ public class Transformable : MonoBehaviour
 	[SerializeField]
 	LayerMask dropTargetLayerMask;
 
-	[Tooltip("Optional origin to use as center to place object on ground")]
-	[SerializeField]
-	private Transform optionalOffsetPoint;
-
 	[SerializeField]
 	private Vector3 offset;
 
@@ -25,9 +21,6 @@ public class Transformable : MonoBehaviour
 
 	private void Start()
 	{
-		if (optionalOffsetPoint)
-			offset = optionalOffsetPoint.localPosition;
-
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
@@ -36,6 +29,11 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
+	private void OnMouseDown()
+	{
+		print("Click " + name);
+		if(!stickToMouse) ShowTransformProperties();
+	}
 
 	void OnMouseOver()
 	{
@@ -48,6 +46,13 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
+	private void ShowTransformProperties()
+	{
+		ObjectProperties.Instance.OpenPanel(gameObject.name);
+		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
+		ObjectProperties.Instance.AddTransformPanel(gameObject);
+	}
+
 	/// <summary>
 	/// Makes the new object stick to the mouse untill we click.
 	/// Enable the collider, so raycasts can pass through the object while dragging.
@@ -56,17 +61,17 @@ public class Transformable : MonoBehaviour
 	IEnumerator StickToMouse()
 	{
 		//Keep following mouse untill we clicked
-		while (!Input.GetMouseButton(0) && !Input.GetMouseButtonDown(1))
+		while (stickToMouse && !Input.GetMouseButton(0) && !Input.GetMouseButtonDown(1))
 		{
 			FollowMousePointer();
 			yield return new WaitForEndOfFrame();
 		}
+		stickToMouse = false;
+
 		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 		ContextPointerMenu.Instance.SetTargetObject(gameObject);
 
-		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
-		ObjectProperties.Instance.OpenPanel(gameObject.name);
-		ObjectProperties.Instance.AddTransformPanel(gameObject);
+		ShowTransformProperties();
 		
 		meshCollider.enabled = true;
 	}

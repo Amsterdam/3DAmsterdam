@@ -94,7 +94,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &5218858876867971921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +109,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropTargetLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  optionalOffsetPoint: {fileID: 0}
+    m_Bits: 512
   offset: {x: 0, y: -25, z: 0}
   stickToMouse: 1
