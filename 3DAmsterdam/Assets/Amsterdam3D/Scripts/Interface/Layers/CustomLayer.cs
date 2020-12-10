@@ -53,9 +53,10 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
-        public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
+        public void Create(string layerName, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
+            layerNameText.text = layerName;
             LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
         }
