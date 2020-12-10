@@ -44,6 +44,8 @@ public class TransformPanel : MonoBehaviour
     private Quaternion rotationOffset;
     private Vector3 scaleOffset;
 
+    private const string emptyStringDefault = "0";
+
     void Start()
     {
         //Store starting position so any transform changes can be added to that untill we lose focus
@@ -69,6 +71,11 @@ public class TransformPanel : MonoBehaviour
 
     private void PreviewTranslation(string value = null)
     {
+        //Empty fields default to 0
+        if (string.IsNullOrEmpty(translateX.text)) translateX.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(translateY.text)) translateY.text = emptyStringDefault;
+        if (string.IsNullOrEmpty(translateZ.text)) translateZ.text = emptyStringDefault;
+
         Vector3RD previewTranslation = moveOffset;
         previewTranslation.x += double.Parse(translateX.text);
         previewTranslation.y += double.Parse(translateY.text);
