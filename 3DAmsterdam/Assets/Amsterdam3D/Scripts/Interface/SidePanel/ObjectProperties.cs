@@ -62,6 +62,7 @@ namespace Amsterdam3D.Interface
 			//Our render camera for thumbnails. 
             //We disable it so we cant manualy render a single frame using Camera.Render();
 			thumbnailRenderer = new GameObject().AddComponent<Camera>();
+            thumbnailRenderer.name = "ThumbnailRenderer";
 			thumbnailRenderer.fieldOfView = 30;
 			thumbnailRenderer.farClipPlane = 5000;
 			thumbnailRenderer.targetTexture = thumbnailRenderTexture;
