@@ -31,7 +31,6 @@ public class Transformable : MonoBehaviour
 
 	private void OnMouseDown()
 	{
-		print("Click " + name);
 		if(!stickToMouse) ShowTransformProperties();
 	}
 
@@ -46,6 +45,9 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Show the transform property panel for this transformable
+	/// </summary>
 	private void ShowTransformProperties()
 	{
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
@@ -57,7 +59,6 @@ public class Transformable : MonoBehaviour
 	/// Makes the new object stick to the mouse untill we click.
 	/// Enable the collider, so raycasts can pass through the object while dragging.
 	/// </summary>
-	/// <returns></returns>
 	IEnumerator StickToMouse()
 	{
 		//Keep following mouse untill we clicked
