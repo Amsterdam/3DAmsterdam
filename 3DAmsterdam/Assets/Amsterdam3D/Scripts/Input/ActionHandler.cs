@@ -76,7 +76,11 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        public bool subscribeToAction(string actionName, UnityInputSystemAction.ActionDelegate func) 
+        /// <summary>
+        /// Subscribe to IAction without returning IAction.
+        /// Returns true if succesful and false if Action doesn't exist.
+        /// </summary>
+        public bool SubscribeToAction(string actionName, UnityInputSystemAction.ActionDelegate func) 
         {
             foreach(var action in ActionDictionary.Keys) 
             {
@@ -93,6 +97,11 @@ namespace Amsterdam3D.InputHandler
 
 
 
+
+        /// <summary>
+        /// Subscribe to IAction without returning IAction.
+        /// Returns true if succesful and false if Action doesn't exist.
+        /// </summary>
         public bool SubscribeToAction(InputAction action, UnityInputSystemAction.ActionDelegate func, bool AddWhenNotExisting = false) 
         {
             if (!ActionDictionary.ContainsKey(action)) 
@@ -114,11 +123,21 @@ namespace Amsterdam3D.InputHandler
         }
 
 
+
+
+        /// <summary>
+        /// Gets the corresponding Action class by either name or by Unity input system Action.
+        /// returns null if Action doesn't exist.
+        /// </summary>
         public IAction GetAction(InputAction action) 
         {
             return ActionDictionary[action];
         }
 
+        /// <summary>
+        /// Gets the corresponding Action class by either name or by Unity input system Action.
+        /// returns null if Action doesn't exist.
+        /// </summary>
         public IAction GetAction(string actionName) 
         {
             foreach (UnityInputSystemAction action in ActionDictionary.Values) 
@@ -132,7 +151,9 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        //still a bit slow 
+        /// <summary>
+        /// Gets the corresponding Action map class, to enable or disable, or get actions from
+        /// </summary>
         public IActionMap GetActionMap(InputActionMap map) 
         {
             foreach (var actionMap in unityActionMaps) 
@@ -146,6 +167,9 @@ namespace Amsterdam3D.InputHandler
         }
 
 
+        /// <summary>
+        /// Enables or disables all input. 
+        /// </summary>
         public void EnableInputSystem(bool enabled) 
         {
             this.inputEnabled = enabled;
