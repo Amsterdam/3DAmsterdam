@@ -37,7 +37,7 @@ namespace Amsterdam3D.Interface
                    foreach(var address in addressList.results)
                    {
                         //We create a field and make it clickable, so addresses cant contain more data
-                        var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, address.landelijk_id);
+                        var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "");
                         var button = dataKeyAndValue.GetComponent<Button>();
                         button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
                    }
