@@ -16,6 +16,10 @@ public class AddToNumberInput : MonoBehaviour, IScrollHandler
 	[SerializeField]
 	private float modifierAmount = 15.0f;
 
+	/// <summary>
+	/// Add a value to the numeric (text) input field
+	/// </summary>
+	/// <param name="multiply"></param>
 	public void AddValue(float multiply)
     {
 		var add = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? modifierAmount*multiply : addAmount * multiply;
@@ -29,6 +33,10 @@ public class AddToNumberInput : MonoBehaviour, IScrollHandler
 		}
     }
 
+	/// <summary>
+	/// Adds value based on scroll event delta
+	/// </summary>
+	/// <param name="eventData">The scroll event data</param>
 	public void OnScroll(PointerEventData eventData)
 	{
 		if (eventData.scrollDelta.y > 0)
