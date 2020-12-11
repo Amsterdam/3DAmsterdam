@@ -17,7 +17,6 @@ namespace Amsterdam3D.InputHandler
     {
 
         public static _3DAmsterdam actions;
-        [SerializeField]
         InputActionAsset actionMaps;
 
 
