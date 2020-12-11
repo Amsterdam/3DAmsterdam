@@ -24,7 +24,6 @@ public class ImportBAG
         // adds data id and url in one string
         string url = buildingUrl + bagId + "/?format=" + format;
 
-        Debug.Log(url);
         // send http request
         var request = UnityWebRequest.Get(url);
 
@@ -50,7 +49,6 @@ public class ImportBAG
         // adds data id and url in one string
         string url = numberIndicatorURL + bagId + "&format=" + format;
 
-        Debug.Log(url);
         // send http request
         var request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
@@ -76,7 +74,6 @@ public class ImportBAG
         // adds data id and url in one string
         string url = numberIndicatorInstanceURL + bagId + "/?format=" + format;
 
-        Debug.Log(url);
         // send http request
         var request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
