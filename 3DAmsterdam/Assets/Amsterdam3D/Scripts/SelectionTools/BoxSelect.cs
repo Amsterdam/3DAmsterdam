@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using Amsterdam3D.CameraMotion;
 using System.Collections.Generic;
-
+using UnityEngine.InputSystem;
+using Amsterdam3D.InputHandler;
 namespace Amsterdam3D.Interface
 {
     public class BoxSelect : SelectionTool
@@ -20,6 +21,9 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private float selectionGraphicCorrection = 10.0f;
 
+
+        private InputAction holdAction;
+
 		public override void EnableTool()
         {
             GameObject selectionBoxObj = Instantiate(selectionBoxPrefab);
@@ -28,11 +32,17 @@ namespace Amsterdam3D.Interface
             selectionBoxObj.SetActive(false);
             inBoxSelect = false;
             enabled = true;
+            
         }
 
-        private void OnEnable()
+        private void Start()
         {
             toolType = ToolType.Box;
+            holdAction = Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.StartSelection;
+            Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.Enable();
+            holdAction.Enable();
+            
+
         }
 
 		private void OnDrawGizmos()
@@ -57,9 +67,7 @@ namespace Amsterdam3D.Interface
                 if (!inBoxSelect)
                 {
 
-                    if (Input.GetKey(KeyCode.LeftShift))
-                    {
-                        if (Input.GetMouseButtonDown(0))
+                        if (holdAction.phase == InputActionPhase.Performed)
                         {
                             vertices.Clear();
 
@@ -68,8 +76,8 @@ namespace Amsterdam3D.Interface
 
                             selectionBox.gameObject.SetActive(true);
                             inBoxSelect = true;
+                        ActionHandler.actions.GodView.Disable();
                         }
-                    }
                 }
                 else
                 {
@@ -87,7 +95,7 @@ namespace Amsterdam3D.Interface
                     selectionBox.gameObject.SetActive(enoughDistanceDragged);
 
                     //On release, check our selected area
-                    if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift))
+                    if (holdAction.phase == InputActionPhase.Waiting)
                     {
                         //Avoid 1 frame flicker when we are enabled again (UI scales are a bit late)
                         selectionBox.sizeDelta = Vector3.zero;
@@ -100,7 +108,7 @@ namespace Amsterdam3D.Interface
                         if (!enoughDistanceDragged)
                             return;
 
-                        //Our for corners of the bounding box as points on our world plane
+                        //Our four corners of the bounding box as points on our world plane
                         Vector3 point1 = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld(startMousePosition);
                         Vector3 point2 = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld(startMousePosition + (Vector2.left * (startMousePosition.x - currentMousePosition.x)));
                         Vector3 point3 = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld(currentMousePosition);
@@ -108,6 +116,7 @@ namespace Amsterdam3D.Interface
                         
                         vertices.AddRange(new List<Vector3>(){ point1,point2,point3,point4 });
                         onSelectionCompleted?.Invoke();
+                        ActionHandler.actions.GodView.Enable();
                     }
                 }
             }
