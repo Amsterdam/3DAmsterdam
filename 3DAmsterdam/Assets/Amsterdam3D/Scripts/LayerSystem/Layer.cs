@@ -52,13 +52,14 @@ namespace LayerSystem
         /// Adds mesh colliders to the meshes found within this layer
         /// </summary>
         /// <param name="onlyTileUnderPosition">Optional world position where this tile should be close to</param>
-        public void AddMeshColliders(Vector3 onlyTileUnderPosition = default) 
+        public List<GameObject> AddMeshColliders(Vector3 onlyTileUnderPosition = default) 
         {
             MeshCollider meshCollider;
             MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-
+            List<GameObject> gameObjectsThatReceivedColliders = new List<GameObject>();
             if (meshFilters != null)
             {
+                //If we supplied a location, only add colliders to tiles within a range (based on tilesize) of that location
                 if (onlyTileUnderPosition != default)
                 {
                     foreach (MeshFilter meshFilter in meshFilters)
@@ -69,10 +70,11 @@ namespace LayerSystem
                             if (meshCollider == null)
                             {
                                 meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                                gameObjectsThatReceivedColliders.Add(meshFilter.gameObject);
                             }
                         }
                     }
-                    return;
+                    return gameObjectsThatReceivedColliders;
                 }
 
                 //Just add all MeshColliders if no specific area was supplied
@@ -82,9 +84,11 @@ namespace LayerSystem
                     if (meshCollider == null)
                     {
                         meshFilter.gameObject.AddComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+                        gameObjectsThatReceivedColliders.Add(meshFilter.gameObject);
                     }
                 }
             }
+            return gameObjectsThatReceivedColliders;
         }
         private IEnumerator HighlightIDs(List<string> ids)
         {

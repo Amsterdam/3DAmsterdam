@@ -39,8 +39,11 @@ public class SelectByID : MonoBehaviour
 
     private const int maximumRayPiercingLoops = 20;
 
+    private Layer targetLayer;
+
     private void Awake()
 	{
+        targetLayer = GetComponent<Layer>();
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
     }
@@ -77,14 +80,81 @@ public class SelectByID : MonoBehaviour
     }
 
     /// <summary>
-    /// Select a mesh ID underneath the pointer
+    /// Finds a building ID tied to this adress bag ID, and highlights it when a LOD > 0 is available
     /// </summary>
-    private void FindSelectedID()
+    /// <param name="addressId">The adress BAG id</param>
+    public void HighlightByAdressIdAtLocation(Vector3 position, string addressId)
+	{
+        StartCoroutine(HighlightBuildingAtPosition(position, addressId));
+    }
+    private IEnumerator HighlightBuildingAtPosition(Vector3 lookupPosition, string addressId)
+    {
+        bool foundAHighLODTile = false;
+        yield return new WaitForEndOfFrame();
+
+        //Show a ray down untill we hit a building to add a collider, and fetch the tile data
+        while (!foundAHighLODTile)
+        {
+            //Find the tile closest to our position (should be the tile with our search result)
+            float distance = float.MaxValue;
+            Transform targetTileTransform = null;
+            foreach (Transform tile in transform)
+            {
+                float tileDistance = Vector3.Distance(tile.transform.position, lookupPosition);
+                if (tileDistance < distance)
+                {
+                    distance = tileDistance;
+                    targetTileTransform = tile;
+                }
+            }
+
+            //Now if we found the closest tile, make sure it has the metadatatag (LOD is high enough)
+            if (targetTileTransform && targetTileTransform.CompareTag(TileHandler.hasMetaDataTag))
+            {
+                containerLayer.AddMeshColliders(lookupPosition);
+                yield return new WaitForEndOfFrame();
+
+                foundAHighLODTile = true;
+                //Get the data for this ID, but do nothing with the ID we get back. Just use the one from our search result:
+                Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId);
+
+                //tileHandler.GetIDData(targetTile, 0, (value) => { HighlightSelectedID(addressId); });
+                Ray ray = new Ray(lookupPosition + Vector3.up * 200.0f, Vector3.down);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+                {
+                    StartCoroutine(GetSelectedMeshIDData(ray, (value) =>
+                    {
+                        if (value == emptyID)
+                        {
+                            Debug.Log("Empty ID found under raycast");
+                        }
+                        else
+                        {
+                            Debug.Log("BAG ID from search: " + addressId);
+                            Debug.Log("BAD ID we highlighted: " + value);
+                            HighlightSelectedID(value);
+                        }
+                    }));
+                }
+                else{
+                    Debug.Log("Noting found under raycast");
+				}
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+	/// <summary>
+	/// Select a mesh ID underneath the pointer
+	/// </summary>
+	private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
         if (!doingMultiSelection) selectedIDs.Clear();
 
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+
         //Try to find a selected mesh ID and highlight it
         StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
     }
