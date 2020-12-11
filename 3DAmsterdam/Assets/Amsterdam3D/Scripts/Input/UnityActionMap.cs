@@ -26,9 +26,6 @@ namespace Amsterdam3D.InputHandler
 
         public List<IAction> boundActions { get; private set; }
         public UnityEngine.InputSystem.InputActionMap map;
-
-
-
         public void Enable() 
         {
             map.Enable();

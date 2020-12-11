@@ -20,7 +20,6 @@ namespace Amsterdam3D.InputHandler
 
 
         void SetValue(dynamic value);
-        void Disable();
         void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
         void  SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
 
@@ -43,9 +42,7 @@ namespace Amsterdam3D.InputHandler
     public dynamic value;
         public delegate void ActionDelegate(IAction action);
         public List<ActionEventClass> sortedDelegates = new List<ActionEventClass>();
-
-
-
+        private bool enabled;
         public T ReadValue<T>() where T: struct
         {
             var returnValue = default(T);
@@ -63,13 +60,6 @@ namespace Amsterdam3D.InputHandler
             this.value = value;
             Used = false;
         }
-
-        public void SetPhase() 
-        {
-
-        }
-
-
         public void FireEvent()
         {
             //create copy of action so it can't change while handling events
@@ -84,9 +74,6 @@ namespace Amsterdam3D.InputHandler
                     del.Invoke(action);
                 }
             }
-
-
-            //OnUnityActionEvent?.Invoke(action);
         }
 
         public void FireCancelEvent()
@@ -103,9 +90,6 @@ namespace Amsterdam3D.InputHandler
                     del.Invoke(action);
                 }
             }
-
-
-            //OnUnityActionEvent?.Invoke(action);
         }
 
 
@@ -121,11 +105,6 @@ namespace Amsterdam3D.InputHandler
             ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
             h.performed = true;
             sortedDelegates.Add(h);
-        }
-
-        public void Disable()
-        {
-            
         }
 
         public void SubscribeCancelled(ActionDelegate del, int priority)
