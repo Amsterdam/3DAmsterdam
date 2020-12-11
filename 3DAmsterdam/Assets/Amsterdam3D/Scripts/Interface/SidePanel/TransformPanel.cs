@@ -44,6 +44,7 @@ public class TransformPanel : MonoBehaviour
     private Quaternion baseRotation;
     private Vector3 baseScale;
 
+    private const string stringDecimal = "F2";
     private const string emptyStringDefault = "0";
 
     void Start()
@@ -91,7 +92,7 @@ public class TransformPanel : MonoBehaviour
     }
 
     /// <summary>
-    /// Something else transformed out target. Update all parameters.
+    /// Something else transformed our target. Update all parameters.
     /// </summary>
     public void TargetWasTransformed()
     {
@@ -102,6 +103,11 @@ public class TransformPanel : MonoBehaviour
         UpdateRDCoordinates();
     }
 
+    /// <summary>
+    /// Forces an input string to be parsable.
+    /// </summary>
+    /// <param name="input">The source string</param>
+    /// <returns></returns>
     private string MakeInputParsable(string input)
     {
         if (string.IsNullOrEmpty(input)) return emptyStringDefault;
@@ -109,6 +115,10 @@ public class TransformPanel : MonoBehaviour
         return input;
 	}
 
+    /// <summary>
+    /// The translation text input fields are applied to our target object position
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void TranslationInputChanged(string value = null)
     {
         Vector3RD previewTranslation = basePosition;
@@ -119,10 +129,15 @@ public class TransformPanel : MonoBehaviour
         transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
 
         //Preview the RD coordinates directly in the RD input
-        rdX.text = previewTranslation.x.ToString(CultureInfo.InvariantCulture);
-        rdY.text = previewTranslation.y.ToString(CultureInfo.InvariantCulture);
-        napZ.text = previewTranslation.z.ToString(CultureInfo.InvariantCulture);
+        rdX.text = previewTranslation.x.ToString(stringDecimal,CultureInfo.InvariantCulture);
+        rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+        napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
     }
+
+    /// <summary>
+    /// The rotate text input fields is applied to our target object rotation
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void RotationInputChanged(string value = null)
     {
         transformableTarget.transform.rotation = baseRotation;
@@ -132,6 +147,11 @@ public class TransformPanel : MonoBehaviour
             float.Parse(MakeInputParsable(rotateZ.text))
         );
     }
+
+    /// <summary>
+    /// The scale input text fields are used as a multiplier on top of our base scale.
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void ScaleInputChanged(string value = null)
     {
         Vector3 normalisedScaler = new Vector3(
@@ -142,9 +162,13 @@ public class TransformPanel : MonoBehaviour
 
         transformableTarget.transform.localScale = normalisedScaler;
     }
+
+    /// <summary>
+    /// Applies the translation (uses this position as 0,0,0)
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void ApplyTranslation(string value = null)
     {
-        Debug.Log("End edit translation and apply");
         basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
         //Reset field values to 0
@@ -152,6 +176,11 @@ public class TransformPanel : MonoBehaviour
         translateY.text = "0";
         translateZ.text = "0";
     }
+
+    /// <summary>
+    /// Applies the rotation (uses this rotation as 0,0,0)
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void ApplyRotation(string value = null)
     {
         baseRotation = transformableTarget.transform.rotation;
@@ -161,6 +190,11 @@ public class TransformPanel : MonoBehaviour
         rotateY.text = "0";
         rotateZ.text = "0";
     }
+
+    /// <summary>
+    /// Applies the scale (uses this scale as 0,0,0)
+    /// </summary>
+    /// <param name="value">Required string field for event handlers</param>
     private void ApplyScale(string value = null)
     {
         baseScale = transformableTarget.transform.localScale;
@@ -171,17 +205,23 @@ public class TransformPanel : MonoBehaviour
         scaleZ.text = "0";
     }
 
+    /// <summary>
+    /// Set our current base position to the current RD coordinates.
+    /// </summary>
     private void UpdateRDCoordinates()
     {
-        Debug.Log("Base RD position set");
         rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
-        rdX.text = rdCoordinates.x.ToString(CultureInfo.InvariantCulture);
-        rdY.text = rdCoordinates.y.ToString(CultureInfo.InvariantCulture);
-        napZ.text = rdCoordinates.z.ToString(CultureInfo.InvariantCulture);
+        rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+        rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+        napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
 
         basePosition = rdCoordinates;
     }
 
+    /// <summary>
+    /// Moves the target object to our text input RD coordinates
+    /// </summary>
+    /// <param name="value"></param>
     private void RDInputChanged(string value = null)
     {
         rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
