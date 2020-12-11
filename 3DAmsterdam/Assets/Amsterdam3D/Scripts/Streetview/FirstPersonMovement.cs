@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.UI;
-
+using UnityEngine.InputSystem;
 public class FirstPersonMovement : MonoBehaviour
 {
     [SerializeField]
@@ -29,9 +29,17 @@ public class FirstPersonMovement : MonoBehaviour
     private Ray ray;
 
     private RaycastHit hit;
+
+
+    public InputActionAsset actionAsset;
+
+    private InputAction moveAction;
+    private UnityEngine.InputSystem.InputActionMap actionMap;
+
     void Start()
     {
         referenceCollider = GetComponent<BoxCollider>();
+
     }
 
     public void EnableMenusMovement()
@@ -46,10 +54,6 @@ public class FirstPersonMovement : MonoBehaviour
             CheckPhysics();
             CheckInput();
             //TODO: Refactor this to have some more global menu state, now each class is checking for menu state seperately 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                EnableMenusMovement();
-            }
         }
         else 
         {
@@ -101,15 +105,17 @@ public class FirstPersonMovement : MonoBehaviour
 
     private void CheckInput() 
     {
+        Vector2 value = moveAction.ReadValue<Vector2>();
+        
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            velocity.x = Input.GetAxis("Horizontal") * runspeed;
-            velocity.z = Input.GetAxis("Vertical") * runspeed;
+            velocity.x = value.x * runspeed;
+            velocity.z = value.y * runspeed;
         }
         else 
         {    
-            velocity.x = Input.GetAxis("Horizontal") * moveSpeed;
-            velocity.z = Input.GetAxis("Vertical") * moveSpeed;
+            velocity.x = value.x * moveSpeed;
+            velocity.z = value.y * moveSpeed;
         }
 
         if (isgrounded)
