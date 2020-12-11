@@ -81,10 +81,9 @@ namespace Amsterdam3D.Interface.Search
                     Vector3 targetLocation = ExtractUnityLocation(ref locationData);
 
                     ParentList.ShowResultsList(false);
+                    
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(targetLocation, new Quaternion());
-
-                    if(selectByID)
-                        selectByID.HighlightSelectedID(lookupData.response.docs[0].nummeraanduiding_id);
+                    SearchResultMarker.Instance.Show(targetLocation, textField.text);
                 }
             }
         }

@@ -25,6 +25,8 @@ namespace Amsterdam3D.Interface.Search{
                 public string id = "";
                 public string centroide_ll = "POINT(0.0 0.0)";
                 public string nummeraanduiding_id = "";
+                public string openbareruimte_id = "";
+                public string adresseerbaarobject_id = "";
             }
         }
     }
