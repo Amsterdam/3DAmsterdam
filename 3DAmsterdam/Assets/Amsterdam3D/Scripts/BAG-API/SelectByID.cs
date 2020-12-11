@@ -39,11 +39,10 @@ public class SelectByID : MonoBehaviour
 
     private const int maximumRayPiercingLoops = 20;
 
-    private Layer targetLayer;
+    private RaycastHit lastRaycastHit;
 
     private void Awake()
 	{
-        targetLayer = GetComponent<Layer>();
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<Layer>();
     }
@@ -80,81 +79,14 @@ public class SelectByID : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds a building ID tied to this adress bag ID, and highlights it when a LOD > 0 is available
+    /// Select a mesh ID underneath the pointer
     /// </summary>
-    /// <param name="addressId">The adress BAG id</param>
-    public void HighlightByAdressIdAtLocation(Vector3 position, string addressId)
-	{
-        StartCoroutine(HighlightBuildingAtPosition(position, addressId));
-    }
-    private IEnumerator HighlightBuildingAtPosition(Vector3 lookupPosition, string addressId)
-    {
-        bool foundAHighLODTile = false;
-        yield return new WaitForEndOfFrame();
-
-        //Show a ray down untill we hit a building to add a collider, and fetch the tile data
-        while (!foundAHighLODTile)
-        {
-            //Find the tile closest to our position (should be the tile with our search result)
-            float distance = float.MaxValue;
-            Transform targetTileTransform = null;
-            foreach (Transform tile in transform)
-            {
-                float tileDistance = Vector3.Distance(tile.transform.position, lookupPosition);
-                if (tileDistance < distance)
-                {
-                    distance = tileDistance;
-                    targetTileTransform = tile;
-                }
-            }
-
-            //Now if we found the closest tile, make sure it has the metadatatag (LOD is high enough)
-            if (targetTileTransform && targetTileTransform.CompareTag(TileHandler.hasMetaDataTag))
-            {
-                containerLayer.AddMeshColliders(lookupPosition);
-                yield return new WaitForEndOfFrame();
-
-                foundAHighLODTile = true;
-                //Get the data for this ID, but do nothing with the ID we get back. Just use the one from our search result:
-                Debug.Log("BAG ID from search. Raycasting towards tile: " + addressId);
-
-                //tileHandler.GetIDData(targetTile, 0, (value) => { HighlightSelectedID(addressId); });
-                Ray ray = new Ray(lookupPosition + Vector3.up * 200.0f, Vector3.down);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
-                {
-                    StartCoroutine(GetSelectedMeshIDData(ray, (value) =>
-                    {
-                        if (value == emptyID)
-                        {
-                            Debug.Log("Empty ID found under raycast");
-                        }
-                        else
-                        {
-                            Debug.Log("BAG ID from search: " + addressId);
-                            Debug.Log("BAD ID we highlighted: " + value);
-                            HighlightSelectedID(value);
-                        }
-                    }));
-                }
-                else{
-                    Debug.Log("Noting found under raycast");
-				}
-            }
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-	/// <summary>
-	/// Select a mesh ID underneath the pointer
-	/// </summary>
-	private void FindSelectedID()
+    private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
         if (!doingMultiSelection) selectedIDs.Clear();
 
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-
         //Try to find a selected mesh ID and highlight it
         StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
     }
@@ -182,7 +114,7 @@ public class SelectByID : MonoBehaviour
         if (id == emptyID && !doingMultiSelection)
         {
             ClearSelection();
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
         else{
             List<string> singleIdList = new List<string>();
@@ -235,7 +167,7 @@ public class SelectByID : MonoBehaviour
         }
 
         //If we hide something, make sure our context menu is reset to default again.
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+        //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
     }
 
     /// <summary>
@@ -253,8 +185,12 @@ public class SelectByID : MonoBehaviour
     /// </summary>
     public void ShowBAGDataForSelectedID()
     {
-        DisplayBAGData.Instance.PrepareUI();
-        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, lastSelectedID, RetrieveType.Pand)); // laat het BAG UI element zien
+        var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
+        var lookAtTarget = lastRaycastHit.point;
+
+        ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
+        ObjectProperties.Instance.OpenPanel("Pand");
+        ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
     }
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
@@ -265,9 +201,8 @@ public class SelectByID : MonoBehaviour
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
         containerLayer.AddMeshColliders(planeHit);
 
-        //No fire a raycast towards our meshcolliders to see what face we hit
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
+        //No fire a raycast towards our meshcolliders to see what face we hit 
+        if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)
         {
             tileHandler.pauseLoading = false;
             callback(emptyID);
@@ -275,8 +210,8 @@ public class SelectByID : MonoBehaviour
         }
 
         //Get the mesh we selected and check if it has an ID stored in the UV2 slot
-        Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-        int vertexIndex = hit.triangleIndex * 3;
+        Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+        int vertexIndex = lastRaycastHit.triangleIndex * 3;
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
@@ -284,7 +219,7 @@ public class SelectByID : MonoBehaviour
         }
 
         var hitUvCoordinate = mesh.uv2[vertexIndex];
-        var gameObjectToHighlight = hit.collider.gameObject;
+        var gameObjectToHighlight = lastRaycastHit.collider.gameObject;
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
@@ -294,11 +229,11 @@ public class SelectByID : MonoBehaviour
             int raysLooped = 0;
             while (hitPixelColor == ObjectData.HIDDEN_COLOR && raysLooped < maximumRayPiercingLoops)
             {
-                Vector3 deeperHitPoint = hit.point + (ray.direction * 0.01f);
+                Vector3 deeperHitPoint = lastRaycastHit.point + (ray.direction * 0.01f);
                 ray = new Ray(deeperHitPoint, ray.direction);
-                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+                if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
                 {
-                    vertexIndex = hit.triangleIndex * 3;
+                    vertexIndex = lastRaycastHit.triangleIndex * 3;
                     hitUvCoordinate = mesh.uv2[vertexIndex];
 
                     hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
@@ -308,7 +243,7 @@ public class SelectByID : MonoBehaviour
             }
         }
         //Not retrieve the selected BAG ID tied to the selected triangle
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        tileHandler.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
