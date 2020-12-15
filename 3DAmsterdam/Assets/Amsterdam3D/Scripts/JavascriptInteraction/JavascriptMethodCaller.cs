@@ -11,7 +11,10 @@ namespace Amsterdam3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string FetchOBJData();
 
-		[DllImport("__Internal")]
+        [DllImport("__Internal")]
+        private static extern string FetchVissimData();
+
+        [DllImport("__Internal")]
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
@@ -68,7 +71,12 @@ namespace Amsterdam3D.JavascriptConnection
 #endif
 		}
 
-		public static string FetchOBJDataAsString()
+        public static string FetchVissimDataAsString()
+        {
+            return FetchVissimData();
+        }
+
+        public static string FetchOBJDataAsString()
 		{
 			return FetchOBJData();
 		}

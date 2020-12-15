@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 using ConvertCoordinates;
 using System.Globalization;
 
-public class ConvertZFP : MonoBehaviour
+public class ConvertFZP : MonoBehaviour
 {
     /* FOR THIS VISSIM SIMULATION, USE THE STANDARD TEMPLATE WITH THE FOLLOWING PARAMETERS ONLY.
      * 
@@ -25,6 +25,7 @@ public class ConvertZFP : MonoBehaviour
     public bool finishedLoadingData = false;
     public float frameCounter = 0.0f;
     public float timeBetweenFrames = 0.0f;
+
 
     [Header("VISSIM Object Prefabs")]
     [SerializeField] private GameObject[] vissimCarPrefabs = default;
@@ -57,7 +58,7 @@ public class ConvertZFP : MonoBehaviour
         vehicleTypes.Add(600, vissimCyclePrefabs); // Cycle
         vehicleTypes.Add(700, vissimVanPrefabs); // Van
 
-        StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM));
+        //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM));
     }
 
     /// <summary>
@@ -81,6 +82,16 @@ public class ConvertZFP : MonoBehaviour
             }
         }
         readyToConvert = false;
+
+        // automatically calculates the time between the frames.
+        foreach(VissimData data in allVissimData)
+        {
+            if(data.simsec != allVissimData[0].simsec)
+            {
+                timeBetweenFrames = data.simsec - allVissimData[0].simsec;
+                break; // after calculating the correct framerate of the simulation, exit the loop.
+            }
+        }
         finishedLoadingData = true;
 
         //sets  the current VISSIM file start parameters

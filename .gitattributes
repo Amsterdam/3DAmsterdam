@@ -1,7 +1,6 @@
 # Unity formats: 
 *.sbsar filter=lfs diff=lfs merge=lfs -text 
 *.unity filter=lfs diff=lfs merge=lfs -text 
-
 # Collapse Unity-generated files on GitHub
 *.asset linguist-generated
 *.mat linguist-generated
@@ -10,3 +9,4 @@
 *.unity linguist-generated
 *.anim linguist-generated
 *.controller linguist-generated
+*.fbx filter=lfs diff=lfs merge=lfs -text

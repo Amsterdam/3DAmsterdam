@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7590023009504579814}
   - component: {fileID: 7590023009504579809}
   - component: {fileID: 2243999760766328421}
+  - component: {fileID: 2469489389575511221}
   m_Layer: 0
   m_Name: FileUploads
   m_TagString: Untagged
@@ -78,3 +79,20 @@ MonoBehaviour:
   customObject: {fileID: 0}
   layerType: 1
   targetParent: {fileID: 0}
+--- !u!114 &2469489389575511221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7590023009504579808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b8f5891b0aede4db70d4c0783b2a2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingObjScreen: {fileID: 0}
+  playback: {fileID: 0}
+  converter: {fileID: 0}
+  vissimLayerObject: {fileID: 0}
+  vissimScriptObject: {fileID: 0}

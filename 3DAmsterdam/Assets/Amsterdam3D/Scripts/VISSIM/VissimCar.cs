@@ -6,89 +6,46 @@ public class VissimCar : MonoBehaviour
 {
     public VissimData vehicleCommandData;
     public RaycastHit hit;
-    private Vector3 startLastRecordedHeight = default;
-    private Vector3 endLastRecordedHeight = default;
+    protected Vector3 startLastRecordedHeight = default;
+    protected Vector3 endLastRecordedHeight = default;
     
     public Vector3 futurePosition = default;
 
-    private Animation anim = default;
+    protected Animation anim = default;
 
+    protected float timeSinceCommand = 0.0f;
 
-    AnimationCurve curveX = default;
-    AnimationCurve curveY = default;
-    AnimationCurve curveZ = default;
-
-    float animationStartTime;
-    float currentAnimationTime = 0;
-
-
-    private void Awake()
+    protected virtual void Awake()
     {
         anim = GetComponent<Animation>();
+        timeSinceCommand = Time.time + 2f;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
-        
+        if (Time.time > timeSinceCommand && gameObject.activeSelf)
+        {
+            CleanUpVehicle();
+        }
     }
 
     /// <summary>
-    /// Parses the VISSIM data to the vehicle and executes it
-    /// </summary>
-    /// <param name="commandData"></param>
-    public void ExecuteVISSIM(VissimData commandData)
-    {
-        vehicleCommandData = commandData;
-        
-        Vector3 temp = transform.position;
-        temp.y = 50f;
-        
-        if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
-        {
-            startLastRecordedHeight = hit.point; // stores the last height position
-            // puts the car on the road
-            MoveObject(hit.point);
-        }
-        else
-        {
-            // puts the car on the road
-            MoveObject(startLastRecordedHeight);
-        }
-        
-    }
-
-    /// <summary>/
-    /// Moves the VISSIM Object
-    /// </summary>
-    public void MoveObject(Vector3 vectorCorrection)
-    {
-        // Corrects the vehicles Y position to the height of the map (Maaiveld)
-        vehicleCommandData.coordRear.y = vectorCorrection.y;
-        vehicleCommandData.coordFront.y = vectorCorrection.y; // misschien hier 2e raycast waarbij de auto naar dit punt kijkt? Alleen bij een weg die naar beneden gaat en hij nog boven staat krijg je dan rare artefacts
-        
-        // Moves the vehicle to the designated position
-        transform.position = vehicleCommandData.coordRear;
-        transform.LookAt(vehicleCommandData.coordFront);
-
-        //Laat de autos lerpen via een animation curve
-        // https://docs.unity3d.com/ScriptReference/AnimationClip.SetCurve.html
-    }
-
-    /// <summary>
-    /// Moves the vehicle through animation
+    /// Moves the vehicle through animation.
     /// </summary>
     /// <param name="startPos"></param>
     /// <param name="endPos"></param>
     /// <param name="animationTime"></param>
-    public void MoveAnimation(Vector3 startPos, Vector3 endPos, float animationTime)
+    public virtual void MoveAnimation(Vector3 startPos, Vector3 endPos, float animationTime)
     {
+        timeSinceCommand = Time.time + 5f;
         // checks for the height and places the car on the correct position on the map (maaiveld)
         Vector3 temp = transform.position;
         temp.y = 50f;
 
         if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
         {
-            startLastRecordedHeight = hit.point; 
+            startLastRecordedHeight = hit.point;
+            vehicleCommandData.coordFront.y = hit.point.y;
         }
         // checks the positional height of there the car will be in the future/next simulation second
         temp = endPos;
@@ -99,28 +56,42 @@ public class VissimCar : MonoBehaviour
         }
 
         vehicleCommandData.coordFront.y = startLastRecordedHeight.y;
-        transform.LookAt(vehicleCommandData.coordFront);
-
-        // Sets the animation curve for each vector element
-        curveX = new AnimationCurve(new Keyframe[2] { new Keyframe(0.0f, startPos.x), new Keyframe(animationTime, endPos.x) });
-        curveY = new AnimationCurve(new Keyframe[2] { new Keyframe(0.0f, startLastRecordedHeight.y), new Keyframe(animationTime, endLastRecordedHeight.y) });
-        curveZ = new AnimationCurve(new Keyframe[2] { new Keyframe(0.0f, startPos.z), new Keyframe(animationTime, endPos.z) });
-
-
+        
+        
         // create a new AnimationClip
         AnimationClip clip = new AnimationClip();
         clip.legacy = true;
 
-        // create a curve to move the GameObject and assign to the clip
-        clip.SetCurve("", typeof(Transform), "localPosition.x", curveX);
-        clip.SetCurve("", typeof(Transform), "localPosition.y", curveY);
-        clip.SetCurve("", typeof(Transform), "localPosition.z", curveZ);
+        Vector3 _direction = (endPos - vehicleCommandData.coordRear).normalized;
+        // create a curve to move the GameObject and assign to the clip.
+        clip.SetCurve("", typeof(Transform), "localPosition.x", AnimationCurve.Linear(0.0f, startPos.x, animationTime, endPos.x)); // sets linear curve from the start position of the car and the end
+        clip.SetCurve("", typeof(Transform), "localPosition.y", AnimationCurve.Linear(0.0f, startLastRecordedHeight.y, animationTime, endLastRecordedHeight.y)); // Misschien endlastrecordheight?
+        clip.SetCurve("", typeof(Transform), "localPosition.z", AnimationCurve.Linear(0.0f, startPos.z, animationTime, endPos.z));
 
-        // now animate the GameObject
+        //Should the car even rotate? If the next position is too close then it won't rotate.
+        if(transform.rotation.y == 0)
+        {
+            transform.rotation = Quaternion.LookRotation((futurePosition - vehicleCommandData.coordRear).normalized);
+        }
+        if (Vector3.Distance(startPos, endPos) > 0.1f)
+        {
+            //clip.SetCurve("", typeof(Transform), "localRotation.x", AnimationCurve.Linear(0.0f, transform.rotation.x, animationTime, Quaternion.LookRotation(_direction).x)); //convert to quaternions
+            clip.SetCurve("", typeof(Transform), "localRotation.y", AnimationCurve.Linear(0.0f, transform.rotation.y, animationTime, Quaternion.LookRotation(_direction).y)); //convert to quaternions
+            //clip.SetCurve("", typeof(Transform), "localRotation.z", AnimationCurve.Linear(0.0f, transform.rotation.z, animationTime, Quaternion.LookRotation(_direction).z)); //convert to quaternions
+            clip.SetCurve("", typeof(Transform), "localRotation.w", AnimationCurve.Linear(0.0f, transform.rotation.w, animationTime, Quaternion.LookRotation(_direction).w)); //convert to quaternions
+        }
+
+        // Plays the animated clip of the vehicle
         anim.AddClip(clip, clip.name);
         anim.Play(clip.name);
+    }
 
-        //transform.position = new Vector3(curveX.Evaluate(animationTime), startPoint.point.y, curveZ.Evaluate(animationTime));
-
+    /// <summary>
+    /// Removes the vehicle when its inactive.
+    /// </summary>
+    protected virtual void CleanUpVehicle()
+    {
+        this.gameObject.SetActive(false);
+        //GameObject.Destroy(this.gameObject); // later you can pool this object
     }
 }

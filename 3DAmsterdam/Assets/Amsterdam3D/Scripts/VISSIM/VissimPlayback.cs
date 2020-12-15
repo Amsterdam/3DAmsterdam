@@ -5,14 +5,12 @@ using UnityEngine;
 public class VissimPlayback : MonoBehaviour
 {
     public Dictionary<int, VissimCar> vehicles = new Dictionary<int, VissimCar>();
-    [SerializeField] private ConvertZFP fileConverter = default;
+    [SerializeField] private ConvertFZP fileConverter = default;
 
     public float timeCounter;
     public int loopCounter = 0;
     public int loopCounterFuture = 0;
 
-    [Header("Prefabs")]
-    [SerializeField] private GameObject[] vissimCarPrefab = default; // REMOVE THIS LATER AFTER YOU GOT MORE MODELS
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +25,10 @@ public class VissimPlayback : MonoBehaviour
             SendCommand(fileConverter.allVissimData);
         }
     }
-
+    /// <summary>
+    /// Checks the current simulation time and sends according commands to all vehicles.
+    /// </summary>
+    /// <param name="dataList"></param>
     public void SendCommand(List<VissimData> dataList)
     {
         
@@ -49,17 +50,16 @@ public class VissimPlayback : MonoBehaviour
                     if (vehicles.ContainsKey(dataList[i].id))
                     {
                         // send vehicle command
-                        //vehicles[dataList[i].id].ExecuteVISSIM(dataList[i]);
                         vehicles[dataList[i].id].vehicleCommandData = dataList[i];
                     }
                     else
                     {
                         // change 0 with i when you have more models
-                        GameObject tempObject = Instantiate(fileConverter.vehicleTypes[dataList[i].vehicleType][Random.Range(0, fileConverter.vehicleTypes[dataList[i].vehicleType].Length )], transform.position, transform.rotation);
+                        GameObject tempObject = Instantiate(fileConverter.vehicleTypes[dataList[i].vehicleType][Random.Range(0, fileConverter.vehicleTypes[dataList[i].vehicleType].Length )], transform.position, new Quaternion(0f,0f,0f,0f));
                         tempObject.transform.SetParent(this.transform);
+
                         VissimCar carInstance = tempObject.GetComponent<VissimCar>();
                         vehicles.Add(dataList[i].id, carInstance);
-                        //carInstance.ExecuteVISSIM(dataList[i]);
                         vehicles[dataList[i].id].vehicleCommandData = dataList[i];
                     }
                 }

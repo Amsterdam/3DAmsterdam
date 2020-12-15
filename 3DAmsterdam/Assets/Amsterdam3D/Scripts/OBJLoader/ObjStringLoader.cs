@@ -70,13 +70,13 @@ namespace Amsterdam3D.Parsing
 			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
 
-		/// <summary>
-		/// Start the parsing of OBJ and MTL strings
-		/// </summary>
-		/// <param name="objText">The OBJ string data</param>
-		/// <param name="mtlText">The MTL string data</param>
-		/// <returns></returns>
-		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
+        /// <summary>
+        /// Start the parsing of OBJ and MTL strings
+        /// </summary>
+        /// <param name="objText">The OBJ string data</param>
+        /// <param name="mtlText">The MTL string data</param>
+        /// <returns></returns>
+        private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
 			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
