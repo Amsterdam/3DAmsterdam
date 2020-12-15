@@ -163,11 +163,21 @@ namespace Amsterdam3D.CameraMotion
 
                 if (!BlockedByTextInput()) 
                 {
-                    Vector3 movement = moveAction.ReadValue<Vector2>();
-                    movement.z = movement.y;
-                      movement.y = 0;
-                      movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                      cameraComponent.transform.position += movement * moveSpeed; 
+                    if (moveAction != null)
+                    {
+                        Vector3 movement = moveAction.ReadValue<Vector2>();
+                        if (movement != null)
+                        {
+                            movement.z = movement.y;
+                            movement.y = 0;
+                            movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                            cameraComponent.transform.position += movement * moveSpeed;
+                        }
+                        else 
+                        {
+                            Debug.Log("WTF?");
+                        }
+                    }
                 }
             }
         }
@@ -177,11 +187,14 @@ namespace Amsterdam3D.CameraMotion
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
             if (!BlockedByTextInput())
             {
-                Vector2 rotationInput = rotateAction.ReadValue<Vector2>();
-                Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
-                rotation.y += rotationInput.x * rotationSpeed;
-                rotation.x += rotationInput.y * rotationSpeed;
-                cameraComponent.transform.eulerAngles = rotation;
+                if (rotateAction != null)
+                {
+                    Vector2 rotationInput = rotateAction.ReadValue<Vector2>();
+                    Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
+                    rotation.y += rotationInput.x * rotationSpeed;
+                    rotation.x += rotationInput.y * rotationSpeed;
+                    cameraComponent.transform.eulerAngles = rotation;
+                }
             }
             
             if (firstPersonModifier && Input.GetMouseButton(0))
