@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;

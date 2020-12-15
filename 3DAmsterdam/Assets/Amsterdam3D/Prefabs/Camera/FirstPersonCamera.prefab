@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 3080695639790331529}
   m_Layer: 11
   m_Name: FirstPersonCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
-  MainMenu: {fileID: 0}
-  Layers: {fileID: 0}
+  mainMenu: {fileID: 0}
+  interfaceLayers: {fileID: 0}
 --- !u!114 &3272134606442253111
 MonoBehaviour:
   m_ObjectHideFlags: 0

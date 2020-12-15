@@ -1,104 +1,127 @@
-﻿using System;
+﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-public class ContextPointerMenu : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-	[SerializeField]
-	private RectTransform contextItemsPanel = default;
-
-	public static ContextPointerMenu Instance = null;
-
-	public ContextState state = ContextState.DEFAULT;
-
-	[SerializeField]
-	[Tooltip("Select buttons that should be active for specific states")]
-	private StateButtons[] buttonsAvailableOnState;
-
-	[Serializable]
-	public class StateButtons
+	public class ContextPointerMenu : MonoBehaviour
 	{
-		public ContextState state;
-		public Button[] activeButtons;
-	}
+		[SerializeField]
+		private RectTransform contextItemsPanel = default;
 
-	public enum ContextState
-	{
-		DEFAULT,
-		CUSTOM_OBJECTS,
-		SELECTABLE_STATICS
-	}
+		public static ContextPointerMenu Instance = null;
 
-	private void Start()
-	{
-		if (Instance == null)
+		public ContextState state = ContextState.DEFAULT;
+
+		private GameObject targetGameObject;
+
+		[SerializeField]
+		[Tooltip("Select buttons that should be active for specific states")]
+		private StateButtons[] buttonsAvailableOnState;
+
+		[Serializable]
+		public class StateButtons
 		{
-			Instance = this;
+			public ContextState state;
+			public Button[] activeButtons;
 		}
-		contextItemsPanel.gameObject.SetActive(false);
 
-		//Add a listener to every containing button that closes our context menu on click
-		Button[] buttons = contextItemsPanel.GetComponentsInChildren<Button>();
-		foreach (Button button in buttons)
-			button.onClick.AddListener(CloseContextMenu);
-	}
-
-	/// <summary>
-	/// Disables our right mouse context menu, and resets its state do default
-	/// </summary>
-	void CloseContextMenu()
-	{
-		contextItemsPanel.gameObject.SetActive(false);
-		state = ContextState.DEFAULT;
-	}
-
-	/// <summary>
-	/// Switches the right click menu state, enabling/disabling the right buttons matching that state
-	/// </summary>
-	/// <param name="newState">The new state detemining what buttons are active/disabled</param>
-	public void SwitchState(ContextState newState)
-	{
-		state = newState;
-
-		//Start by disabling all buttons but disablig their interactibility
-		var buttons = GetComponentsInChildren<Button>();
-		foreach (Button button in buttons)
-			button.interactable = false;
-
-		//Now only active the buttons that should be active in this new state
-		foreach (StateButtons stateButtons in buttonsAvailableOnState)
+		public enum ContextState
 		{
-			if (state == stateButtons.state)
+			DEFAULT,
+			CUSTOM_OBJECTS,
+			SELECTABLE_STATICS
+		}
+
+		private void Start()
+		{
+			if (Instance == null)
 			{
-				foreach (Button button in stateButtons.activeButtons)
-					button.interactable = true;
-				return;
+				Instance = this;
+			}
+			contextItemsPanel.gameObject.SetActive(false);
+
+			//Add a listener to every containing button that closes our context menu on click
+			Button[] buttons = contextItemsPanel.GetComponentsInChildren<Button>();
+			foreach (Button button in buttons)
+				button.onClick.AddListener(CloseContextMenu);
+		}
+
+		public void SetTargetObject(GameObject newTarget)
+		{
+			targetGameObject = newTarget;
+		}
+
+		/// <summary>
+		/// Start transforming the focus object of our contextmenu
+		/// </summary>
+		public void TransformObject()
+		{
+			//Enable gizmo
+
+			//Activate Transform panel in sidemenu
+			ObjectProperties.Instance.OpenPanel(targetGameObject.name);
+			ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, targetGameObject.transform.position);
+			ObjectProperties.Instance.AddTransformPanel(targetGameObject);
+		}
+
+		/// <summary>
+		/// Disables our right mouse context menu, and resets its state do default
+		/// </summary>
+		void CloseContextMenu()
+		{
+			contextItemsPanel.gameObject.SetActive(false);
+			state = ContextState.DEFAULT;
+		}
+
+		/// <summary>
+		/// Switches the right click menu state, enabling/disabling the right buttons matching that state
+		/// </summary>
+		/// <param name="newState">The new state detemining what buttons are active/disabled</param>
+		public void SwitchState(ContextState newState)
+		{
+			state = newState;
+
+			//Start by disabling all buttons but disablig their interactibility
+			var buttons = GetComponentsInChildren<Button>();
+			foreach (Button button in buttons)
+				button.interactable = false;
+
+			//Now only active the buttons that should be active in this new state
+			foreach (StateButtons stateButtons in buttonsAvailableOnState)
+			{
+				if (state == stateButtons.state)
+				{
+					foreach (Button button in stateButtons.activeButtons)
+						button.interactable = true;
+					return;
+				}
 			}
 		}
-	}
 
-	void Update()
-	{
-		//TODO: replace with centralized input system to avoid conflicts with other scripts polling for the same buttons
-		if (Input.GetMouseButtonUp(1) && !EventSystem.current.IsPointerOverGameObject())
+		void Update()
 		{
-			Appear();
+			//TODO: replace with centralized input system to avoid conflicts with other scripts polling for the same buttons
+			if (Input.GetMouseButtonUp(1) && !EventSystem.current.IsPointerOverGameObject())
+			{
+				Appear();
+			}
 		}
-	}
 
-	/// <summary>
-	/// Moves our context menu to our pointer, and actives it with an animation. 
-	/// </summary>
-	private void Appear()
-	{
-		contextItemsPanel.transform.position = Input.mousePosition;
+		/// <summary>
+		/// Moves our context menu to our pointer, and actives it with an animation. 
+		/// </summary>
+		private void Appear()
+		{
+			contextItemsPanel.transform.position = Input.mousePosition;
 
-		//Always disable the panel first, so our appear animation plays again
-		contextItemsPanel.gameObject.SetActive(false);
-		contextItemsPanel.gameObject.SetActive(true);
+			//Always disable the panel first, so our appear animation plays again
+			contextItemsPanel.gameObject.SetActive(false);
+			contextItemsPanel.gameObject.SetActive(true);
+		}
 	}
 }

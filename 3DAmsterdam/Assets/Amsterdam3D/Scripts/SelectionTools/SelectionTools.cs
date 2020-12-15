@@ -13,7 +13,6 @@ namespace Amsterdam3D.Interface
 	//TODO: Move Single click tool to this class, or to a selection tool?
 	public class SelectionTools : MonoBehaviour
 	{
-		[SerializeField]
 		private GameObject canvas;
 		[SerializeField]
 		private SelectionTool selectionTool;
@@ -35,6 +34,7 @@ namespace Amsterdam3D.Interface
 
 		private void Start()
 		{
+			canvas = FindObjectOfType<Canvas>().gameObject;
 			tileHandler = FindObjectOfType<TileHandler>();
 
 			selectionTool.canvas = canvas;

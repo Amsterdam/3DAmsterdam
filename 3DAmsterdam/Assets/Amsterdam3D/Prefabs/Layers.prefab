@@ -60,7 +60,7 @@ MonoBehaviour:
   sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
   sewerPipeSpawner: {fileID: 1484382064384571549}
   sewerManholeSpawner: {fileID: 5050187975766108088}
-  runtimeMaskSphere: {fileID: 0}
+  runtimeMaskSphere: {fileID: 994676525503412668}
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +456,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
       propertyPath: targetMaterialsContainer
       value: 
       objectReference: {fileID: 4498901013376440831}
@@ -473,3 +478,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5998426874923413135}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &994676525503412668 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13aae22d06676da40a6870a8bca648ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
