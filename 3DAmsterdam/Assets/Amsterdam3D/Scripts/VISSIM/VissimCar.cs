@@ -13,16 +13,19 @@ public class VissimCar : MonoBehaviour
 
     protected Animation anim = default;
 
-    protected float timeSinceCommand = 0.0f;
+    protected float minimumDistanceForAnimation = 0.1f;
 
+    protected float timeSinceCommand = 0.0f;
+    protected float cleanUpTime = 5;
     protected virtual void Awake()
     {
         anim = GetComponent<Animation>();
-        timeSinceCommand = Time.time + 2f;
+        timeSinceCommand = Time.time + cleanUpTime;
     }
 
     protected virtual void Update()
     {
+        // if the car hasn't been used, it will be disabled and hidden from scene view
         if (Time.time > timeSinceCommand && gameObject.activeSelf)
         {
             CleanUpVehicle();
@@ -37,7 +40,7 @@ public class VissimCar : MonoBehaviour
     /// <param name="animationTime"></param>
     public virtual void MoveAnimation(Vector3 startPos, Vector3 endPos, float animationTime)
     {
-        timeSinceCommand = Time.time + 5f;
+        timeSinceCommand = Time.time + cleanUpTime;
         // checks for the height and places the car on the correct position on the map (maaiveld)
         Vector3 temp = transform.position;
         temp.y = 50f;
@@ -63,7 +66,7 @@ public class VissimCar : MonoBehaviour
         clip.legacy = true;
 
         Vector3 _direction = (endPos - vehicleCommandData.coordRear).normalized;
-        // create a curve to move the GameObject and assign to the clip.
+        // movement aniomation
         clip.SetCurve("", typeof(Transform), "localPosition.x", AnimationCurve.Linear(0.0f, startPos.x, animationTime, endPos.x)); // sets linear curve from the start position of the car and the end
         clip.SetCurve("", typeof(Transform), "localPosition.y", AnimationCurve.Linear(0.0f, startLastRecordedHeight.y, animationTime, endLastRecordedHeight.y)); // Misschien endlastrecordheight?
         clip.SetCurve("", typeof(Transform), "localPosition.z", AnimationCurve.Linear(0.0f, startPos.z, animationTime, endPos.z));
@@ -73,7 +76,8 @@ public class VissimCar : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation((futurePosition - vehicleCommandData.coordRear).normalized);
         }
-        if (Vector3.Distance(startPos, endPos) > 0.1f)
+        // rotation animation
+        if (Vector3.Distance(startPos, endPos) > minimumDistanceForAnimation)
         {
             //clip.SetCurve("", typeof(Transform), "localRotation.x", AnimationCurve.Linear(0.0f, transform.rotation.x, animationTime, Quaternion.LookRotation(_direction).x)); //convert to quaternions
             clip.SetCurve("", typeof(Transform), "localRotation.y", AnimationCurve.Linear(0.0f, transform.rotation.y, animationTime, Quaternion.LookRotation(_direction).y)); //convert to quaternions
@@ -92,6 +96,5 @@ public class VissimCar : MonoBehaviour
     protected virtual void CleanUpVehicle()
     {
         this.gameObject.SetActive(false);
-        //GameObject.Destroy(this.gameObject); // later you can pool this object
     }
 }

@@ -22,6 +22,9 @@ namespace Amsterdam3D.Parsing
         private void Start()
         {
             vissimLayerObject.SetActive(false);
+            loadingObjScreen = FindObjectOfType<LoadingScreen>();
+            playback = FindObjectOfType<VissimPlayback>();
+            converter = FindObjectOfType<ConvertFZP>();
         }
         public void LoadVissimFromJavascript()
         {
@@ -31,6 +34,7 @@ namespace Amsterdam3D.Parsing
 
         IEnumerator LoadingProgress()
         {
+            // starts loading and sets to 50% by default
             vissimLayerObject.SetActive(true);
             loadingObjScreen.ProgressBar.SetMessage("50%");
             loadingObjScreen.ProgressBar.Percentage(.5f);
@@ -38,25 +42,24 @@ namespace Amsterdam3D.Parsing
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+            // calls vissim data
             string temp = JavascriptMethodCaller.FetchVissimDataAsString();
             converter.ReadFileFZP(temp);
             yield return new WaitForSeconds(1f);
+            // loading "done"
             loadingObjScreen.ProgressBar.SetMessage("100%");
             loadingObjScreen.ProgressBar.Percentage(1f);
             yield return new WaitForSeconds(0.5f);
             loadingObjScreen.Hide();
 
-            //Debug.Log(JavascriptMethodCaller.FetchVissimDataAsString());
-            // stuur deze static string door naar de file loader
-            //zet t scherm op 100 en haal scherm weg na t laden, 
         }
 
         public void DestroyVissim()
         {
             foreach (Transform child in vissimScriptObject.transform)
             {
+                // disables all old cars
                 child.gameObject.SetActive(false);
-                //Destroy(child.gameObject); // deletes all child cars
             }
 
             converter.allVissimData.Clear(); // cleans all old files
