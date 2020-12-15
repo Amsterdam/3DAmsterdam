@@ -22,9 +22,9 @@ namespace Amsterdam3D.Parsing
         private void Start()
         {
             vissimLayerObject.SetActive(false);
-            loadingObjScreen = FindObjectOfType<LoadingScreen>();
-            playback = FindObjectOfType<VissimPlayback>();
-            converter = FindObjectOfType<ConvertFZP>();
+            //loadingObjScreen = FindObjectOfType<LoadingScreen>();
+            //playback = FindObjectOfType<VissimPlayback>();
+            //converter = FindObjectOfType<ConvertFZP>();
         }
         public void LoadVissimFromJavascript()
         {

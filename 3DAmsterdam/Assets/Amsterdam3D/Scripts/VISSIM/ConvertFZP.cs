@@ -58,7 +58,8 @@ public class ConvertFZP : MonoBehaviour
         vehicleTypes.Add(600, vissimCyclePrefabs); // Cycle
         vehicleTypes.Add(700, vissimVanPrefabs); // Van
 
-        //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM));
+        //if(Application.isEditor)
+            //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM)); // code to test VISSIM in editor
     }
 
     /// <summary>
@@ -96,13 +97,6 @@ public class ConvertFZP : MonoBehaviour
 
         //sets  the current VISSIM file start parameters
         frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
-        
-        /* // continue with this after the code testing
-        foreach(VissimData data in allVissimDataByVehicleID[244])
-        {
-            Debug.Log(data.simsec); // HIER MEE KAN JE PER VOERTUIG DE 
-        }
-        */
         
     }
     /// <summary>
