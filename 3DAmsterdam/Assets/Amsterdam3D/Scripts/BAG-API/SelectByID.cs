@@ -28,7 +28,7 @@ public class SelectByID : MonoBehaviour
 
     [SerializeField]
     private LayerMask clickCheckLayerMask;
-    private Layer containerLayer;
+    private AssetbundleMeshLayer containerLayer;
 
     private const string emptyID = "null";
 
@@ -42,7 +42,7 @@ public class SelectByID : MonoBehaviour
     private void Awake()
 	{
         selectedIDs = new List<string>();
-        containerLayer = gameObject.GetComponent<Layer>();
+        containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
 	void Update()
@@ -189,7 +189,7 @@ public class SelectByID : MonoBehaviour
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        tileHandler.pauseLoading = true;
+        containerLayer.pauseLoading = true;
 
         //Check area that we clicked, and add the (heavy) mesh collider there
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
@@ -199,7 +199,7 @@ public class SelectByID : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
         {
-            tileHandler.pauseLoading = false;
+            containerLayer.pauseLoading = false;
             callback(emptyID);
             yield break;
         }
@@ -210,6 +210,7 @@ public class SelectByID : MonoBehaviour
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
+            containerLayer.pauseLoading = false;
             yield break;
         }
 
@@ -238,7 +239,7 @@ public class SelectByID : MonoBehaviour
             }
         }
         //Not retrieve the selected BAG ID tied to the selected triangle
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        containerLayer.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
