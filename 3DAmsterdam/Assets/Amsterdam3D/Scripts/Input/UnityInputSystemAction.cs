@@ -46,23 +46,26 @@ namespace Amsterdam3D.InputHandler
 
         public bool Cancelled  { get; private set; }
 
-    public dynamic value;
+    public object value;
         public delegate void ActionDelegate(IAction action);
         public List<ActionEventClass> sortedDelegates = new List<ActionEventClass>();
         private bool enabled;
         public T ReadValue<T>() where T: struct
         {
             var returnValue = default(T);
+            UnityEngine.Debug.Log("Got here");
             if (value == null) 
             {
+                UnityEngine.Debug.Log("value null");
                 return returnValue;
             }
+            UnityEngine.Debug.Log("value not null");
             return (T)value;
         }
 
 
 
-        public void SetValue(dynamic value)
+        public void SetValue(object value)
         {
             this.value = value;
             Used = false;
