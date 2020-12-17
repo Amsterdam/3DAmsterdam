@@ -62,6 +62,14 @@ public class ConvertFZP : MonoBehaviour
             //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM)); // code to test VISSIM in editor
     }
 
+    private void Update()
+    {
+        if (Application.isEditor && Input.GetKeyDown(KeyCode.P))
+        {
+            StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM)); // code to test VISSIM in editor
+        }
+    }
+
     /// <summary>
     /// Reads the vissim file and converts the lines into individual lines.
     /// </summary>

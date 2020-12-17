@@ -56,14 +56,15 @@ namespace Amsterdam3D.Parsing
 
         public void DestroyVissim()
         {
+
+            converter.allVissimData.Clear(); // cleans all old files
+            converter.finishedLoadingData = false;
+            playback.vehicles.Clear(); //  clears all old data
             foreach (Transform child in vissimScriptObject.transform)
             {
                 // disables all old cars
                 child.gameObject.SetActive(false);
             }
-
-            converter.allVissimData.Clear(); // cleans all old files
-            playback.vehicles.Clear(); //  clears all old data
 
             vissimLayerObject.SetActive(false); // disables layer
         }

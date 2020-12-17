@@ -24,6 +24,11 @@ public class VissimPlayback : MonoBehaviour
         {
             SendCommand(fileConverter.allVissimData);
         }
+        else
+        {
+            loopCounter = 0;
+            loopCounterFuture = 0;
+        }
     }
     /// <summary>
     /// Checks the current simulation time and sends according commands to all vehicles.
