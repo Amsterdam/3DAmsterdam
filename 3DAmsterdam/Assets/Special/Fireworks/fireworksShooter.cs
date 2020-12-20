@@ -30,6 +30,7 @@ public class fireworksShooter : MonoBehaviour
 
     void Start()
     {
+
         sunSettings.SetTime("23:55");
         random = new Random();
         cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
