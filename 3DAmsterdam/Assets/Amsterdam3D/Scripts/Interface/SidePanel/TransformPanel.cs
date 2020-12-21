@@ -155,9 +155,9 @@ public class TransformPanel : MonoBehaviour
     private void ScaleInputChanged(string value = null)
     {
         Vector3 normalisedScaler = new Vector3(
-            baseScale.x * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleX.text))),
-            baseScale.y * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleY.text))),
-            baseScale.z * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleZ.text)))
+            baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
+            baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
+            baseScale.z * (float.Parse(MakeInputParsable(scaleZ.text)) / 100.0f)
         );
 
         transformableTarget.transform.localScale = normalisedScaler;
