@@ -170,7 +170,23 @@ namespace Amsterdam3D.Interface
 		/// <param name="isOn"></param>
 		public void ToggleLinkedObject(bool isOn)
 		{
-			LinkedObject.SetActive(isOn);
+			if (layerType == LayerType.STATIC)
+			{
+                if (LinkedObject.GetComponent<LayerSystem.Layer>()==null)
+                {
+					LinkedObject.SetActive(isOn);
+				}
+				else
+                {
+					LinkedObject.GetComponent<LayerSystem.Layer>().isEnabled = isOn;
+				}
+                
+				
+			}
+			else
+			{
+				LinkedObject.SetActive(isOn);
+			}
 		}
 
 		/// <summary>

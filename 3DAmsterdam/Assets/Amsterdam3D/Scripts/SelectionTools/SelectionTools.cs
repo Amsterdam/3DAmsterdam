@@ -79,16 +79,16 @@ namespace Amsterdam3D.Interface
 				}
 			}
 
-			foreach (Layer layer in selectableLayers)
-			{
-				foreach (Transform tile in layer.transform)
-				{
-					if (Vector3.Distance(tile.transform.position, selectionCentroid) < (maxDistance + layer.tileSize))
-					{
-						tileHandler.GetIDData(tile.gameObject, 0);
-					}
-				}
-			}
+			//foreach (AssetbundleMeshLayer layer in selectableLayers)
+			//{
+			//	foreach (Transform tile in layer.transform)
+			//	{
+			//		if (Vector3.Distance(tile.transform.position, selectionCentroid) < (maxDistance + layer.tileSize))
+			//		{
+			//			layer.GetIDData(tile.gameObject, 0);
+			//		}
+			//	}
+			//}
 		}
 
 		private Vector3 GetPointsCentroid()
