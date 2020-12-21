@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3974945850033855655
 Transform:
   m_ObjectHideFlags: 0
@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 40377333204744845}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3608829578889527130
 MeshFilter:
@@ -90,7 +90,6 @@ GameObject:
   - component: {fileID: 5080761621861139604}
   - component: {fileID: 5080761621861139607}
   - component: {fileID: 5080761621861139606}
-  - component: {fileID: 5080761621861139609}
   m_Layer: 0
   m_Name: UndergroundPlane
   m_TagString: Untagged
@@ -110,7 +109,7 @@ Transform:
   m_LocalScale: {x: 4075.25, y: 4075.25, z: 4075.25}
   m_Children: []
   m_Father: {fileID: 40377333204744845}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5080761621861139607
 MeshFilter:
@@ -159,20 +158,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &5080761621861139609
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5080761621861139611}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &5256260691515697930
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,7 +167,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 40377333204744845}
-  - component: {fileID: 4684447012741289015}
   - component: {fileID: 6841949086296020787}
   m_Layer: 0
   m_Name: Sewerage
@@ -202,31 +186,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2883305811392649005}
   - {fileID: 2308489912040760047}
   - {fileID: 5080761621861139604}
   - {fileID: 3974945850033855655}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4684447012741289015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5256260691515697930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4639a373647a86d46aaf4ff8ce2a049e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawEditorGizmos: 0
-  sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
-  networkContainer: {fileID: 2308489912040760047}
-  combinesMeshTileContainer: {fileID: 2883305811392649005}
-  sewerPipeSpawner: {fileID: 7531797714524878505}
-  sewerManholeSpawner: {fileID: 8229672323305261778}
 --- !u!114 &6841949086296020787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +199,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5256260691515697930}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13aae22d06676da40a6870a8bca648ec, type: 3}
   m_Name: 
@@ -244,36 +209,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   pointerFollower: {fileID: 3974945850033855655}
   maskScale: 0.6
---- !u!1 &5555021392717393928
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2883305811392649005}
-  m_Layer: 0
-  m_Name: CombinedMeshes
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2883305811392649005
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5555021392717393928}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 40377333204744845}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8791206133976174996
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +239,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 40377333204744845}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8229672323305261778
 MonoBehaviour:
