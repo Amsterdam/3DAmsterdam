@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.UI;
 using UnityEngine.InputSystem;
+using Amsterdam3D.InputHandler;
+
 public class FirstPersonMovement : MonoBehaviour
 {
     [SerializeField]
@@ -33,13 +35,15 @@ public class FirstPersonMovement : MonoBehaviour
 
     public InputActionAsset actionAsset;
 
-    private InputAction moveAction;
+    private IAction moveAction;
     private UnityEngine.InputSystem.InputActionMap actionMap;
 
     void Start()
     {
         referenceCollider = GetComponent<BoxCollider>();
-
+        moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move);
+        //rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+        ActionHandler.actions.StreetView.Enable();
     }
 
     public void EnableMenusMovement()
