@@ -12,7 +12,7 @@ namespace LayerSystem
     {
         public Material DefaultMaterial;
 
-		public override void onDisableTiles(bool isenabled)
+		public override void OnDisableTiles(bool isenabled)
         {
 
         }
