@@ -211,6 +211,9 @@ namespace LayerSystem
         {
             Vector3 output = new Vector3();
 
+            float rootMinDistance = Mathf.Sqrt(minDistance);
+            float rootMaxDistance = Mathf.Sqrt(maxDistance);
+
             //get screensize
             float pixelWidth = activeCamera.pixelRect.width;
             float pixelHeight = activeCamera.pixelRect.height;
@@ -218,7 +221,8 @@ namespace LayerSystem
 
             float relativeAngleHorizontal = UnityEngine.Random.Range(0 - halfMaxWidthAngle, halfMaxWidthAngle);
             float absoluteAngleHorizontal = relativeAngleHorizontal + activeCamera.gameObject.transform.rotation.eulerAngles.y;
-            float Distance = UnityEngine.Random.Range(minDistance, maxDistance);
+            float Distance = UnityEngine.Random.Range(rootMinDistance, rootMaxDistance);
+            Distance = Distance * Distance;
             Vector3 relativePostion = Matrix4x4.Rotate(Quaternion.Euler(0, absoluteAngleHorizontal, 0)).MultiplyVector(new Vector3(0, 0, Distance));
             output = activeCamera.gameObject.transform.position + relativePostion;
             output.y = 0f - (float)CoordConvert.referenceRD.z + 2;
