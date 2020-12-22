@@ -14,6 +14,24 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-2746874266456135753
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 193ce201fd932414eb1f845ef96a03d7
+  m_EffectName: Lowpass
+  m_MixLevel: e295bc2159e77134684c9ec3a9117904
+  m_Parameters:
+  - m_ParameterName: Cutoff freq
+    m_GUID: f201125441116694fa53ffb68978eff1
+  - m_ParameterName: Resonance
+    m_GUID: 76f54af8d5d67a4439ad30be0fee5c67
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!243 &-2374505153600382128
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -29,6 +47,7 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: -8592012131210734754}
+  - {fileID: -2746874266456135753}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
@@ -46,7 +65,7 @@ AudioMixerController:
   - {fileID: 24500006}
   m_StartSnapshot: {fileID: 24500006}
   m_SuspendThreshold: -80
-  m_EnableSuspend: 1
+  m_EnableSuspend: 0
   m_UpdateMode: 0
   m_ExposedParameters: []
   m_AudioMixerGroupViews:
@@ -99,5 +118,7 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: edd4b61f78ac3ef4c85393b993156dc2
-  m_FloatValues: {}
+  m_FloatValues:
+    f201125441116694fa53ffb68978eff1: 658
+    4830dd686edbff7449b3fa1096f45f80: -7.1231294
   m_TransitionOverrides: {}

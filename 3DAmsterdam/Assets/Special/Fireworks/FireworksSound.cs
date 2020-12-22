@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class FireworksSound : MonoBehaviour
 {
-    private ParticleSystem particleSystem;
-    private AudioClip audioClip;
+    //public ParticleSystem particleSystem;
+    public AudioSource audioSource;
     private bool IsBorn = false;
     // Start is called before the first frame update
     void Start()
     {
-        particleSystem = GetComponentInParent<ParticleSystem>();
+        
     }
 
     // Update is called once per frame
@@ -20,10 +20,10 @@ public class FireworksSound : MonoBehaviour
         {
             return;
         }
-        if (particleSystem.particleCount>0)
+        if (GetComponent<ParticleSystem>().particleCount>0)
         {
             IsBorn = true;
-            GetComponentInParent<AudioSource>().Play();
+            audioSource.Play();
         }
     }
 }

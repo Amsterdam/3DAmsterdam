@@ -195,7 +195,10 @@ namespace LayerSystem
 
 
             Vector3 fireWorksPosition = GetRandomPosition();
-
+            if (fireWorksPosition == Vector3.zero)
+            {
+                return;
+            }
             if ((fireWorksPosition - activeCamera.gameObject.transform.position).magnitude > splitDistance)
             {
                 GameObject newFirework = Instantiate(FireworksPrefabFaraway[UnityEngine.Random.Range(0, FireworksPrefabFaraway.Count)], transform);
@@ -249,7 +252,14 @@ namespace LayerSystem
                     output = coordinates[i].unityPosition;
                 }
             }
-            return output;
+            if (minimumDistance > 50)
+            {
+                return Vector3.zero;
+            }
+            else
+            {
+                return output;
+            }
         }
     }
 }
