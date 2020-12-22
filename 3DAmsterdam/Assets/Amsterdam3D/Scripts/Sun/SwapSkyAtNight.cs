@@ -9,6 +9,9 @@ public class SwapSkyAtNight : MonoBehaviour
     [SerializeField]
     private Material nightSky;
 
+    [SerializeField]
+    private GameObject[] enableAtNight;
+
     SunVisuals sunVisuals;
     void Start()
     {
@@ -18,5 +21,10 @@ public class SwapSkyAtNight : MonoBehaviour
     void Update()
     {
         RenderSettings.skybox = (sunVisuals.Day) ? daySky : nightSky;
+
+        foreach(GameObject gameObject in enableAtNight)
+        {
+            gameObject.SetActive(!sunVisuals.Day);
+        }
     }
 }
