@@ -23,13 +23,17 @@ public class SunVisuals : MonoBehaviour
     private float crossFadeColorRangeEnd = 20.0f;
     private float crossValue = 1.0f;
 
+    private bool day = true;
+
     [Header("Day and night light color switch")]
     [SerializeField]
     private Color dayLightColor = Color.white;
     [SerializeField]
     private Color nightLightColor = Color.blue;
 
-    private void Awake()
+	public bool Day { get => day; }
+
+	private void Awake()
     {
         InitialUpdate();
     }
@@ -53,7 +57,7 @@ public class SunVisuals : MonoBehaviour
         sunDirectionalLight.color = Color.Lerp(nightLightColor, dayLightColor, crossValue);
 
         //If its night (sun under horizon) switch behaviour to moon
-        bool day = Vector3.Dot(transform.forward, Vector3.down) > 0;
+        day = Vector3.Dot(transform.forward, Vector3.down) > -0.1;
         sunDirectionalLight.transform.localEulerAngles = new Vector3(0, (day) ? 0 : 180, 0);
 
         //Change the fog and ambient color based on cross value
