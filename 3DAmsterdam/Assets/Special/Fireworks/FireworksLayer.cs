@@ -18,6 +18,7 @@ namespace LayerSystem
     
     public class FireworksLayer : Layer
     {
+        public LayerSystem.TileHandler tileHandler;
         private List<fireworksCoordinate> coordinates = new List<fireworksCoordinate>();
         public SunSettings sunSettings;
         public List<GameObject> FireworksPrefabCloseby;
@@ -31,6 +32,8 @@ namespace LayerSystem
         private bool isWaiting = false;
         public int activeCount = 0;
         private UnityEngine.Random random;
+
+        
 
         // Data Loading
         public override void onDisableTiles(bool isenabled)
@@ -147,6 +150,7 @@ namespace LayerSystem
             CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
             activeCamera = CameraModeChanger.Instance.ActiveCamera;
             //tekst.text = maxCount.ToString();
+            tileHandler.layers.Add(this);
         }
 
         // Update is called once per frame
