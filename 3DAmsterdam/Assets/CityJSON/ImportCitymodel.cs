@@ -11,6 +11,7 @@ public class ImportCitymodel: MonoBehaviour
     public int LOD = 1;
     public string objectType = "Buildings";
     public Material DefaultMaterial;
+    public Material windowMaterial;
     private string basefilepath;
     private string filename;
     public void Start()
@@ -36,7 +37,7 @@ public class ImportCitymodel: MonoBehaviour
         }
         if (objectType == "Single")
         {
-            filename = "E:/brondata/dePijpLOD3/pijp_lod3_origineel.json";
+            filename = "D:/3DAmsterdam/lod2rondDam/buildingsLOD3Dam.json";
             ImportSingleFile();
         }
         //int X = 12;
@@ -63,8 +64,12 @@ public class ImportCitymodel: MonoBehaviour
         CityModel Citymodel = new CityModel("", filename);
         List<Building> buildings = Citymodel.LoadBuildings(LOD);
         CreateGameObjects creator = new CreateGameObjects();
+        creator.minimizeMeshes=true;
+        creator.CreatePrefabs = true; 
+        Dictionary<string, Material> materialmapping = new Dictionary<string, Material>();
+        materialmapping.Add("Window", windowMaterial);
         //creator.CreateMeshesByIdentifier(buildings, "name", new ConvertCoordinates.Vector3RD(originX, originY, 0));
-        creator.CreateBuildings(buildings, new Vector3Double(originX, originY, 0), DefaultMaterial, this.gameObject);
+        creator.CreateBuildings(buildings, new Vector3Double(originX, originY, 0), DefaultMaterial, this.gameObject,false,materialmapping);
         //CreateTile("", filename, LOD, originX, originY, objectType);
 
     }

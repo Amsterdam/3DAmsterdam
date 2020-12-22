@@ -248,7 +248,10 @@ namespace cityJSON
             }
             foreach (Surface surf in building.surfaces)
             {
-                CreateSurface(surf, go);
+                
+                    CreateSurface(surf, go);
+                
+                
             }
 
             foreach (Building child in building.children)
@@ -322,7 +325,7 @@ namespace cityJSON
 
                 for (int i = 0; i < surf.semantics.Count; i++)
                 {
-                    if (surf.semantics[i].name == "name")
+                    if (surf.semantics[i].name == "type")
                     {
                         go.name = surf.semantics[i].value;
                         i = surf.semantics.Count;
