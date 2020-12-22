@@ -16,14 +16,15 @@ public class FireworksSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsBorn)
-        {
-            return;
-        }
-        if (GetComponent<ParticleSystem>().particleCount>0)
+        
+        if (GetComponent<ParticleSystem>().particleCount>0 && IsBorn == false)
         {
             IsBorn = true;
             audioSource.Play();
+        }
+        if (GetComponent<ParticleSystem>().particleCount == 0 && IsBorn == true)
+        {
+            IsBorn = false;
         }
     }
 }

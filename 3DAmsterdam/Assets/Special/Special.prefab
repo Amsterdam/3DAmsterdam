@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &329821418080785388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 329821418080785391}
+  m_Layer: 0
+  m_Name: Special
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &329821418080785391
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329821418080785388}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 329821419912449247}
+  - {fileID: 329821419790394733}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &329821419790394730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 329821419790394733}
+  - component: {fileID: 329821419790394732}
+  m_Layer: 0
+  m_Name: FireworksLayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &329821419790394733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329821419790394730}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 329821418080785391}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &329821419790394732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329821419790394730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb3a0ec5a8ea8940904f6bbe61e1462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 1
+  tileSize: 1000
+  layerPriority: 10
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: hardcoded
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 0
+  pauseLoading: 0
+  tileHandler: {fileID: 0}
+  sunSettings: {fileID: 0}
+  FireworksPrefabCloseby:
+  - {fileID: 1594970968046242, guid: 07aa037621e4eba478ebfb04ecfbf0f5, type: 3}
+  - {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+  - {fileID: 1682879854576530, guid: b7b829cd4d996b54ab15cbdc5de62a02, type: 3}
+  - {fileID: 1298818325660344, guid: a66858a1e56e703498927e15f1a8b5e5, type: 3}
+  FireworksPrefabFaraway:
+  - {fileID: 6964447566409985559, guid: 79a772170baa7554e980f6e6f290388a, type: 3}
+  - {fileID: 2909170982921861876, guid: 16c371f40ec0d1a41bb619e9c1dbbf8b, type: 3}
+  - {fileID: 2995998604110961846, guid: 4ae644860961c884283a6c8ee9f63d0e, type: 3}
+  - {fileID: 227614182077699945, guid: db6c85f4fdeff6343848ab77d0c96935, type: 3}
+  - {fileID: 3721887961955351942, guid: 7a575bc089545b440b875b1817ab092c, type: 3}
+  - {fileID: 4329566852695322477, guid: d8b7797f8c446584b8e36fb7000a67f8, type: 3}
+  - {fileID: 8003768540606059529, guid: e5a30bdbb344aab4696c95666b750a18, type: 3}
+  - {fileID: 4679356834952674398, guid: 7f7e4e84904cc1c4b94c86f1dd2b7210, type: 3}
+  maxCount: 100
+  minDistance: 100
+  splitDistance: 200
+  maxDistance: 2000
+  activeCamera: {fileID: 0}
+  activeCount: 0
+--- !u!1 &329821419912449244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 329821419912449247}
+  - component: {fileID: 329821419912449246}
+  m_Layer: 0
+  m_Name: fireworksShooter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &329821419912449247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329821419912449244}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 329821418080785391}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &329821419912449246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329821419912449244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c777e0247510d0a4f8f0a8817bf9361c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sunSettings: {fileID: 0}
+  tekst: {fileID: 0}
+  slider: {fileID: 0}
+  FireworksPrefabCloseby:
+  - {fileID: 1906021416640072, guid: f72b1f87653069d458bfd1263ffa4bb9, type: 3}
+  - {fileID: 1594970968046242, guid: 07aa037621e4eba478ebfb04ecfbf0f5, type: 3}
+  - {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+  - {fileID: 1682879854576530, guid: b7b829cd4d996b54ab15cbdc5de62a02, type: 3}
+  - {fileID: 1298818325660344, guid: a66858a1e56e703498927e15f1a8b5e5, type: 3}
+  FireworksPrefabFaraway:
+  - {fileID: 6964447566409985559, guid: 79a772170baa7554e980f6e6f290388a, type: 3}
+  - {fileID: 2909170982921861876, guid: 16c371f40ec0d1a41bb619e9c1dbbf8b, type: 3}
+  - {fileID: 2995998604110961846, guid: 4ae644860961c884283a6c8ee9f63d0e, type: 3}
+  - {fileID: 227614182077699945, guid: db6c85f4fdeff6343848ab77d0c96935, type: 3}
+  - {fileID: 3721887961955351942, guid: 7a575bc089545b440b875b1817ab092c, type: 3}
+  - {fileID: 4329566852695322477, guid: d8b7797f8c446584b8e36fb7000a67f8, type: 3}
+  - {fileID: 8003768540606059529, guid: e5a30bdbb344aab4696c95666b750a18, type: 3}
+  - {fileID: 4679356834952674398, guid: 7f7e4e84904cc1c4b94c86f1dd2b7210, type: 3}
+  maxCount: 100
+  minDistance: 100
+  splitDistance: 1000
+  maxDistance: 2000
+  activeCamera: {fileID: 0}
+  activeCount: 0
