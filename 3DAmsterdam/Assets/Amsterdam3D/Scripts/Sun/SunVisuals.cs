@@ -32,6 +32,7 @@ public class SunVisuals : MonoBehaviour
     private Color nightLightColor = Color.blue;
 
 	public bool Day { get => day; }
+	public Light SunDirectionalLight { get => sunDirectionalLight; }
 
 	private void Awake()
     {
@@ -51,7 +52,7 @@ public class SunVisuals : MonoBehaviour
         crossValue = Mathf.InverseLerp(-crossFadeColorRangeEnd, crossFadeColorRangeStart, newAngles.x);
 
         //Reduce sun strength when we go down the horizon
-        sunDirectionalLight.intensity = Mathf.Lerp(0.4f, 1.0f, crossValue);
+        sunDirectionalLight.intensity = Mathf.Lerp(0.3f, 1.0f, crossValue);
 
         //Swap color based on intensity (goes down at night)
         sunDirectionalLight.color = Color.Lerp(nightLightColor, dayLightColor, crossValue);

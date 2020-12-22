@@ -31,7 +31,6 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
 
     private void UpdateIcons(float rotate = 0.0f)
     {
-        Debug.Log("Wheel rotation input " + rotate);
         //Keep icons straight
         moonIcon.rotation = Quaternion.identity;
         sunIcon.rotation = Quaternion.identity;

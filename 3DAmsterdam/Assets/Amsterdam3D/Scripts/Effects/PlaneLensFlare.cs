@@ -6,11 +6,18 @@ using UnityEngine;
 public class PlaneLensFlare : MonoBehaviour
 {
     [SerializeField]
-    private Transform sun;
+    private SunVisuals sunVisuals;
+
+    [SerializeField]
+    private GameObject flareVisualPlane;
 
     void LateUpdate()
     {
-        this.transform.rotation = sun.rotation;
-        this.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        flareVisualPlane.SetActive(sunVisuals.Day);
+
+        if (sunVisuals.Day){
+            this.transform.rotation = sunVisuals.SunDirectionalLight.transform.rotation;
+            this.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        }
     }
 }
