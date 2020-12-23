@@ -12,7 +12,7 @@ namespace LayerSystem
     {
         public Material DefaultMaterial;
 
-		public override void onDisableTiles(bool isenabled)
+		public override void OnDisableTiles(bool isenabled)
         {
 
         }
@@ -23,7 +23,7 @@ namespace LayerSystem
 			switch (action)
 			{
 				case TileAction.Create:
-					Tile newTile = createNewTile(tileChange);
+					Tile newTile = CreateNewTile(tileChange);
 					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
 					break;
 				case TileAction.Upgrade:
@@ -42,7 +42,7 @@ namespace LayerSystem
 			}
 			StartCoroutine(DownloadAssetBundle(tileChange,callback));
 		}
-		private Tile createNewTile(TileChange tileChange)
+		private Tile CreateNewTile(TileChange tileChange)
 		{
 			Tile tile = new Tile();
 			tile.LOD = 0;
@@ -211,6 +211,7 @@ namespace LayerSystem
 			Mesh mesh = meshesInAssetbundle[0];
 			Vector2 uv = new Vector2(0.33f, 0.5f);
 			int count = mesh.vertexCount;
+
 			List<Vector2> uvs = new List<Vector2>();
 			Vector2 defaultUV = new Vector2(0.33f, 0.6f);
 			for (int i = 0; i < count; i++)
@@ -223,6 +224,7 @@ namespace LayerSystem
 			container.AddComponent<MeshRenderer>().sharedMaterial = defaultMaterial;
 
 			assetBundle.Unload(false);
+
 			return container;
 		}
 
@@ -246,8 +248,6 @@ namespace LayerSystem
 		}
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
-			
-
 			var meshFilter = obj.GetComponent<MeshFilter>();
 			if (!meshFilter) yield break;
 
@@ -262,9 +262,7 @@ namespace LayerSystem
 
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
 			{
-				yield return uwr.SendWebRequest();
-
-				
+				yield return uwr.SendWebRequest();		
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{

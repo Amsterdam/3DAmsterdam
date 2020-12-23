@@ -188,9 +188,18 @@ public class SelectByID : MonoBehaviour
         var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
         var lookAtTarget = lastRaycastHit.point;
 
-        ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
-        ObjectProperties.Instance.OpenPanel("Pand");
-        ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+        if (lastSelectedID != emptyID)
+        {
+            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
+            ObjectProperties.Instance.OpenPanel("Pand");
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+        }
+        else{
+            //Just force a ground 'selection' if object information
+            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
+            ObjectProperties.Instance.OpenPanel("Grond");
+            ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
+        }
     }
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
