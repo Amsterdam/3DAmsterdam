@@ -28,7 +28,7 @@ public class SelectByID : MonoBehaviour
 
     [SerializeField]
     private LayerMask clickCheckLayerMask;
-    private Layer containerLayer;
+    private AssetbundleMeshLayer containerLayer;
 
     private const string emptyID = "null";
 
@@ -44,7 +44,7 @@ public class SelectByID : MonoBehaviour
     private void Awake()
 	{
         selectedIDs = new List<string>();
-        containerLayer = gameObject.GetComponent<Layer>();
+        containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
 	void Update()
@@ -215,6 +215,7 @@ public class SelectByID : MonoBehaviour
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
+            tileHandler.pauseLoading = false;
             yield break;
         }
 
@@ -243,7 +244,7 @@ public class SelectByID : MonoBehaviour
             }
         }
         //Not retrieve the selected BAG ID tied to the selected triangle
-        tileHandler.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
+        containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)

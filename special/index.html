@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Amsterdam</title>
+	<link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
+	<div id="objUploadClickRegisterArea" style="display:none;">
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
+	</div>
+    <div id="gameContainer"></div>
+    <div id="loader">
+      <img class="logo" src="logo.png">
+      <div class="spinner"></div>
+      <div class="progress"><div class="full"></div></div>
+    </div>
+  </body>
+
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+	  var unityInstance = UnityLoader.instantiate("gameContainer", "Build/special.json" , {
+		  onProgress: UnityProgress
+	  });
+	  var fileReader;
+
+	  var unityObjectName = "FileUploads";
+	  var objData = "";
+	  var mtlData = "";
+	  var dataType = 0;
+
+	  document.addEventListener("dragover", function (event) {
+		  event.preventDefault();
+	  });
+	  document.addEventListener("drop", function (event) {
+		  event.stopPropagation();
+		  event.preventDefault();
+
+		  ReadFiles(event.dataTransfer.files);
+	  });
+
+	  if ("onpointerlockchange" in document) {
+		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
+		  console.log("Added on pointer lock change");
+	  } else if ("onmozpointerlockchange" in document) {
+		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
+		  console.log("Added moz on pointer lock change");
+	  }
+	  document.addEventListener("onblur", window.focus());
+
+	  function UnityProgress(unityInstance, progress) {
+		  if (!unityInstance.Module) {
+			  return;
+		  }
+		  const loader = document.querySelector("#loader");
+		  if (!unityInstance.progress) {
+			  const progress = document.querySelector("#loader .progress");
+			  progress.style.display = "block";
+			  unityInstance.progress = progress.querySelector(".full");
+			  loader.querySelector(".spinner").style.display = "none";
+		  }
+		  unityInstance.progress.style.transform = `scaleX(${progress})`;
+		  if (progress === 1) {
+			  loader.style.display = "none";
+
+			  window.onhashchange = locationHashChanged;
+			  if (window.location.hash) {
+				  locationHashChanged();
+			  }
+		  }
+	  }
+
+	  function OnCursorStateChanged() {
+		  console.log("cursor lock state changed");
+		  if (document.pointerLockElement === document.getElementById("#canvas")) {
+			  console.log("Pointer is locked");
+			  window.focus();
+		  } else {
+			  console.log("Pointer is unlocked");
+			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
+			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
+			  window.focus();
+		  }
+
+	  }
+
+	  function locationHashChanged() {
+		  unityInstance.SendMessage("CameraModeChanger", "ChangedPointFromUrl", window.location.hash.replace("#", ""));
+	  }
+
+	  function SelectSharedURL() {
+		  window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
+	  }
+
+	  function BuildInUnity() {
+		  console.log("Build model in Unity");
+		  unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+		  //Reset file selection
+		  document.getElementById("obj").value = "";
+	  }
+
+	  function ReadFiles(selectedFiles) {
+		  //Check browser support
+		  if (window.File && window.FileReader && window.FileList && window.Blob) {
+			  fileReader = new FileReader();
+		  } else {
+			  alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
+		  }
+
+		  //Set the obj name to display in Unity, and open progress overlay
+		  unityInstance.SendMessage(unityObjectName, "SetOBJFileName", selectedFiles.item(0).name);
+
+		  //If we selected at least one file
+		  if (selectedFiles && selectedFiles[0]) {
+			  //parse obj and optionaly the mtl file
+			  var mtlFileSelectionIndex = -1;
+			  var objFileSelectionIndex = -1;
+
+			  //Check what index is the obj file, and optionaly the mtl file
+			  for (var i = 0; i < selectedFiles.length; i++) {
+				  var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
+				  if (extension == "mtl") {
+					  console.log("MTL file");
+					  mtlFileSelectionIndex = i;
+				  } else if (extension == "obj") {
+					  console.log("OBJ file");
+					  objFileSelectionIndex = i;
+				  }
+			  }
+
+			  //What to do when files are done loading
+			  fileReader.onload = function (e) {
+				  console.log("OBJ file loaded.");
+				  //After reading the text for the OBJ
+				  objData = e.target.result;
+				  if (mtlFileSelectionIndex > -1) {
+					  //Load material after loading obj (optionaly)
+					  fileReader.onload = function (e) {
+						  console.log("MTL file loaded.");
+						  mtlData = e.target.result;
+						  BuildInUnity();
+					  };
+					  fileReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
+				  } else {
+					  BuildInUnity();
+				  }
+			  };
+
+			  //Start loading the obj file
+			  if (objFileSelectionIndex != -1) {
+				  fileReader.readAsText(selectedFiles[objFileSelectionIndex])
+			  };
+		  }
+		  return true;
+	  }
+	</script>
+</html>

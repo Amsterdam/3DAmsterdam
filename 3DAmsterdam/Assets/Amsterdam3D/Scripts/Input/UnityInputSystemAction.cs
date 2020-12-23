@@ -53,13 +53,13 @@ namespace Amsterdam3D.InputHandler
         public T ReadValue<T>() where T: struct
         {
             var returnValue = default(T);
-            UnityEngine.Debug.Log("Got here");
+            //UnityEngine.Debug.Log("Got here");
             if (value == null) 
             {
-                UnityEngine.Debug.Log("value null");
+                //UnityEngine.Debug.Log("value null");
                 return returnValue;
             }
-            UnityEngine.Debug.Log("value not null");
+            //UnityEngine.Debug.Log("value not null");
             return (T)value;
         }
 

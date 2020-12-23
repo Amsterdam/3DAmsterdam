@@ -16,8 +16,13 @@ namespace Amsterdam3D.Sewerage
         /// <param name="to">unity-coordinates of endpoint</param>
         /// <param name="diameterMM">diameter in mm</param>
         /// <returns>GameObject with sewerpipe</returns>
-        public GameObject CreateSewerLine(Vector3 from, Vector3 to, double diameterMM)
+        public GameObject CreateSewerLine(Vector3 from, Vector3 to, double diameterMM, GameObject parent=null)
         {
+            GameObject ParentObject = parent;
+            if (parent == null)
+            {
+                ParentObject = transform.gameObject;
+            }
             //get 2d-vectors for rotation-calculation
             Vector2 startpositionXZ = new Vector2(from.x, from.z);
             Vector2 endpositionXZ = new Vector2(to.x, to.z);
@@ -25,7 +30,8 @@ namespace Amsterdam3D.Sewerage
             float endHeight = to.y;
 
             //create new GameObject from sewerpipetemplate
-            GameObject newSewerPipe = Instantiate(sewerLinePrefab, this.transform);
+            GameObject newSewerPipe = Instantiate(sewerLinePrefab, ParentObject.transform);
+            
             Transform sewerPipe = newSewerPipe.transform;
 
             // rotate pipe in horizontally
@@ -59,6 +65,7 @@ namespace Amsterdam3D.Sewerage
 
             //move pipe to correct location
             sewerPipe.position = from + new Vector3(0, BOBoffset, 0);
+            
             return newSewerPipe;
         }
     }
