@@ -132,7 +132,7 @@ namespace Amsterdam3D.Parsing
 				//Make interactable
 				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
 				newOBJLoader.name = objModelName;
-				newOBJLoader.gameObject.AddComponent<Draggable>();
+				newOBJLoader.gameObject.AddComponent<Transformable>();
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);

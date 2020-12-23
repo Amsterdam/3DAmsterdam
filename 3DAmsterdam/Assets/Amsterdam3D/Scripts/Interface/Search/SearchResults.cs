@@ -83,8 +83,12 @@ namespace Amsterdam3D.Interface.Search
 		{
 			//Check if the current EventSystem selection is one of the search results.
 			//Otherwise, leave it as it is.
-			var currentFocusObject = EventSystem.current.currentSelectedGameObject?.GetComponent<SearchResult>();
-			if (currentFocusObject) selectedResultItem = currentFocusObject;
+			var currentFocusObject = EventSystem.current.currentSelectedGameObject;
+			if (currentFocusObject)
+			{
+				var currentResult = currentFocusObject.GetComponent<SearchResult>();
+				if (currentResult) selectedResultItem = currentResult;
+			}
 
 			if (selectedResultItem)
 			{

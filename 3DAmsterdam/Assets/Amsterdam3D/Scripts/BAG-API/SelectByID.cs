@@ -28,7 +28,7 @@ public class SelectByID : MonoBehaviour
 
     [SerializeField]
     private LayerMask clickCheckLayerMask;
-    private Layer containerLayer;
+    private AssetbundleMeshLayer containerLayer;
 
     private const string emptyID = "null";
 
@@ -39,10 +39,12 @@ public class SelectByID : MonoBehaviour
 
     private const int maximumRayPiercingLoops = 20;
 
+    private RaycastHit lastRaycastHit;
+
     private void Awake()
 	{
         selectedIDs = new List<string>();
-        containerLayer = gameObject.GetComponent<Layer>();
+        containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
 	void Update()
@@ -112,7 +114,7 @@ public class SelectByID : MonoBehaviour
         if (id == emptyID && !doingMultiSelection)
         {
             ClearSelection();
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
         else{
             List<string> singleIdList = new List<string>();
@@ -165,7 +167,7 @@ public class SelectByID : MonoBehaviour
         }
 
         //If we hide something, make sure our context menu is reset to default again.
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+        //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
     }
 
     /// <summary>
@@ -183,8 +185,21 @@ public class SelectByID : MonoBehaviour
     /// </summary>
     public void ShowBAGDataForSelectedID()
     {
-        DisplayBAGData.Instance.PrepareUI();
-        StartCoroutine(ImportBAG.Instance.CallAPI(ApiUrl, lastSelectedID, RetrieveType.Pand)); // laat het BAG UI element zien
+        var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
+        var lookAtTarget = lastRaycastHit.point;
+
+        if (lastSelectedID != emptyID)
+        {
+            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
+            ObjectProperties.Instance.OpenPanel("Pand");
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+        }
+        else{
+            //Just force a ground 'selection' if object information
+            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
+            ObjectProperties.Instance.OpenPanel("Grond");
+            ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
+        }
     }
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
@@ -195,9 +210,8 @@ public class SelectByID : MonoBehaviour
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
         containerLayer.AddMeshColliders(planeHit);
 
-        //No fire a raycast towards our meshcolliders to see what face we hit
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value) == false)
+        //No fire a raycast towards our meshcolliders to see what face we hit 
+        if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)
         {
             tileHandler.pauseLoading = false;
             callback(emptyID);
@@ -205,16 +219,17 @@ public class SelectByID : MonoBehaviour
         }
 
         //Get the mesh we selected and check if it has an ID stored in the UV2 slot
-        Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-        int vertexIndex = hit.triangleIndex * 3;
+        Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+        int vertexIndex = lastRaycastHit.triangleIndex * 3;
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
+            tileHandler.pauseLoading = false;
             yield break;
         }
 
         var hitUvCoordinate = mesh.uv2[vertexIndex];
-        var gameObjectToHighlight = hit.collider.gameObject;
+        var gameObjectToHighlight = lastRaycastHit.collider.gameObject;
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
@@ -224,11 +239,11 @@ public class SelectByID : MonoBehaviour
             int raysLooped = 0;
             while (hitPixelColor == ObjectData.HIDDEN_COLOR && raysLooped < maximumRayPiercingLoops)
             {
-                Vector3 deeperHitPoint = hit.point + (ray.direction * 0.01f);
+                Vector3 deeperHitPoint = lastRaycastHit.point + (ray.direction * 0.01f);
                 ray = new Ray(deeperHitPoint, ray.direction);
-                if (Physics.Raycast(ray, out hit, 10000, clickCheckLayerMask.value))
+                if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
                 {
-                    vertexIndex = hit.triangleIndex * 3;
+                    vertexIndex = lastRaycastHit.triangleIndex * 3;
                     hitUvCoordinate = mesh.uv2[vertexIndex];
 
                     hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
@@ -238,7 +253,7 @@ public class SelectByID : MonoBehaviour
             }
         }
         //Not retrieve the selected BAG ID tied to the selected triangle
-        tileHandler.GetIDData(gameObjectToHighlight, hit.triangleIndex * 3, HighlightSelectedID);
+        containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }
 
     IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)

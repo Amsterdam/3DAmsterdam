@@ -40,6 +40,7 @@ namespace Amsterdam3D.Interface
         public void SpawnNewObjectAtPointer()
         {
             GameObject newObject = Instantiate(customObject, targetParent);
+            newObject.name = newObject.name.Replace("(Clone)", "");
             CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(newObject, layerType);
 
             if (layerType == LayerType.ANNOTATION)
