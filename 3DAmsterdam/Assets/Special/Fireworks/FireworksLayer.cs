@@ -36,7 +36,7 @@ namespace LayerSystem
         
 
         // Data Loading
-        public override void onDisableTiles(bool isenabled)
+        public override void OnDisableTiles(bool isenabled)
         {
             isEnabled = isenabled;
         }
