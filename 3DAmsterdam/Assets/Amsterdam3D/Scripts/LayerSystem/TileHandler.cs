@@ -267,7 +267,7 @@ namespace LayerSystem
 						tileChange.X = activeTile.x;
 						tileChange.Y = activeTile.y;
 						tileChange.layerIndex = layerIndex;
-						tileChange.priorityScore = 0;
+						tileChange.priorityScore = int.MaxValue;
 						pendingTileChanges.Add(tileChange);
 					}
 				}
