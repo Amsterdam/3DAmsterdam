@@ -23,7 +23,7 @@ namespace LayerSystem
 			switch (action)
 			{
 				case TileAction.Create:
-					Tile newTile = createNewTile(tileChange);
+					Tile newTile = CreateNewTile(tileChange);
 					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
 					break;
 				case TileAction.Upgrade:
@@ -42,7 +42,7 @@ namespace LayerSystem
 			}
 			StartCoroutine(DownloadAssetBundle(tileChange,callback));
 		}
-		private Tile createNewTile(TileChange tileChange)
+		private Tile CreateNewTile(TileChange tileChange)
 		{
 			Tile tile = new Tile();
 			tile.LOD = 0;
@@ -246,8 +246,6 @@ namespace LayerSystem
 		}
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
-			
-
 			var meshFilter = obj.GetComponent<MeshFilter>();
 			if (!meshFilter) yield break;
 
@@ -262,9 +260,7 @@ namespace LayerSystem
 
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
 			{
-				yield return uwr.SendWebRequest();
-
-				
+				yield return uwr.SendWebRequest();		
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
