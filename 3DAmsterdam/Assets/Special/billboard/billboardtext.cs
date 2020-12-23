@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Amsterdam3D.CameraMotion;
+using LayerSystem;
 
 public class billboardtext : MonoBehaviour
 {
+    public GameObject fireworksLayer;
     public Vector3 cameraStartpositie;
     public Quaternion cameraStartRotatie;
     public SunSettings sunSettings;
     private TextMesh billboardText;
     DateTime scriptDateTime;
+    private bool AfterMidnight = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,7 +50,7 @@ public class billboardtext : MonoBehaviour
         int hours = verschil.Hours;
         int minutes = verschil.Minutes;
         int seconds = verschil.Seconds;
-       
+        //fireworksLayer.isEnabled = false;
         if (days>0)
         {
             billboardText.text = "nog " + days.ToString() + " dagen";
@@ -73,6 +76,12 @@ public class billboardtext : MonoBehaviour
             billboardText.text = seconds.ToString();
             return;
         }
+        if (AfterMidnight == false)
+        {
+            AfterMidnight = true;
+            fireworksLayer.SetActive(true);
+        }
+
         billboardText.text = "gelukkig Nieuwjaar!!";
     }
 }
