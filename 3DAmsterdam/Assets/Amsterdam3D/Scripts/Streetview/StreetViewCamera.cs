@@ -21,6 +21,17 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     private Ray ray;
     private RaycastHit hit;
 
+    private bool placing = false;
+
+
+
+
+
+    [SerializeField]
+    private GameObject fireworkPrefab;
+
+    private GameObject currentPrefab;
+
     private void OnEnable()
     {
         cameraComponent = GetComponent<Camera>();
@@ -82,9 +93,39 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             }
 
-            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked) 
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                JavascriptMethodCaller.LockCursor();
+                placing = true;
+                currentPrefab = Instantiate(fireworkPrefab);
+                currentPrefab.transform.position = GetMousePositionInWorld();
+                currentPrefab.SetActive(true);
+            }
+
+            if (placing) 
+            {
+                Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
+                Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
+
+                currentPrefab.transform.position = transform.position + (transform.forward * (10));
+                currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
+            }
+
+            if (Input.GetMouseButtonDown(0)) 
+            {
+                if (Cursor.lockState != CursorLockMode.Locked)
+                {
+                    JavascriptMethodCaller.LockCursor();
+
+                }
+                if (placing)
+                {
+                    placing = false;
+                    Debug.Log("We here");
+                    currentPrefab.GetComponentInChildren<Rigidbody>().isKinematic = false;
+                    currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
+
+                }
+
             }
         }
         else 
@@ -102,6 +143,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 mainMenu.SetActive(false);
                 inMenus = false;
             }
+
+           
         }
     }
 
