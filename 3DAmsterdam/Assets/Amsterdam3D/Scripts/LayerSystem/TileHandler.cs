@@ -204,7 +204,7 @@ namespace LayerSystem
 							tileChange.X = tileKey.x;
 							tileChange.Y = tileKey.y;
 							tileChange.layerIndex = layerIndex;
-							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
+							tileChange.priorityScore = (6000 - (int)tileDistance.magnitude) + CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
 							pendingTileChanges.Add(tileChange);
 						}
 					}
@@ -267,7 +267,7 @@ namespace LayerSystem
 						tileChange.X = activeTile.x;
 						tileChange.Y = activeTile.y;
 						tileChange.layerIndex = layerIndex;
-						tileChange.priorityScore = 0;
+						tileChange.priorityScore = int.MaxValue;
 						pendingTileChanges.Add(tileChange);
 					}
 				}
