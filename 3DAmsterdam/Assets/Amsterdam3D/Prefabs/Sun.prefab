@@ -358,6 +358,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8278632715658735414}
+  - component: {fileID: 8601888723193586165}
   m_Layer: 0
   m_Name: Sun
   m_TagString: Untagged
@@ -382,6 +383,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8601888723193586165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8278632715658735416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158c17ece47f7eb4087d15656ec02ab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sun: {fileID: 4408322680050589351}
+  sunDragWheel: {fileID: 0}
+  timeInput: {fileID: 0}
+  dayInput: {fileID: 0}
+  monthInput: {fileID: 0}
+  yearInput: {fileID: 0}
+  maxYearInput: 2100
+  speedMultiplierText: {fileID: 0}
+  speedMultiplier: 1
+  maxSpeedMultiply: 10000
+  playButton: {fileID: 0}
+  pauseButton: {fileID: 0}
 --- !u!1001 &6465509947174980264
 PrefabInstance:
   m_ObjectHideFlags: 0
