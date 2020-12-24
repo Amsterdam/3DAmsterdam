@@ -103,12 +103,19 @@ namespace LayerSystem
                 if (textline !="")
                 {
                     string[] coordinatestring = textline.Split(';');
-                    Vector3 coordinate = CoordConvert.RDtoUnity(new Vector3RD(double.Parse(coordinatestring[0], CultureInfo.InvariantCulture), double.Parse(coordinatestring[1], CultureInfo.InvariantCulture), 0));
-                    coordinate.y = 0f - (float)CoordConvert.referenceRD.z + 2;
-                    fireworksCoordinate coord = new fireworksCoordinate();
-                    coord.tilecoordinates = tilecoordinates;
-                    coord.unityPosition = coordinate;
-                    coordinates.Add(coord);
+                    try
+                    {
+                        Vector3 coordinate = CoordConvert.RDtoUnity(new Vector3RD(double.Parse(coordinatestring[0], CultureInfo.InvariantCulture), double.Parse(coordinatestring[1], CultureInfo.InvariantCulture), 0));
+                        coordinate.y = 0f - (float)CoordConvert.referenceRD.z + 2;
+                        fireworksCoordinate coord = new fireworksCoordinate();
+                        coord.tilecoordinates = tilecoordinates;
+                        coord.unityPosition = coordinate;
+                        coordinates.Add(coord);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Log(textline);
+                    }
 
                 }
 
