@@ -100,8 +100,8 @@ public class BillboardText : MonoBehaviour
         }
         else
         {
-            billboardText.text = "TEAM\n3D AMSTERDAM\nWENST JE";
-            billboardText.transform.localScale = startBillboardTextScale * 0.7f;
+            billboardText.text = "TEAM 3D\nWENST JE";
+            billboardText.transform.localScale = startBillboardTextScale;// * 0.7f;
         }
     }
 }
