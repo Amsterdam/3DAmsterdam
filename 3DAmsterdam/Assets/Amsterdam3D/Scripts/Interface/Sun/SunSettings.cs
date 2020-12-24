@@ -30,6 +30,7 @@ public class SunSettings : MonoBehaviour
 
     [SerializeField]
     private Text speedMultiplierText;
+    [SerializeField]
     private int speedMultiplier = 1;
     public int SpeedMultiplier
     {
@@ -55,7 +56,7 @@ public class SunSettings : MonoBehaviour
     [SerializeField]
     private Button pauseButton;
 
-    private DateTime dateTimeNow;
+    public DateTime dateTimeNow;
 
     private string previousTimeString = "";
     private bool usingSharedSceneTime = false;
@@ -204,6 +205,7 @@ public class SunSettings : MonoBehaviour
             if (!paused)
             {
                 dateTimeNow = dateTimeNow.AddSeconds(Time.deltaTime * SpeedMultiplier);
+
             }
 
             if (dateTimeNow.ToString("HH:mm") != previousTimeString)

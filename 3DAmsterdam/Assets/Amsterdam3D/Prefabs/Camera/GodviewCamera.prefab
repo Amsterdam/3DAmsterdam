@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8089436527420917118}
   - component: {fileID: 6874005418290581582}
   - component: {fileID: 4905035341649260907}
+  - component: {fileID: -1975623539579789515}
   m_Layer: 0
   m_Name: GodviewCamera
   m_TagString: MainCamera
@@ -105,9 +106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cebe9adf2e5533468508ad96789c6bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  cameraComponent: {fileID: 0}
   zoomSpeed: 0.5
-  dragFactor: 100
   cameraOffsetForTargetLocation: {x: 100, y: 200, z: -100}
   LockFunctions: 0
 --- !u!114 &8089436527420917118
@@ -175,3 +175,11 @@ MonoBehaviour:
   range: 3
   maxShadowDistance: 4000
   useFixedValue: 0
+--- !u!81 &-1975623539579789515
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7164494881010118419}
+  m_Enabled: 1
