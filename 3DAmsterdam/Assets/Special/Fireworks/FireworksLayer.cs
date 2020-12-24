@@ -78,7 +78,7 @@ namespace LayerSystem
         IEnumerator GetCoordinates(TileChange tileChange, Action<TileChange> callback = null)
         {
             yield return null;
-            string escapedUrl = "https://acc.3d.amsterdam.nl/web/data/feature/Special/roadNodes/"+tileChange.X +"-" + tileChange.Y + ".txt";
+            string escapedUrl = Constants.BASE_DATA_URL + "roadnodes/"+tileChange.X +"-" + tileChange.Y + ".txt";
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
