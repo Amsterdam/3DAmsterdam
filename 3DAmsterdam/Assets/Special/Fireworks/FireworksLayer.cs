@@ -47,7 +47,7 @@ namespace LayerSystem
             switch (action)
             {
                 case TileAction.Create:
-                    StartCoroutine(getCoordinates(tileChange, callback));
+                    StartCoroutine(GetCoordinates(tileChange, callback));
                     tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), CreateNewTile(tileChange));
                     break;
                 case TileAction.Remove:
@@ -75,7 +75,7 @@ namespace LayerSystem
             callback(tileChange);
         }
 
-        IEnumerator getCoordinates(TileChange tileChange, Action<TileChange> callback = null)
+        IEnumerator GetCoordinates(TileChange tileChange, Action<TileChange> callback = null)
         {
             yield return null;
             string escapedUrl = "https://acc.3d.amsterdam.nl/web/data/feature/Special/roadNodes/"+tileChange.X +"-" + tileChange.Y + ".txt";
@@ -87,6 +87,7 @@ namespace LayerSystem
                 Debug.Log(tileChange.X + "-" + tileChange.Y + ".txt");
                 Debug.Log("error reading file");
                 callback(tileChange);
+                yield break;
             }
             string dataString = sewerageRequest.downloadHandler.text;
             ReadCoordinates(dataString, tileChange);
