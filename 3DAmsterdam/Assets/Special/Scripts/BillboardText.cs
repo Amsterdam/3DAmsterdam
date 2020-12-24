@@ -88,24 +88,19 @@ public class BillboardText : MonoBehaviour
             billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
         }
-        else if(fireWorksEnd<= scriptDateTime)
-        {
-            fireworksLayer.enabled = false;
-        }
-        else{
-            //Fireworks!
-            fireworksLayer.enabled = true;
 
-            //Switch text every second
-            if ((seconds % 2 == 0))
-            {
-                billboardText.text = "GELUKKING\nNIEUWJAAR!!";
-                billboardText.transform.localScale = startBillboardTextScale;
-            }
-            else{
-                billboardText.text = "TEAM\n3D AMSTERDAM\nWENST JE";
-                billboardText.transform.localScale = startBillboardTextScale * 0.7f;
-            }
+        //2021!! Within the hour of allowed fireworks, enable fireworks!!
+        fireworksLayer.enabled = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
+        //Switch wish text every second
+        if ((seconds % 2 == 0))
+        {
+            billboardText.text = "GELUKKING\nNIEUWJAAR!!";
+            billboardText.transform.localScale = startBillboardTextScale;
+        }
+        else
+        {
+            billboardText.text = "TEAM\n3D AMSTERDAM\nWENST JE";
+            billboardText.transform.localScale = startBillboardTextScale * 0.7f;
         }
     }
 }
