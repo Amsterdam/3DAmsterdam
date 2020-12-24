@@ -54,22 +54,22 @@ public class BillboardText : MonoBehaviour
 
         if (days>0)
         {
-            billboardText.text = "nog " + days.ToString() + " dagen";
+            billboardText.text = "NOG " + days.ToString() + "\nDAGEN";
             return;
         }
         if (hours > 0)
         {
-            billboardText.text = "nog " + hours.ToString() + " uur en " + minutes.ToString() + " minuten";
+            billboardText.text = "NOG " + hours.ToString() + " UUR EN\n" + minutes.ToString() + "MINUTEN";
             return;
         }
         if(minutes >0)
         {
-            billboardText.text = "nog " + minutes.ToString() + " minuten en " + seconds.ToString() + " seconden";
+            billboardText.text = "NOG " + minutes.ToString() + "MINUTEN EN\n" + seconds.ToString() + "SECONDEN";
             return;
         }
         if (seconds >10)
         {
-            billboardText.text = "nog " +  seconds.ToString() + " seconden";
+            billboardText.text = "NOG\n" + seconds.ToString() + " SECONDEN";
             return;
         }
         if (middernacht>=scriptDateTime)
