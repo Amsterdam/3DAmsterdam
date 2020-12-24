@@ -8,13 +8,12 @@ using LayerSystem;
 public class BillboardText : MonoBehaviour
 {
     public bool previewAllowed = false;
-    public GameObject fireworksLayer;
+    public FireworksLayer fireworksLayer;
     public Vector3 cameraStartpositie;
     public Quaternion cameraStartRotatie;
     public SunSettings sunSettings;
     private TextMesh billboardText;
     DateTime scriptDateTime;
-    private bool AfterMidnight = false;
 
     private Vector3 startBillboardTextScale = default;
 
@@ -51,6 +50,8 @@ public class BillboardText : MonoBehaviour
     void EditBillboardText()
     {
         DateTime middernacht = new DateTime(2021, 1, 1, 0, 0, 0);
+        DateTime fireWorksEnd = new DateTime(2021, 1, 1, 1, 0, 0);
+
         TimeSpan verschil = middernacht.Subtract(scriptDateTime);
 
         int days = verschil.Days;
@@ -87,12 +88,24 @@ public class BillboardText : MonoBehaviour
             billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
         }
-        if (AfterMidnight == false)
+        else if(fireWorksEnd<= scriptDateTime)
         {
-            AfterMidnight = true;
-            fireworksLayer.GetComponent<Layer>().enabled=true;
+            fireworksLayer.enabled = false;
         }
+        else{
+            //Fireworks!
+            fireworksLayer.enabled = true;
 
-        billboardText.text = "GELUKKING\nNIEUWJAAR!!";
+            //Switch text every second
+            if ((seconds % 2 == 0))
+            {
+                billboardText.text = "GELUKKING\nNIEUWJAAR!!";
+                billboardText.transform.localScale = startBillboardTextScale;
+            }
+            else{
+                billboardText.text = "TEAM\n3D AMSTERDAM\nWENST JE";
+                billboardText.transform.localScale = startBillboardTextScale * 0.7f;
+            }
+        }
     }
 }

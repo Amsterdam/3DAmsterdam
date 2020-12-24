@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adce38304450e474b8fe39c7f7858e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  previewAllowed: 0
-  fireworksLayer: {fileID: 8373671739129859589}
+  previewAllowed: 1
+  fireworksLayer: {fileID: 8373671739129859586}
   cameraStartpositie: {x: 121.9, y: 52.7, z: -26.4}
   cameraStartRotatie: {x: 0.06774398, y: 0.5961822, z: 0.05058683, w: -0.79838485}
   sunSettings: {fileID: 0}
@@ -579,15 +579,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 473031d3442871f44acfaca5281a6790, type: 3}
---- !u!1 &8373671739129859589 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 550779116199367789, guid: 473031d3442871f44acfaca5281a6790,
-    type: 3}
-  m_PrefabInstance: {fileID: 8327578631712037480}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8373671739129859587 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 550779116199367787, guid: 473031d3442871f44acfaca5281a6790,
     type: 3}
   m_PrefabInstance: {fileID: 8327578631712037480}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8373671739129859586 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 550779116199367786, guid: 473031d3442871f44acfaca5281a6790,
+    type: 3}
+  m_PrefabInstance: {fileID: 8327578631712037480}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb3a0ec5a8ea8940904f6bbe61e1462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
