@@ -8,6 +8,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     private Vector2 rotation = new Vector2(0, 0);
     public float speed = 3;
 
+    public float objectDistance = 1;
+    public Vector3 objectOffset;
+
     private bool inMenus = false;
 
     [SerializeField]
@@ -105,8 +108,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             {
                 Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
                 Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
-
-                currentPrefab.transform.position = transform.position + (transform.forward * (10));
+                currentPrefab.transform.position = transform.position + (transform.forward * (objectDistance) + objectOffset);
                 currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
             }
 
@@ -120,7 +122,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 if (placing)
                 {
                     placing = false;
-                    Debug.Log("We here");
+                    currentPrefab.GetComponent<FireworkAnimationScript>().EnableScript(this.transform);
                     currentPrefab.GetComponentInChildren<Rigidbody>().isKinematic = false;
                     currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
 
