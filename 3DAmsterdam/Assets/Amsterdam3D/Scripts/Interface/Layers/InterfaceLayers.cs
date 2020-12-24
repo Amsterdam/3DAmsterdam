@@ -36,6 +36,8 @@ namespace Amsterdam3D.Interface
 			animator = GetComponent<Animator>();
 			annotationsContainer.gameObject.SetActive(false);
 			cameraContainer.gameObject.SetActive(false);
+
+			ToggleVisibility(false);
 		}
 
 		/// <summary>
@@ -44,6 +46,8 @@ namespace Amsterdam3D.Interface
 		/// <param name="visible"></param>
 		public void ToggleVisibility(bool visible)
 		{
+			if (visible) animator.enabled = true;
+
 			toggledVisible = visible;
 			animator.SetBool("AnimateIn", toggledVisible);
 		}
