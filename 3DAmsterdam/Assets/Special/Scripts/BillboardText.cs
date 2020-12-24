@@ -7,7 +7,7 @@ using LayerSystem;
 
 public class BillboardText : MonoBehaviour
 {
-    public bool previewAllowed = true;
+    public bool previewAllowed = false;
     public GameObject fireworksLayer;
     public Vector3 cameraStartpositie;
     public Quaternion cameraStartRotatie;
@@ -39,22 +39,27 @@ public class BillboardText : MonoBehaviour
         {
             scriptDateTime = sunSettings.dateTimeNow;
         }
-
         EditBillboardText();
-
-        
     }
+
+    //Alows us to cheat from javascript
+    public void Cheat(bool allowPreview = true)
+    {
+        previewAllowed = allowPreview;
+    }
+
     void EditBillboardText()
     {
-
         DateTime middernacht = new DateTime(2021, 1, 1, 0, 0, 0);
-
         TimeSpan verschil = middernacht.Subtract(scriptDateTime);
 
         int days = verschil.Days;
         int hours = verschil.Hours;
         int minutes = verschil.Minutes;
         int seconds = verschil.Seconds;
+
+        //Make sure we reset our text scale back to default if we scrubbed back
+        billboardText.transform.localScale = startBillboardTextScale;
 
         if (days>0)
         {
@@ -79,7 +84,7 @@ public class BillboardText : MonoBehaviour
         if (middernacht>=scriptDateTime)
         {
             billboardText.text = seconds.ToString();
-            billboardText.transform.localScale = startBillboardTextScale * 2.0f;
+            billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
         }
         if (AfterMidnight == false)
