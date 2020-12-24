@@ -42,9 +42,9 @@ public class BillboardText : MonoBehaviour
     }
 
     //Alows us to cheat from javascript
-    public void Cheat(bool allowPreview = true)
+    public void Cheat()
     {
-        previewAllowed = allowPreview;
+        previewAllowed = !previewAllowed;
     }
 
     void EditBillboardText()
