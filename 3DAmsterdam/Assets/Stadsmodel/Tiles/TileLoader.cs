@@ -13,6 +13,7 @@ using ConvertCoordinates;
 using Amsterdam3D.CameraMotion;
 using UnityEngine.Rendering;
 
+
 public class TileLoader : MonoBehaviour
 {
     private Boolean updateTerrainTilesFinished = true;
@@ -37,6 +38,12 @@ public class TileLoader : MonoBehaviour
     public Dictionary<string, DownloadRequest> activeDownloads = new Dictionary<string, DownloadRequest>(maxParallelRequests);
 
     public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.Off;
+
+    private Vector3 cameraPosition;
+    private Vector3RD cameraPositionRD;
+
+    [SerializeField]
+    private bool sortByDistance = true;
 
     public enum TileService
     {
@@ -99,9 +106,7 @@ public class TileLoader : MonoBehaviour
                 activeDownloads.Add(request.Url, request);
 
             //fire request
-
             StartCoroutine(RequestQMTile(request.Url, request.TileId));
-
         }
     }
 
@@ -334,7 +339,6 @@ public class TileLoader : MonoBehaviour
             {
                 
                 double tileSizeInDegrees = 180 / (Math.Pow(2, tileKey.z));
-
                 double tileDistance = GetMinimumDistance(tileKey.x + 0.5f, tileKey.y + 0.5f, tileKey.z);
                 double minafstand = 60* Math.Pow(2, (19 - tileKey.z));
                 if (tileDistance < minafstand && tileKey.z < 18)
@@ -346,6 +350,14 @@ public class TileLoader : MonoBehaviour
                 }
 
             }
+        }
+
+        //Sort by distance from camera
+        if (sortByDistance)
+        {
+            cameraPositionRD = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
+            cameraPosition = new Vector3((float)cameraPositionRD.x, (float)cameraPositionRD.y,0);
+            requiredTileKeys.OrderBy((d) => (d - cameraPosition).sqrMagnitude).ToArray();
         }
         requiredTileKeys.Reverse();
 

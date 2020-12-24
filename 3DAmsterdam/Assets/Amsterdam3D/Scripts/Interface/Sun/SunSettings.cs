@@ -230,7 +230,7 @@ public class SunSettings : MonoBehaviour
         double azi;
         SunPosition.CalculateSunPosition(dateTimeNow, (double)latitude, (double)longitude, out azi, out alt);
         angles.x = (float)alt * Mathf.Rad2Deg;
-        angles.y = (float)azi * Mathf.Rad2Deg;     
+        angles.y = (float)azi * Mathf.Rad2Deg;
 
         sun.UpdateVisuals(angles);
 

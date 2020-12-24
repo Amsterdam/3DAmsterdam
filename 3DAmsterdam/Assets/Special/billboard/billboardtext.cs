@@ -5,7 +5,7 @@ using System;
 using Amsterdam3D.CameraMotion;
 using LayerSystem;
 
-public class billboardtext : MonoBehaviour
+public class BillboardText : MonoBehaviour
 {
     public bool previewAllowed = true;
     public GameObject fireworksLayer;
