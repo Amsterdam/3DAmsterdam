@@ -26,7 +26,7 @@ public class billboardtext : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //check dateTime
         if (DateTime.Now<sunSettings.dateTimeNow & previewAllowed==false)
         {
             scriptDateTime = DateTime.Now;
@@ -51,7 +51,7 @@ public class billboardtext : MonoBehaviour
         int hours = verschil.Hours;
         int minutes = verschil.Minutes;
         int seconds = verschil.Seconds;
-        //fireworksLayer.isEnabled = false;
+
         if (days>0)
         {
             billboardText.text = "nog " + days.ToString() + " dagen";
@@ -80,7 +80,7 @@ public class billboardtext : MonoBehaviour
         if (AfterMidnight == false)
         {
             AfterMidnight = true;
-            fireworksLayer.SetActive(true);
+            fireworksLayer.GetComponent<Layer>().enabled=true;
         }
 
         billboardText.text = "gelukkig Nieuwjaar!!";
