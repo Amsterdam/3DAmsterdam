@@ -7,6 +7,7 @@ using LayerSystem;
 
 public class billboardtext : MonoBehaviour
 {
+    public bool previewAllowed = true;
     public GameObject fireworksLayer;
     public Vector3 cameraStartpositie;
     public Quaternion cameraStartRotatie;
@@ -26,7 +27,7 @@ public class billboardtext : MonoBehaviour
     void Update()
     {
 
-        if (DateTime.Now==sunSettings.dateTimeNow)
+        if (DateTime.Now<sunSettings.dateTimeNow & previewAllowed==false)
         {
             scriptDateTime = DateTime.Now;
         }
