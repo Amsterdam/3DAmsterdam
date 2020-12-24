@@ -20,7 +20,7 @@ namespace LayerSystem
     {
         public LayerSystem.TileHandler tileHandler;
         private List<fireworksCoordinate> coordinates = new List<fireworksCoordinate>();
-        public SunSettings sunSettings;
+
         public List<GameObject> FireworksPrefabCloseby;
         public List<GameObject> FireworksPrefabFaraway;
         public int maxCount = 100;
@@ -32,8 +32,7 @@ namespace LayerSystem
         private bool isWaiting = false;
         public int activeCount = 0;
         private UnityEngine.Random random;
-
-        
+                
 
         // Data Loading
         public override void OnDisableTiles(bool isenabled)
