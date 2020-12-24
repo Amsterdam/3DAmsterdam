@@ -64,6 +64,12 @@ namespace LayerSystem
 		void Update()
 		{
 			UpdateViewRange();
+			if (viewRange.x < 0)
+			{
+				//Something wrong with viewrange. Do not continue.
+				return;
+			}
+
 			GetTilesizes();
 			GetPossibleTiles();
 
