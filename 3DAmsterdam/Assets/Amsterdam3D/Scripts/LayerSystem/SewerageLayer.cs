@@ -24,7 +24,7 @@ namespace LayerSystem
 		private const int maxParsesPerFrame = 500;
 		private float napOffset = 0;
 
-		public override void onDisableTiles(bool isenabled)
+		public override void OnDisableTiles(bool isenabled)
         {
 			runtimeMaskSphere.enabled = isenabled;
         }
@@ -185,6 +185,9 @@ namespace LayerSystem
 
 		public GameObject CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
+			//Do not try to combine if our gameobject was already destroyed.
+			if (!tile.gameObject) return null;
+
 			//Determine meshes to combine
 			MeshFilter[] meshFilters = tile.gameObject.GetComponentsInChildren<MeshFilter>(true);
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
@@ -197,15 +200,6 @@ namespace LayerSystem
 
 				i++;
 			}
-
-			//GameObject[] allChildren = new GameObject[networkContainer.childCount];
-			//int j = 0;
-			////Find all child obj and store to that array
-			//foreach (Transform child in networkContainer)
-			//{
-			//	allChildren[j] = child.gameObject;
-			//	j++;
-			//}
 
 			//Own combined mesh
 			GameObject newCombinedTile = new GameObject();

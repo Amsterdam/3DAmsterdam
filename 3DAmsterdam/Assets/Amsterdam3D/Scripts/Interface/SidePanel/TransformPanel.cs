@@ -155,9 +155,9 @@ public class TransformPanel : MonoBehaviour
     private void ScaleInputChanged(string value = null)
     {
         Vector3 normalisedScaler = new Vector3(
-            baseScale.x * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleX.text))),
-            baseScale.y * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleY.text))),
-            baseScale.z * Mathf.Max(1.0f, float.Parse(MakeInputParsable(scaleZ.text)))
+            baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
+            baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
+            baseScale.z * (float.Parse(MakeInputParsable(scaleZ.text)) / 100.0f)
         );
 
         transformableTarget.transform.localScale = normalisedScaler;
@@ -171,7 +171,7 @@ public class TransformPanel : MonoBehaviour
     {
         basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
-        //Reset field values to 0
+        //Reset field values to 0 meter
         translateX.text = "0";
         translateY.text = "0";
         translateZ.text = "0";
@@ -185,7 +185,7 @@ public class TransformPanel : MonoBehaviour
     {
         baseRotation = transformableTarget.transform.rotation;
 
-        //Reset field values to 0
+        //Reset field values to 0 degrees
         rotateX.text = "0";
         rotateY.text = "0";
         rotateZ.text = "0";
@@ -199,10 +199,10 @@ public class TransformPanel : MonoBehaviour
     {
         baseScale = transformableTarget.transform.localScale;
 
-        //Reset field values to 0
-        scaleX.text = "0";
-        scaleY.text = "0";
-        scaleZ.text = "0";
+        //Reset field values to 100%
+        scaleX.text = "100";
+        scaleY.text = "100";
+        scaleZ.text = "100";
     }
 
     /// <summary>

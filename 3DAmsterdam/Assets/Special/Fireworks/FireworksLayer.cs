@@ -36,7 +36,7 @@ namespace LayerSystem
         
 
         // Data Loading
-        public override void onDisableTiles(bool isenabled)
+        public override void OnDisableTiles(bool isenabled)
         {
             isEnabled = isenabled;
         }
@@ -143,7 +143,7 @@ namespace LayerSystem
             {
                 dataset.maximumDistanceSquared = dataset.maximumDistance * dataset.maximumDistance;
             }
-            sunSettings.SetTime("23:55");
+            
             random = new UnityEngine.Random();
             cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
             CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;

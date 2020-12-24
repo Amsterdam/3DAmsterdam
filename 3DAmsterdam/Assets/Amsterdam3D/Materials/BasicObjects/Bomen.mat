@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bomen
-  m_Shader: {fileID: -6465566751694194690, guid: 3106168cc850fcc4b8ec0e3713613daf,
+  m_Shader: {fileID: -6465566751694194690, guid: de217dbf06acca44bb4443c5f5667c2b,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 34bc6aeceaa6a2a49a45ecbfbfd6c2a2, type: 3}
+        m_Texture: {fileID: 2800000, guid: bfc688cbd96368345b405324ff353d91, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -48,7 +48,13 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_9458229D_Out_0:
+        m_Texture: {fileID: 2800000, guid: bfc688cbd96368345b405324ff353d91, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_440665CC: 47
+    - Vector1_8AC3446: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -75,7 +81,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.85769707, g: 1.6392624, b: 1.3345748, a: 1}
+    - Vector3_E5E29C87: {r: 0, g: 1, b: 0, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _ClippingMaskDome: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

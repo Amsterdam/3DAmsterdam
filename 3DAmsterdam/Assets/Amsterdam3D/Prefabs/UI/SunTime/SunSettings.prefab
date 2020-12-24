@@ -84,7 +84,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: ToggleTimedSun
         m_Mode: 0
         m_Arguments:
@@ -382,7 +382,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: TogglePausePlay
         m_Mode: 1
         m_Arguments:
@@ -525,7 +525,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: FastBackward
         m_Mode: 1
         m_Arguments:
@@ -790,7 +790,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: TogglePausePlay
         m_Mode: 1
         m_Arguments:
@@ -945,7 +945,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: SetMonth
         m_Mode: 0
         m_Arguments:
@@ -978,7 +978,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 1904684309602659811}
 --- !u!114 &8947761231033734563
@@ -1430,7 +1429,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: SetTime
         m_Mode: 0
         m_Arguments:
@@ -1463,7 +1462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 5097240996446748500}
 --- !u!114 &3987021332017136525
@@ -1567,7 +1565,6 @@ GameObject:
   - component: {fileID: 7857794041386956636}
   - component: {fileID: 5737699761853439012}
   - component: {fileID: 5247113732931729710}
-  - component: {fileID: 7584193516858630437}
   - component: {fileID: 4139343253934370360}
   - component: {fileID: 2990360362297632167}
   m_Layer: 5
@@ -1646,29 +1643,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7584193516858630437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4191085345761035721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 158c17ece47f7eb4087d15656ec02ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sun: {fileID: 0}
-  sunDragWheel: {fileID: 7174073007413458522}
-  timeInput: {fileID: 6808655028179085412}
-  dayInput: {fileID: 5204827080947554042}
-  monthInput: {fileID: 8554100719413110358}
-  yearInput: {fileID: 3224309485585934287}
-  maxYearInput: 2100
-  speedMultiplierText: {fileID: 3433857591399445323}
-  maxSpeedMultiply: 10000
-  playButton: {fileID: 8250048913782980332}
-  pauseButton: {fileID: 6587921868184615781}
 --- !u!114 &4139343253934370360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2120,7 +2094,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: ResetTimeToNow
         m_Mode: 0
         m_Arguments:
@@ -2288,7 +2262,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: SetDay
         m_Mode: 0
         m_Arguments:
@@ -2321,7 +2295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 6364935962477400352}
 --- !u!114 &4637141329283546865
@@ -2616,7 +2589,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: SetYear
         m_Mode: 0
         m_Arguments:
@@ -2649,7 +2622,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36bcf292b06bf3343b813a356a958103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalIncrement: 5
   scrollWheelSensitivity: 1
   inputField: {fileID: 4141236083236528138}
 --- !u!114 &3328029182701799211
@@ -2940,7 +2912,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7584193516858630437}
+      - m_Target: {fileID: 0}
         m_MethodName: FastForward
         m_Mode: 1
         m_Arguments:
