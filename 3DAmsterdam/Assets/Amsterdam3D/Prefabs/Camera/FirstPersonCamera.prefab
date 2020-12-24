@@ -51,8 +51,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
+  objectDistance: 1
+  objectOffset: {x: 0, y: 0, z: 0}
   mainMenu: {fileID: 0}
   interfaceLayers: {fileID: 0}
+  fireworkPrefab: {fileID: 4321196574157008510, guid: e531f171dd1f75846bba5b7fa1dfb095,
+    type: 3}
 --- !u!114 &3272134606442253111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +78,7 @@ MonoBehaviour:
     m_Bits: 1025
   moveSpeed: 5
   runspeed: 8
+  actionAsset: {fileID: 0}
 --- !u!114 &6092253054437786300
 MonoBehaviour:
   m_ObjectHideFlags: 0
