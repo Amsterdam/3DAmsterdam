@@ -34,7 +34,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &4239202409010224035
 Transform:
@@ -145,6 +145,7 @@ Transform:
   - {fileID: 7073346354248891942}
   - {fileID: 3573376492940228702}
   - {fileID: 2875886173879335398}
+  - {fileID: 5283346082514882785}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -223,6 +224,101 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2048765063443467572}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2690625634515510279
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8327578630716260213}
+    m_Modifications:
+    - target: {fileID: 2662689356683511620, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: af0ca6879f39f054ca447c9621c4de48, type: 2}
+    - target: {fileID: 3065605767507306580, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7444135911684271708, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_Name
+      value: ' ChristmasTree'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7444135911684271708, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7664089097033228685, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 13.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 43.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9928797
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -2.2188158e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.11912177
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0000000018493825
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -13.683001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fb0418fe2751eb8428179c948e4d07b2, type: 3}
+--- !u!4 &5283346082514882785 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7783683087876699366, guid: fb0418fe2751eb8428179c948e4d07b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2690625634515510279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4621734125285836269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -290,6 +386,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sign
       objectReference: {fileID: 0}
+    - target: {fileID: 7818619640028735153, guid: c86b92b615dd58e4ca128d50046f187e,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c86b92b615dd58e4ca128d50046f187e, type: 3}
 --- !u!4 &2875886173879335398 stripped
@@ -315,6 +416,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Snowman
+      objectReference: {fileID: 0}
+    - target: {fileID: 3913827037426782211, guid: effb7190fdf9365478335ecfada1b3c3,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 4403223393505430201, guid: effb7190fdf9365478335ecfada1b3c3,
         type: 3}
