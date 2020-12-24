@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7008712636139494169}
   - component: {fileID: 5730179703894242732}
   - component: {fileID: 3080695639790331529}
+  - component: {fileID: 6098229860547832358}
   m_Layer: 11
   m_Name: FirstPersonCamera
   m_TagString: MainCamera
@@ -74,6 +75,7 @@ MonoBehaviour:
     m_Bits: 1025
   moveSpeed: 5
   runspeed: 8
+  actionAsset: {fileID: 0}
 --- !u!114 &6092253054437786300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,3 +209,11 @@ MonoBehaviour:
   range: 200
   maxShadowDistance: 4000
   useFixedValue: 1
+--- !u!81 &6098229860547832358
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101375191303853095}
+  m_Enabled: 1
