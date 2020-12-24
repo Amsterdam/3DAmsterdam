@@ -59,12 +59,12 @@ public class BillboardText : MonoBehaviour
         }
         if (hours > 0)
         {
-            billboardText.text = "NOG " + hours.ToString() + " UUR EN\n" + minutes.ToString() + "MINUTEN";
+            billboardText.text = "NOG " + hours.ToString() + " UUR\nEN " + minutes.ToString() + " MIN";
             return;
         }
         if(minutes >0)
         {
-            billboardText.text = "NOG " + minutes.ToString() + "MINUTEN EN\n" + seconds.ToString() + "SECONDEN";
+            billboardText.text = "NOG " + minutes.ToString() + "MIN\nEN " + seconds.ToString() + " SEC";
             return;
         }
         if (seconds >10)
@@ -83,6 +83,6 @@ public class BillboardText : MonoBehaviour
             fireworksLayer.GetComponent<Layer>().enabled=true;
         }
 
-        billboardText.text = "gelukkig Nieuwjaar!!";
+        billboardText.text = "GELUKKING\nNIEUWJAAR!!";
     }
 }
