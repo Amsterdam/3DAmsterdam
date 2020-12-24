@@ -62,6 +62,9 @@ public class BillboardText : MonoBehaviour
         //Make sure we reset our text scale back to default if we scrubbed back
         billboardText.transform.localScale = startBillboardTextScale;
 
+        //Within the hour of allowed fireworks, enable fireworks!!
+        fireworksLayer.enabled = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
+
         if (days>0)
         {
             billboardText.text = "NOG " + days.ToString() + "\nDAG" + ((days>1) ? "EN" : "");
@@ -89,9 +92,7 @@ public class BillboardText : MonoBehaviour
             return;
         }
 
-        //2021!! Within the hour of allowed fireworks, enable fireworks!!
-        fireworksLayer.enabled = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
-        //Switch wish text every second
+        //After midnight, keep switching the text every second
         if ((seconds % 2 == 0))
         {
             billboardText.text = "GELUKKING\nNIEUWJAAR!!";
