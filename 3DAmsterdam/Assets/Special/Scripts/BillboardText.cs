@@ -15,10 +15,14 @@ public class BillboardText : MonoBehaviour
     private TextMesh billboardText;
     DateTime scriptDateTime;
     private bool AfterMidnight = false;
+
+    private Vector3 startBillboardTextScale = default;
+
     // Start is called before the first frame update
     void Start()
     {
         billboardText = GetComponent<TextMesh>();
+        startBillboardTextScale = this.transform.localScale;
         CameraModeChanger.Instance.ActiveCamera.transform.position = cameraStartpositie;
         CameraModeChanger.Instance.ActiveCamera.transform.rotation = cameraStartRotatie;
     }
@@ -54,7 +58,7 @@ public class BillboardText : MonoBehaviour
 
         if (days>0)
         {
-            billboardText.text = "NOG " + days.ToString() + "\nDAGEN";
+            billboardText.text = "NOG " + days.ToString() + "\nDAG" + ((days>1) ? "EN" : "");
             return;
         }
         if (hours > 0)
@@ -75,6 +79,7 @@ public class BillboardText : MonoBehaviour
         if (middernacht>=scriptDateTime)
         {
             billboardText.text = seconds.ToString();
+            billboardText.transform.localScale = startBillboardTextScale * 2.0f;
             return;
         }
         if (AfterMidnight == false)
