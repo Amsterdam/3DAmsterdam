@@ -63,6 +63,7 @@ namespace Amsterdam3D.Interface
 		{
 			//Enable gizmo
 
+			if (!targetGameObject) return;
 			//Activate Transform panel in sidemenu
 			ObjectProperties.Instance.OpenPanel(targetGameObject.name);
 			ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, targetGameObject.transform.position);

@@ -89,11 +89,7 @@ namespace LayerSystem
 		public void TileHandled(TileChange handledTileChange)
         {
 			TileAction action = handledTileChange.action;
-			
-
-					activeTileChanges.Remove(new Vector3Int(handledTileChange.X, handledTileChange.Y, handledTileChange.layerIndex));
-					
-			
+			activeTileChanges.Remove(new Vector3Int(handledTileChange.X, handledTileChange.Y, handledTileChange.layerIndex));
 		}
 
 		private void UpdateViewRange()
@@ -187,19 +183,6 @@ namespace LayerSystem
 						continue;
 					}
 					int LOD = CalculateLOD(tileDistance, layer);
-					if (LOD == -1)
-					{
-						if (layer.tiles.ContainsKey(tileKey))
-						{
-							TileChange tileChange = new TileChange();
-							tileChange.action = TileAction.Remove;
-							tileChange.X = tileKey.x;
-							tileChange.Y = tileKey.y;
-							pendingTileChanges.Add(tileChange);
-
-						}
-						continue;
-					}
 
 					if (layer.tiles.ContainsKey(tileKey))
 					{
@@ -221,7 +204,7 @@ namespace LayerSystem
 							tileChange.X = tileKey.x;
 							tileChange.Y = tileKey.y;
 							tileChange.layerIndex = layerIndex;
-							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
+							tileChange.priorityScore = (6000 - (int)tileDistance.magnitude) + CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
 							pendingTileChanges.Add(tileChange);
 						}
 					}
@@ -241,14 +224,13 @@ namespace LayerSystem
 		}
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)
 		{
-			int lod = -1;
+			int lod = 0;
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
 				if (dataSet.maximumDistanceSquared > (tiledistance.z))
 				{
 					lod = dataSet.lod;
-
 				}
 			}
 			return lod;
@@ -285,7 +267,7 @@ namespace LayerSystem
 						tileChange.X = activeTile.x;
 						tileChange.Y = activeTile.y;
 						tileChange.layerIndex = layerIndex;
-						tileChange.priorityScore = 0;
+						tileChange.priorityScore = int.MaxValue;
 						pendingTileChanges.Add(tileChange);
 					}
 				}
