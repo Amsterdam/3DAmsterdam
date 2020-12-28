@@ -29,10 +29,10 @@
 			  unityInstance.popup("Uw browser ondersteund helaas geen WebGL.",
 				[{text: "OK", callback: onerror}]);
 			} else if (UnityLoader.SystemInfo.mobile) {
-			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten.<br><br>Wilt u toch 3D Amsterdam starten?<br><br>",
+			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten. Wilt u toch 3D Amsterdam starten?",
 				[{text: "OK", callback: onsuccess}]);
 			} else if (["Edge", "Firefox", "Chrome", "Safari"].indexOf(UnityLoader.SystemInfo.browser) == -1) {
-			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund door uw browser.<br><br>Wilt u toch 3D Amsterdam starten?<br><br>",
+			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund door uw browser. Wilt u toch 3D Amsterdam starten?",
 				[{text: "OK", callback: onsuccess}]);
 			} else {
 			  onsuccess();
