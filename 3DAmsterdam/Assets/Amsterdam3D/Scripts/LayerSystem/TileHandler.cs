@@ -183,7 +183,10 @@ namespace LayerSystem
 						continue;
 					}
 					int LOD = CalculateLOD(tileDistance, layer);
-
+                    if (LOD==-1)
+                    {
+						continue;
+                    }
 					if (layer.tiles.ContainsKey(tileKey))
 					{
 						int activeLOD = layer.tiles[tileKey].LOD;
@@ -224,7 +227,7 @@ namespace LayerSystem
 		}
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)
 		{
-			int lod = 0;
+			int lod = -1;
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
