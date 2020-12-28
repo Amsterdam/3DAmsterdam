@@ -18,6 +18,7 @@ public class BillboardText : MonoBehaviour
     private Vector3 startBillboardTextScale = default;
 
     public bool countDownAboutToStart = false;
+    public bool allowFireworks = false;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +47,7 @@ public class BillboardText : MonoBehaviour
     //Alows us to cheat from javascript
     public void Cheat()
     {
-        previewAllowed = !previewAllowed;
+        previewAllowed = true;
     }
 
     void EditBillboardText()
@@ -68,7 +69,8 @@ public class BillboardText : MonoBehaviour
         countDownAboutToStart = scriptDateTime > buttonAppearTime;
 
         //Within the hour of allowed fireworks, enable fireworks!!
-        fireworksLayer.enabled = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
+        allowFireworks = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
+        fireworksLayer.enabled = allowFireworks;
 
         if (days>0)
         {
