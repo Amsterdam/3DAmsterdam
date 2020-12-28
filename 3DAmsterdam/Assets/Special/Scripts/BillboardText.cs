@@ -17,6 +17,8 @@ public class BillboardText : MonoBehaviour
 
     private Vector3 startBillboardTextScale = default;
 
+    public bool countDownAboutToStart = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +51,7 @@ public class BillboardText : MonoBehaviour
 
     void EditBillboardText()
     {
+        DateTime buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
         DateTime middernacht = new DateTime(2021, 1, 1, 0, 0, 0);
         DateTime fireWorksEnd = new DateTime(2021, 1, 1, 1, 0, 0);
 
@@ -61,6 +64,8 @@ public class BillboardText : MonoBehaviour
 
         //Make sure we reset our text scale back to default if we scrubbed back
         billboardText.transform.localScale = startBillboardTextScale;
+
+        countDownAboutToStart = scriptDateTime > buttonAppearTime;
 
         //Within the hour of allowed fireworks, enable fireworks!!
         fireworksLayer.enabled = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
@@ -90,6 +95,11 @@ public class BillboardText : MonoBehaviour
             billboardText.text = seconds.ToString();
             billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
+        }
+
+        if(scriptDateTime > fireWorksEnd)
+        {
+            Cheat(); //Allow cheating after 01:00 to be able to scrub the time and restart the show
         }
 
         //After midnight, keep switching the text every second
