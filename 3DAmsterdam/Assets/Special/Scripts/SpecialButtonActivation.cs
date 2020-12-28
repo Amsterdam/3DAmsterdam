@@ -24,10 +24,6 @@ public class SpecialButtonActivation : MonoBehaviour
     [SerializeField]
     private BillboardText billboardText;
 
-    [SerializeField]
-    private bool forceFirstPersonMode = false;
-
-
 	void Update()
     {
         //Show streetview fireworks button if we are in god view and we are within the fireworks window 
