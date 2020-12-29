@@ -10,6 +10,9 @@ public class SpecialButtonActivation : MonoBehaviour
     private Button backToDamButton;
 
     [SerializeField]
+    private Button replayCountdownButton;
+
+    [SerializeField]
     private Button startStreetViewFireworksButton;
 
     [SerializeField]
@@ -34,6 +37,8 @@ public class SpecialButtonActivation : MonoBehaviour
 
         //Show fireworks options when they are allowed
         fireworksOptions.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode == CameraMode.StreetView);
+
+        replayCountdownButton.gameObject.SetActive(billboardText.allowReplay);
     }
 
     public void GoToTheDam()
@@ -45,5 +50,11 @@ public class SpecialButtonActivation : MonoBehaviour
     public void StartFirstPersonFireWorks()
     {
         CameraModeChanger.Instance.FirstPersonMode(billboardText.cameraStartpositie, billboardText.cameraStartRotatie);
+    }
+
+    public void ReplayNewyearMessage()
+    {
+        billboardText.GoToCountdown();
+        StartFirstPersonFireWorks();
     }
 }

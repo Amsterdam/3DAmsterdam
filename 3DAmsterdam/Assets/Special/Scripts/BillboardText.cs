@@ -19,10 +19,28 @@ public class BillboardText : MonoBehaviour
 
     public bool countDownAboutToStart = false;
     public bool allowFireworks = false;
+    public bool allowReplay = false;
+
+    private DateTime buttonAppearTime;
+    private DateTime midnightTime;
+    private DateTime fireWorksEndTime;
+    private DateTime restartAllowedTime;
+
+    private TimeSpan verschil;
+
+    private int days;
+    private int hours;
+    private int minutes;
+    private int seconds;
 
     // Start is called before the first frame update
     void Start()
     {
+        buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
+        midnightTime = new DateTime(2021, 1, 1, 0, 0, 0);
+        fireWorksEndTime = new DateTime(2021, 1, 1, 1, 0, 0);
+        restartAllowedTime = new DateTime(2021, 1, 1, 0, 15, 0);
+
         billboardText = GetComponent<TextMesh>();
         startBillboardTextScale = this.transform.localScale;
         CameraModeChanger.Instance.ActiveCamera.transform.position = cameraStartpositie;
@@ -52,16 +70,12 @@ public class BillboardText : MonoBehaviour
 
     void EditBillboardText()
     {
-        DateTime buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
-        DateTime middernacht = new DateTime(2021, 1, 1, 0, 0, 0);
-        DateTime fireWorksEnd = new DateTime(2021, 1, 1, 1, 0, 0);
+        verschil = midnightTime.Subtract(scriptDateTime);
 
-        TimeSpan verschil = middernacht.Subtract(scriptDateTime);
-
-        int days = verschil.Days;
-        int hours = verschil.Hours;
-        int minutes = verschil.Minutes;
-        int seconds = verschil.Seconds;
+        days = verschil.Days;
+        hours = verschil.Hours;
+        minutes = verschil.Minutes;
+        seconds = verschil.Seconds;
 
         //Make sure we reset our text scale back to default if we scrubbed back
         billboardText.transform.localScale = startBillboardTextScale;
@@ -69,7 +83,7 @@ public class BillboardText : MonoBehaviour
         countDownAboutToStart = scriptDateTime > buttonAppearTime;
 
         //Within the hour of allowed fireworks, enable fireworks!!
-        allowFireworks = (scriptDateTime > middernacht && scriptDateTime < fireWorksEnd);
+        allowFireworks = (scriptDateTime > midnightTime && scriptDateTime < fireWorksEndTime);
         fireworksLayer.enabled = allowFireworks;
 
         if (days>0)
@@ -92,16 +106,20 @@ public class BillboardText : MonoBehaviour
             billboardText.text = "NOG\n" + seconds.ToString() + " SECONDEN";
             return;
         }
-        if (middernacht>=scriptDateTime)
+        if (midnightTime>=scriptDateTime)
         {
             billboardText.text = seconds.ToString();
             billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
         }
 
-        if(scriptDateTime > fireWorksEnd)
+        if(scriptDateTime > fireWorksEndTime)
         {
             Cheat(); //Allow cheating after 01:00 to be able to scrub the time and restart the show
+        }
+        if(scriptDateTime > restartAllowedTime)
+        {
+            allowReplay = true;
         }
 
         //After midnight, keep switching the text every second
@@ -115,5 +133,11 @@ public class BillboardText : MonoBehaviour
             billboardText.text = "TEAM 3D\nWENST JE";
             billboardText.transform.localScale = startBillboardTextScale;// * 0.7f;
         }
+    }
+
+	public void GoToCountdown()
+	{
+        sunSettings.dateTimeNow = buttonAppearTime;
+        allowReplay = false; //Makes button go away, and appear again at the triggertime
     }
 }
