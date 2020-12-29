@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
+using System.Collections.Generic;
 
 public class StreetViewCamera : MonoBehaviour, ICameraControls
 {
@@ -31,7 +32,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
 
     [SerializeField]
-    private GameObject fireworkPrefab;
+    private List<GameObject> fireworkPrefabs;
 
     private GameObject currentPrefab;
 
@@ -96,12 +97,32 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (!placing)
             {
-                placing = true;
-                currentPrefab = Instantiate(fireworkPrefab);
-                currentPrefab.transform.position = GetMousePositionInWorld();
-                currentPrefab.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    placing = true;
+                    currentPrefab = Instantiate(fireworkPrefabs[0]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    placing = true;
+                    currentPrefab = Instantiate(fireworkPrefabs[1]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    placing = true;
+                    currentPrefab = Instantiate(fireworkPrefabs[2]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
             }
 
             if (placing) 
@@ -110,6 +131,37 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
                 currentPrefab.transform.position = transform.position + (transform.forward * (objectDistance) + objectOffset);
                 currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
+
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    placing = true;
+                    GameObject tmp = currentPrefab;
+                    Destroy(tmp);
+                    currentPrefab = Instantiate(fireworkPrefabs[0]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    placing = true;
+                    GameObject tmp = currentPrefab;
+                    Destroy(tmp);
+                    currentPrefab = Instantiate(fireworkPrefabs[1]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    placing = true;
+                    GameObject tmp = currentPrefab;
+                    Destroy(tmp);
+                    currentPrefab = Instantiate(fireworkPrefabs[2]);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                }
+
             }
 
             if (Input.GetMouseButtonDown(0)) 
