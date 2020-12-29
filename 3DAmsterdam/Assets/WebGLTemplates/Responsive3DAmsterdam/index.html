@@ -15,7 +15,7 @@
 	</div>
     <div id="gameContainer"></div>
     <div id="loader">
-      <img class="logo" src="logo.png">
+      <img class="logo" src="logo_christmas.png">
       <div class="spinner"></div>
       <div class="progress"><div class="full"></div></div>
     </div>
@@ -24,6 +24,20 @@
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
+		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
+			if (!UnityLoader.SystemInfo.hasWebGL) {
+			  unityInstance.popup("Uw browser ondersteund helaas geen WebGL.",
+				[{text: "OK", callback: onerror}]);
+			} else if (UnityLoader.SystemInfo.mobile) {
+			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten. Wilt u toch 3D Amsterdam starten?",
+				[{text: "OK", callback: onsuccess}]);
+			} else if (["Edge", "Firefox", "Chrome", "Safari"].indexOf(UnityLoader.SystemInfo.browser) == -1) {
+			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund door uw browser. Wilt u toch 3D Amsterdam starten?",
+				[{text: "OK", callback: onsuccess}]);
+			} else {
+			  onsuccess();
+			}
+		  },
 		  onProgress: UnityProgress
 	  });
 	  var fileReader;

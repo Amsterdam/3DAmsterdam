@@ -20,7 +20,7 @@ namespace LayerSystem
     {
         public LayerSystem.TileHandler tileHandler;
         private List<fireworksCoordinate> coordinates = new List<fireworksCoordinate>();
-        public SunSettings sunSettings;
+
         public List<GameObject> FireworksPrefabCloseby;
         public List<GameObject> FireworksPrefabFaraway;
         public int maxCount = 100;
@@ -32,8 +32,7 @@ namespace LayerSystem
         private bool isWaiting = false;
         public int activeCount = 0;
         private UnityEngine.Random random;
-
-        
+                
 
         // Data Loading
         public override void OnDisableTiles(bool isenabled)
@@ -48,7 +47,7 @@ namespace LayerSystem
             switch (action)
             {
                 case TileAction.Create:
-                    StartCoroutine(getCoordinates(tileChange, callback));
+                    StartCoroutine(GetCoordinates(tileChange, callback));
                     tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), CreateNewTile(tileChange));
                     break;
                 case TileAction.Remove:
@@ -76,10 +75,10 @@ namespace LayerSystem
             callback(tileChange);
         }
 
-        IEnumerator getCoordinates(TileChange tileChange, Action<TileChange> callback = null)
+        IEnumerator GetCoordinates(TileChange tileChange, Action<TileChange> callback = null)
         {
             yield return null;
-            string escapedUrl = "https://acc.3d.amsterdam.nl/web/data/feature/Special/roadNodes/"+tileChange.X +"-" + tileChange.Y + ".txt";
+            string escapedUrl = Constants.BASE_DATA_URL + "roadnodes/"+tileChange.X +"-" + tileChange.Y + ".txt";
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
@@ -88,6 +87,7 @@ namespace LayerSystem
                 Debug.Log(tileChange.X + "-" + tileChange.Y + ".txt");
                 Debug.Log("error reading file");
                 callback(tileChange);
+                yield break;
             }
             string dataString = sewerageRequest.downloadHandler.text;
             ReadCoordinates(dataString, tileChange);
@@ -104,12 +104,19 @@ namespace LayerSystem
                 if (textline !="")
                 {
                     string[] coordinatestring = textline.Split(';');
-                    Vector3 coordinate = CoordConvert.RDtoUnity(new Vector3RD(double.Parse(coordinatestring[0], CultureInfo.InvariantCulture), double.Parse(coordinatestring[1], CultureInfo.InvariantCulture), 0));
-                    coordinate.y = 0f - (float)CoordConvert.referenceRD.z + 2;
-                    fireworksCoordinate coord = new fireworksCoordinate();
-                    coord.tilecoordinates = tilecoordinates;
-                    coord.unityPosition = coordinate;
-                    coordinates.Add(coord);
+                    try
+                    {
+                        Vector3 coordinate = CoordConvert.RDtoUnity(new Vector3RD(double.Parse(coordinatestring[0], CultureInfo.InvariantCulture), double.Parse(coordinatestring[1], CultureInfo.InvariantCulture), 0));
+                        coordinate.y = 0f - (float)CoordConvert.referenceRD.z + 2;
+                        fireworksCoordinate coord = new fireworksCoordinate();
+                        coord.tilecoordinates = tilecoordinates;
+                        coord.unityPosition = coordinate;
+                        coordinates.Add(coord);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Log(textline);
+                    }
 
                 }
 

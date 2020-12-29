@@ -7,18 +7,42 @@ using LayerSystem;
 
 public class BillboardText : MonoBehaviour
 {
-    public bool previewAllowed = true;
-    public GameObject fireworksLayer;
+    public bool previewAllowed = false;
+    public FireworksLayer fireworksLayer;
     public Vector3 cameraStartpositie;
     public Quaternion cameraStartRotatie;
     public SunSettings sunSettings;
     private TextMesh billboardText;
     DateTime scriptDateTime;
-    private bool AfterMidnight = false;
+
+    private Vector3 startBillboardTextScale = default;
+
+    public bool countDownAboutToStart = false;
+    public bool allowFireworks = false;
+    public bool allowReplay = false;
+
+    private DateTime buttonAppearTime;
+    private DateTime midnightTime;
+    private DateTime fireWorksEndTime;
+    private DateTime restartAllowedTime;
+
+    private TimeSpan verschil;
+
+    private int days;
+    private int hours;
+    private int minutes;
+    private int seconds;
+
     // Start is called before the first frame update
     void Start()
     {
+        buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
+        midnightTime = new DateTime(2021, 1, 1, 0, 0, 0);
+        fireWorksEndTime = new DateTime(2021, 1, 1, 1, 0, 0);
+        restartAllowedTime = new DateTime(2021, 1, 1, 0, 15, 0);
+
         billboardText = GetComponent<TextMesh>();
+        startBillboardTextScale = this.transform.localScale;
         CameraModeChanger.Instance.ActiveCamera.transform.position = cameraStartpositie;
         CameraModeChanger.Instance.ActiveCamera.transform.rotation = cameraStartRotatie;
     }
@@ -35,36 +59,46 @@ public class BillboardText : MonoBehaviour
         {
             scriptDateTime = sunSettings.dateTimeNow;
         }
-
         EditBillboardText();
-
-        
     }
+
+    //Alows us to cheat from javascript
+    public void Cheat()
+    {
+        previewAllowed = true;
+    }
+
     void EditBillboardText()
     {
+        verschil = midnightTime.Subtract(scriptDateTime);
 
-        DateTime middernacht = new DateTime(2021, 1, 1, 0, 0, 0);
+        days = verschil.Days;
+        hours = verschil.Hours;
+        minutes = verschil.Minutes;
+        seconds = verschil.Seconds;
 
-        TimeSpan verschil = middernacht.Subtract(scriptDateTime);
+        //Make sure we reset our text scale back to default if we scrubbed back
+        billboardText.transform.localScale = startBillboardTextScale;
 
-        int days = verschil.Days;
-        int hours = verschil.Hours;
-        int minutes = verschil.Minutes;
-        int seconds = verschil.Seconds;
+        countDownAboutToStart = scriptDateTime > buttonAppearTime;
+
+        //Within the hour of allowed fireworks, enable fireworks!!
+        allowFireworks = (scriptDateTime > midnightTime && scriptDateTime < fireWorksEndTime);
+        fireworksLayer.enabled = allowFireworks;
 
         if (days>0)
         {
-            billboardText.text = "NOG " + days.ToString() + "\nDAGEN";
+            billboardText.text = "NOG " + days.ToString() + "\nDAG" + ((days>1) ? "EN" : "");
             return;
         }
         if (hours > 0)
         {
-            billboardText.text = "NOG " + hours.ToString() + " UUR EN\n" + minutes.ToString() + "MINUTEN";
+            billboardText.text = "NOG " + hours.ToString() + " UUR\nEN " + minutes.ToString() + " MIN";
             return;
         }
         if(minutes >0)
         {
-            billboardText.text = "NOG " + minutes.ToString() + "MINUTEN EN\n" + seconds.ToString() + "SECONDEN";
+            billboardText.text = "NOG " + minutes.ToString() + "MIN\nEN " + seconds.ToString() + " SEC";
             return;
         }
         if (seconds >10)
@@ -72,17 +106,38 @@ public class BillboardText : MonoBehaviour
             billboardText.text = "NOG\n" + seconds.ToString() + " SECONDEN";
             return;
         }
-        if (middernacht>=scriptDateTime)
+        if (midnightTime>=scriptDateTime)
         {
             billboardText.text = seconds.ToString();
+            billboardText.transform.localScale = startBillboardTextScale * 2.5f;
             return;
         }
-        if (AfterMidnight == false)
+
+        if(scriptDateTime > fireWorksEndTime)
         {
-            AfterMidnight = true;
-            fireworksLayer.GetComponent<Layer>().enabled=true;
+            Cheat(); //Allow cheating after 01:00 to be able to scrub the time and restart the show
+        }
+        if(scriptDateTime > restartAllowedTime)
+        {
+            allowReplay = true;
         }
 
-        billboardText.text = "gelukkig Nieuwjaar!!";
+        //After midnight, keep switching the text every second
+        if ((seconds % 2 == 0))
+        {
+            billboardText.text = "GELUKKING\nNIEUWJAAR!!";
+            billboardText.transform.localScale = startBillboardTextScale;
+        }
+        else
+        {
+            billboardText.text = "TEAM 3D\nWENST JE";
+            billboardText.transform.localScale = startBillboardTextScale;// * 0.7f;
+        }
+    }
+
+	public void GoToCountdown()
+	{
+        sunSettings.dateTimeNow = buttonAppearTime;
+        allowReplay = false; //Makes button go away, and appear again at the triggertime
     }
 }
