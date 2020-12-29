@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using Amsterdam3D.Rendering;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.Performance
 {
@@ -15,7 +16,10 @@ namespace Amsterdam3D.Performance
         private int mobileQualitySettingSlot = 0;
 
         [SerializeField]
-        PostProcessingSettings postProcessingSettings;
+        private PostProcessingSettings postProcessingSettings;
+
+        [SerializeField]
+        private Toggle mapToggle;
 
 		private void Start()
 		{
@@ -34,6 +38,8 @@ namespace Amsterdam3D.Performance
         {
             QualitySettings.SetQualityLevel(mobileQualitySettingSlot, true);
             postProcessingSettings.SetRenderScale(0.5f);
+
+            mapToggle.isOn = false; //Disable map by default on mobile ( lots of textures = lots of memory )
         }
     }
 }
