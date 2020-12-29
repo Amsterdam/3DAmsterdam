@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using Amsterdam3D.Rendering;
 using UnityEngine.UI;
+using LayerSystem;
 
 namespace Amsterdam3D.Performance
 {
@@ -21,6 +22,12 @@ namespace Amsterdam3D.Performance
         [SerializeField]
         private Toggle mapToggle;
 
+        [SerializeField]
+        private Layer[] lodTargetLayers;
+
+        [SerializeField]
+        private float mobileLodDistanceMultiplier = 0.5f;
+
 		private void Start()
 		{
             #if !UNITY_EDITOR
@@ -31,8 +38,6 @@ namespace Amsterdam3D.Performance
             #endif
         }
 
-
-
         [ContextMenu("Set mobile quality settings")]
         private void MobileOverrides()
         {
@@ -40,6 +45,15 @@ namespace Amsterdam3D.Performance
             postProcessingSettings.SetRenderScale(0.5f);
 
             mapToggle.isOn = false; //Disable map by default on mobile ( lots of textures = lots of memory )
+
+            //Reduce all LOD ranges
+            foreach(Layer layer in lodTargetLayers){
+                foreach(DataSet dataSet in layer.Datasets)
+                {
+                    dataSet.maximumDistance *= mobileLodDistanceMultiplier;
+                    dataSet.maximumDistanceSquared = dataSet.maximumDistance * dataSet.maximumDistance;
+                }
+			}
         }
     }
 }
