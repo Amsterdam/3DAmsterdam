@@ -125,7 +125,7 @@ public class BillboardText : MonoBehaviour
         //After midnight, keep switching the text every second
         if ((seconds % 2 == 0))
         {
-            billboardText.text = "GELUKKING\nNIEUWJAAR!!";
+            billboardText.text = "GELUKKIG\nNIEUWJAAR!!";
             billboardText.transform.localScale = startBillboardTextScale;
         }
         else
