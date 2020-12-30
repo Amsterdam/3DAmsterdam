@@ -57,6 +57,12 @@ public class FirstPersonMovement : MonoBehaviour
         {
             CheckPhysics();
             CheckInput();
+
+            if (!inMenus)
+            {
+                transform.position += velocity * Time.deltaTime;
+            }
+
             //TODO: Refactor this to have some more global menu state, now each class is checking for menu state seperately 
         }
         else 
@@ -138,9 +144,6 @@ public class FirstPersonMovement : MonoBehaviour
     
     private void LateUpdate()
     {
-        if (!inMenus)
-        {
-            transform.position += velocity * Time.deltaTime;
-        }
+      
     }
 }
