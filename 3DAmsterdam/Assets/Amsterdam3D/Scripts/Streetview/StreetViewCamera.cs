@@ -34,6 +34,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private List<GameObject> fireworkPrefabs;
 
+    [SerializeField]
+    private List<GameObject> randomRocketPrefab;
+
     private int usedPrefab1 = 0;
     private int usedPrefab2 = 0;
     private int usedPrefab3 = 0;
@@ -68,7 +71,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
         for (int i = 0; i < firework2ObjectPool.Length; i++)
         {
-            firework2ObjectPool[i] = Instantiate(fireworkPrefabs[1]);
+            firework2ObjectPool[i] = Instantiate(randomRocketPrefab[UnityEngine.Random.Range(0, randomRocketPrefab.Count - 1)]);
             firework2ObjectPool[i].SetActive(false);
         }
 
