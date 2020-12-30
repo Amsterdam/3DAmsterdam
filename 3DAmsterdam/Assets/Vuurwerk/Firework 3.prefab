@@ -144,7 +144,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 16
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!95 &1393583790891601116
 Animator:
@@ -331,9 +331,39 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 198069424884980432, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198268598796057722, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 198402070810913338, guid: b7b829cd4d996b54ab15cbdc5de62a02,
         type: 3}
       propertyPath: stopAction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198402070810913338, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198444634388247846, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198475452607885232, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198849889304873564, guid: b7b829cd4d996b54ab15cbdc5de62a02,
+        type: 3}
+      propertyPath: moveWithTransform
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -144,7 +144,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 16
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!95 &1393583790891601116
 Animator:
@@ -358,6 +358,11 @@ PrefabInstance:
     - target: {fileID: 198645597072035358, guid: ca38b4fca70a84e47892790122a1ec48,
         type: 3}
       propertyPath: stopAction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198645597072035358, guid: ca38b4fca70a84e47892790122a1ec48,
+        type: 3}
+      propertyPath: moveWithTransform
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4069336146080190071, guid: ca38b4fca70a84e47892790122a1ec48,

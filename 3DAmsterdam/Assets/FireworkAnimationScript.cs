@@ -21,6 +21,8 @@ public class FireworkAnimationScript : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        // create copy of animator?
+        animator.runtimeAnimatorController = Instantiate(animator.runtimeAnimatorController);
     }
 
     public void EnableScript(Transform player) 
@@ -29,6 +31,7 @@ public class FireworkAnimationScript : MonoBehaviour
         this.player = player;
         Text.SetActive(true);
         animator.SetBool("MovedBack", false);
+        animator.SetBool("FadeText", true);
 
     }
 
