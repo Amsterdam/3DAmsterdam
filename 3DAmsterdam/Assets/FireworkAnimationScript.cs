@@ -30,8 +30,11 @@ public class FireworkAnimationScript : MonoBehaviour
         active = true;
         this.player = player;
         Text.SetActive(true);
-        animator.SetBool("MovedBack", false);
-        animator.SetBool("FadeText", true);
+        if (animator != null)
+        {
+            animator.SetBool("MovedBack", false);
+            animator.SetBool("FadeText", true);
+        }
 
     }
 

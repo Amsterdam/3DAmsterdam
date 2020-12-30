@@ -126,7 +126,28 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             rotation.x += -Input.GetAxis("Mouse Y") * speed;
             rotation.x = ClampAngle(rotation.x, -90, 90);
             transform.eulerAngles = (Vector2)rotation;
-                
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (placing)
+                {
+                    placing = false;
+                    currentPrefab.GetComponent<FireworkAnimationScript>().EnableScript(this.transform);
+                    currentPrefab.GetComponentInChildren<Rigidbody>().isKinematic = false;
+                    currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
+
+                }
+
+                if (Cursor.lockState != CursorLockMode.Locked)
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+
+                }
+
+
+            }
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 EnableMenus();
@@ -136,6 +157,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             if (placing)
             {
+                Debug.Log("Placing");
                 Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
                 Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
 
@@ -181,23 +203,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (Cursor.lockState != CursorLockMode.Locked)
-                {
-                    JavascriptMethodCaller.LockCursor();
-
-                }
-                if (placing)
-                {
-                    placing = false;
-                    currentPrefab.GetComponent<FireworkAnimationScript>().EnableScript(this.transform);
-                    currentPrefab.GetComponentInChildren<Rigidbody>().isKinematic = false;
-                    currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
-
-                }
-
-            }
+           
 
             if (!placing)
             {
