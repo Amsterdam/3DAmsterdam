@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>%UNITY_WEB_NAME%</title>
+    <title>3D Amsterdam</title>
 	<link rel="stylesheet" href="style.css" />
   </head>
 
@@ -21,9 +21,12 @@
     </div>
   </body>
 
-  <script src="%UNITY_WEBGL_LOADER_URL%"></script>
+  <script src="Build/UnityLoader.js"></script>
   <script>
-	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
+	  var escapePressed = false;
+	  document.onmousedown = OnCursorDown;
+	  document.onkeydown = OnKeyDown;
+	  var unityInstance = UnityLoader.instantiate("gameContainer", "Build/special.json" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
 			  unityInstance.popup("Uw browser ondersteund helaas geen WebGL.",
@@ -88,6 +91,31 @@
 		  }
 	  }
 
+
+function OnKeyDown(ev)
+{
+	console.log("something Pressed");
+	if(ev.keyCode == 27)
+	{
+		console.log("Escape Pressed");
+		unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
+		unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
+		escapePressed = true;
+
+	}
+}
+function OnCursorDown()
+{
+	
+	console.log("Cursor pressed");
+	if(escapePressed){
+
+	unityInstance.SendMessage("FirstPersonCamera", "DisableMenus");
+	console.log("Cursor pressed");
+	escapePressed = false;
+	}
+}
+
 	  function OnCursorStateChanged() {
 		  console.log("cursor lock state changed");
 		  if (document.pointerLockElement === document.getElementById("#canvas")) {
@@ -95,8 +123,9 @@
 			  window.focus();
 		  } else {
 			  console.log("Pointer is unlocked");
-			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
-			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
+		unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
+		unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
+		escapePressed = true;
 			  window.focus();
 		  }
 

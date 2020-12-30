@@ -86,6 +86,20 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         inMenus = false;
     }
 
+
+    public void DisableMenus() 
+    {
+
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            Cursor.visible = false;
+            JavascriptMethodCaller.LockCursor();
+            interfaceLayers.SetActive(false);
+            mainMenu.SetActive(false);
+            inMenus = false;
+        }
+    }
+    
     public void EnableMenus() 
     {
         inMenus = true;
@@ -95,6 +109,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         Cursor.visible = true;
 
     }
+
+    
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation) 
     {
@@ -122,6 +138,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     {
         if (!inMenus)
         {
+
+
+
             rotation.y += Input.GetAxis("Mouse X") * speed;
             rotation.x += -Input.GetAxis("Mouse Y") * speed;
             rotation.x = ClampAngle(rotation.x, -90, 90);
@@ -130,6 +149,15 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             if (Input.GetMouseButtonDown(0))
             {
+
+
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+
+
                 if (placing)
                 {
                     placing = false;
@@ -138,14 +166,6 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                     currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
 
                 }
-
-                if (Cursor.lockState != CursorLockMode.Locked)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-
-                }
-
-
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -203,7 +223,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             }
 
-           
+
 
             if (!placing)
             {
@@ -249,16 +269,14 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 }
             }
 
-           
+
         }
+
         else 
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                EnableMenus();
-            }
-
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) 
+#if UNITY_EDITOR
+            Debug.Log("aAAAAAAAAA");
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 Cursor.visible = false;
                 JavascriptMethodCaller.LockCursor();
@@ -266,8 +284,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 mainMenu.SetActive(false);
                 inMenus = false;
             }
-
-           
+#endif
         }
     }
 
