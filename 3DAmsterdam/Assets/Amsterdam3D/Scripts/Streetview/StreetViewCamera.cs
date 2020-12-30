@@ -157,7 +157,6 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 {
                     placing = true;
                     DespawnObject();
-                    Debug.Log(usedPrefab2 % 19);
                     currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
                     currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
                     currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -219,7 +218,6 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
                     placing = true;
-                    Debug.Log(usedPrefab2 % 19);
                     currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
                     usedPrefab2++;
                     currentType = FireworkType.Rocket;
