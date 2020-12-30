@@ -48,7 +48,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
     private GameObject currentPrefab;
 
-    private enum FireworkType 
+    public enum FireworkType 
     {
         Missle,Rocket,Missle2
     }
@@ -302,12 +302,32 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         this.rotation = rotationEuler;
     }
 
-    public void SpawnPrefab(GameObject prefab) 
+    public void SpawnPrefab(int type) 
     {
         placing = true;
-        currentPrefab = Instantiate(prefab);
+        if (type == 2)
+        {
+            currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+            usedPrefab2++;
+        }
+        else if (type == 3)
+        {
+            currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+            usedPrefab3++;
+        }
+
+        else 
+        {
+            currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+            usedPrefab1++;
+        }
+
+        currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+        currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+        currentType = FireworkType.Missle;
         currentPrefab.transform.position = GetMousePositionInWorld();
         currentPrefab.SetActive(true);
+        currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
     }
 
     private void DespawnObject() 
