@@ -51,6 +51,7 @@ public class SpecialButtonActivation : MonoBehaviour
     public void StartFirstPersonFireWorks()
     {
         CameraModeChanger.Instance.FirstPersonMode(billboardText.cameraStartpositie, billboardText.cameraStartRotatie);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void ReplayNewyearMessage()
