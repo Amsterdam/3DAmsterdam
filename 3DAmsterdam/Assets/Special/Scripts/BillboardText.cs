@@ -22,6 +22,7 @@ public class BillboardText : MonoBehaviour
     public bool allowReplay = false;
 
     private DateTime buttonAppearTime;
+    private DateTime restartCountdownTime;
     private DateTime midnightTime;
     private DateTime fireWorksEndTime;
     private DateTime restartAllowedTime;
@@ -36,6 +37,7 @@ public class BillboardText : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        restartCountdownTime = new DateTime(2020, 12, 31, 23, 59, 30);
         buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
         midnightTime = new DateTime(2021, 1, 1, 0, 0, 0);
         fireWorksEndTime = new DateTime(2021, 1, 1, 1, 0, 0);
@@ -137,7 +139,7 @@ public class BillboardText : MonoBehaviour
 
 	public void GoToCountdown()
 	{
-        sunSettings.dateTimeNow = buttonAppearTime;
+        sunSettings.dateTimeNow = restartCountdownTime;
         allowReplay = false; //Makes button go away, and appear again at the triggertime
     }
 }
