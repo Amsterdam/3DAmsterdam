@@ -46,7 +46,6 @@ public class SpecialButtonActivation : MonoBehaviour
         fireWorksLightOverride.customColor = billboardText.allowFireworksFlicker;
 
         //Show streetview fireworks button if we are in god view and we are within the fireworks window 
-        Debug.Log(CameraModeChanger.Instance.CameraMode);
         startStreetViewFireworksButton.gameObject.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
 
 		//Activate button if distance is too far, and countdown is about to start, and we are not already showing the fireworks button
