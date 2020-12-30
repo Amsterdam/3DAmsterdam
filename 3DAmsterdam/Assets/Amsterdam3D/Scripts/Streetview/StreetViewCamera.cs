@@ -71,7 +71,7 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
         for (int i = 0; i < firework2ObjectPool.Length; i++)
         {
-            firework2ObjectPool[i] = Instantiate(randomRocketPrefab[UnityEngine.Random.Range(0, randomRocketPrefab.Count - 1)]);
+            firework2ObjectPool[i] = Instantiate(randomRocketPrefab[UnityEngine.Random.Range(0, randomRocketPrefab.Count)]);
             firework2ObjectPool[i].SetActive(false);
         }
 
@@ -138,8 +138,6 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
             {
                 Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
                 Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
-                currentPrefab.transform.position = transform.position + (transform.forward * (objectDistance) + objectOffset);
-                currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
 
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
@@ -286,6 +284,16 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     {
         return transform.position.y;
     }
+
+    private void LateUpdate()
+    {
+        if (placing)
+        {
+            currentPrefab.transform.position = transform.position + (transform.forward * (objectDistance) + objectOffset);
+            currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
+        }
+    }
+
     public void OnRotation(Quaternion rotation)
     {
         Vector2 rotationEuler = rotation.eulerAngles;
