@@ -391,6 +391,7 @@ GameObject:
   - component: {fileID: 1323138749957403929}
   - component: {fileID: 3020662449069460138}
   - component: {fileID: 3482347025589897221}
+  - component: {fileID: 8771701705261063395}
   m_Layer: 5
   m_Name: Explanation
   m_TagString: Untagged
@@ -414,8 +415,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 136.3}
-  m_SizeDelta: {x: 445.56, y: 76.6}
+  m_AnchoredPosition: {x: 0, y: 155.1}
+  m_SizeDelta: {x: 678.12, y: 76.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3020662449069460138
 CanvasRenderer:
@@ -446,7 +447,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f6f9d17c21b381f49a9d4b06b403679b, type: 3}
-    m_FontSize: 17
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -454,13 +455,28 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Gebruik de pijltjes toetsen om rond te lopen.
 
     Druk op Escape om deze
     modus te verlaten.'
+--- !u!114 &8771701705261063395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936269344312587082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &3522559434202907737
 GameObject:
   m_ObjectHideFlags: 0
