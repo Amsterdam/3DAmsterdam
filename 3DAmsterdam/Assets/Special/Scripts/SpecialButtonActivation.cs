@@ -39,7 +39,7 @@ public class SpecialButtonActivation : MonoBehaviour
         //Show fireworks options when they are allowed
         fireworksOptions.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode == CameraMode.StreetView);
 
-        replayCountdownButton.gameObject.SetActive(billboardText.allowReplay && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
+        replayCountdownButton.gameObject.SetActive(billboardText.allowReplay && !startStreetViewFireworksButton.gameObject.activeSelf && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
     }
 
     public void GoToTheDam()
