@@ -30,6 +30,7 @@ public class SpecialButtonActivation : MonoBehaviour
 	void Update()
     {
         //Show streetview fireworks button if we are in god view and we are within the fireworks window 
+        Debug.Log(CameraModeChanger.Instance.CameraMode);
         startStreetViewFireworksButton.gameObject.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
 
 		//Activate button if distance is too far, and countdown is about to start, and we are not already showing the fireworks button
@@ -38,7 +39,7 @@ public class SpecialButtonActivation : MonoBehaviour
         //Show fireworks options when they are allowed
         fireworksOptions.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode == CameraMode.StreetView);
 
-        replayCountdownButton.gameObject.SetActive(billboardText.allowReplay);
+        replayCountdownButton.gameObject.SetActive(billboardText.allowReplay && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
     }
 
     public void GoToTheDam()

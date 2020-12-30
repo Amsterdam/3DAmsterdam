@@ -28,7 +28,16 @@ public class FireworkAnimationScript : MonoBehaviour
         active = true;
         this.player = player;
         Text.SetActive(true);
+        animator.SetBool("MovedBack", false);
 
+    }
+
+    public void PickupScript() 
+    {
+        if (animator != null)
+        {
+            animator.SetBool("MovedBack", false);
+        }
     }
 
     // Update is called once per frame

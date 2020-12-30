@@ -34,8 +34,23 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private List<GameObject> fireworkPrefabs;
 
+    private int usedPrefab1 = 0;
+    private int usedPrefab2 = 0;
+    private int usedPrefab3 = 0;
+    private FireworkType currentType;
+
+    private GameObject[] firework1ObjectPool = new GameObject[20];
+    private GameObject[] firework2ObjectPool = new GameObject[20];
+    private GameObject[] firework3ObjectPool = new GameObject[20];
+
     private GameObject currentPrefab;
 
+    private enum FireworkType 
+    {
+        Missle,Rocket,Missle2
+    }
+    
+    
     private void OnEnable()
     {
         cameraComponent = GetComponent<Camera>();
@@ -43,6 +58,24 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         {
             interfaceLayers.SetActive(false);
             mainMenu.SetActive(false);
+        }
+
+        for (int i = 0; i < firework1ObjectPool.Length; i++) 
+        {
+            firework1ObjectPool[i] = Instantiate(fireworkPrefabs[0]);
+            firework1ObjectPool[i].SetActive(false);
+        }
+
+        for (int i = 0; i < firework2ObjectPool.Length; i++)
+        {
+            firework2ObjectPool[i] = Instantiate(fireworkPrefabs[1]);
+            firework2ObjectPool[i].SetActive(false);
+        }
+
+        for (int i = 0; i < firework3ObjectPool.Length; i++)
+        {
+            firework3ObjectPool[i] = Instantiate(fireworkPrefabs[2]);
+            firework3ObjectPool[i].SetActive(false);
         }
     }
     private void OnDisable()
@@ -97,35 +130,8 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
 
             }
 
-            if (!placing)
-            {
 
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    placing = true;
-                    currentPrefab = Instantiate(fireworkPrefabs[0]);
-                    currentPrefab.transform.position = GetMousePositionInWorld();
-                    currentPrefab.SetActive(true);
-                }
-
-                if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    placing = true;
-                    currentPrefab = Instantiate(fireworkPrefabs[1]);
-                    currentPrefab.transform.position = GetMousePositionInWorld();
-                    currentPrefab.SetActive(true);
-                }
-
-                if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    placing = true;
-                    currentPrefab = Instantiate(fireworkPrefabs[2]);
-                    currentPrefab.transform.position = GetMousePositionInWorld();
-                    currentPrefab.SetActive(true);
-                }
-            }
-
-            if (placing) 
+            if (placing)
             {
                 Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
                 Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
@@ -135,36 +141,46 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     placing = true;
-                    GameObject tmp = currentPrefab;
-                    Destroy(tmp);
-                    currentPrefab = Instantiate(fireworkPrefabs[0]);
+                    DespawnObject();
+                    currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+                    usedPrefab1++;
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    currentType = FireworkType.Missle;
                     currentPrefab.transform.position = GetMousePositionInWorld();
                     currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
                 }
 
                 if (Input.GetKeyDown(KeyCode.Alpha2))
                 {
                     placing = true;
-                    GameObject tmp = currentPrefab;
-                    Destroy(tmp);
-                    currentPrefab = Instantiate(fireworkPrefabs[1]);
-                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    DespawnObject();
+                    Debug.Log(usedPrefab2 % 19);
+                    currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    usedPrefab2++;
+                    currentType = FireworkType.Rocket;
                     currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
                 }
 
                 if (Input.GetKeyDown(KeyCode.Alpha3))
                 {
                     placing = true;
-                    GameObject tmp = currentPrefab;
-                    Destroy(tmp);
-                    currentPrefab = Instantiate(fireworkPrefabs[2]);
-                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    DespawnObject();
+                    currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    usedPrefab3++;
+                    currentType = FireworkType.Missle2;
                     currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
                 }
 
             }
 
-            if (Input.GetMouseButtonDown(0)) 
+            if (Input.GetMouseButtonDown(0))
             {
                 if (Cursor.lockState != CursorLockMode.Locked)
                 {
@@ -181,6 +197,53 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                 }
 
             }
+
+            if (!placing)
+            {
+
+                // lots of double code but I guess this is only used once anyway
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    placing = true;
+                    currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+                    usedPrefab1++;
+                    currentType = FireworkType.Missle;
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    placing = true;
+                    Debug.Log(usedPrefab2 % 19);
+                    currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+                    usedPrefab2++;
+                    currentType = FireworkType.Rocket;
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    placing = true;
+                    currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+                    usedPrefab3++;
+                    currentType = FireworkType.Missle2;
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
+                    currentPrefab.SetActive(true);
+                    currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+                }
+            }
+
+           
         }
         else 
         {
@@ -234,6 +297,35 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         }
 
         this.rotation = rotationEuler;
+    }
+
+    public void SpawnPrefab(GameObject prefab) 
+    {
+        placing = true;
+        currentPrefab = Instantiate(prefab);
+        currentPrefab.transform.position = GetMousePositionInWorld();
+        currentPrefab.SetActive(true);
+    }
+
+    private void DespawnObject() 
+    {
+        if (currentType == FireworkType.Missle)
+        {
+            usedPrefab1--;
+            firework1ObjectPool[usedPrefab1].SetActive(false);
+        }
+
+        else if (currentType == FireworkType.Rocket)
+        {
+            usedPrefab2--;
+            firework2ObjectPool[usedPrefab2].SetActive(false);
+        }
+
+        else if (currentType == FireworkType.Missle2) 
+        {
+            usedPrefab3--;
+            firework3ObjectPool[usedPrefab3].SetActive(false);
+        }
     }
 
     public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)

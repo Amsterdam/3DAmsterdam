@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1552510096561609230}
   - component: {fileID: 668486179943631587}
   - component: {fileID: 5004373264776522546}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: New Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333769442620429532}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.28, y: 0.191, z: 1.986}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children: []
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1393583790891601116}
   - component: {fileID: 9134043064936369855}
   - component: {fileID: 4776090377376498053}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Firework 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4321196574157008510}
-  m_LocalRotation: {x: -0.707105, y: 0.001604389, z: 0.001604389, w: 0.707105}
+  m_LocalRotation: {x: 0, y: 0, z: 0.0022689488, w: 0.99999744}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -132,7 +132,7 @@ Transform:
   - {fileID: 212654558752042947}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0.26}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.26}
 --- !u!54 &690832211361295514
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -207,8 +207,8 @@ GameObject:
   - component: {fileID: 212654558752042947}
   - component: {fileID: 8848879418912205216}
   - component: {fileID: 2804058707390185952}
-  m_Layer: 0
-  m_Name: g Cylinder003
+  m_Layer: 13
+  m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -221,7 +221,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6209570205835892604}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -282,13 +282,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4321196574157008507}
     m_Modifications:
+    - target: {fileID: 1180926828619224, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326495945441332, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_Name
       value: FX_Fireworks_Large_Red_01 (3)
       objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641000039280304, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868516382072212, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928916233961054, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_RootOrder
@@ -308,11 +332,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.y
@@ -324,7 +348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -349,13 +373,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4321196574157008507}
     m_Modifications:
+    - target: {fileID: 1180926828619224, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326495945441332, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_Name
       value: FX_Fireworks_Large_Red_01 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641000039280304, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868516382072212, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928916233961054, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_RootOrder
@@ -375,11 +423,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.y
@@ -391,7 +439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -416,13 +464,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4321196574157008507}
     m_Modifications:
+    - target: {fileID: 1180926828619224, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326495945441332, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_Name
       value: FX_Fireworks_Large_Red_01
       objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641000039280304, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868516382072212, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928916233961054, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_RootOrder
@@ -442,11 +514,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.y
@@ -458,7 +530,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -483,13 +555,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4321196574157008507}
     m_Modifications:
+    - target: {fileID: 1180926828619224, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1326495945441332, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_Name
       value: FX_Fireworks_Large_Red_01 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641000039280304, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868516382072212, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1928916233961054, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_RootOrder
@@ -509,11 +605,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalRotation.y
@@ -525,7 +621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257818311196038, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
