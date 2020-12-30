@@ -145,9 +145,9 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                     DespawnObject();
                     currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
                     usedPrefab1++;
+                    currentType = FireworkType.Missle;
                     currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
                     currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
-                    currentType = FireworkType.Missle;
                     currentPrefab.transform.position = GetMousePositionInWorld();
                     currentPrefab.SetActive(true);
                     currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
@@ -158,10 +158,11 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
                     placing = true;
                     DespawnObject();
                     currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
-                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
-                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
                     usedPrefab2++;
                     currentType = FireworkType.Rocket;
+                    currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+                    currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+                    currentPrefab.transform.position = GetMousePositionInWorld();
                     currentPrefab.SetActive(true);
                     currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
                 }
@@ -341,19 +342,19 @@ public class StreetViewCamera : MonoBehaviour, ICameraControls
         if (currentType == FireworkType.Missle)
         {
             usedPrefab1--;
-            firework1ObjectPool[usedPrefab1].SetActive(false);
+            firework1ObjectPool[usedPrefab1 % 19].SetActive(false);
         }
 
         else if (currentType == FireworkType.Rocket)
         {
             usedPrefab2--;
-            firework2ObjectPool[usedPrefab2].SetActive(false);
+            firework2ObjectPool[usedPrefab2 % 19].SetActive(false);
         }
 
         else if (currentType == FireworkType.Missle2) 
         {
             usedPrefab3--;
-            firework3ObjectPool[usedPrefab3].SetActive(false);
+            firework3ObjectPool[usedPrefab3 % 19].SetActive(false);
         }
     }
 

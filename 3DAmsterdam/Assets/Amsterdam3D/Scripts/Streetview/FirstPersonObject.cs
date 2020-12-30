@@ -57,7 +57,6 @@ public class FirstPersonObject : MonoBehaviour, IPointerDownHandler
 		{
 			manager.FirstPersonMode(follower.WorldPosition, savedRotation);
 			gameObject.SetActive(false);
-			Cursor.lockState = CursorLockMode.Locked;
 		}
 	}
 }
