@@ -19,11 +19,15 @@ public class BillboardText : MonoBehaviour
 
     public bool countDownAboutToStart = false;
     public bool allowFireworks = false;
+    public bool allowFireworksFlicker = false;
+
     public bool allowReplay = false;
 
     private DateTime buttonAppearTime;
     private DateTime restartCountdownTime;
     private DateTime midnightTime;
+    private DateTime fireWorksFlickerTime;
+
     private DateTime fireWorksEndTime;
     private DateTime restartAllowedTime;
 
@@ -37,9 +41,11 @@ public class BillboardText : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        restartCountdownTime = new DateTime(2020, 12, 31, 23, 59, 30);
+        restartCountdownTime = new DateTime(2020, 12, 31, 23, 59, 50);
         buttonAppearTime = new DateTime(2020, 12, 31, 23, 59, 0);
         midnightTime = new DateTime(2021, 1, 1, 0, 0, 0);
+        fireWorksFlickerTime = new DateTime(2021, 1, 1, 0, 0, 2);
+
         fireWorksEndTime = new DateTime(2021, 1, 1, 1, 0, 0);
         restartAllowedTime = new DateTime(2021, 1, 1, 0, 15, 0);
 
@@ -86,6 +92,8 @@ public class BillboardText : MonoBehaviour
 
         //Within the hour of allowed fireworks, enable fireworks!!
         allowFireworks = (scriptDateTime > midnightTime && scriptDateTime < fireWorksEndTime);
+        allowFireworksFlicker = (scriptDateTime > fireWorksFlickerTime && scriptDateTime < fireWorksEndTime);
+
         fireworksLayer.enabled = allowFireworks;
 
         if (days>0)
@@ -140,6 +148,9 @@ public class BillboardText : MonoBehaviour
 	public void GoToCountdown()
 	{
         sunSettings.dateTimeNow = restartCountdownTime;
+
+        restartCountdownTime = midnightTime; //Allows quicker restart after 1 restart/later visit
+
         allowReplay = false; //Makes button go away, and appear again at the triggertime
     }
 }
