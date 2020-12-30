@@ -197,7 +197,7 @@ public class SunSettings : MonoBehaviour
         ChangeSunPosition();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (useTimedSun)
         {

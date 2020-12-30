@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 3765959727179800786}
   - component: {fileID: 8593625809956198400}
   - component: {fileID: 611984534670928220}
+  - component: {fileID: 379039272542977203}
   m_Layer: 5
   m_Name: ButtonFireworksFPS
   m_TagString: Untagged
@@ -229,6 +230,34 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &379039272542977203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884343140378773495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6672321380974528359}
+          m_MethodName: StartFirstPersonFireWorks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1428451812664798300
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +420,7 @@ GameObject:
   - component: {fileID: 1323138749957403929}
   - component: {fileID: 3020662449069460138}
   - component: {fileID: 3482347025589897221}
+  - component: {fileID: 8771701705261063395}
   m_Layer: 5
   m_Name: Explanation
   m_TagString: Untagged
@@ -414,8 +444,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 136.3}
-  m_SizeDelta: {x: 445.56, y: 76.6}
+  m_AnchoredPosition: {x: 0, y: 155.1}
+  m_SizeDelta: {x: 678.12, y: 76.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3020662449069460138
 CanvasRenderer:
@@ -446,7 +476,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f6f9d17c21b381f49a9d4b06b403679b, type: 3}
-    m_FontSize: 17
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -454,13 +484,28 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Gebruik de pijltjes toetsen om rond te lopen.
 
     Druk op Escape om deze
     modus te verlaten.'
+--- !u!114 &8771701705261063395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936269344312587082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &3522559434202907737
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,6 +839,7 @@ GameObject:
   - component: {fileID: 886576774149546461}
   - component: {fileID: 1612961950668047033}
   - component: {fileID: 5432130189511612504}
+  - component: {fileID: 8984712305986313597}
   m_Layer: 5
   m_Name: ButtonReplayCountdown
   m_TagString: Untagged
@@ -932,6 +978,34 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8984712305986313597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644756062201124669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6672321380974528359}
+          m_MethodName: ReplayNewyearMessage
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &7657871290432385318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1132,6 +1206,7 @@ MonoBehaviour:
   distanceReference: {fileID: 0}
   triggerDistance: 200
   billboardText: {fileID: 0}
+  lightFlickerSpeed: 10
 --- !u!1 &9168959731077883636
 GameObject:
   m_ObjectHideFlags: 0
