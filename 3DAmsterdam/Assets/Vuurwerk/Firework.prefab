@@ -104,8 +104,8 @@ GameObject:
   - component: {fileID: 4321196574157008507}
   - component: {fileID: 690832211361295514}
   - component: {fileID: 1393583790891601116}
-  - component: {fileID: 3543173865155326421}
   - component: {fileID: 9134043064936369855}
+  - component: {fileID: 1867248669621612353}
   m_Layer: 13
   m_Name: Firework
   m_TagString: Untagged
@@ -168,19 +168,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!65 &3543173865155326421
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4321196574157008510}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.52, y: 0.51, z: 0.41}
-  m_Center: {x: -0.19, y: 0.18, z: 0.14}
 --- !u!114 &9134043064936369855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +183,19 @@ MonoBehaviour:
   player: {fileID: 0}
   distance: 8
   Text: {fileID: 1333769442620429532}
+--- !u!65 &1867248669621612353
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4321196574157008510}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8484821, y: 0.6321089, z: 0.7530477}
+  m_Center: {x: -0.0014481843, y: 0.30018872, z: 0.002994299}
 --- !u!1 &6462529008553797558
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,13 +221,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6462529008553797558}
-  m_LocalRotation: {x: -0.5000008, y: -0.49999925, z: -0.49999928, w: 0.5000007}
+  m_LocalRotation: {x: 0.7071068, y: -0.0000040084124, z: -0.0000040084124, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4321196574157008507}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -90.00001}
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: -359.999}
 --- !u!33 &7299078105686012585
 MeshFilter:
   m_ObjectHideFlags: 0
