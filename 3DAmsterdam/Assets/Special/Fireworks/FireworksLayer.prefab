@@ -49,7 +49,6 @@ MonoBehaviour:
   Datasets: []
   pauseLoading: 0
   tileHandler: {fileID: 0}
-  sunSettings: {fileID: 0}
   FireworksPrefabCloseby:
   - {fileID: 1594970968046242, guid: 07aa037621e4eba478ebfb04ecfbf0f5, type: 3}
   - {fileID: 1481965347600448, guid: ca38b4fca70a84e47892790122a1ec48, type: 3}
@@ -64,9 +63,9 @@ MonoBehaviour:
   - {fileID: 4329566852695322477, guid: d8b7797f8c446584b8e36fb7000a67f8, type: 3}
   - {fileID: 8003768540606059529, guid: e5a30bdbb344aab4696c95666b750a18, type: 3}
   - {fileID: 4679356834952674398, guid: 7f7e4e84904cc1c4b94c86f1dd2b7210, type: 3}
-  maxCount: 100
-  minDistance: 100
-  splitDistance: 1000
-  maxDistance: 2000
+  maxCount: 30
+  minDistance: 20
+  splitDistance: 100
+  maxDistance: 500
   activeCamera: {fileID: 0}
   activeCount: 0
