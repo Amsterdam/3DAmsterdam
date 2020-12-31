@@ -64,6 +64,13 @@ namespace Amsterdam3D.CameraMotion
 
 		void Update()
 		{
+#if !UNITY_WEBGL || UNITY_EDITOR
+			if(Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				EnableMenus();
+				PointerLock.SetMode(PointerLock.Mode.DEFAULT);
+			}
+#endif
 			if (PointerLock.GetMode() == PointerLock.Mode.DEFAULT)
 			{
 				if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
