@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
-
+using UnityEngine.UI;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -13,6 +13,9 @@ namespace Amsterdam3D.CameraMotion
 
 		[SerializeField]
 		private GameObject mainMenu;
+
+		[SerializeField]
+		private Button hideMenuButton;
 
 		[SerializeField]
 		private GameObject interfaceLayers;
@@ -28,16 +31,25 @@ namespace Amsterdam3D.CameraMotion
 			DisableMenus();
 		}
 
+		private void OnDisable()
+		{
+			hideMenuButton.gameObject.SetActive(false);
+		}
+
 		public void EnableMenus()
 		{
+			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
 			interfaceLayers.SetActive(true);
 			mainMenu.SetActive(true);
+			hideMenuButton.gameObject.SetActive(true);
 		}
 
 		public void DisableMenus()
 		{
+			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
 			interfaceLayers.SetActive(false);
 			mainMenu.SetActive(false);
+			hideMenuButton.gameObject.SetActive(false);
 		}
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
@@ -68,26 +80,11 @@ namespace Amsterdam3D.CameraMotion
 			if(Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
 				EnableMenus();
-				PointerLock.SetMode(PointerLock.Mode.DEFAULT);
 			}
 #endif
-			if (PointerLock.GetMode() == PointerLock.Mode.DEFAULT)
-			{
-				if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-				{
-					DisableMenus();
-					PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-				}
-			}
-			else
+			if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
 				FollowMouseRotation();
-
-				if (Input.GetMouseButtonDown(0) && PointerLock.GetMode() != PointerLock.Mode.FIRST_PERSON)
-				{
-					DisableMenus();
-					PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-				}
 			}
 		}
 

@@ -23,6 +23,9 @@
 
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
+	  var forceFocus = false;
+	  var unityCanvas;
+  
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
@@ -70,7 +73,7 @@
 		  unityInstance.progress.style.transform = `scaleX(${progress})`;
 		  if (progress === 1) {
 			  loader.style.display = "none";
-
+			  unityCanvas = document.getElementById("#canvas");
 			  window.onhashchange = locationHashChanged;
 			  if (window.location.hash) {
 				  locationHashChanged();
@@ -80,24 +83,18 @@
 	 
 	  if ("onpointerlockchange" in document) {
 		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
-		  console.log("On pointer lock changed to:");
 		  console.log(document.pointerLockElement);
 	  } 
 	  else if ("onmozpointerlockchange" in document) {
 		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
-		  console.log("On pointer lock changed to:");
 		  console.log(document.mozPointerLockElement);
 	  }
-	  
-	  var forceFocus = true;
 	  function OnCursorStateChanged() {
-		  console.log("Cursor lock state changed");
-		  var unityCanvas = document.getElementById("#canvas");
 		  if (document.pointerLockElement !=  unityCanvas && document.mozPointerLockElement != unityCanvas) {
 			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
-			  if(forceFocus == true){
-				window.focus();
-			  }
+		  }
+		  if(forceFocus == true){
+			window.focus();
 		  }
 	  }
 
