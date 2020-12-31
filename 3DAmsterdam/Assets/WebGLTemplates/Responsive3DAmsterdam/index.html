@@ -23,6 +23,9 @@
 
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
+	  var forceFocus = false;
+	  var unityCanvas;
+  
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
@@ -41,7 +44,6 @@
 		  onProgress: UnityProgress
 	  });
 	  var fileReader;
-
 	  var unityObjectName = "FileUploads";
 	  var objData = "";
 	  var mtlData = "";
@@ -57,15 +59,6 @@
 		  ReadFiles(event.dataTransfer.files);
 	  });
 
-	  if ("onpointerlockchange" in document) {
-		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
-		  console.log("Added on pointer lock change");
-	  } else if ("onmozpointerlockchange" in document) {
-		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
-		  console.log("Added moz on pointer lock change");
-	  }
-	  document.addEventListener("onblur", window.focus());
-
 	  function UnityProgress(unityInstance, progress) {
 		  if (!unityInstance.Module) {
 			  return;
@@ -80,26 +73,29 @@
 		  unityInstance.progress.style.transform = `scaleX(${progress})`;
 		  if (progress === 1) {
 			  loader.style.display = "none";
-
+			  unityCanvas = document.getElementById("#canvas");
 			  window.onhashchange = locationHashChanged;
 			  if (window.location.hash) {
 				  locationHashChanged();
 			  }
 		  }
 	  }
-
+	 
+	  if ("onpointerlockchange" in document) {
+		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
+		  console.log(document.pointerLockElement);
+	  } 
+	  else if ("onmozpointerlockchange" in document) {
+		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
+		  console.log(document.mozPointerLockElement);
+	  }
 	  function OnCursorStateChanged() {
-		  console.log("cursor lock state changed");
-		  if (document.pointerLockElement === document.getElementById("#canvas")) {
-			  console.log("Pointer is locked");
-			  window.focus();
-		  } else {
-			  console.log("Pointer is unlocked");
+		  if (document.pointerLockElement !=  unityCanvas && document.mozPointerLockElement != unityCanvas) {
 			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
-			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
-			  window.focus();
 		  }
-
+		  if(forceFocus == true){
+			window.focus();
+		  }
 	  }
 
 	  function locationHashChanged() {

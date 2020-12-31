@@ -50,6 +50,8 @@ namespace Amsterdam3D.CameraMotion
 
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
         {
+            PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
+
             this.CameraMode = CameraMode.StreetView;
 
             Vector3 oldPosition = currentCamera.transform.position;
@@ -90,6 +92,8 @@ namespace Amsterdam3D.CameraMotion
 
         public void GodViewMode()
         {
+            PointerLock.SetMode(PointerLock.Mode.DEFAULT);
+
             this.CameraMode = CameraMode.GodView;
             Vector3 currentPosition = currentCamera.transform.position;
             Quaternion rot = currentCamera.transform.rotation;
