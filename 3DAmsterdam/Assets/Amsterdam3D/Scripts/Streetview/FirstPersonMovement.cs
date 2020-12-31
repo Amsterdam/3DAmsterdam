@@ -28,10 +28,7 @@ namespace Amsterdam3D.CameraMotion
         [SerializeField]
         private float runspeed = 4;
 
-        private bool inMenus = false;
-
         private Ray ray;
-
         private RaycastHit hit;
 
 
@@ -48,19 +45,18 @@ namespace Amsterdam3D.CameraMotion
             ActionHandler.actions.StreetView.Enable();
         }
 
-        public void EnableMenusMovement()
-        {
-            inMenus = true;
-        }
-
+ 
         void Update()
         {
             if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
             {
                 CheckPhysics();
                 CheckInput();
+
+                transform.position += velocity * Time.deltaTime;
             }
         }
+
         private void CheckPhysics()
         {
             //Find grounding
@@ -128,15 +124,6 @@ namespace Amsterdam3D.CameraMotion
 
             // rotate velocity 
             velocity = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0) * velocity;
-
-        }
-
-        private void LateUpdate()
-        {
-            if (!inMenus)
-            {
-                transform.position += velocity * Time.deltaTime;
-            }
         }
     }
 }

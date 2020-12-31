@@ -37,12 +37,12 @@ public class StreetViewButton : MonoBehaviour
     }
 }
 
-
+/*
 public class CursorLockButton : UnityEngine.UI.Button 
 {
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-        Cursor.lockState = CursorLockMode.Locked;
     }
 }
+*/
