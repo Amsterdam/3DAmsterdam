@@ -52,22 +52,15 @@ public class SpecialButtonActivation : MonoBehaviour
 		backToDamButton.gameObject.SetActive(!startStreetViewFireworksButton.gameObject.activeSelf && billboardText.countDownAboutToStart && Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, distanceReference.transform.position) > triggerDistance);
 
         //Show fireworks options when they are allowed
-        fireworksOptions.SetActive(billboardText.allowFireworks && CameraModeChanger.Instance.CameraMode == CameraMode.StreetView);
+        fireworksOptions.SetActive(PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON && billboardText.allowFireworks);
 
         replayCountdownButton.gameObject.SetActive(billboardText.allowReplay && !startStreetViewFireworksButton.gameObject.activeSelf && CameraModeChanger.Instance.CameraMode != CameraMode.StreetView);
     }
     IEnumerator LightFlicker(){
         while (true) {
             if (billboardText.allowFireworksFlicker) {
-                //var currentRotation = fireWorksLightOverride.SunDirectionalLight.transform.rotation;
                 var startColor = fireWorksLightOverride.SunDirectionalLight.color;
                 var newColor = new Color(Random.Range(0.2f, 1.0f), Random.Range(0.2f, 1.0f), Random.Range(0.2f, 1.0f));
-                /*
-                fireWorksLightOverride.SunDirectionalLight.transform.forward = Vector3.down;
-                fireWorksLightOverride.SunDirectionalLight.transform.Rotate(Random.Range(-30, 30), Random.Range(-30, 30), Random.Range(-30, 30));
-                var targetRotation = fireWorksLightOverride.SunDirectionalLight.transform.rotation;*/
-
-                //fireWorksLightOverride.SunDirectionalLight.transform.rotation = currentRotation;
 
                 float elapsedTime = 0.0f;
                 float totalTime = Random.Range(0.2f, 1.0f);
@@ -75,7 +68,6 @@ public class SpecialButtonActivation : MonoBehaviour
                 {
                     elapsedTime += Time.deltaTime;
                     fireWorksLightOverride.SunDirectionalLight.color = Color.Lerp(startColor, newColor, (elapsedTime / totalTime));
-                    //fireWorksLightOverride.SunDirectionalLight.transform.rotation = Quaternion.Lerp(currentRotation,targetRotation, (elapsedTime / totalTime));
                     yield return null;
                 }
 
