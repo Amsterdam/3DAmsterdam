@@ -25,7 +25,6 @@
   <script>
 	  var escapePressed = false;
 	  document.onmousedown = OnCursorDown;
-	  document.onkeydown = OnKeyDown;
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "Build/special.json" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
@@ -92,18 +91,6 @@
 	  }
 
 
-function OnKeyDown(ev)
-{
-	console.log("something Pressed");
-	if(ev.keyCode == 27)
-	{
-		console.log("Escape Pressed");
-		unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
-		unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
-		escapePressed = true;
-
-	}
-}
 function OnCursorDown()
 {
 	
