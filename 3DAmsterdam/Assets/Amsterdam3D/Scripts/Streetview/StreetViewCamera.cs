@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace Amsterdam3D.CameraMotion
@@ -10,6 +11,9 @@ namespace Amsterdam3D.CameraMotion
 	{
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
+
+		public float objectDistance = 1;
+		public Vector3 objectOffset;
 
 		[SerializeField]
 		private GameObject mainMenu;
@@ -25,16 +29,60 @@ namespace Amsterdam3D.CameraMotion
 		private Ray ray;
 		private RaycastHit hit;
 
+		private bool placing = false;
+
+		[SerializeField]
+		private List<GameObject> fireworkPrefabs;
+
+		[SerializeField]
+		private List<GameObject> randomRocketPrefab;
+
+		private int usedPrefab1 = 0;
+		private int usedPrefab2 = 0;
+		private int usedPrefab3 = 0;
+		private FireworkType currentType;
+
+		private GameObject[] firework1ObjectPool = new GameObject[20];
+		private GameObject[] firework2ObjectPool = new GameObject[20];
+		private GameObject[] firework3ObjectPool = new GameObject[20];
+
+		private GameObject currentPrefab;
+
+		public enum FireworkType
+		{
+			Missle, Rocket, Missle2
+		}
+
+
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
 			DisableMenus();
+
+			for (int i = 0; i < firework1ObjectPool.Length; i++)
+			{
+				firework1ObjectPool[i] = Instantiate(fireworkPrefabs[0]);
+				firework1ObjectPool[i].SetActive(false);
+			}
+
+			for (int i = 0; i < firework2ObjectPool.Length; i++)
+			{
+				firework2ObjectPool[i] = Instantiate(randomRocketPrefab[UnityEngine.Random.Range(0, randomRocketPrefab.Count)]);
+				firework2ObjectPool[i].SetActive(false);
+			}
+
+			for (int i = 0; i < firework3ObjectPool.Length; i++)
+			{
+				firework3ObjectPool[i] = Instantiate(fireworkPrefabs[2]);
+				firework3ObjectPool[i].SetActive(false);
+			}
 		}
 
 		private void OnDisable()
 		{
 			hideMenuButton.gameObject.SetActive(false);
 		}
+
 
 		public void EnableMenus()
 		{
@@ -51,6 +99,8 @@ namespace Amsterdam3D.CameraMotion
 			mainMenu.SetActive(false);
 			hideMenuButton.gameObject.SetActive(false);
 		}
+
+
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
 		{
@@ -77,7 +127,7 @@ namespace Amsterdam3D.CameraMotion
 		void Update()
 		{
 #if !UNITY_WEBGL || UNITY_EDITOR
-			if(Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			if (Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
 				EnableMenus();
 			}
@@ -85,6 +135,108 @@ namespace Amsterdam3D.CameraMotion
 			if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
 				FollowMouseRotation();
+			}
+
+			if (Input.GetMouseButtonDown(0) && placing)
+			{
+				placing = false;
+				currentPrefab.GetComponent<FireworkAnimationScript>().EnableScript(this.transform);
+				currentPrefab.GetComponentInChildren<Rigidbody>().isKinematic = false;
+				currentPrefab.GetComponentInChildren<Rigidbody>().useGravity = true;
+
+			}
+
+
+			if (placing)
+			{
+				Debug.Log("Placing");
+				Vector2 pos = new Vector2(Screen.width / 2, Screen.height / 2);
+				Vector3 worldPos = cameraComponent.ScreenToWorldPoint(pos);
+
+				if (Input.GetKeyDown(KeyCode.Alpha1))
+				{
+					placing = true;
+					DespawnObject();
+					currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+					usedPrefab1++;
+					currentType = FireworkType.Missle;
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+					currentPrefab.transform.position = GetMousePositionInWorld();
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
+
+				if (Input.GetKeyDown(KeyCode.Alpha2))
+				{
+					placing = true;
+					DespawnObject();
+					currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+					usedPrefab2++;
+					currentType = FireworkType.Rocket;
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+					currentPrefab.transform.position = GetMousePositionInWorld();
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
+
+				if (Input.GetKeyDown(KeyCode.Alpha3))
+				{
+					placing = true;
+					DespawnObject();
+					currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					usedPrefab3++;
+					currentType = FireworkType.Missle2;
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
+
+			}
+
+			if (!placing)
+			{
+
+				// lots of double code but I guess this is only used once anyway
+				if (Input.GetKeyDown(KeyCode.Alpha1))
+				{
+					placing = true;
+					currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+					usedPrefab1++;
+					currentType = FireworkType.Missle;
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+					currentPrefab.transform.position = GetMousePositionInWorld();
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
+
+				if (Input.GetKeyDown(KeyCode.Alpha2))
+				{
+					placing = true;
+					currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+					usedPrefab2++;
+					currentType = FireworkType.Rocket;
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+					currentPrefab.transform.position = GetMousePositionInWorld();
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
+
+				if (Input.GetKeyDown(KeyCode.Alpha3))
+				{
+					placing = true;
+					currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+					usedPrefab3++;
+					currentType = FireworkType.Missle2;
+					currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+					currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+					currentPrefab.transform.position = GetMousePositionInWorld();
+					currentPrefab.SetActive(true);
+					currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+				}
 			}
 		}
 
@@ -114,6 +266,16 @@ namespace Amsterdam3D.CameraMotion
 		{
 			return transform.position.y;
 		}
+
+		private void LateUpdate()
+		{
+			if (placing)
+			{
+				currentPrefab.transform.position = transform.position + (transform.forward * (objectDistance) + objectOffset);
+				currentPrefab.transform.eulerAngles = new Vector3(currentPrefab.transform.eulerAngles.x, transform.rotation.eulerAngles.y, currentPrefab.transform.eulerAngles.z);
+			}
+		}
+
 		public void OnRotation(Quaternion rotation)
 		{
 			Vector2 rotationEuler = rotation.eulerAngles;
@@ -128,6 +290,55 @@ namespace Amsterdam3D.CameraMotion
 			}
 
 			this.rotation = rotationEuler;
+		}
+
+		public void SpawnPrefab(int type)
+		{
+			placing = true;
+			if (type == 2)
+			{
+				currentPrefab = firework2ObjectPool[usedPrefab2 % 19];
+				usedPrefab2++;
+			}
+			else if (type == 3)
+			{
+				currentPrefab = firework3ObjectPool[usedPrefab3 % 19];
+				usedPrefab3++;
+			}
+
+			else
+			{
+				currentPrefab = firework1ObjectPool[usedPrefab1 % 19];
+				usedPrefab1++;
+			}
+
+			currentPrefab.GetComponent<Rigidbody>().isKinematic = true;
+			currentPrefab.transform.rotation = Quaternion.Euler(Vector3.zero);
+			currentType = FireworkType.Missle;
+			currentPrefab.transform.position = GetMousePositionInWorld();
+			currentPrefab.SetActive(true);
+			currentPrefab.GetComponent<FireworkAnimationScript>().PickupScript();
+		}
+
+		private void DespawnObject()
+		{
+			if (currentType == FireworkType.Missle)
+			{
+				usedPrefab1--;
+				firework1ObjectPool[usedPrefab1 % 19].SetActive(false);
+			}
+
+			else if (currentType == FireworkType.Rocket)
+			{
+				usedPrefab2--;
+				firework2ObjectPool[usedPrefab2 % 19].SetActive(false);
+			}
+
+			else if (currentType == FireworkType.Missle2)
+			{
+				usedPrefab3--;
+				firework3ObjectPool[usedPrefab3 % 19].SetActive(false);
+			}
 		}
 
 		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
