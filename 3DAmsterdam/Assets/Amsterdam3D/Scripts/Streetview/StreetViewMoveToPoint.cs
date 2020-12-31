@@ -10,7 +10,7 @@ namespace Amsterdam3D.CameraMotion
     {
 
         public Camera FPSCam;
-        private float lerpSpeed = 3f;
+        private float lerpSpeed = 5f;
 
         public UnityEvent OnMoved;
 
