@@ -20,6 +20,14 @@ namespace Amsterdam3D.Interface
             if (bagId.Length < 5) return;
 
             StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) => {
+                //Use the boundingbox coordinates to draw the thumbnail for this building position                 
+                List<Vector3> bbox = new List<Vector3>();
+                var rdCoordinateTopLeft = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 4.0));
+                var rdCoordinateTopRight = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 4.0));
+                bbox.Add(rdCoordinateTopLeft);
+                bbox.Add(rdCoordinateTopRight);
+                ObjectProperties.Instance.RenderThumbnailContaining(bbox.ToArray());
+
                 ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
                 ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
                 ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);

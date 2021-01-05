@@ -90,6 +90,25 @@ namespace Amsterdam3D.Interface
             
             thumbnailRenderer.Render();
         }
+        public void RenderThumbnailContaining(Vector3[] points)
+        {
+            //Find our centroid
+            var centroid = new Vector3(0, 0, 0);
+            var totalPoints = points.Length;
+            foreach (var point in points)
+            {
+                centroid += point;
+            }
+            centroid /= totalPoints;
+            Bounds bounds = new Bounds(centroid, Vector3.zero);
+
+            //Expand our bounds
+            foreach (Vector3 point in points)
+            {
+                bounds.Encapsulate(point);
+            }
+            RenderThumbnailContaining(bounds);
+        }
         public void RenderThumbnailContaining(Bounds bounds)
         {
             var objectSizes = bounds.max - bounds.min;

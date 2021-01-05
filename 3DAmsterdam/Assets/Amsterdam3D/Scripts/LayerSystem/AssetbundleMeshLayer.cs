@@ -246,6 +246,12 @@ namespace LayerSystem
 				callback?.Invoke(id);
 			}
 		}
+
+		public void GetAllVerts(List<string> selectedIDs)
+		{
+			
+		}
+
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
 			var meshFilter = obj.GetComponent<MeshFilter>();

@@ -190,17 +190,20 @@ public class SelectByID : MonoBehaviour
 
         if (lastSelectedID != emptyID)
         {
-            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
             ObjectProperties.Instance.OpenPanel("Pand");
             ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
         else{
             //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
             ObjectProperties.Instance.OpenPanel("Grond");
             ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
         }
     }
+
+    private void GetAllVertsInSelection(string id)
+    {
+        containerLayer.GetAllVerts(selectedIDs);
+	}
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
