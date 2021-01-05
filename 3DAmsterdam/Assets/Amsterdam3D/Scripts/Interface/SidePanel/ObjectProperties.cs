@@ -39,9 +39,16 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
+        [SerializeField]
+        private Camera thumbnailCameraPrefab;
         private Camera thumbnailRenderer;
 
-        void Awake()
+        [SerializeField]
+        private float cameraThumbnailObjectMargin = 0.1f;
+
+		public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+
+		void Awake()
 		{
 			if (Instance == null)
 			{
@@ -54,24 +61,14 @@ namespace Amsterdam3D.Interface
             //Properties panel is disabled at startup
             objectPropertiesPanel.SetActive(false);
 
-			CreateThumbnailRenderCamera();
-		}
-
-		private void CreateThumbnailRenderCamera()
-		{
-			//Our render camera for thumbnails. 
-            //We disable it so we cant manualy render a single frame using Camera.Render();
-			thumbnailRenderer = new GameObject().AddComponent<Camera>();
-            thumbnailRenderer.name = "ThumbnailRenderer";
-			thumbnailRenderer.fieldOfView = 30;
-			thumbnailRenderer.farClipPlane = 5000;
-			thumbnailRenderer.targetTexture = thumbnailRenderTexture;
-			thumbnailRenderer.enabled = false;
-		}
+            //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
+            thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
+        }
 
         public void AddTransformPanel(GameObject transformable)
         {
-            Instantiate(transformPanelPrefab, targetFieldsContainer).SetTarget(transformable);
+            TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
+            transformPanel.SetTarget(transformable);
         }
 
         public void OpenPanel(string title, bool clearOldfields = true)
@@ -90,6 +87,19 @@ namespace Amsterdam3D.Interface
         {
             thumbnailRenderer.transform.position = from;
             thumbnailRenderer.transform.LookAt(to);
+            
+            thumbnailRenderer.Render();
+        }
+        public void RenderThumbnailContaining(Bounds bounds)
+        {
+            var objectSizes = bounds.max - bounds.min;
+            var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
+            var cameraView = 2.0f * Mathf.Tan(0.5f * Mathf.Deg2Rad * thumbnailRenderer.fieldOfView);
+            var distance = objectSize / cameraView;
+            distance += cameraThumbnailObjectMargin * objectSize;
+
+            thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
+            thumbnailRenderer.transform.LookAt(bounds.center);
             thumbnailRenderer.Render();
         }
 
