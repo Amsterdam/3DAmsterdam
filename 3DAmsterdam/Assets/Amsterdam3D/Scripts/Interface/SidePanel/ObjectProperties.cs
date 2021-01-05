@@ -90,6 +90,8 @@ namespace Amsterdam3D.Interface
             
             thumbnailRenderer.Render();
         }
+
+        
         public void RenderThumbnailContaining(Vector3[] points)
         {
             //Find our centroid
@@ -109,7 +111,9 @@ namespace Amsterdam3D.Interface
             }
             RenderThumbnailContaining(bounds);
         }
-        public void RenderThumbnailContaining(Bounds bounds)
+
+
+		public void RenderThumbnailContaining(Bounds bounds)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);

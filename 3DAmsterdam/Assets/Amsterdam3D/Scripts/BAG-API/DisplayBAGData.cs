@@ -20,12 +20,23 @@ namespace Amsterdam3D.Interface
             if (bagId.Length < 5) return;
 
             StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) => {
-                //Use the boundingbox coordinates to draw the thumbnail for this building position                 
+                //Use the boundingbox coordinates to draw the thumbnail for this building position 
+                double estimatedHeight = 100.0f;
+                /*if(double.TryParse(buildingData.hoogste_bouwlaag, out estimatedHeight)){
+                    estimatedHeight *= 2.5f; //Take an average layer height
+
+                    Debug.Log("HEIGHT ESTIMATE: " + estimatedHeight);
+                }*/
+
                 List<Vector3> bbox = new List<Vector3>();
-                var rdCoordinateTopLeft = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 4.0));
-                var rdCoordinateTopRight = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 4.0));
-                bbox.Add(rdCoordinateTopLeft);
-                bbox.Add(rdCoordinateTopRight);
+                var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0.0));
+                var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0.0));
+                var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], estimatedHeight));
+                var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], estimatedHeight));
+                bbox.Add(rdA);
+                bbox.Add(rdB);
+                bbox.Add(rdC);
+                bbox.Add(rdD);
                 ObjectProperties.Instance.RenderThumbnailContaining(bbox.ToArray());
 
                 ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
