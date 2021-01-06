@@ -106,9 +106,11 @@ MonoBehaviour:
     type: 3}
   transformPanelPrefab: {fileID: 8672078815327666604, guid: 44e1397e6ca53274390b38e3980263b8,
     type: 3}
-  thumbnailExclusiveLayer: 
   thumbnailCameraPrefab: {fileID: 9139849903442163905, guid: 3633d44bc1ddeda49aac5f63e74e1f1d,
     type: 3}
+  renderAllLayersMask:
+    serializedVersion: 2
+    m_Bits: 256
   cameraThumbnailObjectMargin: 0.1
 --- !u!114 &3414459779218427146
 MonoBehaviour:
