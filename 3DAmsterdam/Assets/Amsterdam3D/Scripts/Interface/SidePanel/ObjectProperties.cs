@@ -42,8 +42,6 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Camera thumbnailCameraPrefab;
         private Camera thumbnailRenderer;
-        [SerializeField]
-        private LayerMask layerMask;
 
         [SerializeField]
         private float cameraThumbnailObjectMargin = 0.1f;
@@ -102,11 +100,9 @@ namespace Amsterdam3D.Interface
             {
                 bounds.Encapsulate(point);
             }
-            RenderThumbnailContaining(bounds);
+            RenderThumbnailContaining(bounds, renderAllLayers);
         }
-
-
-		public void RenderThumbnailContaining(Bounds bounds)
+		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
@@ -116,6 +112,7 @@ namespace Amsterdam3D.Interface
 
             thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
             thumbnailRenderer.transform.LookAt(bounds.center);
+            thumbnailRenderer.cullingMask = (renderAllLayers) ? CameraModeChanger.Instance.ActiveCamera.cullingMask : thumbnailCameraPrefab.cullingMask;
             thumbnailRenderer.Render();
         }
 
