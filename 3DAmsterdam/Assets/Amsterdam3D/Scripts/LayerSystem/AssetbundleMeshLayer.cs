@@ -118,7 +118,7 @@ namespace LayerSystem
 					{
 						if (TileHasHighlight(tileChange))
 						{
-							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject));
+							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
 						}
 						else
 						{
@@ -129,6 +129,7 @@ namespace LayerSystem
 					}
 					else
 					{
+
 						callback(tileChange);
 					}
 
@@ -156,7 +157,7 @@ namespace LayerSystem
 			return true;
 		}
 
-		private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject)
+		private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
 		{
 			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
 			ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
@@ -175,7 +176,7 @@ namespace LayerSystem
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
-
+					callback(tileChange);
 				}
 				else
 				{
@@ -200,6 +201,7 @@ namespace LayerSystem
 			tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
 			//activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
 			yield return null;
+			callback(tileChange);
 
 		}
 
