@@ -137,12 +137,12 @@ public class SelectByID : MonoBehaviour
     /// <param name="ids">List of IDs to add to our selection</param>
     private void HighlightObjectsWithIDs(List<string> ids)
     {
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
-
-        selectedIDs.AddRange(ids);
+		selectedIDs.AddRange(ids);
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
-    }
+
+		ContextPointerMenu.Instance.SelectBuildingIDs(selectedIDs);
+	}
 
     /// <summary>
     /// Clear our list of selected objects, and update the highlights
@@ -152,7 +152,9 @@ public class SelectByID : MonoBehaviour
 		lastSelectedID = emptyID;
 		selectedIDs.Clear();
         containerLayer.Highlight(selectedIDs);
-    }
+
+		ContextPointerMenu.Instance.SelectBuildingIDs(selectedIDs);
+	}
 
     /// <summary>
     /// Hides all objects that matches the list of ID's, and remove them from our selection list.

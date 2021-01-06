@@ -23,6 +23,8 @@ namespace Amsterdam3D.Interface
 		[Tooltip("Select buttons that should be active for specific states")]
 		private StateButtons[] buttonsAvailableOnState;
 
+		private Button[] allButtons;
+
 		[Serializable]
 		public class StateButtons
 		{
@@ -34,7 +36,8 @@ namespace Amsterdam3D.Interface
 		{
 			DEFAULT,
 			CUSTOM_OBJECTS,
-			SELECTABLE_STATICS
+			BUILDING_SELECTION,
+			MULTI_BUILDING_SELECTION
 		}
 
 		private void Start()
@@ -43,12 +46,13 @@ namespace Amsterdam3D.Interface
 			{
 				Instance = this;
 			}
-			contextItemsPanel.gameObject.SetActive(false);
 
 			//Add a listener to every containing button that closes our context menu on click
-			Button[] buttons = contextItemsPanel.GetComponentsInChildren<Button>();
-			foreach (Button button in buttons)
+			foreach (Button button in allButtons)
 				button.onClick.AddListener(CloseContextMenu);
+
+			allButtons = GetComponentsInChildren<Button>();
+			contextItemsPanel.gameObject.SetActive(false);
 		}
 
 		public void SetTargetObject(GameObject newTarget)
@@ -74,7 +78,6 @@ namespace Amsterdam3D.Interface
 		void CloseContextMenu()
 		{
 			contextItemsPanel.gameObject.SetActive(false);
-			state = ContextState.DEFAULT;
 		}
 
 		/// <summary>
@@ -86,8 +89,7 @@ namespace Amsterdam3D.Interface
 			state = newState;
 
 			//Start by disabling all buttons but disablig their interactibility
-			var buttons = GetComponentsInChildren<Button>();
-			foreach (Button button in buttons)
+			foreach (Button button in allButtons)
 				button.interactable = false;
 
 			//Now only active the buttons that should be active in this new state
@@ -121,6 +123,22 @@ namespace Amsterdam3D.Interface
 			//Always disable the panel first, so our appear animation plays again
 			contextItemsPanel.gameObject.SetActive(false);
 			contextItemsPanel.gameObject.SetActive(true);
+		}
+
+		public void SelectBuildingIDs(List<string> selectedIDs)
+		{
+			if (selectedIDs.Count == 1)
+			{
+				SwitchState(ContextState.BUILDING_SELECTION);
+			}
+			else if (selectedIDs.Count > 1)
+			{
+				SwitchState(ContextState.MULTI_BUILDING_SELECTION);
+			}
+			else
+			{
+				SwitchState(ContextState.DEFAULT);
+			}
 		}
 	}
 }
