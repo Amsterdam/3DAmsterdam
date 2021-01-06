@@ -102,7 +102,7 @@ namespace LayerSystem
 					{
 						if (TileHasHighlight(tileChange))
 						{
-							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject));
+							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
 						}
 						else
 						{
@@ -113,6 +113,7 @@ namespace LayerSystem
 					}
 					else
 					{
+
 						callback(tileChange);
 					}
 
@@ -140,7 +141,7 @@ namespace LayerSystem
 			return true;
 		}
 
-		private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject)
+		private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
 		{
 			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
 			ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
@@ -159,7 +160,7 @@ namespace LayerSystem
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
-
+					callback(tileChange);
 				}
 				else
 				{
@@ -184,6 +185,7 @@ namespace LayerSystem
 			tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
 			//activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
 			yield return null;
+			callback(tileChange);
 
 		}
 
@@ -298,7 +300,7 @@ namespace LayerSystem
 
 		public void Highlight(List<string> ids)
 		{
-			StopAllCoroutines();
+			
 			StartCoroutine(HighlightIDs(ids));
 		}
 
@@ -308,7 +310,7 @@ namespace LayerSystem
 		/// <param name="ids">List of unique (BAG) id's we want to hide</param>
 		public void Hide(List<string> ids)
 		{
-			StopAllCoroutines();
+			
 			StartCoroutine(HideIDs(ids));
 		}
 
