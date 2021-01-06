@@ -84,17 +84,8 @@ namespace Amsterdam3D.Interface
         {
             objectPropertiesPanel.SetActive(false);
         }
-
-        public void RenderThumbnailFromPosition(Vector3 from, Vector3 to)
-        {
-            thumbnailRenderer.transform.position = from;
-            thumbnailRenderer.transform.LookAt(to);
-            
-            thumbnailRenderer.Render();
-        }
-
         
-        public void RenderThumbnailContaining(Vector3[] points)
+        public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
         {
             //Find our centroid
             var centroid = new Vector3(0, 0, 0);
