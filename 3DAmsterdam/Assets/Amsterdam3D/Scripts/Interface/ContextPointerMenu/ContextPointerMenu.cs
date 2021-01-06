@@ -25,6 +25,7 @@ namespace Amsterdam3D.Interface
 
 		private Button[] allButtons;
 
+
 		[Serializable]
 		public class StateButtons
 		{
@@ -48,10 +49,11 @@ namespace Amsterdam3D.Interface
 			}
 
 			//Add a listener to every containing button that closes our context menu on click
+			allButtons = GetComponentsInChildren<Button>();
 			foreach (Button button in allButtons)
 				button.onClick.AddListener(CloseContextMenu);
 
-			allButtons = GetComponentsInChildren<Button>();
+			SwitchState(ContextState.DEFAULT);
 			contextItemsPanel.gameObject.SetActive(false);
 		}
 
@@ -123,22 +125,6 @@ namespace Amsterdam3D.Interface
 			//Always disable the panel first, so our appear animation plays again
 			contextItemsPanel.gameObject.SetActive(false);
 			contextItemsPanel.gameObject.SetActive(true);
-		}
-
-		public void SelectBuildingIDs(List<string> selectedIDs)
-		{
-			if (selectedIDs.Count == 1)
-			{
-				SwitchState(ContextState.BUILDING_SELECTION);
-			}
-			else if (selectedIDs.Count > 1)
-			{
-				SwitchState(ContextState.MULTI_BUILDING_SELECTION);
-			}
-			else
-			{
-				SwitchState(ContextState.DEFAULT);
-			}
 		}
 	}
 }
