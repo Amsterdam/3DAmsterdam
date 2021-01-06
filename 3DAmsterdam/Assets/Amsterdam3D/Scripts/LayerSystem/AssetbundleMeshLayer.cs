@@ -310,7 +310,7 @@ namespace LayerSystem
 
 		public void Highlight(List<string> ids)
 		{
-			StopAllCoroutines();
+			
 			StartCoroutine(HighlightIDs(ids));
 		}
 
@@ -320,7 +320,7 @@ namespace LayerSystem
 		/// <param name="ids">List of unique (BAG) id's we want to hide</param>
 		public void Hide(List<string> ids)
 		{
-			StopAllCoroutines();
+			
 			StartCoroutine(HideIDs(ids));
 		}
 
