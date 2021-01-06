@@ -19,52 +19,62 @@ namespace Amsterdam3D.Interface
             ObjectProperties.Instance.AddTitle("Pand " + bagId);
             if (bagId.Length < 5) return;
 
-            StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) => {
-                //Use the boundingbox coordinates to draw the thumbnail for this building position 
-                double estimatedHeight = 100.0f;
-                /*if(double.TryParse(buildingData.hoogste_bouwlaag, out estimatedHeight)){
-                    estimatedHeight *= 2.5f; //Take an average layer height
+			StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
+			{
+				EstimateBuildingThumbnailFrame(buildingData);
 
-                    Debug.Log("HEIGHT ESTIMATE: " + estimatedHeight);
-                }*/
+				ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
+				ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
+				ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
+				ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
+				ObjectProperties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
+				ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
+				ObjectProperties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
+				ObjectProperties.Instance.AddURLText("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
-                List<Vector3> bbox = new List<Vector3>();
-                var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0.0));
-                var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0.0));
-                var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], estimatedHeight));
-                var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], estimatedHeight));
-                bbox.Add(rdA);
-                bbox.Add(rdB);
-                bbox.Add(rdC);
-                bbox.Add(rdD);
-                ObjectProperties.Instance.RenderThumbnailContaining(bbox.ToArray());
+				ObjectProperties.Instance.AddSeperatorLine();
 
-                ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
-                ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
-                ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
-                ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
-                ObjectProperties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-                ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
-                ObjectProperties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
-                ObjectProperties.Instance.AddURLText("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
-
-                ObjectProperties.Instance.AddSeperatorLine();
-
-                //Load up the list of addresses tied to this building (in a Seperate API call)
-                ObjectProperties.Instance.AddTitle("Adressen");
-                StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) => {
-                   foreach(var address in addressList.results)
-                   {
-                        //We create a field and make it clickable, so addresses cant contain more data
-                        var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "");
-                        var button = dataKeyAndValue.GetComponent<Button>();
-                        button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
-                   }
-                }));
-            }));
+				//Load up the list of addresses tied to this building (in a Seperate API call)
+				ObjectProperties.Instance.AddTitle("Adressen");
+				StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
+				{
+					foreach (var address in addressList.results)
+					{
+						//We create a field and make it clickable, so addresses cant contain more data
+						var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "");
+						var button = dataKeyAndValue.GetComponent<Button>();
+						button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
+					}
+				}));
+			}));
         }
 
-        private void ShowAddressData(string addressId, Button button)
+		private static void EstimateBuildingThumbnailFrame(BagData.Rootobject buildingData)
+		{
+            //Create our building area using bbox coming from the building data
+            List<Vector3> points = new List<Vector3>();
+			var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0.0));
+			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0.0));
+           
+            //Estimate height using a raycast shot from above at the center of the bounding box
+            double estimatedHeight = 100.0f;
+            RaycastHit hit;
+            if (Physics.Raycast(Vector3.Lerp(rdA,rdB,0.5f) + Vector3.up*300.0f, Vector3.down, out hit))
+            {
+                estimatedHeight = hit.point.y;
+            }
+
+            //Add extra points giving our points shape a height
+            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], estimatedHeight));
+			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], estimatedHeight));
+			points.Add(rdA);
+			points.Add(rdB);
+			points.Add(rdC);
+			points.Add(rdD);
+			ObjectProperties.Instance.RenderThumbnailContaining(points.ToArray());
+		}
+
+		private void ShowAddressData(string addressId, Button button)
         {
             button.onClick.RemoveAllListeners();
 
