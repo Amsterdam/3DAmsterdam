@@ -10,9 +10,16 @@ namespace LayerSystem
 {
     public class AssetbundleMeshLayer : Layer
     {
+		[SerializeField]
+		public List<Tile> activetileslist = new List<Tile>();
         public Material DefaultMaterial;
 
-		public override void OnDisableTiles(bool isenabled)
+        public void Update()
+        {
+			activetileslist = tiles.Values.ToList();
+        }
+
+        public override void OnDisableTiles(bool isenabled)
         {
 
         }
@@ -86,15 +93,24 @@ namespace LayerSystem
 			url = url.Replace("{y}", tileChange.Y.ToString());
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
 			{
-				yield return uwr.SendWebRequest();
+				
+				tileChange.status = "downloading";
+				AsyncOperation request = uwr.SendWebRequest();
 
+                while (!request.isDone)
+                {
+					tileChange.status = request.progress.ToString();
+					yield return null;
+                }
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
-					RemoveGameObjectFromTile(tileChange);
+					tileChange.status = "error downloading";
+					yield return new WaitForSeconds(4f);
 					callback(tileChange);
 				}
 				else
 				{
+					tileChange.status = "finished downloading";
 					AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
 					yield return new WaitUntil(() => pauseLoading == false);
 					GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
