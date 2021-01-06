@@ -361,7 +361,7 @@ namespace LayerSystem
 		public float maximumDistanceSquared;
 		public bool enabled = true;
 	}
-
+	[Serializable]
 	public class Tile
 	{
 		public Layer layer;
@@ -378,6 +378,7 @@ namespace LayerSystem
 		public int layerIndex;
 		public int X;
 		public int Y;
+		public string status;
 	}
 	public enum TileAction
 	{
