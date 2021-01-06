@@ -42,6 +42,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private Camera thumbnailCameraPrefab;
         private Camera thumbnailRenderer;
+        [SerializeField]
+        private LayerMask layerMask;
 
         [SerializeField]
         private float cameraThumbnailObjectMargin = 0.1f;
