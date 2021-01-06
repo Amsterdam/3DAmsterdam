@@ -71,7 +71,7 @@ namespace Amsterdam3D.Interface
 			points.Add(rdB);
 			points.Add(rdC);
 			points.Add(rdD);
-			ObjectProperties.Instance.RenderThumbnailContaining(points.ToArray());
+			ObjectProperties.Instance.RenderThumbnailContaining(points.ToArray(), true);
 		}
 
 		private void ShowAddressData(string addressId, Button button)
