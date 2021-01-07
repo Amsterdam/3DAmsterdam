@@ -91,9 +91,7 @@ namespace Amsterdam3D.CameraMotion
 
         void Update()
 		{
-			if (InteractionOverruled()) return;
-
-            canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
+            canUseMouseRelatedFunctions = (!EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
 
            //these shouldn't be needed anymore since unity input system has modifiers built in
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -128,19 +126,6 @@ namespace Amsterdam3D.CameraMotion
 		private bool BlockedByTextInput(){
             return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
         }
-
-		private bool InteractionOverruled()
-		{
-			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || ObjectManipulation.manipulatingObject)
-			{
-				interactionOverruled = true;
-			}
-			else if (Input.GetMouseButtonUp(0))
-			{
-				interactionOverruled = false;
-			}
-			return interactionOverruled;
-		}
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
 		{
