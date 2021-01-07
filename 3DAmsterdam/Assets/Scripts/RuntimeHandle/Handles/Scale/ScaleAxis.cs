@@ -1,3 +1,4 @@
+using Amsterdam3D.CameraMotion;
 using System.IO;
 using System.Security.Permissions;
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace RuntimeHandle
         {
             Vector3 mouseVector = (Input.mousePosition - p_previousPosition);
             float mag = mouseVector.magnitude;
-            mouseVector = Camera.main.transform.rotation * mouseVector.normalized;
+            mouseVector = CameraModeChanger.Instance.ActiveCamera.transform.rotation * mouseVector.normalized;
 
             Vector3 rperp = _parentTransformHandle.space == HandleSpace.LOCAL
                 ? _parentTransformHandle.target.rotation * _perp
