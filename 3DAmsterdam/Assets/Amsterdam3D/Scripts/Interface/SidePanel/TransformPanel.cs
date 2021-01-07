@@ -1,4 +1,5 @@
 ﻿using ConvertCoordinates;
+using RuntimeHandle;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -78,9 +79,22 @@ public class TransformPanel : MonoBehaviour
     {
         if (gizmoHandles) return;
 
-        gizmoHandles = RuntimeHandle.RuntimeTransformHandle.Create(null, RuntimeHandle.HandleType.POSITION);
+        gizmoHandles = RuntimeTransformHandle.Create(null, HandleType.POSITION);
         gizmoHandles.autoScale = true;
-        gizmoHandles.space = RuntimeHandle.HandleSpace.LOCAL;   
+        gizmoHandles.space = HandleSpace.LOCAL;   
+    }
+
+    public void TranslationGizmo()
+    {
+        if (gizmoHandles) gizmoHandles.type = HandleType.POSITION;
+    }
+    public void RotationGizmo()
+    {
+        if (gizmoHandles) gizmoHandles.type = HandleType.ROTATION;
+    }
+    public void ScaleGizmo()
+    {
+        if (gizmoHandles) gizmoHandles.type = HandleType.SCALE;
     }
 
     public void SetTarget(GameObject targetGameObject)
