@@ -89,6 +89,8 @@ namespace Amsterdam3D.CameraMotion
 
         void Update()
 		{
+            requireMouseClickBeforeDrag = (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0));
+
             canUseMouseRelatedFunctions = (!EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
 
            //these shouldn't be needed anymore since unity input system has modifiers built in
@@ -137,27 +139,15 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!translationModifier)
+            if (!translationModifier && !BlockedByTextInput() && moveAction != null)
             {
-                // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
-
-                if (!BlockedByTextInput()) 
+                Vector3 movement = moveAction.ReadValue<Vector2>();
+                if (movement != null)
                 {
-                    if (moveAction != null)
-                    {
-                        Vector3 movement = moveAction.ReadValue<Vector2>();
-                        if (movement != null)
-                        {
-                            movement.z = movement.y;
-                            movement.y = 0;
-                            movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                            cameraComponent.transform.position += movement * moveSpeed;
-                        }
-                        else 
-                        {
-                            Debug.Log("WTF?");
-                        }
-                    }
+                    movement.z = movement.y;
+                    movement.y = 0;
+                    movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                    cameraComponent.transform.position += movement * moveSpeed;
                 }
             }
         }
@@ -299,7 +289,7 @@ namespace Amsterdam3D.CameraMotion
                 else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
                 {
                     dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
-
+                     
                     if(dragMomentum.magnitude > 0.1f)
                         transform.position -= dragMomentum;
 
