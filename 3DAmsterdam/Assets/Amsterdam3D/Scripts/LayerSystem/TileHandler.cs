@@ -157,9 +157,9 @@ namespace LayerSystem
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.z) / tileSize) * tileSize;
-				for (int x = startX; x < endX; x += tileSize)
+				for (int x = startX; x <= endX; x += tileSize)
 				{
-					for (int y = startY; y < endY; y += tileSize)
+					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID)));
