@@ -57,17 +57,20 @@ namespace Amsterdam3D.Interface
 			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0.0));
            
             //Estimate height using a raycast shot from above at the center of the bounding box
-            double estimatedHeight = 100.0f;
+            float estimatedHeight = 100.0f;
             RaycastHit hit;
-            if (Physics.Raycast(Vector3.Lerp(rdA,rdB,0.5f) + Vector3.up*300.0f, Vector3.down, out hit))
+            if (Physics.BoxCast(Vector3.Lerp(rdA,rdB,0.5f) + Vector3.up*300.0f,Vector3.one*10.0f, Vector3.down, out hit))
             {
                 estimatedHeight = hit.point.y;
             }
 
             //Add extra points giving our points shape a height
-            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], estimatedHeight));
-			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], estimatedHeight));
-			points.Add(rdA);
+            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0));
+			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0));
+            rdC.y = estimatedHeight;
+            rdD.y = estimatedHeight;
+
+            points.Add(rdA);
 			points.Add(rdB);
 			points.Add(rdC);
 			points.Add(rdD);
