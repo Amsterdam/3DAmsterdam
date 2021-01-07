@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Amsterdam3D.CameraMotion;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RuntimeHandle
@@ -19,7 +20,6 @@ namespace RuntimeHandle
 
         public bool autoScale = false;
         public float autoScaleFactor = 1;
-        public Camera handleCamera;
 
         private Vector3 _previousPosition;
         private HandleBase _previousAxis;
@@ -37,9 +37,6 @@ namespace RuntimeHandle
 
         void Start()
         {
-            if (handleCamera == null)
-                handleCamera = Camera.main;
-
             _previousType = type;
 
             if (target == null)
@@ -77,7 +74,7 @@ namespace RuntimeHandle
         {
             if (autoScale)
                 transform.localScale =
-                    Vector3.one * (Vector3.Distance(handleCamera.transform.position, transform.position) * autoScaleFactor) / 15;
+                    Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
             
             if (_previousType != type || _previousAxes != axes)
             {
@@ -99,12 +96,15 @@ namespace RuntimeHandle
             if (Input.GetMouseButtonDown(0) && axis != null)
             {
                 _draggingAxis = axis;
+                ObjectManipulation.manipulatingObject = true;
                 _draggingAxis.StartInteraction();
             }
 
             if (Input.GetMouseButtonUp(0) && _draggingAxis != null)
             {
+                Debug.Log("End interaction");
                 _draggingAxis.EndInteraction();
+                ObjectManipulation.manipulatingObject = false;
                 _draggingAxis = null;
             }
 
@@ -138,7 +138,7 @@ namespace RuntimeHandle
 
         private HandleBase GetAxis()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray);
             if (hits.Length == 0)
                 return null;
