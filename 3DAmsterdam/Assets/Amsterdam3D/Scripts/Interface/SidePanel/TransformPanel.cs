@@ -95,6 +95,8 @@ public class TransformPanel : MonoBehaviour
         gizmoHandles.gameObject.SetActive(true);
         gizmoHandles.target = targetGameObject.transform;
         gizmoHandles.enabled = true;
+
+        gizmoHandles.movedHandle.RemoveAllListeners();
         gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
     }
 
