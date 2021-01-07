@@ -56,8 +56,6 @@ namespace Amsterdam3D.CameraMotion
 
         public bool LockFunctions = false;
 
-		private bool interactionOverruled = false;
-
         private Vector3 zoomDirection;
 
         private Vector3 dragOrigin;
