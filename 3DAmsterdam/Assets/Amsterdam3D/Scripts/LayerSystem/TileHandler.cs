@@ -68,7 +68,9 @@ namespace LayerSystem
 		}
 		void Update()
 		{
+			#if UNITY_EDITOR
 			activeTileChangesView = activeTileChanges.Values.ToList();
+			#endif
 
 			UpdateViewRange();
 			GetTilesizes();
