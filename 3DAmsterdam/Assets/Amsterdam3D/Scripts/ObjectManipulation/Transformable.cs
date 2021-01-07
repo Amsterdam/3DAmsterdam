@@ -52,8 +52,7 @@ public class Transformable : MonoBehaviour
 	{
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
 		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
-		ObjectProperties.Instance.AddTransformPanel(gameObject);
-		ObjectProperties.Instance.SetTransformTarget(gameObject);
+		ObjectProperties.Instance.OpenTransformPanel(gameObject);
 	}
 
 	/// <summary>

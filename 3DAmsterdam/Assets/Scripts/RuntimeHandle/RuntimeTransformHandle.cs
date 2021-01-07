@@ -1,11 +1,13 @@
 ﻿using Amsterdam3D.CameraMotion;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RuntimeHandle
 {
     /**
      * Created by Peter @sHTiF Stefcek 21.10.2020
+     * Altered by 3D Amsterdam Team to make translation handles be relative to world, and not mouse delta. 07.01.2021
      */
     public class RuntimeTransformHandle : MonoBehaviour
     {
@@ -35,8 +37,12 @@ namespace RuntimeHandle
 
         public Transform target;
 
-        void Start()
+        public UnityEvent movedHandle;
+
+        void Awake()
         {
+            movedHandle = new UnityEvent();
+
             _previousType = type;
 
             if (target == null)
@@ -91,6 +97,7 @@ namespace RuntimeHandle
             if (Input.GetMouseButton(0) && _draggingAxis != null)
             {
                 _draggingAxis.Interact(_previousPosition);
+                movedHandle.Invoke();
             }
 
             if (Input.GetMouseButtonDown(0) && axis != null)
