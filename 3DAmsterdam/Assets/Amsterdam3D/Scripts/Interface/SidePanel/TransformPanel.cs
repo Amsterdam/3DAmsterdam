@@ -47,31 +47,26 @@ public class TransformPanel : MonoBehaviour
     private const string stringDecimal = "F2";
     private const string emptyStringDefault = "0";
 
+    private static RuntimeHandle.RuntimeTransformHandle gizmoHandles;
+
+    private bool ignoreChangeEvents = false;
+
     void Start()
     {
         //Store starting position so any transform changes can be added to that untill we lose focus
         translateX.onValueChanged.AddListener(TranslationInputChanged);
         translateY.onValueChanged.AddListener(TranslationInputChanged);
         translateZ.onValueChanged.AddListener(TranslationInputChanged);
-        translateX.onEndEdit.AddListener(ApplyTranslation);
-        translateY.onEndEdit.AddListener(ApplyTranslation);
-        translateZ.onEndEdit.AddListener(ApplyTranslation);
 
         //Rotation preview and apply
         rotateX.onValueChanged.AddListener(RotationInputChanged);
         rotateY.onValueChanged.AddListener(RotationInputChanged);
         rotateZ.onValueChanged.AddListener(RotationInputChanged);
-        rotateX.onEndEdit.AddListener(ApplyRotation);
-        rotateY.onEndEdit.AddListener(ApplyRotation);
-        rotateZ.onEndEdit.AddListener(ApplyRotation);
 
         //Scale preview and apply
         scaleX.onValueChanged.AddListener(ScaleInputChanged);
         scaleY.onValueChanged.AddListener(ScaleInputChanged);
         scaleZ.onValueChanged.AddListener(ScaleInputChanged);
-        scaleX.onEndEdit.AddListener(ApplyScale);
-        scaleY.onEndEdit.AddListener(ApplyScale);
-        scaleZ.onEndEdit.AddListener(ApplyScale);
 
         //Add listeners to change
         rdX.onValueChanged.AddListener(RDInputChanged);
@@ -157,6 +152,8 @@ public class TransformPanel : MonoBehaviour
     /// <param name="value">Required string field for event handlers</param>
     private void TranslationInputChanged(string value = null)
     {
+        if (ignoreChangeEvents) return;
+
         Vector3RD previewTranslation = basePosition;
         previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
         previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
@@ -176,6 +173,8 @@ public class TransformPanel : MonoBehaviour
     /// <param name="value">Required string field for event handlers</param>
     private void RotationInputChanged(string value = null)
     {
+        if (ignoreChangeEvents) return;
+
         transformableTarget.transform.rotation = baseRotation;
         transformableTarget.transform.Rotate(
             float.Parse(MakeInputParsable(rotateX.text)),
@@ -190,6 +189,8 @@ public class TransformPanel : MonoBehaviour
     /// <param name="value">Required string field for event handlers</param>
     private void ScaleInputChanged(string value = null)
     {
+        if (ignoreChangeEvents) return;
+
         Vector3 normalisedScaler = new Vector3(
             baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
             baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
@@ -202,8 +203,7 @@ public class TransformPanel : MonoBehaviour
     /// <summary>
     /// Applies the translation (uses this position as 0,0,0)
     /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyTranslation(string value = null)
+    private void ApplyTranslation()
     {
         basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
@@ -216,8 +216,7 @@ public class TransformPanel : MonoBehaviour
     /// <summary>
     /// Applies the rotation (uses this rotation as 0,0,0)
     /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyRotation(string value = null)
+    private void ApplyRotation()
     {
         baseRotation = transformableTarget.transform.rotation;
 
@@ -230,8 +229,7 @@ public class TransformPanel : MonoBehaviour
     /// <summary>
     /// Applies the scale (uses this scale as 0,0,0)
     /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyScale(string value = null)
+    private void ApplyScale()
     {
         baseScale = transformableTarget.transform.localScale;
 
@@ -244,14 +242,12 @@ public class TransformPanel : MonoBehaviour
     /// <summary>
     /// Set our current base position to the current RD coordinates.
     /// </summary>
-    private void UpdateRDCoordinates()
+    private void SetRDCoordinateFields()
     {
         rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
         rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
         rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
         napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
-
-        basePosition = rdCoordinates;
     }
 
     /// <summary>
@@ -260,6 +256,8 @@ public class TransformPanel : MonoBehaviour
     /// <param name="value"></param>
     private void RDInputChanged(string value = null)
     {
+        if (ignoreChangeEvents) return;
+
         rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
         rdCoordinates.y = double.Parse(rdY.text, CultureInfo.InvariantCulture);
         rdCoordinates.z = double.Parse(napZ.text, CultureInfo.InvariantCulture);
