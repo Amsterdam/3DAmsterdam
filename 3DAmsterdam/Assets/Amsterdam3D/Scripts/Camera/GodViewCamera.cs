@@ -72,9 +72,6 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction moveAction;
         private IAction rotateAction;
-        
-
-
 
         private float minUndergroundY = 0.0f;
 
