@@ -249,13 +249,11 @@ namespace LayerSystem
 
 		private void AddTileChange(TileChange tileChange, int layerIndex)
 		{
-
 			//don't add a tilechange if the tile has an active tilechange already
 			
 			Vector3Int activekey = new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex);
 			if (activeTileChanges.ContainsKey(activekey))
 			{
-				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
 				return;
 			}
 			bool tileIspending = false;
@@ -267,21 +265,12 @@ namespace LayerSystem
                 }
 			}
 
-
             //Replace running tile changes with this one if priority is higher
-
             if (tileIspending==false)
             {
 				
 				pendingTileChanges.Add(tileChange);
-			}
-            else
-            {
-				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
-			}
-				
-			
-			
+			}			
 		}
 
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)
