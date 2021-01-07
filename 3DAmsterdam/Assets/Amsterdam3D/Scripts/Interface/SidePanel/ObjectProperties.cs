@@ -1,6 +1,7 @@
 ﻿using Amsterdam3D.CameraMotion;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,16 +40,20 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
+        [Header("Thumbnail rendering")]
         [SerializeField]
         private Camera thumbnailCameraPrefab;
         private Camera thumbnailRenderer;
         [SerializeField]
         private LayerMask renderAllLayersMask;
-
         [SerializeField]
         private float cameraThumbnailObjectMargin = 0.1f;
+        [SerializeField]
+        private Material buildingsExclusiveShader;
+        [SerializeField]
+        private Material defaultBuildingsShader;
 
-		public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
 
 		void Awake()
 		{
@@ -115,7 +120,23 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
             thumbnailRenderer.transform.LookAt(bounds.center);
             thumbnailRenderer.cullingMask = (renderAllLayers) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
-            thumbnailRenderer.Render();
+
+            if (renderAllLayers)
+            {
+                var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
+                foreach (var renderer in renderersOnBuildingsLayer)
+                {
+                    renderer.material.shader = buildingsExclusiveShader.shader;
+                    Debug.Log("Swapping " + renderer.gameObject.name); 
+                }
+                thumbnailRenderer.Render();
+
+                foreach (var renderer in renderersOnBuildingsLayer)
+                    renderer.material.shader = defaultBuildingsShader.shader;
+            }
+            else{
+                thumbnailRenderer.Render();
+            }
         }
 
         /// <summary>
