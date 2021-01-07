@@ -67,7 +67,7 @@ namespace Amsterdam3D.Interface
 			//Activate Transform panel in sidemenu
 			ObjectProperties.Instance.OpenPanel(targetGameObject.name);
 			ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, targetGameObject.transform.position);
-			ObjectProperties.Instance.AddTransformPanel(targetGameObject);
+			ObjectProperties.Instance.OpenTransformPanel(targetGameObject);
 		}
 
 		/// <summary>
