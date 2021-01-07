@@ -26,7 +26,12 @@ namespace LayerSystem
 		public List<Layer> layers = new List<Layer>();
 		private List<int> tileSizes = new List<int>();
 		private List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
+
+		[SerializeField]
 		private List<TileChange> pendingTileChanges = new List<TileChange>();
+		[SerializeField]
+		private List<TileChange> activeTileChangesView = new List<TileChange>();
+
 		private Dictionary<Vector3Int, TileChange> activeTileChanges = new Dictionary<Vector3Int, TileChange>();
 		// key : Vector3Int where
 		//                  x = bottomleft x-coordinate in RD
@@ -63,13 +68,17 @@ namespace LayerSystem
 		}
 		void Update()
 		{
+			#if UNITY_EDITOR
+			activeTileChangesView = activeTileChanges.Values.ToList();
+			#endif
+
 			UpdateViewRange();
 			GetTilesizes();
 			GetPossibleTiles();
 
-			GetTileChanges();
-
+			pendingTileChanges.Clear();
 			RemoveOutOfViewTiles();
+			GetTileChanges();
 
 			if (pendingTileChanges.Count == 0) { return; }
 
@@ -82,6 +91,16 @@ namespace LayerSystem
 					activeTileChanges.Add(tilekey, highestPriorityTileChange);
 					pendingTileChanges.Remove(highestPriorityTileChange);
 					layers[highestPriorityTileChange.layerIndex].HandleTile(highestPriorityTileChange,TileHandled);
+				}
+				else if (activeTileChanges.TryGetValue(tilekey, out TileChange existingTileChange))
+				{
+					//Change running tile changes to more important ones
+					Debug.Log("Upgrading existing");
+					if (existingTileChange.priorityScore < highestPriorityTileChange.priorityScore)
+					{
+						activeTileChanges[tilekey] = highestPriorityTileChange;
+						pendingTileChanges.Remove(highestPriorityTileChange);
+					}
 				}
 			}
 		}
@@ -140,9 +159,9 @@ namespace LayerSystem
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.z) / tileSize) * tileSize;
-				for (int x = startX; x < endX; x += tileSize)
+				for (int x = startX; x <= endX; x += tileSize)
 				{
-					for (int y = startY; y < endY; y += tileSize)
+					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID)));
@@ -167,8 +186,6 @@ namespace LayerSystem
 		}
 		private void GetTileChanges()
 		{
-			pendingTileChanges.Clear();
-
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
 				Layer layer = layers[layerIndex];
@@ -177,20 +194,25 @@ namespace LayerSystem
 				foreach (Vector3Int tileDistance in tileDistances[tilesizeIndex])
 				{
 					tileKey = new Vector2Int(tileDistance.x, tileDistance.y);
-
-					if (activeTileChanges.ContainsKey(new Vector3Int(tileKey.x, tileKey.y, layerIndex)))
-					{
-						continue;
-					}
 					int LOD = CalculateLOD(tileDistance, layer);
-                    if (LOD==-1)
+                    if (LOD==-1 && !layer.tiles.ContainsKey(tileKey))
                     {
 						continue;
                     }
-					if (layer.tiles.ContainsKey(tileKey))
+					else if (layer.tiles.ContainsKey(tileKey))
 					{
 						int activeLOD = layer.tiles[tileKey].LOD;
-						if (activeLOD > LOD)
+						if (LOD == -1)
+						{
+							TileChange tileChange = new TileChange();
+							tileChange.action = TileAction.Remove;
+							tileChange.X = tileKey.x;
+							tileChange.Y = tileKey.y;
+							tileChange.layerIndex = layerIndex;
+							tileChange.priorityScore = int.MaxValue;
+							AddTileChange(tileChange, layerIndex);
+						}
+						else if (activeLOD > LOD)
 						{
 							TileChange tileChange = new TileChange();
 							tileChange.action = TileAction.Downgrade;
@@ -198,7 +220,7 @@ namespace LayerSystem
 							tileChange.Y = tileKey.y;
 							tileChange.layerIndex = layerIndex;
 							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, activeLOD - 1);
-							pendingTileChanges.Add(tileChange);
+							AddTileChange(tileChange, layerIndex);
 						}
 						else if (activeLOD < LOD)
 						{
@@ -207,8 +229,8 @@ namespace LayerSystem
 							tileChange.X = tileKey.x;
 							tileChange.Y = tileKey.y;
 							tileChange.layerIndex = layerIndex;
-							tileChange.priorityScore = (6000 - (int)tileDistance.magnitude) + CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
-							pendingTileChanges.Add(tileChange);
+							tileChange.priorityScore = (5000 - (int)tileDistance.magnitude) + CalculatePriorityScore(layer.layerPriority, activeLOD + 1);
+							AddTileChange(tileChange, layerIndex);
 						}
 					}
 					else
@@ -217,14 +239,51 @@ namespace LayerSystem
 						tileChange.action = TileAction.Create;
 						tileChange.X = tileKey.x;
 						tileChange.Y = tileKey.y;
-						tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, 0);
+						tileChange.priorityScore = (6000 - (int)tileDistance.magnitude);
 						tileChange.layerIndex = layerIndex;
-						pendingTileChanges.Add(tileChange);
+						AddTileChange(tileChange, layerIndex);
 					}
 				}
 			}
-
 		}
+
+		private void AddTileChange(TileChange tileChange, int layerIndex)
+		{
+
+			//don't add a tilechange if the tile has an active tilechange already
+			
+			Vector3Int activekey = new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex);
+			if (activeTileChanges.ContainsKey(activekey))
+			{
+				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
+				return;
+			}
+			bool tileIspending = false;
+			for (int i = pendingTileChanges.Count - 1; i >= 0; i--)
+			{
+				if (pendingTileChanges[i].X == tileChange.X && pendingTileChanges[i].Y == tileChange.Y && pendingTileChanges[i].layerIndex == tileChange.layerIndex)
+                {
+					tileIspending = true;
+                }
+			}
+
+
+            //Replace running tile changes with this one if priority is higher
+
+            if (tileIspending==false)
+            {
+				
+				pendingTileChanges.Add(tileChange);
+			}
+            else
+            {
+				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
+			}
+				
+			
+			
+		}
+
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)
 		{
 			int lod = -1;
@@ -270,8 +329,8 @@ namespace LayerSystem
 						tileChange.X = activeTile.x;
 						tileChange.Y = activeTile.y;
 						tileChange.layerIndex = layerIndex;
-						tileChange.priorityScore = 0;
-						pendingTileChanges.Add(tileChange);
+						tileChange.priorityScore = int.MaxValue;
+						AddTileChange(tileChange,layerIndex);
 					}
 				}
 
@@ -284,7 +343,7 @@ namespace LayerSystem
 
 			for (int i = 1; i < pendingTileChanges.Count; i++)
 			{
-				if (pendingTileChanges[i].priorityScore < highestPriority)
+				if (pendingTileChanges[i].priorityScore > highestPriority)
 				{
 					highestPriorityTileChange = pendingTileChanges[i];
 					highestPriority = highestPriorityTileChange.priorityScore;
@@ -313,6 +372,7 @@ namespace LayerSystem
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
 	}
+	[Serializable]
 	public class TileChange
 	{
 		public TileAction action;
