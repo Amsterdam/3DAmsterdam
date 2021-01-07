@@ -51,21 +51,24 @@ namespace Amsterdam3D.Interface
 				Instance = this;
 			}
 
-            //Start with our main container. Groups may change this target.
-            targetFieldsContainer = generatedFieldsRootContainer;
+			//Start with our main container. Groups may change this target.
+			targetFieldsContainer = generatedFieldsRootContainer;
 
-            //Properties panel is disabled at startup
-            objectPropertiesPanel.SetActive(false);
+			//Properties panel is disabled at startup
+			objectPropertiesPanel.SetActive(false);
 
 			CreateThumbnailRenderCamera();
+			InitializeGizmoHandles();
+		}
 
-            handle = RuntimeHandle.RuntimeTransformHandle.Create(null, RuntimeHandle.HandleType.POSITION);
-            handle.enabled = false;
-            handle.autoScale = true;
-            handle.space = RuntimeHandle.HandleSpace.WORLD;
-            handle.gameObject.SetActive(false);
-
-        }
+		private void InitializeGizmoHandles()
+		{
+			handle = RuntimeHandle.RuntimeTransformHandle.Create(null, RuntimeHandle.HandleType.POSITION);
+			handle.enabled = false;
+			handle.autoScale = true;
+			handle.space = RuntimeHandle.HandleSpace.LOCAL;
+			handle.gameObject.SetActive(false);
+		}
 
 		private void CreateThumbnailRenderCamera()
 		{
