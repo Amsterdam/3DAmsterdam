@@ -79,36 +79,72 @@ public class TransformPanel : MonoBehaviour
         napZ.onValueChanged.AddListener(RDInputChanged);
     }
 
+    private void CreateGizmoHandles()
+    {
+        if (gizmoHandles) return;
+
+        gizmoHandles = RuntimeHandle.RuntimeTransformHandle.Create(null, RuntimeHandle.HandleType.POSITION);
+        gizmoHandles.autoScale = true;
+        gizmoHandles.space = RuntimeHandle.HandleSpace.LOCAL;   
+    }
+
     public void SetTarget(GameObject targetGameObject)
     {
         transformableTarget = targetGameObject;
 
-        ApplyRotation();
-        ApplyTranslation();
-        ApplyScale();
+        ApplyTransformOffsets(); //Our starting percentage scale is always 100% (even if our imported/created stuff has a strange scale)
+        SetRDCoordinateFields();
 
-        //Sets our RD translation offset
-        UpdateRDCoordinates();
+        //Target our 3D gizmo on the same object
+        CreateGizmoHandles();  
+        gizmoHandles.gameObject.SetActive(true);
+        gizmoHandles.target = targetGameObject.transform;
+        gizmoHandles.enabled = true;
+        gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
     }
 
-    /// <summary>
-    /// Something else transformed our target. Update all parameters.
-    /// </summary>
-    public void TargetWasTransformed()
+	/// <summary>
+	/// Something else transformed our target. Update all parameters.
+	/// </summary>
+	public void TargetWasTransformed()
+	{
+        ignoreChangeEvents = true;
+
+        SetRDCoordinateFields();
+        UpdateWithCurrentTransform();
+
+        ignoreChangeEvents = false;
+    }
+
+
+    private void UpdateWithCurrentTransform()
     {
-        ApplyRotation();
-        ApplyTranslation();
-        ApplyScale();
+        translateX.text = (rdCoordinates.x - basePosition.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
+        translateY.text = (rdCoordinates.y - basePosition.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+        translateZ.text = (rdCoordinates.z - basePosition.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
 
-        UpdateRDCoordinates();
+        rotateX.text = (transformableTarget.transform.eulerAngles.x - baseRotation.eulerAngles.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
+        rotateY.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
+        rotateZ.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+
+        scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
+        scaleY.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
+        scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
     }
 
-    /// <summary>
-    /// Forces an input string to be parsable.
-    /// </summary>
-    /// <param name="input">The source string</param>
-    /// <returns></returns>
-    private string MakeInputParsable(string input)
+    private void ApplyTransformOffsets()
+	{
+		ApplyRotation();
+		ApplyTranslation();
+		ApplyScale();
+	}
+
+	/// <summary>
+	/// Forces an input string to be parsable.
+	/// </summary>
+	/// <param name="input">The source string</param>
+	/// <returns></returns>
+	private string MakeInputParsable(string input)
     {
         if (string.IsNullOrEmpty(input)) return emptyStringDefault;
         if (input == "-") return "-" + emptyStringDefault;

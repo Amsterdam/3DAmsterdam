@@ -41,9 +41,6 @@ namespace Amsterdam3D.Interface
 
         private Camera thumbnailRenderer;
 
-
-        private RuntimeHandle.RuntimeTransformHandle handle;
-
         void Awake()
 		{
 			if (Instance == null)
@@ -58,16 +55,6 @@ namespace Amsterdam3D.Interface
 			objectPropertiesPanel.SetActive(false);
 
 			CreateThumbnailRenderCamera();
-			InitializeGizmoHandles();
-		}
-
-		private void InitializeGizmoHandles()
-		{
-			handle = RuntimeHandle.RuntimeTransformHandle.Create(null, RuntimeHandle.HandleType.POSITION);
-			handle.enabled = false;
-			handle.autoScale = true;
-			handle.space = RuntimeHandle.HandleSpace.LOCAL;
-			handle.gameObject.SetActive(false);
 		}
 
 		private void CreateThumbnailRenderCamera()
@@ -82,16 +69,9 @@ namespace Amsterdam3D.Interface
 			thumbnailRenderer.enabled = false;
 		}
 
-        public void AddTransformPanel(GameObject transformable)
+        public void OpenTransformPanel(GameObject transformable)
         {
             Instantiate(transformPanelPrefab, targetFieldsContainer).SetTarget(transformable);
-        }
-
-        public void SetTransformTarget(GameObject transformable) 
-        {
-            handle.target = transformable.transform;
-            handle.enabled = true;
-            handle.gameObject.SetActive(true);
         }
 
         public void OpenPanel(string title, bool clearOldfields = true)
@@ -104,7 +84,6 @@ namespace Amsterdam3D.Interface
         public void ClosePanel()
         {
             objectPropertiesPanel.SetActive(false);
-            handle.gameObject.SetActive(false);
         }
 
         public void RenderThumbnailFromPosition(Vector3 from, Vector3 to)
