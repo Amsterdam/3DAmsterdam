@@ -1,3 +1,4 @@
+using Amsterdam3D.CameraMotion;
 using UnityEngine;
 
 namespace RuntimeHandle
@@ -10,7 +11,8 @@ namespace RuntimeHandle
         protected Vector3 _startPosition;
         protected Vector3 _axis;
         protected Vector3 _perp;
-
+        protected Plane _plane;
+        protected Vector3 _interactionOffset;
         public PositionAxis Initialize(RuntimeTransformHandle p_runtimeHandle, Vector3 p_axis, Vector3 p_perp,
             Color p_color)
         {
@@ -47,43 +49,67 @@ namespace RuntimeHandle
         }
 
         public override void Interact(Vector3 p_previousPosition)
-        {
-            Vector3 mouseVector = (Input.mousePosition - p_previousPosition);
-            float mag = mouseVector.magnitude;
-            mouseVector = Camera.main.transform.rotation * mouseVector.normalized;
+        {            
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
-            Vector3 rperp = _parentTransformHandle.space == HandleSpace.LOCAL
-                ? _parentTransformHandle.target.rotation * _perp
-                : _perp;
-            Vector3 projected = Vector3.ProjectOnPlane(mouseVector, rperp);
+            float d = 0.0f;
+            _plane.Raycast(ray, out d);
 
-            projected *= Time.deltaTime * mag * 2; // Bulhar
-            Vector3 raxis = _parentTransformHandle.space == HandleSpace.LOCAL
-                ? _parentTransformHandle.target.rotation * _axis
-                : _axis;
-            float d = raxis.x * projected.x + raxis.y * projected.y + raxis.z * projected.z;
+            Vector3 hitPoint = ray.GetPoint(d);
 
-            delta += d;
-            Vector3 snappingVector = _parentTransformHandle.positionSnap;
-            float snap = Vector3.Scale(snappingVector, _axis).magnitude;
-            float snappedDelta = (snap == 0 || _parentTransformHandle.snappingType == HandleSnappingType.ABSOLUTE) ? delta : Mathf.Round(delta / snap) * snap;
-            Vector3 position = _startPosition + raxis * snappedDelta;
+            Vector3 offset = hitPoint + _interactionOffset - _startPosition;
+            Vector3 snapping = _parentTransformHandle.positionSnap;
+            float snap = Vector3.Scale(snapping, _axis).magnitude;
+            if (snap != 0 && _parentTransformHandle.snappingType == HandleSnappingType.RELATIVE)
+            {
+                if (snapping.x != 0) offset.x = Mathf.Round(offset.x / snapping.x) * snapping.x;
+                if (snapping.y != 0) offset.y = Mathf.Round(offset.y / snapping.y) * snapping.y;
+                if (snapping.z != 0) offset.z = Mathf.Round(offset.z / snapping.z) * snapping.z;
+            }
+
+            Vector3 position = _startPosition + offset;
+
             if (snap != 0 && _parentTransformHandle.snappingType == HandleSnappingType.ABSOLUTE)
             {
-                if (snappingVector.x != 0) position.x = Mathf.Round(position.x / snappingVector.x) * snappingVector.x;
-                if (snappingVector.y != 0) position.y = Mathf.Round(position.y / snappingVector.y) * snappingVector.y;
-                if (snappingVector.z != 0) position.z = Mathf.Round(position.z / snappingVector.z) * snappingVector.z;
+                if (snapping.x != 0) position.x = _axis.x * Mathf.Round(position.x / snapping.x) * snapping.x;
+                if (snapping.y != 0) position.y = _axis.x * Mathf.Round(position.y / snapping.y) * snapping.y;
+                if (snapping.x != 0) position.z = _axis.x * Mathf.Round(position.z / snapping.z) * snapping.z;
             }
-            
-            _parentTransformHandle.target.position = position;
+
+            Vector3 directionToDragTo = (position - _startPosition).normalized;
+            _parentTransformHandle.target.position = _startPosition;
+			if(_axis.x > 0)
+            {
+                _parentTransformHandle.target.Translate(Vector3.right * Vector3.Dot(_parentTransformHandle.target.right, directionToDragTo) * Vector3.Distance(_startPosition, position),Space.Self);
+            }
+            else if (_axis.y > 0)
+            {
+                _parentTransformHandle.target.Translate(Vector3.up * Vector3.Dot(_parentTransformHandle.target.up, directionToDragTo) * Vector3.Distance(_startPosition, position), Space.Self);
+            }
+            else if(_axis.z > 0)
+            {
+                _parentTransformHandle.target.Translate(Vector3.forward * Vector3.Dot(_parentTransformHandle.target.forward, directionToDragTo) * Vector3.Distance(_startPosition, position), Space.Self);
+            }
 
             base.Interact(p_previousPosition);
         }
 
         public override void StartInteraction()
         {
-            base.StartInteraction();
+            Vector3 rperp = _parentTransformHandle.space == HandleSpace.LOCAL
+                ? _parentTransformHandle.target.rotation * _perp
+                : _perp;
+
+            _plane = new Plane(rperp, _parentTransformHandle.target.position);
+
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+
+            float d = 0.0f;
+            _plane.Raycast(ray, out d);
+
+            Vector3 hitPoint = ray.GetPoint(d);
             _startPosition = _parentTransformHandle.target.position;
+            _interactionOffset = _startPosition - hitPoint;
         }
     }
 }
