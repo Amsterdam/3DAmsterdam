@@ -158,7 +158,7 @@ namespace LayerSystem
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
-				endY = (int)Math.Ceiling((viewRange.y + viewRange.z) / tileSize) * tileSize;
+				endY = (int)Math.Ceiling((viewRange.y + viewRange.w) / tileSize) * tileSize;
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
@@ -267,9 +267,7 @@ namespace LayerSystem
                 }
 			}
 
-
             //Replace running tile changes with this one if priority is higher
-
             if (tileIspending==false)
             {
 				
@@ -279,9 +277,6 @@ namespace LayerSystem
             {
 				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
 			}
-				
-			
-			
 		}
 
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)
