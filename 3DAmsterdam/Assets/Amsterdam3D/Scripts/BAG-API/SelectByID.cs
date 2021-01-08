@@ -114,7 +114,6 @@ public class SelectByID : MonoBehaviour
         if (id == emptyID && !doingMultiSelection)
         {
             ClearSelection();
-            //ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
         }
         else{
             List<string> singleIdList = new List<string>();
@@ -126,7 +125,6 @@ public class SelectByID : MonoBehaviour
             else{
                 singleIdList.Add(id);
             }
-
             HighlightObjectsWithIDs(singleIdList);
         }
     }
@@ -137,22 +135,40 @@ public class SelectByID : MonoBehaviour
     /// <param name="ids">List of IDs to add to our selection</param>
     private void HighlightObjectsWithIDs(List<string> ids)
     {
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.SELECTABLE_STATICS);
-
-        selectedIDs.AddRange(ids);
+		selectedIDs.AddRange(ids);
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
-    }
+
+		//Specific context menu items per selection count
+		if (selectedIDs.Count == 1)
+		{
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+		}
+		else if (selectedIDs.Count > 1)
+		{
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
+		}
+		else
+		{
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+		}
+	}
 
     /// <summary>
     /// Clear our list of selected objects, and update the highlights
     /// </summary>
     public void ClearSelection()
 	{
-		lastSelectedID = emptyID;
-		selectedIDs.Clear();
-        containerLayer.Highlight(selectedIDs);
-    }
+		if (selectedIDs.Count != 0)
+		{
+			lastSelectedID = emptyID;
+			selectedIDs.Clear();
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+		}
+
+		//Remove highlights by highlighting our empty list
+		containerLayer.Highlight(selectedIDs);
+	}
 
     /// <summary>
     /// Hides all objects that matches the list of ID's, and remove them from our selection list.
@@ -190,17 +206,20 @@ public class SelectByID : MonoBehaviour
 
         if (lastSelectedID != emptyID)
         {
-            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
             ObjectProperties.Instance.OpenPanel("Pand");
             ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
         else{
             //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.RenderThumbnailFromPosition(thumbnailFrom, lookAtTarget);
             ObjectProperties.Instance.OpenPanel("Grond");
             ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
         }
     }
+
+    private void GetAllVertsInSelection(string id)
+    {
+        containerLayer.GetAllVerts(selectedIDs);
+	}
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {

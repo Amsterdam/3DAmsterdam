@@ -48,11 +48,29 @@ public class Transformable : MonoBehaviour
 	/// <summary>
 	/// Show the transform property panel for this transformable
 	/// </summary>
-	private void ShowTransformProperties()
+	public void ShowTransformProperties()
 	{
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
 		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
 		ObjectProperties.Instance.OpenTransformPanel(gameObject);
+	}
+
+	/// <summary>
+	/// Method allowing the triggers for when this object bounds were changed so the thumbnail will be rerendered.
+	/// </summary>
+	public void UpdateThumbnailBounds()
+	{
+		int objectOriginalLayer = this.gameObject.layer;
+		this.gameObject.layer = ObjectProperties.Instance.ThumbnailExclusiveLayer;
+
+		//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
+		Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
+		foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+		{
+			bounds.Encapsulate(renderer.bounds);
+		}
+		ObjectProperties.Instance.RenderThumbnailContaining(bounds);
+		this.gameObject.layer = objectOriginalLayer;
 	}
 
 	/// <summary>
