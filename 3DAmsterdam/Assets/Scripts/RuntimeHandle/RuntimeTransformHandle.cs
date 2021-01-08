@@ -76,8 +76,13 @@ namespace RuntimeHandle
             if (_scaleHandle) _scaleHandle.Destroy();
         }
 
-        void Update()
+        void LateUpdate()
         {
+            if (!target)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
             if (autoScale)
                 transform.localScale =
                     Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
