@@ -46,8 +46,9 @@ namespace Amsterdam3D.CameraMotion
         private float deceleration = 10.0f;
         private Vector3 dragMomentum = Vector3.zero;
         private float maxMomentum = 1000.0f;
-        private bool requireMouseClickBeforeDrag = false;
 
+        private bool requireMouseClickBeforeDrag = false;
+        private bool clickStartedBlocked = false;
 
         private bool translationModifier = false;
         private bool firstPersonModifier = false;
@@ -81,17 +82,26 @@ namespace Amsterdam3D.CameraMotion
         void Start()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-            UnityEngine.InputSystem.InputAction testAction = ActionHandler.actions.GodView.MoveCamera;
+
             moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
             rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+
             ActionHandler.actions.GodView.Enable();
         }
 
         void Update()
 		{
-            requireMouseClickBeforeDrag = (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0));
+            //Check if we started dragging on the UI
+            if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+            {
+                clickStartedBlocked = true;
+            }
+            else if (clickStartedBlocked && Input.GetMouseButtonUp(0))
+            {
+                clickStartedBlocked = false;
+            }
 
-            canUseMouseRelatedFunctions = (!EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
+            canUseMouseRelatedFunctions = (!clickStartedBlocked && !EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
 
            //these shouldn't be needed anymore since unity input system has modifiers built in
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);

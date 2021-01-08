@@ -51,8 +51,12 @@ namespace LayerSystem
 		private Vector3RD cameraPositionRD;
 
 		private Vector2Int tileKey;
+		private Vector3Int tileKeyWithLayer;
 
 		public static int runningTileDataRequests = 0;
+
+		private TileChange highestPriorityTileChange;
+
 
 		public void OnCameraChanged()
 		{
@@ -84,21 +88,20 @@ namespace LayerSystem
 
 			if (activeTileChanges.Count < maximumConcurrentDownloads)
 			{
-				TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
-				Vector3Int tilekey = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
-				if (activeTileChanges.ContainsKey(tilekey) == false)
+				highestPriorityTileChange = FindHighestPriorityTileChange();
+				tileKeyWithLayer = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
+				if (activeTileChanges.ContainsKey(tileKeyWithLayer) == false)
 				{
-					activeTileChanges.Add(tilekey, highestPriorityTileChange);
+					activeTileChanges.Add(tileKeyWithLayer, highestPriorityTileChange);
 					pendingTileChanges.Remove(highestPriorityTileChange);
 					layers[highestPriorityTileChange.layerIndex].HandleTile(highestPriorityTileChange,TileHandled);
 				}
-				else if (activeTileChanges.TryGetValue(tilekey, out TileChange existingTileChange))
+				else if (activeTileChanges.TryGetValue(tileKeyWithLayer, out TileChange existingTileChange))
 				{
 					//Change running tile changes to more important ones
-					Debug.Log("Upgrading existing");
 					if (existingTileChange.priorityScore < highestPriorityTileChange.priorityScore)
 					{
-						activeTileChanges[tilekey] = highestPriorityTileChange;
+						activeTileChanges[tileKeyWithLayer] = highestPriorityTileChange;
 						pendingTileChanges.Remove(highestPriorityTileChange);
 					}
 				}
