@@ -3,231 +3,240 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TransformPanel : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-    [Header("Input field references")]
-    [SerializeField]
-    private InputField translateX;
-    [SerializeField]
-    private InputField translateY;
-    [SerializeField]
-    private InputField translateZ;
-
-    [SerializeField]
-    private InputField rotateX;
-    [SerializeField]
-    private InputField rotateY;
-    [SerializeField]
-    private InputField rotateZ;
-
-    [SerializeField]
-    private InputField scaleX;
-    [SerializeField]
-    private InputField scaleY;
-    [SerializeField]
-    private InputField scaleZ;
-
-    [SerializeField]
-    private InputField rdX;
-    [SerializeField]
-    private InputField rdY;
-    [SerializeField]
-    private InputField napZ;
-
-    private GameObject transformableTarget;
-    private Vector3RD rdCoordinates;
-
-    private Vector3RD basePosition;
-    private Quaternion baseRotation;
-    private Vector3 baseScale;
-
-    private const string stringDecimal = "F2";
-    private const string emptyStringDefault = "0";
-
-    void Start()
+    public class TransformPanel : MonoBehaviour
     {
-        //Store starting position so any transform changes can be added to that untill we lose focus
-        translateX.onValueChanged.AddListener(TranslationInputChanged);
-        translateY.onValueChanged.AddListener(TranslationInputChanged);
-        translateZ.onValueChanged.AddListener(TranslationInputChanged);
-        translateX.onEndEdit.AddListener(ApplyTranslation);
-        translateY.onEndEdit.AddListener(ApplyTranslation);
-        translateZ.onEndEdit.AddListener(ApplyTranslation);
+        [Header("Input field references")]
+        [SerializeField]
+        private InputField translateX;
+        [SerializeField]
+        private InputField translateY;
+        [SerializeField]
+        private InputField translateZ;
 
-        //Rotation preview and apply
-        rotateX.onValueChanged.AddListener(RotationInputChanged);
-        rotateY.onValueChanged.AddListener(RotationInputChanged);
-        rotateZ.onValueChanged.AddListener(RotationInputChanged);
-        rotateX.onEndEdit.AddListener(ApplyRotation);
-        rotateY.onEndEdit.AddListener(ApplyRotation);
-        rotateZ.onEndEdit.AddListener(ApplyRotation);
+        [SerializeField]
+        private InputField rotateX;
+        [SerializeField]
+        private InputField rotateY;
+        [SerializeField]
+        private InputField rotateZ;
 
-        //Scale preview and apply
-        scaleX.onValueChanged.AddListener(ScaleInputChanged);
-        scaleY.onValueChanged.AddListener(ScaleInputChanged);
-        scaleZ.onValueChanged.AddListener(ScaleInputChanged);
-        scaleX.onEndEdit.AddListener(ApplyScale);
-        scaleY.onEndEdit.AddListener(ApplyScale);
-        scaleZ.onEndEdit.AddListener(ApplyScale);
+        [SerializeField]
+        private InputField scaleX;
+        [SerializeField]
+        private InputField scaleY;
+        [SerializeField]
+        private InputField scaleZ;
 
-        //Add listeners to change
-        rdX.onValueChanged.AddListener(RDInputChanged);
-        rdY.onValueChanged.AddListener(RDInputChanged);
-        napZ.onValueChanged.AddListener(RDInputChanged);
-    }
+        [SerializeField]
+        private InputField rdX;
+        [SerializeField]
+        private InputField rdY;
+        [SerializeField]
+        private InputField napZ;
 
-    public void SetTarget(GameObject targetGameObject)
-    {
-        transformableTarget = targetGameObject;
+        private GameObject transformableTarget;
+        private Vector3RD rdCoordinates;
 
-        ApplyRotation();
-        ApplyTranslation();
-        ApplyScale();
+        private Vector3RD basePosition;
+        private Quaternion baseRotation;
+        private Vector3 baseScale;
 
-        //Sets our RD translation offset
-        UpdateRDCoordinates();
-    }
+        private const string stringDecimal = "F2";
+        private const string emptyStringDefault = "0";
 
-    /// <summary>
-    /// Something else transformed our target. Update all parameters.
-    /// </summary>
-    public void TargetWasTransformed()
-    {
-        ApplyRotation();
-        ApplyTranslation();
-        ApplyScale();
+        void Start()
+        {
+            //Store starting position so any transform changes can be added to that untill we lose focus
+            translateX.onValueChanged.AddListener(TranslationInputChanged);
+            translateY.onValueChanged.AddListener(TranslationInputChanged);
+            translateZ.onValueChanged.AddListener(TranslationInputChanged);
+            translateX.onEndEdit.AddListener(ApplyTranslation);
+            translateY.onEndEdit.AddListener(ApplyTranslation);
+            translateZ.onEndEdit.AddListener(ApplyTranslation);
 
-        UpdateRDCoordinates();
-    }
+            //Rotation preview and apply
+            rotateX.onValueChanged.AddListener(RotationInputChanged);
+            rotateY.onValueChanged.AddListener(RotationInputChanged);
+            rotateZ.onValueChanged.AddListener(RotationInputChanged);
+            rotateX.onEndEdit.AddListener(ApplyRotation);
+            rotateY.onEndEdit.AddListener(ApplyRotation);
+            rotateZ.onEndEdit.AddListener(ApplyRotation);
 
-    /// <summary>
-    /// Forces an input string to be parsable.
-    /// </summary>
-    /// <param name="input">The source string</param>
-    /// <returns></returns>
-    private string MakeInputParsable(string input)
-    {
-        if (string.IsNullOrEmpty(input)) return emptyStringDefault;
-        if (input == "-") return "-" + emptyStringDefault;
-        return input;
-	}
+            //Scale preview and apply
+            scaleX.onValueChanged.AddListener(ScaleInputChanged);
+            scaleY.onValueChanged.AddListener(ScaleInputChanged);
+            scaleZ.onValueChanged.AddListener(ScaleInputChanged);
+            scaleX.onEndEdit.AddListener(ApplyScale);
+            scaleY.onEndEdit.AddListener(ApplyScale);
+            scaleZ.onEndEdit.AddListener(ApplyScale);
 
-    /// <summary>
-    /// The translation text input fields are applied to our target object position
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void TranslationInputChanged(string value = null)
-    {
-        Vector3RD previewTranslation = basePosition;
-        previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
-        previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
-        previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
+            //Add listeners to change
+            rdX.onValueChanged.AddListener(AnyInputChanged);
+            rdY.onValueChanged.AddListener(AnyInputChanged);
+            napZ.onValueChanged.AddListener(AnyInputChanged);
 
-        transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+            //Global listener for any changes made in input
+            foreach(InputField inputField in GetComponentsInChildren<InputField>())
+            {
+                inputField.onValueChanged.AddListener(AnyInputChanged); 
+            }
+        }
 
-        //Preview the RD coordinates directly in the RD input
-        rdX.text = previewTranslation.x.ToString(stringDecimal,CultureInfo.InvariantCulture);
-        rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
-        napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
-    }
+        public void SetTarget(GameObject targetGameObject)
+        {
+            transformableTarget = targetGameObject;
+            TargetWasTransformed();
+        }
 
-    /// <summary>
-    /// The rotate text input fields is applied to our target object rotation
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void RotationInputChanged(string value = null)
-    {
-        transformableTarget.transform.rotation = baseRotation;
-        transformableTarget.transform.Rotate(
-            float.Parse(MakeInputParsable(rotateX.text)),
-            float.Parse(MakeInputParsable(rotateY.text)),
-            float.Parse(MakeInputParsable(rotateZ.text))
-        );
-    }
+        /// <summary>
+        /// Something else transformed our target. Update all parameters.
+        /// </summary>
+        public void TargetWasTransformed()
+        {
+            ApplyRotation();
+            ApplyTranslation();
+            ApplyScale();
 
-    /// <summary>
-    /// The scale input text fields are used as a multiplier on top of our base scale.
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ScaleInputChanged(string value = null)
-    {
-        Vector3 normalisedScaler = new Vector3(
-            baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
-            baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
-            baseScale.z * (float.Parse(MakeInputParsable(scaleZ.text)) / 100.0f)
-        );
+            UpdateRDCoordinates();
+        }
 
-        transformableTarget.transform.localScale = normalisedScaler;
-    }
+        private void AnyInputChanged(string input)
+        {
+            transformableTarget.GetComponent<Transformable>().UpdateThumbnailBounds();
+		}
 
-    /// <summary>
-    /// Applies the translation (uses this position as 0,0,0)
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyTranslation(string value = null)
-    {
-        basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+        /// <summary>
+        /// Forces an input string to be parsable.
+        /// </summary>
+        /// <param name="input">The source string</param>
+        /// <returns></returns>
+        private string MakeInputParsable(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return emptyStringDefault;
+            if (input == "-") return "-" + emptyStringDefault;
+            return input;
+        }
 
-        //Reset field values to 0 meter
-        translateX.text = "0";
-        translateY.text = "0";
-        translateZ.text = "0";
-    }
+        /// <summary>
+        /// The translation text input fields are applied to our target object position
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void TranslationInputChanged(string value = null)
+        {
+            Vector3RD previewTranslation = basePosition;
+            previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
+            previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
+            previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
 
-    /// <summary>
-    /// Applies the rotation (uses this rotation as 0,0,0)
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyRotation(string value = null)
-    {
-        baseRotation = transformableTarget.transform.rotation;
+            transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
 
-        //Reset field values to 0 degrees
-        rotateX.text = "0";
-        rotateY.text = "0";
-        rotateZ.text = "0";
-    }
+            //Preview the RD coordinates directly in the RD input
+            rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+        }
 
-    /// <summary>
-    /// Applies the scale (uses this scale as 0,0,0)
-    /// </summary>
-    /// <param name="value">Required string field for event handlers</param>
-    private void ApplyScale(string value = null)
-    {
-        baseScale = transformableTarget.transform.localScale;
+        /// <summary>
+        /// The rotate text input fields is applied to our target object rotation
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void RotationInputChanged(string value = null)
+        {
+            transformableTarget.transform.rotation = baseRotation;
+            transformableTarget.transform.Rotate(
+                float.Parse(MakeInputParsable(rotateX.text)),
+                float.Parse(MakeInputParsable(rotateY.text)),
+                float.Parse(MakeInputParsable(rotateZ.text))
+            );
+        }
 
-        //Reset field values to 100%
-        scaleX.text = "100";
-        scaleY.text = "100";
-        scaleZ.text = "100";
-    }
+        /// <summary>
+        /// The scale input text fields are used as a multiplier on top of our base scale.
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void ScaleInputChanged(string value = null)
+        {
+            Vector3 normalisedScaler = new Vector3(
+                baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
+                baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
+                baseScale.z * (float.Parse(MakeInputParsable(scaleZ.text)) / 100.0f)
+            );
 
-    /// <summary>
-    /// Set our current base position to the current RD coordinates.
-    /// </summary>
-    private void UpdateRDCoordinates()
-    {
-        rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
-        rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
-        rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
-        napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            transformableTarget.transform.localScale = normalisedScaler;
+        }
 
-        basePosition = rdCoordinates;
-    }
+        /// <summary>
+        /// Applies the translation (uses this position as 0,0,0)
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void ApplyTranslation(string value = null)
+        {
+            basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
 
-    /// <summary>
-    /// Moves the target object to our text input RD coordinates
-    /// </summary>
-    /// <param name="value"></param>
-    private void RDInputChanged(string value = null)
-    {
-        rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
-        rdCoordinates.y = double.Parse(rdY.text, CultureInfo.InvariantCulture);
-        rdCoordinates.z = double.Parse(napZ.text, CultureInfo.InvariantCulture);
+            //Reset field values to 0 meter
+            translateX.text = "0";
+            translateY.text = "0";
+            translateZ.text = "0";
+        }
 
-        transformableTarget.transform.position = CoordConvert.RDtoUnity(rdCoordinates);
+        /// <summary>
+        /// Applies the rotation (uses this rotation as 0,0,0)
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void ApplyRotation(string value = null)
+        {
+            baseRotation = transformableTarget.transform.rotation;
+
+            //Reset field values to 0 degrees
+            rotateX.text = "0";
+            rotateY.text = "0";
+            rotateZ.text = "0";
+        }
+
+        /// <summary>
+        /// Applies the scale (uses this scale as 0,0,0)
+        /// </summary>
+        /// <param name="value">Required string field for event handlers</param>
+        private void ApplyScale(string value = null)
+        {
+            baseScale = transformableTarget.transform.localScale;
+
+            //Reset field values to 100%
+            scaleX.text = "100";
+            scaleY.text = "100";
+            scaleZ.text = "100";
+        }
+
+        /// <summary>
+        /// Set our current base position to the current RD coordinates.
+        /// </summary>
+        private void UpdateRDCoordinates()
+        {
+            rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+            rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+
+            basePosition = rdCoordinates;
+        }
+
+        /// <summary>
+        /// Moves the target object to our text input RD coordinates
+        /// </summary>
+        /// <param name="value"></param>
+        private void RDInputChanged(string value = null)
+        {
+            rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
+            rdCoordinates.y = double.Parse(rdY.text, CultureInfo.InvariantCulture);
+            rdCoordinates.z = double.Parse(napZ.text, CultureInfo.InvariantCulture);
+
+            transformableTarget.transform.position = CoordConvert.RDtoUnity(rdCoordinates);
+        }
     }
 }
