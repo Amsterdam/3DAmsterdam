@@ -53,6 +53,8 @@ namespace LayerSystem
 		private Vector2Int tileKey;
 		private Vector3Int tileKeyWithLayer;
 
+		private List<Vector3Int> tileList;
+
 		public static int runningTileDataRequests = 0;
 
 		private TileChange highestPriorityTileChange;
@@ -154,7 +156,6 @@ namespace LayerSystem
 			int endX;
 			int endY;
 
-			List<Vector3Int> tileList;
 			foreach (int tileSize in tileSizes)
 			{
 				tileList = new List<Vector3Int>();
