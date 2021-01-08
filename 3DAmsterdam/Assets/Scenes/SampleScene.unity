@@ -153,6 +153,7 @@ MonoBehaviour:
   LOD: 1
   objectType: Bridges
   DefaultMaterial: {fileID: 0}
+  windowMaterial: {fileID: 0}
 --- !u!4 &130413337
 Transform:
   m_ObjectHideFlags: 0
@@ -211,8 +212,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LOD: 1
-  objectType: Buildings
-  DefaultMaterial: {fileID: 0}
+  objectType: Utrecht
+  DefaultMaterial: {fileID: 2100000, guid: db04eeddf2c3cf04e93ed6e6bb5bfe22, type: 2}
+  windowMaterial: {fileID: 2100000, guid: cbc59de62d350c84ab87d610186bb6eb, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,6 +339,7 @@ MonoBehaviour:
   LOD: 3
   objectType: Single
   DefaultMaterial: {fileID: 2100000, guid: 735cab25f34c110499fb092689c7ccdd, type: 2}
+  windowMaterial: {fileID: 0}
 --- !u!4 &775656526
 Transform:
   m_ObjectHideFlags: 0
@@ -466,6 +469,7 @@ MonoBehaviour:
   LOD: 2
   objectType: Single
   DefaultMaterial: {fileID: 2100000, guid: 735cab25f34c110499fb092689c7ccdd, type: 2}
+  windowMaterial: {fileID: 0}
 --- !u!4 &1894760664
 Transform:
   m_ObjectHideFlags: 0
@@ -496,7 +500,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1932203831
 MonoBehaviour:
   m_ObjectHideFlags: 0

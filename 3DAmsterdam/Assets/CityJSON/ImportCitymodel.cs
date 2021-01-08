@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using ConvertCoordinates;
 
 public class ImportCitymodel: MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class ImportCitymodel: MonoBehaviour
     public Material windowMaterial;
     private string basefilepath;
     private string filename;
+    private string basefilename;
     public void Start()
     {
 
@@ -39,6 +41,14 @@ public class ImportCitymodel: MonoBehaviour
         {
             filename = "D:/3DAmsterdam/lod2rondDam/buildingsLOD3Dam.json";
             ImportSingleFile();
+        }
+        if (objectType == "Utrecht")
+        {
+            CoordConvert.ReferenceRD = new Vector3RD(136778, 455859, -42.962);
+            CoordConvert.ReferenceWGS84 = new Vector3WGS(5.121314, 52.090695, 0);
+            basefilepath = "D:/3DUtrecht/tiledBuildings/";
+            basefilename = "gebouwen_{x}.0_{y}.0.json";
+            ImportBuildingsNew();
         }
         //int X = 12;
         //int Y = 1;
@@ -76,21 +86,49 @@ public class ImportCitymodel: MonoBehaviour
 
     private void ImportBuildingsLOD1()
     {
-        int Xmin = 109000;
-        int Ymin = 474000;
-        int Xmax = 141000;
-        int Ymax = 501000;
+        int Xmin = 125000;
+        int Ymin = 443000;
+        int Xmax = 145000;
+        int Ymax = 462000;
 
         int stepSize = 1000;
         string filepath = "";
         int LOD = 1;
 
 
-        for (int X = Xmin; X < Xmax; X+=stepSize)
+        for (int X = Xmin; X <= Xmax; X+=stepSize)
         {
-            for (int Y = Ymin; Y < Ymax; Y+=stepSize)
+            for (int Y = Ymin; Y <= Ymax; Y+=stepSize)
             {
                 filepath = basefilepath + "tile_" + X + ".0_" + Y + ".0/";
+                Debug.Log(filepath);
+                double originX = X;
+                double originY = Y;
+                CreateTile(filepath, filename, LOD, originX, originY, objectType);
+            }
+        }
+    }
+
+
+    private void ImportBuildingsNew()
+    {
+        int Xmin = 125000;
+        int Ymin = 443000;
+        int Xmax = 145000;
+        int Ymax = 462000;
+
+        int stepSize = 1000;
+        string filepath = "";
+        int LOD = 1;
+
+
+        for (int X = Xmin; X < Xmax; X += stepSize)
+        {
+            for (int Y = Ymin; Y < Ymax; Y += stepSize)
+            {
+                filepath = basefilepath;
+                string filename = basefilename.Replace("{x}", X.ToString());
+                filename = filename.Replace("{y}",Y.ToString());
                 Debug.Log(filepath);
                 double originX = X;
                 double originY = Y;
@@ -135,6 +173,7 @@ public class ImportCitymodel: MonoBehaviour
 
     static void CreateTile(string filepath, string filename,int LOD, double X, double Y, string objectType)
     {
+       // Debug.Log("started Building");
         CityModel Citymodel = new CityModel(filepath, filename);
         List<Building> buildings = Citymodel.LoadBuildings(LOD);
         
