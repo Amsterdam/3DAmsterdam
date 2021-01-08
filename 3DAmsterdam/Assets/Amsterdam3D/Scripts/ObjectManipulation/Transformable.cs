@@ -41,7 +41,7 @@ public class Transformable : MonoBehaviour
 			stickToMouse = false;
 
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-			ContextPointerMenu.Instance.SetTargetObject(gameObject);
+			ContextPointerMenu.Instance.SetTargetTransformable(this);
 		}
 	}
 
@@ -51,14 +51,14 @@ public class Transformable : MonoBehaviour
 	public void ShowTransformProperties()
 	{
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
-		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
-		ObjectProperties.Instance.OpenTransformPanel(gameObject);
+		ObjectProperties.Instance.OpenTransformPanel(this);
+		UpdateBounds();
 	}
 
 	/// <summary>
 	/// Method allowing the triggers for when this object bounds were changed so the thumbnail will be rerendered.
 	/// </summary>
-	public void UpdateThumbnailBounds()
+	public void UpdateBounds()
 	{
 		int objectOriginalLayer = this.gameObject.layer;
 		this.gameObject.layer = ObjectProperties.Instance.ThumbnailExclusiveLayer;
@@ -88,7 +88,7 @@ public class Transformable : MonoBehaviour
 		stickToMouse = false;
 
 		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		ContextPointerMenu.Instance.SetTargetObject(gameObject);
+		ContextPointerMenu.Instance.SetTargetTransformable(this);
 
 		ShowTransformProperties();
 		
