@@ -40,7 +40,7 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private InputField napZ;
 
-        private GameObject transformableTarget;
+        private Transformable transformableTarget;
         private Vector3RD rdCoordinates;
 
         private Vector3RD basePosition;
@@ -99,9 +99,9 @@ namespace Amsterdam3D.Interface
             if (gizmoHandles) gizmoHandles.type = HandleType.SCALE;
         }
 
-        public void SetTarget(GameObject targetGameObject)
+        public void SetTarget(Transformable target)
         {
-            transformableTarget = targetGameObject;
+            transformableTarget = target;
 
             ApplyTransformOffsets(); //Our starting percentage scale is always 100% (even if our imported/created stuff has a strange scale)
             SetRDCoordinateFields();
@@ -109,7 +109,7 @@ namespace Amsterdam3D.Interface
             //Target our 3D gizmo on the same object
             CreateGizmoHandles();
             gizmoHandles.gameObject.SetActive(true);
-            gizmoHandles.target = targetGameObject.transform;
+            gizmoHandles.target = transformableTarget.transform;
             gizmoHandles.enabled = true;
 
             gizmoHandles.movedHandle.RemoveAllListeners();
@@ -125,6 +125,7 @@ namespace Amsterdam3D.Interface
 
             SetRDCoordinateFields();
             UpdateWithCurrentTransform();
+            transformableTarget.UpdateBounds();
 
             ignoreChangeEvents = false;
         }

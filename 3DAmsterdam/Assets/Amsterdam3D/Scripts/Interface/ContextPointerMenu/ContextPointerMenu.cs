@@ -17,7 +17,7 @@ namespace Amsterdam3D.Interface
 
 		public ContextState state = ContextState.DEFAULT;
 
-		private GameObject targetGameObject;
+		private Transformable targetTransformable;
 
 		[SerializeField]
 		[Tooltip("Select buttons that should be active for specific states")]
@@ -57,9 +57,9 @@ namespace Amsterdam3D.Interface
 			contextItemsPanel.gameObject.SetActive(false);
 		}
 
-		public void SetTargetObject(GameObject newTarget)
+		public void SetTargetTransformable(Transformable newTarget)
 		{
-			targetGameObject = newTarget;
+			targetTransformable = newTarget;
 		}
 
 		/// <summary>
@@ -68,10 +68,8 @@ namespace Amsterdam3D.Interface
 		public void TransformObject()
 		{
 			//Enable gizmo
-
-			if (!targetGameObject) return;
-
-			targetGameObject.GetComponent<Transformable>()?.ShowTransformProperties();
+			if (!targetTransformable) return;
+				targetTransformable.ShowTransformProperties();
 		}
 
 		/// <summary>

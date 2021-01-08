@@ -72,7 +72,7 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
 
-        public void OpenTransformPanel(GameObject transformable)
+        public void OpenTransformPanel(Transformable transformable)
         {
             TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
             transformPanel.SetTarget(transformable);
