@@ -13,6 +13,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform contextItemsPanel = default;
 
+		[SerializeField]
+		private RectTransform transformSubMenu = default;
+
 		public static ContextPointerMenu Instance = null;
 
 		public ContextState state = ContextState.DEFAULT;
@@ -65,11 +68,13 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Start transforming the focus object of our contextmenu
 		/// </summary>
-		public void TransformObject()
+		public void TransformObject(int setGizmoTransformType = 0)
 		{
 			//Enable gizmo
 			if (!targetTransformable) return;
-				targetTransformable.ShowTransformProperties();
+
+			targetTransformable.ShowTransformProperties(setGizmoTransformType);
+			CloseContextMenu();
 		}
 
 		/// <summary>
@@ -78,6 +83,7 @@ namespace Amsterdam3D.Interface
 		void CloseContextMenu()
 		{
 			contextItemsPanel.gameObject.SetActive(false);
+			transformSubMenu.gameObject.SetActive(false);
 		}
 
 		/// <summary>

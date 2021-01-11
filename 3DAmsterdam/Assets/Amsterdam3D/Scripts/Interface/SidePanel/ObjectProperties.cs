@@ -72,11 +72,35 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
 
-        public void OpenTransformPanel(Transformable transformable)
+        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = 0)
         {
             TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
             transformPanel.SetTarget(transformable);
-        }
+
+			switch (gizmoTransformType)
+			{
+                case 0:
+                    transformPanel.TranslationGizmo();
+                    break;
+                case 1:
+                    transformPanel.RotationGizmo();
+                    break;
+                case 2:
+                    transformPanel.ScaleGizmo();
+                    break;
+				default:
+					break;
+			}
+		}
+
+        public void EnableTransformProperty(int type)
+        {
+			switch (type)
+			{
+				default:
+					break;
+			}
+		}
 
         public void OpenPanel(string title, bool clearOldfields = true)
         {

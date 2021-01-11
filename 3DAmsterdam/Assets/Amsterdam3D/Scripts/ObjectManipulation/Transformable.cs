@@ -19,6 +19,8 @@ public class Transformable : MonoBehaviour
 
 	private Collider meshCollider;
 
+	private bool wasSelectedOnDown = false;
+
 	private void Start()
 	{
 		meshCollider = GetComponent<Collider>();
@@ -48,10 +50,10 @@ public class Transformable : MonoBehaviour
 	/// <summary>
 	/// Show the transform property panel for this transformable
 	/// </summary>
-	public void ShowTransformProperties()
+	public void ShowTransformProperties(int gizmoTransformType = 0)
 	{
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
-		ObjectProperties.Instance.OpenTransformPanel(this);
+		ObjectProperties.Instance.OpenTransformPanel(this, gizmoTransformType);
 		UpdateBounds();
 	}
 
