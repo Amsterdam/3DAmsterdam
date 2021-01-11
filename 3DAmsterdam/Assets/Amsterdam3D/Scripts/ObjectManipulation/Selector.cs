@@ -26,9 +26,10 @@ public class Selector : MonoBehaviour
 	}
 
 	private void ClearHighlights(){
-		foreach(var highlight in selectedObjects)
+		foreach(var outlinedObject in selectedObjects)
 		{
-			Destroy(highlight.gameObject);
+			if(outlinedObject != null)
+				Destroy(outlinedObject.gameObject);
 		}
 		selectedObjects.Clear(); //May allow multiselect in future features
 	}
