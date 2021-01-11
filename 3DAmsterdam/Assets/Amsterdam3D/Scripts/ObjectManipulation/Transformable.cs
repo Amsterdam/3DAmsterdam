@@ -19,6 +19,8 @@ public class Transformable : MonoBehaviour
 
 	private Collider meshCollider;
 
+	public static Transformable lastSelectedTransformable;
+
 	private void Start()
 	{
 		meshCollider = GetComponent<Collider>();
@@ -27,6 +29,16 @@ public class Transformable : MonoBehaviour
 			meshCollider.enabled = false;
 			StartCoroutine(StickToMouse());
 		}
+	}
+
+	private void Update()
+	{
+		if(lastSelectedTransformable == null && Input.GetMouseButtonDown(0))
+		{
+			//We havent made a transformable selection this frame's onmousedown, so deselect
+			ObjectProperties.Instance.ClosePanel();
+		}
+		lastSelectedTransformable = null;
 	}
 
 	private void OnMouseDown()
@@ -53,6 +65,8 @@ public class Transformable : MonoBehaviour
 	/// </summary>
 	public void ShowTransformProperties(int gizmoTransformType = 0)
 	{
+		lastSelectedTransformable = this;
+
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
 		ObjectProperties.Instance.OpenTransformPanel(this, gizmoTransformType);
 		UpdateBounds();

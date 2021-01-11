@@ -55,7 +55,6 @@ namespace Amsterdam3D.Interface
         private static RuntimeTransformHandle gizmoHandles;
 
         private bool ignoreChangeEvents = false;
-
         private bool coordinateSystemLocal = true;
 
         void Start()
@@ -81,7 +80,12 @@ namespace Amsterdam3D.Interface
             napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
-        private void CreateGizmoHandles()
+		private void OnDestroy()
+		{
+            if (gizmoHandles) Destroy(gizmoHandles.gameObject);
+        }
+
+		private void CreateGizmoHandles()
         {
             if (gizmoHandles) return;
 

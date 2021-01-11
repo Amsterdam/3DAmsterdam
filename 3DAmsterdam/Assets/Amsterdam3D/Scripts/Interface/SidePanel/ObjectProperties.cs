@@ -111,6 +111,7 @@ namespace Amsterdam3D.Interface
         }
         public void ClosePanel()
         {
+            ClearGeneratedFields();
             objectPropertiesPanel.SetActive(false);
         }
         
