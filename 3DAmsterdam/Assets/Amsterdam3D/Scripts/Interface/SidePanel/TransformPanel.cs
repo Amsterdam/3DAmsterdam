@@ -236,6 +236,11 @@ namespace Amsterdam3D.Interface
                 float.Parse(MakeInputParsable(rotateY.text)),
                 float.Parse(MakeInputParsable(rotateZ.text))
             );
+
+            if(coordinateSystemLocal)
+            {
+                ApplyTranslation();
+            }
         }
 
         /// <summary>
