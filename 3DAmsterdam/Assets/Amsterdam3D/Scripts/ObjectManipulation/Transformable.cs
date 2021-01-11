@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.InputHandler;
 using Amsterdam3D.Interface;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,11 +19,14 @@ public class Transformable : MonoBehaviour
 	private bool stickToMouse = true;
 
 	private Collider meshCollider;
-
 	public static Transformable lastSelectedTransformable;
+
+	private IAction clickAction;
 
 	private void Start()
 	{
+		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
+
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
