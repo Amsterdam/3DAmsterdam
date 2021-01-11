@@ -139,8 +139,8 @@ namespace Amsterdam3D.Interface
         {
             if (coordinateSystemLocal)
             {
-                Vector3 localCurrentTransformPoint = transformableTarget.transform.InverseTransformPoint(basePositionUnity);
-                Vector3 targetTransformPoint = transformableTarget.transform.InverseTransformPoint(transformableTarget.transform.position);
+                Vector3 localCurrentTransformPoint = TransformExtensions.InverseTransformPointUnscaled(transformableTarget.transform, basePositionUnity);
+                Vector3 targetTransformPoint = TransformExtensions.InverseTransformPointUnscaled(transformableTarget.transform, transformableTarget.transform.position);
 
                 var translationX = targetTransformPoint.x - localCurrentTransformPoint.x;
                 var translationY = targetTransformPoint.y - localCurrentTransformPoint.y;
@@ -198,8 +198,8 @@ namespace Amsterdam3D.Interface
                 transformableTarget.transform.position = basePositionUnity;
                 transformableTarget.transform.Translate(
                     float.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture),
-                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture),
-                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture)
+                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture)
                 );
 
                 Vector3RD previewTranslation = CoordConvert.UnitytoRD(transformableTarget.transform.position);
