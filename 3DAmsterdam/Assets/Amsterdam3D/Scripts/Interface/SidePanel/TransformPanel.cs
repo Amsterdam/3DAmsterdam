@@ -118,6 +118,9 @@ namespace Amsterdam3D.Interface
 
             gizmoHandles.movedHandle.RemoveAllListeners();
             gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
+
+            //Place a highlight on our object
+            //Selector.Instance.HighlightObject(transformableTarget.gameObject);
         }
 
         /// <summary>
