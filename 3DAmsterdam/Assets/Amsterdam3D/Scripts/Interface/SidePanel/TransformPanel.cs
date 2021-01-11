@@ -43,16 +43,20 @@ namespace Amsterdam3D.Interface
         private Transformable transformableTarget;
         private Vector3RD rdCoordinates;
 
+        private Vector3 basePositionUnity;
         private Vector3RD basePosition;
         private Quaternion baseRotation;
         private Vector3 baseScale;
 
         private const string stringDecimal = "F2";
         private const string emptyStringDefault = "0";
+        private const string scaleSuffix = "%";
 
-        private static RuntimeHandle.RuntimeTransformHandle gizmoHandles;
+        private static RuntimeTransformHandle gizmoHandles;
 
         private bool ignoreChangeEvents = false;
+
+        private bool coordinateSystemLocal = true;
 
         void Start()
         {
@@ -133,17 +137,32 @@ namespace Amsterdam3D.Interface
 
         private void UpdateWithCurrentTransform()
         {
-            translateX.text = (rdCoordinates.x - basePosition.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
-            translateY.text = (rdCoordinates.y - basePosition.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
-            translateZ.text = (rdCoordinates.z - basePosition.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            if (coordinateSystemLocal)
+            {
+                Vector3 localCurrentTransformPoint = transformableTarget.transform.InverseTransformPoint(basePositionUnity);
+                Vector3 targetTransformPoint = transformableTarget.transform.InverseTransformPoint(transformableTarget.transform.position);
+
+                var translationX = targetTransformPoint.x - localCurrentTransformPoint.x;
+                var translationY = targetTransformPoint.y - localCurrentTransformPoint.y;
+                var translationZ = targetTransformPoint.z - localCurrentTransformPoint.z;
+
+                translateX.text = (translationX).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateY.text = (translationY).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateZ.text = (translationZ).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
+            else{
+                translateX.text = (rdCoordinates.x - basePosition.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateY.text = (rdCoordinates.y - basePosition.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateZ.text = (rdCoordinates.z - basePosition.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
 
             rotateX.text = (transformableTarget.transform.eulerAngles.x - baseRotation.eulerAngles.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
             rotateY.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
             rotateZ.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
 
-            scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
-            scaleY.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
-            scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + "%";
+            scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleY.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
         }
 
         private void ApplyTransformOffsets()
@@ -173,17 +192,34 @@ namespace Amsterdam3D.Interface
         {
             if (ignoreChangeEvents) return;
 
-            Vector3RD previewTranslation = basePosition;
-            previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
-            previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
-            previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
+            if (coordinateSystemLocal)
+            {
+                //Local always translates from our saved base position
+                transformableTarget.transform.position = basePositionUnity;
+                transformableTarget.transform.Translate(
+                    float.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture)
+                );
 
-            transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+                Vector3RD previewTranslation = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+                rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
+            else{
+                Vector3RD previewTranslation = basePosition;
+                previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
+                previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
+                previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
 
-            //Preview the RD coordinates directly in the RD input
-            rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
-            rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
-            napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+
+                //Preview the RD coordinates directly in the RD input
+                rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
         }
 
         /// <summary>
@@ -224,7 +260,8 @@ namespace Amsterdam3D.Interface
         /// </summary>
         private void ApplyTranslation()
         {
-            basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+            basePositionUnity = transformableTarget.transform.position;
+            basePosition = CoordConvert.UnitytoRD(basePositionUnity);
 
             //Reset field values to 0 meter
             translateX.text = "0";
