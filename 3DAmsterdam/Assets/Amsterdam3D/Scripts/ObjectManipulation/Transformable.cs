@@ -18,7 +18,6 @@ public class Transformable : MonoBehaviour
 	private bool stickToMouse = true;
 
 	private Collider meshCollider;
-
 	private bool wasSelectedOnDown = false;
 
 	private void Start()
@@ -33,7 +32,10 @@ public class Transformable : MonoBehaviour
 
 	private void OnMouseDown()
 	{
-		if(!stickToMouse) ShowTransformProperties();
+		if(!stickToMouse){
+			ShowTransformProperties();
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
+		}	
 	}
 
 	void OnMouseOver()
