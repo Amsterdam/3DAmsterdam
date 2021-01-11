@@ -133,6 +133,7 @@ namespace Amsterdam3D.Interface
             }
             RenderThumbnailContaining(bounds, renderAllLayers);
         }
+
 		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
         {
             var objectSizes = bounds.max - bounds.min;

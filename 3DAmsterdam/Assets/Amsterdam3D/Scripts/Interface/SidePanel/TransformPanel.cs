@@ -241,6 +241,8 @@ namespace Amsterdam3D.Interface
             {
                 ApplyTranslation();
             }
+
+            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
@@ -258,6 +260,8 @@ namespace Amsterdam3D.Interface
             );
 
             transformableTarget.transform.localScale = normalisedScaler;
+
+            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
