@@ -18,7 +18,6 @@ public class Transformable : MonoBehaviour
 	private bool stickToMouse = true;
 
 	private Collider meshCollider;
-	private bool wasSelectedOnDown = false;
 
 	private void Start()
 	{

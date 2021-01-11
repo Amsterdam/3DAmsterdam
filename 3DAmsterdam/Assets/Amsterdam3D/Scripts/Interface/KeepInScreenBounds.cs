@@ -8,9 +8,12 @@ public class KeepInScreenBounds : MonoBehaviour
     private Image mainImage;
     private Vector3 limitedPosition;
 
+    private Vector3 startPosition;
+
 	private void Awake()
 	{
         mainImage = GetComponent<Image>();
+        startPosition = this.transform.localPosition;
     }
 
 	void OnEnable()
@@ -22,5 +25,10 @@ public class KeepInScreenBounds : MonoBehaviour
         );
 
         this.transform.position = limitedPosition;
+    }
+
+	private void OnDisable()
+	{
+        this.transform.localPosition = startPosition;
     }
 }
