@@ -72,7 +72,7 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
 
-        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = 0)
+        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
         {
             TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
             transformPanel.SetTarget(transformable);
@@ -88,15 +88,6 @@ namespace Amsterdam3D.Interface
                 case 2:
                     transformPanel.ScaleGizmo();
                     break;
-				default:
-					break;
-			}
-		}
-
-        public void EnableTransformProperty(int type)
-        {
-			switch (type)
-			{
 				default:
 					break;
 			}

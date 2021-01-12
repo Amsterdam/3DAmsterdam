@@ -35,22 +35,13 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
-	private void Update()
-	{
-		if(lastSelectedTransformable == null && Input.GetMouseButtonDown(0))
-		{
-			//We havent made a transformable selection this frame's onmousedown, so deselect
-			ObjectProperties.Instance.ClosePanel();
-		}
-		lastSelectedTransformable = null;
-	}
-
 	private void OnMouseDown()
 	{
-		if(!stickToMouse){
+		if(!stickToMouse && lastSelectedTransformable != this)
+		{
 			ShowTransformProperties();
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		}	
+		}
+		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
 
 	void OnMouseOver()
@@ -58,16 +49,15 @@ public class Transformable : MonoBehaviour
 		if (Input.GetMouseButtonDown(1))
 		{
 			stickToMouse = false;
-
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 			ContextPointerMenu.Instance.SetTargetTransformable(this);
 		}
+		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
 
 	/// <summary>
 	/// Show the transform property panel for this transformable
 	/// </summary>
-	public void ShowTransformProperties(int gizmoTransformType = 0)
+	public void ShowTransformProperties(int gizmoTransformType = -1)
 	{
 		lastSelectedTransformable = this;
 

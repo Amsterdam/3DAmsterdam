@@ -80,11 +80,6 @@ namespace Amsterdam3D.Interface
             napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
-		private void OnDestroy()
-		{
-            if (gizmoHandles) Destroy(gizmoHandles.gameObject);
-        }
-
 		private void CreateGizmoHandles()
         {
             if (gizmoHandles) return;
@@ -119,7 +114,6 @@ namespace Amsterdam3D.Interface
             gizmoHandles.gameObject.SetActive(true);
             gizmoHandles.target = transformableTarget.transform;
             gizmoHandles.enabled = true;
-
             gizmoHandles.movedHandle.RemoveAllListeners();
             gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
 
