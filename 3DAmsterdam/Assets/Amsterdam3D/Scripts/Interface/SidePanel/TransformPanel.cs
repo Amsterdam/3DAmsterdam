@@ -80,6 +80,9 @@ namespace Amsterdam3D.Interface
             napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
+        /// <summary>
+        /// Create the object containing our 3D gizmos if it does not exist yet
+        /// </summary>
 		private void CreateGizmoHandles()
         {
             if (gizmoHandles) return;
@@ -88,7 +91,8 @@ namespace Amsterdam3D.Interface
             gizmoHandles.autoScale = true;
             gizmoHandles.space = HandleSpace.LOCAL;
         }
-
+        
+        //Public methods we can trigger via serialized unity button click events
         public void TranslationGizmo()
         {
             if (gizmoHandles) gizmoHandles.type = HandleType.POSITION;
@@ -102,6 +106,10 @@ namespace Amsterdam3D.Interface
             if (gizmoHandles) gizmoHandles.type = HandleType.SCALE;
         }
 
+        /// <summary>
+        /// Define the target transformable our transformpanel will manipulate
+        /// </summary>
+        /// <param name="target">The target transformable we want to manipulate using the transform panel</param>
         public void SetTarget(Transformable target)
         {
             transformableTarget = target;
@@ -135,7 +143,9 @@ namespace Amsterdam3D.Interface
             ignoreChangeEvents = false;
         }
 
-
+        /// <summary>
+        /// Update the input fields using the transform values of our current targeted transformable
+        /// </summary>
         private void UpdateWithCurrentTransform()
         {
             if (coordinateSystemLocal)
@@ -166,6 +176,9 @@ namespace Amsterdam3D.Interface
             scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
         }
 
+        /// <summary>
+        /// Use the current rotation/translation and scale as our base 0,0,0 value
+        /// </summary>
         private void ApplyTransformOffsets()
         {
             ApplyRotation();
