@@ -4,7 +4,7 @@ using System.Collections;
 public static class TransformExtensions
 {
 	/// <summary>
-	/// Returns a transform point but ignore scale
+	/// Returns a transform point world scale coordinates inside a transform but ignores the scale of the transform
 	/// </summary>
 	/// <param name="transform">Transform with the coordinate system our point lives in</param>
 	/// <param name="position">The transform point location within our transform</param>
