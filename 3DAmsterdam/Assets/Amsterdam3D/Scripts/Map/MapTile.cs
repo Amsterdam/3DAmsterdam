@@ -10,7 +10,9 @@ namespace Amsterdam3D.Interface
 	public class MapTile : MonoBehaviour
 	{
 		[SerializeField]
-		private const string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
+		//private const string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
+		//utrecht
+		private const string tilesUrl = "https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtplaninformatie/EPSG%3A28992/{zoom}/{x}/{y}.png";
 
 		private RawImage rawImage;
 		public RawImage textureTargetRawImage { get => rawImage; private set => rawImage = value; }
@@ -40,6 +42,7 @@ namespace Amsterdam3D.Interface
 
 		private IEnumerator LoadTexture(int zoom, int x, int y)
 		{
+			Debug.Log(zoom +"-"+x + "-" + y);
 			var tileImageUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
 			
 			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))
