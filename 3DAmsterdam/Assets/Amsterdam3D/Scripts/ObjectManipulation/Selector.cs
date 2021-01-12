@@ -19,12 +19,19 @@ public class Selector : MonoBehaviour
 		selectedObjects = new List<OutlineObject>();
 	}
 
+	/// <summary>
+	/// Add an outline object to the target gameobject
+	/// </summary>
+	/// <param name="gameObject"></param>
 	public void HighlightObject(GameObject gameObject)
 	{
 		ClearHighlights();
 		selectedObjects.Add(Instantiate(outline, gameObject.transform));
 	}
 
+	/// <summary>
+	/// Destroys all the current outlines
+	/// </summary>
 	private void ClearHighlights(){
 		foreach(var outlinedObject in selectedObjects)
 		{
