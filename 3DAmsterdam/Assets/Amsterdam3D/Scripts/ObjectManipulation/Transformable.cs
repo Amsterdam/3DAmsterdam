@@ -50,6 +50,7 @@ public class Transformable : MonoBehaviour
 		{
 			stickToMouse = false;
 			ContextPointerMenu.Instance.SetTargetTransformable(this);
+			ShowTransformProperties();
 		}
 		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
@@ -60,7 +61,6 @@ public class Transformable : MonoBehaviour
 	public void ShowTransformProperties(int gizmoTransformType = -1)
 	{
 		lastSelectedTransformable = this;
-
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
 		ObjectProperties.Instance.OpenTransformPanel(this, gizmoTransformType);
 		UpdateBounds();

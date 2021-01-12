@@ -40,6 +40,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
+        private TransformPanel currentTransformPanel;
+
         [Header("Thumbnail rendering")]
         [SerializeField]
         private Camera thumbnailCameraPrefab;
@@ -74,19 +76,19 @@ namespace Amsterdam3D.Interface
 
         public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
         {
-            TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
-            transformPanel.SetTarget(transformable);
+            currentTransformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
+            currentTransformPanel.SetTarget(transformable);
 
 			switch (gizmoTransformType)
 			{
                 case 0:
-                    transformPanel.TranslationGizmo();
+                    currentTransformPanel.TranslationGizmo();
                     break;
                 case 1:
-                    transformPanel.RotationGizmo();
+                    currentTransformPanel.RotationGizmo();
                     break;
                 case 2:
-                    transformPanel.ScaleGizmo();
+                    currentTransformPanel.ScaleGizmo();
                     break;
 				default:
 					break;
@@ -105,7 +107,13 @@ namespace Amsterdam3D.Interface
             ClearGeneratedFields();
             objectPropertiesPanel.SetActive(false);
         }
-        
+
+        public void DeselectTransformable()
+        {
+            if(currentTransformPanel)
+                Destroy(currentTransformPanel);
+		}
+
         public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
         {
             //Find our centroid
