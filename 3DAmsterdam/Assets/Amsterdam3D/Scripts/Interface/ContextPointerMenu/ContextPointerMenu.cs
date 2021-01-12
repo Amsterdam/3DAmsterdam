@@ -68,6 +68,7 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Start transforming the focus object of our contextmenu
 		/// </summary>
+		/// <param name="setGizmoTransformType">0=Translate, 1=Rotate, 2=Scale</param>
 		public void TransformObject(int setGizmoTransformType = 0)
 		{
 			//Enable gizmo

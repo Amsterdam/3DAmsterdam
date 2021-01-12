@@ -58,6 +58,7 @@ public class Transformable : MonoBehaviour
 	/// <summary>
 	/// Show the transform property panel for this transformable
 	/// </summary>
+	/// <param name="gizmoTransformType">0=Translate, 1=Rotate, 2=Scale,Empty=Keep previous</param>
 	public void ShowTransformProperties(int gizmoTransformType = -1)
 	{
 		lastSelectedTransformable = this;
