@@ -305,7 +305,7 @@ public class ObjLoad : MonoBehaviour
 		}
 		catch (Exception e)
 		{
-			print(e);
+			print(e + " -> " + v);
 			return 0;
 		}
 	}
@@ -318,7 +318,7 @@ public class ObjLoad : MonoBehaviour
 		}
 		catch (Exception e)
 		{
-			print(e);
+			print(e + " -> " + v);
 			return 0;
 		}
 	}

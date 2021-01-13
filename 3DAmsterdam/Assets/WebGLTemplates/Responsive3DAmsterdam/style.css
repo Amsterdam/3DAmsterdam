@@ -8,12 +8,34 @@ html {
 
 body {
 	margin: 0;
-	background: #444;
+	background: #231f20;
 }
 
 #gameContainer {
 	width: 100vw;
 	height: 100vh;
+}
+#gameContainer div{
+	font-family: sans-serif !important; 
+    color: #353535 !important; 
+    background-color: white !important;
+	border: 1px solid #b0b0b0 !important;
+	padding: 20px !important;
+	width: 80vw !important;
+	-webkit-box-shadow: 4px 9px 14px 0px rgba(0,0,0,0.29);
+	-moz-box-shadow: 4px 9px 14px 0px rgba(0,0,0,0.29);
+	box-shadow: 4px 9px 14px 0px rgba(0,0,0,0.29);
+}
+#gameContainer button{
+	color: white;
+    background-color: #004392;
+    margin-top: 20px !important;
+    border: none;
+    border-radius: 0px;
+    min-width: 120px;
+    min-height: 50px;
+    font-weight: bold;
+	
 }
 
 canvas {

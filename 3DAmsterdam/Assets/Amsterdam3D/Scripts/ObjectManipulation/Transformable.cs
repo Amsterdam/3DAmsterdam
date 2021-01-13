@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.InputHandler;
 using Amsterdam3D.Interface;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,9 +19,14 @@ public class Transformable : MonoBehaviour
 	private bool stickToMouse = true;
 
 	private Collider meshCollider;
+	public static Transformable lastSelectedTransformable;
+
+	private IAction clickAction;
 
 	private void Start()
 	{
+		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
+
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
@@ -31,7 +37,11 @@ public class Transformable : MonoBehaviour
 
 	private void OnMouseDown()
 	{
-		if(!stickToMouse) ShowTransformProperties();
+		if(!stickToMouse && lastSelectedTransformable != this)
+		{
+			ShowTransformProperties();
+		}
+		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
 
 	void OnMouseOver()
@@ -39,20 +49,40 @@ public class Transformable : MonoBehaviour
 		if (Input.GetMouseButtonDown(1))
 		{
 			stickToMouse = false;
-
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-			ContextPointerMenu.Instance.SetTargetObject(gameObject);
+			ContextPointerMenu.Instance.SetTargetTransformable(this);
+			ShowTransformProperties();
 		}
+		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
 	}
 
 	/// <summary>
 	/// Show the transform property panel for this transformable
 	/// </summary>
-	private void ShowTransformProperties()
+	/// <param name="gizmoTransformType">0=Translate, 1=Rotate, 2=Scale,Empty=Keep previous</param>
+	public void ShowTransformProperties(int gizmoTransformType = -1)
 	{
+		lastSelectedTransformable = this;
 		ObjectProperties.Instance.OpenPanel(gameObject.name);
-		ObjectProperties.Instance.RenderThumbnailFromPosition(CameraModeChanger.Instance.ActiveCamera.transform.position, gameObject.transform.position);
-		ObjectProperties.Instance.AddTransformPanel(gameObject);
+		ObjectProperties.Instance.OpenTransformPanel(this, gizmoTransformType);
+		UpdateBounds();
+	}
+
+	/// <summary>
+	/// Method allowing the triggers for when this object bounds were changed so the thumbnail will be rerendered.
+	/// </summary>
+	public void UpdateBounds()
+	{
+		int objectOriginalLayer = this.gameObject.layer;
+		this.gameObject.layer = ObjectProperties.Instance.ThumbnailExclusiveLayer;
+
+		//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
+		Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
+		foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+		{
+			bounds.Encapsulate(renderer.bounds);
+		}
+		ObjectProperties.Instance.RenderThumbnailContaining(bounds);
+		this.gameObject.layer = objectOriginalLayer;
 	}
 
 	/// <summary>
@@ -70,7 +100,7 @@ public class Transformable : MonoBehaviour
 		stickToMouse = false;
 
 		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		ContextPointerMenu.Instance.SetTargetObject(gameObject);
+		ContextPointerMenu.Instance.SetTargetTransformable(this);
 
 		ShowTransformProperties();
 		

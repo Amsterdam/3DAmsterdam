@@ -1,6 +1,7 @@
 ﻿using Amsterdam3D.CameraMotion;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,40 +40,60 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
-        private Camera thumbnailRenderer;
+        private TransformPanel currentTransformPanel;
 
-        void Awake()
+        [Header("Thumbnail rendering")]
+        [SerializeField]
+        private Camera thumbnailCameraPrefab;
+        private Camera thumbnailRenderer;
+        [SerializeField]
+        private LayerMask renderAllLayersMask;
+        [SerializeField]
+        private float cameraThumbnailObjectMargin = 0.1f;
+        [SerializeField]
+        private Material buildingsExclusiveShader;
+        [SerializeField]
+        private Material defaultBuildingsShader;
+
+        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+
+		void Awake()
 		{
 			if (Instance == null)
 			{
 				Instance = this;
 			}
 
-            //Start with our main container. Groups may change this target.
-            targetFieldsContainer = generatedFieldsRootContainer;
+			//Start with our main container. Groups may change this target.
+			targetFieldsContainer = generatedFieldsRootContainer;
 
-            //Properties panel is disabled at startup
-            objectPropertiesPanel.SetActive(false);
+			//Properties panel is disabled at startup
+			objectPropertiesPanel.SetActive(false);
 
-			CreateThumbnailRenderCamera();
-		}
-
-		private void CreateThumbnailRenderCamera()
-		{
-			//Our render camera for thumbnails. 
-            //We disable it so we cant manualy render a single frame using Camera.Render();
-			thumbnailRenderer = new GameObject().AddComponent<Camera>();
-            thumbnailRenderer.name = "ThumbnailRenderer";
-			thumbnailRenderer.fieldOfView = 30;
-			thumbnailRenderer.farClipPlane = 5000;
-			thumbnailRenderer.targetTexture = thumbnailRenderTexture;
-			thumbnailRenderer.enabled = false;
-		}
-
-        public void AddTransformPanel(GameObject transformable)
-        {
-            Instantiate(transformPanelPrefab, targetFieldsContainer).SetTarget(transformable);
+            //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
+            thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
+
+        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
+        {
+            currentTransformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
+            currentTransformPanel.SetTarget(transformable);
+
+			switch (gizmoTransformType)
+			{
+                case 0:
+                    currentTransformPanel.TranslationGizmo();
+                    break;
+                case 1:
+                    currentTransformPanel.RotationGizmo();
+                    break;
+                case 2:
+                    currentTransformPanel.ScaleGizmo();
+                    break;
+				default:
+					break;
+			}
+		}
 
         public void OpenPanel(string title, bool clearOldfields = true)
         {
@@ -83,14 +104,69 @@ namespace Amsterdam3D.Interface
         }
         public void ClosePanel()
         {
+            DeselectTransformable();
+            ClearGeneratedFields();
             objectPropertiesPanel.SetActive(false);
         }
 
-        public void RenderThumbnailFromPosition(Vector3 from, Vector3 to)
+        public void DeselectTransformable()
         {
-            thumbnailRenderer.transform.position = from;
-            thumbnailRenderer.transform.LookAt(to);
-            thumbnailRenderer.Render();
+            if (currentTransformPanel)
+            {
+                Selector.Instance.ClearHighlights();
+                currentTransformPanel.DisableGizmo();
+                Transformable.lastSelectedTransformable = null;
+            }
+        }
+
+        public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
+        {
+            //Find our centroid
+            var centroid = new Vector3(0, 0, 0);
+            var totalPoints = points.Length;
+            foreach (var point in points)
+            {
+                centroid += point;
+            }
+            centroid /= totalPoints;
+            Bounds bounds = new Bounds(centroid, Vector3.zero);
+
+            //Expand our bounds
+            foreach (Vector3 point in points)
+            {
+                bounds.Encapsulate(point);
+            }
+            RenderThumbnailContaining(bounds, renderAllLayers);
+        }
+
+		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
+        {
+            var objectSizes = bounds.max - bounds.min;
+            var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
+            var cameraView = 2.0f * Mathf.Tan(0.5f * Mathf.Deg2Rad * thumbnailRenderer.fieldOfView);
+            var distance = objectSize / cameraView;
+            distance += cameraThumbnailObjectMargin * objectSize;
+
+            thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
+            thumbnailRenderer.transform.LookAt(bounds.center);
+            thumbnailRenderer.cullingMask = (renderAllLayers) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
+
+            if (renderAllLayers)
+            {
+                var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
+                foreach (var renderer in renderersOnBuildingsLayer)
+                {
+                    renderer.material.shader = buildingsExclusiveShader.shader;
+                    Debug.Log("Swapping " + renderer.gameObject.name); 
+                }
+                thumbnailRenderer.Render();
+
+                foreach (var renderer in renderersOnBuildingsLayer)
+                    renderer.material.shader = defaultBuildingsShader.shader;
+            }
+            else{
+                thumbnailRenderer.Render();
+            }
         }
 
         /// <summary>
