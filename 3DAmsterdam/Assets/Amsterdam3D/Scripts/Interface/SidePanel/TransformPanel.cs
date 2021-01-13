@@ -106,11 +106,16 @@ namespace Amsterdam3D.Interface
             if (gizmoHandles) gizmoHandles.type = HandleType.SCALE;
         }
 
-        /// <summary>
-        /// Define the target transformable our transformpanel will manipulate
-        /// </summary>
-        /// <param name="target">The target transformable we want to manipulate using the transform panel</param>
-        public void SetTarget(Transformable target)
+        public void DisableGizmo()
+		{
+            if (gizmoHandles) gizmoHandles.gameObject.SetActive(false);
+        }
+
+		/// <summary>
+		/// Define the target transformable our transformpanel will manipulate
+		/// </summary>
+		/// <param name="target">The target transformable we want to manipulate using the transform panel</param>
+		public void SetTarget(Transformable target)
         {
             transformableTarget = target;
 

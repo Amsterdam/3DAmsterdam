@@ -104,15 +104,20 @@ namespace Amsterdam3D.Interface
         }
         public void ClosePanel()
         {
+            DeselectTransformable();
             ClearGeneratedFields();
             objectPropertiesPanel.SetActive(false);
         }
 
         public void DeselectTransformable()
         {
-            if(currentTransformPanel)
-                Destroy(currentTransformPanel);
-		}
+            if (currentTransformPanel)
+            {
+                Selector.Instance.ClearHighlights();
+                currentTransformPanel.DisableGizmo();
+                Transformable.lastSelectedTransformable = null;
+            }
+        }
 
         public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
         {

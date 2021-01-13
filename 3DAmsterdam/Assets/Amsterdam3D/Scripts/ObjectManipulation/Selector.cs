@@ -32,7 +32,7 @@ public class Selector : MonoBehaviour
 	/// <summary>
 	/// Destroys all the current outlines
 	/// </summary>
-	private void ClearHighlights(){
+	public void ClearHighlights(){
 		foreach(var outlinedObject in selectedObjects)
 		{
 			if(outlinedObject != null)
