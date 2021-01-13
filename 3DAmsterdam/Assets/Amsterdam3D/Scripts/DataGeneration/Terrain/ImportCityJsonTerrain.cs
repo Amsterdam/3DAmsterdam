@@ -175,8 +175,16 @@ public class ImportCityJsonTerrain : MonoBehaviour
         List<int> ints = new List<int>();
         for (int i = 0; i < clippedRDTriangles.Count; i++)
         {
-            ints.Add(i);
+            Vector3 coord = CoordConvert.RDtoUnity(clippedRDTriangles[i]) - tileCenterUnity;
+            if (verts.Contains(coord))
+            {
+                ints.Add(verts.IndexOf(coord));
+            }
+            else
+            { 
+            ints.Add(verts.Count);
             verts.Add(CoordConvert.RDtoUnity(clippedRDTriangles[i])-tileCenterUnity);
+            }
         }
         ints.Reverse(); //reverse the trianglelist to make the triangles counter-clockwise again
 
