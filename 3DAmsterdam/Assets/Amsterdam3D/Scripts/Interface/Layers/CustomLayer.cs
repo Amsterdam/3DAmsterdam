@@ -53,10 +53,10 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
-        public void Create(string name, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
+        public void Create(string layerName, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
-            layerNameText.text = name.Replace("(Clone)", ""); //Users do not need to see this is a clone;
+            layerNameText.text = layerName;
             LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
         }
@@ -82,6 +82,7 @@ namespace Amsterdam3D.Interface
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
             parentInterfaceLayers.LayerVisuals.Close();
+            ObjectProperties.Instance.ClosePanel();
             Destroy(gameObject);
         }
 

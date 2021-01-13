@@ -36,7 +36,8 @@ public class FirstPersonObject : MonoBehaviour, IPointerDownHandler
 	{
 		gameObject.SetActive(false);
 	}
-	private void OnMouseDown()
+
+	public void OnPointerDown(PointerEventData eventData)
 	{
 		if (placed)
 		{
@@ -49,15 +50,5 @@ public class FirstPersonObject : MonoBehaviour, IPointerDownHandler
 	{
 		manager.OnGodViewModeEvent -= EnableObject;
 		manager.OnFirstPersonModeEvent -= DisableObject;
-	}
-
-	public void OnPointerDown(PointerEventData eventData)
-	{
-		if (placed)
-		{
-			manager.FirstPersonMode(follower.WorldPosition, savedRotation);
-			gameObject.SetActive(false);
-			Cursor.lockState = CursorLockMode.Locked;
-		}
 	}
 }

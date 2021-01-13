@@ -114,6 +114,7 @@ namespace Amsterdam3D.JavascriptConnection
 			OpenURLInNewWindow(url);
 #endif
 		}
+		/*
 		public static void LockCursor() 
 		{
 #if UNITY_EDITOR
@@ -121,6 +122,6 @@ namespace Amsterdam3D.JavascriptConnection
 #elif UNITY_WEBGL && !UNITY_EDITOR
 			LockCursorInternal();
 #endif
-		}
+		}*/
 	}
 }

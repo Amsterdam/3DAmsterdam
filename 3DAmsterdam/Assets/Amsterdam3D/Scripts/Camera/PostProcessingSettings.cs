@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 namespace Amsterdam3D.Rendering
 {
@@ -11,6 +12,9 @@ namespace Amsterdam3D.Rendering
     {
         private bool antiAliasing = true;
         private bool postEffects = true;
+
+        [SerializeField]
+        private Slider dpiSlider;
 
         /// <summary>
         /// Toggles antialiasing on or off.
@@ -55,6 +59,8 @@ namespace Amsterdam3D.Rendering
         {
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
             urp.renderScale = Mathf.Lerp(0.25f,1.0f, renderScale);
+
+            dpiSlider.value = renderScale;
         }
     }
 }

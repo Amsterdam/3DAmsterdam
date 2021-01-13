@@ -25,14 +25,19 @@ namespace Amsterdam3D.Sewerage
         /// <param name="manholePrefab">GameObject with manholeTemplate, default height=1, origin = top-center, local x-direction is down</param>
         /// <param name="defaultDepth">default manhole-depth if no sewerpipes are found</param>
         /// <returns></returns>
-        public GameObject CreateManhole(Vector3 position, float defaultDepth=1.50f)
+        public GameObject CreateManhole(Vector3 position, float defaultDepth=1.50f, GameObject parent = null)
         {
+            GameObject ParentObject = parent;
+            if (parent == null)
+            {
+                ParentObject = transform.gameObject;
+            }
             // get top-center position
             Vector3 lidPosition = GetPositionAtSurface(position);
             // get manhole-height
             float depth = GetDepthAtPosition(lidPosition,defaultDepth);
             // create manhole
-            GameObject manHole = Instantiate(manholePrefab, this.transform);
+            GameObject manHole = Instantiate(manholePrefab, ParentObject.transform);
             // move manhole
             manHole.transform.localPosition = lidPosition;
             // scale manhole to correct height
