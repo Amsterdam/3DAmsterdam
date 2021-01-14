@@ -37,7 +37,15 @@ namespace Amsterdam3D.Interface
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				DetermineTag();
+				if(HooveringInteractableCollider())
+				{
+					//Disable action map with camera mouse actions
+					//ActionHandler.actions.GodView.Disable();
+				}
+				else{
+					//Enable action map with camera mouse actions
+					//ActionHandler.actions.GodView.Enable();
+				}
 			}
 
 			//Only allow click/selects starts that swap action maps if we are not hovering interface
@@ -47,16 +55,19 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void DetermineTag()
+		private bool HooveringInteractableCollider()
 		{
 			if (hit.collider.CompareTag("Gizmo"))
 			{
-				
+				//ActionHandler.actions.Gizmos.Enable();
+				return true;
 			}
 			else if (hit.collider.CompareTag("Transformable"))
 			{
-
+				//ActionHandler.actions.Gizmos.Enable();
+				return true;
 			}
+			return false;
 		}
 
 		private bool HoveringInterface()
