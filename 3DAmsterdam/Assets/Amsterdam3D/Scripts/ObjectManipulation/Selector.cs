@@ -1,43 +1,90 @@
-﻿using System.Collections;
+﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.InputHandler;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Selector : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-	[SerializeField]
-	private OutlineObject outline;
-	public static Selector Instance = null;
-
-	public List<OutlineObject> selectedObjects;
-
-	void Awake()
+	public class Selector : MonoBehaviour
 	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		selectedObjects = new List<OutlineObject>();
-	}
+		[SerializeField]
+		private OutlineObject outline;
+		public static Selector Instance = null;
 
-	/// <summary>
-	/// Add an outline object to the target gameobject
-	/// </summary>
-	/// <param name="gameObject"></param>
-	public void HighlightObject(GameObject gameObject)
-	{
-		ClearHighlights();
-		selectedObjects.Add(Instantiate(outline, gameObject.transform));
-	}
+		public List<OutlineObject> selectedObjects;
 
-	/// <summary>
-	/// Destroys all the current outlines
-	/// </summary>
-	public void ClearHighlights(){
-		foreach(var outlinedObject in selectedObjects)
+		private Ray ray;
+		private RaycastHit hit;
+
+		[SerializeField]
+		private LayerMask raycastLayers;
+
+		void Awake()
 		{
-			if(outlinedObject != null)
-				Destroy(outlinedObject.gameObject);
+			if (Instance == null)
+			{
+				Instance = this;
+			}
+			selectedObjects = new List<OutlineObject>();
 		}
-		selectedObjects.Clear(); //May allow multiselect in future features
+
+		private void Update()
+		{
+			//Always raycast to look for hoover actions
+			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
+			{
+				DetermineTag();
+			}
+
+			//Only allow click/selects starts that swap action maps if we are not hovering interface
+			if (!HoveringInterface())
+			{
+				
+			}
+		}
+
+		private void DetermineTag()
+		{
+			if (hit.collider.CompareTag("Gizmo"))
+			{
+				
+			}
+			else if (hit.collider.CompareTag("Transformable"))
+			{
+
+			}
+		}
+
+		private bool HoveringInterface()
+		{
+			return EventSystem.current.IsPointerOverGameObject();
+		}
+
+		/// <summary>
+		/// Add an outline object to the target gameobject
+		/// </summary>
+		/// <param name="gameObject"></param>
+		public void HighlightObject(GameObject gameObject)
+		{
+			ClearHighlights();
+			selectedObjects.Add(Instantiate(outline, gameObject.transform));
+		}
+
+		/// <summary>
+		/// Destroys all the current outlines
+		/// </summary>
+		public void ClearHighlights()
+		{
+			foreach (var outlinedObject in selectedObjects)
+			{
+				if (outlinedObject != null)
+					Destroy(outlinedObject.gameObject);
+			}
+			selectedObjects.Clear(); //May allow multiselect in future features
+		}
 	}
 }
