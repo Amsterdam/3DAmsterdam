@@ -1030,44 +1030,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ]
         },
         {
-            ""name"": ""Test"",
-            ""id"": ""751729d8-1a55-4b56-ae05-c162c0c86bb1"",
-            ""actions"": [
-                {
-                    ""name"": ""TestActie"",
-                    ""type"": ""Button"",
-                    ""id"": ""aa006a65-1b71-4d9c-9642-9d3864545841"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""7000a58c-1fbb-4e21-a99d-a78375a84823"",
-                    ""path"": ""<Joystick>/stick/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TestActie"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""22686f75-09aa-4c4c-a70b-d6e401986206"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TestActie"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""SelectionTool"",
             ""id"": ""402bd2ad-ab88-4f3e-9dd3-032a690c2e47"",
             ""actions"": [
@@ -1204,9 +1166,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_GodView_RotateCamera = m_GodView.FindAction("Rotate Camera", throwIfNotFound: true);
         m_GodView_Zoom = m_GodView.FindAction("Zoom", throwIfNotFound: true);
         m_GodView_Contextmenu = m_GodView.FindAction("Context menu", throwIfNotFound: true);
-        // Test
-        m_Test = asset.FindActionMap("Test", throwIfNotFound: true);
-        m_Test_TestActie = m_Test.FindAction("TestActie", throwIfNotFound: true);
         // SelectionTool
         m_SelectionTool = asset.FindActionMap("SelectionTool", throwIfNotFound: true);
         m_SelectionTool_StartSelection = m_SelectionTool.FindAction("StartSelection", throwIfNotFound: true);
@@ -1475,39 +1434,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     }
     public GodViewActions @GodView => new GodViewActions(this);
 
-    // Test
-    private readonly InputActionMap m_Test;
-    private ITestActions m_TestActionsCallbackInterface;
-    private readonly InputAction m_Test_TestActie;
-    public struct TestActions
-    {
-        private @_3DAmsterdam m_Wrapper;
-        public TestActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
-        public InputAction @TestActie => m_Wrapper.m_Test_TestActie;
-        public InputActionMap Get() { return m_Wrapper.m_Test; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(TestActions set) { return set.Get(); }
-        public void SetCallbacks(ITestActions instance)
-        {
-            if (m_Wrapper.m_TestActionsCallbackInterface != null)
-            {
-                @TestActie.started -= m_Wrapper.m_TestActionsCallbackInterface.OnTestActie;
-                @TestActie.performed -= m_Wrapper.m_TestActionsCallbackInterface.OnTestActie;
-                @TestActie.canceled -= m_Wrapper.m_TestActionsCallbackInterface.OnTestActie;
-            }
-            m_Wrapper.m_TestActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @TestActie.started += instance.OnTestActie;
-                @TestActie.performed += instance.OnTestActie;
-                @TestActie.canceled += instance.OnTestActie;
-            }
-        }
-    }
-    public TestActions @Test => new TestActions(this);
-
     // SelectionTool
     private readonly InputActionMap m_SelectionTool;
     private ISelectionToolActions m_SelectionToolActionsCallbackInterface;
@@ -1611,10 +1537,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         void OnRotateCamera(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnContextmenu(InputAction.CallbackContext context);
-    }
-    public interface ITestActions
-    {
-        void OnTestActie(InputAction.CallbackContext context);
     }
     public interface ISelectionToolActions
     {
