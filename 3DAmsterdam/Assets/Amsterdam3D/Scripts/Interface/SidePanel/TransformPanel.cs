@@ -1,9 +1,9 @@
 ﻿using ConvertCoordinates;
+using RuntimeHandle;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -40,15 +40,22 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private InputField napZ;
 
-        private GameObject transformableTarget;
+        private Transformable transformableTarget;
         private Vector3RD rdCoordinates;
 
+        private Vector3 basePositionUnity;
         private Vector3RD basePosition;
         private Quaternion baseRotation;
         private Vector3 baseScale;
 
         private const string stringDecimal = "F2";
         private const string emptyStringDefault = "0";
+        private const string scaleSuffix = "%";
+
+        private static RuntimeTransformHandle gizmoHandles;
+
+        private bool ignoreChangeEvents = false;
+        private bool coordinateSystemLocal = true;
 
         void Start()
         {
@@ -56,42 +63,75 @@ namespace Amsterdam3D.Interface
             translateX.onValueChanged.AddListener(TranslationInputChanged);
             translateY.onValueChanged.AddListener(TranslationInputChanged);
             translateZ.onValueChanged.AddListener(TranslationInputChanged);
-            translateX.onEndEdit.AddListener(ApplyTranslation);
-            translateY.onEndEdit.AddListener(ApplyTranslation);
-            translateZ.onEndEdit.AddListener(ApplyTranslation);
 
             //Rotation preview and apply
             rotateX.onValueChanged.AddListener(RotationInputChanged);
             rotateY.onValueChanged.AddListener(RotationInputChanged);
             rotateZ.onValueChanged.AddListener(RotationInputChanged);
-            rotateX.onEndEdit.AddListener(ApplyRotation);
-            rotateY.onEndEdit.AddListener(ApplyRotation);
-            rotateZ.onEndEdit.AddListener(ApplyRotation);
 
             //Scale preview and apply
             scaleX.onValueChanged.AddListener(ScaleInputChanged);
             scaleY.onValueChanged.AddListener(ScaleInputChanged);
             scaleZ.onValueChanged.AddListener(ScaleInputChanged);
-            scaleX.onEndEdit.AddListener(ApplyScale);
-            scaleY.onEndEdit.AddListener(ApplyScale);
-            scaleZ.onEndEdit.AddListener(ApplyScale);
 
             //Add listeners to change
-            rdX.onValueChanged.AddListener(AnyInputChanged);
-            rdY.onValueChanged.AddListener(AnyInputChanged);
-            napZ.onValueChanged.AddListener(AnyInputChanged);
-
-            //Global listener for any changes made in input
-            foreach(InputField inputField in GetComponentsInChildren<InputField>())
-            {
-                inputField.onValueChanged.AddListener(AnyInputChanged); 
-            }
+            rdX.onValueChanged.AddListener(RDInputChanged);
+            rdY.onValueChanged.AddListener(RDInputChanged);
+            napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
-        public void SetTarget(GameObject targetGameObject)
+        /// <summary>
+        /// Create the object containing our 3D gizmos if it does not exist yet
+        /// </summary>
+		private void CreateGizmoHandles()
         {
-            transformableTarget = targetGameObject;
-            TargetWasTransformed();
+            if (gizmoHandles) return;
+
+            gizmoHandles = RuntimeTransformHandle.Create(null, HandleType.POSITION);
+            gizmoHandles.autoScale = true;
+            gizmoHandles.space = HandleSpace.LOCAL;
+        }
+        
+        //Public methods we can trigger via serialized unity button click events
+        public void TranslationGizmo()
+        {
+            if (gizmoHandles) gizmoHandles.type = HandleType.POSITION;
+        }
+        public void RotationGizmo()
+        {
+            if (gizmoHandles) gizmoHandles.type = HandleType.ROTATION;
+        }
+        public void ScaleGizmo()
+        {
+            if (gizmoHandles) gizmoHandles.type = HandleType.SCALE;
+        }
+
+        public void DisableGizmo()
+		{
+            if (gizmoHandles) gizmoHandles.gameObject.SetActive(false);
+        }
+
+		/// <summary>
+		/// Define the target transformable our transformpanel will manipulate
+		/// </summary>
+		/// <param name="target">The target transformable we want to manipulate using the transform panel</param>
+		public void SetTarget(Transformable target)
+        {
+            transformableTarget = target;
+
+            ApplyTransformOffsets(); //Our starting percentage scale is always 100% (even if our imported/created stuff has a strange scale)
+            SetRDCoordinateFields();
+
+            //Target our 3D gizmo on the same object
+            CreateGizmoHandles();
+            gizmoHandles.gameObject.SetActive(true);
+            gizmoHandles.target = transformableTarget.transform;
+            gizmoHandles.enabled = true;
+            gizmoHandles.movedHandle.RemoveAllListeners();
+            gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
+
+            //Place a highlight on our object
+            Selector.Instance.HighlightObject(transformableTarget.gameObject);
         }
 
         /// <summary>
@@ -99,17 +139,57 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void TargetWasTransformed()
         {
+            ignoreChangeEvents = true;
+
+            SetRDCoordinateFields();
+            UpdateWithCurrentTransform();
+            transformableTarget.UpdateBounds();
+
+            ignoreChangeEvents = false;
+        }
+
+        /// <summary>
+        /// Update the input fields using the transform values of our current targeted transformable
+        /// </summary>
+        private void UpdateWithCurrentTransform()
+        {
+            if (coordinateSystemLocal)
+            {
+                Vector3 localCurrentTransformPoint = TransformExtensions.InverseTransformPointUnscaled(transformableTarget.transform, basePositionUnity);
+                Vector3 targetTransformPoint = TransformExtensions.InverseTransformPointUnscaled(transformableTarget.transform, transformableTarget.transform.position);
+
+                var translationX = targetTransformPoint.x - localCurrentTransformPoint.x;
+                var translationY = targetTransformPoint.y - localCurrentTransformPoint.y;
+                var translationZ = targetTransformPoint.z - localCurrentTransformPoint.z;
+
+                translateX.text = (translationX).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateY.text = (translationZ).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateZ.text = (translationY).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
+            else{
+                translateX.text = (rdCoordinates.x - basePosition.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateY.text = (rdCoordinates.y - basePosition.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+                translateZ.text = (rdCoordinates.z - basePosition.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
+
+            rotateX.text = (transformableTarget.transform.eulerAngles.x - baseRotation.eulerAngles.x).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rotateY.text = (transformableTarget.transform.eulerAngles.z - baseRotation.eulerAngles.z).ToString(stringDecimal, CultureInfo.InvariantCulture);
+            rotateZ.text = (transformableTarget.transform.eulerAngles.y - baseRotation.eulerAngles.y).ToString(stringDecimal, CultureInfo.InvariantCulture);
+
+            scaleX.text = ((transformableTarget.transform.localScale.x / baseScale.x) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleY.text = ((transformableTarget.transform.localScale.z / baseScale.z) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+            scaleZ.text = ((transformableTarget.transform.localScale.y / baseScale.y) * 100.0f).ToString(stringDecimal, CultureInfo.InvariantCulture) + scaleSuffix;
+        }
+
+        /// <summary>
+        /// Use the current rotation/translation and scale as our base 0,0,0 value
+        /// </summary>
+        private void ApplyTransformOffsets()
+        {
             ApplyRotation();
             ApplyTranslation();
             ApplyScale();
-
-            UpdateRDCoordinates();
         }
-
-        private void AnyInputChanged(string input)
-        {
-            transformableTarget.GetComponent<Transformable>().UpdateThumbnailBounds();
-		}
 
         /// <summary>
         /// Forces an input string to be parsable.
@@ -129,17 +209,36 @@ namespace Amsterdam3D.Interface
         /// <param name="value">Required string field for event handlers</param>
         private void TranslationInputChanged(string value = null)
         {
-            Vector3RD previewTranslation = basePosition;
-            previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
-            previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
-            previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
+            if (ignoreChangeEvents) return;
 
-            transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+            if (coordinateSystemLocal)
+            {
+                //Local always translates from our saved base position
+                transformableTarget.transform.position = basePositionUnity;
+                transformableTarget.transform.Translate(
+                    float.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture),
+                    float.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture)
+                );
 
-            //Preview the RD coordinates directly in the RD input
-            rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
-            rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
-            napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                Vector3RD previewTranslation = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+                rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
+            else{
+                Vector3RD previewTranslation = basePosition;
+                previewTranslation.x += double.Parse(MakeInputParsable(translateX.text), CultureInfo.InvariantCulture);
+                previewTranslation.y += double.Parse(MakeInputParsable(translateY.text), CultureInfo.InvariantCulture);
+                previewTranslation.z += double.Parse(MakeInputParsable(translateZ.text), CultureInfo.InvariantCulture);
+
+                transformableTarget.transform.position = CoordConvert.RDtoUnity(previewTranslation);
+
+                //Preview the RD coordinates directly in the RD input
+                rdX.text = previewTranslation.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                rdY.text = previewTranslation.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
+                napZ.text = previewTranslation.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
+            }
         }
 
         /// <summary>
@@ -148,12 +247,21 @@ namespace Amsterdam3D.Interface
         /// <param name="value">Required string field for event handlers</param>
         private void RotationInputChanged(string value = null)
         {
+            if (ignoreChangeEvents) return;
+
             transformableTarget.transform.rotation = baseRotation;
             transformableTarget.transform.Rotate(
                 float.Parse(MakeInputParsable(rotateX.text)),
                 float.Parse(MakeInputParsable(rotateY.text)),
                 float.Parse(MakeInputParsable(rotateZ.text))
             );
+
+            if(coordinateSystemLocal)
+            {
+                ApplyTranslation();
+            }
+
+            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
@@ -162,6 +270,8 @@ namespace Amsterdam3D.Interface
         /// <param name="value">Required string field for event handlers</param>
         private void ScaleInputChanged(string value = null)
         {
+            if (ignoreChangeEvents) return;
+
             Vector3 normalisedScaler = new Vector3(
                 baseScale.x * (float.Parse(MakeInputParsable(scaleX.text)) / 100.0f),
                 baseScale.y * (float.Parse(MakeInputParsable(scaleY.text)) / 100.0f),
@@ -169,15 +279,17 @@ namespace Amsterdam3D.Interface
             );
 
             transformableTarget.transform.localScale = normalisedScaler;
+
+            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
         /// Applies the translation (uses this position as 0,0,0)
         /// </summary>
-        /// <param name="value">Required string field for event handlers</param>
-        private void ApplyTranslation(string value = null)
+        private void ApplyTranslation()
         {
-            basePosition = CoordConvert.UnitytoRD(transformableTarget.transform.position);
+            basePositionUnity = transformableTarget.transform.position;
+            basePosition = CoordConvert.UnitytoRD(basePositionUnity);
 
             //Reset field values to 0 meter
             translateX.text = "0";
@@ -188,8 +300,7 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// Applies the rotation (uses this rotation as 0,0,0)
         /// </summary>
-        /// <param name="value">Required string field for event handlers</param>
-        private void ApplyRotation(string value = null)
+        private void ApplyRotation()
         {
             baseRotation = transformableTarget.transform.rotation;
 
@@ -202,8 +313,7 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// Applies the scale (uses this scale as 0,0,0)
         /// </summary>
-        /// <param name="value">Required string field for event handlers</param>
-        private void ApplyScale(string value = null)
+        private void ApplyScale()
         {
             baseScale = transformableTarget.transform.localScale;
 
@@ -216,14 +326,12 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// Set our current base position to the current RD coordinates.
         /// </summary>
-        private void UpdateRDCoordinates()
+        private void SetRDCoordinateFields()
         {
             rdCoordinates = CoordConvert.UnitytoRD(transformableTarget.transform.position);
             rdX.text = rdCoordinates.x.ToString(stringDecimal, CultureInfo.InvariantCulture);
             rdY.text = rdCoordinates.y.ToString(stringDecimal, CultureInfo.InvariantCulture);
             napZ.text = rdCoordinates.z.ToString(stringDecimal, CultureInfo.InvariantCulture);
-
-            basePosition = rdCoordinates;
         }
 
         /// <summary>
@@ -232,6 +340,8 @@ namespace Amsterdam3D.Interface
         /// <param name="value"></param>
         private void RDInputChanged(string value = null)
         {
+            if (ignoreChangeEvents) return;
+
             rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
             rdCoordinates.y = double.Parse(rdY.text, CultureInfo.InvariantCulture);
             rdCoordinates.z = double.Parse(napZ.text, CultureInfo.InvariantCulture);
