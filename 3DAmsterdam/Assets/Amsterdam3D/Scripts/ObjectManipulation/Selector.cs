@@ -33,11 +33,11 @@ namespace Amsterdam3D.Interface
 
 		private void Update()
 		{
-			//Always raycast to look for hoover actions
+			//Always raycast to look for hover actions
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				if(HooveringInteractableCollider())
+				if(HoveringInteractableCollider())
 				{
 					//Disable action map with camera mouse actions
 					//ActionHandler.actions.GodView.Disable();
@@ -51,11 +51,18 @@ namespace Amsterdam3D.Interface
 			//Only allow click/selects starts that swap action maps if we are not hovering interface
 			if (!HoveringInterface())
 			{
-				
+				RegisterSelectionInput();
 			}
 		}
 
-		private bool HooveringInteractableCollider()
+		private void RegisterSelectionInput()
+		{
+			//click, or right click action on our hovering object?
+
+			//no hovering object, check for click or right click in mid air, maybe theres a building there
+		}
+
+		private bool HoveringInteractableCollider()
 		{
 			if (hit.collider.CompareTag("Gizmo"))
 			{
