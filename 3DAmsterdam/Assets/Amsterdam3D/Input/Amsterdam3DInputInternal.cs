@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Amsterdam3D/Scripts/Input/3D Amsterdam.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Amsterdam3D/Input/3D Amsterdam.inputactions'
 
 using System;
 using System.Collections;
