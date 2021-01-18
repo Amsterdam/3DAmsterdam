@@ -54,11 +54,6 @@ namespace Amsterdam3D.Interface
 			activeInteractable = interactable;
 		}
 
-		private void Start()
-		{
-			//FindActionMaps();
-		}
-
 		private void Update()
 		{
 			//Always raycast to look for hover actions
@@ -122,7 +117,7 @@ namespace Amsterdam3D.Interface
 		{
 			if (!HoveringInterface())
 			{
-
+				//
 			}
 		}
 		private void SecondaryClick()
