@@ -9,8 +9,7 @@ namespace Amsterdam3D.Interface
 {
     public class Interactable : MonoBehaviour
     {
-        [SerializeField]
-        private string actionMapName = "";
+        public string actionMapName = "";
 
         public Ray receivedRay;
 
@@ -34,12 +33,25 @@ namespace Amsterdam3D.Interface
 
         public virtual void TakePriority()
         {
-            Selector.activeInteractable = this;
+            Selector.Instance.SetActiveInteractable(this);
+        }
+
+        public virtual bool IsHovered()
+        {
+            return Selector.Instance.GetHoveringInteractable() == this;
+        }
+
+        public virtual bool HasPriority()
+        {
+            //Always have priority if none is set
+            if (!Selector.Instance.GetActiveInteractable()) return true;
+
+            return Selector.Instance.GetActiveInteractable() == this;
         }
 
         public virtual void InteractionCompleted()
         {
-            Selector.activeInteractable = null;
+            Selector.Instance.SetActiveInteractable(null);
         }
     }
 }

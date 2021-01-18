@@ -1096,7 +1096,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Select"",

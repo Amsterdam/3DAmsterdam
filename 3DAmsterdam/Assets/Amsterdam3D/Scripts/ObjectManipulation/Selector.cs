@@ -18,6 +18,7 @@ namespace Amsterdam3D.Interface
 	{
 		[SerializeField]
 		private OutlineObject outline;
+
 		public static Selector Instance = null;
 
 		public List<OutlineObject> selectedObjects;
@@ -28,10 +29,12 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private LayerMask raycastLayers;
 
-		[SerializeField]
-		private TagAndActionMap[] tagsAndActionMaps;
+		public Interactable GetActiveInteractable() => activeInteractable;
+		public Interactable GetHoveringInteractable() => hoveringInteractable;
 
-		public static Interactable activeInteractable;
+		[SerializeField]
+		private Interactable activeInteractable;
+		[SerializeField]
 		private Interactable hoveringInteractable;
 
 		[SerializeField]
@@ -46,18 +49,15 @@ namespace Amsterdam3D.Interface
 			selectedObjects = new List<OutlineObject>();
 		}
 
+		public void SetActiveInteractable(Interactable interactable)
+		{
+			activeInteractable = interactable;
+		}
+
 		private void Start()
 		{
 			//FindActionMaps();
 		}
-
-		/*private void FindActionMaps()
-		{
-			for (int i = 0; i < tagsAndActionMaps.Length; i++)
-			{
-				tagsAndActionMaps[i].actionMap = ActionHandler.actions.asset.FindActionMap(tagsAndActionMaps[i].actionMapName);
-			}
-		}*/
 
 		private void Update()
 		{
@@ -65,23 +65,28 @@ namespace Amsterdam3D.Interface
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				if(!activeInteractable)
+				if (!activeInteractable)
 				{
 					//No active interactable, but we might be hovering one.
 					hoveringInteractable = hit.collider.GetComponent<Interactable>();
-					if (hoveringInteractable) hoveringInteractable.Hover(ray);
+					if (hoveringInteractable)
+					{
+						hoveringInteractable.Hover(ray);
+						hoveringInteractable.ActionMap.Enable();
+					}
 				}
-				
-				if (!activeInteractable && FindHoverActionMap())
+				else
 				{
-					EnableCameraActionMaps(true, false);
+					//TODO: we have an active interactable, so (mouse) camera motions are blocked
+					activeInteractable.Hover(ray);
 				}
 			}
-			else if(activeInteractable)
+			else if (activeInteractable)
 			{
-				activeInteractable.Hover(ray);
+				
 			}
-			else{
+			else
+			{
 				EnableObjectActionMaps(false);
 				EnableCameraActionMaps(true, true);
 			}
@@ -98,20 +103,20 @@ namespace Amsterdam3D.Interface
 			//We can be dragging an interactable around and move camera while pressing arrow keys
 		}
 
+		/// <summary>
+		/// Enable or disable object specific action maps
+		/// </summary>
+		/// <param name="enable">Enable action maps</param>
 		private void EnableObjectActionMaps(bool enable)
 		{
-			for (int i = 0; i < tagsAndActionMaps.Length; i++)
+			if(enable)
 			{
-				if (enable)
-				{
-					tagsAndActionMaps[i].actionMap.Enable();
-				}
-				else{
-					tagsAndActionMaps[i].actionMap.Disable();
-				}
+				ActionHandler.actions.Transformable.Enable();
+			}
+			else{
+				ActionHandler.actions.Transformable.Disable();
 			}
 		}
-
 
 		private void Click()
 		{
@@ -128,7 +133,8 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void MultiselectStart(){
+		private void MultiselectStart()
+		{
 			if (!HoveringInterface())
 			{
 				//enable selectiontool actionmap
@@ -147,10 +153,10 @@ namespace Amsterdam3D.Interface
 		private void RegisterSelectionInput(Ray ray)
 		{
 			//click, or right click
-			
+
 
 			//multiselect action?
-			
+
 
 			//no hovering object, check for click or right click in mid air, maybe theres a building there
 			//pass ray down to SelectByID
@@ -160,11 +166,12 @@ namespace Amsterdam3D.Interface
 		private bool FindHoverActionMap()
 		{
 			var interactable = hit.collider.GetComponent<Interactable>();
-			if(interactable)
+			if (interactable && !interactable.ActionMap.enabled)
 			{
+				Debug.Log("Enable actionmap for " + interactable.ActionMap.name);
 				interactable.ActionMap.Enable();
 				return true;
-			}			
+			}
 
 			return false;
 		}
@@ -172,7 +179,7 @@ namespace Amsterdam3D.Interface
 		private bool HoveringInterface()
 		{
 			return EventSystem.current.IsPointerOverGameObject();
-			
+
 		}
 
 		/// <summary>
@@ -197,12 +204,5 @@ namespace Amsterdam3D.Interface
 			}
 			selectedObjects.Clear(); //May allow multiselect in future features
 		}
-	}
-
-	[System.Serializable]
-	public struct TagAndActionMap{
-		public string tag;
-		public string actionMapName;
-		public InputActionMap actionMap;
 	}
 }

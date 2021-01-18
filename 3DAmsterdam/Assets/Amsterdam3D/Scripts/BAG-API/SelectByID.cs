@@ -10,7 +10,7 @@ using Amsterdam3D.Interface;
 using System;
 using System.Globalization;
 
-public class SelectByID : MonoBehaviour
+public class SelectByID : Interactable
 {
     public TileHandler tileHandler;
 

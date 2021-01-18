@@ -25,7 +25,9 @@ public class Transformable : Interactable
 	private IAction clickAction;
 
 	private void Start()
-	{		
+	{
+		actionMapName = "Transformable";
+
 		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
         clickAction.SubscribePerformed(Select, 0);
 		
@@ -39,7 +41,11 @@ public class Transformable : Interactable
 
 	public void Select(IAction action)
 	{
-		TakePriority();
+		if (!IsHovered())
+		{
+			Deselect();
+			return;
+		}
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
 			ShowTransformProperties();
@@ -50,7 +56,11 @@ public class Transformable : Interactable
 			ContextPointerMenu.Instance.SetTargetTransformable(this);
 			ShowTransformProperties();
 		}
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
+	}
+
+	private void Deselect()
+	{
+		ObjectProperties.Instance.DeselectTransformable(this, true);
 	}
 
 	/// <summary>
