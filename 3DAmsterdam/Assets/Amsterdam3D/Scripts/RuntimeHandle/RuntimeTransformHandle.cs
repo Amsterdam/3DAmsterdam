@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.Interface;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +10,7 @@ namespace RuntimeHandle
      * Created by Peter @sHTiF Stefcek 21.10.2020
      * Altered by 3D Amsterdam Team to make translation handles be relative to world, and not mouse delta. 07.01.2021
      */
-    public class RuntimeTransformHandle : MonoBehaviour
+    public class RuntimeTransformHandle : Interactable
     {
         public HandleAxes axes = HandleAxes.XYZ;
         public HandleSpace space = HandleSpace.LOCAL;

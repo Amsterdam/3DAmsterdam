@@ -31,8 +31,7 @@ namespace Amsterdam3D.Interface
             selectionBox.SetParent(canvas.transform);
             selectionBoxObj.SetActive(false);
             inBoxSelect = false;
-            enabled = true;
-            
+            enabled = true;       
         }
 
         private void Start()
@@ -41,8 +40,6 @@ namespace Amsterdam3D.Interface
             holdAction = Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.StartSelection;
             Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.Enable();
             holdAction.Enable();
-            
-
         }
 
 		private void OnDrawGizmos()
