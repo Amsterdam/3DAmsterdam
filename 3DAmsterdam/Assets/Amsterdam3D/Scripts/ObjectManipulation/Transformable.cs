@@ -25,8 +25,9 @@ public class Transformable : MonoBehaviour
 
 	private void Start()
 	{
-		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
+		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.Zoom);
 
+		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
@@ -35,7 +36,7 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
-	private void OnMouseDown()
+	public void Clicked()
 	{
 		if(!stickToMouse && lastSelectedTransformable != this)
 		{

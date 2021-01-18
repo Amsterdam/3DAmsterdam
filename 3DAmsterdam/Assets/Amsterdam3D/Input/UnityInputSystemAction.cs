@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Amsterdam3D.InputHandler
 {
-
-
     public enum ActionPhase 
     {
         Idle,
@@ -18,7 +16,6 @@ namespace Amsterdam3D.InputHandler
     {
         T ReadValue<T>() where T : struct;
 
-
         void SetValue(dynamic value);
 
         /// <summary>
@@ -29,7 +26,6 @@ namespace Amsterdam3D.InputHandler
         /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
         /// </summary>
         void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
-
 
         bool Used { get; set; }
         bool Performed { get; }
@@ -59,8 +55,6 @@ namespace Amsterdam3D.InputHandler
             }
             return (T)value;
         }
-
-
 
         public void SetValue(object value)
         {
@@ -99,7 +93,6 @@ namespace Amsterdam3D.InputHandler
             }
         }
 
-
         public void SubscribePerformed(ActionDelegate del, int priority)
         {
             ActionEventClass h = new ActionEventClass(del, priority);
@@ -126,20 +119,14 @@ namespace Amsterdam3D.InputHandler
             this.name = name;
         }
 
-
         // nested class otherwise ActionDelegate doesn't work
         // class made to implement IComparable
         public class ActionEventClass : IComparable<ActionEventClass>
         {
-
-
             public ActionDelegate del;
             public bool performed;
             public bool cancelled;
             public int priority = 0;
-
-
-
 
             public ActionEventClass(ActionDelegate del, int priority)
             {
@@ -156,9 +143,6 @@ namespace Amsterdam3D.InputHandler
             {
                 return this.priority - other.priority;
             }
-
         }
-
-
     }
 }

@@ -7,17 +7,14 @@ namespace Amsterdam3D.Interface
 {
     public class Interactable : MonoBehaviour
     {
-        public void Hover(Ray ray)
-        {
+        public virtual void HandleRay(Ray ray)  {}
 
-        }
-
-        public void TakePriority()
+        public virtual void TakePriority()
         {
             Selector.activeInteractable = this;
         }
 
-        public void InteractionCompleted()
+        public virtual void InteractionCompleted()
         {
             Selector.activeInteractable = null;
         }

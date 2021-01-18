@@ -9,6 +9,11 @@ using UnityEngine.InputSystem;
 
 namespace Amsterdam3D.Interface
 {
+	/// <summary>
+	/// This class handles the base order in which we handle input (divided in action maps) for interactable objects.
+	/// We provide a main raycast for objects that require a ray based on the mouse/pointer position.
+	/// Here we also maintain the lists of multiselected objects, and set the right context menu.
+	/// </summary>
 	public class Selector : MonoBehaviour
 	{
 		[SerializeField]
@@ -24,9 +29,7 @@ namespace Amsterdam3D.Interface
 		private LayerMask raycastLayers;
 
 		[SerializeField]
-		private TagAndAction[] tagsAndActions;
-
-		private Collider targetCollider;
+		private TagAndActionMap[] tagsAndActionMaps;
 
 		public static Interactable activeInteractable;
 		private Interactable hoveringInteractable;
@@ -47,9 +50,9 @@ namespace Amsterdam3D.Interface
 
 		private void FindActionMaps()
 		{
-			for (int i = 0; i < tagsAndActions.Length; i++)
+			for (int i = 0; i < tagsAndActionMaps.Length; i++)
 			{
-				tagsAndActions[i].actionMap = ActionHandler.actions.asset.FindActionMap(tagsAndActions[i].actionMapName);
+				tagsAndActionMaps[i].actionMap = ActionHandler.actions.asset.FindActionMap(tagsAndActionMaps[i].actionMapName);
 			}
 		}
 
@@ -59,14 +62,11 @@ namespace Amsterdam3D.Interface
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				if(activeInteractable)
+				if(!activeInteractable)
 				{
-					activeInteractable.Hover(ray);
-				}
-				else{
 					//No active interactable, but we might be hovering one.
 					hoveringInteractable = hit.collider.GetComponent<Interactable>();
-					if (hoveringInteractable) hoveringInteractable.Hover(ray);
+					if (hoveringInteractable) hoveringInteractable.HandleRay(ray);
 				}
 				
 				if (!activeInteractable && ActivateHoverActionMap())
@@ -74,14 +74,22 @@ namespace Amsterdam3D.Interface
 					EnableCameraActionMaps(true, false);
 				}
 			}
-			else if(!activeInteractable)
+			else if(activeInteractable)
 			{
+				activeInteractable.HandleRay(ray);
+			}
+			else{
 				EnableObjectActionMaps(false);
 				EnableCameraActionMaps(true, true);
 			}
 		}
 
-		private void EnableCameraActionMaps(bool enaleKeyboardActions, bool enableMouseActions)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="enableKeyboardActions"></param>
+		/// <param name="enableMouseActions"></param>
+		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
 			//two action maps.
 			//We can be dragging an interactable around and move camera while pressing arrow keys
@@ -89,15 +97,31 @@ namespace Amsterdam3D.Interface
 
 		private void EnableObjectActionMaps(bool enable)
 		{
-			for (int i = 0; i < tagsAndActions.Length; i++)
+			for (int i = 0; i < tagsAndActionMaps.Length; i++)
 			{
 				if (enable)
 				{
-					tagsAndActions[i].actionMap.Enable();
+					tagsAndActionMaps[i].actionMap.Enable();
 				}
 				else{
-					tagsAndActions[i].actionMap.Disable();
+					tagsAndActionMaps[i].actionMap.Disable();
 				}
+			}
+		}
+
+
+		private void Click()
+		{
+			if (!HoveringInterface())
+			{
+
+			}
+		}
+		private void SecondaryClick()
+		{
+			if (!HoveringInterface())
+			{
+				//Determine context menu
 			}
 		}
 
@@ -117,25 +141,6 @@ namespace Amsterdam3D.Interface
 			//What kind of context / combinations etc. etc.
 		}
 
-		private void InputStopped()
-		{
-			
-		}
-
-		private void Click(){
-			if (!HoveringInterface())
-			{
-				
-			}
-		}
-
-		private void SecondaryClick(){
-			if (!HoveringInterface())
-			{
-				//Determine context menu
-			}
-		}
-
 		private void RegisterSelectionInput(Ray ray)
 		{
 			//click, or right click
@@ -152,16 +157,15 @@ namespace Amsterdam3D.Interface
 		private bool ActivateHoverActionMap()
 		{
 			bool foundActionMap = false;
-			for (int i = 0; i < tagsAndActions.Length; i++)
+			for (int i = 0; i < tagsAndActionMaps.Length; i++)
 			{
-				if (hit.collider.CompareTag(tagsAndActions[i].tag))
+				if (hit.collider.CompareTag(tagsAndActionMaps[i].tag))
 				{
-					targetCollider = hit.collider;
-					tagsAndActions[i].actionMap.Enable();
+					tagsAndActionMaps[i].actionMap.Enable();
 					foundActionMap = true;
 				}
 				else{
-					tagsAndActions[i].actionMap.Disable();
+					tagsAndActionMaps[i].actionMap.Disable();
 				}
 			}
 			return foundActionMap;
@@ -198,7 +202,7 @@ namespace Amsterdam3D.Interface
 	}
 
 	[System.Serializable]
-	public struct TagAndAction{
+	public struct TagAndActionMap{
 		public string tag;
 		public string actionMapName;
 		public InputActionMap actionMap;

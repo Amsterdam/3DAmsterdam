@@ -16,24 +16,18 @@ namespace Amsterdam3D.InputHandler
     [DefaultExecutionOrder(-1000)]
     public class ActionHandler:MonoBehaviour
     {
-
         public static _3DAmsterdam actions;
         InputActionAsset actionMaps;
 
-
         public static ActionHandler instance;
-
 
         public Dictionary<InputAction, UnityInputSystemAction> ActionDictionary = new Dictionary<InputAction, UnityInputSystemAction>();
         public List<UnityActionMap> unityActionMaps = new List<UnityActionMap>();
 
-
         private bool inputEnabled = true;
-
 
         private void Awake()
         {
-
             instance = this;
             actions = new _3DAmsterdam();
             actionMaps = actions.asset; 
@@ -52,11 +46,7 @@ namespace Amsterdam3D.InputHandler
                     ActionHandler.actions.StreetView.Disable();
                 }
                 unityActionMaps.Add(unityMap);
-
-                
-               
             } 
-
         }
 
         private void InputAction_canceled(InputAction.CallbackContext obj)
@@ -76,7 +66,6 @@ namespace Amsterdam3D.InputHandler
             action.FireEvent();
         }
 
-
         /// <summary>
         /// Subscribe to IAction without returning IAction.
         /// Returns true if succesful and false if Action doesn't exist.
@@ -95,9 +84,6 @@ namespace Amsterdam3D.InputHandler
             //not in dictionary, return false
             return false;
         }
-
-
-
 
         /// <summary>
         /// Subscribe to IAction without returning IAction.
@@ -122,9 +108,6 @@ namespace Amsterdam3D.InputHandler
             ActionDictionary[action].Subscribe(func);
             return true;
         }
-
-
-
 
         /// <summary>
         /// Gets the corresponding Action class by either name or by Unity input system Action.
@@ -151,7 +134,6 @@ namespace Amsterdam3D.InputHandler
             return null;
         }
 
-
         /// <summary>
         /// Gets the corresponding Action map class, to enable or disable, or get actions from
         /// </summary>
@@ -167,7 +149,6 @@ namespace Amsterdam3D.InputHandler
             return null;
         }
 
-
         /// <summary>
         /// Enables or disables all input. 
         /// </summary>
@@ -175,7 +156,5 @@ namespace Amsterdam3D.InputHandler
         {
             this.inputEnabled = enabled;
         }
-
-
     }
 }
