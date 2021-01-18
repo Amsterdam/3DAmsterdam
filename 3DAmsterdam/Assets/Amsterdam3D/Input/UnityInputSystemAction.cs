@@ -96,6 +96,7 @@ namespace Amsterdam3D.InputHandler
         public void SubscribePerformed(ActionDelegate del, int priority)
         {
             ActionEventClass h = new ActionEventClass(del, priority);
+            h.performed = true;
             sortedDelegates.InsertIntoSortedList(h);
         }
 

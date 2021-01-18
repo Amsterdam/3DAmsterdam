@@ -34,6 +34,9 @@ namespace Amsterdam3D.Interface
 		public static Interactable activeInteractable;
 		private Interactable hoveringInteractable;
 
+		[SerializeField]
+		private Interactable[] defaultInteractables;
+
 		void Awake()
 		{
 			if (Instance == null)
@@ -45,16 +48,16 @@ namespace Amsterdam3D.Interface
 
 		private void Start()
 		{
-			FindActionMaps();
+			//FindActionMaps();
 		}
 
-		private void FindActionMaps()
+		/*private void FindActionMaps()
 		{
 			for (int i = 0; i < tagsAndActionMaps.Length; i++)
 			{
 				tagsAndActionMaps[i].actionMap = ActionHandler.actions.asset.FindActionMap(tagsAndActionMaps[i].actionMapName);
 			}
-		}
+		}*/
 
 		private void Update()
 		{
@@ -66,17 +69,17 @@ namespace Amsterdam3D.Interface
 				{
 					//No active interactable, but we might be hovering one.
 					hoveringInteractable = hit.collider.GetComponent<Interactable>();
-					if (hoveringInteractable) hoveringInteractable.HandleRay(ray);
+					if (hoveringInteractable) hoveringInteractable.Hover(ray);
 				}
 				
-				if (!activeInteractable && ActivateHoverActionMap())
+				if (!activeInteractable && FindHoverActionMap())
 				{
 					EnableCameraActionMaps(true, false);
 				}
 			}
 			else if(activeInteractable)
 			{
-				activeInteractable.HandleRay(ray);
+				activeInteractable.Hover(ray);
 			}
 			else{
 				EnableObjectActionMaps(false);
@@ -154,21 +157,16 @@ namespace Amsterdam3D.Interface
 			//show progress/waiting indicator
 		}
 
-		private bool ActivateHoverActionMap()
+		private bool FindHoverActionMap()
 		{
-			bool foundActionMap = false;
-			for (int i = 0; i < tagsAndActionMaps.Length; i++)
+			var interactable = hit.collider.GetComponent<Interactable>();
+			if(interactable)
 			{
-				if (hit.collider.CompareTag(tagsAndActionMaps[i].tag))
-				{
-					tagsAndActionMaps[i].actionMap.Enable();
-					foundActionMap = true;
-				}
-				else{
-					tagsAndActionMaps[i].actionMap.Disable();
-				}
-			}
-			return foundActionMap;
+				interactable.ActionMap.Enable();
+				return true;
+			}			
+
+			return false;
 		}
 
 		private bool HoveringInterface()

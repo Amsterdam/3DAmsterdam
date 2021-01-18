@@ -1077,6 +1077,33 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Transformable"",
+            ""id"": ""b90b70c2-2bfe-4c07-94cb-f1eae418634d"",
+            ""actions"": [
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""463b5c23-5d96-485c-a17d-6c4cc5ff9bc6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1169,6 +1196,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // SelectionTool
         m_SelectionTool = asset.FindActionMap("SelectionTool", throwIfNotFound: true);
         m_SelectionTool_StartSelection = m_SelectionTool.FindAction("StartSelection", throwIfNotFound: true);
+        // Transformable
+        m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
+        m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1466,6 +1496,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     }
     public SelectionToolActions @SelectionTool => new SelectionToolActions(this);
+
+    // Transformable
+    private readonly InputActionMap m_Transformable;
+    private ITransformableActions m_TransformableActionsCallbackInterface;
+    private readonly InputAction m_Transformable_Select;
+    public struct TransformableActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public TransformableActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Select => m_Wrapper.m_Transformable_Select;
+        public InputActionMap Get() { return m_Wrapper.m_Transformable; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TransformableActions set) { return set.Get(); }
+        public void SetCallbacks(ITransformableActions instance)
+        {
+            if (m_Wrapper.m_TransformableActionsCallbackInterface != null)
+            {
+                @Select.started -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+            }
+            m_Wrapper.m_TransformableActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
+            }
+        }
+    }
+    public TransformableActions @Transformable => new TransformableActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1541,5 +1604,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface ISelectionToolActions
     {
         void OnStartSelection(InputAction.CallbackContext context);
+    }
+    public interface ITransformableActions
+    {
+        void OnSelect(InputAction.CallbackContext context);
     }
 }

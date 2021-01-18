@@ -1,11 +1,12 @@
 ﻿using Amsterdam3D.CameraMotion;
 using Amsterdam3D.InputHandler;
 using Amsterdam3D.Interface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Transformable : MonoBehaviour
+public class Transformable : Interactable
 {
 	[SerializeField]
 	LayerMask dropTargetLayerMask;
@@ -24,9 +25,9 @@ public class Transformable : MonoBehaviour
 	private IAction clickAction;
 
 	private void Start()
-	{
-		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.Zoom);
-
+	{		
+		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
+        clickAction.SubscribePerformed(Select, 0);
 		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
@@ -36,18 +37,14 @@ public class Transformable : MonoBehaviour
 		}
 	}
 
-	public void Clicked()
+	public void Select(IAction action)
 	{
-		if(!stickToMouse && lastSelectedTransformable != this)
+		TakePriority();
+		if (!stickToMouse && lastSelectedTransformable != this)
 		{
 			ShowTransformProperties();
 		}
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-	}
-
-	void OnMouseOver()
-	{
-		if (Input.GetMouseButtonDown(1))
+		else if(stickToMouse)
 		{
 			stickToMouse = false;
 			ContextPointerMenu.Instance.SetTargetTransformable(this);
