@@ -15,6 +15,139 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     ""name"": ""3D Amsterdam"",
     ""maps"": [
         {
+            ""name"": ""Selector"",
+            ""id"": ""db9e8cf2-0efd-4ecf-b4d7-c9bc5e9a5062"",
+            ""actions"": [
+                {
+                    ""name"": ""Multiselect"",
+                    ""type"": ""Button"",
+                    ""id"": ""a9f44bed-9b83-4ef6-abcf-acd5a4c00113"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.02)""
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ac8eaae-7118-45f8-827c-94e076d63abf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DoubleClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""fe0aaeea-4249-440a-9e12-7aaead39a843"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ClickSecondary"",
+                    ""type"": ""Button"",
+                    ""id"": ""15c19d74-0310-409f-9e60-c9040640d172"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""2f3204b5-adfe-4044-a49b-bce11fea096a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Left mouse button + shift"",
+                    ""id"": ""258dc78e-6ab1-4438-9cb0-c773b9e289a9"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Multiselect"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""2f3d25b3-0bcd-407a-863a-a38cc1e09919"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Multiselect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""5145fc05-17e7-4ee1-aa34-cefd278c46d8"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Multiselect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c19967f6-c230-400f-9262-23effdbce2bf"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ClickSecondary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8316239-ec1c-4536-828e-244cd9633fc2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""DoubleClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Transformable"",
+            ""id"": ""b90b70c2-2bfe-4c07-94cb-f1eae418634d"",
+            ""actions"": [
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""463b5c23-5d96-485c-a17d-6c4cc5ff9bc6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""StreetView"",
             ""id"": ""7ca4ea23-faa0-45a2-9684-e2f35e54e858"",
             ""actions"": [
@@ -1077,33 +1210,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
-        },
-        {
-            ""name"": ""Transformable"",
-            ""id"": ""b90b70c2-2bfe-4c07-94cb-f1eae418634d"",
-            ""actions"": [
-                {
-                    ""name"": ""Select"",
-                    ""type"": ""Button"",
-                    ""id"": ""463b5c23-5d96-485c-a17d-6c4cc5ff9bc6"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Tap"",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Select"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
         }
     ],
     ""controlSchemes"": [
@@ -1169,6 +1275,15 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     ]
 }");
+        // Selector
+        m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
+        m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
+        m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
+        m_Selector_DoubleClick = m_Selector.FindAction("DoubleClick", throwIfNotFound: true);
+        m_Selector_ClickSecondary = m_Selector.FindAction("ClickSecondary", throwIfNotFound: true);
+        // Transformable
+        m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
+        m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
         // StreetView
         m_StreetView = asset.FindActionMap("StreetView", throwIfNotFound: true);
         m_StreetView_Move = m_StreetView.FindAction("Move", throwIfNotFound: true);
@@ -1196,9 +1311,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // SelectionTool
         m_SelectionTool = asset.FindActionMap("SelectionTool", throwIfNotFound: true);
         m_SelectionTool_StartSelection = m_SelectionTool.FindAction("StartSelection", throwIfNotFound: true);
-        // Transformable
-        m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
-        m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1244,6 +1356,96 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     {
         asset.Disable();
     }
+
+    // Selector
+    private readonly InputActionMap m_Selector;
+    private ISelectorActions m_SelectorActionsCallbackInterface;
+    private readonly InputAction m_Selector_Multiselect;
+    private readonly InputAction m_Selector_Click;
+    private readonly InputAction m_Selector_DoubleClick;
+    private readonly InputAction m_Selector_ClickSecondary;
+    public struct SelectorActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public SelectorActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Multiselect => m_Wrapper.m_Selector_Multiselect;
+        public InputAction @Click => m_Wrapper.m_Selector_Click;
+        public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
+        public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
+        public InputActionMap Get() { return m_Wrapper.m_Selector; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(SelectorActions set) { return set.Get(); }
+        public void SetCallbacks(ISelectorActions instance)
+        {
+            if (m_Wrapper.m_SelectorActionsCallbackInterface != null)
+            {
+                @Multiselect.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
+                @Multiselect.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
+                @Multiselect.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
+                @Click.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @Click.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @Click.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @DoubleClick.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
+                @DoubleClick.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
+                @DoubleClick.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
+                @ClickSecondary.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
+                @ClickSecondary.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
+                @ClickSecondary.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
+            }
+            m_Wrapper.m_SelectorActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Multiselect.started += instance.OnMultiselect;
+                @Multiselect.performed += instance.OnMultiselect;
+                @Multiselect.canceled += instance.OnMultiselect;
+                @Click.started += instance.OnClick;
+                @Click.performed += instance.OnClick;
+                @Click.canceled += instance.OnClick;
+                @DoubleClick.started += instance.OnDoubleClick;
+                @DoubleClick.performed += instance.OnDoubleClick;
+                @DoubleClick.canceled += instance.OnDoubleClick;
+                @ClickSecondary.started += instance.OnClickSecondary;
+                @ClickSecondary.performed += instance.OnClickSecondary;
+                @ClickSecondary.canceled += instance.OnClickSecondary;
+            }
+        }
+    }
+    public SelectorActions @Selector => new SelectorActions(this);
+
+    // Transformable
+    private readonly InputActionMap m_Transformable;
+    private ITransformableActions m_TransformableActionsCallbackInterface;
+    private readonly InputAction m_Transformable_Select;
+    public struct TransformableActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public TransformableActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Select => m_Wrapper.m_Transformable_Select;
+        public InputActionMap Get() { return m_Wrapper.m_Transformable; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TransformableActions set) { return set.Get(); }
+        public void SetCallbacks(ITransformableActions instance)
+        {
+            if (m_Wrapper.m_TransformableActionsCallbackInterface != null)
+            {
+                @Select.started -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+            }
+            m_Wrapper.m_TransformableActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
+            }
+        }
+    }
+    public TransformableActions @Transformable => new TransformableActions(this);
 
     // StreetView
     private readonly InputActionMap m_StreetView;
@@ -1496,39 +1698,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     }
     public SelectionToolActions @SelectionTool => new SelectionToolActions(this);
-
-    // Transformable
-    private readonly InputActionMap m_Transformable;
-    private ITransformableActions m_TransformableActionsCallbackInterface;
-    private readonly InputAction m_Transformable_Select;
-    public struct TransformableActions
-    {
-        private @_3DAmsterdam m_Wrapper;
-        public TransformableActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Select => m_Wrapper.m_Transformable_Select;
-        public InputActionMap Get() { return m_Wrapper.m_Transformable; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(TransformableActions set) { return set.Get(); }
-        public void SetCallbacks(ITransformableActions instance)
-        {
-            if (m_Wrapper.m_TransformableActionsCallbackInterface != null)
-            {
-                @Select.started -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
-                @Select.performed -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
-                @Select.canceled -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
-            }
-            m_Wrapper.m_TransformableActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @Select.started += instance.OnSelect;
-                @Select.performed += instance.OnSelect;
-                @Select.canceled += instance.OnSelect;
-            }
-        }
-    }
-    public TransformableActions @Transformable => new TransformableActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1574,6 +1743,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_XRSchemeIndex];
         }
     }
+    public interface ISelectorActions
+    {
+        void OnMultiselect(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
+        void OnDoubleClick(InputAction.CallbackContext context);
+        void OnClickSecondary(InputAction.CallbackContext context);
+    }
+    public interface ITransformableActions
+    {
+        void OnSelect(InputAction.CallbackContext context);
+    }
     public interface IStreetViewActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -1604,9 +1784,5 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface ISelectionToolActions
     {
         void OnStartSelection(InputAction.CallbackContext context);
-    }
-    public interface ITransformableActions
-    {
-        void OnSelect(InputAction.CallbackContext context);
     }
 }

@@ -117,7 +117,7 @@ namespace Amsterdam3D.Interface
 		{
 			if (!HoveringInterface())
 			{
-				//
+				
 			}
 		}
 		private void SecondaryClick()

@@ -2,6 +2,139 @@
     "name": "3D Amsterdam",
     "maps": [
         {
+            "name": "Selector",
+            "id": "db9e8cf2-0efd-4ecf-b4d7-c9bc5e9a5062",
+            "actions": [
+                {
+                    "name": "Multiselect",
+                    "type": "Button",
+                    "id": "a9f44bed-9b83-4ef6-abcf-acd5a4c00113",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold(duration=0.02)"
+                },
+                {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "6ac8eaae-7118-45f8-827c-94e076d63abf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DoubleClick",
+                    "type": "Button",
+                    "id": "fe0aaeea-4249-440a-9e12-7aaead39a843",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ClickSecondary",
+                    "type": "Button",
+                    "id": "15c19d74-0310-409f-9e60-c9040640d172",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2f3204b5-adfe-4044-a49b-bce11fea096a",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Left mouse button + shift",
+                    "id": "258dc78e-6ab1-4438-9cb0-c773b9e289a9",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Multiselect",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "2f3d25b3-0bcd-407a-863a-a38cc1e09919",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Multiselect",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "5145fc05-17e7-4ee1-aa34-cefd278c46d8",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Multiselect",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c19967f6-c230-400f-9262-23effdbce2bf",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ClickSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8316239-ec1c-4536-828e-244cd9633fc2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "MultiTap",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DoubleClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Transformable",
+            "id": "b90b70c2-2bfe-4c07-94cb-f1eae418634d",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "463b5c23-5d96-485c-a17d-6c4cc5ff9bc6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "47991643-d187-4165-9d01-3d8b3a6caddf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "StreetView",
             "id": "7ca4ea23-faa0-45a2-9684-e2f35e54e858",
             "actions": [
@@ -1062,33 +1195,6 @@
                     "action": "StartSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
-                }
-            ]
-        },
-        {
-            "name": "Transformable",
-            "id": "b90b70c2-2bfe-4c07-94cb-f1eae418634d",
-            "actions": [
-                {
-                    "name": "Select",
-                    "type": "Button",
-                    "id": "463b5c23-5d96-485c-a17d-6c4cc5ff9bc6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "47991643-d187-4165-9d01-3d8b3a6caddf",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Tap",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Select",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }
