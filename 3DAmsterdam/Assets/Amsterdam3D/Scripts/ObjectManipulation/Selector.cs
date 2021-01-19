@@ -94,17 +94,11 @@ namespace Amsterdam3D.Interface
 			{
 				if (!activeInteractable)
 				{
-					//No active interactable, but we might be hovering one.
-					hoveringInteractable = hit.collider.GetComponent<Interactable>();
-					if (hoveringInteractable)
-					{
-						hoveringInteractable.SetRay(ray);
-						hoveringInteractable.ActionMap.Enable();
-					}
+					FindInteractableUnderRay();
 				}
 				else
 				{
-					//TODO: we have an active interactable, so (mouse) camera motions are blocked
+					EnableCameraActionMaps(true, false);
 					activeInteractable.SetRay(ray);
 				}
 			}
@@ -117,6 +111,17 @@ namespace Amsterdam3D.Interface
 			{
 				DisableAllActionMaps();
 				EnableCameraActionMaps(true, true);
+			}
+		}
+
+		private void FindInteractableUnderRay()
+		{
+			//No active interactable, but we might be hovering one.
+			hoveringInteractable = hit.collider.GetComponent<Interactable>();
+			if (hoveringInteractable)
+			{
+				hoveringInteractable.SetRay(ray);
+				hoveringInteractable.ActionMap.Enable();
 			}
 		}
 

@@ -113,7 +113,7 @@ namespace Amsterdam3D.Interface
                         
                         vertices.AddRange(new List<Vector3>(){ point1,point2,point3,point4 });
                         onSelectionCompleted?.Invoke();
-                        ActionHandler.actions.GodView.Enable();
+                        ActionHandler.actions.GodViewMouse.Enable();
                     }
                 }
             }

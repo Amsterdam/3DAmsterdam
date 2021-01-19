@@ -69,8 +69,11 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
 
-        private IAction moveAction;
-        private IAction rotateAction;
+        private IAction dragActionMouse;
+        private IAction rotateActionMouse;
+
+        private IAction moveActionKeyboard;
+        private IAction rotateActionKeyboard;
 
         private float minUndergroundY = 0.0f;
 
@@ -80,16 +83,30 @@ namespace Amsterdam3D.CameraMotion
         }
 
         void Start()
-        {
-            currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+		{
+			currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
 
-            moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
-            rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+			AddActionListeners();
+		}
 
-            ActionHandler.actions.GodView.Enable();
-        }
+		private void AddActionListeners()
+		{
+			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.MoveCamera);
+			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
 
-        void Update()
+			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.MoveCamera);
+			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
+
+
+			//Listeners
+			dragActionMouse.SubscribePerformed(Move);
+			rotateActionMouse.SubscribePerformed(Rotate);
+
+			moveActionKeyboard.SubscribePerformed(Move);
+			rotateActionKeyboard.SubscribePerformed(Rotate);
+		}
+
+		void Update()
 		{
             //Check if we started dragging on the UI
             if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
@@ -149,9 +166,9 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!translationModifier && !BlockedByTextInput() && moveAction != null)
+            if (!translationModifier && !BlockedByTextInput() && dragActionMouse != null)
             {
-                Vector3 movement = moveAction.ReadValue<Vector2>();
+                Vector3 movement = dragActionMouse.ReadValue<Vector2>();
                 if (movement != null)
                 {
                     movement.z = movement.y;
@@ -167,9 +184,9 @@ namespace Amsterdam3D.CameraMotion
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
             if (!BlockedByTextInput())
             {
-                if (rotateAction != null)
+                if (rotateActionMouse != null)
                 {
-                    Vector2 rotationInput = rotateAction.ReadValue<Vector2>();
+                    Vector2 rotationInput = rotateActionMouse.ReadValue<Vector2>();
                     Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
                     rotation.y += rotationInput.x * rotationSpeed;
                     rotation.x += rotationInput.y * rotationSpeed;
