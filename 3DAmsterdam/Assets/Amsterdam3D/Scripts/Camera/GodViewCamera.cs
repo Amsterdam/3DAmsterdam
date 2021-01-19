@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Amsterdam3D.InputHandler;
+using UnityEngine.InputSystem;
+
 namespace Amsterdam3D.CameraMotion
 {
     public class GodViewCamera : MonoBehaviour, ICameraControls
@@ -107,8 +109,9 @@ namespace Amsterdam3D.CameraMotion
 
 		private void Drag(IAction action)
 		{
-            //w
-		}
+            //
+            
+        }
         private void DragRotate(IAction action)
         {
 

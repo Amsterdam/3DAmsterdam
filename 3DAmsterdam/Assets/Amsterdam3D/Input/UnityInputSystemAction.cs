@@ -126,7 +126,7 @@ namespace Amsterdam3D.InputHandler
         public class ActionEventClass : IComparable<ActionEventClass>
         {
             public ActionDelegate del;
-            public bool start;
+            public bool started;
             public bool performed;
             public bool cancelled;
             public int priority = 0;
