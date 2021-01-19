@@ -10,8 +10,11 @@
 
   <body>
     <div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
-	<div id="objUploadClickRegisterArea" style="display:none;">
-		<input id="fileUploadInput" type="file" accept=".obj,.mtl,.fzp" onchange="ReadFiles(this.files)" multiple>
+	<div id="objUploadClickRegisterArea" class="hiddenUpload" style="display:none;">
+		<input id="objFileUploadInput" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
+	</div>
+	<div id="fzpUploadClickRegisterArea" class="hiddenUpload" style="display:none;">
+		<input id="fzpFileUploadInput" type="file" accept=".fzp" onchange="ReadFiles(this.files)" multiple>
 	</div>
     <div id="gameContainer"></div>
     <div id="loader">
@@ -23,27 +26,11 @@
 
   <script src="%UNITY_WEBGL_LOADER_URL%"></script>
   <script>
-	  var forceFocus = false;
-	  var unityCanvas;
-  
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
-		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
-			if (!UnityLoader.SystemInfo.hasWebGL) {
-			  unityInstance.popup("Uw browser ondersteund helaas geen WebGL.",
-				[{text: "OK", callback: onerror}]);
-			} else if (UnityLoader.SystemInfo.mobile) {
-			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten. Wilt u toch 3D Amsterdam starten?",
-				[{text: "OK", callback: onsuccess}]);
-			} else if (["Edge", "Firefox", "Chrome", "Safari"].indexOf(UnityLoader.SystemInfo.browser) == -1) {
-			  unityInstance.popup("Unity WebGL is momenteel niet volledig ondersteund door uw browser. Wilt u toch 3D Amsterdam starten?",
-				[{text: "OK", callback: onsuccess}]);
-			} else {
-			  onsuccess();
-			}
-		  },
 		  onProgress: UnityProgress
 	  });
 	  var fileReader;
+
 	  var unityObjectName = "FileUploads";
 	  var objData = "";
 	  var mtlData = "";
@@ -61,6 +48,15 @@
 		  ReadFiles(event.dataTransfer.files);
 	  });
 
+	  if ("onpointerlockchange" in document) {
+		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
+		  console.log("Added on pointer lock change");
+	  } else if ("onmozpointerlockchange" in document) {
+		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
+		  console.log("Added moz on pointer lock change");
+	  }
+	  document.addEventListener("onblur", window.focus());
+
 	  function UnityProgress(unityInstance, progress) {
 		  if (!unityInstance.Module) {
 			  return;
@@ -75,29 +71,26 @@
 		  unityInstance.progress.style.transform = `scaleX(${progress})`;
 		  if (progress === 1) {
 			  loader.style.display = "none";
-			  unityCanvas = document.getElementById("#canvas");
+
 			  window.onhashchange = locationHashChanged;
 			  if (window.location.hash) {
 				  locationHashChanged();
 			  }
 		  }
 	  }
-	 
-	  if ("onpointerlockchange" in document) {
-		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
-		  console.log(document.pointerLockElement);
-	  } 
-	  else if ("onmozpointerlockchange" in document) {
-		  document.addEventListener('mozpointerlockchange', OnCursorStateChanged, false);
-		  console.log(document.mozPointerLockElement);
-	  }
+
 	  function OnCursorStateChanged() {
-		  if (document.pointerLockElement !=  unityCanvas && document.mozPointerLockElement != unityCanvas) {
+		  console.log("cursor lock state changed");
+		  if (document.pointerLockElement === document.getElementById("#canvas")) {
+			  console.log("Pointer is locked");
+			  window.focus();
+		  } else {
+			  console.log("Pointer is unlocked");
 			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
+			  unityInstance.SendMessage("FirstPersonCamera", "EnableMenusMovement");
+			  window.focus();
 		  }
-		  if(forceFocus == true){
-			window.focus();
-		  }
+
 	  }
 
 	  function locationHashChanged() {
@@ -112,14 +105,14 @@
 		  console.log("Build model in Unity");
 		  unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
 		  //Reset file selection
-		  document.getElementById("fileUploadInput").value = "";
+		  document.getElementById("objFileUploadInput").value = "";
 	  }
 
 	  function ParseVissimInUnity() {
 		  console.log("Build FZP in Unity");
 		  unityInstance.SendMessage(unityObjectName, "LoadVissimFromJavascript");
 		  //Reset file selection
-		  document.getElementById("fileUploadInput").value = "";
+		  document.getElementById("fzpFileUploadInput").value = "";
 	  }
 
 	  function ReadFiles(selectedFiles) {
