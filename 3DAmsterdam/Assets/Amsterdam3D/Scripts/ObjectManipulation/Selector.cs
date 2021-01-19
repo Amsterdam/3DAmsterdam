@@ -145,7 +145,7 @@ namespace Amsterdam3D.Interface
 			{
 				if(!hoveringInteractable)
 				{
-					
+					Debug.Log("Pass click down to 'special'");
 				}
 			}
 		}
