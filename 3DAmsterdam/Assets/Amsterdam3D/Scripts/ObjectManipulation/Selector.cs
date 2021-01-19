@@ -26,6 +26,11 @@ namespace Amsterdam3D.Interface
 		private Ray ray;
 		private RaycastHit hit;
 
+		private InputActionMap selectorActionMap;
+		private IAction clicked;
+		private IAction clickedSecondary;
+		private IAction multiselect;
+
 		[SerializeField]
 		private LayerMask raycastLayers;
 
@@ -47,6 +52,21 @@ namespace Amsterdam3D.Interface
 				Instance = this;
 			}
 			selectedObjects = new List<OutlineObject>();
+			InitializeActions();
+		}
+
+		private void InitializeActions()
+		{
+			selectorActionMap = ActionHandler.actions.asset.FindActionMap("Selector");
+
+			clicked = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
+			clickedSecondary = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
+			multiselect = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+		}
+
+		private void OnDisable()
+		{
+			selectorActionMap.Disable();
 		}
 
 		public void SetActiveInteractable(Interactable interactable)
