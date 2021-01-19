@@ -97,16 +97,32 @@ namespace Amsterdam3D.CameraMotion
 			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
 
-
 			//Listeners
-			dragActionMouse.SubscribePerformed(Move);
-			rotateActionMouse.SubscribePerformed(Rotate);
+			dragActionMouse.SubscribePerformed(Drag);
+			rotateActionMouse.SubscribePerformed(DragRotate);
 
 			moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
 		}
 
-		void Update()
+		private void Drag(IAction action)
+		{
+			
+		}
+        private void DragRotate(IAction action)
+        {
+
+        }
+        private void Move(IAction action)
+        {
+
+        }
+        private void Rotate(IAction action)
+        {
+
+        }
+
+        void Update()
 		{
             //Check if we started dragging on the UI
             if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
