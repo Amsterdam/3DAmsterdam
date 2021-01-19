@@ -26,9 +26,8 @@ namespace Amsterdam3D.InputHandler
         /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
         /// </summary>
         void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
-
+         
         bool Used { get; set; }
-        bool Started { get; }
         bool Performed { get; }
         bool Cancelled { get; }
         string name { get; }
@@ -38,8 +37,6 @@ namespace Amsterdam3D.InputHandler
     {
         public bool Used { get; set; }
         public string name { get; private set; }
-
-        public bool Started { get; private set; }
         public bool Performed { get; private set; }
         public bool Cancelled  { get; private set; }
 
@@ -126,7 +123,6 @@ namespace Amsterdam3D.InputHandler
         public class ActionEventClass : IComparable<ActionEventClass>
         {
             public ActionDelegate del;
-            public bool started;
             public bool performed;
             public bool cancelled;
             public int priority = 0;
