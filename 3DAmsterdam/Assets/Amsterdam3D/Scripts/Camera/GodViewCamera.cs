@@ -52,12 +52,9 @@ namespace Amsterdam3D.CameraMotion
         private float maxMomentum = 1000.0f;
 
         private bool requireMouseClickBeforeDrag = false;
-        private bool clickStartedBlocked = false;
 
-        private bool translationModifier = false;
+        private bool panModifier = false;
         private bool firstPersonModifier = false;
-
-        private bool canUseMouseRelatedFunctions = true;
 
         public bool LockFunctions = false;
 
@@ -75,6 +72,9 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
+        private IAction modifierFirstPersonAction;
+        private IAction modifierPanAction;
+
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
@@ -101,22 +101,68 @@ namespace Amsterdam3D.CameraMotion
 			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
 
-			//Listeners
-			dragActionMouse.SubscribePerformed(Drag);
+            modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
+            modifierPanAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.PanModifier);
+
+            //Listeners
+            dragActionMouse.SubscribePerformed(Drag);
             dragActionMouse.SubscribeCancelled(Drag);
 
-			moveActionKeyboard.SubscribePerformed(Move);
+            modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
+            modifierFirstPersonAction.SubscribeCancelled(PanModifier);
+
+
+            moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
 		}
 
+
         public void EnableKeyboardActionMap(bool enabled)
         {
-            ActionHandler.actions.GodViewMouse.Disable();
+            if (enabled)
+            {
+                ActionHandler.actions.GodViewKeyboard.Enable();
+            }
+            else
+            {
+                ActionHandler.actions.GodViewKeyboard.Disable();
+            }
         }
 
         public void EnableMouseActionMap(bool enabled)
         {
-            ActionHandler.actions.GodViewKeyboard.Disable();
+            if (enabled)
+            {
+                ActionHandler.actions.GodViewMouse.Enable();
+            }
+            else
+            {
+                ActionHandler.actions.GodViewMouse.Disable();
+            }
+        }
+
+        private void FirstPersonModifier(IAction action)
+        {
+            if (action.Performed)
+            {
+                firstPersonModifier = true;
+            }
+            else if(action.Cancelled)
+            {
+                firstPersonModifier = false;
+            }
+        }
+
+        private void PanModifier(IAction action)
+        {
+            if (action.Performed)
+            {
+                panModifier = true;
+            }
+            else if (action.Cancelled)
+            {
+                panModifier = false;
+            }
         }
 
         private void Drag(IAction action)
@@ -134,44 +180,19 @@ namespace Amsterdam3D.CameraMotion
 
         private void Move(IAction action)
         {
-            Debug.Log("Move");
+            Debug.Log("Move keyboard");
         }
         private void Rotate(IAction action)
         {
-            Debug.Log("Rotate");
+            Debug.Log("Rotate keyboard");
         }
 
         void Update()
 		{
-            //Check if we started dragging on the UI
-            if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
-            {
-                clickStartedBlocked = true;
-            }
-            else if (clickStartedBlocked && Input.GetMouseButtonUp(0))
-            {
-                clickStartedBlocked = false;
-            }
+            //Zooming();
+            if(dragging) Dragging();
+            //RotationAroundPoint();
 
-            canUseMouseRelatedFunctions = (!clickStartedBlocked && !EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
-
-           //these shouldn't be needed anymore since unity input system has modifiers built in
-            translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-            firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-
-            if (!Input.GetKey(KeyCode.Space))
-            {
-                //HandleTranslationInput();
-                //HandleRotationInput();
-
-                if (canUseMouseRelatedFunctions)
-                {
-                    //Zooming();
-                    //Dragging();
-                    //RotationAroundPoint();
-                }
-                ClampRotation();
-            }
             LimitPosition();
 		}
 
@@ -199,7 +220,7 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!translationModifier && !BlockedByTextInput() && dragActionMouse != null)
+            if (!panModifier && !BlockedByTextInput() && dragActionMouse != null)
             {
                 Vector3 movement = dragActionMouse.ReadValue<Vector2>();
                 if (movement != null)
@@ -293,7 +314,7 @@ namespace Amsterdam3D.CameraMotion
 
         private void Zooming()
         {
-            if (translationModifier)
+            if (panModifier)
             {
                 if ((Input.GetKey(KeyCode.R)) && !BlockedByTextInput())
                 {
@@ -338,7 +359,7 @@ namespace Amsterdam3D.CameraMotion
 
         private void Dragging()
         {
-            if (!translationModifier && !firstPersonModifier)
+            if (!panModifier && !firstPersonModifier)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
