@@ -15,6 +15,8 @@ namespace Amsterdam3D.InputHandler
 
         public string name => throw new NotImplementedException();
 
+        public bool Started => throw new NotImplementedException();
+
         public bool Performed => throw new NotImplementedException();
 
         public bool Cancelled => throw new NotImplementedException();

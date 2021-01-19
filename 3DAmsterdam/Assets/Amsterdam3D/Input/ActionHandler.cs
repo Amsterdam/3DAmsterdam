@@ -40,6 +40,7 @@ namespace Amsterdam3D.InputHandler
                     UnityInputSystemAction tmp = new UnityInputSystemAction(inputAction.name);
 
                     ActionDictionary.Add(inputAction, tmp);
+                    inputAction.started += InputAction_started;
                     inputAction.performed += Inputaction_performed;
                     inputAction.canceled += InputAction_canceled;
                     unityMap.boundActions.Add(ActionDictionary[inputAction]);
@@ -49,11 +50,24 @@ namespace Amsterdam3D.InputHandler
             } 
         }
 
+        private void InputAction_started(InputAction.CallbackContext obj)
+        {
+            // could be faster if it didn't have to search a dictionary?
+            UnityInputSystemAction action = ActionDictionary[obj.action];
+            action.SetValue(obj.action.ReadValueAsObject());
+
+            // Fire Event on UnityAction
+            action.FireEvent();
+        }
+
         private void InputAction_canceled(InputAction.CallbackContext obj)
         {
             // could be faster if it didn't have to search a dictionary?
             UnityInputSystemAction action = ActionDictionary[obj.action];
             action.SetValue(obj.action.ReadValueAsObject());
+
+            // Fire Event on UnityAction
+            action.FireEvent();
         }
 
         private void Inputaction_performed(InputAction.CallbackContext obj)

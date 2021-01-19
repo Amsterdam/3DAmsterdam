@@ -91,11 +91,11 @@ namespace Amsterdam3D.CameraMotion
 
 		private void AddActionListeners()
 		{
-			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.MoveCamera);
+			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
 
-			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.MoveCamera);
-			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
+			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
+			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
 
 			//Listeners
 			dragActionMouse.SubscribePerformed(Drag);
@@ -107,7 +107,7 @@ namespace Amsterdam3D.CameraMotion
 
 		private void Drag(IAction action)
 		{
-			
+            //w
 		}
         private void DragRotate(IAction action)
         {
