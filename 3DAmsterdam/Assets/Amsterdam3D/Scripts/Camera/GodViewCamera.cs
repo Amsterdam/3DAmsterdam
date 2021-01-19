@@ -21,6 +21,8 @@ namespace Amsterdam3D.CameraMotion
         private Vector3 mouseZoomTarget;
         private float mouseZoomSpeed = 0.01f;
 
+        private bool dragging = false;
+
         private const float rotationSpeed = 1f;
 
         private const float minAngle = -89f;
@@ -71,8 +73,8 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
 
-        private IAction dragActionMouse;
         private IAction rotateActionMouse;
+        private IAction dragActionMouse;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
@@ -91,7 +93,7 @@ namespace Amsterdam3D.CameraMotion
 			AddActionListeners();
 		}
 
-		private void AddActionListeners()
+        private void AddActionListeners()
 		{
 			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
@@ -101,28 +103,42 @@ namespace Amsterdam3D.CameraMotion
 
 			//Listeners
 			dragActionMouse.SubscribePerformed(Drag);
-			rotateActionMouse.SubscribePerformed(DragRotate);
+            dragActionMouse.SubscribeCancelled(Drag);
 
 			moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
 		}
 
-		private void Drag(IAction action)
-		{
-            //
+        public void EnableKeyboardActionMap(bool enabled)
+        {
             
         }
-        private void DragRotate(IAction action)
-        {
 
+        public void EnableMouseActionMap(bool enabled)
+        {
+            
         }
+
+        private void Drag(IAction action)
+		{
+            if (action.Performed)
+            {
+                dragging = true;
+            }
+            else if(action.Cancelled)
+            { 
+                dragging = false;
+			}
+            Debug.Log("Dragging: " + dragging);
+        }
+
         private void Move(IAction action)
         {
-
+            Debug.Log("Move");
         }
         private void Rotate(IAction action)
         {
-
+            Debug.Log("Rotate");
         }
 
         void Update()
@@ -145,19 +161,17 @@ namespace Amsterdam3D.CameraMotion
 
             if (!Input.GetKey(KeyCode.Space))
             {
-                HandleTranslationInput();
-                HandleRotationInput();
+                //HandleTranslationInput();
+                //HandleRotationInput();
 
                 if (canUseMouseRelatedFunctions)
                 {
-                    Zooming();
-                    Dragging();
-                    RotationAroundPoint();
+                    //Zooming();
+                    //Dragging();
+                    //RotationAroundPoint();
                 }
-
                 ClampRotation();
             }
-
             LimitPosition();
 		}
 

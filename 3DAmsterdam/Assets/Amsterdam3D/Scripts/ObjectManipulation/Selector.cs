@@ -26,8 +26,6 @@ namespace Amsterdam3D.Interface
 		private Ray ray;
 		private RaycastHit hit;
 
-		private InputActionMap cameraMouseActionMap;
-		private InputActionMap cameraKeyboardActionMap;
 		private InputActionMap selectorActionMap;
 
 		private IAction clickedAction;
@@ -61,8 +59,6 @@ namespace Amsterdam3D.Interface
 		private void InitializeActions()
 		{
 			selectorActionMap = ActionHandler.actions.asset.FindActionMap("Selector");
-			cameraMouseActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraMouse");
-			cameraKeyboardActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraKeyboard");
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
@@ -133,22 +129,8 @@ namespace Amsterdam3D.Interface
 		/// <param name="enableMouseActions">Enable the camera action map containing mouse inputs</param>
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
-			if(enableKeyboardActions)
-			{
-				cameraKeyboardActionMap.Enable();
-			}
-			else{
-				cameraKeyboardActionMap.Disable();
-			}
-
-			if (enableMouseActions)
-			{
-				cameraMouseActionMap.Enable();
-			}
-			else
-			{
-				cameraMouseActionMap.Disable();
-			}
+			CameraModeChanger.Instance.CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
+			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(enableMouseActions);
 		}
 
 		/// <summary>

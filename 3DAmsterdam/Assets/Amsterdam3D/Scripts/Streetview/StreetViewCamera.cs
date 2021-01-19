@@ -36,6 +36,16 @@ namespace Amsterdam3D.CameraMotion
 			hideMenuButton.gameObject.SetActive(false);
 		}
 
+		public void EnableKeyboardActionMap(bool enabled)
+		{
+			//
+		}
+
+		public void EnableMouseActionMap(bool enabled)
+		{
+			//
+		}
+
 		public void EnableMenus()
 		{
 			PointerLock.SetMode(PointerLock.Mode.DEFAULT);

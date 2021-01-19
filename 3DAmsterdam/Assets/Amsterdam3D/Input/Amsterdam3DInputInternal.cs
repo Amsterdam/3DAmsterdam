@@ -325,6 +325,22 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""FirstPersonModifier"",
+                    ""type"": ""Button"",
+                    ""id"": ""053832fe-4432-49b1-96ca-0d639d5609d3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PanModifier"",
+                    ""type"": ""Button"",
+                    ""id"": ""7dd875bf-95e4-4a25-97cb-d3c9c886d2b3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -369,6 +385,28 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse;Touch"",
                     ""action"": ""Rotate Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""688b3ef2-1a5b-4e9a-a411-204fe4fd1d3a"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FirstPersonModifier"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8bd765ea-7dcd-48b2-813e-031a65833bc5"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PanModifier"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1306,6 +1344,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_GodViewMouse_RotateCamera = m_GodViewMouse.FindAction("Rotate Camera", throwIfNotFound: true);
         m_GodViewMouse_Zoom = m_GodViewMouse.FindAction("Zoom", throwIfNotFound: true);
         m_GodViewMouse_Drag = m_GodViewMouse.FindAction("Drag", throwIfNotFound: true);
+        m_GodViewMouse_FirstPersonModifier = m_GodViewMouse.FindAction("FirstPersonModifier", throwIfNotFound: true);
+        m_GodViewMouse_PanModifier = m_GodViewMouse.FindAction("PanModifier", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
@@ -1480,6 +1520,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_GodViewMouse_RotateCamera;
     private readonly InputAction m_GodViewMouse_Zoom;
     private readonly InputAction m_GodViewMouse_Drag;
+    private readonly InputAction m_GodViewMouse_FirstPersonModifier;
+    private readonly InputAction m_GodViewMouse_PanModifier;
     public struct GodViewMouseActions
     {
         private @_3DAmsterdam m_Wrapper;
@@ -1487,6 +1529,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         public InputAction @RotateCamera => m_Wrapper.m_GodViewMouse_RotateCamera;
         public InputAction @Zoom => m_Wrapper.m_GodViewMouse_Zoom;
         public InputAction @Drag => m_Wrapper.m_GodViewMouse_Drag;
+        public InputAction @FirstPersonModifier => m_Wrapper.m_GodViewMouse_FirstPersonModifier;
+        public InputAction @PanModifier => m_Wrapper.m_GodViewMouse_PanModifier;
         public InputActionMap Get() { return m_Wrapper.m_GodViewMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1505,6 +1549,12 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @Drag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
+                @FirstPersonModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
+                @FirstPersonModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
+                @FirstPersonModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
+                @PanModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
+                @PanModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
+                @PanModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
             }
             m_Wrapper.m_GodViewMouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -1518,6 +1568,12 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @Drag.started += instance.OnDrag;
                 @Drag.performed += instance.OnDrag;
                 @Drag.canceled += instance.OnDrag;
+                @FirstPersonModifier.started += instance.OnFirstPersonModifier;
+                @FirstPersonModifier.performed += instance.OnFirstPersonModifier;
+                @FirstPersonModifier.canceled += instance.OnFirstPersonModifier;
+                @PanModifier.started += instance.OnPanModifier;
+                @PanModifier.performed += instance.OnPanModifier;
+                @PanModifier.canceled += instance.OnPanModifier;
             }
         }
     }
@@ -1812,6 +1868,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         void OnRotateCamera(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnDrag(InputAction.CallbackContext context);
+        void OnFirstPersonModifier(InputAction.CallbackContext context);
+        void OnPanModifier(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
     {
