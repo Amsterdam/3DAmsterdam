@@ -61,13 +61,12 @@ namespace Amsterdam3D.Interface
 		private void InitializeActions()
 		{
 			selectorActionMap = ActionHandler.actions.asset.FindActionMap("Selector");
+			cameraMouseActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraMouse");
+			cameraKeyboardActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraKeyboard");
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
 			multiselectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
-
-			cameraMouseActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraMouse");
-			cameraKeyboardActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraKeyboard");
 
 			//Listeners
 			clickedAction.SubscribePerformed(Click);
@@ -112,6 +111,7 @@ namespace Amsterdam3D.Interface
 			else if (activeInteractable)
 			{
 				activeInteractable.SetRay(ray);
+				EnableCameraActionMaps(true, false);
 			}
 			else
 			{
