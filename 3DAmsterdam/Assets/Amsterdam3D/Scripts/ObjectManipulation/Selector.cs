@@ -27,9 +27,9 @@ namespace Amsterdam3D.Interface
 		private RaycastHit hit;
 
 		private InputActionMap selectorActionMap;
-		private IAction clicked;
-		private IAction clickedSecondary;
-		private IAction multiselect;
+		private IAction clickedAction;
+		private IAction clickedSecondaryAction;
+		private IAction multiselectAction;
 
 		[SerializeField]
 		private LayerMask raycastLayers;
@@ -59,9 +59,15 @@ namespace Amsterdam3D.Interface
 		{
 			selectorActionMap = ActionHandler.actions.asset.FindActionMap("Selector");
 
-			clicked = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
-			clickedSecondary = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
-			multiselect = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
+			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
+			multiselectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+
+			clickedAction.SubscribePerformed(Click, 0);
+			clickedSecondaryAction.SubscribePerformed(SecondaryClick, 0);
+			multiselectAction.SubscribePerformed(MultiselectStart, 0);
+
+			multiselectAction.SubscribeCancelled(MultiselectFinish, 0);
 		}
 
 		private void OnDisable()
@@ -133,14 +139,17 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void Click()
+		private void Click(IAction action)
 		{
 			if (!HoveringInterface())
 			{
-				
+				if(!hoveringInteractable)
+				{
+					
+				}
 			}
 		}
-		private void SecondaryClick()
+		private void SecondaryClick(IAction action)
 		{
 			if (!HoveringInterface())
 			{
@@ -148,7 +157,7 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void MultiselectStart()
+		private void MultiselectStart(IAction action)
 		{
 			if (!HoveringInterface())
 			{
@@ -156,26 +165,13 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		private void MultiSelectFinish()
+		private void MultiselectFinish(IAction action)
 		{
 			//Check selected region for
 			//Custom objects
 			//Static layers
 
 			//What kind of context / combinations etc. etc.
-		}
-
-		private void RegisterSelectionInput(Ray ray)
-		{
-			//click, or right click
-
-
-			//multiselect action?
-
-
-			//no hovering object, check for click or right click in mid air, maybe theres a building there
-			//pass ray down to SelectByID
-			//show progress/waiting indicator
 		}
 
 		private bool FindHoverActionMap()
