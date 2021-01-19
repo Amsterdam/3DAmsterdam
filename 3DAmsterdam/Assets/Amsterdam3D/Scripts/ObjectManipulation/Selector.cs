@@ -174,23 +174,9 @@ namespace Amsterdam3D.Interface
 			//What kind of context / combinations etc. etc.
 		}
 
-		private bool FindHoverActionMap()
-		{
-			var interactable = hit.collider.GetComponent<Interactable>();
-			if (interactable && !interactable.ActionMap.enabled)
-			{
-				Debug.Log("Enable actionmap for " + interactable.ActionMap.name);
-				interactable.ActionMap.Enable();
-				return true;
-			}
-
-			return false;
-		}
-
 		private bool HoveringInterface()
 		{
 			return EventSystem.current.IsPointerOverGameObject();
-
 		}
 
 		/// <summary>
