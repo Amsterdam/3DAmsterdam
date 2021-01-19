@@ -26,7 +26,10 @@ namespace Amsterdam3D.Interface
 		private Ray ray;
 		private RaycastHit hit;
 
+		private InputActionMap cameraMouseActionMap;
+		private InputActionMap cameraKeyboardActionMap;
 		private InputActionMap selectorActionMap;
+
 		private IAction clickedAction;
 		private IAction clickedSecondaryAction;
 		private IAction multiselectAction;
@@ -63,6 +66,10 @@ namespace Amsterdam3D.Interface
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
 			multiselectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
 
+			cameraMouseActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraMouse");
+			cameraKeyboardActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraKeyboard");
+
+			//Listeners
 			clickedAction.SubscribePerformed(Click, 0);
 			clickedSecondaryAction.SubscribePerformed(SecondaryClick, 0);
 			multiselectAction.SubscribePerformed(MultiselectStart, 0);
@@ -108,34 +115,45 @@ namespace Amsterdam3D.Interface
 			}
 			else
 			{
-				EnableObjectActionMaps(false);
+				DisableAllActionMaps(false);
 				EnableCameraActionMaps(true, true);
 			}
 		}
 
 		/// <summary>
-		/// 
+		/// Enable action maps for camera interaction. 
+		/// Keyboard and mouse events are split in two action maps, to be able to enable/disable them specifically.
 		/// </summary>
-		/// <param name="enableKeyboardActions"></param>
-		/// <param name="enableMouseActions"></param>
+		/// <param name="enableKeyboardActions">Enable the camera action map containing keyboard inputs</param>
+		/// <param name="enableMouseActions">Enable the camera action map containing mouse inputs</param>
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
-			//two action maps.
-			//We can be dragging an interactable around and move camera while pressing arrow keys
+			if(enableKeyboardActions)
+			{
+				cameraKeyboardActionMap.Enable();
+			}
+			else{
+				cameraKeyboardActionMap.Disable();
+			}
+
+			if (enableMouseActions)
+			{
+				cameraMouseActionMap.Enable();
+			}
+			else
+			{
+				cameraMouseActionMap.Disable();
+			}
 		}
 
 		/// <summary>
-		/// Enable or disable object specific action maps
+		/// Disables all action maps
 		/// </summary>
-		/// <param name="enable">Enable action maps</param>
-		private void EnableObjectActionMaps(bool enable)
+		private void DisableAllActionMaps()
 		{
-			if(enable)
+			foreach(var actionMap in ActionHandler.actions.asset.actionMaps)
 			{
-				ActionHandler.actions.Transformable.Enable();
-			}
-			else{
-				ActionHandler.actions.Transformable.Disable();
+				actionMap.Disable();
 			}
 		}
 
