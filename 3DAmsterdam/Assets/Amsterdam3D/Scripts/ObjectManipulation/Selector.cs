@@ -70,11 +70,11 @@ namespace Amsterdam3D.Interface
 			cameraKeyboardActionMap = ActionHandler.actions.asset.FindActionMap("GodViewCameraKeyboard");
 
 			//Listeners
-			clickedAction.SubscribePerformed(Click, 0);
-			clickedSecondaryAction.SubscribePerformed(SecondaryClick, 0);
-			multiselectAction.SubscribePerformed(MultiselectStart, 0);
+			clickedAction.SubscribePerformed(Click);
+			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
+			multiselectAction.SubscribePerformed(MultiselectStart);
 
-			multiselectAction.SubscribeCancelled(MultiselectFinish, 0);
+			multiselectAction.SubscribeCancelled(MultiselectFinish);
 		}
 
 		private void OnDisable()
@@ -99,23 +99,23 @@ namespace Amsterdam3D.Interface
 					hoveringInteractable = hit.collider.GetComponent<Interactable>();
 					if (hoveringInteractable)
 					{
-						hoveringInteractable.Hover(ray);
+						hoveringInteractable.SetRay(ray);
 						hoveringInteractable.ActionMap.Enable();
 					}
 				}
 				else
 				{
 					//TODO: we have an active interactable, so (mouse) camera motions are blocked
-					activeInteractable.Hover(ray);
+					activeInteractable.SetRay(ray);
 				}
 			}
 			else if (activeInteractable)
 			{
-				
+				activeInteractable.SetRay(ray);
 			}
 			else
 			{
-				DisableAllActionMaps(false);
+				DisableAllActionMaps();
 				EnableCameraActionMaps(true, true);
 			}
 		}

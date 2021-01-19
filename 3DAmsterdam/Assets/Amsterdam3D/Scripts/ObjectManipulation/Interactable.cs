@@ -26,7 +26,7 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        public virtual void Hover(Ray ray)  
+        public virtual void SetRay(Ray ray)  
         {
             receivedRay = ray;
         }

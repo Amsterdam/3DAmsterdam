@@ -73,7 +73,7 @@ namespace Amsterdam3D.Interface
 
                             selectionBox.gameObject.SetActive(true);
                             inBoxSelect = true;
-                        ActionHandler.actions.GodView.Disable();
+                            ActionHandler.actions.GodViewMouse.Disable();
                         }
                 }
                 else

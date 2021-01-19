@@ -21,11 +21,11 @@ namespace Amsterdam3D.InputHandler
         /// <summary>
         /// Subscribe to the performed event. Input Handler equivalent of GetButtonDown.
         /// </summary>
-        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
+        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority = 0);
         /// <summary>
         /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
         /// </summary>
-        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
 
         bool Used { get; set; }
         bool Performed { get; }
