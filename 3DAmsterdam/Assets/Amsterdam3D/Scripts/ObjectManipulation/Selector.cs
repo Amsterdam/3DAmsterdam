@@ -58,7 +58,7 @@ namespace Amsterdam3D.Interface
 
 		private void InitializeActions()
 		{
-			selectorActionMap = ActionHandler.actions.asset.FindActionMap("Selector");
+			selectorActionMap = ActionHandler.actions.Selector;
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);

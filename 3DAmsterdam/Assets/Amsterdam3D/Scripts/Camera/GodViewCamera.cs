@@ -111,12 +111,12 @@ namespace Amsterdam3D.CameraMotion
 
         public void EnableKeyboardActionMap(bool enabled)
         {
-            
+            ActionHandler.actions.GodViewMouse.Disable();
         }
 
         public void EnableMouseActionMap(bool enabled)
         {
-            
+            ActionHandler.actions.GodViewKeyboard.Disable();
         }
 
         private void Drag(IAction action)
