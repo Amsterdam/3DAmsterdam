@@ -29,16 +29,27 @@ namespace Amsterdam3D.Interface
             }
         }
 
+        /// <summary>
+        /// Sets the main ray used for determining click/pointer position
+        /// </summary>
+        /// <param name="ray">Ray usualy served by the selector (that shoots our main pointer ray)</param>
         public virtual void SetRay(Ray ray)  
         {
             receivedRay = ray;
         }
 
+        /// <summary>
+        /// This interactable becomes the main interactable for the Selector
+        /// </summary>
         public virtual void TakePriority()
         {
             Selector.Instance.SetActiveInteractable(this);
         }
 
+        /// <summary>
+        /// Returns if this is the interactable we are currently hovering
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsHovered()
         {
             return Selector.Instance.GetHoveringInteractable() == this;
@@ -52,6 +63,9 @@ namespace Amsterdam3D.Interface
             return Selector.Instance.GetActiveInteractable() == this;
         }
 
+        /// <summary>
+        /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
+        /// </summary>
         public virtual void InteractionCompleted()
         {
             Selector.Instance.SetActiveInteractable(null);

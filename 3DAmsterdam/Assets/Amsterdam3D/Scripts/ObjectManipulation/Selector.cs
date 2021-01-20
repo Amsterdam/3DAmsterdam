@@ -163,10 +163,12 @@ namespace Amsterdam3D.Interface
 		}
 		private void SecondaryClick(IAction action)
 		{
+			Debug.Log("Selector secondary click");
 			if (!HoveringInterface())
 			{	
 				if(hoveringInteractable)
 				{
+					Debug.Log("Secondary click on a interactable");
 					//Open context menu based on the interactable we are hovering
 					ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
 					ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
