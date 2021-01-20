@@ -95,18 +95,18 @@ namespace Amsterdam3D.Interface
 				}
 				else
 				{
-					EnableCameraActionMaps(true, false);
 					activeInteractable.SetRay(ray);
+					if (!HoveringInterface()) EnableCameraActionMaps(true, false);
 				}
 			}
 			else if (activeInteractable)
 			{
 				activeInteractable.SetRay(ray);
-				EnableCameraActionMaps(true, false);
+				if (!HoveringInterface()) EnableCameraActionMaps(true, false);
 			}
 			else
 			{
-				DisableAllActionMaps();
+				if (!HoveringInterface()) DisableAllActionMaps();
 				EnableCameraActionMaps(true, true);
 			}
 
@@ -155,6 +155,7 @@ namespace Amsterdam3D.Interface
 
 		private void Click(IAction action)
 		{
+			Debug.Log("Selector click");
 			if (!HoveringInterface() && !hoveringInteractable)
 			{
 				Debug.Log("Pass click down to 'special layers with a delay'");

@@ -27,14 +27,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""interactions"": ""Hold(duration=0.02)""
                 },
                 {
-                    ""name"": ""Click"",
-                    ""type"": ""Button"",
-                    ""id"": ""6ac8eaae-7118-45f8-827c-94e076d63abf"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""DoubleClick"",
                     ""type"": ""Button"",
                     ""id"": ""fe0aaeea-4249-440a-9e12-7aaead39a843"",
@@ -49,20 +41,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""ac9497e2-93a6-4f44-947a-f2e56bafe8e3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""2f3204b5-adfe-4044-a49b-bce11fea096a"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Tap"",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Click"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": ""Left mouse button + shift"",
                     ""id"": ""258dc78e-6ab1-4438-9cb0-c773b9e289a9"",
@@ -115,6 +104,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""DoubleClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a41e736-680f-4b49-8848-9864b8217f1d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1359,9 +1359,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // Selector
         m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
         m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
-        m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
         m_Selector_DoubleClick = m_Selector.FindAction("DoubleClick", throwIfNotFound: true);
         m_Selector_ClickSecondary = m_Selector.FindAction("ClickSecondary", throwIfNotFound: true);
+        m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
         // GodViewKeyboard
         m_GodViewKeyboard = asset.FindActionMap("GodViewKeyboard", throwIfNotFound: true);
         m_GodViewKeyboard_MoveCamera = m_GodViewKeyboard.FindAction("Move Camera", throwIfNotFound: true);
@@ -1450,17 +1450,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Selector;
     private ISelectorActions m_SelectorActionsCallbackInterface;
     private readonly InputAction m_Selector_Multiselect;
-    private readonly InputAction m_Selector_Click;
     private readonly InputAction m_Selector_DoubleClick;
     private readonly InputAction m_Selector_ClickSecondary;
+    private readonly InputAction m_Selector_Click;
     public struct SelectorActions
     {
         private @_3DAmsterdam m_Wrapper;
         public SelectorActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
         public InputAction @Multiselect => m_Wrapper.m_Selector_Multiselect;
-        public InputAction @Click => m_Wrapper.m_Selector_Click;
         public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
         public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
+        public InputAction @Click => m_Wrapper.m_Selector_Click;
         public InputActionMap Get() { return m_Wrapper.m_Selector; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1473,15 +1473,15 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @Multiselect.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
                 @Multiselect.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
                 @Multiselect.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
-                @Click.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
-                @Click.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
-                @Click.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
                 @DoubleClick.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @ClickSecondary.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
                 @ClickSecondary.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
                 @ClickSecondary.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
+                @Click.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @Click.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @Click.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
             }
             m_Wrapper.m_SelectorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1489,15 +1489,15 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @Multiselect.started += instance.OnMultiselect;
                 @Multiselect.performed += instance.OnMultiselect;
                 @Multiselect.canceled += instance.OnMultiselect;
-                @Click.started += instance.OnClick;
-                @Click.performed += instance.OnClick;
-                @Click.canceled += instance.OnClick;
                 @DoubleClick.started += instance.OnDoubleClick;
                 @DoubleClick.performed += instance.OnDoubleClick;
                 @DoubleClick.canceled += instance.OnDoubleClick;
                 @ClickSecondary.started += instance.OnClickSecondary;
                 @ClickSecondary.performed += instance.OnClickSecondary;
                 @ClickSecondary.canceled += instance.OnClickSecondary;
+                @Click.started += instance.OnClick;
+                @Click.performed += instance.OnClick;
+                @Click.canceled += instance.OnClick;
             }
         }
     }
@@ -1917,9 +1917,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface ISelectorActions
     {
         void OnMultiselect(InputAction.CallbackContext context);
-        void OnClick(InputAction.CallbackContext context);
         void OnDoubleClick(InputAction.CallbackContext context);
         void OnClickSecondary(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
     }
     public interface IGodViewKeyboardActions
     {
