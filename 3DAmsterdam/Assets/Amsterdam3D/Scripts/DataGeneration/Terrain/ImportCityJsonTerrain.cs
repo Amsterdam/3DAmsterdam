@@ -19,7 +19,9 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        ImportSingle();
+        double originX = 131000;
+        double originY = 489000;
+        ImportSingle(originX, originY);
         //importeer();
     }
 
@@ -28,11 +30,11 @@ public class ImportCityJsonTerrain : MonoBehaviour
     {
         
     }
-    void ImportSingle()
+    void ImportSingle(double OriginX, double OriginY)
     {
 
-        double originX = 121000;
-        double originY = 487000;
+        double originX = OriginX;
+        double originY = OriginY;
         string basefilepath = "E:/TiledData/Terrain1000x1000/";
         
         string jsonfilename = originX.ToString() + "-" +originY.ToString() +".json";
@@ -51,6 +53,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         CityModel cm = new CityModel(filepath, jsonfilename);
 
             Mesh LanduseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize);
+            
             LanduseMesh = SimplifyMesh(LanduseMesh, 0.05f);
             Mesh RoadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize);
             Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize);
@@ -65,11 +68,13 @@ public class ImportCityJsonTerrain : MonoBehaviour
             //combi[3].mesh = waterBodyMesh;
             //combi[4].mesh = bridgeMesh;
             //combi[5].mesh = plantcoverMesh;
-            
-            //Mesh CombinedMesh = new Mesh();
-            //CombinedMesh.CombineMeshes(combi, false, false);
 
-            //Mesh simplifiedMesh = SimplifyMesh(CombinedMesh, 0.5f);
+            //Mesh lod1Mesh = new Mesh();
+            //lod1Mesh.CombineMeshes(combi, false, false);
+            //lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
+
+            
+
             combi[0].mesh = SimplifyMesh(LanduseMesh, 0.05f);
             combi[1].mesh = SimplifyMesh(RoadMesh, 0.05f);
             combi[2].mesh = SimplifyMesh(genericCityObjectMesh, 0.05f);
@@ -77,10 +82,12 @@ public class ImportCityJsonTerrain : MonoBehaviour
             combi[4].mesh = bridgeMesh;
             combi[5].mesh = SimplifyMesh(plantcoverMesh, 0.05f); ;
 
-            Mesh simplifiedMesh = new Mesh();
-            simplifiedMesh.CombineMeshes(combi, false, false);
-            simplifiedMesh.uv2 = RDuv2(simplifiedMesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
-            GetComponent<MeshFilter>().sharedMesh = simplifiedMesh;
+            Mesh lod0Mesh = new Mesh();
+            lod0Mesh.CombineMeshes(combi, false, false);
+            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
+            AssetDatabase.CreateAsset(lod0Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + ".mesh");
+            //for debug
+            GetComponent<MeshFilter>().sharedMesh = lod0Mesh;
 
 
         }
@@ -88,6 +95,12 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
     private Mesh SimplifyMesh(Mesh mesh, float quality)
     {
+
+        if (mesh.triangles.Length<100)
+        {
+            return mesh;
+        }
+
         var DecimatedMesh = mesh;
         
         var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
@@ -128,9 +141,15 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
         List<Vector3> clipboundary = CreateClippingPolygon(tileSize);
 
+        if (RDTriangles.Count==0)
+        {
+            return CreateEmptyMesh();
+        }
+
         //clip all the triangles
         for (int i = 0; i < RDTriangles.Count; i += 3)
         {
+
             if (PointISInsideArea(RDTriangles[i], originX, originY, tileSize) && PointISInsideArea(RDTriangles[i + 1], originX, originY, tileSize) && PointISInsideArea(RDTriangles[i + 2], originX, originY, tileSize))
             {
                 clippedRDTriangles.Add(RDTriangles[i+2]);
@@ -155,9 +174,15 @@ public class ImportCityJsonTerrain : MonoBehaviour
             {
                 continue;
             }
+
+            if (defshape[0].x.ToString() == "NaN")
+            {
+                continue;
+            }
+
             Vector3RD vectorRD = new Vector3RD();
             // add first three vectors
-
+            
             vectorRD.x = defshape[0].x + originX;
             vectorRD.y = defshape[0].z + originY;
             vectorRD.z = defshape[0].y;
@@ -208,6 +233,10 @@ public class ImportCityJsonTerrain : MonoBehaviour
         }
         ints.Reverse(); //reverse the trianglelist to make the triangles counter-clockwise again
 
+        if (ints.Count==0)
+        {
+            return CreateEmptyMesh();
+        }
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.vertices = verts.ToArray();
@@ -216,6 +245,20 @@ public class ImportCityJsonTerrain : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.Optimize();
         return mesh;
+    }
+
+    private Mesh CreateEmptyMesh()
+    {
+        Mesh emptyMesh = new Mesh();
+        Vector3[] emptyVertsList = new Vector3[3];
+        emptyVertsList[0] = new Vector3(0, 0, 0);
+        List<int> emptyIndices = new List<int>();
+        emptyIndices.Add(0);
+        emptyIndices.Add(0);
+        emptyIndices.Add(0);
+        emptyMesh.vertices = emptyVertsList;
+        emptyMesh.SetIndices(emptyIndices.ToArray(), MeshTopology.Triangles, 0);
+        return emptyMesh;
     }
 
     private Vector2[] RDuv2(Vector3[] verts, Vector3 UnityOrigin, float tileSize)
@@ -242,7 +285,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         int[] newIndices = new int[originlints.Length];
         Dictionary<Vector3,int> vertexMapping = new Dictionary<Vector3, int>();
         //fill the dictionary
-        foreach (var vert in originalVerts)
+        foreach (Vector3 vert in originalVerts)
         {
             if (!vertexMapping.ContainsKey(vert))
             {
@@ -262,89 +305,40 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
 
 
-    //void importeer()
-    //{
-    //    int Xmin = 109000;
-    //    int Ymin = 475000;
-    //    int Xmax = 136000;
-    //    int Ymax = 498000;
+    void importeer()
+    {
+        int Xmin = 109000;
+        int Ymin = 474000;
+        int Xmax = 140000;
+        int Ymax = 500000;
 
-    //    int stepSize = 1000;
+        int stepSize = 1000;
 
-    //    string basefilepath = "E:/TiledData/TerrainLOD1/";
-    //    string filepath = "";
-    //    string jsonfilename = "terraintile.json";
-    //    int LOD = 1;
-    //    bool skip = false;
-    //    //testpurpose
-    //    int Xstart = (109000 - Xmin) / stepSize;
-        
-    //    for (int X = Xstart; X < ((Xmax - Xmin) / stepSize); X++)
-    //    {
-    //        for (int Y = 0; Y < ((Ymax - Ymin) / stepSize); Y++)
-    //        {
-    //            skip = false;
-    //            filepath = basefilepath + "tile_" + ((X*stepSize)+Xmin )+ ".0_" + ((Y * stepSize) + Ymin) + ".0/";
-                
-    //            if (File.Exists(filepath+jsonfilename)==false)
-    //            {
-    //                Debug.Log(filepath + jsonfilename + " bestaat niet");
-    //                skip = true;
-    //            }
-    //                double originX = (X * stepSize) + Xmin;
-    //                double originY = (Y * stepSize) + Ymin;
-
-    //            if (skip == false)
-    //            {
-    //                Debug.Log("loading: " +filepath + jsonfilename);
-    //                CityModel cm = new CityModel(filepath, jsonfilename);
-                    
-    //                //go.name = originX.ToString() + "-" + originY.ToString() + "-LOD" + LOD;
-    //                //go.transform.parent = transform;
-    //                //go.GetComponent<MeshRenderer>().sharedMaterials = materialsArray;
-    //                //if (go.GetComponent<MeshFilter>().mesh.vertexCount>0)
-    //                //{
-    //                //    SavePrefab("Terrain", go, originX.ToString(), originY.ToString(), 1);
-    //                //}
-    //                //Debug.Log("loaded: " + filepath + jsonfilename);
-    //            }
-
-
-                
-    //        }
-    //    }
 
         
 
-    //}
-
-    //void SavePrefab(string type, GameObject container, string X, string Y, int LOD)
-    //{
-
-    //    MeshFilter[] mfs = container.GetComponentsInChildren<MeshFilter>();
-    //    string LODfolder = CreateAssetFolder("Assets/Terrain", "LOD" + LOD);
-    //    string SquareFolder = CreateAssetFolder(LODfolder, X + "_" + Y);
-    //    string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
-    //    string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
-    //    int meshcounter = 0;
-    //    foreach (MeshFilter mf in mfs)
-    //    {
-    //        AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/"+ type+"-" + X +"-" + Y+ "-mesh_" + meshcounter + ".mesh");
-    //        AssetDatabase.SaveAssets();
-    //        AssetImporter.GetAtPath(MeshFolder + "/" + type + "-" + X + "-" + Y + "-mesh_" + meshcounter + ".mesh").SetAssetBundleNameAndVariant("Terrain_" + X + "_" + Y + "_LOD" + LOD, "");
-    //        meshcounter++;
-    //    }
-    //    AssetDatabase.SaveAssets();
-    //    PrefabUtility.SaveAsPrefabAssetAndConnect(container, PrefabFolder + "/" + type + "-" + container.name + ".prefab", InteractionMode.AutomatedAction);
-    //    AssetDatabase.SaveAssets();
-    //    AssetImporter.GetAtPath(PrefabFolder + "/" + type + "-" + container.name + ".prefab").SetAssetBundleNameAndVariant("Terrain_" + X + "_" + Y + "_LOD" + LOD, "");
-    //    AssetDatabase.SaveAssets();
+        for (int X = Xmin; X < Xmax; X+=stepSize)
+        {
+            for (int Y = Ymin; Y < Ymax; Y+=stepSize)
+            {
+                Debug.Log(X +"=" + Y);
+                ImportSingle(X, Y);
+            }
 
 
 
-    //}
+        }
+    }
 
-    private List<Vector3RD> GetVertsRD(CityModel cityModel)
+
+
+
+
+
+
+
+
+private List<Vector3RD> GetVertsRD(CityModel cityModel)
     {
         List<Vector3RD> vertsRD = new List<Vector3RD>();
         Vector3RD vertexCoordinate = new Vector3RD();
