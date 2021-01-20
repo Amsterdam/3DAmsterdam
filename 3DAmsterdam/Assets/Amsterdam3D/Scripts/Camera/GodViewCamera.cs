@@ -80,6 +80,7 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
+        private IAction zoomActionKeyboard;
 
         private float minUndergroundY = 0.0f;
 
@@ -103,6 +104,7 @@ namespace Amsterdam3D.CameraMotion
 
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
+            zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
 
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
             modifierPanAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.PanModifier);
@@ -152,7 +154,7 @@ namespace Amsterdam3D.CameraMotion
 
         private void Zoom(IAction action)
         {
-            scrollDelta = action.ReadValue<Vector2>().y;
+            scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
             if (scrollDelta != 0)
             {
                 var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));

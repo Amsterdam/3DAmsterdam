@@ -120,6 +120,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Zoom",
+                    "type": "Value",
+                    "id": "fc627390-7bba-424a-91a5-a782adf200f2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Rotate Camera",
                     "type": "Value",
                     "id": "72ab7859-34ab-4b42-bcc7-511fc65ebb4d",
@@ -282,6 +290,39 @@
                     "action": "Move Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "ForwardBackward",
+                    "id": "730774e9-8459-46c5-9fce-3732dbe94dca",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "3fc72e76-8a6a-4a69-9294-b616e1e27dac",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "884b1d8f-fbd0-45b5-8d5d-dcbe64d4c4ac",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
@@ -333,17 +374,6 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "a9fb9547-7969-4e4e-931a-860f19cbe2b1",
-                    "path": "<Mouse>/scroll",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "50b6cf8b-9977-4c2f-b97c-56d89099fda3",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -383,6 +413,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "PanModifier",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6aef2a6-736b-4a00-99c7-4720b5c4dc40",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=0.001,y=0.001)",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

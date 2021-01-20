@@ -133,6 +133,14 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""fc627390-7bba-424a-91a5-a782adf200f2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Rotate Camera"",
                     ""type"": ""Value"",
                     ""id"": ""72ab7859-34ab-4b42-bcc7-511fc65ebb4d"",
@@ -295,6 +303,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""action"": ""Move Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""ForwardBackward"",
+                    ""id"": ""730774e9-8459-46c5-9fce-3732dbe94dca"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""3fc72e76-8a6a-4a69-9294-b616e1e27dac"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""884b1d8f-fbd0-45b5-8d5d-dcbe64d4c4ac"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -346,17 +387,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""a9fb9547-7969-4e4e-931a-860f19cbe2b1"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""50b6cf8b-9977-4c2f-b97c-56d89099fda3"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -396,6 +426,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""PanModifier"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b6aef2a6-736b-4a00-99c7-4720b5c4dc40"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=0.001,y=0.001)"",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1354,6 +1395,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // GodViewKeyboard
         m_GodViewKeyboard = asset.FindActionMap("GodViewKeyboard", throwIfNotFound: true);
         m_GodViewKeyboard_MoveCamera = m_GodViewKeyboard.FindAction("Move Camera", throwIfNotFound: true);
+        m_GodViewKeyboard_Zoom = m_GodViewKeyboard.FindAction("Zoom", throwIfNotFound: true);
         m_GodViewKeyboard_RotateCamera = m_GodViewKeyboard.FindAction("Rotate Camera", throwIfNotFound: true);
         // GodViewMouse
         m_GodViewMouse = asset.FindActionMap("GodViewMouse", throwIfNotFound: true);
@@ -1496,12 +1538,14 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputActionMap m_GodViewKeyboard;
     private IGodViewKeyboardActions m_GodViewKeyboardActionsCallbackInterface;
     private readonly InputAction m_GodViewKeyboard_MoveCamera;
+    private readonly InputAction m_GodViewKeyboard_Zoom;
     private readonly InputAction m_GodViewKeyboard_RotateCamera;
     public struct GodViewKeyboardActions
     {
         private @_3DAmsterdam m_Wrapper;
         public GodViewKeyboardActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveCamera => m_Wrapper.m_GodViewKeyboard_MoveCamera;
+        public InputAction @Zoom => m_Wrapper.m_GodViewKeyboard_Zoom;
         public InputAction @RotateCamera => m_Wrapper.m_GodViewKeyboard_RotateCamera;
         public InputActionMap Get() { return m_Wrapper.m_GodViewKeyboard; }
         public void Enable() { Get().Enable(); }
@@ -1515,6 +1559,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @MoveCamera.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
+                @Zoom.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
+                @Zoom.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
+                @Zoom.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
                 @RotateCamera.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
@@ -1525,6 +1572,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @MoveCamera.started += instance.OnMoveCamera;
                 @MoveCamera.performed += instance.OnMoveCamera;
                 @MoveCamera.canceled += instance.OnMoveCamera;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
                 @RotateCamera.started += instance.OnRotateCamera;
                 @RotateCamera.performed += instance.OnRotateCamera;
                 @RotateCamera.canceled += instance.OnRotateCamera;
@@ -1913,6 +1963,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface IGodViewKeyboardActions
     {
         void OnMoveCamera(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
     }
     public interface IGodViewMouseActions
