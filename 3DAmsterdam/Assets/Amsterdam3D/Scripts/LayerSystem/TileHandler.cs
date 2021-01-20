@@ -229,7 +229,7 @@ namespace LayerSystem
 			delta = cameraPosition.z * cameraPosition.z;
 			distance += (delta);
 			//distance = (cameraPosition - center).sqrMagnitude;
-			Debug.Log(distance);
+			//Debug.Log(distance);
 			return distance;
 		}
 		
