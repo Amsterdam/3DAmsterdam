@@ -72,6 +72,8 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
+        private IAction zoomActionMouse;
+
         private IAction modifierFirstPersonAction;
         private IAction modifierPanAction;
 
@@ -97,20 +99,22 @@ namespace Amsterdam3D.CameraMotion
 		{
 			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
+            zoomActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
 
-			moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
+            moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
 
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
             modifierPanAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.PanModifier);
 
             //Listeners
-            dragActionMouse.SubscribePerformed(Drag);
+            dragActionMouse.SubscribePerformed(Drag,1);
             dragActionMouse.SubscribeCancelled(Drag);
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
 
+            zoomActionMouse.SubscribePerformed(Scroll);
 
             moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
@@ -143,14 +147,12 @@ namespace Amsterdam3D.CameraMotion
 
         private void FirstPersonModifier(IAction action)
         {
-            if (action.Performed)
-            {
-                firstPersonModifier = true;
-            }
-            else if(action.Cancelled)
-            {
-                firstPersonModifier = false;
-            }
+            
+        }
+
+        private void Scroll(IAction action)
+        {
+            Debug.Log(action.ReadValue<Vector2>());
         }
 
         private void PanModifier(IAction action)
