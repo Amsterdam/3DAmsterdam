@@ -31,6 +31,7 @@ namespace Amsterdam3D.Performance
 		private void Start()
 		{
             #if !UNITY_EDITOR
+                Debug.unityLogger.logEnabled=false;
                 if(IsMobile())
                 {
                     MobileOverrides();

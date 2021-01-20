@@ -13,11 +13,14 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RectTransform contextItemsPanel = default;
 
+		[SerializeField]
+		private RectTransform transformSubMenu = default;
+
 		public static ContextPointerMenu Instance = null;
 
 		public ContextState state = ContextState.DEFAULT;
 
-		private GameObject targetGameObject;
+		private Transformable targetTransformable;
 
 		[SerializeField]
 		[Tooltip("Select buttons that should be active for specific states")]
@@ -57,21 +60,22 @@ namespace Amsterdam3D.Interface
 			contextItemsPanel.gameObject.SetActive(false);
 		}
 
-		public void SetTargetObject(GameObject newTarget)
+		public void SetTargetTransformable(Transformable newTarget)
 		{
-			targetGameObject = newTarget;
+			targetTransformable = newTarget;
 		}
 
 		/// <summary>
 		/// Start transforming the focus object of our contextmenu
 		/// </summary>
-		public void TransformObject()
+		/// <param name="setGizmoTransformType">0=Translate, 1=Rotate, 2=Scale</param>
+		public void TransformObject(int setGizmoTransformType = 0)
 		{
 			//Enable gizmo
+			if (!targetTransformable) return;
 
-			if (!targetGameObject) return;
-
-			targetGameObject.GetComponent<Transformable>()?.ShowTransformProperties();
+			targetTransformable.ShowTransformProperties(setGizmoTransformType);
+			CloseContextMenu();
 		}
 
 		/// <summary>
@@ -80,6 +84,7 @@ namespace Amsterdam3D.Interface
 		void CloseContextMenu()
 		{
 			contextItemsPanel.gameObject.SetActive(false);
+			transformSubMenu.gameObject.SetActive(false);
 		}
 
 		/// <summary>

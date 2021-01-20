@@ -40,6 +40,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
+        private TransformPanel currentTransformPanel;
+
         [Header("Thumbnail rendering")]
         [SerializeField]
         private Camera thumbnailCameraPrefab;
@@ -62,21 +64,36 @@ namespace Amsterdam3D.Interface
 				Instance = this;
 			}
 
-            //Start with our main container. Groups may change this target.
-            targetFieldsContainer = generatedFieldsRootContainer;
+			//Start with our main container. Groups may change this target.
+			targetFieldsContainer = generatedFieldsRootContainer;
 
-            //Properties panel is disabled at startup
-            objectPropertiesPanel.SetActive(false);
+			//Properties panel is disabled at startup
+			objectPropertiesPanel.SetActive(false);
 
             //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
 
-        public void AddTransformPanel(GameObject transformable)
+        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
         {
-            TransformPanel transformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
-            transformPanel.SetTarget(transformable);
-        }
+            currentTransformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
+            currentTransformPanel.SetTarget(transformable);
+
+			switch (gizmoTransformType)
+			{
+                case 0:
+                    currentTransformPanel.TranslationGizmo();
+                    break;
+                case 1:
+                    currentTransformPanel.RotationGizmo();
+                    break;
+                case 2:
+                    currentTransformPanel.ScaleGizmo();
+                    break;
+				default:
+					break;
+			}
+		}
 
         public void OpenPanel(string title, bool clearOldfields = true)
         {
@@ -87,9 +104,21 @@ namespace Amsterdam3D.Interface
         }
         public void ClosePanel()
         {
+            DeselectTransformable();
+            ClearGeneratedFields();
             objectPropertiesPanel.SetActive(false);
         }
-        
+
+        public void DeselectTransformable()
+        {
+            if (currentTransformPanel)
+            {
+                Selector.Instance.ClearHighlights();
+                currentTransformPanel.DisableGizmo();
+                Transformable.lastSelectedTransformable = null;
+            }
+        }
+
         public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
         {
             //Find our centroid
@@ -109,6 +138,7 @@ namespace Amsterdam3D.Interface
             }
             RenderThumbnailContaining(bounds, renderAllLayers);
         }
+
 		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
         {
             var objectSizes = bounds.max - bounds.min;
