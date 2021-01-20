@@ -26,6 +26,7 @@ namespace Amsterdam3D.Interface
 		private Ray ray;
 		private RaycastHit hit;
 
+		[SerializeField]
 		private InputActionMap selectorActionMap;
 
 		private IAction clickedAction;
@@ -114,6 +115,9 @@ namespace Amsterdam3D.Interface
 			//Two fingers pinch without raycast hit? Zoom camera. Centroid of pinches delta rotates around point.
 		}
 
+		/// <summary>
+		/// Finds a interactable under the raycast, and enables its actionmap
+		/// </summary>
 		private void FindInteractableUnderRay()
 		{
 			//No active interactable, but we might be hovering one.
