@@ -138,13 +138,14 @@ namespace Amsterdam3D.Interface
 		}
 
 		/// <summary>
-		/// Disables all action maps
+		/// Disables all action maps (except our own main Selector actionmap )
 		/// </summary>
 		private void DisableAllActionMaps()
 		{
 			foreach(var actionMap in ActionHandler.actions.asset.actionMaps)
 			{
-				actionMap.Disable();
+				if(actionMap != selectorActionMap)
+					actionMap.Disable();
 			}
 		}
 
