@@ -20,6 +20,7 @@ namespace Amsterdam3D.Interface
 
 		public ContextState state = ContextState.DEFAULT;
 
+		private Interactable targetInteractable;
 		private Transformable targetTransformable;
 
 		[SerializeField]
@@ -60,9 +61,10 @@ namespace Amsterdam3D.Interface
 			contextItemsPanel.gameObject.SetActive(false);
 		}
 
-		public void SetTargetTransformable(Transformable newTarget)
+		public void SetTargetInteractable(Interactable newTargetInteractable)
 		{
-			targetTransformable = newTarget;
+			targetInteractable = newTargetInteractable;
+			targetTransformable = newTargetInteractable.GetComponent<Transformable>();
 		}
 
 		/// <summary>

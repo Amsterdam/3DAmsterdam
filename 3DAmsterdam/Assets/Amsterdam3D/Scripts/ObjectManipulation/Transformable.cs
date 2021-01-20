@@ -53,7 +53,7 @@ public class Transformable : Interactable
 		else if(stickToMouse)
 		{
 			stickToMouse = false;
-			ContextPointerMenu.Instance.SetTargetTransformable(this);
+			ContextPointerMenu.Instance.SetTargetInteractable(this);
 			ShowTransformProperties();
 		}
 	}
@@ -108,7 +108,7 @@ public class Transformable : Interactable
 		stickToMouse = false;
 
 		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		ContextPointerMenu.Instance.SetTargetTransformable(this);
+		ContextPointerMenu.Instance.SetTargetInteractable(this);
 
 		ShowTransformProperties();
 		

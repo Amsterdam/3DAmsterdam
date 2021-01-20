@@ -146,19 +146,21 @@ namespace Amsterdam3D.Interface
 
 		private void Click(IAction action)
 		{
-			if (!HoveringInterface())
+			if (!HoveringInterface() && !hoveringInteractable)
 			{
-				if(!hoveringInteractable)
-				{
-					Debug.Log("Pass click down to 'special'");
-				}
+				Debug.Log("Pass click down to 'special layers with a delay'");
 			}
 		}
 		private void SecondaryClick(IAction action)
 		{
 			if (!HoveringInterface())
-			{
-				//Determine context menu
+			{	
+				if(hoveringInteractable)
+				{
+					//Open context menu based on the interactable we are hovering
+					ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
+					ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
+				}
 			}
 		}
 

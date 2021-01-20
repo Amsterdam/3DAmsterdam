@@ -370,7 +370,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""50b6cf8b-9977-4c2f-b97c-56d89099fda3"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Drag"",
@@ -419,7 +419,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Select"",
                     ""type"": ""Button"",
-                    ""id"": ""463b5c23-5d96-485c-a17d-6c4cc5ff9bc6"",
+                    ""id"": ""ce4079f9-4766-499d-9b00-fe3c4c6e0cf8"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Tap""
@@ -428,7 +428,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
+                    ""id"": ""bff4e5ec-c0fc-4dc7-842b-a8cca2536f26"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Tap"",
                     ""processors"": """",
