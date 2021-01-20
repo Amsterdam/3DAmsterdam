@@ -114,7 +114,7 @@ namespace Amsterdam3D.CameraMotion
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
 
-            zoomActionMouse.SubscribePerformed(Scroll);
+            zoomActionMouse.SubscribePerformed(Zoom);
 
             moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
@@ -150,9 +150,14 @@ namespace Amsterdam3D.CameraMotion
             
         }
 
-        private void Scroll(IAction action)
+        private void Zoom(IAction action)
         {
-            Debug.Log(action.ReadValue<Vector2>());
+            scrollDelta = action.ReadValue<Vector2>().y;
+            if (scrollDelta != 0)
+            {
+                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
+                ZoomInDirection(scrollDelta, zoomPoint);
+            }
         }
 
         private void PanModifier(IAction action)
@@ -191,7 +196,6 @@ namespace Amsterdam3D.CameraMotion
 
         void Update()
 		{
-            //Zooming();
             if(dragging) Dragging();
             //RotationAroundPoint();
 
