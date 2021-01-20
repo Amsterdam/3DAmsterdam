@@ -22,14 +22,14 @@ public class Transformable : Interactable
 	private Collider meshCollider;
 	public static Transformable lastSelectedTransformable;
 
-	private IAction clickAction;
+	private IAction selectAction;
 
 	private void Start()
 	{
 		actionMapName = "Transformable";
 
-		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
-        clickAction.SubscribePerformed(Select, 0);
+		selectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
+        selectAction.SubscribePerformed(Select, 0);
 		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)

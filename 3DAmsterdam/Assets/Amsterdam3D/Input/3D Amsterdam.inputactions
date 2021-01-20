@@ -409,13 +409,40 @@
                     "id": "463b5c23-5d96-485c-a17d-6c4cc5ff9bc6",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Tap"
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "47991643-d187-4165-9d01-3d8b3a6caddf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "GizmoHandle",
+            "id": "9f5cca77-43e4-4143-9b9e-2cf7c6125193",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "6f4bfda6-829a-42b1-8f75-11641f5ecf28",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "22dc82f1-c74e-4e0e-9d3b-1594618c3900",
                     "path": "<Mouse>/leftButton",
                     "interactions": "Tap",
                     "processors": "",

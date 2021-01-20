@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 namespace Amsterdam3D.Interface
 {
     public class Interactable : MonoBehaviour
     {
         public string actionMapName = "";
+
+        public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
         public Ray receivedRay;
 

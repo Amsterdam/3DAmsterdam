@@ -422,13 +422,40 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""id"": ""463b5c23-5d96-485c-a17d-6c4cc5ff9bc6"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""47991643-d187-4165-9d01-3d8b3a6caddf"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""GizmoHandle"",
+            ""id"": ""9f5cca77-43e4-4143-9b9e-2cf7c6125193"",
+            ""actions"": [
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f4bfda6-829a-42b1-8f75-11641f5ecf28"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""22dc82f1-c74e-4e0e-9d3b-1594618c3900"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Tap"",
                     ""processors"": """",
@@ -1349,6 +1376,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
+        // GizmoHandle
+        m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
+        m_GizmoHandle_Select = m_GizmoHandle.FindAction("Select", throwIfNotFound: true);
         // StreetView
         m_StreetView = asset.FindActionMap("StreetView", throwIfNotFound: true);
         m_StreetView_Move = m_StreetView.FindAction("Move", throwIfNotFound: true);
@@ -1612,6 +1642,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     }
     public TransformableActions @Transformable => new TransformableActions(this);
 
+    // GizmoHandle
+    private readonly InputActionMap m_GizmoHandle;
+    private IGizmoHandleActions m_GizmoHandleActionsCallbackInterface;
+    private readonly InputAction m_GizmoHandle_Select;
+    public struct GizmoHandleActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public GizmoHandleActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Select => m_Wrapper.m_GizmoHandle_Select;
+        public InputActionMap Get() { return m_Wrapper.m_GizmoHandle; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GizmoHandleActions set) { return set.Get(); }
+        public void SetCallbacks(IGizmoHandleActions instance)
+        {
+            if (m_Wrapper.m_GizmoHandleActionsCallbackInterface != null)
+            {
+                @Select.started -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
+            }
+            m_Wrapper.m_GizmoHandleActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
+            }
+        }
+    }
+    public GizmoHandleActions @GizmoHandle => new GizmoHandleActions(this);
+
     // StreetView
     private readonly InputActionMap m_StreetView;
     private IStreetViewActions m_StreetViewActionsCallbackInterface;
@@ -1872,6 +1935,10 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         void OnPanModifier(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
+    {
+        void OnSelect(InputAction.CallbackContext context);
+    }
+    public interface IGizmoHandleActions
     {
         void OnSelect(InputAction.CallbackContext context);
     }
