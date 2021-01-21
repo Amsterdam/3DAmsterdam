@@ -462,7 +462,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/middleButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""SpinDrag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

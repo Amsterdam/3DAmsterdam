@@ -97,6 +97,7 @@ namespace Amsterdam3D.CameraMotion
 		{
 			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
+
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
             zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
@@ -168,39 +169,39 @@ namespace Amsterdam3D.CameraMotion
         
         private void PanModifier(IAction action)
         {
-            if (action.Performed)
-            {
-                panModifier = true;
-            }
-            else if (action.Cancelled)
+            if (action.Cancelled)
             {
                 panModifier = false;
+            }
+            else if (action.Performed)
+            {
+                panModifier = true;
             }
         }
 
         private void Drag(IAction action)
 		{
-            if (action.Performed)
+            if (action.Cancelled)
             {
-                dragging = true;
-            }
-            else if(action.Cancelled)
-            { 
                 dragging = false;
+            }
+            else if(action.Performed)
+            { 
+                dragging = true;
 			}
             Debug.Log("Dragging: " + dragging);
         }
 
         private void SpinDrag(IAction action)
         {
-            if (action.Performed)
+            if (action.Cancelled)
+            {
+                rotatingAroundPoint = false;
+            }
+            else if (action.Performed)
             {
                 rotatingAroundPoint = true;
                 pointerStartPosition = Mouse.current.position.ReadValue();
-            }
-            else if (action.Cancelled)
-            {
-                rotatingAroundPoint = false;
             }
             Debug.Log("Spin drag: " + rotatingAroundPoint);
         }
