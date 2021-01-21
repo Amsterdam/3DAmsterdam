@@ -344,18 +344,18 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""id"": ""d0a58484-c489-430a-939d-f215553ffebe"",
             ""actions"": [
                 {
-                    ""name"": ""Rotate Camera"",
+                    ""name"": ""Zoom"",
                     ""type"": ""Value"",
-                    ""id"": ""e8a038eb-55f9-4c5a-9cb4-473204ad92a0"",
+                    ""id"": ""8cfbe0b0-e14f-439f-ab30-7eb11467c459"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""8cfbe0b0-e14f-439f-ab30-7eb11467c459"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""ZoomDrag"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c591bd6-36dd-4c10-903a-22e22b2016fe"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -366,6 +366,14 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""SpinDrag"",
+                    ""type"": ""Button"",
+                    ""id"": ""835ad5ed-5a4a-40e1-8d6f-ef4498493dfb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""FirstPersonModifier"",
@@ -382,6 +390,14 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Drag1"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0851659-e4b6-47c5-a124-0b24bd306b3d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -393,17 +409,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Drag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""00ed4198-929f-46c7-97dd-ee0403808ef7"",
-                    ""path"": ""<Pointer>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse;Touch"",
-                    ""action"": ""Rotate Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -437,6 +442,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": ""ScaleVector2(x=0.001,y=0.001)"",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd0e37ac-be5d-4762-9b0e-751b1f0b924b"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drag1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a091bbae-e6cd-491b-9d82-98ec8164c56c"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomDrag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95d405f2-cc8e-4b00-ae5f-c7c2edbf1366"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpinDrag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1399,11 +1437,13 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_GodViewKeyboard_RotateCamera = m_GodViewKeyboard.FindAction("Rotate Camera", throwIfNotFound: true);
         // GodViewMouse
         m_GodViewMouse = asset.FindActionMap("GodViewMouse", throwIfNotFound: true);
-        m_GodViewMouse_RotateCamera = m_GodViewMouse.FindAction("Rotate Camera", throwIfNotFound: true);
         m_GodViewMouse_Zoom = m_GodViewMouse.FindAction("Zoom", throwIfNotFound: true);
+        m_GodViewMouse_ZoomDrag = m_GodViewMouse.FindAction("ZoomDrag", throwIfNotFound: true);
         m_GodViewMouse_Drag = m_GodViewMouse.FindAction("Drag", throwIfNotFound: true);
+        m_GodViewMouse_SpinDrag = m_GodViewMouse.FindAction("SpinDrag", throwIfNotFound: true);
         m_GodViewMouse_FirstPersonModifier = m_GodViewMouse.FindAction("FirstPersonModifier", throwIfNotFound: true);
         m_GodViewMouse_PanModifier = m_GodViewMouse.FindAction("PanModifier", throwIfNotFound: true);
+        m_GodViewMouse_Drag1 = m_GodViewMouse.FindAction("Drag1", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
@@ -1586,20 +1626,24 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     // GodViewMouse
     private readonly InputActionMap m_GodViewMouse;
     private IGodViewMouseActions m_GodViewMouseActionsCallbackInterface;
-    private readonly InputAction m_GodViewMouse_RotateCamera;
     private readonly InputAction m_GodViewMouse_Zoom;
+    private readonly InputAction m_GodViewMouse_ZoomDrag;
     private readonly InputAction m_GodViewMouse_Drag;
+    private readonly InputAction m_GodViewMouse_SpinDrag;
     private readonly InputAction m_GodViewMouse_FirstPersonModifier;
     private readonly InputAction m_GodViewMouse_PanModifier;
+    private readonly InputAction m_GodViewMouse_Drag1;
     public struct GodViewMouseActions
     {
         private @_3DAmsterdam m_Wrapper;
         public GodViewMouseActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
-        public InputAction @RotateCamera => m_Wrapper.m_GodViewMouse_RotateCamera;
         public InputAction @Zoom => m_Wrapper.m_GodViewMouse_Zoom;
+        public InputAction @ZoomDrag => m_Wrapper.m_GodViewMouse_ZoomDrag;
         public InputAction @Drag => m_Wrapper.m_GodViewMouse_Drag;
+        public InputAction @SpinDrag => m_Wrapper.m_GodViewMouse_SpinDrag;
         public InputAction @FirstPersonModifier => m_Wrapper.m_GodViewMouse_FirstPersonModifier;
         public InputAction @PanModifier => m_Wrapper.m_GodViewMouse_PanModifier;
+        public InputAction @Drag1 => m_Wrapper.m_GodViewMouse_Drag1;
         public InputActionMap Get() { return m_Wrapper.m_GodViewMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1609,40 +1653,52 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_GodViewMouseActionsCallbackInterface != null)
             {
-                @RotateCamera.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnRotateCamera;
-                @RotateCamera.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnRotateCamera;
-                @RotateCamera.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnRotateCamera;
                 @Zoom.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
+                @ZoomDrag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
+                @ZoomDrag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
+                @ZoomDrag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
                 @Drag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
+                @SpinDrag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSpinDrag;
+                @SpinDrag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSpinDrag;
+                @SpinDrag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSpinDrag;
                 @FirstPersonModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
                 @FirstPersonModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
                 @FirstPersonModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
                 @PanModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
                 @PanModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
                 @PanModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
+                @Drag1.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag1;
+                @Drag1.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag1;
+                @Drag1.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag1;
             }
             m_Wrapper.m_GodViewMouseActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @RotateCamera.started += instance.OnRotateCamera;
-                @RotateCamera.performed += instance.OnRotateCamera;
-                @RotateCamera.canceled += instance.OnRotateCamera;
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
+                @ZoomDrag.started += instance.OnZoomDrag;
+                @ZoomDrag.performed += instance.OnZoomDrag;
+                @ZoomDrag.canceled += instance.OnZoomDrag;
                 @Drag.started += instance.OnDrag;
                 @Drag.performed += instance.OnDrag;
                 @Drag.canceled += instance.OnDrag;
+                @SpinDrag.started += instance.OnSpinDrag;
+                @SpinDrag.performed += instance.OnSpinDrag;
+                @SpinDrag.canceled += instance.OnSpinDrag;
                 @FirstPersonModifier.started += instance.OnFirstPersonModifier;
                 @FirstPersonModifier.performed += instance.OnFirstPersonModifier;
                 @FirstPersonModifier.canceled += instance.OnFirstPersonModifier;
                 @PanModifier.started += instance.OnPanModifier;
                 @PanModifier.performed += instance.OnPanModifier;
                 @PanModifier.canceled += instance.OnPanModifier;
+                @Drag1.started += instance.OnDrag1;
+                @Drag1.performed += instance.OnDrag1;
+                @Drag1.canceled += instance.OnDrag1;
             }
         }
     }
@@ -1968,11 +2024,13 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     }
     public interface IGodViewMouseActions
     {
-        void OnRotateCamera(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
+        void OnZoomDrag(InputAction.CallbackContext context);
         void OnDrag(InputAction.CallbackContext context);
+        void OnSpinDrag(InputAction.CallbackContext context);
         void OnFirstPersonModifier(InputAction.CallbackContext context);
         void OnPanModifier(InputAction.CallbackContext context);
+        void OnDrag1(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
     {

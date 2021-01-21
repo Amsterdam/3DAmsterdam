@@ -331,18 +331,18 @@
             "id": "d0a58484-c489-430a-939d-f215553ffebe",
             "actions": [
                 {
-                    "name": "Rotate Camera",
+                    "name": "Zoom",
                     "type": "Value",
-                    "id": "e8a038eb-55f9-4c5a-9cb4-473204ad92a0",
+                    "id": "8cfbe0b0-e14f-439f-ab30-7eb11467c459",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "Zoom",
-                    "type": "Value",
-                    "id": "8cfbe0b0-e14f-439f-ab30-7eb11467c459",
-                    "expectedControlType": "Vector2",
+                    "name": "ZoomDrag",
+                    "type": "Button",
+                    "id": "6c591bd6-36dd-4c10-903a-22e22b2016fe",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
@@ -353,6 +353,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold"
+                },
+                {
+                    "name": "SpinDrag",
+                    "type": "Button",
+                    "id": "835ad5ed-5a4a-40e1-8d6f-ef4498493dfb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 },
                 {
                     "name": "FirstPersonModifier",
@@ -369,6 +377,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Drag1",
+                    "type": "Button",
+                    "id": "e0851659-e4b6-47c5-a124-0b24bd306b3d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -380,17 +396,6 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Drag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "00ed4198-929f-46c7-97dd-ee0403808ef7",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
-                    "action": "Rotate Camera",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -424,6 +429,39 @@
                     "processors": "ScaleVector2(x=0.001,y=0.001)",
                     "groups": "Keyboard&Mouse",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bd0e37ac-be5d-4762-9b0e-751b1f0b924b",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a091bbae-e6cd-491b-9d82-98ec8164c56c",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ZoomDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95d405f2-cc8e-4b00-ae5f-c7c2edbf1366",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpinDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

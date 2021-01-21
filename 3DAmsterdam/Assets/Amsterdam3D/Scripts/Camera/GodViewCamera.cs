@@ -72,7 +72,8 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
-        private IAction zoomActionMouse;
+        private IAction zoomScrollActionMouse;
+        private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
         private IAction modifierPanAction;
@@ -99,8 +100,9 @@ namespace Amsterdam3D.CameraMotion
         private void AddActionListeners()
 		{
 			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
-			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateCamera);
-            zoomActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
+			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
+            zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
+            zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
@@ -113,10 +115,16 @@ namespace Amsterdam3D.CameraMotion
             dragActionMouse.SubscribePerformed(Drag,1);
             dragActionMouse.SubscribeCancelled(Drag);
 
+            rotateActionMouse.SubscribePerformed(Drag, 1);
+            rotateActionMouse.SubscribeCancelled(Drag);
+
+            dragActionMouse.SubscribePerformed(Drag, 1);
+            dragActionMouse.SubscribeCancelled(Drag);
+
+            zoomScrollActionMouse.SubscribePerformed(Zoom);
+
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
-
-            zoomActionMouse.SubscribePerformed(Zoom);
 
             moveActionKeyboard.SubscribePerformed(Move);
 			rotateActionKeyboard.SubscribePerformed(Rotate);
