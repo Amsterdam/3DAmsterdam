@@ -108,15 +108,15 @@ namespace Amsterdam3D.CameraMotion
             modifierPanAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.PanModifier);
 
             //Listeners
-            dragActionMouse.SubscribePerformed(Drag,1);
+            dragActionMouse.SubscribePerformed(Drag);
             dragActionMouse.SubscribeCancelled(Drag);
 
-            rotateActionMouse.SubscribePerformed(SpinDrag, 1);
+            rotateActionMouse.SubscribePerformed(SpinDrag);
             rotateActionMouse.SubscribeCancelled(SpinDrag);
 
             zoomScrollActionMouse.SubscribePerformed(Zoom);
 
-            dragActionMouse.SubscribePerformed(Drag, 1);
+            dragActionMouse.SubscribePerformed(Drag);
             dragActionMouse.SubscribeCancelled(Drag);
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
@@ -403,7 +403,7 @@ namespace Amsterdam3D.CameraMotion
             var previousPosition = cameraComponent.transform.position;
             var previousRotation = cameraComponent.transform.rotation;
 
-            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -pointerPosition.y-pointerStartPosition.y * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -pointerPosition.y - pointerStartPosition.y * 5f);
             cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, pointerPosition.x - pointerStartPosition.x * 5f);
 
             if (cameraComponent.transform.position.y < minUndergroundY )

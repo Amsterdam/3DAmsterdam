@@ -67,7 +67,7 @@ namespace Amsterdam3D.InputHandler
             action.SetValue(obj.action.ReadValueAsObject());
 
             // Fire Event on UnityAction
-            action.FireEvent();
+            action.FireCancelEvent();
         }
 
         private void Inputaction_performed(InputAction.CallbackContext obj)
