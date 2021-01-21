@@ -29,7 +29,7 @@ public class Transformable : Interactable
 		actionMapName = "Transformable";
 
 		selectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
-        selectAction.SubscribePerformed(Select, 0);
+        selectAction.SubscribePerformed(Select, 1);
 		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)

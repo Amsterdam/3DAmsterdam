@@ -72,6 +72,11 @@ namespace Amsterdam3D.Interface
 			multiselectAction.SubscribeCancelled(MultiselectFinish);
 		}
 
+
+		private void OnEnable()
+		{
+			selectorActionMap.Enable();
+		}
 		private void OnDisable()
 		{
 			selectorActionMap.Disable();
@@ -88,17 +93,18 @@ namespace Amsterdam3D.Interface
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				if (!activeInteractable)
-				{
-					FindInteractableUnderRay();
-				}
-				else
+				if (activeInteractable)
 				{
 					activeInteractable.SetRay(ray);
 					if (!HoveringInterface()) EnableCameraActionMaps(true, false);
 				}
+				else
+				{
+					FindHoveringInteractableUnderRay();
+				}
 			}
-			else if (activeInteractable)
+
+			if (activeInteractable)
 			{
 				activeInteractable.SetRay(ray);
 				if (!HoveringInterface()) EnableCameraActionMaps(true, false);
@@ -117,7 +123,7 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Finds a interactable under the raycast, and enables its actionmap
 		/// </summary>
-		private void FindInteractableUnderRay()
+		private void FindHoveringInteractableUnderRay()
 		{
 			//No active interactable, but we might be hovering one.
 			hoveringInteractable = hit.collider.GetComponent<Interactable>();
@@ -147,7 +153,7 @@ namespace Amsterdam3D.Interface
 		{
 			foreach(var actionMap in ActionHandler.actions.asset.actionMaps)
 			{
-				if(actionMap != selectorActionMap)
+				if((!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && actionMap != selectorActionMap && !CameraModeChanger.Instance.CurrentCameraControls.UsesActionMap(actionMap))
 					actionMap.Disable();
 			}
 		}
