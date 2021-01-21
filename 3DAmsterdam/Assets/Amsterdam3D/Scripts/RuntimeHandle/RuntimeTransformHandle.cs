@@ -109,7 +109,6 @@ namespace RuntimeHandle
             if (Input.GetMouseButtonDown(0) && axis != null)
             {
                 _draggingAxis = axis;
-                ObjectManipulation.manipulatingObject = true;
                 _draggingAxis.StartInteraction();
             }
 
@@ -117,7 +116,6 @@ namespace RuntimeHandle
             {
                 Debug.Log("End interaction");
                 _draggingAxis.EndInteraction();
-                ObjectManipulation.manipulatingObject = false;
                 _draggingAxis = null;
             }
 
