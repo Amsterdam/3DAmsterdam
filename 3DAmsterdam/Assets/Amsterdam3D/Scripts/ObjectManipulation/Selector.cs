@@ -85,7 +85,7 @@ namespace Amsterdam3D.Interface
 		private void Update()
 		{
 			//Always raycast to look for hover actions
-			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
 				if (!activeInteractable)

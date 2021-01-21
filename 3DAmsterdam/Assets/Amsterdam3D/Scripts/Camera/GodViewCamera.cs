@@ -56,9 +56,9 @@ namespace Amsterdam3D.CameraMotion
         public bool LockFunctions = false;
 
         private Vector3 zoomDirection;
-
-        private Vector3 dragOrigin;
         private Vector3 rotatePoint;
+
+        private Vector2 pointerStartPosition;
 
         private Vector2 currentRotation;
 
@@ -74,8 +74,6 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction modifierFirstPersonAction;
         private IAction modifierPanAction;
-
-        private IAction pointerPosition;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
@@ -101,8 +99,6 @@ namespace Amsterdam3D.CameraMotion
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
             zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
-
-            pointerPosition = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Position);
 
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
@@ -200,6 +196,7 @@ namespace Amsterdam3D.CameraMotion
             if (action.Performed)
             {
                 rotatingAroundPoint = true;
+                pointerStartPosition = Mouse.current.position.ReadValue();
             }
             else if (action.Cancelled)
             {
@@ -339,38 +336,38 @@ namespace Amsterdam3D.CameraMotion
 
         private void Dragging()
         {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    requireMouseClickBeforeDrag = false;
-                    startMouseDrag = GetMousePositionInWorld();
-                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
-                }
-                else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
-                {
-                    dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
+            if (Input.GetMouseButtonDown(0))
+            {
+                requireMouseClickBeforeDrag = false;
+                startMouseDrag = GetMousePositionInWorld();
+                ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
+            }
+            else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
+            {
+                dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
                      
-                    if(dragMomentum.magnitude > 0.1f)
-                        transform.position -= dragMomentum;
+                if(dragMomentum.magnitude > 0.1f)
+                    transform.position -= dragMomentum;
 
-                    //Filter out extreme swings
-                    if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.zero;
+                //Filter out extreme swings
+                if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.zero;
+            }
+            else if (Input.GetMouseButtonUp(0)){
+                ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
+            }
+            else {
+                //Slide forward in dragged direction
+                dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
+                if (dragMomentum.magnitude > 0.1f)
+                {
+                    this.transform.position -= dragMomentum;
                 }
-                else if (Input.GetMouseButtonUp(0)){
-                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
-                }
-                else {
-                    //Slide forward in dragged direction
-                    dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
-                    if (dragMomentum.magnitude > 0.1f)
-                    {
-                        this.transform.position -= dragMomentum;
-                    }
-                }
+            }
         }
 
         public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var pointerPosition = Input.mousePosition;
+            var pointerPosition = Mouse.current.position.ReadValue();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
             var ray = cameraComponent.ScreenPointToRay(pointerPosition);            
@@ -384,13 +381,12 @@ namespace Amsterdam3D.CameraMotion
 
         private void RotationAroundPoint()
         {
-            var mousePosition = Mouse.current.position.ReadValue();
+            var pointerPosition = Mouse.current.position.ReadValue();
 
             RaycastHit hit;
-            var ray = cameraComponent.ScreenPointToRay(mousePosition);
+            var ray = cameraComponent.ScreenPointToRay(pointerPosition);
 
-            Debug.Log("Screen point: " + mousePosition);
-
+            //Determine the point we will spin around
             if (Transformable.lastSelectedTransformable != null){
                 rotatePoint = Transformable.lastSelectedTransformable.transform.position;
             }
@@ -407,8 +403,8 @@ namespace Amsterdam3D.CameraMotion
             var previousPosition = cameraComponent.transform.position;
             var previousRotation = cameraComponent.transform.rotation;
 
-            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mousePosition.y * 5f);
-            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mousePosition.x * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -pointerPosition.y-pointerStartPosition.y * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, pointerPosition.x - pointerStartPosition.x * 5f);
 
             if (cameraComponent.transform.position.y < minUndergroundY )
             {
