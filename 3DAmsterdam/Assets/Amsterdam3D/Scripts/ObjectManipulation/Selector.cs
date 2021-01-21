@@ -26,7 +26,6 @@ namespace Amsterdam3D.Interface
 		private Ray ray;
 		private RaycastHit hit;
 
-		[SerializeField]
 		private InputActionMap selectorActionMap;
 
 		private IAction clickedAction;

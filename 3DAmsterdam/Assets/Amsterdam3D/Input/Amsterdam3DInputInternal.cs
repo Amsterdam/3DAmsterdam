@@ -449,20 +449,20 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Select"",
                     ""type"": ""Button"",
-                    ""id"": ""ce4079f9-4766-499d-9b00-fe3c4c6e0cf8"",
+                    ""id"": ""1a3dbc7d-b1cd-4a2d-882d-2374142db434"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Tap""
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""bff4e5ec-c0fc-4dc7-842b-a8cca2536f26"",
+                    ""id"": ""c5cb54d9-ba8d-4f92-9377-e41a90124f88"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Select"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -474,7 +474,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""id"": ""9f5cca77-43e4-4143-9b9e-2cf7c6125193"",
             ""actions"": [
                 {
-                    ""name"": ""Select"",
+                    ""name"": ""Drag"",
                     ""type"": ""Button"",
                     ""id"": ""6f4bfda6-829a-42b1-8f75-11641f5ecf28"",
                     ""expectedControlType"": ""Button"",
@@ -487,10 +487,10 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""22dc82f1-c74e-4e0e-9d3b-1594618c3900"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Select"",
+                    ""action"": ""Drag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1409,7 +1409,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
         // GizmoHandle
         m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
-        m_GizmoHandle_Select = m_GizmoHandle.FindAction("Select", throwIfNotFound: true);
+        m_GizmoHandle_Drag = m_GizmoHandle.FindAction("Drag", throwIfNotFound: true);
         // StreetView
         m_StreetView = asset.FindActionMap("StreetView", throwIfNotFound: true);
         m_StreetView_Move = m_StreetView.FindAction("Move", throwIfNotFound: true);
@@ -1684,12 +1684,12 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     // GizmoHandle
     private readonly InputActionMap m_GizmoHandle;
     private IGizmoHandleActions m_GizmoHandleActionsCallbackInterface;
-    private readonly InputAction m_GizmoHandle_Select;
+    private readonly InputAction m_GizmoHandle_Drag;
     public struct GizmoHandleActions
     {
         private @_3DAmsterdam m_Wrapper;
         public GizmoHandleActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Select => m_Wrapper.m_GizmoHandle_Select;
+        public InputAction @Drag => m_Wrapper.m_GizmoHandle_Drag;
         public InputActionMap Get() { return m_Wrapper.m_GizmoHandle; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1699,16 +1699,16 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_GizmoHandleActionsCallbackInterface != null)
             {
-                @Select.started -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
-                @Select.performed -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
-                @Select.canceled -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnSelect;
+                @Drag.started -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnDrag;
+                @Drag.performed -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnDrag;
+                @Drag.canceled -= m_Wrapper.m_GizmoHandleActionsCallbackInterface.OnDrag;
             }
             m_Wrapper.m_GizmoHandleActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Select.started += instance.OnSelect;
-                @Select.performed += instance.OnSelect;
-                @Select.canceled += instance.OnSelect;
+                @Drag.started += instance.OnDrag;
+                @Drag.performed += instance.OnDrag;
+                @Drag.canceled += instance.OnDrag;
             }
         }
     }
@@ -1980,7 +1980,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     }
     public interface IGizmoHandleActions
     {
-        void OnSelect(InputAction.CallbackContext context);
+        void OnDrag(InputAction.CallbackContext context);
     }
     public interface IStreetViewActions
     {
