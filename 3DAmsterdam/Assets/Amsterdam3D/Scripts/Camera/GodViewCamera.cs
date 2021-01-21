@@ -17,11 +17,8 @@ namespace Amsterdam3D.CameraMotion
         private float zoomSpeed = 0.5f;
         private const float maxZoomOut = 2500f;
 
-        private Vector3 mouseZoomStart;
-        private Vector3 mouseZoomTarget;
-        private float mouseZoomSpeed = 0.01f;
-
         private bool dragging = false;
+        private bool rotatingAroundPoint = false;
 
         private const float rotationSpeed = 1f;
 
@@ -78,6 +75,7 @@ namespace Amsterdam3D.CameraMotion
         private IAction modifierFirstPersonAction;
         private IAction modifierPanAction;
 
+        private IAction pointerPosition;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
@@ -104,6 +102,8 @@ namespace Amsterdam3D.CameraMotion
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
             zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
+            pointerPosition = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Position);
+
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
@@ -115,13 +115,13 @@ namespace Amsterdam3D.CameraMotion
             dragActionMouse.SubscribePerformed(Drag,1);
             dragActionMouse.SubscribeCancelled(Drag);
 
-            rotateActionMouse.SubscribePerformed(Drag, 1);
-            rotateActionMouse.SubscribeCancelled(Drag);
+            rotateActionMouse.SubscribePerformed(SpinDrag, 1);
+            rotateActionMouse.SubscribeCancelled(SpinDrag);
+
+            zoomScrollActionMouse.SubscribePerformed(Zoom);
 
             dragActionMouse.SubscribePerformed(Drag, 1);
             dragActionMouse.SubscribeCancelled(Drag);
-
-            zoomScrollActionMouse.SubscribePerformed(Zoom);
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
@@ -169,7 +169,7 @@ namespace Amsterdam3D.CameraMotion
                 ZoomInDirection(scrollDelta, zoomPoint);
             }
         }
-
+        
         private void PanModifier(IAction action)
         {
             if (action.Performed)
@@ -195,6 +195,19 @@ namespace Amsterdam3D.CameraMotion
             Debug.Log("Dragging: " + dragging);
         }
 
+        private void SpinDrag(IAction action)
+        {
+            if (action.Performed)
+            {
+                rotatingAroundPoint = true;
+            }
+            else if (action.Cancelled)
+            {
+                rotatingAroundPoint = false;
+            }
+            Debug.Log("Spin drag: " + dragging);
+        }
+
         private void Move(IAction action)
         {
             Debug.Log("Move keyboard");
@@ -207,7 +220,7 @@ namespace Amsterdam3D.CameraMotion
         void Update()
 		{
             if(dragging) Dragging();
-            //RotationAroundPoint();
+            if (rotatingAroundPoint) RotationAroundPoint();
 
             LimitPosition();
 		}
@@ -316,55 +329,6 @@ namespace Amsterdam3D.CameraMotion
             return cameraComponent.transform.position.y;
         }
 
-        private void ClampToGround()
-        {
-            Debug.DrawRay(cameraComponent.transform.position, Vector3.down * floorOffset, Color.red);
-            RaycastHit hit;
-            if (Physics.Raycast(cameraComponent.transform.position, Vector3.down * floorOffset, out hit)){ 
-                if (hit.distance < floorOffset)
-                {
-                    cameraComponent.transform.position = hit.point + new Vector3(0, floorOffset, 0);
-                }
-            }
-        }
-
-        private void Zooming()
-        {
-            if (panModifier)
-            {
-                if ((Input.GetKey(KeyCode.R)) && !BlockedByTextInput())
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(Time.deltaTime, zoomPoint);
-                }
-                else if ((Input.GetKey(KeyCode.F)) && !BlockedByTextInput())
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(-Time.deltaTime, zoomPoint);
-                }
-            }
-            else if (Input.GetMouseButtonDown(1))
-            {
-                startMouseDrag = Input.mousePosition;
-                mouseZoomTarget = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                mouseZoomStart = cameraComponent.transform.position;
-            }
-            else if (Input.GetMouseButton(1))
-            {
-                cameraComponent.transform.position = mouseZoomStart;
-                ZoomInDirection(-(Input.mousePosition.y - startMouseDrag.y) * mouseZoomSpeed, mouseZoomTarget);
-            }
-            else
-            {
-                scrollDelta = Input.GetAxis("Mouse ScrollWheel");
-                if (scrollDelta != 0)
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(scrollDelta, zoomPoint);
-                }
-            }   
-        }
-
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
             var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
@@ -375,8 +339,6 @@ namespace Amsterdam3D.CameraMotion
 
         private void Dragging()
         {
-            if (!panModifier && !firstPersonModifier)
-            {
                 if (Input.GetMouseButtonDown(0))
                 {
                     requireMouseClickBeforeDrag = false;
@@ -404,7 +366,6 @@ namespace Amsterdam3D.CameraMotion
                         this.transform.position -= dragMomentum;
                     }
                 }
-            }
         }
 
         public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
@@ -426,44 +387,38 @@ namespace Amsterdam3D.CameraMotion
             RaycastHit hit;
             var ray = cameraComponent.ScreenPointToRay(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(2))
+            if (Transformable.lastSelectedTransformable != null){
+                rotatePoint = Transformable.lastSelectedTransformable.transform.position;
+            }
+            else if (Physics.Raycast(ray, out hit))
             {
-                if (Transformable.lastSelectedTransformable != null){
-                    rotatePoint = Transformable.lastSelectedTransformable.transform.position;
-                }
-                else if (Physics.Raycast(ray, out hit))
-                {
-                    rotatePoint = hit.point;
-                    focusingOnTargetPoint(rotatePoint);
-                }
-                else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter)){
-                    rotatePoint = ray.GetPoint(enter);
-                    focusingOnTargetPoint(rotatePoint);
-                }
+                rotatePoint = hit.point;
+                focusingOnTargetPoint(rotatePoint);
+            }
+            else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter)){
+                rotatePoint = ray.GetPoint(enter);
+                focusingOnTargetPoint(rotatePoint);
             }
 
-            if (Input.GetMouseButton(2))
+            var mouseX = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().x;
+            var mouseY = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
+
+            var previousPosition = cameraComponent.transform.position;
+            var previousRotation = cameraComponent.transform.rotation;
+
+            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseY * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+
+            if (cameraComponent.transform.position.y < minUndergroundY )
             {
-                var mouseX = Input.GetAxis("Mouse X");
-                var mouseY = Input.GetAxis("Mouse Y");
-
-                var previousPosition = cameraComponent.transform.position;
-                var previousRotation = cameraComponent.transform.rotation;
-
-                cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseY * 5f);
-                cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
-
-                if (cameraComponent.transform.position.y < minUndergroundY )
-                {
-                    //Do not let the camera go beyond the rotationpoint height
-                    cameraComponent.transform.position = previousPosition;
-                    cameraComponent.transform.rotation = previousRotation;
-                }
-
-                currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-
-                focusingOnTargetPoint.Invoke(rotatePoint);
+                //Do not let the camera go beyond the rotationpoint height
+                cameraComponent.transform.position = previousPosition;
+                cameraComponent.transform.rotation = previousRotation;
             }
+
+            currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+
+            focusingOnTargetPoint.Invoke(rotatePoint);
         }
 
         private float ClampAngle(float angle, float from, float to)

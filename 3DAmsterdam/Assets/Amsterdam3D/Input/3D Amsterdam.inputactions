@@ -379,10 +379,10 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Drag1",
-                    "type": "Button",
-                    "id": "e0851659-e4b6-47c5-a124-0b24bd306b3d",
-                    "expectedControlType": "Button",
+                    "name": "Position",
+                    "type": "PassThrough",
+                    "id": "c49c049d-757c-46a9-b9c5-5cf0aa7f0ccf",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
                 }
@@ -434,17 +434,6 @@
                 },
                 {
                     "name": "",
-                    "id": "bd0e37ac-be5d-4762-9b0e-751b1f0b924b",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Drag1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a091bbae-e6cd-491b-9d82-98ec8164c56c",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -462,6 +451,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpinDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e26af352-df3d-42b7-9c87-8a09f846590d",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Position",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
