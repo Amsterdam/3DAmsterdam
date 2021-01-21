@@ -205,7 +205,7 @@ namespace Amsterdam3D.CameraMotion
             {
                 rotatingAroundPoint = false;
             }
-            Debug.Log("Spin drag: " + dragging);
+            Debug.Log("Spin drag: " + rotatingAroundPoint);
         }
 
         private void Move(IAction action)
@@ -384,8 +384,12 @@ namespace Amsterdam3D.CameraMotion
 
         private void RotationAroundPoint()
         {
+            var mousePosition = Mouse.current.position.ReadValue();
+
             RaycastHit hit;
-            var ray = cameraComponent.ScreenPointToRay(Input.mousePosition);
+            var ray = cameraComponent.ScreenPointToRay(mousePosition);
+
+            Debug.Log("Screen point: " + mousePosition);
 
             if (Transformable.lastSelectedTransformable != null){
                 rotatePoint = Transformable.lastSelectedTransformable.transform.position;
@@ -400,14 +404,11 @@ namespace Amsterdam3D.CameraMotion
                 focusingOnTargetPoint(rotatePoint);
             }
 
-            var mouseX = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().x;
-            var mouseY = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
-
             var previousPosition = cameraComponent.transform.position;
             var previousRotation = cameraComponent.transform.rotation;
 
-            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseY * 5f);
-            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mousePosition.y * 5f);
+            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mousePosition.x * 5f);
 
             if (cameraComponent.transform.position.y < minUndergroundY )
             {
