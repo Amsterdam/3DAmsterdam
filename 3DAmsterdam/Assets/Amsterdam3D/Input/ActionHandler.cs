@@ -32,7 +32,7 @@ namespace Amsterdam3D.InputHandler
             actions = new _3DAmsterdam();
             actionMaps = actions.asset; 
            
-            foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps) 
+            foreach (InputActionMap map in actionMaps.actionMaps) 
             {
                 UnityActionMap unityMap = new UnityActionMap(map);
                 foreach (var inputAction in map) 
