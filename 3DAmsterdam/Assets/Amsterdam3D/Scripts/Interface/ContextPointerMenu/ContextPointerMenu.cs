@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace Amsterdam3D.Interface
 {
@@ -64,7 +65,8 @@ namespace Amsterdam3D.Interface
 		public void SetTargetInteractable(Interactable newTargetInteractable)
 		{
 			targetInteractable = newTargetInteractable;
-			targetTransformable = newTargetInteractable.GetComponent<Transformable>();
+			if(newTargetInteractable)
+				targetTransformable = newTargetInteractable.GetComponent<Transformable>();
 		}
 
 		/// <summary>
@@ -118,7 +120,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void Appear()
 		{
-			contextItemsPanel.transform.position = Input.mousePosition;
+			contextItemsPanel.transform.position = Mouse.current.position.ReadValue();
 
 			//Always disable the panel first, so our appear animation plays again
 			contextItemsPanel.gameObject.SetActive(false);

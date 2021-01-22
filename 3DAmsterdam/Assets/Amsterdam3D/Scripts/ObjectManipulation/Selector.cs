@@ -174,19 +174,23 @@ namespace Amsterdam3D.Interface
 		private void SecondaryClick(IAction action)
 		{
 			Debug.Log("Selector secondary click");
-			if(!HoveringInterface() && hoveringInteractable)
+			if(!HoveringInterface())
 			{
-				Debug.Log("Secondary click on a interactable");
-				//Open context menu based on the interactable we are hovering
-				ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
-				ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
-				hoveringInteractable.Select();
-			}
-			else{
-				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-				ContextPointerMenu.Instance.SetTargetInteractable(null);
-				ContextPointerMenu.Instance.Appear();
-			}
+				if (hoveringInteractable)
+				{
+					//Open context menu based on the interactable we are hovering
+					ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
+					ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
+					ContextPointerMenu.Instance.Appear();
+					hoveringInteractable.Select();
+				}
+				else
+				{
+					ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+					ContextPointerMenu.Instance.SetTargetInteractable(null);
+					ContextPointerMenu.Instance.Appear();
+				}
+			}	
 		}
 
 		private void DeselectAll()

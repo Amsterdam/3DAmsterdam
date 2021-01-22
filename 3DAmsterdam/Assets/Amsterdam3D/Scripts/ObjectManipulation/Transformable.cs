@@ -49,14 +49,13 @@ public class Transformable : Interactable
 		else if(stickToMouse)
 		{
 			stickToMouse = false;
-			ContextPointerMenu.Instance.SetTargetInteractable(this);
 			ShowTransformProperties();
 		}
 	}
 
 	public override void Deselect()
 	{
-		base.Select();
+		base.Deselect();
 		ObjectProperties.Instance.DeselectTransformable(this, true);
 	}
 
