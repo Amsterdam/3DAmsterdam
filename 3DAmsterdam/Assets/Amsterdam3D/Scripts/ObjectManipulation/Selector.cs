@@ -36,6 +36,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private LayerMask raycastLayers;
 
+		[SerializeField]
+		private LayerMask raycastPriorityLayer;
+
 		public Interactable GetActiveInteractable() => activeInteractable;
 		public Interactable GetHoveringInteractable() => hoveringInteractable;
 
@@ -49,6 +52,9 @@ namespace Amsterdam3D.Interface
 
 		private string priority3DInterfaceHitLayerName = "Interface3D";
 		private int priority3DInterfaceHitLayer;
+
+		[SerializeField]
+		private RaycastHit[] sortedHits;
 
 		void Awake()
 		{
@@ -100,7 +106,7 @@ namespace Amsterdam3D.Interface
 			RaycastHit[] hits = Physics.RaycastAll(ray, 10000, raycastLayers.value);
 			if (hits.Length > 0 && !activeInteractable)
 			{
-				FindHoveringInteractableUnderRay(hits);
+				HoveringInteractableUnderRay(hits);
 			}
 
 			if (activeInteractable)
@@ -122,12 +128,12 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Finds a interactable under the raycast, and enables its actionmap
 		/// </summary>
-		private void FindHoveringInteractableUnderRay(RaycastHit[] hits)
+		private bool HoveringInteractableUnderRay(RaycastHit[] hits)
 		{
 			//Sort our hit list. 
-			//We want our 3D interface items to always take priority, than ordered by distance
-			var sortedHits = hits.OrderBy(n => n.collider.gameObject.layer == priority3DInterfaceHitLayer)
-				.ThenBy(h => h.distance)
+			//We want our 3D interface items to always take priority, then ordered by distance.
+			sortedHits = hits.OrderBy(h => h.distance)
+				.ThenBy(n => n.collider.gameObject.layer == raycastPriorityLayer.value)
 				.ToArray();
 
 			//Find interactables in our hit list
@@ -142,10 +148,9 @@ namespace Amsterdam3D.Interface
 					hoveringInteractable.SetRay(ray);
 					if (hoveringInteractable.ActionMap != null)
 						hoveringInteractable.ActionMap.Enable();
-
-					
 				}
 			}
+			return false;
 		}
 
 		/// <summary>
