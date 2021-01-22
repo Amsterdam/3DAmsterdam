@@ -113,19 +113,10 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		void Update()
-		{
-			//TODO: replace with centralized input system to avoid conflicts with other scripts polling for the same buttons
-			if (Input.GetMouseButtonUp(1) && !EventSystem.current.IsPointerOverGameObject())
-			{
-				Appear();
-			}
-		}
-
 		/// <summary>
 		/// Moves our context menu to our pointer, and actives it with an animation. 
 		/// </summary>
-		private void Appear()
+		public void Appear()
 		{
 			contextItemsPanel.transform.position = Input.mousePosition;
 

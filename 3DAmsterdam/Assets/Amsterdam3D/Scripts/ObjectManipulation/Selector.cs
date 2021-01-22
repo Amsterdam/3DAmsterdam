@@ -107,14 +107,12 @@ namespace Amsterdam3D.Interface
 			if (activeInteractable)
 			{
 				activeInteractable.SetRay(ray);
-				if (!HoveringInterface()) 
-					EnableCameraActionMaps(true, false);
+				EnableCameraActionMaps(true, false);
 			}
 			else
 			{
 				DisableAllActionMaps();
-				if (!HoveringInterface())
-					EnableCameraActionMaps(true, true);
+				EnableCameraActionMaps(true, true);
 			}
 
 			//TODO: Mobile touch inputs will be handled from here as well. For example: 
@@ -145,7 +143,7 @@ namespace Amsterdam3D.Interface
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
 			CameraModeChanger.Instance.CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
-			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(enableMouseActions);
+			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && enableMouseActions);
 		}
 
 		/// <summary>
@@ -163,23 +161,41 @@ namespace Amsterdam3D.Interface
 		private void Click(IAction action)
 		{
 			Debug.Log("Selector click");
-			if (!HoveringInterface() && !hoveringInteractable)
+			if(!HoveringInterface() && hoveringInteractable)
+			{
+				hoveringInteractable.Select();
+			}
+			else if (!HoveringInterface() && !hoveringInteractable)
 			{
 				Debug.Log("Pass click down to 'special layers with a delay'");
+				DeselectAll();
 			}
 		}
 		private void SecondaryClick(IAction action)
 		{
 			Debug.Log("Selector secondary click");
-			if (!HoveringInterface())
-			{	
-				if(hoveringInteractable)
-				{
-					Debug.Log("Secondary click on a interactable");
-					//Open context menu based on the interactable we are hovering
-					ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
-					ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
-				}
+			if(!HoveringInterface() && hoveringInteractable)
+			{
+				Debug.Log("Secondary click on a interactable");
+				//Open context menu based on the interactable we are hovering
+				ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
+				ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
+				hoveringInteractable.Select();
+			}
+			else{
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+				ContextPointerMenu.Instance.SetTargetInteractable(null);
+				ContextPointerMenu.Instance.Appear();
+			}
+		}
+
+		private void DeselectAll()
+		{
+			//Deselect all transformables
+			var transformables = FindObjectsOfType<Transformable>();
+			foreach(var tranformable in transformables)
+			{
+				tranformable.Deselect();
 			}
 		}
 

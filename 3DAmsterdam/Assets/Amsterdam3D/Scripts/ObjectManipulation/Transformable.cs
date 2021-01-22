@@ -28,8 +28,8 @@ public class Transformable : Interactable
 	{
 		actionMapName = "Transformable";
 
-		selectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
-        selectAction.SubscribePerformed(Select, 1);
+		//selectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
+        //selectAction.SubscribePerformed(Select, 1);
 		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
@@ -39,8 +39,9 @@ public class Transformable : Interactable
 		}
 	}
 
-	public void Select(IAction action)
+	public override void Select()
 	{
+		base.Select();
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
 			ShowTransformProperties();
@@ -53,8 +54,9 @@ public class Transformable : Interactable
 		}
 	}
 
-	public void Deselect()
+	public override void Deselect()
 	{
+		base.Select();
 		ObjectProperties.Instance.DeselectTransformable(this, true);
 	}
 

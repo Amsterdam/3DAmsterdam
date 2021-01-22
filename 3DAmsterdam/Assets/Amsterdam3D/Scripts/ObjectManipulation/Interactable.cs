@@ -46,6 +46,15 @@ namespace Amsterdam3D.Interface
             Selector.Instance.SetActiveInteractable(this);
         }
 
+		public virtual void Select()
+		{
+			
+		}
+        public virtual void Deselect()
+        {
+
+        }
+
         /// <summary>
         /// Returns if this is the interactable we are currently hovering
         /// </summary>
