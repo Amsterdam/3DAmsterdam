@@ -3,6 +3,7 @@ using Amsterdam3D.InputHandler;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -24,7 +25,7 @@ namespace Amsterdam3D.Interface
 		public List<OutlineObject> selectedObjects;
 
 		private Ray ray;
-		private RaycastHit hit;
+		private RaycastHit[] hits;
 
 		private InputActionMap selectorActionMap;
 
@@ -46,8 +47,13 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private Interactable[] defaultInteractables;
 
+		private string priority3DInterfaceHitLayerName = "Interface3D";
+		private int priority3DInterfaceHitLayer;
+
 		void Awake()
 		{
+			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
+
 			if (Instance == null)
 			{
 				Instance = this;
@@ -91,12 +97,10 @@ namespace Amsterdam3D.Interface
 		{
 			//Always raycast to look for hover actions
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
+			RaycastHit[] hits = Physics.RaycastAll(ray, 10000, raycastLayers.value);
+			if (hits.Length > 0 && !activeInteractable)
 			{
-				if (!activeInteractable)
-				{
-					FindHoveringInteractableUnderRay();
-				}
+				FindHoveringInteractableUnderRay(hits);
 			}
 
 			if (activeInteractable)
@@ -118,22 +122,29 @@ namespace Amsterdam3D.Interface
 		/// <summary>
 		/// Finds a interactable under the raycast, and enables its actionmap
 		/// </summary>
-		private void FindHoveringInteractableUnderRay()
+		private void FindHoveringInteractableUnderRay(RaycastHit[] hits)
 		{
-			//No active interactable, but we might be hovering one.
-			hoveringInteractable = hit.collider.GetComponent<Interactable>();
+			//Sort our hit list. 
+			//We want our 3D interface items to always take priority, than ordered by distance
+			var sortedHits = hits.OrderBy(n => n.collider.gameObject.layer == priority3DInterfaceHitLayer)
+				.ThenBy(h => h.distance)
+				.ToArray();
 
-			//In case of our 3D gizmo Interactable, the colliders are on the child handles, so check the root for Interactable as well.
-			if(!hoveringInteractable)
+			//Find interactables in our hit list
+			foreach (var hit in sortedHits)
 			{
-				hoveringInteractable = hit.collider.transform.root.GetComponent<Interactable>();
-			}
+				//Hovering an interactable?
+				hoveringInteractable = hit.collider.GetComponent<Interactable>();
+				if (!hoveringInteractable) hoveringInteractable = hit.collider.transform.root.GetComponent<Interactable>();
 
-			if (hoveringInteractable)
-			{
-				hoveringInteractable.SetRay(ray);
-				if(hoveringInteractable.ActionMap != null)
-					hoveringInteractable.ActionMap.Enable();
+				//If we found an interactable under the mouse enable its own actions if it has a map
+				if(hoveringInteractable){
+					hoveringInteractable.SetRay(ray);
+					if (hoveringInteractable.ActionMap != null)
+						hoveringInteractable.ActionMap.Enable();
+
+					
+				}
 			}
 		}
 

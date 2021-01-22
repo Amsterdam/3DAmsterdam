@@ -41,12 +41,12 @@ namespace RuntimeHandle
 
         public UnityEvent movedHandle;
 
-        [SerializeField]
-        private LayerMask layerMask;
+        private string raycastLayerName = "Interface3D";
+        public int raycastLayer;
 
         void Awake()
         {
-            layerMask = LayerMask.NameToLayer("Interface3D");
+            raycastLayer = LayerMask.NameToLayer(raycastLayerName);
 
             movedHandle = new UnityEvent();
 
@@ -157,20 +157,18 @@ namespace RuntimeHandle
 
         private HandleBase GetAxis()
         {
-            RaycastHit[] hits = Physics.RaycastAll(receivedRay, 10000, layerMask.value);
+            RaycastHit[] hits = Physics.RaycastAll(receivedRay, 10000, LayerMask.GetMask(raycastLayerName));
             if (hits.Length == 0)
                 return null;
 
             foreach (RaycastHit hit in hits)
             {
                 HandleBase axis = hit.collider.gameObject.GetComponentInParent<HandleBase>();
-
                 if (axis != null)
                 {
                     return axis;
                 }
             }
-
             return null;
         }
 
