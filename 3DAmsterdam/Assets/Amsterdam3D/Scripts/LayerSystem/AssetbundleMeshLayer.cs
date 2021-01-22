@@ -84,9 +84,9 @@ namespace LayerSystem
 			string url = Constants.BASE_DATA_URL + Datasets[lod].path;
             
 				url = Datasets[lod].path;
-			
-				
 
+
+			Debug.Log(url);
 			
 
 			
@@ -98,6 +98,7 @@ namespace LayerSystem
 
 				if (uwr.isNetworkError || uwr.isHttpError)
 				{
+					Debug.Log("error");
 					RemoveGameObjectFromTile(tileChange);
 					callback(tileChange);
 				}
