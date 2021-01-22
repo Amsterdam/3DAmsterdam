@@ -405,7 +405,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""50b6cf8b-9977-4c2f-b97c-56d89099fda3"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Drag"",
