@@ -93,12 +93,7 @@ namespace Amsterdam3D.Interface
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			if (Physics.Raycast(ray, out hit, 10000, raycastLayers.value))
 			{
-				if (activeInteractable)
-				{
-					activeInteractable.SetRay(ray);
-					if (!HoveringInterface()) EnableCameraActionMaps(true, false);
-				}
-				else
+				if (!activeInteractable)
 				{
 					FindHoveringInteractableUnderRay();
 				}
@@ -127,10 +122,18 @@ namespace Amsterdam3D.Interface
 		{
 			//No active interactable, but we might be hovering one.
 			hoveringInteractable = hit.collider.GetComponent<Interactable>();
+
+			//In case of our 3D gizmo Interactable, the colliders are on the child handles, so check the root for Interactable as well.
+			if(!hoveringInteractable)
+			{
+				hoveringInteractable = hit.collider.transform.root.GetComponent<Interactable>();
+			}
+
 			if (hoveringInteractable)
 			{
 				hoveringInteractable.SetRay(ray);
-				hoveringInteractable.ActionMap.Enable();
+				if(hoveringInteractable.ActionMap != null)
+					hoveringInteractable.ActionMap.Enable();
 			}
 		}
 

@@ -41,8 +41,13 @@ namespace RuntimeHandle
 
         public UnityEvent movedHandle;
 
+        [SerializeField]
+        private LayerMask layerMask;
+
         void Awake()
         {
+            layerMask = LayerMask.NameToLayer("Interface3D");
+
             movedHandle = new UnityEvent();
 
             previousType = type;
@@ -67,7 +72,7 @@ namespace RuntimeHandle
                     scaleHandle = gameObject.AddComponent<ScaleHandle>().Initialize(this);
                     break;
             }
-        }
+        } 
 
         void Clear()
         {
@@ -111,6 +116,7 @@ namespace RuntimeHandle
             {
                 draggingAxis = axis;
                 draggingAxis.StartInteraction();
+                TakePriority();
             }
 
             if (Input.GetMouseButtonUp(0) && draggingAxis != null)
@@ -118,6 +124,7 @@ namespace RuntimeHandle
                 Debug.Log("End interaction");
                 draggingAxis.EndInteraction();
                 draggingAxis = null;
+                InteractionCompleted();
             }
 
             previousPosition = Mouse.current.position.ReadValue();
@@ -150,7 +157,7 @@ namespace RuntimeHandle
 
         private HandleBase GetAxis()
         {
-            RaycastHit[] hits = Physics.RaycastAll(receivedRay);
+            RaycastHit[] hits = Physics.RaycastAll(receivedRay, 10000, layerMask.value);
             if (hits.Length == 0)
                 return null;
 

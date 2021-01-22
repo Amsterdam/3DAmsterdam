@@ -45,8 +45,15 @@ namespace Amsterdam3D.Interface
         {
             Selector.Instance.SetActiveInteractable(this);
         }
+        /// <summary>
+        /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
+        /// </summary>
+        public virtual void InteractionCompleted()
+        {
+            Selector.Instance.SetActiveInteractable(null);
+        }
 
-		public virtual void Select()
+        public virtual void Select()
 		{
 			
 		}
@@ -70,14 +77,6 @@ namespace Amsterdam3D.Interface
             if (!Selector.Instance.GetActiveInteractable()) return true;
 
             return Selector.Instance.GetActiveInteractable() == this;
-        }
-
-        /// <summary>
-        /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
-        /// </summary>
-        public virtual void InteractionCompleted()
-        {
-            Selector.Instance.SetActiveInteractable(null);
         }
     }
 }

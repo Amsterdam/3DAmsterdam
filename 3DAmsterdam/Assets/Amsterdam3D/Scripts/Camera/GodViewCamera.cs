@@ -160,6 +160,8 @@ namespace Amsterdam3D.CameraMotion
             else if(!enabled && !HoldingInteraction && ActionHandler.actions.GodViewMouse.enabled)
             {
                 Debug.Log("DISABLE CAMERA MOUSE ACTION MAP");
+                dragging = false;
+                rotatingAroundPoint = false;
                 ActionHandler.actions.GodViewMouse.Disable();
             }
         }
