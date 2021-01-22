@@ -107,12 +107,14 @@ namespace Amsterdam3D.Interface
 			if (activeInteractable)
 			{
 				activeInteractable.SetRay(ray);
-				if (!HoveringInterface()) EnableCameraActionMaps(true, false);
+				if (!HoveringInterface()) 
+					EnableCameraActionMaps(true, false);
 			}
 			else
 			{
-				if (!HoveringInterface()) DisableAllActionMaps();
-				EnableCameraActionMaps(true, true);
+				DisableAllActionMaps();
+				if (!HoveringInterface())
+					EnableCameraActionMaps(true, true);
 			}
 
 			//TODO: Mobile touch inputs will be handled from here as well. For example: 
@@ -153,7 +155,7 @@ namespace Amsterdam3D.Interface
 		{
 			foreach(var actionMap in ActionHandler.actions.asset.actionMaps)
 			{
-				if((!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && actionMap != selectorActionMap && !CameraModeChanger.Instance.CurrentCameraControls.UsesActionMap(actionMap))
+				if((!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && (!hoveringInteractable || (hoveringInteractable && hoveringInteractable.ActionMap != actionMap)) && actionMap != selectorActionMap && !CameraModeChanger.Instance.CurrentCameraControls.UsesActionMap(actionMap))
 					actionMap.Disable();
 			}
 		}

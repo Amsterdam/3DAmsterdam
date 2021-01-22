@@ -41,11 +41,6 @@ public class Transformable : Interactable
 
 	public void Select(IAction action)
 	{
-		if (!IsHovered())
-		{
-			Deselect();
-			return;
-		}
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
 			ShowTransformProperties();
@@ -58,7 +53,7 @@ public class Transformable : Interactable
 		}
 	}
 
-	private void Deselect()
+	public void Deselect()
 	{
 		ObjectProperties.Instance.DeselectTransformable(this, true);
 	}
