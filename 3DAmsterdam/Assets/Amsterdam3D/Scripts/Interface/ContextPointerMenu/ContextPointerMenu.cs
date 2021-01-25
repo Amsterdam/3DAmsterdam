@@ -120,11 +120,12 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void Appear()
 		{
-			contextItemsPanel.transform.position = Mouse.current.position.ReadValue();
+			CloseContextMenu();
 
-			//Always disable the panel first, so our appear animation plays again
-			contextItemsPanel.gameObject.SetActive(false);
+			contextItemsPanel.transform.position = Mouse.current.position.ReadValue();
 			contextItemsPanel.gameObject.SetActive(true);
+
+			contextItemsPanel.GetComponent<ClickOutsideToClose>().IgnoreClicks(1);
 		}
 	}
 }
