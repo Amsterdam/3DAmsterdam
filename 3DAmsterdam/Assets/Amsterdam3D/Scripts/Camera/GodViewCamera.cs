@@ -36,7 +36,7 @@ namespace Amsterdam3D.CameraMotion
         private float maxClickDragDistance = 5000.0f;
         private float maxTravelDistance = 20000.0f;
 
-        private const float rotationSensitivity = 5f;
+        private const float rotationSensitivity = 20.0f;
 
         private const float floorOffset = 1.8f;
 
@@ -311,8 +311,8 @@ namespace Amsterdam3D.CameraMotion
             var mouseDelta = Mouse.current.delta.ReadValue();
 
 			//Convert mouse position into local rotations
-			currentRotation.x += mouseDelta.x * rotationSensitivity;
-			currentRotation.y -= mouseDelta.y * rotationSensitivity;
+			currentRotation.x += mouseDelta.x * rotationSensitivity * Time.deltaTime;
+			currentRotation.y -= mouseDelta.y * rotationSensitivity * Time.deltaTime;
 
 			//Adjust camera rotation
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
