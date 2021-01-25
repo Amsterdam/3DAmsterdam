@@ -19,13 +19,6 @@ public class SelectByID : Interactable
 
     public static List<string> selectedIDs;
 
-    private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-    private float mouseClickTime;
-    private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
-    private Vector2 mousePosition;
-    [SerializeField]
-    private float clickTimer = 0.3f;
-
     [SerializeField]
     private LayerMask clickCheckLayerMask;
     private AssetbundleMeshLayer containerLayer;
