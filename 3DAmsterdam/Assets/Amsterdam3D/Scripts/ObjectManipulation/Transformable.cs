@@ -33,11 +33,26 @@ public class Transformable : Interactable
 		if (stickToMouse)
 		{
 			placeAction.SubscribePerformed(Place);
-			TakePriority();
+			StartInteraction();
 			StartCoroutine(StickToMouse());
-			lastSelectedTransformable = null;
 			meshCollider.enabled = false;
 		}
+	}
+
+	/// <summary>
+	/// Makes the new object stick to the mouse untill we click.
+	/// Enable the collider, so raycasts can pass through the object while dragging.
+	/// </summary>
+	IEnumerator StickToMouse()
+	{
+		//Keep following mouse untill we clicked
+		while (stickToMouse)
+		{
+			FollowMousePointer();
+			yield return new WaitForEndOfFrame();
+		}
+		stickToMouse = false;
+		meshCollider.enabled = true;
 	}
 
 	public void Place(IAction action)
@@ -47,7 +62,7 @@ public class Transformable : Interactable
 			Debug.Log("Placed Transformable");
 			stickToMouse = false;
 			ShowTransformProperties();
-			InteractionCompleted();
+			StopInteraction();
 		}
 	}
 
@@ -58,7 +73,10 @@ public class Transformable : Interactable
 		base.Select();
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
+			if (lastSelectedTransformable) lastSelectedTransformable.Deselect();
+
 			ShowTransformProperties();
+			meshCollider.enabled = false;
 		}
 	}
 
@@ -66,6 +84,7 @@ public class Transformable : Interactable
 	{
 		base.Deselect();
 		ObjectProperties.Instance.DeselectTransformable(this, true);
+		meshCollider.enabled = true;
 	}
 
 	/// <summary>
@@ -96,22 +115,6 @@ public class Transformable : Interactable
 		}
 		ObjectProperties.Instance.RenderThumbnailContaining(bounds);
 		this.gameObject.layer = objectOriginalLayer;
-	}
-
-	/// <summary>
-	/// Makes the new object stick to the mouse untill we click.
-	/// Enable the collider, so raycasts can pass through the object while dragging.
-	/// </summary>
-	IEnumerator StickToMouse()
-	{
-		//Keep following mouse untill we clicked
-		while (stickToMouse)
-		{
-			FollowMousePointer();
-			yield return new WaitForEndOfFrame();
-		}
-		stickToMouse = false;
-		meshCollider.enabled = true;
 	}
 
 	private void FollowMousePointer()

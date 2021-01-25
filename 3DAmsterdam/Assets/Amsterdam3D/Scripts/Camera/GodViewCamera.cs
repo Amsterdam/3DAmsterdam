@@ -154,7 +154,7 @@ namespace Amsterdam3D.CameraMotion
                 Debug.Log("ENABLE CAMERA MOUSE ACTION MAP");
                 ActionHandler.actions.GodViewMouse.Enable();
             }
-            else if(!enabled && !HoldingInteraction && ActionHandler.actions.GodViewMouse.enabled)
+            else if(!enabled && ActionHandler.actions.GodViewMouse.enabled)
             {
                 Debug.Log("DISABLE CAMERA MOUSE ACTION MAP");
                 dragging = false;

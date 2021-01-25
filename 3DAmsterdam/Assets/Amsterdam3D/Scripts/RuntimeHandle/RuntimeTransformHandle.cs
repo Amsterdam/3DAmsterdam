@@ -117,7 +117,7 @@ namespace RuntimeHandle
                 draggingAxis = axis;
                 draggingAxis.StartInteraction();
 
-                if(IsHovered()) TakePriority();
+                StartInteraction();
             }
 
             if (Input.GetMouseButtonUp(0) && draggingAxis != null)
@@ -126,7 +126,7 @@ namespace RuntimeHandle
                 draggingAxis.EndInteraction();
                 draggingAxis = null;
 
-                InteractionCompleted();
+                StopInteraction();
             }
 
             previousPosition = Mouse.current.position.ReadValue();
@@ -142,7 +142,7 @@ namespace RuntimeHandle
             }
         }
 
-        void HandleOverEffect(HandleBase p_axis)
+		void HandleOverEffect(HandleBase p_axis)
         {
             if (draggingAxis == null && previousAxis != null && previousAxis != p_axis)
             {

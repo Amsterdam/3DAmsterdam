@@ -41,7 +41,7 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// This interactable becomes the main interactable for the Selector
         /// </summary>
-        public virtual void TakePriority()
+        public virtual void StartInteraction()
         {
             if (ActionMap != null) ActionMap.Enable();
             Selector.Instance.SetActiveInteractable(this);
@@ -49,10 +49,12 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
         /// </summary>
-        public virtual void InteractionCompleted()
+        public virtual void StopInteraction()
         {
             if (ActionMap != null) ActionMap.Disable();
-            Selector.Instance.SetActiveInteractable(null);
+
+            if(HasInteractionPriority())
+                Selector.Instance.SetActiveInteractable(null);
         }
 
         public virtual void Select()
@@ -64,16 +66,22 @@ namespace Amsterdam3D.Interface
 
         }
 
-        /// <summary>
-        /// Returns if this is the interactable we are currently hovering
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool IsHovered()
+		private void OnDisable()
+		{
+            //Make sure to always release the priority for input when we are disabled
+            StopInteraction();
+        }
+
+		/// <summary>
+		/// Returns if this is the interactable we are currently hovering
+		/// </summary>
+		/// <returns></returns>
+		public virtual bool IsHovered()
         {
             return Selector.Instance.GetHoveringInteractable() == this;
         }
 
-        public virtual bool HasPriority()
+        public virtual bool HasInteractionPriority()
         {
             //Always have priority if none is set
             if (!Selector.Instance.GetActiveInteractable()) return true;
