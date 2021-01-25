@@ -197,7 +197,8 @@ namespace Amsterdam3D.Interface
 		private void Select()
 		{
 			if (HoveringInterface()) return;
-			Debug.Log("Selector click. If we do not have a hovering interactable, try to select our default interactables.");
+			//Selector click. If we do not have a hovering interactable, try to select our delayed interactables.
+			//The buildings are delayed interactables, because we need to download metadata before we know if/where we hit a building
 			if (hoveringInteractable)
 			{
 				hoveringInteractable.Select();
@@ -248,8 +249,6 @@ namespace Amsterdam3D.Interface
 			{
 				tranformable.Deselect();
 			}
-
-
 		}
 
 		private void MultiselectFinish(IAction action)
