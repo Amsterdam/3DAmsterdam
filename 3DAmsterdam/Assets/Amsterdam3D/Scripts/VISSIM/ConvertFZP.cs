@@ -12,6 +12,8 @@ public class ConvertFZP : MonoBehaviour
      *  $VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH
      * 
      */
+    public List<int> missingVissimTypes = new List<int>();
+
     public Dictionary<int, GameObject[]> vehicleTypes = new Dictionary<int, GameObject[]>();
 
     private string requiredTemplate = "$VEHICLE:SIMSEC;NO;VEHTYPE;COORDFRONT;COORDREAR;WIDTH";
@@ -19,7 +21,6 @@ public class ConvertFZP : MonoBehaviour
 
     public List<VissimData> allVissimData = new List<VissimData>();
     public Dictionary<int, List<VissimData>> allVissimDataByVehicleID = new Dictionary<int, List<VissimData>>(); // Vehicle Sorting test, see SortDataByCar() function
-
     private bool readyToConvert = false;
 
     public bool finishedLoadingData = false;
@@ -28,13 +29,15 @@ public class ConvertFZP : MonoBehaviour
 
 
     [Header("VISSIM Object Prefabs")]
-    [SerializeField] private GameObject[] vissimCarPrefabs = default;
-    [SerializeField] private GameObject[] vissimTruckPrefabs = default;
-    [SerializeField] private GameObject[] vissimBusPrefabs = default;
-    [SerializeField] private GameObject[] vissimTramPrefabs = default;
-    [SerializeField] private GameObject[] vissimPedestrianPrefabs = default;
-    [SerializeField] private GameObject[] vissimCyclePrefabs = default;
-    [SerializeField] private GameObject[] vissimVanPrefabs = default;
+    [SerializeField] private VissimType vissimCarPrefabs = default;
+    [SerializeField] private VissimType vissimTruckPrefabs = default;
+    [SerializeField] private VissimType vissimBusPrefabs = default;
+    [SerializeField] private VissimType vissimTramPrefabs = default;
+    [SerializeField] private VissimType vissimPedestrianPrefabs = default;
+    [SerializeField] private VissimType vissimCyclePrefabs = default;
+    [SerializeField] private VissimType vissimVanPrefabs = default;
+
+    private Amsterdam3D.Interface.VissimConfiguration vissimConfiguration = default;
 
     /* VISSIM OBJECT TYPE TEMPLATE
      * 
@@ -49,17 +52,16 @@ public class ConvertFZP : MonoBehaviour
      */
     void Start()
     {
-        // Based on the VISSIM Object Template
-        vehicleTypes.Add(100, vissimCarPrefabs); // Car
-        vehicleTypes.Add(200, vissimTruckPrefabs); // Truck
-        vehicleTypes.Add(300, vissimBusPrefabs); // Bus
-        vehicleTypes.Add(400, vissimTramPrefabs); // Tram
-        vehicleTypes.Add(500, vissimPedestrianPrefabs); // Pedestrian
-        vehicleTypes.Add(600, vissimCyclePrefabs); // Cycle
-        vehicleTypes.Add(700, vissimVanPrefabs); // Van
+        vissimConfiguration = GetComponent<Amsterdam3D.Interface.VissimConfiguration>();
 
-        //if(Application.isEditor)
-            //StartCoroutine(RetrieveVissim(Constants.BASE_DATA_URL + "traffic/" + fileLocationVISSIM)); // code to test VISSIM in editor
+        // Based on the VISSIM Object Template
+        vehicleTypes.Add(100, vissimCarPrefabs.vissimTypeAssets); // Car
+        vehicleTypes.Add(200, vissimTruckPrefabs.vissimTypeAssets); // Truck
+        vehicleTypes.Add(300, vissimBusPrefabs.vissimTypeAssets); // Bus
+        vehicleTypes.Add(400, vissimTramPrefabs.vissimTypeAssets); // Tram
+        //vehicleTypes.Add(500, vissimPedestrianPrefabs.vissimTypeAssets); // Pedestrian
+        //vehicleTypes.Add(600, vissimCyclePrefabs.vissimTypeAssets); // Cycle
+        vehicleTypes.Add(700, vissimVanPrefabs.vissimTypeAssets); // Van
     }
 
     private void Update()
@@ -85,7 +87,7 @@ public class ConvertFZP : MonoBehaviour
             {
                 AddVissimData(line);
             }
-            if (line == requiredTemplate) 
+            if (line == requiredTemplate)
             {
                 readyToConvert = true;
             }
@@ -93,20 +95,36 @@ public class ConvertFZP : MonoBehaviour
         readyToConvert = false;
 
         // automatically calculates the time between the frames.
-        foreach(VissimData data in allVissimData)
+        foreach (VissimData data in allVissimData)
         {
-            if(data.simsec != allVissimData[0].simsec)
+            if (data.simsec != allVissimData[0].simsec)
             {
                 timeBetweenFrames = data.simsec - allVissimData[0].simsec;
                 break; // after calculating the correct framerate of the simulation, exit the loop.
             }
         }
-        finishedLoadingData = true;
+        // checks if there are missing Vissim types
+        if (missingVissimTypes.Count > 0)
+        {
+            vissimConfiguration.OpenInterface(missingVissimTypes); // opens missing visism interface
+        }
+        else
+        {
+            StartVissim(); // starts animation
+        }
 
         //sets  the current VISSIM file start parameters
         frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
         
     }
+    /// <summary>
+    /// Starts the vissim simulation
+    /// </summary>
+    public void StartVissim()
+    {
+        finishedLoadingData = true;
+    }
+
     /// <summary>
     /// Converts string into VissimData.
     /// </summary>
@@ -115,9 +133,14 @@ public class ConvertFZP : MonoBehaviour
     {
         string[] arr = dataString.Split(';');
         float simsec = float.Parse(arr[0], CultureInfo.InvariantCulture);
-        //arr[0] = arr[0].ToString(CultureInfo.InvariantCulture);
-        //float simsec = float.Parse(arr[0]);
-        VissimData data = new VissimData(simsec, int.Parse(arr[1]), int.Parse(arr[2]), convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
+        int vissimTypeID = int.Parse(arr[2]);
+
+        if (!vehicleTypes.ContainsKey(vissimTypeID) && !missingVissimTypes.Contains(vissimTypeID))
+        {
+            missingVissimTypes.Add(vissimTypeID);
+        }
+
+        VissimData data = new VissimData(simsec, int.Parse(arr[1]), vissimTypeID, convertStringToVector(arr[3]), convertStringToVector(arr[4]), float.Parse(arr[5]));
         allVissimData.Add(data);
 
         SortDataByCar(data); // currently in test modes, can be removed later or kept for other functions.

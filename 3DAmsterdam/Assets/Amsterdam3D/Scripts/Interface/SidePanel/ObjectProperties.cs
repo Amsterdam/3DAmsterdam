@@ -210,6 +210,12 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
         }
+
+        public void AddCustomField(GameObject gameObject)
+        {
+            Instantiate(gameObject, targetFieldsContainer);
+        }
+
         public void ClearGeneratedFields()
         {
             foreach (Transform field in generatedFieldsRootContainer)
