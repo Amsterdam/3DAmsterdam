@@ -171,6 +171,12 @@ namespace Amsterdam3D.CameraMotion
         private void Zoom(IAction action)
         {
             scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
+
+            //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
+            #if UNITY_WEBGL && !UNITY_EDITOR
+                scrollDelta *= 20.0f;
+            #endif  
+
             if (scrollDelta != 0)
             {
                 var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
