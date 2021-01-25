@@ -19,10 +19,10 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        double originX = 131000;
-        double originY = 489000;
-        ImportSingle(originX, originY);
-        //importeer();
+        double originX = 124000;
+        double originY = 443000;
+        //ImportSingle(originX, originY);
+        importeer();
     }
 
     // Update is called once per frame
@@ -35,7 +35,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
         double originX = OriginX;
         double originY = OriginY;
-        string basefilepath = "E:/TiledData/Terrain1000x1000/";
+        string basefilepath = "D:/3DUtrecht/terrainTiles/";
         
         string jsonfilename = originX.ToString() + "-" +originY.ToString() +".json";
         
@@ -307,10 +307,10 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
     void importeer()
     {
-        int Xmin = 109000;
-        int Ymin = 474000;
-        int Xmax = 140000;
-        int Ymax = 500000;
+        int Xmin = 124000;
+        int Ymin = 443000;
+        int Xmax = 145000;
+        int Ymax = 463000;
 
         int stepSize = 1000;
 
