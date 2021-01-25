@@ -33,7 +33,7 @@ public class Transformable : Interactable
 		if (stickToMouse)
 		{
 			placeAction.SubscribePerformed(Place);
-			StartInteraction();
+			TakeInteractionPriority();
 			StartCoroutine(StickToMouse());
 			meshCollider.enabled = false;
 		}
@@ -61,7 +61,7 @@ public class Transformable : Interactable
 		{
 			Debug.Log("Placed Transformable");
 			stickToMouse = false;
-			ShowTransformProperties();
+			Select();
 			StopInteraction();
 		}
 	}
@@ -131,7 +131,7 @@ public class Transformable : Interactable
 	private Vector3 GetMousePointOnLayerMask()
 	{
 		RaycastHit hit;
-		if (snapToGround && Physics.Raycast(receivedRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+		if (snapToGround && Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 		{
 			return hit.point;
 		}

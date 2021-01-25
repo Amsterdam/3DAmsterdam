@@ -24,7 +24,7 @@ namespace Amsterdam3D.Interface
 
 		public List<OutlineObject> selectedObjects;
 
-		private Ray ray;
+		public static Ray mainSelectorRay;
 		private RaycastHit[] hits;
 
 		private InputActionMap selectorActionMap;
@@ -101,22 +101,22 @@ namespace Amsterdam3D.Interface
 
 		private void Update()
 		{
-			//Always raycast to look for hover actions
-			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-			RaycastHit[] hits = Physics.RaycastAll(ray, 10000, raycastLayers.value);
+			//Always update our main selector ray, and raycast for hovers
+			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+			RaycastHit[] hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
 			{
 				HoveringInteractableUnderRay(hits);
 			}
 
+			EnableCameraActionMaps(true, !activeInteractable);
+
 			if (activeInteractable)
 			{
-				activeInteractable.SetRay(ray);
 				EnableCameraActionMaps(true, false);
 			}
 			else
 			{
-				//DisableAllActionMaps();
 				EnableCameraActionMaps(true, true);
 			}
 
@@ -132,9 +132,7 @@ namespace Amsterdam3D.Interface
 		{
 			//Sort our hit list. 
 			//We want our 3D interface items to always take priority, then ordered by distance.
-			sortedHits = hits.OrderBy(h => h.distance)
-				.ThenBy(n => n.collider.gameObject.layer == raycastPriorityLayer.value)
-				.ToArray();
+			sortedHits = hits.OrderBy(n => n.collider.gameObject.layer == raycastPriorityLayer.value).ThenBy(h => h.distance).ToArray();
 
 			//Find interactables in our hit list
 			foreach (var hit in sortedHits)
@@ -145,7 +143,6 @@ namespace Amsterdam3D.Interface
 
 				//If we found an interactable under the mouse enable its own actions if it has a map
 				if(hoveringInteractable){
-					hoveringInteractable.SetRay(ray);
 					if (hoveringInteractable.ActionMap != null)
 						hoveringInteractable.ActionMap.Enable();
 					return true;

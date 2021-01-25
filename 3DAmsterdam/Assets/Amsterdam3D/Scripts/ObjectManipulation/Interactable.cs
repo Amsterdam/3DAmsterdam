@@ -14,8 +14,6 @@ namespace Amsterdam3D.Interface
 
         public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
-        public Ray receivedRay;
-
         private InputActionMap actionMap;
         public InputActionMap ActionMap {
             get
@@ -30,18 +28,9 @@ namespace Amsterdam3D.Interface
         }
 
         /// <summary>
-        /// Sets the main ray used for determining click/pointer position
-        /// </summary>
-        /// <param name="ray">Ray usualy served by the selector (that shoots our main pointer ray)</param>
-        public virtual void SetRay(Ray ray)  
-        {
-            receivedRay = ray;
-        }
-
-        /// <summary>
         /// This interactable becomes the main interactable for the Selector
         /// </summary>
-        public virtual void StartInteraction()
+        public virtual void TakeInteractionPriority()
         {
             if (ActionMap != null) ActionMap.Enable();
             Selector.Instance.SetActiveInteractable(this);

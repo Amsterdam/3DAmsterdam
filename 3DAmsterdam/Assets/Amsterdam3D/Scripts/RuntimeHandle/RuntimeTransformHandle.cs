@@ -117,7 +117,7 @@ namespace RuntimeHandle
                 draggingAxis = axis;
                 draggingAxis.StartInteraction();
 
-                StartInteraction();
+                TakeInteractionPriority();
             }
 
             if (Input.GetMouseButtonUp(0) && draggingAxis != null)
@@ -159,7 +159,7 @@ namespace RuntimeHandle
 
         private HandleBase GetAxis()
         {
-            RaycastHit[] hits = Physics.RaycastAll(receivedRay, 10000, LayerMask.GetMask(raycastLayerName));
+            RaycastHit[] hits = Physics.RaycastAll(Selector.mainSelectorRay, 10000, LayerMask.GetMask(raycastLayerName));
             if (hits.Length == 0)
                 return null;
 
