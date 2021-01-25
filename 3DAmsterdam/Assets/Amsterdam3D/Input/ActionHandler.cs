@@ -48,6 +48,7 @@ namespace Amsterdam3D.InputHandler
                     ActionDictionary.Add(inputAction, tmp);
                     inputAction.performed += Inputaction_performed;
                     inputAction.canceled += InputAction_canceled;
+                    inputAction.started += Inputaction_started;
                     unityMap.boundActions.Add(ActionDictionary[inputAction]);
                     ActionHandler.actions.StreetView.Disable();
                 }
