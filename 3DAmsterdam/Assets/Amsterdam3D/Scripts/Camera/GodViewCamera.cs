@@ -46,8 +46,9 @@ namespace Amsterdam3D.CameraMotion
         private float deceleration = 10.0f;
         private Vector3 dragMomentum = Vector3.zero;
         private float maxMomentum = 1000.0f;
-        private bool requireMouseClickBeforeDrag = false;
 
+        private bool requireMouseClickBeforeDrag = false;
+        private bool clickStartedBlocked = false;
 
         private bool translationModifier = false;
         private bool firstPersonModifier = false;
@@ -55,8 +56,6 @@ namespace Amsterdam3D.CameraMotion
         private bool canUseMouseRelatedFunctions = true;
 
         public bool LockFunctions = false;
-
-		private bool interactionOverruled = false;
 
         private Vector3 zoomDirection;
 
@@ -72,9 +71,6 @@ namespace Amsterdam3D.CameraMotion
 
         private IAction moveAction;
         private IAction rotateAction;
-        
-
-
 
         private float minUndergroundY = 0.0f;
 
@@ -86,17 +82,26 @@ namespace Amsterdam3D.CameraMotion
         void Start()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-            UnityEngine.InputSystem.InputAction testAction = ActionHandler.actions.GodView.MoveCamera;
+
             moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
             rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+
             ActionHandler.actions.GodView.Enable();
         }
 
         void Update()
 		{
-			if (InteractionOverruled()) return;
+            //Check if we started dragging on the UI
+            if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+            {
+                clickStartedBlocked = true;
+            }
+            else if (clickStartedBlocked && Input.GetMouseButtonUp(0))
+            {
+                clickStartedBlocked = false;
+            }
 
-            canUseMouseRelatedFunctions = !(EventSystem.current.IsPointerOverGameObject());
+            canUseMouseRelatedFunctions = (!clickStartedBlocked && !EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
 
            //these shouldn't be needed anymore since unity input system has modifiers built in
             translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -132,19 +137,6 @@ namespace Amsterdam3D.CameraMotion
             return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
         }
 
-		private bool InteractionOverruled()
-		{
-			if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() || ObjectManipulation.manipulatingObject)
-			{
-				interactionOverruled = true;
-			}
-			else if (Input.GetMouseButtonUp(0))
-			{
-				interactionOverruled = false;
-			}
-			return interactionOverruled;
-		}
-
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
 		{
             cameraComponent.transform.position = targetLocation + cameraOffsetForTargetLocation;
@@ -157,27 +149,15 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!translationModifier)
+            if (!translationModifier && !BlockedByTextInput() && moveAction != null)
             {
-                // de directie wordt gelijk gezet aan de juiste directie plus hoeveel de camera gedraaid is
-
-                if (!BlockedByTextInput()) 
+                Vector3 movement = moveAction.ReadValue<Vector2>();
+                if (movement != null)
                 {
-                    if (moveAction != null)
-                    {
-                        Vector3 movement = moveAction.ReadValue<Vector2>();
-                        if (movement != null)
-                        {
-                            movement.z = movement.y;
-                            movement.y = 0;
-                            movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                            cameraComponent.transform.position += movement * moveSpeed;
-                        }
-                        else 
-                        {
-                            Debug.Log("WTF?");
-                        }
-                    }
+                    movement.z = movement.y;
+                    movement.y = 0;
+                    movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                    cameraComponent.transform.position += movement * moveSpeed;
                 }
             }
         }
@@ -319,7 +299,7 @@ namespace Amsterdam3D.CameraMotion
                 else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
                 {
                     dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
-
+                     
                     if(dragMomentum.magnitude > 0.1f)
                         transform.position -= dragMomentum;
 
@@ -361,8 +341,10 @@ namespace Amsterdam3D.CameraMotion
 
             if (Input.GetMouseButtonDown(2))
             {
-                //Check if a collider is under our mouse, if not get a point on NAP~0
-                if (Physics.Raycast(ray, out hit))
+                if (Transformable.lastSelectedTransformable != null){
+                    rotatePoint = Transformable.lastSelectedTransformable.transform.position;
+                }
+                else if (Physics.Raycast(ray, out hit))
                 {
                     rotatePoint = hit.point;
                     focusingOnTargetPoint(rotatePoint);

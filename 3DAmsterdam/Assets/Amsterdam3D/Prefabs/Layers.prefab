@@ -1,5 +1,66 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1144097371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1144097372}
+  - component: {fileID: 1144097373}
+  m_Layer: 0
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1144097372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144097371}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4498901013433943612}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1144097373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144097371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb70087fbf1079548852def3e6f500ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 1
+  tileSize: 1000
+  layerPriority: 0
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: terrain/lod0/terrain_{x}-{y}
+    maximumDistance: 3000
+    maximumDistanceSquared: 0
+    enabled: 0
+  pauseLoading: 0
+  DefaultMaterialList:
+  - {fileID: 2100000, guid: 35be97376d46fe34f82ce335eac97d06, type: 2}
+  - {fileID: 2100000, guid: 23e067c1f30c53343b28456c3e5fa5b6, type: 2}
+  - {fileID: 2100000, guid: e9e5ffc6b814ac7429c502c361cd31b7, type: 2}
+  - {fileID: 2100000, guid: 0bd1798a77e07d6448a16df4b2052aaf, type: 2}
+  - {fileID: 2100000, guid: 70116c33088e6144ca158c73bca33c90, type: 2}
+  - {fileID: 2100000, guid: 08de757fe28f2c8488c5b8cd6f764032, type: 2}
 --- !u!114 &1484382064384571549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +210,8 @@ MonoBehaviour:
     maximumDistanceSquared: 0
     enabled: 0
   pauseLoading: 0
-  DefaultMaterial: {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
+  DefaultMaterialList:
+  - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4498901013376440831
 Transform:
   m_ObjectHideFlags: 0
@@ -233,6 +295,7 @@ Transform:
   - {fileID: 4498901013737045448}
   - {fileID: 3613444410144068165}
   - {fileID: 6030816391891915778}
+  - {fileID: 1144097372}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -253,6 +316,9 @@ MonoBehaviour:
   - {fileID: 7566330805877739126}
   - {fileID: 4453755010848541782}
   - {fileID: 7005504237309713869}
+  - {fileID: 1144097373}
+  pendingTileChanges: []
+  activeTileChangesView: []
 --- !u!1 &4498901013737045302
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +373,8 @@ MonoBehaviour:
     maximumDistanceSquared: 0
     enabled: 0
   pauseLoading: 0
-  DefaultMaterial: {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
+  DefaultMaterialList:
+  - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
 --- !u!1001 &1655602355448839381
 PrefabInstance:
   m_ObjectHideFlags: 0

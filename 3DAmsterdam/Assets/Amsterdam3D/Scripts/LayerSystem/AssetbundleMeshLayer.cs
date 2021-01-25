@@ -10,8 +10,8 @@ namespace LayerSystem
 {
     public class AssetbundleMeshLayer : Layer
     {
-        public Material DefaultMaterial;
-
+        //public Material DefaultMaterial;
+		public List<Material> DefaultMaterialList = new List<Material>();
 		public override void OnDisableTiles(bool isenabled)
         {
 
@@ -207,7 +207,7 @@ namespace LayerSystem
 			container.transform.parent = transform.gameObject.transform;
 			container.layer = container.transform.parent.gameObject.layer;
 			container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X + 500, tileChange.Y + 500));
-			Material defaultMaterial = DefaultMaterial;
+			//Material defaultMaterial = DefaultMaterial;
 			container.SetActive(isEnabled);
 			Mesh[] meshesInAssetbundle = new Mesh[0];
 			try
@@ -233,7 +233,7 @@ namespace LayerSystem
 			mesh.uv2 = uvs.ToArray();
 
 			container.AddComponent<MeshFilter>().mesh = mesh;
-			container.AddComponent<MeshRenderer>().sharedMaterial = defaultMaterial;
+			container.AddComponent<MeshRenderer>().sharedMaterials = DefaultMaterialList.ToArray();
 
 			assetBundle.Unload(false);
 
