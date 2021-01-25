@@ -155,7 +155,7 @@ namespace Amsterdam3D.Interface
 
 		/// <summary>
 		/// Enable action maps for camera interaction. 
-		/// Keyboard and mouse events are split in two action maps, to be able to enable/disable them specifically.
+		/// Keyboard and mouse events are split in two action maps, to be able to enable/disable them seperately.
 		/// </summary>
 		/// <param name="enableKeyboardActions">Enable the camera action map containing keyboard inputs</param>
 		/// <param name="enableMouseActions">Enable the camera action map containing mouse inputs</param>
