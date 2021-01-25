@@ -365,7 +365,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""id"": ""903b8b44-4759-4735-9cb9-f43f9490d7b1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""SpinDrag"",

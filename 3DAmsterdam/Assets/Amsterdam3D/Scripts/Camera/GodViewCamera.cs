@@ -125,9 +125,6 @@ namespace Amsterdam3D.CameraMotion
 
             zoomScrollActionMouse.SubscribePerformed(Zoom);
 
-            dragActionMouse.SubscribePerformed(Drag);
-            dragActionMouse.SubscribeCancelled(Drag);
-
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
 
@@ -195,15 +192,15 @@ namespace Amsterdam3D.CameraMotion
 
         private void Drag(IAction action)
 		{
-            if (action.Cancelled)
+            if(action.Cancelled)
             {
                 dragging = false;
-            }
-            else if(action.Performed)
+            } 
+            else if (action.Performed)
             {
                 startMouseDrag = GetMousePositionInWorld();
                 dragging = true;
-			}
+            }
         }
 
         private void SpinDrag(IAction action)

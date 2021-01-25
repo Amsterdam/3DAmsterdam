@@ -35,15 +35,17 @@ namespace Amsterdam3D.InputHandler
         {
             throw new NotImplementedException();
         }
-
+        public void SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority)
+        {
+            throw new NotImplementedException();
+        }
         public void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority)
         {
             throw new NotImplementedException();
         }
-
         public void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority)
         {
             throw new NotImplementedException();
         }
-    }
+	}
 }
