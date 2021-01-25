@@ -31,7 +31,9 @@ namespace Amsterdam3D.Interface
 
 		private IAction clickedAction;
 		private IAction clickedSecondaryAction;
-		private IAction multiselectAction;
+		private IAction multiSelectAction;
+
+		public static bool doingMultiselect = false;
 
 		[SerializeField]
 		private LayerMask raycastLayers;
@@ -74,14 +76,14 @@ namespace Amsterdam3D.Interface
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
-			multiselectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+			multiSelectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
 
 			//Listeners
 			clickedAction.SubscribePerformed(Click);
-			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
-			multiselectAction.SubscribePerformed(MultiselectStart);
+			multiSelectAction.SubscribePerformed(Multiselect);
+			multiSelectAction.SubscribeCancelled(Multiselect);
 
-			multiselectAction.SubscribeCancelled(MultiselectFinish);
+			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
 		}
 
 
@@ -177,16 +179,32 @@ namespace Amsterdam3D.Interface
 
 		private void Click(IAction action)
 		{
-			if (HoveringInterface()) return;
+			Select();
+		}
 
+		private void Multiselect(IAction action)
+		{
+			if (action.Cancelled)
+			{
+				doingMultiselect = false;
+			}
+			else if (action.Performed)
+			{
+				doingMultiselect = true;
+			}
+		}
+
+		private void Select()
+		{
+			if (HoveringInterface()) return;
 			Debug.Log("Selector click. If we do not have a hovering interactable, try to select our default interactables.");
-			if(hoveringInteractable)
+			if (hoveringInteractable)
 			{
 				hoveringInteractable.Select();
 
 				foreach (var interactable in delayedInteractables)
 				{
-					if(interactable != hoveringInteractable)
+					if (interactable != hoveringInteractable)
 						interactable.Deselect();
 				}
 			}
@@ -199,6 +217,7 @@ namespace Amsterdam3D.Interface
 				DeselectAll();
 			}
 		}
+
 		private void SecondaryClick(IAction action)
 		{
 			Debug.Log("Selector secondary click");
@@ -231,14 +250,6 @@ namespace Amsterdam3D.Interface
 			}
 
 
-		}
-
-		private void MultiselectStart(IAction action)
-		{
-			if (!HoveringInterface())
-			{
-				//enable selectiontool actionmap
-			}
 		}
 
 		private void MultiselectFinish(IAction action)

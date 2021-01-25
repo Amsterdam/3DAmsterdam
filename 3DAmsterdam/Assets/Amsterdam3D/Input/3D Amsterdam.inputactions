@@ -11,7 +11,7 @@
                     "id": "a9f44bed-9b83-4ef6-abcf-acd5a4c00113",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=0.02)"
+                    "interactions": ""
                 },
                 {
                     "name": "DoubleClick",
@@ -39,39 +39,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "Left mouse button + shift",
-                    "id": "258dc78e-6ab1-4438-9cb0-c773b9e289a9",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Multiselect",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "2f3d25b3-0bcd-407a-863a-a38cc1e09919",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Multiselect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "5145fc05-17e7-4ee1-aa34-cefd278c46d8",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Multiselect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
                 {
                     "name": "",
                     "id": "c19967f6-c230-400f-9262-23effdbce2bf",
@@ -102,6 +69,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b1a83d8-326d-4aa2-a7fe-5110a8f0c7c1",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Multiselect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -25,8 +25,6 @@ public class SelectByID : Interactable
 
     private const string emptyID = "null";
 
-    private bool doingMultiSelection = false;
-
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
     private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
@@ -58,7 +56,7 @@ public class SelectByID : Interactable
     private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
-        if (!doingMultiSelection) selectedIDs.Clear();
+        if (!Selector.doingMultiselect) selectedIDs.Clear();
 
         ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
@@ -85,14 +83,14 @@ public class SelectByID : Interactable
     /// <param name="id">The object ID</param>
     public void HighlightSelectedID(string id)
     {
-        if (id == emptyID && !doingMultiSelection)
+        if (id == emptyID && !Selector.doingMultiselect)
         {
             ClearSelection();
         }
         else{
             List<string> singleIdList = new List<string>();
             //Allow clicking a single object multiple times to move them in and out of our selection
-            if (doingMultiSelection && selectedIDs.Contains(id))
+            if (Selector.doingMultiselect && selectedIDs.Contains(id))
             {
                 selectedIDs.Remove(id);
             }
