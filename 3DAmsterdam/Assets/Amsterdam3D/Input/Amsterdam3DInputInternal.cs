@@ -104,7 +104,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Move Camera"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""d1e84f37-0f69-46fb-8b05-30decdc74b0e"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",

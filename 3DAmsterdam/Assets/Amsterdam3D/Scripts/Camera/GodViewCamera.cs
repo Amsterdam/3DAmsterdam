@@ -27,11 +27,11 @@ namespace Amsterdam3D.CameraMotion
         private bool rotatingAroundPoint = false;
         public bool HoldingInteraction => (dragging || rotatingAroundPoint);
 
-        private const float rotationSpeed = 1f;
+        private const float rotationSpeed = 50.0f;
 
         private const float minAngle = -89f;
         private const float maxAngle = 89f;
-        private const float speedFactor = 0.5f;
+        private const float speedFactor = 50.0f;
 
         private float maxClickDragDistance = 5000.0f;
         private float maxTravelDistance = 20000.0f;
@@ -130,9 +130,6 @@ namespace Amsterdam3D.CameraMotion
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(PanModifier);
-
-            moveActionKeyboard.SubscribePerformed(Move);
-			rotateActionKeyboard.SubscribePerformed(Rotate);
 		}
 
 
@@ -225,10 +222,6 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        private void Move(IAction action)
-        {
-            Debug.Log("Move keyboard");
-        }
         private void Rotate(IAction action)
         {
             Debug.Log("Rotate keyboard");
@@ -241,11 +234,18 @@ namespace Amsterdam3D.CameraMotion
                 Dragging();
             }
             else{
+                if (rotatingAroundPoint)
+                {
+                    RotateAroundPoint();
+                }
+                else if(!BlockedByTextInput())
+                {
+                    HandleTranslationInput();
+                    HandleRotationInput();
+				}
                 EazeOutDragVelocity();
-            }
-
-            if (rotatingAroundPoint) RotationAroundPoint();
-
+            }  
+  
             LimitPosition();
 		}
 
@@ -273,38 +273,27 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!panModifier && !BlockedByTextInput() && dragActionMouse != null)
+            Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
+            if (movement != null)
             {
-                Vector3 movement = dragActionMouse.ReadValue<Vector2>();
-                if (movement != null)
-                {
-                    movement.z = movement.y;
-                    movement.y = 0;
-                    movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                    cameraComponent.transform.position += movement * moveSpeed;
-                }
+                movement.z = movement.y;
+                movement.y = 0;
+                movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
             }
         }
 
         private void HandleRotationInput()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-            if (!BlockedByTextInput())
+            if (rotateActionKeyboard != null)
             {
-                if (rotateActionMouse != null)
-                {
-                    Vector2 rotationInput = rotateActionMouse.ReadValue<Vector2>();
-                    Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
-                    rotation.y += rotationInput.x * rotationSpeed;
-                    rotation.x += rotationInput.y * rotationSpeed;
-                    cameraComponent.transform.eulerAngles = rotation;
-                }
+                Vector2 rotationInput = rotateActionKeyboard.ReadValue<Vector2>();
+                Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
+                rotation.y += rotationInput.x * rotationSpeed * Time.deltaTime;
+                rotation.x += rotationInput.y * rotationSpeed * Time.deltaTime;
+                cameraComponent.transform.eulerAngles = rotation;
             }
-            
-            if (firstPersonModifier && Input.GetMouseButton(0))
-			{
-				FirstPersonLook();
-			}
 		}
 
 		private void FirstPersonLook()
@@ -393,7 +382,7 @@ namespace Amsterdam3D.CameraMotion
             return samplePoint;
         }
 
-        private void RotationAroundPoint()
+        private void RotateAroundPoint()
 		{
 			var mouseDelta = Mouse.current.delta.ReadValue();
 
