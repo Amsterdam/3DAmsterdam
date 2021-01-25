@@ -43,6 +43,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public virtual void TakePriority()
         {
+            if (ActionMap != null) ActionMap.Enable();
             Selector.Instance.SetActiveInteractable(this);
         }
         /// <summary>
@@ -50,6 +51,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public virtual void InteractionCompleted()
         {
+            if (ActionMap != null) ActionMap.Disable();
             Selector.Instance.SetActiveInteractable(null);
         }
 

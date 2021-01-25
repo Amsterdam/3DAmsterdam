@@ -27,7 +27,7 @@ public class Transformable : Interactable
 	private void Start()
 	{
 		ActionMap = ActionHandler.actions.Transformable;
-		placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
+		placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
 
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
@@ -42,15 +42,19 @@ public class Transformable : Interactable
 
 	public void Place(IAction action)
 	{
-		if(action.Performed)
+		if(stickToMouse && action.Performed)
 		{
+			Debug.Log("Placed Transformable");
 			stickToMouse = false;
 			ShowTransformProperties();
+			InteractionCompleted();
 		}
 	}
 
 	public override void Select()
 	{
+		if (stickToMouse) return;
+
 		base.Select();
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
@@ -124,9 +128,7 @@ public class Transformable : Interactable
 	private Vector3 GetMousePointOnLayerMask()
 	{
 		RaycastHit hit;
-
-		var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-		if (snapToGround && Physics.Raycast(ray, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+		if (snapToGround && Physics.Raycast(receivedRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 		{
 			return hit.point;
 		}

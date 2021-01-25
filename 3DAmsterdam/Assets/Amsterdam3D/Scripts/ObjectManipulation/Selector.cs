@@ -104,7 +104,7 @@ namespace Amsterdam3D.Interface
 			//Always raycast to look for hover actions
 			ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			RaycastHit[] hits = Physics.RaycastAll(ray, 10000, raycastLayers.value);
-			if (hits.Length > 0 && !activeInteractable)
+			if (!activeInteractable && hits.Length > 0)
 			{
 				HoveringInteractableUnderRay(hits);
 			}
