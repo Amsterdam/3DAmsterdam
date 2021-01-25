@@ -11,9 +11,10 @@ using UnityEngine.InputSystem;
 namespace Amsterdam3D.Interface
 {
 	/// <summary>
-	/// This class handles the base order in which we handle input (divided in action maps) for interactable objects.
+	/// The Selector object handles the base order in which we handle input (divided in action maps) for interactable objects.
 	/// We provide a main raycast for objects that require a ray based on the mouse/pointer position.
 	/// Here we also maintain the lists of multiselected objects, and set the right context menu.
+	/// This is also the place from where we determine what camera movement actions are allowed. They may be overruled by other interactions.
 	/// </summary>
 	public class Selector : MonoBehaviour
 	{

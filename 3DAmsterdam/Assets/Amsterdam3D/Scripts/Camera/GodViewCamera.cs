@@ -106,18 +106,19 @@ namespace Amsterdam3D.CameraMotion
 
         private void AddActionListeners()
 		{
-			dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
+            //Mouse actions
+            dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
-
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
             zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
+            //Keyboard actions
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
 
+            //Combination
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
-            modifierPanAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.PanModifier);
 
             //Listeners
             dragActionMouse.SubscribePerformed(Drag);
@@ -129,7 +130,7 @@ namespace Amsterdam3D.CameraMotion
             zoomScrollActionMouse.SubscribePerformed(Zoom);
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
-            modifierFirstPersonAction.SubscribeCancelled(PanModifier);
+            modifierFirstPersonAction.SubscribeCancelled(FirstPersonModifier);
 		}
 
 
@@ -165,7 +166,14 @@ namespace Amsterdam3D.CameraMotion
 
         private void FirstPersonModifier(IAction action)
         {
-            
+            if (action.Cancelled)
+            {
+                firstPersonModifier = false;
+            }
+            else if (action.Performed)
+            {
+                firstPersonModifier = true;
+            }
         }
 
         private void Zoom(IAction action)
@@ -222,16 +230,18 @@ namespace Amsterdam3D.CameraMotion
             }
         }
 
-        private void Rotate(IAction action)
-        {
-            Debug.Log("Rotate keyboard");
-        }
-
         void Update()
 		{
             if (dragging)
             {
-                Dragging();
+                if (firstPersonModifier)
+                {
+                    FirstPersonLook();
+                }
+                else
+                {
+                    Dragging();
+                }
             }
             else{
                 if (rotatingAroundPoint)
@@ -298,12 +308,11 @@ namespace Amsterdam3D.CameraMotion
 
 		private void FirstPersonLook()
 		{
-			mouseHorizontal = Input.GetAxis("Mouse X");
-			mouseVertical = Input.GetAxis("Mouse Y");
+            var mouseDelta = Mouse.current.delta.ReadValue();
 
 			//Convert mouse position into local rotations
-			currentRotation.x += mouseHorizontal * rotationSensitivity;
-			currentRotation.y -= mouseVertical * rotationSensitivity;
+			currentRotation.x += mouseDelta.x * rotationSensitivity;
+			currentRotation.y -= mouseDelta.y * rotationSensitivity;
 
 			//Adjust camera rotation
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
