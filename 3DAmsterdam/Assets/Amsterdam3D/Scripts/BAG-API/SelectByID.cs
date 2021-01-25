@@ -47,7 +47,7 @@ public class SelectByID : Interactable
         containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
-	void Update()
+	/*void Update()
     {
         //We only allow selectiontools in Godview now
         if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;        
@@ -76,6 +76,17 @@ public class SelectByID : Interactable
                 HideSelectedIDs();
             }
         }
+    }*/
+    public override void Select()
+    {
+        base.Select();
+        FindSelectedID();
+    }
+
+	public override void Deselect()
+	{
+		base.Deselect();
+        ClearSelection();
     }
 
     /// <summary>

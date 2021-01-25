@@ -48,7 +48,7 @@ namespace Amsterdam3D.Interface
 		private Interactable hoveringInteractable;
 
 		[SerializeField]
-		private Interactable[] defaultInteractables;
+		private Interactable[] delayedInteractables;
 
 		private string priority3DInterfaceHitLayerName = "Interface3D";
 		private int priority3DInterfaceHitLayer;
@@ -177,14 +177,25 @@ namespace Amsterdam3D.Interface
 
 		private void Click(IAction action)
 		{
-			Debug.Log("Selector click");
-			if(!HoveringInterface() && hoveringInteractable)
+			if (HoveringInterface()) return;
+
+			Debug.Log("Selector click. If we do not have a hovering interactable, try to select our default interactables.");
+			if(hoveringInteractable)
 			{
 				hoveringInteractable.Select();
+
+				foreach (var interactable in delayedInteractables)
+				{
+					if(interactable != hoveringInteractable)
+						interactable.Deselect();
+				}
 			}
-			else if (!HoveringInterface() && !hoveringInteractable)
+			else
 			{
-				Debug.Log("Pass click down to 'special layers with a delay'");
+				foreach (var interactable in delayedInteractables)
+				{
+					interactable.Select();
+				}
 				DeselectAll();
 			}
 		}
@@ -218,6 +229,8 @@ namespace Amsterdam3D.Interface
 			{
 				tranformable.Deselect();
 			}
+
+
 		}
 
 		private void MultiselectStart(IAction action)
