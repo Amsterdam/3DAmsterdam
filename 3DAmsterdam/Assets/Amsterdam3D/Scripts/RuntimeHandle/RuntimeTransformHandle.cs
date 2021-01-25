@@ -116,6 +116,7 @@ namespace RuntimeHandle
             {
                 draggingAxis = axis;
                 draggingAxis.StartInteraction();
+
                 if(IsHovered()) TakePriority();
             }
 
@@ -124,6 +125,7 @@ namespace RuntimeHandle
                 Debug.Log("End interaction");
                 draggingAxis.EndInteraction();
                 draggingAxis = null;
+
                 InteractionCompleted();
             }
 

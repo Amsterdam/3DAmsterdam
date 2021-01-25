@@ -22,20 +22,30 @@ public class Transformable : Interactable
 	private Collider meshCollider;
 	public static Transformable lastSelectedTransformable;
 
-	private IAction selectAction;
+	private IAction placeAction;
 
 	private void Start()
 	{
-		actionMapName = "Transformable";
+		ActionMap = ActionHandler.actions.Transformable;
+		placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 
-		//selectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Select);
-        //selectAction.SubscribePerformed(Select, 1);
-		
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
-			meshCollider.enabled = false;
+			placeAction.SubscribePerformed(Place);
+			TakePriority();
 			StartCoroutine(StickToMouse());
+			lastSelectedTransformable = null;
+			meshCollider.enabled = false;
+		}
+	}
+
+	public void Place(IAction action)
+	{
+		if(action.Performed)
+		{
+			stickToMouse = false;
+			ShowTransformProperties();
 		}
 	}
 
@@ -44,11 +54,6 @@ public class Transformable : Interactable
 		base.Select();
 		if (!stickToMouse && lastSelectedTransformable != this)
 		{
-			ShowTransformProperties();
-		}
-		else if(stickToMouse)
-		{
-			stickToMouse = false;
 			ShowTransformProperties();
 		}
 	}
@@ -96,24 +101,19 @@ public class Transformable : Interactable
 	IEnumerator StickToMouse()
 	{
 		//Keep following mouse untill we clicked
-		while (stickToMouse && !Input.GetMouseButton(0) && !Input.GetMouseButtonDown(1))
+		while (stickToMouse)
 		{
 			FollowMousePointer();
 			yield return new WaitForEndOfFrame();
 		}
 		stickToMouse = false;
-
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		ContextPointerMenu.Instance.SetTargetInteractable(this);
-
-		ShowTransformProperties();
-		
 		meshCollider.enabled = true;
 	}
 
 	private void FollowMousePointer()
 	{
 		this.transform.position = GetMousePointOnLayerMask() - offset;
+		
 	}
 
 	/// <summary>

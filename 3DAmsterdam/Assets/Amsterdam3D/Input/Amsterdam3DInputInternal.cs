@@ -485,7 +485,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ""id"": ""b90b70c2-2bfe-4c07-94cb-f1eae418634d"",
             ""actions"": [
                 {
-                    ""name"": ""Select"",
+                    ""name"": ""Place"",
                     ""type"": ""Button"",
                     ""id"": ""1a3dbc7d-b1cd-4a2d-882d-2374142db434"",
                     ""expectedControlType"": ""Button"",
@@ -501,7 +501,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Select"",
+                    ""action"": ""Place"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1446,7 +1446,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_GodViewMouse_Position = m_GodViewMouse.FindAction("Position", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
-        m_Transformable_Select = m_Transformable.FindAction("Select", throwIfNotFound: true);
+        m_Transformable_Place = m_Transformable.FindAction("Place", throwIfNotFound: true);
         // GizmoHandle
         m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
         m_GizmoHandle_Drag = m_GizmoHandle.FindAction("Drag", throwIfNotFound: true);
@@ -1707,12 +1707,12 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     // Transformable
     private readonly InputActionMap m_Transformable;
     private ITransformableActions m_TransformableActionsCallbackInterface;
-    private readonly InputAction m_Transformable_Select;
+    private readonly InputAction m_Transformable_Place;
     public struct TransformableActions
     {
         private @_3DAmsterdam m_Wrapper;
         public TransformableActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Select => m_Wrapper.m_Transformable_Select;
+        public InputAction @Place => m_Wrapper.m_Transformable_Place;
         public InputActionMap Get() { return m_Wrapper.m_Transformable; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1722,16 +1722,16 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_TransformableActionsCallbackInterface != null)
             {
-                @Select.started -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
-                @Select.performed -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
-                @Select.canceled -= m_Wrapper.m_TransformableActionsCallbackInterface.OnSelect;
+                @Place.started -= m_Wrapper.m_TransformableActionsCallbackInterface.OnPlace;
+                @Place.performed -= m_Wrapper.m_TransformableActionsCallbackInterface.OnPlace;
+                @Place.canceled -= m_Wrapper.m_TransformableActionsCallbackInterface.OnPlace;
             }
             m_Wrapper.m_TransformableActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Select.started += instance.OnSelect;
-                @Select.performed += instance.OnSelect;
-                @Select.canceled += instance.OnSelect;
+                @Place.started += instance.OnPlace;
+                @Place.performed += instance.OnPlace;
+                @Place.canceled += instance.OnPlace;
             }
         }
     }
@@ -2034,7 +2034,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     }
     public interface ITransformableActions
     {
-        void OnSelect(InputAction.CallbackContext context);
+        void OnPlace(InputAction.CallbackContext context);
     }
     public interface IGizmoHandleActions
     {
