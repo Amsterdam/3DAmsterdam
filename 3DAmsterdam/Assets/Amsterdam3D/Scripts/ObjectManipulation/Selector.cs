@@ -148,6 +148,7 @@ namespace Amsterdam3D.Interface
 					hoveringInteractable.SetRay(ray);
 					if (hoveringInteractable.ActionMap != null)
 						hoveringInteractable.ActionMap.Enable();
+					return true;
 				}
 			}
 			return false;

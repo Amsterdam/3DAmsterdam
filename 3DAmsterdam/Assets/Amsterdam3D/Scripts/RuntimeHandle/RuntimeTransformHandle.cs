@@ -116,7 +116,7 @@ namespace RuntimeHandle
             {
                 draggingAxis = axis;
                 draggingAxis.StartInteraction();
-                TakePriority();
+                if(IsHovered()) TakePriority();
             }
 
             if (Input.GetMouseButtonUp(0) && draggingAxis != null)
