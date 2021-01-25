@@ -19,7 +19,9 @@ namespace Amsterdam3D.InputHandler
 
         public bool Cancelled => throw new NotImplementedException();
 
-        public void Disable()
+		public bool Started => throw new NotImplementedException();
+
+		public void Disable()
         {
             throw new NotImplementedException();
         }
@@ -43,5 +45,10 @@ namespace Amsterdam3D.InputHandler
         {
             throw new NotImplementedException();
         }
-    }
+
+		public void SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
