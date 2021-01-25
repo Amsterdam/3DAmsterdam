@@ -362,14 +362,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""PanModifier"",
-                    ""type"": ""Button"",
-                    ""id"": ""7dd875bf-95e4-4a25-97cb-d3c9c886d2b3"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Position"",
                     ""type"": ""PassThrough"",
                     ""id"": ""c49c049d-757c-46a9-b9c5-5cf0aa7f0ccf"",
@@ -398,17 +390,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""FirstPersonModifier"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8bd765ea-7dcd-48b2-813e-031a65833bc5"",
-                    ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""PanModifier"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1420,7 +1401,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         m_GodViewMouse_Drag = m_GodViewMouse.FindAction("Drag", throwIfNotFound: true);
         m_GodViewMouse_SpinDrag = m_GodViewMouse.FindAction("SpinDrag", throwIfNotFound: true);
         m_GodViewMouse_FirstPersonModifier = m_GodViewMouse.FindAction("FirstPersonModifier", throwIfNotFound: true);
-        m_GodViewMouse_PanModifier = m_GodViewMouse.FindAction("PanModifier", throwIfNotFound: true);
         m_GodViewMouse_Position = m_GodViewMouse.FindAction("Position", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
@@ -1609,7 +1589,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_GodViewMouse_Drag;
     private readonly InputAction m_GodViewMouse_SpinDrag;
     private readonly InputAction m_GodViewMouse_FirstPersonModifier;
-    private readonly InputAction m_GodViewMouse_PanModifier;
     private readonly InputAction m_GodViewMouse_Position;
     public struct GodViewMouseActions
     {
@@ -1620,7 +1599,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         public InputAction @Drag => m_Wrapper.m_GodViewMouse_Drag;
         public InputAction @SpinDrag => m_Wrapper.m_GodViewMouse_SpinDrag;
         public InputAction @FirstPersonModifier => m_Wrapper.m_GodViewMouse_FirstPersonModifier;
-        public InputAction @PanModifier => m_Wrapper.m_GodViewMouse_PanModifier;
         public InputAction @Position => m_Wrapper.m_GodViewMouse_Position;
         public InputActionMap Get() { return m_Wrapper.m_GodViewMouse; }
         public void Enable() { Get().Enable(); }
@@ -1646,9 +1624,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @FirstPersonModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
                 @FirstPersonModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
                 @FirstPersonModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnFirstPersonModifier;
-                @PanModifier.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
-                @PanModifier.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
-                @PanModifier.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPanModifier;
                 @Position.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
@@ -1671,9 +1646,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @FirstPersonModifier.started += instance.OnFirstPersonModifier;
                 @FirstPersonModifier.performed += instance.OnFirstPersonModifier;
                 @FirstPersonModifier.canceled += instance.OnFirstPersonModifier;
-                @PanModifier.started += instance.OnPanModifier;
-                @PanModifier.performed += instance.OnPanModifier;
-                @PanModifier.canceled += instance.OnPanModifier;
                 @Position.started += instance.OnPosition;
                 @Position.performed += instance.OnPosition;
                 @Position.canceled += instance.OnPosition;
@@ -2007,7 +1979,6 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         void OnDrag(InputAction.CallbackContext context);
         void OnSpinDrag(InputAction.CallbackContext context);
         void OnFirstPersonModifier(InputAction.CallbackContext context);
-        void OnPanModifier(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
