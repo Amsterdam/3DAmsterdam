@@ -47,36 +47,6 @@ public class SelectByID : Interactable
         containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
-	/*void Update()
-    {
-        //We only allow selectiontools in Godview now
-        if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;        
-
-        doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseClickTime = Time.time;
-            mousePosition = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
-        {
-            //If we did a left mouse click without dragging, find a selected object
-            FindSelectedID();
-        }
-        else if (Input.GetMouseButtonUp(1) && selectedIDs.Count <= 1){
-            //Right mouse only does a selection when our list 1 or empty.
-            doingMultiSelection = false;
-            FindSelectedID();
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-        {
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                HideSelectedIDs();
-            }
-        }
-    }*/
     public override void Select()
     {
         base.Select();

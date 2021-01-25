@@ -103,7 +103,7 @@ namespace Amsterdam3D.Interface
 		{
 			//Always update our main selector ray, and raycast for hovers
 			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-			RaycastHit[] hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
+			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
 			{
 				HoveringInteractableUnderRay(hits);

@@ -345,7 +345,7 @@ namespace Amsterdam3D.CameraMotion
         {
             var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
             zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
-            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
+            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed * Time.deltaTime, Space.World);
             focusingOnTargetPoint.Invoke(zoomDirectionPoint);
         }
 
