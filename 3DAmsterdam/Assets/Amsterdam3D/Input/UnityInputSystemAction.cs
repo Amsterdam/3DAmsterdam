@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Amsterdam3D.InputHandler
 {
+
+
     public enum ActionPhase 
     {
         Idle,
@@ -16,20 +18,26 @@ namespace Amsterdam3D.InputHandler
     {
         T ReadValue<T>() where T : struct;
 
+
         void SetValue(dynamic value);
 
         /// <summary>
         /// Subscribe to the performed event. Input Handler equivalent of GetButtonDown.
         /// </summary>
-        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority = 0);
+        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
         /// <summary>
         /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
         /// </summary>
-        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
-         
+        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+
+        void SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
+
+
         bool Used { get; set; }
         bool Performed { get; }
         bool Cancelled { get; }
+
+        bool Started { get; }
         string name { get; }
     }
 
@@ -37,8 +45,12 @@ namespace Amsterdam3D.InputHandler
     {
         public bool Used { get; set; }
         public string name { get; private set; }
+
         public bool Performed { get; private set; }
+
         public bool Cancelled  { get; private set; }
+
+        public bool Started { get; private set; }
 
         public object value;
         public delegate void ActionDelegate(IAction action);
@@ -54,12 +66,14 @@ namespace Amsterdam3D.InputHandler
             return (T)value;
         }
 
+
+
         public void SetValue(object value)
         {
             this.value = value;
             Used = false;
         }
-        public void FireEvent()
+        public void FirePerformedEvent()
         {
             //create copy of action so it can't change while handling events
             var action = new UnityInputSystemAction(this.name);
@@ -68,7 +82,7 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.performed)
+                if (del.Performed)
                 {
                     del.Invoke(action);
                 }
@@ -84,32 +98,57 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.cancelled == true)
+                if (del.Cancelled == true)
                 {
                     del.Invoke(action);
                 }
             }
         }
 
+
+        public void FireStartedEvent()
+        {
+            //create copy of action so it can't change while handling events
+            var action = new UnityInputSystemAction(this.name);
+            action.Cancelled = true;
+            action.SetValue(value);
+
+            foreach (var del in sortedDelegates)
+            {
+                if (del.Started == true)
+                {
+                    del.Invoke(action);
+                }
+            }
+        }
+
+
         public void SubscribePerformed(ActionDelegate del, int priority)
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            h.performed = true;
-            sortedDelegates.InsertIntoSortedList(h);
+            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
+            h.Performed = true;
+            sortedDelegates.Add(h);
         }
 
         public void Subscribe(ActionDelegate del)
         {
             // add event as lowest priority
             ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.performed = true;
+            h.Performed = true;
             sortedDelegates.Add(h);
         }
 
         public void SubscribeCancelled(ActionDelegate del, int priority)
         {
             ActionEventClass h = new ActionEventClass(del, priority);
-            h.cancelled = true;
+            h.Cancelled = true;
+            sortedDelegates.InsertIntoSortedList(h);
+        }
+
+        public void SubscribeStarted(ActionDelegate del, int priority)
+        {
+            ActionEventClass h = new ActionEventClass(del, priority);
+            h.Started = true;
             sortedDelegates.InsertIntoSortedList(h);
         }
 
@@ -118,14 +157,21 @@ namespace Amsterdam3D.InputHandler
             this.name = name;
         }
 
+
         // nested class otherwise ActionDelegate doesn't work
         // class made to implement IComparable
         public class ActionEventClass : IComparable<ActionEventClass>
         {
+
+
             public ActionDelegate del;
-            public bool performed;
-            public bool cancelled;
+            public bool Performed;
+            public bool Cancelled;
+            public bool Started;
             public int priority = 0;
+
+
+
 
             public ActionEventClass(ActionDelegate del, int priority)
             {
@@ -142,6 +188,9 @@ namespace Amsterdam3D.InputHandler
             {
                 return this.priority - other.priority;
             }
+
         }
+
+
     }
 }
