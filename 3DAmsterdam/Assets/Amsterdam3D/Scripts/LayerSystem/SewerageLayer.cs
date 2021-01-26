@@ -183,6 +183,8 @@ namespace LayerSystem
 				);
 			}
 			CombineSewerage(tileChange,tile,callback);
+
+			if (!tile.gameObject) yield break;
 			tile.gameObject.SetActive(isEnabled);
 			yield return null;
 		}
