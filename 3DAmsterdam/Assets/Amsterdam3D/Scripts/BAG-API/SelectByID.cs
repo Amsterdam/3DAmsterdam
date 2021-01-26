@@ -34,6 +34,8 @@ public class SelectByID : Interactable
 
     private void Awake()
 	{
+        contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
+
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
