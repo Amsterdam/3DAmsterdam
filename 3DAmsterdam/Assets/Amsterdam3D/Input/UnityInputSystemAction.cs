@@ -22,18 +22,31 @@ namespace Amsterdam3D.InputHandler
         void SetValue(dynamic value);
 
         /// <summary>
-        /// Subscribe to the performed event. Input Handler equivalent of GetButtonDown.
+        /// Subscribe to the performed event. Fires when Unity's input system's interaction is triggered.
+        /// Make sure to configure Unity's Input action's Interaction properly so performed gets called when intended. 
+        ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
+        UnityInputSystemAction.ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
         /// <summary>
-        /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
+        /// Subscribe to the cancelled event. Triggers when the action is stopped.
+        ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+        UnityInputSystemAction.ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+        /// <summary>
+        /// Subscribe to the started event. Triggers when the action is started. Triggers before performed. 
+        ///  For more details, check Unity's Input system docs. 
+        /// </summary>
+        UnityInputSystemAction.ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
+
+
+        void UnSubscribe(UnityInputSystemAction.ActionEventClass ev);
 
 
         bool Used { get; set; }
         bool Performed { get; }
         bool Cancelled { get; }
+
+        bool Started { get; }
         string name { get; }
     }
 
@@ -45,6 +58,8 @@ namespace Amsterdam3D.InputHandler
         public bool Performed { get; private set; }
 
         public bool Cancelled  { get; private set; }
+
+        public bool Started { get; private set; }
 
         public object value;
         public delegate void ActionDelegate(IAction action);
@@ -67,7 +82,7 @@ namespace Amsterdam3D.InputHandler
             this.value = value;
             Used = false;
         }
-        public void FireEvent()
+        public void FirePerformedEvent()
         {
             //create copy of action so it can't change while handling events
             var action = new UnityInputSystemAction(this.name);
@@ -76,7 +91,7 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.performed)
+                if (del.Performed)
                 {
                     del.Invoke(action);
                 }
@@ -92,7 +107,7 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.cancelled == true)
+                if (del.Cancelled == true)
                 {
                     del.Invoke(action);
                 }
@@ -100,25 +115,59 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        public void SubscribePerformed(ActionDelegate del, int priority)
+        public void FireStartedEvent()
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            sortedDelegates.InsertIntoSortedList(h);
+            //create copy of action so it can't change while handling event
+            var action = new UnityInputSystemAction(this.name);
+            action.Started = true;
+            action.SetValue(value);
+
+            foreach (var del in sortedDelegates)
+            {
+                if (del.Started == true)
+                {
+                    del.Invoke(action);
+                }
+            }
         }
 
-        public void Subscribe(ActionDelegate del)
+
+        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del, int priority)
+        {
+            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
+            h.Performed = true;
+            sortedDelegates.Add(h);
+
+            return h;
+        }
+
+        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del)
         {
             // add event as lowest priority
             ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.performed = true;
+            h.Performed = true;
             sortedDelegates.Add(h);
+            return h;
         }
 
-        public void SubscribeCancelled(ActionDelegate del, int priority)
+        public UnityInputSystemAction.ActionEventClass SubscribeCancelled(ActionDelegate del, int priority)
         {
             ActionEventClass h = new ActionEventClass(del, priority);
-            h.cancelled = true;
+            h.Cancelled = true;
             sortedDelegates.InsertIntoSortedList(h);
+            return h;
+        }
+
+        public void SubscribeStarted(ActionDelegate del, int priority)
+        {
+            ActionEventClass h = new ActionEventClass(del, priority);
+            h.Started = true;
+            sortedDelegates.InsertIntoSortedList(h);
+        }
+
+        public void UnSubscribe(ActionEventClass ev)
+        {
+            sortedDelegates.Remove(ev);
         }
 
         public UnityInputSystemAction(string name)
@@ -134,8 +183,9 @@ namespace Amsterdam3D.InputHandler
 
 
             public ActionDelegate del;
-            public bool performed;
-            public bool cancelled;
+            public bool Performed;
+            public bool Cancelled;
+            public bool Started;
             public int priority = 0;
 
 

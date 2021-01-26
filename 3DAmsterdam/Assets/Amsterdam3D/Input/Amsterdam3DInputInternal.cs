@@ -1057,8 +1057,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""22686f75-09aa-4c4c-a70b-d6e401986206"",
-                    ""path"": """",
-                    ""interactions"": """",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TestActie"",
