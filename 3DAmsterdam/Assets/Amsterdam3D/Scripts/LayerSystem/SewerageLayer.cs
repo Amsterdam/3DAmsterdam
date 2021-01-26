@@ -113,6 +113,8 @@ namespace LayerSystem
 
 		private IEnumerator SpawnLineObjects(SewerLines sewerLines, TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
 		{
+			if (!tile.gameObject) yield break;
+
 			tile.gameObject.SetActive(isEnabled);
 			SewerLines.Feature sewerLineFeature;
 			for (int i = 0; i < sewerLines.features.Length; i++)
@@ -157,6 +159,8 @@ namespace LayerSystem
 		}
 		private IEnumerator SpawnManholeObjects(SewerManholes sewerManholes, TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
 		{
+			if (!tile.gameObject) yield break;
+
 			tile.gameObject.SetActive(isEnabled);
 			SewerManholes.Feature sewerManholeFeature;
 			for (int i = 0; i < sewerManholes.features.Length; i++)
