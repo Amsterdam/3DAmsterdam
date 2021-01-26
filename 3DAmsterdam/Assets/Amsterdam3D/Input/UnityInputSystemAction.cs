@@ -132,37 +132,32 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del, int priority)
+        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del, int priority = 0)
         {
-            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.Performed = true;
-            sortedDelegates.Add(h);
+            ActionEventClass eventClass = new ActionEventClass(del, sortedDelegates.Count);
+            eventClass.Performed = true;
+            sortedDelegates.Add(eventClass);
 
-            return h;
+            return eventClass;
         }
 
-        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del)
+
+
+        public UnityInputSystemAction.ActionEventClass SubscribeCancelled(ActionDelegate del, int priority = 0)
         {
-            // add event as lowest priority
-            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.Performed = true;
-            sortedDelegates.Add(h);
-            return h;
+            ActionEventClass eventClass = new ActionEventClass(del, priority);
+            eventClass.Cancelled = true;
+            sortedDelegates.InsertIntoSortedList(eventClass);
+            return eventClass;
         }
 
-        public UnityInputSystemAction.ActionEventClass SubscribeCancelled(ActionDelegate del, int priority)
+        public UnityInputSystemAction.ActionEventClass SubscribeStarted(ActionDelegate del, int priority = 0)
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            h.Cancelled = true;
-            sortedDelegates.InsertIntoSortedList(h);
-            return h;
-        }
+            ActionEventClass eventClass = new ActionEventClass(del, priority);
+            eventClass.Started = true;
+            sortedDelegates.InsertIntoSortedList(eventClass);
 
-        public void SubscribeStarted(ActionDelegate del, int priority)
-        {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            h.Started = true;
-            sortedDelegates.InsertIntoSortedList(h);
+            return eventClass;
         }
 
         public void UnSubscribe(ActionEventClass ev)
