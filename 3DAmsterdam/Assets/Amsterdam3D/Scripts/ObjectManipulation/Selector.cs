@@ -223,7 +223,11 @@ namespace Amsterdam3D.Interface
 		private void SecondaryClick(IAction action)
 		{
 			Debug.Log("Selector secondary click");
-			if(!HoveringInterface())
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+
+			Select();
+
+			if (!HoveringInterface())
 			{
 				if (hoveringInteractable)
 				{
@@ -235,7 +239,6 @@ namespace Amsterdam3D.Interface
 				}
 				else
 				{
-					ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 					ContextPointerMenu.Instance.SetTargetInteractable(null);
 					ContextPointerMenu.Instance.Appear();
 				}
