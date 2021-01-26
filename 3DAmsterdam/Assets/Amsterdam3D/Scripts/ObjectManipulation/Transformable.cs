@@ -26,6 +26,8 @@ public class Transformable : Interactable
 
 	private void Start()
 	{
+		contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
+
 		ActionMap = ActionHandler.actions.Transformable;
 		placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
 
