@@ -128,7 +128,7 @@ namespace LayerSystem
 					tile.gameObject
 				);
 			}
-			callback(tileChange);
+
 			//Lines are done spawing. Start loading and spawing the manholes.
 			StartCoroutine(GetSewerManholesInBoundingBox(tileChange,boundingBoxMinimum, boundingBoxMaximum,tile,callback));
 
