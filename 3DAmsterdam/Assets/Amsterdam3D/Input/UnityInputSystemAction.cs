@@ -6,6 +6,37 @@ using System.Threading.Tasks;
 namespace Amsterdam3D.InputHandler
 {
 
+    // class made to implement IComparable
+    public class ActionEventClass : IComparable<ActionEventClass>
+    {
+
+
+        public UnityInputSystemAction.ActionDelegate del;
+        public bool Performed;
+        public bool Cancelled;
+        public bool Started;
+        public int priority = 0;
+
+
+
+
+        public ActionEventClass(UnityInputSystemAction.ActionDelegate del, int priority)
+        {
+            this.del = del;
+            this.priority = priority;
+        }
+
+        public void Invoke(IAction action)
+        {
+            del?.Invoke(action);
+        }
+
+        public int CompareTo(ActionEventClass other)
+        {
+            return this.priority - other.priority;
+        }
+
+    }
 
     public enum ActionPhase 
     {
@@ -26,20 +57,20 @@ namespace Amsterdam3D.InputHandler
         /// Make sure to configure Unity's Input action's Interaction properly so performed gets called when intended. 
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        UnityInputSystemAction.ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
         /// <summary>
         /// Subscribe to the cancelled event. Triggers when the action is stopped.
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        UnityInputSystemAction.ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
         /// <summary>
         /// Subscribe to the started event. Triggers when the action is started. Triggers before performed. 
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        UnityInputSystemAction.ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
 
 
-        void UnSubscribe(UnityInputSystemAction.ActionEventClass ev);
+        void UnSubscribe(ActionEventClass ev);
 
 
         bool Used { get; set; }
@@ -132,7 +163,7 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        public UnityInputSystemAction.ActionEventClass SubscribePerformed(ActionDelegate del, int priority = 0)
+        public ActionEventClass SubscribePerformed(ActionDelegate del, int priority = 0)
         {
             ActionEventClass eventClass = new ActionEventClass(del, sortedDelegates.Count);
             eventClass.Performed = true;
@@ -143,7 +174,7 @@ namespace Amsterdam3D.InputHandler
 
 
 
-        public UnityInputSystemAction.ActionEventClass SubscribeCancelled(ActionDelegate del, int priority = 0)
+        public ActionEventClass SubscribeCancelled(ActionDelegate del, int priority = 0)
         {
             ActionEventClass eventClass = new ActionEventClass(del, priority);
             eventClass.Cancelled = true;
@@ -151,7 +182,7 @@ namespace Amsterdam3D.InputHandler
             return eventClass;
         }
 
-        public UnityInputSystemAction.ActionEventClass SubscribeStarted(ActionDelegate del, int priority = 0)
+        public ActionEventClass SubscribeStarted(ActionDelegate del, int priority = 0)
         {
             ActionEventClass eventClass = new ActionEventClass(del, priority);
             eventClass.Started = true;
@@ -171,38 +202,6 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        // nested class otherwise ActionDelegate doesn't work
-        // class made to implement IComparable
-        public class ActionEventClass : IComparable<ActionEventClass>
-        {
-
-
-            public ActionDelegate del;
-            public bool Performed;
-            public bool Cancelled;
-            public bool Started;
-            public int priority = 0;
-
-
-
-
-            public ActionEventClass(ActionDelegate del, int priority)
-            {
-                this.del = del;
-                this.priority = priority;
-            }
-
-            public void Invoke(IAction action)
-            {
-                del?.Invoke(action);
-            }
-
-            public int CompareTo(ActionEventClass other)
-            {
-                return this.priority - other.priority;
-            }
-
-        }
 
 
     }
