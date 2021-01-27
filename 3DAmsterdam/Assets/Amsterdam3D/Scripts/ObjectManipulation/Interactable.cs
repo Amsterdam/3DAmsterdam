@@ -46,14 +46,12 @@ namespace Amsterdam3D.Interface
                 Selector.Instance.SetActiveInteractable(null);
         }
 
-        public virtual void Select()
-		{
-			
-		}
-        public virtual void Deselect()
-        {
-
-        }
+        /// <summary>
+        /// Virtual methods for basic actions triggered from the Selector
+        /// </summary>
+        public virtual void Select() { }
+        public virtual void SecondarySelect() { }
+        public virtual void Deselect() { }
 
 		private void OnDisable()
 		{

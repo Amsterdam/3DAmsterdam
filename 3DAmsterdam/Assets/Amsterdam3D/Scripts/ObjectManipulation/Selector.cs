@@ -182,6 +182,12 @@ namespace Amsterdam3D.Interface
 		{
 			Select();
 		}
+		private void SecondaryClick(IAction action)
+		{
+			Debug.Log("Selector secondary click");
+			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+			SecondarySelect();
+		}
 
 		private void Multiselect(IAction action)
 		{
@@ -219,30 +225,34 @@ namespace Amsterdam3D.Interface
 				DeselectAll();
 			}
 		}
-
-		private void SecondaryClick(IAction action)
+		private void SecondarySelect()
 		{
-			Debug.Log("Selector secondary click");
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-			
-			Select();
-
-			if (!HoveringInterface())
+			if (HoveringInterface()) return;
+			//Selector click. If we do not have a hovering interactable, try to select our delayed interactables.
+			//The buildings are delayed interactables, because we need to download metadata before we know if/where we hit a building
+			if (hoveringInteractable)
 			{
-				if (hoveringInteractable)
+				//Open context menu based on the interactable we are hovering
+				ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
+				ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
+				ContextPointerMenu.Instance.Appear();
+				hoveringInteractable.SecondarySelect();
+
+				foreach (var interactable in delayedInteractables)
 				{
-					//Open context menu based on the interactable we are hovering
-					ContextPointerMenu.Instance.SwitchState(hoveringInteractable.contextMenuState);
-					ContextPointerMenu.Instance.SetTargetInteractable(hoveringInteractable);
-					ContextPointerMenu.Instance.Appear();
-					hoveringInteractable.Select();
+					if (interactable != hoveringInteractable)
+						interactable.Deselect();
 				}
-				else
+			}
+			else
+			{
+				ContextPointerMenu.Instance.SetTargetInteractable(null);
+				ContextPointerMenu.Instance.Appear();
+				foreach (var interactable in delayedInteractables)
 				{
-					ContextPointerMenu.Instance.SetTargetInteractable(null);
-					ContextPointerMenu.Instance.Appear();
+					interactable.SecondarySelect();
 				}
-			}	
+			}
 		}
 
 		private void DeselectAll()

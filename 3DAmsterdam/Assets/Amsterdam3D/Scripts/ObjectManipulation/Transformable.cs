@@ -80,6 +80,10 @@ public class Transformable : Interactable
 			ShowTransformProperties();
 		}
 	}
+	public override void SecondarySelect()
+	{
+		Select();
+	}
 
 	public override void Deselect()
 	{
