@@ -224,7 +224,7 @@ namespace Amsterdam3D.Interface
 		{
 			Debug.Log("Selector secondary click");
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-
+			
 			Select();
 
 			if (!HoveringInterface())
