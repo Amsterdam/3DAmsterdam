@@ -45,8 +45,14 @@ public class SelectByID : Interactable
         base.Select();
         FindSelectedID();
     }
+    public override void SecondarySelect()
+    {
+        base.Select();
+        //On a secondary click, only select if we did not make a multisselection yet.
+        if (selectedIDs.Count < 2) Select();
+    }
 
-	public override void Deselect()
+    public override void Deselect()
 	{
 		base.Deselect();
         ClearSelection();
