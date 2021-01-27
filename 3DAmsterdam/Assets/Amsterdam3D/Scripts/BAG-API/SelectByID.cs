@@ -60,9 +60,8 @@ public class SelectByID : Interactable
         //Clear selected ids if we are not adding to a multiselection
         if (!Selector.doingMultiselect) selectedIDs.Clear();
 
-        ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
-        StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
+        StartCoroutine(GetSelectedMeshIDData(Selector.mainSelectorRay, (value) => { HighlightSelectedID(value); }));
     }
 
     /// <summary>
