@@ -339,7 +339,7 @@ namespace LayerSystem
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
-				if (dataSet.maximumDistanceSquared > (tiledistance.z))
+				if (dataSet.maximumDistanceSquared > (tiledistance.z) && dataSet.enabled==true)
 				{
 					lod = dataSet.lod;
 				}
