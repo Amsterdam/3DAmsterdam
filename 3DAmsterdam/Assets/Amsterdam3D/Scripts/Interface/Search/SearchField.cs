@@ -28,9 +28,10 @@ namespace Amsterdam3D.Interface.Search
 		public string SearchInput { get => searchInputField.text; set => searchInputField.text = Regex.Replace(value, "<.*?>", string.Empty); }
 
 		private SearchResults searchResultsList;
+		public string cityName = "Amsterdam";
 
 		private const string REPLACEMENT_STRING = "{SEARCHTERM}";
-		private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
+		private string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
 
 		private SearchData searchData;
 
@@ -38,6 +39,8 @@ namespace Amsterdam3D.Interface.Search
 
 		private void Start()
 		{
+			locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20"+cityName+"%20&rows=5";
+
 			searchResultsList = GetComponent<SearchResults>();
 			searchResultsList.ShowResultsList(false);
 		}
