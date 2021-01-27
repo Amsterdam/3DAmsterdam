@@ -82,11 +82,14 @@ namespace LayerSystem
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
 			string url = Constants.BASE_DATA_URL + Datasets[lod].path;
-            
+            if (Datasets[lod].path.StartsWith("file:///"))
+            {
 				url = Datasets[lod].path;
+			}
+				
 
 
-			Debug.Log(url);
+			
 			
 
 			
@@ -158,10 +161,13 @@ namespace LayerSystem
 			string name = newTile.GetComponent<MeshFilter>().mesh.name;
 			Debug.Log(name);
 			string dataName = name.Replace(" Instance", "");
-			dataName = dataName.Replace("mesh", "utrecht");
+			//dataName = dataName.Replace("mesh", "utrecht");
 			dataName = dataName.Replace("-", "_") + "-data";
+
 			string dataURL = Constants.TILE_METADATA_URL + dataName;
-			dataURL = "file://D:/3DUtrecht/Assetbundels/" + dataName;
+			
+
+			
 			Debug.Log(dataURL);
 			ObjectMappingClass data;
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
@@ -271,10 +277,10 @@ namespace LayerSystem
 
 			string name = meshFilter.mesh.name;
 			string dataName = name.Replace(" Instance", "");
-			dataName = dataName.Replace("mesh", "utrecht");
+			//dataName = dataName.Replace("mesh", "utrecht");
 			dataName = dataName.Replace("-", "_") + "-data";
 			string dataURL = Constants.TILE_METADATA_URL + dataName;
-			dataURL = "file://D:/3DUtrecht/Assetbundles/" + dataName;
+			//dataURL = "file://D:/3DUtrecht/Assetbundles/" + dataName;
 			Debug.Log(dataURL);
 			ObjectMappingClass data;
 			string id = "null";
