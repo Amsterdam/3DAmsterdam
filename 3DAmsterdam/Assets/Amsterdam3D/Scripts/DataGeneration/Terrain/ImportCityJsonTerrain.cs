@@ -19,8 +19,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        double originX = 131000;
-        double originY = 489000;
+        double originX = 119000;
+        double originY = 485000;
         ImportSingle(originX, originY);
         //importeer();
     }
@@ -52,16 +52,30 @@ public class ImportCityJsonTerrain : MonoBehaviour
             
         CityModel cm = new CityModel(filepath, jsonfilename);
 
-            Mesh LanduseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize);
+            Mesh voetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize,"bgt_functie",new List<string> { "voetpad","voetgangersgebied" },true);
+            Mesh fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true);
+            Mesh parkeervlakMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak" }, true);
+            Mesh roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak", "voetpad", "voetgangersgebied", "fietspad" }, false);
             
-            LanduseMesh = SimplifyMesh(LanduseMesh, 0.05f);
-            Mesh RoadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize);
-            Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize);
-            plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
-            Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize);
-            Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize);
-            Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize);
-            CombineInstance[] combi = new CombineInstance[6];
+            Mesh LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true);
+            LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.05f);
+            Mesh erfMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf" }, true);
+            erfMesh = SimplifyMesh(erfMesh, 0.05f);
+            Mesh LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding","open verharding" }, true);
+            LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.05f);
+            Mesh LandUseOnverhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "onverhard" }, true);
+            LandUseOnverhardMesh = SimplifyMesh(LandUseOnverhardMesh, 0.05f);
+            Mesh LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "onverhard", "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false);
+            LandUseMesh = SimplifyMesh(LandUseMesh, 0.05f);
+
+            //LanduseMesh = SimplifyMesh(LanduseMesh, 0.05f);
+            //Mesh RoadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize);
+            //Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize);
+            //plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
+            //Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize);
+            //Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize);
+            //Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize);
+
             //combi[0].mesh = LanduseMesh;
             //combi[1].mesh = RoadMesh;
             //combi[2].mesh = genericCityObjectMesh;
@@ -73,14 +87,19 @@ public class ImportCityJsonTerrain : MonoBehaviour
             //lod1Mesh.CombineMeshes(combi, false, false);
             //lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
 
-            
 
-            combi[0].mesh = SimplifyMesh(LanduseMesh, 0.05f);
-            combi[1].mesh = SimplifyMesh(RoadMesh, 0.05f);
-            combi[2].mesh = SimplifyMesh(genericCityObjectMesh, 0.05f);
-            combi[3].mesh = SimplifyMesh(waterBodyMesh, 0.05f);
-            combi[4].mesh = bridgeMesh;
-            combi[5].mesh = SimplifyMesh(plantcoverMesh, 0.05f); ;
+            //this is HighLOD-mesh, combine and simplify voor lower-waulity distant mesh;
+            CombineInstance[] combi = new CombineInstance[9];
+            combi[0].mesh = voetpadMesh;
+            combi[1].mesh = fietspadMesh;
+            combi[2].mesh = parkeervlakMesh;
+            combi[3].mesh = roadsMesh;
+            combi[4].mesh = LanduseGroenMesh;
+            combi[5].mesh = erfMesh;
+            combi[6].mesh = LandUseVerhardMesh;
+            combi[7].mesh = LandUseOnverhardMesh;
+            combi[8].mesh = LandUseMesh;
+            ;
 
             Mesh lod0Mesh = new Mesh();
             lod0Mesh.CombineMeshes(combi, false, false);
@@ -130,11 +149,11 @@ public class ImportCityJsonTerrain : MonoBehaviour
         return true;
     }
 
-    private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize)
+    private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize, string bgtProperty, List<string> bgtValues, bool include)
     {
         
 
-        List<Vector3RD> RDTriangles = GetTriangleListRD(cityModel, cityObjectType);
+        List<Vector3RD> RDTriangles = GetTriangleListRD(cityModel, cityObjectType, bgtProperty, bgtValues,include);
 
         List<Vector3RD> clippedRDTriangles = new List<Vector3RD>();
         List<Vector3> vectors = new List<Vector3>();
@@ -352,17 +371,26 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
         }
         return vertsRD;
     }
-    public List<Vector3RD> GetTriangleListRD(CityModel cityModel, string cityObjectType)
+    public List<Vector3RD> GetTriangleListRD(CityModel cityModel, string cityObjectType, string bgtProperty, List<string> bgtValues, bool include)
     {
         List<Vector3RD> vertsRD = GetVertsRD(cityModel);
         List<Vector3RD> triangleList = new List<Vector3RD>();
         List<int> triangles = new List<int>();
+        bool Include;
         foreach (JSONNode cityObject in cityModel.cityjsonNode["CityObjects"])
         {
+            Include = !include;
             if (cityObject["type"] == cityObjectType)
             {
-
+                if (bgtValues.Contains(cityObject["attributes"][bgtProperty]))
+                {
+                    Include = !Include;
+                }
+                if (Include)
+                {
                     triangles.AddRange(ReadTriangles(cityObject));
+                }
+                    
 
             }
         }
