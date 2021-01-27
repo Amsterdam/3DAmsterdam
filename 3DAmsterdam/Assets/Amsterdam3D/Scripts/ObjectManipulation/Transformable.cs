@@ -78,7 +78,6 @@ public class Transformable : Interactable
 			if (lastSelectedTransformable) lastSelectedTransformable.Deselect();
 
 			ShowTransformProperties();
-			meshCollider.enabled = false;
 		}
 	}
 
@@ -86,7 +85,6 @@ public class Transformable : Interactable
 	{
 		base.Deselect();
 		ObjectProperties.Instance.DeselectTransformable(this, true);
-		meshCollider.enabled = true;
 	}
 
 	/// <summary>
