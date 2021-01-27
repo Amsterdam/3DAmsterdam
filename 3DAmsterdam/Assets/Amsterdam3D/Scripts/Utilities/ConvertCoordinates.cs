@@ -15,6 +15,7 @@ namespace ConvertCoordinates
     /// <summary>
     /// Vector3 width Double values to represent RD-coordinates (X,Y,H)
     /// </summary>
+   [Serializable]
     public struct Vector3RD
     {
         public double x;
@@ -30,6 +31,7 @@ namespace ConvertCoordinates
     /// <summary>
     /// Vector3 width Double values to represent WGS84-coordinates (Lon,Lat,H)
     /// </summary>
+    [Serializable]
     public struct Vector3WGS
     {
         public double lat;
@@ -49,11 +51,14 @@ namespace ConvertCoordinates
         //referenceWGS84 is used for conversions to and from Unity-coordinates
         //referenceRD can be used to check de desired origin, and to set referenceWGS84
         
-        //public static Vector3WGS referenceWGS84 = new Vector3WGS(4.892504, 52.373043,0);
-        //public static Vector3RD referenceRD = new Vector3RD(121311.223, 487355.782,-42.962);
+        // Center Amsterdam
+       public static Vector3WGS referenceWGS84 = new Vector3WGS(4.892504, 52.373043,0);
+        public static Vector3RD referenceRD = new Vector3RD(121311.223, 487355.782,-42.962);
 
-        public static Vector3WGS referenceWGS84 = new Vector3WGS(5.121314, 52.090695, 0);
-        public static Vector3RD referenceRD = new Vector3RD(136778, 455859, -42.962);
+
+        //center Utrecht
+        //public static Vector3WGS referenceWGS84 = new Vector3WGS(5.121314, 52.090695, 0);
+        //public static Vector3RD referenceRD = new Vector3RD(136778, 455859, -42.962);
 
         //scalefactors for converting WGS84 to Unity
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude

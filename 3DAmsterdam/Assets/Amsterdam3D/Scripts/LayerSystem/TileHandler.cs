@@ -67,9 +67,10 @@ namespace LayerSystem
 		/// postion of camera in RDcoordinates rounded to nearest integer
 		/// </summary>
 		private Vector3Int cameraPosition;
-		
 
 
+		public Vector3WGS OriginWGS84;
+		public Vector3RD OriginRD;
 
 		private Vector2Int tileKey;
 
@@ -82,6 +83,9 @@ namespace LayerSystem
 
 		void Start()
 		{
+			//center Utrecht
+			CoordConvert.referenceWGS84 = OriginWGS84;
+			CoordConvert.referenceRD = OriginRD;
 			pauseLoading = false;
 			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
 			CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
