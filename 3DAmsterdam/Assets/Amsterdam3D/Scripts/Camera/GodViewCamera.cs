@@ -51,14 +51,11 @@ namespace Amsterdam3D.CameraMotion
 #endif
 
         private float moveSpeed;
-        private float mouseHorizontal;
-        private float mouseVertical;
 
         private float deceleration = 10.0f;
         private Vector3 dragMomentum = Vector3.zero;
         private float maxMomentum = 1000.0f;
 
-        private bool panModifier = false;
         private bool firstPersonModifier = false;
 
         public bool LockFunctions = false;
@@ -79,7 +76,6 @@ namespace Amsterdam3D.CameraMotion
         private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
-        private IAction modifierPanAction;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
@@ -189,18 +185,6 @@ namespace Amsterdam3D.CameraMotion
             {
                 var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
                 ZoomInDirection(scrollDelta, zoomPoint);
-            }
-        }
-        
-        private void PanModifier(IAction action)
-        {
-            if (action.Cancelled)
-            {
-                panModifier = false;
-            }
-            else if (action.Performed)
-            {
-                panModifier = true;
             }
         }
 
