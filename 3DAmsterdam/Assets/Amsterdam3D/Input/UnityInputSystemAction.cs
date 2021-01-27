@@ -30,10 +30,14 @@ namespace Amsterdam3D.InputHandler
         /// </summary>
         void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
 
+        void SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
+
 
         bool Used { get; set; }
         bool Performed { get; }
         bool Cancelled { get; }
+
+        bool Started { get; }
         string name { get; }
     }
 
@@ -45,6 +49,8 @@ namespace Amsterdam3D.InputHandler
         public bool Performed { get; private set; }
 
         public bool Cancelled  { get; private set; }
+
+        public bool Started { get; private set; }
 
         public object value;
         public delegate void ActionDelegate(IAction action);
@@ -67,7 +73,7 @@ namespace Amsterdam3D.InputHandler
             this.value = value;
             Used = false;
         }
-        public void FireEvent()
+        public void FirePerformedEvent()
         {
             //create copy of action so it can't change while handling events
             var action = new UnityInputSystemAction(this.name);
@@ -76,7 +82,7 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.performed)
+                if (del.Performed)
                 {
                     del.Invoke(action);
                 }
@@ -92,7 +98,24 @@ namespace Amsterdam3D.InputHandler
 
             foreach (var del in sortedDelegates)
             {
-                if (del.cancelled == true)
+                if (del.Cancelled == true)
+                {
+                    del.Invoke(action);
+                }
+            }
+        }
+
+
+        public void FireStartedEvent()
+        {
+            //create copy of action so it can't change while handling events
+            var action = new UnityInputSystemAction(this.name);
+            action.Cancelled = true;
+            action.SetValue(value);
+
+            foreach (var del in sortedDelegates)
+            {
+                if (del.Started == true)
                 {
                     del.Invoke(action);
                 }
@@ -102,22 +125,30 @@ namespace Amsterdam3D.InputHandler
 
         public void SubscribePerformed(ActionDelegate del, int priority)
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            sortedDelegates.InsertIntoSortedList(h);
+            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
+            h.Performed = true;
+            sortedDelegates.Add(h);
         }
 
         public void Subscribe(ActionDelegate del)
         {
             // add event as lowest priority
             ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.performed = true;
+            h.Performed = true;
             sortedDelegates.Add(h);
         }
 
         public void SubscribeCancelled(ActionDelegate del, int priority)
         {
             ActionEventClass h = new ActionEventClass(del, priority);
-            h.cancelled = true;
+            h.Cancelled = true;
+            sortedDelegates.InsertIntoSortedList(h);
+        }
+
+        public void SubscribeStarted(ActionDelegate del, int priority)
+        {
+            ActionEventClass h = new ActionEventClass(del, priority);
+            h.Started = true;
             sortedDelegates.InsertIntoSortedList(h);
         }
 
@@ -134,8 +165,9 @@ namespace Amsterdam3D.InputHandler
 
 
             public ActionDelegate del;
-            public bool performed;
-            public bool cancelled;
+            public bool Performed;
+            public bool Cancelled;
+            public bool Started;
             public int priority = 0;
 
 
