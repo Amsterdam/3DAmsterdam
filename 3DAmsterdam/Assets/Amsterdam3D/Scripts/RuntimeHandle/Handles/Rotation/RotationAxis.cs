@@ -34,6 +34,7 @@ namespace RuntimeHandle
             MeshCollider mc = o.AddComponent<MeshCollider>();
             mc.sharedMesh = MeshUtils.CreateTorus(2f, .1f, 32, 6);
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _axis);
+            o.layer = p_runtimeHandle.raycastLayer;
 
             o = new GameObject();
             o.transform.SetParent(transform, false);
@@ -42,6 +43,7 @@ namespace RuntimeHandle
             mr.material.color = new Color(1,1,0,.5f);
             _arcMesh = o.AddComponent<MeshFilter>();
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _axis);
+            o.layer = p_runtimeHandle.raycastLayer;
             o.SetActive(false);
 
             return this;

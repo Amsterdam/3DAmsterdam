@@ -16,6 +16,7 @@ namespace RuntimeHandle
         {
             _parentTransformHandle = p_runtimeHandle;
             transform.SetParent(_parentTransformHandle.transform, false);
+            gameObject.layer = _parentTransformHandle.raycastLayer;
 
             _axes = new List<PositionAxis>();
 

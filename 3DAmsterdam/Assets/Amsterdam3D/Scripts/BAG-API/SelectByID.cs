@@ -10,7 +10,7 @@ using Amsterdam3D.Interface;
 using System;
 using System.Globalization;
 
-public class SelectByID : MonoBehaviour
+public class SelectByID : Interactable
 {
     public TileHandler tileHandler;
 
@@ -19,20 +19,11 @@ public class SelectByID : MonoBehaviour
 
     public static List<string> selectedIDs;
 
-    private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-    private float mouseClickTime;
-    private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
-    private Vector2 mousePosition;
-    [SerializeField]
-    private float clickTimer = 0.3f;
-
     [SerializeField]
     private LayerMask clickCheckLayerMask;
     private AssetbundleMeshLayer containerLayer;
 
     private const string emptyID = "null";
-
-    private bool doingMultiSelection = false;
 
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
     private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
@@ -43,39 +34,28 @@ public class SelectByID : MonoBehaviour
 
     private void Awake()
 	{
+        contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
+
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
-	void Update()
+    public override void Select()
     {
-        //We only allow selectiontools in Godview now
-        if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;        
+        base.Select();
+        FindSelectedID();
+    }
+    public override void SecondarySelect()
+    {
+        base.Select();
+        //On a secondary click, only select if we did not make a multisselection yet.
+        if (selectedIDs.Count < 2) Select();
+    }
 
-        doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseClickTime = Time.time;
-            mousePosition = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
-        {
-            //If we did a left mouse click without dragging, find a selected object
-            FindSelectedID();
-        }
-        else if (Input.GetMouseButtonUp(1) && selectedIDs.Count <= 1){
-            //Right mouse only does a selection when our list 1 or empty.
-            doingMultiSelection = false;
-            FindSelectedID();
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-        {
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                HideSelectedIDs();
-            }
-        }
+    public override void Deselect()
+	{
+		base.Deselect();
+        ClearSelection();
     }
 
     /// <summary>
@@ -84,11 +64,10 @@ public class SelectByID : MonoBehaviour
     private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
-        if (!doingMultiSelection) selectedIDs.Clear();
+        if (!Selector.doingMultiselect) selectedIDs.Clear();
 
-        ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
-        StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
+        StartCoroutine(GetSelectedMeshIDData(Selector.mainSelectorRay, (value) => { HighlightSelectedID(value); }));
     }
 
     /// <summary>
@@ -111,14 +90,14 @@ public class SelectByID : MonoBehaviour
     /// <param name="id">The object ID</param>
     public void HighlightSelectedID(string id)
     {
-        if (id == emptyID && !doingMultiSelection)
+        if (id == emptyID && !Selector.doingMultiselect)
         {
             ClearSelection();
         }
         else{
             List<string> singleIdList = new List<string>();
             //Allow clicking a single object multiple times to move them in and out of our selection
-            if (doingMultiSelection && selectedIDs.Contains(id))
+            if (Selector.doingMultiselect && selectedIDs.Contains(id))
             {
                 selectedIDs.Remove(id);
             }

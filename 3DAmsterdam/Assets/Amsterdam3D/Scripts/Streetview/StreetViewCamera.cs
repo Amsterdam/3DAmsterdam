@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Amsterdam3D.CameraMotion
 {
@@ -34,6 +35,16 @@ namespace Amsterdam3D.CameraMotion
 		private void OnDisable()
 		{
 			hideMenuButton.gameObject.SetActive(false);
+		}
+
+		public void EnableKeyboardActionMap(bool enabled)
+		{
+			//
+		}
+
+		public void EnableMouseActionMap(bool enabled)
+		{
+			//
 		}
 
 		public void EnableMenus()
@@ -151,6 +162,12 @@ namespace Amsterdam3D.CameraMotion
 		public void SetNormalizedCameraHeight(float height)
 		{
 			//TODO: Determine if we want to expose the height slider.
+		}
+
+		public bool UsesActionMap(InputActionMap actionMap)
+		{
+			//TODO: Requires switch to actionmap inputs
+			return false;
 		}
 	}
 }

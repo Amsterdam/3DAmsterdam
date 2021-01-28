@@ -186,8 +186,7 @@ namespace LayerSystem
 		private List<List<Vector3Int>> GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
-			
-
+		
 			int startX;
 			int startY;
 			int endX;
@@ -201,7 +200,7 @@ namespace LayerSystem
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.w) / tileSize) * tileSize;
-				Debug.Log(endY);
+
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
@@ -228,8 +227,7 @@ namespace LayerSystem
 			distance += (delta * delta);
 			delta = cameraPosition.z * cameraPosition.z;
 			distance += (delta);
-			//distance = (cameraPosition - center).sqrMagnitude;
-			//Debug.Log(distance);
+			
 			return distance;
 		}
 		
@@ -304,7 +302,6 @@ namespace LayerSystem
 			Vector3Int activekey = new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex);
 			if (activeTileChanges.ContainsKey(activekey))
 			{
-				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
 				return;
 			}
 			bool tileIspending = false;
@@ -316,21 +313,11 @@ namespace LayerSystem
                 }
 			}
 
-
             //Replace running tile changes with this one if priority is higher
-
             if (tileIspending==false)
-            {
-				
+            {		
 				pendingTileChanges.Add(tileChange);
 			}
-            else
-            {
-				Debug.Log("tile NOT added: " + tileChange.X + "-" + tileChange.Y + "-" + tileChange.layerIndex);
-			}
-				
-			
-			
 		}
 
 		private int CalculateLOD(Vector3Int tiledistance, Layer layer)

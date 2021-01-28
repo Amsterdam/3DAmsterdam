@@ -13,8 +13,7 @@ namespace RuntimeHandle
         protected Vector3 _perp;
         protected Plane _plane;
         protected Vector3 _interactionOffset;
-        public PositionAxis Initialize(RuntimeTransformHandle p_runtimeHandle, Vector3 p_axis, Vector3 p_perp,
-            Color p_color)
+        public PositionAxis Initialize(RuntimeTransformHandle p_runtimeHandle, Vector3 p_axis, Vector3 p_perp, Color p_color)
         {
             _parentTransformHandle = p_runtimeHandle;
             _axis = p_axis;
@@ -34,6 +33,7 @@ namespace RuntimeHandle
             MeshCollider mc = o.AddComponent<MeshCollider>();
             mc.sharedMesh = MeshUtils.CreateCone(2f, .1f, .2f, 6, 1);
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, p_axis);
+            o.layer = p_runtimeHandle.raycastLayer;
 
             o = new GameObject();
             o.transform.SetParent(transform, false);
@@ -44,6 +44,7 @@ namespace RuntimeHandle
             mc = o.AddComponent<MeshCollider>();
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _axis);
             o.transform.localPosition = p_axis * 2;
+            o.layer = p_runtimeHandle.raycastLayer;
 
             return this;
         }

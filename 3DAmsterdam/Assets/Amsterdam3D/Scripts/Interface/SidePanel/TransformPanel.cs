@@ -57,7 +57,9 @@ namespace Amsterdam3D.Interface
         private bool ignoreChangeEvents = false;
         private bool coordinateSystemLocal = true;
 
-        void Start()
+		public Transformable TransformableTarget { get => transformableTarget; }
+
+		void Start()
         {
             //Store starting position so any transform changes can be added to that untill we lose focus
             translateX.onValueChanged.AddListener(TranslationInputChanged);
