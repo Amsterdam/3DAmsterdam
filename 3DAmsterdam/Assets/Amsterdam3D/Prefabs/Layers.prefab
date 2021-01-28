@@ -105,8 +105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionMapName: 
+  contextMenuState: 2
   tileHandler: {fileID: 6377280993247164478}
-  clickTimer: 0.3
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -253,6 +254,8 @@ MonoBehaviour:
   - {fileID: 7566330805877739126}
   - {fileID: 4453755010848541782}
   - {fileID: 7005504237309713869}
+  pendingTileChanges: []
+  activeTileChangesView: []
 --- !u!1 &4498901013737045302
 GameObject:
   m_ObjectHideFlags: 0

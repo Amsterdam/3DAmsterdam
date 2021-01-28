@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace Amsterdam3D.Interface
 {
@@ -20,6 +21,7 @@ namespace Amsterdam3D.Interface
 
 		public ContextState state = ContextState.DEFAULT;
 
+		private Interactable targetInteractable;
 		private Transformable targetTransformable;
 
 		[SerializeField]
@@ -60,9 +62,11 @@ namespace Amsterdam3D.Interface
 			contextItemsPanel.gameObject.SetActive(false);
 		}
 
-		public void SetTargetTransformable(Transformable newTarget)
+		public void SetTargetInteractable(Interactable newTargetInteractable)
 		{
-			targetTransformable = newTarget;
+			targetInteractable = newTargetInteractable;
+			if(newTargetInteractable)
+				targetTransformable = newTargetInteractable.GetComponent<Transformable>();
 		}
 
 		/// <summary>
@@ -111,25 +115,17 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-		void Update()
-		{
-			//TODO: replace with centralized input system to avoid conflicts with other scripts polling for the same buttons
-			if (Input.GetMouseButtonUp(1) && !EventSystem.current.IsPointerOverGameObject())
-			{
-				Appear();
-			}
-		}
-
 		/// <summary>
 		/// Moves our context menu to our pointer, and actives it with an animation. 
 		/// </summary>
-		private void Appear()
+		public void Appear()
 		{
-			contextItemsPanel.transform.position = Input.mousePosition;
+			CloseContextMenu();
 
-			//Always disable the panel first, so our appear animation plays again
-			contextItemsPanel.gameObject.SetActive(false);
+			contextItemsPanel.transform.position = Mouse.current.position.ReadValue();
 			contextItemsPanel.gameObject.SetActive(true);
+
+			contextItemsPanel.GetComponent<ClickOutsideToClose>().IgnoreClicks(1);
 		}
 	}
 }
