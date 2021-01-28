@@ -47,7 +47,7 @@ namespace Amsterdam3D.CameraMotion
 
         private float scrollDelta;
 #if UNITY_WEBGL && !UNITY_EDITOR
-        float webGLScrollMultiplier = 50.0f;
+        float webGLScrollMultiplier = 100.0f;
 #endif
 
         private float moveSpeed;
