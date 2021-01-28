@@ -91,7 +91,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Multiselect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
