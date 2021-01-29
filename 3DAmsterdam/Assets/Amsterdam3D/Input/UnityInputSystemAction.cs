@@ -57,17 +57,17 @@ namespace Amsterdam3D.InputHandler
         /// Make sure to configure Unity's Input action's Interaction properly so performed gets called when intended. 
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority = 0);
         /// <summary>
         /// Subscribe to the cancelled event. Triggers when the action is stopped.
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
         /// <summary>
         /// Subscribe to the started event. Triggers when the action is started. Triggers before performed. 
         ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority);
+        ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority = 0);
 
 
         void UnSubscribe(ActionEventClass ev);
