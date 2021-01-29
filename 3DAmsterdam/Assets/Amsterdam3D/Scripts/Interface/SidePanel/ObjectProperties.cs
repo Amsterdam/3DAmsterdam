@@ -109,13 +109,21 @@ namespace Amsterdam3D.Interface
             objectPropertiesPanel.SetActive(false);
         }
 
-        public void DeselectTransformable()
+        /// <summary>
+        /// Deselect the currently selected transformable
+        /// </summary>
+        /// <param name="transformable">Optional specific transformable reference. Only deselects if transformable matches.</param>
+        public void DeselectTransformable(Transformable transformable = null, bool disableContainerPanel = false)
         {
             if (currentTransformPanel)
             {
-                Selector.Instance.ClearHighlights();
-                currentTransformPanel.DisableGizmo();
-                Transformable.lastSelectedTransformable = null;
+                if (transformable == null || (transformable != null && currentTransformPanel.TransformableTarget == transformable))
+                {
+                    Selector.Instance.ClearHighlights();
+                    currentTransformPanel.DisableGizmo();
+                    Transformable.lastSelectedTransformable = null;
+                    if(disableContainerPanel) objectPropertiesPanel.SetActive(false);
+                }
             }
         }
 
