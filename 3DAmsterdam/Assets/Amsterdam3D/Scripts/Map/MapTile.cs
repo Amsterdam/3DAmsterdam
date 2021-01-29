@@ -12,8 +12,8 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		//private const string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
 		//utrecht
-		private const string tilesUrl = "https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/bgtplaninformatie/EPSG%3A28992/{zoom}/{x}/{y}.png";
-
+		private const string tilesUrl = "https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/opentopo/EPSG:28992/{zoom}/{x}/{y}.png";
+		
 		private RawImage rawImage;
 		public RawImage textureTargetRawImage { get => rawImage; private set => rawImage = value; }
 		private Vector2 tileKey;

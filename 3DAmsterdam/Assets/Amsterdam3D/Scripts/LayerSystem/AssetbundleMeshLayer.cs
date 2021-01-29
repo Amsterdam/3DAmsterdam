@@ -12,6 +12,7 @@ namespace LayerSystem
     {
         //public Material DefaultMaterial;
 		public List<Material> DefaultMaterialList = new List<Material>();
+		public bool CreateMeshCollider = false;
 		public override void OnDisableTiles(bool isenabled)
         {
 
@@ -240,7 +241,10 @@ namespace LayerSystem
 
 			container.AddComponent<MeshFilter>().mesh = mesh;
 			container.AddComponent<MeshRenderer>().sharedMaterials = DefaultMaterialList.ToArray();
-
+			if (CreateMeshCollider)
+            {
+				container.AddComponent<MeshCollider>().sharedMesh = mesh;
+            }
 			assetBundle.Unload(false);
 
 			return container;
