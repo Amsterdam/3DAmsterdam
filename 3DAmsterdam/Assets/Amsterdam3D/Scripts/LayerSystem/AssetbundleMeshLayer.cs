@@ -256,6 +256,7 @@ namespace LayerSystem
 
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
+			yield return new WaitUntil(() => pauseLoading == false); //wait for opportunity to start
 			pauseLoading = true;
 			var meshFilter = obj.GetComponent<MeshFilter>();
 			if (!meshFilter) yield break;
