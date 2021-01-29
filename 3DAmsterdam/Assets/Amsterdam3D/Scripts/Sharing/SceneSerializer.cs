@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-using UnityScript.Steps;
 
 namespace Amsterdam3D.Sharing
 {
