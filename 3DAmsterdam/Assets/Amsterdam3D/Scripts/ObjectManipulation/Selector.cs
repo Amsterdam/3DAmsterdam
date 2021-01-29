@@ -111,6 +111,9 @@ namespace Amsterdam3D.Interface
 			{
 				HoveringInteractableUnderRay(hits);
 			}
+			else{
+				hoveringInteractable = null;
+			}
 
 			EnableCameraActionMaps(true, !activeInteractable);
 
