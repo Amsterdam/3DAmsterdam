@@ -26,7 +26,8 @@ public class SelectByID : Interactable
     private const string emptyID = "null";
 
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
+
+	private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
     private const int maximumRayPiercingLoops = 20;
 
@@ -105,6 +106,19 @@ public class SelectByID : Interactable
                 singleIdList.Add(id);
             }
             HighlightObjectsWithIDs(singleIdList);
+        }
+    }
+
+    /// <summary>
+    /// Removes an object with this specific ID from the selected list, and update the highlights
+    /// </summary>
+    /// <param name="id">The unique ID of this item</param>
+    public void DeselectSpecificID(string id)
+    {
+        if (selectedIDs.Contains(id))
+        {
+            selectedIDs.Remove(id);
+            HighlightObjectsWithIDs(selectedIDs);
         }
     }
 
