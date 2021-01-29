@@ -30,7 +30,14 @@ namespace Amsterdam3D.Interface {
 			if (!LinkedGameObject) Close();
 		}
 
-		private void Close()
+		public void Link(GameObject targetGameObject, string title, string id = "")
+		{
+			linkedGameObject = targetGameObject;
+			Title = title;
+			Id = id;
+		}
+
+		public void Close()
 		{
 			var selectable = linkedGameObject.GetComponent<Interactable>();
 			if (selectable)

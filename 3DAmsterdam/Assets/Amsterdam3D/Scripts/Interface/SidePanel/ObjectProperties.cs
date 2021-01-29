@@ -36,6 +36,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject seperatorLinePrefab;
         [SerializeField]
+        private SelectionOutliner selectionOutlinerPrefab;
+        [SerializeField]
         private NameAndURL urlPrefab;
         [SerializeField]
         private TransformPanel transformPanelPrefab;
@@ -217,6 +219,10 @@ namespace Amsterdam3D.Interface
         public void AddURLText(string urlText, string urlPath)
         {
             Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
+        }
+        public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
+        {
+            Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);
         }
         public void ClearGeneratedFields()
         {
