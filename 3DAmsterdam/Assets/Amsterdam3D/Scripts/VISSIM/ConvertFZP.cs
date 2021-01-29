@@ -28,7 +28,7 @@ public class ConvertFZP : MonoBehaviour
     public float timeBetweenFrames = 0.0f;
 
 
-    [Header("VISSIM Object Prefabs")]
+    [Header("VISSIM Scriptable Objects")]
     [SerializeField] private VissimType vissimCarPrefabs = default;
     [SerializeField] private VissimType vissimTruckPrefabs = default;
     [SerializeField] private VissimType vissimBusPrefabs = default;
@@ -55,13 +55,7 @@ public class ConvertFZP : MonoBehaviour
         vissimConfiguration = GetComponent<Amsterdam3D.Interface.VissimConfiguration>();
 
         // Based on the VISSIM Object Template
-        vehicleTypes.Add(100, vissimCarPrefabs.vissimTypeAssets); // Car
-        vehicleTypes.Add(200, vissimTruckPrefabs.vissimTypeAssets); // Truck
-        vehicleTypes.Add(300, vissimBusPrefabs.vissimTypeAssets); // Bus
-        vehicleTypes.Add(400, vissimTramPrefabs.vissimTypeAssets); // Tram
-        //vehicleTypes.Add(500, vissimPedestrianPrefabs.vissimTypeAssets); // Pedestrian
-        //vehicleTypes.Add(600, vissimCyclePrefabs.vissimTypeAssets); // Cycle
-        vehicleTypes.Add(700, vissimVanPrefabs.vissimTypeAssets); // Van
+        LoadDefaultVissimData();
     }
 
     private void Update()
@@ -117,13 +111,7 @@ public class ConvertFZP : MonoBehaviour
         frameCounter = allVissimData[0].simsec - timeBetweenFrames; // Some simulations start at a different simsec depending on the population of the simulation. This makes sure that it will always start at the 1st frame
         
     }
-    /// <summary>
-    /// Starts the vissim simulation
-    /// </summary>
-    public void StartVissim()
-    {
-        finishedLoadingData = true;
-    }
+
 
     /// <summary>
     /// Converts string into VissimData.
@@ -206,5 +194,30 @@ public class ConvertFZP : MonoBehaviour
                 ReadFileFZP(request.downloadHandler.text);
             }
         }
+    }
+    /// <summary>
+    /// Resets Vissim Data and replaces it with the default data
+    /// </summary>
+    public void LoadDefaultVissimData()
+    {
+        missingVissimTypes.Clear(); // removes all missing vehicles
+        vehicleTypes.Clear(); // removes all assigned vehicles
+
+        // Loads in all default vehicles Based on the VISSIM Object Template
+        //vehicleTypes.Add(100, vissimCarPrefabs.vissimTypeAssets); // Car
+        vehicleTypes.Add(200, vissimTruckPrefabs.vissimTypeAssets); // Truck
+        vehicleTypes.Add(300, vissimBusPrefabs.vissimTypeAssets); // Bus
+        vehicleTypes.Add(400, vissimTramPrefabs.vissimTypeAssets); // Tram
+        //vehicleTypes.Add(500, vissimPedestrianPrefabs.vissimTypeAssets); // Pedestrian
+        //vehicleTypes.Add(600, vissimCyclePrefabs.vissimTypeAssets); // Cycle
+        vehicleTypes.Add(700, vissimVanPrefabs.vissimTypeAssets); // Van
+    }
+
+    /// <summary>
+    /// Starts the vissim simulation
+    /// </summary>
+    public void StartVissim()
+    {
+        finishedLoadingData = true;
     }
 }

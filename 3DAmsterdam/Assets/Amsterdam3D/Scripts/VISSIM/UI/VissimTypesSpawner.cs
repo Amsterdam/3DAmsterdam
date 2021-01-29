@@ -11,6 +11,7 @@ public class VissimTypesSpawner : MonoBehaviour
     {
        foreach(VissimType type in allVissimTypes)
         {
+            // creates the  Vissim type button
             GameObject temp = Instantiate(vissimButton, transform.position, transform.rotation);
             temp.transform.SetParent(transform);
 

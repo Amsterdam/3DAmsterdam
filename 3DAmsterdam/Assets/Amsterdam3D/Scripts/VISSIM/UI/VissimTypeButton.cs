@@ -28,6 +28,7 @@ public class VissimTypeButton : MonoBehaviour
     {
         foreach(VissimTypeUI type in allUITypes)
         {
+            // updates the assigned vehicle to the active element
             type.UpdateAssignedVehicles(thisType.vissimTypeAssets, thisType.name);
         }
     }

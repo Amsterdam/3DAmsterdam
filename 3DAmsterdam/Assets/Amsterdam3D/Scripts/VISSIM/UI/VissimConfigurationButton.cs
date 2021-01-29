@@ -12,6 +12,6 @@ public class VissimConfigurationButton : MonoBehaviour
     {
         vissimConfiguration = FindObjectOfType<Amsterdam3D.Interface.VissimConfiguration>();
         btn = GetComponent<Button>();
-        btn.onClick.AddListener(vissimConfiguration.SetVehicles);
+        btn.onClick.AddListener(vissimConfiguration.SetVehicles); // sets all vehicles and also starts the game
     }
 }

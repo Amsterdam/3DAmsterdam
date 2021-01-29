@@ -25,9 +25,10 @@ namespace Amsterdam3D.Interface
         /// <param name="missingVehiclesTypes"></param>
         public void OpenInterface(List<int> missingVehiclesTypes)
         {
+            // Opens the side panel
             ObjectProperties.Instance.OpenPanel("Vissim instellingen");
-            ObjectProperties.Instance.AddTitle("ONBEKEND VISSIM BESTAND");
-            ObjectProperties.Instance.AddURLText("ONBEKEND VISSIM BESTAND", "ONBEKEND");
+            ObjectProperties.Instance.AddTitle("Onbekende voertuigklasse koppelen");
+            ObjectProperties.Instance.AddURLText("Meer info", "https://3d.amsterdam.nl/web/wat%20is%20nieuw/documentatie/VISSIM_3DAmsterdam.pdf");
             ObjectProperties.Instance.AddDataField("Aantal voertuigen", fileConverter.vehicleTypes.Count.ToString());
             ObjectProperties.Instance.AddDataField("Aantal onbekend", fileConverter.missingVissimTypes.Count.ToString());
             ObjectProperties.Instance.AddCustomField(vissimTypesPrefab);
@@ -39,13 +40,9 @@ namespace Amsterdam3D.Interface
             foreach (int type in missingVehiclesTypes)
             {
                 // spawn ui element as child
-
-                // geef dit UI element zijn eigen script genaamd vehicleTypeUI met een int vehicleTypeID en een array met voertuigen en een reference naar het master object
-                Debug.Log(type.ToString());
-                
                 GameObject tempObject = Instantiate(vissimTypeInstance, tempInterface.position, tempInterface.rotation);
                 tempObject.transform.SetParent(tempInterface.transform);
-
+                // gets the UI element and adds the correct id type
                 VissimTypeUI tempTypeUI = tempObject.GetComponent<VissimTypeUI>();
                 tempTypeUI.vissimTypeID = type;
                 vehicleTypeUI.Add(tempTypeUI);
@@ -56,7 +53,7 @@ namespace Amsterdam3D.Interface
 
         public void SetVehicles()
         {
-            // foreach vehicleTypeUI uit lijst
+            // foreach vehicleTypeUI from  lijst
             foreach (VissimTypeUI vehicleTypeItem in vehicleTypeUI)
             {
                 if (!fileConverter.vehicleTypes.ContainsKey(vehicleTypeItem.vissimTypeID))
@@ -69,6 +66,7 @@ namespace Amsterdam3D.Interface
                 }
             }
             fileConverter.missingVissimTypes.Clear();
+            // close panel
             ObjectProperties.Instance.ClearGeneratedFields();
             ObjectProperties.Instance.ClosePanel();
             fileConverter.StartVissim();
