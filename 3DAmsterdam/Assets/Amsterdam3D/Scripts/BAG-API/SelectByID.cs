@@ -231,7 +231,7 @@ public class SelectByID : Interactable
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
-        tileHandler.pauseLoading = true;
+        
         if (objectMapping && objectMapping.colorIDMap)
         {
             Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
@@ -251,7 +251,7 @@ public class SelectByID : Interactable
                 yield return new WaitForEndOfFrame();
             }
         }
-        tileHandler.pauseLoading = false;
+        
         //Not retrieve the selected BAG ID tied to the selected triangle
         containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }
