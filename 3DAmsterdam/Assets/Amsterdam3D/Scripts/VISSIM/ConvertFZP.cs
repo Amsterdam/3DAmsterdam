@@ -204,12 +204,12 @@ public class ConvertFZP : MonoBehaviour
         vehicleTypes.Clear(); // removes all assigned vehicles
 
         // Loads in all default vehicles Based on the VISSIM Object Template
-        //vehicleTypes.Add(100, vissimCarPrefabs.vissimTypeAssets); // Car
+        vehicleTypes.Add(100, vissimCarPrefabs.vissimTypeAssets); // Car
         vehicleTypes.Add(200, vissimTruckPrefabs.vissimTypeAssets); // Truck
         vehicleTypes.Add(300, vissimBusPrefabs.vissimTypeAssets); // Bus
         vehicleTypes.Add(400, vissimTramPrefabs.vissimTypeAssets); // Tram
-        //vehicleTypes.Add(500, vissimPedestrianPrefabs.vissimTypeAssets); // Pedestrian
-        //vehicleTypes.Add(600, vissimCyclePrefabs.vissimTypeAssets); // Cycle
+        vehicleTypes.Add(500, vissimPedestrianPrefabs.vissimTypeAssets); // Pedestrian
+        vehicleTypes.Add(600, vissimCyclePrefabs.vissimTypeAssets); // Cycle
         vehicleTypes.Add(700, vissimVanPrefabs.vissimTypeAssets); // Van
     }
 
