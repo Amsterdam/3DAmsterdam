@@ -179,7 +179,7 @@ namespace Amsterdam3D.Sharing
                 cameraObject.transform.SetParent(camerasContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
                 cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
-                cameraObject.GetComponent<FirstPersonLocation>().placed = true;
+                cameraObject.GetComponent<FirstPersonLocation>().waitingForClick = false;
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
                 newCustomLayer.Active = true;
             }

@@ -15,8 +15,6 @@ namespace Amsterdam3D.Interface
 	{
 		private CameraModeChanger cameraModeChanger;
 
-		public bool placed = false;
-
 		[HideInInspector]
 		public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
 		public override void Start()

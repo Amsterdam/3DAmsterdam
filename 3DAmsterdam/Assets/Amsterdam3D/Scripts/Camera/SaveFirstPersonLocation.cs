@@ -6,7 +6,7 @@ using Amsterdam3D.CameraMotion;
 
 namespace Amsterdam3D.Interface
 {
-    public class SaveCameraPositionButton : MonoBehaviour
+    public class SaveFirstPersonLocation : MonoBehaviour
     {
         [SerializeField]
         private PlaceCustomObject firstPersonLocationPlacer;
@@ -31,10 +31,14 @@ namespace Amsterdam3D.Interface
 
         public void SaveCurrentPosition()
         {
-            Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+            Vector3 currentCameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
+            Quaternion currentCameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
-            firstPersonLocationPlacer.SpawnNewObjectAtPointer();
+            firstPersonLocationPlacer.SpawnNewObjectAtPointer("Camera positie");
+            FirstPersonLocation firstPersonLocation = firstPersonLocationPlacer.SpawnedObject.GetComponent<FirstPersonLocation>();
+            firstPersonLocation.WorldPointerFollower.WorldPosition = currentCameraPosition;
+            firstPersonLocation.savedRotation = currentCameraRotation;
+            firstPersonLocation.waitingForClick = false;
         }
     }
 }
