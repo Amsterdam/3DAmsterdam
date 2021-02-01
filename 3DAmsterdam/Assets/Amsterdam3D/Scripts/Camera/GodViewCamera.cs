@@ -134,12 +134,10 @@ namespace Amsterdam3D.CameraMotion
         {
             if (enabled && !ActionHandler.actions.GodViewKeyboard.enabled)
             {
-                Debug.Log("ENABLE CAMERA KEYBOARD ACTION MAP");
                 ActionHandler.actions.GodViewKeyboard.Enable();
             }
             else if (!enabled && ActionHandler.actions.GodViewKeyboard.enabled)
             {
-                Debug.Log("DISABLE CAMERA KEYBOARD ACTION MAP");
                 ActionHandler.actions.GodViewKeyboard.Disable();
             }
         }
@@ -148,12 +146,10 @@ namespace Amsterdam3D.CameraMotion
         {
             if (enabled && !ActionHandler.actions.GodViewMouse.enabled)
             {
-                Debug.Log("ENABLE CAMERA MOUSE ACTION MAP");
                 ActionHandler.actions.GodViewMouse.Enable();
             }
             else if(!enabled && ActionHandler.actions.GodViewMouse.enabled)
             {
-                Debug.Log("DISABLE CAMERA MOUSE ACTION MAP");
                 dragging = false;
                 rotatingAroundPoint = false;
                 ActionHandler.actions.GodViewMouse.Disable();
