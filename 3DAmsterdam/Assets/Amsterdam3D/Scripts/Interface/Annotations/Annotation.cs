@@ -98,8 +98,8 @@ namespace Amsterdam3D.Interface
 		{
 			if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
 			{
-				var distance = worldPointerFollower.WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
-				var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(worldPointerFollower.WorldPosition);
+				var distance = WorldPointerFollower.WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
+				var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPointerFollower.WorldPosition);
 				//Alternate way, connect annotations to world tiles?
 				// World space canvas instead of using canvas space?
 				if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0)

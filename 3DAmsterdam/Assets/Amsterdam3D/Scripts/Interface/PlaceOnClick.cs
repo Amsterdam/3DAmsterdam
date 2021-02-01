@@ -13,11 +13,12 @@ namespace Amsterdam3D.Interface
         protected bool waitingForClick = true;
         private IAction placeAction;
 
-        protected WorldPointFollower worldPointerFollower;
+        private WorldPointFollower worldPointerFollower;
+		public WorldPointFollower WorldPointerFollower { get => worldPointerFollower; private set => worldPointerFollower = value; }
 
-        public virtual void Awake()
+		public virtual void Awake()
 		{
-            worldPointerFollower = GetComponent<WorldPointFollower>();
+            WorldPointerFollower = GetComponent<WorldPointFollower>();
         }
 
 		public virtual void Start()
@@ -72,7 +73,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         private void FollowMousePointer()
         {
-            worldPointerFollower.AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+            WorldPointerFollower.AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
         }
 	}
 }

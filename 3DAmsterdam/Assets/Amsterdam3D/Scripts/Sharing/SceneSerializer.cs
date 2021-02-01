@@ -138,7 +138,7 @@ namespace Amsterdam3D.Sharing
                 var annotationData = scene.annotations[i];
 
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
-                annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
+                annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
 
@@ -423,7 +423,12 @@ namespace Amsterdam3D.Sharing
                 annotationsData.Add(new SerializableScene.Annotation
                 {
                     active = annotation.interfaceLayer.Active,
-                    position = new SerializableScene.Vector3 { x = annotation.WorldPosition.x, y = annotation.WorldPosition.y, z = annotation.WorldPosition.z },
+                    position = new SerializableScene.Vector3 
+                    { 
+                        x = annotation.WorldPointerFollower.WorldPosition.x, 
+                        y = annotation.WorldPointerFollower.WorldPosition.y, 
+                        z = annotation.WorldPointerFollower.WorldPosition.z 
+                    },
                     bodyText = annotation.BodyText
                 });
             }

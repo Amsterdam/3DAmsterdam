@@ -42,7 +42,7 @@ namespace Amsterdam3D.Interface
 		{
 			if (waitingForClick) return;
 
-			cameraModeChanger.FirstPersonMode(worldPointerFollower.WorldPosition, savedRotation);
+			cameraModeChanger.FirstPersonMode(WorldPointerFollower.WorldPosition, savedRotation);
 			gameObject.SetActive(false);
 		}
 

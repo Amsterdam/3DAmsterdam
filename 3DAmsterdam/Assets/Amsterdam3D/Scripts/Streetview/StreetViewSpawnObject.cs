@@ -25,7 +25,6 @@ public class StreetViewSpawnObject : MonoBehaviour
 
 	private GameObject currentObject;
 	private FirstPersonLocation currentFirstPersonLocation;
-	private WorldPointFollower follower;
 
 	private Pointer pointer;
 
