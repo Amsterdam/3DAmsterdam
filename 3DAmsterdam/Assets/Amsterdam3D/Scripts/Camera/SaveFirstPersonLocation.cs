@@ -34,11 +34,15 @@ namespace Amsterdam3D.Interface
             Vector3 currentCameraPosition = CameraModeChanger.Instance.ActiveCamera.transform.position;
             Quaternion currentCameraRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 
+            //Use the same spawner we use to manualy place the camera point, but skip the waiting for a click part.
             firstPersonLocationPlacer.SpawnNewObjectAtPointer("Camera positie");
             FirstPersonLocation firstPersonLocation = firstPersonLocationPlacer.SpawnedObject.GetComponent<FirstPersonLocation>();
+            firstPersonLocation.waitingForClick = false;
+
+            //Set properties to current camera position
             firstPersonLocation.WorldPointerFollower.WorldPosition = currentCameraPosition;
             firstPersonLocation.savedRotation = currentCameraRotation;
-            firstPersonLocation.waitingForClick = false;
+            firstPersonLocationPlacer.SpawnedObject.SetActive(false);
         }
     }
 }

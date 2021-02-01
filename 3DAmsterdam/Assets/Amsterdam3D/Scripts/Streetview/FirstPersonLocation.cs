@@ -45,9 +45,11 @@ namespace Amsterdam3D.Interface
 		}
 
 		private void OnDestroy()
-		{
-			cameraModeChanger.OnGodViewModeEvent -= EnableObject;
-			cameraModeChanger.OnFirstPersonModeEvent -= DisableObject;
+		{ 
+			if(cameraModeChanger){
+				cameraModeChanger.OnGodViewModeEvent -= EnableObject;
+				cameraModeChanger.OnFirstPersonModeEvent -= DisableObject;
+			}
 		}
 	}
 }
