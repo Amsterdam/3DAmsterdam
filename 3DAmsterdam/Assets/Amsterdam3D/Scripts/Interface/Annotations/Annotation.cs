@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-    public class Annotation : WorldPointFollower, IDragHandler, IPointerClickHandler
+	public class Annotation : PlaceOnClick, IPointerClickHandler
     {
         [SerializeField]
         private Image balloon;
@@ -18,9 +18,7 @@ namespace Amsterdam3D.Interface
         private InputField editInputField;
 
         private float lastClickTime = 0;
-        private float doubleClickTime = 0.2f;
-
-        public CustomLayer interfaceLayer { get; set; }
+        private const float doubleClickTime = 0.2f;
 
         private bool allowEdit = true;
         public bool AllowEdit {
@@ -44,47 +42,10 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        public void PlaceUsingMouse()
-        {
-            StartCoroutine(StickToMouse());
-        }
-
-        /// <summary>
-        /// Stick to the mouse pointer untill we click. 
-        /// Starts editing after the click.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerator StickToMouse()
-        {
-            while (!Input.GetMouseButton(0))
-            {
-                FollowMousePointer();
-                yield return new WaitForEndOfFrame();
-            }
-            if(CameraModeChanger.Instance.CameraMode == CameraMode.StreetView) 
-            {
-                // put comment on clicked object instead of world position
-            }
-            StartEditingText();
-        }
-
-        /// <summary>
-        /// Align the annotation with the mouse pointer position
-        /// </summary>
-        private void FollowMousePointer()
-        {
-            AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (!allowEdit) return; 
-
-            FollowMousePointer();
-        }
-
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (waitingForClick) return;
+
             if (Time.time - lastClickTime < doubleClickTime)
             {
                 StartEditingText();
@@ -92,12 +53,19 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
-        /// <summary>
-        /// Start editing the annotation body text
-        /// </summary>
-        public void StartEditingText()
+		protected override void Placed()
+		{
+			base.Placed();
+            //After we placed the annotation, start editing it, so the user can immediatly change its content
+            StartEditingText();
+        }
+
+		/// <summary>
+		/// Start editing the annotation body text
+		/// </summary>
+		public void StartEditingText()
         {
-            if (!allowEdit) return;
+            if (waitingForClick || !allowEdit) return;
 
             editInputField.gameObject.SetActive(true);
             editInputField.text = BodyText;
@@ -109,53 +77,57 @@ namespace Amsterdam3D.Interface
         /// Apply the text from the editor directly to the balloon
         /// and the layer name.
         /// </summary>
-        public void EditText()
+        public void ApplyText()
         {
             BodyText = editInputField.text;
             interfaceLayer.RenameLayer(BodyText);
         }
 
-        protected override void Update()
-        {
-            base.Update();
-            if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
-            {
-                var distance = WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
-                var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPosition);
-                //Alternate way, connect annotations to world tiles?
-                // World space canvas instead of using canvas space?
-                if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0) 
-                {
-                    balloon.gameObject.SetActive(false);
-                    balloonText.gameObject.SetActive(false);
-                }
-                else if (distance.x > 100 || distance.z > 100 || distance.x < -100 || distance.z < -100)
-                {
-                    balloon.gameObject.SetActive(false);
-                    balloonText.gameObject.SetActive(false);
-                }
-                else
-                {
-                    balloon.gameObject.SetActive(true);
-                    balloonText.gameObject.SetActive(true);
-                }
-
-            }
-
-            else 
-            {
-                balloon.gameObject.SetActive(true);
-                balloonText.gameObject.SetActive(true);
-            }
-        }
+        private void Update()
+		{
+			AutoHideByCamera();
+		}
 
         /// <summary>
-        /// Hides the editor, and applies the last text inputs to the balloon and layer name
+        /// Hides the annotation based on camera type and distance
         /// </summary>
-        public void StopEditingText()
+		private void AutoHideByCamera()
+		{
+			if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
+			{
+				var distance = WorldPointerFollower.WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
+				var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPointerFollower.WorldPosition);
+				//Alternate way, connect annotations to world tiles?
+				// World space canvas instead of using canvas space?
+				if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0)
+				{
+					balloon.gameObject.SetActive(false);
+					balloonText.gameObject.SetActive(false);
+				}
+				else if (distance.x > 100 || distance.z > 100 || distance.x < -100 || distance.z < -100)
+				{
+					balloon.gameObject.SetActive(false);
+					balloonText.gameObject.SetActive(false);
+				}
+				else
+				{
+					balloon.gameObject.SetActive(true);
+					balloonText.gameObject.SetActive(true);
+				}
+			}
+			else
+			{
+				balloon.gameObject.SetActive(true);
+				balloonText.gameObject.SetActive(true);
+			}
+		}
+
+		/// <summary>
+		/// Hides the editor, and applies the last text inputs to the balloon and layer name
+		/// </summary>
+		public void StopEditingText()
         {
-            BodyText = editInputField.text;
-            interfaceLayer.RenameLayer(BodyText);
+            ApplyText();
             editInputField.gameObject.SetActive(false);
         }
     }
