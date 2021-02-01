@@ -67,7 +67,7 @@ namespace Amsterdam3D.Interface
 		/// </summary>
 		public void StartEditingText()
         {
-            if (!waitingForClick || !allowEdit) return;
+            if (waitingForClick || !allowEdit) return;
 
             editInputField.gameObject.SetActive(true);
             editInputField.text = BodyText;
