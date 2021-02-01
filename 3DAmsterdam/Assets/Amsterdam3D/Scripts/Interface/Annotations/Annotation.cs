@@ -58,7 +58,6 @@ namespace Amsterdam3D.Interface
 		protected override void Placed()
 		{
 			base.Placed();
-
             //After we placed the annotation, start editing it, so the user can immediatly change its content
             StartEditingText();
         }

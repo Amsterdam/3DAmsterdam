@@ -36,15 +36,18 @@ namespace Amsterdam3D.Interface
             FollowMousePointer();
         }
 
-        public void Place(IAction action)
+        private void Place(IAction action)
         {
-            print("CLICK");
             if (waitingForClick && action.Performed)
             {
-                print("PERFORMED PLACE");
                 StopInteraction();
-                waitingForClick = false;
+                Placed();
             }
+        }
+        protected virtual void Placed()
+        {
+            Debug.Log("Placed object", this.gameObject);
+            waitingForClick = false;
         }
 
         public void PlaceUsingPointer()
@@ -66,13 +69,7 @@ namespace Amsterdam3D.Interface
                 FollowMousePointer();
                 yield return new WaitForEndOfFrame();
             }
-            Placed();
         }
-
-        protected virtual void Placed()
-        {
-            Debug.Log("Placed object", this.gameObject);
-		}
 
         /// <summary>
         /// Align the annotation with the mouse pointer position
