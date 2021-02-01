@@ -35,7 +35,7 @@ namespace Amsterdam3D.Interface
                 if (layerType == LayerType.ANNOTATION)
                 {
                     Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPosition, new Quaternion());
+                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
                     annotation.StartEditingText();
                 }
 

@@ -12,9 +12,6 @@ public class SaveCameraPositionButton : MonoBehaviour
         CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
         CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
-        Button button = GetComponent<Button>();
-        streetViewSpawnObject = FindObjectOfType<StreetViewSpawnObject>();
-        button.onClick.AddListener(OnClick);
     }
 
     public void EnableObject()
@@ -27,10 +24,10 @@ public class SaveCameraPositionButton : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OnClick() 
+    public void SaveCurrentPosition() 
     {
         Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
         Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-        streetViewSpawnObject.SpawnFirstPersonAtPosition(pos, rot);
+        //streetViewSpawnObject.SpawnFirstPersonAtPosition(pos, rot);
     }
 }

@@ -11,7 +11,7 @@ using Amsterdam3D.CameraMotion;
 
 public class StreetViewSpawnObject : MonoBehaviour
 {
-	[SerializeField]
+	/*[SerializeField]
 	private GameObject streetViewPrefab;
 
 	[SerializeField]
@@ -83,5 +83,5 @@ public class StreetViewSpawnObject : MonoBehaviour
 			currentObject.gameObject.SetActive(false);
 		}
 	}
-
+	*/
 }

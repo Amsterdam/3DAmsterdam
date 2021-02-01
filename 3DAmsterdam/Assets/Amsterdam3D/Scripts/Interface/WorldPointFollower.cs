@@ -7,9 +7,7 @@ public class WorldPointFollower : MonoBehaviour
 {
     private RectTransform rectTransform;
 
-    [SerializeField]
     private Vector3 worldPosition = Vector3.zero;
-
     public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
     public virtual void Awake()
@@ -22,7 +20,7 @@ public class WorldPointFollower : MonoBehaviour
         WorldPosition = newWorldPosition;
     }
 
-   protected virtual void Update()
+    protected virtual void Update()
     {
         var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(worldPosition);
         rectTransform.anchorMin = viewportPosition;

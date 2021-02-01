@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 namespace Amsterdam3D.Interface
 {
     [RequireComponent(typeof(WorldPointFollower))]
-	public class PlaceOnClick : MonoBehaviour, IDragHandler
+	public class PlaceOnClick : Interactable, IDragHandler
     {
         protected bool waitingForClick = true;
         private IAction placeAction;
@@ -18,11 +18,12 @@ namespace Amsterdam3D.Interface
 
 		public virtual void Awake()
 		{
-            WorldPointerFollower = GetComponent<WorldPointFollower>();
+            WorldPointerFollower = GetComponent<WorldPointFollower>(); 
         }
 
 		public virtual void Start()
         {
+            ActionMap = ActionHandler.actions.PlaceOnClick;
             placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
             placeAction.SubscribePerformed(Place);
             PlaceUsingPointer();
@@ -31,19 +32,24 @@ namespace Amsterdam3D.Interface
         public virtual void OnDrag(PointerEventData eventData)
         {
             if (!waitingForClick) return;
+            print("Drag action");
             FollowMousePointer();
         }
 
         public void Place(IAction action)
         {
+            print("CLICK");
             if (waitingForClick && action.Performed)
             {
+                print("PERFORMED PLACE");
+                StopInteraction();
                 waitingForClick = false;
             }
         }
 
         public void PlaceUsingPointer()
         {
+            TakeInteractionPriority();
             StopAllCoroutines();
             StartCoroutine(StickToPointer());
         }
