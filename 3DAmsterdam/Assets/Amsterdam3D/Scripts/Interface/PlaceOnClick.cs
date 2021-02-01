@@ -7,20 +7,21 @@ using UnityEngine.InputSystem;
 
 namespace Amsterdam3D.Interface
 {
+    [RequireComponent(typeof(WorldPointFollower))]
 	public class PlaceOnClick : MonoBehaviour, IDragHandler
     {
         protected bool waitingForClick = true;
         private IAction placeAction;
 
-        private InputActionMap actionMap;
+        protected WorldPointFollower worldPointerFollower;
 
-        private WorldPointFollower worldPointerFollower;
-
-        public virtual void Start()
-        {
+        public virtual void Awake()
+		{
             worldPointerFollower = GetComponent<WorldPointFollower>();
-            actionMap = ActionHandler.actions.PlaceOnClick;
+        }
 
+		public virtual void Start()
+        {
             placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
             placeAction.SubscribePerformed(Place);
             PlaceUsingPointer();

@@ -42,7 +42,7 @@ namespace Amsterdam3D.Interface
                 else if (layerType == LayerType.CAMERA) 
                 {
                     WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
-                    FirstPersonObject obj = LinkedObject.GetComponent<FirstPersonObject>();
+                    FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
                 }
                 else

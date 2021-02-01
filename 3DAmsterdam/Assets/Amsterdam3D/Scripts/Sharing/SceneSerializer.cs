@@ -178,8 +178,8 @@ namespace Amsterdam3D.Sharing
                 cameraObject.name = cameraPoint.name;
                 cameraObject.transform.SetParent(camerasContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
-                cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
-                cameraObject.GetComponent<FirstPersonObject>().placed = true;
+                cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
+                cameraObject.GetComponent<FirstPersonLocation>().placed = true;
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
                 newCustomLayer.Active = true;
             }
@@ -439,7 +439,7 @@ namespace Amsterdam3D.Sharing
               
               foreach (var camera in cameraPoints)
               {
-                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
+                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonLocation>();
                 var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
                 cameraPointsData.Add(new SerializableScene.CameraPoint
                 {

@@ -10,12 +10,12 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-	public class FirstPersonObject : PlaceOnClick, IPointerClickHandler
+	[RequireComponent(typeof(WorldPointFollower))]
+	public class FirstPersonLocation : PlaceOnClick, IPointerClickHandler
 	{
 		private CameraModeChanger cameraModeChanger;
 
 		public bool placed = false;
-		private WorldPointFollower follower;
 
 		[HideInInspector]
 		public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
@@ -26,7 +26,6 @@ namespace Amsterdam3D.Interface
 			cameraModeChanger = CameraModeChanger.Instance;
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
-			follower = GetComponent<WorldPointFollower>();
 		}
 
 		private void EnableObject()
@@ -43,7 +42,7 @@ namespace Amsterdam3D.Interface
 		{
 			if (waitingForClick) return;
 
-			cameraModeChanger.FirstPersonMode(follower.WorldPosition, savedRotation);
+			cameraModeChanger.FirstPersonMode(worldPointerFollower.WorldPosition, savedRotation);
 			gameObject.SetActive(false);
 		}
 

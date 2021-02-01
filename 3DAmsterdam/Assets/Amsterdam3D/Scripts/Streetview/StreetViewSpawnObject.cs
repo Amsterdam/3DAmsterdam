@@ -24,7 +24,7 @@ public class StreetViewSpawnObject : MonoBehaviour
 	public float offset = 1.8f;
 
 	private GameObject currentObject;
-	private FirstPersonObject currentObjectComponent;
+	private FirstPersonLocation currentFirstPersonLocation;
 	private WorldPointFollower follower;
 
 	private Pointer pointer;
@@ -51,7 +51,7 @@ public class StreetViewSpawnObject : MonoBehaviour
 				if (Input.GetMouseButtonDown(0))
 				{
 					canClick = false;
-					currentObjectComponent.placed = true;
+					currentFirstPersonLocation.placed = true;
 					currentObject = null;
 				}
 			}
@@ -70,7 +70,7 @@ public class StreetViewSpawnObject : MonoBehaviour
 		currentIndex++;
 		layers.AddNewCustomObjectLayer(currentObject, LayerType.CAMERA, true);
 		currentObject.transform.SetParent(UIParent, false);
-		currentObjectComponent = currentObject.GetComponent<FirstPersonObject>();
+		currentFirstPersonLocation = currentObject.GetComponent<FirstPersonLocation>();
 		follower = currentObject.GetComponent<WorldPointFollower>();
 		follower.WorldPosition = position;
 		if (manualPlace)
@@ -79,8 +79,8 @@ public class StreetViewSpawnObject : MonoBehaviour
 		}
 		else
 		{
-			currentObjectComponent.placed = true;
-			currentObjectComponent.savedRotation = rotation;
+			currentFirstPersonLocation.placed = true;
+			currentFirstPersonLocation.savedRotation = rotation;
 			currentObject.gameObject.SetActive(false);
 		}
 	}
