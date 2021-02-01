@@ -17,7 +17,9 @@ namespace Amsterdam3D.Interface
         private WorldPointFollower worldPointerFollower;
 		public WorldPointFollower WorldPointerFollower { get => worldPointerFollower; private set => worldPointerFollower = value; }
 
-		public virtual void Awake()
+        public CustomLayer interfaceLayer { get; set; }
+
+        public virtual void Awake()
 		{
             WorldPointerFollower = GetComponent<WorldPointFollower>(); 
         }

@@ -3,31 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Amsterdam3D.CameraMotion;
-public class SaveCameraPositionButton : MonoBehaviour
+
+namespace Amsterdam3D.Interface
 {
-    private StreetViewSpawnObject streetViewSpawnObject;
-    void Start()
+    public class SaveCameraPositionButton : MonoBehaviour
     {
-        //todo, make these event handlers all a seperate monobehaviour
-        CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
-        CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
-        gameObject.SetActive(false);
-    }
+        [SerializeField]
+        private PlaceCustomObject firstPersonLocationPlacer;
 
-    public void EnableObject()
-    {
-        gameObject.SetActive(true);
-    }
+        void Start()
+        {
+            //todo, make these event handlers all a seperate monobehaviour
+            CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
+            CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
+            gameObject.SetActive(false);
+        }
 
-    public void DisableObject()
-    {
-        gameObject.SetActive(false);
-    }
+        public void EnableObject()
+        {
+            gameObject.SetActive(true);
+        }
 
-    public void SaveCurrentPosition() 
-    {
-        Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
-        Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-        //streetViewSpawnObject.SpawnFirstPersonAtPosition(pos, rot);
+        public void DisableObject()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void SaveCurrentPosition()
+        {
+            Vector3 pos = CameraModeChanger.Instance.ActiveCamera.transform.position;
+            Quaternion rot = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
+
+            firstPersonLocationPlacer.SpawnNewObjectAtPointer();
+        }
     }
 }

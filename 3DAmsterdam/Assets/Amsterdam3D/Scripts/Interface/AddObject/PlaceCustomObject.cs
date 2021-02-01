@@ -43,10 +43,10 @@ namespace Amsterdam3D.Interface
             newObject.name = newObject.name.Replace("(Clone)", "");
             CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(newObject, layerType);
 
-            if (layerType == LayerType.ANNOTATION)
+            if (layerType == LayerType.ANNOTATION || layerType == LayerType.CAMERA)
             {
-                var annotation = newObject.GetComponent<Annotation>();
-                annotation.interfaceLayer = interfaceLayer;
+                //Set container layer for objects that have a connection with an interfacelayer
+                newObject.GetComponent<PlaceOnClick>().interfaceLayer = interfaceLayer;
             }
             else{
                 newObject.transform.position = pointer.WorldPosition;

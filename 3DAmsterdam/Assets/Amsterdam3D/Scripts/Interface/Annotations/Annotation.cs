@@ -20,8 +20,6 @@ namespace Amsterdam3D.Interface
         private float lastClickTime = 0;
         private const float doubleClickTime = 0.2f;
 
-        public CustomLayer interfaceLayer { get; set; }
-
         private bool allowEdit = true;
         public bool AllowEdit {
             set
