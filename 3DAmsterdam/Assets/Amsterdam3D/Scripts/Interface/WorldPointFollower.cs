@@ -12,7 +12,7 @@ public class WorldPointFollower : MonoBehaviour
 
     public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
-    void Awake()
+    public virtual void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
     }

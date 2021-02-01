@@ -467,6 +467,33 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             ]
         },
         {
+            ""name"": ""PlaceOnClick"",
+            ""id"": ""66a1f93e-fff9-4a38-89c6-c8f3ca6fafcc"",
+            ""actions"": [
+                {
+                    ""name"": ""Place"",
+                    ""type"": ""Button"",
+                    ""id"": ""6446b212-f44f-4328-a9ff-b613c295e465"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""856681fa-710e-4246-b718-1fbbc380fb17"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""GizmoHandle"",
             ""id"": ""9f5cca77-43e4-4143-9b9e-2cf7c6125193"",
             ""actions"": [
@@ -1405,6 +1432,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Place = m_Transformable.FindAction("Place", throwIfNotFound: true);
+        // PlaceOnClick
+        m_PlaceOnClick = asset.FindActionMap("PlaceOnClick", throwIfNotFound: true);
+        m_PlaceOnClick_Place = m_PlaceOnClick.FindAction("Place", throwIfNotFound: true);
         // GizmoHandle
         m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
         m_GizmoHandle_Drag = m_GizmoHandle.FindAction("Drag", throwIfNotFound: true);
@@ -1686,6 +1716,39 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     }
     public TransformableActions @Transformable => new TransformableActions(this);
+
+    // PlaceOnClick
+    private readonly InputActionMap m_PlaceOnClick;
+    private IPlaceOnClickActions m_PlaceOnClickActionsCallbackInterface;
+    private readonly InputAction m_PlaceOnClick_Place;
+    public struct PlaceOnClickActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public PlaceOnClickActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Place => m_Wrapper.m_PlaceOnClick_Place;
+        public InputActionMap Get() { return m_Wrapper.m_PlaceOnClick; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlaceOnClickActions set) { return set.Get(); }
+        public void SetCallbacks(IPlaceOnClickActions instance)
+        {
+            if (m_Wrapper.m_PlaceOnClickActionsCallbackInterface != null)
+            {
+                @Place.started -= m_Wrapper.m_PlaceOnClickActionsCallbackInterface.OnPlace;
+                @Place.performed -= m_Wrapper.m_PlaceOnClickActionsCallbackInterface.OnPlace;
+                @Place.canceled -= m_Wrapper.m_PlaceOnClickActionsCallbackInterface.OnPlace;
+            }
+            m_Wrapper.m_PlaceOnClickActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Place.started += instance.OnPlace;
+                @Place.performed += instance.OnPlace;
+                @Place.canceled += instance.OnPlace;
+            }
+        }
+    }
+    public PlaceOnClickActions @PlaceOnClick => new PlaceOnClickActions(this);
 
     // GizmoHandle
     private readonly InputActionMap m_GizmoHandle;
@@ -1982,6 +2045,10 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         void OnPosition(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
+    {
+        void OnPlace(InputAction.CallbackContext context);
+    }
+    public interface IPlaceOnClickActions
     {
         void OnPlace(InputAction.CallbackContext context);
     }

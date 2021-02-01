@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Amsterdam3D.Interface
 {
-    public class Annotation : WorldPointFollower, IDragHandler, IPointerClickHandler
+	public class Annotation : PlaceOnClick, IPointerClickHandler
     {
         [SerializeField]
         private Image balloon;
@@ -18,7 +18,7 @@ namespace Amsterdam3D.Interface
         private InputField editInputField;
 
         private float lastClickTime = 0;
-        private float doubleClickTime = 0.2f;
+        private const float doubleClickTime = 0.2f;
 
         public CustomLayer interfaceLayer { get; set; }
 
@@ -44,47 +44,10 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        public void PlaceUsingMouse()
-        {
-            StartCoroutine(StickToMouse());
-        }
-
-        /// <summary>
-        /// Stick to the mouse pointer untill we click. 
-        /// Starts editing after the click.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerator StickToMouse()
-        {
-            while (!Input.GetMouseButton(0))
-            {
-                FollowMousePointer();
-                yield return new WaitForEndOfFrame();
-            }
-            if(CameraModeChanger.Instance.CameraMode == CameraMode.StreetView) 
-            {
-                // put comment on clicked object instead of world position
-            }
-            StartEditingText();
-        }
-
-        /// <summary>
-        /// Align the annotation with the mouse pointer position
-        /// </summary>
-        private void FollowMousePointer()
-        {
-            AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (!allowEdit) return; 
-
-            FollowMousePointer();
-        }
-
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (waitingForClick) return;
+
             if (Time.time - lastClickTime < doubleClickTime)
             {
                 StartEditingText();
@@ -92,12 +55,20 @@ namespace Amsterdam3D.Interface
             lastClickTime = Time.time;
         }
 
-        /// <summary>
-        /// Start editing the annotation body text
-        /// </summary>
-        public void StartEditingText()
+		protected override void Placed()
+		{
+			base.Placed();
+
+            //After we placed the annotation, start editing it, so the user can immediatly change its content
+            StartEditingText();
+        }
+
+		/// <summary>
+		/// Start editing the annotation body text
+		/// </summary>
+		public void StartEditingText()
         {
-            if (!allowEdit) return;
+            if (!waitingForClick || !allowEdit) return;
 
             editInputField.gameObject.SetActive(true);
             editInputField.text = BodyText;
@@ -109,7 +80,7 @@ namespace Amsterdam3D.Interface
         /// Apply the text from the editor directly to the balloon
         /// and the layer name.
         /// </summary>
-        public void EditText()
+        public void ApplyText()
         {
             BodyText = editInputField.text;
             interfaceLayer.RenameLayer(BodyText);
@@ -139,9 +110,7 @@ namespace Amsterdam3D.Interface
                     balloon.gameObject.SetActive(true);
                     balloonText.gameObject.SetActive(true);
                 }
-
             }
-
             else 
             {
                 balloon.gameObject.SetActive(true);
@@ -154,8 +123,7 @@ namespace Amsterdam3D.Interface
         /// </summary>
         public void StopEditingText()
         {
-            BodyText = editInputField.text;
-            interfaceLayer.RenameLayer(BodyText);
+            ApplyText();
             editInputField.gameObject.SetActive(false);
         }
     }
