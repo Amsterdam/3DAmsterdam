@@ -36,12 +36,12 @@ namespace Amsterdam3D.InputHandler
 
             instance = this;
             actions = new _3DAmsterdam();
-            actionMaps = actions.asset; 
-           
-            foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps) 
+            actionMaps = actions.asset;
+
+            foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps)
             {
                 UnityActionMap unityMap = new UnityActionMap(map);
-                foreach (var inputAction in map) 
+                foreach (var inputAction in map)
                 {
                     UnityInputSystemAction tmp = new UnityInputSystemAction(inputAction.name);
 
@@ -54,9 +54,9 @@ namespace Amsterdam3D.InputHandler
                 }
                 unityActionMaps.Add(unityMap);
 
-                
-               
-            } 
+
+
+            }
 
         }
 
@@ -92,16 +92,16 @@ namespace Amsterdam3D.InputHandler
 
 
         /// <summary>
-        /// Subscribe to IAction without returning IAction.
+        /// Subscribe to IAction Performed without returning IAction.
         /// Returns true if succesful and false if Action doesn't exist.
         /// </summary>
-        public bool SubscribeToAction(string actionName, UnityInputSystemAction.ActionDelegate func) 
+        public bool SubscribeToActionPerformed(string actionName, UnityInputSystemAction.ActionDelegate func)
         {
-            foreach(var action in ActionDictionary.Keys) 
+            foreach (var action in ActionDictionary.Keys)
             {
-                if (action.name == actionName) 
+                if (action.name == actionName)
                 {
-                    ActionDictionary[action].Subscribe(func);
+                    ActionDictionary[action].SubscribePerformed(func);
                     return true;
                 }
             }
@@ -114,26 +114,26 @@ namespace Amsterdam3D.InputHandler
 
 
         /// <summary>
-        /// Subscribe to IAction without returning IAction.
+        /// Subscribe to IAction performed without returning IAction.
         /// Returns true if succesful and false if Action doesn't exist.
         /// </summary>
-        public bool SubscribeToAction(InputAction action, UnityInputSystemAction.ActionDelegate func, bool AddWhenNotExisting = false) 
+        public bool SubscribeToActionPerformed(InputAction action, UnityInputSystemAction.ActionDelegate func, bool AddWhenNotExisting = false)
         {
-            if (!ActionDictionary.ContainsKey(action)) 
+            if (!ActionDictionary.ContainsKey(action))
             {
                 if (AddWhenNotExisting)
                 {
                     UnityInputSystemAction newAction = new UnityInputSystemAction(action.name);
                     ActionDictionary.Add(action, newAction);
-                    newAction.Subscribe(func);
+                    newAction.SubscribePerformed(func);
                 }
-                else 
+                else
                 {
                     return false;
                 }
             }
 
-            ActionDictionary[action].Subscribe(func);
+            ActionDictionary[action].SubscribePerformed(func);
             return true;
         }
 
@@ -144,7 +144,7 @@ namespace Amsterdam3D.InputHandler
         /// Gets the corresponding Action class by either name or by Unity input system Action.
         /// returns null if Action doesn't exist.
         /// </summary>
-        public IAction GetAction(InputAction action) 
+        public IAction GetAction(InputAction action)
         {
             return ActionDictionary[action];
         }
@@ -153,11 +153,11 @@ namespace Amsterdam3D.InputHandler
         /// Gets the corresponding Action class by either name or by Unity input system Action.
         /// returns null if Action doesn't exist.
         /// </summary>
-        public IAction GetAction(string actionName) 
+        public IAction GetAction(string actionName)
         {
-            foreach (UnityInputSystemAction action in ActionDictionary.Values) 
+            foreach (UnityInputSystemAction action in ActionDictionary.Values)
             {
-                if (action.name == actionName) 
+                if (action.name == actionName)
                 {
                     return action;
                 }
@@ -169,11 +169,11 @@ namespace Amsterdam3D.InputHandler
         /// <summary>
         /// Gets the corresponding Action map class, to enable or disable, or get actions from
         /// </summary>
-        public IActionMap GetActionMap(InputActionMap map) 
+        public IActionMap GetActionMap(InputActionMap map)
         {
-            foreach (var actionMap in unityActionMaps) 
+            foreach (var actionMap in unityActionMaps)
             {
-                if (actionMap.map == map) 
+                if (actionMap.map == map)
                 {
                     return actionMap;
                 }
@@ -185,7 +185,7 @@ namespace Amsterdam3D.InputHandler
         /// <summary>
         /// Enables or disables all input. 
         /// </summary>
-        public void EnableInputSystem(bool enabled) 
+        public void EnableInputSystem(bool enabled)
         {
             this.inputEnabled = enabled;
         }
