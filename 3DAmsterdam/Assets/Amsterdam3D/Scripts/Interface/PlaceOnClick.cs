@@ -18,6 +18,8 @@ namespace Amsterdam3D.Interface
 
         public CustomLayer interfaceLayer { get; set; }
 
+        private Vector3 targetLocation;
+
         public virtual void Awake()
 		{
             WorldPointerFollower = GetComponent<WorldPointFollower>(); 
@@ -74,11 +76,15 @@ namespace Amsterdam3D.Interface
         }
 
         /// <summary>
-        /// Align the annotation with the mouse pointer position
+        /// Align the annotation with the mouse pointer position (on raycast hits, or a fallback to a world plane)
         /// </summary>
         private void FollowMousePointer()
         {
-            WorldPointerFollower.AlignWithWorldPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+            //Check if the selector has raycast hits, otherwise use our camera world plane
+            targetLocation = (Selector.hits.Length > 0) ? Selector.hits[0].point : CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+            targetLocation += Vector3.up * 1.8f;
+
+            WorldPointerFollower.AlignWithWorldPosition(targetLocation);
         }
 	}
 }

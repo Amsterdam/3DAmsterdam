@@ -26,7 +26,7 @@ namespace Amsterdam3D.Interface
 		public List<OutlineObject> selectedObjects;
 
 		public static Ray mainSelectorRay;
-		private RaycastHit[] hits;
+		public static RaycastHit[] hits;
 
 		private InputActionMap selectorActionMap;
 
