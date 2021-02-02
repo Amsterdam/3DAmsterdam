@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5861045808506588389}
   - component: {fileID: -3394169075420353282}
   m_Layer: 0
-  m_Name: Camera_SavePoint
+  m_Name: FirstPersonLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2d24ffe98aa06438b9b4281d2ccb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placed: 0
+  actionMapName: 
+  contextMenuState: 1
+  waitingForClick: 1
   savedRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &893245956948469509
 CanvasRenderer:
@@ -75,13 +77,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.27450982, b: 0.6, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3010f0dbc5bca1446bba45736bb1dd62, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b15fc5317cc5e8247b753140901b4e64, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -103,7 +105,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0ad89d129de3b4b93725e2960bc349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &-3394169075420353282
 MonoBehaviour:
   m_ObjectHideFlags: 0
