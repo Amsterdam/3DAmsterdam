@@ -216,7 +216,7 @@ public class SelectByID : Interactable
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        tileHandler.pauseLoading = true;
+        
 
         //Check area that we clicked, and add the (heavy) mesh collider there
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
@@ -225,7 +225,7 @@ public class SelectByID : Interactable
         //No fire a raycast towards our meshcolliders to see what face we hit 
         if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)
         {
-            tileHandler.pauseLoading = false;
+            
             callback(emptyID);
             yield break;
         }
@@ -236,7 +236,7 @@ public class SelectByID : Interactable
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
-            tileHandler.pauseLoading = false;
+            
             yield break;
         }
 
@@ -245,7 +245,8 @@ public class SelectByID : Interactable
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
-        if(objectMapping && objectMapping.colorIDMap)
+        
+        if (objectMapping && objectMapping.colorIDMap)
         {
             Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
             int raysLooped = 0;
@@ -264,6 +265,7 @@ public class SelectByID : Interactable
                 yield return new WaitForEndOfFrame();
             }
         }
+        
         //Not retrieve the selected BAG ID tied to the selected triangle
         containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }

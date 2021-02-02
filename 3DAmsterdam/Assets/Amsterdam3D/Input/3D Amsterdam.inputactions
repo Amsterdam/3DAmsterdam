@@ -454,6 +454,33 @@
             ]
         },
         {
+            "name": "PlaceOnClick",
+            "id": "66a1f93e-fff9-4a38-89c6-c8f3ca6fafcc",
+            "actions": [
+                {
+                    "name": "Place",
+                    "type": "Button",
+                    "id": "6446b212-f44f-4328-a9ff-b613c295e465",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "856681fa-710e-4246-b718-1fbbc380fb17",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "GizmoHandle",
             "id": "9f5cca77-43e4-4143-9b9e-2cf7c6125193",
             "actions": [

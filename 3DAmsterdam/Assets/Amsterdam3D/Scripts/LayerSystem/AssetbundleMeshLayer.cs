@@ -12,6 +12,7 @@ namespace LayerSystem
     {
         //public Material DefaultMaterial;
 		public List<Material> DefaultMaterialList = new List<Material>();
+		public bool createMeshcollider = false;
 		public override void OnDisableTiles(bool isenabled)
         {
 
@@ -224,6 +225,10 @@ namespace LayerSystem
 
 			container.AddComponent<MeshFilter>().mesh = mesh;
 			container.AddComponent<MeshRenderer>().sharedMaterials = DefaultMaterialList.ToArray();
+			if (createMeshcollider)
+			{
+				container.AddComponent<MeshCollider>().sharedMesh = mesh;
+			}
 
 			assetBundle.Unload(false);
 
@@ -256,6 +261,8 @@ namespace LayerSystem
 
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
+			yield return new WaitUntil(() => pauseLoading == false); //wait for opportunity to start
+			pauseLoading = true;
 			var meshFilter = obj.GetComponent<MeshFilter>();
 			if (!meshFilter) yield break;
 

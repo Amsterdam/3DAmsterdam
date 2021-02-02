@@ -6,6 +6,37 @@ using System.Threading.Tasks;
 namespace Amsterdam3D.InputHandler
 {
 
+    // class made to implement IComparable
+    public class ActionEventClass : IComparable<ActionEventClass>
+    {
+
+
+        public UnityInputSystemAction.ActionDelegate del;
+        public bool Performed;
+        public bool Cancelled;
+        public bool Started;
+        public int priority = 0;
+
+
+
+
+        public ActionEventClass(UnityInputSystemAction.ActionDelegate del, int priority)
+        {
+            this.del = del;
+            this.priority = priority;
+        }
+
+        public void Invoke(IAction action)
+        {
+            del?.Invoke(action);
+        }
+
+        public int CompareTo(ActionEventClass other)
+        {
+            return this.priority - other.priority;
+        }
+
+    }
 
     public enum ActionPhase 
     {
@@ -22,15 +53,24 @@ namespace Amsterdam3D.InputHandler
         void SetValue(dynamic value);
 
         /// <summary>
-        /// Subscribe to the performed event. Input Handler equivalent of GetButtonDown.
+        /// Subscribe to the performed event. Fires when Unity's input system's interaction is triggered.
+        /// Make sure to configure Unity's Input action's Interaction properly so performed gets called when intended. 
+        ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        void SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority = 0);
+        ActionEventClass SubscribePerformed(UnityInputSystemAction.ActionDelegate del, int priority = 0);
         /// <summary>
-        /// Subscribe to the cancelled event. Input Handler equivalent of GetButtonUp.
+        /// Subscribe to the cancelled event. Triggers when the action is stopped.
+        ///  For more details, check Unity's Input system docs. 
         /// </summary>
-        void SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
+        ActionEventClass SubscribeCancelled(UnityInputSystemAction.ActionDelegate del, int priority = 0);
+        /// <summary>
+        /// Subscribe to the started event. Triggers when the action is started. Triggers before performed. 
+        ///  For more details, check Unity's Input system docs. 
+        /// </summary>
+        ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority = 0);
 
-        void SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority = 0);
+
+        void UnSubscribe(ActionEventClass ev);
 
 
         bool Used { get; set; }
@@ -108,9 +148,9 @@ namespace Amsterdam3D.InputHandler
 
         public void FireStartedEvent()
         {
-            //create copy of action so it can't change while handling events
+            //create copy of action so it can't change while handling event
             var action = new UnityInputSystemAction(this.name);
-            action.Cancelled = true;
+            action.Started = true;
             action.SetValue(value);
 
             foreach (var del in sortedDelegates)
@@ -123,33 +163,37 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        public void SubscribePerformed(ActionDelegate del, int priority)
+        public ActionEventClass SubscribePerformed(ActionDelegate del, int priority = 0)
         {
-            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.Performed = true;
-            sortedDelegates.Add(h);
+            ActionEventClass eventClass = new ActionEventClass(del, sortedDelegates.Count);
+            eventClass.Performed = true;
+            sortedDelegates.Add(eventClass);
+
+            return eventClass;
         }
 
-        public void Subscribe(ActionDelegate del)
+
+
+        public ActionEventClass SubscribeCancelled(ActionDelegate del, int priority = 0)
         {
-            // add event as lowest priority
-            ActionEventClass h = new ActionEventClass(del, sortedDelegates.Count);
-            h.Performed = true;
-            sortedDelegates.Add(h);
+            ActionEventClass eventClass = new ActionEventClass(del, priority);
+            eventClass.Cancelled = true;
+            sortedDelegates.InsertIntoSortedList(eventClass);
+            return eventClass;
         }
 
-        public void SubscribeCancelled(ActionDelegate del, int priority)
+        public ActionEventClass SubscribeStarted(ActionDelegate del, int priority = 0)
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            h.Cancelled = true;
-            sortedDelegates.InsertIntoSortedList(h);
+            ActionEventClass eventClass = new ActionEventClass(del, priority);
+            eventClass.Started = true;
+            sortedDelegates.InsertIntoSortedList(eventClass);
+
+            return eventClass;
         }
 
-        public void SubscribeStarted(ActionDelegate del, int priority)
+        public void UnSubscribe(ActionEventClass ev)
         {
-            ActionEventClass h = new ActionEventClass(del, priority);
-            h.Started = true;
-            sortedDelegates.InsertIntoSortedList(h);
+            sortedDelegates.Remove(ev);
         }
 
         public UnityInputSystemAction(string name)
@@ -158,38 +202,6 @@ namespace Amsterdam3D.InputHandler
         }
 
 
-        // nested class otherwise ActionDelegate doesn't work
-        // class made to implement IComparable
-        public class ActionEventClass : IComparable<ActionEventClass>
-        {
-
-
-            public ActionDelegate del;
-            public bool Performed;
-            public bool Cancelled;
-            public bool Started;
-            public int priority = 0;
-
-
-
-
-            public ActionEventClass(ActionDelegate del, int priority)
-            {
-                this.del = del;
-                this.priority = priority;
-            }
-
-            public void Invoke(IAction action)
-            {
-                del?.Invoke(action);
-            }
-
-            public int CompareTo(ActionEventClass other)
-            {
-                return this.priority - other.priority;
-            }
-
-        }
 
 
     }
