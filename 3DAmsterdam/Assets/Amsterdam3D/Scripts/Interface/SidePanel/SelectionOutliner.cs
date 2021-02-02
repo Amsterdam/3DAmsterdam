@@ -39,12 +39,7 @@ namespace Amsterdam3D.Interface {
 
 		public void Close()
 		{
-			var selectable = linkedGameObject.GetComponent<Interactable>();
-			if (selectable)
-			{
-				selectable.Deselect();
-			}
-
+			//Did we close a SelectByID selection?
 			var selectByID = linkedGameObject.GetComponent<SelectByID>();
 			if (selectByID)
 			{
@@ -52,8 +47,13 @@ namespace Amsterdam3D.Interface {
 				return;
 			}
 
+			//Maybe another simple interactable?
+			var selectable = linkedGameObject.GetComponent<Interactable>();
+			if (selectable)
+			{
+				selectable.Deselect();
+			}
 
-			Destroy(gameObject);
 		}
 	}
 }

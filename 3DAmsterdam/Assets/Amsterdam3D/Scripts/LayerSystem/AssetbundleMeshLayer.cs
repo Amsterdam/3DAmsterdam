@@ -307,7 +307,6 @@ namespace LayerSystem
 
 		public void Highlight(List<string> ids)
 		{
-			
 			StartCoroutine(HighlightIDs(ids));
 		}
 
