@@ -19,8 +19,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
     void Start()
     {
         materialsArray = materialList.ToArray();
-        double originX = 119000;
-        double originY = 485000;
+        double originX = 121000;
+        double originY = 487000;
         ImportSingle(originX, originY);
         //importeer();
     }
@@ -52,63 +52,145 @@ public class ImportCityJsonTerrain : MonoBehaviour
             
         CityModel cm = new CityModel(filepath, jsonfilename);
 
-            Mesh voetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize,"bgt_functie",new List<string> { "voetpad","voetgangersgebied" },true);
+            //type voetpad
+
+            Mesh RoadsvoetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize,"bgt_functie",new List<string> { "voetpad","voetgangersgebied", "ruiterpad", "voetpad op trap" },true);
+            Mesh LandUseVoetpadMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "open verharding" }, true);
+            LandUseVoetpadMesh = SimplifyMesh(LandUseVoetpadMesh, 0.05f);
+            //combine meshes of type "voetpad"
+            CombineInstance[] voetpadcombi = new CombineInstance[2];
+            voetpadcombi[0].mesh = RoadsvoetpadMesh;
+            voetpadcombi[1].mesh = LandUseVoetpadMesh;
+            Mesh voetpadmesh = new Mesh();
+            voetpadmesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            voetpadmesh.CombineMeshes(voetpadcombi, true,false);
+            //type fietspad
             Mesh fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true);
+
+            //type parkeervak
             Mesh parkeervlakMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak" }, true);
-            Mesh roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak", "voetpad", "voetgangersgebied", "fietspad" }, false);
+            //type spoorbaan
+            Mesh spoorbaanMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "spoorbaan" }, true);
+            //type woonerf
+            Mesh WoonerfMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "transitie", "woonerf" }, true);
             
+            // type weg
+            Mesh roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad","parkeervlak","ruiterpad","spoorbaan","voetgangersgebied","voetpad","voetpad op trap","woonerf"}, false);
+            Mesh LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding" }, true);
+            LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.05f);
+            // combine meshes of type "weg"
+            CombineInstance[] wegcombi = new CombineInstance[2];
+            wegcombi[0].mesh = roadsMesh;
+            wegcombi[1].mesh = LandUseVerhardMesh;
+            Mesh wegmesh = new Mesh();
+            wegmesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            wegmesh.CombineMeshes(wegcombi, true,false);
+
+            // type groen
+            Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "alles" }, false);
             Mesh LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true);
             LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.05f);
+            //combine meshes of type "groen"
+            CombineInstance[] groencombi = new CombineInstance[2];
+            groencombi[0].mesh = plantcoverMesh;
+            groencombi[1].mesh = LanduseGroenMesh;
+            Mesh groenMesh = new Mesh();
+            groenMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            groenMesh.CombineMeshes(groencombi, true,false);
+
+            //type erf
             Mesh erfMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf" }, true);
             erfMesh = SimplifyMesh(erfMesh, 0.05f);
-            Mesh LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding","open verharding" }, true);
-            LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.05f);
-            Mesh LandUseOnverhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "onverhard" }, true);
-            LandUseOnverhardMesh = SimplifyMesh(LandUseOnverhardMesh, 0.05f);
-            Mesh LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "onverhard", "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false);
+            
+            //type onverhard
+            Mesh LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> {  "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false);
             LandUseMesh = SimplifyMesh(LandUseMesh, 0.05f);
 
-            //LanduseMesh = SimplifyMesh(LanduseMesh, 0.05f);
-            //Mesh RoadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize);
-            //Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize);
-            //plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
-            //Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize);
-            //Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize);
-            //Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize);
+            Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize, "bgt_type", null, true);
+            Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize, "bgt_type", null, true);
+            Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize, "bgt_type", null, true);
 
-            //combi[0].mesh = LanduseMesh;
-            //combi[1].mesh = RoadMesh;
-            //combi[2].mesh = genericCityObjectMesh;
-            //combi[3].mesh = waterBodyMesh;
-            //combi[4].mesh = bridgeMesh;
-            //combi[5].mesh = plantcoverMesh;
+            
 
-            //Mesh lod1Mesh = new Mesh();
-            //lod1Mesh.CombineMeshes(combi, false, false);
-            //lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
+            
 
+            
 
-            //this is HighLOD-mesh, combine and simplify voor lower-waulity distant mesh;
-            CombineInstance[] combi = new CombineInstance[9];
-            combi[0].mesh = voetpadMesh;
-            combi[1].mesh = fietspadMesh;
-            combi[2].mesh = parkeervlakMesh;
-            combi[3].mesh = roadsMesh;
-            combi[4].mesh = LanduseGroenMesh;
-            combi[5].mesh = erfMesh;
-            combi[6].mesh = LandUseVerhardMesh;
-            combi[7].mesh = LandUseOnverhardMesh;
-            combi[8].mesh = LandUseMesh;
+            //create LOD1 Mesh
+            CombineInstance[] combi = new CombineInstance[12];
+            combi[0].mesh = voetpadmesh; //
+            combi[1].mesh = fietspadMesh; //
+            combi[2].mesh = parkeervlakMesh; //
+            combi[3].mesh = wegmesh; //
+            combi[4].mesh = groenMesh; //
+            combi[5].mesh = erfMesh; //
+            combi[6].mesh = LandUseMesh; //
+            combi[7].mesh = spoorbaanMesh; //
+            combi[8].mesh = WoonerfMesh; //
+            combi[9].mesh = genericCityObjectMesh;
+            combi[10].mesh = bridgeMesh;
+            combi[11].mesh = waterBodyMesh;
             ;
 
-            Mesh lod0Mesh = new Mesh();
-            lod0Mesh.CombineMeshes(combi, false, false);
-            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
-            AssetDatabase.CreateAsset(lod0Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + ".mesh");
+            Mesh lod1Mesh = new Mesh();
+            lod1Mesh.CombineMeshes(combi, false, false);
+            lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY,0)), tileSize);
+            Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
+            AssetDatabase.CreateAsset(lod1Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + "-lod1.mesh");
             //for debug
-            GetComponent<MeshFilter>().sharedMesh = lod0Mesh;
+
+            //GetComponent<MeshFilter>().sharedMesh = lod1Mesh;
 
 
+
+            //create LOD0MEsh
+            combi = new CombineInstance[5];
+            combi[0].mesh = voetpadmesh;
+            combi[1].mesh = fietspadMesh;
+            combi[2].mesh = parkeervlakMesh;
+            combi[3].mesh = wegmesh;
+            combi[4].mesh = spoorbaanMesh;
+
+
+            Mesh Roads = new Mesh();
+            Roads.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            Roads.CombineMeshes(combi, true, false);
+            Roads = SimplifyMesh(Roads, 0.05f);
+
+            combi = new CombineInstance[3];
+            combi[0].mesh = erfMesh;
+            combi[1].mesh = LandUseMesh;
+            combi[2].mesh = WoonerfMesh;
+            
+            Mesh landuse = new Mesh();
+            landuse.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            landuse.CombineMeshes(combi, true, false);
+            landuse = SimplifyMesh(landuse, 0.05f);
+
+            combi = new CombineInstance[12];
+
+
+            combi[0].mesh = CreateEmptyMesh(); //
+            combi[1].mesh = CreateEmptyMesh(); //
+            combi[2].mesh = CreateEmptyMesh(); //
+            combi[3].mesh = Roads; //
+            combi[4].mesh = SimplifyMesh(groenMesh, 0.05f);//
+            combi[5].mesh = CreateEmptyMesh(); //
+            combi[6].mesh = landuse; //
+            combi[7].mesh = CreateEmptyMesh(); //
+            combi[8].mesh = CreateEmptyMesh(); //
+            combi[9].mesh = genericCityObjectMesh;
+            combi[10].mesh = bridgeMesh;
+            combi[11].mesh = waterBodyMesh;
+
+
+            Mesh lod0Mesh = new Mesh();
+            lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            lod0Mesh.CombineMeshes(combi, false, false);
+            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
+            Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
+            AssetDatabase.CreateAsset(lod0Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + "-lod0.mesh");
+            
         }
     }
 
@@ -127,6 +209,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         meshSimplifier.PreserveBorderEdges = true;
         meshSimplifier.MaxIterationCount = 500;
         meshSimplifier.SimplifyMesh(quality);
+        meshSimplifier.EnableSmartLink = true;
         DecimatedMesh = meshSimplifier.ToMesh();
         DecimatedMesh.RecalculateNormals();
         DecimatedMesh.Optimize();
@@ -382,7 +465,11 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
             Include = !include;
             if (cityObject["type"] == cityObjectType)
             {
-                if (bgtValues.Contains(cityObject["attributes"][bgtProperty]))
+                if (bgtValues==null)
+                {
+                    Include = !Include;
+                }
+                else if (bgtValues.Contains(cityObject["attributes"][bgtProperty]))
                 {
                     Include = !Include;
                 }
