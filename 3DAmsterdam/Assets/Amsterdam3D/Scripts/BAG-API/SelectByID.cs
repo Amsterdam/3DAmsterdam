@@ -129,21 +129,31 @@ public class SelectByID : Interactable
     private void HighlightObjectsWithIDs(List<string> ids)
     {
 		selectedIDs.AddRange(ids);
+        selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
+
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
 
-		//Specific context menu items per selection count
-		if (selectedIDs.Count == 1)
+        //Specific context menu /sidepanel items per selection count
+        if (selectedIDs.Count == 1)
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+            ShowBAGDataForSelectedID();
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
 		}
 		else if (selectedIDs.Count > 1)
 		{
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
-		}
+            //Update sidepanel outliner
+            ObjectProperties.Instance.ClearGeneratedFields();
+            foreach (var id in selectedIDs)
+            {
+                ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Gebouw " + id, id);
+            }
+        }
 		else
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            ObjectProperties.Instance.ClosePanel();
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 	}
 
@@ -199,12 +209,12 @@ public class SelectByID : Interactable
 
         if (lastSelectedID != emptyID)
         {
-            ObjectProperties.Instance.OpenPanel("Pand");
+            ObjectProperties.Instance.OpenPanel("Pand",true);
             ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
         else{
             //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.OpenPanel("Grond");
+            ObjectProperties.Instance.OpenPanel("Grond", true);
             ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
         }
     }
@@ -216,8 +226,6 @@ public class SelectByID : Interactable
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        
-
         //Check area that we clicked, and add the (heavy) mesh collider there
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
         containerLayer.AddMeshColliders(planeHit);
