@@ -170,7 +170,6 @@ public class SelectByID : Interactable
 			selectedIDs.Clear();
         }
 
-        ObjectProperties.Instance.ClearGeneratedFields();
         ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 
         //Remove highlights by highlighting our empty list
