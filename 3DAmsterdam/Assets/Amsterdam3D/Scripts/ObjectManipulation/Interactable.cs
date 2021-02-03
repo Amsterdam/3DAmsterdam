@@ -10,15 +10,12 @@ namespace Amsterdam3D.Interface
 {
     public class Interactable : MonoBehaviour
     {
-        public string actionMapName = "";
-
         public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
         private InputActionMap actionMap;
         public InputActionMap ActionMap {
             get
             {
-                if(actionMap == null) actionMap = ActionHandler.actions.asset.FindActionMap(actionMapName);
                 return actionMap;
             }
             set
