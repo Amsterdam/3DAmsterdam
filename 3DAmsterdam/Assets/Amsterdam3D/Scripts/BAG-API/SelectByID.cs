@@ -144,12 +144,13 @@ public class SelectByID : Interactable
 		{
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
             //Update sidepanel outliner
-            ObjectProperties.Instance.ClearGeneratedFields();
-            ObjectProperties.Instance.AddTitle("Selectie");
+            ObjectProperties.Instance.OpenPanel("Selectie", true);
+            ObjectProperties.Instance.AddTitle("Geselecteerde panden");
             foreach (var id in selectedIDs)
             {
                 ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
             }
+            ObjectProperties.Instance.RenderThumbnail();
         }
 		else
 		{
@@ -167,13 +168,15 @@ public class SelectByID : Interactable
 		{
 			lastSelectedID = emptyID;
 			selectedIDs.Clear();
-            ObjectProperties.Instance.ClearGeneratedFields();
-            ObjectProperties.Instance.ClosePanel();
-            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 
-		//Remove highlights by highlighting our empty list
-		containerLayer.Highlight(selectedIDs);
+        ObjectProperties.Instance.ClearGeneratedFields();
+        ObjectProperties.Instance.ClosePanel();
+
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+
+        //Remove highlights by highlighting our empty list
+        containerLayer.Highlight(selectedIDs);
 	}
 
     /// <summary>

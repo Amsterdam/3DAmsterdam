@@ -129,6 +129,11 @@ namespace Amsterdam3D.Interface
             }
         }
 
+        /// <summary>
+        /// Render a thumbnail containing the given world points
+        /// </summary>
+        /// <param name="points">The points that should be framed within the thumbnail</param>
+        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
         public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
         {
             //Find our centroid
@@ -149,6 +154,11 @@ namespace Amsterdam3D.Interface
             RenderThumbnailContaining(bounds, renderAllLayers);
         }
 
+        /// <summary>
+        /// Render a thumbnail containing the given bounds
+        /// </summary>
+        /// <param name="bounds">The bounds object that should be framed in the thumbnail</param>
+        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
 		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
         {
             var objectSizes = bounds.max - bounds.min;
@@ -161,29 +171,39 @@ namespace Amsterdam3D.Interface
             thumbnailRenderer.transform.LookAt(bounds.center);
             thumbnailRenderer.cullingMask = (renderAllLayers) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
 
+            RenderThumbnail(renderAllLayers);
+        }
+
+        /// <summary>
+        /// Render thumbnail from previous position
+        /// </summary>
+        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
+		public void RenderThumbnail(bool renderAllLayers = false)
+		{
             if (renderAllLayers)
             {
                 var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
                 foreach (var renderer in renderersOnBuildingsLayer)
                 {
                     renderer.material.shader = buildingsExclusiveShader.shader;
-                    Debug.Log("Swapping " + renderer.gameObject.name); 
+                    Debug.Log("Swapping " + renderer.gameObject.name);
                 }
                 thumbnailRenderer.Render();
 
                 foreach (var renderer in renderersOnBuildingsLayer)
                     renderer.material.shader = defaultBuildingsShader.shader;
             }
-            else{
+            else
+            {
                 thumbnailRenderer.Render();
             }
         }
 
-        /// <summary>
-        /// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
-        /// </summary>
-        /// <returns>The new group object</returns>
-        public GameObject CreateGroup()
+		/// <summary>
+		/// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
+		/// </summary>
+		/// <returns>The new group object</returns>
+		public GameObject CreateGroup()
         {
             GameObject newGroup = Instantiate(groupPrefab, targetFieldsContainer);
             targetFieldsContainer = newGroup.transform;
