@@ -65,7 +65,9 @@ namespace Amsterdam3D.Sharing
 
         private void Start()
         {
-            if (Application.absoluteURL.Contains(urlViewIDVariable)){
+            if (Application.absoluteURL.Contains(urlViewIDVariable))
+            {
+                var urlVariables = Application.absoluteURL.Split('=');
                 StartCoroutine(GetSharedScene(Application.absoluteURL.Split('=')[1]));
             }
             customMeshObjects = new List<GameObject>();
