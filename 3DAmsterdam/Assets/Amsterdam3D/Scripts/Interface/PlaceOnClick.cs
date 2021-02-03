@@ -10,7 +10,7 @@ namespace Amsterdam3D.Interface
     [RequireComponent(typeof(WorldPointFollower))]
 	public class PlaceOnClick : Interactable, IDragHandler
     {
-       public bool waitingForClick = true;
+        public bool waitingForClick = true;
         private IAction placeAction;
 
         private WorldPointFollower worldPointerFollower;
@@ -29,8 +29,11 @@ namespace Amsterdam3D.Interface
         {
             ActionMap = ActionHandler.actions.PlaceOnClick;
             placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
-            placeAction.SubscribePerformed(Place);
-            PlaceUsingPointer();
+            if (waitingForClick)
+            {
+                placeAction.SubscribePerformed(Place);
+                PlaceUsingPointer();
+            }
         }
 
         public virtual void OnDrag(PointerEventData eventData)
