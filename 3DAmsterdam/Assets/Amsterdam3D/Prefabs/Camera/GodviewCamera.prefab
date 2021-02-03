@@ -105,9 +105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cebe9adf2e5533468508ad96789c6bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  zoomSpeed: 0.5
-  dragFactor: 100
+  cameraComponent: {fileID: 0}
+  zoomSpeed: 0.01
+  spinSpeed: 0.5
+  dragging: 0
+  rotatingAroundPoint: 0
   cameraOffsetForTargetLocation: {x: 100, y: 200, z: -100}
   LockFunctions: 0
 --- !u!114 &8089436527420917118
