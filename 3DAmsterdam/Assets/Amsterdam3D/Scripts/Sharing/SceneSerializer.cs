@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-using UnityScript.Steps;
 
 namespace Amsterdam3D.Sharing
 {
@@ -139,7 +138,7 @@ namespace Amsterdam3D.Sharing
                 var annotationData = scene.annotations[i];
 
                 Annotation annotation = Instantiate(annotationPrefab, annotationsContainer);
-                annotation.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
+                annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
 
@@ -179,8 +178,8 @@ namespace Amsterdam3D.Sharing
                 cameraObject.name = cameraPoint.name;
                 cameraObject.transform.SetParent(camerasContainer, false);
                 cameraObject.GetComponent<WorldPointFollower>().WorldPosition = cameraPoint.position;
-                cameraObject.GetComponent<FirstPersonObject>().savedRotation = cameraPoint.rotation;
-                cameraObject.GetComponent<FirstPersonObject>().placed = true;
+                cameraObject.GetComponent<FirstPersonLocation>().savedRotation = cameraPoint.rotation;
+                cameraObject.GetComponent<FirstPersonLocation>().waitingForClick = false;
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(cameraObject, LayerType.CAMERA);
                 newCustomLayer.Active = true;
             }
@@ -424,7 +423,12 @@ namespace Amsterdam3D.Sharing
                 annotationsData.Add(new SerializableScene.Annotation
                 {
                     active = annotation.interfaceLayer.Active,
-                    position = new SerializableScene.Vector3 { x = annotation.WorldPosition.x, y = annotation.WorldPosition.y, z = annotation.WorldPosition.z },
+                    position = new SerializableScene.Vector3 
+                    { 
+                        x = annotation.WorldPointerFollower.WorldPosition.x, 
+                        y = annotation.WorldPointerFollower.WorldPosition.y, 
+                        z = annotation.WorldPointerFollower.WorldPosition.z 
+                    },
                     bodyText = annotation.BodyText
                 });
             }
@@ -440,7 +444,7 @@ namespace Amsterdam3D.Sharing
               
               foreach (var camera in cameraPoints)
               {
-                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonObject>();
+                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonLocation>();
                 var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
                 cameraPointsData.Add(new SerializableScene.CameraPoint
                 {

@@ -34,6 +34,7 @@ namespace RuntimeHandle
             MeshCollider mc = o.AddComponent<MeshCollider>();
             mc.sharedMesh = MeshUtils.CreateTorus(2f, .1f, 32, 6);
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _axis);
+            o.layer = p_runtimeHandle.raycastLayer;
 
             o = new GameObject();
             o.transform.SetParent(transform, false);
@@ -42,6 +43,7 @@ namespace RuntimeHandle
             mr.material.color = new Color(1,1,0,.5f);
             _arcMesh = o.AddComponent<MeshFilter>();
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _axis);
+            o.layer = p_runtimeHandle.raycastLayer;
             o.SetActive(false);
 
             return this;
@@ -55,7 +57,6 @@ namespace RuntimeHandle
 
             Vector3 rperp = _parentTransformHandle.space == HandleSpace.LOCAL ? _parentTransformHandle.target.rotation * _axis : _axis;
             Vector3 projected = Vector3.ProjectOnPlane(mouseVector, rperp);
-            Debug.Log(rperp+" : "+projected+" : "+mouseVector);
 
             projected *= Time.deltaTime * mag * 2; // Bulhar
             float d = projected.x + projected.y + projected.z;

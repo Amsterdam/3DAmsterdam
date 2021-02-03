@@ -6,7 +6,10 @@ using UnityEngine.EventSystems;
 
 public class RuntimeMaskSphere : MonoBehaviour
 {
-    [SerializeField]
+	[SerializeField]
+	private bool updateRuntimeDynamicMaterials = false;
+
+	[SerializeField]
     private Transform targetMaterialsContainer;
 
     [SerializeField]
@@ -20,13 +23,14 @@ public class RuntimeMaskSphere : MonoBehaviour
 
 	Vector4 maskVector = default;
 
-
+	//We enable shadows for the underground when we use the mask sphere, to give more depth
 	private void OnEnable()
 	{
         targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(true);
     }
 
-    private void OnDisable()
+	//We enable shadows for the underground when we use the mask sphere, to give more depth
+	private void OnDisable()
     {
         targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(false);
 
@@ -72,8 +76,13 @@ public class RuntimeMaskSphere : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Optionally find runtime created materials that we cant predefine in our specificMaterials list
+	/// </summary>
 	private void UpdateDynamicCreatedInstancedMaterials()
 	{
+		if (!updateRuntimeDynamicMaterials) return;
+
 		MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
 		foreach (MeshRenderer renderer in meshRenderers)

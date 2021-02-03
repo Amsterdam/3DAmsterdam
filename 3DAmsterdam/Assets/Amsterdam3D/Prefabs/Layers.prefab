@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1144097372}
   - component: {fileID: 1144097373}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,6 +61,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0bd1798a77e07d6448a16df4b2052aaf, type: 2}
   - {fileID: 2100000, guid: 70116c33088e6144ca158c73bca33c90, type: 2}
   - {fileID: 2100000, guid: 08de757fe28f2c8488c5b8cd6f764032, type: 2}
+  createMeshcollider: 1
 --- !u!114 &1484382064384571549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,8 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionMapName: 
+  contextMenuState: 1
   tileHandler: {fileID: 6377280993247164478}
-  clickTimer: 0.3
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -212,6 +214,7 @@ MonoBehaviour:
   pauseLoading: 0
   DefaultMaterialList:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
+  createMeshcollider: 0
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +378,7 @@ MonoBehaviour:
   pauseLoading: 0
   DefaultMaterialList:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
+  createMeshcollider: 0
 --- !u!1001 &1655602355448839381
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,6 +9,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject customObject;
 
+        private GameObject spawnedObject;
+
         [SerializeField]
         private LayerType layerType;
 
@@ -20,7 +22,9 @@ namespace Amsterdam3D.Interface
         [Tooltip("Leave empty to place object in root")]
         private Transform targetParent;
 
-        private void Start()
+		public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
+
+		private void Start()
         {
             pointer = FindObjectOfType<Pointer>();
             layers = FindObjectOfType<InterfaceLayers>();
@@ -37,19 +41,20 @@ namespace Amsterdam3D.Interface
         /// <summary>
         /// Spawn the customObject prefab at the pointer location and create a linked interface layer
         /// </summary>
-        public void SpawnNewObjectAtPointer()
+        public void SpawnNewObjectAtPointer(string objectName = "")
         {
-            GameObject newObject = Instantiate(customObject, targetParent);
-            newObject.name = newObject.name.Replace("(Clone)", "");
-            CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(newObject, layerType);
+            spawnedObject = Instantiate(customObject, targetParent);
+            spawnedObject.name = (objectName!="") ? objectName : spawnedObject.name.Replace("(Clone)", "");
 
-            if (layerType == LayerType.ANNOTATION)
+            CustomLayer interfaceLayer = layers.AddNewCustomObjectLayer(spawnedObject, layerType);
+
+            if (layerType == LayerType.ANNOTATION || layerType == LayerType.CAMERA)
             {
-                var annotation = newObject.GetComponent<Annotation>();
-                annotation.interfaceLayer = interfaceLayer;
+                //Set container layer for objects that have a connection with an interfacelayer
+                spawnedObject.GetComponent<PlaceOnClick>().interfaceLayer = interfaceLayer;
             }
             else{
-                newObject.transform.position = pointer.WorldPosition;
+                spawnedObject.transform.position = pointer.WorldPosition;
             }
         }
     }
