@@ -133,8 +133,8 @@ namespace Amsterdam3D.Interface
         /// Render a thumbnail containing the given world points
         /// </summary>
         /// <param name="points">The points that should be framed within the thumbnail</param>
-        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
-        public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
+        /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
+        public void RenderThumbnailContaining(Vector3[] points, bool swapBuildingShaders = false)
         {
             //Find our centroid
             var centroid = new Vector3(0, 0, 0);
@@ -151,15 +151,15 @@ namespace Amsterdam3D.Interface
             {
                 bounds.Encapsulate(point);
             }
-            RenderThumbnailContaining(bounds, renderAllLayers);
+            RenderThumbnailContaining(bounds, swapBuildingShaders);
         }
 
         /// <summary>
         /// Render a thumbnail containing the given bounds
         /// </summary>
         /// <param name="bounds">The bounds object that should be framed in the thumbnail</param>
-        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
-		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
+        /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
+		public void RenderThumbnailContaining(Bounds bounds, bool swapBuildingShaders = false)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
@@ -169,18 +169,19 @@ namespace Amsterdam3D.Interface
 
             thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
             thumbnailRenderer.transform.LookAt(bounds.center);
-            thumbnailRenderer.cullingMask = (renderAllLayers) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
 
-            RenderThumbnail(renderAllLayers);
+            RenderThumbnail(swapBuildingShaders);
         }
 
         /// <summary>
         /// Render thumbnail from previous position
         /// </summary>
-        /// <param name="renderAllLayers">Render all layers or exclusively the selected buildings</param>
-		public void RenderThumbnail(bool renderAllLayers = false)
+        /// <param name="swapBuildingShaders">Swap building shaders for one frame, so we can exclusively draw highlighted buildings</param>
+		public void RenderThumbnail(bool swapBuildingShaders = false)
 		{
-            if (renderAllLayers)
+            thumbnailRenderer.cullingMask = (swapBuildingShaders) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
+
+            if (swapBuildingShaders)
             {
                 var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
                 foreach (var renderer in renderersOnBuildingsLayer)

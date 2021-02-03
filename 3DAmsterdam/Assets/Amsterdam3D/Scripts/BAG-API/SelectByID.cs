@@ -150,11 +150,10 @@ public class SelectByID : Interactable
             {
                 ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
             }
-            ObjectProperties.Instance.RenderThumbnail();
+            ObjectProperties.Instance.RenderThumbnail(true);
         }
 		else
 		{
-            ObjectProperties.Instance.ClosePanel();
             ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 	}
@@ -168,11 +167,9 @@ public class SelectByID : Interactable
 		{
 			lastSelectedID = emptyID;
 			selectedIDs.Clear();
-		}
+        }
 
         ObjectProperties.Instance.ClearGeneratedFields();
-        ObjectProperties.Instance.ClosePanel();
-
         ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 
         //Remove highlights by highlighting our empty list
