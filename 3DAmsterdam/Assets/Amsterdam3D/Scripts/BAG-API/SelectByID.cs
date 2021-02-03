@@ -145,9 +145,10 @@ public class SelectByID : Interactable
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
             //Update sidepanel outliner
             ObjectProperties.Instance.ClearGeneratedFields();
+            ObjectProperties.Instance.AddTitle("Selectie");
             foreach (var id in selectedIDs)
             {
-                ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Gebouw " + id, id);
+                ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
             }
         }
 		else
