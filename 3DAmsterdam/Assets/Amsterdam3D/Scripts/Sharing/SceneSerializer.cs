@@ -3,6 +3,8 @@ using Amsterdam3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
@@ -43,8 +45,7 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private InterfaceLayer groundLayer;
 
-        [SerializeField]
-        private string urlViewIDVariable = "?view=";
+        private string urlViewIDVariable = "view=";
 
         private List<GameObject> customMeshObjects;
 
@@ -64,21 +65,29 @@ namespace Amsterdam3D.Sharing
         private GameObject[] objectsRemovedInViewMode;
 
         private void Start()
-        {
-            if (Application.absoluteURL.Contains(urlViewIDVariable))
-            {
-                var urlVariables = Application.absoluteURL.Split('=');
-                StartCoroutine(GetSharedScene(Application.absoluteURL.Split('=')[1]));
-            }
-            customMeshObjects = new List<GameObject>();
-        }
+		{
+            //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
+			CheckURLForSharedSceneID();
 
-        #if UNITY_EDITOR
-        /// <summary>
-        /// This test method allows you to right click this MonoBehaviour in the editor.
-        /// And test the downloading of a specific sharedSceneId.
-        /// </summary>
-        [ContextMenu("Load last saved ID")] 
+			customMeshObjects = new List<GameObject>();
+		}
+
+		private void CheckURLForSharedSceneID()
+		{
+            //HttpUtility not embedded in Unity's .net integration, so lets just filter out the ID ourselves
+            if (Application.absoluteURL.Contains("?" + urlViewIDVariable + "=") || Application.absoluteURL.Contains("&" + urlViewIDVariable + "="))
+			{
+                var uniqueSceneID = Application.absoluteURL.Split(new string[] { urlViewIDVariable }, StringSplitOptions.None)[1].Split('&')[0].Split('#')[0];
+				StartCoroutine(GetSharedScene(uniqueSceneID));
+			}
+		}
+
+#if UNITY_EDITOR
+		/// <summary>
+		/// This test method allows you to right click this MonoBehaviour in the editor.
+		/// And test the downloading of a specific sharedSceneId.
+		/// </summary>
+		[ContextMenu("Load last saved ID")] 
         public void GetTestId(){
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
