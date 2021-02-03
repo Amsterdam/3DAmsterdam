@@ -167,7 +167,9 @@ public class SelectByID : Interactable
 		{
 			lastSelectedID = emptyID;
 			selectedIDs.Clear();
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            ObjectProperties.Instance.ClearGeneratedFields();
+            ObjectProperties.Instance.ClosePanel();
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 
 		//Remove highlights by highlighting our empty list
