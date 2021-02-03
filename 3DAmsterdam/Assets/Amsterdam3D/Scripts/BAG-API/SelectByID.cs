@@ -119,6 +119,7 @@ public class SelectByID : Interactable
         {
             selectedIDs.Remove(id);
             HighlightObjectsWithIDs(selectedIDs);
+ 
         }
     }
 
