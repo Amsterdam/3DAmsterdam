@@ -92,7 +92,7 @@ namespace Amsterdam3D.Utilities
 
 		private static void ZipAndDeploy(BuildSummary buildSummary)
 		{
-            var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "") + ".zip";
+            var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "").Replace("feature-","") + ".zip";
             if (File.Exists(zipFilePath)) File.Delete(zipFilePath);            
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
             Debug.Log("Zipped build in: " + zipFilePath);
@@ -107,7 +107,7 @@ namespace Amsterdam3D.Utilities
                 Debug.Log("Autodeploying");
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                 startInfo.FileName = Path.GetDirectoryName(zipFilePath) + "/deploy.bat";
                 startInfo.Arguments = Path.GetFileNameWithoutExtension(zipFilePath);
                 process.StartInfo = startInfo;
