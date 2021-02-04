@@ -101,19 +101,14 @@ namespace Amsterdam3D.Utilities
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
             Debug.Log("Zipped build in: " + zipFilePath);
 
-            var deployResult = DeployZipFile(zipFilePath).Result;
-            Debug.Log(deployResult);
+            DeployZipFile(zipFilePath);
+            Debug.Log("Deployed");
         }
 
-		private static async Task<string> DeployZipFile(string zipFilePath)
+		private static void DeployZipFile(string zipFilePath)
 		{
             string[] deploy = File.ReadAllText(Path.GetDirectoryName(zipFilePath) + "/deploy").Split(' ');
             byte[] fileBytes = File.ReadAllBytes(zipFilePath);
-   
-            string returnString = "";
-
-            Application.OpenURL(deploy[2] + Path.GetFileNameWithoutExtension(zipFilePath));
-
             try
             {
                 using (var httpClient = new HttpClient())
@@ -121,18 +116,15 @@ namespace Amsterdam3D.Utilities
                     MultipartFormDataContent form = new MultipartFormDataContent();
                     form.Add(new StringContent(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(deploy[1]))), "deploy");
                     form.Add(new ByteArrayContent(fileBytes, 0, fileBytes.Length), "zip_file", Path.GetFileName(zipFilePath));
-                    HttpResponseMessage response = await httpClient.PostAsync(deploy[0], form);
+                    httpClient.PostAsync(deploy[0], form);
 
-                    response.EnsureSuccessStatusCode();
-                    returnString = await response.Content.ReadAsStringAsync();
+                    Application.OpenURL(deploy[2] + Path.GetFileNameWithoutExtension(zipFilePath));
                 }
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message);
-                return e.Message;
             }
-            return returnString;
         }
 	}
 }
