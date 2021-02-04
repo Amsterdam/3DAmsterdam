@@ -5,6 +5,10 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using System.IO.Compression;
+using UnityEngine.Networking;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Amsterdam3D.Utilities
 {
@@ -71,8 +75,7 @@ namespace Amsterdam3D.Utilities
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? webGlBuildPrefix :desktopBuildPrefix) + headNameWithoutControlCharacters,
-                options = BuildOptions.AutoRunPlayer
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? webGlBuildPrefix :desktopBuildPrefix) + headNameWithoutControlCharacters
             };
 
             Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
@@ -94,9 +97,42 @@ namespace Amsterdam3D.Utilities
 		private static void ZipAndDeploy(BuildSummary buildSummary)
 		{
             var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "") + ".zip";
+            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);            
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
-
             Debug.Log("Zipped build in: " + zipFilePath);
+
+            var deployResult = DeployZipFile(zipFilePath).Result;
+            Debug.Log(deployResult);
+        }
+
+		private static async Task<string> DeployZipFile(string zipFilePath)
+		{
+            string[] deploy = File.ReadAllText(Path.GetDirectoryName(zipFilePath) + "/deploy").Split(' ');
+            byte[] fileBytes = File.ReadAllBytes(zipFilePath);
+   
+            string returnString = "";
+
+            Application.OpenURL(deploy[2] + Path.GetFileNameWithoutExtension(zipFilePath));
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    MultipartFormDataContent form = new MultipartFormDataContent();
+                    form.Add(new StringContent(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(deploy[1]))), "deploy");
+                    form.Add(new ByteArrayContent(fileBytes, 0, fileBytes.Length), "zip_file", Path.GetFileName(zipFilePath));
+                    HttpResponseMessage response = await httpClient.PostAsync(deploy[0], form);
+
+                    response.EnsureSuccessStatusCode();
+                    returnString = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return e.Message;
+            }
+            return returnString;
         }
 	}
 }
