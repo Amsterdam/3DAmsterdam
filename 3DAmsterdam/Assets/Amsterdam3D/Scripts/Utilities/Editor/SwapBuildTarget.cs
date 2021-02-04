@@ -11,6 +11,9 @@ namespace Amsterdam3D.Utilities
     {
         public static void DataTarget(){}
 
+        private const string webGlBuildPrefix = "BuildWebGL_";
+        private const string desktopBuildPrefix = "BuildDesktop_";
+
         [MenuItem("3D Amsterdam/Set data target/Production")]
         public static void SwitchBranchMaster()
         {
@@ -67,7 +70,7 @@ namespace Amsterdam3D.Utilities
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL_" : "BuildDesktop_") + headNameWithoutControlCharacters,
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? webGlBuildPrefix :desktopBuildPrefix) + headNameWithoutControlCharacters,
                 options = BuildOptions.AutoRunPlayer
             };
 
