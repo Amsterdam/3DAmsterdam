@@ -4,6 +4,7 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using System.IO.Compression;
 
 namespace Amsterdam3D.Utilities
 {
@@ -79,15 +80,23 @@ namespace Amsterdam3D.Utilities
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
             if (buildSummary.result == BuildResult.Succeeded)
-            {
-                Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-                
-            }
+			{
+				Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
+				ZipAndDeploy(buildSummary);
+			}
 
-            if (buildSummary.result == BuildResult.Failed)
+			if (buildSummary.result == BuildResult.Failed)
             {
                 Debug.Log("Build failed");
             }
         }
-    }
+
+		private static void ZipAndDeploy(BuildSummary buildSummary)
+		{
+            var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "") + ".zip";
+            ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
+
+            Debug.Log("Zipped build in: " + zipFilePath);
+        }
+	}
 }
