@@ -5,10 +5,6 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using System.IO.Compression;
-using UnityEngine.Networking;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Amsterdam3D.Utilities
 {
@@ -102,28 +98,20 @@ namespace Amsterdam3D.Utilities
             Debug.Log("Zipped build in: " + zipFilePath);
 
             DeployZipFile(zipFilePath);
-            Debug.Log("Deployed");
         }
 
 		private static void DeployZipFile(string zipFilePath)
 		{
-            string[] deploy = File.ReadAllText(Path.GetDirectoryName(zipFilePath) + "/deploy").Split(' ');
-            byte[] fileBytes = File.ReadAllBytes(zipFilePath);
-            try
+            if (File.Exists(Path.GetDirectoryName(zipFilePath) + "/deploy.bat"))
             {
-                using (var httpClient = new HttpClient())
-                {
-                    MultipartFormDataContent form = new MultipartFormDataContent();
-                    form.Add(new StringContent(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(deploy[1]))), "deploy");
-                    form.Add(new ByteArrayContent(fileBytes, 0, fileBytes.Length), "zip_file", Path.GetFileName(zipFilePath));
-                    httpClient.PostAsync(deploy[0], form);
-
-                    Application.OpenURL(deploy[2] + Path.GetFileNameWithoutExtension(zipFilePath));
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.Message);
+                Debug.Log("Autodeploying");
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+                startInfo.FileName = Path.GetDirectoryName(zipFilePath) + "/deploy.bat";
+                startInfo.Arguments = Path.GetFileNameWithoutExtension(zipFilePath);
+                process.StartInfo = startInfo;
+                process.Start();
             }
         }
 	}
