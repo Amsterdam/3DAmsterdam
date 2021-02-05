@@ -170,7 +170,7 @@ namespace Amsterdam3D.CameraMotion
 
         private void Zoom(IAction action)
         {
-            scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
+                scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
 
             //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -332,7 +332,7 @@ namespace Amsterdam3D.CameraMotion
         {
             var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
             zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
-            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed * Time.deltaTime, Space.World);
+            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
             focusingOnTargetPoint.Invoke(zoomDirectionPoint);
         }
 

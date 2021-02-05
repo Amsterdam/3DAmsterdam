@@ -3,6 +3,8 @@ using Amsterdam3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
@@ -43,8 +45,7 @@ namespace Amsterdam3D.Sharing
         [SerializeField]
         private InterfaceLayer groundLayer;
 
-        [SerializeField]
-        private string urlViewIDVariable = "?view=";
+        private string urlViewIDVariable = "view=";
 
         private List<GameObject> customMeshObjects;
 
@@ -64,19 +65,29 @@ namespace Amsterdam3D.Sharing
         private GameObject[] objectsRemovedInViewMode;
 
         private void Start()
-        {
-            if (Application.absoluteURL.Contains(urlViewIDVariable)){
-                StartCoroutine(GetSharedScene(Application.absoluteURL.Split('=')[1]));
-            }
-            customMeshObjects = new List<GameObject>();
-        }
+		{
+            //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
+			CheckURLForSharedSceneID();
 
-        #if UNITY_EDITOR
-        /// <summary>
-        /// This test method allows you to right click this MonoBehaviour in the editor.
-        /// And test the downloading of a specific sharedSceneId.
-        /// </summary>
-        [ContextMenu("Load last saved ID")] 
+			customMeshObjects = new List<GameObject>();
+		}
+
+		private void CheckURLForSharedSceneID()
+		{
+            //HttpUtility not embedded in Unity's .net integration, so lets just filter out the ID ourselves
+            if (Application.absoluteURL.Contains("?" + urlViewIDVariable) || Application.absoluteURL.Contains("&" + urlViewIDVariable))
+			{
+                var uniqueSceneID = Application.absoluteURL.Split(new string[] { urlViewIDVariable }, StringSplitOptions.None)[1].Split('&')[0].Split('#')[0];
+				StartCoroutine(GetSharedScene(uniqueSceneID));
+			}
+		}
+
+#if UNITY_EDITOR
+		/// <summary>
+		/// This test method allows you to right click this MonoBehaviour in the editor.
+		/// And test the downloading of a specific sharedSceneId.
+		/// </summary>
+		[ContextMenu("Load last saved ID")] 
         public void GetTestId(){
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
@@ -141,6 +152,7 @@ namespace Amsterdam3D.Sharing
                 annotation.WorldPointerFollower.WorldPosition = new Vector3(annotationData.position.x, annotationData.position.y, annotationData.position.z);
                 annotation.BodyText = annotationData.bodyText;
                 annotation.AllowEdit = scene.allowSceneEdit;
+                annotation.waitingForClick = false;
 
                 //Create a custom annotation layer
                 CustomLayer newCustomAnnotationLayer = interfaceLayers.AddNewCustomObjectLayer(annotation.gameObject, LayerType.ANNOTATION, false);
@@ -157,6 +169,7 @@ namespace Amsterdam3D.Sharing
                 SerializableScene.CustomLayer customLayer = scene.customLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
+                if(scene.allowSceneEdit) customObject.AddComponent<Interactable>();
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
@@ -170,7 +183,7 @@ namespace Amsterdam3D.Sharing
                 StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
             }
 
-            // create all custom camera points
+            //Create all custom camera points
             for (int i = 0; i < scene.cameraPoints.Length; i++) 
             {
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];

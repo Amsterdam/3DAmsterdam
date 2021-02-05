@@ -4,12 +4,16 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using System.IO.Compression;
 
 namespace Amsterdam3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
         public static void DataTarget(){}
+
+        private const string webGlBuildPrefix = "BuildWebGL_";
+        private const string desktopBuildPrefix = "BuildDesktop_";
 
         [MenuItem("3D Amsterdam/Set data target/Production")]
         public static void SwitchBranchMaster()
@@ -67,8 +71,7 @@ namespace Amsterdam3D.Utilities
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? "BuildWebGL_" : "BuildDesktop_") + headNameWithoutControlCharacters,
-                options = BuildOptions.AutoRunPlayer
+                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? webGlBuildPrefix :desktopBuildPrefix) + headNameWithoutControlCharacters
             };
 
             Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
@@ -76,15 +79,40 @@ namespace Amsterdam3D.Utilities
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
             if (buildSummary.result == BuildResult.Succeeded)
-            {
-                Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-                
-            }
+			{
+				Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
+				ZipAndDeploy(buildSummary);
+			}
 
-            if (buildSummary.result == BuildResult.Failed)
+			if (buildSummary.result == BuildResult.Failed)
             {
                 Debug.Log("Build failed");
             }
         }
-    }
+
+		private static void ZipAndDeploy(BuildSummary buildSummary)
+		{
+            var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "").Replace("feature-","") + ".zip";
+            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);            
+            ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
+            Debug.Log("Zipped build in: " + zipFilePath);
+
+            DeployZipFile(zipFilePath);
+        }
+
+		private static void DeployZipFile(string zipFilePath)
+		{
+            if (File.Exists(Path.GetDirectoryName(zipFilePath) + "/deploy.bat"))
+            {
+                Debug.Log("Autodeploying");
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+                startInfo.FileName = Path.GetDirectoryName(zipFilePath) + "/deploy.bat";
+                startInfo.Arguments = Path.GetFileNameWithoutExtension(zipFilePath);
+                process.StartInfo = startInfo;
+                process.Start();
+            }
+        }
+	}
 }
