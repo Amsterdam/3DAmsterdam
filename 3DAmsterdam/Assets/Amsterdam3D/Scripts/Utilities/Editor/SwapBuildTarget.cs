@@ -107,7 +107,7 @@ namespace Amsterdam3D.Utilities
                 Debug.Log("Autodeploying");
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
                 startInfo.FileName = Path.GetDirectoryName(zipFilePath) + "/deploy.bat";
                 startInfo.Arguments = Path.GetFileNameWithoutExtension(zipFilePath);
                 process.StartInfo = startInfo;
