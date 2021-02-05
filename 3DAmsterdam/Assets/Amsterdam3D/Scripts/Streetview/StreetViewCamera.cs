@@ -4,11 +4,15 @@ using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using LayerSystem;
 
 namespace Amsterdam3D.CameraMotion
 {
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
+		[SerializeField]
+		
+		private AssetbundleMeshLayer terrainContainerLayer;
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
 
@@ -147,6 +151,8 @@ namespace Amsterdam3D.CameraMotion
 			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
 			ray = cameraComponent.ScreenPointToRay(pointerPosition);
+			Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			terrainContainerLayer.AddMeshColliders(planeHit);
 			float distance = 99;
 			if (Physics.Raycast(ray, out hit, distance))
 			{

@@ -4,11 +4,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering.UI;
 using UnityEngine.InputSystem;
 using Amsterdam3D.InputHandler;
+using LayerSystem;
 
 namespace Amsterdam3D.CameraMotion
 {
     public class FirstPersonMovement : MonoBehaviour
     {
+        [SerializeField]
+        private AssetbundleMeshLayer terrainContainerLayer;
         [SerializeField]
         private float groundOffset;
 
@@ -63,6 +66,10 @@ namespace Amsterdam3D.CameraMotion
             var playerCenter = transform.TransformPoint(new Vector3(referenceCollider.center.x, referenceCollider.center.y, referenceCollider.center.z));
             var rayGround = new Ray(playerCenter + Vector3.up * 100.0f, Vector3.down);
             var rayCustom = new Ray(playerCenter, Vector3.down);
+
+            // add Meshcollider to terrain if not already exists
+            terrainContainerLayer.AddMeshColliders(playerCenter);
+
 
             //First check for custom colliders from center of player. Next, check for grounding above or under the player.
             if (Physics.Raycast(rayCustom, out hit, 1000.0f, layerMaskCustom.value) || Physics.Raycast(rayGround, out hit, 1000.0f, layerMaskGround.value))
