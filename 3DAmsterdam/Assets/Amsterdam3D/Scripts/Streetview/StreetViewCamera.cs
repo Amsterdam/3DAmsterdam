@@ -23,6 +23,9 @@ namespace Amsterdam3D.CameraMotion
 		private Button hideMenuButton;
 
 		[SerializeField]
+		private Button exitFirstPersonButton;
+
+		[SerializeField]
 		private GameObject interfaceLayers;
 
 		private Camera cameraComponent;
@@ -33,11 +36,13 @@ namespace Amsterdam3D.CameraMotion
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
+			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();
 		}
 
 		private void OnDisable()
 		{
+			exitFirstPersonButton.gameObject.SetActive(true);
 			hideMenuButton.gameObject.SetActive(false);
 		}
 
