@@ -37,13 +37,23 @@ namespace Amsterdam3D.Interface {
 			Id = id;
 		}
 
+		public void Select()
+		{
+			var selectByID = linkedGameObject.GetComponent<SelectByID>();
+			if (selectByID)
+			{
+				selectByID.ShowBAGDataForSelectedID(Id);
+				return;
+			}
+		}
+
 		public void Close()
 		{
 			//Did we close a SelectByID selection?
 			var selectByID = linkedGameObject.GetComponent<SelectByID>();
 			if (selectByID)
 			{
-				selectByID.DeselectSpecificID(id);
+				selectByID.DeselectSpecificID(Id);
 				return;
 			}
 

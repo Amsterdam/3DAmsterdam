@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,8 @@ namespace Amsterdam3D.Interface
         private SelectionOutliner selectionOutlinerPrefab;
         [SerializeField]
         private NameAndURL urlPrefab;
+        [SerializeField]
+        private ActionButton buttonPrefab;
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
@@ -237,10 +240,15 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(seperatorLinePrefab, targetFieldsContainer);
         }
-        public void AddURLText(string urlText, string urlPath)
+        public void AddLink(string urlText, string urlPath)
         {
             Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
         }
+        public void AddActionButton(string buttonText, Action<string> clickAction)
+        {
+            Instantiate(buttonPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
+        }
+
         public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
         {
             Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);

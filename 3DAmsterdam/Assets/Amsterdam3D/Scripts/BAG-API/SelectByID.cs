@@ -127,9 +127,9 @@ public class SelectByID : Interactable
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightObjectsWithIDs(List<string> ids)
+    private void HighlightObjectsWithIDs(List<string> ids = null)
     {
-		selectedIDs.AddRange(ids);
+        if(ids != null) selectedIDs.AddRange(ids);
         selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
 
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
@@ -138,7 +138,7 @@ public class SelectByID : Interactable
         //Specific context menu /sidepanel items per selection count
         if (selectedIDs.Count == 1)
 		{
-            ShowBAGDataForSelectedID();
+            ShowBAGDataForSelectedID(lastSelectedID);
             ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
 		}
 		else if (selectedIDs.Count > 1)
@@ -205,20 +205,24 @@ public class SelectByID : Interactable
     /// <summary>
     /// Method to allow other objects to display the information panel for the last ID we selected here.
     /// </summary>
-    public void ShowBAGDataForSelectedID()
+    public void ShowBAGDataForSelectedID(string id = "")
     {
         var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
         var lookAtTarget = lastRaycastHit.point;
 
-        if (lastSelectedID != emptyID)
+        if (id != emptyID)
         {
             ObjectProperties.Instance.OpenPanel("Pand",true);
-            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+            if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButton("< Geselecteerde panden", (action) => {
+                HighlightObjectsWithIDs();
+			}
+            );
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(id);
         }
-        else{
-            //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.OpenPanel("Grond", true);
-            ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
+        else if(lastSelectedID != emptyID)
+        { 
+            ObjectProperties.Instance.OpenPanel("Pand", true);
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
     }
 
