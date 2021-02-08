@@ -266,6 +266,8 @@ namespace Amsterdam3D.Interface
 			{
 				tranformable.Deselect();
 			}
+
+			ClearHighlights();
 		}
 
 		private void MultiselectFinish(IAction action)
