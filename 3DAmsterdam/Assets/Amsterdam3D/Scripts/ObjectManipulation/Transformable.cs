@@ -79,6 +79,9 @@ public class Transformable : Interactable
 
 			ShowTransformProperties();
 		}
+
+		//Place a highlight on our object
+		Selector.Instance.HighlightObject(this.gameObject);
 	}
 	public override void SecondarySelect()
 	{

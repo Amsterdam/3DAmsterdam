@@ -26,7 +26,8 @@ public class SelectByID : Interactable
     private const string emptyID = "null";
 
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
+
+	private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
     private const int maximumRayPiercingLoops = 20;
 
@@ -109,27 +110,52 @@ public class SelectByID : Interactable
     }
 
     /// <summary>
+    /// Removes an object with this specific ID from the selected list, and update the highlights
+    /// </summary>
+    /// <param name="id">The unique ID of this item</param>
+    public void DeselectSpecificID(string id)
+    {
+        if (selectedIDs.Contains(id))
+        {
+            selectedIDs.Remove(id);
+            HighlightObjectsWithIDs(selectedIDs);
+ 
+        }
+    }
+
+    /// <summary>
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightObjectsWithIDs(List<string> ids)
+    private void HighlightObjectsWithIDs(List<string> ids = null)
     {
-		selectedIDs.AddRange(ids);
+        if(ids != null) selectedIDs.AddRange(ids);
+        selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
+
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
 
-		//Specific context menu items per selection count
-		if (selectedIDs.Count == 1)
+        //Specific context menu /sidepanel items per selection count
+        if (selectedIDs.Count == 1)
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+            ShowBAGDataForSelectedID(lastSelectedID);
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
 		}
 		else if (selectedIDs.Count > 1)
 		{
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
-		}
+            //Update sidepanel outliner
+            ObjectProperties.Instance.OpenPanel("Selectie", true);
+            ObjectProperties.Instance.AddTitle("Geselecteerde panden");
+            foreach (var id in selectedIDs)
+            {
+                ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+            }
+            ObjectProperties.Instance.RenderThumbnail(true);
+        }
 		else
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 	}
 
@@ -142,11 +168,12 @@ public class SelectByID : Interactable
 		{
 			lastSelectedID = emptyID;
 			selectedIDs.Clear();
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-		}
+        }
 
-		//Remove highlights by highlighting our empty list
-		containerLayer.Highlight(selectedIDs);
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+
+        //Remove highlights by highlighting our empty list
+        containerLayer.Highlight(selectedIDs);
 	}
 
     /// <summary>
@@ -178,20 +205,24 @@ public class SelectByID : Interactable
     /// <summary>
     /// Method to allow other objects to display the information panel for the last ID we selected here.
     /// </summary>
-    public void ShowBAGDataForSelectedID()
+    public void ShowBAGDataForSelectedID(string id = "")
     {
         var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
         var lookAtTarget = lastRaycastHit.point;
 
-        if (lastSelectedID != emptyID)
+        if (id != emptyID)
         {
-            ObjectProperties.Instance.OpenPanel("Pand");
-            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+            ObjectProperties.Instance.OpenPanel("Pand",true);
+            if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButton("< Geselecteerde panden", (action) => {
+                HighlightObjectsWithIDs();
+			}
+            );
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(id);
         }
-        else{
-            //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.OpenPanel("Grond");
-            ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
+        else if(lastSelectedID != emptyID)
+        { 
+            ObjectProperties.Instance.OpenPanel("Pand", true);
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
     }
 
@@ -202,8 +233,6 @@ public class SelectByID : Interactable
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        
-
         //Check area that we clicked, and add the (heavy) mesh collider there
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
         containerLayer.AddMeshColliders(planeHit);

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,5 +23,5 @@ namespace Amsterdam3D.Interface
             titleText.name = urlName;
             gameObject.name = urlPath;
         }
-    }
+	}
 }

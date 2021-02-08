@@ -30,7 +30,7 @@ namespace Amsterdam3D.Interface
 				ObjectProperties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
 				ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
 				ObjectProperties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
-				ObjectProperties.Instance.AddURLText("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+				ObjectProperties.Instance.AddLink("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
 				ObjectProperties.Instance.AddSeperatorLine();
 
@@ -100,7 +100,7 @@ namespace Amsterdam3D.Interface
                 ObjectProperties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
                 ObjectProperties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
                 ObjectProperties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
-                ObjectProperties.Instance.AddURLText("Meer adres informatie", moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
+                ObjectProperties.Instance.AddLink("Meer adres informatie", moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
                 ObjectProperties.Instance.AddSeperatorLine();
                 ObjectProperties.Instance.CloseGroup();
             }));

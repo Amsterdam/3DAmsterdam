@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,11 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject seperatorLinePrefab;
         [SerializeField]
+        private SelectionOutliner selectionOutlinerPrefab;
+        [SerializeField]
         private NameAndURL urlPrefab;
+        [SerializeField]
+        private ActionButton buttonPrefab;
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
@@ -127,7 +132,12 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        public void RenderThumbnailContaining(Vector3[] points, bool renderAllLayers = false)
+        /// <summary>
+        /// Render a thumbnail containing the given world points
+        /// </summary>
+        /// <param name="points">The points that should be framed within the thumbnail</param>
+        /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
+        public void RenderThumbnailContaining(Vector3[] points, bool swapBuildingShaders = false)
         {
             //Find our centroid
             var centroid = new Vector3(0, 0, 0);
@@ -144,10 +154,15 @@ namespace Amsterdam3D.Interface
             {
                 bounds.Encapsulate(point);
             }
-            RenderThumbnailContaining(bounds, renderAllLayers);
+            RenderThumbnailContaining(bounds, swapBuildingShaders);
         }
 
-		public void RenderThumbnailContaining(Bounds bounds, bool renderAllLayers = false)
+        /// <summary>
+        /// Render a thumbnail containing the given bounds
+        /// </summary>
+        /// <param name="bounds">The bounds object that should be framed in the thumbnail</param>
+        /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
+		public void RenderThumbnailContaining(Bounds bounds, bool swapBuildingShaders = false)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
@@ -157,31 +172,42 @@ namespace Amsterdam3D.Interface
 
             thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
             thumbnailRenderer.transform.LookAt(bounds.center);
-            thumbnailRenderer.cullingMask = (renderAllLayers) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
 
-            if (renderAllLayers)
+            RenderThumbnail(swapBuildingShaders);
+        }
+
+        /// <summary>
+        /// Render thumbnail from previous position
+        /// </summary>
+        /// <param name="swapBuildingShaders">Swap building shaders for one frame, so we can exclusively draw highlighted buildings</param>
+		public void RenderThumbnail(bool swapBuildingShaders = false)
+		{
+            thumbnailRenderer.cullingMask = (swapBuildingShaders) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
+
+            if (swapBuildingShaders)
             {
                 var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
                 foreach (var renderer in renderersOnBuildingsLayer)
                 {
                     renderer.material.shader = buildingsExclusiveShader.shader;
-                    Debug.Log("Swapping " + renderer.gameObject.name); 
+                    Debug.Log("Swapping " + renderer.gameObject.name);
                 }
                 thumbnailRenderer.Render();
 
                 foreach (var renderer in renderersOnBuildingsLayer)
                     renderer.material.shader = defaultBuildingsShader.shader;
             }
-            else{
+            else
+            {
                 thumbnailRenderer.Render();
             }
         }
 
-        /// <summary>
-        /// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
-        /// </summary>
-        /// <returns>The new group object</returns>
-        public GameObject CreateGroup()
+		/// <summary>
+		/// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
+		/// </summary>
+		/// <returns>The new group object</returns>
+		public GameObject CreateGroup()
         {
             GameObject newGroup = Instantiate(groupPrefab, targetFieldsContainer);
             targetFieldsContainer = newGroup.transform;
@@ -214,9 +240,18 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(seperatorLinePrefab, targetFieldsContainer);
         }
-        public void AddURLText(string urlText, string urlPath)
+        public void AddLink(string urlText, string urlPath)
         {
             Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
+        }
+        public void AddActionButton(string buttonText, Action<string> clickAction)
+        {
+            Instantiate(buttonPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
+        }
+
+        public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
+        {
+            Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);
         }
         public void ClearGeneratedFields()
         {
