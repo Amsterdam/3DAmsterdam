@@ -83,7 +83,7 @@ namespace LayerSystem
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
 			string url = Constants.BASE_DATA_URL + Datasets[lod].path;
-            if (Datasets[lod].path.StartsWith("file:///"))
+            if (Datasets[lod].path.StartsWith("https://"))
             {
 				url = Datasets[lod].path;
 
