@@ -83,6 +83,11 @@ namespace LayerSystem
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
 			string url = Constants.BASE_DATA_URL + Datasets[lod].path;
+            if (Datasets[lod].path.StartsWith("https://"))
+            {
+				url = Datasets[lod].path;
+
+			}
 			url = url.Replace("{x}", tileChange.X.ToString());
 			url = url.Replace("{y}", tileChange.Y.ToString());
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
