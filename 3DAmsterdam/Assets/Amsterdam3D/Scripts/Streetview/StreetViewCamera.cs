@@ -151,15 +151,16 @@ namespace Amsterdam3D.CameraMotion
 			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
 			ray = cameraComponent.ScreenPointToRay(pointerPosition);
-			Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-			terrainContainerLayer.AddMeshColliders(planeHit);
+			
 			float distance = 99;
 			if (Physics.Raycast(ray, out hit, distance))
 			{
+				terrainContainerLayer.AddMeshColliders(hit.point);
 				return hit.point;
 			}
 			else
 			{
+				terrainContainerLayer.AddMeshColliders(ray.origin + ray.direction * (distance / 10));
 				// return end of mouse ray if nothing collides
 				return ray.origin + ray.direction * (distance / 10);
 			}
