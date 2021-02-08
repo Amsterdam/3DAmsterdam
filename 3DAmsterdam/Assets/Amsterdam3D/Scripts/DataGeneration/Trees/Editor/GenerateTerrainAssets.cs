@@ -1,8 +1,4 @@
-﻿
-#if UNITY_EDITOR
-
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using cityJSON;
 using UnityEditor;
@@ -10,27 +6,41 @@ using System.IO;
 using ConvertCoordinates;
 using SimpleJSON;
 
-public class ImportCityJsonTerrain : MonoBehaviour
+public static class GenerateTerrainAssets
 {
-    public List<Material> materialList = new List<Material>(7);
-    private Material[] materialsArray;
+    //public List<Material> materialList = new List<Material>(7);
+    //private Material[] materialsArray;
     
     // Start is called before the first frame update
-    void Start()
+    static void Start()
     {
-        materialsArray = materialList.ToArray();
-        double originX = 121000;
-        double originY = 487000;
-        ImportSingle(originX, originY);
+        double originX=0;
+        double originY=0;
+        string[] args = System.Environment.GetCommandLineArgs();
+        //materialsArray = materialList.ToArray();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i].StartsWith("Xmin="))
+            {
+                originX = double.Parse(args[i].Replace("Xmin=", ""));
+            }
+            if (args[i].StartsWith("Ymin="))
+            {
+                originY = double.Parse(args[i].Replace("Ymin=", ""));
+            }
+        }
+
+
+        //originX = double.Parse(args[args.Length-2]);
+        //originY = double.Parse(args[args.Length-1]);
+        //ImportSingle(originX, originY);
+        Debug.Log("klaar");
         //importeer();
+        GenerateTerrainAssetBundles();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    void ImportSingle(double OriginX, double OriginY)
+    
+    static void ImportSingle(double OriginX, double OriginY)
     {
 
         double originX = OriginX;
@@ -194,7 +204,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         }
     }
 
-    private Mesh SimplifyMesh(Mesh mesh, float quality)
+    static private Mesh SimplifyMesh(Mesh mesh, float quality)
     {
 
         if (mesh.triangles.Length<100)
@@ -217,7 +227,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
 
 
-    private bool PointISInsideArea(Vector3RD point, double OriginX, double OriginY, float tileSize)
+    static private bool PointISInsideArea(Vector3RD point, double OriginX, double OriginY, float tileSize)
     {
         
         if (point.x < OriginX || point.x > (OriginX+tileSize))
@@ -232,7 +242,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         return true;
     }
 
-    private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize, string bgtProperty, List<string> bgtValues, bool include)
+    static private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize, string bgtProperty, List<string> bgtValues, bool include)
     {
         
 
@@ -349,7 +359,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         return mesh;
     }
 
-    private Mesh CreateEmptyMesh()
+    static private Mesh CreateEmptyMesh()
     {
         Mesh emptyMesh = new Mesh();
         Vector3[] emptyVertsList = new Vector3[3];
@@ -363,7 +373,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         return emptyMesh;
     }
 
-    private Vector2[] RDuv2(Vector3[] verts, Vector3 UnityOrigin, float tileSize)
+    static private Vector2[] RDuv2(Vector3[] verts, Vector3 UnityOrigin, float tileSize)
     {
         Vector3 UnityCoordinate;
         Vector3RD rdCoordinate;
@@ -380,7 +390,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
         return uv2;
     }
 
-    private Mesh WeldVertices(Mesh mesh)
+    static private Mesh WeldVertices(Mesh mesh)
     {
         Vector3[] originalVerts = mesh.vertices;
         int[] originlints = mesh.GetIndices(0);
@@ -407,17 +417,14 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
 
 
-    void importeer()
+    static void importeer()
     {
-        int Xmin = 109000;
+        int Xmin = 135000;
         int Ymin = 474000;
         int Xmax = 140000;
         int Ymax = 500000;
 
         int stepSize = 1000;
-
-
-        
 
         for (int X = Xmin; X < Xmax; X+=stepSize)
         {
@@ -433,14 +440,36 @@ public class ImportCityJsonTerrain : MonoBehaviour
     }
 
 
+    public static void GenerateTerrainAssetBundles()
+    {
+        DirectoryInfo directory = new DirectoryInfo(Application.dataPath + "/terrainMeshes/LOD0/");
+        var fileInfo = directory.GetFiles();
+
+        foreach (var file in fileInfo)
+        {
+            if (!file.Name.Contains(".meta") && !File.ReadAllText(file.FullName).Contains("vertexCount: 0"))
+            {
+                //Create asset bundle from mesh we just made
+                AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
+                string[] assetNames = new string[1];
+                assetNames[0] = "Assets/terrainMeshes/LOD0/" + file.Name;
+
+                buildMap[0].assetBundleName = file.Name.Replace(".mesh", "");
+                buildMap[0].assetNames = assetNames;
+
+                BuildPipeline.BuildAssetBundles("Terrain", buildMap, BuildAssetBundleOptions.None, BuildTarget.WebGL);
+            }
+        }
+
+        Debug.Log("Done exporting Tree tile AssetBundles");
+    }
 
 
 
 
 
 
-
-private List<Vector3RD> GetVertsRD(CityModel cityModel)
+    static private List<Vector3RD> GetVertsRD(CityModel cityModel)
     {
         List<Vector3RD> vertsRD = new List<Vector3RD>();
         Vector3RD vertexCoordinate = new Vector3RD();
@@ -454,7 +483,7 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
         }
         return vertsRD;
     }
-    public List<Vector3RD> GetTriangleListRD(CityModel cityModel, string cityObjectType, string bgtProperty, List<string> bgtValues, bool include)
+    static public List<Vector3RD> GetTriangleListRD(CityModel cityModel, string cityObjectType, string bgtProperty, List<string> bgtValues, bool include)
     {
         List<Vector3RD> vertsRD = GetVertsRD(cityModel);
         List<Vector3RD> triangleList = new List<Vector3RD>();
@@ -488,7 +517,7 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
         return triangleList;
     }
 
-    private List<Vector3> CreateClippingPolygon(float tilesize)
+    static private List<Vector3> CreateClippingPolygon(float tilesize)
     {
         List<Vector3> polygon = new List<Vector3>();
         polygon.Add(new Vector3(0, 0, 0));
@@ -497,7 +526,7 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
         polygon.Add(new Vector3(0, 0, tilesize));
         return polygon;
     }
-    private List<int> ReadTriangles(JSONNode cityObject)
+    static private List<int> ReadTriangles(JSONNode cityObject)
     {
         List<int> triangles = new List<int>();
         JSONNode boundariesNode = cityObject["geometry"][0]["boundaries"];
@@ -516,7 +545,7 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
 
         return triangles;
     }
-    string CreateAssetFolder(string folderpath, string foldername)
+    static string CreateAssetFolder(string folderpath, string foldername)
     {
 
         if (!AssetDatabase.IsValidFolder(folderpath + "/" + foldername))
@@ -526,5 +555,3 @@ private List<Vector3RD> GetVertsRD(CityModel cityModel)
         return folderpath + "/" + foldername;
     }
 }
-
-#endif

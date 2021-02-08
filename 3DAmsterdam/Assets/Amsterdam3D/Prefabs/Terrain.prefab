@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6043584489261153549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6043584489261153546}
+  - component: {fileID: 6043584489261153547}
+  m_Layer: 9
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6043584489261153546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043584489261153549}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6043584489261153547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043584489261153549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb70087fbf1079548852def3e6f500ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 1
+  tileSize: 1000
+  layerPriority: 5
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: https://acc.3d.amsterdam.nl/web/feature/3DBasisvoorziening/data/terrain_{x}-{y}-lod0
+    maximumDistance: 4000
+    maximumDistanceSquared: 0
+    enabled: 0
+  - Description: LOD1
+    lod: 1
+    path: https://acc.3d.amsterdam.nl/web/feature/3DBasisvoorziening/data/terrain_{x}-{y}-lod1
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 0
+  pauseLoading: 0
+  DefaultMaterialList:
+  - {fileID: 2100000, guid: aca3b592882510047a4de2020cd5cafc, type: 2}
+  - {fileID: 2100000, guid: bb7ac713e126c8945bcac94241300b1f, type: 2}
+  - {fileID: 2100000, guid: e600c15abc7262243a880924e2fc2c06, type: 2}
+  - {fileID: 2100000, guid: 23e067c1f30c53343b28456c3e5fa5b6, type: 2}
+  - {fileID: 2100000, guid: 08de757fe28f2c8488c5b8cd6f764032, type: 2}
+  - {fileID: 2100000, guid: e4f9ce9f3edc77849af7e517f63a0ced, type: 2}
+  - {fileID: 2100000, guid: 8315f7af6de482c4eb389221ec2651d7, type: 2}
+  - {fileID: 2100000, guid: 091bfc07dec694b45a25781029f121bb, type: 2}
+  - {fileID: 2100000, guid: fd21c30e7e276bf4ba3b222fc253ab27, type: 2}
+  - {fileID: 2100000, guid: e9e5ffc6b814ac7429c502c361cd31b7, type: 2}
+  - {fileID: 2100000, guid: 70116c33088e6144ca158c73bca33c90, type: 2}
+  - {fileID: 2100000, guid: 0bd1798a77e07d6448a16df4b2052aaf, type: 2}
+  createMeshcollider: 0
