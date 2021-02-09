@@ -109,10 +109,13 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 			var green = Vector2.Dot(greenVector, pointerLocalVector);
 			var blue = Vector2.Dot(blueVector, pointerLocalVector);
 
-			pickedColor = Color.Lerp(Color.white, new Color(red,green,blue), lightness);
-			sliderArea.color = pickedColor;
+			//Calculate lightness using color wheel position from centre
+			pickedColor = Color.Lerp(Color.white, new Color(red, green, blue), lightness);
 
-			pickedColor *= intensity;
+			//Now calculate intensity using the intensity slider value
+			pickedColor = Color.Lerp(Color.black, pickedColor, intensity);
+
+			sliderArea.color = pickedColor;
 		}
 		else
 		{
@@ -129,26 +132,43 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	public override void ChangeColorInput(Color inputColor)
 	{
 		CalculateHitArea();
-
 		print(inputColor);
 
 		//Not using HDR colors for now
-		Vector3 normalizedColorVector = new Vector3(Mathf.Abs(inputColor.r), Mathf.Abs(inputColor.g), Mathf.Abs(inputColor.b)).normalized;//Not using HDR colors for now
-		Color normalizedColor = new Color(normalizedColorVector.x, normalizedColorVector.y, normalizedColorVector.z);
-		intensity = Vector3.Distance(normalizedColorVector, Vector3.one);
-
-		print("i" + intensity);
+		/*intensity = (inputColor.r + inputColor.g + inputColor.b) / 3.0f;
 
 		ignoreChanges = true;
-		intensitySlider.value = Mathf.InverseLerp(0.0f,2.0f, intensity);
+		intensitySlider.value = (intensity < 0.5f) ? intensity*2.0f : 0.5f;
 		ignoreChanges = false;
 
-		var targetVector = ((normalizedColorVector.x * redVector) + (normalizedColorVector.y * greenVector) + (normalizedColorVector.z * blueVector));
-		targetVector = Vector3.Lerp(Vector3.zero, targetVector, intensity);
+		var targetVector = ((inputColor.r * redVector) + (inputColor.g * greenVector) + (inputColor.b * blueVector * 0.5f)).normalized;
+		targetVector = Vector3.Lerp(targetVector, Vector3.zero, Mathf.Clamp(Mathf.InverseLerp(0.5f,1.0f,intensity),0.0f,1.0f));
 
 		targetVector.x = (dragDropRegion.rect.width / 2.0f) * targetVector.x;
 		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
 		pointer.rectTransform.anchoredPosition = targetVector;
+
+		inputColor.a = 1.0f;
+		pointer.color = inputColor;
+		sliderHandle.color = inputColor;
+		sliderArea.color = inputColor / intensity;*/
+
+		Color.RGBToHSV(inputColor,out float hue,out float saturation, out float value);
+		intensitySlider.value = value;
+
+		var colorPalette = (Texture2D)this.colorPalette.texture;
+		float pickerWidth = colorPalette.width;
+		float radius = pickerWidth / 2.0f;
+		float colorRadius = saturation * radius;
+		float angle = (1.0f - hue) * (2.0f * Mathf.PI);
+
+		float xOffset = Mathf.Cos(angle) * colorRadius; //offset from the midpoint of the circle
+		float yOffset = Mathf.Sin(angle) * colorRadius;
+
+		Vector3 anchorTarget = new Vector3();
+		anchorTarget.x = xOffset;
+		anchorTarget.y = yOffset;
+		pointer.rectTransform.anchoredPosition = anchorTarget;
 
 		inputColor.a = 1.0f;
 		pointer.color = inputColor;
