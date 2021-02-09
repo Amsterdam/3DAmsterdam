@@ -30,7 +30,7 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	[SerializeField]
 	private Image sliderArea;
 
-	private Vector3 redVector = Vector2.left;
+	private Vector3 redVector = Vector2.right;
 	private Vector3 greenVector;
 	private Vector3 blueVector;
 
@@ -103,50 +103,60 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 
 		if (radialConstraint && useVectorPalette)
 		{
-			var pointerLocalVector = pointer.rectTransform.anchoredPosition.normalized;
+			var pointerLocalVector = pointer.rectTransform.anchoredPosition;
 			var lightness = pointer.rectTransform.anchoredPosition.magnitude / (paletteWidth/2.0f);
-			var red = Vector2.Dot(redVector, pointerLocalVector);
-			var green = Vector2.Dot(greenVector, pointerLocalVector);
-			var blue = Vector2.Dot(blueVector, pointerLocalVector);
 
-			pickedColor = Color.Lerp(Color.white, new Color(red,green,blue), lightness);
-			sliderArea.color = pickedColor;
+			Quaternion rotation = Quaternion.FromToRotation(pointerLocalVector,Vector3.right);		
+			var hue = rotation.eulerAngles.z / 360.0f;
+			pickedColor = Color.HSVToRGB(hue, lightness,intensity);
+			var pickedColorWithoutIntensity = Color.HSVToRGB(hue, lightness, 1.0f);
 
-			pickedColor *= intensity;
+			sliderHandle.color = pickedColor;
+			sliderArea.color = pickedColorWithoutIntensity;
+			pointer.color = pickedColorWithoutIntensity;
 		}
 		else
 		{
 			//Grab the raw texture pixel at the coordinates of the pointer
 			pickedColor = colorPalette.GetPixel((int)(pointerPosition.x * paletteWidth), (int)(pointerPosition.y * paletteHeight)) * intensity;
+
+			sliderHandle.color = pickedColor;
+			sliderArea.color = pickedColor;
+			pointer.color = pickedColor;
 		}
 		pickedColor.a = 1.0f;
-		pointer.color = pickedColor;
-		sliderHandle.color = pickedColor;
-
+		
 		selectedNewColor.Invoke(pickedColor,this);
 	}
 
 	public override void ChangeColorInput(Color inputColor)
 	{
 		CalculateHitArea();
+		print(inputColor);
 
-		intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
+		Color.RGBToHSV(inputColor,out float hue,out float saturation, out float value);
+
+		float radius = dragDropRegion.rect.width / 2.0f;
+		float colorRadius = saturation * radius;
+		float angle = ((1.0f - hue) * (2.0f * Mathf.PI));
+
+		float xOffset = Mathf.Cos(angle) * colorRadius; //offset from the midpoint of the circle
+		float yOffset = Mathf.Sin(angle) * colorRadius;
 
 		ignoreChanges = true;
-		intensitySlider.value = Mathf.InverseLerp(0.0f,1.0f,intensity);
+		intensitySlider.value = value;
 		ignoreChanges = false;
 
-		var targetVector = ((inputColor.r * redVector) + (inputColor.g * greenVector) + (inputColor.b * blueVector)).normalized;
-		targetVector = Vector3.Lerp(targetVector, Vector3.zero, Mathf.InverseLerp(1.0f, 2.0f, intensity));
-
-		targetVector.x = (dragDropRegion.rect.width / 2.0f) * targetVector.x;
-		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
-		pointer.rectTransform.anchoredPosition = targetVector;
+		Vector3 anchorTarget = new Vector3();
+		anchorTarget.x = xOffset;
+		anchorTarget.y = yOffset;
+		pointer.rectTransform.anchoredPosition = anchorTarget;
 
 		inputColor.a = 1.0f;
-		pointer.color = inputColor;
 		sliderHandle.color = inputColor;
-		sliderArea.color = inputColor;
+
+		sliderArea.color = Color.HSVToRGB(hue, saturation, 1.0f);
+		pointer.color = sliderArea.color;
 	}
 
 	public Rect RectTransformToScreenSpace(RectTransform transform)
