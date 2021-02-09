@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,16 +24,19 @@ public class RuntimeMaskSphere : MonoBehaviour
 
 	Vector4 maskVector = default;
 
+	[SerializeField]
+	private AssetbundleMeshLayer groundMeshLayer;
+
 	//We enable shadows for the underground when we use the mask sphere, to give more depth
 	private void OnEnable()
 	{
-        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(true);
+		//groundMeshLayer.EnableShadows(true); //We use shadows all the time now, but this might give a performance boost later on
     }
 
 	//We enable shadows for the underground when we use the mask sphere, to give more depth
 	private void OnDisable()
     {
-        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(false);
+		//groundMeshLayer.EnableShadows(false); //We use shadows all the time now, but this might give a performance boost later on
 
 		//make sure to reset mask shaders
 		UpdateSpecificMaterials(true);

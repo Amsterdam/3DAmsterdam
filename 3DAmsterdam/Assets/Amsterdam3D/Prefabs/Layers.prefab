@@ -105,7 +105,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionMapName: 
   contextMenuState: 1
   tileHandler: {fileID: 6377280993247164478}
   clickCheckLayerMask:
@@ -153,6 +152,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   createMeshcollider: 0
+  tileShadowCastingMode: 1
 --- !u!1 &4498901013376440829
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +317,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   createMeshcollider: 0
+  tileShadowCastingMode: 1
 --- !u!1001 &1655602355448839381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -466,14 +467,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
         type: 3}
+      propertyPath: groundMeshLayer
+      value: 
+      objectReference: {fileID: 1144097373}
+    - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
+        type: 3}
       propertyPath: targetMaterialsContainer
       value: 
       objectReference: {fileID: 4498901013376440831}
-    - target: {fileID: 6841949086296020787, guid: 25cc053d85d8e9648ae70ade3628dc63,
-        type: 3}
-      propertyPath: specificMaterials.Array.data[14]
-      value: 
-      objectReference: {fileID: 2100000, guid: fd21c30e7e276bf4ba3b222fc253ab27, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25cc053d85d8e9648ae70ade3628dc63, type: 3}
 --- !u!1 &2003904154926515589 stripped
