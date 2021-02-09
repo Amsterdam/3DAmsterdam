@@ -130,14 +130,21 @@ public class ColorPicker : ColorSelector, IBeginDragHandler, IDragHandler, IEndD
 	{
 		CalculateHitArea();
 
-		intensity = Vector3.Distance(new Vector3(inputColor.r, inputColor.g, inputColor.b), Vector3.zero);
+		print(inputColor);
+
+		//Not using HDR colors for now
+		Vector3 normalizedColorVector = new Vector3(Mathf.Abs(inputColor.r), Mathf.Abs(inputColor.g), Mathf.Abs(inputColor.b)).normalized;//Not using HDR colors for now
+		Color normalizedColor = new Color(normalizedColorVector.x, normalizedColorVector.y, normalizedColorVector.z);
+		intensity = Vector3.Distance(normalizedColorVector, Vector3.one);
+
+		print("i" + intensity);
 
 		ignoreChanges = true;
-		intensitySlider.value = Mathf.InverseLerp(0.0f,1.0f,intensity);
+		intensitySlider.value = Mathf.InverseLerp(0.0f,2.0f, intensity);
 		ignoreChanges = false;
 
-		var targetVector = ((inputColor.r * redVector) + (inputColor.g * greenVector) + (inputColor.b * blueVector)).normalized;
-		targetVector = Vector3.Lerp(targetVector, Vector3.zero, Mathf.InverseLerp(1.0f, 2.0f, intensity));
+		var targetVector = ((normalizedColorVector.x * redVector) + (normalizedColorVector.y * greenVector) + (normalizedColorVector.z * blueVector));
+		targetVector = Vector3.Lerp(Vector3.zero, targetVector, intensity);
 
 		targetVector.x = (dragDropRegion.rect.width / 2.0f) * targetVector.x;
 		targetVector.y = (dragDropRegion.rect.height / 2.0f) * targetVector.y;
