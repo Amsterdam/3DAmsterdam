@@ -5,6 +5,7 @@ using ConvertCoordinates;
 using UnityEngine.Networking;
 using System;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace LayerSystem
 {
@@ -13,6 +14,8 @@ namespace LayerSystem
         //public Material DefaultMaterial;
 		public List<Material> DefaultMaterialList = new List<Material>();
 		public bool createMeshcollider = false;
+		public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.On;
+
 		public override void OnDisableTiles(bool isenabled)
         {
 
@@ -126,7 +129,16 @@ namespace LayerSystem
 				}
 			}
 		}
+		public void EnableShadows(bool enabled)
+		{
+			tileShadowCastingMode = (enabled) ? ShadowCastingMode.On : ShadowCastingMode.Off;
 
+			MeshRenderer[] existingTiles = GetComponentsInChildren<MeshRenderer>();
+			foreach(var renderer in existingTiles)
+			{
+				renderer.shadowCastingMode = tileShadowCastingMode;
+			}
+		}
 
 		private bool TileHasHighlight(TileChange tileChange)
 		{
@@ -180,7 +192,7 @@ namespace LayerSystem
 					objectMapping.uvs = data.uvs;
 					objectMapping.vectorMap = data.vectorMap;
 					objectMapping.mappedUVs = data.mappedUVs;
-					objectMapping.mesh = newTile.GetComponent<MeshFilter>().mesh;
+					objectMapping.mesh = newTile.GetComponent<MeshFilter>().sharedMesh;
 					objectMapping.triangleCount = data.triangleCount;
 					objectMapping.ApplyDataToIDsTexture();
 					newAssetBundle.Unload(true);
@@ -189,7 +201,7 @@ namespace LayerSystem
 			yield return new WaitUntil(() => pauseLoading == false);
 			RemoveGameObjectFromTile(tileChange);
 			tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
-			//activeTileChanges.Remove(new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex));
+
 			yield return null;
 			callback(tileChange);
 
@@ -203,7 +215,7 @@ namespace LayerSystem
 			container.transform.parent = transform.gameObject.transform;
 			container.layer = container.transform.parent.gameObject.layer;
 			container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X + 500, tileChange.Y + 500));
-			//Material defaultMaterial = DefaultMaterial;
+			
 			container.SetActive(isEnabled);
 			Mesh[] meshesInAssetbundle = new Mesh[0];
 			try
@@ -228,8 +240,12 @@ namespace LayerSystem
 			}
 			mesh.uv2 = uvs.ToArray();
 
-			container.AddComponent<MeshFilter>().mesh = mesh;
-			container.AddComponent<MeshRenderer>().sharedMaterials = DefaultMaterialList.ToArray();
+			container.AddComponent<MeshFilter>().sharedMesh = mesh;
+
+			MeshRenderer meshRenderer = container.AddComponent<MeshRenderer>();
+			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
+			meshRenderer.shadowCastingMode = tileShadowCastingMode;
+
 			if (createMeshcollider)
 			{
 				container.AddComponent<MeshCollider>().sharedMesh = mesh;
