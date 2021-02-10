@@ -79,7 +79,7 @@ namespace Amsterdam3D.Interface
 				annotationsContainer.gameObject.SetActive(true);
 
 				if (createdByUser)
-					linkedWorldObject.GetComponent<Annotation>().PlaceUsingMouse();
+					linkedWorldObject.GetComponent<Annotation>().PlaceUsingPointer();
 			}
 			else if (type == LayerType.CAMERA) 
 			{

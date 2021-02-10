@@ -128,7 +128,7 @@ namespace LayerSystem
 					tile.gameObject
 				);
 			}
-			callback(tileChange);
+
 			//Lines are done spawing. Start loading and spawing the manholes.
 			StartCoroutine(GetSewerManholesInBoundingBox(tileChange,boundingBoxMinimum, boundingBoxMaximum,tile,callback));
 
@@ -179,10 +179,11 @@ namespace LayerSystem
 				);
 			}
 			CombineSewerage(tileChange,tile,callback);
+
 			tile.gameObject.SetActive(isEnabled);
 			yield return null;
 		}
-
+		 
 		public GameObject CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
 			//Do not try to combine if our gameobject was already destroyed.

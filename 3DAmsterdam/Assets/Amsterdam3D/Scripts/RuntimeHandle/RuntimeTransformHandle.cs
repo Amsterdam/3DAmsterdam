@@ -1,15 +1,17 @@
 ﻿using Amsterdam3D.CameraMotion;
+using Amsterdam3D.Interface;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace RuntimeHandle
 {
     /**
      * Created by Peter @sHTiF Stefcek 21.10.2020
-     * Altered by 3D Amsterdam Team to make translation handles be relative to world, and not mouse delta. 07.01.2021
+     * Altered by 3D Amsterdam Team to make translation handles be relative to world, use the new input system and not mouse delta. 07.01.2021
      */
-    public class RuntimeTransformHandle : MonoBehaviour
+    public class RuntimeTransformHandle : Interactable
     {
         public HandleAxes axes = HandleAxes.XYZ;
         public HandleSpace space = HandleSpace.LOCAL;
@@ -23,27 +25,32 @@ namespace RuntimeHandle
         public bool autoScale = false;
         public float autoScaleFactor = 1;
 
-        private Vector3 _previousPosition;
-        private HandleBase _previousAxis;
+        private Vector3 previousPosition;
+        private HandleBase previousAxis;
         
-        private HandleBase _draggingAxis;
+        private HandleBase draggingAxis;
 
-        private HandleType _previousType;
-        private HandleAxes _previousAxes;
+        private HandleType previousType;
+        private HandleAxes previousAxes;
 
-        private PositionHandle _positionHandle;
-        private RotationHandle _rotationHandle;
-        private ScaleHandle _scaleHandle;
+        private PositionHandle positionHandle;
+        private RotationHandle rotationHandle;
+        private ScaleHandle scaleHandle;
 
         public Transform target;
 
         public UnityEvent movedHandle;
 
+        private string raycastLayerName = "Interface3D";
+        public int raycastLayer;
+
         void Awake()
         {
+            raycastLayer = LayerMask.NameToLayer(raycastLayerName);
+
             movedHandle = new UnityEvent();
 
-            _previousType = type;
+            previousType = type;
 
             if (target == null)
                 target = transform;
@@ -56,24 +63,24 @@ namespace RuntimeHandle
             switch (type)
             {
                 case HandleType.POSITION:
-                    _positionHandle = gameObject.AddComponent<PositionHandle>().Initialize(this);
+                    positionHandle = gameObject.AddComponent<PositionHandle>().Initialize(this);
                     break;
                 case HandleType.ROTATION:
-                    _rotationHandle = gameObject.AddComponent<RotationHandle>().Initialize(this);
+                    rotationHandle = gameObject.AddComponent<RotationHandle>().Initialize(this);
                     break;
                 case HandleType.SCALE:
-                    _scaleHandle = gameObject.AddComponent<ScaleHandle>().Initialize(this);
+                    scaleHandle = gameObject.AddComponent<ScaleHandle>().Initialize(this);
                     break;
             }
-        }
+        } 
 
         void Clear()
         {
-            _draggingAxis = null;
+            draggingAxis = null;
             
-            if (_positionHandle) _positionHandle.Destroy();
-            if (_rotationHandle) _rotationHandle.Destroy();
-            if (_scaleHandle) _scaleHandle.Destroy();
+            if (positionHandle) positionHandle.Destroy();
+            if (rotationHandle) rotationHandle.Destroy();
+            if (scaleHandle) scaleHandle.Destroy();
         }
 
         void LateUpdate()
@@ -87,40 +94,42 @@ namespace RuntimeHandle
                 transform.localScale =
                     Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
             
-            if (_previousType != type || _previousAxes != axes)
+            if (previousType != type || previousAxes != axes)
             {
                 Clear();
                 CreateHandles();
-                _previousType = type;
-                _previousAxes = axes;
+                previousType = type;
+                previousAxes = axes;
             }
 
             HandleBase axis = GetAxis();
 
             HandleOverEffect(axis);
 
-            if (Input.GetMouseButton(0) && _draggingAxis != null)
+            if (Input.GetMouseButton(0) && draggingAxis != null)
             {
-                _draggingAxis.Interact(_previousPosition);
+                draggingAxis.Interact(previousPosition);
                 movedHandle.Invoke();
             }
 
             if (Input.GetMouseButtonDown(0) && axis != null)
             {
-                _draggingAxis = axis;
-                ObjectManipulation.manipulatingObject = true;
-                _draggingAxis.StartInteraction();
+                draggingAxis = axis;
+                draggingAxis.StartInteraction();
+
+                TakeInteractionPriority();
             }
 
-            if (Input.GetMouseButtonUp(0) && _draggingAxis != null)
+            if (Input.GetMouseButtonUp(0) && draggingAxis != null)
             {
                 Debug.Log("End interaction");
-                _draggingAxis.EndInteraction();
-                ObjectManipulation.manipulatingObject = false;
-                _draggingAxis = null;
+                draggingAxis.EndInteraction();
+                draggingAxis = null;
+
+                StopInteraction();
             }
 
-            _previousPosition = Input.mousePosition;
+            previousPosition = Mouse.current.position.ReadValue();
 
             transform.position = target.transform.position;
             if (space == HandleSpace.LOCAL || type == HandleType.SCALE)
@@ -133,38 +142,35 @@ namespace RuntimeHandle
             }
         }
 
-        void HandleOverEffect(HandleBase p_axis)
+		void HandleOverEffect(HandleBase p_axis)
         {
-            if (_draggingAxis == null && _previousAxis != null && _previousAxis != p_axis)
+            if (draggingAxis == null && previousAxis != null && previousAxis != p_axis)
             {
-                _previousAxis.SetDefaultColor();
+                previousAxis.SetDefaultColor();
             }
 
-            if (p_axis != null && _draggingAxis == null)
+            if (p_axis != null && draggingAxis == null)
             {
                 p_axis.SetColor(Color.yellow);
             }
 
-            _previousAxis = p_axis;
+            previousAxis = p_axis;
         }
 
         private HandleBase GetAxis()
         {
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray);
+            RaycastHit[] hits = Physics.RaycastAll(Selector.mainSelectorRay, 10000, LayerMask.GetMask(raycastLayerName));
             if (hits.Length == 0)
                 return null;
 
             foreach (RaycastHit hit in hits)
             {
                 HandleBase axis = hit.collider.gameObject.GetComponentInParent<HandleBase>();
-
                 if (axis != null)
                 {
                     return axis;
                 }
             }
-
             return null;
         }
 

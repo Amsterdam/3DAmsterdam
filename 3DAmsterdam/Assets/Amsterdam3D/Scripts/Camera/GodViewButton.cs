@@ -10,8 +10,6 @@ public class GodViewButton : MonoBehaviour
         CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
         CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
         gameObject.SetActive(false);
-        Button button = GetComponent<Button>();
-        button.onClick.AddListener(CameraModeChanger.Instance.GodViewMode);
     }
     public void EnableObject() 
     {

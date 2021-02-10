@@ -87,7 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 193b37127df197d49ac4a06534e71d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldPosition: {x: 1391.1532, y: 43.472095, z: -3295.3564}
   fadeOutTime: 0.3
 --- !u!1 &364591167403559
 GameObject:
@@ -782,6 +781,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1474045521906670772, guid: b7030aa81cc345440a7ed884e960011f,
+        type: 3}
+      propertyPath: targetParent
+      value: 
+      objectReference: {fileID: 9209569043728391639}
     - target: {fileID: 2159202327476575358, guid: b7030aa81cc345440a7ed884e960011f,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -4957,6 +4961,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2555178412930568368, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2555178412930568368, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2555178412930568368, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2555178412930568375, guid: 080c16bb02d65b944a7d0c7739a124f5,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -5271,6 +5290,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8916405072538603910, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8916405072538603910, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8916405072538603910, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8916405072538603910, guid: 080c16bb02d65b944a7d0c7739a124f5,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080c16bb02d65b944a7d0c7739a124f5, type: 3}

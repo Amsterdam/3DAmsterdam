@@ -3,11 +3,16 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using Amsterdam3D.JavascriptConnection;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using LayerSystem;
 
 namespace Amsterdam3D.CameraMotion
 {
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
+		[SerializeField]
+		
+		private AssetbundleMeshLayer terrainContainerLayer;
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
 
@@ -16,6 +21,9 @@ namespace Amsterdam3D.CameraMotion
 
 		[SerializeField]
 		private Button hideMenuButton;
+
+		[SerializeField]
+		private Button exitFirstPersonButton;
 
 		[SerializeField]
 		private GameObject interfaceLayers;
@@ -28,12 +36,24 @@ namespace Amsterdam3D.CameraMotion
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
+			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();
 		}
 
 		private void OnDisable()
 		{
+			exitFirstPersonButton.gameObject.SetActive(true);
 			hideMenuButton.gameObject.SetActive(false);
+		}
+
+		public void EnableKeyboardActionMap(bool enabled)
+		{
+			//
+		}
+
+		public void EnableMouseActionMap(bool enabled)
+		{
+			//
 		}
 
 		public void EnableMenus()
@@ -136,13 +156,16 @@ namespace Amsterdam3D.CameraMotion
 			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
 			ray = cameraComponent.ScreenPointToRay(pointerPosition);
+			
 			float distance = 99;
 			if (Physics.Raycast(ray, out hit, distance))
 			{
+				terrainContainerLayer.AddMeshColliders(hit.point);
 				return hit.point;
 			}
 			else
 			{
+				terrainContainerLayer.AddMeshColliders(ray.origin + ray.direction * (distance / 10));
 				// return end of mouse ray if nothing collides
 				return ray.origin + ray.direction * (distance / 10);
 			}
@@ -151,6 +174,12 @@ namespace Amsterdam3D.CameraMotion
 		public void SetNormalizedCameraHeight(float height)
 		{
 			//TODO: Determine if we want to expose the height slider.
+		}
+
+		public bool UsesActionMap(InputActionMap actionMap)
+		{
+			//TODO: Requires switch to actionmap inputs
+			return false;
 		}
 	}
 }

@@ -1,11 +1,12 @@
 ﻿using Amsterdam3D.CameraMotion;
 using Amsterdam3D.InputHandler;
 using Amsterdam3D.Interface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Transformable : MonoBehaviour
+public class Transformable : Interactable
 {
 	[SerializeField]
 	LayerMask dropTargetLayerMask;
@@ -21,38 +22,76 @@ public class Transformable : MonoBehaviour
 	private Collider meshCollider;
 	public static Transformable lastSelectedTransformable;
 
-	private IAction clickAction;
+	private IAction placeAction;
 
 	private void Start()
 	{
-		clickAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
+		contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
+
+		ActionMap = ActionHandler.actions.Transformable;
+		placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
 
 		meshCollider = GetComponent<Collider>();
 		if (stickToMouse)
 		{
-			meshCollider.enabled = false;
+			placeAction.SubscribePerformed(Place);
+			TakeInteractionPriority();
 			StartCoroutine(StickToMouse());
+			meshCollider.enabled = false;
 		}
 	}
 
-	private void OnMouseDown()
+	/// <summary>
+	/// Makes the new object stick to the mouse untill we click.
+	/// Enable the collider, so raycasts can pass through the object while dragging.
+	/// </summary>
+	IEnumerator StickToMouse()
 	{
-		if(!stickToMouse && lastSelectedTransformable != this)
+		//Keep following mouse untill we clicked
+		while (stickToMouse)
 		{
-			ShowTransformProperties();
+			FollowMousePointer();
+			yield return new WaitForEndOfFrame();
 		}
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
+		stickToMouse = false;
+		meshCollider.enabled = true;
 	}
 
-	void OnMouseOver()
+	public void Place(IAction action)
 	{
-		if (Input.GetMouseButtonDown(1))
+		if(stickToMouse && action.Performed)
 		{
+			Debug.Log("Placed Transformable");
 			stickToMouse = false;
-			ContextPointerMenu.Instance.SetTargetTransformable(this);
+			Select();
+			StopInteraction();
+		}
+	}
+
+	public override void Select()
+	{
+		if (stickToMouse) return;
+
+		base.Select();
+		if (!stickToMouse && lastSelectedTransformable != this)
+		{
+			if (lastSelectedTransformable) lastSelectedTransformable.Deselect();
+
 			ShowTransformProperties();
 		}
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
+
+		//Place a highlight on our object
+		Selector.Instance.HighlightObject(this.gameObject);
+	}
+	public override void SecondarySelect()
+	{
+		Select();
+	}
+
+	public override void Deselect()
+	{
+		base.Deselect();
+		ObjectProperties.Instance.DeselectTransformable(this, true);
 	}
 
 	/// <summary>
@@ -85,31 +124,10 @@ public class Transformable : MonoBehaviour
 		this.gameObject.layer = objectOriginalLayer;
 	}
 
-	/// <summary>
-	/// Makes the new object stick to the mouse untill we click.
-	/// Enable the collider, so raycasts can pass through the object while dragging.
-	/// </summary>
-	IEnumerator StickToMouse()
-	{
-		//Keep following mouse untill we clicked
-		while (stickToMouse && !Input.GetMouseButton(0) && !Input.GetMouseButtonDown(1))
-		{
-			FollowMousePointer();
-			yield return new WaitForEndOfFrame();
-		}
-		stickToMouse = false;
-
-		ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.CUSTOM_OBJECTS);
-		ContextPointerMenu.Instance.SetTargetTransformable(this);
-
-		ShowTransformProperties();
-		
-		meshCollider.enabled = true;
-	}
-
 	private void FollowMousePointer()
 	{
 		this.transform.position = GetMousePointOnLayerMask() - offset;
+		
 	}
 
 	/// <summary>
@@ -120,9 +138,7 @@ public class Transformable : MonoBehaviour
 	private Vector3 GetMousePointOnLayerMask()
 	{
 		RaycastHit hit;
-
-		var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-		if (snapToGround && Physics.Raycast(ray, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+		if (snapToGround && Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 		{
 			return hit.point;
 		}

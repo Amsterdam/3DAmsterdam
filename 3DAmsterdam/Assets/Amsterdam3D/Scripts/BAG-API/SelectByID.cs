@@ -10,7 +10,7 @@ using Amsterdam3D.Interface;
 using System;
 using System.Globalization;
 
-public class SelectByID : MonoBehaviour
+public class SelectByID : Interactable
 {
     public TileHandler tileHandler;
 
@@ -19,23 +19,15 @@ public class SelectByID : MonoBehaviour
 
     public static List<string> selectedIDs;
 
-    private const string ApiUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-    private float mouseClickTime;
-    private const float mouseDragDistance = 10.0f; //10 pixels results in a drag
-    private Vector2 mousePosition;
-    [SerializeField]
-    private float clickTimer = 0.3f;
-
     [SerializeField]
     private LayerMask clickCheckLayerMask;
     private AssetbundleMeshLayer containerLayer;
 
     private const string emptyID = "null";
 
-    private bool doingMultiSelection = false;
-
 	private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-    private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
+
+	private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
 
     private const int maximumRayPiercingLoops = 20;
 
@@ -43,39 +35,28 @@ public class SelectByID : MonoBehaviour
 
     private void Awake()
 	{
+        contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
+
         selectedIDs = new List<string>();
         containerLayer = gameObject.GetComponent<AssetbundleMeshLayer>();
     }
 
-	void Update()
+    public override void Select()
     {
-        //We only allow selectiontools in Godview now
-        if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;        
+        base.Select();
+        FindSelectedID();
+    }
+    public override void SecondarySelect()
+    {
+        base.Select();
+        //On a secondary click, only select if we did not make a multisselection yet.
+        if (selectedIDs.Count < 2) Select();
+    }
 
-        doingMultiSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseClickTime = Time.time;
-            mousePosition = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0) && (Time.time - mouseClickTime) < clickTimer && Vector3.Distance(mousePosition, Input.mousePosition) < mouseDragDistance && !EventSystem.current.IsPointerOverGameObject() && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
-        {
-            //If we did a left mouse click without dragging, find a selected object
-            FindSelectedID();
-        }
-        else if (Input.GetMouseButtonUp(1) && selectedIDs.Count <= 1){
-            //Right mouse only does a selection when our list 1 or empty.
-            doingMultiSelection = false;
-            FindSelectedID();
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-        {
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                HideSelectedIDs();
-            }
-        }
+    public override void Deselect()
+	{
+		base.Deselect();
+        ClearSelection();
     }
 
     /// <summary>
@@ -84,11 +65,10 @@ public class SelectByID : MonoBehaviour
     private void FindSelectedID()
     {
         //Clear selected ids if we are not adding to a multiselection
-        if (!doingMultiSelection) selectedIDs.Clear();
+        if (!Selector.doingMultiselect) selectedIDs.Clear();
 
-        ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
         //Try to find a selected mesh ID and highlight it
-        StartCoroutine(GetSelectedMeshIDData(ray, (value) => { HighlightSelectedID(value); }));
+        StartCoroutine(GetSelectedMeshIDData(Selector.mainSelectorRay, (value) => { HighlightSelectedID(value); }));
     }
 
     /// <summary>
@@ -111,14 +91,14 @@ public class SelectByID : MonoBehaviour
     /// <param name="id">The object ID</param>
     public void HighlightSelectedID(string id)
     {
-        if (id == emptyID && !doingMultiSelection)
+        if (id == emptyID && !Selector.doingMultiselect)
         {
             ClearSelection();
         }
         else{
             List<string> singleIdList = new List<string>();
             //Allow clicking a single object multiple times to move them in and out of our selection
-            if (doingMultiSelection && selectedIDs.Contains(id))
+            if (Selector.doingMultiselect && selectedIDs.Contains(id))
             {
                 selectedIDs.Remove(id);
             }
@@ -130,27 +110,52 @@ public class SelectByID : MonoBehaviour
     }
 
     /// <summary>
+    /// Removes an object with this specific ID from the selected list, and update the highlights
+    /// </summary>
+    /// <param name="id">The unique ID of this item</param>
+    public void DeselectSpecificID(string id)
+    {
+        if (selectedIDs.Contains(id))
+        {
+            selectedIDs.Remove(id);
+            HighlightObjectsWithIDs(selectedIDs);
+ 
+        }
+    }
+
+    /// <summary>
     /// Add list of ID's to our selected objects list
     /// </summary>
     /// <param name="ids">List of IDs to add to our selection</param>
-    private void HighlightObjectsWithIDs(List<string> ids)
+    private void HighlightObjectsWithIDs(List<string> ids = null)
     {
-		selectedIDs.AddRange(ids);
+        if(ids != null) selectedIDs.AddRange(ids);
+        selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
+
         lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
         containerLayer.Highlight(selectedIDs);
 
-		//Specific context menu items per selection count
-		if (selectedIDs.Count == 1)
+        //Specific context menu /sidepanel items per selection count
+        if (selectedIDs.Count == 1)
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+            ShowBAGDataForSelectedID(lastSelectedID);
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
 		}
 		else if (selectedIDs.Count > 1)
 		{
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
-		}
+            //Update sidepanel outliner
+            ObjectProperties.Instance.OpenPanel("Selectie", true);
+            ObjectProperties.Instance.AddTitle("Geselecteerde panden");
+            foreach (var id in selectedIDs)
+            {
+                ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+            }
+            ObjectProperties.Instance.RenderThumbnail(true);
+        }
 		else
 		{
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
 	}
 
@@ -163,11 +168,12 @@ public class SelectByID : MonoBehaviour
 		{
 			lastSelectedID = emptyID;
 			selectedIDs.Clear();
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-		}
+        }
 
-		//Remove highlights by highlighting our empty list
-		containerLayer.Highlight(selectedIDs);
+        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+
+        //Remove highlights by highlighting our empty list
+        containerLayer.Highlight(selectedIDs);
 	}
 
     /// <summary>
@@ -199,20 +205,24 @@ public class SelectByID : MonoBehaviour
     /// <summary>
     /// Method to allow other objects to display the information panel for the last ID we selected here.
     /// </summary>
-    public void ShowBAGDataForSelectedID()
+    public void ShowBAGDataForSelectedID(string id = "")
     {
         var thumbnailFrom = lastRaycastHit.point + (Vector3.up*300) + (Vector3.back*300);
         var lookAtTarget = lastRaycastHit.point;
 
-        if (lastSelectedID != emptyID)
+        if (id != emptyID)
         {
-            ObjectProperties.Instance.OpenPanel("Pand");
-            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+            ObjectProperties.Instance.OpenPanel("Pand",true);
+            if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButton("< Geselecteerde panden", (action) => {
+                HighlightObjectsWithIDs();
+			}
+            );
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(id);
         }
-        else{
-            //Just force a ground 'selection' if object information
-            ObjectProperties.Instance.OpenPanel("Grond");
-            ObjectProperties.Instance.AddTitle("Geen extra data beschikbaar.");
+        else if(lastSelectedID != emptyID)
+        { 
+            ObjectProperties.Instance.OpenPanel("Pand", true);
+            ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
         }
     }
 
@@ -223,8 +233,6 @@ public class SelectByID : MonoBehaviour
 
     IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
     {
-        tileHandler.pauseLoading = true;
-
         //Check area that we clicked, and add the (heavy) mesh collider there
         Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
         containerLayer.AddMeshColliders(planeHit);
@@ -232,7 +240,7 @@ public class SelectByID : MonoBehaviour
         //No fire a raycast towards our meshcolliders to see what face we hit 
         if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)
         {
-            tileHandler.pauseLoading = false;
+            
             callback(emptyID);
             yield break;
         }
@@ -243,7 +251,7 @@ public class SelectByID : MonoBehaviour
         if (vertexIndex > mesh.uv2.Length) 
         {
             Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
-            tileHandler.pauseLoading = false;
+            
             yield break;
         }
 
@@ -252,7 +260,8 @@ public class SelectByID : MonoBehaviour
 
         //Maybe we hit an object with objectdata, that has hidden selections, in that case, loop untill we find something
         ObjectData objectMapping = gameObjectToHighlight.GetComponent<ObjectData>();
-        if(objectMapping && objectMapping.colorIDMap)
+        
+        if (objectMapping && objectMapping.colorIDMap)
         {
             Color hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
             int raysLooped = 0;
@@ -271,6 +280,7 @@ public class SelectByID : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
+        
         //Not retrieve the selected BAG ID tied to the selected triangle
         containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
     }

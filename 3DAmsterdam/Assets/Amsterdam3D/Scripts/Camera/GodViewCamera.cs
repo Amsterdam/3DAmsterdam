@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Amsterdam3D.InputHandler;
+using UnityEngine.InputSystem;
+
 namespace Amsterdam3D.CameraMotion
 {
     public class GodViewCamera : MonoBehaviour, ICameraControls
@@ -13,22 +15,28 @@ namespace Amsterdam3D.CameraMotion
 
         [SerializeField]
         private float zoomSpeed = 0.5f;
+
+        [SerializeField]
+        private float spinSpeed = 0.5f;
+
         private const float maxZoomOut = 2500f;
 
-        private Vector3 mouseZoomStart;
-        private Vector3 mouseZoomTarget;
-        private float mouseZoomSpeed = 0.01f;
+        [SerializeField]
+        private bool dragging = false;
+        [SerializeField]
+        private bool rotatingAroundPoint = false;
+        public bool HoldingInteraction => (dragging || rotatingAroundPoint);
 
-        private const float rotationSpeed = 1f;
+        private const float rotationSpeed = 50.0f;
 
         private const float minAngle = -89f;
         private const float maxAngle = 89f;
-        private const float speedFactor = 0.5f;
+        private const float speedFactor = 50.0f;
 
         private float maxClickDragDistance = 5000.0f;
         private float maxTravelDistance = 20000.0f;
 
-        private const float rotationSensitivity = 5f;
+        private const float rotationSensitivity = 20.0f;
 
         private const float floorOffset = 1.8f;
 
@@ -38,28 +46,21 @@ namespace Amsterdam3D.CameraMotion
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
 
         private float scrollDelta;
-  
+#if UNITY_WEBGL && !UNITY_EDITOR
+        float webGLScrollMultiplier = 100.0f;
+#endif
+
         private float moveSpeed;
-        private float mouseHorizontal;
-        private float mouseVertical;
 
         private float deceleration = 10.0f;
         private Vector3 dragMomentum = Vector3.zero;
         private float maxMomentum = 1000.0f;
 
-        private bool requireMouseClickBeforeDrag = false;
-        private bool clickStartedBlocked = false;
-
-        private bool translationModifier = false;
         private bool firstPersonModifier = false;
-
-        private bool canUseMouseRelatedFunctions = true;
 
         public bool LockFunctions = false;
 
         private Vector3 zoomDirection;
-
-        private Vector3 dragOrigin;
         private Vector3 rotatePoint;
 
         private Vector2 currentRotation;
@@ -69,10 +70,21 @@ namespace Amsterdam3D.CameraMotion
 
         private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0));
 
-        private IAction moveAction;
-        private IAction rotateAction;
+        private IAction rotateActionMouse;
+        private IAction dragActionMouse;
+        private IAction zoomScrollActionMouse;
+        private IAction zoomDragActionMouse;
+
+        private IAction modifierFirstPersonAction;
+
+        private IAction moveActionKeyboard;
+        private IAction rotateActionKeyboard;
+        private IAction zoomActionKeyboard;
 
         private float minUndergroundY = 0.0f;
+
+        private InputActionMap mouseActionMap;
+        private InputActionMap keyboardActionMap;
 
         void Awake()
         {
@@ -80,48 +92,150 @@ namespace Amsterdam3D.CameraMotion
         }
 
         void Start()
-        {
+		{
+            mouseActionMap = ActionHandler.actions.GodViewMouse;
+            keyboardActionMap = ActionHandler.actions.GodViewKeyboard;
+
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+			AddActionListeners();
+		}
 
-            moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.MoveCamera);
-            rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
+        private void AddActionListeners()
+		{
+            //Mouse actions
+            dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
+			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
+            zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
+            zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
-            ActionHandler.actions.GodView.Enable();
+            //Keyboard actions
+            moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
+			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
+            zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
+
+            //Combination
+            modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
+
+            //Listeners
+            dragActionMouse.SubscribePerformed(Drag);
+            dragActionMouse.SubscribeCancelled(Drag);
+
+            rotateActionMouse.SubscribePerformed(SpinDrag);
+            rotateActionMouse.SubscribeCancelled(SpinDrag);
+
+            zoomScrollActionMouse.SubscribePerformed(Zoom);
+
+            modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
+            modifierFirstPersonAction.SubscribeCancelled(FirstPersonModifier);
+		}
+
+
+        public void EnableKeyboardActionMap(bool enabled)
+        {
+            if (enabled && !ActionHandler.actions.GodViewKeyboard.enabled)
+            {
+                ActionHandler.actions.GodViewKeyboard.Enable();
+            }
+            else if (!enabled && ActionHandler.actions.GodViewKeyboard.enabled)
+            {
+                ActionHandler.actions.GodViewKeyboard.Disable();
+            }
+        }
+
+        public void EnableMouseActionMap(bool enabled)
+        {
+            if (enabled && !ActionHandler.actions.GodViewMouse.enabled)
+            {
+                ActionHandler.actions.GodViewMouse.Enable();
+            }
+            else if(!enabled && ActionHandler.actions.GodViewMouse.enabled)
+            {
+                dragging = false;
+                rotatingAroundPoint = false;
+                ActionHandler.actions.GodViewMouse.Disable();
+            }
+        }
+
+        private void FirstPersonModifier(IAction action)
+        {
+            if (action.Cancelled)
+            {
+                firstPersonModifier = false;
+            }
+            else if (action.Performed)
+            {
+                firstPersonModifier = true;
+            }
+        }
+
+        private void Zoom(IAction action)
+        {
+                scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
+
+            //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
+#if UNITY_WEBGL && !UNITY_EDITOR
+                scrollDelta *= webGLScrollMultiplier;
+#endif
+
+            if (scrollDelta != 0)
+            {
+                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
+                ZoomInDirection(scrollDelta, zoomPoint);
+            }
+        }
+
+        private void Drag(IAction action)
+		{
+            if(action.Cancelled)
+            {
+                dragging = false;
+            } 
+            else if (action.Performed)
+            {
+                startMouseDrag = GetMousePositionInWorld();
+                dragging = true;
+            }
+        }
+
+        private void SpinDrag(IAction action)
+        {
+            if (action.Cancelled)
+            {
+                rotatingAroundPoint = false;
+            }
+            else if (action.Performed)
+            {
+                rotatingAroundPoint = true;
+                SetFocusPoint();
+            }
         }
 
         void Update()
 		{
-            //Check if we started dragging on the UI
-            if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+            if (dragging)
             {
-                clickStartedBlocked = true;
-            }
-            else if (clickStartedBlocked && Input.GetMouseButtonUp(0))
-            {
-                clickStartedBlocked = false;
-            }
-
-            canUseMouseRelatedFunctions = (!clickStartedBlocked && !EventSystem.current.IsPointerOverGameObject() && !ObjectManipulation.manipulatingObject);
-
-           //these shouldn't be needed anymore since unity input system has modifiers built in
-            translationModifier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-            firstPersonModifier = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-
-            if (!Input.GetKey(KeyCode.Space))
-            {
-                HandleTranslationInput();
-                HandleRotationInput();
-
-                if (canUseMouseRelatedFunctions)
+                if (firstPersonModifier)
                 {
-                    Zooming();
-                    Dragging();
-                    RotationAroundPoint();
+                    FirstPersonLook();
                 }
-
-                ClampRotation();
+                else
+                {
+                    Dragging();
+                }
             }
-
+            else{
+                if (rotatingAroundPoint)
+                {
+                    RotateAroundPoint();
+                }
+                else if(!BlockedByTextInput())
+                {
+                    HandleTranslationInput();
+                    HandleRotationInput();
+				}
+                EazeOutDragVelocity();
+            }  
+  
             LimitPosition();
 		}
 
@@ -149,54 +263,39 @@ namespace Amsterdam3D.CameraMotion
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
-            if (!translationModifier && !BlockedByTextInput() && moveAction != null)
+            Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
+            if (movement != null)
             {
-                Vector3 movement = moveAction.ReadValue<Vector2>();
-                if (movement != null)
-                {
-                    movement.z = movement.y;
-                    movement.y = 0;
-                    movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                    cameraComponent.transform.position += movement * moveSpeed;
-                }
+                movement.z = movement.y;
+                movement.y = 0;
+                movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+                cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
             }
         }
 
         private void HandleRotationInput()
         {
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-            if (!BlockedByTextInput())
+            if (rotateActionKeyboard != null)
             {
-                if (rotateAction != null)
-                {
-                    Vector2 rotationInput = rotateAction.ReadValue<Vector2>();
-                    Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
-                    rotation.y += rotationInput.x * rotationSpeed;
-                    rotation.x += rotationInput.y * rotationSpeed;
-                    cameraComponent.transform.eulerAngles = rotation;
-                }
+                Vector2 rotationInput = rotateActionKeyboard.ReadValue<Vector2>();
+                Vector3 rotation = cameraComponent.transform.rotation.eulerAngles;
+                rotation.y += rotationInput.x * rotationSpeed * Time.deltaTime;
+                rotation.x += rotationInput.y * rotationSpeed * Time.deltaTime;
+                cameraComponent.transform.eulerAngles = rotation;
             }
-            
-            if (firstPersonModifier && Input.GetMouseButton(0))
-			{
-				FirstPersonLook();
-			}
 		}
 
 		private void FirstPersonLook()
 		{
-			mouseHorizontal = Input.GetAxis("Mouse X");
-			mouseVertical = Input.GetAxis("Mouse Y");
+            var mouseDelta = Mouse.current.delta.ReadValue();
 
 			//Convert mouse position into local rotations
-			currentRotation.x += mouseHorizontal * rotationSensitivity;
-			currentRotation.y -= mouseVertical * rotationSensitivity;
+			currentRotation.x += mouseDelta.x * rotationSensitivity * Time.deltaTime;
+			currentRotation.y -= mouseDelta.y * rotationSensitivity * Time.deltaTime;
 
 			//Adjust camera rotation
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
-
-            //Require a mouse release, before we register drag events again
-            requireMouseClickBeforeDrag = true;
         }
 
 		private void ClampRotation()
@@ -229,55 +328,6 @@ namespace Amsterdam3D.CameraMotion
             return cameraComponent.transform.position.y;
         }
 
-        private void ClampToGround()
-        {
-            Debug.DrawRay(cameraComponent.transform.position, Vector3.down * floorOffset, Color.red);
-            RaycastHit hit;
-            if (Physics.Raycast(cameraComponent.transform.position, Vector3.down * floorOffset, out hit)){ 
-                if (hit.distance < floorOffset)
-                {
-                    cameraComponent.transform.position = hit.point + new Vector3(0, floorOffset, 0);
-                }
-            }
-        }
-
-        private void Zooming()
-        {
-            if (translationModifier)
-            {
-                if ((Input.GetKey(KeyCode.R)) && !BlockedByTextInput())
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(Time.deltaTime, zoomPoint);
-                }
-                else if ((Input.GetKey(KeyCode.F)) && !BlockedByTextInput())
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(-Time.deltaTime, zoomPoint);
-                }
-            }
-            else if (Input.GetMouseButtonDown(1))
-            {
-                startMouseDrag = Input.mousePosition;
-                mouseZoomTarget = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                mouseZoomStart = cameraComponent.transform.position;
-            }
-            else if (Input.GetMouseButton(1))
-            {
-                cameraComponent.transform.position = mouseZoomStart;
-                ZoomInDirection(-(Input.mousePosition.y - startMouseDrag.y) * mouseZoomSpeed, mouseZoomTarget);
-            }
-            else
-            {
-                scrollDelta = Input.GetAxis("Mouse ScrollWheel");
-                if (scrollDelta != 0)
-                {
-                    var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
-                    ZoomInDirection(scrollDelta, zoomPoint);
-                }
-            }   
-        }
-
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
             var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
@@ -287,103 +337,96 @@ namespace Amsterdam3D.CameraMotion
         }
 
         private void Dragging()
-        {
-            if (!translationModifier && !firstPersonModifier)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    requireMouseClickBeforeDrag = false;
-                    startMouseDrag = GetMousePositionInWorld();
-                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
-                }
-                else if (Input.GetMouseButton(0) && !requireMouseClickBeforeDrag)
-                {
-                    dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
-                     
-                    if(dragMomentum.magnitude > 0.1f)
-                        transform.position -= dragMomentum;
+		{
+			dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
 
-                    //Filter out extreme swings
-                    if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.zero;
-                }
-                else if (Input.GetMouseButtonUp(0)){
-                    ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
-                }
-                else {
-                    //Slide forward in dragged direction
-                    dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
-                    if (dragMomentum.magnitude > 0.1f)
-                    {
-                        this.transform.position -= dragMomentum;
-                    }
-                }
-            }
-        }
+			if (dragMomentum.magnitude > 0.1f)
+				transform.position -= dragMomentum;
 
-        public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+            //Filter out extreme swings
+            if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.ClampMagnitude(dragMomentum, maxMomentum); 
+		}
+
+		private void EazeOutDragVelocity()
+		{
+			//Slide forward in dragged direction
+			dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
+			if (dragMomentum.magnitude > 0.1f)
+			{
+				this.transform.position -= dragMomentum;
+			}
+		}
+
+		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var pointerPosition = Input.mousePosition;
+            var pointerPosition = Mouse.current.position.ReadValue();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
-            var ray = cameraComponent.ScreenPointToRay(pointerPosition);            
-            worldPlane.Raycast(ray, out float distance);
+            var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);            
+            worldPlane.Raycast(screenRay, out float distance);
 
-            var samplePoint = ray.GetPoint(Mathf.Min(maxClickDragDistance, distance));
+            var samplePoint = screenRay.GetPoint(Mathf.Min(maxClickDragDistance, distance));
             samplePoint.y = Constants.ZERO_GROUND_LEVEL_Y;
 
             return samplePoint;
         }
 
-        private void RotationAroundPoint()
-        {
-            RaycastHit hit;
-            var ray = cameraComponent.ScreenPointToRay(Input.mousePosition);
+        private void RotateAroundPoint()
+		{
+			var mouseDelta = Mouse.current.delta.ReadValue();
 
-            if (Input.GetMouseButtonDown(2))
-            {
-                if (Transformable.lastSelectedTransformable != null){
-                    rotatePoint = Transformable.lastSelectedTransformable.transform.position;
-                }
-                else if (Physics.Raycast(ray, out hit))
-                {
-                    rotatePoint = hit.point;
-                    focusingOnTargetPoint(rotatePoint);
-                }
-                else if (new Plane(Vector3.up, new Vector3(0.0f, Constants.ZERO_GROUND_LEVEL_Y, 0.0f)).Raycast(ray, out float enter)){
-                    rotatePoint = ray.GetPoint(enter);
-                    focusingOnTargetPoint(rotatePoint);
-                }
-            }
+			var previousPosition = cameraComponent.transform.position;
+			var previousRotation = cameraComponent.transform.rotation;
 
-            if (Input.GetMouseButton(2))
-            {
-                var mouseX = Input.GetAxis("Mouse X");
-                var mouseY = Input.GetAxis("Mouse Y");
+			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed);
+			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed);
 
-                var previousPosition = cameraComponent.transform.position;
-                var previousRotation = cameraComponent.transform.rotation;
+			if (cameraComponent.transform.position.y < minUndergroundY)
+			{
+				//Do not let the camera go beyond the rotationpoint height
+				cameraComponent.transform.position = previousPosition;
+				cameraComponent.transform.rotation = previousRotation;
+			}
 
-                cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseY * 5f);
-                cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseX * 5f);
+			currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
 
-                if (cameraComponent.transform.position.y < minUndergroundY )
-                {
-                    //Do not let the camera go beyond the rotationpoint height
-                    cameraComponent.transform.position = previousPosition;
-                    cameraComponent.transform.rotation = previousRotation;
-                }
+			focusingOnTargetPoint.Invoke(rotatePoint);
+		}
 
-                currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+		private void SetFocusPoint()
+		{
+			var pointerPosition = Mouse.current.position.ReadValue();
 
-                focusingOnTargetPoint.Invoke(rotatePoint);
-            }
-        }
+			RaycastHit hit;
+			var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
 
-        private float ClampAngle(float angle, float from, float to)
+			//Determine the point we will spin around
+			if (Transformable.lastSelectedTransformable != null)
+			{
+				rotatePoint = Transformable.lastSelectedTransformable.transform.position;
+			}
+			else if (Physics.Raycast(screenRay, out hit))
+			{
+				rotatePoint = hit.point;
+				focusingOnTargetPoint(rotatePoint);
+			}
+			else
+			{
+				rotatePoint = GetMousePositionInWorld();
+				focusingOnTargetPoint(rotatePoint);
+			}
+		}
+
+		private float ClampAngle(float angle, float from, float to)
         {
             if (angle < 0f) angle = 360 + angle;
             if (angle > 180f) return Mathf.Max(angle, 360 + from);
             return Mathf.Min(angle, to);
         }
-    }
+
+		public bool UsesActionMap(InputActionMap actionMap)
+		{
+            return (actionMap == mouseActionMap || actionMap == keyboardActionMap);
+		}
+	}
 }

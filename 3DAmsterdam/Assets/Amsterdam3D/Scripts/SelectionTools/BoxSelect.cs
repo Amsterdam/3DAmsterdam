@@ -31,8 +31,7 @@ namespace Amsterdam3D.Interface
             selectionBox.SetParent(canvas.transform);
             selectionBoxObj.SetActive(false);
             inBoxSelect = false;
-            enabled = true;
-            
+            enabled = true;       
         }
 
         private void Start()
@@ -41,8 +40,6 @@ namespace Amsterdam3D.Interface
             holdAction = Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.StartSelection;
             Amsterdam3D.InputHandler.ActionHandler.actions.SelectionTool.Enable();
             holdAction.Enable();
-            
-
         }
 
 		private void OnDrawGizmos()
@@ -76,7 +73,7 @@ namespace Amsterdam3D.Interface
 
                             selectionBox.gameObject.SetActive(true);
                             inBoxSelect = true;
-                        ActionHandler.actions.GodView.Disable();
+                            ActionHandler.actions.GodViewMouse.Disable();
                         }
                 }
                 else
@@ -116,7 +113,7 @@ namespace Amsterdam3D.Interface
                         
                         vertices.AddRange(new List<Vector3>(){ point1,point2,point3,point4 });
                         onSelectionCompleted?.Invoke();
-                        ActionHandler.actions.GodView.Enable();
+                        ActionHandler.actions.GodViewMouse.Enable();
                     }
                 }
             }

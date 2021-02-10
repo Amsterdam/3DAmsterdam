@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,10 @@ using UnityEngine.EventSystems;
 
 public class RuntimeMaskSphere : MonoBehaviour
 {
-    [SerializeField]
+	[SerializeField]
+	private bool updateRuntimeDynamicMaterials = false;
+
+	[SerializeField]
     private Transform targetMaterialsContainer;
 
     [SerializeField]
@@ -20,15 +24,19 @@ public class RuntimeMaskSphere : MonoBehaviour
 
 	Vector4 maskVector = default;
 
+	[SerializeField]
+	private AssetbundleMeshLayer groundMeshLayer;
 
+	//We enable shadows for the underground when we use the mask sphere, to give more depth
 	private void OnEnable()
 	{
-        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(true);
+		//groundMeshLayer.EnableShadows(true); //We use shadows all the time now, but this might give a performance boost later on
     }
 
-    private void OnDisable()
+	//We enable shadows for the underground when we use the mask sphere, to give more depth
+	private void OnDisable()
     {
-        targetMaterialsContainer.GetComponent<TileLoader>()?.EnableShadows(false);
+		//groundMeshLayer.EnableShadows(false); //We use shadows all the time now, but this might give a performance boost later on
 
 		//make sure to reset mask shaders
 		UpdateSpecificMaterials(true);
@@ -72,8 +80,13 @@ public class RuntimeMaskSphere : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Optionally find runtime created materials that we cant predefine in our specificMaterials list
+	/// </summary>
 	private void UpdateDynamicCreatedInstancedMaterials()
 	{
+		if (!updateRuntimeDynamicMaterials) return;
+
 		MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
 		foreach (MeshRenderer renderer in meshRenderers)

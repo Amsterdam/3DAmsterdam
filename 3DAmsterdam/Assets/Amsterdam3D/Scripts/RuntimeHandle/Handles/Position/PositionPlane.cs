@@ -34,6 +34,7 @@ namespace RuntimeHandle
             MeshCollider mc = o.AddComponent<MeshCollider>();
             o.transform.localRotation = Quaternion.FromToRotation(Vector3.up, _perp);
             o.transform.localPosition = _axis * .25f;
+            o.layer = p_runtimeHandle.raycastLayer;
 
             return this;
         }

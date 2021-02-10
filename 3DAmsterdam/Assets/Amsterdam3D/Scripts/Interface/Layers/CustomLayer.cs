@@ -35,14 +35,14 @@ namespace Amsterdam3D.Interface
                 if (layerType == LayerType.ANNOTATION)
                 {
                     Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPosition, new Quaternion());
+                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
                     annotation.StartEditingText();
                 }
 
                 else if (layerType == LayerType.CAMERA) 
                 {
                     WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
-                    FirstPersonObject obj = LinkedObject.GetComponent<FirstPersonObject>();
+                    FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
                     CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
                 }
                 else
