@@ -49,13 +49,13 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: https://acc.3d.amsterdam.nl/web/feature/3DBasisvoorziening/data/terrain_{x}-{y}-lod0
+    path: terrain/terrain_{x}-{y}-lod0
     maximumDistance: 4000
     maximumDistanceSquared: 0
     enabled: 0
   - Description: LOD1
     lod: 1
-    path: https://acc.3d.amsterdam.nl/web/feature/3DBasisvoorziening/data/terrain_{x}-{y}-lod1
+    path: terrain/terrain_{x}-{y}-lod1
     maximumDistance: 2000
     maximumDistanceSquared: 0
     enabled: 0
