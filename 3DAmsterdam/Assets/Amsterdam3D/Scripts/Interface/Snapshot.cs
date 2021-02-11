@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +29,9 @@ public class Snapshot : MonoBehaviour
 
     [SerializeField]
     private bool includeUI = false;
+
+    [SerializeField]
+    private String fileType;
 
 
     private bool takeScreenshotOnNextFrame;
@@ -71,6 +76,7 @@ public class Snapshot : MonoBehaviour
                     }
 
                     snapshotCamera.targetTexture = screenshotRenderTexture;
+
                     // Calls events on the camera related to rendering
                     snapshotCamera.Render();
 
@@ -81,10 +87,25 @@ public class Snapshot : MonoBehaviour
                     snapshotCamera.targetTexture = null;
                     RenderTexture.active = null;
 
+                    // Default filename
+                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
 
-                    byte[] bytes = screenShot.EncodeToPNG();
-                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
-                    System.IO.File.WriteAllBytes(filename, bytes);
+                    if(fileType == "")
+                    {
+                        fileType = "png";
+                    }
+
+                    // Window for user to input desired path/name/filetype
+                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
+
+
+                    // If user pressed cancel nothing happens
+                    if (path.Length != 0)
+                    {
+                        byte[] bytes = screenShot.EncodeToPNG();
+                        
+                        File.WriteAllBytes(path, bytes);
+                    }
 
                     // Exits out of loop
                     StopCoroutine(screenshotCoroutine);
@@ -96,7 +117,7 @@ public class Snapshot : MonoBehaviour
 
     }
     /// <summary>
-    /// Saves the immediate view as a .png in the 3DAmsterdam folder
+    /// Saves the immediate view with user defined parameters
     /// </summary>
     public void TakeScreenshot()
     {
