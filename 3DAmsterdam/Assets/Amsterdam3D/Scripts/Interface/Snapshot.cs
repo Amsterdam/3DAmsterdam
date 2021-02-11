@@ -25,6 +25,9 @@ public class Snapshot : MonoBehaviour
     [SerializeField]
     private RenderTexture screenshotRenderTexture;
 
+    [SerializeField]
+    private bool includeUI = false;
+
 
     private bool takeScreenshotOnNextFrame;
     private IEnumerator screenshotCoroutine;
@@ -50,31 +53,44 @@ public class Snapshot : MonoBehaviour
             {
                 takeScreenshotOnNextFrame = false;
 
-                if (screenshotRenderTexture == null)
+                // This is a solution for now that enables UI to be included in the picture
+                if(includeUI)
                 {
-                    // Creates off-screen render texture that can be rendered into
-                    screenshotRenderTexture = new RenderTexture(width, height, 24);
-                    screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
+                    ScreenCapture.CaptureScreenshot(fileName);
+                    StopCoroutine(screenshotCoroutine);
+                    gameObject.SetActive(false);
                 }
+                else
+                {
+                    if (screenshotRenderTexture == null)
+                    {
+                        // Creates off-screen render texture that can be rendered into
+                        screenshotRenderTexture = new RenderTexture(width, height, 24);
+                        screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+                    }
 
-                snapshotCamera.targetTexture = screenshotRenderTexture;
-                // Calls events on the camera related to rendering
-                snapshotCamera.Render();
-     
-                RenderTexture.active = screenshotRenderTexture;
-                screenShot.ReadPixels(new Rect(0, 0, width, height),0, 0);
+                    snapshotCamera.targetTexture = screenshotRenderTexture;
+                    // Calls events on the camera related to rendering
+                    snapshotCamera.Render();
 
-                // Resets variables
-                snapshotCamera.targetTexture = null;
-                RenderTexture.active = null;
+                    RenderTexture.active = screenshotRenderTexture;
+                    screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
 
-                byte[] bytes = screenShot.EncodeToPNG();
-                string filename = "Screenshot" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss" )+ ".png";
-                System.IO.File.WriteAllBytes(filename, bytes);
+                    // Resets variables
+                    snapshotCamera.targetTexture = null;
+                    RenderTexture.active = null;
 
-                // Exits out of loop
-                StopCoroutine(screenshotCoroutine);
-                gameObject.SetActive(false);
+
+                    byte[] bytes = screenShot.EncodeToPNG();
+                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
+                    System.IO.File.WriteAllBytes(filename, bytes);
+
+                    // Exits out of loop
+                    StopCoroutine(screenshotCoroutine);
+                    gameObject.SetActive(false);
+                }
+              
             }
         }
 
