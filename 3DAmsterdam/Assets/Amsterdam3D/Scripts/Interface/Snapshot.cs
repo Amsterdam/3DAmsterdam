@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,17 +20,23 @@ public class Snapshot : MonoBehaviour
     private RawImage screenshot;
 
     [SerializeField]
+    private Texture2D screenShot;
+
+    [SerializeField]
     private RenderTexture screenshotRenderTexture;
+
 
     private bool takeScreenshotOnNextFrame;
     private IEnumerator screenshotCoroutine;
-    private Texture2D screenShot;
 
 
 
-    private void Awake()
+
+    private void OnEnable()
     {
-        snapshotCamera = Camera.main.GetComponent<Camera>();
+        snapshotCamera = transform.GetComponent<Camera>();
+        snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
+        snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
         screenshotCoroutine = Screenshotting();
     }
 
@@ -67,6 +74,7 @@ public class Snapshot : MonoBehaviour
 
                 // Exits out of loop
                 StopCoroutine(screenshotCoroutine);
+                gameObject.SetActive(false);
             }
         }
 
@@ -76,7 +84,7 @@ public class Snapshot : MonoBehaviour
     /// </summary>
     public void TakeScreenshot()
     {
-        StopCoroutine(screenshotCoroutine);
+        gameObject.SetActive(true);
         takeScreenshotOnNextFrame = true;
         StartCoroutine(screenshotCoroutine);
     }
