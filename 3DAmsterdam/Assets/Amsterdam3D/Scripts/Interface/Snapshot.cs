@@ -20,20 +20,25 @@ public class Snapshot : MonoBehaviour
     private Camera snapshotCamera;
 
     [SerializeField]
-    private RawImage screenshot;
-
-    [SerializeField]
     private Texture2D screenShot;
 
     [SerializeField]
     private RenderTexture screenshotRenderTexture;
 
     [SerializeField]
-    private bool includeUI = false;
+    private bool includeUI = true;
 
     [SerializeField]
     private String fileType;
 
+    [SerializeField]
+    private String fileName;
+
+    public GameObject snapshotSettings;
+    public Toggle snapshotIncludeUI;
+    public Text snapshotResolution;
+    public Text snapshotFileType;
+    public Text snapshotName;
 
     private bool takeScreenshotOnNextFrame;
     private IEnumerator screenshotCoroutine;
@@ -41,10 +46,36 @@ public class Snapshot : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
-
-
     private void OnEnable()
     {
+        includeUI = snapshotIncludeUI.isOn;
+
+        if(snapshotResolution.text != "")
+        {
+            width = Convert.ToInt32(snapshotResolution.text.Substring(0, 4));
+            height = Convert.ToInt32(snapshotResolution.text.Substring(5));
+        }
+
+        // Need further instrunctions on what to do with resolution
+        width = Screen.width;
+        height = Screen.height;
+
+        if(snapshotFileType.text != "")
+        {
+            fileType = snapshotFileType.text.ToLower();
+        }
+
+        // If the user tries to take a snapshot twice without giving it a name the variable won't reset
+        // That's why we do it here
+        fileName = "";
+
+        if(snapshotName.text != "")
+        {
+            fileName = snapshotName.text;
+        }
+
+        snapshotSettings.SetActive(false);
+
         snapshotCamera = transform.GetComponent<Camera>();
         snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
         snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
@@ -68,11 +99,8 @@ public class Snapshot : MonoBehaviour
                 // This is a solution for now that enables UI to be included in the picture
                 if(includeUI)
                 {
-                    if (screenshotRenderTexture == null)
-                    {
-                        // Creates off-screen render texture that can be rendered into
-                        screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
-                    }
+                    // Creates off-screen render texture that can be rendered into
+                    screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
                     screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                     screenShot.Apply();
@@ -84,9 +112,28 @@ public class Snapshot : MonoBehaviour
                     }
 
                     // Default filename
-                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + fileType;
+                    if (fileName == "")
+                    {
+                        fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + "." + fileType;
+                    }
+                    else
+                    {
+                        fileName += fileName + "." + fileType;
+                    }
 
-                    byte[] bytes = screenShot.EncodeToPNG();
+                    byte[] bytes = null;
+                    if (fileType == "png")
+                    {
+                        bytes = screenShot.EncodeToPNG();
+                    }
+                    else if (fileType == "jpg")
+                    {
+                        bytes = screenShot.EncodeToJPG();
+                    }
+                    else if (fileType == "raw")
+                    {
+                        bytes = screenShot.GetRawTextureData();
+                    }
 
                     DownloadFile(bytes, bytes.Length, fileName);
 
@@ -122,9 +169,28 @@ public class Snapshot : MonoBehaviour
                     }
 
                     // Default filename
-                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + fileType;
+                    if (fileName == "")
+                    {
+                        fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + "." + fileType;
+                    }
+                    else
+                    {
+                        fileName += fileName + "." + fileType;
+                    }
 
-                    byte[] bytes = screenShot.EncodeToPNG();
+                    byte[] bytes = null;
+                    if (fileType == "png")
+                    {
+                        bytes = screenShot.EncodeToPNG();
+                    }
+                    else if (fileType == "jpg")
+                    {
+                        bytes = screenShot.EncodeToJPG();
+                    }
+                    else if (fileType == "raw")
+                    {
+                        bytes = screenShot.GetRawTextureData();
+                    }
 
                     DownloadFile(bytes, bytes.Length, fileName);
 
@@ -154,30 +220,43 @@ public class Snapshot : MonoBehaviour
                 // This is a solution for now that enables UI to be included in the picture
                 if(includeUI)
                 {
-                    if (screenshotRenderTexture == null)
-                    {
-                        // Creates off-screen render texture that can be rendered into
-                        screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
-                    }
+                    // Creates off-screen render texture that can be rendered into
+                    screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
                     screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                     screenShot.Apply();
 
-                    // Default filename
-                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-
+                    // If no filetype is given, make it a png
                     if (fileType == "")
                     {
                         fileType = "png";
                     }
 
+                    // Default filename
+                    if (fileName == "")
+                    {
+                        fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                    }
+
                     // Window for user to input desired path/name/filetype
-                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
+                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", fileName, fileType);
 
                     // If user pressed cancel nothing happens
                     if (path.Length != 0)
                     {
-                        byte[] bytes = screenShot.EncodeToPNG();
+                        byte[] bytes = null;
+                        if (fileType == "png")
+                        {
+                            bytes = screenShot.EncodeToPNG();
+                        }
+                        else if(fileType == "jpg")
+                        {
+                            bytes = screenShot.EncodeToJPG();
+                        }
+                        else if(fileType == "raw")
+                        {
+                            bytes = screenShot.GetRawTextureData();
+                        }
 
                         File.WriteAllBytes(path, bytes);
                     }
@@ -208,22 +287,37 @@ public class Snapshot : MonoBehaviour
                     snapshotCamera.targetTexture = null;
                     RenderTexture.active = null;
 
-                    // Default filename
-                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-
+                    // If no filetype is given, make it a png
                     if (fileType == "")
                     {
                         fileType = "png";
                     }
 
+                    // Default filename
+                    if (fileName == "")
+                    {
+                        fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                    }
+
                     // Window for user to input desired path/name/filetype
-                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
+                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", fileName, fileType);
 
                     // If user pressed cancel nothing happens
                     if (path.Length != 0)
                     {
-                        byte[] bytes = screenShot.EncodeToPNG();
-
+                        byte[] bytes = null;
+                        if (fileType == "png")
+                        {
+                            bytes = screenShot.EncodeToPNG();
+                        }
+                        else if (fileType == "jpg")
+                        {
+                            bytes = screenShot.EncodeToJPG();
+                        }
+                        else if (fileType == "raw")
+                        {
+                            bytes = screenShot.GetRawTextureData();
+                        }
                         File.WriteAllBytes(path, bytes);
                     }
 
