@@ -118,7 +118,7 @@ public class Snapshot : MonoBehaviour
                     }
                     else
                     {
-                        fileName += fileName + "." + fileType;
+                        fileName = fileName + "." + fileType;
                     }
 
                     byte[] bytes = null;
@@ -175,7 +175,7 @@ public class Snapshot : MonoBehaviour
                     }
                     else
                     {
-                        fileName += fileName + "." + fileType;
+                        fileName = fileName + "." + fileType;
                     }
 
                     byte[] bytes = null;
