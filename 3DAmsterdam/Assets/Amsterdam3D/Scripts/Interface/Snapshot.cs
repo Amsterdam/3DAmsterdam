@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,6 +38,8 @@ public class Snapshot : MonoBehaviour
     private bool takeScreenshotOnNextFrame;
     private IEnumerator screenshotCoroutine;
 
+    [DllImport("__Internal")]
+    private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
 
 
@@ -60,9 +63,32 @@ public class Snapshot : MonoBehaviour
 
                 // This is a solution for now that enables UI to be included in the picture
                 if(includeUI)
-                {
-                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png";
-                    ScreenCapture.CaptureScreenshot(fileName);
+                {                   
+                    // If no filetype is given, make it a png
+                    if (fileType == "")
+                    {
+                        fileType = ".png";
+                    }
+
+                    // Default filename
+                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + fileType;
+
+                    var texture = ScreenCapture.CaptureScreenshotAsTexture();
+                    byte[] textureBytes = texture.EncodeToPNG();
+                    DownloadFile(textureBytes, textureBytes.Length, fileName);
+
+
+                    // Window for user to input desired path/name/filetype
+                    //string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
+                    // If user pressed cancel nothing happens
+                    //if (path.Length != 0)
+                    //{
+                    //    ScreenCapture.CaptureScreenshot(path);
+                    //}             
+
+                    // This only works on Editor
+
+                    Destroy(texture);
                     StopCoroutine(screenshotCoroutine);
                     gameObject.SetActive(false);
                 }
@@ -87,25 +113,23 @@ public class Snapshot : MonoBehaviour
                     snapshotCamera.targetTexture = null;
                     RenderTexture.active = null;
 
-                    // Default filename
-                    string filename = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-
-                    if(fileType == "")
+                    // If no filetype is given, make it a png
+                    if (fileType == "")
                     {
-                        fileType = "png";
+                        fileType = ".png";
                     }
+
+                    // Default filename
+                    string fileName = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + fileType;
 
                     // Window for user to input desired path/name/filetype
-                    string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
-
+                    //string path = EditorUtility.SaveFilePanel("Save texture as PNG", "", filename, fileType);
 
                     // If user pressed cancel nothing happens
-                    if (path.Length != 0)
-                    {
-                        byte[] bytes = screenShot.EncodeToPNG();
-                        
-                        File.WriteAllBytes(path, bytes);
-                    }
+
+                    byte[] bytes = screenShot.EncodeToPNG();
+
+                    DownloadFile(bytes, bytes.Length, fileName);
 
                     // Exits out of loop
                     StopCoroutine(screenshotCoroutine);
