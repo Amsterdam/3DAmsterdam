@@ -6,6 +6,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class Snapshot : MonoBehaviour
@@ -13,8 +15,10 @@ public class Snapshot : MonoBehaviour
 
     [SerializeField]
     private int width = 1920;
+    private int previewWidth = 0;
     [SerializeField]
     private int height = 1080;
+    private int previewHeight = 0;
 
     [SerializeField]
     private Camera snapshotCamera;
@@ -36,17 +40,19 @@ public class Snapshot : MonoBehaviour
     public GameObject snapshotSettings;
     public Toggle snapshotMainMenu;
     public Text snapshotResolution;
+    public Text aspectRatio;
     public Text snapshotFileType;
     public Text snapshotName;
 
     public Canvas responsiveCanvas;
+    public GameObject preview;
     private bool takeScreenshotOnNextFrame;
     private IEnumerator screenshotCoroutine;
 
     [DllImport("__Internal")]
     private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
-    private void OnEnable()
+    private void UpdateSettings()
     {
 
         if(snapshotResolution.text != "")
@@ -77,8 +83,6 @@ public class Snapshot : MonoBehaviour
         {
             fileName = snapshotName.text;
         }
-
-        snapshotSettings.SetActive(false);
 
         snapshotCamera = transform.GetComponent<Camera>();
         snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
@@ -183,6 +187,7 @@ public class Snapshot : MonoBehaviour
 
                 // Creates off-screen render texture that can be rendered into
                 screenshotRenderTexture = new RenderTexture(width, height, 24);
+                
                 screenShot = new Texture2D(width, height , TextureFormat.RGB24, false);
                     
                 snapshotCamera.targetTexture = screenshotRenderTexture;
@@ -195,11 +200,12 @@ public class Snapshot : MonoBehaviour
                 responsiveCanvas.worldCamera = null;
                 responsiveCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-                screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                //screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                //screenShot.ReadPixels(new Rect(6, 72, previewWidth-6, previewHeight-72), 6, 72);
+                screenShot.ReadPixels(new Rect(32, 18, previewWidth-32, previewHeight-18), 32, 18);
                 screenShot.Apply();
 
                 // Resets variables
-                snapshotCamera.targetTexture = null;
                 RenderTexture.active = null;
                 snapshotMainMenu.isOn = true;
 
@@ -251,10 +257,61 @@ public class Snapshot : MonoBehaviour
     /// </summary>
     public void TakeScreenshot()
     {
+        // This sets the canvas to be inside of the camera render
+        gameObject.SetActive(true);
         responsiveCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         responsiveCanvas.worldCamera = snapshotCamera;
-        gameObject.SetActive(true);
+        UpdateSettings();
         takeScreenshotOnNextFrame = true;
         StartCoroutine(screenshotCoroutine);
+    }
+
+    public void UpdateResolution()
+    {
+        gameObject.SetActive(true);
+        UpdateSettings();
+        if (width == 1920)
+        {
+            preview.transform.localScale = new Vector3(16, 9);
+            int previewSize = Mathf.RoundToInt((Screen.width - 250) / 16);
+            previewWidth = previewSize * 16;
+            previewHeight = previewSize * 9;
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(previewSize, previewSize);
+        }
+        else if (width == 1440)
+        {
+            preview.transform.localScale = new Vector3(16, 10);
+            int previewSize = Mathf.RoundToInt((Screen.width - 250) / 16);
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(previewSize, previewSize);
+        }
+        gameObject.SetActive(false);
+    }
+    
+    public void UpdateAspectRatio()
+    {
+        gameObject.SetActive(true);
+        UpdateSettings();
+        if (aspectRatio.text == "16×9")
+        {
+            preview.transform.localScale = new Vector3(16, 9);
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(106, 106);
+        }
+        else if (aspectRatio.text == "16×10")
+        {
+            preview.transform.localScale = new Vector3(16, 10);
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(106, 106);
+        }
+        else if (aspectRatio.text == "4×3")
+        {
+            preview.transform.localScale = new Vector3(4, 3);
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(360, 360);
+        }
+        else if (aspectRatio.text == "1×1")
+        {
+            preview.transform.localScale = new Vector3(1, 1);
+            preview.GetComponent<RectTransform>().sizeDelta = new Vector2(1080, 1080);
+        }
+
+        gameObject.SetActive(false);
     }
 }
