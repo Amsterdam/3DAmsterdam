@@ -34,10 +34,20 @@ public class Snapshot : MonoBehaviour
     private const string resolutionSeparator = "×";
 
     public GameObject snapshotSettings;
+
+    public Toggle snapshotUI;
+    private bool snapshotPreferenceUI;
+    public Toggle snapshotNavigation;
+    private bool snapshotPreferenceNavigation;
+    public Toggle snapshotLogo;
+    private bool snapshotPreferenceLogo = true;
     public Toggle snapshotMainMenu;
+    private bool snapshotPreferenceMainMenu;
+
     public Text snapshotResolution;
     public Text snapshotFileType;
     public Text snapshotName;
+
 
     public Canvas responsiveCanvas;
     private bool takeScreenshotOnNextFrame;
@@ -77,6 +87,12 @@ public class Snapshot : MonoBehaviour
         {
             fileName = snapshotName.text;
         }
+
+        // After taking a screenshot the toggles for UI that the user set get saved
+        snapshotPreferenceUI = snapshotUI.isOn;
+        snapshotPreferenceNavigation = snapshotNavigation.isOn;
+        snapshotPreferenceLogo = snapshotLogo.isOn;
+        snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
 
         snapshotSettings.SetActive(false);
 
@@ -220,13 +236,25 @@ public class Snapshot : MonoBehaviour
         // Resets variables
         snapshotCamera.targetTexture = null;
         RenderTexture.active = null;
-        snapshotMainMenu.isOn = true;
+        snapshotUI.isOn = false;
+        snapshotUI.isOn = true;
 
         // If no filetype is given, make it a png
         if (fileType == "")
         {
             fileType = "png";
         }
+    }
+
+    /// <summary>
+    /// Updates the toggles based on the previous snapshot settings
+    /// </summary>
+    public void UpdateFields()
+    {
+        snapshotUI.isOn = snapshotPreferenceUI;
+        snapshotNavigation.isOn = snapshotPreferenceNavigation;
+        snapshotLogo.isOn = snapshotPreferenceLogo;
+        snapshotMainMenu.isOn = snapshotPreferenceMainMenu;
     }
 
 
