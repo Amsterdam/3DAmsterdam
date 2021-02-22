@@ -153,7 +153,7 @@ public class SelectByID : Interactable
             }
             ObjectProperties.Instance.RenderThumbnail(true);
         }
-		else
+		else if(ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
 		{
             ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 		}
@@ -170,7 +170,10 @@ public class SelectByID : Interactable
 			selectedIDs.Clear();
         }
 
-        ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+        if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+        {
+            ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+        }
 
         //Remove highlights by highlighting our empty list
         containerLayer.Highlight(selectedIDs);
