@@ -46,6 +46,8 @@ namespace RuntimeHandle
 
         void Awake()
         {
+            contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
+
             raycastLayer = LayerMask.NameToLayer(raycastLayerName);
 
             movedHandle = new UnityEvent();
@@ -81,6 +83,12 @@ namespace RuntimeHandle
             if (positionHandle) positionHandle.Destroy();
             if (rotationHandle) rotationHandle.Destroy();
             if (scaleHandle) scaleHandle.Destroy();
+        }
+
+        public override void SecondarySelect()
+        {
+            base.Select();
+            ContextPointerMenu.Instance.SetTargetInteractable(target.GetComponent<Interactable>());
         }
 
         void LateUpdate()
