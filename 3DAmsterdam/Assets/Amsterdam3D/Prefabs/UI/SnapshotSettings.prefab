@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 162883043}
   - component: {fileID: 162883045}
   - component: {fileID: 162883044}
+  - component: {fileID: 3927251459721533726}
   m_Layer: 5
   m_Name: SettingsHeaderText
   m_TagString: Untagged
@@ -78,6 +79,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Momentopname
+--- !u!114 &3927251459721533726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162883042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4847de65100161641ae3f7962da902a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowOutsideOfScreen: 0
 --- !u!1 &811542521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1142,6 +1156,7 @@ GameObject:
   - component: {fileID: 9200547442961178813}
   - component: {fileID: 709583476302009613}
   - component: {fileID: 8033335347037436223}
+  - component: {fileID: 6387119902659046699}
   m_Layer: 5
   m_Name: SnapshotSettings
   m_TagString: Untagged
@@ -1228,6 +1243,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6387119902659046699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082173924246429680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9274b11f9c1f2d4299622a94bf7c327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1546071819650012734
 GameObject:
   m_ObjectHideFlags: 0
