@@ -97,40 +97,12 @@ public class Snapshot : MonoBehaviour
         {
             // Helps with making sure the camera is ready to render
             yield return new WaitForEndOfFrame();   
-            // A trick to make sure the UI gets rendered to the screenshot
-            yield return new WaitForEndOfFrame();
+
             if (takeScreenshotOnNextFrame)
             {
                 takeScreenshotOnNextFrame = false;
-                
-                // Creates off-screen render texture that can be rendered into
-                screenshotRenderTexture = new RenderTexture(width, height, 24);
-                screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-                snapshotCamera.targetTexture = screenshotRenderTexture;
-                RenderTexture.active = screenshotRenderTexture;
-
-                // Calls events on the camera related to rendering
-                snapshotCamera.Render();          
-                
-                // Resets canvas
-                responsiveCanvas.worldCamera = null;
-                responsiveCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-                screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                screenShot.Apply();
-
-                // Resets variables
-                snapshotCamera.targetTexture = null;
-                RenderTexture.active = null;
-                snapshotMainMenu.isOn = true;
-
-
-                // If no filetype is given, make it a png
-                if (fileType == "")
-                {
-                    fileType = ".png";
-                }
+                RenderCameraToTexture();
 
                 // Default filename
                 if (fileName == "")
@@ -143,17 +115,21 @@ public class Snapshot : MonoBehaviour
                 }
 
                 byte[] bytes = null;
-                if (fileType == "png")
+
+                switch (fileType)
                 {
-                    bytes = screenShot.EncodeToPNG();
-                }
-                else if (fileType == "jpg")
-                {
-                    bytes = screenShot.EncodeToJPG();
-                }
-                else if (fileType == "raw")
-                {
-                    bytes = screenShot.GetRawTextureData();
+                    case "png":
+                        bytes = screenShot.EncodeToPNG();
+                        break;
+                    case "jpg":
+                        bytes = screenShot.EncodeToJPG();
+                        break;
+                    case "raw":
+                        bytes = screenShot.GetRawTextureData();
+                        break;
+                    default:
+                        bytes = screenShot.EncodeToPNG();
+                        break;
                 }
 
                 DownloadFile(bytes, bytes.Length, fileName);
@@ -166,7 +142,6 @@ public class Snapshot : MonoBehaviour
 
     }
 
-
 #if UNITY_EDITOR
 
     private IEnumerator ScreenshottingEditor()
@@ -175,39 +150,12 @@ public class Snapshot : MonoBehaviour
         {
             // Helps with making sure the camera is ready to render
             yield return new WaitForEndOfFrame();
-            // A trick to make sure the UI gets rendered to the screenshot
-            yield return new WaitForEndOfFrame();
+
             if (takeScreenshotOnNextFrame)
             {
                 takeScreenshotOnNextFrame = false;
 
-                // Creates off-screen render texture that can be rendered into
-                screenshotRenderTexture = new RenderTexture(width, height, 24);
-                screenShot = new Texture2D(width, height , TextureFormat.RGB24, false);
-                    
-                snapshotCamera.targetTexture = screenshotRenderTexture;
-                RenderTexture.active = screenshotRenderTexture;
-
-                // Calls events on the camera related to rendering
-                snapshotCamera.Render();
-
-                // Resets canvas
-                responsiveCanvas.worldCamera = null;
-                responsiveCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-                screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-                screenShot.Apply();
-
-                // Resets variables
-                snapshotCamera.targetTexture = null;
-                RenderTexture.active = null;
-                snapshotMainMenu.isOn = true;
-
-                // If no filetype is given, make it a png
-                if (fileType == "")
-                {
-                    fileType = "png";
-                }
+                RenderCameraToTexture();
 
                 // Default filename
                 if (fileName == "")
@@ -222,17 +170,20 @@ public class Snapshot : MonoBehaviour
                 if (path.Length != 0)
                 {
                     byte[] bytes = null;
-                    if (fileType == "png")
+                    switch (fileType)
                     {
-                        bytes = screenShot.EncodeToPNG();
-                    }
-                    else if (fileType == "jpg")
-                    {
-                        bytes = screenShot.EncodeToJPG();
-                    }
-                    else if (fileType == "raw")
-                    {
-                        bytes = screenShot.GetRawTextureData();
+                        case "png":
+                            bytes = screenShot.EncodeToPNG();
+                            break;
+                        case "jpg":
+                            bytes = screenShot.EncodeToJPG();
+                            break;
+                        case "raw":
+                            bytes = screenShot.GetRawTextureData();
+                            break;
+                        default:
+                            bytes = screenShot.EncodeToPNG();
+                            break;
                     }
                     File.WriteAllBytes(path, bytes);
                 }
@@ -246,13 +197,49 @@ public class Snapshot : MonoBehaviour
     }
 #endif
 
+
+    private void RenderCameraToTexture()
+    {
+        // Creates off-screen render texture that can be rendered into
+        screenshotRenderTexture = new RenderTexture(width, height, 24);
+        screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+        snapshotCamera.targetTexture = screenshotRenderTexture;
+        RenderTexture.active = screenshotRenderTexture;
+
+        // Calls events on the camera related to rendering
+        snapshotCamera.Render();
+
+        // Resets canvas
+        responsiveCanvas.worldCamera = null;
+        responsiveCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        screenShot.Apply();
+
+        // Resets variables
+        snapshotCamera.targetTexture = null;
+        RenderTexture.active = null;
+        snapshotMainMenu.isOn = true;
+
+        // If no filetype is given, make it a png
+        if (fileType == "")
+        {
+            fileType = "png";
+        }
+    }
+
+
     /// <summary>
     /// Saves the immediate view with user defined parameters
     /// </summary>
     public void TakeScreenshot()
     {
+        // Allows the camera to see what is on the canvas
         responsiveCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         responsiveCanvas.worldCamera = snapshotCamera;
+        responsiveCanvas.planeDistance = snapshotCamera.nearClipPlane + 0.1f;
+
         gameObject.SetActive(true);
         takeScreenshotOnNextFrame = true;
         StartCoroutine(screenshotCoroutine);
