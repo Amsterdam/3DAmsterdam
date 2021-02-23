@@ -115,13 +115,12 @@ canvas+* {
 
 #sharedUrl {
 	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-left: -140px;
-	margin-top: 50px;
+	bottom: 0; 
+	left: 0;
 	z-index: 2;
-	height: 40px;
-	width: 280px;
+	width: 0px;
+	height: 0px;
+	text-align: center;
 	font-family: sans-serif;
 	font-weight: bold;
 	word-break: break-all;

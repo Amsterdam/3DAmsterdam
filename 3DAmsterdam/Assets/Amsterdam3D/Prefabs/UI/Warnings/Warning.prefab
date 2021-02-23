@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 713723926396034807}
   - component: {fileID: 8444610344151220636}
   - component: {fileID: -8189241401573661688}
+  - component: {fileID: 4589333276197880667}
   m_Layer: 5
   m_Name: Warning
   m_TagString: Untagged
@@ -95,7 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyText: {fileID: 2334859570067598517}
-  contactUrl: {fileID: 2712057682244656203}
 --- !u!95 &-8189241401573661688
 Animator:
   serializedVersion: 3
@@ -115,6 +115,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4589333276197880667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129534788594353835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9274b11f9c1f2d4299622a94bf7c327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &960662875383448160
 GameObject:
   m_ObjectHideFlags: 0

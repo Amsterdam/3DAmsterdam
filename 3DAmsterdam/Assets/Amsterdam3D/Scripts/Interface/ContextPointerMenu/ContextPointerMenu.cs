@@ -15,6 +15,8 @@ namespace Amsterdam3D.Interface
 		private RectTransform contextItemsPanel = default;
 
 		[SerializeField]
+		private Button transformSubmenuItem;
+		[SerializeField]
 		private RectTransform transformSubMenu = default;
 
 		public static ContextPointerMenu Instance = null;
@@ -112,6 +114,17 @@ namespace Amsterdam3D.Interface
 						button.interactable = true;
 					return;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Pops out transform options if the button is active
+		/// </summary>
+		public void PopOutTransformSubmenu()
+		{
+			if (transformSubmenuItem.interactable)
+			{
+				transformSubMenu.gameObject.SetActive(true);
 			}
 		}
 
