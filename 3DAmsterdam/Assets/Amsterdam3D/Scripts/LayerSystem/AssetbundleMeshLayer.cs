@@ -232,14 +232,14 @@ namespace LayerSystem
 			Vector2 uv = new Vector2(0.33f, 0.5f);
 			int count = mesh.vertexCount;
 
-			List<Vector2> uvs = new List<Vector2>();
-			uvs.Capacity = count;
+			Vector2[] uvs =new Vector2[count];
+			
 			Vector2 defaultUV = new Vector2(0.33f, 0.6f);
 			for (int i = 0; i < count; i++)
 			{
-				uvs.Add(defaultUV);
+				uvs[i]=(defaultUV);
 			}
-			mesh.uv2 = uvs.ToArray();
+			mesh.uv2 = uvs;
 
 			container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
