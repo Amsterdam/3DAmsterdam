@@ -233,6 +233,7 @@ namespace LayerSystem
 			int count = mesh.vertexCount;
 
 			List<Vector2> uvs = new List<Vector2>();
+			uvs.Capacity = count;
 			Vector2 defaultUV = new Vector2(0.33f, 0.6f);
 			for (int i = 0; i < count; i++)
 			{
