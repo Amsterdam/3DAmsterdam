@@ -90,11 +90,15 @@ namespace LayerSystem
 		void Update()
 		{
 			//for debugging
-			activeTileChangesView = activeTileChanges.Values.ToList();
+			//activeTileChangesView = activeTileChanges.Values.ToList();
 
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = getCameraPosition(cameraExtents);
-			tileSizes=GetTilesizes();
+			
+            if (tileSizes.Count==0)
+            {
+				GetTilesizes();
+			}
 			GetTileDistances(tileSizes, viewRange, cameraPosition);
 
 			pendingTileChanges.Clear();
@@ -165,10 +169,10 @@ namespace LayerSystem
 		/// create a list of unique tilesizes used by all the layers
 		/// save the list in variable tileSizes
 		/// </summary>
-		private List<int> GetTilesizes()
+		private void GetTilesizes()
 		{
 			int tilesize;
-			List<int> tileSizes = new List<int>();
+			tileSizes = new List<int>();
 			foreach (Layer layer in layers)
 			{
 				if (layer.isEnabled == true)
@@ -180,7 +184,7 @@ namespace LayerSystem
 					}
 				}
 			}
-			return tileSizes;
+			
 		}
 		
 		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
@@ -371,7 +375,8 @@ namespace LayerSystem
 		Layer layer;
 		List<Vector3Int> neededTiles;
 		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
-		List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
+		//List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
+		Vector2Int[] activeTiles;
 		TileChange tileChange;
 		
 		private void RemoveOutOfViewTiles()
@@ -393,17 +398,17 @@ namespace LayerSystem
 					//tileKey.y = neededTile.y;
 					neededTileKeys.Add(new Vector2Int(neededTile.x, neededTile.y));
 				}
-
-				activeTiles = new List<Vector2Int>(layer.tiles.Keys);
+				//activeTiles = layer.tiles.Keys.ToArray();
+				//activeTiles = new List<Vector2Int>(layer.tiles.Keys);
 				// check for each active tile if the key is in the list of tilekeys within the viewrange
-				foreach (Vector2Int activeTile in activeTiles)
+				foreach (var kvp in layer.tiles)
 				{
-					if (neededTileKeys.Contains(activeTile) == false) // if the tile is not within the viewrange, set it up for removal
+					if (neededTileKeys.Contains(kvp.Key) == false) // if the tile is not within the viewrange, set it up for removal
 					{
 						tileChange = new TileChange();
 						tileChange.action = TileAction.Remove;
-						tileChange.X = activeTile.x;
-						tileChange.Y = activeTile.y;
+						tileChange.X = kvp.Key.x;
+						tileChange.Y = kvp.Key.y;
 						tileChange.layerIndex = layerIndex;
 						tileChange.priorityScore = int.MaxValue; // set the priorityscore to maximum
 						AddTileChange(tileChange,layerIndex);
