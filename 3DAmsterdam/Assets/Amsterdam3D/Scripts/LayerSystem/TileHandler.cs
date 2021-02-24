@@ -438,7 +438,7 @@ namespace LayerSystem
 		public Vector2Int tileKey;
 	}
 	[Serializable]
-	public class TileChange
+	public struct TileChange
 	{
 		public TileAction action;
 		public int priorityScore;
