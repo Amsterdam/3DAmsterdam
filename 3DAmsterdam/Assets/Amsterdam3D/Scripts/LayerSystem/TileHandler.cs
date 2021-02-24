@@ -35,8 +35,8 @@ namespace LayerSystem
 		/// X,Y is bottom-left coordinate of tile in RD (for example 121000,480000)
 		/// Z is distance-squared to camera in m 
 		/// </summary>
-		public List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
-
+		private List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
+		private List<Vector3Int> tileList = new List<Vector3Int>();
 		/// <summary>
 		/// list of tilechanges, ready to be processed
 		/// </summary>
@@ -95,7 +95,7 @@ namespace LayerSystem
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = getCameraPosition(cameraExtents);
 			tileSizes=GetTilesizes();
-			tileDistances = GetTileDistances(tileSizes, viewRange, cameraPosition);
+			GetTileDistances(tileSizes, viewRange, cameraPosition);
 
 			pendingTileChanges.Clear();
 			RemoveOutOfViewTiles();
@@ -183,36 +183,39 @@ namespace LayerSystem
 			return tileSizes;
 		}
 		
-		private List<List<Vector3Int>> GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
-			List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
+			tileDistances.Clear();
 		
 			int startX;
 			int startY;
 			int endX;
 			int endY;
 
-			List<Vector3Int> tileList;
+			
 			foreach (int tileSize in tileSizes)
 			{
-				tileList = new List<Vector3Int>();
+				
+				
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.w) / tileSize) * tileSize;
-
+				//clear the tileList
+				tileList.Clear();
+				//set the required capacity
+				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize);
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
-
 					}
 				}
 				tileDistances.Add(tileList);
 			}
-			return tileDistances;
+			
 		}
 
 
