@@ -14,6 +14,7 @@ namespace LayerSystem
         //public Material DefaultMaterial;
 		public List<Material> DefaultMaterialList = new List<Material>();
 		public bool createMeshcollider = false;
+		public bool addHighlightuvs = false;
 		public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.On;
 
 		public override void OnDisableTiles(bool isenabled)
@@ -207,9 +208,15 @@ namespace LayerSystem
 
 		}
 
+		Mesh[] meshesInAssetbundle = new Mesh[0];
+		GameObject container;
+		Mesh mesh;
+		MeshRenderer meshRenderer;
+		Vector2[] uvs;
+		Vector2 defaultUV = new Vector2(0.33f, 0.6f);
 		private GameObject CreateNewGameObject(AssetBundle assetBundle, TileChange tileChange)
 		{
-			GameObject container = new GameObject();
+			container = new GameObject();
 			
 			container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
 			container.transform.parent = transform.gameObject.transform;
@@ -217,7 +224,7 @@ namespace LayerSystem
 			container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X + 500, tileChange.Y + 500));
 			
 			container.SetActive(isEnabled);
-			Mesh[] meshesInAssetbundle = new Mesh[0];
+			//Mesh[] meshesInAssetbundle = new Mesh[0];
 			try
 			{
 				meshesInAssetbundle = assetBundle.LoadAllAssets<Mesh>();
@@ -228,22 +235,26 @@ namespace LayerSystem
 				assetBundle.Unload(true);
 				return null;
 			}
-			Mesh mesh = meshesInAssetbundle[0];
-			Vector2 uv = new Vector2(0.33f, 0.5f);
+			mesh = meshesInAssetbundle[0];
+			
 			int count = mesh.vertexCount;
 
-			Vector2[] uvs =new Vector2[count];
-			
-			Vector2 defaultUV = new Vector2(0.33f, 0.6f);
-			for (int i = 0; i < count; i++)
-			{
-				uvs[i]=(defaultUV);
+            // creating the UV-s runtime takes a lot of time and causes the garbage-collector to kick in.
+            // uv's should be built in in to the meshes in the assetbundles.
+            if (addHighlightuvs)
+            {
+				uvs = new Vector2[count];
+				for (int i = 0; i < count; i++)
+				{
+					uvs[i] = (defaultUV);
+				}
+				mesh.uv2 = uvs;
 			}
-			mesh.uv2 = uvs;
+            
 
-			container.AddComponent<MeshFilter>().sharedMesh = mesh;
+            container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
-			MeshRenderer meshRenderer = container.AddComponent<MeshRenderer>();
+			meshRenderer = container.AddComponent<MeshRenderer>();
 			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
 			meshRenderer.shadowCastingMode = tileShadowCastingMode;
 
