@@ -186,7 +186,7 @@ namespace LayerSystem
 		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			tileDistances.Clear();
-			tileDistances.Capacity = tileSizes.Count;
+			
 		
 			int startX;
 			int startY;
@@ -205,7 +205,7 @@ namespace LayerSystem
 				//clear the tileList
 				tileList.Clear();
 				//set the required capacity
-				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize);
+				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize)+50;
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
@@ -214,6 +214,8 @@ namespace LayerSystem
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
 					}
 				}
+				
+				
 				tileDistances.Add(tileList);
 			}
 			
@@ -361,28 +363,36 @@ namespace LayerSystem
             }
 			return priority;
 		}
-		
+
 		/// <summary>
 		/// 
 		/// </summary>
+		/// 
+		Layer layer;
+		List<Vector3Int> neededTiles;
+		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
+		List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
+		TileChange tileChange;
+		
 		private void RemoveOutOfViewTiles()
 		{
-			List<Vector3Int> neededTiles;
-			List<Vector2Int> neededTileKeys = new List<Vector2Int>();
-			List<Vector2Int> activeTiles; // list of currently active tiles
+			
+			
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
 				// create a list of tilekeys for the tiles that are within the viewrange
-				Layer layer = layers[layerIndex];
+				 layer = layers[layerIndex];
 				if (layer.gameObject.activeSelf == false) { continue; }
 				int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
 				neededTiles = tileDistances[tilesizeIndex];
 				neededTileKeys.Clear();
+				neededTileKeys.Capacity = neededTiles.Count;
 				foreach (var neededTile in neededTiles)
 				{
+					//tileKey.x = neededTile.x;
+					//tileKey.y = neededTile.y;
 					neededTileKeys.Add(new Vector2Int(neededTile.x, neededTile.y));
 				}
-
 
 				activeTiles = new List<Vector2Int>(layer.tiles.Keys);
 				// check for each active tile if the key is in the list of tilekeys within the viewrange
@@ -390,7 +400,7 @@ namespace LayerSystem
 				{
 					if (neededTileKeys.Contains(activeTile) == false) // if the tile is not within the viewrange, set it up for removal
 					{
-						TileChange tileChange = new TileChange();
+						tileChange = new TileChange();
 						tileChange.action = TileAction.Remove;
 						tileChange.X = activeTile.x;
 						tileChange.Y = activeTile.y;
