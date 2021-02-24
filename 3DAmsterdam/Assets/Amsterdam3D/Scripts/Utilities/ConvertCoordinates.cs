@@ -60,6 +60,7 @@ namespace ConvertCoordinates
         private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
         private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
 
+        private static Vector3RD output = new Vector3RD();
         /// <summary>
         /// set ReferenceWGS84 to given value, 
         /// sets referenceRD to corresponding value, 
@@ -355,6 +356,16 @@ namespace ConvertCoordinates
         /// <param name="lon">Longitude (East-West)</param>
         /// <param name="lat">Lattitude (South-North)</param>
         /// <returns>RD-coordinate xyH</returns>
+        /// 
+        //setup coefficients for X-calculation
+        private static double[] Rp = new double[] { 0, 1, 2, 0, 1, 3, 1, 0, 2 };
+        private static double[] Rq = new double[] { 1, 1, 1, 3, 0, 1, 3, 2, 3 };
+        private static double[] Rpq = new double[] { 190094.945, -11832.228, -114.221, -32.391, -0.705, -2.340, -0.608, -0.008, 0.148 };
+        //setup coefficients for Y-calculation
+        private static double[] Sp = new double[] { 1, 0, 2, 1, 3, 0, 2, 1, 0, 1 };
+        private static double[] Sq = new double[] { 0, 2, 0, 2, 0, 1, 2, 1, 4, 4 };
+        private static double[] Spq = new double[] { 309056.544, 3638.893, 73.077, -157.984, 59.788, 0.433, -6.439, -0.032, 0.092, -0.054 };
+
         public static Vector3RD WGS84toRD(double lon, double lat)
         {
             //coordinates of basepoint in RD
@@ -368,13 +379,6 @@ namespace ConvertCoordinates
             double DeltaLon = 0.36 * (lon - refLon);
             double DeltaLat = 0.36 * (lat - refLat);
 
-            
-
-            //setup coefficients for X-calculation
-            double[] Rp = new double[] { 0, 1, 2, 0, 1, 3, 1, 0, 2 };
-            double[] Rq = new double[] { 1, 1, 1, 3, 0, 1, 3, 2, 3 };
-            double[] Rpq = new double[] { 190094.945, -11832.228, -114.221, -32.391, -0.705, -2.340, -0.608, -0.008, 0.148 };
-
             //calculate X
             double DeltaX = 0;
             for (int i = 0; i < Rpq.Length; i++)
@@ -382,11 +386,6 @@ namespace ConvertCoordinates
                 DeltaX += Rpq[i] * Math.Pow(DeltaLat, Rp[i]) * Math.Pow(DeltaLon, Rq[i]);
             }
             double X = DeltaX + refRDX;
-
-            //setup coefficients for Y-calculation
-            double[] Sp = new double[] { 1, 0, 2, 1, 3, 0, 2, 1, 0, 1 };
-            double[] Sq = new double[] { 0, 2, 0, 2, 0, 1, 2, 1, 4, 4 };
-            double[] Spq = new double[] { 309056.544, 3638.893, 73.077, -157.984, 59.788, 0.433, -6.439, -0.032, 0.092, -0.054 };
 
             //calculate Y
             double DeltaY = 0;
@@ -402,7 +401,9 @@ namespace ConvertCoordinates
             Y -= correctionY;
 
             //output result
-            Vector3RD output = new Vector3RD((float)X, (float)Y,0);
+            output.x = (float)X;
+            output.y = (float)Y;
+            output.z = 0;
             return output;
         }
 
