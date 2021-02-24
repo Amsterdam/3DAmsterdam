@@ -186,6 +186,7 @@ namespace LayerSystem
 		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			tileDistances.Clear();
+			tileDistances.Capacity = tileSizes.Count;
 		
 			int startX;
 			int startY;
