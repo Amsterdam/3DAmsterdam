@@ -454,14 +454,21 @@ namespace LayerSystem
 		public Vector2Int tileKey;
 	}
 	[Serializable]
-	public struct TileChange
+	public struct TileChange : IEquatable<TileChange>
 	{
+		
 		public TileAction action;
 		public int priorityScore;
 		public int layerIndex;
 		public int X;
 		public int Y;
-	}
+
+         public bool Equals(TileChange other)
+        {
+			return (X == other.X && Y == other.Y && layerIndex == other.layerIndex);
+		}
+
+    }
 	public enum TileAction
 	{
 		Create,
