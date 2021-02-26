@@ -299,6 +299,15 @@ namespace ConvertCoordinates
         /// <param name="x">RD-coordinate X</param>
         /// <param name="y">RD-coordinate Y</param>
         /// <returns>WGS84-coordinate</returns>
+        /// 
+        //setup coefficients for lattitude-calculation
+        private static double[] Kp = new double[] { 0, 2, 0, 2, 0, 2, 1, 4, 2, 4, 1 };
+        private static double[] Kq = new double[] { 1, 0, 2, 1, 3, 2, 0, 0, 3, 1, 1 };
+        private static double[] Kpq = new double[] { 3235.65389, -32.58297, -0.24750, -0.84978, -0.06550, -0.01709, -0.00738, 0.00530, -0.00039, 0.00033, -0.00012 };
+        //setup coefficients for longitude-calculation
+        private static double[] Lp = new double[] { 1, 1, 1, 3, 1, 3, 0, 3, 1, 0, 2, 5 };
+        private static double[] Lq = new double[] { 0, 1, 2, 0, 3, 1, 1, 2, 4, 2, 0, 0 };
+        private static double[] Lpq = new double[] { 5260.52916, 105.94684, 2.45656, -0.81885, 0.05594, -.05607, 0.01199, -0.00256, 0.00128, 0.00022, -0.00022, 0.00026 };
         public static Vector3WGS RDtoWGS84(double x, double y)
         {
             //coordinates of basepoint in RD
@@ -315,10 +324,7 @@ namespace ConvertCoordinates
             double DeltaX = (x+correctionX - refRDX) * Math.Pow(10, -5);
             double DeltaY = (y+correctionY - refRDY) * Math.Pow(10, -5);
 
-            //setup coefficients for lattitude-calculation
-            double[] Kp = new double[] { 0, 2, 0, 2, 0, 2, 1, 4, 2, 4, 1 };
-            double[] Kq = new double[] { 1, 0, 2, 1, 3, 2, 0, 0, 3, 1, 1 };
-            double[] Kpq = new double[] { 3235.65389, -32.58297, -0.24750, -0.84978, -0.06550, -0.01709, -0.00738, 0.00530, -0.00039, 0.00033, -0.00012 };
+            
 
             //calculate lattitude
             double Deltalat = 0;
@@ -328,11 +334,6 @@ namespace ConvertCoordinates
             }
             Deltalat = Deltalat / 3600;
             double lat = Deltalat + refLat;
-
-            //setup coefficients for longitude-calculation
-            double[] Lp = new double[] { 1, 1, 1, 3, 1, 3, 0, 3, 1, 0, 2, 5 };
-            double[] Lq = new double[] { 0, 1, 2, 0, 3, 1, 1, 2, 4, 2, 0, 0 };
-            double[] Lpq = new double[] { 5260.52916, 105.94684, 2.45656, -0.81885, 0.05594, -.05607, 0.01199, -0.00256, 0.00128, 0.00022, -0.00022, 0.00026 };
 
             //calculate longitude
             double Deltalon = 0;
