@@ -15,9 +15,6 @@ namespace Amsterdam3D.Interface
 		private Image fpsBackground;
 
 		[SerializeField]
-		private float updateInterval = 0.5f;
-
-		[SerializeField]
 		private bool logFpsGroupsToAnalytics = true;
 
 		[SerializeField]
@@ -33,7 +30,16 @@ namespace Amsterdam3D.Interface
 
 		private float timeNow = 0;
 
-		private int analyticsFpsGroupSize = 5; //5, 15, 15, 20 fps groups etc.etc.
+		[SerializeField]
+		[Tooltip("The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up")]
+		private int analyticsFpsGroupSize = 5;
+
+		[Header("FPS Numbers on screen")]
+		[SerializeField]
+		private int badFpsThreshold = 10;
+		private int goodFpsThreshold = 30;
+		[SerializeField]
+		private float updateInterval = 0.5f;
 
 		private void Awake()
 		{
@@ -51,6 +57,10 @@ namespace Amsterdam3D.Interface
 			CalculateAverageFPS();
 		}
 
+		/// <summary>
+		/// Shows or hides the visual FPS number in the screen
+		/// </summary>
+		/// <param name="enabled"></param>
 		public void ToggleVisualFPS(bool enabled)
 		{
 			enabledVisualFPS = enabled;
@@ -59,6 +69,9 @@ namespace Amsterdam3D.Interface
 			fpsBackground.enabled = enabledVisualFPS;
 		}
 
+		/// <summary>
+		/// Calculates the average frames drawn per second (updates) and optionaly shows/logs it
+		/// </summary>
 		private void CalculateAverageFPS()
 		{
 			timeNow = Time.realtimeSinceStartup;
@@ -86,12 +99,20 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
+		/// <summary>
+		/// Updates the visual fps counter text interpolated color red->green based on fps
+		/// </summary>
+		/// <param name="fps">The avarage framerate count to draw</param>
 		private void DrawFps(float fps)
 		{
 			fpsCounter.text = Mathf.Round(fps).ToString();
-			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(10, 30, fps));
+			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(badFpsThreshold, goodFpsThreshold, fps));
 		}
 		
+		/// <summary>
+		/// Logs the FPS to Unity Analytics. Its rounded up into to FPS groups.
+		/// </summary>
+		/// <param name="fps">The avarage framerate count at this time of logging</param>
 		private void LogFPS(float fps)
 		{
 			int fpsLogGroup = Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize);
