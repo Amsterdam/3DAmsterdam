@@ -33,7 +33,7 @@ namespace Amsterdam3D.Interface
 
 		private float timeNow = 0;
 
-		private float analyticsFpsGroupSize = 5.0f; //5, 15, 15, 20 fps groups etc.etc.
+		private int analyticsFpsGroupSize = 5; //5, 15, 15, 20 fps groups etc.etc.
 
 		private void Awake()
 		{
@@ -89,11 +89,12 @@ namespace Amsterdam3D.Interface
 		private void DrawFps(float fps)
 		{
 			fpsCounter.text = Mathf.Round(fps).ToString();
+			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(10, 30, fps));
 		}
 		
 		private void LogFPS(float fps)
 		{
-			int fpsLogGroup = Mathf.RoundToInt((fps / analyticsFpsGroupSize) * analyticsFpsGroupSize);
+			int fpsLogGroup = Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize);
 			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
 			Analytics.CustomEvent("FPS",
 			new Dictionary<string, object>
