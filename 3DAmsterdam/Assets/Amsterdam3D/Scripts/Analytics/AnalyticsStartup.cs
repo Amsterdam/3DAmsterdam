@@ -1,4 +1,4 @@
-﻿#if !PRODUCTION
+﻿#if UNITY_EDITOR || !PRODUCTION
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
