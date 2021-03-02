@@ -1,22 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
+using System.Collections.Generic;
 
 namespace Amsterdam3D.Interface
 {
 	public class Fps : MonoBehaviour
 	{
+		[SerializeField]
 		private Text fpsCounter;
 
-		public float updateInterval = 0.5f;
+		[SerializeField]
+		private Image fpsBackground;
+
+		[SerializeField]
+		private float updateInterval = 0.5f;
+
+		[SerializeField]
+		private bool logFpsGroupsToAnalytics = true;
+
+		[SerializeField]
+		private float updateAnalyticsInterval = 10.0f; //Every # seconds we log our average fps to the analytics
+
 		private double lastInterval;
-		private int frames = 0;
+		private double lastIntervalAnalytics;
+
+		private int framesVisualFPS = 0;
+		private int framesAnalytics = 0;
+
+		private bool enabledVisualFPS = false;
+
+		private float timeNow = 0;
+
+		private float analyticsFpsGroupSize = 5.0f; //5, 15, 15, 20 fps groups etc.etc.
 
 		private void Awake()
 		{
-			fpsCounter = GetComponent<Text>();
+			ToggleVisualFPS(false);
+
 			lastInterval = Time.realtimeSinceStartup;
-			frames = 0;
+			lastIntervalAnalytics = Time.realtimeSinceStartup;
+
+			framesVisualFPS = 0;
+			framesAnalytics = 0;
 		}
 
 		private void Update()
@@ -24,21 +51,56 @@ namespace Amsterdam3D.Interface
 			CalculateAverageFPS();
 		}
 
+		public void ToggleVisualFPS(bool enabled)
+		{
+			enabledVisualFPS = enabled;
+
+			fpsCounter.enabled = enabledVisualFPS;
+			fpsBackground.enabled = enabledVisualFPS;
+		}
+
 		private void CalculateAverageFPS()
 		{
-			++frames;
-			var timeNow = Time.realtimeSinceStartup;
-			if (timeNow > lastInterval + updateInterval)
+			timeNow = Time.realtimeSinceStartup;
+
+			if (enabledVisualFPS)
 			{
-				DrawFps((float)(frames / (timeNow - lastInterval)));
-				frames = 0;
-				lastInterval = timeNow;
+				++framesVisualFPS;
+				if (timeNow > lastInterval + updateInterval)
+				{
+					DrawFps((float)(framesVisualFPS / (timeNow - lastInterval)));
+					framesVisualFPS = 0;
+					lastInterval = timeNow;
+				}
+			}
+
+			if(logFpsGroupsToAnalytics)
+			{
+				++framesAnalytics;
+				if (timeNow > lastIntervalAnalytics + updateAnalyticsInterval)
+				{
+					LogFPS((float)(framesAnalytics / (timeNow - lastIntervalAnalytics)));
+					framesAnalytics = 0;
+					lastIntervalAnalytics = timeNow;
+				}
 			}
 		}
 
 		private void DrawFps(float fps)
 		{
 			fpsCounter.text = Mathf.Round(fps).ToString();
+		}
+		
+		private void LogFPS(float fps)
+		{
+			int fpsLogGroup = Mathf.RoundToInt((fps / analyticsFpsGroupSize) * analyticsFpsGroupSize);
+			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
+			Analytics.CustomEvent("FPS",
+			new Dictionary<string, object>
+			  {
+				{ "fpsGroup", fpsLogGroup },
+				{ "fps", fps }
+			  });
 		}
 	}
 }

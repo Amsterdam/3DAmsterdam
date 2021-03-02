@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2202321080022535590}
   - component: {fileID: 6906512957913940545}
   - component: {fileID: 2798071469444078161}
+  - component: {fileID: 3538334029229770543}
   m_Layer: 5
   m_Name: FpsPanel
   m_TagString: Untagged
@@ -75,6 +76,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3538334029229770543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8701318617480816947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 739da8962be77194da8953009e08187f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fpsCounter: {fileID: 2208685251058266772}
+  fpsBackground: {fileID: 2798071469444078161}
+  updateInterval: 0.5
+  logFpsGroupsToAnalytics: 1
+  updateAnalyticsInterval: 10
 --- !u!1 &8961631062717988770
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,7 +104,6 @@ GameObject:
   - component: {fileID: 7001366619393465099}
   - component: {fileID: 9166179080644471652}
   - component: {fileID: 2208685251058266772}
-  - component: {fileID: 8714218248425061921}
   m_Layer: 5
   m_Name: FpsCounter
   m_TagString: Untagged
@@ -154,16 +171,3 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 60
---- !u!114 &8714218248425061921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8961631062717988770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 739da8962be77194da8953009e08187f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  updateInterval: 0.5
