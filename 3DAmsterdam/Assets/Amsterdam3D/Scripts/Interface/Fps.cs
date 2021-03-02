@@ -87,6 +87,7 @@ namespace Amsterdam3D.Interface
 				}
 			}
 
+			#if !UNITY_EDITOR
 			if(logFpsGroupsToAnalytics)
 			{
 				++framesAnalytics;
@@ -97,6 +98,7 @@ namespace Amsterdam3D.Interface
 					lastIntervalAnalytics = timeNow;
 				}
 			}
+			#endif
 		}
 
 		/// <summary>
