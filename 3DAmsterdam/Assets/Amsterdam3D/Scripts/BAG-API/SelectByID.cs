@@ -146,12 +146,12 @@ public class SelectByID : Interactable
 			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
             //Update sidepanel outliner
             ObjectProperties.Instance.OpenPanel("Selectie", true);
+            ObjectProperties.Instance.RenderThumbnail(true);
             ObjectProperties.Instance.AddTitle("Geselecteerde panden");
             foreach (var id in selectedIDs)
             {
                 ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
-            }
-            ObjectProperties.Instance.RenderThumbnail(true);
+            } 
         }
 		else if(ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
 		{
@@ -216,7 +216,7 @@ public class SelectByID : Interactable
         if (id != emptyID)
         {
             ObjectProperties.Instance.OpenPanel("Pand",true);
-            if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButton("< Geselecteerde panden", (action) => {
+            if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButtonText("< Geselecteerde panden", (action) => {
                 HighlightObjectsWithIDs();
 			}
             );

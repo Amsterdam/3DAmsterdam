@@ -22,6 +22,9 @@ namespace Amsterdam3D.Settings {
         private CanvasSettings canvasSettings;
         private Rendering.RenderSettings renderSettings;
 
+        [SerializeField]
+        private GameObject stats;
+
         void Awake()
         {
             canvasSettings = GetComponent<CanvasSettings>();
@@ -35,7 +38,7 @@ namespace Amsterdam3D.Settings {
         public void OpenSettingsPanel()
         {
             //Interface options
-            ObjectProperties.Instance.OpenPanel("Settings", true);
+            ObjectProperties.Instance.OpenPanel("Instellingen", true , 5.0f);
             ObjectProperties.Instance.AddTitle("Interface");
             ObjectProperties.Instance.AddActionCheckbox("Toon kaart", (toggle) => {
                 settings.drawMap = toggle;
@@ -46,7 +49,7 @@ namespace Amsterdam3D.Settings {
                 ApplySettings();
             });
             ObjectProperties.Instance.AddLabel("Interface schaal");
-            ObjectProperties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, (value) => {
+            ObjectProperties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
                 settings.canvasDPI = value;
                 ApplySettings();
             });
@@ -61,22 +64,35 @@ namespace Amsterdam3D.Settings {
                 settings.antiAliasing = toggle;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Render resolutie");
-            ObjectProperties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, (value) => {
+            ObjectProperties.Instance.AddLabel("Render resolutie:");
+            ObjectProperties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
                 settings.renderResolution = value;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Schaduw kwaliteit");
-            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, (value) => {
-                settings.renderResolution = value;
+            ObjectProperties.Instance.AddLabel("Schaduw kwaliteit:");
+            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, settings.shadowQuality, (value) => {
+                settings.shadowQuality = value;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Textuur kwaliteit");
-            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, (value) => {
-                settings.renderResolution = value;
+            ObjectProperties.Instance.AddLabel("Textuur kwaliteit:");
+            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, settings.textureQuality, (value) => {
+                settings.textureQuality = value;
                 ApplySettings();
             });
 
+            ObjectProperties.Instance.AddSeperatorLine();
+            ObjectProperties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
+                settings = Instantiate(settingsProfilesTemplates[0]);
+                ApplySettings();
+            });
+
+            ObjectProperties.Instance.AddSeperatorLine();
+
+            ObjectProperties.Instance.AddActionButtonBig("Herstel alle kleuren",(action) => {
+                //
+            });
+
+            ObjectProperties.Instance.AddCustomPrefab(stats);
         }
 
         public void ApplySettings()
@@ -88,6 +104,8 @@ namespace Amsterdam3D.Settings {
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+
+            SaveSettings();
         }
 
         [ContextMenu("Save application settings")]
@@ -100,6 +118,7 @@ namespace Amsterdam3D.Settings {
         public void LoadSettings()
         {
             JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(playerPrefKey), settings);
+            ApplySettings();
         }
     }
 }
