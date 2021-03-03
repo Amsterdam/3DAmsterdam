@@ -16,14 +16,13 @@ namespace Amsterdam3D.Interface
         /// <param name="pandData"></param>
         public void ShowBuildingData(string bagId)
         {
-            ObjectProperties.Instance.AddTitle("Pand " + bagId);
             if (bagId.Length < 5) return;
 
 			StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
 			{
-				EstimateBuildingThumbnailFrame(buildingData);
-
-				ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
+                EstimateBuildingThumbnailFrame(buildingData);
+                ObjectProperties.Instance.AddTitle("Pand " + bagId);
+                ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
 				ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
 				ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
 				ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
