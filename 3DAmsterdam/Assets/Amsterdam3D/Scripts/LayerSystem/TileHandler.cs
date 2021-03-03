@@ -351,16 +351,16 @@ namespace LayerSystem
             switch (action)
             {
                 case TileAction.Create:
-					priority = (int)((10*(lod+layerPriority))*distanceFactor);
+					priority = (int)((1+(10*(lod+layerPriority)))*distanceFactor);
                     break;
                 case TileAction.Upgrade:
-					priority = (int)((1 * (lod + layerPriority)) * distanceFactor);
+					priority = (int)((1+(1 * (lod + layerPriority))) * distanceFactor);
 					break;
                 case TileAction.Downgrade:
-					priority= (int)((0.5 * (lod + layerPriority)) * distanceFactor);
+					priority= (int)((1+(0.5 * (lod + layerPriority))) * distanceFactor);
 					break;
                 case TileAction.Remove:
-					priority = (int)((100 * (lod + layerPriority)) * distanceFactor);
+					priority = (int)((1+(100 * (lod + layerPriority))) * distanceFactor);
 					break;
                 default:
                     break;
