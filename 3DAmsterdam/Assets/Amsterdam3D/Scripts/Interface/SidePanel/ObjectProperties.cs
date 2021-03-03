@@ -281,9 +281,9 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction);
         }
-        public void AddActionCheckbox(string buttonText, Action<bool> checkAction)
+        public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
         {
-            Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkAction);
+            Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkedBox, checkAction);
         }
         public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
         {

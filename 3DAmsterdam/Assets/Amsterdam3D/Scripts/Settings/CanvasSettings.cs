@@ -10,6 +10,7 @@ namespace Amsterdam3D.Interface
 {
     public class CanvasSettings : MonoBehaviour
     {
+        [SerializeField]
         private CanvasScaler canvasScaler;
         private string canvasScaleFactorKey = "canvasScaleFactor";
 
@@ -29,9 +30,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject interfaceLayers;
 
-        void Start()
+        void Awake()
         {
-            canvasScaler = GetComponent<CanvasScaler>();
             if (PlayerPrefs.HasKey(canvasScaleFactorKey))
             {
                 canvasScale = PlayerPrefs.GetFloat(canvasScaleFactorKey, 1.0f);

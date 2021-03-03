@@ -36,6 +36,9 @@ namespace Amsterdam3D.Settings {
             //Start with a copy of the selected base profile so we do not alter the templates
             settings = Instantiate(settings);
             settings.name = "UserProfile";
+
+            //Always start with applying the settings
+            ApplySettings();
         }
 
         public void OpenSettingsPanel()
@@ -43,11 +46,11 @@ namespace Amsterdam3D.Settings {
             //Interface options
             ObjectProperties.Instance.OpenPanel("Instellingen", true , 10.0f);
             ObjectProperties.Instance.AddTitle("Interface");
-            ObjectProperties.Instance.AddActionCheckbox("Toon kaart", (toggle) => {
+            ObjectProperties.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
                 settings.drawMap = toggle;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddActionCheckbox("Toon FPS teller", (toggle) => {
+            ObjectProperties.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
                 settings.drawFPS = toggle;
                 ApplySettings();
             });
@@ -62,11 +65,11 @@ namespace Amsterdam3D.Settings {
 
             //Graphic options
             ObjectProperties.Instance.AddTitle("Grafisch");
-            ObjectProperties.Instance.AddActionCheckbox("Effecten", (toggle) => {
+            ObjectProperties.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
                 settings.postProcessingEffects = toggle;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddActionCheckbox("Antialiasing", (toggle) => {
+            ObjectProperties.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
                 settings.antiAliasing = toggle;
                 ApplySettings();
             });
@@ -92,7 +95,6 @@ namespace Amsterdam3D.Settings {
             });
 
             ObjectProperties.Instance.AddSeperatorLine();
-
             ObjectProperties.Instance.AddCustomPrefab(stats);
         }
 

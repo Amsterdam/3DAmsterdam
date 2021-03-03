@@ -8,6 +8,9 @@ namespace Amsterdam3D.Interface
 {
     public class ActionCheckbox : MonoBehaviour
     {
+        [SerializeField]
+        private Toggle checkboxToggle;
+
         private Action<bool> checkAction;
 
         [SerializeField]
@@ -18,8 +21,9 @@ namespace Amsterdam3D.Interface
             if (checkAction != null) checkAction.Invoke(checkedBox);
         }
 
-        public void SetAction(string title, Action<bool> action)
+        public void SetAction(string title, bool checkedBox, Action<bool> action)
         {
+            checkboxToggle.isOn = checkedBox;
             checkboxText.text = title;
             checkAction = action;
         }
