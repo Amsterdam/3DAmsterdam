@@ -12,8 +12,8 @@ public class ProfilerDataLoaderWindow : EditorWindow
 {
     // This script works entirely in the editor and can be used by going to Window/Analysis/ProfilerDataLoader
 
-    static List<string> s_cachedFilePaths;
-    static int s_chosenIndex = -1;
+    static List<string> cachedFilePaths;
+    static int chosenIndex = -1;
     static string[] buttonNames;
 
     [MenuItem("Window/Analysis/ProfilerDataLoader")]
@@ -33,7 +33,7 @@ public class ProfilerDataLoaderWindow : EditorWindow
         Profiler.logFile = "";
 
         string[] filePaths = Directory.GetFiles(Application.persistentDataPath, "*.raw");
-        s_cachedFilePaths = new List<string>();
+        cachedFilePaths = new List<string>();
         buttonNames = new string[filePaths.Length];
 
         // we want to ignore all of the binary
@@ -51,12 +51,12 @@ public class ProfilerDataLoaderWindow : EditorWindow
             {
                 // not a binary file, add it to the list
                 Debug.Log("Found file: " + thisPath);
-                s_cachedFilePaths.Add(thisPath);
+                cachedFilePaths.Add(thisPath);
                 buttonNames[i] = filePaths[i].Substring(Application.persistentDataPath.Length + 1, filePaths[i].Length - Application.persistentDataPath.Length - 4 - 1);
             }
         }
 
-        s_chosenIndex = -1;
+        chosenIndex = -1;
     }
 
     void OnGUI()
@@ -66,7 +66,7 @@ public class ProfilerDataLoaderWindow : EditorWindow
             ReadProfilerDataFiles();
         }
 
-        if (s_cachedFilePaths == null)
+        if (cachedFilePaths == null)
             return;
 
         EditorGUILayout.Space();
@@ -84,7 +84,7 @@ public class ProfilerDataLoaderWindow : EditorWindow
         GUIStyle highlightedStyle = new GUIStyle(defaultStyle);
         highlightedStyle.normal.textColor = Color.red;
 
-        for (int i = 0; i < s_cachedFilePaths.Count; ++i)
+        for (int i = 0; i < cachedFilePaths.Count; ++i)
         {
 
             // list 5 items per row
@@ -96,7 +96,7 @@ public class ProfilerDataLoaderWindow : EditorWindow
 
             GUIStyle thisStyle = null;
 
-            if (s_chosenIndex == i)
+            if (chosenIndex == i)
             {
                 thisStyle = highlightedStyle;
             }
@@ -107,9 +107,9 @@ public class ProfilerDataLoaderWindow : EditorWindow
 
             if (GUILayout.Button(buttonNames[i], thisStyle))
             {
-                Profiler.AddFramesFromFile(s_cachedFilePaths[i]);
+                Profiler.AddFramesFromFile(cachedFilePaths[i]);
 
-                s_chosenIndex = i;
+                chosenIndex = i;
             }
         }
 

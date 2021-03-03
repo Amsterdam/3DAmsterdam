@@ -14,12 +14,13 @@ public class ProfilerDataRecorder : MonoBehaviour
     [SerializeField]
     public string _fileName = "FileName";
 
+    [Header("Holding Ctrl + your designated button starts/stops recording")]
     [SerializeField]
-    private KeyCode profilerRecordKey = KeyCode.P;
-
-
+    [Tooltip("Look up Unity hotkeys before changing these values")]
+    private KeyCode profilerRecordKey = KeyCode.H;
     [SerializeField]
-    private KeyCode profilerStopKey = KeyCode.O;
+    [Tooltip("Look up Unity hotkeys before changing these values")]
+    private KeyCode profilerStopKey = KeyCode.G;
 
     Coroutine savingProfilingData;
 
@@ -56,11 +57,11 @@ public class ProfilerDataRecorder : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(profilerRecordKey))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerRecordKey))
         {
             StartRecording();
         }
-        else if(Input.GetKeyDown(profilerStopKey))
+        else if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerStopKey))
         {
             StopRecording();
         }
