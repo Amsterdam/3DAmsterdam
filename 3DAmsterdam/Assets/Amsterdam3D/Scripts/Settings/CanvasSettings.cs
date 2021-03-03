@@ -30,7 +30,7 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject interfaceLayers;
 
-        void Awake()
+        void Start()
         {
             if (PlayerPrefs.HasKey(canvasScaleFactorKey))
             {

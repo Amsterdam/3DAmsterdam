@@ -28,7 +28,7 @@ namespace Amsterdam3D.Settings {
         [SerializeField]
         private GameObject stats;
 
-        void Awake()
+        void Start()
         {
             canvasSettings = GetComponent<CanvasSettings>();
             renderSettings = GetComponent<Rendering.RenderSettings>();
