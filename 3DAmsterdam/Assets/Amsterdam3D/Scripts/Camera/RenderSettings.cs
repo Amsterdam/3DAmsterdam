@@ -14,7 +14,10 @@ namespace Amsterdam3D.Rendering
         private bool postEffects = true;
 
         [SerializeField]
-        private Slider dpiSlider;
+        private Volume[] postProcessingVolumes;
+
+        [SerializeField]
+        private GameObject[] postEffectGameObjects;
 
         /// <summary>
         /// Toggles antialiasing on or off.
@@ -44,6 +47,12 @@ namespace Amsterdam3D.Rendering
         {
             postEffects = effectsOn;
 
+            foreach(Volume volume in postProcessingVolumes)
+                volume.enabled = effectsOn;
+
+            foreach (GameObject gameObject in postEffectGameObjects)
+                gameObject.SetActive(false);
+
             SetPostProcessing();
         }
 
@@ -64,9 +73,7 @@ namespace Amsterdam3D.Rendering
         public void SetRenderScale(float renderScale)
         {
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
-            urp.renderScale = Mathf.Lerp(0.25f,1.0f, renderScale);
-
-            dpiSlider.value = renderScale;
+            urp.renderScale = renderScale;
         }
     }
 }
