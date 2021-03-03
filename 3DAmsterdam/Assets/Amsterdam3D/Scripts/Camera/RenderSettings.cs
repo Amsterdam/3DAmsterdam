@@ -51,7 +51,7 @@ namespace Amsterdam3D.Rendering
                 volume.enabled = effectsOn;
 
             foreach (GameObject gameObject in postEffectGameObjects)
-                gameObject.SetActive(false);
+                gameObject.SetActive(effectsOn);
 
             SetPostProcessing();
         }
