@@ -14,6 +14,9 @@ namespace Amsterdam3D.Settings {
         private const string playerPrefKey = "applicationSettings";
 
         [SerializeField]
+        private InterfaceLayers interfaceLayers;
+
+        [SerializeField]
         private Map minimap;
 
         [SerializeField]
@@ -38,7 +41,7 @@ namespace Amsterdam3D.Settings {
         public void OpenSettingsPanel()
         {
             //Interface options
-            ObjectProperties.Instance.OpenPanel("Instellingen", true , 5.0f);
+            ObjectProperties.Instance.OpenPanel("Instellingen", true , 10.0f);
             ObjectProperties.Instance.AddTitle("Interface");
             ObjectProperties.Instance.AddActionCheckbox("Toon kaart", (toggle) => {
                 settings.drawMap = toggle;
@@ -52,6 +55,9 @@ namespace Amsterdam3D.Settings {
             ObjectProperties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
                 settings.canvasDPI = value;
                 ApplySettings();
+            });
+            ObjectProperties.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
+                interfaceLayers.ResetAllLayerMaterialColors();
             });
 
             //Graphic options
@@ -80,17 +86,12 @@ namespace Amsterdam3D.Settings {
                 ApplySettings();
             });
 
-            ObjectProperties.Instance.AddSeperatorLine();
             ObjectProperties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
                 settings = Instantiate(settingsProfilesTemplates[0]);
                 ApplySettings();
             });
 
             ObjectProperties.Instance.AddSeperatorLine();
-
-            ObjectProperties.Instance.AddActionButtonBig("Herstel alle kleuren",(action) => {
-                //
-            });
 
             ObjectProperties.Instance.AddCustomPrefab(stats);
         }
