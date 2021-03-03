@@ -33,6 +33,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private GameObject titlePrefab;
         [SerializeField]
+        private GameObject labelPrefab;
+        [SerializeField]
         private DataKeyAndValue dataFieldPrefab;
         [SerializeField]
         private GameObject seperatorLinePrefab;
@@ -42,6 +44,10 @@ namespace Amsterdam3D.Interface
         private NameAndURL urlPrefab;
         [SerializeField]
         private ActionButton buttonPrefab;
+        [SerializeField]
+        private ActionSlider sliderPrefab;
+        [SerializeField]
+        private ActionCheckbox checkboxPrefab;
         [SerializeField]
         private TransformPanel transformPanelPrefab;
 
@@ -230,6 +236,10 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(titlePrefab, targetFieldsContainer).GetComponent<Text>().text = titleText;
         }
+        public void AddLabel(string labelText)
+        {
+            Instantiate(labelPrefab, targetFieldsContainer).GetComponent<Text>().text = labelText;
+        }
         public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
             DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, targetFieldsContainer);
@@ -248,7 +258,14 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(buttonPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
         }
-
+        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, Action<float> changeAction)
+        {
+            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, changeAction);
+        }
+        public void AddActionCheckbox(string buttonText, Action<bool> checkAction)
+        {
+            Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkAction);
+        }
         public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
         {
             Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);

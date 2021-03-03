@@ -4,21 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActionButton : MonoBehaviour
+namespace Amsterdam3D.Interface
 {
-    private Action<string> clickAction;
-
-    [SerializeField]
-    private Text buttonText;
-
-    public void Select()
+    public class ActionButton : MonoBehaviour
     {
-        if (clickAction != null) clickAction.Invoke("");
-    }
+        private Action<string> clickAction;
 
-	public void SetAction(string title, Action<string> action)
-	{
-        buttonText.text = title;
-        clickAction = action;
-	}
+        [SerializeField]
+        private Text buttonText;
+
+        public void Select()
+        {
+            if (clickAction != null) clickAction.Invoke("");
+        }
+
+        public void SetAction(string title, Action<string> action)
+        {
+            buttonText.text = title;
+            clickAction = action;
+        }
+    }
 }
