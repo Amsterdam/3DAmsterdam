@@ -29,6 +29,8 @@ namespace Amsterdam3D.Interface
 
         [Header("Generated field prefabs:")]
         [SerializeField]
+        private GameObject thumbnailPrefab;
+        [SerializeField]
         private GameObject groupPrefab;
         [SerializeField]
         private GameObject titlePrefab;
@@ -43,7 +45,9 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private NameAndURL urlPrefab;
         [SerializeField]
-        private ActionButton buttonPrefab;
+        private ActionButton buttonTextPrefab;
+        [SerializeField]
+        private ActionButton buttonBigPrefab;
         [SerializeField]
         private ActionSlider sliderPrefab;
         [SerializeField]
@@ -65,6 +69,9 @@ namespace Amsterdam3D.Interface
         private Material buildingsExclusiveShader;
         [SerializeField]
         private Material defaultBuildingsShader;
+
+        [SerializeField]
+        private VerticalLayoutGroup verticalLayoutGroup;
 
         public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
 
@@ -106,10 +113,11 @@ namespace Amsterdam3D.Interface
 			}
 		}
 
-        public void OpenPanel(string title, bool clearOldfields = true)
+        public void OpenPanel(string title, bool clearOldfields = true, float spacing = 0.0f)
         {
             if(clearOldfields) ClearGeneratedFields();
 
+            verticalLayoutGroup.spacing = spacing;
             objectPropertiesPanel.SetActive(true);
             titleText.text = title;
         }
@@ -207,13 +215,20 @@ namespace Amsterdam3D.Interface
             {
                 thumbnailRenderer.Render();
             }
+
+            AddThumbnail();
         }
 
-		/// <summary>
-		/// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
-		/// </summary>
-		/// <returns>The new group object</returns>
-		public GameObject CreateGroup()
+        public void AddThumbnail()
+        {
+            Instantiate(thumbnailPrefab, targetFieldsContainer).transform.SetAsFirstSibling();
+        }
+
+        /// <summary>
+        /// Create a grouped field. All visuals added will be added to this group untill CloseGroup() is called.
+        /// </summary>
+        /// <returns>The new group object</returns>
+        public GameObject CreateGroup()
         {
             GameObject newGroup = Instantiate(groupPrefab, targetFieldsContainer);
             targetFieldsContainer = newGroup.transform;
@@ -254,13 +269,17 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
         }
-        public void AddActionButton(string buttonText, Action<string> clickAction)
+        public void AddActionButtonText(string buttonText, Action<string> clickAction)
         {
-            Instantiate(buttonPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
+            Instantiate(buttonTextPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
         }
-        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, Action<float> changeAction)
+        public void AddActionButtonBig(string buttonText, Action<string> clickAction)
         {
-            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, changeAction);
+            Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
+        }
+        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction)
+        {
+            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction);
         }
         public void AddActionCheckbox(string buttonText, Action<bool> checkAction)
         {
@@ -269,6 +288,10 @@ namespace Amsterdam3D.Interface
         public void AddSelectionOutliner(GameObject linkedGameObject, string title, string id = "")
         {
             Instantiate(selectionOutlinerPrefab, targetFieldsContainer).Link(linkedGameObject,title,id);
+        }
+        public void AddCustomPrefab(GameObject prefab)
+        {
+            Instantiate(prefab, targetFieldsContainer);
         }
         public void ClearGeneratedFields()
         {
