@@ -12,7 +12,7 @@ public class ProfilerDataRecorder : MonoBehaviour
     int _count = 0;
 
     [SerializeField]
-    public string _fileName = "FileName";
+    public string fileName = "FileName";
 
     [Header("Holding Ctrl + your designated button starts/stops recording")]
     [SerializeField]
