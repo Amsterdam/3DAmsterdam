@@ -15,6 +15,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public float canvasDPI = 1.0f;
 
     //Quality
+    public float renderResolution = 1.0f;
     public float shadowQuality = 1.0f;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;

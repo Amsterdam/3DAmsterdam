@@ -51,8 +51,14 @@ namespace Amsterdam3D.Rendering
         {
             //Post processing can be disabled entirely if there are no AA or effects enabled
             UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();
-
             universalCameraData.renderPostProcessing = (antiAliasing || postEffects);
+        }
+
+        public void SetShadowQuality(float shadowQuality)
+        {
+            //TODO: Probably need to swap render profiles here..Directly changing the res. as a value is not in URP yet.
+            var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
+            //urp.mainLightShadowmapResolution = calculatehere; //This is only a getter now. Its on the unity backlog to be able to be set as well
         }
 
         public void SetRenderScale(float renderScale)

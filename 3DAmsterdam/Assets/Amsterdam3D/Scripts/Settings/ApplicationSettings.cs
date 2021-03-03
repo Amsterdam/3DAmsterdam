@@ -34,6 +34,7 @@ namespace Amsterdam3D.Settings {
 
         public void OpenSettingsPanel()
         {
+            //Interface options
             ObjectProperties.Instance.OpenPanel("Settings", true);
             ObjectProperties.Instance.AddTitle("Interface");
             ObjectProperties.Instance.AddActionCheckbox("Toon kaart", (toggle) => {
@@ -49,12 +50,33 @@ namespace Amsterdam3D.Settings {
                 settings.canvasDPI = value;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Interface schaal");
-            ObjectProperties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, (value) => {
-                settings.canvasDPI = value;
+
+            //Graphic options
+            ObjectProperties.Instance.AddTitle("Grafisch");
+            ObjectProperties.Instance.AddActionCheckbox("Effecten", (toggle) => {
+                settings.postProcessingEffects = toggle;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddTitle("Grafisch");
+            ObjectProperties.Instance.AddActionCheckbox("Antialiasing", (toggle) => {
+                settings.antiAliasing = toggle;
+                ApplySettings();
+            });
+            ObjectProperties.Instance.AddLabel("Render resolutie");
+            ObjectProperties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, (value) => {
+                settings.renderResolution = value;
+                ApplySettings();
+            });
+            ObjectProperties.Instance.AddLabel("Schaduw kwaliteit");
+            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, (value) => {
+                settings.renderResolution = value;
+                ApplySettings();
+            });
+            ObjectProperties.Instance.AddLabel("Textuur kwaliteit");
+            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, (value) => {
+                settings.renderResolution = value;
+                ApplySettings();
+            });
+
         }
 
         public void ApplySettings()
@@ -62,6 +84,10 @@ namespace Amsterdam3D.Settings {
             fpsCounter.ToggleVisualFPS(settings.drawFPS);
             minimap.gameObject.SetActive(settings.drawMap);
             canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+
+            renderSettings.SetRenderScale(settings.renderResolution);
+            renderSettings.TogglePostEffects(settings.postProcessingEffects);
+            renderSettings.ToggleAA(settings.antiAliasing);
         }
 
         [ContextMenu("Save application settings")]

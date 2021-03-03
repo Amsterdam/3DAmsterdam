@@ -29,6 +29,9 @@ namespace Amsterdam3D.Interface
             sliderTextMin.text = minText;
             sliderTextMax.text = maxText;
 
+            slider.minValue = minValue;
+            slider.maxValue = maxValue;
+
             changeAction = action;
         }
     }
