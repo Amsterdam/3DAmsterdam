@@ -39,9 +39,10 @@ namespace Amsterdam3D.Settings {
             //Start with a copy of the selected base profile so we do not alter the templates
             settings = Instantiate(settings);
             settings.name = "UserProfile";
+            settings.applicationVersion = Application.version;
 
             //Load previous or auto detect optimal settings
-            if(PlayerPrefs.HasKey(playerPrefKey))
+            if (PlayerPrefs.HasKey(playerPrefKey))
             {
                 LoadSettings();
             }
@@ -94,15 +95,10 @@ namespace Amsterdam3D.Settings {
                 ApplySettings();
             });
             ObjectProperties.Instance.AddLabel("Schaduw kwaliteit:");
-            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, settings.shadowQuality, (value) => {
-                settings.shadowQuality = value;
+            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+                settings.shadowQuality = (int)value;
                 ApplySettings();
-            });
-            ObjectProperties.Instance.AddLabel("Textuur kwaliteit:");
-            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0.0f, 1.0f, settings.textureQuality, (value) => {
-                settings.textureQuality = value;
-                ApplySettings();
-            });
+            }, true);
 
             ObjectProperties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
                 settings = Instantiate(settingsProfilesTemplates[0]);
@@ -123,6 +119,10 @@ namespace Amsterdam3D.Settings {
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+
+            //Currently we only use the quality settings files for shadow quality differences
+            //3 = 2045, 2 = 1024, 1=514, 0=Off
+            QualitySettings.SetQualityLevel(settings.shadowQuality, true);
 
             SaveSettings();
         }
