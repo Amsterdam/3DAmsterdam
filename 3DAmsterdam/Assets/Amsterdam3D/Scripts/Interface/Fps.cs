@@ -117,7 +117,7 @@ namespace Amsterdam3D.Interface
 		/// <param name="fps">The avarage framerate count at this time of logging</param>
 		private void LogFPS(float fps)
 		{
-			int fpsLogGroup = Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize);
+			int fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);			
 			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
 			Analytics.CustomEvent("FPS",
 			new Dictionary<string, object>
