@@ -277,9 +277,9 @@ namespace Amsterdam3D.Interface
         {
             Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
         }
-        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction)
+        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false)
         {
-            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction);
+            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
         }
         public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
         {

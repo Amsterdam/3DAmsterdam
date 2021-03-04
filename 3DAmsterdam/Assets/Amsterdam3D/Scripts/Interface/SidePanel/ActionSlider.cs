@@ -24,13 +24,15 @@ namespace Amsterdam3D.Interface
             if (changeAction != null) changeAction.Invoke(value);
         }
 
-        public void SetAction(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> action)
+        public void SetAction(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> action, bool wholeNumberSteps = false)
         {
             sliderTextMin.text = minText;
             sliderTextMax.text = maxText;
 
             slider.minValue = minValue;
             slider.maxValue = maxValue;
+            slider.wholeNumbers = wholeNumberSteps;
+
             slider.value = defaultValue;
 
             changeAction = action;
