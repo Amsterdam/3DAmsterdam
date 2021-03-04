@@ -78,6 +78,8 @@ namespace Amsterdam3D.Interface
 
         public void Initialize(RectTransform view, RectTransform drag)
         {
+            loadedBottomLayer = false;
+
             canvas = transform.root.GetComponent<Canvas>();
 
             tilesDraggableContainer = drag;
@@ -207,13 +209,14 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        private void ClearZoomLevelContainers(bool clearAll = false)
+        public void ClearZoomLevelContainers(bool clearAll = false)
         {
             //Remove all zoomlevel containers with images that are not the base zoomlevel, and are two levels down
             //from current zoomlevel, or above.
             if(clearAll)
             {
-                foreach (var zoomLevelContainer in zoomLevelContainers)
+                var itemsToRemove = zoomLevelContainers.ToList();
+                foreach (var zoomLevelContainer in itemsToRemove)
                 {
                     Destroy(zoomLevelContainer.Value);
                     zoomLevelContainers.Remove(zoomLevelContainer.Key);
