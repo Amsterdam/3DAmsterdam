@@ -14,9 +14,6 @@ namespace Amsterdam3D.Interface
         private CanvasScaler canvasScaler;
         private string canvasScaleFactorKey = "canvasScaleFactor";
 
-        [SerializeField]
-        private Slider canvasScaleSlider;
-
         //static scale we can request through class
         public static float canvasScale = 1.0f;
 
@@ -32,17 +29,6 @@ namespace Amsterdam3D.Interface
 
         void Start()
         {
-            if (PlayerPrefs.HasKey(canvasScaleFactorKey))
-            {
-                canvasScale = PlayerPrefs.GetFloat(canvasScaleFactorKey, 1.0f);
-                canvasScaler.scaleFactor = canvasScale;
-                canvasScaleSlider.value = canvasScale;
-            }
-            else
-            {
-                SetPreferableScale();
-            }
-
             CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
         }
 
@@ -62,12 +48,12 @@ namespace Amsterdam3D.Interface
         /// Scale up the canvas when we have a screen width high DPI like a 4k monitor or ultrawide.
         /// Do not go all the way up to 2x, but it is allowed through the settings menu.
         /// </summary>
-        private void SetPreferableScale()
+        public float DetectPreferedCanvasScale()
         {
             canvasScale = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, maxAutoWidth);
             canvasScaler.scaleFactor = canvasScale;
-            canvasScaleSlider.value = canvasScale;
             JavascriptMethodCaller.SetInterfaceScale(canvasScale);
+            return canvasScale;
         }
 
         /// <summary>

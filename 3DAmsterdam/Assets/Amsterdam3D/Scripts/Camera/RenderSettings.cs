@@ -1,4 +1,5 @@
 ﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,7 +57,12 @@ namespace Amsterdam3D.Rendering
             SetPostProcessing();
         }
 
-        private void SetPostProcessing()
+		public void DetectOptimalQualitySettings()
+		{
+			throw new NotImplementedException();
+		}
+
+		private void SetPostProcessing()
         {
             //Post processing can be disabled entirely if there are no AA or effects enabled
             UniversalAdditionalCameraData universalCameraData = CameraModeChanger.Instance.ActiveCamera.GetComponent<UniversalAdditionalCameraData>();

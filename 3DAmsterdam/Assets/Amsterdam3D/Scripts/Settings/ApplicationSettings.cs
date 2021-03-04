@@ -6,6 +6,9 @@ using UnityEngine;
 namespace Amsterdam3D.Settings {
     public class ApplicationSettings : MonoBehaviour
     {
+        [SerializeField]
+        private bool automaticOptimalSettings = true;
+
         public ApplicationSettingsProfile settings;
 
         [SerializeField]
@@ -37,11 +40,23 @@ namespace Amsterdam3D.Settings {
             settings = Instantiate(settings);
             settings.name = "UserProfile";
 
-            //Always start with applying the settings
-            ApplySettings();
+            //Load previous or auto detect optimal settings
+            if(PlayerPrefs.HasKey(playerPrefKey))
+            {
+                LoadSettings();
+            }
+            else if (automaticOptimalSettings && !PlayerPrefs.HasKey(playerPrefKey))
+			{
+				DetermineOptimalSettings();
+			}
         }
 
-        public void OpenSettingsPanel()
+		private void DetermineOptimalSettings()
+		{
+			settings.canvasDPI = canvasSettings.DetectPreferedCanvasScale();
+		}
+
+		public void OpenSettingsPanel()
         {
             //Interface options
             ObjectProperties.Instance.OpenPanel("Instellingen", true , 10.0f);
