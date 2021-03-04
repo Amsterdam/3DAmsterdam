@@ -92,6 +92,7 @@ namespace Amsterdam3D.Settings {
             ObjectProperties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
                 settings = Instantiate(settingsProfilesTemplates[0]);
                 ApplySettings();
+                OpenSettingsPanel(); //Just regenerate this panel with new values.
             });
 
             ObjectProperties.Instance.AddSeperatorLine();
