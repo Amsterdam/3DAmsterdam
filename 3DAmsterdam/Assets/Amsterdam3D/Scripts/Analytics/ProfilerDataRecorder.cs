@@ -73,10 +73,10 @@ public class ProfilerDataRecorder : MonoBehaviour
         {
 #if UNITY_EDITOR
             // Checks for existing files with the same name and makes sure no overwrites happen
-            string[] filePaths = Directory.GetFiles(Application.persistentDataPath, _fileName + "*");
+            string[] filePaths = Directory.GetFiles(Application.persistentDataPath, fileName + "*");
             if(filePaths.Length != 0)
             {
-                int prefix = Application.persistentDataPath.Length + _fileName.Length;
+                int prefix = Application.persistentDataPath.Length + fileName.Length;
                 int suffix = ".raw".Length;
                 for (int i = 0; i < filePaths.Length; i++)
                 {
@@ -94,7 +94,7 @@ public class ProfilerDataRecorder : MonoBehaviour
             }
 
             // Generate the file path
-            string filepath = Application.persistentDataPath + "/" + _fileName + _count;
+            string filepath = Application.persistentDataPath + "/" + fileName + _count;
             // Set the log file and enable the profiler
             Profiler.logFile = filepath;
             Profiler.enableBinaryLog = true;
