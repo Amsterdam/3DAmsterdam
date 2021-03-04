@@ -96,6 +96,12 @@ namespace Amsterdam3D.Interface
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
         }
 
+		public void OnDisable()
+		{
+            //Make sure to remove all containers on disable (to free memory when not using minimap)
+            ClearZoomLevelContainers(true);
+        }
+
         public void CenterMapOnPointer()
         {
             tilesDraggableContainer.anchoredPosition = -pointer.transform.localPosition* tilesDraggableContainer.localScale.x;
@@ -201,16 +207,27 @@ namespace Amsterdam3D.Interface
             }
         }
 
-        private void ClearZoomLevelContainers()
+        private void ClearZoomLevelContainers(bool clearAll = false)
         {
             //Remove all zoomlevel containers with images that are not the base zoomlevel, and are two levels down
             //from current zoomlevel, or above.
-            var itemsToRemove = zoomLevelContainers.Where(f => (f.Key < zoom - 1 || f.Key > zoom) && f.Key != minZoom).ToArray();
-            foreach (var zoomLevelContainer in itemsToRemove)
+            if(clearAll)
             {
-                Destroy(zoomLevelContainer.Value);
-                zoomLevelContainers.Remove(zoomLevelContainer.Key);   
+                foreach (var zoomLevelContainer in zoomLevelContainers)
+                {
+                    Destroy(zoomLevelContainer.Value);
+                    zoomLevelContainers.Remove(zoomLevelContainer.Key);
+                }
             }
+            else{
+                var itemsToRemove = zoomLevelContainers.Where(f => (f.Key < zoom - 1 || f.Key > zoom) && f.Key != minZoom).ToArray();
+                foreach (var zoomLevelContainer in itemsToRemove)
+                {
+                    Destroy(zoomLevelContainer.Value);
+                    zoomLevelContainers.Remove(zoomLevelContainer.Key);
+                }
+            }
+            
 
             //Clear current level loaded tiles list
             loadedTiles.Clear();
