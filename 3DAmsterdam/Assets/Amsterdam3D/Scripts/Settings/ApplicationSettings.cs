@@ -94,8 +94,8 @@ namespace Amsterdam3D.Settings {
                 settings.renderResolution = value;
                 ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Schaduw kwaliteit:");
-            ObjectProperties.Instance.AddActionSlider("Laag", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+            ObjectProperties.Instance.AddLabel("Schaduw detail:");
+            ObjectProperties.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
                 settings.shadowQuality = (int)value;
                 ApplySettings();
             }, true);
