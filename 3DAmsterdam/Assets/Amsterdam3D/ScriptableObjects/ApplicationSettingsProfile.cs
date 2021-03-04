@@ -7,6 +7,8 @@ using UnityEngine;
 [System.Serializable]
 public class ApplicationSettingsProfile : ScriptableObject
 {
+    public string applicationVersion = "";
+
     public string profileName = "High";
 
     //Interface
@@ -16,8 +18,10 @@ public class ApplicationSettingsProfile : ScriptableObject
 
     //Quality
     public float renderResolution = 1.0f;
-    public float shadowQuality = 1.0f;
+    public int shadowQuality = 3;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
     public bool postProcessingEffects = true;
+
+    public int qualitySettingsSlot = 0;
 }
