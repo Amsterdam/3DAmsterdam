@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 0
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 4
   Datasets:
   - Description: LOD0
     lod: 0
@@ -61,6 +61,7 @@ MonoBehaviour:
   sewerPipeSpawner: {fileID: 1484382064384571549}
   sewerManholeSpawner: {fileID: 5050187975766108088}
   runtimeMaskSphere: {fileID: 994676525503412668}
+  activeCount: 0
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 1
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 2
   Datasets:
   - Description: LOD0
     lod: 0
@@ -152,6 +153,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   createMeshcollider: 0
+  addHighlightuvs: 1
   tileShadowCastingMode: 1
 --- !u!1 &4498901013376440829
 GameObject:
@@ -305,7 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 1
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 1
   Datasets:
   - Description: LOD0
     lod: 0
@@ -317,6 +319,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   createMeshcollider: 0
+  addHighlightuvs: 0
   tileShadowCastingMode: 1
 --- !u!1001 &1655602355448839381
 PrefabInstance:
