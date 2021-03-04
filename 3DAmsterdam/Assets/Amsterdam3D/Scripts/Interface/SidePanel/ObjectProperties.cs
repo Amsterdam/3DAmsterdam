@@ -73,6 +73,8 @@ namespace Amsterdam3D.Interface
         [SerializeField]
         private VerticalLayoutGroup verticalLayoutGroup;
 
+        private GameObject thumbnailImage = null;
+
         public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
 
 		void Awake()
@@ -216,12 +218,15 @@ namespace Amsterdam3D.Interface
                 thumbnailRenderer.Render();
             }
 
-            AddThumbnail();
+            //We only allow one thumbnail to be in our properties panel
+            if(!thumbnailImage)
+                AddThumbnail();
         }
 
         public void AddThumbnail()
         {
-            Instantiate(thumbnailPrefab, targetFieldsContainer).transform.SetAsFirstSibling();
+            thumbnailImage = Instantiate(thumbnailPrefab, targetFieldsContainer);
+            thumbnailImage.transform.SetAsFirstSibling();
         }
 
         /// <summary>
@@ -295,6 +300,7 @@ namespace Amsterdam3D.Interface
         }
         public void ClearGeneratedFields()
         {
+            thumbnailImage = null;
             foreach (Transform field in generatedFieldsRootContainer)
             {
                 Destroy(field.gameObject);
