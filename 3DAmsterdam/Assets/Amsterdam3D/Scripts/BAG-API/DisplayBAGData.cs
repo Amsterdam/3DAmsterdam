@@ -18,6 +18,8 @@ namespace Amsterdam3D.Interface
         {
             if (bagId.Length < 5) return;
 
+            StopAllCoroutines(); //Make sure all delayed Api coroutines are stopped before running this one again
+
 			StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
 			{
                 EstimateBuildingThumbnailFrame(buildingData);
