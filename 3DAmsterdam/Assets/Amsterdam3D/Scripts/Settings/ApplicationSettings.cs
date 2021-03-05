@@ -89,6 +89,10 @@ namespace Amsterdam3D.Settings {
                 settings.antiAliasing = toggle;
                 ApplySettings();
             });
+            ObjectProperties.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
+                settings.realtimeReflections = toggle;
+                ApplySettings();
+            });
             ObjectProperties.Instance.AddLabel("Render resolutie:");
             ObjectProperties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
                 settings.renderResolution = value;
