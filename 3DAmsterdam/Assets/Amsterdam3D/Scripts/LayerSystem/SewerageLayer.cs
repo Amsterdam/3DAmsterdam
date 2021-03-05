@@ -26,6 +26,10 @@ namespace LayerSystem
 		[SerializeField]
 		private int activeCount = 0;
 		private int maxSimultaneous = 1;
+		[SerializeField]
+		private SewerageObjectPool SewerLineObjectPool;
+		[SerializeField]
+		private SewerageObjectPool manHoleObjectPool;
 
 		public override void OnDisableTiles(bool isenabled)
         {
@@ -192,18 +196,21 @@ namespace LayerSystem
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
 			}
-			CombineSewerage(tileChange, tile, callback);
+			StartCoroutine(CombineSewerage(tileChange, tile, callback));
 
-			tile.gameObject.SetActive(isEnabled);
+			
 
 		}
-		public GameObject CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
+		private IEnumerator CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
+			int parseCounter = 0;
 			//Do not try to combine if our gameobject was already destroyed.
 			if (!tile.gameObject)
 			{
 				activeCount--;
-				return null;
+				callback(tileChange);
+				tile.gameObject.SetActive(isEnabled);
+				yield break;
 			}
 
 			//Determine meshes to combine
@@ -214,7 +221,7 @@ namespace LayerSystem
 			{
 				combine[i].mesh = meshFilters[i].sharedMesh;
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-				meshFilters[i].gameObject.SetActive(false);
+				//meshFilters[i].gameObject.SetActive(false);
 
 				i++;
 			}
@@ -233,13 +240,27 @@ namespace LayerSystem
 			newCombinedTile.AddComponent<MeshFilter>().sharedMesh = newMesh;
 
 			//Now destroy our large amount of network children.
-			foreach (MeshFilter child in meshFilters)
-			{
-				Destroy(child.gameObject);
-			}
+
+			GameObject childObject; 
+            for (int j = tile.gameObject.transform.childCount-1; j >= 0; j--)
+            {
+				parseCounter++;
+				if ((parseCounter % maxParsesPerFrame) == 0) yield return new WaitForEndOfFrame();
+				childObject = tile.gameObject.transform.GetChild(j).gameObject;
+
+				if (childObject.name[0]=='S')
+                {
+					SewerLineObjectPool.ReturnObject(childObject);
+                }
+                else if (childObject.name[0] == 'M')
+                {
+					manHoleObjectPool.ReturnObject(childObject);
+				}
+            }
+			
 			callback(tileChange);
 			activeCount--;
-			return newCombinedTile;
+			tile.gameObject.SetActive(isEnabled);
 		}
 
 		/// <summary>

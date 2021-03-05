@@ -21,8 +21,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
         materialsArray = materialList.ToArray();
         double originX = 121000;
         double originY = 487000;
-        ImportSingle(originX, originY);
-        //importeer();
+        //ImportSingle(originX, originY);
+       importeer();
     }
 
     // Update is called once per frame
@@ -64,6 +64,8 @@ public class ImportCityJsonTerrain : MonoBehaviour
             Mesh voetpadmesh = new Mesh();
             voetpadmesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             voetpadmesh.CombineMeshes(voetpadcombi, true,false);
+
+
             //type fietspad
             Mesh fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true);
 
@@ -88,6 +90,7 @@ public class ImportCityJsonTerrain : MonoBehaviour
 
             // type groen
             Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "alles" }, false);
+            plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
             Mesh LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true);
             LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.05f);
             //combine meshes of type "groen"
@@ -415,9 +418,6 @@ public class ImportCityJsonTerrain : MonoBehaviour
         int Ymax = 500000;
 
         int stepSize = 1000;
-
-
-        
 
         for (int X = Xmin; X < Xmax; X+=stepSize)
         {

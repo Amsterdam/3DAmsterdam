@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1583489548161554881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1375151945590335532}
+  - component: {fileID: 4990700502472287826}
+  m_Layer: 0
+  m_Name: sewerlineObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1375151945590335532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583489548161554881}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 40377333204744845}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4990700502472287826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583489548161554881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f28f85e12183ff4a99de1f09ccc3b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e, type: 3}
+  amountToPool: 100
+  defaultTransform: {fileID: 0}
 --- !u!1 &4351049657613157917
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,6 +156,8 @@ Transform:
   - {fileID: 2308489912040760047}
   - {fileID: 3974945850033855655}
   - {fileID: 6888077500886613791}
+  - {fileID: 1375151945590335532}
+  - {fileID: 8911691938486560024}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -145,6 +193,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   pointerFollower: {fileID: 3974945850033855655}
   maskScale: 0.6
+  groundMeshLayer: {fileID: 0}
 --- !u!1 &8791206133976174996
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,6 +244,8 @@ MonoBehaviour:
   terrainHeightCheckLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  terrainLayer: {fileID: 0}
+  manHoleObjectPool: {fileID: 0}
   manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
     type: 3}
 --- !u!114 &7531797714524878505
@@ -209,8 +260,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8341a7d046a9da34494525e0653a3675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sewerLinePrefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e,
-    type: 3}
+  objectPool: {fileID: 0}
+--- !u!1 &9213080796967388603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8911691938486560024}
+  - component: {fileID: 3587774327578772770}
+  m_Layer: 0
+  m_Name: manHoleObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8911691938486560024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9213080796967388603}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 40377333204744845}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3587774327578772770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9213080796967388603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f28f85e12183ff4a99de1f09ccc3b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106, type: 3}
+  amountToPool: 100
+  defaultTransform: {fileID: 0}
 --- !u!1001 &1957519341404273557
 PrefabInstance:
   m_ObjectHideFlags: 0
