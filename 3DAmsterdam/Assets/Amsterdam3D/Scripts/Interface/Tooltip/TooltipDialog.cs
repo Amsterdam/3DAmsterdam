@@ -53,6 +53,8 @@ namespace Amsterdam3D.Interface
 
         public void ShowMessage(string message = "Tooltip"){
             //Restart our animator
+            gameObject.transform.SetAsLastSibling(); //Make sure we are in front of all the UI
+
             gameObject.SetActive(false);
             gameObject.SetActive(true);
 
