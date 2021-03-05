@@ -22,6 +22,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
     public bool postProcessingEffects = true;
+    public bool realtimeReflections = false;
 
     public int qualitySettingsSlot = 0;
 }

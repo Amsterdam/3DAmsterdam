@@ -20,6 +20,9 @@ namespace Amsterdam3D.Rendering
         [SerializeField]
         private GameObject[] postEffectGameObjects;
 
+        [SerializeField]
+        private GameObject realtimeReflectionProbe;
+
         /// <summary>
         /// Toggles antialiasing on or off.
         /// </summary>
@@ -41,6 +44,11 @@ namespace Amsterdam3D.Rendering
             }
 
             SetPostProcessing();
+        }
+
+        public void ToggleReflections(bool reflectionsOn)
+        {
+            realtimeReflectionProbe.SetActive(reflectionsOn);
         }
 
 

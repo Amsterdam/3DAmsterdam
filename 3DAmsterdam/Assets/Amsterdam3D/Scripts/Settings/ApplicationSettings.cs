@@ -117,6 +117,7 @@ namespace Amsterdam3D.Settings {
             canvasSettings.ChangeCanvasScale(settings.canvasDPI);
 
             renderSettings.SetRenderScale(settings.renderResolution);
+            renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
 
