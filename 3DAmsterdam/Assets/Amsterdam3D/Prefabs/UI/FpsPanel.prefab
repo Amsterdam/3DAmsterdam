@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -90,9 +90,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fpsCounter: {fileID: 2208685251058266772}
   fpsBackground: {fileID: 2798071469444078161}
-  updateInterval: 0.5
   logFpsGroupsToAnalytics: 1
   updateAnalyticsInterval: 10
+  analyticsFpsGroupSize: 5
+  badFpsThreshold: 10
+  updateInterval: 0.5
 --- !u!1 &8961631062717988770
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +168,7 @@ MonoBehaviour:
     m_MaxSize: 65
     m_Alignment: 4
     m_AlignByGeometry: 0
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1

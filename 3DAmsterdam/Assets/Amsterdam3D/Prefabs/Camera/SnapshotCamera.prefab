@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5214365360773365056}
   - component: {fileID: 5193461917430267707}
   - component: {fileID: 5672555903470763752}
+  - component: {fileID: 1126292071125756211}
   m_Layer: 0
   m_Name: SnapshotCamera
   m_TagString: Untagged
@@ -122,5 +123,33 @@ MonoBehaviour:
   width: 1920
   height: 1080
   snapshotCamera: {fileID: 0}
-  screenshot: {fileID: 0}
+  screenShot: {fileID: 0}
   screenshotRenderTexture: {fileID: 0}
+  fileType: 
+  fileName: 
+  snapshotSettings: {fileID: 0}
+  snapshotUI: {fileID: 0}
+  snapshotNavigation: {fileID: 0}
+  snapshotLogo: {fileID: 0}
+  snapshotMainMenu: {fileID: 0}
+  snapshotResolution: {fileID: 0}
+  snapshotFileType: {fileID: 0}
+  snapshotName: {fileID: 0}
+  responsiveCanvas: {fileID: 0}
+--- !u!114 &1126292071125756211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3920816697506440587}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 2e6c3ed42a5d76c4d8e1d1a0efd077c7, type: 2}
