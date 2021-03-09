@@ -116,6 +116,10 @@ namespace Amsterdam3D.Settings {
 
         public void ApplySettings()
         {
+            //Currently we only use the quality settings files for shadow quality differences
+            //3 = 2045, 2 = 1024, 1=514, 0=Off
+            QualitySettings.SetQualityLevel(settings.shadowQuality, true);
+
             fpsCounter.ToggleVisualFPS(settings.drawFPS);
             minimap.gameObject.SetActive(settings.drawMap);
             canvasSettings.ChangeCanvasScale(settings.canvasDPI);
@@ -124,10 +128,6 @@ namespace Amsterdam3D.Settings {
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
-
-            //Currently we only use the quality settings files for shadow quality differences
-            //3 = 2045, 2 = 1024, 1=514, 0=Off
-            QualitySettings.SetQualityLevel(settings.shadowQuality, true);
 
             SaveSettings();
         }
