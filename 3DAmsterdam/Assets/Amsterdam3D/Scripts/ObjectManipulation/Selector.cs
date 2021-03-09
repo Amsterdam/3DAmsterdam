@@ -59,6 +59,9 @@ namespace Amsterdam3D.Interface
 		[SerializeField]
 		private RaycastHit[] sortedHits;
 
+		[SerializeField]
+		private Interactable multiSelector;
+
 		void Awake()
 		{
 			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
@@ -197,6 +200,7 @@ namespace Amsterdam3D.Interface
 			if (action.Cancelled)
 			{
 				doingMultiselect = false;
+
 			}
 			else if (action.Performed)
 			{

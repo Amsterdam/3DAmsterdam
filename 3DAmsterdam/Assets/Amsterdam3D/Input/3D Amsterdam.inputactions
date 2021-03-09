@@ -1332,6 +1332,96 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "GridSelection",
+            "id": "fc0f2e8c-320f-4f22-bbb1-7ecc3341f85a",
+            "actions": [
+                {
+                    "name": "Draw",
+                    "type": "Button",
+                    "id": "4d71f97d-97df-4265-8641-cd87068cac97",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap"
+                },
+                {
+                    "name": "ClearDrawing",
+                    "type": "Button",
+                    "id": "87d5dffa-a017-433c-addc-62c08df7c975",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "Button With One Modifier",
+                    "id": "f3b1a2b9-5716-4139-ae63-d0d69282d1be",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Draw",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "24fcaf29-ff79-4859-97b5-4c70c3d31659",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Draw",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "89b1e992-b934-4592-ae43-ce663bfec703",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Draw",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "e143cc7b-d8d7-465b-89b9-43fcf1f91d70",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClearDrawing",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "009480b6-4d28-4514-8291-b214f6366771",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClearDrawing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "5845d8ef-034a-40a1-b724-1c2646d177eb",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClearDrawing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
         }
     ],
     "controlSchemes": [

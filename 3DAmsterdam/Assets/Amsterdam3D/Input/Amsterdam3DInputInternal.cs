@@ -1345,6 +1345,96 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""GridSelection"",
+            ""id"": ""fc0f2e8c-320f-4f22-bbb1-7ecc3341f85a"",
+            ""actions"": [
+                {
+                    ""name"": ""Draw"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d71f97d-97df-4265-8641-cd87068cac97"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap""
+                },
+                {
+                    ""name"": ""ClearDrawing"",
+                    ""type"": ""Button"",
+                    ""id"": ""87d5dffa-a017-433c-addc-62c08df7c975"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""f3b1a2b9-5716-4139-ae63-d0d69282d1be"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Draw"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""24fcaf29-ff79-4859-97b5-4c70c3d31659"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Draw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""89b1e992-b934-4592-ae43-ce663bfec703"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Draw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""e143cc7b-d8d7-465b-89b9-43fcf1f91d70"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClearDrawing"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""009480b6-4d28-4514-8291-b214f6366771"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClearDrawing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""5845d8ef-034a-40a1-b724-1c2646d177eb"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClearDrawing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1459,6 +1549,10 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // SelectionTool
         m_SelectionTool = asset.FindActionMap("SelectionTool", throwIfNotFound: true);
         m_SelectionTool_StartSelection = m_SelectionTool.FindAction("StartSelection", throwIfNotFound: true);
+        // GridSelection
+        m_GridSelection = asset.FindActionMap("GridSelection", throwIfNotFound: true);
+        m_GridSelection_Draw = m_GridSelection.FindAction("Draw", throwIfNotFound: true);
+        m_GridSelection_ClearDrawing = m_GridSelection.FindAction("ClearDrawing", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1977,6 +2071,47 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     }
     public SelectionToolActions @SelectionTool => new SelectionToolActions(this);
+
+    // GridSelection
+    private readonly InputActionMap m_GridSelection;
+    private IGridSelectionActions m_GridSelectionActionsCallbackInterface;
+    private readonly InputAction m_GridSelection_Draw;
+    private readonly InputAction m_GridSelection_ClearDrawing;
+    public struct GridSelectionActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public GridSelectionActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Draw => m_Wrapper.m_GridSelection_Draw;
+        public InputAction @ClearDrawing => m_Wrapper.m_GridSelection_ClearDrawing;
+        public InputActionMap Get() { return m_Wrapper.m_GridSelection; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GridSelectionActions set) { return set.Get(); }
+        public void SetCallbacks(IGridSelectionActions instance)
+        {
+            if (m_Wrapper.m_GridSelectionActionsCallbackInterface != null)
+            {
+                @Draw.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDraw;
+                @Draw.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDraw;
+                @Draw.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDraw;
+                @ClearDrawing.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnClearDrawing;
+                @ClearDrawing.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnClearDrawing;
+                @ClearDrawing.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnClearDrawing;
+            }
+            m_Wrapper.m_GridSelectionActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Draw.started += instance.OnDraw;
+                @Draw.performed += instance.OnDraw;
+                @Draw.canceled += instance.OnDraw;
+                @ClearDrawing.started += instance.OnClearDrawing;
+                @ClearDrawing.performed += instance.OnClearDrawing;
+                @ClearDrawing.canceled += instance.OnClearDrawing;
+            }
+        }
+    }
+    public GridSelectionActions @GridSelection => new GridSelectionActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -2079,5 +2214,10 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface ISelectionToolActions
     {
         void OnStartSelection(InputAction.CallbackContext context);
+    }
+    public interface IGridSelectionActions
+    {
+        void OnDraw(InputAction.CallbackContext context);
+        void OnClearDrawing(InputAction.CallbackContext context);
     }
 }
