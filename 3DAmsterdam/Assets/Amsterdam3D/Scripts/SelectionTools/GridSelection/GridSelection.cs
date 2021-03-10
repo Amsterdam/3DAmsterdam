@@ -83,7 +83,7 @@ public class GridSelection : Interactable
 
 	private void OnEnable()
 	{
-		//TakeInteractionPriority();
+		TakeInteractionPriority();
 	}
 
 	private void Update()
