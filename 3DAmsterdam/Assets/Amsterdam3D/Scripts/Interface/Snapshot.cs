@@ -266,7 +266,7 @@ public class Snapshot : MonoBehaviour
         // Allows the camera to see what is on the canvas
         responsiveCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         responsiveCanvas.worldCamera = snapshotCamera;
-        responsiveCanvas.planeDistance = snapshotCamera.nearClipPlane + 0.1f;
+        responsiveCanvas.planeDistance = snapshotCamera.nearClipPlane + 1.0f;
 
         gameObject.SetActive(true);
         takeScreenshotOnNextFrame = true;
