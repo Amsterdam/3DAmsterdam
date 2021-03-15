@@ -1,74 +1,65 @@
-﻿using System;
+﻿using Amsterdam3D.Interface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchTool : MonoBehaviour
-{
-    private Button[] containingButtons;
-	[SerializeField]
-	private HorizontalLayoutGroup forceOrderGroup;
-
-	private bool expanded = false;
-
-    void Start()
+namespace Amsterdam3D.Interface {
+	public class SwitchTool : MonoBehaviour
 	{
-		containingButtons = GetComponentsInChildren<Button>();
+		private Button[] containingButtons;
 
-		if(!expanded)
-			HideToolButtons();
-	}
+		private bool expanded = false;
 
-	/// <summary>
-	/// Hide all tool buttons except the first (the active one)
-	/// </summary>
-	private void HideToolButtons()
-	{
-		expanded = false;
-		for (int i = 0; i < containingButtons.Length; i++)
+		[SerializeField]
+		private float spacing = 50;
+
+		void Start()
 		{
-			if(containingButtons[i].transform.GetSiblingIndex() != 0)
-				containingButtons[i].gameObject.SetActive(false);
-		}
-	}
-
-	private void ShowToolButtons()
-	{
-		expanded = true;
-		for (int i = 0; i < containingButtons.Length; i++)
-		{
-			containingButtons[i].gameObject.SetActive(true);
-		}
-		forceOrderGroup.enabled = true;
-		forceOrderGroup.enabled = false;
-	}
-
-
-	public void SwitchTo(int tool = 0)
-    {
-		if(expanded)
-		{
-			ActivateTool(tool);
+			containingButtons = GetComponentsInChildren<Button>();
 			HideToolButtons();
 		}
-		else{
-			
-		}
-	}
 
-	private void ActivateTool(int tool)
-	{
-		switch (tool)
+		/// <summary>
+		/// Hide all tool buttons except the first (the active one)
+		/// </summary>
+		private void HideToolButtons()
 		{
-			case 0:
-				//
-				break;
-			case 1:
-				//
-				break;
-			default:
-				break;
+			expanded = false;
+			for (int i = 0; i < containingButtons.Length; i++)
+			{
+				containingButtons[i].gameObject.SetActive((containingButtons[i].transform.GetSiblingIndex() == 0));
+			}
+		}
+
+		private void AlignToolButtonsSideBySide()
+		{
+			expanded = true;
+			for (int i = 0; i < containingButtons.Length; i++)
+			{
+				containingButtons[i].gameObject.SetActive(true);
+				containingButtons[i].transform.localPosition = new Vector3(containingButtons[i].transform.GetSiblingIndex() * spacing, 0, 0);
+			}
+		}
+
+
+		public void SwitchTo(int tool = 0)
+		{
+			if (expanded)
+			{
+				ActivateTool(tool);
+				AlignToolButtonsSideBySide();
+				HideToolButtons();
+			}
+			else {
+				AlignToolButtonsSideBySide();
+			}
+		}
+
+		private void ActivateTool(int tool)
+		{
+			//Selector.Instance.SetSelectionTool(tool);
 		}
 	}
 }
