@@ -274,15 +274,6 @@ namespace Amsterdam3D.Interface
 			ClearHighlights();
 		}
 
-		private void MultiselectFinish(IAction action)
-		{
-			//Check selected region for
-			//Custom objects
-			//Static layers
-
-			//What kind of context / combinations etc. etc.
-		}
-
 		private bool HoveringInterface()
 		{
 			return EventSystem.current.IsPointerOverGameObject();
