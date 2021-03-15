@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amsterdam3D.CameraMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,11 +17,12 @@ public class ProfilerDataRecorder : MonoBehaviour
 
     [Header("Holding Ctrl + your designated button starts/stops recording")]
     [SerializeField]
-    [Tooltip("Look up Unity hotkeys before changing these values")]
-    private KeyCode profilerRecordKey = KeyCode.H;
+    [Tooltip("Look up Unity AND Google Chrome hotkeys before changing these values")]
+    private KeyCode profilerRecordKey = KeyCode.Space;
+
     [SerializeField]
-    [Tooltip("Look up Unity hotkeys before changing these values")]
-    private KeyCode profilerStopKey = KeyCode.G;
+    [Tooltip("Look up Unity Google Chrome hotkeys before changing these values")]
+    private KeyCode profilerStopKey = KeyCode.Y;
 
     Coroutine savingProfilingData;
 
@@ -28,42 +30,52 @@ public class ProfilerDataRecorder : MonoBehaviour
 
     public bool recording = false;
 
+    private bool isBenchmarkToggled = false;
+
     void Start()
     {
         Instance = this;
         Profiler.enabled = false;
         Profiler.logFile = "";
     }
-
+    /// <summary>
+    /// Tells the profiler to start recording performance
+    /// </summary>
     public void StartRecording()
     {
-        if(!recording)
+        // Avoids starting multiple coroutines
+        if (!recording)
         {
+            recording = true;
             savingProfilingData = StartCoroutine(SaveProfilerData());
         }
     }
-
+    /// <summary>
+    /// Tells the profiler to stop recording performance
+    /// </summary>
     public void StopRecording()
     {
-        if(savingProfilingData != null)
+        if (savingProfilingData != null)
         {
             StopCoroutine(savingProfilingData);
         }
+        Profiler.enabled = false;
+        recording = false;
+        isBenchmarkToggled = false;
         Profiler.logFile = "";
         Profiler.enableBinaryLog = false;
-        Profiler.enabled = false; 
-        recording = false;
     }
 
     void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerRecordKey))
         {
-            StartRecording();
+            isBenchmarkToggled = true;
+            Instance.StartRecording();
         }
-        else if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerStopKey))
+        else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerStopKey))
         {
-            StopRecording();
+            Instance.StopRecording();
         }
     }
 
@@ -74,7 +86,7 @@ public class ProfilerDataRecorder : MonoBehaviour
 #if UNITY_EDITOR
             // Checks for existing files with the same name and makes sure no overwrites happen
             string[] filePaths = Directory.GetFiles(Application.persistentDataPath, fileName + "*");
-            if(filePaths.Length != 0)
+            if (filePaths.Length != 0)
             {
                 int prefix = Application.persistentDataPath.Length + fileName.Length;
                 int suffix = ".raw".Length;
@@ -92,7 +104,7 @@ public class ProfilerDataRecorder : MonoBehaviour
             {
                 _count = 0;
             }
-
+            
             // Generate the file path
             string filepath = Application.persistentDataPath + "/" + fileName + _count;
             // Set the log file and enable the profiler
@@ -100,17 +112,51 @@ public class ProfilerDataRecorder : MonoBehaviour
             Profiler.enableBinaryLog = true;
 #endif
             Profiler.enabled = true;
-            recording = true;
-
-            // Count 300 frames
-            for (int i = 0; i < 300; ++i)
+            if (isBenchmarkToggled)
             {
+                // Count 300 frames and execute commands that together form the 'Benchmark'
+                // Wrapping code with Profiler.BeginSample and EndSample is entirely optional, it makes debugging easier
+                // case 300 is the last one that is interractable
+                // The last line should always call StopRecording() or else the profiler will continue recording endlessly
+                for (int i = 1; i <= 301; ++i)
+                {
+                    yield return new WaitForEndOfFrame();
 
-                yield return new WaitForEndOfFrame();
+                    switch (i)
+                    {
+                        case 1:
+                            Profiler.BeginSample("B.Frame1");
+                            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(1000, 150, 1000);
+                            Profiler.EndSample();
+                            break;
+                        case 280:
+                            Profiler.BeginSample("B.Frame280");
+                            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(1500, 300, -3900);
+                            Profiler.EndSample();
+                            break;
+                        case 300:
+                            Profiler.BeginSample("B.FrameEND");
+                            Instance.StopRecording();
+                            Profiler.EndSample();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Count 300 frames
+                // This loop is used by classes that call this instance by themselves for individual testing
+                // For features that take over 300 frames this only works in Editor mode
+                for (int i = 1; i <= 301; ++i)
+                {
+                    yield return new WaitForEndOfFrame();
 
-                // Workaround to keep the Profiler working
-                if (!Profiler.enabled)
-                    Profiler.enabled = true;
+                    // Workaround to keep the Profiler working
+                    if (!Profiler.enabled)
+                        Profiler.enabled = true;
+                }
             }
         }
     }
