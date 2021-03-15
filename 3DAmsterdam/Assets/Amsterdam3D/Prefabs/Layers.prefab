@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8341a7d046a9da34494525e0653a3675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sewerLinePrefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e,
-    type: 3}
+  objectPool: {fileID: 1620230286426900701}
 --- !u!114 &5050187975766108088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32,6 +31,8 @@ MonoBehaviour:
   terrainHeightCheckLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  terrainLayer: {fileID: 1144097373}
+  manHoleObjectPool: {fileID: 7130575673976826797}
   manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
     type: 3}
 --- !u!114 &7005504237309713869
@@ -48,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 0
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 2
   Datasets:
   - Description: LOD0
     lod: 0
@@ -61,6 +62,9 @@ MonoBehaviour:
   sewerPipeSpawner: {fileID: 1484382064384571549}
   sewerManholeSpawner: {fileID: 5050187975766108088}
   runtimeMaskSphere: {fileID: 994676525503412668}
+  activeCount: 0
+  SewerLineObjectPool: {fileID: 1620230286426900701}
+  manHoleObjectPool: {fileID: 7130575673976826797}
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,7 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 1
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 2
   Datasets:
   - Description: LOD0
     lod: 0
@@ -152,6 +156,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   createMeshcollider: 0
+  addHighlightuvs: 1
   tileShadowCastingMode: 1
 --- !u!1 &4498901013376440829
 GameObject:
@@ -305,7 +310,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 1
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 1
   Datasets:
   - Description: LOD0
     lod: 0
@@ -317,6 +322,7 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
   createMeshcollider: 0
+  addHighlightuvs: 0
   tileShadowCastingMode: 1
 --- !u!1001 &1655602355448839381
 PrefabInstance:
@@ -499,6 +505,30 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13aae22d06676da40a6870a8bca648ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1620230286426900701 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4990700502472287826, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f28f85e12183ff4a99de1f09ccc3b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7130575673976826797 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3587774327578772770, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f28f85e12183ff4a99de1f09ccc3b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6043584490264672086

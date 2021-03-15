@@ -35,8 +35,8 @@ namespace LayerSystem
 		/// X,Y is bottom-left coordinate of tile in RD (for example 121000,480000)
 		/// Z is distance-squared to camera in m 
 		/// </summary>
-		public List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
-
+		private List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
+		private List<Vector3Int> tileList = new List<Vector3Int>();
 		/// <summary>
 		/// list of tilechanges, ready to be processed
 		/// </summary>
@@ -90,12 +90,16 @@ namespace LayerSystem
 		void Update()
 		{
 			//for debugging
-			activeTileChangesView = activeTileChanges.Values.ToList();
+			//activeTileChangesView = activeTileChanges.Values.ToList();
 
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = getCameraPosition(cameraExtents);
-			tileSizes=GetTilesizes();
-			tileDistances = GetTileDistances(tileSizes, viewRange, cameraPosition);
+			
+            if (tileSizes.Count==0)
+            {
+				GetTilesizes();
+			}
+			GetTileDistances(tileSizes, viewRange, cameraPosition);
 
 			pendingTileChanges.Clear();
 			RemoveOutOfViewTiles();
@@ -165,10 +169,10 @@ namespace LayerSystem
 		/// create a list of unique tilesizes used by all the layers
 		/// save the list in variable tileSizes
 		/// </summary>
-		private List<int> GetTilesizes()
+		private void GetTilesizes()
 		{
 			int tilesize;
-			List<int> tileSizes = new List<int>();
+			tileSizes = new List<int>();
 			foreach (Layer layer in layers)
 			{
 				if (layer.isEnabled == true)
@@ -180,39 +184,45 @@ namespace LayerSystem
 					}
 				}
 			}
-			return tileSizes;
+			
 		}
 		
-		private List<List<Vector3Int>> GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
-			List<List<Vector3Int>> tileDistances = new List<List<Vector3Int>>();
+			tileDistances.Clear();
+			
 		
 			int startX;
 			int startY;
 			int endX;
 			int endY;
 
-			List<Vector3Int> tileList;
+			
 			foreach (int tileSize in tileSizes)
 			{
-				tileList = new List<Vector3Int>();
+				
+				
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.w) / tileSize) * tileSize;
-
+				//clear the tileList
+				tileList.Clear();
+				//set the required capacity
+				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize)+50;
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
-
 					}
 				}
+				
+				
 				tileDistances.Add(tileList);
 			}
-			return tileDistances;
+			
 		}
 
 
@@ -341,55 +351,64 @@ namespace LayerSystem
             switch (action)
             {
                 case TileAction.Create:
-					priority = (int)((10*(lod+layerPriority))*distanceFactor);
+					priority = (int)((1+(10*(lod+layerPriority)))*distanceFactor);
                     break;
                 case TileAction.Upgrade:
-					priority = (int)((1 * (lod + layerPriority)) * distanceFactor);
+					priority = (int)((1+(1 * (lod + layerPriority))) * distanceFactor);
 					break;
                 case TileAction.Downgrade:
-					priority= (int)((0.5 * (lod + layerPriority)) * distanceFactor);
+					priority= (int)((1+(0.5 * (lod + layerPriority))) * distanceFactor);
 					break;
                 case TileAction.Remove:
-					priority = (int)((100 * (lod + layerPriority)) * distanceFactor);
+					priority = (int)((1+(100 * (lod + layerPriority))) * distanceFactor);
 					break;
                 default:
                     break;
             }
 			return priority;
 		}
-		
+
 		/// <summary>
 		/// 
 		/// </summary>
+		/// 
+		Layer layer;
+		List<Vector3Int> neededTiles;
+		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
+		//List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
+		Vector2Int[] activeTiles;
+		TileChange tileChange;
+		
 		private void RemoveOutOfViewTiles()
 		{
-			List<Vector3Int> neededTiles;
-			List<Vector2Int> neededTileKeys = new List<Vector2Int>();
-			List<Vector2Int> activeTiles; // list of currently active tiles
+			
+			
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
 				// create a list of tilekeys for the tiles that are within the viewrange
-				Layer layer = layers[layerIndex];
+				 layer = layers[layerIndex];
 				if (layer.gameObject.activeSelf == false) { continue; }
 				int tilesizeIndex = tileSizes.IndexOf(layer.tileSize);
 				neededTiles = tileDistances[tilesizeIndex];
 				neededTileKeys.Clear();
+				neededTileKeys.Capacity = neededTiles.Count;
 				foreach (var neededTile in neededTiles)
 				{
+					//tileKey.x = neededTile.x;
+					//tileKey.y = neededTile.y;
 					neededTileKeys.Add(new Vector2Int(neededTile.x, neededTile.y));
 				}
-
-
-				activeTiles = new List<Vector2Int>(layer.tiles.Keys);
+				//activeTiles = layer.tiles.Keys.ToArray();
+				//activeTiles = new List<Vector2Int>(layer.tiles.Keys);
 				// check for each active tile if the key is in the list of tilekeys within the viewrange
-				foreach (Vector2Int activeTile in activeTiles)
+				foreach (var kvp in layer.tiles)
 				{
-					if (neededTileKeys.Contains(activeTile) == false) // if the tile is not within the viewrange, set it up for removal
+					if (neededTileKeys.Contains(kvp.Key) == false) // if the tile is not within the viewrange, set it up for removal
 					{
-						TileChange tileChange = new TileChange();
+						tileChange = new TileChange();
 						tileChange.action = TileAction.Remove;
-						tileChange.X = activeTile.x;
-						tileChange.Y = activeTile.y;
+						tileChange.X = kvp.Key.x;
+						tileChange.Y = kvp.Key.y;
 						tileChange.layerIndex = layerIndex;
 						tileChange.priorityScore = int.MaxValue; // set the priorityscore to maximum
 						AddTileChange(tileChange,layerIndex);
@@ -435,14 +454,21 @@ namespace LayerSystem
 		public Vector2Int tileKey;
 	}
 	[Serializable]
-	public class TileChange
+	public struct TileChange : IEquatable<TileChange>
 	{
+		
 		public TileAction action;
 		public int priorityScore;
 		public int layerIndex;
 		public int X;
 		public int Y;
-	}
+
+         public bool Equals(TileChange other)
+        {
+			return (X == other.X && Y == other.Y && layerIndex == other.layerIndex);
+		}
+
+    }
 	public enum TileAction
 	{
 		Create,

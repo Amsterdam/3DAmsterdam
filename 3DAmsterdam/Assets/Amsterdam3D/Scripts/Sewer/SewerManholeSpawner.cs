@@ -9,7 +9,10 @@ namespace Amsterdam3D.Sewerage
 
         [SerializeField]
         private LayerMask terrainHeightCheckLayerMask;
-
+        [SerializeField]
+        private LayerSystem.AssetbundleMeshLayer terrainLayer;
+        [SerializeField]
+        private SewerageObjectPool manHoleObjectPool;
         public GameObject manholePrefab;
 
         private const float maxRayCastDistance = 50.0f;
@@ -33,11 +36,13 @@ namespace Amsterdam3D.Sewerage
                 ParentObject = transform.gameObject;
             }
             // get top-center position
-            Vector3 lidPosition = GetPositionAtSurface(position);
+            Vector3 lidPosition = position;
             // get manhole-height
             float depth = GetDepthAtPosition(lidPosition,defaultDepth);
             // create manhole
-            GameObject manHole = Instantiate(manholePrefab, ParentObject.transform);
+            GameObject manHole = manHoleObjectPool.GetPooledObject();
+            manHole.SetActive(true);
+            manHole.transform.parent = ParentObject.transform;
             // move manhole
             manHole.transform.localPosition = lidPosition;
             // scale manhole to correct height
@@ -55,10 +60,10 @@ namespace Amsterdam3D.Sewerage
         private Vector3 GetPositionAtSurface(Vector3 position)
         {
             Vector3 foundPosition = new Vector3();
-
+           
             // set RaycastOrigin to 10 above theoretical manhole-position
             Vector3 rayCastPosition = position + new Vector3(0, 10, 0);
-
+            terrainLayer.AddMeshColliders(rayCastPosition);
             if (Physics.Raycast(rayCastPosition, Vector3.down, out hit, maxRayCastDistance, terrainHeightCheckLayerMask.value))
             {
                 // set foundposition to hitpoint if terrain is found

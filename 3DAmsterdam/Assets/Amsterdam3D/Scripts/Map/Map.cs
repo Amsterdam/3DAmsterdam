@@ -38,11 +38,14 @@ namespace Amsterdam3D.Interface
             rectTransform = this.GetComponent<RectTransform>();
             defaultSize = rectTransform.sizeDelta;
             navigation.gameObject.SetActive(false);
+        }
 
+		private void OnEnable()
+		{
             mapTiles.Initialize(rectTransform, dragTarget);
         }
 
-        void LateUpdate()
+		void LateUpdate()
         {
             if(!interactingWithMap)
             {

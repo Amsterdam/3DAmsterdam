@@ -6,9 +6,10 @@ namespace Amsterdam3D.Sewerage
 {
     public class SewerLineSpawner : MonoBehaviour
     {
-        [SerializeField] 
+        
         private GameObject sewerLinePrefab;
-
+        [SerializeField]
+        private SewerageObjectPool objectPool;
         /// <summary>
         /// Create SewerPipe-GameObject from template and location-information
         /// </summary>
@@ -30,10 +31,13 @@ namespace Amsterdam3D.Sewerage
             float endHeight = to.y;
 
             //create new GameObject from sewerpipetemplate
-            GameObject newSewerPipe = Instantiate(sewerLinePrefab, ParentObject.transform);
+            //GameObject newSewerPipe = Instantiate(sewerLinePrefab, ParentObject.transform);
+            GameObject newSewerPipe = objectPool.GetPooledObject();
+            newSewerPipe.transform.parent= ParentObject.transform;
+            newSewerPipe.SetActive(true);
             
             Transform sewerPipe = newSewerPipe.transform;
-
+            
             // rotate pipe in horizontally
             float angle = Vector2.SignedAngle((endpositionXZ - startpositionXZ), new Vector2(10, 0));
             sewerPipe.Rotate(new Vector3(0, 1, 0), angle);

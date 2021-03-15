@@ -17,7 +17,7 @@ namespace Amsterdam3D.Performance
         private int mobileQualitySettingSlot = 0;
 
         [SerializeField]
-        private PostProcessingSettings postProcessingSettings;
+        private Rendering.RenderSettings postProcessingSettings;
 
         [SerializeField]
         private Toggle mapToggle;
