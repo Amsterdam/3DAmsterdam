@@ -2,6 +2,8 @@
 
 public static class Constants
 {
+    
+    
     /// <summary>
     /// The world Y axis is based on GPS coordinates.
     /// The height of 43 is close to 0 NAP, a nice average value for the Amsterdam ground level.
