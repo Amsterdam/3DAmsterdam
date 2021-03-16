@@ -88,12 +88,12 @@ namespace Netherlands3D.CameraMotion
 
         void Awake()
         {
-            worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
             cameraComponent = GetComponent<Camera>();
         }
 
         void Start()
 		{
+            worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
             mouseActionMap = ActionHandler.actions.GodViewMouse;
             keyboardActionMap = ActionHandler.actions.GodViewKeyboard;
 

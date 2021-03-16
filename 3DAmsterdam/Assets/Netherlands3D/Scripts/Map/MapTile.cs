@@ -37,7 +37,7 @@ namespace Netherlands3D.Interface
 
 		private IEnumerator LoadTexture(int zoom, int x, int y)
 		{
-			var tileImageUrl = Config.activeConfiguration.minimapTmsServiceUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", Mathf.Abs(x).ToString()).Replace("{y}", Mathf.Abs(y).ToString());
+			var tileImageUrl = Config.activeConfiguration.minimapTmsServiceUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
 
 			print(tileImageUrl);
 			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))

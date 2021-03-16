@@ -49,8 +49,9 @@ namespace Netherlands3D.Interface
         public int StartCellY { get => startCellY; }
         public int TilePixelSize { get => tilePixelSize;  }
         public int MapPixelWidth { get => mapPixelWidth; }
+		public bool Initialized { get => initialized; private set => initialized = value; }
 
-        private float keyTileSize;
+		private float keyTileSize;
         private float distanceX;
         private float distanceY;
         private float tileOffsetX;
@@ -76,6 +77,8 @@ namespace Netherlands3D.Interface
 
         private Canvas canvas;
 
+        private bool initialized = false;
+
         public void Initialize(RectTransform view, RectTransform drag)
         {
             loadedBottomLayer = false;
@@ -96,6 +99,8 @@ namespace Netherlands3D.Interface
             LoadTilesInView();
 
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
+
+            Initialized = true;
         }
 
 		public void OnDisable()
@@ -116,7 +121,8 @@ namespace Netherlands3D.Interface
 
         void Update()
         {
-            PutPointerOnCameraLocation();
+            if(Initialized)
+                PutPointerOnCameraLocation();
         }
 
         private void PutPointerOnCameraLocation()
@@ -150,9 +156,6 @@ namespace Netherlands3D.Interface
             });
             RDcoordinate.y = CameraModeChanger.Instance.ActiveCamera.transform.position.y;
             CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;
-
-            //PutPointerOnCameraLocation(); //TODO: Needs a smooth transition to not be disturbing
-            //CenterMapOnPointer();
         }
 
         private void CalculateMapCoordinates()

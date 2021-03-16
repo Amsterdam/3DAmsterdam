@@ -42,12 +42,22 @@ namespace Netherlands3D.Interface
 
 		private void OnEnable()
 		{
+            StartCoroutine(InitializeMapTiles());
+        }
+
+        IEnumerator InitializeMapTiles(){
+            while (!Config.activeConfiguration)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             mapTiles.Initialize(rectTransform, dragTarget);
         }
 
-		void LateUpdate()
+
+        void LateUpdate()
         {
-            if(!interactingWithMap)
+            if(!interactingWithMap && mapTiles.Initialized)
             {
                 mapTiles.CenterMapOnPointer();
             }
