@@ -95,7 +95,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4498901013433943612}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2619376247858438739
 MonoBehaviour:
@@ -158,56 +158,6 @@ MonoBehaviour:
   createMeshcollider: 0
   addHighlightuvs: 1
   tileShadowCastingMode: 1
---- !u!1 &4498901013376440829
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4498901013376440831}
-  - component: {fileID: 4498901013376440828}
-  m_Layer: 9
-  m_Name: GroundTiles
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4498901013376440831
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013376440829}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4498901013433943612}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4498901013376440828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013376440829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0cdf445e47d5ac4f93e93702f5bd739, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultMaterial: {fileID: 0}
-  dataFolder: terrain
-  textureUrl: terrain_textures/{z}/{x}/{y}.jpg
-  placeholderTile: {fileID: 1983436932115830, guid: 503bdea8ef3e023468133e2f91b32d3f,
-    type: 3}
-  tileShadowCastingMode: 0
-  sortByDistance: 0
 --- !u!1 &4498901013433943613
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +186,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4498901013376440831}
   - {fileID: 4498901013071965063}
   - {fileID: 4498901013737045448}
   - {fileID: 3613444410144068165}
@@ -294,7 +243,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4498901013433943612}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4453755010848541782
 MonoBehaviour:
@@ -334,7 +283,7 @@ PrefabInstance:
     - target: {fileID: 2656113440087731856, guid: 13decf1b360e8d14ab0d098ca5371ab0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2656113440087731856, guid: 13decf1b360e8d14ab0d098ca5371ab0,
         type: 3}
@@ -414,7 +363,7 @@ PrefabInstance:
     - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
         type: 3}
@@ -480,7 +429,7 @@ PrefabInstance:
         type: 3}
       propertyPath: targetMaterialsContainer
       value: 
-      objectReference: {fileID: 4498901013376440831}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25cc053d85d8e9648ae70ade3628dc63, type: 3}
 --- !u!1 &2003904154926515589 stripped
@@ -541,7 +490,7 @@ PrefabInstance:
     - target: {fileID: 6043584489261153546, guid: 7d6a9e42de047a44e90e6992115299e1,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6043584489261153546, guid: 7d6a9e42de047a44e90e6992115299e1,
         type: 3}
