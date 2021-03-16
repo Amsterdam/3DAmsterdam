@@ -13,7 +13,7 @@ namespace Netherlands3D.Configuration
 
         void Awake()
         {
-            Config.configurationFile = configurationFile;
+            Config.activeConfiguration = configurationFile;
         }
     }
 }

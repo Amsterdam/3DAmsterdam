@@ -74,9 +74,9 @@ namespace Netherlands3D.CameraMotion
 
 		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
 		{
-			if (targetLocation.y < Config.ZERO_GROUND_LEVEL_Y + 1.8f)
+			if (targetLocation.y < Config.activeConfiguration.zeroGroundLevelY + 1.8f)
 			{
-				targetLocation.y = Config.ZERO_GROUND_LEVEL_Y + 1.81f;
+				targetLocation.y = Config.activeConfiguration.zeroGroundLevelY + 1.81f;
 			}
 
 			transform.position = targetLocation;

@@ -71,7 +71,7 @@ namespace Netherlands3D.Interface.Sharing
 			yield return new WaitForEndOfFrame(); 
 			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
 			//Post basic scene, and optionaly get unique tokens in return
-			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.SHARE_URL + "customUpload.php", jsonScene);
+			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php", jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
 
@@ -97,7 +97,7 @@ namespace Netherlands3D.Interface.Sharing
 						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
 						var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token), false);
 
-						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.SHARE_URL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
+						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 						yield return modelSaveRequest.SendWebRequest();
 
@@ -122,7 +122,7 @@ namespace Netherlands3D.Interface.Sharing
 				yield return new WaitForSeconds(0.1f);
 
 				ChangeState(SharingState.SHOW_URL);
-				Debug.Log(Config.SHARED_VIEW_URL + serverReturn.sceneId);
+				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
 				JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
 				yield return null;
 			}

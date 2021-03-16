@@ -6,19 +6,29 @@ using UnityEngine;
 [System.Serializable]
 public class ConfigurationFile : ScriptableObject
 {
-    public const float ZERO_GROUND_LEVEL_Y = 43.0f;
+    [Header("Coordinates")]
+    public float zeroGroundLevelY = 43.0f;
 
-    public float MINIMAP_RD_BOTTOMLEFT_X = -285401.920f; // zoomlevel 0 at RD WMTS
-    public float MINIMAP_RD_BOTTOMLEFT_Y = 22598.080f; // zoomlevel 0 at RD WMTS
-    public float MINIMAP_RD_ZOOM_0_TILESIZE = 880803.84f; // zoomlevel 0 width/height of tiles 
+    [Header("Minimap")]
+    [Tooltip("The variables {x} and {y} in the URL will be replaced with their corresponding RD coordinates.")]
+    public string minimapTmsServiceUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
+    public float minimapBottomLeftRD_X = -285401.920f; // zoomlevel 0 at RD WMTS
+    public float minimapBottomLeftRD_Y = 22598.080f; // zoomlevel 0 at RD WMTS
 
-    /// <summary>
-    /// Swap data URL based on the branch type. Optionaly we can choose to use a relative path for WebGL.
-    /// </summary>
-    public string BASE_DATA_URL = "https://3d.amsterdam.nl/web/data/";
-    public string SHARE_URL = "https://3d.amsterdam.nl/";
-    public string SHARE_OBJECTSTORE_PATH = "customScene.php?id=";
-    public string SHARED_VIEW_URL = "https://3d.amsterdam.nl/web/app/index.html?view=";
+    [Tooltip("Zoomlevel 0 width/height of tiles")]
+    public float MinimapZoom0RDSize = 880803.84f;
 
-    public string TILE_METADATA_URL = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
+    [Header("External assets paths")]
+    public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
+    public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
+
+    public string sharingBaseURL = "https://3d.amsterdam.nl/";
+    public string sharingSceneSubdirectory = "customScene.php?id=";
+    public string sharingViewUrl = "https://3d.amsterdam.nl/web/app/index.html?view=";
+
+    [Header("Graphics")]
+    public Texture2D logo;
+
+    public Color primaryColor;
+    public Color secondaryColor;
 }

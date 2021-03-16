@@ -30,7 +30,7 @@ public class GenerateRoads : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(GetRoadsJson(Config.BASE_DATA_URL + roadsFileName));
+        StartCoroutine(GetRoadsJson(Config.activeConfiguration.webserverRootPath + roadsFileName));
         mainCameraTransform = Camera.main.transform;
     }
 

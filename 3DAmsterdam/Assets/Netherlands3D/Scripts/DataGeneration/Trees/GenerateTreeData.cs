@@ -74,7 +74,7 @@ namespace Netherlands3D.DataGeneration
 			tileOffset = CoordConvert.referenceRD;
 			tileOffset.x -= 500;
 			tileOffset.y -= 500;
-			tileOffset.z -= Config.ZERO_GROUND_LEVEL_Y;
+			tileOffset.z -= Config.activeConfiguration.zeroGroundLevelY;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
 
 			trees = new List<Tree>();
@@ -306,7 +306,7 @@ namespace Netherlands3D.DataGeneration
 			}
 
 			//Define a preview position to preview the tree tile in our scene
-			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Config.ZERO_GROUND_LEVEL_Y;
+			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Config.activeConfiguration.zeroGroundLevelY;
 			treeTile.transform.position = unityTileOffset;
 
 			CreateTreeTile(treeTile, previewPosition);

@@ -9,15 +9,12 @@ namespace Netherlands3D.Interface
 {
 	public class MapTile : MonoBehaviour
 	{
-		[SerializeField]
-		private const string tilesUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
-
 		private RawImage rawImage;
-		public RawImage textureTargetRawImage { get => rawImage; private set => rawImage = value; }
+		public RawImage TextureTargetRawImage { get => rawImage; private set => rawImage = value; }
 		private Vector2 tileKey;
 
 		private const float fadeSpeed = 3.0f;
-		UnityWebRequest uwr;
+		private UnityWebRequest uwr;
 
 		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key, bool rayCastTile)
 		{
@@ -27,11 +24,11 @@ namespace Netherlands3D.Interface
 			transform.SetParent(parentTo, false);
 
 			//generate a new rawimage
-			textureTargetRawImage = this.gameObject.AddComponent<RawImage>();
-			textureTargetRawImage.raycastTarget = rayCastTile;
-			textureTargetRawImage.rectTransform.pivot = Vector2.zero;
-			textureTargetRawImage.rectTransform.sizeDelta = Vector2.one * size;
-			textureTargetRawImage.enabled = false;
+			TextureTargetRawImage = this.gameObject.AddComponent<RawImage>();
+			TextureTargetRawImage.raycastTarget = rayCastTile;
+			TextureTargetRawImage.rectTransform.pivot = Vector2.zero;
+			TextureTargetRawImage.rectTransform.sizeDelta = Vector2.one * size;
+			TextureTargetRawImage.enabled = false;
 
 			//Posotion it in our parent according to x an y grid
 			transform.localPosition = new Vector3(xLocation * size, yLocation * size, 0);
@@ -40,8 +37,9 @@ namespace Netherlands3D.Interface
 
 		private IEnumerator LoadTexture(int zoom, int x, int y)
 		{
-			var tileImageUrl = tilesUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
-			
+			var tileImageUrl = Config.activeConfiguration.minimapTmsServiceUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", Mathf.Abs(x).ToString()).Replace("{y}", Mathf.Abs(y).ToString());
+
+			print(tileImageUrl);
 			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))
 			{
 				yield return uwr.SendWebRequest();
@@ -53,18 +51,18 @@ namespace Netherlands3D.Interface
 				else
 				{
 					var texture = DownloadHandlerTexture.GetContent(uwr);
-					textureTargetRawImage.texture = texture;
-					textureTargetRawImage.enabled = true;
-					textureTargetRawImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+					TextureTargetRawImage.texture = texture;
+					TextureTargetRawImage.enabled = true;
+					TextureTargetRawImage.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 					StartCoroutine(FadeInRawImage());
 				}
 			}
 		}
 
 		IEnumerator FadeInRawImage(){
-			while(textureTargetRawImage.color.a < 1.0f)
+			while(TextureTargetRawImage.color.a < 1.0f)
 			{
-				textureTargetRawImage.color = new Color(textureTargetRawImage.color.r, textureTargetRawImage.color.g, textureTargetRawImage.color.b, textureTargetRawImage.color.a + fadeSpeed*Time.deltaTime);
+				TextureTargetRawImage.color = new Color(TextureTargetRawImage.color.r, TextureTargetRawImage.color.g, TextureTargetRawImage.color.b, TextureTargetRawImage.color.a + fadeSpeed*Time.deltaTime);
 				yield return new WaitForEndOfFrame();
 			}
 		}
@@ -78,10 +76,10 @@ namespace Netherlands3D.Interface
 			if (uwr != null) uwr.Dispose();
 
 			//Cleanup texture from memory
-			Destroy(textureTargetRawImage.texture);
-			textureTargetRawImage.texture = null;
+			Destroy(TextureTargetRawImage.texture);
+			TextureTargetRawImage.texture = null;
 
-			Destroy(textureTargetRawImage);
+			Destroy(TextureTargetRawImage);
 		}
 	}
 }

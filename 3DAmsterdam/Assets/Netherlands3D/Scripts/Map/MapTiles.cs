@@ -157,9 +157,9 @@ namespace Netherlands3D.Interface
 
         private void CalculateMapCoordinates()
         {
-            var gridCellTileSize = Config.MINIMAP_RD_ZOOM_0_TILESIZE / Mathf.Pow(2, Zoom);
-            mapBottomLeftRDCoordinates = new Vector2(Config.MINIMAP_RD_BOTTOMLEFT_X + (gridCellTileSize * StartCellX), Config.MINIMAP_RD_BOTTOMLEFT_Y + (gridCellTileSize * StartCellY));
-            mapTopRightRDCoordinates = new Vector2(Config.MINIMAP_RD_BOTTOMLEFT_X + (gridCellTileSize * (StartCellX + gridCells)), Config.MINIMAP_RD_BOTTOMLEFT_Y + (gridCellTileSize * (StartCellY + gridCells)));
+            var gridCellTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
+            mapBottomLeftRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * StartCellX), Config.activeConfiguration.minimapBottomLeftRD_X);
+            mapTopRightRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellX + gridCells)), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellY + gridCells)));
 
             bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapBottomLeftRDCoordinates.x, mapBottomLeftRDCoordinates.y, 0.0f));
             topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapTopRightRDCoordinates.x, mapTopRightRDCoordinates.y, 0.0f));
@@ -168,10 +168,10 @@ namespace Netherlands3D.Interface
         }
         private void CalculateGridOffset()
         {
-            keyTileSize = Config.MINIMAP_RD_ZOOM_0_TILESIZE / Mathf.Pow(2, Zoom);
+            keyTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
 
-            distanceX = MapBottomLeftRDCoordinates.x - Config.MINIMAP_RD_BOTTOMLEFT_X;
-            distanceY = MapBottomLeftRDCoordinates.y - Config.MINIMAP_RD_BOTTOMLEFT_Y;
+            distanceX = MapBottomLeftRDCoordinates.x - Config.activeConfiguration.minimapBottomLeftRD_X;
+            distanceY = MapBottomLeftRDCoordinates.y - Config.activeConfiguration.minimapBottomLeftRD_Y;
             tileOffsetX = Mathf.Floor(distanceX / keyTileSize);
             tileOffsetY = Mathf.Floor(distanceY / keyTileSize);
         }

@@ -86,11 +86,10 @@ namespace LayerSystem
 		private IEnumerator DownloadAssetBundle(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
-			string url = Config.BASE_DATA_URL + Datasets[lod].path;
+			string url = Config.activeConfiguration.webserverRootPath + Datasets[lod].path;
             if (Datasets[lod].path.StartsWith("https://"))
             {
 				url = Datasets[lod].path;
-
 			}
 			url = url.Replace("{x}", tileChange.X.ToString());
 			url = url.Replace("{y}", tileChange.Y.ToString());
@@ -170,7 +169,7 @@ namespace LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.TILE_METADATA_URL + dataName;
+			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
 			Debug.Log(dataURL);
 			ObjectMappingClass data;
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
@@ -303,7 +302,7 @@ namespace LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.TILE_METADATA_URL + dataName;
+			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
 
 			ObjectMappingClass data;
 			string id = "null";

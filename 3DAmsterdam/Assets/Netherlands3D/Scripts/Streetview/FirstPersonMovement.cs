@@ -100,7 +100,7 @@ namespace Netherlands3D.CameraMotion
             {
                 //We are not grounded, but have no ground to fall to. keep floating.
                 isgrounded = false;
-                this.transform.position = new Vector3(this.transform.position.x, Config.ZERO_GROUND_LEVEL_Y + 1.8f, this.transform.position.z);
+                this.transform.position = new Vector3(this.transform.position.x, Config.activeConfiguration.zeroGroundLevelY + 1.8f, this.transform.position.z);
                 velocity = new Vector3(velocity.x, 0, velocity.z);
             }
         }

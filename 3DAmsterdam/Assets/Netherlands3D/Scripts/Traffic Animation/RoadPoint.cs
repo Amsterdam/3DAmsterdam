@@ -8,7 +8,7 @@ public class RoadPoint : MonoBehaviour
     public void Initiate(double longitude, double latitude)
     {
         Vector3 tempCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(longitude, latitude);
-        tempCoordinates.y = Config.ZERO_GROUND_LEVEL_Y; 
+        tempCoordinates.y = Config.activeConfiguration.zeroGroundLevelY; 
         pointCoordinates = tempCoordinates;
         transform.position = pointCoordinates;
     }

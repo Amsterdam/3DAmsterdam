@@ -25,7 +25,7 @@ public class SearchResultMarker : WorldPointFollower
     public void Show(Vector3 locationInWorld, string searchResultText)
     {
         gameObject.SetActive(true);
-        WorldPosition = locationInWorld + Vector3.up * Config.ZERO_GROUND_LEVEL_Y * 2.0f;
+        WorldPosition = locationInWorld + Vector3.up * Config.activeConfiguration.zeroGroundLevelY * 2.0f;
 
         //Set text from search result (without formatting)
         text.text = Regex.Replace(searchResultText, "<.*?>", string.Empty);

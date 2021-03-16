@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
   m_Name: Config3DAmsterdam
   m_EditorClassIdentifier: 
-  MINIMAP_RD_BOTTOMLEFT_X: -285401.9
-  MINIMAP_RD_BOTTOMLEFT_Y: 22598.08
-  MINIMAP_RD_ZOOM_0_TILESIZE: 880803.8
-  BASE_DATA_URL: https://3d.amsterdam.nl/web/data/
-  SHARE_URL: https://3d.amsterdam.nl/
-  SHARE_OBJECTSTORE_PATH: customScene.php?id=
-  SHARED_VIEW_URL: https://3d.amsterdam.nl/web/app/index.html?view=
-  TILE_METADATA_URL: https://3d.amsterdam.nl/web/data/buildings/objectdata/
+  zeroGroundLevelY: 43
+  wmtsUrl: 
+  MinimapBottomLeftRD_X: -285401.9
+  MinimapBottomLeftRD_Y: 22598.08
+  MinimapZoom0RDSize: 880803.8
+  webserverRootPath: https://3d.amsterdam.nl/web/data/
+  buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/buildings/objectdata/
+  sharingBaseURL: https://3d.amsterdam.nl/
+  sharingSceneSubdirectory: customScene.php?id=
+  sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
+  logo: {fileID: 2800000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
+  primaryColor: {r: 0, g: 0, b: 0, a: 0}
+  secondaryColor: {r: 0, g: 0, b: 0, a: 0}

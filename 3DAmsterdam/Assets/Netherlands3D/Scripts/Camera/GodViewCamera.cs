@@ -68,7 +68,7 @@ namespace Netherlands3D.CameraMotion
         public delegate void FocusPointChanged(Vector3 pointerPosition);
         public static FocusPointChanged focusingOnTargetPoint;
 
-        private Plane worldPlane = new Plane(Vector3.up, new Vector3(0, Config.ZERO_GROUND_LEVEL_Y, 0));
+        private Plane worldPlane;
 
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
@@ -88,6 +88,7 @@ namespace Netherlands3D.CameraMotion
 
         void Awake()
         {
+            worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
             cameraComponent = GetComponent<Camera>();
         }
 
@@ -366,7 +367,7 @@ namespace Netherlands3D.CameraMotion
             worldPlane.Raycast(screenRay, out float distance);
 
             var samplePoint = screenRay.GetPoint(Mathf.Min(maxClickDragDistance, distance));
-            samplePoint.y = Config.ZERO_GROUND_LEVEL_Y;
+            samplePoint.y = Config.activeConfiguration.zeroGroundLevelY;
 
             return samplePoint;
         }
