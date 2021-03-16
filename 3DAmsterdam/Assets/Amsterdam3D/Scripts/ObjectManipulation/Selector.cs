@@ -107,7 +107,7 @@ namespace Amsterdam3D.Interface
 
 		private void Update()
 		{
-			//Always update our main selector ray, and raycast for hovers
+			//Always update our main selector ray, and raycast for Interactables that we are hovering
 			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
@@ -118,11 +118,10 @@ namespace Amsterdam3D.Interface
 				hoveringInteractable = null;
 			}
 
-			EnableCameraActionMaps(true, !activeInteractable);
-
+			//Enable camera action maps based on the active interactable
 			if (activeInteractable)
 			{
-				EnableCameraActionMaps(true, false);
+				EnableCameraActionMaps(activeInteractable.blockKeyboardNavigationInteractions, activeInteractable.blockMouseNavigationInteractions);
 			}
 			else
 			{

@@ -44,22 +44,16 @@ namespace Amsterdam3D.Interface {
 		}
 
 
-		public void SwitchTo(int tool = 0)
+		public void OrderToolItems()
 		{
 			if (expanded)
 			{
-				ActivateTool(tool);
 				AlignToolButtonsSideBySide();
 				HideToolButtons();
 			}
 			else {
 				AlignToolButtonsSideBySide();
 			}
-		}
-
-		private void ActivateTool(int tool)
-		{
-			//Selector.Instance.SetSelectionTool(tool);
 		}
 	}
 }

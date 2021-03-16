@@ -12,6 +12,9 @@ namespace Amsterdam3D.Interface
     {
         public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
+        public bool blockMouseNavigationInteractions = true;
+        public bool blockKeyboardNavigationInteractions = false;
+
         private InputActionMap actionMap;
         public InputActionMap ActionMap {
             get
