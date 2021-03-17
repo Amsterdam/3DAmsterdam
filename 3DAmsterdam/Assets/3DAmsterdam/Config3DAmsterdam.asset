@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Config3DAmsterdam
   m_EditorClassIdentifier: 
   zeroGroundLevelY: 43
-  wmtsUrl: 
-  MinimapBottomLeftRD_X: -285401.9
-  MinimapBottomLeftRD_Y: 22598.08
+  minimapTmsServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
+  minimapBottomLeftRD_X: -285401.9
+  minimapBottomLeftRD_Y: 22598.08
   MinimapZoom0RDSize: 880803.8
   webserverRootPath: https://3d.amsterdam.nl/web/data/
   buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/buildings/objectdata/
@@ -23,5 +23,5 @@ MonoBehaviour:
   sharingSceneSubdirectory: customScene.php?id=
   sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
   logo: {fileID: 2800000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
-  primaryColor: {r: 0, g: 0, b: 0, a: 0}
-  secondaryColor: {r: 0, g: 0, b: 0, a: 0}
+  primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
+  secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
