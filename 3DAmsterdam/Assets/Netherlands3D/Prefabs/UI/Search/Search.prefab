@@ -462,6 +462,7 @@ GameObject:
   - component: {fileID: 712693449112873878}
   - component: {fileID: 712693449112873879}
   - component: {fileID: 5383455638417254398}
+  - component: {fileID: 1393096664084623718}
   m_Layer: 5
   m_Name: SearchButton
   m_TagString: Untagged
@@ -593,6 +594,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
+--- !u!114 &1393096664084623718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712693449112873897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4b679cd9b33acb42875fd7e11dc530e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorStyle: 1
 --- !u!1 &712693449117882653
 GameObject:
   m_ObjectHideFlags: 0

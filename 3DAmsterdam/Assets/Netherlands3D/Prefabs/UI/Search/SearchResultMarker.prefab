@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 8493319920197841962}
   - component: {fileID: 5123232526582743962}
   - component: {fileID: 5171120928228145824}
+  - component: {fileID: 3341588144140800892}
   m_Layer: 5
   m_Name: Pointer
   m_TagString: Untagged
@@ -154,6 +155,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3341588144140800892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545502035871800555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4b679cd9b33acb42875fd7e11dc530e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorStyle: 1
 --- !u!1 &6438447792365043824
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,6 +274,7 @@ GameObject:
   - component: {fileID: 5292056478883883120}
   - component: {fileID: 5734759758422310495}
   - component: {fileID: 375968893166211123}
+  - component: {fileID: 8731130496764956518}
   m_Layer: 5
   m_Name: AutoScalingBalloon
   m_TagString: Untagged
@@ -363,3 +378,16 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &8731130496764956518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8241735430415665499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4b679cd9b33acb42875fd7e11dc530e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorStyle: 1

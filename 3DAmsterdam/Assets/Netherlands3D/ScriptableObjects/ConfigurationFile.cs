@@ -27,7 +27,7 @@ public class ConfigurationFile : ScriptableObject
     public string sharingViewUrl = "https://3d.amsterdam.nl/web/app/index.html?view=";
 
     [Header("Graphics")]
-    public Texture2D logo;
+    public Sprite logo;
 
     public Color primaryColor;
     public Color secondaryColor;
