@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
+using Netherlands3D.ObjectInteraction;
 
 namespace Netherlands3D.Cameras
 {

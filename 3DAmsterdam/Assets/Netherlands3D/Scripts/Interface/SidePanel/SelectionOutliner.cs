@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.ObjectInteraction;
 
 namespace Netherlands3D.Interface.SidePanel
 {

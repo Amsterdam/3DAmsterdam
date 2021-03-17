@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.InputHandler;
+using Netherlands3D.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.ObjectInteraction
 {
     public class Interactable : MonoBehaviour
     {

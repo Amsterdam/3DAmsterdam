@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace Netherlands3D.LayerSystem
+{
     public class ObjectMappingClass : ScriptableObject
     {
         public List<string> ids;
@@ -11,3 +12,4 @@ using UnityEngine;
         public Vector2[] uvs;
         public List<int> vectorMap;
     }
+}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Netherlands3D.Parsing
+namespace Netherlands3D.ModelParsing
 {
 	public class ClearMeshAndMaterialsOnDestroy : MonoBehaviour
 	{

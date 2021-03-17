@@ -7,8 +7,9 @@ using System.Text;
 using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
+using Netherlands3D.ObjectInteraction;
 
-namespace Netherlands3D.Parsing
+namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{

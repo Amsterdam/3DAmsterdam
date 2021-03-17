@@ -6,8 +6,8 @@ using Netherlands3D.Cameras;
 using System.Linq;
 using Netherlands3D.Interface;
 using System.Globalization;
-using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Interface.Selection;
+using Netherlands3D.ObjectInteraction;
 
 namespace Netherlands3D.LayerSystem
 {
