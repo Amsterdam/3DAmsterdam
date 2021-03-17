@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Layers
 {
 	public class ExpandGroup : ChangePointerStyleHandler
 	{

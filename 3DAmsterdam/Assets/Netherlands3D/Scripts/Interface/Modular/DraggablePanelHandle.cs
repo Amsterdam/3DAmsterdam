@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Modular
 {
     public class DraggablePanelHandle : MonoBehaviour, IDragHandler, IPointerDownHandler
     {

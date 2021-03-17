@@ -3,8 +3,8 @@ using System.Collections;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
-namespace Netherlands3D.Interface
-{
+namespace Netherlands3D.Interface.Selection
+{ 
     public abstract class SelectionTool : MonoBehaviour
     {
         public GameObject canvas;

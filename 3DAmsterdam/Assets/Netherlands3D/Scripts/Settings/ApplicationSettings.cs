@@ -1,5 +1,7 @@
 ﻿using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
+using Netherlands3D.Interface.Minimap;
+using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,59 +62,59 @@ namespace Netherlands3D.Settings {
 
 		public void OpenSettingsPanel()
         {
-            //Interface options
-            ObjectProperties.Instance.OpenPanel("Instellingen", true , 10.0f);
-            ObjectProperties.Instance.AddTitle("Interface");
-            ObjectProperties.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
-                settings.drawMap = toggle;
-                ApplySettings();
+			//Interface options
+			Interface.SidePanel.Properties.Instance.OpenPanel("Instellingen", true , 10.0f);
+			Interface.SidePanel.Properties.Instance.AddTitle("Interface");
+			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
+				settings.drawMap = toggle;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
-                settings.drawFPS = toggle;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
+				settings.drawFPS = toggle;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Interface schaal");
-            ObjectProperties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
-                settings.canvasDPI = value;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddLabel("Interface schaal");
+			Interface.SidePanel.Properties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
+				settings.canvasDPI = value;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
-                interfaceLayers.ResetAllLayerMaterialColors();
+			Interface.SidePanel.Properties.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
+				interfaceLayers.ResetAllLayerMaterialColors();
             });
 
-            //Graphic options
-            ObjectProperties.Instance.AddTitle("Grafisch");
-            ObjectProperties.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
-                settings.postProcessingEffects = toggle;
-                ApplySettings();
+			//Graphic options
+			Interface.SidePanel.Properties.Instance.AddTitle("Grafisch");
+			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+				settings.postProcessingEffects = toggle;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
-                settings.antiAliasing = toggle;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
+				settings.antiAliasing = toggle;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
-                settings.realtimeReflections = toggle;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
+				settings.realtimeReflections = toggle;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Render resolutie:");
-            ObjectProperties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
-                settings.renderResolution = value;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddLabel("Render resolutie:");
+			Interface.SidePanel.Properties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
+				settings.renderResolution = value;
+				ApplySettings();
             });
-            ObjectProperties.Instance.AddLabel("Schaduw detail:");
-            ObjectProperties.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
-                settings.shadowQuality = (int)value;
-                ApplySettings();
+			Interface.SidePanel.Properties.Instance.AddLabel("Schaduw detail:");
+			Interface.SidePanel.Properties.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+				settings.shadowQuality = (int)value;
+				ApplySettings();
             }, true);
 
-            ObjectProperties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
-                settings = Instantiate(settingsProfilesTemplates[0]);
-                ApplySettings();
-                OpenSettingsPanel(); //Just regenerate this panel with new values.
+			Interface.SidePanel.Properties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
+				settings = Instantiate(settingsProfilesTemplates[0]);
+				ApplySettings();
+				OpenSettingsPanel(); //Just regenerate this panel with new values.
             });
 
-            ObjectProperties.Instance.AddSeperatorLine();
-            ObjectProperties.Instance.AddCustomPrefab(stats);
+			Interface.SidePanel.Properties.Instance.AddSeperatorLine();
+			Interface.SidePanel.Properties.Instance.AddCustomPrefab(stats);
         }
 
         public void ApplySettings()

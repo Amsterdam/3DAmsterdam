@@ -6,7 +6,7 @@ using Netherlands3D.LayerSystem;
 using Netherlands3D.Cameras;
 using ConvertCoordinates;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Selection
 {
 	// currently works as MVP, still has a bunch of TODOs for better usage.
 
@@ -71,7 +71,7 @@ namespace Netherlands3D.Interface
 			GetPointsCentroid();
 			var maxDistance = 0.0f;
 			foreach (var position in vertices)
-			{ 
+			{
 				var distance = Vector3.Distance(position, selectionCentroid);
 				if (distance > maxDistance)
 				{

@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using Netherlands3D.LayerSystem;
 
-namespace Netherlands3D.Interface {
+namespace Netherlands3D.Interface.SidePanel
+{
 	public class SelectionOutliner : MonoBehaviour
 	{
 		private string id = "";

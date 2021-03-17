@@ -6,22 +6,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.SidePanel
 {
-    public class NameAndURL : OpenURL
-    {
-        [SerializeField]
-        private Text titleText;
+	public class NameAndURL : OpenURL
+	{
+		[SerializeField]
+		private Text titleText;
 
-        void Awake()
-        {
-            titleText.GetComponent<Text>();
-        }
+		void Awake()
+		{
+			titleText.GetComponent<Text>();
+		}
 
-        public void SetURL(string urlName, string urlPath)
-        {
-            titleText.name = urlName;
-            gameObject.name = urlPath;
-        }
+		public void SetURL(string urlName, string urlPath)
+		{
+			titleText.name = urlName;
+			gameObject.name = urlPath;
+		}
 	}
 }

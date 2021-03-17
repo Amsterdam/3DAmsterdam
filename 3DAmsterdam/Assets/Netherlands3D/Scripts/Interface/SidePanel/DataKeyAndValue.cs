@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DataKeyAndValue : MonoBehaviour
+namespace Netherlands3D.Interface.SidePanel
 {
-    [SerializeField]
-    private Text keyText;
-
-    [SerializeField]
-    private Text valueText;
-    
-    public void SetTexts(string key, string value)
+    public class DataKeyAndValue : MonoBehaviour
     {
-        keyText.text = key;
-        valueText.text = value;
+        [SerializeField]
+        private Text keyText;
+
+        [SerializeField]
+        private Text valueText;
+
+        public void SetTexts(string key, string value)
+        {
+            keyText.text = key;
+            valueText.text = value;
+        }
     }
 }

@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Minimap
 {
     public class MapTiles : MonoBehaviour, IPointerClickHandler
     {

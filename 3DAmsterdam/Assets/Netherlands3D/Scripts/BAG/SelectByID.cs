@@ -6,6 +6,8 @@ using Netherlands3D.Cameras;
 using System.Linq;
 using Netherlands3D.Interface;
 using System.Globalization;
+using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Interface.Selection;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -143,13 +145,13 @@ namespace Netherlands3D.LayerSystem
             else if (selectedIDs.Count > 1)
             {
                 ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
-                //Update sidepanel outliner
-                ObjectProperties.Instance.OpenPanel("Selectie", true);
-                ObjectProperties.Instance.RenderThumbnail(true);
-                ObjectProperties.Instance.AddTitle("Geselecteerde panden");
+				//Update sidepanel outliner
+				Interface.SidePanel.Properties.Instance.OpenPanel("Selectie", true);
+				Interface.SidePanel.Properties.Instance.RenderThumbnail(true);
+				Interface.SidePanel.Properties.Instance.AddTitle("Geselecteerde panden");
                 foreach (var id in selectedIDs)
                 {
-                    ObjectProperties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+					Interface.SidePanel.Properties.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
                 }
             }
             else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
@@ -214,18 +216,18 @@ namespace Netherlands3D.LayerSystem
 
             if (id != emptyID)
             {
-                ObjectProperties.Instance.OpenPanel("Pand", true);
-                if (selectedIDs.Count > 1) ObjectProperties.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
+				Interface.SidePanel.Properties.Instance.OpenPanel("Pand", true);
+                if (selectedIDs.Count > 1) Interface.SidePanel.Properties.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
                 {
-                    HighlightObjectsWithIDs();
+					HighlightObjectsWithIDs();
                 }
                 );
-                ObjectProperties.Instance.displayBagData.ShowBuildingData(id);
+				Interface.SidePanel.Properties.Instance.displayBagData.ShowBuildingData(id);
             }
             else if (lastSelectedID != emptyID)
             {
-                ObjectProperties.Instance.OpenPanel("Pand", true);
-                ObjectProperties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+				Interface.SidePanel.Properties.Instance.OpenPanel("Pand", true);
+				Interface.SidePanel.Properties.Instance.displayBagData.ShowBuildingData(lastSelectedID);
             }
         }
 

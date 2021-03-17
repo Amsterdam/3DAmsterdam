@@ -3,7 +3,8 @@ using Netherlands3D.Cameras;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using Netherlands3D.InputHandler;
-namespace Netherlands3D.Interface
+
+namespace Netherlands3D.Interface.Selection
 {
     public class BoxSelect : SelectionTool
     {
@@ -21,7 +22,6 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private float selectionGraphicCorrection = 10.0f;
 
-
         private InputAction holdAction;
 
 		public override void EnableTool()
@@ -37,8 +37,8 @@ namespace Netherlands3D.Interface
         private void Start()
         {
             toolType = ToolType.Box;
-            holdAction = Netherlands3D.InputHandler.ActionHandler.actions.SelectionTool.StartSelection;
-            Netherlands3D.InputHandler.ActionHandler.actions.SelectionTool.Enable();
+            holdAction = ActionHandler.actions.SelectionTool.StartSelection;
+            ActionHandler.actions.SelectionTool.Enable();
             holdAction.Enable();
         }
 

@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,26 +25,26 @@ namespace Netherlands3D.BAG
 			StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
 			{
                 EstimateBuildingThumbnailFrame(buildingData);
-                ObjectProperties.Instance.AddTitle("Pand " + bagId);
-                ObjectProperties.Instance.AddDataField("BAG ID", buildingData._display);
-				ObjectProperties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
-				ObjectProperties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
-				ObjectProperties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
-				ObjectProperties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-				ObjectProperties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
-				ObjectProperties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
-				ObjectProperties.Instance.AddLink("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+				Interface.SidePanel.Properties.Instance.AddTitle("Pand " + bagId);
+				Interface.SidePanel.Properties.Instance.AddDataField("BAG ID", buildingData._display);
+				Interface.SidePanel.Properties.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
+				Interface.SidePanel.Properties.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
+				Interface.SidePanel.Properties.Instance.AddDataField("Buurt", buildingData._buurt.naam);
+				Interface.SidePanel.Properties.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
+				Interface.SidePanel.Properties.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
+				Interface.SidePanel.Properties.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
+				Interface.SidePanel.Properties.Instance.AddLink("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
-				ObjectProperties.Instance.AddSeperatorLine();
+				Interface.SidePanel.Properties.Instance.AddSeperatorLine();
 
 				//Load up the list of addresses tied to this building (in a Seperate API call)
-				ObjectProperties.Instance.AddTitle("Adressen");
+				Interface.SidePanel.Properties.Instance.AddTitle("Adressen");
 				StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
 				{
 					foreach (var address in addressList.results)
 					{
 						//We create a field and make it clickable, so addresses cant contain more data
-						var dataKeyAndValue = ObjectProperties.Instance.AddDataField(address._display, "");
+						var dataKeyAndValue = Interface.SidePanel.Properties.Instance.AddDataField(address._display, "");
 						var button = dataKeyAndValue.GetComponent<Button>();
 						button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
 					}
@@ -76,7 +77,7 @@ namespace Netherlands3D.BAG
 			points.Add(rdB);
 			points.Add(rdC);
 			points.Add(rdD);
-			ObjectProperties.Instance.RenderThumbnailContaining(points.ToArray(), true);
+			Interface.SidePanel.Properties.Instance.RenderThumbnailContaining(points.ToArray(), true);
 		}
 
 		private void ShowAddressData(string addressId, Button button)
@@ -86,8 +87,8 @@ namespace Netherlands3D.BAG
             //TODO, add groupable dropdrown that shows/hides the following fields at below the selected object
             StartCoroutine(ImportBAG.GetAddressData(addressId, (addressData) =>
             {
-                //Create group under button
-                GameObject group = ObjectProperties.Instance.CreateGroup();
+				//Create group under button
+				GameObject group = Interface.SidePanel.Properties.Instance.CreateGroup();
                 group.transform.SetSiblingIndex(button.transform.GetSiblingIndex() + 1);
 
                 //Next click closes (and removes) group again
@@ -98,13 +99,13 @@ namespace Netherlands3D.BAG
                     button.onClick.AddListener((() => ShowAddressData(addressId, button)));
                 }));
 
-                ObjectProperties.Instance.AddSeperatorLine();
-                ObjectProperties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
-                ObjectProperties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
-                ObjectProperties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
-                ObjectProperties.Instance.AddLink("Meer adres informatie", moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
-                ObjectProperties.Instance.AddSeperatorLine();
-                ObjectProperties.Instance.CloseGroup();
+				Interface.SidePanel.Properties.Instance.AddSeperatorLine();
+				Interface.SidePanel.Properties.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
+				Interface.SidePanel.Properties.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
+				Interface.SidePanel.Properties.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
+				Interface.SidePanel.Properties.Instance.AddLink("Meer adres informatie", moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
+				Interface.SidePanel.Properties.Instance.AddSeperatorLine();
+				Interface.SidePanel.Properties.Instance.CloseGroup();
             }));
         }
     }

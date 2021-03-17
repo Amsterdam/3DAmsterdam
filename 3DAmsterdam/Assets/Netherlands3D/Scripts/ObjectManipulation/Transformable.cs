@@ -1,6 +1,7 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.InputHandler;
 using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ public class Transformable : Interactable
 	public override void Deselect()
 	{
 		base.Deselect();
-		ObjectProperties.Instance.DeselectTransformable(this, true);
+		Netherlands3D.Interface.SidePanel.Properties.Instance.DeselectTransformable(this, true);
 	}
 
 	/// <summary>
@@ -101,8 +102,8 @@ public class Transformable : Interactable
 	public void ShowTransformProperties(int gizmoTransformType = -1)
 	{
 		lastSelectedTransformable = this;
-		ObjectProperties.Instance.OpenPanel(gameObject.name);
-		ObjectProperties.Instance.OpenTransformPanel(this, gizmoTransformType);
+		Netherlands3D.Interface.SidePanel.Properties.Instance.OpenPanel(gameObject.name);
+		Netherlands3D.Interface.SidePanel.Properties.Instance.OpenTransformPanel(this, gizmoTransformType);
 		UpdateBounds();
 	}
 
@@ -112,7 +113,7 @@ public class Transformable : Interactable
 	public void UpdateBounds()
 	{
 		int objectOriginalLayer = this.gameObject.layer;
-		this.gameObject.layer = ObjectProperties.Instance.ThumbnailExclusiveLayer;
+		this.gameObject.layer = Netherlands3D.Interface.SidePanel.Properties.Instance.ThumbnailExclusiveLayer;
 
 		//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
 		Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
@@ -120,7 +121,7 @@ public class Transformable : Interactable
 		{
 			bounds.Encapsulate(renderer.bounds);
 		}
-		ObjectProperties.Instance.RenderThumbnailContaining(bounds);
+		Netherlands3D.Interface.SidePanel.Properties.Instance.RenderThumbnailContaining(bounds);
 		this.gameObject.layer = objectOriginalLayer;
 	}
 

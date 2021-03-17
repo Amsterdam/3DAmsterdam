@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,7 +83,7 @@ namespace Netherlands3D.Interface.Layers
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
             parentInterfaceLayers.LayerVisuals.Close();
-            ObjectProperties.Instance.ClosePanel();
+			SidePanel.Properties.Instance.ClosePanel();
             Destroy(gameObject);
         }
 

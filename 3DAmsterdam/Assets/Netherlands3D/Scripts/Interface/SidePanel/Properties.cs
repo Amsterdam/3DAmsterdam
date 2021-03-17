@@ -7,9 +7,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.SidePanel
 {
-    public class ObjectProperties : MonoBehaviour
+    public class Properties : MonoBehaviour
     {
         [SerializeField]
         private GameObject objectPropertiesPanel;
@@ -23,7 +23,7 @@ namespace Netherlands3D.Interface
 
         public DisplayBAGData displayBagData;
 
-        public static ObjectProperties Instance = null;
+        public static Properties Instance = null;
 
         [SerializeField]
         private Text titleText;
