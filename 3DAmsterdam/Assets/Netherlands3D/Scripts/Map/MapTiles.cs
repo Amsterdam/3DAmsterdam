@@ -161,8 +161,8 @@ namespace Netherlands3D.Interface
         private void CalculateMapCoordinates()
         {
             var gridCellTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
-            mapBottomLeftRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * StartCellX), Config.activeConfiguration.minimapBottomLeftRD_X);
-            mapTopRightRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellX + gridCells)), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellY + gridCells)));
+            mapBottomLeftRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * StartCellX), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * StartCellY));
+            mapTopRightRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * (StartCellX + gridCells)), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellY + gridCells)));
 
             bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapBottomLeftRDCoordinates.x, mapBottomLeftRDCoordinates.y, 0.0f));
             topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapTopRightRDCoordinates.x, mapTopRightRDCoordinates.y, 0.0f));

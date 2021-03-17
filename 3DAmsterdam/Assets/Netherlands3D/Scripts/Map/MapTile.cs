@@ -39,7 +39,6 @@ namespace Netherlands3D.Interface
 		{
 			var tileImageUrl = Config.activeConfiguration.minimapTmsServiceUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
 
-			print(tileImageUrl);
 			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))
 			{
 				yield return uwr.SendWebRequest();
