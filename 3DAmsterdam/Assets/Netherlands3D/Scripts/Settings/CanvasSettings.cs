@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Netherlands3D.CameraMotion;
+using Netherlands3D.Cameras;
 
 namespace Netherlands3D.Interface
 {

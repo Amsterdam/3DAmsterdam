@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Netherlands3D.CameraMotion
+namespace Netherlands3D.Cameras
 {
 
     public class StreetViewMoveToPoint : MonoBehaviour

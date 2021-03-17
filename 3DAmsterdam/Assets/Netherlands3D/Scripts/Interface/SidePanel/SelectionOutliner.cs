@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using Netherlands3D.LayerSystem;
 
 namespace Netherlands3D.Interface {
 	public class SelectionOutliner : MonoBehaviour

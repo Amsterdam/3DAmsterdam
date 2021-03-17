@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Layers
 {
 	public enum LayerType
 	{

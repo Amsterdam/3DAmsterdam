@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public static class Config
+namespace Netherlands3D
 {
-    public static ConfigurationFile activeConfiguration;
+    public static class Config
+    {
+        public static ConfigurationFile activeConfiguration;
+    }
 }

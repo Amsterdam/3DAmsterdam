@@ -1,4 +1,4 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.InputHandler;
 using System;
 using System.Collections;

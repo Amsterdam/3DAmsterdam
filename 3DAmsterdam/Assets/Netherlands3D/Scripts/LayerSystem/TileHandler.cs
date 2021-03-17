@@ -6,10 +6,10 @@ using BruTile;
 using ConvertCoordinates;
 using System.Linq;
 using UnityEngine.Networking;
-using Netherlands3D.CameraMotion;
-namespace LayerSystem
+using Netherlands3D.Cameras;
+
+namespace Netherlands3D.LayerSystem
 {
-	
 	public class TileHandler : MonoBehaviour
 	{
 		/// <summary>

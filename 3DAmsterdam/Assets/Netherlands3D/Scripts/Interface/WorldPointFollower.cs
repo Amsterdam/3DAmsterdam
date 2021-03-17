@@ -1,29 +1,32 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldPointFollower : MonoBehaviour
+namespace Netherlands3D.Interface
 {
-    private RectTransform rectTransform;
-
-    private Vector3 worldPosition = Vector3.zero;
-    public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
-
-    public virtual void Awake()
+    public class WorldPointFollower : MonoBehaviour
     {
-        rectTransform = GetComponent<RectTransform>();
-    }
+        private RectTransform rectTransform;
 
-    public virtual void AlignWithWorldPosition(Vector3 newWorldPosition)
-    {
-        WorldPosition = newWorldPosition;
-    }
+        private Vector3 worldPosition = Vector3.zero;
+        public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
-    private void Update()
-    {
-        var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(worldPosition);
-        rectTransform.anchorMin = viewportPosition;
-        rectTransform.anchorMax = viewportPosition;
+        public virtual void Awake()
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
+        public virtual void AlignWithWorldPosition(Vector3 newWorldPosition)
+        {
+            WorldPosition = newWorldPosition;
+        }
+
+        private void Update()
+        {
+            var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(worldPosition);
+            rectTransform.anchorMin = viewportPosition;
+            rectTransform.anchorMax = viewportPosition;
+        }
     }
 }

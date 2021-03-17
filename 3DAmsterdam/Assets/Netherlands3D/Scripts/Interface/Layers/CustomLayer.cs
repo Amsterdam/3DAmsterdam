@@ -1,11 +1,11 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Layers
 {
     public class CustomLayer : InterfaceLayer, IPointerClickHandler
     {               

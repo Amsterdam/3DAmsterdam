@@ -3,29 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Warning : MonoBehaviour
+namespace Netherlands3D.Interface
 {
-    [SerializeField]
-    private Text bodyText;
-
-
-    /// <summary>
-    /// Leave empty to show the default message
-    /// </summary>
-    /// <param name="message">Custom warning message</param>
-    public void SetMessage(string message = "")
+    public class Warning : MonoBehaviour
     {
-        if (message != "")
+        [SerializeField]
+        private Text bodyText;
+
+        /// <summary>
+        /// Leave empty to show the default message
+        /// </summary>
+        /// <param name="message">Custom warning message</param>
+        public void SetMessage(string message = "")
         {
-            bodyText.text = message;
+            if (message != "")
+            {
+                bodyText.text = message;
+            }
+        }
+
+        /// <summary>
+        /// Closing the panel using own method to destroy itself
+        /// </summary>
+        public void Close()
+        {
+            Destroy(gameObject);
         }
     }
-
-    /// <summary>
-    /// Closing the panel using own method to destroy itself
-    /// </summary>
-    public void Close()
-    {
-        Destroy(gameObject);
-	}
 }

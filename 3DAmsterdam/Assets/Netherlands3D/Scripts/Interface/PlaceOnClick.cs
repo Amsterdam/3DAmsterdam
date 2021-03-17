@@ -1,5 +1,6 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.InputHandler;
+using Netherlands3D.Interface.Layers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,7 +16,6 @@ namespace Netherlands3D.Interface
 
         private WorldPointFollower worldPointerFollower;
 		public WorldPointFollower WorldPointerFollower { get => worldPointerFollower; private set => worldPointerFollower = value; }
-
         public CustomLayer interfaceLayer { get; set; }
 
         private Vector3 targetLocation;

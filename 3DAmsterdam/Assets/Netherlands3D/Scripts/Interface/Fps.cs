@@ -14,25 +14,23 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Image fpsBackground;
 
-		[SerializeField]
-		private bool logFpsGroupsToAnalytics = true;
-
-		[SerializeField]
-		private float updateAnalyticsInterval = 10.0f; //Every # seconds we log our average fps to the analytics
-
-		private double lastInterval;
-		private double lastIntervalAnalytics;
 
 		private int framesVisualFPS = 0;
+		private double lastInterval = 0;
+
+#if !UNITY_EDITOR
+		private bool logFpsGroupsToAnalytics = true;
+		private float updateAnalyticsInterval = 10.0f; //Every # seconds we log our average fps to the analytics
+		
 		private int framesAnalytics = 0;
+		private double lastIntervalAnalytics = 0;
+
+		private int analyticsFpsGroupSize = 5; //The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up
+#endif
 
 		private bool enabledVisualFPS = false;
 
 		private float timeNow = 0;
-
-		[SerializeField]
-		[Tooltip("The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up")]
-		private int analyticsFpsGroupSize = 5;
 
 		[Header("FPS Numbers on screen")]
 		[SerializeField]
@@ -45,11 +43,13 @@ namespace Netherlands3D.Interface
 		{
 			ToggleVisualFPS(false);
 
-			lastInterval = Time.realtimeSinceStartup;
-			lastIntervalAnalytics = Time.realtimeSinceStartup;
-
 			framesVisualFPS = 0;
+			lastInterval = Time.realtimeSinceStartup;
+
+			#if !UNITY_EDITOR
+			lastIntervalAnalytics = Time.realtimeSinceStartup;
 			framesAnalytics = 0;
+			#endif
 		}
 
 		private void Update()
@@ -87,7 +87,7 @@ namespace Netherlands3D.Interface
 				}
 			}
 
-			#if !UNITY_EDITOR
+#if !UNITY_EDITOR
 			if(logFpsGroupsToAnalytics)
 			{
 				++framesAnalytics;
@@ -98,7 +98,7 @@ namespace Netherlands3D.Interface
 					lastIntervalAnalytics = timeNow;
 				}
 			}
-			#endif
+#endif
 		}
 
 		/// <summary>
@@ -111,6 +111,7 @@ namespace Netherlands3D.Interface
 			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(badFpsThreshold, goodFpsThreshold, fps));
 		}
 		
+		#if !UNITY_EDITOR
 		/// <summary>
 		/// Logs the FPS to Unity Analytics. Its rounded up into to FPS groups.
 		/// </summary>
@@ -126,5 +127,6 @@ namespace Netherlands3D.Interface
 				{ "fps", fps }
 			  });
 		}
+		#endif
 	}
 }

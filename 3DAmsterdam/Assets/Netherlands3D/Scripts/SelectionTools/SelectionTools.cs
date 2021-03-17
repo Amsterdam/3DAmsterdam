@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
-using LayerSystem;
-using Netherlands3D.CameraMotion;
+using Netherlands3D.LayerSystem;
+using Netherlands3D.Cameras;
 using ConvertCoordinates;
 
 namespace Netherlands3D.Interface

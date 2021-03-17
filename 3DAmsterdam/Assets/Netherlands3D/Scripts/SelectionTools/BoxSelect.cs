@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Netherlands3D.CameraMotion;
+using Netherlands3D.Cameras;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using Netherlands3D.InputHandler;

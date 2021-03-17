@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Layers
 {
 	public class InterfaceLayers : MonoBehaviour
 	{

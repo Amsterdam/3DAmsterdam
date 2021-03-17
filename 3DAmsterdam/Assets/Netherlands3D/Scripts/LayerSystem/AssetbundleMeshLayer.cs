@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using UnityEngine.Rendering;
 
-namespace LayerSystem
+namespace Netherlands3D.LayerSystem
 {
     public class AssetbundleMeshLayer : Layer
     {

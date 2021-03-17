@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StyleColor : MonoBehaviour
+namespace Netherlands3D.Style
 {
-    public enum ColorStyle{
-        PRIMARY,
-        SECONDARY
-	}
-
-    [SerializeField]
-    private ColorStyle colorStyle = ColorStyle.PRIMARY; 
-
-    void Start()
+    public class StyleColor : MonoBehaviour
     {
-        GetComponent<Graphic>().color = (colorStyle == ColorStyle.PRIMARY) ? Config.activeConfiguration.primaryColor : Config.activeConfiguration.secondaryColor;
+        public enum ColorStyle
+        {
+            PRIMARY,
+            SECONDARY
+        }
+
+        [SerializeField]
+        private ColorStyle colorStyle = ColorStyle.PRIMARY;
+
+        void Start()
+        {
+            GetComponent<Graphic>().color = (colorStyle == ColorStyle.PRIMARY) ? Config.activeConfiguration.primaryColor : Config.activeConfiguration.secondaryColor;
+        }
     }
 }

@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LayerInformation : MonoBehaviour
+namespace Netherlands3D.Interface.Layers
 {
-    /// <summary>
-    /// Make sure any other layer information panels are hidden.
-    /// We use unique objects for the layer panels, because there is too much difference in hierarchy
-    /// to be able to use a single object and swap data. (url's in unity texts are covered by buttons to make them clickable)
-    /// </summary>
-    void OnEnable()
+    public class LayerInformation : MonoBehaviour
     {
-        var layerInformationPanels = FindObjectsOfType<LayerInformation>();
-        foreach (var panel in layerInformationPanels)
+        /// <summary>
+        /// Make sure any other layer information panels are hidden.
+        /// We use unique objects for the layer panels, because there is too much difference in hierarchy
+        /// to be able to use a single object and swap data. (url's in unity texts are covered by buttons to make them clickable)
+        /// </summary>
+        void OnEnable()
         {
-            if (panel != this) panel.gameObject.SetActive(false);
+            var layerInformationPanels = FindObjectsOfType<LayerInformation>();
+            foreach (var panel in layerInformationPanels)
+            {
+                if (panel != this) panel.gameObject.SetActive(false);
+            }
         }
-    } 
+    }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ConvertCoordinates;
 
-namespace LayerSystem
+namespace Netherlands3D.LayerSystem
 {
     abstract public class Layer : MonoBehaviour
     {

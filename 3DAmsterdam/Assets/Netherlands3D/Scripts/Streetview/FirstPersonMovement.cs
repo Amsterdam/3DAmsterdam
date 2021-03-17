@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.EventSystems;
-using UnityEngine.Rendering.UI;
 using UnityEngine.InputSystem;
 using Netherlands3D.InputHandler;
-using LayerSystem;
+using Netherlands3D.LayerSystem;
 
-namespace Netherlands3D.CameraMotion
+namespace Netherlands3D.Cameras
 {
     public class FirstPersonMovement : MonoBehaviour
     {
@@ -31,24 +28,18 @@ namespace Netherlands3D.CameraMotion
         [SerializeField]
         private float runspeed = 4;
 
-        private Ray ray;
         private RaycastHit hit;
 
-
         public InputActionAsset actionAsset;
-
         private IAction moveAction;
-        private UnityEngine.InputSystem.InputActionMap actionMap;
 
         void Start()
         {
             referenceCollider = GetComponent<BoxCollider>();
             moveAction = ActionHandler.instance.GetAction(ActionHandler.actions.StreetView.Move);
-            //rotateAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodView.RotateCamera);
             ActionHandler.actions.StreetView.Enable();
         }
 
- 
         void Update()
         {
             if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)

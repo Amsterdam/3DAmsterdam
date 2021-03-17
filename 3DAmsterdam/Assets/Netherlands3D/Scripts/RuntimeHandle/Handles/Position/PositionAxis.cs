@@ -1,4 +1,4 @@
-using Netherlands3D.CameraMotion;
+using Netherlands3D.Cameras;
 using UnityEngine;
 
 namespace RuntimeHandle

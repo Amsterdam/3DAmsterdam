@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Layers
 {
 	public class MaterialSlot : ChangePointerStyleHandler, IPointerClickHandler
 	{

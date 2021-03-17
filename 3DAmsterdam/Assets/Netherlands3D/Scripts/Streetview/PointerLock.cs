@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Netherlands3D.CameraMotion
+namespace Netherlands3D.Cameras
 {
 	public class PointerLock
 	{

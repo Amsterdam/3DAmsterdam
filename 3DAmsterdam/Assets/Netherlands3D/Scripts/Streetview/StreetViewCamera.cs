@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.EventSystems;
-using Netherlands3D.JavascriptConnection;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using LayerSystem;
+using Netherlands3D.LayerSystem;
 
-namespace Netherlands3D.CameraMotion
+namespace Netherlands3D.Cameras
 {
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{

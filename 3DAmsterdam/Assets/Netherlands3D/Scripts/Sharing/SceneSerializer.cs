@@ -1,5 +1,6 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
+using Netherlands3D.Interface.Layers;
 using System;
 using System.Collections;
 using System.Collections.Generic;

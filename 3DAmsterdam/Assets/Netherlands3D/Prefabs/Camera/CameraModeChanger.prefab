@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 927853791765686707}
   - component: {fileID: 927853791765686706}
   - component: {fileID: 8852100570403522361}
-  - component: {fileID: 8432458362986357795}
   m_Layer: 0
   m_Name: CameraModeChanger
   m_TagString: Untagged
@@ -127,21 +126,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   stopMovement: 0
---- !u!114 &8432458362986357795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927853791765686717}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d540ad8d33441b45a5e4cf52725dcba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!1001 &3319163042246165390
 PrefabInstance:
   m_ObjectHideFlags: 0

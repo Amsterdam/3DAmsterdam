@@ -1,8 +1,7 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using Netherlands3D.JavascriptConnection;
 using ConvertCoordinates;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -26,8 +25,6 @@ namespace Netherlands3D.Interface.Search
 
         private LookupData lookupData;
 
-        private SelectByID selectByID;
-
         public string ResultText { 
             get => resultText;
             set
@@ -44,11 +41,6 @@ namespace Netherlands3D.Interface.Search
                 id = value;
                 gameObject.name = id;
             }
-        }
-
-		private void Start()
-		{
-            selectByID = FindObjectOfType<SelectByID>();
         }
 
 		public void ClickedResult(){

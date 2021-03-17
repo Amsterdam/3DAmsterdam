@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Netherlands3D.Configuration
+namespace Netherlands3D
 {
     public class ApplicationConfiguration : MonoBehaviour
     {

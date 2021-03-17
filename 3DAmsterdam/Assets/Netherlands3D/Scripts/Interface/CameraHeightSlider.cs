@@ -1,35 +1,39 @@
-﻿using Netherlands3D.CameraMotion;
+﻿using Netherlands3D.Cameras;
 using ConvertCoordinates;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CameraHeightSlider : MonoBehaviour
+namespace Netherlands3D.Interface
 {
-    private Slider slider;
-    [SerializeField]
-    private Text heightText;
-
-    [SerializeField]
-    private string textSuffix = "m NAP";
-
-    private float heightInNAP;
-
-    private void Awake()
+    public class CameraHeightSlider : MonoBehaviour
     {
-        slider = GetComponent<Slider>();
-    }
+        private Slider slider;
+        [SerializeField]
+        private Text heightText;
 
-    public void HeightSliderChanged(float sliderValue){
-        CameraModeChanger.Instance.CurrentCameraControls.SetNormalizedCameraHeight(sliderValue);
-    }
+        [SerializeField]
+        private string textSuffix = "m NAP";
 
-    void LateUpdate()
-    {
-        heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y + (float)CoordConvert.referenceRD.z);
-        heightText.text = heightInNAP + textSuffix;
+        private float heightInNAP;
 
-        slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
+        private void Awake()
+        {
+            slider = GetComponent<Slider>();
+        }
+
+        public void HeightSliderChanged(float sliderValue)
+        {
+            CameraModeChanger.Instance.CurrentCameraControls.SetNormalizedCameraHeight(sliderValue);
+        }
+
+        void LateUpdate()
+        {
+            heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y + (float)CoordConvert.referenceRD.z);
+            heightText.text = heightInNAP + textSuffix;
+
+            slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
+        }
     }
 }
