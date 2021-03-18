@@ -13,10 +13,11 @@ namespace Netherlands3D.ObjectInteraction
     {
         public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
+        [Header("Interactable settings")]
         public bool blockMouseSelectionInteractions = false;
         public bool blockMouseNavigationInteractions = true;
         public bool blockKeyboardNavigationInteractions = false;
-
+        
         private InputActionMap actionMap;
         public InputActionMap ActionMap {
             get

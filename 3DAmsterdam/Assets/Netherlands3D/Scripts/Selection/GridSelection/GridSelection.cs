@@ -94,10 +94,17 @@ namespace Netherlands3D.Interface
 
 		private void Update()
 		{
-			MoveSelectionBlock();
-			if (drawing)
+			if (Selector.Instance.HoveringInterface())
 			{
-				DrawVoxelUnderMouse();
+				//Hide block
+			}
+			else
+			{
+				MoveSelectionBlock();
+				if (drawing)
+				{
+					DrawVoxelUnderMouse();
+				}
 			}
 		}
 

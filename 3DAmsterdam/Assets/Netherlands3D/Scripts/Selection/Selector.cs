@@ -186,7 +186,9 @@ namespace Netherlands3D.Interface
 
 		private void Click(IAction action)
 		{
-			Select();
+			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
+			if(!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+				Select();
 		}
 		private void SecondaryClick(IAction action)
 		{
@@ -274,7 +276,7 @@ namespace Netherlands3D.Interface
 			ClearHighlights();
 		}
 
-		private bool HoveringInterface()
+		public bool HoveringInterface()
 		{
 			return EventSystem.current.IsPointerOverGameObject();
 		}
