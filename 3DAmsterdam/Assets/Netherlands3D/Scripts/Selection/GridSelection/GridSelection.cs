@@ -176,14 +176,15 @@ namespace Netherlands3D.Interface
 			{
 				var xDifference = (mouseGridPosition.x - startGridPosition.x);
 				var zDifference = (mouseGridPosition.z - startGridPosition.z);
-
+				print("X " + xDifference);
+				print("Z " + zDifference);
 
 				scaleBlock.transform.position = startGridPosition;
 				scaleBlock.transform.Translate(xDifference / 2.0f, 0, zDifference / 2.0f);
 				scaleBlock.transform.localScale = new Vector3(
-						(mouseGridPosition.x - startGridPosition.x) + gridSize,
+						(mouseGridPosition.x - startGridPosition.x) + ((xDifference < 0 ) ? -gridSize : gridSize),
 						gridSize,
-						(mouseGridPosition.z - startGridPosition.z) + gridSize
+						(mouseGridPosition.z - startGridPosition.z) + ((zDifference < 0) ? -gridSize : gridSize)
 				);
 			}
 			else{
