@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.SidePanel
 {
-    public class Properties : MonoBehaviour
+    public class PropertiesPanel : MonoBehaviour
     {
         [SerializeField]
         private GameObject objectPropertiesPanel;
@@ -24,7 +24,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         public DisplayBAGData displayBagData;
 
-        public static Properties Instance = null;
+        public static PropertiesPanel Instance = null;
 
         [SerializeField]
         private Text titleText;

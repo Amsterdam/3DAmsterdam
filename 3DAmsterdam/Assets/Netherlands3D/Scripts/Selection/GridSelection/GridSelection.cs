@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Netherlands3D.Interface.SidePanel;
 
 namespace Netherlands3D.Interface
 {
@@ -72,12 +73,17 @@ namespace Netherlands3D.Interface
 			if (action.Cancelled)
 			{
 				drawing = false;
+				FinishSelection();
 			}
 			else if (action.Performed)
 			{
-				startVoxel = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
 				drawing = true;
 				add = true;
+				if (freePaint)
+				{
+					startVoxel = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+					MoveSelectionBlock();
+				}
 			}
 		}
 		private void Clear(IAction action)
@@ -120,7 +126,7 @@ namespace Netherlands3D.Interface
 					}
 					else
 					{
-						ScaleVoxelUnderMouse();
+						ScaleSingleVoxelUnderMouse();
 					}
 						
 				}
@@ -140,10 +146,16 @@ namespace Netherlands3D.Interface
 				voxels.Remove(mouseGridPosition);
 			}
 		}
-		private void ScaleVoxelUnderMouse(bool toggled = false)
+		private void ScaleSingleVoxelUnderMouse(bool toggled = false)
 		{
 			var mouseGridPosition = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-			
+			gridSelectionBlock.transform.position = startVoxel;
+			gridSelectionBlock.transform.Translate((mouseGridPosition.x - startVoxel.x) / 2.0f,	0,(mouseGridPosition.z - startVoxel.z) / 2.0f);
+			gridSelectionBlock.transform.localScale = new Vector3(
+					((mouseGridPosition.x - startVoxel.x) / 2.0f) * gridSize,
+					gridSize,
+					((mouseGridPosition.z - startVoxel.z) / 2.0f) * gridSize
+			);
 		}
 
 
@@ -178,6 +190,32 @@ namespace Netherlands3D.Interface
 
 			gridSelectionBlock.transform.position = gridBlockPosition;
 			gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
+		}
+
+		private void FinishSelection()
+		{
+			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
+			PropertiesPanel.Instance.OpenPanel("Grid selectie", true);
+			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
+			{
+
+			});
+			PropertiesPanel.Instance.AddActionCheckbox("Bomen", true, (action) =>
+			{
+
+			});
+			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", true, (action) =>
+			{
+
+			});
+			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", true, (action) =>
+			{
+
+			});
+			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
+			{
+				//Do the download action
+			});
 		}
 
 		private void SetGridSize()

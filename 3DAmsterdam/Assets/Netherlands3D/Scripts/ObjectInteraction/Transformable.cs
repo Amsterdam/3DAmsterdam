@@ -94,7 +94,7 @@ namespace Netherlands3D.ObjectInteraction
 		public override void Deselect()
 		{
 			base.Deselect();
-			Netherlands3D.Interface.SidePanel.Properties.Instance.DeselectTransformable(this, true);
+			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.DeselectTransformable(this, true);
 		}
 
 		/// <summary>
@@ -104,8 +104,8 @@ namespace Netherlands3D.ObjectInteraction
 		public void ShowTransformProperties(int gizmoTransformType = -1)
 		{
 			lastSelectedTransformable = this;
-			Netherlands3D.Interface.SidePanel.Properties.Instance.OpenPanel(gameObject.name);
-			Netherlands3D.Interface.SidePanel.Properties.Instance.OpenTransformPanel(this, gizmoTransformType);
+			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenPanel(gameObject.name);
+			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenTransformPanel(this, gizmoTransformType);
 			UpdateBounds();
 		}
 
@@ -115,7 +115,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void UpdateBounds()
 		{
 			int objectOriginalLayer = this.gameObject.layer;
-			this.gameObject.layer = Netherlands3D.Interface.SidePanel.Properties.Instance.ThumbnailExclusiveLayer;
+			this.gameObject.layer = Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.ThumbnailExclusiveLayer;
 
 			//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
 			Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
@@ -123,7 +123,7 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				bounds.Encapsulate(renderer.bounds);
 			}
-			Netherlands3D.Interface.SidePanel.Properties.Instance.RenderThumbnailContaining(bounds);
+			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.RenderThumbnailContaining(bounds);
 			this.gameObject.layer = objectOriginalLayer;
 		}
 
