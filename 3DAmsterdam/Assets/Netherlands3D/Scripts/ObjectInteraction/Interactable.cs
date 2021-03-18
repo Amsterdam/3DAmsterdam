@@ -13,6 +13,7 @@ namespace Netherlands3D.ObjectInteraction
     {
         public ContextPointerMenu.ContextState contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
+        public bool blockMouseSelectionInteractions = false;
         public bool blockMouseNavigationInteractions = true;
         public bool blockKeyboardNavigationInteractions = false;
 
