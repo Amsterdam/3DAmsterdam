@@ -35,6 +35,7 @@ namespace Netherlands3D.Interface
 		private bool drawing = false;
 		private bool add = true;
 
+		private GameObject scaleBlock;
 		private Dictionary<Vector3Int, GameObject> voxels;
 		private int maxVoxels = 200;
 
@@ -73,6 +74,7 @@ namespace Netherlands3D.Interface
 				DrawVoxelsUnderMouse(true);
 			}
 			else{
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
 				ScaleSingleVoxelUnderMouse(false);
 			}
 
@@ -163,12 +165,13 @@ namespace Netherlands3D.Interface
 			if (Selector.Instance.HoveringInterface()) return;
 
 			//Just make sure there is one voxel that we can scale
-			if (voxels.Count == 0)
+			if (!scaleBlock)
 			{
+				voxels.Clear();
 				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+				scaleBlock = voxels.First().Value;
 			}
-
-			var scaleBlock = voxels.First().Value;
+			
 			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());		
 			scaleBlock.transform.position = mouseGridPosition;
 
@@ -230,6 +233,7 @@ namespace Netherlands3D.Interface
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenPanel("Grid selectie", true);
+			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
 			{
 

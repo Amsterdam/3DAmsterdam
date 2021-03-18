@@ -123,7 +123,7 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				bounds.Encapsulate(renderer.bounds);
 			}
-			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.RenderThumbnailContaining(bounds);
+			PropertiesPanel.Instance.RenderThumbnailContaining(bounds);
 			this.gameObject.layer = objectOriginalLayer;
 		}
 

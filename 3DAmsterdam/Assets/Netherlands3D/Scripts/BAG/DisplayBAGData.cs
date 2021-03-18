@@ -77,7 +77,7 @@ namespace Netherlands3D.BAG
 			points.Add(rdB);
 			points.Add(rdC);
 			points.Add(rdD);
-			Interface.SidePanel.PropertiesPanel.Instance.RenderThumbnailContaining(points.ToArray(), true);
+			PropertiesPanel.Instance.RenderThumbnailContaining(points.ToArray(), PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
 		}
 
 		private void ShowAddressData(string addressId, Button button)

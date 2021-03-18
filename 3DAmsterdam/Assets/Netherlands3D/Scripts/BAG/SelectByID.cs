@@ -8,6 +8,7 @@ using Netherlands3D.Interface;
 using System.Globalization;
 using Netherlands3D.Interface.Selection;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Interface.SidePanel;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -146,12 +147,12 @@ namespace Netherlands3D.LayerSystem
             {
                 ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
-				Interface.SidePanel.PropertiesPanel.Instance.OpenPanel("Selectie", true);
-				Interface.SidePanel.PropertiesPanel.Instance.RenderThumbnail(true);
-				Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
+				PropertiesPanel.Instance.OpenPanel("Selectie", true);
+				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
+				PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
                 foreach (var id in selectedIDs)
                 {
-					Interface.SidePanel.PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
+					PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
                 }
             }
             else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
