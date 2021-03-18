@@ -11,7 +11,7 @@
                     "id": "4d71f97d-97df-4265-8641-cd87068cac97",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=0.02)"
+                    "interactions": "Tap"
                 },
                 {
                     "name": "DrawVoxels",
@@ -35,7 +35,7 @@
                     "name": "",
                     "id": "60312e81-d621-4a52-b35e-16557370191c",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Tap",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "ToggleVoxel",
@@ -43,7 +43,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Button With One Modifier",
+                    "name": "Left mouse button + shift",
                     "id": "e143cc7b-d8d7-465b-89b9-43fcf1f91d70",
                     "path": "ButtonWithOneModifier",
                     "interactions": "",

@@ -25,8 +25,7 @@ namespace Netherlands3D.Interface
 
 		private Vector3 gridBlockPosition;
 
-		private Vector3 voxelPosition;
-
+		private IAction toggleAction;
 		private IAction drawAction;
 		private IAction clearAction;
 
@@ -34,30 +33,40 @@ namespace Netherlands3D.Interface
 		private bool add = true;
 
 		private Dictionary<Vector3Int, GameObject> voxels;
-
-		private Vector3Int mouseGridPosition;
-
 		private int maxVoxels = 200;
 
-		void Start()
+		[SerializeField]
+		private bool freePaint = false;
+		private Vector3Int startVoxel;
+
+		private void Awake()
 		{
-			mouseGridPosition = new Vector3Int();
-			voxels = new Dictionary<Vector3Int, GameObject>();
-
-			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
-			SetGridSize();
-
 			ActionMap = ActionHandler.actions.GridSelection;
 
-			drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.Draw);
+			toggleAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ToggleVoxel);
+			toggleAction.SubscribePerformed(Toggle);
+
+			drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.DrawVoxels);
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
 
-			clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ClearDrawing);
+			clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
 			clearAction.SubscribePerformed(Clear);
 			clearAction.SubscribeCancelled(Clear);
+
+			voxels = new Dictionary<Vector3Int, GameObject>();
 		}
 
+		void Start()
+		{
+			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
+			SetGridSize();
+		}
+		private void Toggle(IAction action)
+		{
+			print("Tap toggle voxel");
+			DrawVoxelUnderMouse(true);
+		}
 		private void Drawing(IAction action)
 		{
 			if (action.Cancelled)
@@ -66,6 +75,7 @@ namespace Netherlands3D.Interface
 			}
 			else if (action.Performed)
 			{
+				startVoxel = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
 				drawing = true;
 				add = true;
 			}
@@ -96,40 +106,63 @@ namespace Netherlands3D.Interface
 		{
 			if (Selector.Instance.HoveringInterface())
 			{
-				//Hide block
+				gridSelectionBlock.SetActive(false);
 			}
 			else
 			{
+				gridSelectionBlock.SetActive(true);
 				MoveSelectionBlock();
 				if (drawing)
 				{
-					DrawVoxelUnderMouse();
+					if (freePaint)
+					{
+						DrawVoxelUnderMouse();
+					}
+					else
+					{
+						ScaleVoxelUnderMouse();
+					}
+						
 				}
 			}
 		}
 
-		private void DrawVoxelUnderMouse()
+		private void DrawVoxelUnderMouse(bool toggled = false)
 		{
-			voxelPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			var mouseGridPosition = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
+			{
+				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+			}
+			else if ((toggled || !add) && voxels.ContainsKey(mouseGridPosition))
+			{
+				Destroy(voxels[mouseGridPosition]);
+				voxels.Remove(mouseGridPosition);
+			}
+		}
+		private void ScaleVoxelUnderMouse(bool toggled = false)
+		{
+			var mouseGridPosition = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+			
+		}
+
+
+		private Vector3Int GetVoxel(Vector3 voxelPosition)
+		{
 			voxelPosition.x += (gridSize * 0.5f);
 			voxelPosition.z += (gridSize * 0.5f);
 
 			voxelPosition.x = (Mathf.Round(voxelPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
 			voxelPosition.z = (Mathf.Round(voxelPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
 
-			mouseGridPosition.x = Mathf.RoundToInt(voxelPosition.x);
-			mouseGridPosition.y = Mathf.RoundToInt(gridSize * 0.5f);
-			mouseGridPosition.z = Mathf.RoundToInt(voxelPosition.z);
+			Vector3Int mouseGridPosition = new Vector3Int
+			{
+				x = Mathf.RoundToInt(voxelPosition.x),
+				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (gridSize * 0.5f)),
+				z = Mathf.RoundToInt(voxelPosition.z)
+			};
 
-			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
-			{
-				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
-			}
-			else if (!add && voxels.ContainsKey(mouseGridPosition))
-			{
-				Destroy(voxels[mouseGridPosition]);
-				voxels.Remove(mouseGridPosition);
-			}
+			return mouseGridPosition;
 		}
 
 		private void MoveSelectionBlock()

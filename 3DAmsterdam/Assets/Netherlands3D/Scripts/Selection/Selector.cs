@@ -122,7 +122,7 @@ namespace Netherlands3D.Interface
 			//Enable camera action maps based on the active interactable
 			if (activeInteractable)
 			{
-				EnableCameraActionMaps(activeInteractable.blockKeyboardNavigationInteractions, activeInteractable.blockMouseNavigationInteractions);
+				EnableCameraActionMaps(!activeInteractable.blockKeyboardNavigationInteractions, !activeInteractable.blockMouseNavigationInteractions);
 			}
 			else
 			{
@@ -192,9 +192,11 @@ namespace Netherlands3D.Interface
 		}
 		private void SecondaryClick(IAction action)
 		{
-			Debug.Log("Selector secondary click");
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-			SecondarySelect();
+			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+			{
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+				SecondarySelect();
+			}
 		}
 
 		private void Multiselect(IAction action)
