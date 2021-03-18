@@ -169,7 +169,7 @@ namespace Netherlands3D.Interface
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
 			CameraModeChanger.Instance.CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
-			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && enableMouseActions);
+			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && !doingMultiselect && enableMouseActions);
 		}
 
 		/// <summary>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
+using System.Linq;
 
 namespace Netherlands3D.Interface
 {
@@ -25,6 +26,7 @@ namespace Netherlands3D.Interface
 		private float gridPlaneSize = 10000.0f;
 
 		private Vector3 gridBlockPosition;
+		private Vector3Int mouseGridPosition;
 
 		private IAction toggleAction;
 		private IAction drawAction;
@@ -38,7 +40,7 @@ namespace Netherlands3D.Interface
 
 		[SerializeField]
 		private bool freePaint = false;
-		private Vector3Int startVoxel;
+		private Vector3Int startGridPosition;
 
 		private void Awake()
 		{
@@ -66,8 +68,17 @@ namespace Netherlands3D.Interface
 		private void Toggle(IAction action)
 		{
 			print("Tap toggle voxel");
-			DrawVoxelUnderMouse(true);
+			if (freePaint)
+			{
+				DrawVoxelsUnderMouse(true);
+			}
+			else{
+				ScaleSingleVoxelUnderMouse(false);
+			}
+
+			FinishSelection();
 		}
+
 		private void Drawing(IAction action)
 		{
 			if (action.Cancelled)
@@ -79,10 +90,9 @@ namespace Netherlands3D.Interface
 			{
 				drawing = true;
 				add = true;
-				if (freePaint)
+				if (!freePaint)
 				{
-					startVoxel = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-					MoveSelectionBlock();
+					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
 				}
 			}
 		}
@@ -122,20 +132,21 @@ namespace Netherlands3D.Interface
 				{
 					if (freePaint)
 					{
-						DrawVoxelUnderMouse();
+						DrawVoxelsUnderMouse();
 					}
 					else
 					{
 						ScaleSingleVoxelUnderMouse();
-					}
-						
+					}				
 				}
 			}
 		}
 
-		private void DrawVoxelUnderMouse(bool toggled = false)
+		private void DrawVoxelsUnderMouse(bool toggled = false)
 		{
-			var mouseGridPosition = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+			if (Selector.Instance.HoveringInterface()) return;
+			
+			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
 			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
 			{
 				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
@@ -146,35 +157,57 @@ namespace Netherlands3D.Interface
 				voxels.Remove(mouseGridPosition);
 			}
 		}
-		private void ScaleSingleVoxelUnderMouse(bool toggled = false)
+
+		private void ScaleSingleVoxelUnderMouse(bool calculateScale = true)
 		{
-			var mouseGridPosition = GetVoxel(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-			gridSelectionBlock.transform.position = startVoxel;
-			gridSelectionBlock.transform.Translate((mouseGridPosition.x - startVoxel.x) / 2.0f,	0,(mouseGridPosition.z - startVoxel.z) / 2.0f);
-			gridSelectionBlock.transform.localScale = new Vector3(
-					((mouseGridPosition.x - startVoxel.x) / 2.0f) * gridSize,
-					gridSize,
-					((mouseGridPosition.z - startVoxel.z) / 2.0f) * gridSize
-			);
+			if (Selector.Instance.HoveringInterface()) return;
+
+			//Just make sure there is one voxel that we can scale
+			if (voxels.Count == 0)
+			{
+				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+			}
+
+			var scaleBlock = voxels.First().Value;
+			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());		
+			scaleBlock.transform.position = mouseGridPosition;
+
+			if (calculateScale)
+			{
+				var xDifference = (mouseGridPosition.x - startGridPosition.x);
+				var zDifference = (mouseGridPosition.z - startGridPosition.z);
+
+
+				scaleBlock.transform.position = startGridPosition;
+				scaleBlock.transform.Translate(xDifference / 2.0f, 0, zDifference / 2.0f);
+				scaleBlock.transform.localScale = new Vector3(
+						(mouseGridPosition.x - startGridPosition.x) + gridSize,
+						gridSize,
+						(mouseGridPosition.z - startGridPosition.z) + gridSize
+				);
+			}
+			else{
+				//Just make sure it is default size
+				scaleBlock.transform.localScale = Vector3.one * gridSize;
+			}
 		}
 
-
-		private Vector3Int GetVoxel(Vector3 voxelPosition)
+		private Vector3Int GetGridPosition(Vector3 samplePosition)
 		{
-			voxelPosition.x += (gridSize * 0.5f);
-			voxelPosition.z += (gridSize * 0.5f);
+			samplePosition.x += (gridSize * 0.5f);
+			samplePosition.z += (gridSize * 0.5f);
 
-			voxelPosition.x = (Mathf.Round(voxelPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
-			voxelPosition.z = (Mathf.Round(voxelPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
+			samplePosition.x = (Mathf.Round(samplePosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
+			samplePosition.z = (Mathf.Round(samplePosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
 
-			Vector3Int mouseGridPosition = new Vector3Int
+			Vector3Int roundedPosition = new Vector3Int
 			{
-				x = Mathf.RoundToInt(voxelPosition.x),
+				x = Mathf.RoundToInt(samplePosition.x),
 				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (gridSize * 0.5f)),
-				z = Mathf.RoundToInt(voxelPosition.z)
+				z = Mathf.RoundToInt(samplePosition.z)
 			};
 
-			return mouseGridPosition;
+			return roundedPosition;
 		}
 
 		private void MoveSelectionBlock()
