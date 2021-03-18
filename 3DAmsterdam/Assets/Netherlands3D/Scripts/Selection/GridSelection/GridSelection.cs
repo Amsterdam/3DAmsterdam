@@ -1,150 +1,154 @@
-﻿using Amsterdam3D.CameraMotion;
-using Amsterdam3D.InputHandler;
-using Amsterdam3D.Interface;
+﻿using Netherlands3D.Cameras;
+using Netherlands3D.InputHandler;
+using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GridSelection : Interactable
+namespace Netherlands3D.Interface
 {
-	[SerializeField]
-	private Material gridMaterial;
-
-	[SerializeField]
-	private GameObject gridSelectionBlock;
-
-	[SerializeField]
-	private float gridSize = 100.0f; //Meter
-
-	[SerializeField]
-	private float gridPlaneSize = 10000.0f;
-
-	private Vector3 gridBlockPosition;
-
-	private Vector3 voxelPosition;
-
-	private IAction drawAction;
-	private IAction clearAction;
-
-	private bool drawing = false;
-	private bool add = true;
-
-	private Dictionary<Vector3Int, GameObject> voxels;
-
-	private Vector3Int mouseGridPosition;
-
-	private int maxVoxels = 200;
-
-	void Awake()
-    {
-		mouseGridPosition = new Vector3Int();
-		voxels = new Dictionary<Vector3Int, GameObject>();
-
-		this.transform.position = new Vector3(0, Constants.ZERO_GROUND_LEVEL_Y, 0);
-		SetGridSize();
-
-		ActionMap = ActionHandler.actions.GridSelection;
-
-		drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.Draw);
-		drawAction.SubscribePerformed(Drawing);
-		drawAction.SubscribeCancelled(Drawing);
-
-		clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ClearDrawing);
-		clearAction.SubscribePerformed(Clear);
-		clearAction.SubscribeCancelled(Clear);
-	}
-
-	private void Drawing(IAction action)
+	public class GridSelection : Interactable
 	{
-		if (action.Cancelled)
+		[SerializeField]
+		private Material gridMaterial;
+
+		[SerializeField]
+		private GameObject gridSelectionBlock;
+
+		[SerializeField]
+		private float gridSize = 100.0f; //Meter
+
+		[SerializeField]
+		private float gridPlaneSize = 10000.0f;
+
+		private Vector3 gridBlockPosition;
+
+		private Vector3 voxelPosition;
+
+		private IAction drawAction;
+		private IAction clearAction;
+
+		private bool drawing = false;
+		private bool add = true;
+
+		private Dictionary<Vector3Int, GameObject> voxels;
+
+		private Vector3Int mouseGridPosition;
+
+		private int maxVoxels = 200;
+
+		void Start()
 		{
-			drawing = false;
+			mouseGridPosition = new Vector3Int();
+			voxels = new Dictionary<Vector3Int, GameObject>();
+
+			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
+			SetGridSize();
+
+			ActionMap = ActionHandler.actions.GridSelection;
+
+			drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.Draw);
+			drawAction.SubscribePerformed(Drawing);
+			drawAction.SubscribeCancelled(Drawing);
+
+			clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ClearDrawing);
+			clearAction.SubscribePerformed(Clear);
+			clearAction.SubscribeCancelled(Clear);
 		}
-		else if (action.Performed)
+
+		private void Drawing(IAction action)
 		{
-			drawing = true;
-			add = true;
+			if (action.Cancelled)
+			{
+				drawing = false;
+			}
+			else if (action.Performed)
+			{
+				drawing = true;
+				add = true;
+			}
 		}
-	}
-	private void Clear(IAction action)
-	{
-		if (action.Cancelled)
+		private void Clear(IAction action)
 		{
-			drawing = false;
+			if (action.Cancelled)
+			{
+				drawing = false;
+			}
+			else if (action.Performed)
+			{
+				drawing = true;
+				add = false;
+			}
 		}
-		else if (action.Performed)
+
+		private void OnEnable()
 		{
-			drawing = true;
-			add = false;
+			TakeInteractionPriority();
 		}
-	}
-
-	private void OnEnable()
-	{
-		TakeInteractionPriority();
-	}
-	private void OnDisable()
-	{
-		StopInteraction();
-	}
-
-	private void Update()
-	{
-		MoveSelectionBlock();
-		if (drawing)
+		private void OnDisable()
 		{
-			DrawVoxelUnderMouse();
+			StopInteraction();
 		}
-	}
 
-	private void DrawVoxelUnderMouse()
-	{
-		voxelPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-		voxelPosition.x += (gridSize * 0.5f);
-		voxelPosition.z += (gridSize * 0.5f);
-		
-		voxelPosition.x = (Mathf.Round(voxelPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
-		voxelPosition.z = (Mathf.Round(voxelPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
-
-		mouseGridPosition.x = Mathf.RoundToInt(voxelPosition.x);
-		mouseGridPosition.y = Mathf.RoundToInt(gridSize * 0.5f);
-		mouseGridPosition.z = Mathf.RoundToInt(voxelPosition.z);
-
-		if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
+		private void Update()
 		{
-			voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+			MoveSelectionBlock();
+			if (drawing)
+			{
+				DrawVoxelUnderMouse();
+			}
 		}
-		else if (!add && voxels.ContainsKey(mouseGridPosition)) {
-			Destroy(voxels[mouseGridPosition]);
-			voxels.Remove(mouseGridPosition);
+
+		private void DrawVoxelUnderMouse()
+		{
+			voxelPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			voxelPosition.x += (gridSize * 0.5f);
+			voxelPosition.z += (gridSize * 0.5f);
+
+			voxelPosition.x = (Mathf.Round(voxelPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
+			voxelPosition.z = (Mathf.Round(voxelPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
+
+			mouseGridPosition.x = Mathf.RoundToInt(voxelPosition.x);
+			mouseGridPosition.y = Mathf.RoundToInt(gridSize * 0.5f);
+			mouseGridPosition.z = Mathf.RoundToInt(voxelPosition.z);
+
+			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
+			{
+				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+			}
+			else if (!add && voxels.ContainsKey(mouseGridPosition))
+			{
+				Destroy(voxels[mouseGridPosition]);
+				voxels.Remove(mouseGridPosition);
+			}
 		}
+
+		private void MoveSelectionBlock()
+		{
+			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			//Offset to make up for grid object origin (centered)
+			gridBlockPosition.x += (gridSize * 0.5f);
+			gridBlockPosition.z += (gridSize * 0.5f);
+
+			//Snap block to grid
+			gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
+			gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
+
+			gridSelectionBlock.transform.position = gridBlockPosition;
+			gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
+		}
+
+		private void SetGridSize()
+		{
+			gridMaterial.SetTextureScale("_MainTex", Vector2.one * (gridPlaneSize / (gridSize * 0.1f)));
+		}
+
+		public void OnValidate()
+		{
+			SetGridSize();
+		}
+
 	}
-
-	private void MoveSelectionBlock()
-	{
-		gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-		//Offset to make up for grid object origin (centered)
-		gridBlockPosition.x += (gridSize * 0.5f);
-		gridBlockPosition.z += (gridSize * 0.5f);
-
-		//Snap block to grid
-		gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
-		gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
-
-		gridSelectionBlock.transform.position = gridBlockPosition;
-		gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
-	}
-
-	private void SetGridSize()
-	{
-		gridMaterial.SetTextureScale("_MainTex", Vector2.one * (gridPlaneSize / (gridSize*0.1f)));
-	}
-	 
-	public void OnValidate()
-	{
-		SetGridSize();
-	}
-
 }

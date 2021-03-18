@@ -174,7 +174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5279267763681953419
 Transform:
   m_ObjectHideFlags: 0
@@ -204,6 +204,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contextMenuState: 1
+  blockMouseNavigationInteractions: 1
+  blockKeyboardNavigationInteractions: 1
   gridMaterial: {fileID: 2100000, guid: 00c6806b73cd33441a9c97ba07adc915, type: 2}
   gridSelectionBlock: {fileID: 4066160254706343728}
   gridSize: 100

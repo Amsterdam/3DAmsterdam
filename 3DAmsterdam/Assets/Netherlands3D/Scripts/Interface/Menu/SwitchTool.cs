@@ -1,11 +1,10 @@
-﻿using Amsterdam3D.Interface;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Amsterdam3D.Interface {
+namespace Netherlands3D.Interface.Menu {
 	public class SwitchTool : MonoBehaviour
 	{
 		private Button[] containingButtons;
