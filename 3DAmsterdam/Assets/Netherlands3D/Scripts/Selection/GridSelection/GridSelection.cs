@@ -68,7 +68,8 @@ namespace Netherlands3D.Interface
 		}
 		private void Toggle(IAction action)
 		{
-			print("Tap toggle voxel");
+			if (Selector.Instance.HoveringInterface()) return;
+
 			if (freePaint)
 			{
 				DrawVoxelsUnderMouse(true);
@@ -88,7 +89,7 @@ namespace Netherlands3D.Interface
 				drawing = false;
 				FinishSelection();
 			}
-			else if (action.Performed)
+			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
 				drawing = true;
 				add = true;
@@ -232,8 +233,9 @@ namespace Netherlands3D.Interface
 		private void FinishSelection()
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenPanel("Grid selectie", true);
+			PropertiesPanel.Instance.OpenPanel("Grid selectie", true, 10);
 			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
+			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
 			{
 
