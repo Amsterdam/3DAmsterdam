@@ -215,6 +215,12 @@ namespace Netherlands3D.Interface
 			return roundedPosition;
 		}
 
+		private void SetGridSize()
+		{
+			gridMaterial.SetTextureScale("_MainTex", Vector2.one * (gridPlaneSize / (gridSize * 0.1f)));
+			gridSelectionBlock.transform.localScale = new Vector3(gridSize, gridSize, gridSize);
+		}
+
 		private void MoveSelectionBlock()
 		{
 			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
@@ -256,11 +262,6 @@ namespace Netherlands3D.Interface
 			{
 				//Do the download action
 			});
-		}
-
-		private void SetGridSize()
-		{
-			gridMaterial.SetTextureScale("_MainTex", Vector2.one * (gridPlaneSize / (gridSize * 0.1f)));
 		}
 
 		public void OnValidate()
