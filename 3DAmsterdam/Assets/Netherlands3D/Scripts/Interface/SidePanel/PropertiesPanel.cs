@@ -52,6 +52,8 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionButton buttonBigPrefab;
         [SerializeField]
         private ActionSlider sliderPrefab;
+        [SerializeField] 
+        private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
         [SerializeField]
@@ -308,6 +310,12 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
         }
+
+        public void AddActionDropdown(List<Dropdown.OptionData> dropdownOptions, Action<string> selectOptionAction)
+        {
+            Instantiate(dropdownPrefab, targetFieldsContainer).SetAction(dropdownOptions, selectOptionAction);
+        }
+
         public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
         {
             Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkedBox, checkAction);
