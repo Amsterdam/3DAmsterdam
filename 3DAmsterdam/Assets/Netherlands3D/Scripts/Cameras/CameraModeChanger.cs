@@ -1,6 +1,7 @@
 ﻿
 using BruTile.Wms;
 using ConvertCoordinates;
+using Netherlands3D.Interface.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,9 @@ namespace Netherlands3D.Cameras
 
         public static CameraModeChanger Instance;
 
+        [SerializeField]
+        private float groundTransitionOffset = 2.0f;
+
         private void Awake()
         {
             streetView = FindObjectOfType<StreetViewMoveToPoint>();
@@ -52,6 +56,8 @@ namespace Netherlands3D.Cameras
         {
             PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
 
+            SwitchTool.Instance.ResetToDefault();
+
             this.CameraMode = CameraMode.StreetView;
 
             Vector3 oldPosition = currentCamera.transform.position;
@@ -65,10 +71,10 @@ namespace Netherlands3D.Cameras
             ActiveCamera = currentCamera.GetComponent<Camera>();
             CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             OnFirstPersonModeEvent?.Invoke();
-            MoveCameraToStreet(currentCamera.transform, position, rotation);
+            TransitionCamera(currentCamera.transform, position, rotation);
         }
 
-        public void MoveCameraToStreet(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
+        public void TransitionCamera(Transform cameraTransform, Vector3 position, Quaternion rotation, bool reverse = false)
         {
             if (reverse)
             {
@@ -76,10 +82,14 @@ namespace Netherlands3D.Cameras
             }
             else
             {
-                StartCoroutine(streetView.MoveToPosition(cameraTransform, position, rotation));
+                StartCoroutine(streetView.MoveToPosition(cameraTransform, position + Vector3.up * groundTransitionOffset, rotation));
             }
         }
 
+        /// <summary>
+        /// Used from Javascript to move the camera to a specific WGS84 (gps) location based on the hash # in the url
+        /// </summary>
+        /// <param name="latitudeLongitude">Comma seperated lat,long string</param>
         public void ChangedPointFromUrl(string latitudeLongitude)
         {
             string[] coordinates = latitudeLongitude.Split(',');
@@ -106,7 +116,7 @@ namespace Netherlands3D.Cameras
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
             OnGodViewModeEvent?.Invoke();
-            MoveCameraToStreet(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
+            TransitionCamera(currentCamera.transform, currentPosition + Vector3.up * 400, oldGodViewRotation, true);
         }
     }
 

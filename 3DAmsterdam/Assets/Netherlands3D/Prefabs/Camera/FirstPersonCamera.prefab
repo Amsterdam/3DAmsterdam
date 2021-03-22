@@ -50,8 +50,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b5095b9a18dff249aeb8c84bcd50fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainContainerLayer: {fileID: 0}
   speed: 3
   mainMenu: {fileID: 0}
+  hideMenuButton: {fileID: 0}
+  exitFirstPersonButton: {fileID: 0}
+  disableWhenActive:
+  - {fileID: 0}
   interfaceLayers: {fileID: 0}
 --- !u!114 &3272134606442253111
 MonoBehaviour:
@@ -65,6 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd73c13c2739cc4ba881917b614a0f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainContainerLayer: {fileID: 0}
   groundOffset: 1.8
   layerMaskGround:
     serializedVersion: 2
@@ -74,6 +80,7 @@ MonoBehaviour:
     m_Bits: 1025
   moveSpeed: 5
   runspeed: 8
+  actionAsset: {fileID: 0}
 --- !u!114 &6092253054437786300
 MonoBehaviour:
   m_ObjectHideFlags: 0

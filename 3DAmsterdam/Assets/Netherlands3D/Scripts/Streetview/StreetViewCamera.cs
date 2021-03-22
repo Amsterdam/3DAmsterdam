@@ -33,6 +33,7 @@ namespace Netherlands3D.Cameras
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
+
 			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();
 		}
