@@ -8,15 +8,14 @@ mergeInto(LibraryManager.library, {
 	DisplayDOMObjectWithID: function(id,display,x,y, width, height) {
 		var idString = Pointer_stringify(id);
 		document.getElementById(idString).style.display = Pointer_stringify(display);
-		document.getElementById(idString).style.margin = "0px 0px " + (y + height) + "px " + x + "px";
-		document.getElementById(idString).style.width = width + "px";
-		document.getElementById(idString).style.height = height + "px";
+		document.getElementById(idString).style.margin = "0px 0px " + ((y + height) *100) + "vh " + (x*100) + "vw";
+		document.getElementById(idString).style.width = (width*100) + "vw";
+		document.getElementById(idString).style.height = (height*100) + "vh";
 	},
 	/*
 	If the user changed the UI DPI in Unity, this method can be used to scale HTML elements with it.
 	*/
 	ChangeInterfaceScale: function(scale) {
-		document.getElementById("sharedUrl").style.transform = "scale("+ scale + ","+ scale + ")";
-		document.getElementById("sharedUrl").style.marginTop = (50*scale)+"px";
+		document.getElementById("sharedUrl").style.fontSize = scale + "em";
 	}
 });
