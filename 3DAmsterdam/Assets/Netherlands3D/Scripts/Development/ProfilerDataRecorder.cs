@@ -1,5 +1,4 @@
-﻿using Netherlands3D.Cameras;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,12 +6,14 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.UI;
 
 public class ProfilerDataRecorder : MonoBehaviour
 {
     int _count = 0;
 
     [SerializeField]
+    [Header("The name given to saved Profiler recordings when in Editor mode")]
     public string fileName = "FileName";
 
     [Header("Holding Ctrl + your designated button starts/stops recording")]
@@ -31,6 +32,14 @@ public class ProfilerDataRecorder : MonoBehaviour
     public bool recording = false;
 
     private bool isBenchmarkToggled = false;
+
+    // The way I would use this array is first define a version of the Benchmark
+    // Version 1.0 of [Name of what we are testing]
+    // Then have written down what elements the array contains
+    // GameObject[0] = Toggle of Building layer
+    // GameObject[1] = Snapshot
+    // etc.
+    public GameObject[] benchmarkItems;
 
     void Start()
     {
@@ -71,11 +80,11 @@ public class ProfilerDataRecorder : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerRecordKey))
         {
             isBenchmarkToggled = true;
-            Instance.StartRecording();
+            StartRecording();
         }
         else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(profilerStopKey))
         {
-            Instance.StopRecording();
+            StopRecording();
         }
     }
 
@@ -105,38 +114,45 @@ public class ProfilerDataRecorder : MonoBehaviour
                 _count = 0;
             }
 
-            // Generate the file path
+            // Tell the profiler to save your recording and where to save it
             string filepath = Application.persistentDataPath + "/" + fileName + _count;
-            // Set the log file and enable the profiler
             Profiler.logFile = filepath;
             Profiler.enableBinaryLog = true;
 #endif
             Profiler.enabled = true;
             if (isBenchmarkToggled)
             {
-                // Count 300 frames and execute commands that together form the 'Benchmark'
+                // Count 300 frames (MAX) and execute commands that together form the 'Benchmark'
+                // You can make the Benchmark 10 frames if you want to
                 // Wrapping code with Profiler.BeginSample and EndSample is entirely optional, it makes debugging easier
                 // case 300 is the last one that is interractable
-                // The last line should always call StopRecording() or else the profiler will continue recording endlessly
+                // The last line should always call StopRecording() or else the profiler will continue recording endlessly while overwriting older data
                 for (int i = 1; i <= 301; ++i)
                 {
                     yield return new WaitForEndOfFrame();
 
                     switch (i)
                     {
-                        case 1:
-                            Profiler.BeginSample("B.Frame1");
-                            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(1000, 150, 1000);
-                            Profiler.EndSample();
-                            break;
-                        case 280:
-                            Profiler.BeginSample("B.Frame280");
-                            CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(1500, 300, -3900);
-                            Profiler.EndSample();
-                            break;
+                        // Within this switch case is where programming of the Benchmark should be made
+                        // When choosing a case number just use your FPS as a reference (300fps = 1 second of Benchmarking)
+                        // Example #1
+                        //case 1:
+                        //    Profiler.BeginSample("B.DisableLayers");
+                        //    benchmarkItems[0].GetComponent<Toggle>().isOn = false;
+                        //    benchmarkItems[1].GetComponent<Toggle>().isOn = false;
+                        //    Profiler.EndSample();
+                        //    break;
+
+                        // Example #2
+                        //case 2:
+                        //    Profiler.BeginSample("B.MoveToUnloadedArea");
+                        //    CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(5000, 200, -6500);
+                        //    Profiler.EndSample();
+                        //    break;
+
                         case 300:
                             Profiler.BeginSample("B.FrameEND");
-                            Instance.StopRecording();
+                            StopRecording();
                             Profiler.EndSample();
                             break;
                         default:
@@ -147,8 +163,8 @@ public class ProfilerDataRecorder : MonoBehaviour
             else
             {
                 // Count 300 frames
-                // This loop is used by classes that call this instance by themselves for individual testing
-                // For features that take over 300 frames this only works in Editor mode
+                // This loop is used by classes that call this instance by themselves for individual feature testing
+                // For features that take over 300 frames this only works in Editor mode and not on WebGL
                 for (int i = 1; i <= 301; ++i)
                 {
                     yield return new WaitForEndOfFrame();
