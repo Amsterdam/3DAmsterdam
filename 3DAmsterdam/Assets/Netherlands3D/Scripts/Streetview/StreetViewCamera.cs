@@ -152,7 +152,8 @@ namespace Netherlands3D.Cameras
 			var pointerPosition = Input.mousePosition;
 			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
-			ray = cameraComponent.ScreenPointToRay(pointerPosition);
+			if(cameraComponent)
+				ray = cameraComponent.ScreenPointToRay(pointerPosition);
 			
 			float distance = 99;
 			if (Physics.Raycast(ray, out hit, distance))
