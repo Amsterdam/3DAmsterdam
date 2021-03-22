@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   godViewCam: {fileID: 4093344675420705374}
+  groundTransitionOffset: 0
 --- !u!114 &8852100570403522361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +153,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8014012090906924388, guid: ab6da9ff3a357104f884fac01a2076e8,
+        type: 3}
+      propertyPath: disableWhenActive.Array.data[0]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9175618376203658408, guid: ab6da9ff3a357104f884fac01a2076e8,
         type: 3}
