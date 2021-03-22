@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -257,6 +258,16 @@ namespace Netherlands3D.Interface
 			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", true, (action) =>
 			{
 
+			});
+			PropertiesPanel.Instance.AddActionDropdown(new string[] { "Collada (.dae)", "AutoCAD DXF (.dxf)" }, (action) =>
+			{
+				switch(action)
+				{
+					case "Collada (.dae)":
+						break;
+					case "AutoCAD DXF (.dxf)":
+						break;
+				}
 			});
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{

@@ -311,7 +311,7 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
         }
 
-        public void AddActionDropdown(List<Dropdown.OptionData> dropdownOptions, Action<string> selectOptionAction)
+        public void AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction)
         {
             Instantiate(dropdownPrefab, targetFieldsContainer).SetAction(dropdownOptions, selectOptionAction);
         }
