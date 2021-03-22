@@ -44,6 +44,8 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
+		private string gridExportFormat = "";
+
 		private void Awake()
 		{
 			ActionMap = ActionHandler.actions.GridSelection;
@@ -265,19 +267,14 @@ namespace Netherlands3D.Interface
 			{
 
 			});
-			PropertiesPanel.Instance.AddActionDropdown(new string[] { "Collada (.dae)", "AutoCAD DXF (.dxf)" }, (action) =>
+			PropertiesPanel.Instance.AddActionDropdown(new string[] { "Collada DAE (.dae)", "AutoCAD DXF (.dxf)" }, (action) =>
 			{
-				switch(action)
-				{
-					case "Collada (.dae)":
-						break;
-					case "AutoCAD DXF (.dxf)":
-						break;
-				}
+				gridExportFormat = action;
 			});
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
 				//Do the download action
+				WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");
 			});
 		}
 
