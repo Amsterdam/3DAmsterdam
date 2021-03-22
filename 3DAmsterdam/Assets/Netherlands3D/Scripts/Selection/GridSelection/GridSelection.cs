@@ -55,9 +55,12 @@ namespace Netherlands3D.Interface
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
 
-			clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
-			clearAction.SubscribePerformed(Clear);
-			clearAction.SubscribeCancelled(Clear);
+			if (freePaint)
+			{
+				clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
+				clearAction.SubscribePerformed(Clear);
+				clearAction.SubscribeCancelled(Clear);
+			}
 
 			voxels = new Dictionary<Vector3Int, GameObject>();
 		}
@@ -69,18 +72,23 @@ namespace Netherlands3D.Interface
 		}
 		private void Toggle(IAction action)
 		{
-			if (Selector.Instance.HoveringInterface()) return;
-
-			if (freePaint)
+			if (action.Performed)
 			{
-				DrawVoxelsUnderMouse(true);
-			}
-			else{
-				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-				ScaleSingleVoxelUnderMouse(false);
-			}
 
-			FinishSelection();
+				if (Selector.Instance.HoveringInterface()) return;
+
+				if (freePaint)
+				{
+					DrawVoxelsUnderMouse(true);
+				}
+				else
+				{
+					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+					ScaleSingleVoxelUnderMouse(false);
+				}
+
+				FinishSelection();
+			}
 		}
 
 		private void Drawing(IAction action)
@@ -181,8 +189,6 @@ namespace Netherlands3D.Interface
 			{
 				var xDifference = (mouseGridPosition.x - startGridPosition.x);
 				var zDifference = (mouseGridPosition.z - startGridPosition.z);
-				print("X " + xDifference);
-				print("Z " + zDifference);
 
 				scaleBlock.transform.position = startGridPosition;
 				scaleBlock.transform.Translate(xDifference / 2.0f, 0, zDifference / 2.0f);
