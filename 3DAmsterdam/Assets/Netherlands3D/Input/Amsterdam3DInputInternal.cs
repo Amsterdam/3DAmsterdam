@@ -15,6 +15,115 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     ""name"": ""3D Amsterdam"",
     ""maps"": [
         {
+            ""name"": ""GridSelection"",
+            ""id"": ""fc0f2e8c-320f-4f22-bbb1-7ecc3341f85a"",
+            ""actions"": [
+                {
+                    ""name"": ""ToggleVoxel"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d71f97d-97df-4265-8641-cd87068cac97"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap""
+                },
+                {
+                    ""name"": ""DrawVoxels"",
+                    ""type"": ""Button"",
+                    ""id"": ""50924954-e46f-44f9-8127-9103ef424e23"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.02)""
+                },
+                {
+                    ""name"": ""EraseVoxels"",
+                    ""type"": ""Button"",
+                    ""id"": ""87d5dffa-a017-433c-addc-62c08df7c975"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.02)""
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""60312e81-d621-4a52-b35e-16557370191c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ToggleVoxel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Left mouse button + shift"",
+                    ""id"": ""e143cc7b-d8d7-465b-89b9-43fcf1f91d70"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EraseVoxels"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""009480b6-4d28-4514-8291-b214f6366771"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EraseVoxels"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""5845d8ef-034a-40a1-b724-1c2646d177eb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EraseVoxels"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Left mouse button + shift"",
+                    ""id"": ""9351aa68-d2d6-4be4-93e5-834ccfe177a6"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrawVoxels"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""b015cfff-a810-4270-9ce5-26c1fbe1e400"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrawVoxels"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""20d8e313-3851-419b-bf75-64bd5bd993c1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrawVoxels"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
+        },
+        {
             ""name"": ""Selector"",
             ""id"": ""db9e8cf2-0efd-4ecf-b4d7-c9bc5e9a5062"",
             ""actions"": [
@@ -1410,6 +1519,11 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         }
     ]
 }");
+        // GridSelection
+        m_GridSelection = asset.FindActionMap("GridSelection", throwIfNotFound: true);
+        m_GridSelection_ToggleVoxel = m_GridSelection.FindAction("ToggleVoxel", throwIfNotFound: true);
+        m_GridSelection_DrawVoxels = m_GridSelection.FindAction("DrawVoxels", throwIfNotFound: true);
+        m_GridSelection_EraseVoxels = m_GridSelection.FindAction("EraseVoxels", throwIfNotFound: true);
         // Selector
         m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
         m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
@@ -1504,6 +1618,55 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     {
         asset.Disable();
     }
+
+    // GridSelection
+    private readonly InputActionMap m_GridSelection;
+    private IGridSelectionActions m_GridSelectionActionsCallbackInterface;
+    private readonly InputAction m_GridSelection_ToggleVoxel;
+    private readonly InputAction m_GridSelection_DrawVoxels;
+    private readonly InputAction m_GridSelection_EraseVoxels;
+    public struct GridSelectionActions
+    {
+        private @_3DAmsterdam m_Wrapper;
+        public GridSelectionActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ToggleVoxel => m_Wrapper.m_GridSelection_ToggleVoxel;
+        public InputAction @DrawVoxels => m_Wrapper.m_GridSelection_DrawVoxels;
+        public InputAction @EraseVoxels => m_Wrapper.m_GridSelection_EraseVoxels;
+        public InputActionMap Get() { return m_Wrapper.m_GridSelection; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GridSelectionActions set) { return set.Get(); }
+        public void SetCallbacks(IGridSelectionActions instance)
+        {
+            if (m_Wrapper.m_GridSelectionActionsCallbackInterface != null)
+            {
+                @ToggleVoxel.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnToggleVoxel;
+                @ToggleVoxel.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnToggleVoxel;
+                @ToggleVoxel.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnToggleVoxel;
+                @DrawVoxels.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
+                @DrawVoxels.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
+                @DrawVoxels.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
+                @EraseVoxels.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
+                @EraseVoxels.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
+                @EraseVoxels.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
+            }
+            m_Wrapper.m_GridSelectionActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ToggleVoxel.started += instance.OnToggleVoxel;
+                @ToggleVoxel.performed += instance.OnToggleVoxel;
+                @ToggleVoxel.canceled += instance.OnToggleVoxel;
+                @DrawVoxels.started += instance.OnDrawVoxels;
+                @DrawVoxels.performed += instance.OnDrawVoxels;
+                @DrawVoxels.canceled += instance.OnDrawVoxels;
+                @EraseVoxels.started += instance.OnEraseVoxels;
+                @EraseVoxels.performed += instance.OnEraseVoxels;
+                @EraseVoxels.canceled += instance.OnEraseVoxels;
+            }
+        }
+    }
+    public GridSelectionActions @GridSelection => new GridSelectionActions(this);
 
     // Selector
     private readonly InputActionMap m_Selector;
@@ -2021,6 +2184,12 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
             if (m_XRSchemeIndex == -1) m_XRSchemeIndex = asset.FindControlSchemeIndex("XR");
             return asset.controlSchemes[m_XRSchemeIndex];
         }
+    }
+    public interface IGridSelectionActions
+    {
+        void OnToggleVoxel(InputAction.CallbackContext context);
+        void OnDrawVoxels(InputAction.CallbackContext context);
+        void OnEraseVoxels(InputAction.CallbackContext context);
     }
     public interface ISelectorActions
     {

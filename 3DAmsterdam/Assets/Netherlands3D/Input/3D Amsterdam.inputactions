@@ -2,6 +2,115 @@
     "name": "3D Amsterdam",
     "maps": [
         {
+            "name": "GridSelection",
+            "id": "fc0f2e8c-320f-4f22-bbb1-7ecc3341f85a",
+            "actions": [
+                {
+                    "name": "ToggleVoxel",
+                    "type": "Button",
+                    "id": "4d71f97d-97df-4265-8641-cd87068cac97",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap"
+                },
+                {
+                    "name": "DrawVoxels",
+                    "type": "Button",
+                    "id": "50924954-e46f-44f9-8127-9103ef424e23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold(duration=0.02)"
+                },
+                {
+                    "name": "EraseVoxels",
+                    "type": "Button",
+                    "id": "87d5dffa-a017-433c-addc-62c08df7c975",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold(duration=0.02)"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "60312e81-d621-4a52-b35e-16557370191c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ToggleVoxel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Left mouse button + shift",
+                    "id": "e143cc7b-d8d7-465b-89b9-43fcf1f91d70",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EraseVoxels",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "009480b6-4d28-4514-8291-b214f6366771",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "EraseVoxels",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "5845d8ef-034a-40a1-b724-1c2646d177eb",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "EraseVoxels",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Left mouse button + shift",
+                    "id": "9351aa68-d2d6-4be4-93e5-834ccfe177a6",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DrawVoxels",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "b015cfff-a810-4270-9ce5-26c1fbe1e400",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DrawVoxels",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "20d8e313-3851-419b-bf75-64bd5bd993c1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DrawVoxels",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
             "name": "Selector",
             "id": "db9e8cf2-0efd-4ecf-b4d7-c9bc5e9a5062",
             "actions": [

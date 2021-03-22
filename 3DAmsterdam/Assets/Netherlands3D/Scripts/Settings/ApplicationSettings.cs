@@ -63,58 +63,58 @@ namespace Netherlands3D.Settings {
 		public void OpenSettingsPanel()
         {
 			//Interface options
-			Interface.SidePanel.Properties.Instance.OpenPanel("Instellingen", true , 10.0f);
-			Interface.SidePanel.Properties.Instance.AddTitle("Interface");
-			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
+			Interface.SidePanel.PropertiesPanel.Instance.OpenPanel("Instellingen", true , 10.0f);
+			Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Interface");
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
 				settings.drawMap = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
 				settings.drawFPS = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddLabel("Interface schaal");
-			Interface.SidePanel.Properties.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Interface schaal");
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
 				interfaceLayers.ResetAllLayerMaterialColors();
             });
 
 			//Graphic options
-			Interface.SidePanel.Properties.Instance.AddTitle("Grafisch");
-			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Grafisch");
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
 				settings.postProcessingEffects = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddLabel("Render resolutie:");
-			Interface.SidePanel.Properties.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Render resolutie:");
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
             });
-			Interface.SidePanel.Properties.Instance.AddLabel("Schaduw detail:");
-			Interface.SidePanel.Properties.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Schaduw detail:");
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
             }, true);
 
-			Interface.SidePanel.Properties.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
+			Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
 				settings = Instantiate(settingsProfilesTemplates[0]);
 				ApplySettings();
 				OpenSettingsPanel(); //Just regenerate this panel with new values.
             });
 
-			Interface.SidePanel.Properties.Instance.AddSeperatorLine();
-			Interface.SidePanel.Properties.Instance.AddCustomPrefab(stats);
+			Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
+			Interface.SidePanel.PropertiesPanel.Instance.AddCustomPrefab(stats);
         }
 
         public void ApplySettings()
