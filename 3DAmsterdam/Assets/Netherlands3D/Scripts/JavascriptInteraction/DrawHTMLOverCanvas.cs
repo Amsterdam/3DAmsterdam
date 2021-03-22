@@ -37,10 +37,10 @@ namespace Netherlands3D.JavascriptConnection
 		{
 			var screenSpaceRectangle = GetScreenSpaceRectangle();
 			JavascriptMethodCaller.DisplayWithID(htmlObjectID, true,
-				Mathf.RoundToInt(screenSpaceRectangle.x / Screen.width),
-				Mathf.RoundToInt(screenSpaceRectangle.y / Screen.height),
-				Mathf.RoundToInt(screenSpaceRectangle.width / Screen.width),
-				Mathf.RoundToInt(screenSpaceRectangle.height / Screen.height)
+				screenSpaceRectangle.x / Screen.width,
+				screenSpaceRectangle.y / Screen.height,
+				screenSpaceRectangle.width / Screen.width,
+				screenSpaceRectangle.height / Screen.height
 			);
 		}
 
