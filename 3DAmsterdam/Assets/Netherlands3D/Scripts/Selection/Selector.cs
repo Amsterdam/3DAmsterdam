@@ -60,6 +60,9 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private RaycastHit[] sortedHits;
 
+		[SerializeField]
+		private Interactable multiSelector;
+
 		void Awake()
 		{
 			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
@@ -105,7 +108,7 @@ namespace Netherlands3D.Interface
 
 		private void Update()
 		{
-			//Always update our main selector ray, and raycast for hovers
+			//Always update our main selector ray, and raycast for Interactables that we are hovering
 			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
@@ -116,11 +119,10 @@ namespace Netherlands3D.Interface
 				hoveringInteractable = null;
 			}
 
-			EnableCameraActionMaps(true, !activeInteractable);
-
+			//Enable camera action maps based on the active interactable
 			if (activeInteractable)
 			{
-				EnableCameraActionMaps(true, false);
+				EnableCameraActionMaps(!activeInteractable.blockKeyboardNavigationInteractions, !activeInteractable.blockMouseNavigationInteractions);
 			}
 			else
 			{
@@ -167,7 +169,7 @@ namespace Netherlands3D.Interface
 		private void EnableCameraActionMaps(bool enableKeyboardActions, bool enableMouseActions)
 		{
 			CameraModeChanger.Instance.CurrentCameraControls.EnableKeyboardActionMap(enableKeyboardActions);
-			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && enableMouseActions);
+			CameraModeChanger.Instance.CurrentCameraControls.EnableMouseActionMap(!HoveringInterface() && !doingMultiselect && enableMouseActions);
 		}
 
 		/// <summary>
@@ -184,13 +186,17 @@ namespace Netherlands3D.Interface
 
 		private void Click(IAction action)
 		{
-			Select();
+			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
+			if(!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+				Select();
 		}
 		private void SecondaryClick(IAction action)
 		{
-			Debug.Log("Selector secondary click");
-			ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
-			SecondarySelect();
+			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+			{
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+				SecondarySelect();
+			}
 		}
 
 		private void Multiselect(IAction action)
@@ -198,6 +204,7 @@ namespace Netherlands3D.Interface
 			if (action.Cancelled)
 			{
 				doingMultiselect = false;
+
 			}
 			else if (action.Performed)
 			{
@@ -271,16 +278,7 @@ namespace Netherlands3D.Interface
 			ClearHighlights();
 		}
 
-		private void MultiselectFinish(IAction action)
-		{
-			//Check selected region for
-			//Custom objects
-			//Static layers
-
-			//What kind of context / combinations etc. etc.
-		}
-
-		private bool HoveringInterface()
+		public bool HoveringInterface()
 		{
 			return EventSystem.current.IsPointerOverGameObject();
 		}

@@ -83,7 +83,7 @@ namespace Netherlands3D.Interface.Layers
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
             parentInterfaceLayers.LayerVisuals.Close();
-			SidePanel.Properties.Instance.ClosePanel();
+			SidePanel.PropertiesPanel.Instance.ClosePanel();
             Destroy(gameObject);
         }
 

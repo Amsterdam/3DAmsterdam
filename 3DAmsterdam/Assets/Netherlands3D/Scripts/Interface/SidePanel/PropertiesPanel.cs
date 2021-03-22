@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.SidePanel
 {
-    public class Properties : MonoBehaviour
+    public class PropertiesPanel : MonoBehaviour
     {
         [SerializeField]
         private GameObject objectPropertiesPanel;
@@ -24,7 +24,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         public DisplayBAGData displayBagData;
 
-        public static Properties Instance = null;
+        public static PropertiesPanel Instance = null;
 
         [SerializeField]
         private Text titleText;
@@ -52,6 +52,8 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionButton buttonBigPrefab;
         [SerializeField]
         private ActionSlider sliderPrefab;
+        [SerializeField] 
+        private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
         [SerializeField]
@@ -155,7 +157,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// </summary>
         /// <param name="points">The points that should be framed within the thumbnail</param>
         /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
-        public void RenderThumbnailContaining(Vector3[] points, bool swapBuildingShaders = false)
+        public void RenderThumbnailContaining(Vector3[] points, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
         {
             //Find our centroid
             var centroid = new Vector3(0, 0, 0);
@@ -172,7 +174,7 @@ namespace Netherlands3D.Interface.SidePanel
             {
                 bounds.Encapsulate(point);
             }
-            RenderThumbnailContaining(bounds, swapBuildingShaders);
+            RenderThumbnailContaining(bounds, thumbnailRenderMethod);
         }
 
         /// <summary>
@@ -180,7 +182,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// </summary>
         /// <param name="bounds">The bounds object that should be framed in the thumbnail</param>
         /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
-		public void RenderThumbnailContaining(Bounds bounds, bool swapBuildingShaders = false)
+		public void RenderThumbnailContaining(Bounds bounds, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
@@ -191,18 +193,32 @@ namespace Netherlands3D.Interface.SidePanel
             thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
             thumbnailRenderer.transform.LookAt(bounds.center);
 
-            RenderThumbnail(swapBuildingShaders);
+            RenderThumbnail(thumbnailRenderMethod);
         }
 
         /// <summary>
         /// Render thumbnail from previous position
         /// </summary>
         /// <param name="swapBuildingShaders">Swap building shaders for one frame, so we can exclusively draw highlighted buildings</param>
-		public void RenderThumbnail(bool swapBuildingShaders = false)
+		public void RenderThumbnail(ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
 		{
-            thumbnailRenderer.cullingMask = (swapBuildingShaders) ? renderAllLayersMask.value : thumbnailCameraPrefab.cullingMask;
+			switch (thumbnailRenderMethod)
+			{
+				case ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA:
+                    thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
+                    break;
+				case ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS:
+                    thumbnailRenderer.cullingMask = renderAllLayersMask.value;
+                    break;
+				case ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA:
+                    thumbnailRenderer.cullingMask = thumbnailCameraPrefab.cullingMask;
+                    break;
+				default:
+					break;
+			}
 
-            if (swapBuildingShaders)
+            //Switchs shaders temporarily on buildings to exclusively draw the highlighted ones
+			if (thumbnailRenderMethod == ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS)
             {
                 var renderersOnBuildingsLayer = FindObjectsOfType<Renderer>().Where(c => c.gameObject.layer == LayerMask.NameToLayer("Buildings")).ToArray();
                 foreach (var renderer in renderersOnBuildingsLayer)
@@ -252,6 +268,12 @@ namespace Netherlands3D.Interface.SidePanel
 
             targetFieldsContainer = generatedFieldsRootContainer;
         }
+        public enum ThumbnailRenderMethod
+        {
+            SAME_AS_MAIN_CAMERA,
+            HIGHLIGHTED_BUILDINGS,
+            SAME_LAYER_AS_THUMBNAIL_CAMERA
+		}
 
         #region Methods for generating the main field types (spawning prefabs)
         public void AddTitle(string titleText)
@@ -288,6 +310,12 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
         }
+
+        public void AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction)
+        {
+            Instantiate(dropdownPrefab, targetFieldsContainer).SetAction(dropdownOptions, selectOptionAction);
+        }
+
         public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
         {
             Instantiate(checkboxPrefab, targetFieldsContainer).SetAction(buttonText, checkedBox, checkAction);
