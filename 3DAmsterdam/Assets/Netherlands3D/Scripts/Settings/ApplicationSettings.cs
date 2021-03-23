@@ -16,6 +16,7 @@ namespace Netherlands3D.Settings {
 
         [SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
+		private int selectedTemplate = 0;
 
         private const string playerPrefKey = "applicationSettings";
 
@@ -35,25 +36,30 @@ namespace Netherlands3D.Settings {
         private GameObject stats;
 
         void Start()
-        {
-            canvasSettings = GetComponent<CanvasSettings>();
-            renderSettings = GetComponent<Rendering.RenderSettings>();
+		{
+			canvasSettings = GetComponent<CanvasSettings>();
+			renderSettings = GetComponent<Rendering.RenderSettings>();
 
-            //Start with a copy of the selected base profile so we do not alter the templates
-            settings = Instantiate(settings);
-            settings.name = "UserProfile";
-            settings.applicationVersion = Application.version;
+			LoadTemplate(settings);
 
-            //Load previous or auto detect optimal settings
-            if (PlayerPrefs.HasKey(playerPrefKey))
-            {
-                LoadSettings();
-            }
-            else if (automaticOptimalSettings && !PlayerPrefs.HasKey(playerPrefKey))
+			//Load previous or auto detect optimal settings
+			if (PlayerPrefs.HasKey(playerPrefKey))
+			{
+				LoadSettings();
+			}
+			else if (automaticOptimalSettings && !PlayerPrefs.HasKey(playerPrefKey))
 			{
 				DetermineOptimalSettings();
 			}
-        }
+		}
+
+		private void LoadTemplate(ApplicationSettingsProfile templateProfile)
+		{
+			//Start with a copy of the selected base profile so we do not alter the templates
+			settings = Instantiate(templateProfile);
+			settings.name = "UserProfile";
+			settings.applicationVersion = Application.version;
+		}
 
 		private void DetermineOptimalSettings()
 		{
@@ -63,58 +69,76 @@ namespace Netherlands3D.Settings {
 		public void OpenSettingsPanel()
         {
 			//Interface options
-			Interface.SidePanel.PropertiesPanel.Instance.OpenPanel("Instellingen", true , 10.0f);
-			Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Interface");
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
+			PropertiesPanel.Instance.OpenPanel("Instellingen", true , 10.0f);
+			PropertiesPanel.Instance.AddTitle("Interface");
+			PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
 				settings.drawMap = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
+			PropertiesPanel.Instance.AddActionCheckbox("Toon FPS teller", settings.drawFPS, (toggle) => {
 				settings.drawFPS = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Interface schaal");
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
+			PropertiesPanel.Instance.AddLabel("Interface schaal");
+			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
+			PropertiesPanel.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
 				interfaceLayers.ResetAllLayerMaterialColors();
             });
 
 			//Graphic options
-			Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Grafisch");
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+			PropertiesPanel.Instance.AddTitle("Grafisch");
+            PropertiesPanel.Instance.AddLabel("Algemene instelling:");
+
+			//Fill our dropdown using the templates and their titles
+			List<string> profileNames = new List<string>();
+			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
+				profileNames.Add(profile.profileName);
+
+			PropertiesPanel.Instance.AddActionDropdown(profileNames.ToArray(), (action)=>
+            {
+				print("Selected template " + action);
+				selectedTemplate = profileNames.IndexOf(action);
+				settings = Instantiate(settingsProfilesTemplates[selectedTemplate]);
+
+				ApplySettings();
+				OpenSettingsPanel(); //Simply force a reload of the settings panel to apply all new overrides
+            }, profileNames[selectedTemplate]);
+
+            PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
 				settings.postProcessingEffects = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
+			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
+			PropertiesPanel.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Render resolutie:");
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
+			PropertiesPanel.Instance.AddLabel("Render resolutie:");
+			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
             });
-			Interface.SidePanel.PropertiesPanel.Instance.AddLabel("Schaduw detail:");
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
+			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
             }, true);
 
-			Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
-				settings = Instantiate(settingsProfilesTemplates[0]);
+			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
+				selectedTemplate = 0;
+				settings = Instantiate(settingsProfilesTemplates[selectedTemplate]);
 				ApplySettings();
 				OpenSettingsPanel(); //Just regenerate this panel with new values.
             });
 
-			Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
-			Interface.SidePanel.PropertiesPanel.Instance.AddCustomPrefab(stats);
+			PropertiesPanel.Instance.AddSeperatorLine();
+			PropertiesPanel.Instance.AddCustomPrefab(stats);
         }
 
         public void ApplySettings()
