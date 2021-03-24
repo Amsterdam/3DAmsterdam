@@ -104,7 +104,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void ShowTransformProperties(int gizmoTransformType = -1)
 		{
 			lastSelectedTransformable = this;
-			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenPanel(gameObject.name);
+			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenObjectProperties(gameObject.name);
 			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenTransformPanel(this, gizmoTransformType);
 			UpdateBounds();
 		}

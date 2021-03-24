@@ -119,7 +119,7 @@ namespace Netherlands3D.Interface.SidePanel
 			}
 		}
 
-        public void OpenPanel(string title, bool clearOldfields = true, float spacing = 0.0f)
+        public void OpenObjectProperties(string title, bool clearOldfields = true, float spacing = 0.0f)
         {
             if(clearOldfields) ClearGeneratedFields();
 
