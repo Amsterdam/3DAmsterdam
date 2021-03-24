@@ -7,12 +7,22 @@ using UnityEngine.UI;
 namespace Netherlands3D.Interface.Menu {
 	public class SwitchTool : MonoBehaviour
 	{
+		public static SwitchTool Instance;
+
 		private Button[] containingButtons;
 
 		private bool expanded = false;
 
 		[SerializeField]
 		private float spacing = 50;
+
+		[SerializeField]
+		private GameObject defaultToolSelection;
+
+		private void Awake()
+		{
+			Instance = this;
+		}
 
 		void Start()
 		{
@@ -30,6 +40,15 @@ namespace Netherlands3D.Interface.Menu {
 			{
 				containingButtons[i].gameObject.SetActive((containingButtons[i].transform.GetSiblingIndex() == 0));
 			}
+		}
+
+		/// <summary>
+		/// Simple force a click on our default pointer button, selecting our set default tool
+		/// </summary>
+		public void ResetToDefault()
+		{
+			defaultToolSelection.GetComponent<Button>().onClick.Invoke();
+			HideToolButtons();
 		}
 
 		private void AlignToolButtonsSideBySide()
