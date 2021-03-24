@@ -13,7 +13,17 @@ namespace Netherlands3D.Interface.SidePanel
     public class PropertiesPanel : MonoBehaviour
     {
         [SerializeField]
-        private GameObject objectPropertiesPanel;
+        private RectTransform movePanelRectTransform;
+
+        [SerializeField]
+        private float animationSpeed = 5.0f;
+        [SerializeField]
+        private float collapsedShift = 300;
+
+        private Coroutine panelAnimation;
+
+        private bool open = true;
+
         [SerializeField]
         private Transform generatedFieldsRootContainer;
 
@@ -91,9 +101,6 @@ namespace Netherlands3D.Interface.SidePanel
 			//Start with our main container. Groups may change this target.
 			targetFieldsContainer = generatedFieldsRootContainer;
 
-			//Properties panel is disabled at startup
-			objectPropertiesPanel.SetActive(false);
-
             //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
         }
@@ -124,14 +131,46 @@ namespace Netherlands3D.Interface.SidePanel
             if(clearOldfields) ClearGeneratedFields();
 
             verticalLayoutGroup.spacing = spacing;
-            objectPropertiesPanel.SetActive(true);
-            titleText.text = title;
+            OpenPanel(title);
         }
+
+        public void OpenLayerProperties(string title, bool clearOldfields = true, float spacing = 0.0f)
+        {
+            if (clearOldfields) ClearGeneratedFields();
+
+            verticalLayoutGroup.spacing = spacing;
+            OpenPanel(title);
+        }
+
+        public void OpenPanel(string title = "")
+        {
+            if(title!= "")
+                titleText.text = title;
+            open = true;
+            if (panelAnimation != null) StopCoroutine(panelAnimation);
+            panelAnimation = StartCoroutine(Animate());
+		}
+
         public void ClosePanel()
         {
-            DeselectTransformable();
-            ClearGeneratedFields();
-            objectPropertiesPanel.SetActive(false);
+            open = false;
+            if (panelAnimation != null) StopCoroutine(panelAnimation);
+            panelAnimation = StartCoroutine(Animate());
+        }
+
+        private IEnumerator Animate()
+        {
+            while (open && movePanelRectTransform.anchoredPosition.x > 0)
+            {
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.zero, animationSpeed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+            while (!open && movePanelRectTransform.anchoredPosition.x < collapsedShift)
+            {
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.right * collapsedShift, animationSpeed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+            yield return null;
         }
 
         /// <summary>
@@ -147,7 +186,7 @@ namespace Netherlands3D.Interface.SidePanel
                     Selector.Instance.ClearHighlights();
                     currentTransformPanel.DisableGizmo();
                     Transformable.lastSelectedTransformable = null;
-                    if(disableContainerPanel) objectPropertiesPanel.SetActive(false);
+                    if (disableContainerPanel) ClosePanel();
                 }
             }
         }
