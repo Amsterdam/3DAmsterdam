@@ -22,6 +22,11 @@ public class MeshClipper
     public void clipSubMesh(RDBoundingBox boundingBox, int subMeshNumber)
     {
         clippedVerticesRD = new List<Vector3RD>();
+        if (subMeshNumber>=mesh.subMeshCount)
+        {
+            return;
+        }
+
         int[] indices = mesh.GetIndices(subMeshNumber);
         temporaryOrigin = new Vector3RD(boundingBox.minX, boundingBox.minY, 0);
         Vector3 point1;
