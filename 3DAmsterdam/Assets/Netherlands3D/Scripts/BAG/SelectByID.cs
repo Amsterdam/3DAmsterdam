@@ -217,18 +217,18 @@ namespace Netherlands3D.LayerSystem
 
             if (id != emptyID)
             {
-				Interface.SidePanel.PropertiesPanel.Instance.OpenObjectProperties("Pand", true);
+				PropertiesPanel.Instance.OpenObjectProperties("", true);
                 if (selectedIDs.Count > 1) Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
                 {
 					HighlightObjectsWithIDs();
                 }
                 );
-				Interface.SidePanel.PropertiesPanel.Instance.displayBagData.ShowBuildingData(id);
+				PropertiesPanel.Instance.displayBagData.ShowBuildingData(id);
             }
             else if (lastSelectedID != emptyID)
             {
-				Interface.SidePanel.PropertiesPanel.Instance.OpenObjectProperties("Pand", true);
-				Interface.SidePanel.PropertiesPanel.Instance.displayBagData.ShowBuildingData(lastSelectedID);
+				PropertiesPanel.Instance.OpenObjectProperties("", true);
+				PropertiesPanel.Instance.displayBagData.ShowBuildingData(lastSelectedID);
             }
         }
 

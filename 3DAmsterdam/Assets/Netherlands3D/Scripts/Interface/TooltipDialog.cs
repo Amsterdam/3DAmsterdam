@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -13,6 +14,8 @@ namespace Netherlands3D.Interface
         private Text tooltiptext;
         private RectTransform rectTransform;
         private ContentSizeFitter contentSizeFitter;
+
+        private bool pivotRight = false;
 
         #region Singleton
         private static TooltipDialog instance;
@@ -47,8 +50,19 @@ namespace Netherlands3D.Interface
 
         private void FollowPointer()
         {
-            rectTransform.position = Input.mousePosition;
-            rectTransform.position = Input.mousePosition;
+            rectTransform.position = Mouse.current.position.ReadValue();
+            
+            //Swap pivot based on place in screen (to try to stay in the screen horizontally)
+            if(!pivotRight && rectTransform.position.x > Screen.width/2)
+            {
+                pivotRight = true;
+                rectTransform.pivot = Vector2.right;
+            }
+            else if(pivotRight && rectTransform.position.x <= Screen.width / 2)
+            {
+                pivotRight = false;
+                rectTransform.pivot = Vector2.zero;
+            }
         }
 
         public void ShowMessage(string message = "Tooltip"){

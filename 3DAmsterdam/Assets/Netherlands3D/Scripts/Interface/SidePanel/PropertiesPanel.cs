@@ -16,6 +16,9 @@ namespace Netherlands3D.Interface.SidePanel
         private RectTransform movePanelRectTransform;
 
         [SerializeField]
+        private Tab startingActiveTab;
+
+        [SerializeField]
         private float animationSpeed = 5.0f;
         [SerializeField]
         private float collapsedShift = 300;
@@ -103,6 +106,8 @@ namespace Netherlands3D.Interface.SidePanel
 
             //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
+
+            startingActiveTab.OpenTab(true);
         }
 
         public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)

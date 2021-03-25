@@ -19,9 +19,6 @@ namespace Netherlands3D.Interface.Coloring
         private Color pickedColor = Color.white;
 
         [SerializeField]
-        private ClickOutsideToClose panelCloseCatcher;
-
-        [SerializeField]
         private Image selectionPointer;
 
         [SerializeField]
@@ -50,7 +47,6 @@ namespace Netherlands3D.Interface.Coloring
         /// </summary>
         public void StartColorSelection()
         {
-            panelCloseCatcher.IgnoreClicks(1); //This will keep our color panel open when we click the screen
             selectionPointer.gameObject.SetActive(true);
 
             //We dont allow clicks on the canvas, untill we are done picking a color

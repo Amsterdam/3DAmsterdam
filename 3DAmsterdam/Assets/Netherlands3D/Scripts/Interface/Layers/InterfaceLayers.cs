@@ -34,8 +34,6 @@ namespace Netherlands3D.Interface.Layers
 		void Awake()
 		{
 			animator = GetComponent<Animator>();
-			annotationsContainer.gameObject.SetActive(false);
-			cameraContainer.gameObject.SetActive(false);
 		}
 
 		/// <summary>
