@@ -193,7 +193,7 @@ MonoBehaviour:
     type: 3}
   camerasLayerPrefab: {fileID: 8778083341583675047, guid: 569f4ba7ba4b61b4ebf54b6b18c2a080,
     type: 3}
-  layersContainer: {fileID: 1403248280924594323}
+  customLayersContainer: {fileID: 4110384795647470943}
   annotationsContainer: {fileID: 2534885638861334160}
   cameraContainer: {fileID: 7225696065238384043}
   layerVisualsDialog: {fileID: 7222801889008690497}
@@ -987,12 +987,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &1403248280924594323 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6895656845740255980, guid: 02ad944e407562d40ae7234a9622449a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5533549267884870271}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7222801889008690497 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2951988272139906878, guid: 02ad944e407562d40ae7234a9622449a,
@@ -1026,6 +1020,12 @@ MonoBehaviour:
 --- !u!224 &7225696065238384043 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2922213783245830100, guid: 02ad944e407562d40ae7234a9622449a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5533549267884870271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4110384795647470943 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8484808687974442784, guid: 02ad944e407562d40ae7234a9622449a,
     type: 3}
   m_PrefabInstance: {fileID: 5533549267884870271}
   m_PrefabAsset: {fileID: 0}

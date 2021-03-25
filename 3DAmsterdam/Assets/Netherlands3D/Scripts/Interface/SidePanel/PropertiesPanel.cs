@@ -191,7 +191,6 @@ namespace Netherlands3D.Interface.SidePanel
                     Selector.Instance.ClearHighlights();
                     currentTransformPanel.DisableGizmo();
                     Transformable.lastSelectedTransformable = null;
-                    if (disableContainerPanel) ClosePanel();
                 }
             }
         }
