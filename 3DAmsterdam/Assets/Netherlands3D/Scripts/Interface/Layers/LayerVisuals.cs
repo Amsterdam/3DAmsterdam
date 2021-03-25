@@ -35,7 +35,6 @@ namespace Netherlands3D.Interface.Layers
 		{
 			colorPicker.selectedNewColor += ChangeMaterialColor;
 			hexColorField.selectedNewColor += ChangeMaterialColor;
-
 			containerRectTransform = GetComponent<RectTransform>();
 		}
 
@@ -143,13 +142,16 @@ namespace Netherlands3D.Interface.Layers
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
 
-			StartCoroutine(WrapContainingItems());
+			StartCoroutine(SortLayout());
 		}
 
-		private IEnumerator WrapContainingItems()
+		private IEnumerator SortLayout()
 		{
+			//Give our parent layout group a juggle, so it respects our new size
+			VerticalLayoutGroup layoutGroup = transform.parent.GetComponent<VerticalLayoutGroup>();
+			layoutGroup.enabled = false;
 			yield return new WaitForEndOfFrame();
-			Canvas.ForceUpdateCanvases();
+			layoutGroup.enabled = true;
 		}
 
 		/// <summary>
