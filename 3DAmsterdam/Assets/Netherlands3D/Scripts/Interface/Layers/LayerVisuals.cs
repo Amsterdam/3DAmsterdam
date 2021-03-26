@@ -52,13 +52,11 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (selectedMaterialSlots.Count < 1) return;
 
-			foreach(MaterialSlot materialSlot in selectedMaterialSlots)
+			//Update selected material slot colors (and set first one as layer label color)
+			for (int i = 0; i < selectedMaterialSlots.Count; i++)
 			{
-				materialSlot.ChangeColor(pickedColor);
-				if (materialSlot.transform.GetSiblingIndex() == 0)
-				{
-					targetInterfaceLayer.UpdateLayerPrimaryColor();
-				}
+				selectedMaterialSlots[i].ChangeColor(pickedColor);
+				if(i ==0) targetInterfaceLayer.UpdateLayerPrimaryColor();
 			}
 
 			//Match other selector colors

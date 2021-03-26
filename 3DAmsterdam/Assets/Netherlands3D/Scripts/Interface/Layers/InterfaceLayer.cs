@@ -146,7 +146,6 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
 			{
-				print("CHANGING COLOR");
 				var primaryColor = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 				primaryColor.a = 1.0f;
 				layerLabelColor.color = primaryColor;
