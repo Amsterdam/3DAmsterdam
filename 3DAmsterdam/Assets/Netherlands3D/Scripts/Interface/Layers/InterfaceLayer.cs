@@ -65,7 +65,7 @@ namespace Netherlands3D.Interface.Layers
 		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
-		private Image layerOptionsButton;
+		private Image layerLabelColor;
 
 		[Tooltip("Override shaders instead of copying material source properties")]
 		public bool swapTransparentMaterialSources = false;
@@ -87,7 +87,7 @@ namespace Netherlands3D.Interface.Layers
 
 		public void EnableOptions(bool enabled)
 		{
-			layerOptionsButton.gameObject.SetActive(enabled);
+			layerLabelColor.gameObject.SetActive(enabled);
 		}
 
 		/// <summary>
@@ -146,9 +146,10 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (uniqueLinkedObjectMaterials.Count > 0)
 			{
+				print("CHANGING COLOR");
 				var primaryColor = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 				primaryColor.a = 1.0f;
-				layerOptionsButton.color = primaryColor;
+				layerLabelColor.color = primaryColor;
 			}
 		}
 
