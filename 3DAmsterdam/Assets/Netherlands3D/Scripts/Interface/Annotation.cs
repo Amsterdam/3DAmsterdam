@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -58,6 +59,7 @@ namespace Netherlands3D.Interface
 			base.Placed();
             //After we placed the annotation, start editing it, so the user can immediatly change its content
             StartEditingText();
+            PropertiesPanel.Instance.OpenAnnotations();
         }
 
 		/// <summary>

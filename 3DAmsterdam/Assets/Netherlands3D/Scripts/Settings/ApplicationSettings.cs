@@ -69,7 +69,7 @@ namespace Netherlands3D.Settings {
 		public void OpenSettingsPanel()
         {
 			//Interface options
-			PropertiesPanel.Instance.OpenObjectProperties("Instellingen", true , 10.0f);
+			PropertiesPanel.Instance.OpenObjectInformation("Instellingen", true , 10.0f);
 			PropertiesPanel.Instance.AddTitle("Interface");
 			PropertiesPanel.Instance.AddActionCheckbox("Toon kaart", settings.drawMap, (toggle) => {
 				settings.drawMap = toggle;

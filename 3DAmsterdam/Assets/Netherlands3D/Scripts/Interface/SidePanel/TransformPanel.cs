@@ -12,6 +12,9 @@ namespace Netherlands3D.Interface.SidePanel
 {
     public class TransformPanel : MonoBehaviour
     {
+        [SerializeField]
+        private Text transformTitle;
+
         [Header("Input field references")]
         [SerializeField]
         private InputField translateX;
@@ -120,10 +123,11 @@ namespace Netherlands3D.Interface.SidePanel
 		/// <param name="target">The target transformable we want to manipulate using the transform panel</param>
 		public void SetTarget(Transformable target)
         {
+            transformTitle.text = target.name;
             transformableTarget = target;
 
             ApplyTransformOffsets(); //Our starting percentage scale is always 100% (even if our imported/created stuff has a strange scale)
-            SetRDCoordinateFields();
+            TargetWasTransformed();
 
             //Target our 3D gizmo on the same object
             CreateGizmoHandles();
@@ -132,6 +136,9 @@ namespace Netherlands3D.Interface.SidePanel
             gizmoHandles.enabled = true;
             gizmoHandles.movedHandle.RemoveAllListeners();
             gizmoHandles.movedHandle.AddListener(TargetWasTransformed);
+
+            //Display this panel
+            gameObject.SetActive(true);
         }
 
         /// <summary>

@@ -147,7 +147,7 @@ namespace Netherlands3D.LayerSystem
             {
                 ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
-				PropertiesPanel.Instance.OpenObjectProperties("Selectie", true);
+				PropertiesPanel.Instance.OpenObjectInformation("Selectie", true);
 				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
 				PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
                 foreach (var id in selectedIDs)
@@ -217,7 +217,7 @@ namespace Netherlands3D.LayerSystem
 
             if (id != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectProperties("", true);
+				PropertiesPanel.Instance.OpenObjectInformation("", true);
                 if (selectedIDs.Count > 1) Interface.SidePanel.PropertiesPanel.Instance.AddActionButtonText("< Geselecteerde panden", (action) =>
                 {
 					HighlightObjectsWithIDs();
@@ -227,7 +227,7 @@ namespace Netherlands3D.LayerSystem
             }
             else if (lastSelectedID != emptyID)
             {
-				PropertiesPanel.Instance.OpenObjectProperties("", true);
+				PropertiesPanel.Instance.OpenObjectInformation("", true);
 				PropertiesPanel.Instance.displayBagData.ShowBuildingData(lastSelectedID);
             }
         }

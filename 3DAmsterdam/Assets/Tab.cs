@@ -20,7 +20,7 @@ namespace Netherlands3D.Interface
 		/// <param name="open">Is this tab opened</param>
 		public void OpenTab(bool open = true)
         {
-            GetComponent<Toggle>().SetIsOnWithoutNotify(open);
+            GetComponent<Toggle>().isOn = open;
             tabPanel.Open(open);
             if (open)
             {

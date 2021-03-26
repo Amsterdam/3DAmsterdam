@@ -15,16 +15,22 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private RectTransform movePanelRectTransform;
 
+        [Header("Tabs")]
         [SerializeField]
         private Tab startingActiveTab;
+        [SerializeField]
+        private Tab customObjectsTab;
+        [SerializeField]
+        private Tab objectInformationTab;
+        [SerializeField]
+        private Tab annotationsTab;
 
+        [Header("Animation")]
         [SerializeField]
         private float animationSpeed = 5.0f;
         [SerializeField]
         private float collapsedShift = 300;
-
         private Coroutine panelAnimation;
-
         private bool open = true;
 
         [SerializeField]
@@ -69,10 +75,9 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
-        [SerializeField]
-        private TransformPanel transformPanelPrefab;
 
-        private TransformPanel currentTransformPanel;
+        [SerializeField]
+        private TransformPanel transformPanel;
 
         [Header("Thumbnail rendering")]
         [SerializeField]
@@ -108,50 +113,61 @@ namespace Netherlands3D.Interface.SidePanel
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
 
             startingActiveTab.OpenTab(true);
+            transformPanel.gameObject.SetActive(false);
         }
 
-        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
-        {
-            currentTransformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
-            currentTransformPanel.SetTarget(transformable);
-
-			switch (gizmoTransformType)
-			{
-                case 0:
-                    currentTransformPanel.TranslationGizmo();
-                    break;
-                case 1:
-                    currentTransformPanel.RotationGizmo();
-                    break;
-                case 2:
-                    currentTransformPanel.ScaleGizmo();
-                    break;
-				default:
-					break;
-			}
-		}
-
-        public void OpenObjectProperties(string title, bool clearOldfields = true, float spacing = 0.0f)
+        public void OpenObjectInformation(string title, bool clearOldfields = true, float spacing = 0.0f)
         {
             if(clearOldfields) ClearGeneratedFields();
 
+            objectInformationTab.OpenTab();
+
             verticalLayoutGroup.spacing = spacing;
-            OpenPanel(title);
+            OpenPanel();
         }
 
-        public void OpenLayerProperties(string title, bool clearOldfields = true, float spacing = 0.0f)
+        public void OpenAnnotations()
         {
-            if (clearOldfields) ClearGeneratedFields();
+            annotationsTab.OpenTab(true);
+            OpenPanel();
+        }
 
-            verticalLayoutGroup.spacing = spacing;
-            OpenPanel(title);
+        public void OpenCustomObjects(Transformable setTargetTransformable = null, int gizmoTransformType = -1)
+        {
+            customObjectsTab.OpenTab(true);
+
+            if (setTargetTransformable)
+                OpenTransformPanel(setTargetTransformable, gizmoTransformType);
+
+            OpenPanel();
+        }
+        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
+        {
+            transformPanel.SetTarget(transformable);
+            switch (gizmoTransformType)
+            {
+                case 0:
+                    transformPanel.TranslationGizmo();
+                    break;
+                case 1:
+                    transformPanel.RotationGizmo();
+                    break;
+                case 2:
+                    transformPanel.ScaleGizmo();
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void OpenPanel(string title = "")
         {
-            if(title!= "")
+            if (title != "")
+            {
                 titleText.text = title;
+            }
             open = true;
+
             if (panelAnimation != null) StopCoroutine(panelAnimation);
             panelAnimation = StartCoroutine(Animate());
 		}
@@ -184,14 +200,12 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="transformable">Optional specific transformable reference. Only deselects if transformable matches.</param>
         public void DeselectTransformable(Transformable transformable = null, bool disableContainerPanel = false)
         {
-            if (currentTransformPanel)
+            if (transformable == null || (transformable != null && transformPanel.TransformableTarget == transformable))
             {
-                if (transformable == null || (transformable != null && currentTransformPanel.TransformableTarget == transformable))
-                {
-                    Selector.Instance.ClearHighlights();
-                    currentTransformPanel.DisableGizmo();
-                    Transformable.lastSelectedTransformable = null;
-                }
+                Selector.Instance.ClearHighlights();
+                transformPanel.DisableGizmo();
+                Transformable.lastSelectedTransformable = null;
+                transformPanel.gameObject.SetActive(false);
             }
         }
 
