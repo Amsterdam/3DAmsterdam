@@ -91,7 +91,6 @@ namespace Netherlands3D.Settings {
 			//Graphic options
 			PropertiesPanel.Instance.AddTitle("Grafisch");
             PropertiesPanel.Instance.AddLabel("Algemene instelling:");
-
 			//Fill our dropdown using the templates and their titles
 			List<string> profileNames = new List<string>();
 			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
@@ -106,6 +105,8 @@ namespace Netherlands3D.Settings {
 				ApplySettings();
 				OpenSettingsPanel(); //Simply force a reload of the settings panel to apply all new overrides
             }, profileNames[selectedTemplate]);
+
+			PropertiesPanel.Instance.AddSpacer(20);
 
             PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
 				settings.postProcessingEffects = toggle;

@@ -63,6 +63,8 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private GameObject seperatorLinePrefab;
         [SerializeField]
+        private GameObject spacerPrefab;
+        [SerializeField]
         private SelectionOutliner selectionOutlinerPrefab;
         [SerializeField]
         private NameAndURL urlPrefab;
@@ -117,6 +119,12 @@ namespace Netherlands3D.Interface.SidePanel
             transformPanel.gameObject.SetActive(false);
         }
 
+        private void SetDynamicFieldsTargetContainer(Transform targetContainer)
+        {
+            generatedFieldsRootContainer = targetContainer;
+            targetFieldsContainer = targetContainer;
+        }
+
         /// <summary>
         /// Open the object meta data panel, setting it as a target, to spawn dynamic fields in.
         /// </summary>
@@ -125,7 +133,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="spacing">Optional spacing for the vertical layout group</param>
         public void OpenObjectInformation(string title, bool clearOldfields = true, float spacing = 0.0f)
         {
-            generatedFieldsRootContainer = objectInformationTab.TabPanel.FieldsContainer;
+            SetDynamicFieldsTargetContainer(objectInformationTab.TabPanel.FieldsContainer);
             if (clearOldfields) ClearGeneratedFields();
 
             objectInformationTab.OpenTab();
@@ -138,10 +146,9 @@ namespace Netherlands3D.Interface.SidePanel
         /// </summary>
         public void OpenSettings()
         {
-            generatedFieldsRootContainer = settingsTab.TabPanel.FieldsContainer;
-            //Always reload settings
+            SetDynamicFieldsTargetContainer(settingsTab.TabPanel.FieldsContainer);
+            //Always reload settings, so clear fields first
             ClearGeneratedFields();
-
             settingsTab.OpenTab();
             OpenPanel();
         }
@@ -382,6 +389,10 @@ namespace Netherlands3D.Interface.SidePanel
         public void AddSeperatorLine()
         {
             Instantiate(seperatorLinePrefab, targetFieldsContainer);
+        }
+        public void AddSpacer(float height = 5.0f)
+        {
+            Instantiate(spacerPrefab, targetFieldsContainer).GetComponent<RectTransform>().sizeDelta = new Vector2(100, height);
         }
         public void AddLink(string urlText, string urlPath)
         {
