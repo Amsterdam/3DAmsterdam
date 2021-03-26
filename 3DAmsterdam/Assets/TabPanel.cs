@@ -7,7 +7,11 @@ namespace Netherlands3D.Interface
 {
     public class TabPanel : MonoBehaviour
     {
-        public void Open(bool open = true)
+        [SerializeField]
+        private Transform fieldsContainer;
+		public Transform FieldsContainer { get => fieldsContainer; }
+
+		public void Open(bool open = true)
         {
             this.gameObject.SetActive(open);
 		}

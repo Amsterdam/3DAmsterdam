@@ -13,6 +13,7 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private TabPanel tabPanel;
+		public TabPanel TabPanel { get => tabPanel; }
 
 		/// <summary>
 		/// Method to use as dynamic bool in the editor (nice for toggles)
@@ -21,7 +22,7 @@ namespace Netherlands3D.Interface
 		public void OpenTab(bool open = true)
         {
             GetComponent<Toggle>().isOn = open;
-            tabPanel.Open(open);
+            TabPanel.Open(open);
             if (open)
             {
                 PropertiesPanel.Instance.OpenPanel(tabPaneTitle);

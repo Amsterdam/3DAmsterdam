@@ -24,6 +24,8 @@ namespace Netherlands3D.Interface.SidePanel
         private Tab objectInformationTab;
         [SerializeField]
         private Tab annotationsTab;
+        [SerializeField]
+        private Tab settingsTab;
 
         [Header("Animation")]
         [SerializeField]
@@ -35,7 +37,6 @@ namespace Netherlands3D.Interface.SidePanel
 
         [SerializeField]
         private Transform generatedFieldsRootContainer;
-
         private Transform targetFieldsContainer;
 
         [SerializeField]
@@ -116,22 +117,49 @@ namespace Netherlands3D.Interface.SidePanel
             transformPanel.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Open the object meta data panel, setting it as a target, to spawn dynamic fields in.
+        /// </summary>
+        /// <param name="title">Set to change the sidebar title to something custom</param>
+        /// <param name="clearOldfields">Clear current generated fields in the container</param>
+        /// <param name="spacing">Optional spacing for the vertical layout group</param>
         public void OpenObjectInformation(string title, bool clearOldfields = true, float spacing = 0.0f)
         {
-            if(clearOldfields) ClearGeneratedFields();
+            generatedFieldsRootContainer = objectInformationTab.TabPanel.FieldsContainer;
+            if (clearOldfields) ClearGeneratedFields();
 
             objectInformationTab.OpenTab();
-
             verticalLayoutGroup.spacing = spacing;
             OpenPanel();
         }
 
+        /// <summary>
+        /// Open the settings tab
+        /// </summary>
+        public void OpenSettings()
+        {
+            generatedFieldsRootContainer = settingsTab.TabPanel.FieldsContainer;
+            //Always reload settings
+            ClearGeneratedFields();
+
+            settingsTab.OpenTab();
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the annotations tab
+        /// </summary>
         public void OpenAnnotations()
         {
             annotationsTab.OpenTab(true);
             OpenPanel();
         }
 
+        /// <summary>
+        /// Open the custom objects tab
+        /// </summary>
+        /// <param name="setTargetTransformable">Optional target transformable to select by default</param>
+        /// <param name="gizmoTransformType">The type of transformation we are doing to show the right gizmo type</param>
         public void OpenCustomObjects(Transformable setTargetTransformable = null, int gizmoTransformType = -1)
         {
             customObjectsTab.OpenTab(true);
@@ -160,6 +188,10 @@ namespace Netherlands3D.Interface.SidePanel
             }
         }
 
+        /// <summary>
+        /// Slide the panel open (if it is closed)
+        /// </summary>
+        /// <param name="title">Title to show on top of the panel</param>
         public void OpenPanel(string title = "")
         {
             if (title != "")
