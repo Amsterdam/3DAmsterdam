@@ -30,7 +30,6 @@ namespace Netherlands3D.Interface.Search
 		private SearchResults searchResultsList;
 
 		private const string REPLACEMENT_STRING = "{SEARCHTERM}";
-		private const string locationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
 
 		private SearchData searchData;
 
@@ -89,7 +88,7 @@ namespace Netherlands3D.Interface.Search
 		IEnumerator FindSearchSuggestions(string searchTerm)
 		{
 			string urlEncodedSearchTerm = UnityWebRequest.EscapeURL(searchTerm);
-			string url = locationSuggestionUrl.Replace(REPLACEMENT_STRING, urlEncodedSearchTerm);
+            string url = Config.activeConfiguration.LocationSuggestionUrl.Replace(REPLACEMENT_STRING, urlEncodedSearchTerm);
 
 			using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
 			{

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using ConvertCoordinates;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ namespace Netherlands3D
         }
 
         [Header("Coordinates")]
+
+        public Vector2RD RelativeCenterRD;
+
         public float zeroGroundLevelY = 43.0f;
 
         [Header("Minimap Tiled Web Map")]
@@ -37,6 +41,8 @@ namespace Netherlands3D
 
         [Header("External URLs")]
         public string downloadsPage = "https://3d.amsterdam.nl/web/downloads/index.html";
+        public string LocationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
+        public string LookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
 
         [Header("Graphics")]
         public Sprite logo;
