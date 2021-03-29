@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Interface.SidePanel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,25 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private TabPanel tabPanel;
 		public TabPanel TabPanel { get => tabPanel; }
+
+        private Toggle toggle;
+
+        [SerializeField]
+        private GameObject[] toggleOjects;
+
+		private void Awake()
+		{
+            toggle = GetComponent<Toggle>();
+            toggle.onValueChanged.AddListener(delegate { ToggleChanged(); });
+        }
+
+		private void ToggleChanged()
+		{
+            foreach(GameObject gameObject in toggleOjects)
+            {
+                gameObject.SetActive(toggle.isOn);
+			}
+		}
 
 		/// <summary>
 		/// Method to use as dynamic bool in the editor (nice for toggles)

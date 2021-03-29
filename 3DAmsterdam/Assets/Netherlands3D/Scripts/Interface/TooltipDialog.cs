@@ -53,12 +53,12 @@ namespace Netherlands3D.Interface
             rectTransform.position = Mouse.current.position.ReadValue();
             
             //Swap pivot based on place in screen (to try to stay in the screen horizontally)
-            if(!pivotRight && rectTransform.position.x > Screen.width/2)
+            if(!pivotRight && rectTransform.position.x > Screen.width * 0.9f)
             {
                 pivotRight = true;
                 rectTransform.pivot = Vector2.right;
             }
-            else if(pivotRight && rectTransform.position.x <= Screen.width / 2)
+            else if(pivotRight && rectTransform.position.x <= Screen.width * 0.9f)
             {
                 pivotRight = false;
                 rectTransform.pivot = Vector2.zero;

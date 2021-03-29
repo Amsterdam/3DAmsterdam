@@ -2,13 +2,13 @@
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.Interface.SidePanel;
 
 namespace Netherlands3D.Cameras
 {
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
 		[SerializeField]
-		
 		private AssetbundleMeshLayer terrainContainerLayer;
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
@@ -57,7 +57,7 @@ namespace Netherlands3D.Cameras
 		public void EnableMenus()
 		{
 			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
-			interfaceLayers.SetActive(true);
+			PropertiesPanel.Instance.gameObject.SetActive(true);
 			mainMenu.SetActive(true);
 			hideMenuButton.gameObject.SetActive(true);
 		}
@@ -65,7 +65,7 @@ namespace Netherlands3D.Cameras
 		public void DisableMenus()
 		{
 			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
-			interfaceLayers.SetActive(false);
+			PropertiesPanel.Instance.gameObject.SetActive(false);
 			mainMenu.SetActive(false);
 			hideMenuButton.gameObject.SetActive(false);
 		}
