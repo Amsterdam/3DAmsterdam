@@ -7,6 +7,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+using Netherlands3D;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -105,7 +106,7 @@ namespace Amsterdam3D.Sewerage
 		/// <param name="boxMaximum">The RD coordinates maximum point of a bounding box area</param>
 		public void Generate(Vector3RD boxMinimum = default, Vector3RD boxMaximum  = default)
         {
-            napOffset = (float)(0 - CoordConvert.referenceRD.z);
+            napOffset = Config.activeConfiguration.zeroGroundLevelY;
             boundingBoxMinimum = boxMinimum;
             boundingBoxMaximum = boxMaximum;
 

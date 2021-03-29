@@ -12,7 +12,6 @@ namespace Netherlands3D.Interface.Search
     public class SearchResult : ChangePointerStyleHandler
     {
         private const string REPLACEMENT_STRING = "{ID}";
-        private const string lookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
 
         private SearchResults parentList;
         public SearchResults ParentList { get => parentList; set => parentList = value; }
@@ -50,7 +49,7 @@ namespace Netherlands3D.Interface.Search
 
         IEnumerator FindLocationByIDLookup()
         {
-            string uri = lookupUrl.Replace(REPLACEMENT_STRING, id);
+            string uri = Config.activeConfiguration.LookupUrl.Replace(REPLACEMENT_STRING, id);
             using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
             {
                 yield return webRequest.SendWebRequest();
