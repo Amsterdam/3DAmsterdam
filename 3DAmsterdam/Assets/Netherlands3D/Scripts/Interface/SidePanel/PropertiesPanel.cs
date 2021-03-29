@@ -18,7 +18,8 @@ namespace Netherlands3D.Interface.SidePanel
         [Header("Tabs")]
         [SerializeField]
         private Tab startingActiveTab;
-        [SerializeField]
+
+		[SerializeField]
         private Tab customObjectsTab;
         [SerializeField]
         private Tab objectInformationTab;
@@ -56,6 +57,8 @@ namespace Netherlands3D.Interface.SidePanel
         private GameObject groupPrefab;
         [SerializeField]
         private GameObject titlePrefab;
+        [SerializeField]
+        private GameObject loadingSpinnerPrefab;
         [SerializeField]
         private GameObject labelPrefab;
         [SerializeField]
@@ -380,6 +383,12 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(labelPrefab, targetFieldsContainer).GetComponent<Text>().text = labelText;
         }
+
+        public void AddLoadingSpinner()
+        {
+            Instantiate(loadingSpinnerPrefab, targetFieldsContainer);
+        }
+
         public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
             DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, targetFieldsContainer);
