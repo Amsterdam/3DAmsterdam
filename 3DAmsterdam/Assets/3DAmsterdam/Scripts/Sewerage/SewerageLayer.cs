@@ -8,6 +8,7 @@ using System;
 using Netherlands3D.Underground;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Utilities;
+using Netherlands3D;
 
 namespace Amsterdam3D.Sewerage
 {
@@ -79,7 +80,7 @@ namespace Amsterdam3D.Sewerage
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
 			
-			napOffset = (float)(0 - CoordConvert.referenceRD.z);
+			napOffset = Config.activeConfiguration.zeroGroundLevelY;
 			Vector3RD boundingBoxMinimum = new Vector3RD(tileChange.X,tileChange.Y,napOffset);
 			Vector3RD boundingBoxMaximum = new Vector3RD(tileChange.X+tileSize, tileChange.Y+tileSize, napOffset); ;
 			
@@ -111,12 +112,12 @@ namespace Amsterdam3D.Sewerage
                     double diameter = customJsonHandler.getPropertyFloatValue("diameter");
                     double bobBeginPunt = customJsonHandler.getPropertyFloatValue("bob_beginpunt");
                     List<double> coordinates = customJsonHandler.getGeometryLineString();
-                    endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[0], coordinates[1], bobBeginPunt - CoordConvert.ReferenceRD.z));
+                    endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[0], coordinates[1], bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY));
                     for (int i = 2; i < coordinates.Count; i += 2)
                     {
                         startpoint = endpoint;
                         double bobEindPunt = customJsonHandler.getPropertyFloatValue("bob_eindpunt");
-                        endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[i], coordinates[(i + 1)], bobEindPunt - CoordConvert.ReferenceRD.z));
+                        endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[i], coordinates[(i + 1)], bobEindPunt + Config.activeConfiguration.zeroGroundLevelY));
 
                         sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
                     }
@@ -195,7 +196,7 @@ namespace Amsterdam3D.Sewerage
 					point2D = customJsonHandler.getGeometryPoint2DDouble();
 
 					double putdekselhoogte = customJsonHandler.getPropertyFloatValue("putdekselhoogte");
-					point = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(point2D[0], point2D[1], putdekselhoogte - CoordConvert.ReferenceRD.z));
+					point = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(point2D[0], point2D[1], putdekselhoogte + Config.activeConfiguration.zeroGroundLevelY));
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
 			}

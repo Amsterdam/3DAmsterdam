@@ -5,6 +5,7 @@ using System.IO;
 
 
 using UnityEngine;
+using Netherlands3D;
 /// <summary>
 /// Convert coordinates between Unity, WGS84 and RD(EPSG7415)
 /// <!-- accuracy: WGS84 to RD  X <0.01m, Y <0.02m H <0.03m, tested in Amsterdam with PCNapTrans-->
@@ -12,6 +13,22 @@ using UnityEngine;
 /// </summary>
 namespace ConvertCoordinates
 {
+    /// <summary>
+    /// Vector2 width Double values to represent RD-coordinates (X,Y)
+    /// </summary>
+    [System.Serializable]
+    public struct Vector2RD
+    {
+        public double x;
+        public double y;
+        
+        public Vector2RD(double X, double Y)
+        {
+            x = X;
+            y = Y;
+        }
+    }
+
     /// <summary>
     /// Vector3 width Double values to represent RD-coordinates (X,Y,H)
     /// </summary>
@@ -27,6 +44,7 @@ namespace ConvertCoordinates
             z = Z;
         }
     }
+
     /// <summary>
     /// Vector3 width Double values to represent WGS84-coordinates (Lon,Lat,H)
     /// </summary>
@@ -45,70 +63,41 @@ namespace ConvertCoordinates
 
     public static class CoordConvert
     {
-        //referenceWGS84 and referenceRD are connected, both represent the coordinate in their coordinatesystem corresponding to UnityCoordinates 0,0
-        //referenceWGS84 is used for conversions to and from Unity-coordinates
-        //referenceRD can be used to check de desired origin, and to set referenceWGS84
-        public static Vector3WGS referenceWGS84 = new Vector3WGS(4.892504, 52.373043,0);
-        public static Vector3RD referenceRD = new Vector3RD(121311.223, 487355.782,-42.962);
-
         //scalefactors for converting WGS84 to Unity
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude
         private static double unitsPerDegreeY = 111000; //approximation of distance between lattitudinal degrees in meters
-
 
         private static byte[] RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
         private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
         private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
 
         private static Vector3RD output = new Vector3RD();
+
+        private static Vector3WGS? referenceWGS84  = null;
+
         /// <summary>
-        /// set ReferenceWGS84 to given value, 
-        /// sets referenceRD to corresponding value, 
-        /// sets unitsperdegreeX based on unitsperdegreeY and referenceWGS.y
+        /// set ReferenceWGS84 converted from RelativeCenterRD,
         /// </summary>
         public static Vector3WGS ReferenceWGS84
         {
             get
             {
-                return referenceWGS84;
-            }
-            set
-            {
-                //set value
-                referenceWGS84 = value;
-                // update unitsPerDegreeX
-                unitsPerDegreeX = Math.Cos(referenceWGS84.lat * Math.PI / 180) * unitsPerDegreeY;
-                // update referenceRD
-                Vector3RD refRD = WGS84toRD(referenceWGS84.lon, referenceWGS84.lat);
-                // get elevation 
-                double hoogte = RDCorrection(referenceWGS84.lon,referenceWGS84.lat,"Z",RDCorrectionZ);
-                referenceRD = new Vector3RD(refRD.x,refRD.y,-hoogte);
-                
-            }
-        }
-       
-        public static Vector3RD ReferenceRD
-        {
-            get
-            {
-                return referenceRD;
-            }
-            set
-            {
-                //set value
-                referenceRD = value;
-                //update referenceWGS84
-                Vector3WGS refWGS = RDtoWGS84(referenceRD.x, referenceRD.y);
-                double hoogte = RDCorrection(refWGS.lon, refWGS.lat, "Z", RDCorrectionZ);
-                referenceWGS84 = new Vector3WGS(refWGS.lon, refWGS.lat,hoogte);
-                //update unitsperdegreeX
-                unitsPerDegreeX = Math.Cos(referenceWGS84.lon * Math.PI / 180) * unitsPerDegreeY;
+                if(referenceWGS84 == null)
+                {
+                    referenceWGS84 = RDtoWGS84(Config.activeConfiguration.RelativeCenterRD.x, Config.activeConfiguration.RelativeCenterRD.y);                    
+                    referenceWGS84 = new Vector3WGS()
+                    {
+                        lon = referenceWGS84.Value.lon,
+                        lat = referenceWGS84.Value.lat,
+                        h = (float)RDCorrection(referenceWGS84.Value.lon, referenceWGS84.Value.lat, "Z", RDCorrectionZ)
+                    };
+                }
+                return referenceWGS84.Value;
             }
         }
 
         /// <summary>
         /// get: return value
-        /// set: set value, recalcalute UnitsPerDegreeY
         /// </summary>
         public static double UnitsPerDegreeX
         {
@@ -116,30 +105,15 @@ namespace ConvertCoordinates
             {
                 return unitsPerDegreeX;
             }
-            set
-            {
-                //set value
-                unitsPerDegreeX = value;
-                //update unitsPerDegreeY
-                unitsPerDegreeY = unitsPerDegreeX / Math.Cos(referenceWGS84.lon * Math.PI / 180);
-            }
         }
         /// <summary>
         /// get: return value
-        /// set: set value, recalcalute UnitsPerDegreeX
         /// </summary>
         public static double UnitsPerDegreeY
         {
             get
             {
                 return unitsPerDegreeY;
-            }
-            set
-            {
-                //set value
-                unitsPerDegreeY = value;
-                //update unitsPerDegreeX
-                unitsPerDegreeX = Math.Cos(referenceWGS84.lon * Math.PI / 180) * unitsPerDegreeY;
             }
         }
 
@@ -152,7 +126,7 @@ namespace ConvertCoordinates
         {
             Vector3 output = new Vector3();
             output = WGS84toUnity(coordinaat.x, coordinaat.y);
-            output.y = (float)(0-referenceWGS84.h);
+            output.y = (float)-ReferenceWGS84.h;
             return output;
         }
         /// <summary>
@@ -164,7 +138,7 @@ namespace ConvertCoordinates
         {
             Vector3 output = new Vector3();
             output = WGS84toUnity(coordinaat.x, coordinaat.y);
-            output.y = (float)(coordinaat.y-referenceWGS84.h);
+            output.y = (float)(coordinaat.y-ReferenceWGS84.h);
             return output;
         }
         /// <summary>
@@ -176,7 +150,7 @@ namespace ConvertCoordinates
         {
             Vector3 output = new Vector3();
             output = WGS84toUnity(coordinaat.lon, coordinaat.lat);
-            output.y = (float)(coordinaat.h- referenceWGS84.h);
+            output.y = (float)(coordinaat.h- ReferenceWGS84.h);
             return output;
         }
         /// <summary>
@@ -194,9 +168,9 @@ namespace ConvertCoordinates
                 return output;
             }
 
-            output.y = (float)(0-referenceWGS84.h);
-            output.x = (float)((lon - referenceWGS84.lon) * unitsPerDegreeX);
-            output.z = (float)((lat - referenceWGS84.lat) * unitsPerDegreeY);
+            output.y = (float)-ReferenceWGS84.h;
+            output.x = (float)((lon - ReferenceWGS84.lon) * unitsPerDegreeX);
+            output.z = (float)((lat - ReferenceWGS84.lat) * unitsPerDegreeY);
             return output;
         }
 
@@ -225,7 +199,7 @@ namespace ConvertCoordinates
             //convert to unity
             output = RDtoUnity(coordinaat.x, coordinaat.y,coordinaat.z);
             //insert elevation
-            output.y = (float)(coordinaat.z-referenceRD.z);
+            output.y = (float)(coordinaat.z+ Config.activeConfiguration.zeroGroundLevelY);
             return output;
         }
         /// <summary>
@@ -260,7 +234,7 @@ namespace ConvertCoordinates
             //convert to Unity
             output = WGS84toUnity(wgs.lon, wgs.lat);
             double hoogte = RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
-            output.y = (float)(Z - referenceRD.z);
+            output.y = (float)(Z + Config.activeConfiguration.zeroGroundLevelY);
             return output;
         }
 
@@ -272,7 +246,7 @@ namespace ConvertCoordinates
         public static Vector3WGS UnitytoWGS84(Vector3 coordinaat)
         {
             Vector3WGS output = new Vector3WGS();
-            output.h = coordinaat.y - referenceWGS84.h; ;
+            output.h = coordinaat.y - ReferenceWGS84.h; ;
             output.lon = (float)((coordinaat.x / UnitsPerDegreeX) + ReferenceWGS84.lon);
             output.lat = (float)((coordinaat.z / UnitsPerDegreeY) + ReferenceWGS84.lat);
             return output;
@@ -287,7 +261,7 @@ namespace ConvertCoordinates
             Vector3WGS wgs = UnitytoWGS84(coordinaat);
             Vector3RD RD = WGS84toRD(wgs.lon, wgs.lat);
             RD.z = wgs.h - RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
-            RD.z = RD.z + referenceRD.z;
+            RD.z = RD.z - Config.activeConfiguration.zeroGroundLevelY;
             return RD;
         }
 

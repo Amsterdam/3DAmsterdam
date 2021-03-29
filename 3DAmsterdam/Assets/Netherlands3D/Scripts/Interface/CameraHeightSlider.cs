@@ -30,7 +30,7 @@ namespace Netherlands3D.Interface
 
         void LateUpdate()
         {
-            heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y + (float)CoordConvert.referenceRD.z);
+            heightInNAP = Mathf.Round(CameraModeChanger.Instance.ActiveCamera.transform.position.y - Config.activeConfiguration.zeroGroundLevelY);
             heightText.text = heightInNAP + textSuffix;
 
             slider.normalizedValue = CameraModeChanger.Instance.CurrentCameraControls.GetNormalizedCameraHeight();
