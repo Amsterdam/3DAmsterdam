@@ -139,6 +139,16 @@ namespace Netherlands3D.Interface.SidePanel
 
             //Display this panel
             gameObject.SetActive(true);
+
+            StartCoroutine(SortLayout());
+        }
+        private IEnumerator SortLayout()
+        {
+            //Give our parent layout group a juggle, so it respects our new size
+            VerticalLayoutGroup layoutGroup = transform.parent.GetComponent<VerticalLayoutGroup>();
+            layoutGroup.enabled = false;
+            yield return new WaitForEndOfFrame();
+            layoutGroup.enabled = true;
         }
 
         /// <summary>
