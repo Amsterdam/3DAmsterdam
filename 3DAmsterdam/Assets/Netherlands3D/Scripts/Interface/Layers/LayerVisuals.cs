@@ -97,6 +97,9 @@ namespace Netherlands3D.Interface.Layers
 			//Reorder in layout (so these options item appears under selected interface layer)
 			var layers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
 
+			//Move this panel to the layer
+			this.transform.SetParent(interfaceLayer.transform.parent);
+
 			//Move this panel underneath the selected layer
 			int targetInterfaceLayerIndex = targetInterfaceLayer.transform.GetSiblingIndex();
 			containerRectTransform.SetSiblingIndex(targetInterfaceLayerIndex + 1);
