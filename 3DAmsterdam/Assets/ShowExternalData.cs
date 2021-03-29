@@ -7,6 +7,9 @@ namespace Netherlands3D.Interface.SidePanel
 {
     public class ShowExternalData : MonoBehaviour
     {
+        [SerializeField]
+        private ExternalData parsedJson;
+
         public void Load(string metaDataPath = "metadata.xml")
         {
             PropertiesPanel.Instance.OpenObjectInformation("Laag informatie");
@@ -16,23 +19,24 @@ namespace Netherlands3D.Interface.SidePanel
 
         private IEnumerator GetText(string metaDataPath)
         {
-            print("Load external data: " + Config.activeConfiguration.webserverRootPath + "/" + metaDataPath);
-            UnityWebRequest www = UnityWebRequest.Get(Config.activeConfiguration.webserverRootPath + "/" + metaDataPath);
+            print("Load external data: " + Config.activeConfiguration.webserverRootPath + metaDataPath);
+            UnityWebRequest www = UnityWebRequest.Get(Config.activeConfiguration.webserverRootPath + metaDataPath);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log(www.error);
+                PropertiesPanel.Instance.ClearGeneratedFields();
+                PropertiesPanel.Instance.AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");
             }
             else
 			{
 				PropertiesPanel.Instance.ClearGeneratedFields();
-				var parsedJson = JsonUtility.FromJson<ExternalData>(www.downloadHandler.text);
-				DrawFields(parsedJson);
+				parsedJson = JsonUtility.FromJson<ExternalData>(www.downloadHandler.text);
+				DrawFields();
 			}
 		}
 
-		private static void DrawFields(ExternalData parsedJson)
+		private void DrawFields()
 		{
 			foreach (var field in parsedJson.fields)
 			{
