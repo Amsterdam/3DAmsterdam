@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 8024371915375094396}
   - component: {fileID: 8228677906642650527}
   - component: {fileID: 7275359156166519847}
+  - component: {fileID: 700167125502517093}
   m_Layer: 5
   m_Name: Tab
   m_TagString: Untagged
@@ -239,6 +240,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tabPaneTitle: 
   tabPanel: {fileID: 0}
+--- !u!114 &700167125502517093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5183125865731708666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &7870885572510958922
 GameObject:
   m_ObjectHideFlags: 0
