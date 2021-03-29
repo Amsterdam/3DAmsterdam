@@ -48,7 +48,11 @@ namespace Netherlands3D.Interface.Layers
 
                 //If this is a Transformable, select it
                 var transformable = LinkedObject.GetComponent<Transformable>();
-                if (transformable) transformable.Select();
+                if (transformable)
+                {
+                    transformable.Select();
+                    ToggleLayerOpened();
+                }
             }
         }
 
