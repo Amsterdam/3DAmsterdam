@@ -50,13 +50,15 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Text titleText;
 
-        [Header("Generated field prefabs:")]
+		[Header("Generated field prefabs:")]
         [SerializeField]
         private GameObject thumbnailPrefab;
         [SerializeField]
         private GameObject groupPrefab;
         [SerializeField]
         private GameObject titlePrefab;
+        [SerializeField]
+        private GameObject textfieldPrefab;
         [SerializeField]
         private GameObject loadingSpinnerPrefab;
         [SerializeField]
@@ -378,6 +380,10 @@ namespace Netherlands3D.Interface.SidePanel
         public void AddTitle(string titleText)
         {
             Instantiate(titlePrefab, targetFieldsContainer).GetComponent<Text>().text = titleText;
+        }
+        public void AddTextfield(string content)
+        {
+            Instantiate(textfieldPrefab, targetFieldsContainer).GetComponent<Text>().text = content;
         }
         public void AddLabel(string labelText)
         {
