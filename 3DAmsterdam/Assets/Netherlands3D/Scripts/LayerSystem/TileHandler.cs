@@ -73,7 +73,7 @@ namespace Netherlands3D.LayerSystem
 		/// Auto is the default, using distance from camera and LOD distances
 		/// </summary>
 		private LODCalculationMethod lodCalculationMethod = LODCalculationMethod.Auto;
-
+		private float maxDistanceMultiplier = 1.0f;
 
 		private Vector2Int tileKey;
 
@@ -202,8 +202,6 @@ namespace Netherlands3D.LayerSystem
 			
 			foreach (int tileSize in tileSizes)
 			{
-				
-				
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
@@ -337,17 +335,22 @@ namespace Netherlands3D.LayerSystem
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
-				if(lodCalculationMethod == LODCalculationMethod.Lod1)
+				//Are we within distance
+				if (dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
 				{
-					return 1;
-				}
-				else if (lodCalculationMethod == LODCalculationMethod.Lod2 && layer.Datasets.Count > 1)
-				{
-					return 2;
-				}
-				else if (lodCalculationMethod == LODCalculationMethod.Auto && dataSet.maximumDistanceSquared > (tiledistance.z))
-				{
-					lod = dataSet.lod;
+					if (lodCalculationMethod == LODCalculationMethod.Lod1)
+					{
+						return 0;
+					}
+					else if (lodCalculationMethod == LODCalculationMethod.Lod2)
+					{
+						//Just use the dataset length for now (we currently have 3 LOD steps)
+						return layer.Datasets.Count - 1;
+					}
+					else
+					{
+						lod = dataSet.lod;
+					}
 				}
 			}
 			return lod;
@@ -356,6 +359,10 @@ namespace Netherlands3D.LayerSystem
 		public void SetLODMode(int method = 0)
 		{
 			lodCalculationMethod = (LODCalculationMethod)method;
+		}
+		public void SetMaxDistanceMultiplier(float multiplier)
+		{
+			maxDistanceMultiplier = multiplier;
 		}
 
 		private int CalculatePriorityScore(int layerPriority, int lod, int distanceSquared, TileAction action)
@@ -395,8 +402,6 @@ namespace Netherlands3D.LayerSystem
 		
 		private void RemoveOutOfViewTiles()
 		{
-			
-			
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
 				// create a list of tilekeys for the tiles that are within the viewrange
