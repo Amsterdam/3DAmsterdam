@@ -275,10 +275,11 @@ namespace Netherlands3D.Interface
 				toggleArray[3] = action;
 			});
 			toggleArray[3] = true;
-			PropertiesPanel.Instance.AddActionDropdown(new string[] { "Collada DAE (.dae)", "AutoCAD DXF (.dxf)" }, (action) =>
+			PropertiesPanel.Instance.AddActionDropdown(new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" }, (action) =>
 			{
 				gridExportFormat = action;
 			});
+			gridExportFormat = "AutoCAD DXF (.dxf)";
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
                 switch (gridExportFormat)

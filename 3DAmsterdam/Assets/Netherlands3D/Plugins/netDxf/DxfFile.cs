@@ -20,14 +20,14 @@ public class DxfFile
         doc.DrawingVariables.InsUnits = netDxf.Units.DrawingUnits.Meters;
     }
 
-    public void AddLayer(List<Vector3RD>triangleVertices,string layerName)
+    public void AddLayer(List<Vector3RD>triangleVertices,string layerName, AciColor layerColor)
     {
         // TODO 
         // check if there are 3 triangles or less, if that is the case a polyfaceMesh cannot be built, seperate triangles have to be added to the dxf.
 
 
         Laag = new Layer(layerName);
-        Laag.Color = netDxf.AciColor.LightGray;
+        Laag.Color = layerColor;
         doc.Layers.Add(Laag);
         
 
