@@ -29,44 +29,13 @@ public class DxfFile
         Laag = new Layer(layerName);
         Laag.Color = netDxf.AciColor.LightGray;
         doc.Layers.Add(Laag);
-        PolyfaceMesh pfm;
-        // create Mesh
-        List<PolyfaceMeshVertex> pfmVertices = new List<PolyfaceMeshVertex>();
-           pfmVertices.Capacity= triangleVertices.Count;
-        List<PolyfaceMeshFace> pfmFaces = new List<PolyfaceMeshFace>();
-        pfmFaces.Capacity = triangleVertices.Count/3;
-        int facecounter = 0;
-        Debug.Log(triangleVertices.Count);
-        int vertexIndex = 0;
+        
 
-        AddTriangles(triangleVertices, layerName);
-        //for (int i = 0; i < triangleVertices.Count; i+=3)
-        //{
-
-            //AddTriangles(new List<Vector3RD>() { triangleVertices[i], triangleVertices[i + 1], triangleVertices[i + 2] },layerName);
-
-            //vertexIndex = facecounter * 3;
-            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z));
-            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 1].x, triangleVertices[i + 1].y, triangleVertices[i + 1].z));
-            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 2].x, triangleVertices[i + 2].y, triangleVertices[i + 2].z));
-            //PolyfaceMeshFace pfmFace = new PolyfaceMeshFace(new List<short>() { (short)(vertexIndex), (short)(vertexIndex + 1), (short)(vertexIndex + 2) });
-            //pfmFaces.Add(pfmFace);
-            //facecounter++;
-            //if (facecounter % 10000 == 0)
-            //{
-            //    pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
-            //    pfm.Layer = Laag;
-            //    doc.AddEntity(pfm);
-            //    pfmVertices.Clear();
-            //    pfmFaces.Clear();
-            //    facecounter = 0;
-            //}
-        //}
-        //pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
-        //pfm.Layer = Laag;
-        //doc.AddEntity(pfm);
+        //AddTriangles(triangleVertices, layerName);
 
 
+        AddMesh(triangleVertices, layerName);
+        
 
 
 
@@ -93,7 +62,7 @@ public class DxfFile
 
     public void AddTriangles(List<Vector3RD> triangleVertices, string layerName)
     {
-        
+        Block block = new Block(layerName);
 
         for (int i = 0; i < triangleVertices.Count; i+=3)
         {
@@ -101,11 +70,58 @@ public class DxfFile
             netDxf.Vector3 vertex2 = new netDxf.Vector3(triangleVertices[i+1].x, triangleVertices[i+1].y, triangleVertices[i+1].z);
             netDxf.Vector3 vertex3 = new netDxf.Vector3(triangleVertices[i+2].x, triangleVertices[i+2].y, triangleVertices[i+2].z);
             Face3d face = new Face3d(vertex1, vertex2, vertex3);
-            doc.AddEntity(face);
-            face.Layer = Laag;
+            block.Entities.Add(face);
+            //doc.AddEntity(face);
+            //face.Layer = Laag;
+        }
+        Insert blokInsert = new Insert(block);
+        blokInsert.Layer = Laag;
+        doc.AddEntity(blokInsert);
+
+    }
+
+    private void AddMesh(List<Vector3RD> triangleVertices, string layerName)
+    {
+        PolyfaceMesh pfm;
+        // create Mesh
+        List<PolyfaceMeshVertex> pfmVertices = new List<PolyfaceMeshVertex>();
+        pfmVertices.Capacity = triangleVertices.Count;
+        List<PolyfaceMeshFace> pfmFaces = new List<PolyfaceMeshFace>();
+        pfmFaces.Capacity = triangleVertices.Count / 3;
+        int facecounter = 0;
+        Debug.Log(triangleVertices.Count);
+        int vertexIndex = 0;
+
+        for (int i = 0; i < triangleVertices.Count; i += 3)
+        {
+
+            
+            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z));
+            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 1].x, triangleVertices[i + 1].y, triangleVertices[i + 1].z));
+            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 2].x, triangleVertices[i + 2].y, triangleVertices[i + 2].z));
+            PolyfaceMeshFace pfmFace = new PolyfaceMeshFace(new List<short>() { (short)(vertexIndex+1), (short)(vertexIndex + 2), (short)(vertexIndex + 3) });
+            vertexIndex += 3;
+            pfmFaces.Add(pfmFace);
+            facecounter++;
+            if (facecounter % 10000 == 0)
+            {
+                pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
+                pfm.Layer = Laag;
+                doc.AddEntity(pfm);
+                pfmVertices.Clear();
+                pfmFaces.Clear();
+                facecounter = 0;
+                vertexIndex = 0;
+            }
+        }
+        if (pfmFaces.Count>0)
+        {
+            pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
+            pfm.Layer = Laag;
+            doc.AddEntity(pfm);
         }
         
-
+        
     }
 
     [DllImport("__Internal")]

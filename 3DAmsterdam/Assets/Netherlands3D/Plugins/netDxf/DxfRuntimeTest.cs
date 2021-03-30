@@ -48,6 +48,10 @@ public class DxfRuntimeTest : MonoBehaviour
         foreach (var layer in layerList)
         {
             List<GameObject> gameObjectsToClip = getTilesInLayer(layer, bottomLeftRD, topRightRD);
+            if (gameObjectsToClip.Count==0)
+            {
+                continue;
+            }
             foreach (var gameObject in gameObjectsToClip)
             {
                 meshClipper.SetGameObject(gameObject);
@@ -55,6 +59,7 @@ public class DxfRuntimeTest : MonoBehaviour
                 {
                     meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().materials[submeshID].name;
+                    
                     file.AddLayer(meshClipper.clippedVerticesRD, layerName);
                     yield return null;
                 }
@@ -67,8 +72,13 @@ public class DxfRuntimeTest : MonoBehaviour
 
     public List<GameObject> getTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
     {
+        if (layer == null)
+        {
+            return new List<GameObject>();
+        }
         List<GameObject> output = new List<GameObject>();
         double tilesize = layer.tileSize;
+        Debug.Log(tilesize);
         int tileX;
         int tileY;
         foreach (var tile in layer.tiles)
