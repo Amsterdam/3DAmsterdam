@@ -67,8 +67,12 @@ namespace Netherlands3D.LayerSystem
 		/// postion of camera in RDcoordinates rounded to nearest integer
 		/// </summary>
 		private Vector3Int cameraPosition;
-		
 
+		/// <summary>
+		/// The method to use to determine what LOD should be showed.
+		/// Auto is the default, using distance from camera and LOD distances
+		/// </summary>
+		private LODCalculationMethod lodCalculationMethod = LODCalculationMethod.Auto;
 
 
 		private Vector2Int tileKey;
@@ -93,7 +97,7 @@ namespace Netherlands3D.LayerSystem
 			//activeTileChangesView = activeTileChanges.Values.ToList();
 
 			viewRange = GetViewRange(cameraExtents);
-			cameraPosition = getCameraPosition(cameraExtents);
+			cameraPosition = GetCameraPosition(cameraExtents);
 			
             if (tileSizes.Count==0)
             {
@@ -155,7 +159,7 @@ namespace Netherlands3D.LayerSystem
 			return viewRange;
 		}
 
-		private Vector3Int getCameraPosition(ICameraExtents cameraExtents)
+		private Vector3Int GetCameraPosition(ICameraExtents cameraExtents)
         {
 			var cameraPositionRD = CoordConvert.UnitytoRD(cameraExtents.GetPosition());
 			Vector3Int cameraPosition = new Vector3Int();
@@ -190,13 +194,11 @@ namespace Netherlands3D.LayerSystem
 		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			tileDistances.Clear();
-			
-		
+				
 			int startX;
 			int startY;
 			int endX;
 			int endY;
-
 			
 			foreach (int tileSize in tileSizes)
 			{
@@ -217,8 +219,7 @@ namespace Netherlands3D.LayerSystem
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
 					}
-				}
-				
+				}		
 				
 				tileDistances.Add(tileList);
 			}
@@ -336,14 +337,27 @@ namespace Netherlands3D.LayerSystem
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
-				if (dataSet.maximumDistanceSquared > (tiledistance.z))
+				if(lodCalculationMethod == LODCalculationMethod.Lod1)
+				{
+					return 1;
+				}
+				else if (lodCalculationMethod == LODCalculationMethod.Lod2 && layer.Datasets.Count > 1)
+				{
+					return 2;
+				}
+				else if (lodCalculationMethod == LODCalculationMethod.Auto && dataSet.maximumDistanceSquared > (tiledistance.z))
 				{
 					lod = dataSet.lod;
 				}
 			}
 			return lod;
-
 		}
+
+		public void SetLODMode(int method = 0)
+		{
+			lodCalculationMethod = (LODCalculationMethod)method;
+		}
+
 		private int CalculatePriorityScore(int layerPriority, int lod, int distanceSquared, TileAction action)
 		{
 			float distanceFactor = ((5000f * 5000f) / distanceSquared);
@@ -475,5 +489,13 @@ namespace Netherlands3D.LayerSystem
 		Upgrade,
 		Downgrade,
 		Remove
+	}
+
+	[Serializable]
+	public enum LODCalculationMethod
+	{
+		Auto,
+		Lod1,
+		Lod2
 	}
 }
