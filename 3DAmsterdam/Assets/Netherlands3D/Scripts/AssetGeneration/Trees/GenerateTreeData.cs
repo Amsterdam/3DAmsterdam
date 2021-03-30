@@ -70,13 +70,16 @@ namespace Netherlands3D.AssetGeneration
 
 		public void Start()
 		{
-			//Calculate offset. ( Our viewer expects tiles with the origin in the center )
-			tileOffset = CoordConvert.referenceRD;
+            //Calculate offset. ( Our viewer expects tiles with the origin in the center )
+            tileOffset = new Vector3RD()
+            {
+                x = Config.activeConfiguration.RelativeCenterRD.x,
+                y = Config.activeConfiguration.RelativeCenterRD.y,
+                z = 0
+            };
 			tileOffset.x -= 500;
-			tileOffset.y -= 500;
-			tileOffset.z -= Config.activeConfiguration.zeroGroundLevelY;
+            tileOffset.y -= 500;
 			unityTileOffset = CoordConvert.RDtoUnity(tileOffset);
-
 			trees = new List<Tree>();
 			treeLines = new List<string>();
 			noPrefabFoundNames = new List<string>();
