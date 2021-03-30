@@ -340,7 +340,7 @@ namespace Netherlands3D.LayerSystem
 				{
 					if (lodCalculationMethod == LODCalculationMethod.Lod1)
 					{
-						return 0;
+						return (layer.Datasets.Count > 2) ? 1: 0;
 					}
 					else if (lodCalculationMethod == LODCalculationMethod.Lod2)
 					{
@@ -356,10 +356,19 @@ namespace Netherlands3D.LayerSystem
 			return lod;
 		}
 
+		/// <summary>
+		/// Switch the LOD calculaton mode
+		/// </summary>
+		/// <param name="method">0=Auto, 1=Lod1, 2=Lod2</param>
 		public void SetLODMode(int method = 0)
 		{
 			lodCalculationMethod = (LODCalculationMethod)method;
 		}
+
+		/// <summary>
+		/// Set the multiplier to use to limit tile distances
+		/// </summary>
+		/// <param name="multiplier">Multiplier value</param>
 		public void SetMaxDistanceMultiplier(float multiplier)
 		{
 			maxDistanceMultiplier = multiplier;
