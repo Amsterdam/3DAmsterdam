@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
   m_Name: Config3DAmsterdam_acceptance
   m_EditorClassIdentifier: 
+  RelativeCenterRD:
+    x: 121311
+    y: 487355
   zeroGroundLevelY: 43
   minimapServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
   MinimapTileNumberingType: 0
@@ -24,6 +27,8 @@ MonoBehaviour:
   sharingSceneSubdirectory: customScene.php?id=
   sharingViewUrl: https://acc.3d.amsterdam.nl/web/app/index.html?view=
   downloadsPage: https://acc.3d.amsterdam.nl/web/downloads/index.html
+  LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
+  LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   logo: {fileID: 21300000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
   secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
