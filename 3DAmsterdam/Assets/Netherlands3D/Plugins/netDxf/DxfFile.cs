@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 public class DxfFile 
 {
     private DxfDocument doc;
+    private Layer Laag;
 
     public void SetupDXF()
     {
@@ -24,38 +25,59 @@ public class DxfFile
         // TODO 
         // check if there are 3 triangles or less, if that is the case a polyfaceMesh cannot be built, seperate triangles have to be added to the dxf.
 
+
+        Laag = new Layer(layerName);
+        Laag.Color = netDxf.AciColor.LightGray;
+        doc.Layers.Add(Laag);
+        PolyfaceMesh pfm;
         // create Mesh
         List<PolyfaceMeshVertex> pfmVertices = new List<PolyfaceMeshVertex>();
            pfmVertices.Capacity= triangleVertices.Count;
         List<PolyfaceMeshFace> pfmFaces = new List<PolyfaceMeshFace>();
         pfmFaces.Capacity = triangleVertices.Count/3;
         int facecounter = 0;
-        for (int i = 0; i < triangleVertices.Count; i+=3)
-        {
-            
-            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i].x,triangleVertices[i].y,triangleVertices[i].z));
-            PolyfaceMeshFace pfmFace = new PolyfaceMeshFace(new List<short>() { (short)i, (short)(i + 1), (short)(i + 2) });
-            
-            pfmFaces.Add(pfmFace);
-            facecounter++;
-        }
-        PolyfaceMesh pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
+        Debug.Log(triangleVertices.Count);
+        int vertexIndex = 0;
+
+        AddTriangles(triangleVertices, layerName);
+        //for (int i = 0; i < triangleVertices.Count; i+=3)
+        //{
+
+            //AddTriangles(new List<Vector3RD>() { triangleVertices[i], triangleVertices[i + 1], triangleVertices[i + 2] },layerName);
+
+            //vertexIndex = facecounter * 3;
+            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z));
+            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 1].x, triangleVertices[i + 1].y, triangleVertices[i + 1].z));
+            //pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 2].x, triangleVertices[i + 2].y, triangleVertices[i + 2].z));
+            //PolyfaceMeshFace pfmFace = new PolyfaceMeshFace(new List<short>() { (short)(vertexIndex), (short)(vertexIndex + 1), (short)(vertexIndex + 2) });
+            //pfmFaces.Add(pfmFace);
+            //facecounter++;
+            //if (facecounter % 10000 == 0)
+            //{
+            //    pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
+            //    pfm.Layer = Laag;
+            //    doc.AddEntity(pfm);
+            //    pfmVertices.Clear();
+            //    pfmFaces.Clear();
+            //    facecounter = 0;
+            //}
+        //}
+        //pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
+        //pfm.Layer = Laag;
+        //doc.AddEntity(pfm);
 
 
-        //create Layer"
-        Layer Laag = new Layer(layerName);
-        pfm.Layer = Laag;
-        Laag.Color = netDxf.AciColor.LightGray;
-        
-        doc.AddEntity(pfm);
-        
-        
+
+
+
+
     }
     public void Save()
     {
 #if UNITY_EDITOR
 
-        doc.Save("D:/testDXF.dxf");
+        doc.Save("D:/testDXFBinary.dxf", true);
+        
         return;
 #endif
         MemoryStream stream = new MemoryStream();
@@ -71,13 +93,19 @@ public class DxfFile
 
     public void AddTriangles(List<Vector3RD> triangleVertices, string layerName)
     {
-        netDxf.Vector3 vertex1 = new netDxf.Vector3(triangleVertices[0].x, triangleVertices[0].y, triangleVertices[0].z);
-        netDxf.Vector3 vertex2 = new netDxf.Vector3(triangleVertices[1].x, triangleVertices[1].y, triangleVertices[1].z);
-        netDxf.Vector3 vertex3 = new netDxf.Vector3(triangleVertices[2].x, triangleVertices[2].y, triangleVertices[2].z);
-        Face3d face = new Face3d(vertex1, vertex2, vertex3);
-        Layer laag = new Layer(layerName);
-        face.Layer = laag;
-        doc.AddEntity(face);
+        
+
+        for (int i = 0; i < triangleVertices.Count; i+=3)
+        {
+            netDxf.Vector3 vertex1 = new netDxf.Vector3(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z);
+            netDxf.Vector3 vertex2 = new netDxf.Vector3(triangleVertices[i+1].x, triangleVertices[i+1].y, triangleVertices[i+1].z);
+            netDxf.Vector3 vertex3 = new netDxf.Vector3(triangleVertices[i+2].x, triangleVertices[i+2].y, triangleVertices[i+2].z);
+            Face3d face = new Face3d(vertex1, vertex2, vertex3);
+            doc.AddEntity(face);
+            face.Layer = Laag;
+        }
+        
+
     }
 
     [DllImport("__Internal")]
