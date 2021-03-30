@@ -94,7 +94,7 @@ namespace Netherlands3D.ObjectInteraction
 		public override void Deselect()
 		{
 			base.Deselect();
-			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.DeselectTransformable(this, true);
+			PropertiesPanel.Instance.DeselectTransformable(this, true);
 		}
 
 		/// <summary>
@@ -104,8 +104,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void ShowTransformProperties(int gizmoTransformType = -1)
 		{
 			lastSelectedTransformable = this;
-			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenPanel(gameObject.name);
-			Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.OpenTransformPanel(this, gizmoTransformType);
+			PropertiesPanel.Instance.OpenCustomObjects(this, gizmoTransformType);
 			UpdateBounds();
 		}
 
@@ -115,7 +114,7 @@ namespace Netherlands3D.ObjectInteraction
 		public void UpdateBounds()
 		{
 			int objectOriginalLayer = this.gameObject.layer;
-			this.gameObject.layer = Netherlands3D.Interface.SidePanel.PropertiesPanel.Instance.ThumbnailExclusiveLayer;
+			this.gameObject.layer = PropertiesPanel.Instance.ThumbnailExclusiveLayer;
 
 			//Render transformable using the bounds of all the nested renderers (allowing for complexer models with subrenderers)
 			Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
@@ -131,6 +130,12 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			this.transform.position = GetMousePointOnLayerMask() - offset;
 
+		}
+
+		private void OnDestroy()
+		{
+			//Hide transformpanel if we were destroyed
+			PropertiesPanel.Instance.DeselectTransformable(this);
 		}
 
 		/// <summary>

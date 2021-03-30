@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.ObjectInteraction;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,9 +18,6 @@ namespace Netherlands3D.Interface.Layers
         [SerializeField]
         private GameObject removeButton;
 
-        private float lastClickTime = 0;
-        private float doubleClickTime = 0.2f;
-
         private int maxNameLength = 24;
 
         private void Start()
@@ -31,27 +29,31 @@ namespace Netherlands3D.Interface.Layers
         public void OnPointerClick(PointerEventData eventData)
         {
             //Catch double click on layer, to move camera to the linked object
-            if (Time.time - lastClickTime < doubleClickTime)
+            if (layerType == LayerType.ANNOTATION)
             {
-                if (layerType == LayerType.ANNOTATION)
-                {
-                    Annotation annotation = LinkedObject.GetComponent<Annotation>();
-                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
-                    annotation.StartEditingText();
-                }
+                Annotation annotation = LinkedObject.GetComponent<Annotation>();
+                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(annotation.WorldPointerFollower.WorldPosition, new Quaternion());
+                annotation.StartEditingText();
+            }
 
-                else if (layerType == LayerType.CAMERA) 
+            else if (layerType == LayerType.CAMERA) 
+            {
+                WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
+                FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
+                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
+            }
+            else
+            {
+                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
+
+                //If this is a Transformable, select it
+                var transformable = LinkedObject.GetComponent<Transformable>();
+                if (transformable)
                 {
-                    WorldPointFollower follower = LinkedObject.GetComponent<WorldPointFollower>();
-                    FirstPersonLocation obj = LinkedObject.GetComponent<FirstPersonLocation>();
-                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(follower.WorldPosition, obj.savedRotation);
-                }
-                else
-                {
-                    CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
+                    transformable.Select();
+                    ToggleLayerOpened();
                 }
             }
-            lastClickTime = Time.time;
         }
 
         public void Create(string layerName, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
@@ -83,7 +85,6 @@ namespace Netherlands3D.Interface.Layers
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
             parentInterfaceLayers.LayerVisuals.Close();
-			SidePanel.PropertiesPanel.Instance.ClosePanel();
             Destroy(gameObject);
         }
 

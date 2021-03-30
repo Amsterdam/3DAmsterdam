@@ -11,9 +11,17 @@ namespace Netherlands3D
         [SerializeField]
         private ConfigurationFile configurationFile;
 
+        [Header("Optional acceptance config")]
+        [SerializeField]
+        private ConfigurationFile acceptanceConfigurationFile;
+
         void Awake()
-        {
+        {   
+            #if DEVELOPMENT
+            Config.activeConfiguration = (acceptanceConfigurationFile) ? acceptanceConfigurationFile : configurationFile;
+#elif PRODUCTION
             Config.activeConfiguration = configurationFile;
+#endif
         }
     }
 }

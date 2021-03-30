@@ -13,10 +13,31 @@ namespace Netherlands3D.Interface.SidePanel
     public class PropertiesPanel : MonoBehaviour
     {
         [SerializeField]
-        private GameObject objectPropertiesPanel;
+        private RectTransform movePanelRectTransform;
+
+        [Header("Tabs")]
+        [SerializeField]
+        private Tab startingActiveTab;
+
+		[SerializeField]
+        private Tab customObjectsTab;
+        [SerializeField]
+        private Tab objectInformationTab;
+        [SerializeField]
+        private Tab annotationsTab;
+        [SerializeField]
+        private Tab settingsTab;
+
+        [Header("Animation")]
+        [SerializeField]
+        private float animationSpeed = 5.0f;
+        [SerializeField]
+        private float collapsedShift = 300;
+        private Coroutine panelAnimation;
+        private bool open = true;
+
         [SerializeField]
         private Transform generatedFieldsRootContainer;
-
         private Transform targetFieldsContainer;
 
         [SerializeField]
@@ -29,7 +50,7 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Text titleText;
 
-        [Header("Generated field prefabs:")]
+		[Header("Generated field prefabs:")]
         [SerializeField]
         private GameObject thumbnailPrefab;
         [SerializeField]
@@ -37,11 +58,17 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private GameObject titlePrefab;
         [SerializeField]
+        private GameObject textfieldPrefab;
+        [SerializeField]
+        private GameObject loadingSpinnerPrefab;
+        [SerializeField]
         private GameObject labelPrefab;
         [SerializeField]
         private DataKeyAndValue dataFieldPrefab;
         [SerializeField]
         private GameObject seperatorLinePrefab;
+        [SerializeField]
+        private GameObject spacerPrefab;
         [SerializeField]
         private SelectionOutliner selectionOutlinerPrefab;
         [SerializeField]
@@ -56,10 +83,9 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
-        [SerializeField]
-        private TransformPanel transformPanelPrefab;
 
-        private TransformPanel currentTransformPanel;
+        [SerializeField]
+        private TransformPanel transformPanel;
 
         [Header("Thumbnail rendering")]
         [SerializeField]
@@ -91,47 +117,125 @@ namespace Netherlands3D.Interface.SidePanel
 			//Start with our main container. Groups may change this target.
 			targetFieldsContainer = generatedFieldsRootContainer;
 
-			//Properties panel is disabled at startup
-			objectPropertiesPanel.SetActive(false);
-
             //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
+
+            startingActiveTab.OpenTab(true);
+            transformPanel.gameObject.SetActive(false);
         }
 
+        private void SetDynamicFieldsTargetContainer(Transform targetContainer)
+        {
+            generatedFieldsRootContainer = targetContainer;
+            targetFieldsContainer = targetContainer;
+        }
+
+        /// <summary>
+        /// Open the object meta data panel, setting it as a target, to spawn dynamic fields in.
+        /// </summary>
+        /// <param name="title">Set to change the sidebar title to something custom</param>
+        /// <param name="clearOldfields">Clear current generated fields in the container</param>
+        /// <param name="spacing">Optional spacing for the vertical layout group</param>
+        public void OpenObjectInformation(string title, bool clearOldfields = true, float spacing = 0.0f)
+        {
+            SetDynamicFieldsTargetContainer(objectInformationTab.TabPanel.FieldsContainer);
+            if (clearOldfields) ClearGeneratedFields();
+
+            objectInformationTab.OpenTab();
+            verticalLayoutGroup.spacing = spacing;
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the settings tab
+        /// </summary>
+        public void OpenSettings()
+        {
+            SetDynamicFieldsTargetContainer(settingsTab.TabPanel.FieldsContainer);
+            //Always reload settings, so clear fields first
+            ClearGeneratedFields();
+            settingsTab.OpenTab();
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the annotations tab
+        /// </summary>
+        public void OpenAnnotations()
+        {
+            annotationsTab.OpenTab(true);
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the custom objects tab
+        /// </summary>
+        /// <param name="setTargetTransformable">Optional target transformable to select by default</param>
+        /// <param name="gizmoTransformType">The type of transformation we are doing to show the right gizmo type</param>
+        public void OpenCustomObjects(Transformable setTargetTransformable = null, int gizmoTransformType = -1)
+        {
+            customObjectsTab.OpenTab(true);
+
+            if (setTargetTransformable)
+                OpenTransformPanel(setTargetTransformable, gizmoTransformType);
+
+            OpenPanel();
+        }
         public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
         {
-            currentTransformPanel = Instantiate(transformPanelPrefab, targetFieldsContainer);
-            currentTransformPanel.SetTarget(transformable);
-
-			switch (gizmoTransformType)
-			{
+            transformPanel.SetTarget(transformable);
+            switch (gizmoTransformType)
+            {
                 case 0:
-                    currentTransformPanel.TranslationGizmo();
+                    transformPanel.TranslationGizmo();
                     break;
                 case 1:
-                    currentTransformPanel.RotationGizmo();
+                    transformPanel.RotationGizmo();
                     break;
                 case 2:
-                    currentTransformPanel.ScaleGizmo();
+                    transformPanel.ScaleGizmo();
                     break;
-				default:
-					break;
-			}
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Slide the panel open (if it is closed)
+        /// </summary>
+        /// <param name="title">Title to show on top of the panel</param>
+        public void OpenPanel(string title = "")
+        {
+            if (title != "")
+            {
+                titleText.text = title;
+            }
+            open = true;
+
+            if (panelAnimation != null) StopCoroutine(panelAnimation);
+            panelAnimation = StartCoroutine(Animate());
 		}
 
-        public void OpenPanel(string title, bool clearOldfields = true, float spacing = 0.0f)
-        {
-            if(clearOldfields) ClearGeneratedFields();
-
-            verticalLayoutGroup.spacing = spacing;
-            objectPropertiesPanel.SetActive(true);
-            titleText.text = title;
-        }
         public void ClosePanel()
         {
-            DeselectTransformable();
-            ClearGeneratedFields();
-            objectPropertiesPanel.SetActive(false);
+            open = false;
+            if (panelAnimation != null) StopCoroutine(panelAnimation);
+            panelAnimation = StartCoroutine(Animate());
+        }
+
+        private IEnumerator Animate()
+        {
+            while (open && movePanelRectTransform.anchoredPosition.x > 0)
+            {
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.zero, animationSpeed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+            while (!open && movePanelRectTransform.anchoredPosition.x < collapsedShift)
+            {
+                movePanelRectTransform.anchoredPosition = Vector3.Lerp(movePanelRectTransform.anchoredPosition, Vector3.right * collapsedShift, animationSpeed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+            yield return null;
         }
 
         /// <summary>
@@ -140,15 +244,12 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="transformable">Optional specific transformable reference. Only deselects if transformable matches.</param>
         public void DeselectTransformable(Transformable transformable = null, bool disableContainerPanel = false)
         {
-            if (currentTransformPanel)
+            if (transformable == null || (transformable != null && transformPanel.TransformableTarget == transformable))
             {
-                if (transformable == null || (transformable != null && currentTransformPanel.TransformableTarget == transformable))
-                {
-                    Selector.Instance.ClearHighlights();
-                    currentTransformPanel.DisableGizmo();
-                    Transformable.lastSelectedTransformable = null;
-                    if(disableContainerPanel) objectPropertiesPanel.SetActive(false);
-                }
+                Selector.Instance.ClearHighlights();
+                transformPanel.DisableGizmo();
+                Transformable.lastSelectedTransformable = null;
+                transformPanel.gameObject.SetActive(false);
             }
         }
 
@@ -280,10 +381,20 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(titlePrefab, targetFieldsContainer).GetComponent<Text>().text = titleText;
         }
+        public void AddTextfield(string content)
+        {
+            Instantiate(textfieldPrefab, targetFieldsContainer).GetComponent<Text>().text = content;
+        }
         public void AddLabel(string labelText)
         {
             Instantiate(labelPrefab, targetFieldsContainer).GetComponent<Text>().text = labelText;
         }
+
+        public void AddLoadingSpinner()
+        {
+            Instantiate(loadingSpinnerPrefab, targetFieldsContainer);
+        }
+
         public DataKeyAndValue AddDataField(string keyTitle, string valueText)
         {
             DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, targetFieldsContainer);
@@ -293,6 +404,10 @@ namespace Netherlands3D.Interface.SidePanel
         public void AddSeperatorLine()
         {
             Instantiate(seperatorLinePrefab, targetFieldsContainer);
+        }
+        public void AddSpacer(float height = 5.0f)
+        {
+            Instantiate(spacerPrefab, targetFieldsContainer).GetComponent<RectTransform>().sizeDelta = new Vector2(100, height);
         }
         public void AddLink(string urlText, string urlPath)
         {

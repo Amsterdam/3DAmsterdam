@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +20,8 @@ namespace Netherlands3D.Interface
 
         private float lastClickTime = 0;
         private const float doubleClickTime = 0.2f;
+
+        private Transform originalParent;
 
         private bool allowEdit = true;
         public bool AllowEdit {
@@ -42,7 +45,23 @@ namespace Netherlands3D.Interface
             }
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+		public override void Start()
+		{
+			MoveOnTopOfUI();
+			base.Start();
+		}
+
+        /// <summary>
+        /// We move this object on top of the UI so we can start dragging it from UI panels
+        /// </summary>
+		private void MoveOnTopOfUI()
+		{
+			originalParent = transform.parent;
+			transform.SetParent(originalParent.parent);
+			transform.SetAsLastSibling();
+		}
+
+		public void OnPointerClick(PointerEventData eventData)
         {
             if (waitingForClick) return;
 
@@ -58,6 +77,10 @@ namespace Netherlands3D.Interface
 			base.Placed();
             //After we placed the annotation, start editing it, so the user can immediatly change its content
             StartEditingText();
+            PropertiesPanel.Instance.OpenAnnotations();
+
+            //Move back into orignal ordered parent
+            transform.SetParent(originalParent);
         }
 
 		/// <summary>

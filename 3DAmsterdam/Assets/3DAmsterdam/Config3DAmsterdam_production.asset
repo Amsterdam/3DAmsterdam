@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
+  m_Name: Config3DAmsterdam_production
+  m_EditorClassIdentifier: 
+  RelativeCenterRD:
+    x: 121311
+    y: 487355
+  ZeroGroundLevelY: 43
+  minimapServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
+  MinimapTileNumberingType: 0
+  minimapBottomLeftRD_X: -285401.9
+  minimapBottomLeftRD_Y: 22598.08
+  MinimapZoom0RDSize: 880803.8
+  webserverRootPath: https://3d.amsterdam.nl/web/data/
+  buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/buildings/objectdata/
+  sharingBaseURL: https://3d.amsterdam.nl/
+  sharingSceneSubdirectory: customScene.php?id=
+  sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
+  downloadsPage: https://3d.amsterdam.nl/web/downloads/index.html
+  logo: {fileID: 21300000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
+  primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
+  secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
