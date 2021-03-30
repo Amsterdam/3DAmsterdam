@@ -12,10 +12,16 @@ public class DxfRuntimeTest : MonoBehaviour
         verts.Add(new Vector3RD(0, 0, 0));
         verts.Add(new Vector3RD(0, 1, 0));
         verts.Add(new Vector3RD(0, 0, 1));
+        verts.Add(new Vector3RD(0, 0, 0));
+        verts.Add(new Vector3RD(0, 1, 0));
+        verts.Add(new Vector3RD(0, 0, 1));
+        verts.Add(new Vector3RD(0, 0, 0));
+        verts.Add(new Vector3RD(0, 1, 0));
+        verts.Add(new Vector3RD(0, 0, 1));
 
         DxfFile file = new DxfFile();
         file.SetupDXF();
-        file.AddTriangles(verts);
+        file.AddLayer(verts,"testlaag");
         file.Save();
     }
 
