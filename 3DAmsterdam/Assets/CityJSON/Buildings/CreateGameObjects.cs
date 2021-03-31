@@ -14,7 +14,7 @@ namespace cityJSON
     {
         private Material Defaultmaterial;
         public bool useTextures = true;
-        public bool SingleMeshBuildings = false;
+        public bool singleMeshBuildings = false;
         public bool minimizeMeshes = true;
         public bool CreatePrefabs = false;
         private Vector3Double Origin;
@@ -30,13 +30,13 @@ namespace cityJSON
             CreateBuildingsSlowly(buildings, parent);
         }
 
-        private void CreateBuildingsSlowly(List<Building> buildings, GameObject parent)
+        public void CreateBuildingsSlowly(List<Building> buildings, GameObject parent)
         {
             if (minimizeMeshes == true){
                 CreateMultiBuildingMeshes(buildings, parent);
                 //yield return null;
             }
-            else if (SingleMeshBuildings)
+            else if (singleMeshBuildings)
             {
                 foreach (Building building in buildings)
                 {
