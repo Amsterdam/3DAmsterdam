@@ -40,22 +40,27 @@ public class ImportGeoJson : MonoBehaviour
             var xmax = double.Parse(fileNameParts[5]);
             var ymax = double.Parse(fileNameParts[6]);
 
-            CreateGameObjects(file.FullName, "");
+            CreateGameObjects(file.FullName, file.FullName);
             yield return new WaitForEndOfFrame();
         }
     }
 
-    private void CreateGameObjects(string filepath, string suffix = "")
+    private void CreateGameObjects(string filepath, string filename = "")
     {
-        CityModel Citymodel = new CityModel(filepath, suffix, true, false);
-        List<Building> buildings = Citymodel.LoadBuildings(2.2);
-        
+        CityModel citymodel = new CityModel(filepath, "", true, false);
+        List<Building> buildings = citymodel.LoadBuildings(2.2);
+
+        GameObject newContainer = new GameObject();
+        newContainer.name = filename;
+
         CreateGameObjects creator = new CreateGameObjects();
         creator.minimizeMeshes = true;
         creator.CreatePrefabs = false;
         creator.singleMeshBuildings = true;
 
-        creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, new GameObject(), false);
+        creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer, false);
+
+        newContainer.transform.position = CoordConvert.RDtoUnity(new Vector3((float)citymodel.TransformOffset.x, (float)citymodel.TransformOffset.y));
     }
 
     static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)

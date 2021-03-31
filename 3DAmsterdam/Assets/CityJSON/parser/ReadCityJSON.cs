@@ -35,6 +35,8 @@ namespace cityJSON
 		private Vector3Double transformScale;
 		private Vector3Double transformOffset;
 
+		public Vector3Double TransformOffset { get => transformOffset; }
+
 		public CityModel(string filepath, string filename, bool applyTransformScale = false, bool applyTransformOffset = false)
 		{
 			string jsonstring;
@@ -53,7 +55,7 @@ namespace cityJSON
 				cityjsonNode["transform"]["scale"][2]
 			) : new Vector3Double(1,1,1);
 
-			transformOffset = (applyTransformOffset) ? new Vector3Double(
+			TransformOffset = (applyTransformOffset) ? new Vector3Double(
 				   cityjsonNode["transform"]["translate"][0],
 				   cityjsonNode["transform"]["translate"][1],
 				   cityjsonNode["transform"]["translate"][2]
@@ -63,9 +65,9 @@ namespace cityJSON
 			foreach (JSONNode node in cityjsonNode["vertices"])
 			{
 				vertices.Add(new Vector3Double(
-					node[0].AsDouble * transformScale.x + transformOffset.x, 
-					node[1].AsDouble * transformScale.y + transformOffset.y, 
-					node[2].AsDouble * transformScale.z + transformOffset.z)
+					node[0].AsDouble * transformScale.x + TransformOffset.x, 
+					node[1].AsDouble * transformScale.y + TransformOffset.y, 
+					node[2].AsDouble * transformScale.z + TransformOffset.z)
 				);
 			}
 			//get textureVertices
@@ -445,7 +447,7 @@ namespace cityJSON
 		{
 			List<Semantics> result = new List<Semantics>();
 
-			foreach (KeyValuePair<string, JSONNode> kvp in (JSONObject)semanticsNode)
+			foreach (KeyValuePair<string, JSONNode> kvp in semanticsNode)
 			{
 				result.Add(new Semantics(kvp.Key, kvp.Value));
 			}
