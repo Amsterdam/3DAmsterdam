@@ -80,37 +80,20 @@ public class DxfRuntimeTest : MonoBehaviour
 
     private netDxf.AciColor getColor(Material material)
     {
-
-        return netDxf.AciColor.LightGray;
-
-        Color color;
-        try
-        {
-            color = material.color;
-            byte r = (byte)(material.color.r * 256);
-            byte g = (byte)(material.color.g * 256);
-            byte b = (byte)(material.color.b * 256);
-            return new netDxf.AciColor(r, g, b);
-
-        }
-        catch (System.Exception)
-        {
-
-        
-
+       Debug.Log(material.GetColor("_BaseColor").r);
 
         if (material.GetColor("_BaseColor") !=null)
         {
-            byte r = (byte)(material.GetColor("_BaseColor").r * 256);
-            byte g = (byte)(material.GetColor("_BaseColor").g * 256);
-            byte b = (byte)(material.GetColor("_BaseColor").b * 256);
+            byte r = (byte)(material.GetColor("_BaseColor").r * 255);
+            byte g = (byte)(material.GetColor("_BaseColor").g * 255);
+            byte b = (byte)(material.GetColor("_BaseColor").b * 255);
             return new netDxf.AciColor(r, g, b);
         }
         else
         {
-            
+            return netDxf.AciColor.LightGray;
         }
-        }
+        
     }
 
     public List<GameObject> getTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
