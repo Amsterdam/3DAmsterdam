@@ -12,14 +12,11 @@ namespace cityJSON
     public class CreateBuildingSurface : MonoBehaviour
     {
 
-        private List<Vector3> verts = new List<Vector3>();
+        private List<Vector3> verts;
         private Dictionary<string, List<int>> triangleLists;
         public GameObject CreateMesh(CityModel cityModel, Vector3RD origin)
         {
-
-
             GameObject container = new GameObject();
-
             //Terraindata terrainData = container.AddComponent<Terraindata>();
 
             verts = GetVerts(cityModel, origin);
