@@ -55,7 +55,7 @@ namespace cityJSON
 				cityjsonNode["transform"]["scale"][2]
 			) : new Vector3Double(1,1,1);
 
-			TransformOffset = (applyTransformOffset) ? new Vector3Double(
+			transformOffset = (applyTransformOffset) ? new Vector3Double(
 				   cityjsonNode["transform"]["translate"][0],
 				   cityjsonNode["transform"]["translate"][1],
 				   cityjsonNode["transform"]["translate"][2]
@@ -65,9 +65,9 @@ namespace cityJSON
 			foreach (JSONNode node in cityjsonNode["vertices"])
 			{
 				vertices.Add(new Vector3Double(
-					node[0].AsDouble * transformScale.x + TransformOffset.x, 
-					node[1].AsDouble * transformScale.y + TransformOffset.y, 
-					node[2].AsDouble * transformScale.z + TransformOffset.z)
+					node[0].AsDouble * transformScale.x + transformOffset.x, 
+					node[1].AsDouble * transformScale.y + transformOffset.y, 
+					node[2].AsDouble * transformScale.z + transformOffset.z)
 				);
 			}
 			//get textureVertices
