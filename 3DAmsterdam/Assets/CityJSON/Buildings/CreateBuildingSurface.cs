@@ -92,13 +92,13 @@ namespace cityJSON
             // string = objectID
             // List<int> = triangles
             string cityObjectType = "";
+
             foreach (JSONNode cityObject in cityModel.cityjsonNode["CityObjects"])
             {
                 cityObjectType = cityObject["type"];
 
                 // Skip non-Buildings
-                
-                string objectID = GetObjectID("bagpandid", cityObject);
+                string objectID = GetObjectID("identificatie", cityObject);
                 if (objectID == "")
                 {
                     objectID = GetObjectID("name", cityObject);
@@ -112,7 +112,6 @@ namespace cityJSON
                 {
                     triangleList.Add(objectID, ReadTriangles(cityObject));
                 }
-
             }
 
             return triangleList;
@@ -121,7 +120,7 @@ namespace cityJSON
         private string GetObjectID(string attributeName, JSONNode cityobject)
         {
             string objectid = "";
-            objectid = cityobject["attributes"][attributeName].Value;
+            objectid = cityobject["attributes"][attributeName].Value.Replace("NL.IMBAG.Pand.","");
 
             return objectid;
         }

@@ -14,7 +14,6 @@ public class ImportGeoJson : MonoBehaviour
     public int LOD = 1;
     public string objectType = "Buildings";
     public Material DefaultMaterial;
-    public Material windowMaterial;
 
     [SerializeField]
     private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
@@ -41,30 +40,26 @@ public class ImportGeoJson : MonoBehaviour
             var xmax = double.Parse(fileNameParts[5]);
             var ymax = double.Parse(fileNameParts[6]);
 
-            CreateTile(file.FullName, "Buildings");
+            CreateGameObjects(file.FullName, "");
             yield return new WaitForEndOfFrame();
         }
     }
 
-
-    static void CreateTile(string filepath, string suffix = "")
+    private void CreateGameObjects(string filepath, string suffix = "")
     {
-       // Debug.Log("started Building");
-        CityModel Citymodel = new CityModel(filepath, suffix);
-        List<Building> buildings = Citymodel.LoadBuildings(LOD);
+        CityModel Citymodel = new CityModel(filepath, suffix, true, false);
+        List<Building> buildings = Citymodel.LoadBuildings(2.2);
         
-        CreateBuildingSurface createBuildingSurface = new CreateBuildingSurface();
-        GameObject container;
-        container = createBuildingSurface.CreateMesh(Citymodel, new ConvertCoordinates.Vector3RD(X, Y, 0));
-        
-        //SavePrefab(container, X.ToString(), Y.ToString(), LOD, objectType);
-        buildings = null;
-        Citymodel = null;
+        CreateGameObjects creator = new CreateGameObjects();
+        creator.minimizeMeshes = true;
+        creator.CreatePrefabs = false;
+        creator.singleMeshBuildings = true;
+
+        creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, new GameObject(), false);
     }
 
     static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)
     {
-
         MeshFilter[] mfs = container.GetComponentsInChildren<MeshFilter>();
         string objectFolder = CreateAssetFolder("Assets", objectType);
         string LODfolder = CreateAssetFolder(objectFolder,"LOD"+LOD);
@@ -108,8 +103,7 @@ public class ImportGeoJson : MonoBehaviour
     }
 
     static string CreateAssetFolder(string folderpath, string foldername)
-    {
-        
+    {    
         if (!AssetDatabase.IsValidFolder(folderpath + "/" + foldername))
         {
             AssetDatabase.CreateFolder(folderpath, foldername);
