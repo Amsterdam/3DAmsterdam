@@ -18,7 +18,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private Vector2 boundingBoxTopRight;
 
         [SerializeField]
-        private double tileSize = 1000; //1x1 km
+        private int tileSize = 1000; //1x1 km
 
         [SerializeField]
         private double lodLevel = 2.2;
@@ -29,7 +29,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
 
-        private Dictionary<Vector2, List<GameObject>> groups;
+        private Dictionary<Vector2, GameObject> generatedTiles;
 
         [SerializeField]
         private bool generateBuildingsAsSeperateObjects = true;
@@ -61,7 +61,36 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         private void BakeObjectsIntoTiles()
         {
-			
+            var xTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.x - (float)boundingBoxBottomLeft.x) / (float)tileSize);
+            var yTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.y - (float)boundingBoxBottomLeft.y) / (float)tileSize);
+
+            //Walk the tilegrid
+            var tileRD = new Vector2Int(0,0);
+            for (int x = 0; x < xTiles; x++)
+			{
+                tileRD.x = (int)boundingBoxBottomLeft.x + (x * tileSize);
+                for (int y = 0; x < yTiles; y++)
+                {
+                    tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
+
+                    //Spawn our tile container
+                    GameObject newTileContainer = new GameObject();
+                    newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD);
+                    newTileContainer.name = "tile_" + tileRD.x + "-" + tileRD.y;
+                    generatedTiles.Add(tileRD, newTileContainer);
+                }
+            }
+        
+            //Lets use meshrenderer bounds to get the buildings centre for now, and put them in the right tile
+            MeshRenderer[] buildingMeshRenderers = GetComponentsInChildren<MeshRenderer>(true);
+			foreach(MeshRenderer building in buildingMeshRenderers)
+            {
+                Vector3RD childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
+                Vector2Int childGroupedTile = new Vector2Int(
+                    Mathf.FloorToInt((float)childRDCenter.x), 
+                    Mathf.FloorToInt((float)childRDCenter.y)
+                );
+            }
 		}
 
 		private void ImportFilesFromFolder(string folderName, bool threaded = false)
