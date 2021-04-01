@@ -221,7 +221,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //First create gameobjects for all the buildigns we parse
             for (int i = 0; i < fileInfo.Length; i++)
             {
-                if (i > maxFilesToProcess) continue;
+                if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
 
                 var file = fileInfo[i];
                 Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
