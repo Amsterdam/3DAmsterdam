@@ -92,8 +92,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
                     newTileContainer.name = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
                     generatedTiles.Add(tileRD, newTileContainer);
-
-                    print("Created " + tileRD.x + "-" + tileRD.y);
                 }
             }
         
