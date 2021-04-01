@@ -32,8 +32,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private string unityMeshAssetFolder = "Assets/3DAmsterdam/BuildingTileAssets/";
-        [SerializeField]
-        private string unityMeshAssetMetaDataFolder = "Assets/3DAmsterdam/BuildingTileAssets/objectdata/";
 
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
@@ -42,13 +40,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private Dictionary<Vector2, GameObject> generatedTiles;
 
         [SerializeField]
-        private bool generateBuildingsAsSeperateObjects = true;
-        [SerializeField]
         private bool renderInViewport = true;
         [SerializeField]
-        private bool addBuildingsToFileNamedParents = false;
-        [SerializeField]
-        private bool generateAssetBundles = false;
+        private bool generateAssetFiles = false;
         [SerializeField]
         private bool allowEmptyTileGeneration = false;
 
@@ -96,7 +90,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     //Spawn our tile container
                     GameObject newTileContainer = new GameObject();
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
-                    newTileContainer.name = "tile_" + tileRD.x + "-" + tileRD.y;
+                    newTileContainer.name = "tile_" + tileRD.x + "-" + tileRD.y + "_lod" + lodLevel;
                     generatedTiles.Add(tileRD, newTileContainer);
 
                     print("Created " + tileRD.x + "-" + tileRD.y);
@@ -135,7 +129,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
             //Construct the seperate metadata containing the seperation of the buildings
-            ObjectMappingClass buildingMetaData = new ObjectMappingClass();
+            ObjectMappingClass buildingMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
             buildingMetaData.ids = new List<string>();
             foreach (var meshFilter in meshFilters)
             {
@@ -189,7 +183,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
 
 #if UNITY_EDITOR
-            if (generateAssetBundles)
+            if (generateAssetFiles)
             {
                 AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
                 AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
@@ -243,16 +237,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             List<Building> buildings = citymodel.LoadBuildings(2.2);
 
             var targetParent = this.gameObject;
-            if (addBuildingsToFileNamedParents)
-            {
-                GameObject newContainer = new GameObject();
-                newContainer.name = filename;
-                targetParent = newContainer;
-            }
 
             CreateGameObjects creator = new CreateGameObjects();
-            creator.minimizeMeshes = !generateBuildingsAsSeperateObjects;
-            creator.singleMeshBuildings = generateBuildingsAsSeperateObjects;
+            creator.minimizeMeshes = false;
+            creator.singleMeshBuildings = true;
             creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
             creator.enableRenderers = renderInViewport;
 
