@@ -181,6 +181,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 newCombinedMesh.name = buildingTile.name;
                 newCombinedMesh.CombineMeshes(combine, true);
+                newCombinedMesh.RecalculateNormals();
+                newCombinedMesh.Optimize();
 
                 //And clean up memory
                 for (int i = 0; i < combine.Length; i++)

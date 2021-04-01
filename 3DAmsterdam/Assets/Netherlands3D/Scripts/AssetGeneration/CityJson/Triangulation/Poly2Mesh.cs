@@ -248,8 +248,8 @@ public static class Poly2Mesh
         msh.vertices = vertexList.ToArray();
         msh.triangles = indices;
         msh.uv = uv;
-        msh.RecalculateNormals();
-        msh.RecalculateBounds();
+        /*msh.RecalculateNormals();
+        msh.RecalculateBounds();*/
         //		Profiler.Exit(profileID);
         return msh;
     }

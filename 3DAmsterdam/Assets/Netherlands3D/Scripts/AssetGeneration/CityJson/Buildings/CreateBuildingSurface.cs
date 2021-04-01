@@ -56,7 +56,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             mesh.vertices = newVerts.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.uv = uvs.ToArray();
-            mesh.RecalculateNormals();
+            //mesh.RecalculateNormals();
             //mesh.Optimize();
             container.AddComponent<MeshFilter>().mesh = mesh;
             ObjectMapping objectMapping = container.AddComponent<ObjectMapping>();
