@@ -175,16 +175,20 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 newCombinedMesh.name = buildingTile.name;
                 newCombinedMesh.CombineMeshes(combine, true);
-            }
 
+                //And clean up memory
+                for (int i = 0; i < combine.Length; i++)
+                {
+                    Destroy(meshFilters[i].sharedMesh);
+                    Destroy(meshFilters[i].gameObject);
+                }
+            }
             buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
             buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
 
 #if UNITY_EDITOR
             if (generateAssetFiles)
             {
-                
-                
                 AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
                 AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
                 AssetDatabase.SaveAssets();
