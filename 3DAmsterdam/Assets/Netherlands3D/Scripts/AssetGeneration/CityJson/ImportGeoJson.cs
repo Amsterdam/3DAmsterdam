@@ -7,6 +7,7 @@ using UnityEngine;
 using ConvertCoordinates;
 using System.IO;
 using System.Threading;
+using Netherlands3D.LayerSystem;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
@@ -31,6 +32,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private string unityMeshAssetFolder = "Assets/3DAmsterdam/BuildingTileAssets/";
+        [SerializeField]
+        private string unityMeshAssetMetaDataFolder = "Assets/3DAmsterdam/BuildingTileAssets/objectdata/";
 
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
@@ -134,10 +137,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Construct the seperate metadata containing the seperation of the buildings
             ObjectMappingClass buildingMetaData = new ObjectMappingClass();
             buildingMetaData.ids = new List<string>();
-            foreach (var meshFilter in meshFilters) 
+            foreach (var meshFilter in meshFilters)
+            {
                 buildingMetaData.ids.Add(meshFilter.gameObject.name);
-            
-            
+            }
+            var textureSize = ObjectIDMapping.GetTextureSize(buildingMetaData.ids.Count);
+            List<Vector2> allObjectUVs = new List<Vector2>();
+            List<int> allVectorMapIndices = new List<int>();
+            buildingMetaData.uvs = allObjectUVs.ToArray();
 
             //Generate the combined tile mesh
             buildingTile.transform.position = Vector3.zero;
@@ -149,11 +156,24 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             for (int i = 0; i < combine.Length; i++)
             {
                 combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                Mesh buildingMesh = meshFilters[i].sharedMesh;
+                
+                //Create UVS
+                var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
+                for (int v = 0; v < buildingMesh.vertexCount; v++)
+                {
+                    //UV count should match vert count
+                    allObjectUVs.Add(buildingUV);
+                    //Create vector map reference for vert
+                    allVectorMapIndices.Add(i);
+                }
 
-                Mesh treeMesh = meshFilters[i].mesh;
-                combine[i].mesh = treeMesh;
+                combine[i].mesh = buildingMesh;
                 meshFilters[i].gameObject.SetActive(false);
             }
+            //Now add all the combined uvs to our metadata
+            buildingMetaData.uvs = allObjectUVs.ToArray();
+            buildingMetaData.vectorMap = allVectorMapIndices;
 
             Mesh newCombinedMesh = new Mesh();
             if (totalVertexCount > 65536) //In case we go over the 16bit ( 2^16 ) index count, increase the indexformat.
@@ -253,7 +273,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 CreateAsGameObjects(file.FullName, file.Name);
             }
         }
-
+        /*
         static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)
         {
             MeshFilter[] mfs = container.GetComponentsInChildren<MeshFilter>();
@@ -266,7 +286,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             ObjectMappingClass objectMappingClass = ScriptableObject.CreateInstance<ObjectMappingClass>();
             objectMappingClass.ids = container.GetComponent<ObjectMapping>().BagID;
-            objectMappingClass.triangleCount = container.GetComponent<ObjectMapping>().TriangleCount;
             Vector2[] meshUV = container.GetComponent<MeshFilter>().mesh.uv;
             objectMappingClass.vectorMap = container.GetComponent<ObjectMapping>().vectorIDs;
             List<Vector2> mappedUVs = new List<Vector2>();
@@ -275,9 +294,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 mappedUVs.Add(ObjectIDMapping.GetUV(i, TextureSize));
             }
-
-            objectMappingClass.mappedUVs = mappedUVs;
-            //objectMappingClass.TextureSize = TextureSize;
             objectMappingClass.uvs = meshUV;
 
             string typeName = objectType.ToLower();
@@ -306,7 +322,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 AssetDatabase.CreateFolder(folderpath, foldername);
             }
             return folderpath + "/" + foldername;
-        }
+        }*/
     }
 }
 #endif
