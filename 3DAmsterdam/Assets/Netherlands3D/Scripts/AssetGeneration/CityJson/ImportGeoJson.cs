@@ -149,7 +149,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
                 Mesh buildingMesh = meshFilters[i].sharedMesh;
-                
+                totalVertexCount += buildingMesh.vertexCount;
                 //Create UVS
                 var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
                 for (int v = 0; v < buildingMesh.vertexCount; v++)
