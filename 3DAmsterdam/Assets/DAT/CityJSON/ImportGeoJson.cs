@@ -12,7 +12,7 @@ using System.Threading;
 public class ImportGeoJson : MonoBehaviour
 {
     [SerializeField]
-    private float lodLevel = 2.2f;
+    private double lodLevel = 2.2;
 
     public string objectType = "Buildings";
     public Material DefaultMaterial;
@@ -24,6 +24,8 @@ public class ImportGeoJson : MonoBehaviour
 
     [SerializeField]
     private bool generateBuildingsAsSeperateObjects = true;
+    [SerializeField]
+    private bool renderInViewport = true;
 
     [Header("Threading")]
     [SerializeField]
@@ -34,7 +36,6 @@ public class ImportGeoJson : MonoBehaviour
 
     public void Start()
     {
-        runningThreads = new List<Thread>();
         ImportFilesFromFolder(geoJsonSourceFilesFolder, useThreading);
     }
 
@@ -54,6 +55,7 @@ public class ImportGeoJson : MonoBehaviour
 
         if (threaded)
         {
+            runningThreads = new List<Thread>();
             for (int i = 0; i < threads; i++)
             {
                 Thread thread = new Thread(() => ParseFiles(files, i));
@@ -77,7 +79,24 @@ public class ImportGeoJson : MonoBehaviour
             CreateAsGameObjects(file.FullName, file.Name);
             yield return new WaitForEndOfFrame();
         }
+    }
+    private GameObject CreateAsGameObjects(string filepath, string filename = "")
+    {
+        CityModel citymodel = new CityModel(filepath);
+        List<Building> buildings = citymodel.LoadBuildings(2.2);
 
+        GameObject newContainer = new GameObject();
+        newContainer.name = filename;
+
+        CreateGameObjects creator = new CreateGameObjects();
+        creator.minimizeMeshes = !generateBuildingsAsSeperateObjects;
+        creator.singleMeshBuildings = generateBuildingsAsSeperateObjects;
+        creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
+        creator.enableRenderers = renderInViewport;
+
+        creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer);
+
+        return newContainer;
     }
 
     private void ParseFiles(FileInfo[] fileInfo, int threadId = -1)
@@ -102,25 +121,6 @@ public class ImportGeoJson : MonoBehaviour
 
             CreateAsGameObjects(file.FullName, file.Name);
         }    
-    }
-
-    private GameObject CreateAsGameObjects(string filepath, string filename = "")
-    {
-        CityModel citymodel = new CityModel(filepath);
-        List<Building> buildings = citymodel.LoadBuildings(lodLevel);
-
-        GameObject newContainer = new GameObject();
-        newContainer.name = filename;
-
-        CreateGameObjects creator = new CreateGameObjects();
-        creator.minimizeMeshes = false;
-        creator.singleMeshBuildings = true;
-        creator.CreatePrefabs = false; //Do not auto create assets. We want to do this with our own method here
-        creator.enableRenderers = false;
-
-        creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer, false);
-
-        return newContainer;
     }
 
     static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)

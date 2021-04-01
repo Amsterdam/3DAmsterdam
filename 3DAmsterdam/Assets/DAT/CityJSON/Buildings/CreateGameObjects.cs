@@ -16,19 +16,18 @@ namespace cityJSON
 		public bool useTextures = true;
 		public bool singleMeshBuildings = false;
 		public bool minimizeMeshes = true;
-		public bool CreatePrefabs = false;
+		public bool createPrefabs = false;
 		public bool enableRenderers = false;
-
+		 
 		private Vector3Double Origin;
 		private Dictionary<string, Material> Materialmapping;
 		private bool wgsConvert;
-		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null, bool enableMeshRenderers = true)
+		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null)
 		{
 			Materialmapping = materialmapping;
 			wgsConvert = WGSConvert;
 			Defaultmaterial = DefaultMaterial;
 			Origin = origin;
-			enableRenderers = enableMeshRenderers;
 
 			CreateBuildingsSlowly(buildings, parent);
 		}
@@ -38,14 +37,12 @@ namespace cityJSON
 			if (minimizeMeshes)
 			{
 				CreateMultiBuildingMeshes(buildings, parent);
-				//yield return null;
 			}
 			else if (singleMeshBuildings)
 			{
 				foreach (Building building in buildings)
 				{
 					CreateOneMeshBuildingObject(building, parent);
-					//yield return null;
 				}
 			}
 			else
@@ -53,11 +50,10 @@ namespace cityJSON
 				foreach (Building building in buildings)
 				{
 					CreateBuilding(building, parent);
-					//yield return null;
 				}
 			}
 
-			if (CreatePrefabs)
+			if (createPrefabs)
 			{
 				string guid = AssetDatabase.CreateFolder("Assets/Prefabs", parent.name);
 				//string guid = AssetDatabase.CreateFolder("Assets", "My Folder");

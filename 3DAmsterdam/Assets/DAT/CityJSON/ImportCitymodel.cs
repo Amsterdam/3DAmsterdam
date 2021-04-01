@@ -75,7 +75,7 @@ public class ImportCitymodel: MonoBehaviour
         List<Building> buildings = Citymodel.LoadBuildings(LOD);
         CreateGameObjects creator = new CreateGameObjects();
         creator.minimizeMeshes=true;
-        creator.CreatePrefabs = true; 
+        creator.createPrefabs = true; 
         Dictionary<string, Material> materialmapping = new Dictionary<string, Material>();
         materialmapping.Add("Window", windowMaterial);
         //creator.CreateMeshesByIdentifier(buildings, "name", new ConvertCoordinates.Vector3RD(originX, originY, 0));

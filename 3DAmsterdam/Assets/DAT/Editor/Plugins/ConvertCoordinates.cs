@@ -55,7 +55,6 @@ namespace ConvertCoordinates
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude
         private static double unitsPerDegreeY = 111000; //approximation of distance between lattitudinal degrees in meters
 
-
         private static byte[] RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
         private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
         private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;

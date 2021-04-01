@@ -33,7 +33,7 @@ namespace cityJSON
 
 		private Vector3Double transformScale;
 		private Vector3Double transformOffset;
-
+		 
 		public Vector3Double TransformOffset { get => transformOffset; }
 
 		public CityModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
