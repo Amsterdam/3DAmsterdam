@@ -38,7 +38,7 @@ public class DxfRuntimeTest : MonoBehaviour
 
     private IEnumerator createFile(Bounds UnityBounds, List<Layer> layerList)
     {
-
+        freezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
         Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
@@ -73,9 +73,18 @@ public class DxfRuntimeTest : MonoBehaviour
             loadingScreen.ProgressBar.Percentage(100*layercounter/layerList.Count);
             layercounter++;
         }
+        freezeLayers(layerList, false);
         file.Save();
         loadingScreen.Hide();
         Debug.Log("file saved");
+    }
+
+    private void freezeLayers(List<Layer> layerList, bool freeze)
+    {
+        foreach (var layer in layerList)
+        {
+            layer.pauseLoading = freeze;
+        }
     }
 
     private netDxf.AciColor getColor(Material material)
