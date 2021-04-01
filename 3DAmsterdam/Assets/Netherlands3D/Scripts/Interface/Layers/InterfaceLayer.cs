@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface.Layers
 		ANNOTATION,
 		CAMERA
 	}
-	
+
 	public class InterfaceLayer : ChangePointerStyleHandler
 	{
 		[SerializeField]
@@ -49,17 +49,23 @@ namespace Netherlands3D.Interface.Layers
 			}
 		}
 
+		[SerializeField]
+		private Image expandIcon;
+		private bool expanded = false;
+		[SerializeField]
+		private bool autoCloseNeighbourLayers = true;
+
 		[Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
 		public bool usingRuntimeInstancedMaterials = false;
 
 		[SerializeField]
 		private Toggle toggleActiveLayer;
 
-		[SerializeField]
+		[HideInInspector]
 		public InterfaceLayers parentInterfaceLayers;
 
 		[SerializeField]
-		private Image layerOptionsButton;
+		private Image layerLabelColor;
 
 		[Tooltip("Override shaders instead of copying material source properties")]
 		public bool swapTransparentMaterialSources = false;
@@ -74,9 +80,14 @@ namespace Netherlands3D.Interface.Layers
 			}
 		}
 
+		private void Start()
+		{
+			parentInterfaceLayers = FindObjectOfType<InterfaceLayers>();
+		}
+
 		public void EnableOptions(bool enabled)
 		{
-			layerOptionsButton.gameObject.SetActive(enabled);
+			layerLabelColor.gameObject.SetActive(enabled);
 		}
 
 		/// <summary>
@@ -107,10 +118,11 @@ namespace Netherlands3D.Interface.Layers
 		/// Materials will be fetched according to the layer type.
 		/// </summary>
 		/// <param name="newLinkedObject">The GameObject to be linked</param>
-		public void LinkObject(GameObject newLinkedObject){
+		public void LinkObject(GameObject newLinkedObject)
+		{
 			LinkedObject = newLinkedObject;
 
-			switch(layerType)
+			switch (layerType)
 			{
 				case LayerType.BASICSHAPE:
 					//Target the main material of a basic shape
@@ -136,16 +148,17 @@ namespace Netherlands3D.Interface.Layers
 			{
 				var primaryColor = uniqueLinkedObjectMaterials[0].GetColor("_BaseColor");
 				primaryColor.a = 1.0f;
-				layerOptionsButton.color = primaryColor;
+				layerLabelColor.color = primaryColor;
 			}
 		}
 
 		/// <summary>
 		/// Fetch all the nested Materials found in renderers within the linked GameObject.
 		/// </summary>
-		public void GetUniqueNestedMaterials(){
+		public void GetUniqueNestedMaterials()
+		{
 			uniqueLinkedObjectMaterials = new List<Material>();
-			
+
 			Renderer[] linkedObjectRenderers = LinkedObject.GetComponentsInChildren<Renderer>(true);
 			foreach (Renderer renderer in linkedObjectRenderers)
 			{
@@ -172,16 +185,16 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (layerType == LayerType.STATIC)
 			{
-                if (LinkedObject.GetComponent<LayerSystem.Layer>()==null)
-                {
+				if (LinkedObject.GetComponent<LayerSystem.Layer>() == null)
+				{
 					LinkedObject.SetActive(isOn);
 				}
 				else
-                {
+				{
 					LinkedObject.GetComponent<LayerSystem.Layer>().isEnabled = isOn;
 				}
-                
-				
+
+
 			}
 			else
 			{
@@ -190,11 +203,38 @@ namespace Netherlands3D.Interface.Layers
 		}
 
 		/// <summary>
-		/// Opens the layer visuals panel ( with color picker a.o. ) targeting this layer.
+		/// Opens if closed, closes if opened.
 		/// </summary>
-		public void OpenLayerVisualOptions(){
-			Debug.Log("Open layer visual buttons", this);
-			parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
+		public void ToggleLayerOpened()
+		{
+			expanded = !expanded;
+			if(expanded)
+			{
+				parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
+			}
+			else{
+				parentInterfaceLayers.LayerVisuals.Close();
+			}
+			Expand(expanded);
+		}
+
+		/// <summary>
+		/// Should these layer options be expanded
+		/// </summary>
+		/// <param name="openChevron">Expanded or closed</param>
+		public void Expand(bool openChevron = true)
+		{
+			expanded = openChevron;
+			expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
+			if (expanded && autoCloseNeighbourLayers)
+			{
+				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
+				foreach(var layer in neighbourLayers)
+				{
+					if (layer != this)
+						layer.Expand(false);
+				}
+			}
 		}
 	}
 }

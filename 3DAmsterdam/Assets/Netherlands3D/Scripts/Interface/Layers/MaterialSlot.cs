@@ -13,6 +13,8 @@ namespace Netherlands3D.Interface.Layers
 		private Material transparentMaterialSource;
 		[SerializeField]
 		private Material opaqueMaterialSource;
+		[SerializeField]
+		private Text materialTitle;
 
 		private Color resetMaterialColor;
 
@@ -77,7 +79,8 @@ namespace Netherlands3D.Interface.Layers
 			}
 			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
-			GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
+			//GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
+			materialTitle.text = materialName;
 
 			var materialColor = GetMaterialColor;
 			colorImage.color = new Color(materialColor.r, materialColor.g, materialColor.b, 1.0f);
