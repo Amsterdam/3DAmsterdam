@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using System.IO;
-
+using ConvertCoordinates;
 
 namespace cityJSON
 {
@@ -37,7 +37,7 @@ namespace cityJSON
 
 		public Vector3Double TransformOffset { get => transformOffset; }
 
-		public CityModel(string filepath, string filename, bool applyTransformScale = false, bool applyTransformOffset = false)
+		public CityModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
 			string jsonstring;
 			jsonstring = File.ReadAllText(filepath + filename);
@@ -49,26 +49,30 @@ namespace cityJSON
 			Textures = new List<Surfacetexture>();
 
 			//optionaly parse transform scale and offset
-			transformScale = (applyTransformScale) ? new Vector3Double(
-				cityjsonNode["transform"]["scale"][0],
-				cityjsonNode["transform"]["scale"][1],
-				cityjsonNode["transform"]["scale"][2]
+			transformScale = (applyTransformScale && cityjsonNode["transform"] != null && cityjsonNode["transform"]["scale"] != null) ? new Vector3Double(
+				cityjsonNode["transform"]["scale"][0].AsDouble,
+				cityjsonNode["transform"]["scale"][1].AsDouble,
+				cityjsonNode["transform"]["scale"][2].AsDouble
 			) : new Vector3Double(1,1,1);
 
-			transformOffset = (applyTransformOffset) ? new Vector3Double(
-				   cityjsonNode["transform"]["translate"][0],
-				   cityjsonNode["transform"]["translate"][1],
-				   cityjsonNode["transform"]["translate"][2]
+			transformOffset = (applyTransformOffset && cityjsonNode["transform"] != null && cityjsonNode["transform"]["translate"] != null) ? new Vector3Double(
+				   cityjsonNode["transform"]["translate"][0].AsDouble,
+				   cityjsonNode["transform"]["translate"][1].AsDouble,
+				   cityjsonNode["transform"]["translate"][2].AsDouble
 			) : new Vector3Double(0, 0, 0); 
 
 			//now load all the vertices with the scaler and offset applied
 			foreach (JSONNode node in cityjsonNode["vertices"])
 			{
-				vertices.Add(new Vector3Double(
-					node[0].AsDouble * transformScale.x + transformOffset.x, 
-					node[1].AsDouble * transformScale.y + transformOffset.y, 
-					node[2].AsDouble * transformScale.z + transformOffset.z)
+				var rd = new Vector3RD(
+						node[0].AsDouble * transformScale.x + transformOffset.x,
+						node[1].AsDouble * transformScale.y + transformOffset.y,
+						node[2].AsDouble * transformScale.z + transformOffset.z
 				);
+				var unityCoordinates = CoordConvert.RDtoUnity(rd);
+				var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
+
+				vertices.Add(vertCoordinates);
 			}
 			//get textureVertices
 			foreach (JSONNode node in cityjsonNode["appearance"]["vertices-texture"])
