@@ -248,8 +248,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
             creator.enableRenderers = renderInViewport;
 
-            creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
-
+            try
+            {
+                creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
+            }
+            catch 
+            {
+                Debug.Log("Something went wrong in " + filepath);
+			}
             return targetParent;
         }
 
