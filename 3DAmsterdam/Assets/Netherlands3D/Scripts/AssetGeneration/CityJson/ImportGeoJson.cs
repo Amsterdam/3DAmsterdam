@@ -221,12 +221,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private IEnumerator ParseFilesWithFeedback(FileInfo[] fileInfo)
         {
             //First create gameobjects for all the buildigns we parse
-            for (int i = 0; i < fileInfo.Length; i++)
+            for (int i = 110; i < fileInfo.Length; i++)
             {
                 if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
 
                 var file = fileInfo[i];
-                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
+                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length + ":");
+                Debug.Log(file.FullName);
 
                 CreateAsGameObjects(file.FullName, file.Name);
                 yield return new WaitForEndOfFrame();
@@ -237,19 +238,18 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         }
         private GameObject CreateAsGameObjects(string filepath, string filename = "")
         {
-            CityModel citymodel = new CityModel(filepath);
-            List<Building> buildings = citymodel.LoadBuildings(2.2);
-
             var targetParent = this.gameObject;
-
-            CreateGameObjects creator = new CreateGameObjects();
-            creator.minimizeMeshes = false;
-            creator.singleMeshBuildings = true;
-            creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
-            creator.enableRenderers = renderInViewport;
-
             try
             {
+                CityModel citymodel = new CityModel(filepath);
+                List<Building> buildings = citymodel.LoadBuildings(2.2);
+
+                CreateGameObjects creator = new CreateGameObjects();
+                creator.minimizeMeshes = false;
+                creator.singleMeshBuildings = true;
+                creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
+                creator.enableRenderers = renderInViewport;
+            
                 creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
             }
             catch 
