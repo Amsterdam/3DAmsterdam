@@ -8,9 +8,9 @@ namespace Netherlands3D.AssetGeneration
 {
 	public class AssetBundleExport
 	{
-		public const string buildingsAssetBundleFolder = "/3DAmsterdam/BuildingTileAssets";	
-		public const string treesAssetBundleFolder = "/3DAmsterdam/TreeTileAssets";	
-		public const string terrainAssetBundleFolder = "/3DAmsterdam/TerrainTileAssets";
+		public const string buildingsAssetBundleFolder = "/3DAmsterdam/BuildingTileAssets/";	
+		public const string treesAssetBundleFolder = "/3DAmsterdam/TreeTileAssets/";	
+		public const string terrainAssetBundleFolder = "/3DAmsterdam/TerrainTileAssets/";
 
 		public const string metaDataSubstring = "-data";
 

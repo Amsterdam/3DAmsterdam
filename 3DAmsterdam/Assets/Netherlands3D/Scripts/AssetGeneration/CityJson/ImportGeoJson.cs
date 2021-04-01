@@ -90,7 +90,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     //Spawn our tile container
                     GameObject newTileContainer = new GameObject();
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
-                    newTileContainer.name = "tile_" + tileRD.x + "-" + tileRD.y + "_lod" + lodLevel;
+                    newTileContainer.name = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
                     generatedTiles.Add(tileRD, newTileContainer);
 
                     print("Created " + tileRD.x + "-" + tileRD.y);
@@ -185,6 +185,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 #if UNITY_EDITOR
             if (generateAssetFiles)
             {
+                
+                
                 AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
                 AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
                 AssetDatabase.SaveAssets();
