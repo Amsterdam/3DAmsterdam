@@ -25,6 +25,9 @@ public class ImportGeoJson : MonoBehaviour
     [SerializeField]
     private bool generateBuildingsAsSeperateObjects = true;
 
+    [Header("Threading")]
+    [SerializeField]
+    private bool useThreading = false;
     [SerializeField]
     private int threads = 4;
     private List<Thread> runningThreads;
@@ -32,7 +35,7 @@ public class ImportGeoJson : MonoBehaviour
     public void Start()
     {
         runningThreads = new List<Thread>();
-        ImportFilesFromFolder(geoJsonSourceFilesFolder);
+        ImportFilesFromFolder(geoJsonSourceFilesFolder, useThreading);
     }
 
 	private void Update()
@@ -44,31 +47,49 @@ public class ImportGeoJson : MonoBehaviour
         }
 	}
 
-	private void ImportFilesFromFolder(string folderName)
+    private void ImportFilesFromFolder(string folderName, bool threaded = false)
     {
         var info = new DirectoryInfo(folderName);
         var files = info.GetFiles();
 
-        int nr = 0;
-        
-   		for (int i = 0; i < threads; i++)
-		{
-            Thread thread = new Thread(() => ParsedInThread(files, i));
-            runningThreads.Add(thread);
-            thread.Start();
+        if (threaded)
+        {
+            for (int i = 0; i < threads; i++)
+            {
+                Thread thread = new Thread(() => ParseFiles(files, i));
+                runningThreads.Add(thread);
+                thread.Start();
+            }
+        }
+        else
+        {
+            StartCoroutine(ParseFilesWithFeedback(files));
         }
     }
 
-    private void ParsedInThread(FileInfo[] fileInfo, int threadId)
+    private IEnumerator ParseFilesWithFeedback(FileInfo[] fileInfo)
+    {
+        for (int i = 0; i < fileInfo.Length; i++)
+        {
+            var file = fileInfo[i];
+            Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
+
+            CreateAsGameObjects(file.FullName, file.Name);
+            yield return new WaitForEndOfFrame();
+        }
+
+    }
+
+    private void ParseFiles(FileInfo[] fileInfo, int threadId = -1)
     {
 		for (int i = 0; i < fileInfo.Length; i++)
 		{
-            if (i % threadId != 0) continue;
+            if ( threadId > -1  && i % threadId != 0) continue;
 
             var file = fileInfo[i];
 
             string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
-
+            /*
             var id = fileNameParts[0];
             var count = fileNameParts[1];
 
@@ -76,8 +97,8 @@ public class ImportGeoJson : MonoBehaviour
             var ymin = double.Parse(fileNameParts[4]);
             var xmax = double.Parse(fileNameParts[5]);
             var ymax = double.Parse(fileNameParts[6]);
-
-            Debug.Log("Parsing file nr. " + i);
+            */
+            Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
 
             CreateAsGameObjects(file.FullName, file.Name);
         }    
@@ -92,9 +113,10 @@ public class ImportGeoJson : MonoBehaviour
         newContainer.name = filename;
 
         CreateGameObjects creator = new CreateGameObjects();
-        creator.minimizeMeshes = !generateBuildingsAsSeperateObjects;
-        creator.singleMeshBuildings = generateBuildingsAsSeperateObjects;
+        creator.minimizeMeshes = false;
+        creator.singleMeshBuildings = true;
         creator.CreatePrefabs = false; //Do not auto create assets. We want to do this with our own method here
+        creator.enableRenderers = false;
 
         creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer, false);
 

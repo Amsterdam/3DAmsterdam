@@ -17,22 +17,25 @@ namespace cityJSON
 		public bool singleMeshBuildings = false;
 		public bool minimizeMeshes = true;
 		public bool CreatePrefabs = false;
+		public bool enableRenderers = false;
+
 		private Vector3Double Origin;
 		private Dictionary<string, Material> Materialmapping;
 		private bool wgsConvert;
-		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null)
+		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null, bool enableMeshRenderers = true)
 		{
 			Materialmapping = materialmapping;
 			wgsConvert = WGSConvert;
 			Defaultmaterial = DefaultMaterial;
 			Origin = origin;
+			enableRenderers = enableMeshRenderers;
 
 			CreateBuildingsSlowly(buildings, parent);
 		}
 
 		public void CreateBuildingsSlowly(List<Building> buildings, GameObject parent)
 		{
-			if (minimizeMeshes == true)
+			if (minimizeMeshes)
 			{
 				CreateMultiBuildingMeshes(buildings, parent);
 				//yield return null;
@@ -232,7 +235,9 @@ namespace cityJSON
 			Mesh mesh = new Mesh();
 			mesh.CombineMeshes(ci.ToArray(), true, false);
 			go.AddComponent<MeshFilter>().mesh = mesh;
-			go.AddComponent<MeshRenderer>().material = mat;
+			var renderer = go.AddComponent<MeshRenderer>();
+			renderer.material = mat;
+			renderer.enabled = enableRenderers;
 		}
 
 		private void CreateBuilding(Building building, GameObject parent)

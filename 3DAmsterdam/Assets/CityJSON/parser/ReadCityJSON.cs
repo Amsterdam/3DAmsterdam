@@ -21,7 +21,6 @@ namespace cityJSON
 		}
 	}
 
-
 	public class CityModel
 	{
 		public JSONNode cityjsonNode;

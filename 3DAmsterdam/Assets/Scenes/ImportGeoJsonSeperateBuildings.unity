@@ -164,10 +164,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46efc6451dc2b414c883c20e7b60376b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LOD: 1
+  lodLevel: 2.2
   objectType: Buildings
   DefaultMaterial: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
   geoJsonSourceFilesFolder: C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/
+  generateBuildingsAsSeperateObjects: 0
+  useThreading: 0
+  threads: 4
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
