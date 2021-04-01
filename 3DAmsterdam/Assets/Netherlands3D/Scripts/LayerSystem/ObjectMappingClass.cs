@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class ObjectMappingClass : ScriptableObject
 {
-    public List<string> ids;
-    public List<int> triangleCount;
-    public List<Vector2> mappedUVs;
+    public List<string> ids; //List of all Bag ID's in this tile
     public Vector2[] uvs;
     public List<int> vectorMap;
 }
