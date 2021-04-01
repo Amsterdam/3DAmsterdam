@@ -11,26 +11,63 @@ using System.Threading;
 
 public class ImportGeoJson : MonoBehaviour
 {
-    public int LOD = 1;
+    [SerializeField]
+    private float lodLevel = 2.2f;
+
     public string objectType = "Buildings";
     public Material DefaultMaterial;
 
     [SerializeField]
     private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
 
+    private Dictionary<Vector2, List<GameObject>> groups;
+
+    [SerializeField]
+    private bool generateBuildingsAsSeperateObjects = true;
+
+    [SerializeField]
+    private int threads = 4;
+    private List<Thread> runningThreads;
+
     public void Start()
     {
-        StartCoroutine(ImportFilesFromFolder(geoJsonSourceFilesFolder));
+        runningThreads = new List<Thread>();
+        ImportFilesFromFolder(geoJsonSourceFilesFolder);
     }
 
-    private IEnumerator ImportFilesFromFolder(string folderName)
+	private void Update()
+	{
+        if (Input.GetKeyUp(KeyCode.X))
+        {
+            StopAllCoroutines();
+            print("Aborted");
+        }
+	}
+
+	private void ImportFilesFromFolder(string folderName)
     {
         var info = new DirectoryInfo(folderName);
         var files = info.GetFiles();
-        foreach(FileInfo file in files)
-        {
-            print("Importing file " + file);
-            string[] fileNameParts = file.Name.Replace(".json","").Split('_');
+
+        int nr = 0;
+        
+   		for (int i = 0; i < threads; i++)
+		{
+            Thread thread = new Thread(() => ParsedInThread(files, i));
+            runningThreads.Add(thread);
+            thread.Start();
+        }
+    }
+
+    private void ParsedInThread(FileInfo[] fileInfo, int threadId)
+    {
+		for (int i = 0; i < fileInfo.Length; i++)
+		{
+            if (i % threadId != 0) continue;
+
+            var file = fileInfo[i];
+
+            string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
 
             var id = fileNameParts[0];
             var count = fileNameParts[1];
@@ -40,28 +77,26 @@ public class ImportGeoJson : MonoBehaviour
             var xmax = double.Parse(fileNameParts[5]);
             var ymax = double.Parse(fileNameParts[6]);
 
-            CreateAsGameObject(file.FullName, file.Name, xmin, ymin);
-            
-            yield return new WaitForEndOfFrame();
-        }
+            Debug.Log("Parsing file nr. " + i);
+
+            CreateAsGameObjects(file.FullName, file.Name);
+        }    
     }
 
-    private GameObject CreateAsGameObject(string filepath, string filename = "" , double xmin = 0, double ymin = 0)
+    private GameObject CreateAsGameObjects(string filepath, string filename = "")
     {
-        CityModel citymodel = new CityModel(filepath, "", true, false);
-        List<Building> buildings = citymodel.LoadBuildings(2.2);
+        CityModel citymodel = new CityModel(filepath);
+        List<Building> buildings = citymodel.LoadBuildings(lodLevel);
 
         GameObject newContainer = new GameObject();
         newContainer.name = filename;
 
         CreateGameObjects creator = new CreateGameObjects();
-        creator.minimizeMeshes = true;
-        creator.CreatePrefabs = false;
-        creator.singleMeshBuildings = true;
+        creator.minimizeMeshes = !generateBuildingsAsSeperateObjects;
+        creator.singleMeshBuildings = generateBuildingsAsSeperateObjects;
+        creator.CreatePrefabs = false; //Do not auto create assets. We want to do this with our own method here
 
         creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer, false);
-
-        newContainer.transform.position = CoordConvert.RDtoUnity(new Vector3RD(xmin, ymin, citymodel.TransformOffset.z));
 
         return newContainer;
     }
