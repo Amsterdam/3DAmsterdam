@@ -149,8 +149,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Generate the combined tile mesh
             buildingTile.transform.position = Vector3.zero;
 
-            string assetName = unityMeshAssetFolder + buildingTile.name + ".asset";
-            string assetMetaDataName = unityMeshAssetFolder + buildingTile.name + "-objectmap.asset";
+            string assetFileName = unityMeshAssetFolder + buildingTile.name + ".asset";
+            string assetMetaDataFileName = unityMeshAssetFolder + buildingTile.name + "-data.asset";
 
             var totalVertexCount = 0;
             for (int i = 0; i < combine.Length; i++)
@@ -191,7 +191,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 #if UNITY_EDITOR
             if (generateAssetBundles)
             {
-                AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+                AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
+                AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
                 AssetDatabase.SaveAssets();
             }
 #endif
