@@ -13,6 +13,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
     public class ImportGeoJson : MonoBehaviour
     {
         [SerializeField]
+        private Vector2 boundingBoxBottomLeft;
+        [SerializeField]
+        private Vector2 boundingBoxTopRight;
+
+        [SerializeField]
+        private double tileSize = 1000; //1x1 km
+
+        [SerializeField]
         private double lodLevel = 2.2;
 
         public string objectType = "Buildings";
@@ -27,6 +35,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private bool generateBuildingsAsSeperateObjects = true;
         [SerializeField]
         private bool renderInViewport = true;
+        [SerializeField]
+        private bool addBuildingsToFileNamedParents = false;
 
         [Header("Threading")]
         [SerializeField]
@@ -48,6 +58,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 print("Aborted");
             }
         }
+
+        private void BakeObjectsIntoTiles()
+        {
+			
+		}
 
 		private void ImportFilesFromFolder(string folderName, bool threaded = false)
         {
@@ -72,6 +87,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         private IEnumerator ParseFilesWithFeedback(FileInfo[] fileInfo)
         {
+            //First create gameobjects for all the buildigns we parse
             for (int i = 0; i < fileInfo.Length; i++)
             {
                 var file = fileInfo[i];
@@ -80,14 +96,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 CreateAsGameObjects(file.FullName, file.Name);
                 yield return new WaitForEndOfFrame();
             }
+
+            //Now bake the tiles with combined geometry
+            BakeObjectsIntoTiles();
         }
         private GameObject CreateAsGameObjects(string filepath, string filename = "")
         {
             CityModel citymodel = new CityModel(filepath);
             List<Building> buildings = citymodel.LoadBuildings(2.2);
 
-            GameObject newContainer = new GameObject();
-            newContainer.name = filename;
+            var targetParent = this.gameObject;
+            if (addBuildingsToFileNamedParents)
+            {
+                GameObject newContainer = new GameObject();
+                newContainer.name = filename;
+                targetParent = newContainer;
+            }
 
             CreateGameObjects creator = new CreateGameObjects();
             creator.minimizeMeshes = !generateBuildingsAsSeperateObjects;
@@ -95,9 +119,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
             creator.enableRenderers = renderInViewport;
 
-            creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, this.gameObject);
+            creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
 
-            return newContainer;
+            return targetParent;
         }
 
         private void ParseFiles(FileInfo[] fileInfo, int threadId = -1)
@@ -133,6 +157,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
             //string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
             string dataFolder = CreateAssetFolder(SquareFolder, "data");
+
             ObjectMappingClass objectMappingClass = ScriptableObject.CreateInstance<ObjectMappingClass>();
             objectMappingClass.ids = container.GetComponent<ObjectMapping>().BagID;
             objectMappingClass.triangleCount = container.GetComponent<ObjectMapping>().TriangleCount;

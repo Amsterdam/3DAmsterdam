@@ -195,15 +195,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				}
 			}
 			GameObject go = new GameObject();
+
 			Material mat = new Material(Defaultmaterial);
 			go.AddComponent<ObjectProperties>().semantics = building.semantics;
-			foreach (Semantics item in building.semantics)
-			{
-				if (item.name == "gebouwnummer")
-				{
-					go.name = item.value;
-				}
-			}
+			go.name = go.name = GetBuildingID(building);
+
 			List<CombineInstance> ci = new List<CombineInstance>();
 			if (untextured.Count > 0)
 			{
@@ -241,13 +237,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			GameObject go = new GameObject();
 			go.transform.parent = parent.transform;
 			go.AddComponent<ObjectProperties>().semantics = building.semantics;
-			foreach (Semantics item in building.semantics)
-			{
-				if (item.name == "gebouwnummer")
-				{
-					go.name = item.value;
-				}
-			}
+			go.name = GetBuildingID(building);
+
 			foreach (Surface surf in building.surfaces)
 			{
 				CreateSurface(surf, go);
@@ -257,7 +248,19 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			{
 				CreateBuilding(child, go);
 			}
+		}
 
+		private string GetBuildingID(Building building)
+		{
+			foreach (Semantics item in building.semantics)
+			{
+				if (item.name == "identificatie")
+				{
+					return item.value.Replace("NL.IMBAG.Pand.","");
+				}
+			}
+
+			return "No 'identificatie' found";
 		}
 
 		private List<TexturedMesh> CreateOneMeshBuilding(Building building, GameObject parent = null)
@@ -268,13 +271,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				GameObject go = new GameObject();
 				go.transform.parent = parent.transform;
 				go.AddComponent<ObjectProperties>().semantics = building.semantics;
-				foreach (Semantics item in building.semantics)
-				{
-					if (item.name == "gebouwnummer")
-					{
-						go.name = item.value;
-					}
-				}
+				go.name = GetBuildingID(building);
+				
 			}
 
 			foreach (Surface surf in building.surfaces)
