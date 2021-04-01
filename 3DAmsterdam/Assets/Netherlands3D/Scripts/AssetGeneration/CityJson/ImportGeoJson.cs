@@ -49,7 +49,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
         }
 
-        private void ImportFilesFromFolder(string folderName, bool threaded = false)
+		private void ImportFilesFromFolder(string folderName, bool threaded = false)
         {
             var info = new DirectoryInfo(folderName);
             var files = info.GetFiles();
@@ -95,7 +95,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
             creator.enableRenderers = renderInViewport;
 
-            creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, newContainer);
+            creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, this.gameObject);
 
             return newContainer;
         }

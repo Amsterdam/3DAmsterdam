@@ -22,7 +22,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 		private Vector3Double Origin;
 		private Dictionary<string, Material> Materialmapping;
 		private bool wgsConvert;
-		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null)
+		public void CreateBuildings(List<Building> buildings, Vector3Double origin, Material DefaultMaterial, GameObject parent = null, bool WGSConvert = false, Dictionary<string, Material> materialmapping = null)
 		{
 			Materialmapping = materialmapping;
 			wgsConvert = WGSConvert;
@@ -32,7 +32,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			CreateBuildingsSlowly(buildings, parent);
 		}
 
-		public void CreateBuildingsSlowly(List<Building> buildings, GameObject parent)
+		public void CreateBuildingsSlowly(List<Building> buildings, GameObject parent = null)
 		{
 			if (minimizeMeshes)
 			{
