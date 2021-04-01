@@ -64,9 +64,9 @@ public class DxfRuntimeTest : MonoBehaviour
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
                     meshClipper.clipSubMesh(boundingbox, submeshID);
-                    string layerName = gameObject.GetComponent<MeshRenderer>().materials[submeshID].name.Replace(" (Instance)","");
+                    string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
                     
-                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,getColor(gameObject.GetComponent<MeshRenderer>().materials[submeshID]));
+                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,getColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
                     yield return null;
                 }
             }
@@ -80,13 +80,22 @@ public class DxfRuntimeTest : MonoBehaviour
 
     private netDxf.AciColor getColor(Material material)
     {
-       Debug.Log(material.GetColor("_BaseColor").r);
+
+        
 
         if (material.GetColor("_BaseColor") !=null)
         {
             byte r = (byte)(material.GetColor("_BaseColor").r * 255);
             byte g = (byte)(material.GetColor("_BaseColor").g * 255);
             byte b = (byte)(material.GetColor("_BaseColor").b * 255);
+            return new netDxf.AciColor(r, g, b);
+        }
+        else if (material.GetColor("_FresnelColorHigh") != null)
+
+        {
+            byte r = (byte)(material.GetColor("_FresnelColorHigh").r * 255);
+            byte g = (byte)(material.GetColor("_FresnelColorHigh").g * 255);
+            byte b = (byte)(material.GetColor("_FresnelColorHigh").b * 255);
             return new netDxf.AciColor(r, g, b);
         }
         else
@@ -120,7 +129,16 @@ public class DxfRuntimeTest : MonoBehaviour
             {
                 continue;
             }
-            output.Add(tile.Value.gameObject);
+            if (tile.Value.gameObject.GetComponent<MeshFilter>()!=null)
+            {
+                output.Add(tile.Value.gameObject);
+            }
+            MeshFilter[] meshFilters = tile.Value.gameObject.GetComponentsInChildren<MeshFilter>();
+            foreach (var meshFilter in meshFilters)
+            {
+                output.Add(meshFilter.gameObject);
+            }
+            
         }
         return output;
     }
