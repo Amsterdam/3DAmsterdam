@@ -191,9 +191,7 @@ namespace Netherlands3D.LayerSystem
 					objectMapping.ids = data.ids;
 					objectMapping.uvs = data.uvs;
 					objectMapping.vectorMap = data.vectorMap;
-					objectMapping.mappedUVs = data.mappedUVs;
 					objectMapping.mesh = newTile.GetComponent<MeshFilter>().sharedMesh;
-					objectMapping.triangleCount = data.triangleCount;
 					objectMapping.ApplyDataToIDsTexture();
 					newAssetBundle.Unload(true);
 				}
@@ -248,8 +246,7 @@ namespace Netherlands3D.LayerSystem
 					uvs[i] = (defaultUV);
 				}
 				mesh.uv2 = uvs;
-			}
-            
+			}            
 
             container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
@@ -327,7 +324,6 @@ namespace Netherlands3D.LayerSystem
 					objectMapping.ids = data.ids;
 					objectMapping.uvs = data.uvs;
 					objectMapping.vectorMap = data.vectorMap;
-					objectMapping.mappedUVs = data.mappedUVs;
 
 					newAssetBundle.Unload(true);
 				}
