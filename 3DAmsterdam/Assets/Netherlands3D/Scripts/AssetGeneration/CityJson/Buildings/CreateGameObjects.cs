@@ -226,7 +226,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			}
 			Mesh mesh = new Mesh();
 			mesh.CombineMeshes(ci.ToArray(), true, false);
-			go.AddComponent<MeshFilter>().mesh = mesh;
+			go.AddComponent<MeshFilter>().sharedMesh = mesh;
 			var renderer = go.AddComponent<MeshRenderer>();
 			renderer.material = mat;
 			renderer.enabled = enableRenderers;
@@ -333,7 +333,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				if (submesh != null)
 				{
 					go.transform.parent = parentGameobject.transform;
-					go.AddComponent<MeshFilter>().mesh = submesh;
+					go.AddComponent<MeshFilter>().sharedMesh = submesh;
 					go.AddComponent<MeshRenderer>().sharedMaterial = Defaultmaterial;
 					ObjectProperties op = go.AddComponent<ObjectProperties>();
 					op.semantics = surf.semantics;
