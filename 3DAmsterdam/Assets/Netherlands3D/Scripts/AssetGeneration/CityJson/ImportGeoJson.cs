@@ -45,6 +45,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private bool generateAssetFiles = false;
         [SerializeField]
         private bool allowEmptyTileGeneration = false;
+        [SerializeField]
+        private bool useFileNameBoundingBoxFiltering = true;
 
         [SerializeField]
         private Vector2 tileOffset;
@@ -71,7 +73,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
         }
 
-        private void BakeObjectsIntoTiles()
+        private IEnumerator BakeObjectsIntoTiles()
         {
             print("Baking objects into tiles");
 
@@ -94,17 +96,18 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     generatedTiles.Add(tileRD, newTileContainer);
                 }
             }
-        
+
             //Lets use meshrenderer bounds to get the buildings centre for now, and put them in the right tile
-            MeshRenderer[] buildingMeshRenderers = GetComponentsInChildren<MeshRenderer>(true);
-			foreach(MeshRenderer building in buildingMeshRenderers)
+            Vector3RD childRDCenter;
+            Vector2Int childGroupedTile;
+            foreach (Transform child in transform)
             {
-                Vector3RD childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
-                Vector2Int childGroupedTile = new Vector2Int(
+                var building = child.GetComponent<MeshRenderer>();
+                childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
+                childGroupedTile = new Vector2Int(
                     Mathf.FloorToInt((float)childRDCenter.x / tileSize) * tileSize, 
                     Mathf.FloorToInt((float)childRDCenter.y / tileSize) * tileSize
                 );
-                print("Building tile " + childGroupedTile.x + "-" + childGroupedTile.y);
 
                 //If we have a tile for this object, put it in.
                 if (generatedTiles.TryGetValue(childGroupedTile, out GameObject targetParent))
@@ -116,8 +119,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Bake the tiles
             foreach(GameObject tile in generatedTiles.Values)
             {
-                if(tile.transform.childCount > 0 || allowEmptyTileGeneration)
+                if (tile.transform.childCount > 0 || allowEmptyTileGeneration)
+                {
                     CreateBuildingTile(tile, tile.gameObject.transform.position);
+                    yield return new WaitForEndOfFrame();
+                }
             }
 		}
 
@@ -226,15 +232,33 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
 
                 var file = fileInfo[i];
-                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length + ":");
-                Debug.Log(file.FullName);
+                if(useFileNameBoundingBoxFiltering)
+                {
+                    string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
+                    
+                    var id = fileNameParts[0];
+                    var count = fileNameParts[1];
 
+                    var xmin = double.Parse(fileNameParts[3]);
+                    var ymin = double.Parse(fileNameParts[4]);
+                    var xmax = double.Parse(fileNameParts[5]);
+                    var ymax = double.Parse(fileNameParts[6]);
+
+                    if(xmin > boundingBoxTopRight.x || xmax < boundingBoxBottomLeft.x || ymin > boundingBoxTopRight.y || ymax < boundingBoxBottomLeft .y)
+                    {
+                        //Skip if these filename bounds are not within our selected rectangle
+                        print("Skipping " + xmin + "," + ymin + "," + xmax + "," + ymax);
+                        continue;
+                    }
+                }
+
+                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length + ": " + file.Name);
                 CreateAsGameObjects(file.FullName, file.Name);
                 yield return new WaitForEndOfFrame();
             }
 
             //Now bake the tiles with combined geometry
-            BakeObjectsIntoTiles();
+            StartCoroutine(BakeObjectsIntoTiles());
         }
         private GameObject CreateAsGameObjects(string filepath, string filename = "")
         {
