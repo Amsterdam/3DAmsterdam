@@ -251,6 +251,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 creator.enableRenderers = renderInViewport;
             
                 creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
+
+                creator = null;
+                citymodel = null;
+                buildings = null;
             }
             catch 
             {
