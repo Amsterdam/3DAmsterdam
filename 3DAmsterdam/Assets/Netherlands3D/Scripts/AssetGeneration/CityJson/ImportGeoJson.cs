@@ -30,7 +30,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
 
         [SerializeField]
-        private string unityMeshAssetFolder = "BuildingAssets/";
+        private string unityMeshAssetFolder = "Assets/3DAmsterdam/BuildingTileAssets/";
 
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
@@ -44,6 +44,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private bool renderInViewport = true;
         [SerializeField]
         private bool addBuildingsToFileNamedParents = false;
+        [SerializeField]
+        private bool generateAssetBundles = false;
+        [SerializeField]
+        private bool allowEmptyTileGeneration = false;
+
+        [SerializeField]
+        private Vector2 tileOffset;
 
         [Header("Threading")]
         [SerializeField]
@@ -51,9 +58,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private int threads = 4;
         private List<Thread> runningThreads;
-
-        [SerializeField]
-        private Vector2 tileOffset;
 
         public void Start()
         {
@@ -117,18 +121,29 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Bake the tiles
             foreach(GameObject tile in generatedTiles.Values)
             {
-                CreateBuildingTile(tile, tile.gameObject.transform.position);
+                if(tile.transform.childCount > 0 || allowEmptyTileGeneration)
+                    CreateBuildingTile(tile, tile.gameObject.transform.position);
             }
 		}
 
         private void CreateBuildingTile(GameObject buildingTile, Vector3 worldPosition)
         {
+            MeshFilter[] meshFilters = buildingTile.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+            //Construct the seperate metadata containing the seperation of the buildings
+            ObjectMappingClass buildingMetaData = new ObjectMappingClass();
+            buildingMetaData.ids = new List<string>();
+            foreach (var meshFilter in meshFilters) 
+                buildingMetaData.ids.Add(meshFilter.gameObject.name);
+            
+            
+
+            //Generate the combined tile mesh
             buildingTile.transform.position = Vector3.zero;
 
             string assetName = unityMeshAssetFolder + buildingTile.name + ".asset";
-
-            MeshFilter[] meshFilters = buildingTile.GetComponentsInChildren<MeshFilter>();
-            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+            string assetMetaDataName = unityMeshAssetFolder + buildingTile.name + "-objectmap.asset";
 
             var totalVertexCount = 0;
             for (int i = 0; i < combine.Length; i++)
@@ -152,11 +167,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
             buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
-#if UNITY_EDITOR
-            AssetDatabase.CreateAsset(newCombinedMesh, assetName);
-            AssetDatabase.SaveAssets();
-#endif
 
+#if UNITY_EDITOR
+            if (generateAssetBundles)
+            {
+                AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+                AssetDatabase.SaveAssets();
+            }
+#endif
             buildingTile.transform.position = worldPosition;
         }
 
@@ -230,16 +248,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                 var file = fileInfo[i];
 
-                string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
-                /*
-                var id = fileNameParts[0];
-                var count = fileNameParts[1];
-
-                var xmin = double.Parse(fileNameParts[3]);
-                var ymin = double.Parse(fileNameParts[4]);
-                var xmax = double.Parse(fileNameParts[5]);
-                var ymax = double.Parse(fileNameParts[6]);
-                */
                 Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
 
                 CreateAsGameObjects(file.FullName, file.Name);
