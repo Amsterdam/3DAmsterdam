@@ -29,6 +29,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
 
+        [SerializeField]
+        private string unityMeshAssetFolder = "BuildingAssets/";
+
+        [SerializeField]
+        [Tooltip("Leave 0 for all files")]
+        private int maxFilesToProcess = 0;
+
         private Dictionary<Vector2, GameObject> generatedTiles;
 
         [SerializeField]
@@ -45,8 +52,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private int threads = 4;
         private List<Thread> runningThreads;
 
+        [SerializeField]
+        private Vector2 tileOffset;
+
         public void Start()
         {
+            generatedTiles = new Dictionary<Vector2, GameObject>();
             ImportFilesFromFolder(geoJsonSourceFilesFolder, useThreading);
         }
 
@@ -61,6 +72,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         private void BakeObjectsIntoTiles()
         {
+            print("Baking objects into tiles");
+
             var xTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.x - (float)boundingBoxBottomLeft.x) / (float)tileSize);
             var yTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.y - (float)boundingBoxBottomLeft.y) / (float)tileSize);
 
@@ -69,15 +82,17 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             for (int x = 0; x < xTiles; x++)
 			{
                 tileRD.x = (int)boundingBoxBottomLeft.x + (x * tileSize);
-                for (int y = 0; x < yTiles; y++)
+                for (int y = 0; y < yTiles; y++)
                 {
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
                     //Spawn our tile container
                     GameObject newTileContainer = new GameObject();
-                    newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD);
+                    newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
                     newTileContainer.name = "tile_" + tileRD.x + "-" + tileRD.y;
                     generatedTiles.Add(tileRD, newTileContainer);
+
+                    print("Created " + tileRD.x + "-" + tileRD.y);
                 }
             }
         
@@ -87,13 +102,65 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 Vector3RD childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
                 Vector2Int childGroupedTile = new Vector2Int(
-                    Mathf.FloorToInt((float)childRDCenter.x), 
-                    Mathf.FloorToInt((float)childRDCenter.y)
+                    Mathf.FloorToInt((float)childRDCenter.x / tileSize) * tileSize, 
+                    Mathf.FloorToInt((float)childRDCenter.y / tileSize) * tileSize
                 );
+                print("Building tile " + childGroupedTile.x + "-" + childGroupedTile.y);
+
+                //If we have a tile for this object, put it in.
+                if (generatedTiles.TryGetValue(childGroupedTile, out GameObject targetParent))
+                {
+                    building.gameObject.transform.SetParent(targetParent.transform, true);
+                }
+            }
+
+            //Bake the tiles
+            foreach(GameObject tile in generatedTiles.Values)
+            {
+                CreateBuildingTile(tile, tile.gameObject.transform.position);
             }
 		}
 
-		private void ImportFilesFromFolder(string folderName, bool threaded = false)
+        private void CreateBuildingTile(GameObject buildingTile, Vector3 worldPosition)
+        {
+            buildingTile.transform.position = Vector3.zero;
+
+            string assetName = unityMeshAssetFolder + buildingTile.name + ".asset";
+
+            MeshFilter[] meshFilters = buildingTile.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+            var totalVertexCount = 0;
+            for (int i = 0; i < combine.Length; i++)
+            {
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+
+                Mesh treeMesh = meshFilters[i].mesh;
+                combine[i].mesh = treeMesh;
+                meshFilters[i].gameObject.SetActive(false);
+            }
+
+            Mesh newCombinedMesh = new Mesh();
+            if (totalVertexCount > 65536) //In case we go over the 16bit ( 2^16 ) index count, increase the indexformat.
+                newCombinedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
+            if (meshFilters.Length > 0)
+            {
+                newCombinedMesh.name = buildingTile.name;
+                newCombinedMesh.CombineMeshes(combine, true);
+            }
+
+            buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
+            buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
+#if UNITY_EDITOR
+            AssetDatabase.CreateAsset(newCombinedMesh, assetName);
+            AssetDatabase.SaveAssets();
+#endif
+
+            buildingTile.transform.position = worldPosition;
+        }
+
+        private void ImportFilesFromFolder(string folderName, bool threaded = false)
         {
             var info = new DirectoryInfo(folderName);
             var files = info.GetFiles();
@@ -119,6 +186,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //First create gameobjects for all the buildigns we parse
             for (int i = 0; i < fileInfo.Length; i++)
             {
+                if (i > maxFilesToProcess) continue;
+
                 var file = fileInfo[i];
                 Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
 
