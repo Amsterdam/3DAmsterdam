@@ -36,6 +36,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
         private int maxFilesToProcess = 0;
+        [SerializeField]
         private int maxFilesToProcessPerTile = 9;
 
         private Dictionary<Vector2, GameObject> generatedTiles;
@@ -354,7 +355,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             try
             {
                 cityModel = new CityModel(filepath);
-                buildings = cityModel.LoadBuildings(2.2);
+                buildings = cityModel.LoadBuildings(lodLevel);
 
                 creator = new CreateGameObjects();
                 creator.minimizeMeshes = false;
