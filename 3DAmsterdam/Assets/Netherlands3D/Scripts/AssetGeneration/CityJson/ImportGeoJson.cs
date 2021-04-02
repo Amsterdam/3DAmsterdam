@@ -36,6 +36,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
         private int maxFilesToProcess = 0;
+        private int maxFilesToProcessPerTile = 9;
 
         private Dictionary<Vector2, GameObject> generatedTiles;
 
@@ -99,13 +100,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
-                    string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel; 
-
+                    string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
+                    
                     //Maybe skip files?
                     string assetFileName = unityMeshAssetFolder + tileName + ".asset";
-                    if (skipExistingFiles && File.Exists(Application.dataPath + "/" + assetFileName)) 
+                    if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
-                        print("Skipping existing tile: " + assetFileName);
+                        print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+                        yield return new WaitForEndOfFrame();
                         continue;
                     }
 
@@ -114,6 +116,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
                     newTileContainer.name = tileName;
 
+                    print("Parsing JSON files for tile");
+                    yield return new WaitForEndOfFrame();
+                    
                     //Load GEOJsons that overlap this tile
                     ParseSpecificFiles(tileRD);
                     yield return new WaitForEndOfFrame();
@@ -281,7 +286,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             int parsed = 0;
             for (int i = 0; i < fileInfo.Length; i++)
             {
-                if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
+                if (parsed > maxFilesToProcessPerTile && maxFilesToProcessPerTile != 0) continue;
 
                 var file = fileInfo[i];
 
