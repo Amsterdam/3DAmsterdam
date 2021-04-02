@@ -107,7 +107,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     yield return new WaitForEndOfFrame();
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
-                    int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer);
+                    int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer, true);
                     yield return new WaitForEndOfFrame();
 
                     //Now bake the tile into an asset file
@@ -120,7 +120,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
 		}
 
-        private int MoveChildrenIntoTile(Vector2Int rd, GameObject targetParentTile)
+        private int MoveChildrenIntoTile(Vector2Int rd, GameObject targetParentTile, bool removeOutside = false)
         {
             //Lets use meshrenderer bounds to get the buildings centre for now, and put them in the right tile
             Vector3RD childRDCenter;
@@ -142,6 +142,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     buildingsAdded++;
                     building.transform.SetParent(targetParentTile.transform, true);
+                }
+                else if(removeOutside){
+                    //This child is not in our tile. destroy it
+                    Destroy(building.GetComponent<MeshFilter>().sharedMesh);
+                    Destroy(building.gameObject);
+
                 }
             }
             return buildingsAdded;
@@ -229,7 +235,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
                 AssetDatabase.SaveAssets();
             }
-#endif      
+#endif
         }
         /*
         private void ImportFilesFromFolder(string folderName, bool threaded = false)
