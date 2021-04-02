@@ -94,7 +94,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 for (int y = 0; y < yTiles; y++)
                 {
                     currentTile++;
-                    if (currentTile == 2) yield break;
 
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
@@ -212,8 +211,16 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     Destroy(meshFilters[i].gameObject);
                 }
             }
-            buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
-            buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
+            if (renderInViewport)
+            {
+
+                buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
+                buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
+                buildingTile.transform.position = worldPosition;
+            }
+            else{
+                Destroy(buildingTile);
+			}
 
 #if UNITY_EDITOR
             if (generateAssetFiles)
@@ -222,8 +229,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
                 AssetDatabase.SaveAssets();
             }
-#endif
-            buildingTile.transform.position = worldPosition;
+#endif      
         }
         /*
         private void ImportFilesFromFolder(string folderName, bool threaded = false)
