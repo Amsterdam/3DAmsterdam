@@ -40,6 +40,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private Dictionary<Vector2, GameObject> generatedTiles;
 
         [SerializeField]
+        private bool skipExistingFiles = true;
+        [SerializeField]
         private bool renderInViewport = true;
         [SerializeField]
         private bool generateAssetFiles = false;
@@ -97,10 +99,20 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
+                    string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel; 
+
+                    //Maybe skip files?
+                    string assetFileName = unityMeshAssetFolder + tileName + ".asset";
+                    if (skipExistingFiles && File.Exists(Application.dataPath + "/" + assetFileName)) 
+                    {
+                        print("Skipping existing tile: " + assetFileName);
+                        continue;
+                    }
+
                     //Spawn our tile container
                     GameObject newTileContainer = new GameObject();
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
-                    newTileContainer.name = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
+                    newTileContainer.name = tileName;
 
                     //Load GEOJsons that overlap this tile
                     ParseSpecificFiles(tileRD);
