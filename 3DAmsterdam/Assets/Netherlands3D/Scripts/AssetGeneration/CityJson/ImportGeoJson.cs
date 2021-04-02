@@ -58,10 +58,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private int threads = 4;
         private List<Thread> runningThreads;
 
+        private CreateGameObjects creator;
+        private List<Building> buildings;
+        private CityModel cityModel;
+
         public void Start()
         {
             generatedTiles = new Dictionary<Vector2, GameObject>();
-            ImportFilesFromFolder(geoJsonSourceFilesFolder, useThreading);
+            StartCoroutine(CreateTilesAndReadInGeoJSON());
         }
 
         private void Update()
@@ -73,12 +77,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
         }
 
-        private IEnumerator BakeObjectsIntoTiles()
+        private IEnumerator CreateTilesAndReadInGeoJSON()
         {
             print("Baking objects into tiles");
-
             var xTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.x - (float)boundingBoxBottomLeft.x) / (float)tileSize);
             var yTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.y - (float)boundingBoxBottomLeft.y) / (float)tileSize);
+
+            var totalTiles = xTiles * yTiles;
+            int currentTile = 0;
 
             //Walk the tilegrid
             var tileRD = new Vector2Int(0,0);
@@ -87,45 +93,60 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 tileRD.x = (int)boundingBoxBottomLeft.x + (x * tileSize);
                 for (int y = 0; y < yTiles; y++)
                 {
+                    currentTile++;
+                    if (currentTile == 2) yield break;
+
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
                     //Spawn our tile container
                     GameObject newTileContainer = new GameObject();
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
                     newTileContainer.name = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
-                    generatedTiles.Add(tileRD, newTileContainer);
-                }
-            }
 
+                    //Load GEOJsons that overlap this tile
+                    ParseSpecificFiles(tileRD);
+                    yield return new WaitForEndOfFrame();
+
+                    //Now move them into the tile if their centerpoint is within our defined tile region
+                    int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer);
+                    yield return new WaitForEndOfFrame();
+
+                    //Now bake the tile into an asset file
+                    CreateBuildingTile(newTileContainer, newTileContainer.transform.position);
+                    print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
+
+                    yield return new WaitForEndOfFrame();
+                }
+                print("Done!");
+            }
+		}
+
+        private int MoveChildrenIntoTile(Vector2Int rd, GameObject targetParentTile)
+        {
             //Lets use meshrenderer bounds to get the buildings centre for now, and put them in the right tile
             Vector3RD childRDCenter;
             Vector2Int childGroupedTile;
-            foreach (Transform child in transform)
-            {
-                var building = child.GetComponent<MeshRenderer>();
+            int buildingsAdded = 0;
+
+            MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>(true);
+            for (int i = renderers.Length - 1; i >= 0; i--)
+			{
+                var building = renderers[i];
                 childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
                 childGroupedTile = new Vector2Int(
-                    Mathf.FloorToInt((float)childRDCenter.x / tileSize) * tileSize, 
+                    Mathf.FloorToInt((float)childRDCenter.x / tileSize) * tileSize,
                     Mathf.FloorToInt((float)childRDCenter.y / tileSize) * tileSize
                 );
 
                 //If we have a tile for this object, put it in.
-                if (generatedTiles.TryGetValue(childGroupedTile, out GameObject targetParent))
+                if (childGroupedTile == rd)
                 {
-                    building.gameObject.transform.SetParent(targetParent.transform, true);
+                    buildingsAdded++;
+                    building.transform.SetParent(targetParentTile.transform, true);
                 }
             }
-
-            //Bake the tiles
-            foreach(GameObject tile in generatedTiles.Values)
-            {
-                if (tile.transform.childCount > 0 || allowEmptyTileGeneration)
-                {
-                    CreateBuildingTile(tile, tile.gameObject.transform.position);
-                    yield return new WaitForEndOfFrame();
-                }
-            }
-		}
+            return buildingsAdded;
+        }
 
         private void CreateBuildingTile(GameObject buildingTile, Vector3 worldPosition)
         {
@@ -204,7 +225,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 #endif
             buildingTile.transform.position = worldPosition;
         }
-
+        /*
         private void ImportFilesFromFolder(string folderName, bool threaded = false)
         {
             var info = new DirectoryInfo(folderName);
@@ -224,6 +245,42 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 StartCoroutine(ParseFilesWithFeedback(files));
             }
+        }
+        */
+        private void ParseSpecificFiles(Vector2Int rdCoordinates)
+        {
+            //Read files list 
+            var info = new DirectoryInfo(geoJsonSourceFilesFolder);
+            var fileInfo = info.GetFiles();
+
+            //First create gameobjects for all the buildigns we parse
+            int parsed = 0;
+            for (int i = 0; i < fileInfo.Length; i++)
+            {
+                if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
+
+                var file = fileInfo[i];
+
+                string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
+
+                var id = fileNameParts[0];
+                var count = fileNameParts[1];
+
+                var xmin = double.Parse(fileNameParts[3]);
+                var ymin = double.Parse(fileNameParts[4]);
+                var xmax = double.Parse(fileNameParts[5]);
+                var ymax = double.Parse(fileNameParts[6]);
+
+                if (xmin > rdCoordinates.x+tileSize || xmax < rdCoordinates.x || ymin > rdCoordinates.y+tileSize || ymax < rdCoordinates.y)
+                {
+                    //Skip if these filename bounds are not within our selected rectangle
+                    continue;
+                }
+
+                CreateAsGameObjects(file.FullName, file.Name);
+                parsed++;
+            }
+            print("Parsed GeoJSONS to fill tile: " + parsed);
         }
 
         private IEnumerator ParseFilesWithFeedback(FileInfo[] fileInfo)
@@ -260,26 +317,25 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
 
             //Now bake the tiles with combined geometry
-            StartCoroutine(BakeObjectsIntoTiles());
+            StartCoroutine(CreateTilesAndReadInGeoJSON());
         }
         private GameObject CreateAsGameObjects(string filepath, string filename = "")
         {
             var targetParent = this.gameObject;
             try
             {
-                CityModel citymodel = new CityModel(filepath);
-                List<Building> buildings = citymodel.LoadBuildings(2.2);
+                cityModel = new CityModel(filepath);
+                buildings = cityModel.LoadBuildings(2.2);
 
-                CreateGameObjects creator = new CreateGameObjects();
+                creator = new CreateGameObjects();
                 creator.minimizeMeshes = false;
                 creator.singleMeshBuildings = true;
                 creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
                 creator.enableRenderers = renderInViewport;
-            
                 creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
 
                 creator = null;
-                citymodel = null;
+                cityModel = null;
                 buildings = null;
             }
             catch 
@@ -288,7 +344,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			}
             return targetParent;
         }
-
+        /*
         private void ParseFiles(FileInfo[] fileInfo, int threadId = -1)
         {
             for (int i = 0; i < fileInfo.Length; i++)
@@ -301,7 +357,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                 CreateAsGameObjects(file.FullName, file.Name);
             }
-        }
+        }*/
         /*
         static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)
         {

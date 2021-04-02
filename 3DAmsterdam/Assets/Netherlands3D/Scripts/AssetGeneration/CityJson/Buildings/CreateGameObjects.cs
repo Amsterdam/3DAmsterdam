@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
-	public class CreateGameObjects : MonoBehaviour
+	public class CreateGameObjects
 	{
 		private Material Defaultmaterial;
 		public bool useTextures = true;
@@ -159,7 +159,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				mesh.CombineMeshes(ci.ToArray(), true, false);
 				foreach (var meshHolder in ci)
 				{
-					Destroy(meshHolder.mesh);
+					GameObject.Destroy(meshHolder.mesh);
 				}
 				go.AddComponent<MeshFilter>().mesh = mesh;
 				go.AddComponent<MeshRenderer>().sharedMaterial = Defaultmaterial;
@@ -231,7 +231,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			mesh.CombineMeshes(ci.ToArray(), true, false);
 			foreach(var meshHolder in ci)
 			{
-				Destroy(meshHolder.mesh);
+				GameObject.Destroy(meshHolder.mesh);
 			}
 
 			go.AddComponent<MeshFilter>().sharedMesh = mesh;
