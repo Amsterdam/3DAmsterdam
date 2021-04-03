@@ -8,6 +8,7 @@ using ConvertCoordinates;
 using System.IO;
 using System.Threading;
 using Netherlands3D.LayerSystem;
+using System.Linq;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
@@ -38,6 +39,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private int maxFilesToProcess = 0;
         [SerializeField]
         private int maxFilesToProcessPerTile = 9;
+
+        private int[] skipTiles = { 108,307,308 };
 
         private Dictionary<Vector2, GameObject> generatedTiles;
 
@@ -105,7 +108,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     
                     //Maybe skip files?
                     string assetFileName = unityMeshAssetFolder + tileName + ".asset";
-                    if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
+                    if (skipTiles.Contains(currentTile) || skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
                         yield return new WaitForEndOfFrame();
@@ -117,11 +120,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
                     newTileContainer.name = tileName;
 
-                    print("Parsing JSON files for tile");
+                    print("Parsing JSON files for tile " + currentTile + " / " + totalTiles + ": " + newTileContainer.name);
                     yield return new WaitForEndOfFrame();
-                    
+
                     //Load GEOJsons that overlap this tile
-                    ParseSpecificFiles(tileRD);
+                    yield return StartCoroutine(ParseSpecificFiles(tileRD));
+                    
                     yield return new WaitForEndOfFrame();
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
@@ -277,7 +281,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
         }
         */
-        private void ParseSpecificFiles(Vector2Int rdCoordinates)
+        private IEnumerator ParseSpecificFiles(Vector2Int rdCoordinates)
         {
             //Read files list 
             var info = new DirectoryInfo(geoJsonSourceFilesFolder);
@@ -306,6 +310,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     //Skip if these filename bounds are not within our selected rectangle
                     continue;
                 }
+                Debug.Log("Parsing " + file.Name);
+                yield return new WaitForEndOfFrame();
 
                 CreateAsGameObjects(file.FullName, file.Name);
                 parsed++;
