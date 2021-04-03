@@ -67,11 +67,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/ahn2/wms?service=WMS&request=GetMap&layers=ahn2_5m&BBOX=109000,474000,141000,501000&WIDTH={w}&HEIGHT={h}&VERSION=1&wmtver=1.1&styles=&format=image/png&srs=EPSG:28992";
         private Texture2D drawIntoPixels;
-        [SerializeField]
         private RawImage rawImage;
+
+        [SerializeField]
+        private GameObject optionalObjectToEnableWhenFinished;
 
         public void Start()
         {
+            rawImage = FindObjectOfType<RawImage>();
             generatedTiles = new Dictionary<Vector2, GameObject>();
             StartCoroutine(CreateTilesAndReadInGeoJSON());
         }
@@ -172,7 +175,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 }
             }
             print("Done!");
-		}
+            if (optionalObjectToEnableWhenFinished)
+                optionalObjectToEnableWhenFinished.SetActive(true);
+
+        }
 
         private int MoveChildrenIntoTile(Vector2Int rd, GameObject targetParentTile, bool removeOutside = false)
         {
