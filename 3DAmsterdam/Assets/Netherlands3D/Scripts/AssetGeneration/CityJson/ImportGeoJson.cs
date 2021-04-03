@@ -9,6 +9,9 @@ using System.IO;
 using System.Threading;
 using Netherlands3D.LayerSystem;
 using System.Linq;
+using SimpleJSON;
+using UnityEngine.UI;
+using UnityEngine.Networking;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
@@ -25,6 +28,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private double lodLevel = 2.2;
 
+        [SerializeField]
+        private int lodSlot = 2;
+
+        private List<Vector3> allVerts;
+        private List<int> meshTriangles;
+
+        private int vertIndex;
+
         public string objectType = "Buildings";
         public Material DefaultMaterial;
 
@@ -37,10 +48,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         [Tooltip("Leave 0 for all files")]
         private int maxFilesToProcess = 0;
-        [SerializeField]
-        private int maxFilesToProcessPerTile = 9;
-
-        private int[] skipTiles = { 108,307,308 };
 
         private Dictionary<Vector2, GameObject> generatedTiles;
 
@@ -58,16 +65,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private Vector2 tileOffset;
 
-        [Header("Threading")]
+        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/ahn2/wms?service=WMS&request=GetMap&layers=ahn2_5m&BBOX=109000,474000,141000,501000&WIDTH={w}&HEIGHT={h}&VERSION=1&wmtver=1.1&styles=&format=image/png&srs=EPSG:28992";
+        private Texture2D drawIntoPixels;
         [SerializeField]
-        private bool useThreading = false;
-        [SerializeField]
-        private int threads = 4;
-        private List<Thread> runningThreads;
-
-        private CreateGameObjects creator;
-        private List<Building> buildings;
-        private CityModel cityModel;
+        private RawImage rawImage;
 
         public void Start()
         {
@@ -93,6 +94,25 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             var totalTiles = xTiles * yTiles;
             int currentTile = 0;
 
+            //Show a previewmap
+            drawIntoPixels = new Texture2D(yTiles, yTiles, TextureFormat.RGBA32, false);
+            var downloadUrl = previewBackdropImage.Replace("{w}", xTiles.ToString()).Replace("{h}", yTiles.ToString());
+            print(downloadUrl);
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                drawIntoPixels = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            }
+
+            drawIntoPixels.filterMode = FilterMode.Point;
+            rawImage.texture = drawIntoPixels;
+
             //Walk the tilegrid
             var tileRD = new Vector2Int(0,0);
             for (int x = 0; x < xTiles; x++)
@@ -108,9 +128,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     
                     //Maybe skip files?
                     string assetFileName = unityMeshAssetFolder + tileName + ".asset";
-                    if (skipTiles.Contains(currentTile) || skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
+                    if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+                        drawIntoPixels.SetPixel(x, y, Color.grey);
+                        drawIntoPixels.Apply();
                         yield return new WaitForEndOfFrame();
                         continue;
                     }
@@ -130,6 +152,16 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
                     int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer, true);
+                    if (buildingsAdded == 0)
+                    {
+                        drawIntoPixels.SetPixel(x, y, Color.black);
+                    }
+                    else
+                    {
+                        drawIntoPixels.SetPixel(x, y, Color.Lerp(Color.black, Color.green, (float)buildingsAdded / (float)tileSize));
+                    }
+                    drawIntoPixels.Apply();
+
                     yield return new WaitForEndOfFrame();
 
                     //Now bake the tile into an asset file
@@ -138,8 +170,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     yield return new WaitForEndOfFrame();
                 }
-                print("Done!");
             }
+            print("Done!");
 		}
 
         private int MoveChildrenIntoTile(Vector2Int rd, GameObject targetParentTile, bool removeOutside = false)
@@ -259,28 +291,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
 #endif
         }
-        /*
-        private void ImportFilesFromFolder(string folderName, bool threaded = false)
-        {
-            var info = new DirectoryInfo(folderName);
-            var files = info.GetFiles();
 
-            if (threaded)
-            {
-                runningThreads = new List<Thread>();
-                for (int i = 0; i < threads; i++)
-                {
-                    Thread thread = new Thread(() => ParseFiles(files, i));
-                    runningThreads.Add(thread);
-                    thread.Start();
-                }
-            }
-            else
-            {
-                StartCoroutine(ParseFilesWithFeedback(files));
-            }
-        }
-        */
         private IEnumerator ParseSpecificFiles(Vector2Int rdCoordinates)
         {
             //Read files list 
@@ -291,8 +302,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             int parsed = 0;
             for (int i = 0; i < fileInfo.Length; i++)
             {
-                if (parsed > maxFilesToProcessPerTile && maxFilesToProcessPerTile != 0) continue;
-
                 var file = fileInfo[i];
 
                 string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
@@ -305,7 +314,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 var xmax = double.Parse(fileNameParts[5]);
                 var ymax = double.Parse(fileNameParts[6]);
 
-                if (xmin > rdCoordinates.x+tileSize || xmax < rdCoordinates.x || ymin > rdCoordinates.y+tileSize || ymax < rdCoordinates.y)
+                if (xmin > rdCoordinates.x + tileSize || xmax < rdCoordinates.x || ymin > rdCoordinates.y + tileSize || ymax < rdCoordinates.y)
                 {
                     //Skip if these filename bounds are not within our selected rectangle
                     continue;
@@ -313,137 +322,86 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Debug.Log("Parsing " + file.Name);
                 yield return new WaitForEndOfFrame();
 
-                CreateAsGameObjects(file.FullName, file.Name);
-                parsed++;
-            }
-            print("Parsed GeoJSONS to fill tile: " + parsed);
-        }
+                var jsonstring = File.ReadAllText(file.FullName);
+                var cityjsonNode = JSON.Parse(jsonstring);
 
-        private IEnumerator ParseFilesWithFeedback(FileInfo[] fileInfo)
-        {
-            //First create gameobjects for all the buildigns we parse
-            for (int i = 0; i < fileInfo.Length; i++)
-            {
-                if (i > maxFilesToProcess && maxFilesToProcess != 0) continue;
-
-                var file = fileInfo[i];
-                if(useFileNameBoundingBoxFiltering)
+                if (cityjsonNode["CityObjects"] == null)
                 {
-                    string[] fileNameParts = file.Name.Replace(".json", "").Split('_');
-                    
-                    var id = fileNameParts[0];
-                    var count = fileNameParts[1];
+                    Debug.Log("FAILURE PARSING: " + file.Name);
+                    continue; //Failed to parse the json
+                }
+                //get vertices
+                allVerts = new List<Vector3>();
 
-                    var xmin = double.Parse(fileNameParts[3]);
-                    var ymin = double.Parse(fileNameParts[4]);
-                    var xmax = double.Parse(fileNameParts[5]);
-                    var ymax = double.Parse(fileNameParts[6]);
+                //optionaly parse transform scale and offset
+                var transformScale = (cityjsonNode["transform"] != null && cityjsonNode["transform"]["scale"] != null) ? new Vector3Double(
+                    cityjsonNode["transform"]["scale"][0].AsDouble,
+                    cityjsonNode["transform"]["scale"][1].AsDouble,
+                    cityjsonNode["transform"]["scale"][2].AsDouble
+                ) : new Vector3Double(1, 1, 1);
 
-                    if(xmin > boundingBoxTopRight.x || xmax < boundingBoxBottomLeft.x || ymin > boundingBoxTopRight.y || ymax < boundingBoxBottomLeft .y)
-                    {
-                        //Skip if these filename bounds are not within our selected rectangle
-                        print("Skipping " + xmin + "," + ymin + "," + xmax + "," + ymax);
-                        continue;
-                    }
+                var transformOffset = (cityjsonNode["transform"] != null && cityjsonNode["transform"]["translate"] != null) ? new Vector3Double(
+                       cityjsonNode["transform"]["translate"][0].AsDouble,
+                       cityjsonNode["transform"]["translate"][1].AsDouble,
+                       cityjsonNode["transform"]["translate"][2].AsDouble
+                ) : new Vector3Double(0, 0, 0);
+
+                //now load all the vertices with the scaler and offset applied
+                foreach (JSONNode node in cityjsonNode["vertices"])
+                {
+                    var rd = new Vector3RD(
+                            node[0].AsDouble * transformScale.x + transformOffset.x,
+                            node[1].AsDouble * transformScale.y + transformOffset.y,
+                            node[2].AsDouble * transformScale.z + transformOffset.z
+                    );
+                    var unityCoordinates = CoordConvert.RDtoUnity(rd);
+                    allVerts.Add(unityCoordinates);
                 }
 
-                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length + ": " + file.Name);
-                CreateAsGameObjects(file.FullName, file.Name);
-                yield return new WaitForEndOfFrame();
-            }
+                //now build the meshes and create objects for these buildings
+                int buildingCount = 0;
+                foreach (JSONNode buildingNode in cityjsonNode["CityObjects"])
+                {
+                    var name = buildingNode["attributes"]["identificatie"].Value.Replace("NL.IMBAG.Pand.", "");
+                    GameObject building = new GameObject();
+                    building.transform.SetParent(this.transform, false);
+                    building.name = name;
+                    var boundaries = buildingNode["geometry"][lodSlot]["boundaries"][0];
+                    meshTriangles = new List<int>();
+                    List<Vector3> thisMeshVerts = new List<Vector3>();
 
-            //Now bake the tiles with combined geometry
-            StartCoroutine(CreateTilesAndReadInGeoJSON());
+                    foreach (JSONNode boundary in boundaries)
+                    {
+                        JSONNode triangle = boundary[0];
+
+                        vertIndex = triangle[2].AsInt;
+                        thisMeshVerts.Add(allVerts[vertIndex]);
+                        meshTriangles.Add(thisMeshVerts.Count - 1); //TODO. Group same verts
+
+                        vertIndex = triangle[1].AsInt;
+                        thisMeshVerts.Add(allVerts[vertIndex]);
+                        meshTriangles.Add(thisMeshVerts.Count - 1);
+
+                        vertIndex = triangle[0].AsInt;
+                        thisMeshVerts.Add(allVerts[vertIndex]);
+                        meshTriangles.Add(thisMeshVerts.Count - 1);
+                    }
+
+                    //Construct the mesh
+                    Mesh buildingMesh = new Mesh();
+                    buildingMesh.vertices = thisMeshVerts.ToArray();
+                    buildingMesh.triangles = meshTriangles.ToArray();
+                    buildingMesh.RecalculateNormals();
+
+                    building.AddComponent<MeshRenderer>().enabled = false;
+                    building.AddComponent<MeshFilter>().sharedMesh = buildingMesh;
+                    buildingCount++;
+                }
+
+                parsed++;
+                print("Parsed GeoJSONS to fill tile: " + parsed + ". Buildings in tile: " + buildingCount);
+            }
         }
-        private GameObject CreateAsGameObjects(string filepath, string filename = "")
-        {
-            var targetParent = this.gameObject;
-            try
-            {
-                cityModel = new CityModel(filepath);
-                buildings = cityModel.LoadBuildings(lodLevel);
-
-                creator = new CreateGameObjects();
-                creator.minimizeMeshes = false;
-                creator.singleMeshBuildings = true;
-                creator.createPrefabs = false; //Do not auto create assets. We want to do this with our own method here
-                creator.enableRenderers = renderInViewport;
-                creator.CreateBuildings(buildings, new Vector3Double(), DefaultMaterial, targetParent);
-
-                creator = null;
-                cityModel = null;
-                buildings = null;
-            }
-            catch 
-            {
-                Debug.Log("Something went wrong in " + filepath);
-			}
-            return targetParent;
-        }
-        /*
-        private void ParseFiles(FileInfo[] fileInfo, int threadId = -1)
-        {
-            for (int i = 0; i < fileInfo.Length; i++)
-            {
-                if (threadId > -1 && i % threadId != 0) continue;
-
-                var file = fileInfo[i];
-
-                Debug.Log("Parsing file nr. " + i + " / " + fileInfo.Length);
-
-                CreateAsGameObjects(file.FullName, file.Name);
-            }
-        }*/
-        /*
-        static void SavePrefab(GameObject container, string X, string Y, int LOD, string objectType)
-        {
-            MeshFilter[] mfs = container.GetComponentsInChildren<MeshFilter>();
-            string objectFolder = CreateAssetFolder("Assets", objectType);
-            string LODfolder = CreateAssetFolder(objectFolder, "LOD" + LOD);
-            string SquareFolder = CreateAssetFolder(LODfolder, X + "_" + Y);
-            string MeshFolder = CreateAssetFolder(SquareFolder, "meshes");
-            //string PrefabFolder = CreateAssetFolder(SquareFolder, "Prefabs");
-            string dataFolder = CreateAssetFolder(SquareFolder, "data");
-
-            ObjectMappingClass objectMappingClass = ScriptableObject.CreateInstance<ObjectMappingClass>();
-            objectMappingClass.ids = container.GetComponent<ObjectMapping>().BagID;
-            Vector2[] meshUV = container.GetComponent<MeshFilter>().mesh.uv;
-            objectMappingClass.vectorMap = container.GetComponent<ObjectMapping>().vectorIDs;
-            List<Vector2> mappedUVs = new List<Vector2>();
-            Vector2Int TextureSize = ObjectIDMapping.GetTextureSize(objectMappingClass.ids.Count);
-            for (int i = 0; i < objectMappingClass.ids.Count; i++)
-            {
-                mappedUVs.Add(ObjectIDMapping.GetUV(i, TextureSize));
-            }
-            objectMappingClass.uvs = meshUV;
-
-            string typeName = objectType.ToLower();
-
-            container.GetComponent<MeshFilter>().mesh.uv = null;
-            AssetDatabase.CreateAsset(objectMappingClass, dataFolder + "/" + X + "_" + Y + "_" + typeName + "_lod" + LOD + "-data.asset");
-            AssetDatabase.SaveAssets();
-            AssetImporter.GetAtPath(dataFolder + "/" + X + "_" + Y + "_" + typeName + "_lod" + LOD + "-data.asset").SetAssetBundleNameAndVariant(X + "_" + Y + "_" + typeName + "_lod" + LOD + "-data", "");
-            int meshcounter = 0;
-            foreach (MeshFilter mf in mfs)
-            {
-                AssetDatabase.CreateAsset(mf.sharedMesh, MeshFolder + "/" + X + "_" + Y + "_" + typeName + "_lod" + LOD + ".mesh");
-                AssetDatabase.SaveAssets();
-                AssetImporter.GetAtPath(MeshFolder + "/" + X + "_" + Y + "_" + typeName + "_lod" + LOD + ".mesh").SetAssetBundleNameAndVariant(typeName + "_" + X + "_" + Y + "_lod" + LOD, "");
-                meshcounter++;
-            }
-            AssetDatabase.SaveAssets();
-            //PrefabUtility.SaveAsPrefabAssetAndConnect(container, PrefabFolder + "/" + container.name + ".prefab",InteractionMode.AutomatedAction);
-            //AssetImporter.GetAtPath(PrefabFolder + "/" + container.name + ".prefab").SetAssetBundleNameAndVariant("Building_" + X + "_" +Y + "_LOD" + LOD, "");
-        }
-
-        static string CreateAssetFolder(string folderpath, string foldername)
-        {
-            if (!AssetDatabase.IsValidFolder(folderpath + "/" + foldername))
-            {
-                AssetDatabase.CreateFolder(folderpath, foldername);
-            }
-            return folderpath + "/" + foldername;
-        }*/
     }
 }
 #endif
