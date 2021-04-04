@@ -65,16 +65,25 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private Vector2 tileOffset;
 
-        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/ahn2/wms?service=WMS&request=GetMap&layers=ahn2_5m&BBOX=109000,474000,141000,501000&WIDTH={w}&HEIGHT={h}&VERSION=1&wmtver=1.1&styles=&format=image/png&srs=EPSG:28992";
+        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";
+        
+        private Texture2D backDropTexture;
         private Texture2D drawIntoPixels;
-        private RawImage rawImage;
+
+        [SerializeField]
+        private int backgroundSize = 500;
+
+        [SerializeField]
+        private RawImage backgroundRawImage;
+
+        [SerializeField]
+        private RawImage gridPixelsRawImage;
 
         [SerializeField]
         private GameObject optionalObjectToEnableWhenFinished;
 
         public void Start()
         {
-            rawImage = FindObjectOfType<RawImage>();
             generatedTiles = new Dictionary<Vector2, GameObject>();
             StartCoroutine(CreateTilesAndReadInGeoJSON());
         }
@@ -98,8 +107,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             int currentTile = 0;
 
             //Show a previewmap
+            backDropTexture = new Texture2D(500, 500, TextureFormat.RGBA32, false);
             drawIntoPixels = new Texture2D(yTiles, yTiles, TextureFormat.RGBA32, false);
-            var downloadUrl = previewBackdropImage.Replace("{w}", xTiles.ToString()).Replace("{h}", yTiles.ToString());
+            drawIntoPixels.filterMode = FilterMode.Point;
+
+            gridPixelsRawImage.texture = drawIntoPixels;
+
+            //Download background preview image
+            var downloadUrl = previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
             print(downloadUrl);
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
             yield return www.SendWebRequest();
@@ -110,11 +125,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             else
             {
-                drawIntoPixels = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                backDropTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             }
-
-            drawIntoPixels.filterMode = FilterMode.Point;
-            rawImage.texture = drawIntoPixels;
+            backgroundRawImage.texture = backDropTexture;
 
             //Walk the tilegrid
             var tileRD = new Vector2Int(0,0);
@@ -161,7 +174,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     }
                     else
                     {
-                        drawIntoPixels.SetPixel(x, y, Color.Lerp(Color.black, Color.green, (float)buildingsAdded / (float)tileSize));
+                        drawIntoPixels.SetPixel(x, y, Color.clear);
                     }
                     drawIntoPixels.Apply();
 
