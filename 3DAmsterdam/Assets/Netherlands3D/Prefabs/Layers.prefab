@@ -139,20 +139,14 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: buildings/LOD0/buildings_{x}_{y}.0
+    path: buildings_bag3d/buildings_{x}_{y}.1.3
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 0
-  - Description: LOD1
-    lod: 1
-    path: buildings/LOD1/building_{x}_{y}_lod1
-    maximumDistance: 3000
-    maximumDistanceSquared: 0
-    enabled: 0
   - Description: LOD2
-    lod: 2
-    path: buildings/LOD2/building_{x}_{y}_lod2
-    maximumDistance: 1500
+    lod: 1
+    path: buildings_bag3d/buildings_{x}_{y}.2.2
+    maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 0
   pauseLoading: 0
