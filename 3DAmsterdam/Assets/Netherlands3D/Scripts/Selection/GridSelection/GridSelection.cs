@@ -45,6 +45,8 @@ namespace Netherlands3D.Interface
 		private Vector3Int startGridPosition;
 
 		private string gridExportFormat = "";
+		[SerializeField]
+		List<LayerSystem.Layer> selectableLayers;
 
 		private void Awake()
 		{
@@ -247,34 +249,65 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
+
+			bool[] toggleArray = new bool[4];
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
 			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
 			{
-
+				toggleArray[0] = action;
 			});
+			toggleArray[0] = true;
 			PropertiesPanel.Instance.AddActionCheckbox("Bomen", true, (action) =>
 			{
-
+				toggleArray[1] = action;
 			});
+			toggleArray[1] = true;
 			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", true, (action) =>
 			{
-
+				toggleArray[2] = action;
 			});
+			toggleArray[2] = true;
 			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", true, (action) =>
 			{
-
+				toggleArray[3] = action;
 			});
-			PropertiesPanel.Instance.AddActionDropdown(new string[] { "Collada DAE (.dae)", "AutoCAD DXF (.dxf)" }, (action) =>
+			toggleArray[3] = true;
+			PropertiesPanel.Instance.AddActionDropdown(new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" }, (action) =>
 			{
 				gridExportFormat = action;
 			});
+			gridExportFormat = "AutoCAD DXF (.dxf)";
+
+			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
+
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
-				//Do the download action
-				WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");
+                switch (gridExportFormat)
+                {
+					case "AutoCAD DXF (.dxf)":
+						Debug.Log("start building dxf");
+						List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
+
+                        for (int i = 0; i < selectableLayers.Count; i++)
+                        {
+                            if (toggleArray[i])
+                            {
+								selectedLayers.Add(selectableLayers[i]);
+                            }
+                        }
+
+
+						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
+						break;
+					default:
+						WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");
+                        break;
+                }
+                //Do the download action
+               
 			});
 		}
 
