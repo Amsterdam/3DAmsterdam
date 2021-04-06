@@ -15,18 +15,20 @@ MonoBehaviour:
   RelativeCenterRD:
     x: 121311
     y: 487355
-  ZeroGroundLevelY: 43
+  zeroGroundLevelY: 43
   minimapServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
   MinimapTileNumberingType: 0
   minimapBottomLeftRD_X: -285401.9
   minimapBottomLeftRD_Y: 22598.08
   MinimapZoom0RDSize: 880803.8
   webserverRootPath: https://3d.amsterdam.nl/web/data/
-  buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/buildings/objectdata/
+  buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/buildings_bag3d/
   sharingBaseURL: https://3d.amsterdam.nl/
   sharingSceneSubdirectory: customScene.php?id=
   sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
   downloadsPage: https://3d.amsterdam.nl/web/downloads/index.html
+  LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
+  LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   logo: {fileID: 21300000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
   secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}
