@@ -280,6 +280,9 @@ namespace Netherlands3D.Interface
 				gridExportFormat = action;
 			});
 			gridExportFormat = "AutoCAD DXF (.dxf)";
+
+			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
+
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
                 switch (gridExportFormat)
@@ -297,7 +300,7 @@ namespace Netherlands3D.Interface
                         }
 
 
-						GetComponent<DxfRuntimeTest>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
+						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
 						break;
 					default:
 						WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");

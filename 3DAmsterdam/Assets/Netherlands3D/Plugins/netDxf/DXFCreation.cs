@@ -5,7 +5,7 @@ using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface;
 
-public class DxfRuntimeTest : MonoBehaviour
+public class DXFCreation : MonoBehaviour
 {
     [SerializeField]
     private LoadingScreen loadingScreen;
@@ -50,6 +50,7 @@ public class DxfRuntimeTest : MonoBehaviour
         
         loadingScreen.ShowMessage("dxf-bestand genereren...");
         loadingScreen.ProgressBar.Percentage(0f);
+        
         int layercounter = 0;
         foreach (var layer in layerList)
         {
@@ -70,7 +71,7 @@ public class DxfRuntimeTest : MonoBehaviour
                     yield return null;
                 }
             }
-            loadingScreen.ProgressBar.Percentage(100*layercounter/layerList.Count);
+            loadingScreen.ProgressBar.Percentage(50*layercounter/layerList.Count);
             layercounter++;
         }
         freezeLayers(layerList, false);
@@ -138,15 +139,16 @@ public class DxfRuntimeTest : MonoBehaviour
             {
                 continue;
             }
-            if (tile.Value.gameObject.GetComponent<MeshFilter>()!=null)
-            {
-                output.Add(tile.Value.gameObject);
-            }
+            //if (tile.Value.gameObject.GetComponent<MeshFilter>()!=null)
+            //{
+            //    output.Add(tile.Value.gameObject);
+            //}
             MeshFilter[] meshFilters = tile.Value.gameObject.GetComponentsInChildren<MeshFilter>();
             foreach (var meshFilter in meshFilters)
             {
                 output.Add(meshFilter.gameObject);
             }
+            
             
         }
         return output;
