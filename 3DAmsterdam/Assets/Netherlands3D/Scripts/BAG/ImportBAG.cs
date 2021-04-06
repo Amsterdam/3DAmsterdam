@@ -15,7 +15,7 @@ namespace Netherlands3D.BAG
 
         public const string format = "json";
 
-        public const string requestFailureMessage = "Sorry, door een probleem met de server kan de BAG informatie tijdelijk niet worden geladen.";
+        public const string requestFailureMessage = "Voor dit pand geen is data gevonden.";
 
         /// <summary>
         /// Returns a building data object
