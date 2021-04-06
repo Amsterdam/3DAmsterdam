@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4008264157967721105
 RectTransform:
   m_ObjectHideFlags: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Importing file..
+  m_Text: dxf-bestand genereren...
 --- !u!1001 &8735746452694598881
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -243,6 +243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ProgressBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3935188502541000845, guid: 338360f30c1a7ed40be5fd4e1cbf7ed7,
+        type: 3}
+      propertyPath: m_FillAmount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3941995662221987834, guid: 338360f30c1a7ed40be5fd4e1cbf7ed7,
         type: 3}

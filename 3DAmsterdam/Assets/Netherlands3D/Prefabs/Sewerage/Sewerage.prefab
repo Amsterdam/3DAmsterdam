@@ -44,8 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 2646919304868353130, guid: ce06283d7e2a0db4195be90bbf31e75e, type: 3}
-  amountToPool: 100
-  defaultTransform: {fileID: 0}
+  amountToPool: 0
 --- !u!1 &4351049657613157917
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,24 +174,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateRuntimeDynamicMaterials: 0
   targetMaterialsContainer: {fileID: 0}
-  specificMaterials:
-  - {fileID: 2100000, guid: 08de757fe28f2c8488c5b8cd6f764032, type: 2}
-  - {fileID: 2100000, guid: 70116c33088e6144ca158c73bca33c90, type: 2}
-  - {fileID: 2100000, guid: e9e5ffc6b814ac7429c502c361cd31b7, type: 2}
-  - {fileID: 2100000, guid: e4f9ce9f3edc77849af7e517f63a0ced, type: 2}
-  - {fileID: 2100000, guid: bb7ac713e126c8945bcac94241300b1f, type: 2}
-  - {fileID: 2100000, guid: 35be97376d46fe34f82ce335eac97d06, type: 2}
-  - {fileID: 2100000, guid: dcfe282575dfab04c9308dcb2dce7856, type: 2}
-  - {fileID: 2100000, guid: e600c15abc7262243a880924e2fc2c06, type: 2}
-  - {fileID: 2100000, guid: 091bfc07dec694b45a25781029f121bb, type: 2}
-  - {fileID: 2100000, guid: 8315f7af6de482c4eb389221ec2651d7, type: 2}
-  - {fileID: 2100000, guid: aca3b592882510047a4de2020cd5cafc, type: 2}
-  - {fileID: 2100000, guid: 0bd1798a77e07d6448a16df4b2052aaf, type: 2}
-  - {fileID: 2100000, guid: 23e067c1f30c53343b28456c3e5fa5b6, type: 2}
-  - {fileID: 2100000, guid: fd21c30e7e276bf4ba3b222fc253ab27, type: 2}
-  - {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32, type: 2}
-  pointerFollower: {fileID: 3974945850033855655}
-  maskScale: 0.6
+  specificMaterials: []
+  pointerFollower: {fileID: 0}
+  maskScale: 2
   groundMeshLayer: {fileID: 0}
 --- !u!1 &8791206133976174996
 GameObject:
@@ -240,14 +224,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sewerHeightCheckLayerMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 0
   terrainHeightCheckLayerMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   terrainLayer: {fileID: 0}
   manHoleObjectPool: {fileID: 0}
-  manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
-    type: 3}
+  manholePrefab: {fileID: 0}
 --- !u!114 &7531797714524878505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,8 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106, type: 3}
-  amountToPool: 100
-  defaultTransform: {fileID: 0}
+  amountToPool: 0
 --- !u!1001 &1957519341404273557
 PrefabInstance:
   m_ObjectHideFlags: 0

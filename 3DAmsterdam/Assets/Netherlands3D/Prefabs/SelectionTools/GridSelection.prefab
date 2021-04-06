@@ -168,6 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5279267763681953419}
   - component: {fileID: 3294253040189116214}
+  - component: {fileID: -3569162668520986380}
   m_Layer: 0
   m_Name: GridSelection
   m_TagString: Untagged
@@ -212,3 +213,22 @@ MonoBehaviour:
   gridSize: 100
   gridPlaneSize: 10000
   freePaint: 0
+  selectableLayers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &-3569162668520986380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5279267763681953430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b41ef2a1975a5f4289b8a8ded4ad3e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingScreen: {fileID: 1975161188970828490, guid: 80f24fa214216924c8024335188ab451,
+    type: 3}
