@@ -76,7 +76,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private GameObject optionalObjectToEnableWhenFinished;
 
-        public void Start()
+		public void Start()
         {
             //Make sure our tile assets folder is there
             var exportPath = Application.dataPath + "/../" + unityMeshAssetFolder;
@@ -153,7 +153,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
                         drawIntoPixels.SetPixel(x, y, Color.grey);
                         drawIntoPixels.Apply();
-                        yield return new WaitForEndOfFrame();
+                        if(!Application.isBatchMode) yield return new WaitForEndOfFrame();
                         continue;
                     }
 
@@ -163,12 +163,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     newTileContainer.name = tileName;
 
                     print("Parsing JSON files for tile " + currentTile + " / " + totalTiles + ": " + newTileContainer.name);
-                    yield return new WaitForEndOfFrame();
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
                     //Load GEOJsons that overlap this tile
                     yield return StartCoroutine(ParseSpecificFiles(tileRD));
-                    
-                    yield return new WaitForEndOfFrame();
+
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
                     int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer, true);
@@ -182,13 +182,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     }
                     drawIntoPixels.Apply();
 
-                    yield return new WaitForEndOfFrame();
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
                     //Now bake the tile into an asset file
                     CreateBuildingTile(newTileContainer, newTileContainer.transform.position);
                     print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
 
-                    yield return new WaitForEndOfFrame();
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
                 }
             }
             print("Done!");
@@ -360,7 +360,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     continue;
                 }
                 Debug.Log("Parsing " + file.Name);
-                yield return new WaitForEndOfFrame();
+                if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
                 //Parse the file
                 var jsonstring = File.ReadAllText(file.FullName);
