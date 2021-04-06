@@ -67,14 +67,28 @@ namespace ConvertCoordinates
         private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude
         private static double unitsPerDegreeY = 111000; //approximation of distance between lattitudinal degrees in meters
 
-        private static byte[] RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
-        private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
-        private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
+        private static byte[] RDCorrectionX;// = Resources.Load<TextAsset>("x2c").bytes;
+        private static byte[] RDCorrectionY;// = Resources.Load<TextAsset>("y2c").bytes;
+        private static byte[] RDCorrectionZ;// = Resources.Load<TextAsset>("nlgeo04").bytes;
 
         private static Vector3RD output = new Vector3RD();
 
         private static Vector3WGS? referenceWGS84  = null;
 
+        static CoordConvert()
+        {
+            RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
+            RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
+            RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
+            referenceWGS84 = RDtoWGS84(Config.activeConfiguration.RelativeCenterRD.x, Config.activeConfiguration.RelativeCenterRD.y);
+            referenceWGS84 = new Vector3WGS()
+            {
+                lon = referenceWGS84.Value.lon,
+                lat = referenceWGS84.Value.lat,
+                h = (float)RDCorrection(referenceWGS84.Value.lon, referenceWGS84.Value.lat, "Z", RDCorrectionZ)
+            };
+            
+        }
         /// <summary>
         /// set ReferenceWGS84 converted from RelativeCenterRD,
         /// </summary>

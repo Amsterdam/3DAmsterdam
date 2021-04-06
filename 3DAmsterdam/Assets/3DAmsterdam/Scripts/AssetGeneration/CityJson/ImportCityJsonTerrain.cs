@@ -6,6 +6,7 @@ using UnityEditor;
 using System.IO;
 using ConvertCoordinates;
 using SimpleJSON;
+using System.Threading;
 
 namespace Amsterdam3D.AssetGeneration.CityJSON
 {
@@ -13,10 +14,13 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
     {
         public List<Material> materialList = new List<Material>(7);
         private Material[] materialsArray;
+        private Mesh emptyMesh;
 
         // Start is called before the first frame update
         void Start()
         {
+            Vector3 testcoord = CoordConvert.RDtoUnity(new Vector3RD(120000,480000,0));
+            CreateEmptyMesh(false);
             materialsArray = materialList.ToArray();
             //double originX = 121000;
             //double originY = 487000;
@@ -39,12 +43,233 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
             if (File.Exists(filepath + jsonfilename))
             {
                 CityModel cm = new CityModel(filepath, jsonfilename);
+                //readMeshes
+
+                Mesh LandUseVoetpadMesh = new Mesh();
+                LandUseVoetpadMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread1 = new Thread(
+
+                    () => {
+                        LandUseVoetpadMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "open verharding" }, true, LandUseVoetpadMesh);
+                        ;  }
+                    );
+                thread1.Start();
+
+                Mesh LandUseVerhardMesh = new Mesh();
+                LandUseVerhardMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread2 = new Thread(
+
+                    () => {
+                        LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding" }, true, LandUseVerhardMesh);
+                        }
+                    );
+                thread2.Start();
+
+                Mesh plantcoverMesh = new Mesh();
+                plantcoverMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread3 = new Thread(
+
+                    () => {
+                        plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "alles" }, false, plantcoverMesh);
+                        }
+                    );
+                thread3.Start();
+
+                Mesh LanduseGroenMesh = new Mesh();
+                LanduseGroenMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread4 = new Thread(
+
+                    () => {
+                        LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true, LanduseGroenMesh);
+                        }
+                    );
+                thread4.Start();
+
+                //type erf
+                Mesh erfMesh = new Mesh();
+                erfMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread5 = new Thread(
+
+                    () => {
+                        erfMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf" }, true, erfMesh);
+                        }
+                    );
+                thread5.Start();
+
+                //type onverhard
+                Mesh LandUseMesh = new Mesh();
+                LandUseMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread6 = new Thread(
+
+                    () => {
+                        LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false, LandUseMesh);
+                         }
+                    );
+                thread6.Start();
 
                 //type voetpad
-                Mesh RoadsvoetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "voetpad", "voetgangersgebied", "ruiterpad", "voetpad op trap" }, true);
-                Mesh LandUseVoetpadMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "open verharding" }, true);
-                LandUseVoetpadMesh = SimplifyMesh(LandUseVoetpadMesh, 0.05f);
+                Mesh RoadsvoetpadMesh = new Mesh();
+                RoadsvoetpadMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread7 = new Thread(
+
+                    () => {
+                        RoadsvoetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "voetpad", "voetgangersgebied", "ruiterpad", "voetpad op trap" }, true, RoadsvoetpadMesh);
+                    }
+                    );
+                thread7.Start();
+
+
+                Mesh fietspadMesh = new Mesh();
+                fietspadMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread8 = new Thread(
+
+                    () => {
+                        fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true,fietspadMesh);
+                    }
+                    );
+                thread8.Start();
+
+                Mesh parkeervlakMesh = new Mesh();
+                parkeervlakMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread9 = new Thread(
+
+                    () => {
+                        parkeervlakMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak" }, true, parkeervlakMesh);
+                    }
+                    );
+                thread9.Start();
+
+                Mesh spoorbaanMesh = new Mesh();
+                spoorbaanMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread10 = new Thread(
+
+                    () => {
+                        spoorbaanMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "spoorbaan" }, true, spoorbaanMesh);
+                    }
+                    );
+                thread10.Start();
+
+                Mesh WoonerfMesh = new Mesh();
+                WoonerfMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread11 = new Thread(
+
+                    () => {
+                        WoonerfMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "transitie", "woonerf" }, true, WoonerfMesh);
+                    }
+                    );
+                thread11.Start();
+
+                Mesh roadsMesh = new Mesh();
+                roadsMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread12 = new Thread(
+
+                    () => {
+                        roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad", "parkeervlak", "ruiterpad", "spoorbaan", "voetgangersgebied", "voetpad", "voetpad op trap", "woonerf" }, false, roadsMesh);
+                    }
+                    );
+                thread12.Start();
+
+                Mesh genericCityObjectMesh = new Mesh();
+                genericCityObjectMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread13 = new Thread(
+
+                    () => {
+                        genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize, "bgt_type", null, true, genericCityObjectMesh);
+                    }
+                    );
+                thread13.Start();
+
+                Mesh waterBodyMesh = new Mesh();
+                waterBodyMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread14 = new Thread(
+
+                    () => {
+                        waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize, "bgt_type", null, true, waterBodyMesh);
+                    }
+                    );
+                thread14.Start();
+
+                Mesh bridgeMesh = new Mesh();
+                bridgeMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                var thread15 = new Thread(
+
+                    () => {
+                        bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize, "bgt_type", null, true, bridgeMesh);
+                    }
+                    );
+                thread15.Start();
+
+
+
+                thread1.Join(); //landUseVoetpad created
+
+                var thread16 = new Thread(
+                    () =>
+                    {
+                        LandUseVoetpadMesh = SimplifyMesh(LandUseVoetpadMesh, 0.05f);
+                    });
+                thread16.Start();
+
+
+                thread2.Join(); //landUseVerhard created
+                var thread17 = new Thread(
+                    () =>
+                    {
+                        LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.05f);
+                    });
+                thread17.Start();
+
+                thread3.Join();
+                var thread18 = new Thread(
+                   () =>
+                   {
+                       plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
+                   });
+                thread18.Start();
+
+                thread4.Join();
+                var thread19 = new Thread(
+                   () =>
+                   {
+                       LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.05f);
+                   });
+                thread19.Start();
+
+                thread5.Join();
+                var thread20 = new Thread(
+                   () =>
+                   {
+                       erfMesh = SimplifyMesh(erfMesh, 0.05f);
+                   });
+                thread20.Start();
+
+                thread6.Join();
+                var thread21 = new Thread(
+                   () =>
+                   {
+                       LandUseMesh = SimplifyMesh(LandUseMesh, 0.05f);
+                   });
+                thread21.Start();
+
+
+
+                thread7.Join();
+                thread8.Join();
+                thread9.Join();
+                thread10.Join(0);
+                thread11.Join();
+                thread12.Join();
+                thread13.Join();
+                thread14.Join();
+                thread15.Join();
+                thread16.Join();
+                thread17.Join();
+                thread18.Join();
+                thread19.Join();
+                thread20.Join();
+                thread21.Join();
                 //combine meshes of type "voetpad"
+                
                 CombineInstance[] voetpadcombi = new CombineInstance[2];
                 voetpadcombi[0].mesh = RoadsvoetpadMesh;
                 voetpadcombi[1].mesh = LandUseVoetpadMesh;
@@ -53,20 +278,7 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
                 voetpadmesh.CombineMeshes(voetpadcombi, true, false);
 
 
-                //type fietspad
-                Mesh fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true);
-
-                //type parkeervak
-                Mesh parkeervlakMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak" }, true);
-                //type spoorbaan
-                Mesh spoorbaanMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "spoorbaan" }, true);
-                //type woonerf
-                Mesh WoonerfMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "transitie", "woonerf" }, true);
-
-                // type weg
-                Mesh roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad", "parkeervlak", "ruiterpad", "spoorbaan", "voetgangersgebied", "voetpad", "voetpad op trap", "woonerf" }, false);
-                Mesh LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding" }, true);
-                LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.05f);
+   
                 // combine meshes of type "weg"
                 CombineInstance[] wegcombi = new CombineInstance[2];
                 wegcombi[0].mesh = roadsMesh;
@@ -76,10 +288,8 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
                 wegmesh.CombineMeshes(wegcombi, true, false);
 
                 // type groen
-                Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "alles" }, false);
-                plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.05f);
-                Mesh LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true);
-                LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.05f);
+
+
                 //combine meshes of type "groen"
                 CombineInstance[] groencombi = new CombineInstance[2];
                 groencombi[0].mesh = plantcoverMesh;
@@ -88,17 +298,7 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
                 groenMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 groenMesh.CombineMeshes(groencombi, true, false);
 
-                //type erf
-                Mesh erfMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf" }, true);
-                erfMesh = SimplifyMesh(erfMesh, 0.05f);
 
-                //type onverhard
-                Mesh LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false);
-                LandUseMesh = SimplifyMesh(LandUseMesh, 0.05f);
-
-                Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize, "bgt_type", null, true);
-                Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize, "bgt_type", null, true);
-                Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize, "bgt_type", null, true);
 
                 //create LOD1 Mesh
                 CombineInstance[] combi = new CombineInstance[12];
@@ -136,7 +336,12 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
                 Mesh Roads = new Mesh();
                 Roads.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 Roads.CombineMeshes(combi, true, false);
-                Roads = SimplifyMesh(Roads, 0.05f);
+                thread7 = new Thread(
+
+                   () => { Roads = SimplifyMesh(Roads, 0.05f); }
+                   );
+                thread7.Start();
+                
 
                 combi = new CombineInstance[3];
                 combi[0].mesh = erfMesh;
@@ -146,11 +351,16 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
                 Mesh landuse = new Mesh();
                 landuse.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 landuse.CombineMeshes(combi, true, false);
-                landuse = SimplifyMesh(landuse, 0.05f);
+                thread8 = new Thread(
+
+                   () => { landuse = SimplifyMesh(landuse, 0.05f); }
+                   );
+                thread8.Start();
+                
 
                 combi = new CombineInstance[12];
-
-
+                thread8.Join();
+                thread7.Join();
                 combi[0].mesh = CreateEmptyMesh(); //
                 combi[1].mesh = CreateEmptyMesh(); //
                 combi[2].mesh = CreateEmptyMesh(); //
@@ -175,26 +385,23 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
             }
         }
 
-        private Mesh SimplifyMesh(Mesh mesh, float quality)
+        private static Mesh SimplifyMesh(Mesh mesh, float quality)
         {
 
-            if (mesh.triangles.Length < 100)
-            {
-                return mesh;
-            }
+            
 
-            var DecimatedMesh = mesh;
+            //var DecimatedMesh = mesh;
 
             var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
-            meshSimplifier.Initialize(DecimatedMesh);
+            meshSimplifier.Initialize(mesh);
             meshSimplifier.PreserveBorderEdges = true;
             meshSimplifier.MaxIterationCount = 500;
             meshSimplifier.SimplifyMesh(quality);
             meshSimplifier.EnableSmartLink = true;
-            DecimatedMesh = meshSimplifier.ToMesh();
-            DecimatedMesh.RecalculateNormals();
-            DecimatedMesh.Optimize();
-            return DecimatedMesh;
+            mesh = meshSimplifier.ToMesh();
+            mesh.RecalculateNormals();
+            mesh.Optimize();
+            return mesh;
         }
 
 
@@ -213,10 +420,14 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
             return true;
         }
 
-        private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize, string bgtProperty, List<string> bgtValues, bool include)
+        private Mesh CreateCityObjectMesh(CityModel cityModel, string cityObjectType, double originX, double originY, float tileSize, string bgtProperty, List<string> bgtValues, bool include, Mesh emptyMesh = null)
         {
 
-
+            if (emptyMesh == null)
+            {
+                emptyMesh = new Mesh();
+                emptyMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
             List<Vector3RD> RDTriangles = GetTriangleListRD(cityModel, cityObjectType, bgtProperty, bgtValues, include);
 
             List<Vector3RD> clippedRDTriangles = new List<Vector3RD>();
@@ -320,19 +531,27 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
             {
                 return CreateEmptyMesh();
             }
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            mesh.vertices = verts.ToArray();
-            mesh.triangles = ints.ToArray();
-            mesh = WeldVertices(mesh);
-            mesh.RecalculateNormals();
-            mesh.Optimize();
-            return mesh;
+            
+            
+            emptyMesh.SetVertices(verts.ToArray());
+            emptyMesh.triangles = ints.ToArray();
+            emptyMesh = WeldVertices(emptyMesh);
+            emptyMesh.RecalculateNormals();
+            emptyMesh.Optimize();
+            return emptyMesh;
         }
 
-        private Mesh CreateEmptyMesh()
+        private Mesh CreateEmptyMesh(bool reUse = true)
         {
-            Mesh emptyMesh = new Mesh();
+            if (reUse)
+            {
+                return emptyMesh;
+            }
+            if (emptyMesh == null)
+            {
+                emptyMesh = new Mesh();
+            }
+            
             Vector3[] emptyVertsList = new Vector3[3];
             emptyVertsList[0] = new Vector3(0, 0, 0);
             List<int> emptyIndices = new List<int>();
@@ -397,6 +616,11 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
 
             int stepSize = 1000;
 
+            // for debug
+            Xmax = 110000;
+            Ymax = 479000;
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             for (int X = Xmin; X < Xmax; X += stepSize)
             {
                 for (int Y = Ymin; Y < Ymax; Y += stepSize)
@@ -408,6 +632,8 @@ namespace Amsterdam3D.AssetGeneration.CityJSON
 
 
             }
+            sw.Stop();
+            Debug.Log(sw.ElapsedMilliseconds + "ms");
         }
 
 
