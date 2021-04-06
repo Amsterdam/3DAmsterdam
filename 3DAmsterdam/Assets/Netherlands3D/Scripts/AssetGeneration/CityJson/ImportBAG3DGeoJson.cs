@@ -55,6 +55,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private bool allowEmptyTileGeneration = false;
 
+        [Tooltip("Remove children not inside a tile, to start with a clean slate for the next tile.")]
+        [SerializeField]
+        private bool removeChildrenOutsideTile = true;
+
         [SerializeField]
         private Vector2 tileOffset;
       
@@ -185,9 +189,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
                     //Now bake the tile into an asset file
-                    CreateBuildingTile(newTileContainer, newTileContainer.transform.position);
-                    print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
-
+                    if (generateAssetFiles)
+                    {
+                        CreateBuildingTile(newTileContainer, newTileContainer.transform.position);
+                        print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
+                    }
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
                 }
             }
@@ -289,7 +295,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             buildingMetaData.vectorMap = allVectorMapIndices;
 
             Mesh newCombinedMesh = new Mesh();
-            if (totalVertexCount > 65536) //In case we go over the 16bit ( 2^16 ) index count, increase the indexformat.
+            if (totalVertexCount > Mathf.Pow(2, 16))
                 newCombinedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
             if (meshFilters.Length > 0)
@@ -308,7 +314,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             if (renderInViewport)
             {
-
                 buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
                 buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
                 buildingTile.transform.position = worldPosition;
@@ -432,11 +437,16 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Construct the mesh
                     Mesh buildingMesh = new Mesh();
+                    if (thisMeshVerts.Count > Mathf.Pow(2, 16))
+                        buildingMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
                     buildingMesh.vertices = thisMeshVerts.ToArray();
                     buildingMesh.triangles = meshTriangles.ToArray();
                     buildingMesh.RecalculateNormals();
 
-                    building.AddComponent<MeshRenderer>().enabled = false;
+                    var meshRenderer = building.AddComponent<MeshRenderer>();
+                    meshRenderer.material = DefaultMaterial;
+                    meshRenderer.enabled = renderInViewport;
                     building.AddComponent<MeshFilter>().sharedMesh = buildingMesh;
                     buildingCount++;
                 }
