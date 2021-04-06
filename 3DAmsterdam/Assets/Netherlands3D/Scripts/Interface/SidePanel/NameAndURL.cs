@@ -20,7 +20,7 @@ namespace Netherlands3D.Interface.SidePanel
 
 		public void SetURL(string urlName, string urlPath)
 		{
-			titleText.name = urlName;
+			titleText.text = urlName;
 			gameObject.name = urlPath;
 		}
 	}

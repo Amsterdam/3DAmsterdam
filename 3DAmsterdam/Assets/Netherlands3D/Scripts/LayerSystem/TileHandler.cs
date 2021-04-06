@@ -67,9 +67,13 @@ namespace Netherlands3D.LayerSystem
 		/// postion of camera in RDcoordinates rounded to nearest integer
 		/// </summary>
 		private Vector3Int cameraPosition;
-		
 
-
+		/// <summary>
+		/// The method to use to determine what LOD should be showed.
+		/// Auto is the default, using distance from camera and LOD distances
+		/// </summary>
+		private LODCalculationMethod lodCalculationMethod = LODCalculationMethod.Auto;
+		private float maxDistanceMultiplier = 1.0f;
 
 		private Vector2Int tileKey;
 
@@ -93,7 +97,7 @@ namespace Netherlands3D.LayerSystem
 			//activeTileChangesView = activeTileChanges.Values.ToList();
 
 			viewRange = GetViewRange(cameraExtents);
-			cameraPosition = getCameraPosition(cameraExtents);
+			cameraPosition = GetCameraPosition(cameraExtents);
 			
             if (tileSizes.Count==0)
             {
@@ -155,7 +159,7 @@ namespace Netherlands3D.LayerSystem
 			return viewRange;
 		}
 
-		private Vector3Int getCameraPosition(ICameraExtents cameraExtents)
+		private Vector3Int GetCameraPosition(ICameraExtents cameraExtents)
         {
 			var cameraPositionRD = CoordConvert.UnitytoRD(cameraExtents.GetPosition());
 			Vector3Int cameraPosition = new Vector3Int();
@@ -190,18 +194,14 @@ namespace Netherlands3D.LayerSystem
 		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			tileDistances.Clear();
-			
-		
+				
 			int startX;
 			int startY;
 			int endX;
 			int endY;
-
 			
 			foreach (int tileSize in tileSizes)
 			{
-				
-				
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
@@ -217,8 +217,7 @@ namespace Netherlands3D.LayerSystem
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
 						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
 					}
-				}
-				
+				}		
 				
 				tileDistances.Add(tileList);
 			}
@@ -336,14 +335,45 @@ namespace Netherlands3D.LayerSystem
 
 			foreach (DataSet dataSet in layer.Datasets)
 			{
-				if (dataSet.maximumDistanceSquared > (tiledistance.z))
+				//Are we within distance
+				if (dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
 				{
-					lod = dataSet.lod;
+					if (lodCalculationMethod == LODCalculationMethod.Lod1)
+					{
+						return (layer.Datasets.Count > 2) ? 1: 0;
+					}
+					else if (lodCalculationMethod == LODCalculationMethod.Lod2)
+					{
+						//Just use the dataset length for now (we currently have 3 LOD steps)
+						return layer.Datasets.Count - 1;
+					}
+					else
+					{
+						lod = dataSet.lod;
+					}
 				}
 			}
 			return lod;
-
 		}
+
+		/// <summary>
+		/// Switch the LOD calculaton mode
+		/// </summary>
+		/// <param name="method">0=Auto, 1=Lod1, 2=Lod2</param>
+		public void SetLODMode(int method = 0)
+		{
+			lodCalculationMethod = (LODCalculationMethod)method;
+		}
+
+		/// <summary>
+		/// Set the multiplier to use to limit tile distances
+		/// </summary>
+		/// <param name="multiplier">Multiplier value</param>
+		public void SetMaxDistanceMultiplier(float multiplier)
+		{
+			maxDistanceMultiplier = multiplier;
+		}
+
 		private int CalculatePriorityScore(int layerPriority, int lod, int distanceSquared, TileAction action)
 		{
 			float distanceFactor = ((5000f * 5000f) / distanceSquared);
@@ -381,8 +411,6 @@ namespace Netherlands3D.LayerSystem
 		
 		private void RemoveOutOfViewTiles()
 		{
-			
-			
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
 				// create a list of tilekeys for the tiles that are within the viewrange
@@ -475,5 +503,13 @@ namespace Netherlands3D.LayerSystem
 		Upgrade,
 		Downgrade,
 		Remove
+	}
+
+	[Serializable]
+	public enum LODCalculationMethod
+	{
+		Auto,
+		Lod1,
+		Lod2
 	}
 }

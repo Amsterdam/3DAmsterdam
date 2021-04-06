@@ -454,19 +454,21 @@ namespace Netherlands3D.Sharing
 
         private SerializableScene.CameraPoint[] GetCameras()
         {
-              var cameraPoints = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
+              var customLayerChildren = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
               var cameraPointsData = new List<SerializableScene.CameraPoint>();
               
-              foreach (var camera in cameraPoints)
+              foreach (var child in customLayerChildren)
               {
-                var firstPersonObject = camera.LinkedObject.GetComponent<FirstPersonLocation>();
-                var follower = camera.LinkedObject.GetComponent<WorldPointFollower>();
-                cameraPointsData.Add(new SerializableScene.CameraPoint
-                {
-                    position = follower.WorldPosition,
-                    rotation = firstPersonObject.savedRotation,
-                    name = camera.LinkedObject.name
-                });
+                    var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
+                    if (!firstPersonObject) continue;
+
+                    var follower = child.LinkedObject.GetComponent<WorldPointFollower>();
+                    cameraPointsData.Add(new SerializableScene.CameraPoint
+                    {
+                        position = follower.WorldPosition,
+                        rotation = firstPersonObject.savedRotation,
+                        name = child.LinkedObject.name
+                    });
               }
 
               return cameraPointsData.ToArray(); 
