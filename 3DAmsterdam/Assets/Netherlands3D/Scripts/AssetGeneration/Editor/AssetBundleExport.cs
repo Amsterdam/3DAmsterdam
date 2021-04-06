@@ -12,9 +12,9 @@ namespace Netherlands3D.AssetGeneration
 		public const string metaDataSubstring = "-data";
 
 		/// <summary>
-		/// Converts all the data files found in the TileAssets folder to AssetBundles
+		/// Converts all the data files found in the GeneratedTileAssets folder to AssetBundles
 		/// </summary>
-		[MenuItem("3D Amsterdam/Tools/Exporteer asset files to AssetBundles")]
+		[MenuItem("3D Amsterdam/Tools/Export .asset files to AssetBundles")]
 		public static void GenerateBuildingsAssetBundles()
 		{
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + assetsFolder);
