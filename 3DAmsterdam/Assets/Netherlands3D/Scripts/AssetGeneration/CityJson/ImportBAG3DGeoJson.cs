@@ -80,19 +80,34 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private GameObject optionalObjectToEnableWhenFinished;
 
+        private List<GameObject> overrideChildObjects;
+
 		public void Start()
-        {
-            //Make sure our tile assets folder is there
-            var exportPath = Application.dataPath + "/../" + unityMeshAssetFolder;
-            if (!Directory.Exists(exportPath))
-            {
-                Directory.CreateDirectory(exportPath);
-            }
+		{
+			//Make sure our tile assets folder is there
+			var exportPath = Application.dataPath + "/../" + unityMeshAssetFolder;
+			if (!Directory.Exists(exportPath))
+			{
+				Directory.CreateDirectory(exportPath);
+			}
 
-            StartCoroutine(CreateTilesAndReadInGeoJSON());
-        }
+			FindCustomOverrideObjects();
 
-        private void Update()
+			StartCoroutine(CreateTilesAndReadInGeoJSON());
+		}
+
+        /// <summary>
+        /// Get override objects added to this object (these will be skipped by the parser, and use the manualy added replacement building).
+        /// This is a perfect way to replace specific key buildings with higher detail models.
+        /// </summary>
+		private void FindCustomOverrideObjects()
+		{
+			overrideChildObjects = new List<GameObject>();
+			foreach (Transform child in transform)
+				overrideChildObjects.Add(child.gameObject);
+		}
+
+		private void Update()
         {
             if (Input.GetKeyUp(KeyCode.X))
             {
@@ -233,8 +248,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     buildingsAdded++;
                     building.transform.SetParent(targetParentTile.transform, true);
                 }
-                else if(removeOutside){
-                    //This child is not in our tile. destroy it
+                else if(removeOutside && !overrideChildObjects.Contains(building.gameObject)){
+                    //This child is not in our tile. destroy it. Leave it there if it is an override object
                     Destroy(building.GetComponent<MeshFilter>().sharedMesh);
                     Destroy(building.gameObject);
 
@@ -410,6 +425,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     //A building
                     var name = buildingNode["attributes"]["identificatie"].Value.Replace("NL.IMBAG.Pand.", "");
+
+                    //Check if this name/ID exists in our list of manualy added child objects. If it is there, skip it.
+                    if(overrideChildObjects.Where(overrideGameObject => overrideGameObject.name == name).SingleOrDefault())
+                    {
+                        print("Skipped parsing " + name + " because we have added a custom object for that");
+                        continue;
+					}
+
                     GameObject building = new GameObject();
                     building.transform.SetParent(this.transform, false);
                     building.name = name;
