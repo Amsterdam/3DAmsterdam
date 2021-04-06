@@ -15,7 +15,7 @@ namespace Netherlands3D.BAG
 
         public const string format = "json";
 
-        public const string requestFailureMessage = "Voor dit pand geen is data gevonden.";
+        public const string requestFailureMessage = "Sorry, er is geen data gevonden voor dit pand.";
 
         /// <summary>
         /// Returns a building data object
