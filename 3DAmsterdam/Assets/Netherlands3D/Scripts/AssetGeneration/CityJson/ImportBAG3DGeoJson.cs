@@ -57,13 +57,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private Vector2 tileOffset;
-
-        [Header("Progress preview")]
-        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";
-        
+      
+        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";   
         private Texture2D backDropTexture;
         private Texture2D drawIntoPixels;
 
+        [Header("Progress preview")]
         [SerializeField]
         private int backgroundSize = 500;
 
