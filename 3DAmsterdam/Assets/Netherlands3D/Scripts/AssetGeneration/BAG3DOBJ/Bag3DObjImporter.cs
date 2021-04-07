@@ -60,6 +60,7 @@ public class Bag3DObjImporter : MonoBehaviour
 			if (objLoader) Destroy(objLoader);
 			objLoader = this.gameObject.AddComponent<ObjLoad>();
 			objLoader.ObjectUsesRDCoordinates = true;
+			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.FlipFaceDirection = true;
 			objLoader.SetGeometryData(ref objString);
@@ -99,7 +100,10 @@ public class Bag3DObjImporter : MonoBehaviour
 				//Copy this object into our target containers
 				foreach(Transform targetContainer in targetChildContainers)
 				{
-					Instantiate(child.gameObject, targetContainer);
+					var copy = Instantiate(child.gameObject, targetContainer);
+					copy.transform.position = child.position;
+					copy.transform.rotation = child.rotation;
+					copy.name = child.name;
 				}
 			}
 		}

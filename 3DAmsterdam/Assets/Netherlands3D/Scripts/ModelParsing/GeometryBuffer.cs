@@ -14,9 +14,9 @@ public class GeometryBuffer
 	public bool flipTriangleDirection = false;
 
 	SubMeshGroupData currentSubMeshGroup;
-	ObjectData currentObjectData;
+	public ObjectData currentObjectData;
 
-	class ObjectData
+	public class ObjectData
 	{
 		public string Name;
 		public Dictionary<string, SubMeshGroupData> SubMeshGroups;
@@ -30,7 +30,7 @@ public class GeometryBuffer
 		}
 	}
 
-	class SubMeshGroupData
+	public class SubMeshGroupData
 	{
 		public string Name;
 		public List<FaceIndices> FaceIndices;

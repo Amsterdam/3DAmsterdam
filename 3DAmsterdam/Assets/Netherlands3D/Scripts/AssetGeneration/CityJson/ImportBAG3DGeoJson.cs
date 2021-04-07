@@ -174,6 +174,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     {
                         print("Skipping tile because we supplied a specific name we want to replace.");
                         if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+                        continue;
                     }
 
                     //Skip files if we enabled that option and it exists
@@ -223,7 +224,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
                 }
             }
-            print("Done!");
+            Debug.Log(this.name + " is done!", this.gameObject);
             if (optionalObjectToEnableWhenFinished)
                 optionalObjectToEnableWhenFinished.SetActive(true);
 

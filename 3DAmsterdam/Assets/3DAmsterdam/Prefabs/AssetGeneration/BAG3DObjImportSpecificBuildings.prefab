@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3619235213597793445}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -481.73526, y: 181.35056, z: -3849.3347}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -45,11 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bag3DSourceFilesFolder: C:\Users\Sam\Desktop\STOPERA3dbag_v21031_7425c21b_4274\
+  filter: '*.obj'
   parsePerFrame: 5000
   applyMaterial: {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   specificModelNamesToKeep:
   - sourceName: 336
     newName: 0363100012186092
+  targetChildContainers: []
+  enableOnFinish: {fileID: 0}
 --- !u!114 &3619235213597793442
 MonoBehaviour:
   m_ObjectHideFlags: 0

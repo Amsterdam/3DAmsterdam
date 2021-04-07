@@ -57,12 +57,15 @@ public class ObjLoad : MonoBehaviour
 	private bool splitNestedObjects = false;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
+	private int maxSubMeshes = 0;
 
 	/// <summary>
 	/// Disabled is the default. Otherwise SketchUp models would have a loooot of submodels (we cant use batching for rendering in WebGL, so this is bad for performance)
 	/// </summary>
 	public bool SplitNestedObjects { get => splitNestedObjects; set => splitNestedObjects = value; }
 	public bool ObjectUsesRDCoordinates { get => RDCoordinates; set => RDCoordinates = value; }
+
+	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 
 
@@ -122,13 +125,14 @@ public class ObjLoad : MonoBehaviour
 		switch (linePart[0])
 		{
 			case O:
-				if(SplitNestedObjects) buffer.AddObject(linePart[1].Trim()); 
+				if (SplitNestedObjects) buffer.AddObject(linePart[1].Trim());
 				break;
 			case MTLLIB:
 				mtllib = line.Substring(linePart[0].Length + 1).Trim();
 				break;
 			case USEMTL:
-				buffer.AddSubMeshGroup(linePart[1].Trim());
+				if (MaxSubMeshes == 0 || buffer.currentObjectData.SubMeshGroups.Count < MaxSubMeshes)
+					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
 				if (ObjectUsesRDCoordinates)
