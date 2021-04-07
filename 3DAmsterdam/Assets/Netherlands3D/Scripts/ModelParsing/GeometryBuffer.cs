@@ -11,6 +11,7 @@ public class GeometryBuffer
 	public List<Vector2> Uvs;
 	public List<Vector3> Normals;
 	public int UnnamedGroupIndex = 1; // naming index for unnamed group. like "Unnamed-1"
+	public bool flipTriangleDirection = false;
 
 	SubMeshGroupData currentSubMeshGroup;
 	ObjectData currentObjectData;
@@ -204,7 +205,15 @@ public class GeometryBuffer
 				{
 					triangles[j] = firstSubMeshGroup.FaceIndices[j].vertexIndex;
 				}
-				mesh.triangles = triangles;
+
+				if(flipTriangleDirection)
+				{
+					mesh.triangles = triangles.Reverse().ToArray();
+				}
+				else
+				{
+					mesh.triangles = triangles;
+				}
 			}
 			else
 			{
@@ -235,7 +244,14 @@ public class GeometryBuffer
 						triangles[v] = subMesh.Value.FaceIndices[v].vertexIndex;
 					}
 
-					mesh.SetTriangles(triangles, submeshIndex);
+					if (flipTriangleDirection)
+					{
+						mesh.SetTriangles(triangles.Reverse().ToArray(), submeshIndex);
+					}
+					else
+					{
+						mesh.SetTriangles(triangles, submeshIndex);
+					}
 					submeshIndex++;
 				}
 
