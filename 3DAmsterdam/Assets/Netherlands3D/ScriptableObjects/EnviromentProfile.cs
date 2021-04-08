@@ -18,8 +18,9 @@ public class EnviromentProfile : ScriptableObject
     public Color fogColorDay = Color.white;
     public Color fogColorNight = Color.black;
 
-    public Color ambientColorDay = Color.white;
-    public Color ambientColorNight = Color.black;
+    //3 Color gradients
+    public Color[] skyColorsDay = new Color[3];
+    public Color[] skyColorsNight = new Color[3];
 
     public Color skyTintColorDay = Color.gray;
     public Color skyTintColorNight = Color.blue;

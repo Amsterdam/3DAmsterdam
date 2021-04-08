@@ -13,14 +13,20 @@ MonoBehaviour:
   m_Name: Clear
   m_EditorClassIdentifier: 
   enviromentName: Clear
-  skyIcon: {fileID: 0}
+  skyIcon: {fileID: 2800000, guid: e51568325f1616442bb44e03c5027e5e, type: 3}
   skyMap: {fileID: 0}
   exposureDay: 1
   exposureNight: 0.1
-  fogColorDay: {r: 1, g: 1, b: 1, a: 1}
+  fogColorDay: {r: 0.93725497, g: 0.92549026, b: 0.882353, a: 1}
   fogColorNight: {r: 0, g: 0, b: 0, a: 1}
-  ambientColorDay: {r: 1, g: 1, b: 1, a: 1}
-  ambientColorNight: {r: 0, g: 0, b: 0, a: 1}
+  skyColorsDay:
+  - {r: 0.6313726, g: 0.5882353, b: 0.5686275, a: 1}
+  - {r: 0.37254903, g: 0.38823533, b: 0.40000004, a: 1}
+  - {r: 0.2392157, g: 0.227451, b: 0.20784315, a: 1}
+  skyColorsNight:
+  - {r: 0.114275545, g: 0.14719167, b: 0.2264151, a: 1}
+  - {r: 0.081301175, g: 0.19117753, b: 0.2735849, a: 1}
+  - {r: 0.16580635, g: 0.25556752, b: 0.4339623, a: 1}
   skyTintColorDay: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   skyTintColorNight: {r: 0, g: 0, b: 1, a: 1}
   sunTexture: {fileID: 0}
