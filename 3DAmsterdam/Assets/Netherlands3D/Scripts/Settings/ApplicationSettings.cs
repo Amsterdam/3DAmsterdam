@@ -116,7 +116,7 @@ namespace Netherlands3D.Settings {
 				settings.antiAliasing = toggle;
 				ApplySettings();
             });
-			PropertiesPanel.Instance.AddActionCheckbox("Reflecties", settings.realtimeReflections, (toggle) => {
+			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
             });

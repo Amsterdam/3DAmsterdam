@@ -44,13 +44,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectableProfiles:
-  - {fileID: 11400000, guid: 05fabec785b79304ca2b1a4d9c686258, type: 2}
   - {fileID: 11400000, guid: b80d1459bc382e843b5d086d74f65717, type: 2}
+  - {fileID: 11400000, guid: 05fabec785b79304ca2b1a4d9c686258, type: 2}
   - {fileID: 11400000, guid: 2b884312c0b2e054db8579126d337e49, type: 2}
   proceduralSkyMaterial: {fileID: 2100000, guid: 410f74e4d9387fa4e89c946fb28d390d,
     type: 2}
   texturedSkyMaterial: {fileID: 2100000, guid: 488a6092e42ffb443ab02a4d1fe7b6c7, type: 2}
-  sunDirectionalLight: {fileID: 0}
-  crossFadeColorRange: 20
-  intensityMaterialTrees: {fileID: -1549879586689529158, guid: 0015531c525e7f5439991a312fb949e9,
-    type: 3}
+  directionalLightSun: {fileID: 0}
+  sunUpAmount: -0.2
+  sunDownAmount: 0.5
+  intensityMaterialTrees: {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32,
+    type: 2}

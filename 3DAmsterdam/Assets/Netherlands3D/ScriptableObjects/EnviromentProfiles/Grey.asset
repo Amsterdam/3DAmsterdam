@@ -13,14 +13,21 @@ MonoBehaviour:
   m_Name: Grey
   m_EditorClassIdentifier: 
   enviromentName: Clear
-  skyIcon: {fileID: 0}
+  skyIcon: {fileID: 2800000, guid: 819195c80dedec1438e8bc81150804e9, type: 3}
+  fogColorDay: {r: 0.61960787, g: 0.61960787, b: 0.6431373, a: 1}
+  fogColorNight: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 1}
+  skyColorsDay:
+  - {r: 0.42212528, g: 0.46651992, b: 0.5849056, a: 1}
+  - {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 0}
+  - {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0}
+  skyColorsNight:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
   skyMap: {fileID: 8900000, guid: 1c425b9917eb4bb4fabdfdde7a7e08d4, type: 3}
   exposureDay: 1
   exposureNight: 0.1
-  fogColorDay: {r: 1, g: 1, b: 1, a: 1}
-  fogColorNight: {r: 0, g: 0, b: 0, a: 1}
-  ambientColorDay: {r: 1, g: 1, b: 1, a: 1}
-  ambientColorNight: {r: 0, g: 0, b: 0, a: 1}
-  skyTintDay: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  skyTintNight: {r: 0, g: 0, b: 1, a: 1}
+  skyTintColorDay: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  skyTintColorNight: {r: 0, g: 0, b: 1, a: 1}
   sunTexture: {fileID: 0}
+  sunTextureTintColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

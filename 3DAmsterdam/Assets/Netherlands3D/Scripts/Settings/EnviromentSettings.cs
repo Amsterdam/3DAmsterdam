@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using Netherlands3D;
+using Netherlands3D.Settings;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class EnviromentSettings : MonoBehaviour
 {
@@ -21,12 +24,16 @@ public class EnviromentSettings : MonoBehaviour
     private Light directionalLightSun;
 
     [SerializeField]
-    private float crossFadeColorRange = 20.0f;
+    private float sunUpAmount = 1.0f;
+    [SerializeField]
+    private float sunDownAmount = -1.0f;
 
     [SerializeField]
     private Material intensityMaterialTrees;
 
     private static bool visualsUpdateRequired = false;
+
+    private static bool useSkyboxForReflections = true;
 
     private void Awake()
 	{
@@ -40,7 +47,7 @@ public class EnviromentSettings : MonoBehaviour
         }
 
         //Use first slot as default
-        ApplyEnviromentProfile(selectableProfiles[0]);
+        ApplyEnviromentProfile(0);
     }
 
     public static void SetSunAngle(Vector3 angles)
@@ -60,28 +67,46 @@ public class EnviromentSettings : MonoBehaviour
         UpdateSunBasedVisuals();
     }
 
-    public void ApplyEnviromentProfile(EnviromentProfile profile)
+    public void ApplyEnviromentProfile(int profileIndex)
     {
+        var profile = selectableProfiles[profileIndex];
         activeEnviromentProfile = profile;
 
         if(activeEnviromentProfile.skyMap)
         {
-            texturedSkyMaterial.mainTexture = activeEnviromentProfile.skyMap;
+            texturedSkyMaterial.SetTexture("_Tex",activeEnviromentProfile.skyMap);
             //texturedSkyMaterial.SetColor();
             RenderSettings.skybox = texturedSkyMaterial;
+
+            SetReflections(useSkyboxForReflections);
         }
         else
         {
+            SetReflections(useSkyboxForReflections);
             RenderSettings.skybox = proceduralSkyMaterial;
         }
         UpdateSunBasedVisuals();
     }
+
+    public static void SetReflections(bool realtimeReflectionsAreOn = false)
+    {
+        useSkyboxForReflections = realtimeReflectionsAreOn;
+
+        if (!useSkyboxForReflections && activeEnviromentProfile.skyMap)
+        {
+            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
+            RenderSettings.customReflection = activeEnviromentProfile.skyMap;
+        }
+        else
+        {
+            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Skybox;
+        }
+    }
+
     public void UpdateSunBasedVisuals()
     {
-        transform.localRotation = Quaternion.Euler(sun.transform.localEulerAngles);
-
         //Reduce sun strength when we go down the horizon
-        sun.intensity = Mathf.InverseLerp(-crossFadeColorRange, 0.1f, sun.transform.localEulerAngles.x);
+        sun.intensity = Mathf.InverseLerp(sunDownAmount, sunUpAmount, Vector3.Dot(sun.transform.forward,Vector3.up));
 
         //Apply sunlight to tree darkness (who use a very simple unlit shader)
         intensityMaterialTrees.SetFloat("_Light", Mathf.Max(sun.intensity, 0.3f));
@@ -109,6 +134,9 @@ public class EnviromentSettings : MonoBehaviour
             activeEnviromentProfile.skyColorsDay[2],
             sun.intensity
         );
+
+        if(activeEnviromentProfile.skyMap)
+            RenderSettings.skybox.SetFloat("_Exposure", sun.intensity);
 
         visualsUpdateRequired = false;
     }
