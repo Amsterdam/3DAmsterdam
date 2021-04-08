@@ -197,7 +197,7 @@ namespace ConvertCoordinates
             Vector3RD RD = new Vector3RD();
             RD.x = coordinaat.x + Config.activeConfiguration.RelativeCenterRD.x;
             RD.y = coordinaat.z + Config.activeConfiguration.RelativeCenterRD.y;
-            RD.z = coordinaat.y + Config.activeConfiguration.zeroGroundLevelY;
+            RD.z = coordinaat.y - Config.activeConfiguration.zeroGroundLevelY;
             return RD;
         }
 
