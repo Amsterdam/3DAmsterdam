@@ -102,7 +102,7 @@ public class EnviromentSettings : MonoBehaviour
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Skybox;
         }
     }
-
+    
     public void UpdateSunBasedVisuals()
     {
         //Reduce sun strength when we go down the horizon
