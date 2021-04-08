@@ -1,5 +1,5 @@
 {
-    "name": "3D Amsterdam",
+    "name": "3DNetherlands",
     "maps": [
         {
             "name": "GridSelection",
@@ -207,6 +207,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Move CameraHeight",
+                    "type": "PassThrough",
+                    "id": "84f25a91-8646-408e-b502-9de2b451285c",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Zoom",
                     "type": "Value",
                     "id": "fc627390-7bba-424a-91a5-a782adf200f2",
@@ -278,6 +286,17 @@
                     "action": "Rotate Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5b9c8bae-8868-422d-a0bc-c88ccf3afe51",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Rotate Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "2D Vector",
@@ -379,6 +398,17 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "",
+                    "id": "45316856-93cb-4fc6-a924-7ebc98665311",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Move Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "ForwardBackward",
                     "id": "730774e9-8459-46c5-9fce-3732dbe94dca",
                     "path": "2DVector",
@@ -408,6 +438,72 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "febbdd81-74d5-4722-8c00-c0d5330e0481",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "84440e7e-0a0d-4469-9b5f-2870efdb7277",
+                    "path": "<Keyboard>/pageDown",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "1636c197-cda4-453a-8949-a4dca2e3ab46",
+                    "path": "<Keyboard>/pageUp",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "bbb6796f-6edc-458a-a390-1450b9bddad3",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "709d3f57-6049-42c2-9d15-f441a57adb22",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "9836d1d1-14c6-40d2-8f15-1647a94f25bd",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move CameraHeight",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }
@@ -792,7 +888,7 @@
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad;Joystick",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false

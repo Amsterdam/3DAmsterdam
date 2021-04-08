@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Netherlands3D/Input/3D Amsterdam.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Netherlands3D/Input/3DNetherlands.inputactions'
 
 using System;
 using System.Collections;
@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class @_3DAmsterdam : IInputActionCollection, IDisposable
+public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @_3DAmsterdam()
+    public @Netherlands3DInputActions()
     {
         asset = InputActionAsset.FromJson(@"{
-    ""name"": ""3D Amsterdam"",
+    ""name"": ""3DNetherlands"",
     ""maps"": [
         {
             ""name"": ""GridSelection"",
@@ -220,6 +220,14 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Move CameraHeight"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""84f25a91-8646-408e-b502-9de2b451285c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""fc627390-7bba-424a-91a5-a782adf200f2"",
@@ -291,6 +299,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""action"": ""Rotate Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b9c8bae-8868-422d-a0bc-c88ccf3afe51"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Rotate Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""2D Vector"",
@@ -392,6 +411,17 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": """",
+                    ""id"": ""45316856-93cb-4fc6-a924-7ebc98665311"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Move Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""ForwardBackward"",
                     ""id"": ""730774e9-8459-46c5-9fce-3732dbe94dca"",
                     ""path"": ""2DVector"",
@@ -421,6 +451,72 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""febbdd81-74d5-4722-8c00-c0d5330e0481"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""84440e7e-0a0d-4469-9b5f-2870efdb7277"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""1636c197-cda4-453a-8949-a4dca2e3ab46"",
+                    ""path"": ""<Keyboard>/pageUp"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""bbb6796f-6edc-458a-a390-1450b9bddad3"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""709d3f57-6049-42c2-9d15-f441a57adb22"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""9836d1d1-14c6-40d2-8f15-1647a94f25bd"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move CameraHeight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -805,7 +901,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Gamepad"",
+                    ""groups"": ""Gamepad;Joystick"",
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1533,6 +1629,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
         // GodViewKeyboard
         m_GodViewKeyboard = asset.FindActionMap("GodViewKeyboard", throwIfNotFound: true);
         m_GodViewKeyboard_MoveCamera = m_GodViewKeyboard.FindAction("Move Camera", throwIfNotFound: true);
+        m_GodViewKeyboard_MoveCameraHeight = m_GodViewKeyboard.FindAction("Move CameraHeight", throwIfNotFound: true);
         m_GodViewKeyboard_Zoom = m_GodViewKeyboard.FindAction("Zoom", throwIfNotFound: true);
         m_GodViewKeyboard_RotateCamera = m_GodViewKeyboard.FindAction("Rotate Camera", throwIfNotFound: true);
         // GodViewMouse
@@ -1627,8 +1724,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_GridSelection_EraseVoxels;
     public struct GridSelectionActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public GridSelectionActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public GridSelectionActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleVoxel => m_Wrapper.m_GridSelection_ToggleVoxel;
         public InputAction @DrawVoxels => m_Wrapper.m_GridSelection_DrawVoxels;
         public InputAction @EraseVoxels => m_Wrapper.m_GridSelection_EraseVoxels;
@@ -1677,8 +1774,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_Selector_Click;
     public struct SelectorActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public SelectorActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public SelectorActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Multiselect => m_Wrapper.m_Selector_Multiselect;
         public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
         public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
@@ -1729,13 +1826,15 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputActionMap m_GodViewKeyboard;
     private IGodViewKeyboardActions m_GodViewKeyboardActionsCallbackInterface;
     private readonly InputAction m_GodViewKeyboard_MoveCamera;
+    private readonly InputAction m_GodViewKeyboard_MoveCameraHeight;
     private readonly InputAction m_GodViewKeyboard_Zoom;
     private readonly InputAction m_GodViewKeyboard_RotateCamera;
     public struct GodViewKeyboardActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public GodViewKeyboardActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public GodViewKeyboardActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveCamera => m_Wrapper.m_GodViewKeyboard_MoveCamera;
+        public InputAction @MoveCameraHeight => m_Wrapper.m_GodViewKeyboard_MoveCameraHeight;
         public InputAction @Zoom => m_Wrapper.m_GodViewKeyboard_Zoom;
         public InputAction @RotateCamera => m_Wrapper.m_GodViewKeyboard_RotateCamera;
         public InputActionMap Get() { return m_Wrapper.m_GodViewKeyboard; }
@@ -1750,6 +1849,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @MoveCamera.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
                 @MoveCamera.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCamera;
+                @MoveCameraHeight.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCameraHeight;
+                @MoveCameraHeight.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCameraHeight;
+                @MoveCameraHeight.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnMoveCameraHeight;
                 @Zoom.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnZoom;
@@ -1763,6 +1865,9 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
                 @MoveCamera.started += instance.OnMoveCamera;
                 @MoveCamera.performed += instance.OnMoveCamera;
                 @MoveCamera.canceled += instance.OnMoveCamera;
+                @MoveCameraHeight.started += instance.OnMoveCameraHeight;
+                @MoveCameraHeight.performed += instance.OnMoveCameraHeight;
+                @MoveCameraHeight.canceled += instance.OnMoveCameraHeight;
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
@@ -1785,8 +1890,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_GodViewMouse_Position;
     public struct GodViewMouseActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public GodViewMouseActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public GodViewMouseActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Zoom => m_Wrapper.m_GodViewMouse_Zoom;
         public InputAction @ZoomDrag => m_Wrapper.m_GodViewMouse_ZoomDrag;
         public InputAction @Drag => m_Wrapper.m_GodViewMouse_Drag;
@@ -1853,8 +1958,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_Transformable_Place;
     public struct TransformableActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public TransformableActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public TransformableActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_Transformable_Place;
         public InputActionMap Get() { return m_Wrapper.m_Transformable; }
         public void Enable() { Get().Enable(); }
@@ -1886,8 +1991,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_PlaceOnClick_Place;
     public struct PlaceOnClickActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public PlaceOnClickActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public PlaceOnClickActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlaceOnClick_Place;
         public InputActionMap Get() { return m_Wrapper.m_PlaceOnClick; }
         public void Enable() { Get().Enable(); }
@@ -1919,8 +2024,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_GizmoHandle_Drag;
     public struct GizmoHandleActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public GizmoHandleActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public GizmoHandleActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Drag => m_Wrapper.m_GizmoHandle_Drag;
         public InputActionMap Get() { return m_Wrapper.m_GizmoHandle; }
         public void Enable() { Get().Enable(); }
@@ -1955,8 +2060,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_StreetView_OpenMenu;
     public struct StreetViewActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public StreetViewActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public StreetViewActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_StreetView_Move;
         public InputAction @Look => m_Wrapper.m_StreetView_Look;
         public InputAction @Select => m_Wrapper.m_StreetView_Select;
@@ -2018,8 +2123,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     public struct UIActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public UIActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public UIActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
         public InputAction @Submit => m_Wrapper.m_UI_Submit;
         public InputAction @Cancel => m_Wrapper.m_UI_Cancel;
@@ -2114,8 +2219,8 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     private readonly InputAction m_SelectionTool_StartSelection;
     public struct SelectionToolActions
     {
-        private @_3DAmsterdam m_Wrapper;
-        public SelectionToolActions(@_3DAmsterdam wrapper) { m_Wrapper = wrapper; }
+        private @Netherlands3DInputActions m_Wrapper;
+        public SelectionToolActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @StartSelection => m_Wrapper.m_SelectionTool_StartSelection;
         public InputActionMap Get() { return m_Wrapper.m_SelectionTool; }
         public void Enable() { Get().Enable(); }
@@ -2201,6 +2306,7 @@ public class @_3DAmsterdam : IInputActionCollection, IDisposable
     public interface IGodViewKeyboardActions
     {
         void OnMoveCamera(InputAction.CallbackContext context);
+        void OnMoveCameraHeight(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
     }

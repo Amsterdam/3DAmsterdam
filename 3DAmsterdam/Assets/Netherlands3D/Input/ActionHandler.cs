@@ -17,7 +17,7 @@ namespace Netherlands3D.InputHandler
     public class ActionHandler:MonoBehaviour
     {
 
-        public static _3DAmsterdam actions;
+        public static Netherlands3DInputActions actions;
         InputActionAsset actionMaps;
 
 
@@ -35,7 +35,7 @@ namespace Netherlands3D.InputHandler
         {
 
             instance = this;
-            actions = new _3DAmsterdam();
+            actions = new Netherlands3DInputActions();
             actionMaps = actions.asset;
 
             foreach (UnityEngine.InputSystem.InputActionMap map in actionMaps.actionMaps)
