@@ -81,6 +81,7 @@ namespace Netherlands3D.Cameras
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
         private IAction zoomActionKeyboard;
+        private IAction moveHeightActionKeyboard;
 
         private float minUndergroundY = 0.0f;
 
@@ -114,6 +115,7 @@ namespace Netherlands3D.Cameras
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
+            moveHeightActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCameraHeight);
 
             //Combination
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
@@ -265,11 +267,12 @@ namespace Netherlands3D.Cameras
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
+            var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
             if (movement != null)
             {
                 movement.z = movement.y;
-                movement.y = 0;
+                movement.y = heightchange * 0.1f;
                 movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
                 cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
             }
