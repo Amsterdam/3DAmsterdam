@@ -25,6 +25,8 @@ public class EnviromentProfile : ScriptableObject
     public Color skyTintColorDay = Color.gray;
     public Color skyTintColorNight = Color.blue;
 
-    public Texture2D sunTexture; //Cloudy sky would require a more fuzzy sun visual
+    public Texture2D sunTexture; 
+    public Texture2D haloTexture; 
     public Color sunTextureTintColor = Color.yellow;
+    public Color sunHaloTextureTintColor = Color.yellow;
 }

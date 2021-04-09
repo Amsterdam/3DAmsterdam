@@ -56,6 +56,8 @@ MonoBehaviour:
   sunDownAmount: 0.5
   intensityMaterialTrees: {fileID: 2100000, guid: fe330b24b2a46b54f9f209bb9222af32,
     type: 2}
+  sunGraphic: {fileID: 657891322055325270}
+  sunHaloGraphic: {fileID: 465834593465833440}
 --- !u!1001 &6936403399329504428
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67,6 +69,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7688594362449951607, guid: 221d545c4d79dd445b031a06c6945bbd,
+        type: 3}
+      propertyPath: m_Name
+      value: SunHalo
       objectReference: {fileID: 0}
     - target: {fileID: 8278632715658735414, guid: 221d545c4d79dd445b031a06c6945bbd,
         type: 3}
@@ -119,6 +126,18 @@ Transform:
 --- !u!108 &9137917406280500068 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 2203220449124261832, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 6936403399329504428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &465834593465833440 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7365061304711007052, guid: 221d545c4d79dd445b031a06c6945bbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 6936403399329504428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &657891322055325270 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7593705107610643194, guid: 221d545c4d79dd445b031a06c6945bbd,
     type: 3}
   m_PrefabInstance: {fileID: 6936403399329504428}
   m_PrefabAsset: {fileID: 0}

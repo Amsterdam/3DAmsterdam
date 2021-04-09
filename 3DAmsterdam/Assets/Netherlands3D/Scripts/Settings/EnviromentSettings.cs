@@ -35,6 +35,11 @@ public class EnviromentSettings : MonoBehaviour
 
     private static bool useSkyboxForReflections = true;
 
+    [SerializeField]
+    private MeshRenderer sunGraphic;
+    [SerializeField]
+    private MeshRenderer sunHaloGraphic;
+
     private void Awake()
 	{
         if (directionalLightSun)
@@ -85,6 +90,14 @@ public class EnviromentSettings : MonoBehaviour
             SetReflections(useSkyboxForReflections);
             RenderSettings.skybox = proceduralSkyMaterial;
         }
+
+        //Set the proper graphic for the representation of the Sun
+        sunGraphic.enabled = activeEnviromentProfile.sunTexture;
+        sunGraphic.material.SetTexture("_MainTexture", activeEnviromentProfile.sunTexture);
+
+        sunHaloGraphic.enabled = activeEnviromentProfile.haloTexture;
+        sunHaloGraphic.material.SetTexture("_MainTexture", activeEnviromentProfile.haloTexture);
+
         UpdateSunBasedVisuals();
     }
 
@@ -137,6 +150,14 @@ public class EnviromentSettings : MonoBehaviour
 
         if(activeEnviromentProfile.skyMap)
             RenderSettings.skybox.SetFloat("_Exposure", sun.intensity);
+
+        var sunHorizon = Mathf.Clamp(Mathf.InverseLerp(0.6f, 0.7f, sun.intensity),0.0f,1.0f);
+        print("S " + sunHorizon);
+        if (activeEnviromentProfile.sunTexture)
+            sunGraphic.material.SetColor("_BaseColor",Color.Lerp(Color.black, activeEnviromentProfile.sunTextureTintColor * sunHorizon, sun.intensity));
+
+        if(activeEnviromentProfile.haloTexture)
+            sunHaloGraphic.material.SetColor("_BaseColor", Color.Lerp(Color.black, activeEnviromentProfile.sunHaloTextureTintColor * sunHorizon, sun.intensity));
 
         visualsUpdateRequired = false;
     }
