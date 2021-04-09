@@ -39,7 +39,7 @@ namespace Netherlands3D.AssetGeneration
 			public GameObject prefab;
 		}
 
-		private const string treeTileAssetsFolder = "Assets/TreeTileAssets/";
+		private const string treeTileAssetsFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
 		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;
@@ -57,7 +57,7 @@ namespace Netherlands3D.AssetGeneration
 		private Material treesMaterial;
 
 		private double tileSize = 1000.0;
-		private string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
+		public string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
 
 		private string[] treeNameParts;
 		private string treeTypeName = "";
@@ -252,7 +252,8 @@ namespace Netherlands3D.AssetGeneration
 					yield return new WaitForEndOfFrame();
 
 					string[] coordinates = file.Name.Split('_');
-					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
+					coordinates = coordinates[1].Split('-');
+					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0], System.Globalization.CultureInfo.InvariantCulture), double.Parse(coordinates[1], System.Globalization.CultureInfo.InvariantCulture), 0);
 
 					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
 					Mesh[] meshesInAssetbundle = new Mesh[0];
