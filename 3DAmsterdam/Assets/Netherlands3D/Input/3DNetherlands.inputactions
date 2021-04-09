@@ -554,6 +554,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "RotateAroundModifier",
+                    "type": "Button",
+                    "id": "b3fa879f-03f9-4550-bed8-3bff93ce6b84",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Position",
                     "type": "PassThrough",
                     "id": "c49c049d-757c-46a9-b9c5-5cf0aa7f0ccf",
@@ -626,6 +634,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9f7a1fe3-d6f3-4b8e-8595-f880cb550645",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RotateAroundModifier",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
