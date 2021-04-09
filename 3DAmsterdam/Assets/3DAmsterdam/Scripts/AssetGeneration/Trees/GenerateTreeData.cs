@@ -164,8 +164,8 @@ namespace Netherlands3D.AssetGeneration
 				RADIUS = cell[12],
 				WKT_LNG_LAT = cell[13],
 				WKT_LAT_LNG = cell[14],
-				LNG = double.Parse(cell[15]),
-				LAT = double.Parse(cell[16])
+				LNG = double.Parse(cell[15], System.Globalization.CultureInfo.InvariantCulture),
+				LAT = double.Parse(cell[16], System.Globalization.CultureInfo.InvariantCulture)
 			};
 
 			//Extra generated tree data
