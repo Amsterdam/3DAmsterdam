@@ -33,12 +33,12 @@ public class DXFCreation : MonoBehaviour
     public void CreateDXF(Bounds UnityBounds, List<Layer> layerList)
     {
 
-        StartCoroutine(createFile(UnityBounds, layerList));
+        StartCoroutine(CreateFile(UnityBounds, layerList));
     }
 
-    private IEnumerator createFile(Bounds UnityBounds, List<Layer> layerList)
+    private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
     {
-        freezeLayers(layerList, true);
+        FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
         Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
@@ -48,13 +48,14 @@ public class DXFCreation : MonoBehaviour
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
         
-        loadingScreen.ShowMessage("dxf-bestand genereren...");
+        loadingScreen.ShowMessage("DXF-bestand genereren...");
+        loadingScreen.ProgressBar.SetMessage("");
         loadingScreen.ProgressBar.Percentage(0f);
         
         int layercounter = 0;
         foreach (var layer in layerList)
         {
-            List<GameObject> gameObjectsToClip = getTilesInLayer(layer, bottomLeftRD, topRightRD);
+            List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
             if (gameObjectsToClip.Count==0)
             {
                 continue;
@@ -67,20 +68,23 @@ public class DXFCreation : MonoBehaviour
                     meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
                     
-                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,getColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
+                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
                     yield return null;
                 }
             }
-            loadingScreen.ProgressBar.Percentage(50*layercounter/layerList.Count);
+
             layercounter++;
+            loadingScreen.ProgressBar.Percentage((float)layercounter /(float)layerList.Count);
+            loadingScreen.ProgressBar.SetMessage(layer.name + "...");
+            yield return new WaitForEndOfFrame();
         }
-        freezeLayers(layerList, false);
+        FreezeLayers(layerList, false);
         file.Save();
         loadingScreen.Hide();
         Debug.Log("file saved");
     }
 
-    private void freezeLayers(List<Layer> layerList, bool freeze)
+    private void FreezeLayers(List<Layer> layerList, bool freeze)
     {
         foreach (var layer in layerList)
         {
@@ -88,11 +92,8 @@ public class DXFCreation : MonoBehaviour
         }
     }
 
-    private netDxf.AciColor getColor(Material material)
+    private netDxf.AciColor GetColor(Material material)
     {
-
-        
-
         if (material.GetColor("_BaseColor") !=null)
         {
             byte r = (byte)(material.GetColor("_BaseColor").r * 255);
@@ -112,10 +113,9 @@ public class DXFCreation : MonoBehaviour
         {
             return netDxf.AciColor.LightGray;
         }
-        
     }
 
-    public List<GameObject> getTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
+    public List<GameObject> GetTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
     {
         if (layer == null)
         {
