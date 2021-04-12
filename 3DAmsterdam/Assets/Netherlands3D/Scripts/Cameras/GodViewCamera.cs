@@ -58,6 +58,7 @@ namespace Netherlands3D.Cameras
         private float maxMomentum = 1000.0f;
 
         private bool firstPersonModifier = false;
+        private bool rotateAroundModifier = false;
 
         public bool LockFunctions = false;
 
@@ -77,10 +78,12 @@ namespace Netherlands3D.Cameras
         private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
+        private IAction modifierRotateAroundAction;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
         private IAction zoomActionKeyboard;
+        private IAction moveHeightActionKeyboard;
 
         private float minUndergroundY = 0.0f;
 
@@ -114,9 +117,11 @@ namespace Netherlands3D.Cameras
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
+            moveHeightActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCameraHeight);
 
             //Combination
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
+            modifierRotateAroundAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateAroundModifier);
 
             //Listeners
             dragActionMouse.SubscribePerformed(Drag);
@@ -129,7 +134,10 @@ namespace Netherlands3D.Cameras
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(FirstPersonModifier);
-		}
+
+            modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
+            modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
+        }
 
 
         public void EnableKeyboardActionMap(bool enabled)
@@ -170,6 +178,18 @@ namespace Netherlands3D.Cameras
             }
         }
 
+        private void RotateAroundModifier(IAction action)
+        {
+            if (action.Cancelled)
+            {
+                rotateAroundModifier = false;
+            }
+            else if (action.Performed)
+            {
+                rotateAroundModifier = true;
+            }
+        }
+
         private void Zoom(IAction action)
         {
                 scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
@@ -191,6 +211,7 @@ namespace Netherlands3D.Cameras
             if(action.Cancelled)
             {
                 dragging = false;
+                rotatingAroundPoint = false;
             } 
             else if (action.Performed)
             {
@@ -216,16 +237,23 @@ namespace Netherlands3D.Cameras
 		{
             if (dragging)
             {
+                CheckRotatingAround();
+
                 if (firstPersonModifier)
                 {
                     FirstPersonLook();
+                }
+                else if (rotatingAroundPoint)
+                {
+                    RotateAroundPoint();
                 }
                 else
                 {
                     Dragging();
                 }
             }
-            else{
+            else
+            {
                 if (rotatingAroundPoint)
                 {
                     RotateAroundPoint();
@@ -234,12 +262,25 @@ namespace Netherlands3D.Cameras
                 {
                     HandleTranslationInput();
                     HandleRotationInput();
-				}
+                }
                 EazeOutDragVelocity();
-            }  
-  
+            }
+
             LimitPosition();
-		}
+        }
+
+        void CheckRotatingAround()
+        {
+            if (rotateAroundModifier && !rotatingAroundPoint)
+            {
+                rotatingAroundPoint = true;
+                SetFocusPoint();
+            }
+            else if (!rotateAroundModifier && rotatingAroundPoint)
+            {
+                rotatingAroundPoint = false;
+            }
+        }
 
         /// <summary>
         /// Clamps the camera within the max travel distance bounding box
@@ -265,11 +306,12 @@ namespace Netherlands3D.Cameras
         {         
             moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
 
+            var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
             if (movement != null)
             {
                 movement.z = movement.y;
-                movement.y = 0;
+                movement.y = heightchange * 0.1f;
                 movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
                 cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
             }
@@ -286,7 +328,7 @@ namespace Netherlands3D.Cameras
                 rotation.x += rotationInput.y * rotationSpeed * Time.deltaTime;
                 cameraComponent.transform.eulerAngles = rotation;
             }
-		}
+        }
 
 		private void FirstPersonLook()
 		{
@@ -300,11 +342,11 @@ namespace Netherlands3D.Cameras
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
 
-		private void ClampRotation()
+        private void ClampRotation()
         {
             cameraComponent.transform.rotation = Quaternion.Euler(new Vector3(
                 ClampAngle(cameraComponent.transform.localEulerAngles.x, minAngle, maxAngle),
-                cameraComponent.transform.localEulerAngles.y, 
+                cameraComponent.transform.localEulerAngles.y,
                 cameraComponent.transform.localEulerAngles.z));
         }
 
