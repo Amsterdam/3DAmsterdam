@@ -119,7 +119,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 lod1Mesh.CombineMeshes(combi, false, false);
                 lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
                 //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
-                AssetDatabase.CreateAsset(lod1Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + "-lod1.mesh");
+                AssetDatabase.CreateAsset(lod1Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod1.mesh");
                 //for debug
 
                 //GetComponent<MeshFilter>().sharedMesh = lod1Mesh;
@@ -170,7 +170,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 lod0Mesh.CombineMeshes(combi, false, false);
                 lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
                 //Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
-                AssetDatabase.CreateAsset(lod0Mesh, "GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
+                AssetDatabase.CreateAsset(lod0Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
 
             }
         }
