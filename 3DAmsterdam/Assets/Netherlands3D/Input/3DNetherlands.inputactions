@@ -229,6 +229,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Fly",
+                    "type": "Value",
+                    "id": "2dc5fe02-9dca-430f-bdbc-2b5039294e78",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -398,17 +406,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "45316856-93cb-4fc6-a924-7ebc98665311",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Move Camera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "ForwardBackward",
                     "id": "730774e9-8459-46c5-9fce-3732dbe94dca",
                     "path": "2DVector",
@@ -506,6 +503,17 @@
                     "action": "Move CameraHeight",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "f5af82ee-fcc3-4de3-a57e-3af81528e048",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Fly",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
