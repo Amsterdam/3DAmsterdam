@@ -34,7 +34,8 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	/// </summary>
 	/// <param name="textInput">The new text value</param>
 	public void SetInputText(string textInput){
-		inputField.text = textInput;
+		if(!inputField.isFocused)
+			inputField.text = textInput;
 	}
 
 	/// <summary>
