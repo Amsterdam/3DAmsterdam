@@ -14,7 +14,7 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	public delegate void AddedOffset(int addedOffset);
 	public AddedOffset addedOffset;
 
-	float offset = 0;
+	private int offset = 0;
 
 	private void OnDisable()
 	{
@@ -45,7 +45,7 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	/// </summary>
 	IEnumerator ReadScrollWheelInput() {
 		while (true){
-			float offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+			offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
 			if(offset != 0.0f)
 				addedOffset.Invoke(offset);
 			yield return null;
