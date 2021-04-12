@@ -152,7 +152,6 @@ public class EnviromentSettings : MonoBehaviour
             RenderSettings.skybox.SetFloat("_Exposure", sun.intensity);
 
         var sunHorizon = Mathf.Clamp(Mathf.InverseLerp(0.6f, 0.7f, sun.intensity),0.0f,1.0f);
-        print("S " + sunHorizon);
         if (activeEnviromentProfile.sunTexture)
             sunGraphic.material.SetColor("_BaseColor",Color.Lerp(Color.black, activeEnviromentProfile.sunTextureTintColor * sunHorizon, sun.intensity));
 
