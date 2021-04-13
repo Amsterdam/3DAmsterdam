@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class ColladaFile : MonoBehaviour
 {
-
     private XmlTextWriter writer;
     private MemoryStream memoryStream;
     private StringWriter stringWriter;
