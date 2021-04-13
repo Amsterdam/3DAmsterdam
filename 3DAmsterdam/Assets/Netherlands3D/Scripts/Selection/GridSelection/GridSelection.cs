@@ -290,7 +290,7 @@ namespace Netherlands3D.Interface
 						selectedLayers.Add(selectableLayers[i]);
 					}
 				}
-
+				print(gridExportFormat);
 				switch (gridExportFormat)
                 {
 					case "AutoCAD DXF (.dxf)":

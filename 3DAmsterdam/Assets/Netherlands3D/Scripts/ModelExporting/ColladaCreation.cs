@@ -56,6 +56,8 @@ public class ColladaCreation : ModelFormatCreation
             layercounter++;
         }
         FreezeLayers(layerList, false);
+
+        colladaFile.CreateCollada();
         colladaFile.Save();
         loadingScreen.Hide();
         Debug.Log("file saved");
