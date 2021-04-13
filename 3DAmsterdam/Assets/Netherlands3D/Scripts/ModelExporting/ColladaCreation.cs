@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColladaCreation : MonoBehaviour
+public class ColladaCreation : ModelFormatCreation
 {
     [SerializeField]
     private LoadingScreen loadingScreen;
@@ -16,23 +16,15 @@ public class ColladaCreation : MonoBehaviour
         StartCoroutine(CreateFile(UnityBounds, layerList));
     }
 
-    private void FreezeLayers(List<Layer> layerList, bool freeze)
-    {
-        foreach (var layer in layerList)
-        {
-            layer.pauseLoading = freeze;
-        }
-    }
-
-    private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
+	private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
     {
         FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
         Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
         boundingbox = new MeshClipper.RDBoundingBox(bottomLeftRD.x, bottomLeftRD.y, topRightRD.x, topRightRD.y);
-        DxfFile colladaFile = new DxfFile();
-        colladaFile.SetupDXF();
+        ColladaFile colladaFile = new ColladaFile();
+
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
 
@@ -55,7 +47,7 @@ public class ColladaCreation : MonoBehaviour
                     meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)", "");
 
-                    //colladaFile.AddLayer(meshClipper.clippedVerticesRD, layerName, GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
+                    colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].GetColor("_BaseColor"));
                     yield return null;
                 }
             }
@@ -67,38 +59,5 @@ public class ColladaCreation : MonoBehaviour
         colladaFile.Save();
         loadingScreen.Hide();
         Debug.Log("file saved");
-    }
-
-    public List<GameObject> GetTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
-    {
-        if (layer == null)
-        {
-            return new List<GameObject>();
-        }
-        List<GameObject> output = new List<GameObject>();
-        double tilesize = layer.tileSize;
-        Debug.Log(tilesize);
-        int tileX;
-        int tileY;
-        foreach (var tile in layer.tiles)
-        {
-            tileX = tile.Key.x;
-            tileY = tile.Key.y;
-
-            if (tileX + tilesize < bottomLeftRD.x || tileX > topRightRD.x)
-            {
-                continue;
-            }
-            if (tileY + tilesize < bottomLeftRD.y || tileY > topRightRD.y)
-            {
-                continue;
-            }
-            MeshFilter[] meshFilters = tile.Value.gameObject.GetComponentsInChildren<MeshFilter>();
-            foreach (var meshFilter in meshFilters)
-            {
-                output.Add(meshFilter.gameObject);
-            }
-        }
-        return output;
     }
 }

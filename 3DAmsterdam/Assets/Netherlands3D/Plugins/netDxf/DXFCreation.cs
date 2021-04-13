@@ -5,34 +5,14 @@ using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface;
 
-public class DXFCreation : MonoBehaviour
+public class DXFCreation : ModelFormatCreation
 {
     [SerializeField]
     private LoadingScreen loadingScreen;
     private MeshClipper.RDBoundingBox boundingbox;
-    // Start is called before the first frame update
-    void Start()
-    {
-        //List<Vector3RD> verts = new List<Vector3RD>();
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-
-        //DxfFile file = new DxfFile();
-        //file.SetupDXF();
-        //file.AddLayer(verts,"testlaag");
-        //file.Save();
-    }
 
     public void CreateDXF(Bounds UnityBounds, List<Layer> layerList)
     {
-
         StartCoroutine(CreateFile(UnityBounds, layerList));
     }
 
@@ -84,14 +64,6 @@ public class DXFCreation : MonoBehaviour
         Debug.Log("file saved");
     }
 
-    private void FreezeLayers(List<Layer> layerList, bool freeze)
-    {
-        foreach (var layer in layerList)
-        {
-            layer.pauseLoading = freeze;
-        }
-    }
-
     private netDxf.AciColor GetColor(Material material)
     {
         if (material.GetColor("_BaseColor") !=null)
@@ -114,44 +86,4 @@ public class DXFCreation : MonoBehaviour
             return netDxf.AciColor.LightGray;
         }
     }
-
-    public List<GameObject> GetTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
-    {
-        if (layer == null)
-        {
-            return new List<GameObject>();
-        }
-        List<GameObject> output = new List<GameObject>();
-        double tilesize = layer.tileSize;
-        Debug.Log(tilesize);
-        int tileX;
-        int tileY;
-        foreach (var tile in layer.tiles)
-        {
-            tileX = tile.Key.x;
-            tileY = tile.Key.y;
-
-            if (tileX+tilesize < bottomLeftRD.x || tileX > topRightRD.x)
-            {
-                continue;
-            }
-            if (tileY+tilesize<bottomLeftRD.y || tileY > topRightRD.y)
-            {
-                continue;
-            }
-            //if (tile.Value.gameObject.GetComponent<MeshFilter>()!=null)
-            //{
-            //    output.Add(tile.Value.gameObject);
-            //}
-            MeshFilter[] meshFilters = tile.Value.gameObject.GetComponentsInChildren<MeshFilter>();
-            foreach (var meshFilter in meshFilters)
-            {
-                output.Add(meshFilter.gameObject);
-            }
-            
-            
-        }
-        return output;
-    }
-    
 }
