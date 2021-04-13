@@ -242,6 +242,14 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fly"",
+                    ""type"": ""Value"",
+                    ""id"": ""2dc5fe02-9dca-430f-bdbc-2b5039294e78"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -411,17 +419,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""45316856-93cb-4fc6-a924-7ebc98665311"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Move Camera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""ForwardBackward"",
                     ""id"": ""730774e9-8459-46c5-9fce-3732dbe94dca"",
                     ""path"": ""2DVector"",
@@ -519,6 +516,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Move CameraHeight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5af82ee-fcc3-4de3-a57e-3af81528e048"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Fly"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1651,6 +1659,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         m_GodViewKeyboard_MoveCameraHeight = m_GodViewKeyboard.FindAction("Move CameraHeight", throwIfNotFound: true);
         m_GodViewKeyboard_Zoom = m_GodViewKeyboard.FindAction("Zoom", throwIfNotFound: true);
         m_GodViewKeyboard_RotateCamera = m_GodViewKeyboard.FindAction("Rotate Camera", throwIfNotFound: true);
+        m_GodViewKeyboard_Fly = m_GodViewKeyboard.FindAction("Fly", throwIfNotFound: true);
         // GodViewMouse
         m_GodViewMouse = asset.FindActionMap("GodViewMouse", throwIfNotFound: true);
         m_GodViewMouse_Zoom = m_GodViewMouse.FindAction("Zoom", throwIfNotFound: true);
@@ -1849,6 +1858,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_GodViewKeyboard_MoveCameraHeight;
     private readonly InputAction m_GodViewKeyboard_Zoom;
     private readonly InputAction m_GodViewKeyboard_RotateCamera;
+    private readonly InputAction m_GodViewKeyboard_Fly;
     public struct GodViewKeyboardActions
     {
         private @Netherlands3DInputActions m_Wrapper;
@@ -1857,6 +1867,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         public InputAction @MoveCameraHeight => m_Wrapper.m_GodViewKeyboard_MoveCameraHeight;
         public InputAction @Zoom => m_Wrapper.m_GodViewKeyboard_Zoom;
         public InputAction @RotateCamera => m_Wrapper.m_GodViewKeyboard_RotateCamera;
+        public InputAction @Fly => m_Wrapper.m_GodViewKeyboard_Fly;
         public InputActionMap Get() { return m_Wrapper.m_GodViewKeyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1878,6 +1889,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @RotateCamera.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnRotateCamera;
+                @Fly.started -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnFly;
+                @Fly.performed -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnFly;
+                @Fly.canceled -= m_Wrapper.m_GodViewKeyboardActionsCallbackInterface.OnFly;
             }
             m_Wrapper.m_GodViewKeyboardActionsCallbackInterface = instance;
             if (instance != null)
@@ -1894,6 +1908,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @RotateCamera.started += instance.OnRotateCamera;
                 @RotateCamera.performed += instance.OnRotateCamera;
                 @RotateCamera.canceled += instance.OnRotateCamera;
+                @Fly.started += instance.OnFly;
+                @Fly.performed += instance.OnFly;
+                @Fly.canceled += instance.OnFly;
             }
         }
     }
@@ -2337,6 +2354,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         void OnMoveCameraHeight(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
+        void OnFly(InputAction.CallbackContext context);
     }
     public interface IGodViewMouseActions
     {
