@@ -61,8 +61,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private Vector2 tileOffset;
-      
-        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";   
+              
         private Texture2D backDropTexture;
         private Texture2D drawIntoPixels;
 
@@ -137,7 +136,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             gridPixelsRawImage.texture = drawIntoPixels;
 
             //Download background preview image
-            var downloadUrl = previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
+            var downloadUrl = Config.activeConfiguration.previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
             print(downloadUrl);
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
             yield return www.SendWebRequest();
