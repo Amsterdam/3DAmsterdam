@@ -8,6 +8,7 @@ using netDxf.Tables;
 using ConvertCoordinates;
 using System.IO;
 using System.Runtime.InteropServices;
+using Netherlands3D.JavascriptConnection;
 
 public class DxfFile 
 {
@@ -35,11 +36,6 @@ public class DxfFile
 
 
         AddMesh(triangleVertices, layerName);
-        
-
-
-
-
     }
     public void Save()
     {
@@ -53,7 +49,7 @@ public class DxfFile
         {
             if (doc.Save(stream))
             {
-                DownloadFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf"); ;
+                JavascriptMethodCaller.DownloadByteArrayAsFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
             }
             else
             {
@@ -125,7 +121,4 @@ public class DxfFile
         
         
     }
-
-    [DllImport("__Internal")]
-    private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 }

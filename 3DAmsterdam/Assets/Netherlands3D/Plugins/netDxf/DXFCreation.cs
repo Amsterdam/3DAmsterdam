@@ -43,8 +43,8 @@ public class DXFCreation : MonoBehaviour
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
         Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
         boundingbox = new MeshClipper.RDBoundingBox(bottomLeftRD.x, bottomLeftRD.y, topRightRD.x, topRightRD.y);
-        DxfFile file = new DxfFile();
-        file.SetupDXF();
+        DxfFile dxfFile = new DxfFile();
+        dxfFile.SetupDXF();
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
         
@@ -68,7 +68,7 @@ public class DXFCreation : MonoBehaviour
                     meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
                     
-                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
+                    dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
                     yield return null;
                 }
             }
@@ -79,7 +79,7 @@ public class DXFCreation : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         FreezeLayers(layerList, false);
-        file.Save();
+        dxfFile.Save();
         loadingScreen.Hide();
         Debug.Log("file saved");
     }

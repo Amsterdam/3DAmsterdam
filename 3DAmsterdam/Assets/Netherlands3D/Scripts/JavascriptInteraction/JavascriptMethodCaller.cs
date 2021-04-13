@@ -38,9 +38,18 @@ namespace Netherlands3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string ChangeInterfaceScale(float scale);
 
+		[DllImport("__Internal")]
+		private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
+
 
 		[DllImport("__Internal")]
 		private static extern void LockCursorInternal();
+
+
+		public static void DownloadByteArrayAsFile(byte[] array, int byteLength, string fileName)
+		{
+			DownloadFile(array, byteLength, fileName);
+		}
 
 		/// <summary>
 		/// This methods activates the html hitarea for the file upload button.
