@@ -45,18 +45,20 @@ public class DxfFile
     {
 #if UNITY_EDITOR
 
-        doc.Save("D:/testDXFBinary.dxf", true);
-        
+        var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        doc.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
         return;
 #endif
-        MemoryStream stream = new MemoryStream();
-        if (doc.Save(stream))
+        using (var stream = new MemoryStream())
         {
-            DownloadFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf"); ;
-        }
-        else
-        {
-            Debug.Log("cant write file");
+            if (doc.Save(stream))
+            {
+                DownloadFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf"); ;
+            }
+            else
+            {
+                Debug.Log("cant write file");
+            }
         }
     }
 
