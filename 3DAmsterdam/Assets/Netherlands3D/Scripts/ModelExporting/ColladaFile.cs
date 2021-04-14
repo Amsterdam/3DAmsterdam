@@ -35,6 +35,10 @@ public class ColladaFile
 		{
 			objectTriangles.Add(objectName, triangleVertices);
 		}
+		else{
+			//existing object with same name adds their triangles to the existing object
+			objectTriangles[objectName].AddRange(triangleVertices);
+		}
 		vertices = triangleVertices;
 	}
 
