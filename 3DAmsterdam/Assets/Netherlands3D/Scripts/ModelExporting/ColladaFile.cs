@@ -36,7 +36,6 @@ public class ColladaFile
 			objectTriangles.Add(objectName, triangleVertices);
 		}
 		vertices = triangleVertices;
-
 	}
 
 	public void CreateCollada()
@@ -49,16 +48,28 @@ public class ColladaFile
 		writer.WriteAttributeString("version", "1.5.0");
 
 		writer.WriteStartElement("asset");
+		writer.WriteStartElement("contributor");
+		writer.WriteStartElement("authoring_tool");
+		writer.WriteString("3D Amsterdam");
+		writer.WriteEndElement(); //end authoring_tool
+		writer.WriteEndElement(); //end contributor
 		writer.WriteStartElement("created");
-		writer.WriteString("Now");
-		writer.WriteEndElement();
+		writer.WriteString(DateTime.Now.ToString("yyyyMMddHHmmssffff"));
+		writer.WriteEndElement(); //end created
 		writer.WriteStartElement("modified");
-		writer.WriteString("Now");
-		writer.WriteEndElement();
+		writer.WriteString(DateTime.Now.ToString("yyyyMMddHHmmssffff"));
+		writer.WriteEndElement(); //end modified
 		writer.WriteStartElement("revision");
 		writer.WriteString("1");
-		writer.WriteEndElement();
-		writer.WriteEndElement();
+		writer.WriteEndElement(); //end revision
+		writer.WriteStartElement("unit");
+		writer.WriteAttributeString("meter", "1");
+		writer.WriteAttributeString("name", "meter");
+		writer.WriteEndElement(); //end unit
+		writer.WriteStartElement("up_axis");
+		writer.WriteString("Z_UP");
+		writer.WriteEndElement(); //end up_axis
+		writer.WriteEndElement(); //end asset
 
 		writer.WriteStartElement("library_effects");
 		writer.WriteEndElement();
@@ -250,15 +261,11 @@ public class ColladaFile
 				writer.WriteAttributeString("source", "#" + mesh.Key + "-Normal");
 				writer.WriteAttributeString("offset", "1");
 				writer.WriteEndElement();
-				for (int i = 0; i < meshVertices.Count; i++)
+				for (int i = 0; i < meshVertices.Count; i+=3)
 				{
 					writer.WriteStartElement("p"); //start p
 					var vert = meshVertices[i];
-					writer.WriteString(vert.x + " " + vert.y + " " + vert.z);
-					if (i < meshVertices.Count - 1)
-					{
-						writer.WriteString(" ");
-					}
+					writer.WriteString(i.ToString() + " 0 " + (i+1).ToString() + " 0 " + (i + 2).ToString() + " 0"); //triangle
 					writer.WriteEndElement(); //end p
 				}
 				writer.WriteEndElement(); //end polygon
@@ -280,15 +287,7 @@ public class ColladaFile
 				writer.WriteStartElement("translate");
 				writer.WriteString(" 0 0 0");
 				writer.WriteEndElement(); //end translate
-				writer.WriteStartElement("rotate");
-				writer.WriteString(" 0 0 1 0");
-				writer.WriteEndElement(); //end rotate
-				writer.WriteStartElement("rotate");
-				writer.WriteString(" 0 1 0 0");
-				writer.WriteEndElement(); //end rotate
-				writer.WriteStartElement("rotate");
-				writer.WriteString(" 1 0 0 0");
-				writer.WriteEndElement(); //end rotate
+				
 				writer.WriteStartElement("scale");
 				writer.WriteString(" 1 1 1");
 				writer.WriteEndElement(); //end scale

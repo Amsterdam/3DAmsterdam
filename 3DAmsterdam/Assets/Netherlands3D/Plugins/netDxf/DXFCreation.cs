@@ -45,7 +45,7 @@ public class DXFCreation : ModelFormatCreation
                 meshClipper.SetGameObject(gameObject);
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
-                    meshClipper.clipSubMesh(boundingbox, submeshID);
+                    meshClipper.ClipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
                     
                     dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));

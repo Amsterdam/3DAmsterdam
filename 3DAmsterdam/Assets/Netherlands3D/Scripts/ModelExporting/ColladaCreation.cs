@@ -11,6 +11,9 @@ public class ColladaCreation : ModelFormatCreation
     private LoadingScreen loadingScreen;
     private MeshClipper.RDBoundingBox boundingbox;
 
+    private bool coordinatesToZero = true;
+    public bool CoordinatesToZero { get => coordinatesToZero; set => coordinatesToZero = value; }
+
     public void CreateCollada(Bounds UnityBounds, List<Layer> layerList)
     {
         StartCoroutine(CreateFile(UnityBounds, layerList));
@@ -44,8 +47,21 @@ public class ColladaCreation : ModelFormatCreation
                 meshClipper.SetGameObject(gameObject);
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
-                    meshClipper.clipSubMesh(boundingbox, submeshID);
+                    meshClipper.ClipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)", "");
+
+                    if(coordinatesToZero)
+                    {
+						//Move the coordinates so our bottom left of our clipped mesh is at the center of the scene
+						for (int i = 0; i < meshClipper.clippedVerticesRD.Count; i++)
+						{
+                            var vert = meshClipper.clippedVerticesRD[i];
+                            vert.x -= boundingbox.minX;
+                            vert.y -= boundingbox.minY;
+                            meshClipper.clippedVerticesRD[i] = vert;
+                        }
+					}
+
                     colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]);
                     yield return null;
                 }
