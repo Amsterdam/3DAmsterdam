@@ -49,7 +49,7 @@ public class ColladaFile
 		writer.WriteStartDocument(false);
 		writer.WriteStartElement("COLLADA");
 		writer.WriteAttributeString("xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-		writer.WriteAttributeString("version", "1.5.0");
+		writer.WriteAttributeString("version", "1.4.1");
 
 		writer.WriteStartElement("asset");
 		writer.WriteStartElement("contributor");
@@ -136,7 +136,7 @@ public class ColladaFile
 			foreach (var mesh in objectTriangles)
 			{
 				writer.WriteStartElement("geometry");
-				writer.WriteAttributeString("id", mesh.Key);
+				writer.WriteAttributeString("id", mesh.Key + "-geometry");
 				writer.WriteAttributeString("name", mesh.Key);
 				writer.WriteStartElement("mesh");
 
@@ -161,8 +161,8 @@ public class ColladaFile
 				writer.WriteStartElement("technique_common");
 				writer.WriteStartElement("accessor");
 				//start source for vertex positions
+				writer.WriteAttributeString("count", "4");
 				writer.WriteAttributeString("source", "#" + mesh.Key + "_verts-array");
-				writer.WriteAttributeString("count", meshVertices.Count.ToString());
 				writer.WriteAttributeString("stride", "3");
 				writer.WriteStartElement("param");
 				writer.WriteAttributeString("name", "X");
@@ -185,14 +185,24 @@ public class ColladaFile
 				writer.WriteAttributeString("id", mesh.Key + "-Normal");
 				writer.WriteStartElement("float_array");
 				writer.WriteAttributeString("id", mesh.Key + "_Normal-array");
-				writer.WriteAttributeString("count", "1"); //just one normal for now untill we have a list
-				writer.WriteString("0 0 0");
+				writer.WriteAttributeString("count", meshVertices.Count.ToString());
+
+				//normals
+				for (int i = 0; i < meshVertices.Count; i++)
+				{
+					var vert = meshVertices[i];
+					writer.WriteString("0 0 0"); //Zero untill we have a list of normals
+					if (i < meshVertices.Count - 1)
+					{
+						writer.WriteString(" ");
+					}
+				}
 				writer.WriteEndElement(); //end float_array
 				writer.WriteStartElement("technique_common");
 				writer.WriteStartElement("accessor");
 				//start source for vertex positions
+				writer.WriteAttributeString("count", "4");
 				writer.WriteAttributeString("source", "#" + mesh.Key + "_Normal-array");
-				writer.WriteAttributeString("count", "1");
 				writer.WriteAttributeString("stride", "3");
 				writer.WriteStartElement("param");
 				writer.WriteAttributeString("name", "X");
@@ -216,28 +226,31 @@ public class ColladaFile
 				writer.WriteAttributeString("semantic", "POSITION");
 				writer.WriteAttributeString("source", "#" + mesh.Key + "-Pos");
 				writer.WriteEndElement(); //end input
+				writer.WriteStartElement("input");
+				writer.WriteAttributeString("semantic", "NORMAL");
+				writer.WriteAttributeString("source", "#" + mesh.Key + "-Normal");
+				writer.WriteEndElement(); //end input
 				writer.WriteEndElement(); //end vertices
 
-				writer.WriteStartElement("polygons");
+				writer.WriteStartElement("triangles");
 				writer.WriteAttributeString("count", (meshVertices.Count / 3).ToString());
-				writer.WriteAttributeString("material", "WHITE");
+				writer.WriteAttributeString("material", mesh.Key + "-symbol");
 				writer.WriteStartElement("input");
 				writer.WriteAttributeString("semantic", "VERTEX");
 				writer.WriteAttributeString("source", "#" + mesh.Key + "-Vtx");
 				writer.WriteAttributeString("offset", "0");
 				writer.WriteEndElement();
-				writer.WriteStartElement("input");
-				writer.WriteAttributeString("semantic", "NORMAL");
-				writer.WriteAttributeString("source", "#" + mesh.Key + "-Normal");
-				writer.WriteAttributeString("offset", "1");
-				writer.WriteEndElement();
+
+				writer.WriteStartElement("p"); //start p
+				var triangleString = "";
 				for (int i = 0; i < meshVertices.Count; i+=3)
 				{
-					writer.WriteStartElement("p"); //start p
 					var vert = meshVertices[i];
-					writer.WriteString(i.ToString() + " 0 " + (i+1).ToString() + " 0 " + (i + 2).ToString() + " 0"); //triangle
-					writer.WriteEndElement(); //end p
+					triangleString += i.ToString() + " " + (i + 1).ToString() + " " + (i + 2).ToString() + " ";
 				}
+				writer.WriteString(triangleString); //triangle x y z
+				writer.WriteEndElement(); //end p
+
 				writer.WriteEndElement(); //end polygon
 				writer.WriteEndElement(); //end mesh
 				writer.WriteEndElement(); //end geometry
@@ -264,11 +277,11 @@ public class ColladaFile
 
 				//reference geometry
 				writer.WriteStartElement("instance_geometry");
-				writer.WriteAttributeString("url", "#" + mesh.Key);
+				writer.WriteAttributeString("url", "#" + mesh.Key + "-geometry");
 				writer.WriteStartElement("bind_material");
 				writer.WriteStartElement("technique_common");
 				writer.WriteStartElement("instance_material");
-				writer.WriteAttributeString("symbol", "WHITE");
+				writer.WriteAttributeString("symbol", mesh.Key + "-symbol");
 				writer.WriteAttributeString("target", "#" + mesh.Key);
 				writer.WriteEndElement(); //end instance_material
 				writer.WriteEndElement(); //end technique_common
