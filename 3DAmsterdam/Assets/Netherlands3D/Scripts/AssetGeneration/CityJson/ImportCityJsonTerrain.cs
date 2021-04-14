@@ -6,6 +6,7 @@ using UnityEditor;
 using System.IO;
 using ConvertCoordinates;
 using SimpleJSON;
+using System.Threading;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
@@ -177,6 +178,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         public void CreateCombinedMeshes(Dictionary<terrainType, Mesh>meshes,Vector2 tileID, float tileSize)
         {
             //create LOD1 Mesh
+            UnityMeshSimplifier.MeshSimplifier meshSimplifier1 = null;
+            Thread thread1 = null;
+            UnityMeshSimplifier.MeshSimplifier meshSimplifier2 = null;
+            Thread thread2 = null;
+            UnityMeshSimplifier.MeshSimplifier meshSimplifier3 = null;
+            Thread thread3 = null;
+
             CombineInstance[] combi = new CombineInstance[12];
             for (int i = 0; i < combi.Length; i++)
             {
@@ -226,9 +234,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 combi[11].mesh = meshes[terrainType.water];
             }
-
-            
-            
 
             Mesh lod1Mesh = new Mesh();
             lod1Mesh.CombineMeshes(combi, false, false);
@@ -383,7 +388,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             List<int> ints = new List<int>();
             for (int i = 0; i < clippedRDTriangles.Count; i++)
             {
-                Vector3 coord = CoordConvert.RDtoUnity(clippedRDTriangles[i]) - tileCenterUnity;
+                Vector3 coord = new Vector3(
+                    (float)(clippedRDTriangles[i].x-tileCenterRD.x),
+                    (float)clippedRDTriangles[i].z,
+                    (float)(clippedRDTriangles[i].y - tileCenterRD.y)
+                    
+
+                    );
                 ints.Add(i);
                 verts.Add(coord);
             }

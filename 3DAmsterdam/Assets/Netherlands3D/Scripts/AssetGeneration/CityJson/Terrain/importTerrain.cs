@@ -50,7 +50,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 if (IsBoundingBoxInSingleTile(vertices, tileSize, out tileId))
                 {
 
-                        triangleLists.Add(tileId, vertices);
+                        triangleLists.Add(tileId, new List<Vector3RD>());
                     
                 }
                 else
@@ -60,11 +60,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     {
                     if (!triangleLists.ContainsKey(item))
                     {
-                        triangleLists.Add(item, vertices);
+
+                        triangleLists.Add(item, new List<Vector3RD>());
                     }
-                            
-                        
-                    }
+
+
+                }
 
                 }
             
@@ -133,12 +134,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
     public class importTerrain : MonoBehaviour
     {
-        [Header("Bounding box in RD coordinates")]
-        [SerializeField]
-        private Vector2 boundingBoxBottomLeft;
-        [SerializeField]
-        private Vector2 boundingBoxTopRight;
-        private Vector3RD center = new Vector3RD();
+        
 
         [Tooltip("Width and height in meters")]
         [SerializeField]
@@ -174,13 +170,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Debug.Log("file " + counter + " van " + fileNames.Count);
                 bewerkingGereed = false;
                 StartCoroutine(ReadJSONFile(item));
+                
             }
 
         }
 
         private void moveFile(string fileName)
         {
+            if (!System.IO.Directory.Exists(geoJsonSourceFilesFolder+"/gereed"))
+            {
+                System.IO.Directory.CreateDirectory(geoJsonSourceFilesFolder + "/gereed");
+            }
 
+            string[] filePath = fileName.Split('\\');
+            string filename = filePath[filePath.Length-1];
+
+            System.IO.Directory.Move(geoJsonSourceFilesFolder + "/" + filename, geoJsonSourceFilesFolder + "/gereed/" + filename);
         }
         List<string> GetFileList()
         {
@@ -200,15 +205,17 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         IEnumerator ReadJSONFile(string filename)
         {
-            using (StreamReader sr = new StreamReader(filename))
-            {
-                Debug.Log("parsing file: " + filename);
+            
+                Debug.Log("reading file: " + filename);
                 yield return null;
-                JSONNode cityModel = JSON.Parse(sr.ReadToEnd());
+            var jsonstring = File.ReadAllText(filename);
+            Debug.Log("parsing file: " + filename);
+            yield return null;
+            JSONNode cityModel = JSON.Parse(jsonstring);
 
                 Debug.Log("reading vertices");
                 yield return null;
-                Vector3RD[] vertices = readVertices(cityModel, center);
+                Vector3RD[] vertices = readVertices(cityModel);
 
 
 
@@ -254,7 +261,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                         {
                             if (Tiles[tile.Key][i].type == coterraintype)
                             {
-                                Tiles[tile.Key][i].vertices.AddRange(tile.Value);
+                                Tiles[tile.Key][i].vertices.AddRange(cityObject.vertices);
                                 found = true;
                                 i = Tiles[tile.Key].Count + 2;
                             }
@@ -285,11 +292,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     importCityjsonterrainScript.CreateCombinedMeshes(meshes, tile.Key, tileSize);
                 }
                 cityModel = null;
-            }
+
+            moveFile(filename);
             bewerkingGereed = true;
         }
 
-        Vector3RD[] readVertices(JSONNode citymodel, Vector3RD centerpoint)
+        Vector3RD[] readVertices(JSONNode citymodel)
         {
             //needs to be sequential
             JSONNode verticesNode = citymodel["vertices"];
@@ -378,7 +386,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     return terrainType.woonerven;
                 }
-                return terrainFilter.roadsOverig;
+                return terrainType.woonerven;
             }
             if (cityObjectType == "LandUse")
             {
@@ -398,7 +406,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     return terrainType.erven;
                 }
-                return terrainFilter.landUseOverig;
+                return terrainType.onbegroeid;
             }
             if (cityObjectType == "PlantCover")
             {
@@ -416,7 +424,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 return terrainType.bruggen;
             }
-
+            if (cityObjectType =="Building")
+            {
+                return terrainType.anders;
+            }
+            Debug.Log(cityObjectType);
             return terrainType.anders;
         }
 
