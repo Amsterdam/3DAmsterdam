@@ -32,7 +32,8 @@ public class ColladaCreation : ModelFormatCreation
         MeshClipper meshClipper = new MeshClipper();
 
         loadingScreen.ShowMessage("Collada-bestand genereren...");
-        loadingScreen.ProgressBar.Percentage(0f);
+        loadingScreen.ProgressBar.Percentage(0.1f);
+        yield return new WaitForEndOfFrame();
 
         int layercounter = 0;
         foreach (var layer in layerList)

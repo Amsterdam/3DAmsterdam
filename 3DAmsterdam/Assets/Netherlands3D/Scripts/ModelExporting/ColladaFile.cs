@@ -76,8 +76,7 @@ public class ColladaFile
 		writer.WriteEndElement(); //end asset
 
 		writer.WriteStartElement("library_effects");
-		writer.WriteEndElement();
-
+		
 		//Material Effects
 		foreach(Material material in materials)
 		{
@@ -87,19 +86,13 @@ public class ColladaFile
 			writer.WriteAttributeString("id", material.name);
 			writer.WriteStartElement("profile_COMMON");
 			writer.WriteStartElement("technique");
-			writer.WriteAttributeString("sid", "phong1");
-			writer.WriteStartElement("phong");
+			writer.WriteAttributeString("sid", "common");
+			writer.WriteStartElement("lambert");
 
-			//Phong properties
+			//material properties
 			writer.WriteStartElement("emission");
 			writer.WriteStartElement("color");
-			writer.WriteString("0.0 0.0 0.0 0.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("ambient");
-			writer.WriteStartElement("color");
-			writer.WriteString("0.0 0.0 0.0 0.0");
+			writer.WriteString("0.0 0.0 0.0 1.0");
 			writer.WriteEndElement();
 			writer.WriteEndElement();
 
@@ -109,39 +102,10 @@ public class ColladaFile
 			writer.WriteEndElement();
 			writer.WriteEndElement();
 
-			writer.WriteStartElement("specular");
-			writer.WriteStartElement("color");
-			writer.WriteString("0.0 0.0 0.0 0.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("shininess");
+			writer.WriteStartElement("index_of_refraction");
 			writer.WriteStartElement("float");
-			writer.WriteString("5.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("reflective");
-			writer.WriteStartElement("color");
-			writer.WriteString("0.0 0.0 0.0 0.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("reflectivity");
-			writer.WriteStartElement("float");
-			writer.WriteString("0.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("transparent");
-			writer.WriteStartElement("color");
-			writer.WriteString("0.0 0.0 0.0 0.0");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("transparency");
-			writer.WriteStartElement("float");
-			writer.WriteString((1.0f-materialColor.a).ToString());
+			writer.WriteAttributeString("sid", "ior");
+			writer.WriteString("1.45");
 			writer.WriteEndElement();
 			writer.WriteEndElement();
 
@@ -150,6 +114,8 @@ public class ColladaFile
 			writer.WriteEndElement();
 			writer.WriteEndElement();
 		}
+
+		writer.WriteEndElement();
 
 		//Materials
 		writer.WriteStartElement("library_materials");
@@ -323,7 +289,7 @@ public class ColladaFile
 		writer.WriteEndElement(); // COLLADA
 		writer.WriteEndDocument();
 		writer.Flush();
-		//writer.Close(); //Should probably stay open to reuse for reading buffer?
+		writer.Close(); 
 	}
 
 	public void Save()
