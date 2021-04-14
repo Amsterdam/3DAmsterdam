@@ -30,8 +30,9 @@ public class DXFCreation : ModelFormatCreation
         
         loadingScreen.ShowMessage("DXF-bestand genereren...");
         loadingScreen.ProgressBar.SetMessage("");
-        loadingScreen.ProgressBar.Percentage(0f);
-        
+        loadingScreen.ProgressBar.Percentage(0.1f);
+        yield return new WaitForEndOfFrame();
+
         int layercounter = 0;
         foreach (var layer in layerList)
         {
