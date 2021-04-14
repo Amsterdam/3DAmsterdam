@@ -33,7 +33,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         public List<int> indices;
         public bool placed = false;
         public Dictionary<Vector2, List<Vector3RD>> triangleLists;
-        public void GenerateTriangleLists( int tileSize)
+        public void GenerateTriangleLists( int tileSize, Vector4 totalBoundingBox)
         {
            triangleLists = new Dictionary<Vector2, List<Vector3RD>>();
 
@@ -46,26 +46,23 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             Vector2 tileId;
             //check if entire object is inside one tile
-           
-                if (IsBoundingBoxInSingleTile(vertices, tileSize, out tileId))
-                {
+ 
 
-                        triangleLists.Add(tileId, new List<Vector3RD>());
-                    
-                }
-                else
-                {
                     List<Vector2> overlappingTiles = getOverlappingTiles(vertices, tileSize);
                     foreach (var item in overlappingTiles)
                     {
-                    if (!triangleLists.ContainsKey(item))
-                    {
-
-                        triangleLists.Add(item, new List<Vector3RD>());
+                    if (item.x >= totalBoundingBox.x && item.x <= totalBoundingBox.z && item.y >= totalBoundingBox.y && item.y <= totalBoundingBox.w)
+                        {
+                        if (!triangleLists.ContainsKey(item))
+                        {
+                        
+                            triangleLists.Add(item, new List<Vector3RD>());
+                        }
+                        
                     }
 
 
-                }
+                
 
                 }
             
@@ -217,10 +214,19 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 yield return null;
                 Vector3RD[] vertices = readVertices(cityModel);
 
+            double Xmin = vertices.Min(x => x.x);
+            Xmin = Xmin + (tileSize - Xmin % tileSize);
+            double Xmax = vertices.Max(x => x.x);
+            Xmax = Xmax - (Xmax % tileSize);
+            double Ymin = vertices.Min(x => x.y);
+            Ymin = Ymin + (tileSize - Ymin % tileSize);
+            double Ymax = vertices.Max(x => x.y);
+            Ymax = Ymax - (Ymax % tileSize);
+            Vector4 totalBoundingBox = new Vector4((float)Xmin, (float)Ymin, (float)Xmax, (float)Ymax);
+            Debug.Log(totalBoundingBox);
 
-
-                //loop through cityobjects
-                Debug.Log("collecting cityobjects");
+            //loop through cityobjects
+            Debug.Log("collecting cityobjects");
                 yield return null;
                 CityObject[] cityObjects = GetCityObjects(cityModel["CityObjects"],vertices);
 
@@ -230,7 +236,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 yield return null;
                 int total = cityObjects.Count();
                 int counter = 0;
-                Parallel.ForEach(cityObjects, cityObject => { cityObject.GenerateTriangleLists( tileSize); });
+                Parallel.ForEach(cityObjects, cityObject => { cityObject.GenerateTriangleLists( tileSize,totalBoundingBox); });
                 //foreach (var cityObject in cityObjects)
                 //{
                 //    counter++;
