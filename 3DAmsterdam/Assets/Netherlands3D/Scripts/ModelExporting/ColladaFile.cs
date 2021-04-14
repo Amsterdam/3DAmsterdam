@@ -46,7 +46,7 @@ public class ColladaFile : MonoBehaviour
 		//Material Effects
 		foreach(Material material in materials)
 		{
-			Color materialColor = material.GetColor("_MainColor");
+			Color materialColor = material.GetColor("_BaseColor");
 
 			writer.WriteStartElement("effect");
 			writer.WriteAttributeString("id", material.name);
@@ -106,7 +106,7 @@ public class ColladaFile : MonoBehaviour
 
 			writer.WriteStartElement("transparency");
 			writer.WriteStartElement("float");
-			writer.WriteString(materialColor.a.ToString());
+			writer.WriteString((1.0f-materialColor.a).ToString());
 			writer.WriteEndElement();
 			writer.WriteEndElement();
 
@@ -129,54 +129,56 @@ public class ColladaFile : MonoBehaviour
 		}
 		writer.WriteEndElement();
 
-		writer.WriteStartElement("library_geometries");
-		foreach (Mesh mesh in meshes)
-		{
-			writer.WriteStartElement("geometry");
-			writer.WriteAttributeString("id", mesh.name);
-			writer.WriteAttributeString("name", mesh.name);
-			writer.WriteStartElement("mesh");
-
-			writer.WriteStartElement("source");
-			writer.WriteAttributeString("id", mesh.name + "_verts");
-			writer.WriteStartElement("float_array");
-			writer.WriteAttributeString("id", mesh.name + "_verts-array");
-			writer.WriteAttributeString("count", mesh.vertexCount.ToString());
-
-			//Verts for this mesh
-			for (int i = 0; i < mesh.vertexCount; i++)
+		if(meshes != null && meshes.Count > 0){ 
+			writer.WriteStartElement("library_geometries");
+			foreach (Mesh mesh in meshes)
 			{
-				var vert = mesh.vertices[i];
-				writer.WriteString(vert.x + " " + vert.y + " " + vert.z);
-				if(i < mesh.vertexCount -1){	
-					writer.WriteString(" ");
+				writer.WriteStartElement("geometry");
+				writer.WriteAttributeString("id", mesh.name);
+				writer.WriteAttributeString("name", mesh.name);
+				writer.WriteStartElement("mesh");
+
+				writer.WriteStartElement("source");
+				writer.WriteAttributeString("id", mesh.name + "_verts");
+				writer.WriteStartElement("float_array");
+				writer.WriteAttributeString("id", mesh.name + "_verts-array");
+				writer.WriteAttributeString("count", mesh.vertexCount.ToString());
+
+				//Verts for this mesh
+				for (int i = 0; i < mesh.vertexCount; i++)
+				{
+					var vert = mesh.vertices[i];
+					writer.WriteString(vert.x + " " + vert.y + " " + vert.z);
+					if(i < mesh.vertexCount -1){	
+						writer.WriteString(" ");
+					}
 				}
+
+				writer.WriteStartElement("technique_common");
+				writer.WriteStartElement("accessor");
+				writer.WriteAttributeString("source", "#" + mesh.name + "_verts-array");
+				writer.WriteAttributeString("count", mesh.vertexCount.ToString());
+				writer.WriteAttributeString("stride", "3");
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "X");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "Y");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "Z");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteEndElement();
+
 			}
-
-			writer.WriteStartElement("technique_common");
-			writer.WriteStartElement("accessor");
-			writer.WriteAttributeString("source", "#" + mesh.name + "_verts-array");
-			writer.WriteAttributeString("count", mesh.vertexCount.ToString());
-			writer.WriteAttributeString("stride", "3");
-			writer.WriteStartElement("param");
-			writer.WriteAttributeString("name", "X");
-			writer.WriteAttributeString("type", "float");
 			writer.WriteEndElement();
-			writer.WriteStartElement("param");
-			writer.WriteAttributeString("name", "Y");
-			writer.WriteAttributeString("type", "float");
-			writer.WriteEndElement();
-			writer.WriteStartElement("param");
-			writer.WriteAttributeString("name", "Z");
-			writer.WriteAttributeString("type", "float");
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-
 		}
-		writer.WriteEndElement();
 
 		writer.WriteEndElement();
 
