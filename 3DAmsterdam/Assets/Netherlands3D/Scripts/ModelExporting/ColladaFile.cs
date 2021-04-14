@@ -8,14 +8,36 @@ using System.Text;
 using System.Xml;
 using UnityEngine;
 
-
-public class ColladaFile : MonoBehaviour
+public class ColladaFile
 {
 	private XmlTextWriter writer;
 	private StringWriter stringWriter;
 
 	private List<Material> materials;
+
 	private List<Mesh> meshes;
+	private List<Vector3RD> vertices;
+	private List<Mesh> triangles;
+
+	private Dictionary<string, List<Vector3RD>> objectTriangles;
+
+	public void AddObject(List<Vector3RD> triangleVertices, string objectName, Material objectMaterial)
+	{
+		if (objectTriangles == null) objectTriangles = new Dictionary<string, List<Vector3RD>>();
+		if (materials == null) materials = new List<Material>();
+
+		if (!materials.Contains(objectMaterial))
+		{
+			materials.Add(objectMaterial);
+		}
+
+		if (!objectTriangles.ContainsKey(objectName))
+		{
+			objectTriangles.Add(objectName, triangleVertices);
+		}
+		vertices = triangleVertices;
+
+	}
 
 	public void CreateCollada()
 	{
@@ -39,8 +61,6 @@ public class ColladaFile : MonoBehaviour
 		writer.WriteEndElement();
 
 		writer.WriteStartElement("library_effects");
-		writer.WriteStartElement("effect");
-		writer.WriteAttributeString("xmlns", "http://www.collada.org/2008/03/COLLADASchema");
 		writer.WriteEndElement();
 
 		//Material Effects
@@ -129,35 +149,39 @@ public class ColladaFile : MonoBehaviour
 		}
 		writer.WriteEndElement();
 
-		if(meshes != null && meshes.Count > 0){ 
+		if(objectTriangles != null && objectTriangles.Count > 0){ 
 			writer.WriteStartElement("library_geometries");
-			foreach (Mesh mesh in meshes)
+
+			foreach (var mesh in objectTriangles)
 			{
 				writer.WriteStartElement("geometry");
-				writer.WriteAttributeString("id", mesh.name);
-				writer.WriteAttributeString("name", mesh.name);
+				writer.WriteAttributeString("id", mesh.Key);
+				writer.WriteAttributeString("name", mesh.Key);
 				writer.WriteStartElement("mesh");
 
 				writer.WriteStartElement("source");
-				writer.WriteAttributeString("id", mesh.name + "_verts");
+				writer.WriteAttributeString("id", mesh.Key + "-Pos");
 				writer.WriteStartElement("float_array");
-				writer.WriteAttributeString("id", mesh.name + "_verts-array");
-				writer.WriteAttributeString("count", mesh.vertexCount.ToString());
+				writer.WriteAttributeString("id", mesh.Key + "_Pos-array");
+				writer.WriteAttributeString("count", mesh.Value.Count.ToString());
 
 				//Verts for this mesh
-				for (int i = 0; i < mesh.vertexCount; i++)
+				var meshVertices = mesh.Value;
+				for (int i = 0; i < meshVertices.Count; i++)
 				{
-					var vert = mesh.vertices[i];
+					var vert = meshVertices[i];
 					writer.WriteString(vert.x + " " + vert.y + " " + vert.z);
-					if(i < mesh.vertexCount -1){	
+					if(i < meshVertices.Count - 1){	
 						writer.WriteString(" ");
 					}
 				}
 
+				writer.WriteEndElement(); //end float_array
 				writer.WriteStartElement("technique_common");
 				writer.WriteStartElement("accessor");
-				writer.WriteAttributeString("source", "#" + mesh.name + "_verts-array");
-				writer.WriteAttributeString("count", mesh.vertexCount.ToString());
+				//start source for vertex positions
+				writer.WriteAttributeString("source", "#" + mesh.Key + "_verts-array");
+				writer.WriteAttributeString("count", meshVertices.Count.ToString());
 				writer.WriteAttributeString("stride", "3");
 				writer.WriteStartElement("param");
 				writer.WriteAttributeString("name", "X");
@@ -171,32 +195,133 @@ public class ColladaFile : MonoBehaviour
 				writer.WriteAttributeString("name", "Z");
 				writer.WriteAttributeString("type", "float");
 				writer.WriteEndElement();
-				writer.WriteEndElement();
-				writer.WriteEndElement();
-				writer.WriteEndElement();
-				writer.WriteEndElement();
+				writer.WriteEndElement(); //end accessor
+				writer.WriteEndElement(); //end technique_common
+				writer.WriteEndElement(); //end source
 
+				//start source for normals
+				writer.WriteStartElement("source");
+				writer.WriteAttributeString("id", mesh.Key + "-Normal");
+				writer.WriteStartElement("float_array");
+				writer.WriteAttributeString("id", mesh.Key + "_Normal-array");
+				writer.WriteAttributeString("count", "1"); //just one normal for now untill we have a list
+				writer.WriteString("0 0 0");
+				writer.WriteEndElement(); //end float_array
+				writer.WriteStartElement("technique_common");
+				writer.WriteStartElement("accessor");
+				//start source for vertex positions
+				writer.WriteAttributeString("source", "#" + mesh.Key + "_Normal-array");
+				writer.WriteAttributeString("count", "1");
+				writer.WriteAttributeString("stride", "3");
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "X");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "Y");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteStartElement("param");
+				writer.WriteAttributeString("name", "Z");
+				writer.WriteAttributeString("type", "float");
+				writer.WriteEndElement();
+				writer.WriteEndElement(); //end accessor
+				writer.WriteEndElement(); //end technique_common
+				writer.WriteEndElement(); //end source
+
+				writer.WriteStartElement("vertices");
+				writer.WriteAttributeString("id", mesh.Key + "-Vtx");
+				writer.WriteStartElement("input");
+				writer.WriteAttributeString("semantic", "POSITION");
+				writer.WriteAttributeString("source", "#" + mesh.Key + "-Pos");
+				writer.WriteEndElement(); //end input
+				writer.WriteEndElement(); //end vertices
+
+				writer.WriteStartElement("polygons");
+				writer.WriteAttributeString("count", (meshVertices.Count / 3).ToString());
+				writer.WriteAttributeString("material", "WHITE");
+				writer.WriteStartElement("input");
+				writer.WriteAttributeString("semantic", "VERTEX");
+				writer.WriteAttributeString("source", "#" + mesh.Key + "-Vtx");
+				writer.WriteAttributeString("offset", "0");
+				writer.WriteEndElement();
+				writer.WriteStartElement("input");
+				writer.WriteAttributeString("semantic", "NORMAL");
+				writer.WriteAttributeString("source", "#" + mesh.Key + "-Normal");
+				writer.WriteAttributeString("offset", "1");
+				writer.WriteEndElement();
+				for (int i = 0; i < meshVertices.Count; i++)
+				{
+					writer.WriteStartElement("p"); //start p
+					var vert = meshVertices[i];
+					writer.WriteString(vert.x + " " + vert.y + " " + vert.z);
+					if (i < meshVertices.Count - 1)
+					{
+						writer.WriteString(" ");
+					}
+					writer.WriteEndElement(); //end p
+				}
+				writer.WriteEndElement(); //end polygon
+				writer.WriteEndElement(); //end mesh
+				writer.WriteEndElement(); //end geometry
 			}
-			writer.WriteEndElement();
+			writer.WriteEndElement(); //end library_geometries
 		}
 
-		writer.WriteEndElement();
+		writer.WriteStartElement("library_visual_scenes");
+		writer.WriteStartElement("visual_scene");
+		writer.WriteAttributeString("id", "DefaultScene");
+		if (objectTriangles != null && objectTriangles.Count > 0)
+		{
+			foreach (var mesh in objectTriangles)
+			{
+				writer.WriteStartElement("node");
+				writer.WriteAttributeString("id", mesh.Key);
+				writer.WriteStartElement("translate");
+				writer.WriteString(" 0 0 0");
+				writer.WriteEndElement(); //end translate
+				writer.WriteStartElement("rotate");
+				writer.WriteString(" 0 0 1 0");
+				writer.WriteEndElement(); //end rotate
+				writer.WriteStartElement("rotate");
+				writer.WriteString(" 0 1 0 0");
+				writer.WriteEndElement(); //end rotate
+				writer.WriteStartElement("rotate");
+				writer.WriteString(" 1 0 0 0");
+				writer.WriteEndElement(); //end rotate
+				writer.WriteStartElement("scale");
+				writer.WriteString(" 1 1 1");
+				writer.WriteEndElement(); //end scale
 
+				//reference geometry
+				writer.WriteStartElement("instance_geometry");
+				writer.WriteAttributeString("url", "#" + mesh.Key);
+				writer.WriteStartElement("bind_material");
+				writer.WriteStartElement("technique_common");
+				writer.WriteStartElement("instance_material");
+				writer.WriteAttributeString("symbol", "WHITE");
+				writer.WriteAttributeString("target", "#" + mesh.Key);
+				writer.WriteEndElement(); //end instance_material
+				writer.WriteEndElement(); //end technique_common
+				writer.WriteEndElement(); //end bind_material
+				writer.WriteEndElement(); //end instance_geometry
+				writer.WriteEndElement(); //end node
+			}
+		}
+		writer.WriteEndElement(); //end visual_scene
+		writer.WriteEndElement(); //end library_visual_scenes
+
+		//Scene
+		writer.WriteStartElement("scene");
+		writer.WriteStartElement("instance_visual_scene");
+		writer.WriteAttributeString("url", "#DefaultScene");
+		writer.WriteEndElement(); // end instance_visual_scene
+		writer.WriteEndElement(); // end scene
 		writer.WriteEndElement(); // COLLADA
 		writer.WriteEndDocument();
 		writer.Flush();
 		//writer.Close(); //Should probably stay open to reuse for reading buffer?
 	}
-
-
-	public void AddObject(List<Vector3RD> clippedVerticesRD, string objectName, Material objectMaterial)
-	{
-		if (materials == null) materials = new List<Material>();
-		materials.Add(objectMaterial);
-
-
-	}
-
 
 	public void Save()
 	{

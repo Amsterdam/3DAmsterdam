@@ -46,7 +46,6 @@ public class ColladaCreation : ModelFormatCreation
                 {
                     meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)", "");
-
                     colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]);
                     yield return null;
                 }
