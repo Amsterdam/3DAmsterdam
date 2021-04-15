@@ -334,7 +334,6 @@ namespace Netherlands3D.Interface.SidePanel
                 foreach (var renderer in renderersOnBuildingsLayer)
                 {
                     renderer.material.shader = buildingsExclusiveShader.shader;
-                    Debug.Log("Swapping " + renderer.gameObject.name);
                 }
                 thumbnailRenderer.Render();
 

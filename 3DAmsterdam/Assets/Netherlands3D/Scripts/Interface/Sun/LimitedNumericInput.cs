@@ -14,6 +14,8 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	public delegate void AddedOffset(int addedOffset);
 	public AddedOffset addedOffset;
 
+	private int offset = 0;
+
 	private void OnDisable()
 	{
 		StopAllCoroutines();
@@ -30,11 +32,12 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	}
 
 	/// <summary>
-	/// Change the input field text value
+	/// Change the input field text value, but only if we are not focussing this field and changing it manualy (and are not scrolling the input)
 	/// </summary>
 	/// <param name="textInput">The new text value</param>
 	public void SetInputText(string textInput){
-		inputField.text = textInput;
+		if(!inputField.isFocused || ( inputField.isFocused && offset != 0 ))
+			inputField.text = textInput;
 	}
 
 	/// <summary>
@@ -42,7 +45,7 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	/// </summary>
 	IEnumerator ReadScrollWheelInput() {
 		while (true){
-			var offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+			offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
 			if(offset != 0.0f)
 				addedOffset.Invoke(offset);
 			yield return null;

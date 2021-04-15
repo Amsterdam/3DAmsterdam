@@ -49,6 +49,7 @@ namespace Netherlands3D.Rendering
         public void ToggleReflections(bool reflectionsOn)
         {
             realtimeReflectionProbe.SetActive(reflectionsOn);
+            EnviromentSettings.SetReflections(reflectionsOn);
         }
 
 

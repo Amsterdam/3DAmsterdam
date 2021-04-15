@@ -3,14 +3,12 @@ using ConvertCoordinates;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class SunSettings : MonoBehaviour
 {
     private double longitude;
     private double latitude;
-
-    [SerializeField]
-    private SunVisuals sun;
 
     [SerializeField]
     private SunDragWheel sunDragWheel;
@@ -228,9 +226,9 @@ public class SunSettings : MonoBehaviour
         double azi;
         SunPosition.CalculateSunPosition(dateTimeNow, (double)latitude, (double)longitude, out azi, out alt);
         angles.x = (float)alt * Mathf.Rad2Deg;
-        angles.y = (float)azi * Mathf.Rad2Deg;     
+        angles.y = (float)azi * Mathf.Rad2Deg;
 
-        sun.UpdateVisuals(angles);
+        EnviromentSettings.SetSunAngle(angles);
 
         UpdateWheelAccordingToSun();
         UpdateNumericInputs();
@@ -249,7 +247,7 @@ public class SunSettings : MonoBehaviour
 
     private void UpdateWheelAccordingToSun()
     {
-        sunDragWheel.SetUpDirection(new Vector3(sun.transform.forward.x, sun.transform.forward.y, 0.0f));
+        sunDragWheel.SetUpDirection(new Vector3(EnviromentSettings.sun.transform.forward.x, EnviromentSettings.sun.transform.forward.y, 0.0f));
     }
 
     public void ToggleTimedSun(bool timedSun)
