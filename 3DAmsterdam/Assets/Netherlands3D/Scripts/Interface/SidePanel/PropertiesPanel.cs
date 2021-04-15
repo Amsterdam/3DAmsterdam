@@ -282,8 +282,9 @@ namespace Netherlands3D.Interface.SidePanel
         /// Render a thumbnail containing the given bounds
         /// </summary>
         /// <param name="bounds">The bounds object that should be framed in the thumbnail</param>
-        /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
-		public void RenderThumbnailContaining(Bounds bounds, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
+        /// <param name="thumbnailRenderMethod">What type of snapshot rendering behaviour do we want</param>
+        /// 
+		public void RenderThumbnailContaining(Bounds bounds, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA, Vector3 cameraSnapshotFromPosition = default)
         {
             var objectSizes = bounds.max - bounds.min;
             var objectSize = Mathf.Max(objectSizes.x, objectSizes.y, objectSizes.z);
@@ -291,7 +292,7 @@ namespace Netherlands3D.Interface.SidePanel
             var distance = objectSize / cameraView;
             distance += cameraThumbnailObjectMargin * objectSize;
 
-            thumbnailRenderer.transform.position = bounds.center - (distance * Vector3.forward) + (distance * Vector3.up);
+            thumbnailRenderer.transform.position = (cameraSnapshotFromPosition == Vector3.zero) ? bounds.center - (distance * Vector3.forward) + (distance * Vector3.up) : cameraSnapshotFromPosition;
             thumbnailRenderer.transform.LookAt(bounds.center);
 
             RenderThumbnail(thumbnailRenderMethod);
@@ -314,7 +315,11 @@ namespace Netherlands3D.Interface.SidePanel
 				case ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA:
                     thumbnailRenderer.cullingMask = thumbnailCameraPrefab.cullingMask;
                     break;
-				default:
+                case ThumbnailRenderMethod.ORTOGRAPHIC:
+                    thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
+                    thumbnailRenderer.orthographic = true;
+                    break;
+                default:
 					break;
 			}
 
@@ -373,8 +378,9 @@ namespace Netherlands3D.Interface.SidePanel
         {
             SAME_AS_MAIN_CAMERA,
             HIGHLIGHTED_BUILDINGS,
-            SAME_LAYER_AS_THUMBNAIL_CAMERA
-		}
+            SAME_LAYER_AS_THUMBNAIL_CAMERA,
+            ORTOGRAPHIC
+        }
 
         #region Methods for generating the main field types (spawning prefabs)
         public void AddTitle(string titleText)

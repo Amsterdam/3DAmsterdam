@@ -37,7 +37,7 @@ public class DXFCreation : ModelFormatCreation
         foreach (var layer in layerList)
         {
             layercounter++;
-            loadingScreen.ProgressBar.Percentage((float)layercounter / (float)layerList.Count);
+            loadingScreen.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
             loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
             yield return new WaitForEndOfFrame();
 
@@ -51,20 +51,26 @@ public class DXFCreation : ModelFormatCreation
                 meshClipper.SetGameObject(gameObject);
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
-                    meshClipper.ClipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
-
                     loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
                     yield return new WaitForEndOfFrame();
 
+                    meshClipper.ClipSubMesh(boundingbox, submeshID);
                     dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
                     yield return new WaitForEndOfFrame();
                 }
-            }            
+                yield return new WaitForEndOfFrame();
+            }
+            yield return new WaitForEndOfFrame();
         }
-        FreezeLayers(layerList, false);
+
+        loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
+        loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
+        yield return new WaitForEndOfFrame();
         dxfFile.Save();
+
         loadingScreen.Hide();
+        FreezeLayers(layerList, false);
         Debug.Log("file saved");
     }
 
