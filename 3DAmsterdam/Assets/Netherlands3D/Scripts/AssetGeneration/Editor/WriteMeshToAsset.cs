@@ -14,8 +14,10 @@ public class WriteMeshToAsset : MonoBehaviour
 
 	private void MeshToAsset(Mesh targetMesh)
 	{
+		#if UNITY_EDITOR
 		string assetFileName = customMeshFolder + this.name + ".asset";
 		AssetDatabase.CreateAsset(targetMesh, assetFileName);
 		AssetDatabase.SaveAssets();
+		#endif
 	}
 }
