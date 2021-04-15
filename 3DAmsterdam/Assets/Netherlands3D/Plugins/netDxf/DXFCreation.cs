@@ -5,56 +5,43 @@ using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface;
 
-public class DXFCreation : MonoBehaviour
+public class DXFCreation : ModelFormatCreation
 {
     [SerializeField]
     private LoadingScreen loadingScreen;
     private MeshClipper.RDBoundingBox boundingbox;
-    // Start is called before the first frame update
-    void Start()
-    {
-        //List<Vector3RD> verts = new List<Vector3RD>();
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-        //verts.Add(new Vector3RD(0, 0, 0));
-        //verts.Add(new Vector3RD(0, 1, 0));
-        //verts.Add(new Vector3RD(0, 0, 1));
-
-        //DxfFile file = new DxfFile();
-        //file.SetupDXF();
-        //file.AddLayer(verts,"testlaag");
-        //file.Save();
-    }
 
     public void CreateDXF(Bounds UnityBounds, List<Layer> layerList)
     {
-
-        StartCoroutine(createFile(UnityBounds, layerList));
+        StartCoroutine(CreateFile(UnityBounds, layerList));
     }
 
-    private IEnumerator createFile(Bounds UnityBounds, List<Layer> layerList)
+    private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
     {
-        freezeLayers(layerList, true);
+        FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
         Vector3RD topRightRD = CoordConvert.UnitytoRD(UnityBounds.max);
         boundingbox = new MeshClipper.RDBoundingBox(bottomLeftRD.x, bottomLeftRD.y, topRightRD.x, topRightRD.y);
-        DxfFile file = new DxfFile();
-        file.SetupDXF();
+        DxfFile dxfFile = new DxfFile();
+        dxfFile.SetupDXF();
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
         
-        loadingScreen.ShowMessage("dxf-bestand genereren...");
-        loadingScreen.ProgressBar.Percentage(0f);
-        
+        loadingScreen.ShowMessage("DXF-bestand genereren...");
+        loadingScreen.ProgressBar.SetMessage("");
+        loadingScreen.ProgressBar.Percentage(0.1f);
+        yield return new WaitForEndOfFrame();
+
         int layercounter = 0;
         foreach (var layer in layerList)
         {
-            List<GameObject> gameObjectsToClip = getTilesInLayer(layer, bottomLeftRD, topRightRD);
+            layercounter++;
+            loadingScreen.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
+            yield return new WaitForEndOfFrame();
+
+            List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
             if (gameObjectsToClip.Count==0)
             {
                 continue;
@@ -64,35 +51,31 @@ public class DXFCreation : MonoBehaviour
                 meshClipper.SetGameObject(gameObject);
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
-                    meshClipper.clipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
-                    
-                    file.AddLayer(meshClipper.clippedVerticesRD, layerName,getColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
-                    yield return null;
+                    loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
+                    yield return new WaitForEndOfFrame();
+
+                    meshClipper.ClipSubMesh(boundingbox, submeshID);
+                    dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
+                    yield return new WaitForEndOfFrame();
                 }
+                yield return new WaitForEndOfFrame();
             }
-            loadingScreen.ProgressBar.Percentage(50*layercounter/layerList.Count);
-            layercounter++;
+            yield return new WaitForEndOfFrame();
         }
-        freezeLayers(layerList, false);
-        file.Save();
+
+        loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
+        loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
+        yield return new WaitForEndOfFrame();
+        dxfFile.Save();
+
         loadingScreen.Hide();
+        FreezeLayers(layerList, false);
         Debug.Log("file saved");
     }
 
-    private void freezeLayers(List<Layer> layerList, bool freeze)
+    private netDxf.AciColor GetColor(Material material)
     {
-        foreach (var layer in layerList)
-        {
-            layer.pauseLoading = freeze;
-        }
-    }
-
-    private netDxf.AciColor getColor(Material material)
-    {
-
-        
-
         if (material.GetColor("_BaseColor") !=null)
         {
             byte r = (byte)(material.GetColor("_BaseColor").r * 255);
@@ -112,46 +95,5 @@ public class DXFCreation : MonoBehaviour
         {
             return netDxf.AciColor.LightGray;
         }
-        
     }
-
-    public List<GameObject> getTilesInLayer(Layer layer, Vector3RD bottomLeftRD, Vector3RD topRightRD)
-    {
-        if (layer == null)
-        {
-            return new List<GameObject>();
-        }
-        List<GameObject> output = new List<GameObject>();
-        double tilesize = layer.tileSize;
-        Debug.Log(tilesize);
-        int tileX;
-        int tileY;
-        foreach (var tile in layer.tiles)
-        {
-            tileX = tile.Key.x;
-            tileY = tile.Key.y;
-
-            if (tileX+tilesize < bottomLeftRD.x || tileX > topRightRD.x)
-            {
-                continue;
-            }
-            if (tileY+tilesize<bottomLeftRD.y || tileY > topRightRD.y)
-            {
-                continue;
-            }
-            //if (tile.Value.gameObject.GetComponent<MeshFilter>()!=null)
-            //{
-            //    output.Add(tile.Value.gameObject);
-            //}
-            MeshFilter[] meshFilters = tile.Value.gameObject.GetComponentsInChildren<MeshFilter>();
-            foreach (var meshFilter in meshFilters)
-            {
-                output.Add(meshFilter.gameObject);
-            }
-            
-            
-        }
-        return output;
-    }
-    
 }
