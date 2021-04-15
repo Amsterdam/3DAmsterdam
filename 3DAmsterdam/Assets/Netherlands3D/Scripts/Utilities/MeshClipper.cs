@@ -71,7 +71,7 @@ public class MeshClipper
                     clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[j-1], temporaryOrigin));
                     clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[j], temporaryOrigin));
                 }
-                }
+            }
         }
 
     }
