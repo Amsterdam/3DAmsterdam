@@ -67,9 +67,10 @@ public class ColladaCreation : ModelFormatCreation
                     yield return null;
                 }
             }
+            layercounter++;
             loadingScreen.ProgressBar.Percentage((float)layercounter / (float)layerList.Count);
             loadingScreen.ProgressBar.SetMessage(layer.name + "...");
-            layercounter++;
+            yield return new WaitForEndOfFrame();
         }
         FreezeLayers(layerList, false);
 
