@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -14,10 +15,11 @@ public class WriteMeshToAsset : MonoBehaviour
 
 	private void MeshToAsset(Mesh targetMesh)
 	{
-		#if UNITY_EDITOR
+		
 		string assetFileName = customMeshFolder + this.name + ".asset";
 		AssetDatabase.CreateAsset(targetMesh, assetFileName);
 		AssetDatabase.SaveAssets();
-		#endif
+		
 	}
 }
+#endif
