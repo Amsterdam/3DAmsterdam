@@ -256,11 +256,14 @@ namespace Netherlands3D.Interface
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 
 			//Lets render a ortographic thumbnail for a proper grid topdown view
+			gridSelectionBlock.SetActive(false);
 			PropertiesPanel.Instance.RenderThumbnailContaining(
 				scaleBlock.GetComponent<MeshRenderer>().bounds, 
 				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC, 
 				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
 			);
+			gridSelectionBlock.SetActive(true);
+
 			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
 			{
