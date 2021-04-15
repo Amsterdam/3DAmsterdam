@@ -316,7 +316,7 @@ namespace Netherlands3D.Cameras
 
         void HandleTranslationInput()
         {         
-            moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
+            moveSpeed = Mathf.Sqrt(Mathf.Abs(cameraComponent.transform.position.y)) * speedFactor;
 
             var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
