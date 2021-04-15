@@ -256,26 +256,34 @@ namespace Netherlands3D.Interface
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
 			PropertiesPanel.Instance.AddTitle("Lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
 			{
 				exportLayerToggles[0] = action;
+				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Bomen", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[1] = action;
+				PlayerPrefs.SetInt("exportLayer1Toggle", Convert.ToInt32(exportLayerToggles[1]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[2] = action;
+				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[3] = action;
+				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
 			});
-			PropertiesPanel.Instance.AddActionDropdown(new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" }, (action) =>
+
+			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
+			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
 			{
 				gridExportFormat = action;
-			});
+				PlayerPrefs.SetString("exportFormat", action);
+
+			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
 			gridExportFormat = "AutoCAD DXF (.dxf)";
 
 			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
