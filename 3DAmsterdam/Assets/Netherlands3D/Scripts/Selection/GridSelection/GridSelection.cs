@@ -254,7 +254,13 @@ namespace Netherlands3D.Interface
 			
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
-			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
+
+			//Lets render a ortographic thumbnail for a proper grid topdown view
+			PropertiesPanel.Instance.RenderThumbnailContaining(
+				scaleBlock.GetComponent<MeshRenderer>().bounds, 
+				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC, 
+				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
+			);
 			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
 			{
