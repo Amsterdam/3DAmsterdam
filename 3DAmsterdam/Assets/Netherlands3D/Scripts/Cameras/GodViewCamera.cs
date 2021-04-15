@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
+using System.Collections.Generic;
 
 namespace Netherlands3D.Cameras
 {
@@ -85,10 +86,11 @@ namespace Netherlands3D.Cameras
         private IAction zoomActionKeyboard;
         private IAction moveHeightActionKeyboard;
 
+        private IAction flyActionGamepad;
+
         private float minUndergroundY = 0.0f;
 
-        private InputActionMap mouseActionMap;
-        private InputActionMap keyboardActionMap;
+        List<InputActionMap> availableActionMaps;
 
         void Awake()
         {
@@ -98,9 +100,13 @@ namespace Netherlands3D.Cameras
         void Start()
 		{
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
-            mouseActionMap = ActionHandler.actions.GodViewMouse;
-            keyboardActionMap = ActionHandler.actions.GodViewKeyboard;
 
+            availableActionMaps = new List<InputActionMap>()
+            {
+                ActionHandler.actions.GodViewMouse,
+                ActionHandler.actions.GodViewKeyboard                
+            };
+            
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
 			AddActionListeners();
 		}
@@ -118,6 +124,9 @@ namespace Netherlands3D.Cameras
 			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
             moveHeightActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCameraHeight);
+
+            //Gamepad
+            flyActionGamepad = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Fly);
 
             //Combination
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
@@ -137,6 +146,7 @@ namespace Netherlands3D.Cameras
 
             modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
             modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
+
         }
 
 
@@ -262,6 +272,7 @@ namespace Netherlands3D.Cameras
                 {
                     HandleTranslationInput();
                     HandleRotationInput();
+                    HandleFly();
                 }
                 EazeOutDragVelocity();
             }
@@ -330,7 +341,17 @@ namespace Netherlands3D.Cameras
             }
         }
 
-		private void FirstPersonLook()
+        private void HandleFly()
+        {
+            Vector2 val = flyActionGamepad.ReadValue<Vector2>();
+            var newpos = cameraComponent.transform.position += cameraComponent.transform.forward * val.y * moveSpeed * Time.deltaTime * 0.3f;
+            newpos += cameraComponent.transform.right * val.x * moveSpeed * Time.deltaTime * 0.1f;
+
+            if (newpos.y < Config.activeConfiguration.zeroGroundLevelY + 20) newpos.y = Config.activeConfiguration.zeroGroundLevelY + 20;
+            cameraComponent.transform.position = newpos;
+        }
+
+        private void FirstPersonLook()
 		{
             var mouseDelta = Mouse.current.delta.ReadValue();
 
@@ -470,7 +491,7 @@ namespace Netherlands3D.Cameras
 
 		public bool UsesActionMap(InputActionMap actionMap)
 		{
-            return (actionMap == mouseActionMap || actionMap == keyboardActionMap);
+            return availableActionMaps.Contains(actionMap);         
 		}
 	}
 }

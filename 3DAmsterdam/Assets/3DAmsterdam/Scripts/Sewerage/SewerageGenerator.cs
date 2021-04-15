@@ -13,9 +13,6 @@ namespace Amsterdam3D.Sewerage
 {
     public partial class SewerageGenerator : MonoBehaviour
     {
-        private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=";
-        private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
-
         [SerializeField]
         private bool drawEditorGizmos = false;
 
@@ -160,7 +157,7 @@ namespace Amsterdam3D.Sewerage
 
         IEnumerator GetSewerManholesInBoundingBox()
         {
-            string escapedUrl = sewerManholesWfsUrl;
+            string escapedUrl = Config.activeConfiguration.sewerManholesWfsUrl;
             escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
@@ -178,7 +175,7 @@ namespace Amsterdam3D.Sewerage
 
         IEnumerator GetSewerLinesInBoundingBox()
         {
-            string escapedUrl = sewerPipesWfsUrl;
+            string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
             escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x - boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x + boundingBoxMargin).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y - boundingBoxMargin).ToString(CultureInfo.InvariantCulture));
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 

@@ -8,11 +8,6 @@ namespace Netherlands3D.BAG
 {
     public class ImportBAG
     {
-        public const string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-        public const string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=";
-        public const string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";
-        public const string monumentURL = "https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=";
-
         public const string format = "json";
 
         public const string requestFailureMessage = "Sorry, er is geen data gevonden voor dit pand.";
@@ -25,7 +20,7 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetBuildingData(string bagId, Action<BagData.Rootobject> callback)
         {
             // adds data id and url in one string
-            string url = buildingUrl + bagId + "/?format=" + format;
+            string url = Config.activeConfiguration.buildingUrl + bagId + "/?format=" + format;
 
             // send http request
             var request = UnityWebRequest.Get(url);
@@ -50,7 +45,7 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetBuildingAdresses(string bagId, Action<BagData.Rootobject> callback)
         {
             // adds data id and url in one string
-            string url = numberIndicatorURL + bagId + "&format=" + format;
+            string url = Config.activeConfiguration.numberIndicatorURL + bagId + "&format=" + format;
 
             // send http request
             var request = UnityWebRequest.Get(url);
@@ -75,7 +70,7 @@ namespace Netherlands3D.BAG
         public static IEnumerator GetAddressData(string bagId, Action<BagData.AddressInstance> callback)
         {
             // adds data id and url in one string
-            string url = numberIndicatorInstanceURL + bagId + "/?format=" + format;
+            string url = Config.activeConfiguration.numberIndicatorInstanceURL + bagId + "/?format=" + format;
 
             // send http request
             var request = UnityWebRequest.Get(url);

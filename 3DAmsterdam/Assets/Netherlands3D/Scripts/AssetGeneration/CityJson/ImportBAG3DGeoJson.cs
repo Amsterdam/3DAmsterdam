@@ -55,14 +55,17 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private bool allowEmptyTileGeneration = false;
 
+        [Header("Optional. Leave blank to create all tiles")]
+        [SerializeField]
+        private string exclusivelyGenerateTilesWithSubstring = "";
+
         [Tooltip("Remove children not inside a tile, to start with a clean slate for the next tile.")]
         [SerializeField]
         private bool removeChildrenOutsideTile = true;
 
         [SerializeField]
         private Vector2 tileOffset;
-      
-        private string previewBackdropImage = "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992";   
+              
         private Texture2D backDropTexture;
         private Texture2D drawIntoPixels;
 
@@ -137,7 +140,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             gridPixelsRawImage.texture = drawIntoPixels;
 
             //Download background preview image
-            var downloadUrl = previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
+            var downloadUrl = Config.activeConfiguration.previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
             print(downloadUrl);
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
             yield return www.SendWebRequest();
@@ -164,8 +167,16 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
 
                     string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
-                    
-                    //Maybe skip files?
+
+                    //If we supplied a filter we check if this tile contains this substring in order to be (re)generated
+                    if(exclusivelyGenerateTilesWithSubstring != "" && !tileName.Contains(exclusivelyGenerateTilesWithSubstring))
+                    {
+                        print("Skipping tile because we supplied a specific name we want to replace.");
+                        if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+                        continue;
+                    }
+
+                    //Skip files if we enabled that option and it exists
                     string assetFileName = unityMeshAssetFolder + tileName + ".asset";
                     if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
@@ -212,7 +223,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
                 }
             }
-            print("Done!");
+            Debug.Log(this.name + " is done!", this.gameObject);
             if (optionalObjectToEnableWhenFinished)
                 optionalObjectToEnableWhenFinished.SetActive(true);
 

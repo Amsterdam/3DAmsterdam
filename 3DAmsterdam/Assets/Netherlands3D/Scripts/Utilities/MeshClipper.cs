@@ -19,7 +19,7 @@ public class MeshClipper
         ReadVertices();
     }
    
-    public void clipSubMesh(RDBoundingBox boundingBox, int subMeshNumber)
+    public void ClipSubMesh(RDBoundingBox boundingBox, int subMeshNumber)
     {
         clippedVerticesRD = new List<Vector3RD>();
         if (subMeshNumber>=mesh.subMeshCount)
@@ -40,12 +40,12 @@ public class MeshClipper
             point1 = OffsetRDVertex(rdVertices[indices[i]], temporaryOrigin);
             point2 = OffsetRDVertex(rdVertices[indices[i+1]], temporaryOrigin);
             point3 = OffsetRDVertex(rdVertices[indices[i+2]], temporaryOrigin);
-            trianglePosition position = getTrianglePosition(point1, point2, point3, boundingBox);
+            trianglePosition position = GetTrianglePosition(point1, point2, point3, boundingBox);
             if (position == trianglePosition.inside)
             {
-                clippedVerticesRD.Add(restoreRDVertex(point1,temporaryOrigin));
-                clippedVerticesRD.Add(restoreRDVertex(point2, temporaryOrigin));
-                clippedVerticesRD.Add(restoreRDVertex(point3, temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(point1,temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(point2, temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(point3, temporaryOrigin));
             }
             else if (position == trianglePosition.overlap)
             {
@@ -61,17 +61,17 @@ public class MeshClipper
                 {
                     continue;
                 }
-                clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[0], temporaryOrigin));
-                clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[1], temporaryOrigin));
-                clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[2], temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[0], temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[1], temporaryOrigin));
+                clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[2], temporaryOrigin));
                 // add extra vectors. vector makes a triangle with the first and the previous vector.
                 for (int j = 3; j < vertexcount; j++)
                 {
-                    clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[0], temporaryOrigin));
-                    clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[j-1], temporaryOrigin));
-                    clippedVerticesRD.Add(restoreRDVertex(clippedTriangle[j], temporaryOrigin));
+                    clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[0], temporaryOrigin));
+                    clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[j-1], temporaryOrigin));
+                    clippedVerticesRD.Add(RestoreRDVertex(clippedTriangle[j], temporaryOrigin));
                 }
-                }
+            }
         }
 
     }
@@ -86,7 +86,7 @@ public class MeshClipper
         return output;
     }
 
-    private trianglePosition getTrianglePosition(Vector3 point1, Vector3 point2, Vector3 point3, RDBoundingBox boundingBox)
+    private trianglePosition GetTrianglePosition(Vector3 point1, Vector3 point2, Vector3 point3, RDBoundingBox boundingBox)
     {
         int counter = 0;
         if (PointISInsideArea(point1,boundingBox)){counter++;}
@@ -143,7 +143,7 @@ public class MeshClipper
         return output;
     }
 
-    private Vector3RD restoreRDVertex(Vector3 vector, Vector3RD temporaryOrigin)
+    private Vector3RD RestoreRDVertex(Vector3 vector, Vector3RD temporaryOrigin)
     {
         Vector3RD output = new Vector3RD();
         output.x = vector.x + temporaryOrigin.x;

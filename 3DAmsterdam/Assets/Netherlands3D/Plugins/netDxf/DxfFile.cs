@@ -8,52 +8,45 @@ using netDxf.Tables;
 using ConvertCoordinates;
 using System.IO;
 using System.Runtime.InteropServices;
+using Netherlands3D.JavascriptConnection;
 
 public class DxfFile 
 {
-    private DxfDocument doc;
-    private Layer Laag;
+    private DxfDocument dxfDocument;
+    private Layer dxfLayer;
 
     public void SetupDXF()
     {
-        doc = new DxfDocument();
-        doc.DrawingVariables.InsUnits = netDxf.Units.DrawingUnits.Meters;
+        dxfDocument = new DxfDocument();
+        dxfDocument.DrawingVariables.InsUnits = netDxf.Units.DrawingUnits.Meters;
     }
 
     public void AddLayer(List<Vector3RD>triangleVertices,string layerName, AciColor layerColor)
     {
         // TODO 
         // check if there are 3 triangles or less, if that is the case a polyfaceMesh cannot be built, seperate triangles have to be added to the dxf.
-
-
-        Laag = new Layer(layerName);
-        Laag.Color = layerColor;
-        doc.Layers.Add(Laag);
+        dxfLayer = new Layer(layerName);
+        dxfLayer.Color = layerColor;
+        dxfDocument.Layers.Add(dxfLayer);
         
-
         //AddTriangles(triangleVertices, layerName);
 
 
         AddMesh(triangleVertices, layerName);
-        
-
-
-
-
     }
     public void Save()
     {
 #if UNITY_EDITOR
 
         var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        doc.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
+        dxfDocument.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
         return;
 #endif
         using (var stream = new MemoryStream())
         {
-            if (doc.Save(stream))
+            if (dxfDocument.Save(stream))
             {
-                DownloadFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf"); ;
+                JavascriptMethodCaller.DownloadByteArrayAsFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
             }
             else
             {
@@ -77,8 +70,8 @@ public class DxfFile
             //face.Layer = Laag;
         }
         Insert blokInsert = new Insert(block);
-        blokInsert.Layer = Laag;
-        doc.AddEntity(blokInsert);
+        blokInsert.Layer = dxfLayer;
+        dxfDocument.AddEntity(blokInsert);
 
     }
 
@@ -108,8 +101,8 @@ public class DxfFile
             if (facecounter % 10000 == 0)
             {
                 pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
-                pfm.Layer = Laag;
-                doc.AddEntity(pfm);
+                pfm.Layer = dxfLayer;
+                dxfDocument.AddEntity(pfm);
                 pfmVertices.Clear();
                 pfmFaces.Clear();
                 facecounter = 0;
@@ -119,13 +112,10 @@ public class DxfFile
         if (pfmFaces.Count>0)
         {
             pfm = new PolyfaceMesh(pfmVertices, pfmFaces);
-            pfm.Layer = Laag;
-            doc.AddEntity(pfm);
+            pfm.Layer = dxfLayer;
+            dxfDocument.AddEntity(pfm);
         }
         
         
     }
-
-    [DllImport("__Internal")]
-    private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 }
