@@ -36,6 +36,11 @@ public class DXFCreation : ModelFormatCreation
         int layercounter = 0;
         foreach (var layer in layerList)
         {
+            layercounter++;
+            loadingScreen.ProgressBar.Percentage((float)layercounter / (float)layerList.Count);
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
+            yield return new WaitForEndOfFrame();
+
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
             if (gameObjectsToClip.Count==0)
             {
@@ -48,16 +53,14 @@ public class DXFCreation : ModelFormatCreation
                 {
                     meshClipper.ClipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
-                    
-                    dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
-                    yield return null;
-                }
-            }
 
-            layercounter++;
-            loadingScreen.ProgressBar.Percentage((float)layercounter /(float)layerList.Count);
-            loadingScreen.ProgressBar.SetMessage(layer.name + "...");
-            yield return new WaitForEndOfFrame();
+                    loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
+                    yield return new WaitForEndOfFrame();
+
+                    dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
+                    yield return new WaitForEndOfFrame();
+                }
+            }            
         }
         FreezeLayers(layerList, false);
         dxfFile.Save();

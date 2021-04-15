@@ -38,6 +38,11 @@ public class ColladaCreation : ModelFormatCreation
         int layercounter = 0;
         foreach (var layer in layerList)
         {
+            layercounter++;
+            loadingScreen.ProgressBar.Percentage((float)layercounter / (float)layerList.Count);
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
+            yield return new WaitForEndOfFrame();
+
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
             if (gameObjectsToClip.Count == 0)
             {
@@ -51,7 +56,10 @@ public class ColladaCreation : ModelFormatCreation
                     meshClipper.ClipSubMesh(boundingbox, submeshID);
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)", "");
 
-                    if(coordinatesToZero)
+                    loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
+                    yield return new WaitForEndOfFrame();
+
+                    if (coordinatesToZero)
                     {
 						//Move the coordinates so our bottom left of our clipped mesh is at the center of the scene
 						for (int i = 0; i < meshClipper.clippedVerticesRD.Count; i++)
@@ -64,13 +72,9 @@ public class ColladaCreation : ModelFormatCreation
 					}
 
                     colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]);
-                    yield return null;
+                    yield return new WaitForEndOfFrame();
                 }
             }
-            layercounter++;
-            loadingScreen.ProgressBar.Percentage((float)layercounter / (float)layerList.Count);
-            loadingScreen.ProgressBar.SetMessage(layer.name + "...");
-            yield return new WaitForEndOfFrame();
         }
         FreezeLayers(layerList, false);
 

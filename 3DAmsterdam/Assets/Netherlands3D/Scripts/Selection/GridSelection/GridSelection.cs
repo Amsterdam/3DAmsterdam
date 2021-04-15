@@ -44,7 +44,7 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		private string gridExportFormat = "";
+		private string selectedExportFormat = "";
 		[SerializeField]
 		List<LayerSystem.Layer> selectableLayers;
 		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
@@ -278,13 +278,13 @@ namespace Netherlands3D.Interface
 			});
 
 			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
+			selectedExportFormat = PlayerPrefs.GetString("exportFormat", exportFormats[0]);
 			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
 			{
-				gridExportFormat = action;
+				selectedExportFormat = action;
 				PlayerPrefs.SetString("exportFormat", action);
 
 			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
-			gridExportFormat = "AutoCAD DXF (.dxf)";
 
 			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
 
@@ -298,8 +298,8 @@ namespace Netherlands3D.Interface
 						selectedLayers.Add(selectableLayers[i]);
 					}
 				}
-				print(gridExportFormat);
-				switch (gridExportFormat)
+				print(selectedExportFormat);
+				switch (selectedExportFormat)
                 {
 					case "AutoCAD DXF (.dxf)":
 						Debug.Log("Start building DXF");
@@ -310,7 +310,7 @@ namespace Netherlands3D.Interface
 						GetComponent<ColladaCreation>().CreateCollada(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
 						break;
 					default:
-						WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");
+						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
                         break;
                 }
 			});
