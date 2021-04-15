@@ -507,7 +507,7 @@ PrefabInstance:
         type: 3}
       propertyPath: sunSettings
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7211225236651356814}
     - target: {fileID: 762718020226711553, guid: 62959bc94378b334691032ece604518e,
         type: 3}
       propertyPath: cameraParent
@@ -3425,6 +3425,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2297649947035752340}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7211225236651356814 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8931077115964384538, guid: 7cfbd80cff289264fa095e83062304ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 2297649947035752340}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158c17ece47f7eb4087d15656ec02ab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3039488359212404575
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5095,6 +5107,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 080c16bb02d65b944a7d0c7739a124f5, type: 3}
+--- !u!224 &4763422919620988796 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1701472602559105886, guid: 080c16bb02d65b944a7d0c7739a124f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 6163118612261291042}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7914136617333225428 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4058696454881948662, guid: 080c16bb02d65b944a7d0c7739a124f5,
@@ -5107,12 +5125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a489f2be881dde34ab3fe3a8414f2f23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4763422919620988796 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1701472602559105886, guid: 080c16bb02d65b944a7d0c7739a124f5,
-    type: 3}
-  m_PrefabInstance: {fileID: 6163118612261291042}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6943614216806051249
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5272,15 +5284,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c347d5ce287732041bc432a1117acd02, type: 3}
---- !u!1 &7471411654695368249 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 572912662418496392, guid: c347d5ce287732041bc432a1117acd02,
-    type: 3}
-  m_PrefabInstance: {fileID: 6943614216806051249}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2620048045572433134 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4900175362733803871, guid: c347d5ce287732041bc432a1117acd02,
+    type: 3}
+  m_PrefabInstance: {fileID: 6943614216806051249}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7471411654695368249 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 572912662418496392, guid: c347d5ce287732041bc432a1117acd02,
     type: 3}
   m_PrefabInstance: {fileID: 6943614216806051249}
   m_PrefabAsset: {fileID: 0}
