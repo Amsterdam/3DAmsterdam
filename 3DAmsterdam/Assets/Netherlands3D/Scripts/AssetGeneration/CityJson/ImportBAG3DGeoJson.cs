@@ -29,7 +29,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [Tooltip("LOD level name")]
         [SerializeField]
-        private double lodLevel = 2.2;
+        private string lodLevel = "2.2";
 
         [Tooltip("LOD slot (index order in the GeoJSON file)")]
         [SerializeField]

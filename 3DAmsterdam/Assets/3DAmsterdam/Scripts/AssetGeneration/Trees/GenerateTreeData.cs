@@ -39,7 +39,7 @@ namespace Netherlands3D.AssetGeneration
 			public GameObject prefab;
 		}
 
-		private const string treeTileAssetsFolder = "Assets/TreeTileAssets/";
+		private const string treeTileAssetsFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
 		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;
@@ -57,7 +57,7 @@ namespace Netherlands3D.AssetGeneration
 		private Material treesMaterial;
 
 		private double tileSize = 1000.0;
-		private string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
+		public string sourceGroundTilesFolder = "C:/Projects/GemeenteAmsterdam/1x1kmGroundTiles";
 
 		private string[] treeNameParts;
 		private string treeTypeName = "";
@@ -164,8 +164,8 @@ namespace Netherlands3D.AssetGeneration
 				RADIUS = cell[12],
 				WKT_LNG_LAT = cell[13],
 				WKT_LAT_LNG = cell[14],
-				LNG = double.Parse(cell[15]),
-				LAT = double.Parse(cell[16])
+				LNG = double.Parse(cell[15], System.Globalization.CultureInfo.InvariantCulture),
+				LAT = double.Parse(cell[16], System.Globalization.CultureInfo.InvariantCulture)
 			};
 
 			//Extra generated tree data
@@ -250,10 +250,12 @@ namespace Netherlands3D.AssetGeneration
 				{
 					Debug.Log("Filling tile " + currentFile + "/" + fileInfo.Length);
 					yield return new WaitForEndOfFrame();
-
-					string[] coordinates = file.Name.Split('_');
-					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0]), double.Parse(coordinates[1]), 0);
-
+					string filename = file.Name;
+					filename = filename.Replace("terrain_", "");
+					string[] coordinates = filename.Split('-');
+					
+					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0], System.Globalization.CultureInfo.InvariantCulture), double.Parse(coordinates[1], System.Globalization.CultureInfo.InvariantCulture), 0);
+					Vector3RD tileCenter = new Vector3RD(tileRDCoordinatesBottomLeft.x+500, tileRDCoordinatesBottomLeft.y+500, tileRDCoordinatesBottomLeft.z);
 					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
 					Mesh[] meshesInAssetbundle = new Mesh[0];
 					try
@@ -271,8 +273,9 @@ namespace Netherlands3D.AssetGeneration
 					newTile.name = file.Name;
 					newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
 					newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
+					
 					newTile.AddComponent<MeshRenderer>().material = previewMaterial;
-					newTile.transform.position = CoordConvert.RDtoUnity(tileRDCoordinatesBottomLeft);
+					newTile.transform.position = CoordConvert.RDtoUnity(tileCenter);
 
 					GameObject treeRoot = new GameObject();
 					treeRoot.name = file.Name.Replace("terrain", "trees");
@@ -309,8 +312,8 @@ namespace Netherlands3D.AssetGeneration
 			}
 
 			//Define a preview position to preview the tree tile in our scene
-			Vector3 previewPosition = treeTile.transform.position + Vector3.down * Config.activeConfiguration.zeroGroundLevelY;
-			treeTile.transform.position = unityTileOffset;
+			Vector3 previewPosition = treeTile.transform.position;
+			treeTile.transform.position = Vector3.zero;
 
 			CreateTreeTile(treeTile, previewPosition);
 		}

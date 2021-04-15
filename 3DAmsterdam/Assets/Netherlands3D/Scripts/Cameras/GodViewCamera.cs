@@ -88,19 +88,20 @@ namespace Netherlands3D.Cameras
 
         private IAction flyActionGamepad;
 
-        private float minUndergroundY = 0.0f;
+        private float minUndergroundY = -30f;
 
         List<InputActionMap> availableActionMaps;
 
         void Awake()
         {
+            
             cameraComponent = GetComponent<Camera>();
         }
 
         void Start()
 		{
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
-
+            
             availableActionMaps = new List<InputActionMap>()
             {
                 ActionHandler.actions.GodViewMouse,
@@ -315,7 +316,7 @@ namespace Netherlands3D.Cameras
 
         void HandleTranslationInput()
         {         
-            moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
+            moveSpeed = Mathf.Sqrt(Mathf.Abs(cameraComponent.transform.position.y)) * speedFactor;
 
             var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();

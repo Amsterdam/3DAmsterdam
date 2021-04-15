@@ -22,6 +22,7 @@ namespace Netherlands3D
 #elif PRODUCTION
             Config.activeConfiguration = configurationFile;
 #endif
+            Debug.Log("Loaded config: " + Config.activeConfiguration.name);
         }
     }
 }
