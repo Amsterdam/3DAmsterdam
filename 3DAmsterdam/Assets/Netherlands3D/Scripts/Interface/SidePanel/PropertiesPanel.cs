@@ -258,7 +258,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// </summary>
         /// <param name="points">The points that should be framed within the thumbnail</param>
         /// <param name="swapBuildingShaders">Render all layers or exclusively the selected buildings</param>
-        public void RenderThumbnailContaining(Vector3[] points, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
+        public void RenderThumbnailContaining(Vector3[] points, ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA, Vector3 cameraSnapshotFromPosition = default)
         {
             //Find our centroid
             var centroid = new Vector3(0, 0, 0);
@@ -275,7 +275,7 @@ namespace Netherlands3D.Interface.SidePanel
             {
                 bounds.Encapsulate(point);
             }
-            RenderThumbnailContaining(bounds, thumbnailRenderMethod);
+            RenderThumbnailContaining(bounds, thumbnailRenderMethod, cameraSnapshotFromPosition);
         }
 
         /// <summary>
@@ -295,16 +295,18 @@ namespace Netherlands3D.Interface.SidePanel
             thumbnailRenderer.transform.position = (cameraSnapshotFromPosition == Vector3.zero) ? bounds.center - (distance * Vector3.forward) + (distance * Vector3.up) : cameraSnapshotFromPosition;
             thumbnailRenderer.transform.LookAt(bounds.center);
 
-            RenderThumbnail(thumbnailRenderMethod);
+            RenderThumbnail(thumbnailRenderMethod, bounds);
         }
 
         /// <summary>
         /// Render thumbnail from previous position
         /// </summary>
         /// <param name="swapBuildingShaders">Swap building shaders for one frame, so we can exclusively draw highlighted buildings</param>
-		public void RenderThumbnail(ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA)
+		public void RenderThumbnail(ThumbnailRenderMethod thumbnailRenderMethod = ThumbnailRenderMethod.SAME_LAYER_AS_THUMBNAIL_CAMERA, Bounds bounds = default)
 		{
-			switch (thumbnailRenderMethod)
+            thumbnailRenderer.orthographic = false;
+
+            switch (thumbnailRenderMethod)
 			{
 				case ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA:
                     thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
@@ -318,6 +320,8 @@ namespace Netherlands3D.Interface.SidePanel
                 case ThumbnailRenderMethod.ORTOGRAPHIC:
                     thumbnailRenderer.cullingMask = CameraModeChanger.Instance.ActiveCamera.cullingMask;
                     thumbnailRenderer.orthographic = true;
+                    var ortoSize = (Math.Max(bounds.size.x, bounds.size.z) / 2.0f);
+                    thumbnailRenderer.orthographicSize = ortoSize + (ortoSize*cameraThumbnailObjectMargin);
                     break;
                 default:
 					break;
