@@ -315,18 +315,17 @@ namespace Netherlands3D.Cameras
         }
 
         void HandleTranslationInput()
-        {         
+        {
             moveSpeed = Mathf.Sqrt(Mathf.Abs(cameraComponent.transform.position.y)) * speedFactor;
-
             var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
-            if (movement != null)
-            {
-                movement.z = movement.y;
-                movement.y = heightchange * 0.1f;
-                movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
-            }
+
+            if (movement == Vector3.zero && heightchange == 0) return;
+            
+            movement.z = movement.y;
+            movement.y = heightchange * 0.1f;
+            movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+            cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;            
         }
 
         private void HandleRotationInput()
@@ -345,7 +344,10 @@ namespace Netherlands3D.Cameras
         private void HandleFly()
         {
             Vector2 val = flyActionGamepad.ReadValue<Vector2>();
-            var newpos = cameraComponent.transform.position += cameraComponent.transform.forward * val.y * moveSpeed * Time.deltaTime * 0.3f;
+
+            if (val == Vector2.zero) return;
+            
+            var newpos = cameraComponent.transform.position += cameraComponent.transform.forward.normalized * val.y * moveSpeed * Time.deltaTime * 0.3f;
             newpos += cameraComponent.transform.right * val.x * moveSpeed * Time.deltaTime * 0.1f;
 
             if (newpos.y < Config.activeConfiguration.zeroGroundLevelY + 20) newpos.y = Config.activeConfiguration.zeroGroundLevelY + 20;
