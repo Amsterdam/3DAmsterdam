@@ -21,3 +21,17 @@ For C#/.NET coding conventions please refer to the Microsoft conventions:<br/>
 [https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)<br/>
 For variable naming please refer to:<br/>
 [https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions)<br/>
+
+## Third parties and licenses
+
+DXF export library - Lesser General Public Licence https://github.com/Amsterdam/3DAmsterdam/blob/master/3DAmsterdam/Assets/Netherlands3D/Plugins/netDxf/README.md
+Sun Script - Credits to Paul Hayes https://gist.github.com/paulhayes
+3D BAG - CC-BY licentie (TU Delft)
+BruTile (only used for its Extent struct) - Apache License 2.0
+
+Simple SJON - MIT License
+Mesh Simplifier - MIT License
+Clipping Triangles - MIT License
+scripts/extentions/ListExtensions.cs - MIT License
+Scripts/RuntimeHandle derivative work - MIT License
+quantized mesh tiles (no longer used) - MIT License
