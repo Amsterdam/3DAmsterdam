@@ -28,7 +28,7 @@ DXF export library - [Lesser General Public Licence](https://github.com/Amsterda
 Sun Script - Credits to [Paul Hayes](https://gist.github.com/paulhayes)<br/>
 3D BAG - [CC-BY licentie (TU Delft)](https://docs.3dbag.nl/en/copyright/)<br/>
 BruTile (only used for its Extent struct) - [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)<br/>
-<br/>>
+<br/>
 Simple SJON - [MIT License](https://github.com/simplejson/simplejson/blob/master/LICENSE.txt)<br/>
 Mesh Simplifier - MIT License<br/>
 Clipping Triangles - MIT License<br/>
