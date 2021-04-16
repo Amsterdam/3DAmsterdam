@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -62,6 +63,9 @@ namespace Netherlands3D.Interface
 
 		[SerializeField]
 		private Interactable multiSelector;
+
+		[Header("Report any click action to these objects")]
+		public UnityEvent registeredClickInput;
 
 		void Awake()
 		{
@@ -186,8 +190,11 @@ namespace Netherlands3D.Interface
 
 		private void Click(IAction action)
 		{
+			//Let any listeners know we have made a general click
+			registeredClickInput.Invoke();
+
 			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
-			if(!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 				Select();
 		}
 		private void SecondaryClick(IAction action)
