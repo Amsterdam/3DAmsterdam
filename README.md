@@ -24,7 +24,7 @@ For variable naming please refer to:<br/>
 
 ## Third parties and licenses
 
-DXF export library - [Lesser General Public Licence]: https://github.com/Amsterdam/3DAmsterdam/blob/master/3DAmsterdam/Assets/Netherlands3D/Plugins/netDxf/README.md
+DXF export library - [Lesser General Public Licence](https://github.com/Amsterdam/3DAmsterdam/blob/master/3DAmsterdam/Assets/Netherlands3D/Plugins/netDxf/README.md)
 Sun Script - Credits to [Paul Hayes]: https://gist.github.com/paulhayes
 3D BAG - [CC-BY licentie (TU Delft)]: https://docs.3dbag.nl/en/copyright/
 BruTile (only used for its Extent struct) - [Apache License 2.0]: https://www.apache.org/licenses/LICENSE-2.0
