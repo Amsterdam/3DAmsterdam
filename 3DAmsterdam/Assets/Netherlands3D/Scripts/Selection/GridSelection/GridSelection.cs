@@ -46,11 +46,13 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		private string gridExportFormat = "";
+		private string selectedExportFormat = "";
 		[SerializeField]
 		List<LayerSystem.Layer> selectableLayers;
 		[SerializeField]
 		private GameObject traffic;
+		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
+
 
 		private void Awake()
 		{
@@ -253,65 +255,77 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-
-			bool[] toggleArray = new bool[4];
+			
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
-			PropertiesPanel.Instance.RenderThumbnailContaining(scaleBlock.GetComponent<MeshRenderer>().bounds, PropertiesPanel.ThumbnailRenderMethod.SAME_AS_MAIN_CAMERA);
+
+			//Lets render a ortographic thumbnail for a proper grid topdown view
+			gridSelectionBlock.SetActive(false);
+			PropertiesPanel.Instance.RenderThumbnailContaining(
+				scaleBlock.GetComponent<MeshRenderer>().bounds, 
+				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC, 
+				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
+			);
+			gridSelectionBlock.SetActive(true);
+
 			PropertiesPanel.Instance.AddTitle("Lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
 			{
-				toggleArray[0] = action;
+				exportLayerToggles[0] = action;
+				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
 			});
-			toggleArray[0] = true;
-			PropertiesPanel.Instance.AddActionCheckbox("Bomen", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
 			{
-				toggleArray[1] = action;
+				exportLayerToggles[1] = action;
+				PlayerPrefs.SetInt("exportLayer1Toggle", Convert.ToInt32(exportLayerToggles[1]));
 			});
-			toggleArray[1] = true;
-			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
 			{
-				toggleArray[2] = action;
+				exportLayerToggles[2] = action;
+				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
 			});
-			toggleArray[2] = true;
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", true, (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
 			{
-				toggleArray[3] = action;
+				exportLayerToggles[3] = action;
+				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
 			});
-			toggleArray[3] = true;
-			PropertiesPanel.Instance.AddActionDropdown(new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" }, (action) =>
+
+			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
+			selectedExportFormat = PlayerPrefs.GetString("exportFormat", exportFormats[0]);
+			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
 			{
-				gridExportFormat = action;
-			});
-			gridExportFormat = "AutoCAD DXF (.dxf)";
+				selectedExportFormat = action;
+				PlayerPrefs.SetString("exportFormat", action);
+
+			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
 
 			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
 
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
-                switch (gridExportFormat)
+				List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
+				for (int i = 0; i < selectableLayers.Count; i++)
+				{
+					if (exportLayerToggles[i])
+					{
+						selectedLayers.Add(selectableLayers[i]);
+					}
+				}
+				print(selectedExportFormat);
+				switch (selectedExportFormat)
                 {
 					case "AutoCAD DXF (.dxf)":
-						Debug.Log("start building dxf");
-						List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
-
-                        for (int i = 0; i < selectableLayers.Count; i++)
-                        {
-                            if (toggleArray[i])
-                            {
-								selectedLayers.Add(selectableLayers[i]);
-                            }
-                        }
-
-
-						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
+						Debug.Log("Start building DXF");
+						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds, selectedLayers);
+						break;
+					case "Collada DAE (.dae)":
+						Debug.Log("Start building collada");
+						GetComponent<ColladaCreation>().CreateCollada(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
 						break;
 					default:
-						WarningDialogs.Instance.ShowNewDialog("Exporteer " + gridExportFormat + " nog niet geactiveerd.");
+						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
                         break;
                 }
-                //Do the download action
-               
 			});
 
 			PropertiesPanel.Instance.AddActionCheckbox("ShowTraffic",false, (action) =>

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
+using System.Collections.Generic;
 
 namespace Netherlands3D.Cameras
 {
@@ -58,6 +59,7 @@ namespace Netherlands3D.Cameras
         private float maxMomentum = 1000.0f;
 
         private bool firstPersonModifier = false;
+        private bool rotateAroundModifier = false;
 
         public bool LockFunctions = false;
 
@@ -77,28 +79,35 @@ namespace Netherlands3D.Cameras
         private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
+        private IAction modifierRotateAroundAction;
 
         private IAction moveActionKeyboard;
         private IAction rotateActionKeyboard;
         private IAction zoomActionKeyboard;
         private IAction moveHeightActionKeyboard;
 
-        private float minUndergroundY = 0.0f;
+        private IAction flyActionGamepad;
 
-        private InputActionMap mouseActionMap;
-        private InputActionMap keyboardActionMap;
+        private float minUndergroundY = -30f;
+
+        List<InputActionMap> availableActionMaps;
 
         void Awake()
         {
+            
             cameraComponent = GetComponent<Camera>();
         }
 
         void Start()
 		{
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
-            mouseActionMap = ActionHandler.actions.GodViewMouse;
-            keyboardActionMap = ActionHandler.actions.GodViewKeyboard;
-
+            
+            availableActionMaps = new List<InputActionMap>()
+            {
+                ActionHandler.actions.GodViewMouse,
+                ActionHandler.actions.GodViewKeyboard                
+            };
+            
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
 			AddActionListeners();
 		}
@@ -117,8 +126,12 @@ namespace Netherlands3D.Cameras
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
             moveHeightActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCameraHeight);
 
+            //Gamepad
+            flyActionGamepad = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Fly);
+
             //Combination
             modifierFirstPersonAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.FirstPersonModifier);
+            modifierRotateAroundAction = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.RotateAroundModifier);
 
             //Listeners
             dragActionMouse.SubscribePerformed(Drag);
@@ -131,7 +144,11 @@ namespace Netherlands3D.Cameras
 
             modifierFirstPersonAction.SubscribePerformed(FirstPersonModifier);
             modifierFirstPersonAction.SubscribeCancelled(FirstPersonModifier);
-		}
+
+            modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
+            modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
+
+        }
 
 
         public void EnableKeyboardActionMap(bool enabled)
@@ -172,6 +189,18 @@ namespace Netherlands3D.Cameras
             }
         }
 
+        private void RotateAroundModifier(IAction action)
+        {
+            if (action.Cancelled)
+            {
+                rotateAroundModifier = false;
+            }
+            else if (action.Performed)
+            {
+                rotateAroundModifier = true;
+            }
+        }
+
         private void Zoom(IAction action)
         {
                 scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
@@ -193,6 +222,7 @@ namespace Netherlands3D.Cameras
             if(action.Cancelled)
             {
                 dragging = false;
+                rotatingAroundPoint = false;
             } 
             else if (action.Performed)
             {
@@ -218,16 +248,23 @@ namespace Netherlands3D.Cameras
 		{
             if (dragging)
             {
+                CheckRotatingAround();
+
                 if (firstPersonModifier)
                 {
                     FirstPersonLook();
+                }
+                else if (rotatingAroundPoint)
+                {
+                    RotateAroundPoint();
                 }
                 else
                 {
                     Dragging();
                 }
             }
-            else{
+            else
+            {
                 if (rotatingAroundPoint)
                 {
                     RotateAroundPoint();
@@ -236,12 +273,26 @@ namespace Netherlands3D.Cameras
                 {
                     HandleTranslationInput();
                     HandleRotationInput();
-				}
+                    HandleFly();
+                }
                 EazeOutDragVelocity();
-            }  
-  
+            }
+
             LimitPosition();
-		}
+        }
+
+        void CheckRotatingAround()
+        {
+            if (rotateAroundModifier && !rotatingAroundPoint)
+            {
+                rotatingAroundPoint = true;
+                SetFocusPoint();
+            }
+            else if (!rotateAroundModifier && rotatingAroundPoint)
+            {
+                rotatingAroundPoint = false;
+            }
+        }
 
         /// <summary>
         /// Clamps the camera within the max travel distance bounding box
@@ -264,18 +315,17 @@ namespace Netherlands3D.Cameras
         }
 
         void HandleTranslationInput()
-        {         
-            moveSpeed = Mathf.Sqrt(cameraComponent.transform.position.y) * speedFactor;
-
+        {
+            moveSpeed = Mathf.Sqrt(Mathf.Abs(cameraComponent.transform.position.y)) * speedFactor;
             var heightchange = moveHeightActionKeyboard.ReadValue<float>();
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
-            if (movement != null)
-            {
-                movement.z = movement.y;
-                movement.y = heightchange * 0.1f;
-                movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-                cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
-            }
+
+            if (movement == Vector3.zero && heightchange == 0) return;
+            
+            movement.z = movement.y;
+            movement.y = heightchange * 0.1f;
+            movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
+            cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;            
         }
 
         private void HandleRotationInput()
@@ -289,9 +339,22 @@ namespace Netherlands3D.Cameras
                 rotation.x += rotationInput.y * rotationSpeed * Time.deltaTime;
                 cameraComponent.transform.eulerAngles = rotation;
             }
-		}
+        }
 
-		private void FirstPersonLook()
+        private void HandleFly()
+        {
+            Vector2 val = flyActionGamepad.ReadValue<Vector2>();
+
+            if (val == Vector2.zero) return;
+            
+            var newpos = cameraComponent.transform.position += cameraComponent.transform.forward.normalized * val.y * moveSpeed * Time.deltaTime * 0.3f;
+            newpos += cameraComponent.transform.right * val.x * moveSpeed * Time.deltaTime * 0.1f;
+
+            if (newpos.y < Config.activeConfiguration.zeroGroundLevelY + 20) newpos.y = Config.activeConfiguration.zeroGroundLevelY + 20;
+            cameraComponent.transform.position = newpos;
+        }
+
+        private void FirstPersonLook()
 		{
             var mouseDelta = Mouse.current.delta.ReadValue();
 
@@ -303,11 +366,11 @@ namespace Netherlands3D.Cameras
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
 
-		private void ClampRotation()
+        private void ClampRotation()
         {
             cameraComponent.transform.rotation = Quaternion.Euler(new Vector3(
                 ClampAngle(cameraComponent.transform.localEulerAngles.x, minAngle, maxAngle),
-                cameraComponent.transform.localEulerAngles.y, 
+                cameraComponent.transform.localEulerAngles.y,
                 cameraComponent.transform.localEulerAngles.z));
         }
 
@@ -431,7 +494,7 @@ namespace Netherlands3D.Cameras
 
 		public bool UsesActionMap(InputActionMap actionMap)
 		{
-            return (actionMap == mouseActionMap || actionMap == keyboardActionMap);
+            return availableActionMaps.Contains(actionMap);         
 		}
 	}
 }

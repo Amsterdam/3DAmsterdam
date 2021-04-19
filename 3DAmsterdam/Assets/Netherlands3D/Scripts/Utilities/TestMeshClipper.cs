@@ -25,7 +25,7 @@ public class TestMeshClipper : MonoBehaviour
         clipper.SetGameObject(go);
 
         // clip the desired submesh
-        clipper.clipSubMesh(bbox, 0);
+        clipper.ClipSubMesh(bbox, 0);
 
         // after clipping the clipper contains a list of Vector3RD coordinates. each set of 3 coordinates describes a triangle (orientation is counterClockwise
         CreateMesh(clipper.clippedVerticesRD);

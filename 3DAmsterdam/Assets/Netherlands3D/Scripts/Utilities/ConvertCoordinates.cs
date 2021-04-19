@@ -63,59 +63,12 @@ namespace ConvertCoordinates
 
     public static class CoordConvert
     {
-        //scalefactors for converting WGS84 to Unity
-        private static double unitsPerDegreeX = 67800;  //approximation of distance between longitudinal degrees in meters at reference-lattitude
-        private static double unitsPerDegreeY = 111000; //approximation of distance between lattitudinal degrees in meters
 
         private static byte[] RDCorrectionX = Resources.Load<TextAsset>("x2c").bytes;
         private static byte[] RDCorrectionY = Resources.Load<TextAsset>("y2c").bytes;
         private static byte[] RDCorrectionZ = Resources.Load<TextAsset>("nlgeo04").bytes;
 
         private static Vector3RD output = new Vector3RD();
-
-        private static Vector3WGS? referenceWGS84  = null;
-
-        /// <summary>
-        /// set ReferenceWGS84 converted from RelativeCenterRD,
-        /// </summary>
-        public static Vector3WGS ReferenceWGS84
-        {
-            get
-            {
-                if(referenceWGS84 == null)
-                {
-                    referenceWGS84 = RDtoWGS84(Config.activeConfiguration.RelativeCenterRD.x, Config.activeConfiguration.RelativeCenterRD.y);                    
-                    referenceWGS84 = new Vector3WGS()
-                    {
-                        lon = referenceWGS84.Value.lon,
-                        lat = referenceWGS84.Value.lat,
-                        h = (float)RDCorrection(referenceWGS84.Value.lon, referenceWGS84.Value.lat, "Z", RDCorrectionZ)
-                    };
-                }
-                return referenceWGS84.Value;
-            }
-        }
-
-        /// <summary>
-        /// get: return value
-        /// </summary>
-        public static double UnitsPerDegreeX
-        {
-            get
-            {
-                return unitsPerDegreeX;
-            }
-        }
-        /// <summary>
-        /// get: return value
-        /// </summary>
-        public static double UnitsPerDegreeY
-        {
-            get
-            {
-                return unitsPerDegreeY;
-            }
-        }
 
         /// <summary>
         /// Converts WGS84-coordinate to UnityCoordinate
@@ -126,7 +79,7 @@ namespace ConvertCoordinates
         {
             Vector3 output = new Vector3();
             output = WGS84toUnity(coordinaat.x, coordinaat.y);
-            output.y = (float)-ReferenceWGS84.h;
+           
             return output;
         }
         /// <summary>
@@ -136,9 +89,9 @@ namespace ConvertCoordinates
         /// <returns>Vector3 Unity-Coordinate</returns>
         public static Vector3 WGS84toUnity(Vector3 coordinaat)
         {
-            Vector3 output = new Vector3();
-            output = WGS84toUnity(coordinaat.x, coordinaat.y);
-            output.y = (float)(coordinaat.y-ReferenceWGS84.h);
+            Vector3 output = WGS84toUnity(coordinaat.x, coordinaat.y);
+            double hoogteCorrectie = RDCorrection(coordinaat.x, coordinaat.y, "Z", RDCorrectionZ);
+            output.y = (float)(coordinaat.z - hoogteCorrectie);
             return output;
         }
         /// <summary>
@@ -148,9 +101,9 @@ namespace ConvertCoordinates
         /// <returns>Vector Unity-Coordinate</returns>
         public static Vector3 WGS84toUnity(Vector3WGS coordinaat)
         {
-            Vector3 output = new Vector3();
-            output = WGS84toUnity(coordinaat.lon, coordinaat.lat);
-            output.y = (float)(coordinaat.h- ReferenceWGS84.h);
+            Vector3 output = WGS84toUnity(coordinaat.lon, coordinaat.lat);
+            double hoogteCorrectie = RDCorrection(coordinaat.lon, coordinaat.lat, "Z", RDCorrectionZ);
+            output.y = (float)( coordinaat.h - hoogteCorrectie);
             return output;
         }
         /// <summary>
@@ -158,7 +111,7 @@ namespace ConvertCoordinates
         /// </summary>
         /// <param name="lon">double lon (east-west)</param>
         /// <param name="lat">double lat (south-north)</param>
-        /// <returns>Vector3 Unity-Coordinate</returns>
+        /// <returns>Vector3 Unity-Coordinate at 0-NAP</returns>
         public static Vector3 WGS84toUnity(double lon, double lat)
         {
             Vector3 output = new Vector3();
@@ -167,10 +120,10 @@ namespace ConvertCoordinates
                 Debug.Log("<color=red>coordinate " + lon + "," + lat + " is not a valid WGS84-coordinate!</color>");
                 return output;
             }
-
-            output.y = (float)-ReferenceWGS84.h;
-            output.x = (float)((lon - ReferenceWGS84.lon) * unitsPerDegreeX);
-            output.z = (float)((lat - ReferenceWGS84.lat) * unitsPerDegreeY);
+            Vector3RD vectorRD = new Vector3RD();
+            vectorRD = WGS84toRD(lon, lat);
+            vectorRD.z = Config.activeConfiguration.zeroGroundLevelY;
+            output = RDtoUnity(vectorRD);
             return output;
         }
 
@@ -181,12 +134,7 @@ namespace ConvertCoordinates
         /// <returns>UnityCoordinate</returns>
         public static Vector3 RDtoUnity(Vector3 coordinaat)
         {
-            Vector3 output = new Vector3();
-            //convert to unity
-            output = RDtoUnity(coordinaat.x, coordinaat.y,coordinaat.z);
-            //insert elevation
-            //output.y = coordinaat.y;
-            return output;
+            return RDtoUnity(coordinaat.x, coordinaat.y, coordinaat.z);
         }
         /// <summary>
         /// Convert RD-coordinate to Unity-Coordinate
@@ -195,12 +143,7 @@ namespace ConvertCoordinates
         /// <returns>Vector3 Unity-Coordinate</returns>
         public static Vector3 RDtoUnity(Vector3RD coordinaat)
         {
-            Vector3 output = new Vector3();
-            //convert to unity
-            output = RDtoUnity(coordinaat.x, coordinaat.y,coordinaat.z);
-            //insert elevation
-            output.y = (float)(coordinaat.z+ Config.activeConfiguration.zeroGroundLevelY);
-            return output;
+            return RDtoUnity(coordinaat.x, coordinaat.y, coordinaat.z);
         }
         /// <summary>
         /// Convert RD-coordinate to Unity-coordinate
@@ -224,17 +167,9 @@ namespace ConvertCoordinates
         private static Vector3 RDtoUnity(double X, double Y, double Z)
         {
             Vector3 output = new Vector3();
-            //if (RDIsValid(new Vector3((float)X, (float)Y)) == false) //check if RD-coordinate is valid
-            //{
-            //    Debug.Log("<color=red>coordinaat " + X + "," + X + " is geen geldig RD-coordinaat!</color>");
-            //    return output;
-            //}
-            //convert to WGS84
-            Vector3WGS wgs = RDtoWGS84(X, Y);
-            //convert to Unity
-            output = WGS84toUnity(wgs.lon, wgs.lat);
-            double hoogte = RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
+            output.x = (float)( X - Config.activeConfiguration.RelativeCenterRD.x);
             output.y = (float)(Z + Config.activeConfiguration.zeroGroundLevelY);
+            output.z = (float)(Y - Config.activeConfiguration.RelativeCenterRD.y);
             return output;
         }
 
@@ -245,10 +180,10 @@ namespace ConvertCoordinates
         /// <returns>WGS-coordinate</returns>
         public static Vector3WGS UnitytoWGS84(Vector3 coordinaat)
         {
-            Vector3WGS output = new Vector3WGS();
-            output.h = coordinaat.y - ReferenceWGS84.h; ;
-            output.lon = (float)((coordinaat.x / UnitsPerDegreeX) + ReferenceWGS84.lon);
-            output.lat = (float)((coordinaat.z / UnitsPerDegreeY) + ReferenceWGS84.lat);
+            Vector3RD vectorRD = UnitytoRD(coordinaat);
+            Vector3WGS output = RDtoWGS84(vectorRD.x,vectorRD.y);
+            double hoogteCorrectie = RDCorrection(output.lon, output.lat, "Z", RDCorrectionZ);
+            output.h = vectorRD.z + hoogteCorrectie;
             return output;
         }
         /// <summary>
@@ -258,10 +193,11 @@ namespace ConvertCoordinates
         /// <returns>RD-coordinate</returns>
         public static Vector3RD UnitytoRD(Vector3 coordinaat)
         {
-            Vector3WGS wgs = UnitytoWGS84(coordinaat);
-            Vector3RD RD = WGS84toRD(wgs.lon, wgs.lat);
-            RD.z = wgs.h - RDCorrection(wgs.lon, wgs.lat, "Z", RDCorrectionZ);
-            RD.z = RD.z - Config.activeConfiguration.zeroGroundLevelY;
+            //Vector3WGS wgs = UnitytoWGS84(coordinaat);
+            Vector3RD RD = new Vector3RD();
+            RD.x = coordinaat.x + Config.activeConfiguration.RelativeCenterRD.x;
+            RD.y = coordinaat.z + Config.activeConfiguration.RelativeCenterRD.y;
+            RD.z = coordinaat.y - Config.activeConfiguration.zeroGroundLevelY;
             return RD;
         }
 
@@ -520,24 +456,5 @@ namespace ConvertCoordinates
             return waarde;
         }
 
-        /// <summary>
-        /// calculate the necessary rotation for objects in rd-coordinates to sit nicely in the Unity-CoordinateSystem
-        /// </summary>
-        /// <param name="locatie">RD-coordinate</param>
-        /// <returns>rotationAngle for RD-object (clockwise) in degrees around unity Y-axis</returns>
-        public static double RDRotation(Vector3RD locatie)
-        {
-            double hoek = 0;
-
-            Vector3WGS origin = RDtoWGS84(locatie.x,locatie.y);
-            Vector3WGS punt2 = RDtoWGS84(locatie.x+100,locatie.y);
-
-            double deltaX = (punt2.lon - origin.lon) * unitsPerDegreeX;
-            double deltaY = (punt2.lat - origin.lat) * unitsPerDegreeY;
-            double hoekRad = Math.Tan(deltaY / deltaX);
-            hoek = -1*(hoekRad * 180 / Math.PI);
-
-            return hoek;
-        }
     }
 }

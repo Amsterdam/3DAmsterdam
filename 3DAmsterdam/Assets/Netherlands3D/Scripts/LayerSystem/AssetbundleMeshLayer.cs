@@ -91,6 +91,11 @@ namespace Netherlands3D.LayerSystem
             {
 				url = Datasets[lod].path;
 			}
+			if (Datasets[lod].path.StartsWith("file://"))
+			{
+				url = Datasets[lod].path;
+			}
+
 			url = url.Replace("{x}", tileChange.X.ToString());
 			url = url.Replace("{y}", tileChange.Y.ToString());
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))

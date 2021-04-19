@@ -13,7 +13,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
     {
         public List<Material> materialList = new List<Material>(7);
         private Material[] materialsArray;
-
+        private List<Vector3RD> vertsRD = new List<Vector3RD>();
         // Start is called before the first frame update
         void Start()
         {
@@ -35,11 +35,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             float tileSize = 1000;
             string filepath = basefilepath;
             Debug.Log(filepath);
-
+           
             if (File.Exists(filepath + jsonfilename))
             {
                 CityModel cm = new CityModel(filepath, jsonfilename);
-
+                vertsRD = GetVertsRD(cm);
                 //type voetpad
                 Mesh RoadsvoetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "voetpad", "voetgangersgebied", "ruiterpad", "voetpad op trap" }, true);
                 Mesh LandUseVoetpadMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "open verharding" }, true);
@@ -118,8 +118,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Mesh lod1Mesh = new Mesh();
                 lod1Mesh.CombineMeshes(combi, false, false);
                 lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
-                Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
-                AssetDatabase.CreateAsset(lod1Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + "-lod1.mesh");
+                //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
+                AssetDatabase.CreateAsset(lod1Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod1.mesh");
                 //for debug
 
                 //GetComponent<MeshFilter>().sharedMesh = lod1Mesh;
@@ -169,8 +169,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 lod0Mesh.CombineMeshes(combi, false, false);
                 lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
-                Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
-                AssetDatabase.CreateAsset(lod0Mesh, "Assets/terrainMeshes/LOD0/terrain_" + originX + "-" + originY + "-lod0.mesh");
+                //Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
+                AssetDatabase.CreateAsset(lod0Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
 
             }
         }
@@ -397,6 +397,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             int stepSize = 1000;
 
+            //debug
+            //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            //Xmax = 110000;
+            //Ymax = 479000;
+            //sw.Start();
             for (int X = Xmin; X < Xmax; X += stepSize)
             {
                 for (int Y = Ymin; Y < Ymax; Y += stepSize)
@@ -404,10 +409,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     Debug.Log(X + "=" + Y);
                     ImportSingle(X, Y);
                 }
-
-
-
             }
+            //sw.Stop();
+            //Debug.Log(sw.ElapsedMilliseconds + " ms");
         }
 
 
@@ -421,20 +425,20 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private List<Vector3RD> GetVertsRD(CityModel cityModel)
         {
             List<Vector3RD> vertsRD = new List<Vector3RD>();
-            Vector3RD vertexCoordinate = new Vector3RD();
+            Vector3 vertexCoordinate = new Vector3();
             foreach (Vector3Double vertex in cityModel.vertices)
             {
-                vertexCoordinate.x = vertex.x;
-                vertexCoordinate.y = vertex.y;
-                vertexCoordinate.z = vertex.z;
-                vertsRD.Add(vertexCoordinate);
+                vertexCoordinate.x = (float)vertex.x;
+                vertexCoordinate.y = (float)vertex.z;
+                vertexCoordinate.z = (float)vertex.y;
+                vertsRD.Add(CoordConvert.UnitytoRD(vertexCoordinate));
 
             }
             return vertsRD;
         }
         public List<Vector3RD> GetTriangleListRD(CityModel cityModel, string cityObjectType, string bgtProperty, List<string> bgtValues, bool include)
         {
-            List<Vector3RD> vertsRD = GetVertsRD(cityModel);
+            
             List<Vector3RD> triangleList = new List<Vector3RD>();
             List<int> triangles = new List<int>();
             bool Include;

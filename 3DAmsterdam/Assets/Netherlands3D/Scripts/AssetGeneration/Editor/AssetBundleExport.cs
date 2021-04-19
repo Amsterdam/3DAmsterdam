@@ -31,6 +31,7 @@ namespace Netherlands3D.AssetGeneration
 
 					AssetBundleBuild buildMesh = new AssetBundleBuild();
 					buildMesh.assetBundleName = file.Name.Replace(".asset", "");
+					buildMesh.assetBundleName = buildMesh.assetBundleName.Replace(".mesh", "");
 					buildMesh.assetNames = assetName;
 					buildMap.Add(buildMesh);
 				}
