@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using ConvertCoordinates;
+using SimpleJSON;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,31 +8,27 @@ namespace Netherlands3D.Traffic
 {
     public class RoadObject : MonoBehaviour
     {
-        public RoadItem road;
         public GameObject roadPointObject;
-
+        public string roadName;
         public List<RoadPoint> roadPoints = new List<RoadPoint>();
 
         /// <summary>
         /// Creates a roadobject and loads in all the roadpoints
         /// </summary>
         /// <param name="tempRoad"></param>
-        public void Intiate(RoadItem tempRoad)
+        public void CreateRoad(JSONNode tempRoad)
         {
-            road = tempRoad;
-            road.type = road.properties.name;
-
-            Vector3 tempCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(road.geometry.coordinates[0].longitude, road.geometry.coordinates[0].latitude);
+            Vector3 tempCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(tempRoad["geometry"]["lon"], tempRoad["geometry"]["lat"]);
             tempCoordinates.y = 45f; // raycast naar de grond om te kijken of hij er is
-
+            name = tempRoad["tags"]["name"];
             transform.position = tempCoordinates;
-            for (int i = 0; i < road.geometry.coordinates.Count; i++)
+            for (int i = 0; i < tempRoad["geometry"].Count; i++)
             {
                 GameObject tempGameObject = Instantiate(roadPointObject, transform.position, transform.rotation);
                 tempGameObject.transform.SetParent(this.transform);
                 RoadPoint tempRoadPoint = tempGameObject.GetComponent<RoadPoint>();
                 roadPoints.Add(tempRoadPoint);
-                tempRoadPoint.Initiate(road.geometry.coordinates[i].longitude, road.geometry.coordinates[i].latitude);
+                tempRoadPoint.Initiate(tempRoad["geometry"][i]["lon"], tempRoad["geometry"][i]["lat"]);
 
                 if (i == 0)
                 {
@@ -39,7 +37,7 @@ namespace Netherlands3D.Traffic
                 }
             }
             // Checks if there x amount of coördinates in road to deem the road segment big enough to generate a car (it's basically a small performance tweak)
-            if (road.geometry.coordinates.Count > 2)
+            if (tempRoad["geometry"].Count > 2)
             {
                 TrafficSimulator.Instance.PlaceCar(this);
             }

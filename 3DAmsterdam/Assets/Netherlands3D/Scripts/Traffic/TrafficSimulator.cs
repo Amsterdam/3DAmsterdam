@@ -16,9 +16,9 @@ namespace Netherlands3D.Traffic
         public bool enableCarSimulation = false;
         public bool enableBoundsSimulation = false;
 
-        public int minimumCarRenderDistance = 500;
-        public int mediumCarRenderDistance = 1000;
-        public int maximumCarRenderDistance = 1500;
+        public int minimumCarRenderDistance = 1500;
+        public int mediumCarRenderDistance = 2000;
+        public int maximumCarRenderDistance = 2500;
         private void Awake()
         {
             if (Instance == null)
@@ -85,7 +85,13 @@ namespace Netherlands3D.Traffic
         /// <param name="value"></param>
         public void StartSimulation(bool value)
         {
+            foreach (Car car in allCars)
+            {
+                Destroy(car.gameObject);
+            }
+            allCars.Clear();
             enableCarSimulation = value;
+            gameObject.SetActive(value);
         }
         /// <summary>
         /// Updates the car speed of all cars

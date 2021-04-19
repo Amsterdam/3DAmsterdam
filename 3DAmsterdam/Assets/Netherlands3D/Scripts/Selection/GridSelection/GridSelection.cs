@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
+using Netherlands3D.Traffic;
+using ConvertCoordinates;
 
 namespace Netherlands3D.Interface
 {
@@ -47,6 +49,8 @@ namespace Netherlands3D.Interface
 		private string gridExportFormat = "";
 		[SerializeField]
 		List<LayerSystem.Layer> selectableLayers;
+		[SerializeField]
+		private GameObject traffic;
 
 		private void Awake()
 		{
@@ -308,6 +312,17 @@ namespace Netherlands3D.Interface
                 }
                 //Do the download action
                
+			});
+
+			PropertiesPanel.Instance.AddActionCheckbox("ShowTraffic",false, (action) =>
+			{
+				traffic.SetActive(true);
+				traffic.GetComponent<TrafficSimulator>().StartSimulation(action);
+
+				if(traffic.activeSelf)
+				{
+					traffic.GetComponent<GenerateRoads>().ShowTraffic(scaleBlock.GetComponent<MeshRenderer>().bounds);
+				}
 			});
 		}
 

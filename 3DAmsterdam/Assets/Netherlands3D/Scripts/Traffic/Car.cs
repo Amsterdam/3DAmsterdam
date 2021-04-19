@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Netherlands3D.Cameras;
 
 namespace Netherlands3D.Traffic
 {
@@ -49,7 +50,7 @@ namespace Netherlands3D.Traffic
                 speed = TrafficSimulator.Instance.carSpeed;
             }
             updateCarFrames++;
-            float distanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
+            float distanceToCar = Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position);
             if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
             else if (distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
@@ -85,7 +86,7 @@ namespace Netherlands3D.Traffic
                         }
                         else
                         {
-                            if (currentRoad.roadPoints.Count > currentRoadIndex)
+                            if (currentRoad.roadPoints.Count >= currentRoadIndex)
                             {
                                 // if the car cant find an underground
                                 temp.y = lastRecordedHeight;
@@ -148,6 +149,7 @@ namespace Netherlands3D.Traffic
                                 if (Vector3.Dot(toTarget, transform.forward) > 0)
                                 {
                                     // assigns the newly found road
+                                    currentRoadIndex = 0;
                                     lastRoad = currentRoad;
                                     currentRoad = obj;
                                     nextRoad = obj;
