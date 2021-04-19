@@ -169,7 +169,7 @@ namespace Netherlands3D.Cameras
             {
                 ActionHandler.actions.GodViewMouse.Enable();
             }
-            else if(!enabled && ActionHandler.actions.GodViewMouse.enabled)
+            else if(!enabled && !rotatingAroundPoint && !dragging && ActionHandler.actions.GodViewMouse.enabled)
             {
                 dragging = false;
                 rotatingAroundPoint = false;
