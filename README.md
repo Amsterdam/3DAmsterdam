@@ -21,3 +21,17 @@ For C#/.NET coding conventions please refer to the Microsoft conventions:<br/>
 [https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)<br/>
 For variable naming please refer to:<br/>
 [https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions)<br/>
+
+## Third parties and licenses
+
+DXF export library - [Lesser General Public Licence](https://github.com/Amsterdam/3DAmsterdam/blob/master/3DAmsterdam/Assets/Netherlands3D/Plugins/netDxf/README.md)<br/>
+Sun Script - Credits to [Paul Hayes](https://gist.github.com/paulhayes)<br/>
+3D BAG - [CC-BY licentie (TU Delft)](https://docs.3dbag.nl/en/copyright/)<br/>
+BruTile (only used for its Extent struct) - [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)<br/>
+<br/>
+Simple SJON - [MIT License](https://github.com/simplejson/simplejson/blob/master/LICENSE.txt)<br/>
+Mesh Simplifier - MIT License<br/>
+Clipping Triangles - MIT License<br/>
+scripts/extentions/ListExtensions.cs - MIT License<br/>
+Scripts/RuntimeHandle derivative work - MIT License<br/>
+quantized mesh tiles (no longer used) - MIT License
