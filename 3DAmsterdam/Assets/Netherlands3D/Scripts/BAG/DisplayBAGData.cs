@@ -98,7 +98,7 @@ namespace Netherlands3D.BAG
 
 				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
+				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter);
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
 				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer adres informatie", Config.activeConfiguration.moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
 				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
