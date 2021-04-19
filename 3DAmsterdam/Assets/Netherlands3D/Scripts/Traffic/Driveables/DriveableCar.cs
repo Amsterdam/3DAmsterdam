@@ -10,9 +10,9 @@ public class DriveableCar : MonoBehaviour
     private HingeJoint wheelHingeFrontRight;
 
     [SerializeField]
-    private HingeJoint wheelHingeRearLeft;
+    private HingeJoint wheelSteerHingeFrontLeft;
     [SerializeField]
-    private HingeJoint wheelHingeRearRight;
+    private HingeJoint wheelSteerHingeFrontRight;
 
     private Quaternion startRotationFrontLeft;
     private Quaternion startRotationFrontRight;
@@ -22,6 +22,21 @@ public class DriveableCar : MonoBehaviour
     private JointMotor leftWheelMotor;
     private JointMotor rightWheelMotor;
 
+    private JointMotor leftWheelSteerMotor;
+    private JointMotor rightWheelSteerMotor;
+
+    [SerializeField]
+    private float throttleForce = 10.0f;
+
+    [SerializeField]
+    private float steeringForce = 10.0f;
+
+    [SerializeField]
+    private float maxSpeed = 10.0f;
+
+    [SerializeField]
+    private float steeringSpeed = 10.0f;
+
     private void Start()
 	{
         startRotationFrontLeft = wheelHingeFrontLeft.transform.localRotation;
@@ -29,6 +44,9 @@ public class DriveableCar : MonoBehaviour
 
         leftWheelMotor = wheelHingeFrontLeft.motor;
         rightWheelMotor = wheelHingeFrontRight.motor;
+
+        leftWheelSteerMotor = wheelSteerHingeFrontLeft.motor;
+        rightWheelSteerMotor = wheelSteerHingeFrontRight.motor;
     }
 
 	void FixedUpdate()
@@ -36,13 +54,20 @@ public class DriveableCar : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        wheelHingeFrontLeft.transform.eulerAngles = new Vector3(wheelHingeFrontLeft.transform.localEulerAngles.x, startRotationFrontLeft.eulerAngles.y + (horizontal* wheelMaxSteerAngle), wheelHingeFrontLeft.transform.localEulerAngles.z);
-        wheelHingeFrontRight.transform.eulerAngles = new Vector3(wheelHingeFrontLeft.transform.localEulerAngles.x, startRotationFrontRight.eulerAngles.y - (horizontal * wheelMaxSteerAngle), wheelHingeFrontLeft.transform.localEulerAngles.z);
-
-        leftWheelMotor.targetVelocity = vertical;
-        rightWheelMotor.targetVelocity = -vertical;
-
+        //Throttle
+        leftWheelMotor.targetVelocity = -vertical * maxSpeed;
+        rightWheelMotor.targetVelocity = vertical * maxSpeed;
+        leftWheelMotor.force = throttleForce;
+        rightWheelMotor.force = throttleForce;
         wheelHingeFrontLeft.motor = leftWheelMotor;
-        wheelHingeRearRight.motor = rightWheelMotor;
+        wheelHingeFrontRight.motor = rightWheelMotor;
+
+        //Steering
+        leftWheelSteerMotor.targetVelocity = wheelMaxSteerAngle * horizontal * steeringSpeed;
+        rightWheelSteerMotor.targetVelocity = wheelMaxSteerAngle * horizontal * steeringSpeed;
+        leftWheelSteerMotor.force = steeringForce;
+        rightWheelSteerMotor.force = steeringForce;
+        wheelSteerHingeFrontLeft.motor = leftWheelSteerMotor;
+        wheelSteerHingeFrontRight.motor = rightWheelSteerMotor;
     }
 }
