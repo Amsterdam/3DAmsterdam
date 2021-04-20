@@ -723,6 +723,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "CancelPick",
+                    "type": "Button",
+                    "id": "5153ce58-7b89-4c6e-952c-f3f6f588c2f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -734,6 +742,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Pick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3758e466-ba75-4a36-a437-22e1d52ce2d5",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CancelPick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

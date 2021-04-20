@@ -17,8 +17,9 @@ namespace Netherlands3D.Interface.Coloring
         private ColorPicker colorPicker;
         private Texture2D screenTexture;
 
-        public bool waitingForClick = true;
-        private IAction placeAction;
+        public bool waitingForClick = false;
+        private IAction pickAction;
+        private IAction cancelPickAction;
 
         [SerializeField]
         private Color pickedColor = Color.white;
@@ -46,17 +47,27 @@ namespace Netherlands3D.Interface.Coloring
             defaultIconColor = activeImageIcon.color;
 
             ActionMap = ActionHandler.actions.PlaceOnClick;
-            placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
-
-            placeAction.SubscribePerformed(Place);
+            pickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.Pick);
+            cancelPickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.CancelPick);
+            pickAction.SubscribePerformed(Pick);
+            cancelPickAction.SubscribePerformed(CancelPick);
          }
 
-        private void Place(IAction action)
+        private void Pick(IAction action)
         {
             if (waitingForClick && action.Performed)
             {
-                StopInteraction();
                 DonePicking(true);
+                StopInteraction();
+            }
+        }
+
+        private void CancelPick(IAction action)
+        {
+            if (waitingForClick && action.Performed)
+            {
+                DonePicking(false);
+                StopInteraction();
             }
         }
 
@@ -66,6 +77,10 @@ namespace Netherlands3D.Interface.Coloring
         /// </summary>
         public void StartColorSelection()
         {
+            TakeInteractionPriority();
+
+            waitingForClick = true;
+
             selectionPointer.gameObject.SetActive(true);
 
             //We dont allow clicks on the canvas, untill we are done picking a color
@@ -86,22 +101,12 @@ namespace Netherlands3D.Interface.Coloring
         /// <returns></returns>
         private IEnumerator ContinuousColorPick()
         {
-            while (true)
+            while (waitingForClick)
             {
-                if (Input.GetMouseButton(0))
-                {
-                    DonePicking(true);
-                }
-                else if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
-                {
-                    DonePicking(false);
-                }
-
                 yield return new WaitForEndOfFrame();
                 ReadCurrentScreenToTexture();
                 GrabPixelUnderMouse();
-
-                yield return null;
+                yield return new WaitForEndOfFrame();
             }
         }
 

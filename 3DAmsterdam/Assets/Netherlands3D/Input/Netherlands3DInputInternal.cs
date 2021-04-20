@@ -736,6 +736,14 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CancelPick"",
+                    ""type"": ""Button"",
+                    ""id"": ""5153ce58-7b89-4c6e-952c-f3f6f588c2f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -747,6 +755,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Pick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3758e466-ba75-4a36-a437-22e1d52ce2d5"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CancelPick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1705,6 +1724,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         // PickOnClick
         m_PickOnClick = asset.FindActionMap("PickOnClick", throwIfNotFound: true);
         m_PickOnClick_Pick = m_PickOnClick.FindAction("Pick", throwIfNotFound: true);
+        m_PickOnClick_CancelPick = m_PickOnClick.FindAction("CancelPick", throwIfNotFound: true);
         // GizmoHandle
         m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
         m_GizmoHandle_Drag = m_GizmoHandle.FindAction("Drag", throwIfNotFound: true);
@@ -2097,11 +2117,13 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputActionMap m_PickOnClick;
     private IPickOnClickActions m_PickOnClickActionsCallbackInterface;
     private readonly InputAction m_PickOnClick_Pick;
+    private readonly InputAction m_PickOnClick_CancelPick;
     public struct PickOnClickActions
     {
         private @Netherlands3DInputActions m_Wrapper;
         public PickOnClickActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Pick => m_Wrapper.m_PickOnClick_Pick;
+        public InputAction @CancelPick => m_Wrapper.m_PickOnClick_CancelPick;
         public InputActionMap Get() { return m_Wrapper.m_PickOnClick; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2114,6 +2136,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Pick.started -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
                 @Pick.performed -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
                 @Pick.canceled -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
+                @CancelPick.started -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
+                @CancelPick.performed -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
+                @CancelPick.canceled -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
             }
             m_Wrapper.m_PickOnClickActionsCallbackInterface = instance;
             if (instance != null)
@@ -2121,6 +2146,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Pick.started += instance.OnPick;
                 @Pick.performed += instance.OnPick;
                 @Pick.canceled += instance.OnPick;
+                @CancelPick.started += instance.OnCancelPick;
+                @CancelPick.performed += instance.OnCancelPick;
+                @CancelPick.canceled += instance.OnCancelPick;
             }
         }
     }
@@ -2440,6 +2468,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     public interface IPickOnClickActions
     {
         void OnPick(InputAction.CallbackContext context);
+        void OnCancelPick(InputAction.CallbackContext context);
     }
     public interface IGizmoHandleActions
     {
