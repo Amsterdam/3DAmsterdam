@@ -41,7 +41,7 @@ namespace Netherlands3D.Interface
 
 		private void Awake()
 		{
-			ToggleVisualFPS(false);
+			ToggleVisualFPS(true);
 
 			framesVisualFPS = 0;
 			lastInterval = Time.realtimeSinceStartup;
