@@ -1,5 +1,7 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.InputHandler;
 using Netherlands3D.Interface.Modular;
+using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +11,14 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.Coloring
 { 
-    public class ColorPipette : MonoBehaviour
+    public class ColorPipette : Interactable
     {
         [SerializeField]
         private ColorPicker colorPicker;
         private Texture2D screenTexture;
+
+        public bool waitingForClick = true;
+        private IAction placeAction;
 
         [SerializeField]
         private Color pickedColor = Color.white;
@@ -39,6 +44,20 @@ namespace Netherlands3D.Interface.Coloring
 
             parentCanvasGraphicRaycaster = selectionPointer.canvas.GetComponent<GraphicRaycaster>();
             defaultIconColor = activeImageIcon.color;
+
+            ActionMap = ActionHandler.actions.PlaceOnClick;
+            placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
+
+            placeAction.SubscribePerformed(Place);
+         }
+
+        private void Place(IAction action)
+        {
+            if (waitingForClick && action.Performed)
+            {
+                StopInteraction();
+                DonePicking(true);
+            }
         }
 
         /// <summary>
@@ -112,6 +131,8 @@ namespace Netherlands3D.Interface.Coloring
         /// <param name="useColor">Use color in ColorPicker</param>
         private void DonePicking(bool useColor)
         {
+            waitingForClick = false;
+
             Destroy(screenTexture);
 
             //Allow interaction on the canvas again

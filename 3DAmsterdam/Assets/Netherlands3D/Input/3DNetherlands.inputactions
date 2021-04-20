@@ -713,6 +713,33 @@
             ]
         },
         {
+            "name": "PickOnClick",
+            "id": "bccab963-e361-4a48-9589-d6a4141ea5eb",
+            "actions": [
+                {
+                    "name": "Pick",
+                    "type": "Button",
+                    "id": "d7193388-214f-4491-bce3-c40ccc6e6bee",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "163a4000-02b6-46c0-a4bd-f113fdc02572",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Pick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "GizmoHandle",
             "id": "9f5cca77-43e4-4143-9b9e-2cf7c6125193",
             "actions": [
