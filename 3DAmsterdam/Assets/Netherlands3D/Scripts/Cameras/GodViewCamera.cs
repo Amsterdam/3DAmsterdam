@@ -7,6 +7,7 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections.Generic;
+using Netherlands3D.Interface;
 
 namespace Netherlands3D.Cameras
 {
@@ -169,7 +170,7 @@ namespace Netherlands3D.Cameras
             {
                 ActionHandler.actions.GodViewMouse.Enable();
             }
-            else if(!enabled && !rotatingAroundPoint && !dragging && ActionHandler.actions.GodViewMouse.enabled)
+            else if(!enabled && ((!rotatingAroundPoint && !dragging) || Selector.Instance.GetActiveInteractable()) && ActionHandler.actions.GodViewMouse.enabled)
             {
                 dragging = false;
                 rotatingAroundPoint = false;

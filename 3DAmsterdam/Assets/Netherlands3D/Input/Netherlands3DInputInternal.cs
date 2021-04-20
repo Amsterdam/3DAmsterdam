@@ -726,6 +726,52 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
             ]
         },
         {
+            ""name"": ""PickOnClick"",
+            ""id"": ""bccab963-e361-4a48-9589-d6a4141ea5eb"",
+            ""actions"": [
+                {
+                    ""name"": ""Pick"",
+                    ""type"": ""Button"",
+                    ""id"": ""d7193388-214f-4491-bce3-c40ccc6e6bee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""CancelPick"",
+                    ""type"": ""Button"",
+                    ""id"": ""5153ce58-7b89-4c6e-952c-f3f6f588c2f0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""163a4000-02b6-46c0-a4bd-f113fdc02572"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Pick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3758e466-ba75-4a36-a437-22e1d52ce2d5"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""CancelPick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""GizmoHandle"",
             ""id"": ""9f5cca77-43e4-4143-9b9e-2cf7c6125193"",
             ""actions"": [
@@ -1675,6 +1721,10 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         // PlaceOnClick
         m_PlaceOnClick = asset.FindActionMap("PlaceOnClick", throwIfNotFound: true);
         m_PlaceOnClick_Place = m_PlaceOnClick.FindAction("Place", throwIfNotFound: true);
+        // PickOnClick
+        m_PickOnClick = asset.FindActionMap("PickOnClick", throwIfNotFound: true);
+        m_PickOnClick_Pick = m_PickOnClick.FindAction("Pick", throwIfNotFound: true);
+        m_PickOnClick_CancelPick = m_PickOnClick.FindAction("CancelPick", throwIfNotFound: true);
         // GizmoHandle
         m_GizmoHandle = asset.FindActionMap("GizmoHandle", throwIfNotFound: true);
         m_GizmoHandle_Drag = m_GizmoHandle.FindAction("Drag", throwIfNotFound: true);
@@ -2063,6 +2113,47 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     }
     public PlaceOnClickActions @PlaceOnClick => new PlaceOnClickActions(this);
 
+    // PickOnClick
+    private readonly InputActionMap m_PickOnClick;
+    private IPickOnClickActions m_PickOnClickActionsCallbackInterface;
+    private readonly InputAction m_PickOnClick_Pick;
+    private readonly InputAction m_PickOnClick_CancelPick;
+    public struct PickOnClickActions
+    {
+        private @Netherlands3DInputActions m_Wrapper;
+        public PickOnClickActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pick => m_Wrapper.m_PickOnClick_Pick;
+        public InputAction @CancelPick => m_Wrapper.m_PickOnClick_CancelPick;
+        public InputActionMap Get() { return m_Wrapper.m_PickOnClick; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PickOnClickActions set) { return set.Get(); }
+        public void SetCallbacks(IPickOnClickActions instance)
+        {
+            if (m_Wrapper.m_PickOnClickActionsCallbackInterface != null)
+            {
+                @Pick.started -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
+                @Pick.performed -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
+                @Pick.canceled -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnPick;
+                @CancelPick.started -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
+                @CancelPick.performed -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
+                @CancelPick.canceled -= m_Wrapper.m_PickOnClickActionsCallbackInterface.OnCancelPick;
+            }
+            m_Wrapper.m_PickOnClickActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pick.started += instance.OnPick;
+                @Pick.performed += instance.OnPick;
+                @Pick.canceled += instance.OnPick;
+                @CancelPick.started += instance.OnCancelPick;
+                @CancelPick.performed += instance.OnCancelPick;
+                @CancelPick.canceled += instance.OnCancelPick;
+            }
+        }
+    }
+    public PickOnClickActions @PickOnClick => new PickOnClickActions(this);
+
     // GizmoHandle
     private readonly InputActionMap m_GizmoHandle;
     private IGizmoHandleActions m_GizmoHandleActionsCallbackInterface;
@@ -2373,6 +2464,11 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     public interface IPlaceOnClickActions
     {
         void OnPlace(InputAction.CallbackContext context);
+    }
+    public interface IPickOnClickActions
+    {
+        void OnPick(InputAction.CallbackContext context);
+        void OnCancelPick(InputAction.CallbackContext context);
     }
     public interface IGizmoHandleActions
     {

@@ -129,9 +129,8 @@ namespace Netherlands3D.Interface
 				EnableCameraActionMaps(true, true);
 			}
 
-			//TODO: Mobile touch inputs will be handled from here as well. For example: 
-			//Two fingers and pinch out on Interactable (shoot ray from centroid of 2 touches) --> send pinch delta to interactable, to maybe scale the object if its a Transformable.
-			//Two fingers pinch without raycast hit? Zoom camera. Centroid of pinches delta rotates around point.
+			//Manual update for the input system. Mode can be changed in -> Project Settings/Input System Package/Update Mode
+			InputSystem.Update();
 		}
 
 		/// <summary>
@@ -185,7 +184,7 @@ namespace Netherlands3D.Interface
 		}
 
 		private void Click(IAction action)
-		{
+		{ 
 			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
 			if(!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 				Select();
