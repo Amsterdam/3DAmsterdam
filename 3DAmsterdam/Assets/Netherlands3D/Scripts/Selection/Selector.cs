@@ -128,9 +128,6 @@ namespace Netherlands3D.Interface
 			{
 				EnableCameraActionMaps(true, true);
 			}
-
-			//Manual update for the input system. Mode can be changed in -> Project Settings/Input System Package/Update Mode
-			InputSystem.Update();
 		}
 
 		/// <summary>
