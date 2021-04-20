@@ -46,7 +46,7 @@ namespace Netherlands3D.Interface.Coloring
             parentCanvasGraphicRaycaster = selectionPointer.canvas.GetComponent<GraphicRaycaster>();
             defaultIconColor = activeImageIcon.color;
 
-            ActionMap = ActionHandler.actions.PlaceOnClick;
+            ActionMap = ActionHandler.actions.PickOnClick;
             pickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.Pick);
             cancelPickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.CancelPick);
             pickAction.SubscribePerformed(Pick);
