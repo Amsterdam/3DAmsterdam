@@ -1,5 +1,7 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.InputHandler;
 using Netherlands3D.Interface.Modular;
+using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +11,15 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.Interface.Coloring
 { 
-    public class ColorPipette : MonoBehaviour
+    public class ColorPipette : Interactable
     {
         [SerializeField]
         private ColorPicker colorPicker;
         private Texture2D screenTexture;
+
+        public bool waitingForClick = false;
+        private IAction pickAction;
+        private IAction cancelPickAction;
 
         [SerializeField]
         private Color pickedColor = Color.white;
@@ -39,6 +45,30 @@ namespace Netherlands3D.Interface.Coloring
 
             parentCanvasGraphicRaycaster = selectionPointer.canvas.GetComponent<GraphicRaycaster>();
             defaultIconColor = activeImageIcon.color;
+
+            ActionMap = ActionHandler.actions.PickOnClick;
+            pickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.Pick);
+            cancelPickAction = ActionHandler.instance.GetAction(ActionHandler.actions.PickOnClick.CancelPick);
+            pickAction.SubscribePerformed(Pick);
+            cancelPickAction.SubscribePerformed(CancelPick);
+         }
+
+        private void Pick(IAction action)
+        {
+            if (waitingForClick && action.Performed)
+            {
+                DonePicking(true);
+                StopInteraction();
+            }
+        }
+
+        private void CancelPick(IAction action)
+        {
+            if (waitingForClick && action.Performed)
+            {
+                DonePicking(false);
+                StopInteraction();
+            }
         }
 
         /// <summary>
@@ -47,6 +77,10 @@ namespace Netherlands3D.Interface.Coloring
         /// </summary>
         public void StartColorSelection()
         {
+            TakeInteractionPriority();
+
+            waitingForClick = true;
+
             selectionPointer.gameObject.SetActive(true);
 
             //We dont allow clicks on the canvas, untill we are done picking a color
@@ -67,22 +101,12 @@ namespace Netherlands3D.Interface.Coloring
         /// <returns></returns>
         private IEnumerator ContinuousColorPick()
         {
-            while (true)
+            while (waitingForClick)
             {
-                if (Input.GetMouseButton(0))
-                {
-                    DonePicking(true);
-                }
-                else if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
-                {
-                    DonePicking(false);
-                }
-
                 yield return new WaitForEndOfFrame();
                 ReadCurrentScreenToTexture();
                 GrabPixelUnderMouse();
-
-                yield return null;
+                yield return new WaitForEndOfFrame();
             }
         }
 
@@ -112,6 +136,8 @@ namespace Netherlands3D.Interface.Coloring
         /// <param name="useColor">Use color in ColorPicker</param>
         private void DonePicking(bool useColor)
         {
+            waitingForClick = false;
+
             Destroy(screenTexture);
 
             //Allow interaction on the canvas again
