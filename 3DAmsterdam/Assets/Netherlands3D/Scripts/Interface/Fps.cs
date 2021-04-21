@@ -61,18 +61,6 @@ namespace Netherlands3D.Interface
 		}
 
 		/// <summary>
-		/// Method we call from javascript, telling unity if the tab/application is active.
-		/// Browsers throttle down applications in background tabs (to 1 fps) so we want to ignore those fps counts.
-		/// </summary>
-		/// <param name="isActive">Is the application active in the foreground, running at max performance, this should be 1, else 0.</param>
-		public void ActiveApplication(float isActive)
-		{
-			bool active = (isActive == 1); //We convert a number to a bool ( SendMessage from javascript only supports strings and numbers ) 
-			Debug.Log("Javascript told Unity that the application is " + active);
-			applicationIsActive = active;
-		}
-
-		/// <summary>
 		/// Shows or hides the visual FPS number in the screen
 		/// </summary>
 		/// <param name="enabled"></param>
@@ -125,8 +113,8 @@ namespace Netherlands3D.Interface
 			fpsCounter.text = Mathf.Round(fps).ToString();
 			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(badFpsThreshold, goodFpsThreshold, fps));
 		}
-		
-		#if !UNITY_EDITOR
+
+#if !UNITY_EDITOR
 		/// <summary>
 		/// Logs the FPS to Unity Analytics. Its rounded up into to FPS groups.
 		/// </summary>
@@ -142,6 +130,26 @@ namespace Netherlands3D.Interface
 				{ "fps", fps }
 			  });
 		}
-		#endif
+
+		/// <summary>
+		/// Method we call from javascript, telling unity if the tab/application is active.
+		/// Browsers throttle down applications in background tabs (to 1 fps) so we want to ignore those fps counts.
+		/// </summary>
+		/// <param name="isActive">Is the application active in the foreground, running at max performance, this should be 1, else 0.</param>
+		public void ActiveApplication(float isActive)
+		{
+			bool active = (isActive == 1); //We convert a number to a bool ( SendMessage from javascript only supports strings and numbers ) 
+			Debug.Log("Application is on foreground: " + active);
+			applicationIsActive = active;
+
+			//Reset coundown before logging resumes
+			if(applicationIsActive) 
+			{
+				framesAnalytics = 0;
+				lastIntervalAnalytics = timeNow;
+			}
+		}
+
+#endif
 	}
 }
