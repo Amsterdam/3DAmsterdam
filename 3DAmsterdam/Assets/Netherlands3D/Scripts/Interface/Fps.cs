@@ -14,7 +14,6 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Image fpsBackground;
 
-
 		private int framesVisualFPS = 0;
 		private double lastInterval = 0;
 
@@ -24,6 +23,8 @@ namespace Netherlands3D.Interface
 		
 		private int framesAnalytics = 0;
 		private double lastIntervalAnalytics = 0;
+
+		private int minimumFramesRenderedBeforeLogging = 5;
 
 		private int analyticsFpsGroupSize = 5; //The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up
 #endif
@@ -47,7 +48,7 @@ namespace Netherlands3D.Interface
 
 			framesVisualFPS = 0;
 			lastInterval = Time.realtimeSinceStartup;
-			
+
 			#if !UNITY_EDITOR
 			lastIntervalAnalytics = Time.realtimeSinceStartup;
 			framesAnalytics = 0;
@@ -102,7 +103,7 @@ namespace Netherlands3D.Interface
 			}
 
 #if !UNITY_EDITOR
-			if(logFpsGroupsToAnalytics && applicationIsActive)
+			if(logFpsGroupsToAnalytics && applicationIsActive && Time.frameCount > minimumFramesRenderedBeforeLogging)
 			{
 				++framesAnalytics;
 				if (timeNow > lastIntervalAnalytics + updateAnalyticsInterval)
