@@ -39,13 +39,15 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private float updateInterval = 0.5f;
 
+		private bool applicationIsActive = true;
+
 		private void Awake()
 		{
 			ToggleVisualFPS(false);
 
 			framesVisualFPS = 0;
 			lastInterval = Time.realtimeSinceStartup;
-
+			
 			#if !UNITY_EDITOR
 			lastIntervalAnalytics = Time.realtimeSinceStartup;
 			framesAnalytics = 0;
@@ -55,6 +57,17 @@ namespace Netherlands3D.Interface
 		private void Update()
 		{
 			CalculateAverageFPS();
+		}
+
+		/// <summary>
+		/// Method we call from javascript, telling unity if the tab/application is active.
+		/// Browsers throttle down applications in background tabs (to 1 fps) so we want to ignore those fps counts.
+		/// </summary>
+		/// <param name="isActive">Is the application active in the foreground, running at max performance</param>
+		public void Active(bool isActive)
+		{
+			Debug.Log("Javascript told Unity that the application is " + isActive);
+			applicationIsActive = isActive;
 		}
 
 		/// <summary>
@@ -88,7 +101,7 @@ namespace Netherlands3D.Interface
 			}
 
 #if !UNITY_EDITOR
-			if(logFpsGroupsToAnalytics)
+			if(logFpsGroupsToAnalytics && applicationIsActive)
 			{
 				++framesAnalytics;
 				if (timeNow > lastIntervalAnalytics + updateAnalyticsInterval)
