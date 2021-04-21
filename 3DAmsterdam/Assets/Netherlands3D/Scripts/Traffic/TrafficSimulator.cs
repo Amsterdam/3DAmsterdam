@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.LayerSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,9 +17,12 @@ namespace Netherlands3D.Traffic
         public bool enableCarSimulation = false;
         public bool enableBoundsSimulation = false;
 
-        public int minimumCarRenderDistance = 1500;
-        public int mediumCarRenderDistance = 2000;
-        public int maximumCarRenderDistance = 2500;
+        public int minimumCarRenderDistance = 500;
+        public int mediumCarRenderDistance = 1000;
+        public int maximumCarRenderDistance = 1500;
+
+        [SerializeField]
+        private AssetbundleMeshLayer terrainLayer;
         private void Awake()
         {
             if (Instance == null)
@@ -45,6 +49,7 @@ namespace Netherlands3D.Traffic
             GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
             Car tempCar = tempCarObject.GetComponent<Car>();
             tempCar.currentRoad = currentRoadObject;
+            tempCar.SetTerrainLayer(terrainLayer);
             tempCarObject.transform.SetParent(this.transform);
             allCars.Add(tempCar);
         }

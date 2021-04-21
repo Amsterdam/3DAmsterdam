@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Netherlands3D.Cameras;
+using Netherlands3D.LayerSystem;
 
 namespace Netherlands3D.Traffic
 {
@@ -27,7 +28,9 @@ namespace Netherlands3D.Traffic
 
         private float lastRecordedHeight = 0.0f;
         private RaycastHit hit;
-        // Start is called before the first frame update
+
+        private AssetbundleMeshLayer terrainLayer;
+
         void Start()
         {
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
@@ -76,10 +79,10 @@ namespace Netherlands3D.Traffic
                             currentRoadIndex++;
                         }
 
-                        Vector3 temp = transform.position;
-                        temp.y = 50f;
+                        Vector3 carPos = transform.position;
+                        carPos.y = 50f;
 
-                        if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
+                        if (Physics.Raycast(carPos, -Vector3.up, out hit, Mathf.Infinity))
                         {
                             // if the map tiles are loaded beneath the car
                             MoveCar(hit.point);
@@ -89,8 +92,10 @@ namespace Netherlands3D.Traffic
                             if (currentRoad.roadPoints.Count >= currentRoadIndex)
                             {
                                 // if the car cant find an underground
-                                temp.y = lastRecordedHeight;
-                                MoveCar(temp);
+                                Debug.Log("uh-oh");
+                                terrainLayer.AddMeshColliders(carPos);
+                                carPos.y = lastRecordedHeight;
+                                MoveCar(carPos);
                             }
                         }
                     }
@@ -130,7 +135,7 @@ namespace Netherlands3D.Traffic
             {
                 // optimization by executing once every 10 frames
                 findRoadLoopFrames++;
-                if (findRoadLoopFrames % 10 == 0 && nextRoad == null)
+                if (findRoadLoopFrames % 5 == 0 && nextRoad == null)
                 {
                     transform.position = compensationVector;
                     // resets the point DEMO ONLY
@@ -190,6 +195,11 @@ namespace Netherlands3D.Traffic
 
                 }
             }
+        }
+
+        public void SetTerrainLayer(AssetbundleMeshLayer layer)
+        {
+            terrainLayer = layer;
         }
 
     }

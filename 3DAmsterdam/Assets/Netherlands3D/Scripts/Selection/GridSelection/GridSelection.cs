@@ -11,6 +11,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Netherlands3D.Traffic;
 using ConvertCoordinates;
+using Netherlands3D.LayerSystem;
 
 namespace Netherlands3D.Interface
 {
@@ -49,8 +50,12 @@ namespace Netherlands3D.Interface
 		private string selectedExportFormat = "";
 		[SerializeField]
 		List<LayerSystem.Layer> selectableLayers;
+
 		[SerializeField]
 		private GameObject traffic;
+		[SerializeField]
+		private AssetbundleMeshLayer terrainLayer;
+
 		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
 
 
@@ -330,6 +335,7 @@ namespace Netherlands3D.Interface
 
 			PropertiesPanel.Instance.AddActionCheckbox("ShowTraffic",false, (action) =>
 			{
+				terrainLayer.AddMeshColliders(scaleBlock.GetComponent<MeshRenderer>().bounds.center);
 				traffic.SetActive(true);
 				traffic.GetComponent<TrafficSimulator>().StartSimulation(action);
 
