@@ -68,10 +68,10 @@
 	  //Start checking our browser activity
 	  document.addEventListener('visibilitychange', function () {
 			if (document.visibilityState == "hidden") {
-				unityInstance.SendMessage("FpsCounter", "Active", false);
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
 			} 
 			else {
-				unityInstance.SendMessage("FpsCounter", "Active", true);
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
 			}
 		});
 		

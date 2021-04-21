@@ -63,11 +63,12 @@ namespace Netherlands3D.Interface
 		/// Method we call from javascript, telling unity if the tab/application is active.
 		/// Browsers throttle down applications in background tabs (to 1 fps) so we want to ignore those fps counts.
 		/// </summary>
-		/// <param name="isActive">Is the application active in the foreground, running at max performance</param>
-		public void Active(bool isActive)
+		/// <param name="isActive">Is the application active in the foreground, running at max performance, this should be 1, else 0.</param>
+		public void ActiveApplication(float isActive)
 		{
-			Debug.Log("Javascript told Unity that the application is " + isActive);
-			applicationIsActive = isActive;
+			bool active = (isActive == 1); //We convert a number to a bool ( SendMessage from javascript only supports strings and numbers ) 
+			Debug.Log("Javascript told Unity that the application is " + active);
+			applicationIsActive = active;
 		}
 
 		/// <summary>
