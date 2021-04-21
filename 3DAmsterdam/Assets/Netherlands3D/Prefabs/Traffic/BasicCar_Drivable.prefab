@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8153969986832553592}
   - component: {fileID: 7489250312198986755}
   - component: {fileID: 4052095235436612801}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: FrontWheelJointLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.9099121, y: 0.3219999, z: 1.4750977}
+  m_ConnectedAnchor: {x: -0.9099121, y: 0.3220005, z: 1.4750977}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5778805200260588748}
   - component: {fileID: 1776855286236390540}
   - component: {fileID: 1879462963959923420}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: FrontWheelJointRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 0, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.9099121, y: 0.3219999, z: 1.4750977}
+  m_ConnectedAnchor: {x: 0.9099121, y: 0.3220005, z: 1.4750977}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 4788893558921614230}
   - component: {fileID: 3465121436020319820}
   - component: {fileID: 7227423146397794745}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: BasicCar_Drivable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,8 +301,10 @@ MonoBehaviour:
   wheelSteerHingeFrontRight: {fileID: 1879462963959923420}
   throttleForce: 1000
   steeringForce: 100
-  maxSpeed: 1000
+  maxSpeed: 2000
   steeringSpeed: 100
+  autoPilot: 1
+  target: {fileID: 0}
 --- !u!1001 &489143778656914157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -370,6 +372,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wheel_FrontRight
       objectReference: {fileID: 0}
+    - target: {fileID: 7122662318238452697, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_Axis.x
@@ -398,7 +405,7 @@ PrefabInstance:
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.00000008940697
+      value: 0.0000005066395
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
@@ -486,6 +493,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wheel_RearLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 7122662318238452697, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_Axis.x
@@ -509,12 +521,12 @@ PrefabInstance:
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
-      value: -0.9099121
+      value: -0.9100342
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: 0.3219999
+      value: 0.3220005
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
@@ -596,6 +608,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wheel_RearRight
       objectReference: {fileID: 0}
+    - target: {fileID: 7122662318238452697, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_Axis.x
@@ -619,12 +636,12 @@ PrefabInstance:
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
-      value: 0.9099121
+      value: 0.9100342
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: 0.3219999
+      value: 0.3220005
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
@@ -706,6 +723,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wheel_FrontLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 7122662318238452697, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedBody
@@ -719,7 +741,7 @@ PrefabInstance:
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.00000008940697
+      value: 0.0000005066395
       objectReference: {fileID: 0}
     - target: {fileID: 7837328249233557225, guid: 78cf6016d3d650e478aa1b9f68b7bbb7,
         type: 3}

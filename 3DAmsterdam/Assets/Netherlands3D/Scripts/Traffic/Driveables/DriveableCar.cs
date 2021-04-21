@@ -37,6 +37,11 @@ public class DriveableCar : MonoBehaviour
     [SerializeField]
     private float steeringSpeed = 10.0f;
 
+    [SerializeField]
+    private bool autoPilot = false;
+    [SerializeField]
+    private Transform target;
+
     private void Start()
 	{
         startRotationFrontLeft = wheelHingeFrontLeft.transform.localRotation;
@@ -53,6 +58,16 @@ public class DriveableCar : MonoBehaviour
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
+
+        if(autoPilot)
+        {
+            Vector3 directionToTarget = (target.position - this.transform.position);
+            float dot = Vector3.Dot(this.transform.forward, directionToTarget);
+            float directionRight = Vector3.Dot(this.transform.right, directionToTarget);
+
+            vertical = dot;
+            horizontal = (vertical<0) ?  -1.0f : directionRight;
+        }
 
         //Throttle
         leftWheelMotor.targetVelocity = -vertical * maxSpeed;
