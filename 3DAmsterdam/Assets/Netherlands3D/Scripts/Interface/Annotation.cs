@@ -106,45 +106,6 @@ namespace Netherlands3D.Interface
             interfaceLayer.RenameLayer(BodyText);
         }
 
-        private void Update()
-		{
-			AutoHideByCamera();
-		}
-
-        /// <summary>
-        /// Hides the annotation based on camera type and distance
-        /// </summary>
-		private void AutoHideByCamera()
-		{
-			if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
-			{
-				var distance = WorldPointerFollower.WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
-				var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPointerFollower.WorldPosition);
-				//Alternate way, connect annotations to world tiles?
-				// World space canvas instead of using canvas space?
-				if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0)
-				{
-					balloon.gameObject.SetActive(false);
-					balloonText.gameObject.SetActive(false);
-				}
-				else if (distance.x > 100 || distance.z > 100 || distance.x < -100 || distance.z < -100)
-				{
-					balloon.gameObject.SetActive(false);
-					balloonText.gameObject.SetActive(false);
-				}
-				else
-				{
-					balloon.gameObject.SetActive(true);
-					balloonText.gameObject.SetActive(true);
-				}
-			}
-			else
-			{
-				balloon.gameObject.SetActive(true);
-				balloonText.gameObject.SetActive(true);
-			}
-		}
-
 		/// <summary>
 		/// Hides the editor, and applies the last text inputs to the balloon and layer name
 		/// </summary>

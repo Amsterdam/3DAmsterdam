@@ -13,9 +13,7 @@ using Netherlands3D;
 namespace Amsterdam3D.Sewerage
 {
 	public class SewerageLayer : Layer
-    {
-		private const string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=";
-		private const string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
+    {		
 		[SerializeField]
 		private Material sharedMaterial;
 		[SerializeField]
@@ -93,7 +91,7 @@ namespace Amsterdam3D.Sewerage
 			yield return new WaitUntil(() => activeCount < maxSimultaneous);
 			activeCount++;
 			tile.gameObject.SetActive(true);
-			string escapedUrl = sewerPipesWfsUrl;
+			string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
@@ -160,7 +158,7 @@ namespace Amsterdam3D.Sewerage
 		}
 		IEnumerator GetSewerManholesInBoundingBox(TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
 		{
-			string escapedUrl = sewerManholesWfsUrl;
+			string escapedUrl = Config.activeConfiguration.sewerManholesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 

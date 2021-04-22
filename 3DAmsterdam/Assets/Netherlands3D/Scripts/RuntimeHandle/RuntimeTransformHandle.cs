@@ -92,7 +92,7 @@ namespace RuntimeHandle
             ContextPointerMenu.Instance.SetTargetInteractable(target.GetComponent<Interactable>());
         }
 
-        void LateUpdate()
+        void Update()
         {
             if (!target)
             {

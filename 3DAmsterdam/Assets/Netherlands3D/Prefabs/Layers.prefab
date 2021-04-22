@@ -139,13 +139,13 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: buildings_bag3d/buildings_{x}_{y}.1.3
+    path: Buildings/buildings_{x}_{y}.1,3
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 0
   - Description: LOD2
     lod: 1
-    path: buildings_bag3d/buildings_{x}_{y}.2.2
+    path: Buildings/buildings_{x}_{y}.2,2
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 0
@@ -259,7 +259,7 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: trees/LOD0/{x}_{y}_trees_lod0
+    path: Trees/trees_{x}-{y}-lod1
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 0
@@ -457,6 +457,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6043584489261153547, guid: 7d6a9e42de047a44e90e6992115299e1,
+        type: 3}
+      propertyPath: Datasets.Array.data[0].path
+      value: Terrain/terrain_{x}-{y}-lod0.mesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 6043584489261153547, guid: 7d6a9e42de047a44e90e6992115299e1,
+        type: 3}
+      propertyPath: Datasets.Array.data[1].path
+      value: Terrain/terrain_{x}-{y}-lod1.mesh
       objectReference: {fileID: 0}
     - target: {fileID: 6043584489261153549, guid: 7d6a9e42de047a44e90e6992115299e1,
         type: 3}

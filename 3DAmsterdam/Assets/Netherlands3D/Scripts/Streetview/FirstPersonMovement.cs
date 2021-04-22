@@ -100,7 +100,7 @@ namespace Netherlands3D.Cameras
         {
             Vector2 value = moveAction.ReadValue<Vector2>();
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 velocity.x = value.x * runspeed;
                 velocity.z = value.y * runspeed;

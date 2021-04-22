@@ -624,7 +624,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b5cd6f9944914408fbe9ee1bfe4e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contextMenuState: 1
+  blockMouseSelectionInteractions: 1
+  blockMouseNavigationInteractions: 1
+  blockKeyboardNavigationInteractions: 0
   colorPicker: {fileID: 8849778405559282789}
+  waitingForClick: 1
   pickedColor: {r: 1, g: 1, b: 1, a: 1}
   selectionPointer: {fileID: 4581350743387392476}
   activeImageIcon: {fileID: 2441899045869104020}
