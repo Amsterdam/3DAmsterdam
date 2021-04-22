@@ -82,6 +82,7 @@ namespace Netherlands3D.Interface
 		private void InitializeActions()
 		{
 			selectorActionMap = ActionHandler.actions.Selector;
+			selectorActionMap.Enable();
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
@@ -189,6 +190,9 @@ namespace Netherlands3D.Interface
 		}
 		private void SecondaryClick(IAction action)
 		{
+			//Let any listeners know we have made a general click
+			registeredClickInput.Invoke();
+
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 			{
 				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
@@ -206,6 +210,8 @@ namespace Netherlands3D.Interface
 			else if (action.Performed)
 			{
 				doingMultiselect = true;
+				//Let any listeners know we have made a general click action
+				registeredClickInput.Invoke();
 			}
 		}
 
