@@ -276,7 +276,10 @@ namespace Netherlands3D.Cameras
                     HandleRotationInput();
                     HandleFly();
                 }
-                EazeOutDragVelocity();
+                if (ActionHandler.actions.GodViewMouse.enabled)
+                {
+                    EazeOutDragVelocity();
+                }
             }
 
             LimitPosition();
