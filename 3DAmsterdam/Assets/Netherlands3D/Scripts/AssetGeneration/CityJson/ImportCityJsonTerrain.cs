@@ -189,6 +189,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             for (int i = 0; i < combi.Length; i++)
             {
                 combi[i].mesh = CreateEmptyMesh();
+                combi[i].mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             }
             if (meshes.ContainsKey(terrainType.voetpad))
             {
@@ -218,6 +219,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 combi[6].mesh = SimplifyMesh(meshes[terrainType.onbegroeid], 0.2f); // //
             }
+            if (meshes.ContainsKey(terrainType.spoorbanen))
+            {
+                combi[7].mesh = meshes[terrainType.spoorbanen]; //
+            }
             if (meshes.ContainsKey(terrainType.woonerven))
             {
                 combi[8].mesh = meshes[terrainType.woonerven]; //
@@ -236,6 +241,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
 
             Mesh lod1Mesh = new Mesh();
+            lod1Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             lod1Mesh.CombineMeshes(combi, false, false);
             lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
             //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
@@ -245,17 +251,62 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             Mesh existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh));
             if (existingMesh != null)
             {
+                //combine meshes;
+                lod1Mesh = CombineMeshes(lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
                 AssetDatabase.DeleteAsset(assetName);
+                AssetDatabase.SaveAssets();
             }
+            lod1Mesh.Optimize();
             AssetDatabase.CreateAsset(lod1Mesh, assetName);
+            AssetDatabase.SaveAssets();
 
             for (int i = 0; i < combi.Length; i++)
             {
                 Destroy(combi[i].mesh);
             }
-
+            //DestroyImmediate(lod1Mesh,true);
+           
         }
+        private Mesh CombineMeshes(Mesh mesh1, Mesh mesh2)
+        {
+            Mesh newMesh = new Mesh();
+            newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            //newMesh.
+            List<Vector3> verts = new List<Vector3>(mesh1.vertices);
+            verts.AddRange(mesh2.vertices);
+            List<Vector2> newUVs = new List<Vector2>(mesh1.uv2);
+            newUVs.AddRange(new List<Vector2>(mesh2.uv2));
 
+            newMesh.vertices = verts.ToArray();
+            newMesh.uv2 = newUVs.ToArray();
+            newMesh.subMeshCount = mesh1.subMeshCount;
+            int meshVertexCount = mesh1.vertexCount;
+            for (int submeshIndex = 0; submeshIndex < mesh1.subMeshCount; submeshIndex++)
+            {
+                // = new List<int>();
+                List<int> submeshIndices = new List<int>(mesh1.GetIndices(submeshIndex));
+                int subMesh1BaseVertex = mesh1.GetSubMesh(submeshIndex).baseVertex;
+                for (int i = 0; i < submeshIndices.Count; i++)
+                {
+                    submeshIndices[i] += subMesh1BaseVertex;
+                }
+                List<int> extraIndices = new List<int>(mesh2.GetIndices(submeshIndex));
+
+                int mesh2BaseVertex = mesh2.GetSubMesh(submeshIndex).baseVertex;
+                for (int i = 0; i < extraIndices.Count; i++)
+                {
+                    extraIndices[i] += meshVertexCount+mesh2BaseVertex;
+                }
+                submeshIndices.AddRange(extraIndices);
+                newMesh.SetIndices(submeshIndices, MeshTopology.Triangles, submeshIndex);
+            }
+           // DestroyImmediate(mesh1,true);
+            
+            //DestroyImmediate(mesh2,true);
+            newMesh.RecalculateNormals();
+            
+            return newMesh;
+            }
         private Mesh SimplifyMesh(Mesh mesh, float quality)
         {
 
