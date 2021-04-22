@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Help;
 
 namespace Netherlands3D.Cameras
 {
@@ -30,9 +31,13 @@ namespace Netherlands3D.Cameras
 		private Ray ray;
 		private RaycastHit hit;
 
+		[SerializeField]
+		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.";
+
 		private void OnEnable()
 		{
 			cameraComponent = GetComponent<Camera>();
+			HelpMessage.Instance.Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
 			DisableMenus();

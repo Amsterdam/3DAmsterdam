@@ -40,7 +40,6 @@ namespace Netherlands3D.Interface
         public virtual void OnDrag(PointerEventData eventData)
         {
             if (waitingForClick) return;
-            print("Drag action");
             FollowMousePointer();
         }
 

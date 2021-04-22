@@ -21,7 +21,11 @@ namespace Netherlands3D.Interface
 		public override void Start()
 		{
 			base.Start();
-			SwitchTool.Instance.ResetToDefault();
+
+			var gridSelection = FindObjectOfType<GridSelection>();
+			if(gridSelection)
+				gridSelection.gameObject.SetActive(false);
+
 			cameraModeChanger = CameraModeChanger.Instance;
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
