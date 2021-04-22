@@ -46,7 +46,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5395418093126858678}
-  m_CullTransparentMesh: 0
+  m_CullTransparentMesh: 1
 --- !u!114 &708201799545207544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,3 +108,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMessageField: {fileID: 708201799545207544}
+  messageTime: 5
+  fadeOutTime: 1
