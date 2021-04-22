@@ -1,6 +1,7 @@
 ﻿
 using BruTile.Wms;
 using ConvertCoordinates;
+using Netherlands3D.Interface;
 using Netherlands3D.Interface.Menu;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,9 @@ namespace Netherlands3D.Cameras
         {
             PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
 
-            SwitchTool.Instance.ResetToDefault();
+            var gridSelection = FindObjectOfType<GridSelection>();
+            if (gridSelection)
+                gridSelection.gameObject.SetActive(false);
 
             this.CameraMode = CameraMode.StreetView;
 
