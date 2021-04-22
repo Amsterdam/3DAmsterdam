@@ -94,6 +94,28 @@ public class ColladaFile
 		writer.WriteStartElement("library_visual_scenes");
 		writer.WriteStartElement("visual_scene");
 		writer.WriteAttributeString("id", "DefaultScene");
+
+		if (generateGeoHeader)
+		{
+			//geolocation (officialy only supported from collada 1.5.1)
+			writer.WriteStartElement("asset");
+			writer.WriteStartElement("coverage");
+			writer.WriteStartElement("geographic_location");
+			writer.WriteStartElement("longitude");
+			writer.WriteString(geoCoordinates.lon.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end longitude
+			writer.WriteStartElement("latitude");
+			writer.WriteString(geoCoordinates.lat.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end latitude
+			writer.WriteStartElement("altitude");
+			writer.WriteAttributeString("mode", "relativeToGround");
+			writer.WriteString(geoCoordinates.h.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end altitude
+			writer.WriteEndElement(); //end geographic_location
+			writer.WriteEndElement(); //end coverage
+			writer.WriteEndElement(); //end asset
+		}
+
 		if (objectsTriangles != null && objectsTriangles.Count > 0)
 		{
 			foreach (var mesh in objectsTriangles)
@@ -338,26 +360,6 @@ public class ColladaFile
 	private void WriteAssetHeader()
 	{
 		writer.WriteStartElement("asset");
-
-		if (generateGeoHeader)
-		{
-			//geolocation (officialy only supported from collada 1.5.1)
-			writer.WriteStartElement("coverage");
-			writer.WriteStartElement("geographic_location");
-			writer.WriteStartElement("longitude");
-			writer.WriteString(geoCoordinates.lon.ToString(CultureInfo.InvariantCulture));
-			writer.WriteEndElement(); //end longitude
-			writer.WriteStartElement("latitude");
-			writer.WriteString(geoCoordinates.lat.ToString(CultureInfo.InvariantCulture));
-			writer.WriteEndElement(); //end latitude
-			writer.WriteStartElement("altitude");
-			writer.WriteAttributeString("mode", "relativeToGround");
-			writer.WriteString(geoCoordinates.h.ToString(CultureInfo.InvariantCulture));
-			writer.WriteEndElement(); //end altitude
-			writer.WriteEndElement(); //end geographic_location
-			writer.WriteEndElement(); //end coverage
-		}
-
 		writer.WriteStartElement("contributor");
 		writer.WriteStartElement("authoring_tool");
 		writer.WriteString("3D Amsterdam");
