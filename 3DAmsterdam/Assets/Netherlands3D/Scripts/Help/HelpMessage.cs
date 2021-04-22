@@ -37,7 +37,7 @@ namespace Netherlands3D.Help
             gameObject.SetActive(true);
 
             StopAllCoroutines(); //Stop any running fade counters
-            StartWaitForAllowHide();
+            StartCoroutine(StartWaitForAllowHide());
             StartCoroutine(WaitForFadeOut());
         }
 
