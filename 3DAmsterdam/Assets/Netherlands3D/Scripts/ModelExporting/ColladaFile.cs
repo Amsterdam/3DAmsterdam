@@ -3,6 +3,7 @@ using Netherlands3D.JavascriptConnection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -20,6 +21,9 @@ public class ColladaFile
 	private StringWriter stringWriter;
 	private List<Material> materials;
 	private Dictionary<string, List<Vector3RD>> objectsTriangles;
+
+	private bool generateGeoHeader = false;
+	private Vector3WGS geoCoordinates = default;
 
 	public void AddObject(List<Vector3RD> triangleVertices, string objectName, Material objectMaterial)
 	{
@@ -44,8 +48,14 @@ public class ColladaFile
 	/// <summary>
 	/// Write the XML output based on our list of materials and objects+triangles
 	/// </summary>
-	public void CreateCollada()
+	public void CreateCollada(bool addGeoLocation = false, Vector3WGS geolocationWGS = default)
 	{
+		if (addGeoLocation)
+		{
+			generateGeoHeader = true;
+			geoCoordinates = geolocationWGS;
+		}
+
 		stringWriter = new StringWriter();
 		writer = new XmlTextWriter(stringWriter);
 		WriteDocumentHeader();
@@ -322,12 +332,32 @@ public class ColladaFile
 		writer.WriteStartDocument(false);
 		writer.WriteStartElement("COLLADA");
 		writer.WriteAttributeString("xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-		writer.WriteAttributeString("version", "1.4.1");
+		writer.WriteAttributeString("version", "1.5.1");
 	}
 
 	private void WriteAssetHeader()
 	{
 		writer.WriteStartElement("asset");
+
+		if (generateGeoHeader)
+		{
+			//geolocation (officialy only supported from collada 1.5.1)
+			writer.WriteStartElement("coverage");
+			writer.WriteStartElement("geographic_location");
+			writer.WriteStartElement("longitude");
+			writer.WriteString(geoCoordinates.lon.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end longitude
+			writer.WriteStartElement("latitude");
+			writer.WriteString(geoCoordinates.lat.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end latitude
+			writer.WriteStartElement("altitude");
+			writer.WriteAttributeString("mode", "relativeToGround");
+			writer.WriteString(geoCoordinates.h.ToString(CultureInfo.InvariantCulture));
+			writer.WriteEndElement(); //end altitude
+			writer.WriteEndElement(); //end geographic_location
+			writer.WriteEndElement(); //end coverage
+		}
+
 		writer.WriteStartElement("contributor");
 		writer.WriteStartElement("authoring_tool");
 		writer.WriteString("3D Amsterdam");
@@ -352,11 +382,11 @@ public class ColladaFile
 		writer.WriteEndElement(); //end asset
 	}
 
-	public void Save()
+	public void Save(string filename = "")
 	{
 #if UNITY_EDITOR
 		var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-		File.WriteAllText(Path.Combine(mydocs, "ColladaExport.dae"), stringWriter.ToString());
+		File.WriteAllText(Path.Combine(mydocs, (filename != "") ? filename : "ColladaExport.dae"), stringWriter.ToString());
 		stringWriter = null;
 		writer = null;
 		return;
@@ -367,7 +397,7 @@ public class ColladaFile
 			byte[] byteArray = Encoding.UTF8.GetBytes(stringWriter.ToString());
 			stringWriter = null;
 			writer = null;
-			JavascriptMethodCaller.DownloadByteArrayAsFile(byteArray, byteArray.Length, "ColladaExport.dae"); ;
+			JavascriptMethodCaller.DownloadByteArrayAsFile(byteArray, byteArray.Length, (filename!="") ? filename : "ColladaExport.dae");
 		}
 		else
 		{
