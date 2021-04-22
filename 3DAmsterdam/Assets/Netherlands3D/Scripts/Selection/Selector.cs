@@ -67,14 +67,17 @@ namespace Netherlands3D.Interface
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
 
-		void Start()
+		private void Awake()
 		{
-			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
-
 			if (Instance == null)
 			{
 				Instance = this;
 			}
+		}
+
+		void Start()
+		{
+			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
 			selectedObjects = new List<OutlineObject>();
 			InitializeActions();
 		}
