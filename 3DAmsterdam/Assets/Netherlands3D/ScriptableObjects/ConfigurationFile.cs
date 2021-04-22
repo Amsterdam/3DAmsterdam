@@ -24,6 +24,7 @@ namespace Netherlands3D
 
         [Header("Minimap Tiled Web Map")]
         [Tooltip("The variables {x} and {y} in the URL will be replaced with their corresponding RD coordinates.")]
+        public bool EnableMinimap = true;
         public string minimapServiceUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
         public TmsTileNumberingType MinimapTileNumberingType = TmsTileNumberingType.GoogleAndOSM;
         public float minimapBottomLeftRD_X = -285401.920f; // zoomlevel 0 at RD WMTS
