@@ -92,7 +92,6 @@ namespace Netherlands3D.Traffic
                             if (currentRoad.roadPoints.Count >= currentRoadIndex)
                             {
                                 // if the car cant find an underground
-                                Debug.Log("uh-oh");
                                 terrainLayer.AddMeshColliders(carPos);
                                 carPos.y = lastRecordedHeight;
                                 MoveCar(carPos);
