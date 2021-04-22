@@ -3,6 +3,7 @@ using Netherlands3D.Interface;
 using Netherlands3D.LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class ColladaCreation : ModelFormatCreation
@@ -82,8 +83,11 @@ public class ColladaCreation : ModelFormatCreation
         loadingScreen.ProgressBar.SetMessage("Het Collada (.dae) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
 
-        colladaFile.CreateCollada();
-        colladaFile.Save();
+        //Create the collada file XML contents, and add our geo info (supported from collada 1.5)
+        colladaFile.CreateCollada(true,CoordConvert.UnitytoWGS84(UnityBounds.min));
+
+        //Save the collada file, with the coordinates embedded in the name.
+        colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
 
         FreezeLayers(layerList, false);
         loadingScreen.Hide();
