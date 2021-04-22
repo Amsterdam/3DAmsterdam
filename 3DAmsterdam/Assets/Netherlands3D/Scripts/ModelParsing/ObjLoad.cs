@@ -172,7 +172,7 @@ public class ObjLoad : MonoBehaviour
 				}
 				else
 				{
-					Debug.LogWarning("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+					Debug.Log("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
 					return false; //Return failure. Not triangulated.
 				}
 				break;
@@ -275,7 +275,7 @@ public class ObjLoad : MonoBehaviour
 			targetFacesList[i - 1] = faceIndices;
 		}
 	}
-
+	
 	static Material GetMaterial(MaterialData md, Material sourceMaterial)
 	{
 		Material newMaterial;

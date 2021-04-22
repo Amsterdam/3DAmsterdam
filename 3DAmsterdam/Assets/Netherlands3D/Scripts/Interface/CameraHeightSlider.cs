@@ -21,6 +21,10 @@ namespace Netherlands3D.Interface
         private void Awake()
         {
             slider = GetComponent<Slider>();
+            slider.navigation = new Navigation()
+            {
+                mode = Navigation.Mode.None
+            };
         }
 
         public void HeightSliderChanged(float sliderValue)

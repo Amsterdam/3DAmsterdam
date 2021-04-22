@@ -14,7 +14,6 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Image fpsBackground;
 
-
 		private int framesVisualFPS = 0;
 		private double lastInterval = 0;
 
@@ -24,6 +23,8 @@ namespace Netherlands3D.Interface
 		
 		private int framesAnalytics = 0;
 		private double lastIntervalAnalytics = 0;
+
+		private int minimumFramesRenderedBeforeLogging = 5;
 
 		private int analyticsFpsGroupSize = 5; //The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up
 #endif
@@ -38,6 +39,8 @@ namespace Netherlands3D.Interface
 		private int goodFpsThreshold = 30;
 		[SerializeField]
 		private float updateInterval = 0.5f;
+
+		private bool applicationIsActive = true;
 
 		private void Awake()
 		{
@@ -88,7 +91,7 @@ namespace Netherlands3D.Interface
 			}
 
 #if !UNITY_EDITOR
-			if(logFpsGroupsToAnalytics)
+			if(logFpsGroupsToAnalytics && applicationIsActive && Time.frameCount > minimumFramesRenderedBeforeLogging)
 			{
 				++framesAnalytics;
 				if (timeNow > lastIntervalAnalytics + updateAnalyticsInterval)
@@ -110,8 +113,8 @@ namespace Netherlands3D.Interface
 			fpsCounter.text = Mathf.Round(fps).ToString();
 			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(badFpsThreshold, goodFpsThreshold, fps));
 		}
-		
-		#if !UNITY_EDITOR
+
+#if !UNITY_EDITOR
 		/// <summary>
 		/// Logs the FPS to Unity Analytics. Its rounded up into to FPS groups.
 		/// </summary>
@@ -127,6 +130,26 @@ namespace Netherlands3D.Interface
 				{ "fps", fps }
 			  });
 		}
-		#endif
+
+		/// <summary>
+		/// Method we call from javascript, telling unity if the tab/application is active.
+		/// Browsers throttle down applications in background tabs (to 1 fps) so we want to ignore those fps counts.
+		/// </summary>
+		/// <param name="isActive">Is the application active in the foreground, running at max performance, this should be 1, else 0.</param>
+		public void ActiveApplication(float isActive)
+		{
+			bool active = (isActive == 1); //We convert a number to a bool ( SendMessage from javascript only supports strings and numbers ) 
+			Debug.Log("Application is on foreground: " + active);
+			applicationIsActive = active;
+
+			//Reset coundown before logging resumes
+			if(applicationIsActive) 
+			{
+				framesAnalytics = 0;
+				lastIntervalAnalytics = timeNow;
+			}
+		}
+
+#endif
 	}
 }
