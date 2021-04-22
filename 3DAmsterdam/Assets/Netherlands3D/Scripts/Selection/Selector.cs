@@ -67,7 +67,7 @@ namespace Netherlands3D.Interface
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
 
-		void Awake()
+		void Start()
 		{
 			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
 
@@ -93,16 +93,6 @@ namespace Netherlands3D.Interface
 			multiSelectAction.SubscribeCancelled(Multiselect);
 
 			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
-		}
-
-
-		private void OnEnable()
-		{
-			selectorActionMap.Enable();
-		}
-		private void OnDisable()
-		{
-			selectorActionMap.Disable();
 		}
 
 		public void SetActiveInteractable(Interactable interactable)
