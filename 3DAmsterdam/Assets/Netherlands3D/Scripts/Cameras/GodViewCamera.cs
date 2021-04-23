@@ -410,7 +410,9 @@ namespace Netherlands3D.Cameras
 
         private void Dragging()
 		{
-			dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
+            if (!ActionHandler.actions.GodViewMouse.enabled) return;
+
+            dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
 
 			if (dragMomentum.magnitude > 0.1f)
 				transform.position -= dragMomentum;
