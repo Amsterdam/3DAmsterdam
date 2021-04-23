@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.JavascriptConnection;
+using Netherlands3D.LayerSystem;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -75,6 +76,10 @@ namespace Netherlands3D.Interface.Layers
 			//If we set a linkedObject manualy, get the color.
 			if (LinkedObject)
 			{
+				var assetBundleMeshLayer = LinkedObject.GetComponent<AssetbundleMeshLayer>();
+				if (assetBundleMeshLayer && UniqueLinkedObjectMaterials.Count == 0) 
+					UniqueLinkedObjectMaterials = assetBundleMeshLayer.DefaultMaterialList;
+
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();
 			}

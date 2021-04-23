@@ -9,9 +9,6 @@ namespace Netherlands3D.BAG
 {
     public class DisplayBAGData : MonoBehaviour
     {
-        private const string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";
-        private const string moreAddressInfoUrl = "https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/";
-
         /// <summary>
         /// Generates all premises buttons. If there is only 1 premises it will show just that premises
         /// </summary>
@@ -33,7 +30,7 @@ namespace Netherlands3D.BAG
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
-				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
 				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
 
@@ -101,9 +98,9 @@ namespace Netherlands3D.BAG
 
 				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("BAG ID", addressData.nummeraanduidingidentificatie);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter + " " + addressData.huisnummer_toevoeging);
+				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Adres", addressData.adres + addressData.huisletter);
 				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("", addressData.postcode + ", " + addressData.woonplaats._display);
-				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer adres informatie", moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
+				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer adres informatie", Config.activeConfiguration.moreAddressInfoUrl.Replace("{bagid}", addressData.nummeraanduidingidentificatie));
 				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
 				Interface.SidePanel.PropertiesPanel.Instance.CloseGroup();
             }));

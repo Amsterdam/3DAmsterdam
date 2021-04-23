@@ -27,8 +27,6 @@ namespace Netherlands3D.LayerSystem
 
         private const string emptyID = "null";
 
-        private string bagIdRequestServiceBoundingBoxUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=";
-        private string bagIdRequestServicePolygonUrl = "https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=";
         private const int maximumRayPiercingLoops = 20;
 
         private RaycastHit lastRaycastHit;
@@ -297,7 +295,7 @@ namespace Netherlands3D.LayerSystem
             var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
 
             List<string> ids = new List<string>();
-            string url = bagIdRequestServiceBoundingBoxUrl;
+            string url = Config.activeConfiguration.bagIdRequestServiceBoundingBoxUrl;
             // construct url string
             url += wgsMin.x + "," + wgsMin.y + "," + wgsMax.x + "," + wgsMax.y;
             var hideRequest = UnityWebRequest.Get(url);
@@ -349,7 +347,7 @@ namespace Netherlands3D.LayerSystem
             //Our filter according to https://www.mapserver.org/ogc/filter_encoding.html , the type of WFS server used by the API.
             var filter = $"<Filter><Intersects><PropertyName>Geometry</PropertyName><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>{coordinates}</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Intersects></Filter>";
 
-            var requestUrl = bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
+            var requestUrl = Config.activeConfiguration.bagIdRequestServicePolygonUrl + UnityWebRequest.EscapeURL(filter);
             var hideRequest = UnityWebRequest.Get(requestUrl);
 
             yield return hideRequest.SendWebRequest();

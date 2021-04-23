@@ -44,8 +44,6 @@ namespace Netherlands3D.Interface.Layers
             }
             else
             {
-                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(LinkedObject.transform.position, new Quaternion());
-
                 //If this is a Transformable, select it
                 var transformable = LinkedObject.GetComponent<Transformable>();
                 if (transformable)

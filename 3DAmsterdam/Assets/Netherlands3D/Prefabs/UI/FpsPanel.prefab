@@ -90,9 +90,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fpsCounter: {fileID: 2208685251058266772}
   fpsBackground: {fileID: 2798071469444078161}
-  logFpsGroupsToAnalytics: 1
-  updateAnalyticsInterval: 10
-  analyticsFpsGroupSize: 5
   badFpsThreshold: 10
   updateInterval: 0.5
 --- !u!1 &8961631062717988770
@@ -108,7 +105,7 @@ GameObject:
   - component: {fileID: 2208685251058266772}
   - component: {fileID: 4723344759794404093}
   m_Layer: 5
-  m_Name: FpsCounter
+  m_Name: FpsCounterText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

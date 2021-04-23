@@ -29,7 +29,13 @@
   <script>
 	  var forceFocus = false;
 	  var unityCanvas;
-  
+	  var fileReader;
+	  
+	  var unityObjectName = "FileUploads";
+	  var objData = "";
+	  var mtlData = "";
+	  var dataType = 0;
+    
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
@@ -47,12 +53,8 @@
 		  },
 		  onProgress: UnityProgress
 	  });
-	  var fileReader;
-	  var unityObjectName = "FileUploads";
-	  var objData = "";
-	  var mtlData = "";
-	  var dataType = 0;
-
+	  
+	  //Support for dragging dropping files on browser window
 	  document.addEventListener("dragover", function (event) {
 		  event.preventDefault();
 	  });
@@ -62,6 +64,17 @@
 
 		  ReadFiles(event.dataTransfer.files);
 	  });
+	  
+	  //Start checking our browser activity
+	  document.addEventListener('visibilitychange', function () {
+			if (document.visibilityState == "hidden") {
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
+			} 
+			else {
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
+			}
+		});
+		
 
 	  function UnityProgress(unityInstance, progress) {
 		  if (!unityInstance.Module) {

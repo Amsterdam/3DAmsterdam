@@ -30,6 +30,11 @@ namespace Netherlands3D.Interface.Menu {
 			HideToolButtons();
 		}
 
+		public void SelectToolButton(Button tool)
+		{
+			tool.GetComponent<Button>().onClick.Invoke();
+		}
+
 		/// <summary>
 		/// Hide all tool buttons except the first (the active one)
 		/// </summary>

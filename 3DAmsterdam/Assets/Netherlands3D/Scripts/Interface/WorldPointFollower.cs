@@ -2,31 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
-    public class WorldPointFollower : MonoBehaviour
-    {
-        private RectTransform rectTransform;
+	public class WorldPointFollower : MonoBehaviour
+	{
+		private RectTransform rectTransform;
 
-        private Vector3 worldPosition = Vector3.zero;
-        public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
+		private Vector3 worldPosition = Vector3.zero;
+		public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
-        public virtual void Awake()
-        {
-            rectTransform = GetComponent<RectTransform>();
-        }
+		private bool insideView = false;
 
-        public virtual void AlignWithWorldPosition(Vector3 newWorldPosition)
-        {
-            WorldPosition = newWorldPosition;
-        }
+		private float maxRenderDistanceAtGround = 100;
 
-        private void Update()
-        {
-            var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(worldPosition);
-            rectTransform.anchorMin = viewportPosition;
-            rectTransform.anchorMax = viewportPosition;
-        }
-    }
+		private Graphic[] graphics;
+
+		public virtual void Awake()
+		{
+			rectTransform = GetComponent<RectTransform>();
+			graphics = GetComponentsInChildren<Graphic>(true);
+		}
+
+		public virtual void AlignWithWorldPosition(Vector3 newWorldPosition)
+		{
+			WorldPosition = newWorldPosition;
+		}
+
+		private void Update()
+		{
+			AutoHideByCamera();
+		}
+
+		private void DrawGraphics(bool draw = true)
+		{
+			foreach (var graphic in graphics)
+				graphic.enabled = draw;
+		}
+
+		/// <summary>
+		/// Hides the annotation based on camera type and distance
+		/// </summary>
+		private void AutoHideByCamera()
+		{
+			//Always hide outside viewport
+			var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPosition);
+			if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0)
+			{
+				DrawGraphics(false);
+				return;
+			}
+
+			//Else maybe hide depending on distance from streetview camera
+			if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
+			{
+				var distance = WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
+				if (distance.magnitude > maxRenderDistanceAtGround)
+				{
+					DrawGraphics(false);
+					return;
+				}
+			}
+			
+			DrawGraphics(true);
+			rectTransform.anchorMin = viewportPosition;
+			rectTransform.anchorMax = viewportPosition;
+		}
+
+	}
 }

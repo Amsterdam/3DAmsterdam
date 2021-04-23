@@ -32,5 +32,10 @@ namespace Netherlands3D.Interface.Search
             //Set text from search result (without formatting)
             text.text = Regex.Replace(searchResultText, "<.*?>", string.Empty);
         }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
