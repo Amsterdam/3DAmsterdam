@@ -7,8 +7,14 @@ using UnityEngine.EventSystems;
 
 namespace Netherlands3D.Underground
 {
-	public class RuntimeMaskSphere : MonoBehaviour
+	public class RuntimeMask : MonoBehaviour
 	{
+		public enum MaskType
+		{
+			RECTANGULAR,
+			SPHERICAL
+		}
+
 		[SerializeField]
 		private bool updateRuntimeDynamicMaterials = false;
 
@@ -28,6 +34,17 @@ namespace Netherlands3D.Underground
 
 		[SerializeField]
 		private AssetbundleMeshLayer groundMeshLayer;
+
+		[SerializeField]
+		private MaskType maskShapeType = MaskType.RECTANGULAR;
+		public MaskType MaskShapeType { get => maskShapeType; set => maskShapeType = value; }
+
+		private const string clipppingMaskPositionSlot = "_ClippingMask";
+		private const string clippingMaskShape = "_SphericalMask";
+		private const string clippingMaskSize = "_Size";
+
+		[SerializeField]
+		private Vector2 rectangleSize;
 
 		//We enable shadows for the underground when we use the mask sphere, to give more depth
 		private void OnEnable()
@@ -65,9 +82,6 @@ namespace Netherlands3D.Underground
 				((CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) && !EventSystem.current.IsPointerOverGameObject()) ?
 				pointerFollower.transform.localScale.x * 0.47f : 0.0f
 			);
-
-			//Hide mask object if we are underground
-			pointerFollower.gameObject.SetActive((maskVector.w > 0.0f));
 		}
 
 		/// <summary>
@@ -78,7 +92,9 @@ namespace Netherlands3D.Underground
 		{
 			foreach (Material sharedMaterial in specificMaterials)
 			{
-				sharedMaterial.SetVector("_ClippingMaskDome", (resetToZero) ? Vector4.zero : maskVector);
+				sharedMaterial.SetVector(clipppingMaskPositionSlot, (resetToZero) ? Vector4.zero : maskVector);
+				sharedMaterial.SetInt(clippingMaskShape, (int)MaskShapeType);
+				sharedMaterial.SetVector(clippingMaskSize, rectangleSize);
 			}
 		}
 
@@ -93,7 +109,9 @@ namespace Netherlands3D.Underground
 
 			foreach (MeshRenderer renderer in meshRenderers)
 			{
-				renderer.sharedMaterial.SetVector("_ClippingMaskDome", maskVector);
+				renderer.sharedMaterial.SetVector(clipppingMaskPositionSlot, maskVector);
+				renderer.sharedMaterial.SetInt(clippingMaskShape, (int)MaskShapeType);
+				renderer.sharedMaterial.SetVector(clippingMaskSize, rectangleSize);
 			}
 		}
 	}
