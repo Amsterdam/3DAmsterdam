@@ -203,7 +203,7 @@ namespace Netherlands3D.Underground
 		/// </summary>
 		private void UpdateDynamicCreatedInstancedMaterials(bool resetToZero = false)
 		{
-			if (!updateRuntimeDynamicMaterials) return;
+			if (!updateRuntimeDynamicMaterials || !targetMaterialsContainer) return;
 
 			MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
