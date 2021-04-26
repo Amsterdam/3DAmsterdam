@@ -9,10 +9,16 @@ namespace Netherlands3D.Underground
 {
 	public class RuntimeMask : MonoBehaviour
 	{
-		public enum MaskType
+		public enum MaskShape
 		{
 			RECTANGULAR,
 			SPHERICAL
+		}
+
+		public enum MaskState
+		{
+			FOLLOW_MOUSE,
+			STATIC_TRANSFORM
 		}
 
 		[SerializeField]
@@ -24,27 +30,31 @@ namespace Netherlands3D.Underground
 		[SerializeField]
 		private Material[] specificMaterials;
 
-		[SerializeField]
-		private Transform pointerFollower;
+		private float maskMultiplier = 1.0f;
 
 		[SerializeField]
-		private float maskScale = 2.0f;
-
-		Vector4 maskVector = default;
+		private Vector4 maskVector = default;
 
 		[SerializeField]
 		private AssetbundleMeshLayer groundMeshLayer;
 
-		[SerializeField]
-		private MaskType maskShapeType = MaskType.RECTANGULAR;
-		public MaskType MaskShapeType { get => maskShapeType; set => maskShapeType = value; }
+		private MaskShape maskShape = MaskShape.RECTANGULAR;
+		private MaskState maskState = MaskState.FOLLOW_MOUSE;
 
-		private const string clipppingMaskPositionSlot = "_ClippingMask";
-		private const string clippingMaskShape = "_SphericalMask";
+		private const string clipppingMaskPositionVector = "_ClippingMask";
+		private const string clippingMaskTexture = "_MaskMap";
 		private const string clippingMaskSize = "_Size";
 
 		[SerializeField]
-		private Vector2 rectangleSize;
+		private Vector2 maskSize;
+
+		[SerializeField]
+		private Vector2 offSet;
+
+		[SerializeField]
+		private Texture2D[] maskTextures;
+
+		private Texture2D[] maskTexture;
 
 		//We enable shadows for the underground when we use the mask sphere, to give more depth
 		private void OnEnable()
@@ -65,23 +75,30 @@ namespace Netherlands3D.Underground
 		{
 			if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;
 
-			MoveMask();
+			if()
+			MoveMaskWithPointer();
 
-			UpdateDynamicCreatedInstancedMaterials();
+			CalculateMaskStencil();
 			UpdateSpecificMaterials();
+
+			if (!updateRuntimeDynamicMaterials) return;
+			UpdateDynamicCreatedInstancedMaterials();
 		}
 
-		private void MoveMask()
+		private void MoveMaskWithPointer()
 		{
-			pointerFollower.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-			pointerFollower.transform.localScale = Vector3.one * maskScale * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+			transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			transform.transform.localScale = Vector3.one * maskMultiplier * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+		}
+
+		private void CalculateMaskStencil()
+		{
+			maskSize = new Vector2(1.0f / transform.transform.localScale.x, 1.0f / transform.transform.localScale.y);
 			maskVector.Set(
-				pointerFollower.position.x,
-				pointerFollower.position.y,
-				pointerFollower.position.z,
-				((CameraModeChanger.Instance.ActiveCamera.transform.position.y > pointerFollower.position.y) && !EventSystem.current.IsPointerOverGameObject()) ?
-				pointerFollower.transform.localScale.x * 0.47f : 0.0f
-			);
+				(-transform.position.x / transform.transform.localScale.x) + 0.5f,
+				0,
+				(-transform.position.z / transform.transform.localScale.y) + 0.5f,
+				0);
 		}
 
 		/// <summary>
@@ -92,9 +109,9 @@ namespace Netherlands3D.Underground
 		{
 			foreach (Material sharedMaterial in specificMaterials)
 			{
-				sharedMaterial.SetVector(clipppingMaskPositionSlot, (resetToZero) ? Vector4.zero : maskVector);
-				sharedMaterial.SetInt(clippingMaskShape, (int)MaskShapeType);
-				sharedMaterial.SetVector(clippingMaskSize, rectangleSize);
+				sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
+				sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
+				sharedMaterial.SetVector(clippingMaskSize, maskSize);
 			}
 		}
 
@@ -103,15 +120,13 @@ namespace Netherlands3D.Underground
 		/// </summary>
 		private void UpdateDynamicCreatedInstancedMaterials()
 		{
-			if (!updateRuntimeDynamicMaterials) return;
-
 			MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
 			foreach (MeshRenderer renderer in meshRenderers)
 			{
-				renderer.sharedMaterial.SetVector(clipppingMaskPositionSlot, maskVector);
-				renderer.sharedMaterial.SetInt(clippingMaskShape, (int)MaskShapeType);
-				renderer.sharedMaterial.SetVector(clippingMaskSize, rectangleSize);
+				renderer.sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
+				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, maskVector);
+				renderer.sharedMaterial.SetVector(clippingMaskSize, maskSize);
 			}
 		}
 	}
