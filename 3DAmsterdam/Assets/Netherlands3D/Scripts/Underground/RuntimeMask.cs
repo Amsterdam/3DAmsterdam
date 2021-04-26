@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.LayerSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace Netherlands3D.Underground
 		[SerializeField]
 		private AssetbundleMeshLayer groundMeshLayer;
 
-		private MaskShape maskShape = MaskShape.RECTANGULAR;
+		private MaskShape maskShape = MaskShape.SPHERICAL;
 		private MaskState maskState = MaskState.FOLLOW_MOUSE;
 
 		private const string clipppingMaskPositionVector = "_ClippingMask";
@@ -60,7 +61,9 @@ namespace Netherlands3D.Underground
 		private void Awake()
 		{
 			Instance = this;
+
 			if (!maskTexture) ChangeMaskShape(maskShape);
+			Clear();
 			gameObject.SetActive(false);
 		}
 
@@ -74,9 +77,8 @@ namespace Netherlands3D.Underground
 		private void OnDisable()
 		{
 			//groundMeshLayer.EnableShadows(false); //We use shadows all the time now, but this might give a performance boost later on
-
 			//make sure to reset mask shaders
-			UpdateSpecificMaterials(true);
+			Clear();
 		}
 
 		public void ChangeMaskShape(MaskShape shape)
@@ -85,6 +87,11 @@ namespace Netherlands3D.Underground
 			switch (maskShape)
 			{
 				case MaskShape.RECTANGULAR:
+					if (!maskTextures[1].name.Contains("Clone"))
+					{
+						//Make sure our rectangular image is used as an instance, because we want to manipulate it at runtime.
+						maskTextures[1] = Instantiate(maskTextures[1]);
+					}
 					maskTexture = maskTextures[1];
 					break;
 				case MaskShape.SPHERICAL:
@@ -104,9 +111,16 @@ namespace Netherlands3D.Underground
 			gameObject.SetActive(true);
 		}
 
-		public void InvertMask()
+		public void Clear()
 		{
-			if(maskShape == MaskShape.SPHERICAL)
+			UpdateSpecificMaterials(true);
+			UpdateDynamicCreatedInstancedMaterials(true);
+		}
+
+		public void FlipMask()
+		{
+			//Make sure we are working on an instance, not our source asset
+			if (maskShape == MaskShape.SPHERICAL)
 			{
 				Debug.LogWarning("Inverting mask currently only allowed on rectangular (small 32x32 texture) mask");
 				return;
@@ -121,10 +135,13 @@ namespace Netherlands3D.Underground
 			}
 			maskTexture.SetPixels(pixels);
 			maskTexture.Apply();
+			
 		}
 
 		public void MoveToBounds(Bounds bounds)
 		{
+			ChangeMaskShape(MaskShape.RECTANGULAR);
+
 			maskState = MaskState.STATIC_TRANSFORM;
 			domeRenderer.enabled = false;
 			this.transform.position = bounds.center;
@@ -176,7 +193,7 @@ namespace Netherlands3D.Underground
 			foreach (Material sharedMaterial in specificMaterials)
 			{
 				sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
-				sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
+				sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
 				sharedMaterial.SetVector(clippingMaskSize, maskSize);
 			}
 		}
@@ -184,7 +201,7 @@ namespace Netherlands3D.Underground
 		/// <summary>
 		/// Optionally find runtime created materials that we cant predefine in our specificMaterials list
 		/// </summary>
-		private void UpdateDynamicCreatedInstancedMaterials()
+		private void UpdateDynamicCreatedInstancedMaterials(bool resetToZero = false)
 		{
 			if (!updateRuntimeDynamicMaterials) return;
 
@@ -192,8 +209,8 @@ namespace Netherlands3D.Underground
 
 			foreach (MeshRenderer renderer in meshRenderers)
 			{
-				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, maskVector);
-				renderer.sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
+				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
+				renderer.sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
 				renderer.sharedMaterial.SetVector(clippingMaskSize, maskSize);
 			}
 		}

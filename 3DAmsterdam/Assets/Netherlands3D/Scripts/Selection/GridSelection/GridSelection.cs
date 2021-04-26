@@ -107,6 +107,8 @@ namespace Netherlands3D.Interface
 			}
 			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
+				RuntimeMask.Instance.Clear();
+
 				drawing = true;
 				add = true;
 				if (!freePaint)
@@ -255,7 +257,6 @@ namespace Netherlands3D.Interface
 			//Just to test out the mask
 			RuntimeMask.Instance.MoveToBounds(scaleBlock.GetComponent<MeshRenderer>().bounds);
 
-
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 
@@ -268,7 +269,20 @@ namespace Netherlands3D.Interface
 			);
 			gridSelectionBlock.SetActive(true);
 
-			PropertiesPanel.Instance.AddTitle("Lagen");
+			PropertiesPanel.Instance.AddTitle("Grid selectie");
+			PropertiesPanel.Instance.AddActionButtonBig("Masker omdraaien", (action) =>
+			{
+				RuntimeMask.Instance.FlipMask();
+			});
+
+			PropertiesPanel.Instance.AddActionButtonBig("Masker weghalen", (action) =>
+			{
+				RuntimeMask.Instance.Clear();
+			});
+
+			PropertiesPanel.Instance.AddSeperatorLine();
+
+			PropertiesPanel.Instance.AddTitle("Download lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
 			{
 				exportLayerToggles[0] = action;

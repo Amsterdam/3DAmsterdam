@@ -143,7 +143,7 @@ namespace Netherlands3D.Interface.SidePanel
 
             objectInformationTab.OpenTab();
             verticalLayoutGroup.spacing = spacing;
-            OpenPanel();
+            OpenPanel(title);
         }
 
         /// <summary>
