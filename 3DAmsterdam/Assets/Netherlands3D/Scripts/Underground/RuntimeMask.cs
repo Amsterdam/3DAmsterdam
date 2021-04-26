@@ -104,6 +104,25 @@ namespace Netherlands3D.Underground
 			gameObject.SetActive(true);
 		}
 
+		public void InvertMask()
+		{
+			if(maskShape == MaskShape.SPHERICAL)
+			{
+				Debug.LogWarning("Inverting mask currently only allowed on rectangular (small 32x32 texture) mask");
+				return;
+			}
+
+			//We invert the pixels ( single R channel black and white texture )
+			//This might seem slow, but only happens once and after that we avoid having to do this in the shader
+			var pixels = maskTexture.GetPixels();
+			for (int i = 0; i < pixels.Length; i++)
+			{
+				pixels[i].r = (pixels[i].r == 0) ? 1 : 0;
+			}
+			maskTexture.SetPixels(pixels);
+			maskTexture.Apply();
+		}
+
 		public void MoveToBounds(Bounds bounds)
 		{
 			maskState = MaskState.STATIC_TRANSFORM;
