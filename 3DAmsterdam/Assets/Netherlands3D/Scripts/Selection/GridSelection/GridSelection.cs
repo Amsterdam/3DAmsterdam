@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
+using Netherlands3D.Underground;
 
 namespace Netherlands3D.Interface
 {
@@ -251,7 +252,10 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-			
+			//Just to test out the mask
+			RuntimeMask.Instance.MoveToBounds(scaleBlock.GetComponent<MeshRenderer>().bounds);
+
+
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 
