@@ -49,12 +49,20 @@ namespace Netherlands3D.Underground
 		private Vector2 maskSize;
 
 		[SerializeField]
-		private Vector2 offSet;
+		private Texture2D[] maskTextures;
+		private Texture2D maskTexture;
 
 		[SerializeField]
-		private Texture2D[] maskTextures;
+		private MeshRenderer domeRenderer;
 
-		private Texture2D[] maskTexture;
+		public static RuntimeMask Instance;
+
+		private void Awake()
+		{
+			Instance = this;
+			if (!maskTexture) ChangeMaskShape(maskShape);
+			gameObject.SetActive(false);
+		}
 
 		//We enable shadows for the underground when we use the mask sphere, to give more depth
 		private void OnEnable()
@@ -71,18 +79,57 @@ namespace Netherlands3D.Underground
 			UpdateSpecificMaterials(true);
 		}
 
+		public void ChangeMaskShape(MaskShape shape)
+		{
+			maskShape = shape;
+			switch (maskShape)
+			{
+				case MaskShape.RECTANGULAR:
+					maskTexture = maskTextures[1];
+					break;
+				case MaskShape.SPHERICAL:
+					maskTexture = maskTextures[0];
+					break;
+				default:
+					break;
+			}
+			UpdateSpecificMaterials();
+			UpdateDynamicCreatedInstancedMaterials();
+		}
+
+		public void MoveWithMouse()
+		{
+			maskState = MaskState.FOLLOW_MOUSE;
+			domeRenderer.enabled = true;
+			gameObject.SetActive(true);
+		}
+
+		public void MoveToBounds(Bounds bounds)
+		{
+			maskState = MaskState.STATIC_TRANSFORM;
+			domeRenderer.enabled = false;
+			this.transform.position = bounds.center;
+			this.transform.localScale = bounds.size * (1.0f + (2.0f / maskTexture.width)); //We use a margin of 1 pixel, so the white edge of our mask texture can be clamped
+
+			CalculateMaskStencil();
+			UpdateSpecificMaterials();
+			UpdateDynamicCreatedInstancedMaterials();
+
+			gameObject.SetActive(true);
+		}
+
 		void Update()
 		{
 			if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;
 
-			if()
-			MoveMaskWithPointer();
-
-			CalculateMaskStencil();
-			UpdateSpecificMaterials();
-
-			if (!updateRuntimeDynamicMaterials) return;
-			UpdateDynamicCreatedInstancedMaterials();
+			if (maskState == MaskState.FOLLOW_MOUSE)
+			{
+				//Continious update for moving camera/mouse
+				MoveMaskWithPointer();
+				CalculateMaskStencil();
+				UpdateSpecificMaterials();
+				UpdateDynamicCreatedInstancedMaterials();
+			}
 		}
 
 		private void MoveMaskWithPointer()
@@ -93,11 +140,11 @@ namespace Netherlands3D.Underground
 
 		private void CalculateMaskStencil()
 		{
-			maskSize = new Vector2(1.0f / transform.transform.localScale.x, 1.0f / transform.transform.localScale.y);
+			maskSize = new Vector2(1.0f / transform.transform.localScale.x, 1.0f / transform.transform.localScale.z);
 			maskVector.Set(
 				(-transform.position.x / transform.transform.localScale.x) + 0.5f,
 				0,
-				(-transform.position.z / transform.transform.localScale.y) + 0.5f,
+				(-transform.position.z / transform.transform.localScale.z) + 0.5f,
 				0);
 		}
 
@@ -120,12 +167,14 @@ namespace Netherlands3D.Underground
 		/// </summary>
 		private void UpdateDynamicCreatedInstancedMaterials()
 		{
+			if (!updateRuntimeDynamicMaterials) return;
+
 			MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
 			foreach (MeshRenderer renderer in meshRenderers)
 			{
-				renderer.sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
 				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, maskVector);
+				renderer.sharedMaterial.SetTexture(clippingMaskTexture, maskTexture);
 				renderer.sharedMaterial.SetVector(clippingMaskSize, maskSize);
 			}
 		}
