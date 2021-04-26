@@ -254,8 +254,10 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
+			Bounds bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
+
 			//Just to test out the mask
-			RuntimeMask.Instance.MoveToBounds(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			RuntimeMask.Instance.MoveToBounds(bounds);
 
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
@@ -270,6 +272,7 @@ namespace Netherlands3D.Interface
 			gridSelectionBlock.SetActive(true);
 
 			PropertiesPanel.Instance.AddTitle("Grid selectie");
+			PropertiesPanel.Instance.AddTextfield("Je hebt een gebied geselecteerd van " + bounds.size.x + "x" + bounds.size.z + "m");
 			PropertiesPanel.Instance.AddActionButtonBig("Masker omdraaien", (action) =>
 			{
 				RuntimeMask.Instance.FlipMask();
@@ -330,11 +333,11 @@ namespace Netherlands3D.Interface
                 {
 					case "AutoCAD DXF (.dxf)":
 						Debug.Log("Start building DXF");
-						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds, selectedLayers);
+						GetComponent<DXFCreation>().CreateDXF(bounds, selectedLayers);
 						break;
 					case "Collada DAE (.dae)":
 						Debug.Log("Start building collada");
-						GetComponent<ColladaCreation>().CreateCollada(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
+						GetComponent<ColladaCreation>().CreateCollada(bounds, selectedLayers);
 						break;
 					default:
 						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
