@@ -20,8 +20,7 @@ namespace Amsterdam3D.Sewerage
 		private SewerLineSpawner sewerPipeSpawner;
 		[SerializeField]
 		private SewerManholeSpawner sewerManholeSpawner;
-		[SerializeField]
-		private RuntimeMask runtimeMask;
+
 		private const int maxSpawnsPerFrame = 50;
 		private const int maxParsesPerFrame = 50;
 		private float napOffset = 0;
@@ -35,7 +34,11 @@ namespace Amsterdam3D.Sewerage
 
 		public override void OnDisableTiles(bool isenabled)
         {
-			runtimeMask.enabled = isenabled;
+			if(isenabled)
+			{
+				RuntimeMask.Instance.ChangeMaskShape(RuntimeMask.MaskShape.SPHERICAL);
+				RuntimeMask.Instance.MoveWithMouse();
+			}
         }
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
