@@ -31,6 +31,9 @@ namespace Netherlands3D.Underground
 		[SerializeField]
 		private Material[] specificMaterials;
 
+		[SerializeField]
+		private Material[] rectangularOnlyMaterials;
+
 		private float maskMultiplier = 1.0f;
 
 		[SerializeField]
@@ -40,7 +43,7 @@ namespace Netherlands3D.Underground
 		private AssetbundleMeshLayer groundMeshLayer;
 
 		private MaskShape maskShape = MaskShape.SPHERICAL;
-		private MaskState maskState = MaskState.FOLLOW_MOUSE;
+		private MaskState maskState = MaskState.STATIC_TRANSFORM;
 
 		private const string clipppingMaskPositionVector = "_ClippingMask";
 		private const string clippingMaskTexture = "_MaskMap";
@@ -57,6 +60,8 @@ namespace Netherlands3D.Underground
 		private MeshRenderer domeRenderer;
 
 		public static RuntimeMask Instance;
+
+		public MaskState State { get => maskState; private set => maskState = value; }
 
 		private void Awake()
 		{
@@ -106,7 +111,7 @@ namespace Netherlands3D.Underground
 
 		public void MoveWithMouse()
 		{
-			maskState = MaskState.FOLLOW_MOUSE;
+			State = MaskState.FOLLOW_MOUSE;
 			domeRenderer.enabled = true;
 			gameObject.SetActive(true);
 		}
@@ -138,15 +143,18 @@ namespace Netherlands3D.Underground
 			
 		}
 
-		public void MoveToBounds(Bounds bounds)
+		public void MoveToBounds(Bounds bounds = default)
 		{
 			ChangeMaskShape(MaskShape.RECTANGULAR);
 
-			maskState = MaskState.STATIC_TRANSFORM;
+			State = MaskState.STATIC_TRANSFORM;
 			domeRenderer.enabled = false;
-			this.transform.position = bounds.center;
-			this.transform.localScale = bounds.size * (1.0f + (2.0f / maskTexture.width)); //We use a margin of 1 pixel, so the white edge of our mask texture can be clamped
 
+			if (bounds != default)
+			{
+				this.transform.position = bounds.center;
+				this.transform.localScale = bounds.size * (1.0f + (2.0f / maskTexture.width)); //We use a margin of 1 pixel, so the white edge of our mask texture can be clamped
+			}
 			CalculateMaskStencil();
 			UpdateSpecificMaterials();
 			UpdateDynamicCreatedInstancedMaterials();
@@ -158,7 +166,7 @@ namespace Netherlands3D.Underground
 		{
 			if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;
 
-			if (maskState == MaskState.FOLLOW_MOUSE)
+			if (State == MaskState.FOLLOW_MOUSE)
 			{
 				//Continious update for moving camera/mouse
 				MoveMaskWithPointer();
@@ -195,6 +203,16 @@ namespace Netherlands3D.Underground
 				sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
 				sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
 				sharedMaterial.SetVector(clippingMaskSize, maskSize);
+			}
+
+			if(maskShape == MaskShape.RECTANGULAR)
+			{
+				foreach(Material sharedMaterial in rectangularOnlyMaterials)
+				{
+					sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
+					sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
+					sharedMaterial.SetVector(clippingMaskSize, maskSize);
+				}
 			}
 		}
 
