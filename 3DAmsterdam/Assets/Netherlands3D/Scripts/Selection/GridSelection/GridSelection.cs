@@ -77,6 +77,23 @@ namespace Netherlands3D.Interface
 			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
 			SetGridSize();
 		}
+
+		private void OnEnable()
+		{
+			TakeInteractionPriority();
+
+			//For now always clear mask and create new one if we do a new selection
+			if (RuntimeMask.Instance.State == RuntimeMask.MaskState.FOLLOW_MOUSE)
+			{
+				RuntimeMask.Instance.ChangeMaskShape(RuntimeMask.MaskShape.RECTANGULAR);
+				RuntimeMask.Instance.MoveToBounds();
+			}
+		}
+		private void OnDisable()
+		{
+			StopInteraction();
+		}
+
 		private void Toggle(IAction action)
 		{
 			if (action.Performed)
@@ -128,15 +145,6 @@ namespace Netherlands3D.Interface
 				drawing = true;
 				add = false;
 			}
-		}
-
-		private void OnEnable()
-		{
-			TakeInteractionPriority();
-		}
-		private void OnDisable()
-		{
-			StopInteraction();
 		}
 
 		private void Update()
@@ -263,30 +271,26 @@ namespace Netherlands3D.Interface
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 
 			//Lets render a ortographic thumbnail for a proper grid topdown view
-			gridSelectionBlock.SetActive(false);
-			PropertiesPanel.Instance.RenderThumbnailContaining(
-				scaleBlock.GetComponent<MeshRenderer>().bounds, 
-				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC, 
-				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
-			);
-			gridSelectionBlock.SetActive(true);
+			RenderOrtoThumbnail();
 
 			PropertiesPanel.Instance.AddTitle("Grid selectie");
 			PropertiesPanel.Instance.AddTextfield("Je hebt een gebied geselecteerd van " + bounds.size.x + "x" + bounds.size.z + "m");
 			PropertiesPanel.Instance.AddActionButtonBig("Masker omdraaien", (action) =>
 			{
 				RuntimeMask.Instance.FlipMask();
+				RenderOrtoThumbnail();
 			});
 
 			PropertiesPanel.Instance.AddActionButtonBig("Masker weghalen", (action) =>
 			{
 				RuntimeMask.Instance.Clear();
+				RenderOrtoThumbnail();
 			});
 
 			PropertiesPanel.Instance.AddSeperatorLine();
 
 			PropertiesPanel.Instance.AddTitle("Download lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[0] = action;
 				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
@@ -330,7 +334,7 @@ namespace Netherlands3D.Interface
 				}
 				print(selectedExportFormat);
 				switch (selectedExportFormat)
-                {
+				{
 					case "AutoCAD DXF (.dxf)":
 						Debug.Log("Start building DXF");
 						GetComponent<DXFCreation>().CreateDXF(bounds, selectedLayers);
@@ -341,9 +345,20 @@ namespace Netherlands3D.Interface
 						break;
 					default:
 						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
-                        break;
-                }
+						break;
+				}
 			});
+		}
+
+		private void RenderOrtoThumbnail()
+		{
+			gridSelectionBlock.SetActive(false);
+			PropertiesPanel.Instance.RenderThumbnailContaining(
+				scaleBlock.GetComponent<MeshRenderer>().bounds,
+				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC,
+				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
+			);
+			gridSelectionBlock.SetActive(true);
 		}
 
 		public void OnValidate()
