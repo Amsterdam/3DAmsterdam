@@ -43,6 +43,11 @@ namespace ConvertCoordinates
             y = Y;
             z = Z;
         }
+
+        public override string ToString()
+        {
+            return $"x:{x} y:{y} z:{z}";
+        }
     }
 
     /// <summary>
