@@ -51,7 +51,7 @@ namespace Netherlands3D.Interface.Layers
 		/// </summary>
 		public void ResetAllLayerMaterialColors()
 		{
-			InterfaceLayer[] interfaceLayers = FindObjectsOfType<InterfaceLayer>();
+			InterfaceLayer[] interfaceLayers = GetComponentsInChildren<InterfaceLayer>(true);
 			foreach (InterfaceLayer layer in interfaceLayers)
 			{
 				layer.ResetAllColors();

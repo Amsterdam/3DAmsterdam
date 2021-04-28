@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4284331359740463625
 Transform:
   m_ObjectHideFlags: 0
@@ -53,6 +53,7 @@ MonoBehaviour:
   minimumCarRenderDistance: 500
   mediumCarRenderDistance: 1000
   maximumCarRenderDistance: 1500
+  terrainLayer: {fileID: 0}
 --- !u!114 &4284331359740463631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,3 +70,4 @@ MonoBehaviour:
     type: 3}
   allLoadedRoads: []
   shuffledRoadsList: []
+  grid: {fileID: 0}

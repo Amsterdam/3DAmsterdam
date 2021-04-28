@@ -46,6 +46,7 @@ namespace Netherlands3D.Interface.Search
 			searchInputField.text = "";
 			GetSuggestions();
 
+			SearchResultMarker.Instance.Hide();
 		}
 
 		IEnumerator CatchEnter(){

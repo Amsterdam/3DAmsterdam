@@ -53,6 +53,7 @@ namespace Netherlands3D.Sharing
 
         public string sharedSceneId = "";
 
+        [Header("Custom object shader source references")]
         [SerializeField]
         private Material opaqueMaterialSource;
         [SerializeField]
@@ -313,29 +314,6 @@ namespace Netherlands3D.Sharing
                 var materialProperties = fixedLayerProperties.materials[i];
 
                 Material materialInSlot = targetLayer.GetMaterialFromSlot(materialProperties.slotId);
-                if(materialProperties.a == 1)
-                {
-                    if (targetLayer.opaqueShaderSourceOverride)
-                    {
-                        materialInSlot.shader = targetLayer.opaqueShaderSourceOverride.shader;
-                    }
-                    else
-                    {
-                        materialInSlot.CopyPropertiesFromMaterial(opaqueMaterialSource);
-                        materialInSlot.SetFloat("_Surface", 0); //0 Opaque
-                    }
-                }
-                else{
-                    if (targetLayer.transparentShaderSourceOverride)
-                    {
-                        materialInSlot.shader = targetLayer.transparentShaderSourceOverride.shader;
-                    }
-                    else
-                    {
-                        materialInSlot.CopyPropertiesFromMaterial(transparentMaterialSource);
-                        materialInSlot.SetFloat("_Surface", 1); //0 Alpha
-                    }
-                }
                 materialInSlot.SetColor("_BaseColor",new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }
 

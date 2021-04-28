@@ -8,6 +8,8 @@ using System.Linq.Expressions;
 using System.IO;
 using UnityEditor;
 using ConvertCoordinates;
+using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
 
 namespace Netherlands3D.Traffic
 {
@@ -25,6 +27,8 @@ namespace Netherlands3D.Traffic
         private string bbox;
         private Vector3WGS bottomLeftWGS;
         private Vector3WGS topRightWGS;
+
+        public GridSelection grid;
         private void Awake()
         {
             if (Instance == null)
@@ -33,14 +37,23 @@ namespace Netherlands3D.Traffic
             }
         }
 
+        public void WaitForGridBounds()
+        {
+            //Make sure you only subscribe once
+            GridSelection.onGridSelected -= ShowTraffic;
+            GridSelection.onGridSelected += ShowTraffic;
+        }
+
+        public void StopWaitingForGridBounds()
+        {
+            GridSelection.onGridSelected -= ShowTraffic;
+        }
 
         public void ShowTraffic(Bounds bounds)
         {
             bottomLeftWGS = CoordConvert.UnitytoWGS84(bounds.min);
             topRightWGS = CoordConvert.UnitytoWGS84(bounds.max);
-            allLoadedRoads.Clear();
-            shuffledRoadsList.Clear();
-            StartCoroutine(GetRoadsJson(Config.activeConfiguration.webserverRootPath + roadsFileName));
+            DisplayUI();
         }
 
         private void Update()
@@ -55,12 +68,39 @@ namespace Netherlands3D.Traffic
             }
         }
 
+        private void DisplayUI()
+        {
+            PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
+            PropertiesPanel.Instance.AddActionButtonBig("Verkeer weergeven", (action) =>
+            { 
+                gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
+                grid.gameObject.SetActive(false);
+                allLoadedRoads.Clear();
+                gameObject.GetComponent<TrafficSimulator>().StartSimulation(true);
+                StartCoroutine(GetRoadsJson());
+            });
+
+            PropertiesPanel.Instance.AddActionButtonBig("Verkeer verbergen", (action) =>
+            {
+                GridSelection.onGridSelected -= ShowTraffic;
+                grid.gameObject.SetActive(false);
+                allLoadedRoads.Clear();
+                gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
+            });
+
+            PropertiesPanel.Instance.AddActionButtonBig("Kies een ander gebied", (action) =>
+            {
+                grid.gameObject.SetActive(true);
+                //Make sure you only subscribe once
+                GridSelection.onGridSelected -= ShowTraffic;
+                GridSelection.onGridSelected += ShowTraffic;
+            });
+        }
+
         /// <summary>
-        /// retrieves the road json (FROM THE WEBSERVER, NOT OSM)
+        /// Retrieves the road Json from Open Street Maps
         /// </summary>
-        /// <param name="apiUrl"></param>
-        /// <returns></returns>
-        public IEnumerator GetRoadsJson(string apiUrl)
+        public IEnumerator GetRoadsJson()
         {
             string prefixRequest = "https://overpass-api.de/api/interpreter?data=[out:json];";
             string paramRequest = "way[highway~\"motorway|trunk|primary|secondary|tertiary|motorway_link|trunk_link|primary_link|secondary_link|tertiary_link|unclassified|residential|living_street|track|road\"]";
@@ -75,8 +115,6 @@ namespace Netherlands3D.Traffic
 
                 if (request.isDone && !request.isHttpError)
                 {
-                    //string path = EditorUtility.SaveFilePanel("save","","def",".json");
-                    //File.WriteAllText(path, request.downloadHandler.text);
                     // catches the data
                     StartRoadGeneration(request.downloadHandler.text);
                 }
@@ -111,34 +149,5 @@ namespace Netherlands3D.Traffic
             tempRoadObject.CreateRoad(road);
             allLoadedRoads.Add(tempRoadObject);
         }
-
-        /// <summary>
-        /// Adds all the roads coördinates to the chosen road index
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="N"></param>
-        //public void AddCoordinates(int index, JSONNode N)
-        //{
-        //    List<LongitudeLatitude> positions = new List<LongitudeLatitude>();
-        //    for (int i = 0; i < N["elements"][index]["geometry"].Count; i++)
-        //    {
-        //        LongitudeLatitude tempCoordinates = new LongitudeLatitude();
-
-        //        // adds a comma to the coordiantes so it can be parsed to a double
-        //        tempCoordinates.longitude = double.Parse(N["elements"][index]["geometry"][i][0].Value.Insert(1, ","));
-        //        // adds a comma to the coordiantes so it can be parsed to a double
-        //        tempCoordinates.latitude = double.Parse(N["elements"][index]["geometry"][i][1].Value.Insert(2, ","));
-        //        // adds positions to the object
-        //        positions.Add(tempCoordinates);
-
-        //        /*
-        //        tempCoordinates.longitude = N["features"][0]["geometry"]["coordinates"][i][0].Value;
-        //        tempCoordinates.longitude = tempCoordinates.longitude.Insert(1, ",");
-        //        tempCoordinates.latitude = N["features"][0]["geometry"]["coordinates"][i][1].Value;
-        //        tempCoordinates.latitude = tempCoordinates.latitude.Insert(2, ",");
-        //        */
-        //    }
-        //    N["elements"][index]["geomentry"] = positions;
-        //}
     }
 }

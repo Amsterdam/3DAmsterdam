@@ -149,9 +149,13 @@ namespace Netherlands3D.Settings {
             QualitySettings.SetQualityLevel(settings.shadowQuality, true);
 
             fpsCounter.ToggleVisualFPS(settings.drawFPS);
-            minimap.gameObject.SetActive(settings.drawMap);
-            canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+			
+			if (Config.activeConfiguration.EnableMinimap)
+			{
+				minimap.gameObject.SetActive(settings.drawMap);
+			}
 
+            canvasSettings.ChangeCanvasScale(settings.canvasDPI);
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);

@@ -31,15 +31,6 @@ namespace Netherlands3D.Traffic
             }
         }
 
-        private void Start()
-        {
-            StartSimulation(true);
-        }
-
-        private void Update()
-        {
-
-        }
         /// <summary>
         /// Places a car on a roadobject
         /// </summary>

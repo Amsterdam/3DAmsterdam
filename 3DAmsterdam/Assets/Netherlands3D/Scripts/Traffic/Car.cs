@@ -134,10 +134,10 @@ namespace Netherlands3D.Traffic
             {
                 // optimization by executing once every 10 frames
                 findRoadLoopFrames++;
-                if (findRoadLoopFrames % 5 == 0 && nextRoad == null)
+                if (findRoadLoopFrames % 10 == 0 && nextRoad == null)
                 {
                     transform.position = compensationVector;
-                    // resets the point DEMO ONLY
+                    // resets the point
                     foreach (RoadObject obj in GenerateRoads.Instance.shuffledRoadsList)
                     {
                         // calculates distance between the car and the 1st object of the found road, this should indicate wether the road is close or not

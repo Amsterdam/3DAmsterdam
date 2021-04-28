@@ -47,17 +47,9 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		private string selectedExportFormat = "";
-		[SerializeField]
-		List<LayerSystem.Layer> selectableLayers;
+		public delegate void GridSelectedCallback(Bounds bounds);
 
-		[SerializeField]
-		private GameObject traffic;
-		[SerializeField]
-		private AssetbundleMeshLayer terrainLayer;
-
-		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
-
+		public static event GridSelectedCallback onGridSelected;
 
 		private void Awake()
 		{
@@ -258,7 +250,7 @@ namespace Netherlands3D.Interface
 			gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
 		}
 
-		private void FinishSelection()
+		public void RenderGridToThumbnail()
 		{
 			
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
@@ -267,83 +259,16 @@ namespace Netherlands3D.Interface
 			//Lets render a ortographic thumbnail for a proper grid topdown view
 			gridSelectionBlock.SetActive(false);
 			PropertiesPanel.Instance.RenderThumbnailContaining(
-				scaleBlock.GetComponent<MeshRenderer>().bounds, 
-				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC, 
+				scaleBlock.GetComponent<MeshRenderer>().bounds,
+				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC,
 				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
 			);
 			gridSelectionBlock.SetActive(true);
+		}
 
-			PropertiesPanel.Instance.AddTitle("Lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle",1)), (action) =>
-			{
-				exportLayerToggles[0] = action;
-				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[1] = action;
-				PlayerPrefs.SetInt("exportLayer1Toggle", Convert.ToInt32(exportLayerToggles[1]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[2] = action;
-				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[3] = action;
-				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
-			});
-
-			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
-			selectedExportFormat = PlayerPrefs.GetString("exportFormat", exportFormats[0]);
-			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
-			{
-				selectedExportFormat = action;
-				PlayerPrefs.SetString("exportFormat", action);
-
-			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
-
-			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
-
-			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
-			{
-				List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
-				for (int i = 0; i < selectableLayers.Count; i++)
-				{
-					if (exportLayerToggles[i])
-					{
-						selectedLayers.Add(selectableLayers[i]);
-					}
-				}
-				print(selectedExportFormat);
-				switch (selectedExportFormat)
-                {
-					case "AutoCAD DXF (.dxf)":
-						Debug.Log("Start building DXF");
-						GetComponent<DXFCreation>().CreateDXF(scaleBlock.GetComponent<MeshRenderer>().bounds, selectedLayers);
-						break;
-					case "Collada DAE (.dae)":
-						Debug.Log("Start building collada");
-						GetComponent<ColladaCreation>().CreateCollada(scaleBlock.GetComponent<MeshRenderer>().bounds,selectedLayers);
-						break;
-					default:
-						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
-                        break;
-                }
-			});
-
-			PropertiesPanel.Instance.AddActionCheckbox("ShowTraffic",false, (action) =>
-			{
-				terrainLayer.AddMeshColliders(scaleBlock.GetComponent<MeshRenderer>().bounds.center);
-				traffic.SetActive(true);
-				traffic.GetComponent<TrafficSimulator>().StartSimulation(action);
-
-				if(traffic.activeSelf)
-				{
-					traffic.GetComponent<GenerateRoads>().ShowTraffic(scaleBlock.GetComponent<MeshRenderer>().bounds);
-				}
-			});
+		private void FinishSelection()
+		{
+			onGridSelected?.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
 		}
 
 		public void OnValidate()

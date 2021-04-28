@@ -123,8 +123,8 @@ namespace Netherlands3D.AssetGeneration
 			int count = 0;
 			var files = Directory.GetFiles(path).Where(o => !o.Contains(".manifest")).ToArray();
 
-			int heightMax = 5; //vertices above this value are considered to be spikes, vlaue in meters
-			int heightMin = -5; //vertices above this value are considered to be spikes, vlaue in meters            
+			int heightMax = 15; //vertices above this value are considered to be spikes, vlaue in meters
+			int heightMin = -15; //vertices above this value are considered to be spikes, vlaue in meters            
 			int lookaroundWidth = 1; //area in meters to look around for other vertices to find common height
 
 			foreach (var file in files)
@@ -143,7 +143,7 @@ namespace Netherlands3D.AssetGeneration
 				yield return null;
 				Debug.Log($"going to process: {finfo.Name}");
 
-				var rd = GetRDFromName(finfo);
+				var rd = file.GetRDCoordinate();
 				var tilepos = CoordConvert.RDtoUnity(rd);
 
 				var assetbundle = AssetBundle.LoadFromFile(file);
@@ -163,22 +163,24 @@ namespace Netherlands3D.AssetGeneration
 					if (verts[i].y > heightMax || verts[i].y < heightMin)
 					{
 						hasspike = true;
+						verts[i].y = correctvertsAvgHeight; //for now just use the average height
 
-						var x = verts[i].x;
-						var z = verts[i].z;
-						var vertsaround = correctverts.Where(o => o.x < x + lookaroundWidth
-														&& o.x > x - lookaroundWidth
-														&& o.z < z + lookaroundWidth
-														&& o.z > z - lookaroundWidth);
-						if (vertsaround.Any())
-						{
-							var avgh = vertsaround.Max(o => o.y);
-							verts[i].y = avgh;
-						}
-						else
-						{
-							verts[i].y = correctvertsAvgHeight;
-						}
+						//experimental code, needs further testing
+						//var x = verts[i].x;
+						//var z = verts[i].z;
+						//var vertsaround = correctverts.Where(o => o.x < x + lookaroundWidth
+						//								&& o.x > x - lookaroundWidth
+						//								&& o.z < z + lookaroundWidth
+						//								&& o.z > z - lookaroundWidth);
+						//if (vertsaround.Any())
+						//{
+						//	var avgh = vertsaround.Max(o => o.y);
+						//	verts[i].y = avgh;
+						//}
+						//else
+						//{
+						//	verts[i].y = correctvertsAvgHeight;
+						//}
 					}
 				}
 
@@ -235,7 +237,7 @@ namespace Netherlands3D.AssetGeneration
 				yield return null;
 				Debug.Log($"going to process: {finfo.Name}");
 
-				var rd = GetRDFromName(finfo);
+				var rd = file.GetRDCoordinate();
 				var tilepos = CoordConvert.RDtoUnity(rd);
 
 				var assetbundle = AssetBundle.LoadFromFile(file);
@@ -284,7 +286,7 @@ namespace Netherlands3D.AssetGeneration
 			{
 				var finfo = new FileInfo(file);
 
-				var rd = GetRDFromName(finfo);
+				var rd = file.GetRDCoordinate();
 				var tilepos = CoordConvert.RDtoUnity(rd);
 
 				//var mesh = AssetDatabase.LoadAssetAtPath<Mesh>($"{dirname}/{finfo.Name}");
@@ -310,43 +312,7 @@ namespace Netherlands3D.AssetGeneration
 
 		}
 
-		Vector3RD GetRDFromName(FileInfo finfo)
-		{
-			var name = Path.GetFileNameWithoutExtension(finfo.Name).
-				Replace("trees_", "").
-				Replace("terrain_", "").
-				Replace("-lod1", "").
-				Replace("_utrecht_lod2", "");
 
-			string[] splitted;
-
-			if (name.Contains("_"))
-			{
-				splitted = name.Split('_');
-			}
-			else if (name.Contains("-"))
-			{
-				splitted = name.Split('-');
-			}
-			else
-			{
-				throw new Exception($"could not get RD coordinate of string: {name}");
-			}
-
-			Vector3RD rd = new Vector3RD();
-
-			try
-			{
-				rd.x = double.Parse(splitted[0]);
-				rd.y = double.Parse(splitted[1]);
-			}
-			catch
-			{
-			}
-
-			return rd;
-
-		}
 
 		void ReadTreesFromCsv()
 		{

@@ -7,6 +7,7 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections.Generic;
+using Netherlands3D.Interface;
 
 namespace Netherlands3D.Cameras
 {
@@ -169,7 +170,7 @@ namespace Netherlands3D.Cameras
             {
                 ActionHandler.actions.GodViewMouse.Enable();
             }
-            else if(!enabled && ActionHandler.actions.GodViewMouse.enabled)
+            else if(!enabled && ((!rotatingAroundPoint && !dragging) || Selector.Instance.GetActiveInteractable()) && ActionHandler.actions.GodViewMouse.enabled)
             {
                 dragging = false;
                 rotatingAroundPoint = false;
@@ -275,7 +276,10 @@ namespace Netherlands3D.Cameras
                     HandleRotationInput();
                     HandleFly();
                 }
-                EazeOutDragVelocity();
+                if (ActionHandler.actions.GodViewMouse.enabled)
+                {
+                    EazeOutDragVelocity();
+                }
             }
 
             LimitPosition();
@@ -406,7 +410,9 @@ namespace Netherlands3D.Cameras
 
         private void Dragging()
 		{
-			dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
+            if (!ActionHandler.actions.GodViewMouse.enabled) return;
+
+            dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
 
 			if (dragMomentum.magnitude > 0.1f)
 				transform.position -= dragMomentum;
