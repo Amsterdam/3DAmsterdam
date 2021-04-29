@@ -9,7 +9,6 @@ using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
-using Netherlands3D.Underground;
 
 namespace Netherlands3D.Interface
 {
@@ -45,10 +44,9 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		private string selectedExportFormat = "";
-		[SerializeField]
-		List<LayerSystem.Layer> selectableLayers;
-		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
+		public delegate void GridSelectedCallback(Bounds bounds);
+
+		public static event GridSelectedCallback onGridSelected;
 
 
 		private void Awake()
@@ -70,6 +68,7 @@ namespace Netherlands3D.Interface
 			}
 
 			voxels = new Dictionary<Vector3Int, GameObject>();
+
 		}
 
 		void Start()
@@ -77,23 +76,6 @@ namespace Netherlands3D.Interface
 			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
 			SetGridSize();
 		}
-
-		private void OnEnable()
-		{
-			TakeInteractionPriority();
-
-			//For now always clear mask and create new one if we do a new selection
-			if (RuntimeMask.Instance.State == RuntimeMask.MaskState.FOLLOW_MOUSE)
-			{
-				RuntimeMask.Instance.ChangeMaskShape(RuntimeMask.MaskShape.RECTANGULAR);
-				RuntimeMask.Instance.MoveToBounds();
-			}
-		}
-		private void OnDisable()
-		{
-			StopInteraction();
-		}
-
 		private void Toggle(IAction action)
 		{
 			if (action.Performed)
@@ -124,8 +106,6 @@ namespace Netherlands3D.Interface
 			}
 			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
-				RuntimeMask.Instance.Clear();
-
 				drawing = true;
 				add = true;
 				if (!freePaint)
@@ -145,6 +125,15 @@ namespace Netherlands3D.Interface
 				drawing = true;
 				add = false;
 			}
+		}
+
+		private void OnEnable()
+		{
+			TakeInteractionPriority();
+		}
+		private void OnDisable()
+		{
+			StopInteraction();
 		}
 
 		private void Update()
@@ -260,98 +249,9 @@ namespace Netherlands3D.Interface
 			gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
 		}
 
-		private void FinishSelection()
+		public void RenderGridToThumbnail()
 		{
-			Bounds bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
-
-			//Just to test out the mask
-			RuntimeMask.Instance.MoveToBounds(bounds);
-
-			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
-
 			//Lets render a ortographic thumbnail for a proper grid topdown view
-			RenderOrtoThumbnail();
-
-			PropertiesPanel.Instance.AddTitle("Grid selectie");
-			PropertiesPanel.Instance.AddTextfield("Je hebt een gebied geselecteerd van " + bounds.size.x + "x" + bounds.size.z + "m");
-			PropertiesPanel.Instance.AddActionButtonBig("Masker omdraaien", (action) =>
-			{
-				RuntimeMask.Instance.FlipMask();
-				RenderOrtoThumbnail();
-			});
-
-			PropertiesPanel.Instance.AddActionButtonBig("Masker weghalen", (action) =>
-			{
-				RuntimeMask.Instance.Clear();
-				RenderOrtoThumbnail();
-			});
-
-			PropertiesPanel.Instance.AddSeperatorLine();
-
-			PropertiesPanel.Instance.AddTitle("Download lagen");
-			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[0] = action;
-				PlayerPrefs.SetInt("exportLayer0Toggle", Convert.ToInt32(exportLayerToggles[0]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Bomen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer1Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[1] = action;
-				PlayerPrefs.SetInt("exportLayer1Toggle", Convert.ToInt32(exportLayerToggles[1]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Maaiveld", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer2Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[2] = action;
-				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
-			});
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
-			{
-				exportLayerToggles[3] = action;
-				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
-			});
-
-			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
-			selectedExportFormat = PlayerPrefs.GetString("exportFormat", exportFormats[0]);
-			PropertiesPanel.Instance.AddActionDropdown(exportFormats, (action) =>
-			{
-				selectedExportFormat = action;
-				PlayerPrefs.SetString("exportFormat", action);
-
-			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
-
-			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
-
-			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
-			{
-				List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
-				for (int i = 0; i < selectableLayers.Count; i++)
-				{
-					if (exportLayerToggles[i])
-					{
-						selectedLayers.Add(selectableLayers[i]);
-					}
-				}
-				print(selectedExportFormat);
-				switch (selectedExportFormat)
-				{
-					case "AutoCAD DXF (.dxf)":
-						Debug.Log("Start building DXF");
-						GetComponent<DXFCreation>().CreateDXF(bounds, selectedLayers);
-						break;
-					case "Collada DAE (.dae)":
-						Debug.Log("Start building collada");
-						GetComponent<ColladaCreation>().CreateCollada(bounds, selectedLayers);
-						break;
-					default:
-						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
-						break;
-				}
-			});
-		}
-
-		private void RenderOrtoThumbnail()
-		{
 			gridSelectionBlock.SetActive(false);
 			PropertiesPanel.Instance.RenderThumbnailContaining(
 				scaleBlock.GetComponent<MeshRenderer>().bounds,
@@ -359,6 +259,11 @@ namespace Netherlands3D.Interface
 				scaleBlock.GetComponent<MeshRenderer>().bounds.center + Vector3.up * 150.0f
 			);
 			gridSelectionBlock.SetActive(true);
+		}
+
+		private void FinishSelection()
+		{
+			onGridSelected?.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
 		}
 
 		public void OnValidate()
