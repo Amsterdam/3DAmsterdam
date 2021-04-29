@@ -45,9 +45,7 @@ namespace Netherlands3D.Interface
 		private Vector3Int startGridPosition;
 
 		public delegate void GridSelectedCallback(Bounds bounds);
-
 		public static event GridSelectedCallback onGridSelected;
-
 
 		private void Awake()
 		{
