@@ -32,14 +32,7 @@ namespace Amsterdam3D.Sewerage
 		[SerializeField]
 		private SewerageObjectPool manHoleObjectPool;
 
-		public override void OnDisableTiles(bool isenabled)
-        {
-			if(isenabled)
-			{
-				RuntimeMask.Instance.ChangeMaskShape(RuntimeMask.MaskShape.SPHERICAL);
-				RuntimeMask.Instance.MoveWithMouse();
-			}
-        }
+		public override void OnDisableTiles(bool isenabled) { }
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
