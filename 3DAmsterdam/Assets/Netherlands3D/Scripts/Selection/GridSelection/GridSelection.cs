@@ -286,7 +286,8 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-			onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			if(scaleBlock)
+				onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
 		}
 
 		public void OnValidate()
