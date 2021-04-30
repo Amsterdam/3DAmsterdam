@@ -61,6 +61,7 @@ namespace Netherlands3D.Underground
 		private void Awake()
 		{
 			visual = GetComponent<MeshRenderer>();
+			Clear();
 		}
 
 		//We enable shadows for the underground when we use the mask sphere, to give more depth
@@ -83,10 +84,16 @@ namespace Netherlands3D.Underground
 		//We enable shadows for the underground when we use the mask sphere, to give more depth
 		private void OnDisable()
 		{
-			//make sure to reset mask shaders
-			current = (previousMask != null) ? previousMask : null;
-			if(previousMask)
+			//Enable previous masking object if it was active when we enabled this one
+			if (previousMask)
+			{
+				current = previousMask;
 				previousMask.gameObject.SetActive(true);
+			}
+			else{
+				current = null;
+			}
+			//make sure to reset mask shaders
 			Clear();
 		}
 

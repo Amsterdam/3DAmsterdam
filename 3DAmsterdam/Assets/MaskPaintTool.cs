@@ -16,10 +16,12 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private RuntimeMask runtimeRectangularMask;
 
-        public void StartPaintSelection()
+        private string helpMessage = "<b>Shift+Klik+Sleep</b> om het masker gebied te selecteren";
+
+        public void WaitForMaskBounds()
         {
-            gridSelection.gameObject.SetActive(true);
-            GridSelection.onGridSelected += SelectedGridBounds;
+            HelpMessage.Instance.Show(helpMessage);
+            gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
             runtimeRectangularMask.gameObject.SetActive(true);
             runtimeRectangularMask.Clear();
             if (previousBounds != default)
@@ -28,13 +30,12 @@ namespace Netherlands3D.Interface
             }
         }
 
-        private void SelectedGridBounds(Bounds bounds)
+        private void SelectedMaskBounds(Bounds bounds)
         {
             previousBounds = bounds;
             runtimeRectangularMask.MoveToBounds(bounds);
             PropertiesPanel.Instance.OpenLayers();
             gridSelection.gameObject.SetActive(false);
-            GridSelection.onGridSelected -= SelectedGridBounds;
         }
     }
 }

@@ -239,10 +239,15 @@ namespace Netherlands3D.Interface.Layers
 			Expand(expanded);
 		}
 
+		/// <summary>
+		/// Open up layer with a custom set of tools, instead of the general LayerVisuals panel
+		/// </summary>
+		/// <param name="customOptions">The gameobject</param>
 		public void ToggleLayerOpenedWithCustomOptions(GameObject customOptions)
 		{
 			expanded = !expanded;
 			customOptions.SetActive(expanded);
+			customOptions.transform.SetAsLastSibling();
 			Expand(expanded);
 		}
 
