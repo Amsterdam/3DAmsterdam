@@ -188,9 +188,9 @@ namespace Netherlands3D.Underground
 		{
 			foreach (Material sharedMaterial in specificMaterials)
 			{
-				sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
+				sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.one * float.MaxValue : maskVector);
 				sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
-				sharedMaterial.SetVector(clippingMaskSize, maskSize);
+				sharedMaterial.SetVector(clippingMaskSize, (resetToZero) ? Vector2.zero : maskSize);
 			}
 		}
 
@@ -201,13 +201,18 @@ namespace Netherlands3D.Underground
 		{
 			if (!updateRuntimeDynamicMaterials || !targetMaterialsContainer) return;
 
+			if (resetToZero)
+			{
+				maskVector = Vector4.one * float.MaxValue;
+			}
+
 			MeshRenderer[] meshRenderers = targetMaterialsContainer.GetComponentsInChildren<MeshRenderer>();
 
 			foreach (MeshRenderer renderer in meshRenderers)
 			{
-				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.zero : maskVector);
+				renderer.sharedMaterial.SetVector(clipppingMaskPositionVector, (resetToZero) ? Vector4.one * float.MaxValue : maskVector);
 				renderer.sharedMaterial.SetTexture(clippingMaskTexture, (resetToZero) ? null : maskTexture);
-				renderer.sharedMaterial.SetVector(clippingMaskSize, maskSize);
+				renderer.sharedMaterial.SetVector(clippingMaskSize, (resetToZero) ? Vector2.zero : maskSize);
 			}
 		}
 	}
