@@ -24,10 +24,6 @@ namespace Netherlands3D.Interface
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
             runtimeRectangularMask.gameObject.SetActive(true);
             runtimeRectangularMask.Clear();
-            if (previousBounds != default)
-            {
-                runtimeRectangularMask.MoveToBounds(previousBounds);
-            }
         }
 
         private void SelectedMaskBounds(Bounds bounds)
