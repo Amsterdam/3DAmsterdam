@@ -286,8 +286,7 @@ public class ColladaFile
 		for (int i = 0; i < meshVertices.Count; i += 3)
 		{
 			var vert = meshVertices[i];
-			// reverse winding order to comply with collade-specification (CCW)
-			writer.WriteString(i.ToString() + " " + (i + 2).ToString() + " " + (i + 1).ToString() + " ");
+			writer.WriteString(i.ToString() + " " + (i + 1).ToString() + " " + (i + 2).ToString() + " ");
 		}
 		writer.WriteEndElement(); //end p
 		writer.WriteEndElement(); //end triangles
