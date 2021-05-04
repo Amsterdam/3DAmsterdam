@@ -135,20 +135,21 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
+
 				if (ObjectUsesRDCoordinates)
 				{
-					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3]))));
+					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), -cd(linePart[3]))));
 				}
 				else
 				{
-					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
 				}
 				break;
 			case VT:
 				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
 				break;
 			case VN:
-				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
 				break;
 			case F:
 				var faces = new FaceIndices[linePart.Length - 1];
