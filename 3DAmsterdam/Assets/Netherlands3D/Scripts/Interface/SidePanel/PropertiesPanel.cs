@@ -26,6 +26,8 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Tab annotationsTab;
         [SerializeField]
+        private Tab layersTab;
+        [SerializeField]
         private Tab settingsTab;
 
         [Header("Animation")]
@@ -143,7 +145,7 @@ namespace Netherlands3D.Interface.SidePanel
 
             objectInformationTab.OpenTab();
             verticalLayoutGroup.spacing = spacing;
-            OpenPanel();
+            OpenPanel(title);
         }
 
         /// <summary>
@@ -164,6 +166,15 @@ namespace Netherlands3D.Interface.SidePanel
         public void OpenAnnotations()
         {
             annotationsTab.OpenTab(true);
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the static tile layers tab
+        /// </summary>
+        public void OpenLayers()
+        {
+            layersTab.OpenTab(true);
             OpenPanel();
         }
 

@@ -82,6 +82,8 @@ namespace Netherlands3D.Interface.Layers
 
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();
+
+				AddTwoWayConnectionToLinkedObject();
 			}
 		}
 
@@ -127,6 +129,10 @@ namespace Netherlands3D.Interface.Layers
 		{
 			LinkedObject = newLinkedObject;
 
+			//Add script that keeps a two way connection to this layer
+			AddTwoWayConnectionToLinkedObject();
+
+			//linkedObject.Add
 			switch (layerType)
 			{
 				case LayerType.BASICSHAPE:
@@ -141,6 +147,14 @@ namespace Netherlands3D.Interface.Layers
 
 			UpdateLayerPrimaryColor();
 			GetResetColorValues();
+		}
+
+		private void AddTwoWayConnectionToLinkedObject()
+		{
+			var interaceLinkedObject = LinkedObject.GetComponent<InterfaceLayerLinkedObject>();
+			if (interaceLinkedObject) Destroy(interaceLinkedObject);
+
+			LinkedObject.AddComponent<InterfaceLayerLinkedObject>().InterfaceLayer = this;
 		}
 
 		/// <summary>
@@ -190,21 +204,23 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (layerType == LayerType.STATIC)
 			{
-				if (LinkedObject.GetComponent<LayerSystem.Layer>() == null)
+				var staticLayer = LinkedObject.GetComponent<Layer>();
+				if (staticLayer == null)
 				{
 					LinkedObject.SetActive(isOn);
 				}
 				else
 				{
-					LinkedObject.GetComponent<LayerSystem.Layer>().isEnabled = isOn;
+					//Static layer components better use their method to enable/disable, because maybe only the children should be disabled/reenabled
+					staticLayer.isEnabled = isOn;
 				}
-
-
 			}
 			else
 			{
 				LinkedObject.SetActive(isOn);
 			}
+
+			toggleActiveLayer.SetIsOnWithoutNotify(isOn);
 		}
 
 		/// <summary>
@@ -220,6 +236,18 @@ namespace Netherlands3D.Interface.Layers
 			else{
 				parentInterfaceLayers.LayerVisuals.Close();
 			}
+			Expand(expanded);
+		}
+
+		/// <summary>
+		/// Open up layer with a custom set of tools, instead of the general LayerVisuals panel
+		/// </summary>
+		/// <param name="customOptions">The gameobject</param>
+		public void ToggleLayerOpenedWithCustomOptions(GameObject customOptions)
+		{
+			expanded = !expanded;
+			customOptions.SetActive(expanded);
+			customOptions.transform.SetAsLastSibling();
 			Expand(expanded);
 		}
 

@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace Netherlands3D.Interface
 {
@@ -44,10 +45,9 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		public delegate void GridSelectedCallback(Bounds bounds);
-
-		public static event GridSelectedCallback onGridSelected;
-
+		[System.Serializable]
+		public class BoundsEvent : UnityEvent<Bounds> { };
+		public BoundsEvent onGridSelected;
 
 		private void Awake()
 		{
@@ -68,7 +68,23 @@ namespace Netherlands3D.Interface
 			}
 
 			voxels = new Dictionary<Vector3Int, GameObject>();
+		}
 
+		/// <summary>
+		/// Fresh start for the grid selection tool with optional material override (to have a unique block color)
+		/// </summary>
+		/// <param name="toolMaterial">Optional material override for the selection blocks</param>
+		public void StartSelection( Material toolMaterial)
+		{
+			if(toolMaterial)
+			{
+				SetMainMaterial(toolMaterial);
+			}
+
+			onGridSelected.RemoveAllListeners();
+			gameObject.SetActive(true);
+			//Fresh start, clear a previous selection block visual
+			if (scaleBlock) Destroy(scaleBlock);
 		}
 
 		void Start()
@@ -125,6 +141,13 @@ namespace Netherlands3D.Interface
 				drawing = true;
 				add = false;
 			}
+		}
+
+		private void SetMainMaterial(Material material)
+		{
+			gridSelectionBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
+			if(scaleBlock)
+				scaleBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
 		}
 
 		private void OnEnable()
@@ -263,13 +286,13 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-			onGridSelected?.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			if(scaleBlock)
+				onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
 		}
 
 		public void OnValidate()
 		{
 			SetGridSize();
 		}
-
 	}
 }
