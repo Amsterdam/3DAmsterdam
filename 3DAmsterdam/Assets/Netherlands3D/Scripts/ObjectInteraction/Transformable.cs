@@ -18,7 +18,7 @@ namespace Netherlands3D.ObjectInteraction
 		private Vector3 offset;
 
 		private bool snapToGround = true;
-
+		public bool placeOnGrid = false;
 		[SerializeField]
 		private bool stickToMouse = true;
 
@@ -26,7 +26,7 @@ namespace Netherlands3D.ObjectInteraction
 		public static Transformable lastSelectedTransformable;
 
 		private IAction placeAction;
-
+		private Bounds bounds;
 		private void Start()
 		{
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
@@ -42,6 +42,21 @@ namespace Netherlands3D.ObjectInteraction
 				StartCoroutine(StickToMouse());
 				meshCollider.enabled = false;
 			}
+			gameObject.transform.position = Vector3.zero;
+			bounds = new Bounds(gameObject.transform.position, Vector3.zero);
+			Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+			
+				bounds=mesh.bounds;
+			Debug.Log(bounds.min.x + "-" + bounds.max.x);
+			Debug.Log(bounds.min.z + "-" + bounds.max.z);
+			if (((bounds.max.x - bounds.min.x) %100)+1<2)
+            {
+				if (((bounds.max.z - bounds.min.z) % 100)+1 <2)
+				{
+					placeOnGrid = true;
+				}
+			}
+
 		}
 
 		/// <summary>
@@ -128,7 +143,18 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void FollowMousePointer()
 		{
-			this.transform.position = GetMousePointOnLayerMask() - offset;
+			Vector3 newPosition = GetMousePointOnLayerMask() - offset;
+			
+			//offset.x = -bounds.min.x % 100;
+			//offset.z = -bounds.min.z % 100;
+			if (placeOnGrid)
+            {
+				
+				newPosition.x -= ((newPosition.x+bounds.min.x) % 100);
+				newPosition.z -= ((newPosition.z+bounds.min.z) % 100);
+			}
+			
+			this.transform.position = newPosition;
 
 		}
 
