@@ -45,8 +45,8 @@ namespace Netherlands3D.ModelParsing
 		{
 			if (!Application.isPlaying) return;
 				StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.obj"),
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.mtl")
+					File.ReadAllText(Application.dataPath + "/../TestModels/testDXFBinary.obj"),
+					File.ReadAllText(Application.dataPath + "/../TestModels/testDXFBinary.mtl")
 				));
 
 		}
@@ -131,12 +131,18 @@ namespace Netherlands3D.ModelParsing
 				newOBJLoader.Build(defaultLoadedObjectsMaterial);
 
 				//Make interactable
-				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 				newOBJLoader.name = objModelName;
 				newOBJLoader.gameObject.AddComponent<Transformable>();
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+
+
+                if (newOBJLoader.ObjectUsesRDCoordinates==false)
+                {
+					customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				}
+				
 			}
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
