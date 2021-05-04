@@ -324,7 +324,20 @@ public class ObjLoad : MonoBehaviour
 	{
 		try
 		{
-			return float.Parse(v);
+			return float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
+		}
+		catch (Exception e)
+		{
+			print(e + " -> " + v);
+			return 0;
+		}
+	}
+
+	static double cd(string v)
+    {
+		try
+		{
+			return double.Parse(v,System.Globalization.CultureInfo.InvariantCulture);
 		}
 		catch (Exception e)
 		{
