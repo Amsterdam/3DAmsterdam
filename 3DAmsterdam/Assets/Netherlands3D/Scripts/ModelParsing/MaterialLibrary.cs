@@ -11,6 +11,9 @@ namespace Netherlands3D.ModelParsing
         [SerializeField]
         private Material[] materialLibrary;
 
+        [SerializeField]
+        private float materialColorMatchingThreshold = 0.01f;
+
         /// <summary>
         /// Remaps materials to this object based on material name / substrings
         /// </summary>
@@ -53,14 +56,32 @@ namespace Netherlands3D.ModelParsing
             {
                 if(comparisonMaterial.name.ToLower().Contains(libraryMaterial.name.ToLower()))
                 {
-                    Debug.Log("Found library material: " + libraryMaterial.name);
+                    Debug.Log("Found library material with matching name: " + libraryMaterial.name);
                     if (returnAsInstance) return Instantiate(libraryMaterial);
                     return libraryMaterial;
 				}
-			}
+                else if (ColorsAreSimilar(comparisonMaterial.GetColor("_BaseColor"),libraryMaterial.GetColor("_BaseColor"), materialColorMatchingThreshold))
+                {
+                    Debug.Log("Found library material with matching color: " + libraryMaterial.name);
+                    if (returnAsInstance) return Instantiate(libraryMaterial);
+                    return libraryMaterial;
+                }
+            }
 
             //Didnt find a replacement? Just return myself.
             return comparisonMaterial;
+		}
+
+        private bool ColorsAreSimilar(Color colorA, Color colorB, float threshold)
+        {
+            Vector3 colorAVector = new Vector3(colorA.r, colorA.g, colorA.b);
+            Vector3 colorBVector = new Vector3(colorB.r, colorB.g, colorB.b);
+
+            if(Vector3.Distance(colorAVector,colorBVector) < threshold)
+            {
+                return true;
+			}
+            return false;
 		}
 	}
 }
