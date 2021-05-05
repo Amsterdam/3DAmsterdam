@@ -17,7 +17,6 @@ namespace Netherlands3D.LayerSystem
             set
             {
                 isenabled = value;
-                Debug.Log(transform.childCount);
                 for (int i = 0; i < transform.childCount; i++)
                 {
                     transform.GetChild(i).gameObject.SetActive(isenabled);
