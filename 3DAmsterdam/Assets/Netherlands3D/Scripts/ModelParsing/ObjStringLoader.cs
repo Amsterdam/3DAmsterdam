@@ -48,8 +48,8 @@ namespace Netherlands3D.ModelParsing
 		{
 			if (!Application.isPlaying) return;
 				StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.obj"),
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.mtl")
+					File.ReadAllText(Application.dataPath + "/../TestModels/MyNewPlan.obj"),
+					File.ReadAllText(Application.dataPath + "/../TestModels/MyNewPlan.mtl")
 				));
 
 		}

@@ -10,12 +10,12 @@ public class InterfaceLayerLinkedObject : MonoBehaviour
 	private void OnEnable()
 	{
 		if(InterfaceLayer)
-			InterfaceLayer.ToggleLinkedObject(true);
+			InterfaceLayer.ToggleLinkedObject(gameObject.activeSelf);
 	}
 
 	private void OnDisable()
 	{
 		if (InterfaceLayer)
-			InterfaceLayer.ToggleLinkedObject(false);
+			InterfaceLayer.ToggleLinkedObject(gameObject.activeSelf);
 	}
 }
