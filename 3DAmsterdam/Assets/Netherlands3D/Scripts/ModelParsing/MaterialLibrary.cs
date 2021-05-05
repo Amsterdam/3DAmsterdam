@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Netherlands3D.Underground;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,23 +24,37 @@ namespace Netherlands3D.ModelParsing
                 return;
 			}
 
-            for (int i = 0; i < renderer.materials.Length; i++)
+            var materialArray = renderer.materials;
+            for (int i = 0; i < materialArray.Length; i++)
 			{
-                renderer.sharedMaterials[i] = FindMaterialReplacement(renderer.sharedMaterials[i]);
+                var replacement = FindMaterialReplacement(materialArray[i], true);
+                replacement.name = replacement.name.Replace("(Clone)", "");
+                ClearMask(replacement);
+                materialArray[i] = replacement;
             }
-		}
+            renderer.materials = materialArray;
+
+        }
+
+        private void ClearMask(Material targetMaterialWithMask)
+        {
+            //Our materials plucked from library might have some masking set. Clear those
+            targetMaterialWithMask.SetTexture(RuntimeMask.clippingMaskTexture, null);
+        }
 
         /// <summary>
         /// Finds a material from the library with a similar name
         /// </summary>
         /// <param name="comparisonMaterial">The material to find a library material for</param>
         /// <returns></returns>
-        public Material FindMaterialReplacement(Material comparisonMaterial)
+        public Material FindMaterialReplacement(Material comparisonMaterial, bool returnAsInstance = false)
 		{
 			foreach(var libraryMaterial in materialLibrary)
             {
                 if(comparisonMaterial.name.ToLower().Contains(libraryMaterial.name.ToLower()))
                 {
+                    Debug.Log("Found library material: " + libraryMaterial.name);
+                    if (returnAsInstance) return Instantiate(libraryMaterial);
                     return libraryMaterial;
 				}
 			}
