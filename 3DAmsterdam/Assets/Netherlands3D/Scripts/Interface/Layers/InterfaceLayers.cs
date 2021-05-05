@@ -88,6 +88,7 @@ namespace Netherlands3D.Interface.Layers
 			else
 			{
 				newCustomlayer = Instantiate(customObjectLayerPrefab, customLayersContainer);
+				linkedWorldObject.gameObject.SetActive(true);
 				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
 			}
 			return newCustomlayer;
