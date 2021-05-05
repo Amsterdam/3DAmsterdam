@@ -13,14 +13,17 @@ namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
+
 		[SerializeField]
 		private Material defaultLoadedObjectsMaterial;
 
 		[SerializeField]
 		private LoadingScreen loadingObjScreen;
 
+		[System.Serializable]
+		public class ObjectImportedEvent : UnityEvent<GameObject> { };
 		[SerializeField]
-		private UnityEvent doneLoadingModel;
+		private ObjectImportedEvent doneLoadingModel;
 
 		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
@@ -142,7 +145,7 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.Hide();
 
 			//Invoke done event
-			doneLoadingModel.Invoke();
+			doneLoadingModel.Invoke(newOBJLoader.gameObject);
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);
