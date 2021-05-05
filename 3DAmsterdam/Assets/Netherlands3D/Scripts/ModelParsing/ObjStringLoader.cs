@@ -43,15 +43,22 @@ namespace Netherlands3D.ModelParsing
 		/// For Editor testing only.
 		/// This method loads a obj and a mtl file.
 		/// </summary>
-		[ContextMenu("Load test models")]
-		private void LoadTestModels()
+		[ContextMenu("Open selection dialog")]
+		public void OpenModelViaEditor()
 		{
 			if (!Application.isPlaying) return;
-				StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(Application.dataPath + "/../TestModels/MyNewPlan.obj"),
-					File.ReadAllText(Application.dataPath + "/../TestModels/MyNewPlan.mtl")
-				));
 
+			string pathObj = UnityEditor.EditorUtility.OpenFilePanel("Open OBJ", "", "obj");
+			string pathMtl = pathObj.Replace(".obj", ".mtl");
+			if (!File.Exists(pathMtl))
+			{
+				pathMtl = "";
+			}
+
+			StartCoroutine(ParseOBJFromString(
+					File.ReadAllText(pathObj),
+					File.ReadAllText(pathMtl)
+			));
 		}
 #endif
 		/// <summary>
