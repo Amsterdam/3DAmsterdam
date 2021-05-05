@@ -183,7 +183,7 @@ namespace Netherlands3D.Interface.Layers
 			{
 				foreach (Material sharedMaterial in renderer.sharedMaterials)
 				{
-					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial))
+					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial) && !sharedMaterial.name.Contains("Outline"))
 					{
 						uniqueLinkedObjectMaterials.Add(sharedMaterial);
 					}
@@ -231,6 +231,14 @@ namespace Netherlands3D.Interface.Layers
 			expanded = !expanded;
 			if(expanded)
 			{
+				//In case of own models,make sure to always grab the latest materials
+				if (layerType == LayerType.OBJMODEL)
+				{
+					GetUniqueNestedMaterials();
+					GetResetColorValues();
+					UpdateLayerPrimaryColor();
+				}
+
 				parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
 			}
 			else{
