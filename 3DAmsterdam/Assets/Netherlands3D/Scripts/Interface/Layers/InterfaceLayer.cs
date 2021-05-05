@@ -266,7 +266,8 @@ namespace Netherlands3D.Interface.Layers
 		public void Expand(bool openChevron = true)
 		{
 			expanded = openChevron;
-			expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
+			if(expandIcon)
+				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
 			if (expanded && autoCloseNeighbourLayers)
 			{
 				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
