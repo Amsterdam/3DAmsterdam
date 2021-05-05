@@ -158,7 +158,7 @@ namespace Netherlands3D.Underground
 			}
 
 #if UNITY_EDITOR
-			if (maskType == MaskState.STATIC_TRANSFORM)
+			if (maskType == MaskState.STATIC_TRANSFORM && Application.isPlaying)
 			{
 				//Continious update for moving camera/mouse
 				CalculateMaskStencil();
