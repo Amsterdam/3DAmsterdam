@@ -13,14 +13,17 @@ namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
+
 		[SerializeField]
 		private Material defaultLoadedObjectsMaterial;
 
 		[SerializeField]
 		private LoadingScreen loadingObjScreen;
 
+		[System.Serializable]
+		public class ObjectImportedEvent : UnityEvent<GameObject> { };
 		[SerializeField]
-		private UnityEvent doneLoadingModel;
+		private ObjectImportedEvent doneLoadingModel;
 
 		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
@@ -40,15 +43,22 @@ namespace Netherlands3D.ModelParsing
 		/// For Editor testing only.
 		/// This method loads a obj and a mtl file.
 		/// </summary>
-		[ContextMenu("Load test models")]
-		private void LoadTestModels()
+		[ContextMenu("Open selection dialog")]
+		public void OpenModelViaEditor()
 		{
 			if (!Application.isPlaying) return;
-				StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.obj"),
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.mtl")
-				));
 
+			string pathObj = UnityEditor.EditorUtility.OpenFilePanel("Open OBJ", "", "obj");
+			string pathMtl = pathObj.Replace(".obj", ".mtl");
+			if (!File.Exists(pathMtl))
+			{
+				pathMtl = "";
+			}
+
+			StartCoroutine(ParseOBJFromString(
+					File.ReadAllText(pathObj),
+					File.ReadAllText(pathMtl)
+			));
 		}
 #endif
 		/// <summary>
@@ -142,7 +152,7 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.Hide();
 
 			//Invoke done event
-			doneLoadingModel.Invoke();
+			doneLoadingModel.Invoke(newOBJLoader.gameObject);
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);

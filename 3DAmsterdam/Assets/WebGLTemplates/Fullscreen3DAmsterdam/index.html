@@ -65,16 +65,6 @@
 		  ReadFiles(event.dataTransfer.files);
 	  });
 	  
-	  //Start checking our browser activity
-	  document.addEventListener('visibilitychange', function () {
-			if (document.visibilityState == "hidden") {
-				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
-			} 
-			else {
-				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
-			}
-		});
-		
 
 	  function UnityProgress(unityInstance, progress) {
 		  if (!unityInstance.Module) {
@@ -89,14 +79,31 @@
 		  }
 		  unityInstance.progress.style.transform = `scaleX(${progress})`;
 		  if (progress === 1) {
+			  //Done loading
 			  loader.style.display = "none";
 			  unityCanvas = document.getElementById("#canvas");
 			  window.onhashchange = locationHashChanged;
 			  if (window.location.hash) {
 				  locationHashChanged();
 			  }
+			  
+			  //Check if our tab is active
+			  CheckVisibilityState();
+			  document.addEventListener('visibilitychange', function () {
+					CheckVisibilityState();
+				});
 		  }
 	  }
+	 
+	 function CheckVisibilityState()
+	 {
+		if (document.visibilityState == "hidden") {
+			unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
+		} 
+		else {
+			unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
+		}
+	 }
 	 
 	  if ("onpointerlockchange" in document) {
 		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
