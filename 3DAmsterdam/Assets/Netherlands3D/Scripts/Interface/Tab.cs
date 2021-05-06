@@ -41,6 +41,12 @@ namespace Netherlands3D.Interface
 		/// <param name="open">Is this tab opened</param>
 		public void OpenTab(bool open = true)
         {
+            if (PropertiesPanel.ignoreNextTabSwitch)
+            {
+                PropertiesPanel.ignoreNextTabSwitch = false;
+                return;
+            }
+
             GetComponent<Toggle>().isOn = open;
             TabPanel.Open(open);
             if (open)
