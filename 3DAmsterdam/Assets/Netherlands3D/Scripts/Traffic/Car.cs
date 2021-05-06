@@ -41,7 +41,8 @@ namespace Netherlands3D.Traffic
                 car.SetActive(false);
             }
             // Chooses a random car out of all the car objects.
-            cars[Random.Range(0, cars.Length - 1)].SetActive(true);
+            cars[Random.Range(0, cars.Length)].SetActive(true);
+
             speed = TrafficSimulator.Instance.carSpeed;
         }
 
