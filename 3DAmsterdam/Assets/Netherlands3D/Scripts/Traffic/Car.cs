@@ -41,9 +41,62 @@ namespace Netherlands3D.Traffic
                 car.SetActive(false);
             }
             // Chooses a random car out of all the car objects.
-            cars[Random.Range(0, cars.Length)].SetActive(true);
 
+            GameObject carType = cars[Random.Range(0, cars.Length)];
+
+            if (carType.name == "BasicCar")
+            {
+                ApplySettings(carType);
+            }
+            carType.SetActive(true);
             speed = TrafficSimulator.Instance.carSpeed;
+        }
+
+        private void ApplySettings(GameObject car)
+        {
+            float colorPercentage = Random.Range(0.0f, 1.0f);
+            car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
+        }
+
+        private Color32 GenerateColor(float colorPercentage)
+        {
+            if(colorPercentage > 0.66f)
+            {
+                return new Color32(145, 145, 145, 255); //gray 34%
+            }
+            if(colorPercentage <= 0.66f && colorPercentage > 0.42f)
+            {
+                return new Color32(30, 30, 30, 255); //black 24%
+            }
+            if(colorPercentage <= 0.42f && colorPercentage > 0.28f)
+            {
+                return new Color32(57, 71, 245, 255); //blue 14%
+            }
+            if(colorPercentage <= 0.28f && colorPercentage > 0.15f)
+            {
+                return new Color32(220, 220, 220, 255); //white 13%
+            }
+            if(colorPercentage <= 0.15f && colorPercentage > 0.08f)
+            {
+                return new Color32(200, 10, 10, 255); //red 7%
+            } 
+            if(colorPercentage <= 0.08f && colorPercentage > 0.05f)
+            {
+                return new Color32(10, 160, 10, 255); //green 3%
+            }  
+            if(colorPercentage <= 0.05f && colorPercentage > 0.03f)
+            {
+                return new Color32(100, 35, 15, 255); //brown 2%
+            }    
+            if(colorPercentage <= 0.03f && colorPercentage > 0.02f)
+            {
+                return new Color32(244, 226,198, 255); //beige 1%
+            } 
+            if(colorPercentage <= 0.02f && colorPercentage > 0.01f)
+            {
+                return new Color32(255, 223, 0, 255); //yellow 1%
+            }  
+            return new Color32(255, 94, 19, 255); //orange 1%
         }
 
         // Update is called once per frame
