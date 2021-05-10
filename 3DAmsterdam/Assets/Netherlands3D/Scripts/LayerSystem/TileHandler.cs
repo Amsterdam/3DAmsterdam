@@ -480,7 +480,7 @@ namespace Netherlands3D.LayerSystem
 		public GameObject gameObject;
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
-		public Coroutine runningDownloadProgress;
+		public Coroutine runningCoroutine;
 		public Action<TileChange> downloadFinishCallback;
 	}
 	[Serializable]

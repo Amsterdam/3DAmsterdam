@@ -76,7 +76,7 @@ namespace Amsterdam3D.Sewerage
 			Vector3RD boundingBoxMinimum = new Vector3RD(tileChange.X,tileChange.Y,napOffset);
 			Vector3RD boundingBoxMaximum = new Vector3RD(tileChange.X+tileSize, tileChange.Y+tileSize, napOffset); ;
 			
-			tile.runningDownloadProgress = StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
+			tile.runningCoroutine = StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
 			tile.downloadFinishCallback = callback;
 		}
 
@@ -116,7 +116,7 @@ namespace Amsterdam3D.Sewerage
                     }
 
                 }
-                StartCoroutine(GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback));
+				yield return StartCoroutine(GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback));
             }
 			else
             { //callback if weberror
@@ -147,7 +147,7 @@ namespace Amsterdam3D.Sewerage
 			}
 
 			//Lines are done spawing. Start loading and spawing the manholes.
-			StartCoroutine(GetSewerManholesInBoundingBox(tileChange,boundingBoxMinimum, boundingBoxMaximum,tile,callback));
+			yield return StartCoroutine(GetSewerManholesInBoundingBox(tileChange,boundingBoxMinimum, boundingBoxMaximum,tile,callback));
 
 			yield return null;
 		}
@@ -161,7 +161,7 @@ namespace Amsterdam3D.Sewerage
 			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
 			{
 
-                StartCoroutine(SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback));
+				yield return StartCoroutine(SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback));
             }
             else
             {
@@ -193,10 +193,7 @@ namespace Amsterdam3D.Sewerage
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
 			}
-			StartCoroutine(CombineSewerage(tileChange, tile, callback));
-
-			
-
+			yield return StartCoroutine(CombineSewerage(tileChange, tile, callback));
 		}
 		private IEnumerator CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
@@ -289,6 +286,16 @@ namespace Amsterdam3D.Sewerage
 		private void RemoveTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+
+			//Finish any old callbacks directly
+			if (tile.runningCoroutine != null)
+			{
+				StopCoroutine(tile.runningCoroutine);
+				tile.downloadFinishCallback(tileChange);
+				tile.runningCoroutine = null;
+				tile.downloadFinishCallback = null;
+			}
+
 			MeshFilter[] meshFilters = tile.gameObject.GetComponents<MeshFilter>();
             foreach (var meshfilter in meshFilters)
             {

@@ -47,7 +47,7 @@ namespace Netherlands3D.LayerSystem
 					break;
 			}
 
-			tiles[changeKey].runningDownloadProgress = StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange,callback));
 			tiles[changeKey].downloadFinishCallback = callback;
 		}
 
@@ -76,11 +76,11 @@ namespace Netherlands3D.LayerSystem
 				}
 
 				//Finish any old callbacks directly
-				if (tile.runningDownloadProgress != null)
+				if (tile.runningCoroutine != null)
 				{
-					StopCoroutine(tile.runningDownloadProgress);
+					StopCoroutine(tile.runningCoroutine);
 					tile.downloadFinishCallback(tileChange);
-					tile.runningDownloadProgress = null;
+					tile.runningCoroutine = null;
 					tile.downloadFinishCallback = null;
 				}
 
