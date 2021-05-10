@@ -19,7 +19,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     //Quality
     public float renderResolution = 1.0f;
     public int shadowQuality = 3;
-    public int maxConcurrentDownloads = 5;
+    public int maxConcurrentDownloads = 6;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
     public bool postProcessingEffects = true;
