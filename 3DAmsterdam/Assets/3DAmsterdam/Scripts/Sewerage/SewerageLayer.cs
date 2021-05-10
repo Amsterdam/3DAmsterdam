@@ -88,12 +88,12 @@ namespace Amsterdam3D.Sewerage
 			tile.gameObject.SetActive(true);
 			string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
-			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
+			tile.runningWebRequest = UnityWebRequest.Get(escapedUrl);
 
-			yield return sewerageRequest.SendWebRequest();
-			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+			yield return tile.runningWebRequest.SendWebRequest();
+			if (!tile.runningWebRequest.isNetworkError && !tile.runningWebRequest.isHttpError)
 			{
-                GeoJSON customJsonHandler = new GeoJSON(sewerageRequest.downloadHandler.text);
+                GeoJSON customJsonHandler = new GeoJSON(tile.runningWebRequest.downloadHandler.text);
 				yield return null;
                 Vector3 startpoint;
                 Vector3 endpoint;
@@ -155,13 +155,14 @@ namespace Amsterdam3D.Sewerage
 		{
 			string escapedUrl = Config.activeConfiguration.sewerManholesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
-			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
+			
+			tile.runningWebRequest = UnityWebRequest.Get(escapedUrl);
 
-			yield return sewerageRequest.SendWebRequest();
-			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+			yield return tile.runningWebRequest.SendWebRequest();
+			if (!tile.runningWebRequest.isNetworkError && !tile.runningWebRequest.isHttpError)
 			{
 
-				yield return StartCoroutine(SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback));
+				yield return StartCoroutine(SpawnManHoleObjects(tile.runningWebRequest.downloadHandler.text, tileChange, tile, callback));
             }
             else
             {
@@ -290,6 +291,7 @@ namespace Amsterdam3D.Sewerage
 			//Finish any old callbacks directly
 			if (tile.runningCoroutine != null)
 			{
+				if(tile.runningWebRequest != null) tile.runningWebRequest.Abort();
 				StopCoroutine(tile.runningCoroutine);
 				tile.downloadFinishCallback(tileChange);
 				tile.runningCoroutine = null;
