@@ -132,7 +132,7 @@ namespace Netherlands3D.Settings {
 				ApplySettings();
             }, true);
 			PropertiesPanel.Instance.AddLabel("Max. dowloads tegelijk:");
-			PropertiesPanel.Instance.AddActionSlider("1", "6", 1, 20, settings.maxConcurrentDownloads, (value) => {
+			PropertiesPanel.Instance.AddActionSlider("1", "6", 1, 6, settings.maxConcurrentDownloads, (value) => {
 				settings.maxConcurrentDownloads = (int)value;
 				ApplySettings();
 			}, true);
