@@ -78,6 +78,8 @@ namespace Netherlands3D.LayerSystem
 				//Finish any old callbacks directly
 				if (tile.runningCoroutine != null)
 				{
+					Debug.Log("Brute abort");
+					if (tile.runningWebRequest != null) tile.runningWebRequest.Abort();
 					StopCoroutine(tile.runningCoroutine);
 					tile.downloadFinishCallback(tileChange);
 					tile.runningCoroutine = null;
@@ -109,42 +111,41 @@ namespace Netherlands3D.LayerSystem
 				url = Datasets[lod].path;
 			}
 
-			url = url.ReplaceXY(tileChange.X, tileChange.Y);			
-			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
+			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+			tile.runningWebRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);			
+			yield return tile.runningWebRequest.SendWebRequest();
+			if (tile.runningWebRequest.isNetworkError || tile.runningWebRequest.isHttpError)
 			{
-				yield return uwr.SendWebRequest();
-
-				if (uwr.isNetworkError || uwr.isHttpError)
+				RemoveGameObjectFromTile(tileChange);
+				callback(tileChange);
+			}
+			else
+			{
+				AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(tile.runningWebRequest);
+				yield return new WaitUntil(() => pauseLoading == false);
+				GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
+				if (newGameobject != null)
 				{
-					RemoveGameObjectFromTile(tileChange);
-					callback(tileChange);
-				}
-				else
-				{
-					AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-					yield return new WaitUntil(() => pauseLoading == false);
-					GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
-					if (newGameobject != null)
+					if (TileHasHighlight(tileChange))
 					{
-						if (TileHasHighlight(tileChange))
-						{
-							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
-						}
-						else
-						{
-							RemoveGameObjectFromTile(tileChange);
-							tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
-							callback(tileChange);
-						}
+						StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
 					}
 					else
 					{
-
+						RemoveGameObjectFromTile(tileChange);
+						tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
 						callback(tileChange);
 					}
-
 				}
+				else
+				{
+
+					callback(tileChange);
+				}
+
 			}
+			
 		}
 		public void EnableShadows(bool enabled)
 		{
