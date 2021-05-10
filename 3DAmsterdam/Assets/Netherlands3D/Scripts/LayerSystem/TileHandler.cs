@@ -481,6 +481,7 @@ namespace Netherlands3D.LayerSystem
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
 		public Coroutine runningCoroutine;
+		public UnityWebRequest runningWebRequest;
 		public Action<TileChange> downloadFinishCallback;
 	}
 	[Serializable]
