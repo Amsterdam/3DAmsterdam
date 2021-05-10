@@ -51,6 +51,7 @@ namespace Netherlands3D.LayerSystem
 		///		X,Y is bottom-left coordinate of tile in RD (for example 121000,480000)
 		///		Z is the Layerindex of the tile
 		/// </summary>
+		[SerializeField]
 		private Dictionary<Vector3Int, TileChange> activeTileChanges = new Dictionary<Vector3Int, TileChange>();
 
 		/// <summary>
@@ -111,9 +112,9 @@ namespace Netherlands3D.LayerSystem
 
 			if (pendingTileChanges.Count == 0) { return; }
 
-			if (activeTileChanges.Count < maximumConcurrentDownloads)
+			TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
+			if (activeTileChanges.Count < maximumConcurrentDownloads || highestPriorityTileChange.action == TileAction.Remove)
 			{
-				TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
 				Vector3Int tilekey = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
 				if (activeTileChanges.ContainsKey(tilekey) == false)
 				{
@@ -290,13 +291,13 @@ namespace Netherlands3D.LayerSystem
 					{
                         if (LOD !=-1)
                         {
-						TileChange tileChange = new TileChange();
-						tileChange.action = TileAction.Create;
-						tileChange.X = tileKey.x;
-						tileChange.Y = tileKey.y;
+							TileChange tileChange = new TileChange();
+							tileChange.action = TileAction.Create;
+							tileChange.X = tileKey.x;
+							tileChange.Y = tileKey.y;
 							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, 0, tileDistance.z, TileAction.Create);
-						tileChange.layerIndex = layerIndex;
-						AddTileChange(tileChange, layerIndex);
+							tileChange.layerIndex = layerIndex;
+							AddTileChange(tileChange, layerIndex);
 						}
 					}
 				}
@@ -307,7 +308,6 @@ namespace Netherlands3D.LayerSystem
 		{
 
 			//don't add a tilechange if the tile has an active tilechange already
-			
 			Vector3Int activekey = new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex);
 			if (activeTileChanges.ContainsKey(activekey))
 			{
@@ -480,6 +480,8 @@ namespace Netherlands3D.LayerSystem
 		public GameObject gameObject;
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
+		public Coroutine runningDownloadProgress;
+		public Action<TileChange> downloadFinishCallback;
 	}
 	[Serializable]
 	public struct TileChange : IEquatable<TileChange>

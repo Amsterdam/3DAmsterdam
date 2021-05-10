@@ -37,15 +37,16 @@ namespace Amsterdam3D.Sewerage
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
+			var changeKey = new Vector2Int(tileChange.X, tileChange.Y);
 			switch (action)
 			{
 				case TileAction.Create:
 					Tile newTile = CreateNewTile(tileChange,callback);
-					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					tiles.Add(changeKey, newTile);
 					break;
 				case TileAction.Remove:
 					RemoveTile(tileChange, callback);
-					tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+					tiles.Remove(changeKey);
 					callback(tileChange);
 					return;
 				default:
@@ -53,7 +54,6 @@ namespace Amsterdam3D.Sewerage
 					break;
 			}
 		}
-
 		
 		private Tile CreateNewTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
@@ -69,8 +69,6 @@ namespace Amsterdam3D.Sewerage
 			return tile;
 		}
 
-
-
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
 			
@@ -78,7 +76,8 @@ namespace Amsterdam3D.Sewerage
 			Vector3RD boundingBoxMinimum = new Vector3RD(tileChange.X,tileChange.Y,napOffset);
 			Vector3RD boundingBoxMaximum = new Vector3RD(tileChange.X+tileSize, tileChange.Y+tileSize, napOffset); ;
 			
-			StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
+			tile.runningDownloadProgress = StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
+			tile.downloadFinishCallback = callback;
 		}
 
 		IEnumerator GetSewerLinesInBoundingBox(TileChange tileChange, Tile tile, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, System.Action<TileChange> callback = null)

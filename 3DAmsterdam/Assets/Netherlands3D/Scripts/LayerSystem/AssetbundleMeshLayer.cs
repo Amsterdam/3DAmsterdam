@@ -25,28 +25,33 @@ namespace Netherlands3D.LayerSystem
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
+			var changeKey = new Vector2Int(tileChange.X, tileChange.Y);
 			switch (action)
 			{
 				case TileAction.Create:
 					Tile newTile = CreateNewTile(tileChange);
-					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					tiles.Add(changeKey, newTile);
 					break;
 				case TileAction.Upgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD++;
+					tiles[changeKey].LOD++;
 					break;
 				case TileAction.Downgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD--;
+					tiles[changeKey].LOD--;
 					break;
 				case TileAction.Remove:
 					RemoveGameObjectFromTile(tileChange);
-					tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+					tiles.Remove(changeKey);
 					callback(tileChange);
 					return;
 				default:
 					break;
 			}
-			StartCoroutine(DownloadAssetBundle(tileChange,callback));
+
+			tiles[changeKey].runningDownloadProgress = StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			tiles[changeKey].downloadFinishCallback = callback;
 		}
+
+
 		private Tile CreateNewTile(TileChange tileChange)
 		{
 			Tile tile = new Tile();
@@ -64,12 +69,21 @@ namespace Netherlands3D.LayerSystem
 		{
 			if (tiles.ContainsKey(new Vector2Int(tileChange.X, tileChange.Y)))
 			{
-
 				Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
 				if (tile == null)
 				{
 					return;
 				}
+
+				//Finish any old callbacks directly
+				if (tile.runningDownloadProgress != null)
+				{
+					StopCoroutine(tile.runningDownloadProgress);
+					tile.downloadFinishCallback(tileChange);
+					tile.runningDownloadProgress = null;
+					tile.downloadFinishCallback = null;
+				}
+
 				if (tile.gameObject == null)
 				{
 					return;
@@ -80,7 +94,6 @@ namespace Netherlands3D.LayerSystem
 					DestroyImmediate(tile.gameObject.GetComponent<MeshFilter>().sharedMesh, true);
 				}
 				Destroy(tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
-				
 			}
 		}
 		private IEnumerator DownloadAssetBundle(TileChange tileChange, System.Action<TileChange> callback = null)
