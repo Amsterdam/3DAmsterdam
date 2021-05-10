@@ -103,7 +103,7 @@ namespace Netherlands3D.LayerSystem
             {
 				GetTilesizes();
 			}
-			GetTileDistances(tileSizes, viewRange, cameraPosition);
+			GetTileDistancesInView(tileSizes, viewRange, cameraPosition);
 
 			pendingTileChanges.Clear();
 			RemoveOutOfViewTiles();
@@ -190,16 +190,25 @@ namespace Netherlands3D.LayerSystem
 			}
 			
 		}
-		
-		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+
+		private Vector3 GetPlaneIntersection(Plane plane, Camera camera, Vector2 screenCoordinate)
 		{
+			Ray ray = camera.ViewportPointToRay(screenCoordinate);
+			Vector3 dirNorm = ray.direction / ray.direction.y;
+			Vector3 IntersectionPos = ray.origin - dirNorm * ray.origin.y;
+			return IntersectionPos;
+		}
+
+		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+		{
+			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera);		
 			tileDistances.Clear();
-				
+
 			int startX;
 			int startY;
 			int endX;
 			int endY;
-			
+
 			foreach (int tileSize in tileSizes)
 			{
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
@@ -209,19 +218,42 @@ namespace Netherlands3D.LayerSystem
 				//clear the tileList
 				tileList.Clear();
 				//set the required capacity
-				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize)+50;
+				//tileList.Capacity = Mathf.FloorToInt((endX - startX) / tileSize) * Mathf.FloorToInt((endY - startY) / tileSize) + 50;
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
 					{
-						Vector3Int tileID = new Vector3Int(x, y, tileSize);
-						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
+						/*Bounds tileBounds = new Bounds(
+							CoordConvert.RDtoUnity(Vector2.Lerp(new Vector2(startX,startY), new Vector2(endX, endY), 0.5f)),
+							new Vector3(endX - startX,200.0f, endY - startY)
+						);*/
+						Bounds tileBounds = new Bounds(Vector3.zero, Vector3.one * 500);
+
+						if (GeometryUtility.TestPlanesAABB(planes, tileBounds))
+						{
+							Vector3Int tileID = new Vector3Int(x, y, tileSize);
+							tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID, cameraPosition)));
+						}
 					}
-				}		
-				
+				}
+
 				tileDistances.Add(tileList);
 			}
-			
+		}
+
+		private void OnDrawGizmos()
+		{
+			if(tileDistances.Count > 0)
+			{
+				foreach(var tileSizeDistances in tileDistances)
+				{
+					foreach(var tileDistance in tileSizeDistances)
+					{
+						Debug.Log("DOES WORK");
+						Gizmos.DrawSphere(CoordConvert.RDtoUnity(new Vector2(tileDistance.x, tileDistance.y)),100.0f);
+					}
+				}
+			}
 		}
 
 
@@ -290,13 +322,13 @@ namespace Netherlands3D.LayerSystem
 					{
                         if (LOD !=-1)
                         {
-						TileChange tileChange = new TileChange();
-						tileChange.action = TileAction.Create;
-						tileChange.X = tileKey.x;
-						tileChange.Y = tileKey.y;
+							TileChange tileChange = new TileChange();
+							tileChange.action = TileAction.Create;
+							tileChange.X = tileKey.x;
+							tileChange.Y = tileKey.y;
 							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, 0, tileDistance.z, TileAction.Create);
-						tileChange.layerIndex = layerIndex;
-						AddTileChange(tileChange, layerIndex);
+							tileChange.layerIndex = layerIndex;
+							AddTileChange(tileChange, layerIndex);
 						}
 					}
 				}
@@ -398,15 +430,9 @@ namespace Netherlands3D.LayerSystem
 			return priority;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// 
 		Layer layer;
 		List<Vector3Int> neededTiles;
 		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
-		//List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
-		Vector2Int[] activeTiles;
 		TileChange tileChange;
 		
 		private void RemoveOutOfViewTiles()
