@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BruTile;
 using ConvertCoordinates;
 using System.Linq;
 using UnityEngine.Networking;
@@ -27,6 +26,9 @@ namespace Netherlands3D.LayerSystem
             }
 		}
 		public int maximumConcurrentDownloads = 5;
+
+		[SerializeField]
+		private bool filterByCameraFrustum = true;
 
 		public List<Layer> layers = new List<Layer>();
 		private List<int> tileSizes = new List<int>();
@@ -61,7 +63,6 @@ namespace Netherlands3D.LayerSystem
 		/// </summary>
 		private Vector4 viewRange = new Vector4();
 
-
 		public ICameraExtents cameraExtents;
 		/// <summary>
 		/// postion of camera in RDcoordinates rounded to nearest integer
@@ -76,6 +77,7 @@ namespace Netherlands3D.LayerSystem
 		private float maxDistanceMultiplier = 1.0f;
 
 		private Vector2Int tileKey;
+		private Bounds tileBounds;
 
 		public static int runningTileDataRequests = 0;
 
@@ -90,6 +92,8 @@ namespace Netherlands3D.LayerSystem
 			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
 			CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
 			CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
+
+			tileBounds = new Bounds();
 		}
 		void Update()
 		{
@@ -201,6 +205,7 @@ namespace Netherlands3D.LayerSystem
 
 		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
+			//Godview only frustum check
 			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera);		
 			tileDistances.Clear();
 
@@ -223,15 +228,17 @@ namespace Netherlands3D.LayerSystem
 				{
 					for (int y = startY; y <= endY; y += tileSize)
 					{
-						/*Bounds tileBounds = new Bounds(
-							CoordConvert.RDtoUnity(Vector2.Lerp(new Vector2(startX,startY), new Vector2(endX, endY), 0.5f)),
-							new Vector3(endX - startX,200.0f, endY - startY)
-						);*/
-						Bounds tileBounds = new Bounds(Vector3.zero, Vector3.one * 500);
-
-						if (GeometryUtility.TestPlanesAABB(planes, tileBounds))
+						Vector3Int tileID = new Vector3Int(x, y, tileSize);
+						if (filterByCameraFrustum)
 						{
-							Vector3Int tileID = new Vector3Int(x, y, tileSize);
+							tileBounds.SetMinMax(CoordConvert.RDtoUnity(new Vector2(x, y)), CoordConvert.RDtoUnity(new Vector2(x + tileSize, y + tileSize)));
+							if (GeometryUtility.TestPlanesAABB(planes, tileBounds))
+							{
+								tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID, cameraPosition)));
+							}
+						}
+						else
+						{
 							tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID, cameraPosition)));
 						}
 					}
@@ -243,13 +250,17 @@ namespace Netherlands3D.LayerSystem
 
 		private void OnDrawGizmos()
 		{
-			if(tileDistances.Count > 0)
+			/*foreach(var bounds in tileBoundsDebug)
+			{
+				Gizmos.DrawCube(bounds.center, bounds.size*0.99f);
+			}*/
+
+			if (tileDistances.Count > 0)
 			{
 				foreach(var tileSizeDistances in tileDistances)
 				{
 					foreach(var tileDistance in tileSizeDistances)
 					{
-						Debug.Log("DOES WORK");
 						Gizmos.DrawSphere(CoordConvert.RDtoUnity(new Vector2(tileDistance.x, tileDistance.y)),100.0f);
 					}
 				}
