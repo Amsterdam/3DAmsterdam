@@ -261,26 +261,6 @@ namespace Netherlands3D.LayerSystem
 			}
 		}
 
-		private void OnDrawGizmos()
-		{
-			/*foreach(var bounds in tileBoundsDebug)
-			{
-				Gizmos.DrawCube(bounds.center, bounds.size*0.99f);
-			}*/
-
-			if (tileDistances.Count > 0)
-			{
-				foreach(var tileSizeDistances in tileDistances)
-				{
-					foreach(var tileDistance in tileSizeDistances)
-					{
-						Gizmos.DrawSphere(CoordConvert.RDtoUnity(new Vector2(tileDistance.x, tileDistance.y)),100.0f);
-					}
-				}
-			}
-		}
-
-
 		private float GetTileDistanceSquared(Vector3Int tileID, Vector3Int cameraPosition)
 		{
 			float distance = 0;
