@@ -226,7 +226,10 @@ namespace Netherlands3D.LayerSystem
 		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			//Godview only frustum check
-			GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera, cameraFrustumPlanes);	
+			if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+			{
+				GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera, cameraFrustumPlanes);
+			}
 			tileDistances.Clear();
 
 			foreach (int tileSize in tileSizes)
@@ -242,7 +245,7 @@ namespace Netherlands3D.LayerSystem
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
-						if (filterByCameraFrustum)
+						if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
 						{
 							tileBounds.SetMinMax(CoordConvert.RDtoUnity(new Vector2(x, y)), CoordConvert.RDtoUnity(new Vector2(x + tileSize, y + tileSize)));
 							if (GeometryUtility.TestPlanesAABB(cameraFrustumPlanes, tileBounds))
