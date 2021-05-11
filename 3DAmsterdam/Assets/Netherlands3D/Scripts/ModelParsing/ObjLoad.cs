@@ -158,8 +158,8 @@ public class ObjLoad : MonoBehaviour
 				{
 					//tris
 					buffer.PushFace(faces[0]);
-					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
+					buffer.PushFace(faces[1]);
 				}
 				else if (linePart.Length == 5)
 				{

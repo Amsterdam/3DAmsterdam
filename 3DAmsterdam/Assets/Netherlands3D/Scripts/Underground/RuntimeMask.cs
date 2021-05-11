@@ -41,9 +41,9 @@ namespace Netherlands3D.Underground
 		private float maskScaleMultiplier = 1.0f;
 		private Vector4 maskVector = default;
 
-		private const string clipppingMaskPositionVector = "_ClippingMask";
-		private const string clippingMaskTexture = "_MaskMap";
-		private const string clippingMaskSize = "_Size";
+		public const string clipppingMaskPositionVector = "_ClippingMask";
+		public const string clippingMaskTexture = "_MaskMap";
+		public const string clippingMaskSize = "_Size";
 
 		[SerializeField]
 		private Vector2 maskSize;
