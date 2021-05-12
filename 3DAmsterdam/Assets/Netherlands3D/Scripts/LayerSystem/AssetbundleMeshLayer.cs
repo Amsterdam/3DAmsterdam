@@ -133,6 +133,24 @@ namespace Netherlands3D.LayerSystem
 				}
 			}
 		}
+
+		private IEnumerator DownloadAssetBundleViaJavascript(TileChange tileChange, System.Action<TileChange> callback = null)
+		{
+			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
+			string url = Config.activeConfiguration.webserverRootPath + Datasets[lod].path;
+			if (Datasets[lod].path.StartsWith("https://"))
+			{
+				url = Datasets[lod].path;
+			}
+			if (Datasets[lod].path.StartsWith("file://"))
+			{
+				url = Datasets[lod].path;
+			}
+
+			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+			JavascriptDownloader.Instance.StartDownload(url, callback);
+		}
+
 		public void EnableShadows(bool enabled)
 		{
 			tileShadowCastingMode = (enabled) ? ShadowCastingMode.On : ShadowCastingMode.Off;
