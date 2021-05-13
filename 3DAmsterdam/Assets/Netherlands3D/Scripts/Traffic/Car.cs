@@ -31,6 +31,12 @@ namespace Netherlands3D.Traffic
 
         private AssetbundleMeshLayer terrainLayer;
 
+        private bool needToStop = false;
+
+        private GameObject carType;
+
+        private VehicleProperties vehicleProperties;
+
         void Start()
         {
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
@@ -42,8 +48,8 @@ namespace Netherlands3D.Traffic
             }
             // Chooses a random car out of all the car objects.
 
-            GameObject carType = cars[Random.Range(0, cars.Length)];
-
+            carType = cars[Random.Range(0, cars.Length)];
+            vehicleProperties = carType.GetComponent<VehicleProperties>();
             if (carType.name == "BasicCar")
             {
                 ApplySettings(carType);
@@ -134,11 +140,31 @@ namespace Netherlands3D.Traffic
                         }
 
                         Vector3 carPos = transform.position;
+
                         carPos.y = 50f;
+                        
+                        //ask wheels where their position is
+                        //calculate center point
+                        //rotate car body based on center point
+
+                        if (Physics.Raycast(carPos, Vector3.forward, out hit, 10f))
+                        {
+                            // if the map tiles are loaded beneath the car
+                            if (hit.collider.gameObject.name == "BasicTruck")
+                            {
+                                needToStop = true;
+                            }
+                            else
+                            {
+                                needToStop = false;
+                            }
+                        }
+
 
                         if (Physics.Raycast(carPos, -Vector3.up, out hit, Mathf.Infinity))
                         {
                             // if the map tiles are loaded beneath the car
+                            if (!needToStop)
                             MoveCar(hit.point);
                         }
                         else
@@ -172,7 +198,8 @@ namespace Netherlands3D.Traffic
                     transform.position = compensationVector;
                     // looks at the point where the car is driving
                     transform.LookAt(tempLook); // MAYBE U CAN PUT THIS IN THE ELSE SO ITS ONLY EXECUTED ONCE????
-                                                // propels the car forward
+                    transform.rotation = vehicleProperties.GetNewRotation(transform.rotation);
+                    // propels the car forward
                     gameObject.transform.Translate(transform.forward * Time.deltaTime * speed * vehicleFrameSpeedCompensator, Space.World);
                 }
                 else
@@ -237,6 +264,8 @@ namespace Netherlands3D.Traffic
                         transform.position = compensationVector;
                         // looks at the point where the car is driving
                         transform.LookAt(tempLook);
+
+                        transform.rotation = vehicleProperties.GetNewRotation(transform.rotation);
                         // propels the car forward
                         gameObject.transform.Translate(transform.forward * Time.deltaTime * speed * vehicleFrameSpeedCompensator, Space.World);
                     }

@@ -30,11 +30,11 @@ namespace Netherlands3D.Traffic
                 roadPoints.Add(tempRoadPoint);
                 tempRoadPoint.Initiate(tempRoad["geometry"][i]["lon"], tempRoad["geometry"][i]["lat"]);
 
-                if (i == 0)
-                {
-                    BoxCollider collider = tempGameObject.AddComponent<BoxCollider>();
-                    collider.isTrigger = true;
-                }
+                //if (i == 0)
+                //{
+                //    BoxCollider collider = tempGameObject.AddComponent<BoxCollider>();
+                //    collider.isTrigger = true;
+                //}
             }
             // Checks if there x amount of coördinates in road to deem the road segment big enough to generate a car (it's basically a small performance tweak)
             if (tempRoad["geometry"].Count > 2)
