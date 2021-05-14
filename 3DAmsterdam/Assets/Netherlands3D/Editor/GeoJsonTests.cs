@@ -339,71 +339,6 @@ public class GeoJsonTests
 
     }
 
-
-   // [UnityTest]
-    public IEnumerator TestApiPdok()
-    {
-        Config.activeConfiguration = new ConfigurationFile();
-        Config.activeConfiguration.sewerageApiType = Amsterdam3D.Sewerage.SewerageApiType.Pdok;
-        Config.activeConfiguration.sewerPipesWfsUrl = "https://geodata.nationaalgeoregister.nl/rioned/gwsw/wfs/v1_0?SERVICE=WFS&language=eng&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=gwsw:beheer_leiding&SRSNAME=urn:ogc:def:crs:EPSG::28992&outputFormat=application/json&BBOX=";
-        Config.activeConfiguration.sewerManholesWfsUrl = "https://geodata.nationaalgeoregister.nl/rioned/gwsw/wfs/v1_0?SERVICE=WFS&language=eng&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=gwsw:beheer_put&SRSNAME=urn:ogc:def:crs:EPSG::28992&outputFormat=application/json&BBOX=";
-
-        SewerageLayer seweragelayer = new SewerageLayer();
-
-        int Xmin = 123000;
-        int Ymin = 443000;
-        int Xmax = 145000;
-        int Ymax = 463000;
-
-        string url;
-
-        int counter = 0;
-
-        for (int x = Xmin; x < Xmax; x += 1000)
-        {
-            for (int y = Ymin; y < Ymax; y += 1000)
-            {
-                counter++;
-
-                url = Config.activeConfiguration.sewerPipesWfsUrl + $"{x},{y},{x + 1000},{y + 1000}";
-
-                var sewerageRequest = UnityWebRequest.Get(url);
-
-                yield return sewerageRequest.SendWebRequest();
-
-                if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
-                {
-                    try
-                    {
-                        GeoJSON geojson = new GeoJSON(sewerageRequest.downloadHandler.text);
-                        while (geojson.GotoNextFeature())
-                        {
-                            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-                            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-                            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
-                            //var coordinates = geojson.getGeometryLineString();
-                            //Assert.AreEqual(4, coordinates.Count);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.Log($"url:{url} exception:{e.Message}");                        
-                    }
-                }
-
-                yield return null;
-                
-                
-
-                
-            }
-
-        }
-
-        
-
-    }
-
     [Test]
     public void TestApiPdokEmpty()
     {
@@ -516,8 +451,72 @@ public class GeoJsonTests
 
     }
 
+    //[UnityTest]
+    public IEnumerator TestApiPdok()
+    {
+        Config.activeConfiguration = new ConfigurationFile();
+        Config.activeConfiguration.sewerageApiType = Amsterdam3D.Sewerage.SewerageApiType.Pdok;
+        Config.activeConfiguration.sewerPipesWfsUrl = "https://geodata.nationaalgeoregister.nl/rioned/gwsw/wfs/v1_0?SERVICE=WFS&language=eng&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=gwsw:beheer_leiding&SRSNAME=urn:ogc:def:crs:EPSG::28992&outputFormat=application/json&BBOX=";
+        Config.activeConfiguration.sewerManholesWfsUrl = "https://geodata.nationaalgeoregister.nl/rioned/gwsw/wfs/v1_0?SERVICE=WFS&language=eng&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=gwsw:beheer_put&SRSNAME=urn:ogc:def:crs:EPSG::28992&outputFormat=application/json&BBOX=";
 
-   // [Test]
+        SewerageLayer seweragelayer = new SewerageLayer();
+
+        int Xmin = 123000;
+        int Ymin = 443000;
+        int Xmax = 145000;
+        int Ymax = 463000;
+
+        string url;
+
+        int counter = 0;
+
+        for (int x = Xmin; x < Xmax; x += 1000)
+        {
+            for (int y = Ymin; y < Ymax; y += 1000)
+            {
+                counter++;
+
+                url = Config.activeConfiguration.sewerPipesWfsUrl + $"{x},{y},{x + 1000},{y + 1000}";
+
+                var sewerageRequest = UnityWebRequest.Get(url);
+
+                yield return sewerageRequest.SendWebRequest();
+
+                if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+                {
+                    try
+                    {
+                        GeoJSON geojson = new GeoJSON(sewerageRequest.downloadHandler.text);
+                        while (geojson.GotoNextFeature())
+                        {
+                            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
+                            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
+                            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+                            //var coordinates = geojson.getGeometryLineString();
+                            //Assert.AreEqual(4, coordinates.Count);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log($"url:{url} exception:{e.Message}");
+                    }
+                }
+
+                yield return null;
+
+
+
+
+            }
+
+        }
+
+
+
+    }
+
+
+    // [Test]
     public void TestFilePdok()
     {
 

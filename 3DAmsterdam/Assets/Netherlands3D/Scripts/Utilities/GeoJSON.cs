@@ -93,15 +93,9 @@ namespace Netherlands3D.Utilities
             featureLength = 0;
         }
 
-        /// <summary>
-        /// Sets the string pointer to the next feature item in the JSON string
-        /// Remark: This custom JSON parsing is created because it doesn't create garbage collection
-        /// </summary>
-        /// <returns>Return false if no new feature element is found</returns>
         public bool FindFirstFeature()
         {
             featureStartIndex = geoJSONString.IndexOf(FeatureString, 0);
-            //featureEndIndex = geoJSONString.IndexOf(FeatureString, featureStartIndex + FeatureString.Length); //search the next feature start which marks the end of the current, but this will not work if you only have one feature           
             featureEndIndex = geoJSONString.IndexOf("\n", featureStartIndex + FeatureString.Length);           
             featureLength = featureEndIndex - featureStartIndex;
             if (featureStartIndex > -1)
@@ -111,16 +105,18 @@ namespace Netherlands3D.Utilities
             return false;
         }
 
+        /// <summary>
+        /// Sets the string pointer to the next feature item in the JSON string
+        /// Remark: This custom JSON parsing is created because it doesn't create garbage collection
+        /// </summary>
+        /// <returns>Return false if no new feature element is found</returns>
         public bool GotoNextFeature()
         {
             if (featureStartIndex == -1)
             {
                 return FindFirstFeature();
             }
-//            featureStartIndex = featureEndIndex;//this is not the case when there is only one feature
-
             featureStartIndex = geoJSONString.IndexOf(FeatureString, featureEndIndex);
-
 
             if (featureStartIndex == geoJSONString.Length)
             {
