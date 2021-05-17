@@ -2,6 +2,7 @@
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -130,6 +131,11 @@ namespace Netherlands3D.Settings {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
             }, true);
+			PropertiesPanel.Instance.AddLabel("Max. dowloads tegelijk:");
+			PropertiesPanel.Instance.AddActionSlider("1", "6", 1, 6, settings.maxConcurrentDownloads, (value) => {
+				settings.maxConcurrentDownloads = (int)value;
+				ApplySettings();
+			}, true);
 
 			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
 				selectedTemplate = 0;
@@ -160,6 +166,8 @@ namespace Netherlands3D.Settings {
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+
+			FindObjectOfType<TileHandler>().maximumConcurrentDownloads = settings.maxConcurrentDownloads;
 
             SaveSettings();
         }

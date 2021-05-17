@@ -25,28 +25,33 @@ namespace Netherlands3D.LayerSystem
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
+			var changeKey = new Vector2Int(tileChange.X, tileChange.Y);
 			switch (action)
 			{
 				case TileAction.Create:
 					Tile newTile = CreateNewTile(tileChange);
-					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					tiles.Add(changeKey, newTile);
 					break;
 				case TileAction.Upgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD++;
+					tiles[changeKey].LOD++;
 					break;
 				case TileAction.Downgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD--;
+					tiles[changeKey].LOD--;
 					break;
 				case TileAction.Remove:
 					RemoveGameObjectFromTile(tileChange);
-					tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+					tiles.Remove(changeKey);
 					callback(tileChange);
 					return;
 				default:
 					break;
 			}
-			StartCoroutine(DownloadAssetBundle(tileChange,callback));
+
+			tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			tiles[changeKey].downloadFinishCallback = callback;
 		}
+
+
 		private Tile CreateNewTile(TileChange tileChange)
 		{
 			Tile tile = new Tile();
@@ -64,12 +69,23 @@ namespace Netherlands3D.LayerSystem
 		{
 			if (tiles.ContainsKey(new Vector2Int(tileChange.X, tileChange.Y)))
 			{
-
 				Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
 				if (tile == null)
 				{
 					return;
 				}
+
+				//Finish any old callbacks directly
+				if (tile.runningCoroutine != null)
+				{
+					Debug.Log("Brute abort");
+					if (tile.runningWebRequest != null) tile.runningWebRequest.Abort();
+					StopCoroutine(tile.runningCoroutine);
+					tile.downloadFinishCallback(tileChange);
+					tile.runningCoroutine = null;
+					tile.downloadFinishCallback = null;
+				}
+
 				if (tile.gameObject == null)
 				{
 					return;
@@ -80,7 +96,6 @@ namespace Netherlands3D.LayerSystem
 					DestroyImmediate(tile.gameObject.GetComponent<MeshFilter>().sharedMesh, true);
 				}
 				Destroy(tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
-				
 			}
 		}
 		private IEnumerator DownloadAssetBundle(TileChange tileChange, System.Action<TileChange> callback = null)
@@ -96,42 +111,41 @@ namespace Netherlands3D.LayerSystem
 				url = Datasets[lod].path;
 			}
 
-			url = url.ReplaceXY(tileChange.X, tileChange.Y);			
-			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
+			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+			tile.runningWebRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);			
+			yield return tile.runningWebRequest.SendWebRequest();
+			if (tile.runningWebRequest.isNetworkError || tile.runningWebRequest.isHttpError)
 			{
-				yield return uwr.SendWebRequest();
-
-				if (uwr.isNetworkError || uwr.isHttpError)
+				RemoveGameObjectFromTile(tileChange);
+				callback(tileChange);
+			}
+			else
+			{
+				AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(tile.runningWebRequest);
+				yield return new WaitUntil(() => pauseLoading == false);
+				GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
+				if (newGameobject != null)
 				{
-					RemoveGameObjectFromTile(tileChange);
-					callback(tileChange);
-				}
-				else
-				{
-					AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-					yield return new WaitUntil(() => pauseLoading == false);
-					GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
-					if (newGameobject != null)
+					if (TileHasHighlight(tileChange))
 					{
-						if (TileHasHighlight(tileChange))
-						{
-							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
-						}
-						else
-						{
-							RemoveGameObjectFromTile(tileChange);
-							tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
-							callback(tileChange);
-						}
+						StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
 					}
 					else
 					{
-
+						RemoveGameObjectFromTile(tileChange);
+						tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
 						callback(tileChange);
 					}
-
 				}
+				else
+				{
+
+					callback(tileChange);
+				}
+
 			}
+			
 		}
 
 		private IEnumerator DownloadAssetBundleViaJavascript(TileChange tileChange, System.Action<TileChange> callback = null)
