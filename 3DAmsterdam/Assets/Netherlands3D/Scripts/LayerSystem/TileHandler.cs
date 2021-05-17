@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BruTile;
 using ConvertCoordinates;
 using System.Linq;
 using UnityEngine.Networking;
@@ -27,6 +26,9 @@ namespace Netherlands3D.LayerSystem
             }
 		}
 		public int maximumConcurrentDownloads = 5;
+
+		[SerializeField]
+		private bool filterByCameraFrustum = true;
 
 		public List<Layer> layers = new List<Layer>();
 		private List<int> tileSizes = new List<int>();
@@ -61,7 +63,6 @@ namespace Netherlands3D.LayerSystem
 		/// </summary>
 		private Vector4 viewRange = new Vector4();
 
-
 		public ICameraExtents cameraExtents;
 		/// <summary>
 		/// postion of camera in RDcoordinates rounded to nearest integer
@@ -76,6 +77,12 @@ namespace Netherlands3D.LayerSystem
 		private float maxDistanceMultiplier = 1.0f;
 
 		private Vector2Int tileKey;
+		private Bounds tileBounds;
+		private Plane[] cameraFrustumPlanes;
+		private int startX;
+		private int startY;
+		private int endX;
+		private int endY;
 
 		public static int runningTileDataRequests = 0;
 
@@ -90,7 +97,24 @@ namespace Netherlands3D.LayerSystem
 			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
 			CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
 			CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
+
+			CacheCameraFrustum();
 		}
+
+		private void CacheCameraFrustum()
+		{
+			tileBounds = new Bounds();
+			cameraFrustumPlanes = new Plane[6]
+			{
+				new Plane(), //Left
+				new Plane(), //Right
+				new Plane(), //Down
+				new Plane(), //Up
+				new Plane(), //Near
+				new Plane(), //Far
+			};
+		}
+
 		void Update()
 		{
 			//for debugging
@@ -103,7 +127,7 @@ namespace Netherlands3D.LayerSystem
             {
 				GetTilesizes();
 			}
-			GetTileDistances(tileSizes, viewRange, cameraPosition);
+			GetTileDistancesInView(tileSizes, viewRange, cameraPosition);
 
 			pendingTileChanges.Clear();
 			RemoveOutOfViewTiles();
@@ -190,40 +214,55 @@ namespace Netherlands3D.LayerSystem
 			}
 			
 		}
-		
-		private void GetTileDistances(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+
+		private Vector3 GetPlaneIntersection(Plane plane, Camera camera, Vector2 screenCoordinate)
 		{
+			Ray ray = camera.ViewportPointToRay(screenCoordinate);
+			Vector3 dirNorm = ray.direction / ray.direction.y;
+			Vector3 IntersectionPos = ray.origin - dirNorm * ray.origin.y;
+			return IntersectionPos;
+		}
+
+		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
+		{
+			//Godview only frustum check
+			if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+			{
+				GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera, cameraFrustumPlanes);
+			}
 			tileDistances.Clear();
-				
-			int startX;
-			int startY;
-			int endX;
-			int endY;
-			
+
 			foreach (int tileSize in tileSizes)
 			{
 				startX = (int)Math.Floor(viewRange.x / tileSize) * tileSize;
 				startY = (int)Math.Floor(viewRange.y / tileSize) * tileSize;
 				endX = (int)Math.Ceiling((viewRange.x + viewRange.z) / tileSize) * tileSize;
 				endY = (int)Math.Ceiling((viewRange.y + viewRange.w) / tileSize) * tileSize;
-				//clear the tileList
 				tileList.Clear();
-				//set the required capacity
-				tileList.Capacity = Mathf.FloorToInt((endX-startX)/tileSize)* Mathf.FloorToInt((endY - startY) / tileSize)+50;
+
 				for (int x = startX; x <= endX; x += tileSize)
 				{
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
-						tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID,cameraPosition)));
+						if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+						{
+							tileBounds.SetMinMax(CoordConvert.RDtoUnity(new Vector2(x, y)), CoordConvert.RDtoUnity(new Vector2(x + tileSize, y + tileSize)));
+							if (GeometryUtility.TestPlanesAABB(cameraFrustumPlanes, tileBounds))
+							{
+								tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID, cameraPosition)));
+							}
+						}
+						else
+						{
+							tileList.Add(new Vector3Int(x, y, (int)GetTileDistanceSquared(tileID, cameraPosition)));
+						}
 					}
-				}		
-				
+				}
+
 				tileDistances.Add(tileList);
 			}
-			
 		}
-
 
 		private float GetTileDistanceSquared(Vector3Int tileID, Vector3Int cameraPosition)
 		{
@@ -290,13 +329,13 @@ namespace Netherlands3D.LayerSystem
 					{
                         if (LOD !=-1)
                         {
-						TileChange tileChange = new TileChange();
-						tileChange.action = TileAction.Create;
-						tileChange.X = tileKey.x;
-						tileChange.Y = tileKey.y;
+							TileChange tileChange = new TileChange();
+							tileChange.action = TileAction.Create;
+							tileChange.X = tileKey.x;
+							tileChange.Y = tileKey.y;
 							tileChange.priorityScore = CalculatePriorityScore(layer.layerPriority, 0, tileDistance.z, TileAction.Create);
-						tileChange.layerIndex = layerIndex;
-						AddTileChange(tileChange, layerIndex);
+							tileChange.layerIndex = layerIndex;
+							AddTileChange(tileChange, layerIndex);
 						}
 					}
 				}
@@ -398,15 +437,9 @@ namespace Netherlands3D.LayerSystem
 			return priority;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// 
 		Layer layer;
 		List<Vector3Int> neededTiles;
 		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
-		//List<Vector2Int> activeTiles = new List<Vector2Int>(); // list of currently active tiles
-		Vector2Int[] activeTiles;
 		TileChange tileChange;
 		
 		private void RemoveOutOfViewTiles()
