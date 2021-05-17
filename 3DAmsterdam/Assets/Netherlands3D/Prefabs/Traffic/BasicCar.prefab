@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6435454654034516736}
   - component: {fileID: 9127570079713357770}
   - component: {fileID: 666515666712532573}
+  - component: {fileID: 8488118195944559137}
   m_Layer: 0
   m_Name: BasicCar
   m_TagString: Untagged
@@ -100,7 +101,21 @@ MonoBehaviour:
   frontRightWheel: {fileID: 5748359360741754204}
   backLeftWheel: {fileID: 4769460143614685349}
   backRightWheel: {fileID: 6171441270183171455}
-  otherWheels: {fileID: 0}
+  otherWheels:
+  - {fileID: 0}
+--- !u!65 &8488118195944559137
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7326046871663922719}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1, z: 0.3}
+  m_Center: {x: 0, y: 1, z: -2.3}
 --- !u!1001 &2371216805397052284
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Linq;
 using Netherlands3D.Cameras;
 using Netherlands3D.LayerSystem;
+using System.CodeDom.Compiler;
+using System;
 
 namespace Netherlands3D.Traffic
 {
@@ -11,8 +13,8 @@ namespace Netherlands3D.Traffic
     {
         public RoadObject currentRoad;
         private RoadObject lastRoad = null;
-        private RoadObject nextRoad = null;
-        private int currentRoadIndex = 0;
+        public RoadObject nextRoad = null;
+        public int currentRoadIndex = 0;
         public int speed = 20;
 
         public GameObject[] cars;
@@ -39,6 +41,7 @@ namespace Netherlands3D.Traffic
 
         void Start()
         {
+            maxWaitingTime = UnityEngine.Random.Range(4f, 6f);
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
             currentRoadIndex++;
             // disables all car objects
@@ -48,7 +51,7 @@ namespace Netherlands3D.Traffic
             }
             // Chooses a random car out of all the car objects.
 
-            carType = cars[Random.Range(0, cars.Length)];
+            carType = cars[UnityEngine.Random.Range(0, cars.Length)];
             vehicleProperties = carType.GetComponent<VehicleProperties>();
             if (carType.name == "BasicCar")
             {
@@ -60,7 +63,7 @@ namespace Netherlands3D.Traffic
 
         private void ApplySettings(GameObject car)
         {
-            float colorPercentage = Random.Range(0.0f, 1.0f);
+            float colorPercentage = UnityEngine.Random.Range(0.0f, 1.0f);
             car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
         }
 
@@ -141,31 +144,44 @@ namespace Netherlands3D.Traffic
 
                         Vector3 carPos = transform.position;
 
-                        carPos.y = 50f;
-                        
+
                         //ask wheels where their position is
                         //calculate center point
                         //rotate car body based on center point
-
-                        if (Physics.Raycast(carPos, Vector3.forward, out hit, 10f))
+                        carPos.y += 1.5f;
+                        if (Physics.Raycast(carPos, transform.forward, out hit, 20f))
                         {
                             // if the map tiles are loaded beneath the car
-                            if (hit.collider.gameObject.name == "BasicTruck")
+                            if (hit.collider.gameObject.name == "BasicTruck" || hit.collider.gameObject.name == "BasicCar")
                             {
-                                needToStop = true;
+                                if(hit.collider.transform.parent.GetComponent<Car>().needToStop && (Math.Abs((Quaternion.Dot(hit.collider.transform.parent.transform.rotation, transform.rotation))) <= 0.4f))
+                                {
+                                    needToStop = false;
+                                }
+                                else
+                                {
+                                    needToStop = true;
+                                }
                             }
                             else
                             {
                                 needToStop = false;
                             }
                         }
+                        else
+                        {
+                            needToStop = false;
+                        }
 
+                        carPos.y = 50f;
 
                         if (Physics.Raycast(carPos, -Vector3.up, out hit, Mathf.Infinity))
                         {
                             // if the map tiles are loaded beneath the car
-                            if (!needToStop)
-                            MoveCar(hit.point);
+                            if (!needToStop && hit.collider.gameObject.name != "BasicTruck" || hit.collider.gameObject.name != "BasicCar")
+                            {
+                                MoveCar(hit.point);
+                            }
                         }
                         else
                         {
@@ -225,7 +241,7 @@ namespace Netherlands3D.Traffic
                         float distance = Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates);
 
                         // finds new road segment based on distance
-                        if (distance < Mathf.Round(Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
+                        if (distance < Mathf.Round(UnityEngine.Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
                         {
                             if (Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates) < Vector3.Distance(transform.position, obj.roadPoints[obj.roadPoints.Count - 1].pointCoordinates))
                             {
@@ -237,7 +253,7 @@ namespace Netherlands3D.Traffic
                                     currentRoadIndex = 0;
                                     lastRoad = currentRoad;
                                     currentRoad = obj;
-                                    nextRoad = obj;
+                                    //nextRoad = obj;
                                     break;
                                 }
                             }

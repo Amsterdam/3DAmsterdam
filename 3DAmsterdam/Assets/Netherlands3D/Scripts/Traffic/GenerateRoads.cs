@@ -129,6 +129,7 @@ namespace Netherlands3D.Traffic
         {
             string jsonString = jsonData;
             JSONNode N = JSON.Parse(jsonString);
+            
             // adds coordinates of the street with the index
             for (int i = 0; i < N["elements"].Count; i++)
             {
