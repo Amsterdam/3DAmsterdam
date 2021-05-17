@@ -91,7 +91,7 @@ namespace Netherlands3D.LayerSystem
             {
 				url = Datasets[lod].path;
 			}
-			if (Datasets[lod].path.StartsWith("file://"))
+			else if (Datasets[lod].path.StartsWith("file://"))
 			{
 				url = Datasets[lod].path;
 			}
@@ -142,7 +142,7 @@ namespace Netherlands3D.LayerSystem
 			{
 				url = Datasets[lod].path;
 			}
-			if (Datasets[lod].path.StartsWith("file://"))
+			else if (Datasets[lod].path.StartsWith("file://"))
 			{
 				url = Datasets[lod].path;
 			}
