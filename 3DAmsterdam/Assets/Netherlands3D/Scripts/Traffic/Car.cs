@@ -33,7 +33,7 @@ namespace Netherlands3D.Traffic
 
         private AssetbundleMeshLayer terrainLayer;
 
-        private bool needToStop = false;
+        public bool needToStop = false;
 
         private GameObject carType;
 
@@ -41,7 +41,7 @@ namespace Netherlands3D.Traffic
 
         void Start()
         {
-            maxWaitingTime = UnityEngine.Random.Range(4f, 6f);
+            maxWaitingTime = UnityEngine.Random.Range(3f, 7f);
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
             currentRoadIndex++;
             // disables all car objects
@@ -154,7 +154,7 @@ namespace Netherlands3D.Traffic
                             // if the map tiles are loaded beneath the car
                             if (hit.collider.gameObject.name == "BasicTruck" || hit.collider.gameObject.name == "BasicCar")
                             {
-                                if(hit.collider.transform.parent.GetComponent<Car>().needToStop && (Math.Abs((Quaternion.Dot(hit.collider.transform.parent.transform.rotation, transform.rotation))) <= 0.4f))
+                                if(Math.Abs(Quaternion.Dot(hit.collider.transform.parent.transform.rotation, transform.rotation)) < 0.4f)
                                 {
                                     needToStop = false;
                                 }
@@ -178,9 +178,18 @@ namespace Netherlands3D.Traffic
                         if (Physics.Raycast(carPos, -Vector3.up, out hit, Mathf.Infinity))
                         {
                             // if the map tiles are loaded beneath the car
-                            if (!needToStop && hit.collider.gameObject.name != "BasicTruck" || hit.collider.gameObject.name != "BasicCar")
+                            if (!needToStop)
                             {
-                                MoveCar(hit.point);
+                                if (hit.collider.gameObject.name != "BasicTruck" && hit.collider.gameObject.name != "BasicCar")
+                                {
+                                    MoveCar(hit.point);
+                                }
+                                else
+                                {
+                                    speed -= 10;
+                                    carPos.y = lastRecordedHeight;
+                                    MoveCar(carPos);
+                                }
                             }
                         }
                         else
