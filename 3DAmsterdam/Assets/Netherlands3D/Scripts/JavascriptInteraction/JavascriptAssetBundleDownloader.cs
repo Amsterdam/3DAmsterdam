@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -57,30 +58,31 @@ public class JavascriptAssetBundleDownloader : MonoBehaviour
         //Wait for it do be done or aborted
         while (runningDownloads.TryGetValue(url, out RawDownload rawDownload))
         {
-            if(rawDownload.state != DownloadState.COMPLETED)
+            if (rawDownload.state != DownloadState.COMPLETED)
             {
                 yield return new WaitForEndOfFrame();
             }
-
-            //Finished downloading
-            Debug.Log("Completed JS download: " + url);
-            retrievedAssetBundle(rawDownload.assetBundle);
-            runningDownloads.Remove(url);
-            yield break;
+            else
+            {
+                //Finished downloading
+                Debug.Log("Completed JS download: " + url);
+                retrievedAssetBundle(rawDownload.assetBundle);
+                runningDownloads.Remove(url);
+                yield break;
+            }
 		}        
     }
 
-    public void FileDownloadAborted(TileChange tileChange)
+    /// <summary>
+    /// Download all running downloads with the same url
+    /// </summary>
+    /// <param name="tileChange"></param>
+    public void FileDownloadAborted(string url)
     {
-        foreach(var runningDownload in runningDownloads)
-        {
-            if(runningDownload.Value.tileChange.X == tileChange.X && runningDownload.Value.tileChange.Y == tileChange.Y)
-            {
-                Debug.Log("Aborted JS download: " + runningDownload.Key);
-                AbortDownloadProgress(runningDownload.Key);
-                runningDownloads.Remove(runningDownload.Key);
-            }
-		}    
+        if(url != "" && runningDownloads.ContainsKey(url)){
+            AbortDownloadProgress(url);
+            runningDownloads.Remove(url);
+        }
     }
 
 	public void FileDownloaded(string url)
