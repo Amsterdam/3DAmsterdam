@@ -164,6 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4498901013433943612}
   - component: {fileID: 6377280993247164478}
+  - component: {fileID: 6277912083741868569}
   m_Layer: 0
   m_Name: Layers
   m_TagString: Untagged
@@ -202,6 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maximumConcurrentDownloads: 6
+  filterByCameraFrustum: 1
   layers:
   - {fileID: 7566330805877739126}
   - {fileID: 4453755010848541782}
@@ -209,6 +211,18 @@ MonoBehaviour:
   - {fileID: 1144097373}
   pendingTileChanges: []
   activeTileChangesView: []
+--- !u!114 &6277912083741868569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013433943613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 762d928c03fed0042aaef39305c17c77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4498901013737045302
 GameObject:
   m_ObjectHideFlags: 0

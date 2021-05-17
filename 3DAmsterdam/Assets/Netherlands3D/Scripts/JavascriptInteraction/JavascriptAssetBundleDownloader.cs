@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class JavascriptDownloader : MonoBehaviour
+public class JavascriptAssetBundleDownloader : MonoBehaviour
 {
     [DllImport("__Internal")]
     private static extern void DownloadFileData(string fileName);
@@ -21,28 +21,66 @@ public class JavascriptDownloader : MonoBehaviour
     private string testDownloadUrl = "https://acc.3d.amsterdam.nl/web/data/develop/RD/Buildings/buildings_120000_483000.2,2";
     private string lastUrl = "";
 
-    public static JavascriptDownloader Instance;
+    public static JavascriptAssetBundleDownloader Instance;
 
-    private Dictionary<string, DownloadState> runningDownloads;
+    private Dictionary<string, RawDownload> runningDownloads;
+
+    [Serializable]
+    private class RawDownload
+    {
+        public AssetBundle assetBundle;
+        public TileChange tileChange;
+        public DownloadState state;
+    }
 
     private enum DownloadState{
-        STARTED,
+        RUNNING,
         COMPLETED
 	}
 
     private void Awake()
 	{
         Instance = this;
-        runningDownloads = new Dictionary<string, DownloadState>();
+        runningDownloads = new Dictionary<string, RawDownload>();
     }
 
-    public void StartDownload(string url, Action<TileChange> callback = null)
+    public IEnumerator StartAndWaitForDownload(string url, TileChange tileChange, Action<AssetBundle> retrievedAssetBundle = null)
     {
+        //Start a new download
         if (!runningDownloads.ContainsKey(url))
         {
-            runningDownloads.Add(url, DownloadState.STARTED);
+            Debug.Log("Starting JS download: " + url);
+            runningDownloads.Add(url, new RawDownload() { tileChange = tileChange, state = DownloadState.RUNNING });
             DownloadFileData(url);
         }
+
+        //Wait for it do be done or aborted
+        while (runningDownloads.TryGetValue(url, out RawDownload rawDownload))
+        {
+            if(rawDownload.state != DownloadState.COMPLETED)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            //Finished downloading
+            Debug.Log("Completed JS download: " + url);
+            retrievedAssetBundle(rawDownload.assetBundle);
+            runningDownloads.Remove(url);
+            yield break;
+		}        
+    }
+
+    public void FileDownloadAborted(TileChange tileChange)
+    {
+        foreach(var runningDownload in runningDownloads)
+        {
+            if(runningDownload.Value.tileChange.X == tileChange.X && runningDownload.Value.tileChange.Y == tileChange.Y)
+            {
+                Debug.Log("Aborted JS download: " + runningDownload.Key);
+                AbortDownloadProgress(runningDownload.Key);
+                runningDownloads.Remove(runningDownload.Key);
+            }
+		}    
     }
 
 	public void FileDownloaded(string url)
@@ -55,14 +93,13 @@ public class JavascriptDownloader : MonoBehaviour
             var data = new byte[length];
             Marshal.Copy(ptr, data, 0, data.Length);
 
-            runningDownloads.Remove(url);
+            runningDownloads[url].assetBundle = AssetBundle.LoadFromMemory(data);
+            runningDownloads[url].state = DownloadState.COMPLETED;
+            FreeFileData(url);
         }
-
-        
-        FreeFileData(url);
     }
 
-	private void TestParseData(ref byte[] data)
+    /*private void TestParseData(ref byte[] data)
 	{
         var assetBundle = AssetBundle.LoadFromMemory(data);
         Mesh[] meshesInAssetbundle = null;
@@ -88,11 +125,10 @@ public class JavascriptDownloader : MonoBehaviour
         {
             lastUrl = testDownloadUrl + "?random=" + UnityEngine.Random.value;
             DownloadFileData(lastUrl);
-
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
             AbortDownloadProgress(lastUrl);
         }
-    }
+    }*/
 }

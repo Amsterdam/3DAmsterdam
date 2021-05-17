@@ -16,6 +16,20 @@ namespace Netherlands3D.LayerSystem
 		public bool createMeshcollider = false;
 		public bool addHighlightuvs = false;
 		public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.On;
+		public bool useJSDownloader = false;
+
+
+		private void Update()
+		{
+			if(Input.GetKeyDown(KeyCode.J))
+			{
+				useJSDownloader = true;
+			}
+			else if (Input.GetKeyDown(KeyCode.K))
+			{
+				useJSDownloader = false;
+			}
+		}
 
 		public override void OnDisableTiles(bool isenabled)
         {
@@ -47,7 +61,15 @@ namespace Netherlands3D.LayerSystem
 					break;
 			}
 
-			tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			if (useJSDownloader)
+			{
+				tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundleViaJavascript(tileChange, callback));
+			}
+			else
+			{
+				tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange, callback));
+			}
+
 			tiles[changeKey].downloadFinishCallback = callback;
 		}
 
@@ -78,8 +100,11 @@ namespace Netherlands3D.LayerSystem
 				//Finish any old callbacks directly
 				if (tile.runningCoroutine != null)
 				{
-					Debug.Log("Brute abort");
-					if (tile.runningWebRequest != null) tile.runningWebRequest.Abort();
+					if (tile.runningWebRequest != null)
+					{
+						tile.runningWebRequest.Abort();
+					}
+					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tileChange);
 					StopCoroutine(tile.runningCoroutine);
 					tile.downloadFinishCallback(tileChange);
 					tile.runningCoroutine = null;
@@ -98,6 +123,7 @@ namespace Netherlands3D.LayerSystem
 				Destroy(tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
 			}
 		}
+
 		private IEnumerator DownloadAssetBundle(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
@@ -143,7 +169,6 @@ namespace Netherlands3D.LayerSystem
 
 					callback(tileChange);
 				}
-
 			}
 			
 		}
@@ -162,7 +187,27 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			url = url.ReplaceXY(tileChange.X, tileChange.Y);
-			JavascriptDownloader.Instance.StartDownload(url, callback);
+			yield return JavascriptAssetBundleDownloader.Instance.StartAndWaitForDownload(url,tileChange, (receivedAssetBundle) =>
+			{
+				GameObject newGameobject = CreateNewGameObject(receivedAssetBundle, tileChange);
+				if (newGameobject != null)
+				{
+					if (TileHasHighlight(tileChange))
+					{
+						StartCoroutine(DownloadIDMappingData(tileChange, newGameobject, callback));
+					}
+					else
+					{
+						RemoveGameObjectFromTile(tileChange);
+						tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
+						callback(tileChange);
+					}
+				}
+				else
+				{
+					callback(tileChange);
+				}
+			});
 		}
 
 		public void EnableShadows(bool enabled)
