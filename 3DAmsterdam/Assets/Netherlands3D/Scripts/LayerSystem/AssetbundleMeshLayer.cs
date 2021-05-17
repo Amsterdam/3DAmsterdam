@@ -61,18 +61,19 @@ namespace Netherlands3D.LayerSystem
 					break;
 			}
 
+			var targetTile = tiles[changeKey];
 			if (useJSDownloader)
 			{
-				tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundleViaJavascript(tileChange, callback));
+				targetTile.runningCoroutine = StartCoroutine(DownloadAssetBundleViaJavascript(tileChange, callback, targetTile));
+
 			}
 			else
 			{
-				tiles[changeKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange, callback));
+				targetTile.runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange, callback));
 			}
 
-			tiles[changeKey].downloadFinishCallback = callback;
+			targetTile.downloadFinishCallback = callback;
 		}
-
 
 		private Tile CreateNewTile(TileChange tileChange)
 		{
@@ -87,6 +88,7 @@ namespace Netherlands3D.LayerSystem
 
 			return tile;
 		}
+
 		private void RemoveGameObjectFromTile(TileChange tileChange)
 		{
 			if (tiles.ContainsKey(new Vector2Int(tileChange.X, tileChange.Y)))
@@ -98,18 +100,7 @@ namespace Netherlands3D.LayerSystem
 				}
 
 				//Finish any old callbacks directly
-				if (tile.runningCoroutine != null)
-				{
-					if (tile.runningWebRequest != null)
-					{
-						tile.runningWebRequest.Abort();
-					}
-					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tileChange);
-					StopCoroutine(tile.runningCoroutine);
-					tile.downloadFinishCallback(tileChange);
-					tile.runningCoroutine = null;
-					tile.downloadFinishCallback = null;
-				}
+				AbortAndFinishRunningCallbacks(tileChange, tile);
 
 				if (tile.gameObject == null)
 				{
@@ -121,6 +112,25 @@ namespace Netherlands3D.LayerSystem
 					DestroyImmediate(tile.gameObject.GetComponent<MeshFilter>().sharedMesh, true);
 				}
 				Destroy(tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
+			}
+		}
+
+		private void AbortAndFinishRunningCallbacks(TileChange tileChange, Tile tile)
+		{
+			if (tile.runningCoroutine != null)
+			{
+				if (tile.runningWebRequest != null)
+				{
+					tile.runningWebRequest.Abort();
+				}
+#if UNITY_WEBGL && !UNITY_EDITOR
+					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tile.runningDownloadUrl);
+#endif
+				StopCoroutine(tile.runningCoroutine);
+				tile.downloadFinishCallback(tileChange);
+				tile.runningCoroutine = null;
+				tile.downloadFinishCallback = null;
+				tile.runningDownloadUrl = "";
 			}
 		}
 
@@ -173,7 +183,7 @@ namespace Netherlands3D.LayerSystem
 			
 		}
 
-		private IEnumerator DownloadAssetBundleViaJavascript(TileChange tileChange, System.Action<TileChange> callback = null)
+		private IEnumerator DownloadAssetBundleViaJavascript(TileChange tileChange, System.Action<TileChange> callback = null, Tile targetTile = null)
 		{
 			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
 			string url = Config.activeConfiguration.webserverRootPath + Datasets[lod].path;
@@ -185,10 +195,13 @@ namespace Netherlands3D.LayerSystem
 			{
 				url = Datasets[lod].path;
 			}
-
 			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+
+			targetTile.runningDownloadUrl = url;
+
 			yield return JavascriptAssetBundleDownloader.Instance.StartAndWaitForDownload(url,tileChange, (receivedAssetBundle) =>
 			{
+				Debug.Log("Received assetbundle " + receivedAssetBundle.name);
 				GameObject newGameobject = CreateNewGameObject(receivedAssetBundle, tileChange);
 				if (newGameobject != null)
 				{

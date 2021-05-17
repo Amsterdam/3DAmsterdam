@@ -8,7 +8,7 @@ mergeInto(LibraryManager.library, {
         xhr.onload = function (e) {
             if (this.status == 200) {
                 (window.filedata = window.filedata ? window.filedata : {})[filename] = this.response;
-                unityInstance.SendMessage("JavascriptDownloader", "FileDownloaded", filename);
+                unityInstance.SendMessage("Layers", "FileDownloaded", filename);
 				console.log("Done downloading");
             }
         };
@@ -17,7 +17,9 @@ mergeInto(LibraryManager.library, {
     },
     AbortDownloadProgress: function (filenameptr) {
         var filename = Pointer_stringify(filenameptr);
-        window.httprequest[filename].abort();
+		if(window.httprequest[filename]){
+			window.httprequest[filename].abort();
+		}
     },
     GetFileDataLength: function (filenameptr) {
         var filename = Pointer_stringify(filenameptr);

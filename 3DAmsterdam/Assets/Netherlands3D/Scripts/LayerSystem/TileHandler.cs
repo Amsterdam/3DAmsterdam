@@ -513,7 +513,9 @@ namespace Netherlands3D.LayerSystem
 		public GameObject gameObject;
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
+
 		public Coroutine runningCoroutine;
+		public string runningDownloadUrl = "";
 		public UnityWebRequest runningWebRequest;
 		public Action<TileChange> downloadFinishCallback;
 	}
