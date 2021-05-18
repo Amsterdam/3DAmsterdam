@@ -8,6 +8,8 @@ using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
 
 namespace Netherlands3D.ModelParsing
@@ -24,12 +26,17 @@ namespace Netherlands3D.ModelParsing
 		private UnityEvent doneLoadingModel;
 
 		[SerializeField]
+		public Underground.RuntimeMask mask;
+
+		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
 
 		private string objModelName = "model";
 
 		[SerializeField]
 		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
+
+		private Transformable transformable;
 
 		private void Start()
 		{
@@ -141,30 +148,36 @@ namespace Netherlands3D.ModelParsing
 				//Make interactable
 				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 				newOBJLoader.name = objModelName;
-				Transformable transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
-				if(transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
-				transformable.placedTransformable.AddListener(RemapMaterials);
 				
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
+				transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+				transformable.mask = mask;
 
-
-                if (newOBJLoader.ObjectUsesRDCoordinates==false)
+				if (newOBJLoader.ObjectUsesRDCoordinates==false)
                 {
+					if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+					//transformable.placedTransformable.AddListener(RemapMaterials);
 					customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
 				}
+				else
+                {
+					transformable.stickToMouse = false;
+                }
 				
 			}
+			//placementSettings();
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
 
 			//Invoke done event
 			doneLoadingModel.Invoke();
+			
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);
 		}
-
+		
 		private void RemapMaterials(GameObject gameObject)
 		{
 			MaterialLibrary.Instance.AutoRemap(gameObject);

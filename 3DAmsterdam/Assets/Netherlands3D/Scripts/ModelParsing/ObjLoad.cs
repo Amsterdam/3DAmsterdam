@@ -135,10 +135,23 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
+                if (buffer.Vertices.Count==0)
+                {
+                    if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+                    {
+						ObjectUsesRDCoordinates = true;
+						Debug.Log("model appears to be in RD-coordiantes");
+                    }
+					else
+                    {
+						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
+						Debug.Log("model appears not to be in RD-coordinates");
+                    }
+                }
 
 				if (ObjectUsesRDCoordinates)
 				{
-					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), -cd(linePart[3]))));
+					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
 				}
 				else
 				{

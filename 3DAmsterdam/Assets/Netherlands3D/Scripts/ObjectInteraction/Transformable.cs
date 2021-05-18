@@ -18,14 +18,20 @@ namespace Netherlands3D.ObjectInteraction
 		[SerializeField]
 		private Vector3 offset;
 
-		private bool snapToGround = true;
-		public bool placeOnGrid = false;
 		[SerializeField]
-		private bool stickToMouse = true;
+		public Underground.RuntimeMask mask;
+
+		private bool snapToGround = true;
+
+		public bool placeOnGrid = false;
+		private bool maskArea = false;
+		[SerializeField]
+		public bool stickToMouse = true;
 
 		private Collider meshCollider;
 		public static Transformable lastSelectedTransformable;
 
+		private Bounds bounds;
 		private IAction placeAction;
 
 		[System.Serializable]
@@ -40,28 +46,56 @@ namespace Netherlands3D.ObjectInteraction
 			placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Transformable.Place);
 
 			meshCollider = GetComponent<Collider>();
-			if (stickToMouse)
-			{
-				placeAction.SubscribePerformed(Place);
-				TakeInteractionPriority();
-				StartCoroutine(StickToMouse());
-				meshCollider.enabled = false;
-			}
+			
 			gameObject.transform.position = Vector3.zero;
 			bounds = new Bounds(gameObject.transform.position, Vector3.zero);
 			Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
 			
-				bounds=mesh.bounds;
-			Debug.Log(bounds.min.x + "-" + bounds.max.x);
-			Debug.Log(bounds.min.z + "-" + bounds.max.z);
-			if (((bounds.max.x - bounds.min.x) %100)+1<2)
+			bounds=mesh.bounds;
+			
+
+					transform.position = Vector3.zero;
+                    if (stickToMouse)
+                    {
+						placementSettings();
+						placeAction.SubscribePerformed(Place);
+						TakeInteractionPriority();
+						StartCoroutine(StickToMouse());
+						meshCollider.enabled = false;
+					}
+		}
+
+		void placementSettings()
+        {
+			PropertiesPanel.Instance.OpenObjectInformation("", true, 10);
+			UpdateBounds();
+			if (isGridShaped(bounds))
             {
-				if (((bounds.max.z - bounds.min.z) % 100)+1 <2)
+			placeOnGrid = true;
+						PropertiesPanel.Instance.AddActionCheckbox("uitlijnen op grid", true, (action) => placeOnGrid = action);
+			PropertiesPanel.Instance.AddActionCheckbox("ondergrond maskeren", maskArea, (action) => {
+				maskArea = action;
+
+			if (maskArea == false)
 				{
-					placeOnGrid = true;
+					mask.Clear();
+				}
+			});
+			Netherlands3D.ModelParsing.MaterialLibrary.Instance.AutoRemap(gameObject);
+			}
+			PropertiesPanel.ignoreNextTabSwitch = true; //This blocks our tab switching away when we click to place
+		}
+
+		bool isGridShaped(Bounds bounds)
+		{
+			if (((bounds.max.x - bounds.min.x) % 100) + 1 < 2)
+			{
+				if (((bounds.max.z - bounds.min.z) % 100) + 1 < 2)
+				{
+					return true;
 				}
 			}
-
+			return false;
 		}
 
 		/// <summary>
@@ -76,19 +110,35 @@ namespace Netherlands3D.ObjectInteraction
 				FollowMousePointer();
 				yield return new WaitForEndOfFrame();
 			}
-			stickToMouse = false;
+			//stickToMouse = false;
 			meshCollider.enabled = true;
 		}
 
 		public void Place(IAction action)
 		{
-			if (stickToMouse && action.Performed)
+			
+			if (!Selector.Instance.HoveringInterface() && stickToMouse && action.Performed)
 			{
 				Debug.Log("Placed Transformable");
+				Debug.Log(Selector.Instance.HoveringInterface());
+				Debug.Log(stickToMouse);
+				Debug.Log(action.Performed);
 				stickToMouse = false;
 				placedTransformable.Invoke(this.gameObject);
 				Select();
 				StopInteraction();
+                if (maskArea)
+                {
+					mask.MoveToBounds(gameObject.GetComponent<Renderer>().bounds);
+                }
+				PropertiesPanel.Instance.ClosePanel();
+			}
+			else
+            {
+				Debug.Log("NOT Placed Transformable");
+				Debug.Log(Selector.Instance.HoveringInterface());
+				Debug.Log(stickToMouse);
+				Debug.Log(action.Performed);
 			}
 		}
 
@@ -149,17 +199,27 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void FollowMousePointer()
 		{
-			Vector3 newPosition = GetMousePointOnLayerMask() - offset;
+			if (Selector.Instance.HoveringInterface()) return;
+			Vector3 aimedPosition = GetMousePointOnLayerMask();
+			Vector3 newPosition;
+            if (aimedPosition==Vector3.zero)
+            {
+				return;
+            }
+			newPosition= aimedPosition - offset;
 			
 			//offset.x = -bounds.min.x % 100;
 			//offset.z = -bounds.min.z % 100;
 			if (placeOnGrid)
             {
-				
 				newPosition.x -= ((newPosition.x+bounds.min.x) % 100);
 				newPosition.z -= ((newPosition.z+bounds.min.z) % 100);
+				
 			}
-			
+			if(maskArea)
+            {
+				mask.MoveToBounds(gameObject.GetComponent<Renderer>().bounds);
+			}
 			this.transform.position = newPosition;
 
 		}
@@ -177,10 +237,21 @@ namespace Netherlands3D.ObjectInteraction
 		/// <returns>The world point where our mouse is</returns>
 		private Vector3 GetMousePointOnLayerMask()
 		{
+
 			RaycastHit hit;
-			if (snapToGround && Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
+			if (Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
 			{
-				return hit.point;
+				if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
+				{
+					return Vector3.zero;
+				}
+
+				if (snapToGround)
+				{
+					return hit.point;
+				}
+
+				return Vector3.zero;
 			}
 			else
 			{
