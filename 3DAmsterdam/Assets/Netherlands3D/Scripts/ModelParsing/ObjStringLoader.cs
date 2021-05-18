@@ -8,6 +8,7 @@ using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
+using static Netherlands3D.ObjectInteraction.Transformable;
 
 namespace Netherlands3D.ModelParsing
 {
@@ -140,7 +141,10 @@ namespace Netherlands3D.ModelParsing
 				//Make interactable
 				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 				newOBJLoader.name = objModelName;
-				newOBJLoader.gameObject.AddComponent<Transformable>();
+				Transformable transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+				if(transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+				transformable.placedTransformable.AddListener(RemapMaterials);
+				
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 
@@ -159,6 +163,11 @@ namespace Netherlands3D.ModelParsing
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);
+		}
+
+		private void RemapMaterials(GameObject gameObject)
+		{
+			MaterialLibrary.Instance.AutoRemap(gameObject);
 		}
 	}
 }

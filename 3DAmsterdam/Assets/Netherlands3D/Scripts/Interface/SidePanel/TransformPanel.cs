@@ -140,7 +140,8 @@ namespace Netherlands3D.Interface.SidePanel
             //Display this panel
             gameObject.SetActive(true);
 
-            StartCoroutine(SortLayout());
+            //StartCoroutine(SortLayout());
+            this.transform.SetSiblingIndex(1);
         }
         private IEnumerator SortLayout()
         {

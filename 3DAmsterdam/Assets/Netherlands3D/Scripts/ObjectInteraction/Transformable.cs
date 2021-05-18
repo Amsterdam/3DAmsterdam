@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Netherlands3D.ObjectInteraction
 {
@@ -26,7 +27,11 @@ namespace Netherlands3D.ObjectInteraction
 		public static Transformable lastSelectedTransformable;
 
 		private IAction placeAction;
-		private Bounds bounds;
+
+		[System.Serializable]
+		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
+		public ObjectPlacedEvent placedTransformable;
+
 		private void Start()
 		{
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
@@ -81,6 +86,7 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				Debug.Log("Placed Transformable");
 				stickToMouse = false;
+				placedTransformable.Invoke(this.gameObject);
 				Select();
 				StopInteraction();
 			}

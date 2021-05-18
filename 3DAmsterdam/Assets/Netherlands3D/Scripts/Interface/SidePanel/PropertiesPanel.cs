@@ -107,6 +107,8 @@ namespace Netherlands3D.Interface.SidePanel
 
         private GameObject thumbnailImage = null;
 
+        public static bool ignoreNextTabSwitch = false;
+
         public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
 
 		void Awake()
