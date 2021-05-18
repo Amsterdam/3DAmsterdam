@@ -119,25 +119,34 @@ namespace Netherlands3D.LayerSystem
 		void Update()
 		{
 			//for debugging
-			//activeTileChangesView = activeTileChanges.Values.ToList();
+			activeTileChangesView = activeTileChanges.Values.ToList();
 
+			//First we determine what tiles are within our camera view
 			viewRange = GetViewRange(cameraExtents);
-			cameraPosition = GetCameraPosition(cameraExtents);
-			
+			cameraPosition = GetCameraPosition(cameraExtents);	
             if (tileSizes.Count==0)
             {
 				GetTilesizes();
 			}
 			GetTileDistancesInView(tileSizes, viewRange, cameraPosition);
 
+			//Now we stage what tiles need to be added, need an upgrade, or can be removed
 			pendingTileChanges.Clear();
-			RemoveOutOfViewTiles();
-			GetTileChanges();
+			PrepareListOfRequiredTiles();
+			DetermineTileRequiredTileChanges();
 
 			if (pendingTileChanges.Count == 0) { return; }
 
+			//Instantly do all the 'remove' changes to free up our resources
+			var removeChanges = pendingTileChanges.Where(p => p.action == TileAction.Remove);
+			foreach (var removeChange in removeChanges)
+			{
+				layers[removeChange.layerIndex].HandleTile(removeChange, TileHandled);
+			}
+
+			//Now do the other tile changes based on priority order
 			TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
-			if (activeTileChanges.Count < maximumConcurrentDownloads || highestPriorityTileChange.action == TileAction.Remove)
+			if (activeTileChanges.Count < maximumConcurrentDownloads)
 			{
 				Vector3Int tilekey = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
 				if (activeTileChanges.ContainsKey(tilekey) == false)
@@ -281,7 +290,7 @@ namespace Netherlands3D.LayerSystem
 		}
 		
 		
-		private void GetTileChanges()
+		private void DetermineTileRequiredTileChanges()
 		{
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
@@ -442,7 +451,7 @@ namespace Netherlands3D.LayerSystem
 		List<Vector2Int> neededTileKeys = new List<Vector2Int>();
 		TileChange tileChange;
 		
-		private void RemoveOutOfViewTiles()
+		private void PrepareListOfRequiredTiles()
 		{
 			for (int layerIndex = 0; layerIndex < layers.Count; layerIndex++)
 			{
@@ -511,7 +520,6 @@ namespace Netherlands3D.LayerSystem
 		public Layer layer;
 		public int LOD;
 		public GameObject gameObject;
-		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
 
 		public Coroutine runningCoroutine;
