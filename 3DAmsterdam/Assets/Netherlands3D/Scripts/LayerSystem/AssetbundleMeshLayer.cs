@@ -100,6 +100,7 @@ namespace Netherlands3D.LayerSystem
 				}
 
 				//Finish any old callbacks directly
+				Debug.Log("Abort");
 				AbortAndFinishRunningCallbacks(tileChange, tile);
 
 				if (tile.gameObject == null)
@@ -117,15 +118,16 @@ namespace Netherlands3D.LayerSystem
 
 		private void AbortAndFinishRunningCallbacks(TileChange tileChange, Tile tile)
 		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tile.runningDownloadUrl);
+#endif
+
 			if (tile.runningCoroutine != null)
 			{
 				if (tile.runningWebRequest != null)
 				{
 					tile.runningWebRequest.Abort();
 				}
-#if UNITY_WEBGL && !UNITY_EDITOR
-					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tile.runningDownloadUrl);
-#endif
 				StopCoroutine(tile.runningCoroutine);
 				tile.downloadFinishCallback(tileChange);
 				tile.runningCoroutine = null;
@@ -176,7 +178,6 @@ namespace Netherlands3D.LayerSystem
 				}
 				else
 				{
-
 					callback(tileChange);
 				}
 			}
