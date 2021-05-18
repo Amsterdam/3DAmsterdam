@@ -80,6 +80,7 @@ public class JavascriptAssetBundleDownloader : MonoBehaviour
     public void FileDownloadAborted(string url)
     {
         if(url != "" && runningDownloads.ContainsKey(url)){
+            Debug.Log("Aborted JS download" + url);
             AbortDownloadProgress(url);
             runningDownloads.Remove(url);
         }
