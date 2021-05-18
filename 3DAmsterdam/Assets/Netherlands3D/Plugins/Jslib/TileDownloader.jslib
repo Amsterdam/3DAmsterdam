@@ -17,16 +17,14 @@ mergeInto(LibraryManager.library, {
     },
     AbortDownloadProgress: function (filenameptr) {
         var filename = Pointer_stringify(filenameptr);
+		console.log("Trying to abort " + filename);
 		if(window.httprequest[filename]){
 			window.httprequest[filename].abort();
+			console.log("Aborted " + filename);
 		}
     },
     GetFileDataLength: function (filenameptr) {
         var filename = Pointer_stringify(filenameptr);
-        console.log("GetFileDataLength");
-        console.log(filename);
-        console.log(window);
-        console.log(window.filedata);
         return window.filedata[filename].byteLength;
     },
     GetFileData: function (filenameptr) {
