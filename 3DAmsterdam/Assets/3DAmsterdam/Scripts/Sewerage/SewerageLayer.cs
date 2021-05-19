@@ -12,6 +12,9 @@ using Netherlands3D;
 
 namespace Amsterdam3D.Sewerage
 {
+	public enum SewerageApiType { Amsterdam, Pdok }
+
+
 	public class SewerageLayer : Layer
     {		
 		[SerializeField]
@@ -31,6 +34,42 @@ namespace Amsterdam3D.Sewerage
 		private SewerageObjectPool SewerLineObjectPool;
 		[SerializeField]
 		private SewerageObjectPool manHoleObjectPool;
+
+		private string diameterString = null;
+		public string DiameterString {get {
+				if (diameterString == null){
+					diameterString = Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "diameter" : "BreedteLeiding";
+				}
+				return diameterString;
+			}}
+
+		private string bobBeginPuntString = null;
+		public string BobBeginPuntString { get {
+				if(bobBeginPuntString == null)
+                {
+					bobBeginPuntString = Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "bob_beginpunt" : "BobBeginpuntLeiding";
+				}
+				return bobBeginPuntString;
+			}}
+
+		private string bobEindPuntString = null;
+		public string BobEindPuntString { get {
+                if (bobEindPuntString == null)
+                {
+					bobEindPuntString = Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "bob_eindpunt" : "BobEindpuntLeiding";
+				}
+				return bobEindPuntString;
+			}}
+
+		private string putdekselhoogteString = null;
+		public string PutdekselhoogteString { get {
+                if (putdekselhoogteString == null)
+                {
+					putdekselhoogteString=  Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam ? "putdekselhoogte" : "Maaiveldhoogte";
+				}
+				return putdekselhoogteString;
+			}}
+
 
 		public override void OnDisableTiles(bool isenabled) { }
 
@@ -70,7 +109,6 @@ namespace Amsterdam3D.Sewerage
 		}
 
 
-
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
 			
@@ -88,45 +126,50 @@ namespace Amsterdam3D.Sewerage
 			activeCount++;
 			tile.gameObject.SetActive(true);
 			string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
-			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
+			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
+
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
 			yield return sewerageRequest.SendWebRequest();
 			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
 			{
                 GeoJSON customJsonHandler = new GeoJSON(sewerageRequest.downloadHandler.text);
+
 				yield return null;
                 Vector3 startpoint;
                 Vector3 endpoint;
                 int parseCounter = 0;
-                while (customJsonHandler.GotoNextFeature())
-                {
-                    parseCounter++;
-                    if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
-                    double diameter = customJsonHandler.getPropertyFloatValue("diameter");
-                    double bobBeginPunt = customJsonHandler.getPropertyFloatValue("bob_beginpunt");
-                    List<double> coordinates = customJsonHandler.getGeometryLineString();
-                    endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[0], coordinates[1], bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY));
-                    for (int i = 2; i < coordinates.Count; i += 2)
-                    {
-                        startpoint = endpoint;
-                        double bobEindPunt = customJsonHandler.getPropertyFloatValue("bob_eindpunt");
-                        endpoint = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(coordinates[i], coordinates[(i + 1)], bobEindPunt + Config.activeConfiguration.zeroGroundLevelY));
 
-                        sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
-                    }
+				while (customJsonHandler.GotoNextFeature())
+				{
+					parseCounter++;
+					if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
+					double diameter = customJsonHandler.getPropertyFloatValue(DiameterString);
+					double bobBeginPunt = customJsonHandler.getPropertyFloatValue(BobBeginPuntString);
 
-                }
-                StartCoroutine(GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback));
-            }
-			else
-            { //callback if weberror
-				Debug.Log("sewerlinedata not found");
-				activeCount--;
-				callback(tileChange);
-            }
+					List<double> coordinates = customJsonHandler.getGeometryLineString();
+					endpoint = GetUnityPoint(coordinates[0], coordinates[1], bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY);
 
-			yield return null;
+					for (int i = 2; i < coordinates.Count; i += 2)
+					{
+						startpoint = endpoint;						
+						double bobEindPunt = customJsonHandler.getPropertyFloatValue(BobEindPuntString);
+
+						endpoint = GetUnityPoint(coordinates[i], coordinates[(i + 1)], bobEindPunt + Config.activeConfiguration.zeroGroundLevelY);
+						sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
+					}
+
+				}
+				StartCoroutine(GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback));
+				}
+				else
+				{ //callback if weberror
+					Debug.Log("sewerlinedata not found");
+					activeCount--;
+					callback(tileChange);
+				}
+
+				yield return null;
 		}
 
 		private IEnumerator SpawnLineObjects(SewerLines sewerLines, TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
@@ -155,13 +198,13 @@ namespace Amsterdam3D.Sewerage
 		IEnumerator GetSewerManholesInBoundingBox(TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
 		{
 			string escapedUrl = Config.activeConfiguration.sewerManholesWfsUrl;
-			escapedUrl += UnityWebRequest.EscapeURL((boundingBoxMinimum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMinimum.y).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.x).ToString(CultureInfo.InvariantCulture) + "," + (boundingBoxMaximum.y).ToString(CultureInfo.InvariantCulture));
+			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
+
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
 			yield return sewerageRequest.SendWebRequest();
 			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
 			{
-
                 StartCoroutine(SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback));
             }
             else
@@ -185,18 +228,18 @@ namespace Amsterdam3D.Sewerage
 			{
 				parseCounter++;
 				if ((parseCounter % maxParsesPerFrame) == 0) yield return new WaitForEndOfFrame();
-                if (customJsonHandler.PropertyValueStringEquals("objectsoort", "Knikpunt"))
+                
+				if (customJsonHandler.PropertyValueStringEquals("objectsoort", "Knikpunt") == false)
                 {
 					point2D = customJsonHandler.getGeometryPoint2DDouble();
 
-					double putdekselhoogte = customJsonHandler.getPropertyFloatValue("putdekselhoogte");
-					point = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(point2D[0], point2D[1], putdekselhoogte + Config.activeConfiguration.zeroGroundLevelY));
+					double putdekselhoogte = customJsonHandler.getPropertyFloatValue(PutdekselhoogteString);
+					point = GetUnityPoint(point2D[0], point2D[1], putdekselhoogte + Config.activeConfiguration.zeroGroundLevelY);
+
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
 			}
 			StartCoroutine(CombineSewerage(tileChange, tile, callback));
-
-			
 
 		}
 		private IEnumerator CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
@@ -299,5 +342,18 @@ namespace Amsterdam3D.Sewerage
 			tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
 			callback(tileChange);
 		}
+
+		public Vector3 GetUnityPoint(double x, double y, double z)
+		{
+			if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
+			{
+				return ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+			}
+			else
+			{
+				return ConvertCoordinates.CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+			}
+		}
+
 	}
 }
