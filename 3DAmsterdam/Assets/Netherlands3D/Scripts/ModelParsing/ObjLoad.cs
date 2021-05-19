@@ -135,20 +135,34 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
+                if (buffer.Vertices.Count==0)
+                {
+                    if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+                    {
+						ObjectUsesRDCoordinates = true;
+						Debug.Log("model appears to be in RD-coordiantes");
+                    }
+					else
+                    {
+						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
+						Debug.Log("model appears not to be in RD-coordinates");
+                    }
+                }
+
 				if (ObjectUsesRDCoordinates)
 				{
-					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3]))));
+					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
 				}
 				else
 				{
-					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
 				}
 				break;
 			case VT:
 				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
 				break;
 			case VN:
-				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
 				break;
 			case F:
 				var faces = new FaceIndices[linePart.Length - 1];
@@ -157,8 +171,8 @@ public class ObjLoad : MonoBehaviour
 				{
 					//tris
 					buffer.PushFace(faces[0]);
-					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
+					buffer.PushFace(faces[1]);
 				}
 				else if (linePart.Length == 5)
 				{
@@ -324,7 +338,20 @@ public class ObjLoad : MonoBehaviour
 	{
 		try
 		{
-			return float.Parse(v);
+			return float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
+		}
+		catch (Exception e)
+		{
+			print(e + " -> " + v);
+			return 0;
+		}
+	}
+
+	static double cd(string v)
+    {
+		try
+		{
+			return double.Parse(v,System.Globalization.CultureInfo.InvariantCulture);
 		}
 		catch (Exception e)
 		{

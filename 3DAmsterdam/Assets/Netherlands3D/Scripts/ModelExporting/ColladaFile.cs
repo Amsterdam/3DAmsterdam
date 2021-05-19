@@ -283,14 +283,12 @@ public class ColladaFile
 		writer.WriteAttributeString("offset", "0");
 		writer.WriteEndElement();
 		writer.WriteStartElement("p"); //start p
-
-		//Reverse for loop
-		for (int i = meshVertices.Count - 1; i >= 0; i-=3)
+		for (int i = 0; i < meshVertices.Count; i += 3)
 		{
 			var vert = meshVertices[i];
-			writer.WriteString(i.ToString() + " " + (i - 1).ToString() + " " + (i - 2).ToString() + " ");
+			// reverse winding order to comply with collade-specification (CCW)
+			writer.WriteString(i.ToString() + " " + (i + 2).ToString() + " " + (i + 1).ToString() + " ");
 		}
-
 		writer.WriteEndElement(); //end p
 		writer.WriteEndElement(); //end triangles
 
