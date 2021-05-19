@@ -1,6 +1,4 @@
-﻿
-using BruTile.Wms;
-using ConvertCoordinates;
+﻿using ConvertCoordinates;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Menu;
 using System;

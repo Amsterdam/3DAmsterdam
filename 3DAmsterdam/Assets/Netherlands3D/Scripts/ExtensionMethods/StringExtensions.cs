@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 public static class StringExtensions
 {
@@ -50,5 +51,10 @@ public static class StringExtensions
 		}
 	}
 
+
+    public static string ToInvariant(this double d)
+    {
+        return d.ToString(CultureInfo.InvariantCulture);
+    }
 
 }

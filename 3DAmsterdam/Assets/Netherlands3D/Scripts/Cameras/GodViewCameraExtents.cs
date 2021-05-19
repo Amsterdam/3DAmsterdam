@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using ConvertCoordinates;
-using BruTile;
 using UnityEngine.Rendering.Universal;
 
 namespace Netherlands3D.Cameras
