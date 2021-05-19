@@ -23,10 +23,12 @@ namespace Netherlands3D.LayerSystem
 		{
 			if(Input.GetKeyDown(KeyCode.J))
 			{
+				Debug.Log("Enabled JS downloader");
 				useJSDownloader = true;
 			}
 			else if (Input.GetKeyDown(KeyCode.K))
 			{
+				Debug.Log("Disabled JS downloader");
 				useJSDownloader = false;
 			}
 		}
@@ -65,7 +67,6 @@ namespace Netherlands3D.LayerSystem
 			if (useJSDownloader)
 			{
 				targetTile.runningCoroutine = StartCoroutine(DownloadAssetBundleViaJavascript(tileChange, callback, targetTile));
-
 			}
 			else
 			{
@@ -121,13 +122,14 @@ namespace Netherlands3D.LayerSystem
 #if UNITY_WEBGL && !UNITY_EDITOR
 					JavascriptAssetBundleDownloader.Instance.FileDownloadAborted(tile.runningDownloadUrl);
 #endif
+			if (tile.runningWebRequest != null)
+			{
+				tile.runningWebRequest.Abort();
+			}
+
 
 			if (tile.runningCoroutine != null)
 			{
-				if (tile.runningWebRequest != null)
-				{
-					tile.runningWebRequest.Abort();
-				}
 				StopCoroutine(tile.runningCoroutine);
 				tile.downloadFinishCallback(tileChange);
 				tile.runningCoroutine = null;

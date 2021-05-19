@@ -20,6 +20,7 @@ mergeInto(LibraryManager.library, {
 		console.log("Trying to abort " + filename);
 		if(window.httprequest[filename]){
 			window.httprequest[filename].abort();
+			delete window.httprequest[filename];
 			console.log("Aborted " + filename);
 		}
     },
