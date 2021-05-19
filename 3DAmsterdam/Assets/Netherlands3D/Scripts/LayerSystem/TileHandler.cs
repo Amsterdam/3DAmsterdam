@@ -118,7 +118,7 @@ namespace Netherlands3D.LayerSystem
 		void Update()
 		{
 			//for debugging
-			//activeTileChangesView = activeTileChanges.Values.ToList();
+			activeTileChangesView = activeTileChanges.Values.ToList();
 
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = GetCameraPosition(cameraExtents);
@@ -135,9 +135,26 @@ namespace Netherlands3D.LayerSystem
 
 			if (pendingTileChanges.Count == 0) { return; }
 
-			if (activeTileChanges.Count < maximumConcurrentDownloads)
+			//Start with all remove changes to clear resources. We to all remove actions, and stop any running tilechanges that share the same position and layerindex
+			var removeChanges = pendingTileChanges.Where(change => change.action == TileAction.Remove).ToArray();
+			for (int i = removeChanges.Length - 1; i >= 0; i--)
 			{
-				TileChange highestPriorityTileChange = FindHighestPriorityTileChange();
+				var removeChange = removeChanges[i];
+				var runningOtherChangesWithSamePosition = activeTileChanges.Where(change => change.Equals(removeChange)).ToArray();
+				for (int j = runningOtherChangesWithSamePosition.Length - 1; j >= 0; j--)
+				{
+					var runningChange = runningOtherChangesWithSamePosition[j];
+					activeTileChanges.Remove(runningChange.Key);
+				}
+
+				pendingTileChanges.Remove(removeChange);
+				layers[removeChange.layerIndex].HandleTile(removeChange, TileRemoved);
+				Debug.Log("Removed: " + removeChange.X + "," + removeChange.Y);
+			}
+
+			if (activeTileChanges.Count < maximumConcurrentDownloads && pendingTileChanges.Count > 0)
+			{
+				TileChange highestPriorityTileChange = GetHighestPriorityTileChange();
 				Vector3Int tilekey = new Vector3Int(highestPriorityTileChange.X, highestPriorityTileChange.Y, highestPriorityTileChange.layerIndex);
 				if (activeTileChanges.ContainsKey(tilekey) == false)
 				{
@@ -160,8 +177,12 @@ namespace Netherlands3D.LayerSystem
 
 		public void TileHandled(TileChange handledTileChange)
         {
-			TileAction action = handledTileChange.action;
 			activeTileChanges.Remove(new Vector3Int(handledTileChange.X, handledTileChange.Y, handledTileChange.layerIndex));
+		}
+
+		public void TileRemoved(TileChange handledTileChange)
+		{
+			//
 		}
 
 		/// <summary>
@@ -429,7 +450,7 @@ namespace Netherlands3D.LayerSystem
 					priority= (int)((1+(0.5 * (lod + layerPriority))) * distanceFactor);
 					break;
                 case TileAction.Remove:
-					priority = (int)((1+(100 * (lod + layerPriority))) * distanceFactor);
+					priority = int.MaxValue;
 					break;
                 default:
                     break;
@@ -478,7 +499,7 @@ namespace Netherlands3D.LayerSystem
 
 			}
 		}
-		private TileChange FindHighestPriorityTileChange()
+		private TileChange GetHighestPriorityTileChange()
 		{
 			TileChange highestPriorityTileChange = pendingTileChanges[0];
 			float highestPriority = highestPriorityTileChange.priorityScore;
@@ -513,6 +534,7 @@ namespace Netherlands3D.LayerSystem
 		public GameObject gameObject;
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
+		public UnityWebRequest runningWebRequest;
 	}
 	[Serializable]
 	public struct TileChange : IEquatable<TileChange>
