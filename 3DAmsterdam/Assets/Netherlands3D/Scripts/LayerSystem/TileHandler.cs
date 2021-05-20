@@ -119,7 +119,6 @@ namespace Netherlands3D.LayerSystem
 		{
 			//for debugging
 			activeTileChangesView = activeTileChanges.Values.ToList();
-
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = GetCameraPosition(cameraExtents);
 			
@@ -140,15 +139,11 @@ namespace Netherlands3D.LayerSystem
 			for (int i = removeChanges.Length - 1; i >= 0; i--)
 			{
 				var removeChange = removeChanges[i];
-				var runningOtherChangesWithSamePosition = activeTileChanges.Where(change => change.Equals(removeChange)).ToArray();
-				for (int j = runningOtherChangesWithSamePosition.Length - 1; j >= 0; j--)
-				{
-					var runningChange = runningOtherChangesWithSamePosition[j];
-					activeTileChanges.Remove(runningChange.Key);
-				}
+
+				AbortSimilarTileChanges(removeChange);
+				AbortPendingSimilarTileChanges(removeChange);
 
 				pendingTileChanges.Remove(removeChange);
-				layers[removeChange.layerIndex].HandleTile(removeChange, TileRemoved);
 				Debug.Log("Removed: " + removeChange.X + "," + removeChange.Y);
 			}
 
@@ -172,6 +167,32 @@ namespace Netherlands3D.LayerSystem
 						pendingTileChanges.Remove(highestPriorityTileChange);
 					}
 				}
+			}
+		}
+
+		private void AbortSimilarTileChanges(TileChange removeChange)
+		{
+			var changes = activeTileChanges.Where(change => ((change.Value.X == removeChange.X) && (change.Value.Y == removeChange.Y))).ToArray();
+			Debug.Log("ACTIVE REMOVED: " + changes.Length);
+			for (int i = changes.Length - 1; i >= 0; i--)
+			{
+				var runningChange = changes[i];
+				layers[removeChange.layerIndex].InteruptRunningProcesses(new Vector2Int(removeChange.X, removeChange.Y));
+				layers[removeChange.layerIndex].HandleTile(removeChange, TileRemoved);
+				activeTileChanges.Remove(runningChange.Key);
+			}
+		}
+
+		private void AbortPendingSimilarTileChanges(TileChange removeChange)
+		{
+			var changes = pendingTileChanges.Where(change => ((change.X == removeChange.X) && (change.Y == removeChange.Y))).ToArray();
+			Debug.Log("PENDING REMOVED: " + changes.Length);
+			for (int i = changes.Length - 1; i >= 0; i--)
+			{
+				var runningChange = changes[i];
+				layers[removeChange.layerIndex].InteruptRunningProcesses(new Vector2Int(removeChange.X,removeChange.Y));
+				layers[removeChange.layerIndex].HandleTile(removeChange, TileRemoved);
+				pendingTileChanges.Remove(runningChange);
 			}
 		}
 
@@ -535,6 +556,7 @@ namespace Netherlands3D.LayerSystem
 		public AssetBundle assetBundle;
 		public Vector2Int tileKey;
 		public UnityWebRequest runningWebRequest;
+		public Coroutine runningCoroutine;
 	}
 	[Serializable]
 	public struct TileChange : IEquatable<TileChange>

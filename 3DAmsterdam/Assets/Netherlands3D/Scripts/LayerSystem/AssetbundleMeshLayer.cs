@@ -23,9 +23,12 @@ namespace Netherlands3D.LayerSystem
         }
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
-        {
+		{
 			TileAction action = tileChange.action;
 			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+
+			InteruptRunningProcesses(tileKey);
+
 			switch (action)
 			{
 				case TileAction.Create:
@@ -40,16 +43,15 @@ namespace Netherlands3D.LayerSystem
 					break;
 				case TileAction.Remove:
 					RemoveGameObjectFromTile(tileKey);
-					if (tiles[tileKey].runningWebRequest != null)
-						tiles[tileKey].runningWebRequest.Abort();
 					tiles.Remove(tileKey);
 					callback(tileChange);
 					return;
 				default:
 					break;
 			}
-			StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			tiles[tileKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange, callback));
 		}
+
 		private Tile CreateNewTile(Vector2Int tileKey)
 		{
 			Tile tile = new Tile();

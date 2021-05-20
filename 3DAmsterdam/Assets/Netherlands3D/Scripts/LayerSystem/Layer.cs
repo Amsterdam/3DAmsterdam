@@ -40,5 +40,13 @@ namespace Netherlands3D.LayerSystem
                 dataset.maximumDistanceSquared = dataset.maximumDistance * dataset.maximumDistance;
             }
         }
+
+		public void InteruptRunningProcesses(Vector2Int tileKey)
+		{
+			if (!tiles.ContainsKey(tileKey)) return;
+
+			if (tiles[tileKey].runningWebRequest != null) tiles[tileKey].runningWebRequest.Abort();
+			if (tiles[tileKey].runningCoroutine != null) StopCoroutine(tiles[tileKey].runningCoroutine);
+		}
     }
 }
