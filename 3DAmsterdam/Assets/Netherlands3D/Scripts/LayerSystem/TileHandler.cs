@@ -118,7 +118,8 @@ namespace Netherlands3D.LayerSystem
 		void Update()
 		{
 			//for debugging
-			activeTileChangesView = activeTileChanges.Values.ToList();
+			//activeTileChangesView = activeTileChanges.Values.ToList();
+
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = GetCameraPosition(cameraExtents);
 
@@ -311,11 +312,11 @@ namespace Netherlands3D.LayerSystem
 
 		private void OnDrawGizmos()
 		{
+			Gizmos.color = Color.white;
 			foreach(var tileList in tileDistances)
 			{
 				foreach (var tile in tileList)
 				{
-					Gizmos.color = Color.Lerp(Color.green, Color.red, tile.z / 3000);
 					Gizmos.DrawWireCube(CoordConvert.RDtoUnity(new Vector3(tile.x + 500, tile.y + 500,0)),new Vector3(1000, 100,1000));
 				}
 			}
