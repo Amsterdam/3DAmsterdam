@@ -41,7 +41,7 @@ namespace Netherlands3D.LayerSystem
             }
         }
 
-		public void InteruptRunningProcesses(Vector2Int tileKey)
+		public virtual void InteruptRunningProcesses(Vector2Int tileKey)
 		{
 			if (!tiles.ContainsKey(tileKey)) return;
 

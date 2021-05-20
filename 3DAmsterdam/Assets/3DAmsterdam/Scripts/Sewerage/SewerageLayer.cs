@@ -76,16 +76,16 @@ namespace Amsterdam3D.Sewerage
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
+			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
 			switch (action)
 			{
 				case TileAction.Create:
 					Tile newTile = CreateNewTile(tileChange,callback);
-					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					tiles.Add(tileKey, newTile);
 					break;
 				case TileAction.Remove:
+					InteruptRunningProcesses(tileKey);
 					RemoveTile(tileChange, callback);
-					tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
-					callback(tileChange);
 					return;
 				default:
 					callback(tileChange);
@@ -103,11 +103,24 @@ namespace Amsterdam3D.Sewerage
 			tile.gameObject = new GameObject("sewerage-"+tileChange.X + "_" + tileChange.Y);
 			tile.gameObject.transform.parent = transform.gameObject.transform;
 			tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
-			tile.gameObject.SetActive(false);
 			Generate(tileChange, tile, callback);
 			return tile;
 		}
 
+		public override void InteruptRunningProcesses(Vector2Int tileKey)
+		{
+			if (!tiles.ContainsKey(tileKey)) return;
+
+			if (tiles[tileKey].runningWebRequest != null)
+				tiles[tileKey].runningWebRequest.Abort();
+
+			if (tiles[tileKey].runningCoroutine != null)
+			{
+				if (activeCount > 0) activeCount--;
+				
+				StopCoroutine(tiles[tileKey].runningCoroutine);
+			}
+		}
 
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
@@ -116,21 +129,25 @@ namespace Amsterdam3D.Sewerage
 			Vector3RD boundingBoxMinimum = new Vector3RD(tileChange.X,tileChange.Y,napOffset);
 			Vector3RD boundingBoxMaximum = new Vector3RD(tileChange.X+tileSize, tileChange.Y+tileSize, napOffset); ;
 			
-			StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
+			tile.runningCoroutine = StartCoroutine(GetSewerLinesInBoundingBox(tileChange,tile, boundingBoxMinimum, boundingBoxMaximum, callback));
 		}
 
 		IEnumerator GetSewerLinesInBoundingBox(TileChange tileChange, Tile tile, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, System.Action<TileChange> callback = null)
 		{
-			yield return null;
 			yield return new WaitUntil(() => activeCount < maxSimultaneous);
+
 			activeCount++;
-			tile.gameObject.SetActive(true);
+			if (activeCount < 1) activeCount = 1;
+
 			string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
 
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
+			tile.runningWebRequest = sewerageRequest;
 			yield return sewerageRequest.SendWebRequest();
+			tile.runningWebRequest = null;
+
 			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
 			{
                 GeoJSON customJsonHandler = new GeoJSON(sewerageRequest.downloadHandler.text);
@@ -160,52 +177,31 @@ namespace Amsterdam3D.Sewerage
 					}
 
 				}
-				StartCoroutine(GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback));
-				}
-				else
-				{ //callback if weberror
-					Debug.Log("sewerlinedata not found");
-					activeCount--;
-					callback(tileChange);
-				}
-
-				yield return null;
-		}
-
-		private IEnumerator SpawnLineObjects(SewerLines sewerLines, TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
-		{
-			tile.gameObject.SetActive(isEnabled);
-			SewerLines.Feature sewerLineFeature;
-			for (int i = 0; i < sewerLines.features.Length; i++)
-			{
-				if ((i % maxSpawnsPerFrame) == 0) yield return new WaitForEndOfFrame();
-
-				sewerLineFeature = sewerLines.features[i];
-				
-				sewerPipeSpawner.CreateSewerLine(
-					sewerLineFeature.geometry.unity_coordinates[0],
-					sewerLineFeature.geometry.unity_coordinates[1],
-					float.Parse(sewerLineFeature.properties.diameter),
-					tile.gameObject
-				);
+				yield return GetSewerManholesInBoundingBox(tileChange, boundingBoxMinimum, boundingBoxMaximum, tile, callback);
 			}
-
-			//Lines are done spawing. Start loading and spawing the manholes.
-			StartCoroutine(GetSewerManholesInBoundingBox(tileChange,boundingBoxMinimum, boundingBoxMaximum,tile,callback));
+			else
+			{ //callback if weberror
+				Debug.Log("sewerlinedata not found");
+				activeCount--;
+				callback(tileChange);
+			}
 
 			yield return null;
 		}
+
 		IEnumerator GetSewerManholesInBoundingBox(TileChange tileChange, Vector3RD boundingBoxMinimum, Vector3RD boundingBoxMaximum, Tile tile, System.Action<TileChange> callback = null)
 		{
 			string escapedUrl = Config.activeConfiguration.sewerManholesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
 
 			var sewerageRequest = UnityWebRequest.Get(escapedUrl);
-
+			tile.runningWebRequest = sewerageRequest;
 			yield return sewerageRequest.SendWebRequest();
+			tile.runningWebRequest = null;
+
 			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
 			{
-                StartCoroutine(SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback));
+				yield return SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback);
             }
             else
             {
@@ -239,8 +235,7 @@ namespace Amsterdam3D.Sewerage
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
 				}
 			}
-			StartCoroutine(CombineSewerage(tileChange, tile, callback));
-
+			yield return CombineSewerage(tileChange, tile, callback);
 		}
 		private IEnumerator CombineSewerage(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
@@ -332,14 +327,25 @@ namespace Amsterdam3D.Sewerage
 		}
 		private void RemoveTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
-			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
-			MeshFilter[] meshFilters = tile.gameObject.GetComponents<MeshFilter>();
-            foreach (var meshfilter in meshFilters)
-            {
-				Destroy(meshfilter.sharedMesh);
-            }
-			Destroy(tile.gameObject);
-			tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+			if (tiles.ContainsKey(tileKey))
+			{
+				Tile tile = tiles[tileKey];
+				if (tile.gameObject)
+				{
+					tile.gameObject.SetActive(true);
+					MeshFilter[] meshFilters = tile.gameObject.GetComponents<MeshFilter>();
+
+					foreach (var meshfilter in meshFilters)
+					{
+						Destroy(meshfilter.sharedMesh);
+					}
+
+					Destroy(tile.gameObject);
+				}
+
+				tiles.Remove(tileKey);
+			}
 			callback(tileChange);
 		}
 
