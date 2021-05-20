@@ -103,6 +103,7 @@ namespace Amsterdam3D.Sewerage
 			tile.gameObject = new GameObject("sewerage-"+tileChange.X + "_" + tileChange.Y);
 			tile.gameObject.transform.parent = transform.gameObject.transform;
 			tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
+			tile.gameObject.SetActive(false);
 			Generate(tileChange, tile, callback);
 			return tile;
 		}
@@ -137,7 +138,6 @@ namespace Amsterdam3D.Sewerage
 			yield return new WaitUntil(() => activeCount < maxSimultaneous);
 
 			activeCount++;
-			if (activeCount < 1) activeCount = 1;
 
 			string escapedUrl = Config.activeConfiguration.sewerPipesWfsUrl;
 			escapedUrl += UnityWebRequest.EscapeURL($"{boundingBoxMinimum.x.ToInvariant()},{boundingBoxMinimum.y.ToInvariant()},{boundingBoxMaximum.x.ToInvariant()},{boundingBoxMaximum.y.ToInvariant()}");
@@ -333,7 +333,6 @@ namespace Amsterdam3D.Sewerage
 				Tile tile = tiles[tileKey];
 				if (tile.gameObject)
 				{
-					tile.gameObject.SetActive(true);
 					MeshFilter[] meshFilters = tile.gameObject.GetComponents<MeshFilter>();
 
 					foreach (var meshfilter in meshFilters)
@@ -353,11 +352,11 @@ namespace Amsterdam3D.Sewerage
 		{
 			if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
 			{
-				return ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+				return CoordConvert.WGS84toUnity(new Vector3WGS(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
 			}
 			else
 			{
-				return ConvertCoordinates.CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
+				return CoordConvert.RDtoUnity(new Vector3RD(x, y, z + Config.activeConfiguration.zeroGroundLevelY));
 			}
 		}
 
