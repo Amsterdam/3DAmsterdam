@@ -27,7 +27,6 @@ namespace Netherlands3D.LayerSystem
 			TileAction action = tileChange.action;
 			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
 
-			InteruptRunningProcesses(tileKey);
 
 			switch (action)
 			{
@@ -42,6 +41,7 @@ namespace Netherlands3D.LayerSystem
 					tiles[tileKey].LOD--;
 					break;
 				case TileAction.Remove:
+					InteruptRunningProcesses(tileKey);
 					RemoveGameObjectFromTile(tileKey);
 					tiles.Remove(tileKey);
 					callback(tileChange);
@@ -112,6 +112,7 @@ namespace Netherlands3D.LayerSystem
 			else
 			{
 				AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(webRequest);
+				tiles[tileKey].assetBundle = assetBundle;
 				yield return new WaitUntil(() => pauseLoading == false);
 				GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
 				if (newGameobject != null)

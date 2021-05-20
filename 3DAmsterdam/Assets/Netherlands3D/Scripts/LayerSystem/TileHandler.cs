@@ -121,9 +121,9 @@ namespace Netherlands3D.LayerSystem
 			activeTileChangesView = activeTileChanges.Values.ToList();
 			viewRange = GetViewRange(cameraExtents);
 			cameraPosition = GetCameraPosition(cameraExtents);
-			
-            if (tileSizes.Count==0)
-            {
+
+			if (tileSizes.Count == 0)
+			{
 				GetTilesizes();
 			}
 			GetTileDistancesInView(tileSizes, viewRange, cameraPosition);
@@ -135,17 +135,7 @@ namespace Netherlands3D.LayerSystem
 			if (pendingTileChanges.Count == 0) { return; }
 
 			//Start with all remove changes to clear resources. We to all remove actions, and stop any running tilechanges that share the same position and layerindex
-			var removeChanges = pendingTileChanges.Where(change => change.action == TileAction.Remove).ToArray();
-			for (int i = removeChanges.Length - 1; i >= 0; i--)
-			{
-				var removeChange = removeChanges[i];
-
-				AbortSimilarTileChanges(removeChange);
-				AbortPendingSimilarTileChanges(removeChange);
-
-				pendingTileChanges.Remove(removeChange);
-				Debug.Log("Removed: " + removeChange.X + "," + removeChange.Y);
-			}
+			InstantlyStartRemoveChanges();
 
 			if (activeTileChanges.Count < maximumConcurrentDownloads && pendingTileChanges.Count > 0)
 			{
@@ -155,7 +145,7 @@ namespace Netherlands3D.LayerSystem
 				{
 					activeTileChanges.Add(tilekey, highestPriorityTileChange);
 					pendingTileChanges.Remove(highestPriorityTileChange);
-					layers[highestPriorityTileChange.layerIndex].HandleTile(highestPriorityTileChange,TileHandled);
+					layers[highestPriorityTileChange.layerIndex].HandleTile(highestPriorityTileChange, TileHandled);
 				}
 				else if (activeTileChanges.TryGetValue(tilekey, out TileChange existingTileChange))
 				{
@@ -170,10 +160,24 @@ namespace Netherlands3D.LayerSystem
 			}
 		}
 
+		private void InstantlyStartRemoveChanges()
+		{
+			var removeChanges = pendingTileChanges.Where(change => change.action == TileAction.Remove).ToArray();
+			for (int i = removeChanges.Length - 1; i >= 0; i--)
+			{
+				var removeChange = removeChanges[i];
+				layers[removeChange.layerIndex].HandleTile(removeChange, TileRemoved);
+				pendingTileChanges.Remove(removeChange);
+
+				//Abort all tilechanges with the same key
+				AbortSimilarTileChanges(removeChange);
+				AbortPendingSimilarTileChanges(removeChange);
+			}
+		}
+
 		private void AbortSimilarTileChanges(TileChange removeChange)
 		{
 			var changes = activeTileChanges.Where(change => ((change.Value.X == removeChange.X) && (change.Value.Y == removeChange.Y))).ToArray();
-			Debug.Log("ACTIVE REMOVED: " + changes.Length);
 			for (int i = changes.Length - 1; i >= 0; i--)
 			{
 				var runningChange = changes[i];
@@ -186,7 +190,6 @@ namespace Netherlands3D.LayerSystem
 		private void AbortPendingSimilarTileChanges(TileChange removeChange)
 		{
 			var changes = pendingTileChanges.Where(change => ((change.X == removeChange.X) && (change.Y == removeChange.Y))).ToArray();
-			Debug.Log("PENDING REMOVED: " + changes.Length);
 			for (int i = changes.Length - 1; i >= 0; i--)
 			{
 				var runningChange = changes[i];
@@ -306,6 +309,18 @@ namespace Netherlands3D.LayerSystem
 			}
 		}
 
+		private void OnDrawGizmos()
+		{
+			foreach(var tileList in tileDistances)
+			{
+				foreach (var tile in tileList)
+				{
+					Gizmos.color = Color.Lerp(Color.green, Color.red, tile.z / 3000);
+					Gizmos.DrawWireCube(CoordConvert.RDtoUnity(new Vector3(tile.x + 500, tile.y + 500,0)),new Vector3(1000, 100,1000));
+				}
+			}
+		}
+
 		private float GetTileDistanceSquared(Vector3Int tileID, Vector3Int cameraPosition)
 		{
 			float distance = 0;
@@ -390,7 +405,7 @@ namespace Netherlands3D.LayerSystem
 			//don't add a tilechange if the tile has an active tilechange already
 			
 			Vector3Int activekey = new Vector3Int(tileChange.X, tileChange.Y, tileChange.layerIndex);
-			if (activeTileChanges.ContainsKey(activekey))
+			if (activeTileChanges.ContainsKey(activekey) && tileChange.action != TileAction.Remove)
 			{
 				return;
 			}

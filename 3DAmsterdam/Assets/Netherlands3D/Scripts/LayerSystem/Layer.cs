@@ -45,6 +45,8 @@ namespace Netherlands3D.LayerSystem
 		{
 			if (!tiles.ContainsKey(tileKey)) return;
 
+            if (tiles[tileKey].assetBundle) tiles[tileKey].assetBundle.Unload(true);
+
 			if (tiles[tileKey].runningWebRequest != null) tiles[tileKey].runningWebRequest.Abort();
 			if (tiles[tileKey].runningCoroutine != null) StopCoroutine(tiles[tileKey].runningCoroutine);
 		}
