@@ -79,7 +79,7 @@ namespace Netherlands3D.ObjectInteraction
 				PropertiesPanel.Instance.OpenObjectInformation("", true, 10);
 				placeOnGrid = true;
 				PropertiesPanel.Instance.AddTitle("Plaatsingsopties");
-				PropertiesPanel.Instance.AddTextfield("De afmetingen van dit object passen binnen ons grid.\nGebruik de volgende opties om direct uit te lijnen en/of het bestaande gebied te verbergen.");
+				PropertiesPanel.Instance.AddTextfield("De afmetingen van dit object passen binnen ons grid.\nGebruik de volgende opties om direct uit te lijnen en/of het bestaande gebied weg te maskeren.");
 				PropertiesPanel.Instance.AddActionCheckbox("Uitlijnen op grid", true, (action) => placeOnGrid = action);
 				PropertiesPanel.Instance.AddActionCheckbox("Gebied maskeren", maskArea, (action) =>
 				{
@@ -90,7 +90,6 @@ namespace Netherlands3D.ObjectInteraction
 					}
 				});
 			}
-			PropertiesPanel.ignoreNextTabSwitch = true; //This blocks our tab switching away when we click to place
 		}
 
 		private bool IsGridShaped(Bounds bounds)
