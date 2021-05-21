@@ -152,6 +152,7 @@ namespace Netherlands3D.ModelParsing
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 				transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+				transformable.madeWithExternalTool = true;
 				transformable.mask = mask;
 
 				if (newOBJLoader.ObjectUsesRDCoordinates==false)
@@ -176,11 +177,6 @@ namespace Netherlands3D.ModelParsing
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);
-		}
-		
-		private void RemapMaterials(GameObject gameObject)
-		{
-			MaterialLibrary.Instance.AutoRemap(gameObject);
 		}
 	}
 }
