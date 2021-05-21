@@ -8,22 +8,25 @@ using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
+using static Netherlands3D.ObjectInteraction.Transformable;
 
 namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
-
 		[SerializeField]
 		private Material defaultLoadedObjectsMaterial;
 
 		[SerializeField]
 		private LoadingScreen loadingObjScreen;
 
-		[System.Serializable]
-		public class ObjectImportedEvent : UnityEvent<GameObject> { };
 		[SerializeField]
-		private ObjectImportedEvent doneLoadingModel;
+		private UnityEvent doneLoadingModel;
+
+		[SerializeField]
+		public Underground.RuntimeMask mask;
 
 		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
@@ -32,6 +35,8 @@ namespace Netherlands3D.ModelParsing
 
 		[SerializeField]
 		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
+
+		private Transformable transformable;
 
 		private void Start()
 		{
@@ -141,18 +146,34 @@ namespace Netherlands3D.ModelParsing
 				newOBJLoader.Build(defaultLoadedObjectsMaterial);
 
 				//Make interactable
-				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 				newOBJLoader.name = objModelName;
-				newOBJLoader.gameObject.AddComponent<Transformable>();
+				
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+				transformable.madeWithExternalTool = true;
+				transformable.mask = mask;
+
+				if (newOBJLoader.ObjectUsesRDCoordinates==false)
+                {
+					if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+					//transformable.placedTransformable.AddListener(RemapMaterials);
+					customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				}
+				else
+                {
+					transformable.stickToMouse = false;
+                }
+				
 			}
+			//placementSettings();
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
 
 			//Invoke done event
-			doneLoadingModel.Invoke(newOBJLoader.gameObject);
+			doneLoadingModel.Invoke();
+			
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);

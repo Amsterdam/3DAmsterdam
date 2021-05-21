@@ -156,16 +156,6 @@ namespace Netherlands3D.Underground
 				UpdateSpecificMaterials();
 				UpdateDynamicCreatedInstancedMaterials();
 			}
-
-#if UNITY_EDITOR
-			if (maskType == MaskState.STATIC_TRANSFORM && Application.isPlaying)
-			{
-				//Continious update for moving camera/mouse
-				CalculateMaskStencil();
-				UpdateSpecificMaterials();
-				UpdateDynamicCreatedInstancedMaterials();
-			}
-#endif
 		}
 
 		private void MoveMaskWithPointer()

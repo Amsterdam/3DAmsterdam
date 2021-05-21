@@ -64,7 +64,7 @@ public class DxfFile
             netDxf.Vector3 vertex1 = new netDxf.Vector3(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z);
             netDxf.Vector3 vertex2 = new netDxf.Vector3(triangleVertices[i+1].x, triangleVertices[i+1].y, triangleVertices[i+1].z);
             netDxf.Vector3 vertex3 = new netDxf.Vector3(triangleVertices[i+2].x, triangleVertices[i+2].y, triangleVertices[i+2].z);
-            Face3d face = new Face3d(vertex1, vertex2, vertex3);
+            Face3d face = new Face3d(vertex1, vertex3, vertex2);
             block.Entities.Add(face);
             //doc.AddEntity(face);
             //face.Layer = Laag;
@@ -92,8 +92,9 @@ public class DxfFile
 
             
             pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i].x, triangleVertices[i].y, triangleVertices[i].z));
-            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 1].x, triangleVertices[i + 1].y, triangleVertices[i + 1].z));
             pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 2].x, triangleVertices[i + 2].y, triangleVertices[i + 2].z));
+            pfmVertices.Add(new PolyfaceMeshVertex(triangleVertices[i + 1].x, triangleVertices[i + 1].y, triangleVertices[i + 1].z));
+            
             PolyfaceMeshFace pfmFace = new PolyfaceMeshFace(new List<short>() { (short)(vertexIndex+1), (short)(vertexIndex + 2), (short)(vertexIndex + 3) });
             vertexIndex += 3;
             pfmFaces.Add(pfmFace);

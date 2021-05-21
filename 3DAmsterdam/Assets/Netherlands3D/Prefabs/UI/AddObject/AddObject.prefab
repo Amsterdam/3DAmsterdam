@@ -200,7 +200,6 @@ RectTransform:
   m_Children:
   - {fileID: 8148091998274520942}
   - {fileID: 868830995257197284}
-  - {fileID: 7783726422405617307}
   - {fileID: 1911649133417025910}
   m_Father: {fileID: 5309178737955121746}
   m_RootOrder: 1
@@ -495,89 +494,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Eigen model
---- !u!1 &2976261594733223007
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7783726422405617307}
-  - component: {fileID: 3689796967062858775}
-  - component: {fileID: 978519568695902906}
-  m_Layer: 5
-  m_Name: SpecificationText
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7783726422405617307
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2976261594733223007}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4957659734554870234}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -127}
-  m_SizeDelta: {x: 290, y: 51.51}
-  m_Pivot: {x: 0.5, y: 1}
---- !u!222 &3689796967062858775
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2976261594733223007}
-  m_CullTransparentMesh: 0
---- !u!114 &978519568695902906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2976261594733223007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 0
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 12
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 9
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 0
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
-    m_LineSpacing: 1.2
-  m_Text: '-Wavefront OBJ formaat
-
-    -Maximaal 100MB bestandsgrootte
-
-    -Triangulated
-    faces'
 --- !u!1 &3557120425294833839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1009,7 @@ RectTransform:
   - {fileID: 7956115664182329634}
   - {fileID: 6396490243605769551}
   m_Father: {fileID: 4957659734554870234}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -1507,8 +1423,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -53}
-  m_SizeDelta: {x: 290, y: 51.51}
+  m_AnchoredPosition: {x: 0, y: -60}
+  m_SizeDelta: {x: 301, y: 280}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &336449920043772049
 CanvasRenderer:
@@ -1550,21 +1466,27 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'U kunt een eigen .OBJ model uploaden.
+  m_Text: 'U kunt een eigen .OBJ model importeren.
 
-    Zorg dat het 3D model aan de
-    volgende eisen voldoet:
+    Naast de .OBJ kunt u ook
+    tegelijk een bijbehorend .MTL bestand met materialen importeren.
+
+    Zorg dat
+    het 3D model aan de volgende eisen voldoet:
 
 
+    -Wavefront OBJ formaat
 
+    -Maximaal
+    100MB bestandsgrootte
 
-
+    -Triangulated faces
 
 
     <b>Vanuit SketchUp:</b>
 
-    File > Export
-    > 3D Model
+    File
+    > Export > 3D Model
 
     Selecteer OBJ File (*.obj)
 

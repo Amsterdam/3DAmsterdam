@@ -6,7 +6,6 @@ using System.Globalization;
 using ConvertCoordinates;
 using System;
 using UnityEngine.EventSystems;
-using BruTile.Wms;
 using System.Text.RegularExpressions;
 using UnityEngine.UIElements;
 
