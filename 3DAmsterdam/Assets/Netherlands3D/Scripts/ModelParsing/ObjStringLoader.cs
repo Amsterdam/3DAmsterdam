@@ -94,6 +94,14 @@ namespace Netherlands3D.ModelParsing
 		/// <returns></returns>
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
+			//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
+			if (objText.Length < 5)
+			{
+				loadingObjScreen.Hide();
+				WarningDialogs.Instance.ShowNewDialog("Dit bestand lijkt geen .obj bestand te zijn. Controleer of je naast een .mtl bestand ook een .obj bestand heb geselecteerd.");
+				yield break; 
+			}
+		
 			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
 			float remainingLinesToParse;
