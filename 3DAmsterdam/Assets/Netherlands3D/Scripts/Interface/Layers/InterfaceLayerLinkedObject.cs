@@ -18,4 +18,9 @@ public class InterfaceLayerLinkedObject : MonoBehaviour
 		if (InterfaceLayer)
 			InterfaceLayer.ToggleLinkedObject(gameObject.activeSelf);
 	}
+
+	private void OnDestroy()
+	{
+		if (InterfaceLayer) Destroy(InterfaceLayer.gameObject);
+	}
 }
