@@ -23,6 +23,7 @@ public class VisualGrid : MonoBehaviour
 	private void Start()
 	{
 		UpdateVisual();
+		Hide();
 	}
 
 	private void OnValidate()
