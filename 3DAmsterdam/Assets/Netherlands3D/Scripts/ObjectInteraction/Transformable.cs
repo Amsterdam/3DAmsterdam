@@ -21,7 +21,7 @@ namespace Netherlands3D.ObjectInteraction
 		private Vector3 offset;
 
 		[SerializeField]
-		public Underground.RuntimeMask mask;
+		public Masking.RuntimeMask mask;
 
 		private bool snapToGround = true;
 
@@ -177,6 +177,17 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			base.Deselect();
 			PropertiesPanel.Instance.DeselectTransformable(this, true);
+		}
+
+		public override void Escape()
+		{
+			base.Escape();
+
+			if(stickToMouse)
+			{
+				//Im still placing this object, use escape to abort placement, and remove this object
+				Destroy(gameObject);
+			}
 		}
 
 		/// <summary>

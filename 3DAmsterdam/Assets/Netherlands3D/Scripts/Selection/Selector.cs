@@ -35,6 +35,7 @@ namespace Netherlands3D.Interface
 		private IAction clickedAction;
 		private IAction clickedSecondaryAction;
 		private IAction multiSelectAction;
+		private IAction escapeAction;
 
 		public static bool doingMultiselect = false;
 
@@ -90,11 +91,13 @@ namespace Netherlands3D.Interface
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
 			multiSelectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+			escapeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Escape);
 
 			//Listeners
 			clickedAction.SubscribePerformed(Click);
 			multiSelectAction.SubscribePerformed(Multiselect);
 			multiSelectAction.SubscribeCancelled(Multiselect);
+			escapeAction.SubscribePerformed(Escape);
 
 			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
 		}
@@ -215,6 +218,14 @@ namespace Netherlands3D.Interface
 				doingMultiselect = true;
 				//Let any listeners know we have made a general click action
 				registeredClickInput.Invoke();
+			}
+		}
+
+		private void Escape(IAction action)
+		{
+			if(activeInteractable)
+			{
+				activeInteractable.Escape();
 			}
 		}
 
