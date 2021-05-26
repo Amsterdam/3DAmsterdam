@@ -32,7 +32,7 @@ namespace Netherlands3D.Interface
 
             var newWarning = Instantiate(warningPrefab, this.transform);
             newWarning.SetMessage(message);
-            newWarning.transform.SetAsLastSibling();
+            this.transform.SetAsLastSibling();
         }
     }
 }
