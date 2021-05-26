@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &654527445926179445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 654527445926179448}
+  - component: {fileID: 654527445926179451}
+  - component: {fileID: 654527445926179450}
+  m_Layer: 0
+  m_Name: Vissim Object
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &654527445926179448
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654527445926179445}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3392.8591, y: 40.09782, z: -84.56459}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &654527445926179451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654527445926179445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca8c85153fbc8143891046b2cfbe285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileLocationVISSIM: kr651nieuwOS1secondeopcoordinaat.fzp
+  allVissimData: []
+  finishedLoadingData: 0
+  frameCounter: 0
+  timeBetweenFrames: 1
+  vissimCarPrefabs:
+  - {fileID: 7695469252762412907, guid: d431de41acd4e9c4ab9c7a12c5361ca0, type: 3}
+  - {fileID: 2923609624481023521, guid: ee5231591e5902942aed4d07af01e447, type: 3}
+  - {fileID: 7695382110483902936, guid: f7573abdaa5ab1c458792da6a77e3caa, type: 3}
+  - {fileID: 8347114999272615114, guid: dbb7a9dbbf8d059409903492916354b1, type: 3}
+  - {fileID: 3870342148592050058, guid: 433449eaa639af9459cdb6c9c1738e46, type: 3}
+  - {fileID: 8903866566195835908, guid: b1470b26779409741b1117d5ddebe214, type: 3}
+  - {fileID: 8086876940428001739, guid: bbc46fc810eb5044ca77f77a8e07474a, type: 3}
+  - {fileID: 1225890765605297888, guid: ee7aa182d17cc2a4b9a8f333ccf4ea9e, type: 3}
+  vissimTruckPrefabs:
+  - {fileID: 7695469252762412907, guid: d431de41acd4e9c4ab9c7a12c5361ca0, type: 3}
+  - {fileID: 2923609624481023521, guid: ee5231591e5902942aed4d07af01e447, type: 3}
+  - {fileID: 7695382110483902936, guid: f7573abdaa5ab1c458792da6a77e3caa, type: 3}
+  - {fileID: 8347114999272615114, guid: dbb7a9dbbf8d059409903492916354b1, type: 3}
+  - {fileID: 3870342148592050058, guid: 433449eaa639af9459cdb6c9c1738e46, type: 3}
+  - {fileID: 8903866566195835908, guid: b1470b26779409741b1117d5ddebe214, type: 3}
+  - {fileID: 8086876940428001739, guid: bbc46fc810eb5044ca77f77a8e07474a, type: 3}
+  - {fileID: 1225890765605297888, guid: ee7aa182d17cc2a4b9a8f333ccf4ea9e, type: 3}
+  vissimBusPrefabs:
+  - {fileID: 6925990647437181385, guid: a8f41093f0ed11847807bd210f5c5d38, type: 3}
+  vissimTramPrefabs:
+  - {fileID: 7695469252762412907, guid: d431de41acd4e9c4ab9c7a12c5361ca0, type: 3}
+  - {fileID: 5084764971135248543, guid: d11779b4bec81794e8016db03113c707, type: 3}
+  - {fileID: 2923609624481023521, guid: ee5231591e5902942aed4d07af01e447, type: 3}
+  - {fileID: 7695382110483902936, guid: f7573abdaa5ab1c458792da6a77e3caa, type: 3}
+  - {fileID: 8347114999272615114, guid: dbb7a9dbbf8d059409903492916354b1, type: 3}
+  - {fileID: 3870342148592050058, guid: 433449eaa639af9459cdb6c9c1738e46, type: 3}
+  - {fileID: 8903866566195835908, guid: b1470b26779409741b1117d5ddebe214, type: 3}
+  - {fileID: 8086876940428001739, guid: bbc46fc810eb5044ca77f77a8e07474a, type: 3}
+  - {fileID: 1225890765605297888, guid: ee7aa182d17cc2a4b9a8f333ccf4ea9e, type: 3}
+  vissimPedestrianPrefabs:
+  - {fileID: 577238088296470394, guid: 1dcc329478d82c64cab40eefbc85a1b0, type: 3}
+  - {fileID: 4794252102561472799, guid: 7367c829b4204a240b0b8b28d99d838b, type: 3}
+  vissimCyclePrefabs:
+  - {fileID: 784645615902460149, guid: 24d3876203fb424479c270d126247f52, type: 3}
+  vissimVanPrefabs:
+  - {fileID: 7695469252762412907, guid: d431de41acd4e9c4ab9c7a12c5361ca0, type: 3}
+  - {fileID: 5084764971135248543, guid: d11779b4bec81794e8016db03113c707, type: 3}
+  - {fileID: 2923609624481023521, guid: ee5231591e5902942aed4d07af01e447, type: 3}
+  - {fileID: 7695382110483902936, guid: f7573abdaa5ab1c458792da6a77e3caa, type: 3}
+  - {fileID: 8347114999272615114, guid: dbb7a9dbbf8d059409903492916354b1, type: 3}
+  - {fileID: 3870342148592050058, guid: 433449eaa639af9459cdb6c9c1738e46, type: 3}
+  - {fileID: 8903866566195835908, guid: b1470b26779409741b1117d5ddebe214, type: 3}
+  - {fileID: 8086876940428001739, guid: bbc46fc810eb5044ca77f77a8e07474a, type: 3}
+  - {fileID: 1225890765605297888, guid: ee7aa182d17cc2a4b9a8f333ccf4ea9e, type: 3}
+--- !u!114 &654527445926179450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654527445926179445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48323eaae19c3f944bf9a9a959f47cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileConverter: {fileID: 654527445926179451}
+  timeCounter: 0
+  loopCounter: 0
+  loopCounterFuture: 0
