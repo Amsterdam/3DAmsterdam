@@ -136,6 +136,11 @@
 		  //Reset file selection
 		  document.getElementById("obj").value = "";
 	  }
+	  function AbortInUnity() {
+		  console.log("Abort import in Unity");
+		  unityInstance.SendMessage(unityObjectName, "AbortImport");
+		  document.getElementById("obj").value = "";
+	  }
 
 	  function ReadFiles(selectedFiles) {
 		  //Check browser support
@@ -164,6 +169,11 @@
 					  console.log("OBJ file");
 					  objFileSelectionIndex = i;
 				  }
+			  }
+			  
+			  //Check if we at least found an obj in our selection of files
+			  if(objFileSelectionIndex == -1){
+				AbortInUnity();
 			  }
 
 			  //What to do when files are done loading
