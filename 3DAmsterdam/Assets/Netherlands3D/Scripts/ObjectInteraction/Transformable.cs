@@ -112,9 +112,9 @@ namespace Netherlands3D.ObjectInteraction
 
 		private bool IsGridShaped(Bounds bounds)
 		{
-			if (((bounds.max.x - bounds.min.x) % 100) + 1 < 2)
+			if (((bounds.max.x - bounds.min.x) % VisualGrid.Instance.CellSize) + 1 < 2)
 			{
-				if (((bounds.max.z - bounds.min.z) % 100) + 1 < 2)
+				if (((bounds.max.z - bounds.min.z) % VisualGrid.Instance.CellSize) + 1 < 2)
 				{
 					return true;
 				}
@@ -241,12 +241,10 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			newPosition = aimedPosition - offset;
 
-			//offset.x = -bounds.min.x % 100;
-			//offset.z = -bounds.min.z % 100;
 			if (snapToGrid)
 			{
-				newPosition.x -= ((newPosition.x + bounds.min.x) % 100);
-				newPosition.z -= ((newPosition.z + bounds.min.z) % 100);
+				newPosition.x -= ((newPosition.x + bounds.min.x) % VisualGrid.Instance.CellSize);
+				newPosition.z -= ((newPosition.z + bounds.min.z) % VisualGrid.Instance.CellSize);
 
 			}
 			if (mask && maskArea)
