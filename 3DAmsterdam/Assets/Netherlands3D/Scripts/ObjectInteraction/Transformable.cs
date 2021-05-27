@@ -153,6 +153,10 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				Debug.Log("Placed Transformable");
 
+				blockMouseSelectionInteractions = false;
+				blockKeyboardNavigationInteractions = false;
+				blockMouseNavigationInteractions = true;
+
 				stickToMouse = false;
 				placedTransformable.Invoke(this.gameObject);
 
@@ -186,10 +190,6 @@ namespace Netherlands3D.ObjectInteraction
 		public override void Select()
 		{
 			if (stickToMouse) return;
-
-			blockMouseSelectionInteractions = false;
-			blockKeyboardNavigationInteractions = false;
-			blockMouseNavigationInteractions = true;
 
 			base.Select();
 			if (!stickToMouse && lastSelectedTransformable != this)
