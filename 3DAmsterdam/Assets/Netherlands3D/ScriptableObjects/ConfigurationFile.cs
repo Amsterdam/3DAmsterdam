@@ -37,8 +37,9 @@ namespace Netherlands3D
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
         public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
 
-        public string sharingBaseURL = "https://3d.amsterdam.nl/";
-        public string sharingSceneSubdirectory = "customScene.php?id=";
+        public string shareDownloadURL = "https://3d.amsterdam.nl/customScene.php?id=";
+        public string shareUploadURL = "https://3d.amsterdam.nl/customUpload.php";
+
         public string sharingViewUrl = "https://3d.amsterdam.nl/web/app/index.html?view=";
 
         [Header("External URLs")]
