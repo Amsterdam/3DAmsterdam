@@ -199,7 +199,7 @@ namespace Netherlands3D.Interface
 			//Let any listeners know we have made a general click
 			registeredClickInput.Invoke();
 
-			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+			if (activeInteractable && !activeInteractable.blockMouseSelectionInteractions)
 			{
 				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
 				SecondarySelect();

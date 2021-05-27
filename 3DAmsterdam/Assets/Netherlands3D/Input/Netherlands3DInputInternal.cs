@@ -700,7 +700,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""1a3dbc7d-b1cd-4a2d-882d-2374142db434"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 }
             ],
             ""bindings"": [
@@ -727,7 +727,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""6446b212-f44f-4328-a9ff-b613c295e465"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 }
             ],
             ""bindings"": [
