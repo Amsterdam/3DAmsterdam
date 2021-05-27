@@ -42,6 +42,14 @@ namespace Netherlands3D.ObjectInteraction
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
 		public ObjectPlacedEvent placedTransformable;
 
+		private void Awake()
+		{
+			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
+			blockMouseSelectionInteractions = true;
+			blockKeyboardNavigationInteractions = false;
+			blockMouseNavigationInteractions = false;
+		}
+
 		private void Start()
 		{
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
@@ -179,6 +187,10 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			if (stickToMouse) return;
 
+			blockMouseSelectionInteractions = false;
+			blockKeyboardNavigationInteractions = false;
+			blockMouseNavigationInteractions = true;
+
 			base.Select();
 			if (!stickToMouse && lastSelectedTransformable != this)
 			{
@@ -192,6 +204,8 @@ namespace Netherlands3D.ObjectInteraction
 		}
 		public override void SecondarySelect()
 		{
+			if (stickToMouse) return;
+
 			Select();
 		}
 
