@@ -16,7 +16,7 @@
         // Fill in here the folder name from: `Assets/WebGLTemplates/<FOLDER>`
         // Hard-coding this variable is undesirable. Unity Cloud Build allows the user to define an environment variable,
         // which could be used here, but it's more to remember during setup and thus, the simpler hard-coded solution seems best.
-        const string CUSTOM_TEMPLATE_NAME = "Responsive3DAmsterdam";
+        const string CUSTOM_TEMPLATE_NAME = "Fullscreen3DAmsterdam";
 
         static string TemplatePath { get { return Paths.Combine(Application.dataPath, "WebGLTemplates", CUSTOM_TEMPLATE_NAME); } }
 
