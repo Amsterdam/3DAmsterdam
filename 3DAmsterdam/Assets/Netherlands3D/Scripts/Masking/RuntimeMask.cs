@@ -106,7 +106,7 @@ namespace Netherlands3D.Masking
 		public void FlipMask()
 		{
 			//Make sure we are working on an instance, not our source asset
-			if (allowInvert)
+			if (!allowInvert)
 			{
 				Debug.LogWarning("Inverting mask currently only allowed on rectangular (small 32x32 texture) mask");
 				return;
