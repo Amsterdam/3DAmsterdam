@@ -26,7 +26,7 @@ namespace Netherlands3D.ModelParsing
 		private UnityEvent doneLoadingModel;
 
 		[SerializeField]
-		public Underground.RuntimeMask mask;
+		public Masking.RuntimeMask mask;
 
 		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;

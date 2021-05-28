@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Netherlands3D.Underground
+namespace Netherlands3D.Masking
 {
 	public class RuntimeMask : MonoBehaviour
 	{
@@ -24,9 +24,7 @@ namespace Netherlands3D.Underground
 		}
 
 		[SerializeField]
-		private MaskShape maskShape = MaskShape.SPHERICAL;
-		[SerializeField]
-		private MaskState maskType = MaskState.STATIC_TRANSFORM;
+		private bool allowInvert = false;
 
 		[SerializeField]
 		private bool updateRuntimeDynamicMaterials = false;
@@ -58,6 +56,8 @@ namespace Netherlands3D.Underground
 
 		private MeshRenderer visual;
 
+		public float MaskScaleMultiplier { get => maskScaleMultiplier; }
+
 		private void Awake()
 		{
 			visual = GetComponent<MeshRenderer>();
@@ -75,7 +75,7 @@ namespace Netherlands3D.Underground
 			}
 			current = this;
 
-			if(maskType == MaskState.STATIC_TRANSFORM && lastBounds != null)
+			if(lastBounds != null)
 			{
 				MoveToBounds(lastBounds);
 			}
@@ -97,12 +97,6 @@ namespace Netherlands3D.Underground
 			Clear();
 		}
 
-		public void MoveWithMouse()
-		{
-			maskType = MaskState.FOLLOW_MOUSE;
-			gameObject.SetActive(true);
-		}
-
 		public void Clear()
 		{
 			UpdateSpecificMaterials(true);
@@ -112,7 +106,7 @@ namespace Netherlands3D.Underground
 		public void FlipMask()
 		{
 			//Make sure we are working on an instance, not our source asset
-			if (maskShape == MaskShape.SPHERICAL)
+			if (!allowInvert)
 			{
 				Debug.LogWarning("Inverting mask currently only allowed on rectangular (small 32x32 texture) mask");
 				return;
@@ -133,41 +127,19 @@ namespace Netherlands3D.Underground
 		public void MoveToBounds(Bounds bounds)
 		{
 			lastBounds = bounds;
-			maskType = MaskState.STATIC_TRANSFORM;
 
 			this.transform.position = bounds.center;
 			this.transform.localScale = bounds.size * (1.0f + (2.0f / maskTexture.width)); //We use a margin of 1 pixel, so the white edge of our mask texture can be clamped
-			CalculateMaskStencil();
-			UpdateSpecificMaterials();
-			UpdateDynamicCreatedInstancedMaterials();
+			ApplyNewPositionAndScale();
 
 			gameObject.SetActive(true);
 		}
 
-		void Update()
+		public void ApplyNewPositionAndScale()
 		{
-			if (CameraModeChanger.Instance.CameraMode != CameraMode.GodView) return;
-
-			if (maskType == MaskState.FOLLOW_MOUSE)
-			{
-				//Continious update for moving camera/mouse
-				MoveMaskWithPointer();
-				CalculateMaskStencil();
-				UpdateSpecificMaterials();
-				UpdateDynamicCreatedInstancedMaterials();
-			}
-		}
-
-		private void MoveMaskWithPointer()
-		{
-			if (Selector.Instance.HoveringInterface())
-			{
-				transform.transform.localScale = Vector3.zero;
-				return;
-			}
-
-			transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-			transform.transform.localScale = Vector3.one * maskScaleMultiplier * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+			CalculateMaskStencil();
+			UpdateSpecificMaterials();
+			UpdateDynamicCreatedInstancedMaterials();
 		}
 
 		private void CalculateMaskStencil()

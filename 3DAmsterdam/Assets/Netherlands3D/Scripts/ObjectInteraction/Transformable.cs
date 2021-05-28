@@ -21,7 +21,7 @@ namespace Netherlands3D.ObjectInteraction
 		private Vector3 offset;
 
 		[SerializeField]
-		public Underground.RuntimeMask mask;
+		public Masking.RuntimeMask mask;
 
 		private bool snapToGround = true;
 
@@ -41,6 +41,14 @@ namespace Netherlands3D.ObjectInteraction
 		[System.Serializable]
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
 		public ObjectPlacedEvent placedTransformable;
+
+		private void Awake()
+		{
+			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
+			blockMouseSelectionInteractions = true;
+			blockKeyboardNavigationInteractions = false;
+			blockMouseNavigationInteractions = false;
+		}
 
 		private void Start()
 		{
@@ -145,6 +153,10 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				Debug.Log("Placed Transformable");
 
+				blockMouseSelectionInteractions = false;
+				blockKeyboardNavigationInteractions = false;
+				blockMouseNavigationInteractions = true;
+
 				stickToMouse = false;
 				placedTransformable.Invoke(this.gameObject);
 
@@ -192,6 +204,8 @@ namespace Netherlands3D.ObjectInteraction
 		}
 		public override void SecondarySelect()
 		{
+			if (stickToMouse) return;
+
 			Select();
 		}
 
@@ -199,6 +213,17 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			base.Deselect();
 			PropertiesPanel.Instance.DeselectTransformable(this, true);
+		}
+
+		public override void Escape()
+		{
+			base.Escape();
+
+			if(stickToMouse)
+			{
+				//Im still placing this object, use escape to abort placement, and remove this object
+				Destroy(gameObject);
+			}
 		}
 
 		/// <summary>

@@ -152,6 +152,12 @@ namespace Netherlands3D.Interface
 			StopInteraction();
 		}
 
+		public override void Escape()
+		{
+			base.Escape();
+			gameObject.SetActive(false);
+		}
+
 		private void Update()
 		{
 			if (Selector.Instance.HoveringInterface())

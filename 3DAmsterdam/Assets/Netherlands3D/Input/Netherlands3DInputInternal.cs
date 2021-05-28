@@ -158,6 +158,14 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a32b022-8b55-461c-ba43-a21575146cf2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -202,6 +210,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Multiselect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a6100ce-0410-4fdb-aa49-1c7b1a12d129"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -681,7 +700,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""1a3dbc7d-b1cd-4a2d-882d-2374142db434"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 }
             ],
             ""bindings"": [
@@ -708,7 +727,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""6446b212-f44f-4328-a9ff-b613c295e465"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Tap""
                 }
             ],
             ""bindings"": [
@@ -1699,6 +1718,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         m_Selector_DoubleClick = m_Selector.FindAction("DoubleClick", throwIfNotFound: true);
         m_Selector_ClickSecondary = m_Selector.FindAction("ClickSecondary", throwIfNotFound: true);
         m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
+        m_Selector_Escape = m_Selector.FindAction("Escape", throwIfNotFound: true);
         // GodViewKeyboard
         m_GodViewKeyboard = asset.FindActionMap("GodViewKeyboard", throwIfNotFound: true);
         m_GodViewKeyboard_MoveCamera = m_GodViewKeyboard.FindAction("Move Camera", throwIfNotFound: true);
@@ -1851,6 +1871,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Selector_DoubleClick;
     private readonly InputAction m_Selector_ClickSecondary;
     private readonly InputAction m_Selector_Click;
+    private readonly InputAction m_Selector_Escape;
     public struct SelectorActions
     {
         private @Netherlands3DInputActions m_Wrapper;
@@ -1859,6 +1880,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
         public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
         public InputAction @Click => m_Wrapper.m_Selector_Click;
+        public InputAction @Escape => m_Wrapper.m_Selector_Escape;
         public InputActionMap Get() { return m_Wrapper.m_Selector; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1880,6 +1902,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Click.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClick;
+                @Escape.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_SelectorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1896,6 +1921,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -2438,6 +2466,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         void OnDoubleClick(InputAction.CallbackContext context);
         void OnClickSecondary(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
     public interface IGodViewKeyboardActions
     {
