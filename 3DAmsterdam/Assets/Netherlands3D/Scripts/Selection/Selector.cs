@@ -104,6 +104,8 @@ namespace Netherlands3D.Interface
 
 		public void SetActiveInteractable(Interactable interactable)
 		{
+			if (interactable == activeInteractable) return;
+
 			if (activeInteractable) activeInteractable.Escape();
 			activeInteractable = interactable;
 		}
