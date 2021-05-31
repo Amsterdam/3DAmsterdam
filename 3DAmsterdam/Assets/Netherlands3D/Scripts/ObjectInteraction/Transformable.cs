@@ -176,6 +176,7 @@ namespace Netherlands3D.ObjectInteraction
 				}
 
 				//If this is a custom made transformable, check for a material remap
+				PropertiesPanel.Instance.ClearGeneratedFields();
 				if (madeWithExternalTool && !MaterialLibrary.Instance.AutoRemap(gameObject))
 				{
 					PropertiesPanel.Instance.OpenCustomObjects();

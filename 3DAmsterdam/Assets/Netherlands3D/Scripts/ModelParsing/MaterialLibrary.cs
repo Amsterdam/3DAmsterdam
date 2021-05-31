@@ -53,11 +53,13 @@ namespace Netherlands3D.ModelParsing
             PropertiesPanel.Instance.AddActionButtonBig("Ja, neem over", (action) =>
             {
                 ApplyMaterialOverrides(renderer);
+                PropertiesPanel.Instance.ClearGeneratedFields();
                 PropertiesPanel.Instance.OpenCustomObjects();
                 UpdateBounds();
             });
             PropertiesPanel.Instance.AddActionButtonBig("Nee", (action) =>
             {
+                PropertiesPanel.Instance.ClearGeneratedFields();
                 PropertiesPanel.Instance.OpenCustomObjects(renderer.GetComponent<Transformable>());
                 UpdateBounds();
             });
