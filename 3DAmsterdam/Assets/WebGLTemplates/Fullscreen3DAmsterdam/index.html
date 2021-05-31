@@ -15,7 +15,10 @@
   </head>
   <body>
     <div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
-	<div id="objUploadClickRegisterArea" style="display:none;">
+	<div id="objUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
+	</div>
+	<div id="vissimUploadasdasd" class="hiddenFollower" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
 	</div>
     <div id="gameContainer"></div>
@@ -159,16 +162,28 @@
 			  var mtlFileSelectionIndex = -1;
 			  var objFileSelectionIndex = -1;
 
+			  var amountOfObjs = 0;
+			  var amountOfMtls = 0;
+
 			  //Check what index is the obj file, and optionaly the mtl file
 			  for (var i = 0; i < selectedFiles.length; i++) {
 				  var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
 				  if (extension == "mtl") {
 					  console.log("MTL file");
 					  mtlFileSelectionIndex = i;
+					  amountOfMtls ++;
 				  } else if (extension == "obj") {
 					  console.log("OBJ file");
 					  objFileSelectionIndex = i;
+					  amountOfObjs ++;
 				  }
+			  }
+			  
+			  //Selected too many files?
+			  if(amountOfObjs > 1 || amountOfMtls > 1)
+			  {
+				 AbortInUnity();
+				 return false;
 			  }
 			  
 			  //Check if we at least found an obj in our selection of files

@@ -92,7 +92,7 @@ namespace Netherlands3D.ModelParsing
 		public void AbortImport()
 		{
 			loadingObjScreen.Hide();
-			WarningDialogs.Instance.ShowNewDialog("Dit bestand lijkt geen .obj bestand te zijn. Controleer of je naast een .mtl bestand ook een .obj bestand heb geselecteerd.");
+			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
 
 		/// <summary>
