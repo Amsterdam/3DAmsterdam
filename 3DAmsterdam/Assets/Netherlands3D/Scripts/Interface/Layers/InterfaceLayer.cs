@@ -82,8 +82,6 @@ namespace Netherlands3D.Interface.Layers
 
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();
-
-				AddTwoWayConnectionToLinkedObject();
 			}
 		}
 
@@ -151,8 +149,7 @@ namespace Netherlands3D.Interface.Layers
 
 		private void AddTwoWayConnectionToLinkedObject()
 		{
-			var interaceLinkedObject = LinkedObject.GetComponent<InterfaceLayerLinkedObject>();
-			if (interaceLinkedObject) Destroy(interaceLinkedObject);
+			var interfaceLinkedObject = LinkedObject.GetComponent<InterfaceLayerLinkedObject>();
 
 			LinkedObject.AddComponent<InterfaceLayerLinkedObject>().InterfaceLayer = this;
 		}
