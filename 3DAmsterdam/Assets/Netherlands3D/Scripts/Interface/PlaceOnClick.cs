@@ -15,6 +15,7 @@ namespace Netherlands3D.Interface
     {
         public bool waitingForClick = true;
         private IAction placeAction;
+        private ActionEventClass actionEvent;
 
         private WorldPointFollower worldPointerFollower;
 		public WorldPointFollower WorldPointerFollower { get => worldPointerFollower; private set => worldPointerFollower = value; }
@@ -33,7 +34,7 @@ namespace Netherlands3D.Interface
             placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
             if (waitingForClick)
             {
-                placeAction.SubscribePerformed(Place);
+                actionEvent = placeAction.SubscribePerformed(Place);
                 PlaceUsingPointer();
             }
         }
@@ -52,7 +53,8 @@ namespace Netherlands3D.Interface
                 Placed();
             }
         }
-        protected virtual void Placed()
+
+		protected virtual void Placed()
         {
             Debug.Log("Placed object", this.gameObject);
             waitingForClick = false;
