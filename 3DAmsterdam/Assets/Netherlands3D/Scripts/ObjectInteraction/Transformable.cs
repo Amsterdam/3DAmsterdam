@@ -69,7 +69,7 @@ namespace Netherlands3D.ObjectInteraction
 			transform.position = Vector3.zero;
 			if (stickToMouse)
 			{
-				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\nDruk op <b>Escape</b> om te annuleren.");
+				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 				PlacementSettings();
 				placeActionEvent = placeAction.SubscribePerformed(Place);
