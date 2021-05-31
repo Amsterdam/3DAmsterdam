@@ -37,6 +37,7 @@ namespace Netherlands3D.ObjectInteraction
 
 		private Bounds bounds;
 		private IAction placeAction;
+		private ActionEventClass placeActionEvent;
 
 		[System.Serializable]
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
@@ -71,7 +72,7 @@ namespace Netherlands3D.ObjectInteraction
 				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden");
 
 				PlacementSettings();
-				placeAction.SubscribePerformed(Place);
+				placeActionEvent = placeAction.SubscribePerformed(Place);
 				TakeInteractionPriority();
 				StartCoroutine(StickToMouse());
 				meshCollider.enabled = false;
@@ -148,7 +149,6 @@ namespace Netherlands3D.ObjectInteraction
 
 		public void Place(IAction action)
 		{
-
 			if (!Selector.Instance.HoveringInterface() && stickToMouse && action.Performed)
 			{
 				Debug.Log("Placed Transformable");
@@ -285,6 +285,9 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			//Hide transformpanel if we were destroyed
 			PropertiesPanel.Instance.DeselectTransformable(this);
+
+			//Remove our placement event
+			placeAction.UnSubscribe(placeActionEvent);
 		}
 
 		/// <summary>
