@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Interface.Menu;
+using Netherlands3D.Interface.SidePanel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace Netherlands3D.Interface
 			cameraModeChanger = CameraModeChanger.Instance;
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
+
+			PropertiesPanel.Instance.OpenCustomObjects();
 		}
 
 		private void EnableObject()
