@@ -8,7 +8,6 @@ using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
-using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
 

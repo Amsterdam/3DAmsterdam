@@ -605,6 +605,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1619599367386923293}
+  - component: {fileID: 2640871290589526771}
+  - component: {fileID: 7174121088371293658}
   m_Layer: 0
   m_Name: Pedestrian_male
   m_TagString: Untagged
@@ -628,6 +630,41 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2640871290589526771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103789776145210279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64d09400445bb0a41875db5170b8c848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehicleCommandData:
+    simsec: 0
+    id: 0
+    vehicleType: 600
+    coordFront: {x: 0, y: 0, z: 0}
+    coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+  pedestrianAnimator: {fileID: 7272901086263952944}
+--- !u!111 &7174121088371293658
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103789776145210279}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &2156740707617390060
 GameObject:
   m_ObjectHideFlags: 0
@@ -1509,6 +1546,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8843554259754090240}
   - component: {fileID: 5226747970032471813}
+  - component: {fileID: 7272901086263952944}
   m_Layer: 0
   m_Name: BaseHuman
   m_TagString: Untagged
@@ -1634,6 +1672,25 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.03654307, y: 2.3828804, z: 0.093614995}
     m_Extent: {x: 0.98030216, y: 2.4645422, z: 0.5627446}
   m_DirtyAABB: 0
+--- !u!95 &7272901086263952944
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7233701520201707985}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 608854ace7db8a94da02ce3d38b451bf, type: 3}
+  m_Controller: {fileID: 9100000, guid: cda936d039f84f44bb2c42f45d5677e0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7276445665714265001
 GameObject:
   m_ObjectHideFlags: 0

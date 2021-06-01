@@ -14,6 +14,10 @@ namespace Netherlands3D.Traffic.VISSIM
 
     public class VissimStringLoader : MonoBehaviour
     {
+
+        [SerializeField]
+        private UnityEvent doneLoadingModel;
+
         [SerializeField] private LoadingScreen loadingObjScreen = default;
         [SerializeField] private Playback playback = default;
         [SerializeField] private ConvertFZP converter = default;
@@ -27,13 +31,32 @@ namespace Netherlands3D.Traffic.VISSIM
             //playback = FindObjectOfType<VissimPlayback>();
             //converter = FindObjectOfType<ConvertFZP>();
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// For Editor testing only.
+        /// This method loads a obj and a mtl file.
+        /// </summary>
+        [ContextMenu("Open selection dialog")]
+        public void LoadVissimViaEditor()
+        {
+            if (!Application.isPlaying) return;
+
+            string vissimData = UnityEditor.EditorUtility.OpenFilePanel("Open FZP", "", "fzp");
+
+            if(vissimData != "")
+            {
+                StartCoroutine(LoadingProgress(File.ReadAllText(vissimData)));
+            }
+        }
+#endif
+
         public void LoadVissimFromJavascript()
         {
-            StartCoroutine(LoadingProgress());
-            //Debug.Log(JavascriptMethodCaller.FetchVissimDataAsString());
+            StartCoroutine(LoadingProgress(JavascriptMethodCaller.FetchVissimDataAsString()));
         }
 
-        IEnumerator LoadingProgress()
+        IEnumerator LoadingProgress(string vissimData)
         {
             // starts loading and sets to 50% by default
             vissimLayerObject.SetActive(true);
@@ -44,15 +67,14 @@ namespace Netherlands3D.Traffic.VISSIM
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             // calls vissim data
-            string temp = JavascriptMethodCaller.FetchVissimDataAsString();
-            converter.ReadFileFZP(temp);
+            converter.ReadFileFZP(vissimData);
             yield return new WaitForSeconds(1f);
             // loading "done"
             loadingObjScreen.ProgressBar.SetMessage("100%");
             loadingObjScreen.ProgressBar.Percentage(1f);
             yield return new WaitForSeconds(0.5f);
             loadingObjScreen.Hide();
-
+            doneLoadingModel.Invoke();
         }
 
         public void DestroyVissim()

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ConvertCoordinates;
 using System.Globalization;
+using UnityEngine.Rendering;
 
 namespace Netherlands3D.Traffic.VISSIM
 {
@@ -102,6 +103,7 @@ namespace Netherlands3D.Traffic.VISSIM
                     break; // after calculating the correct framerate of the simulation, exit the loop.
                 }
             }
+
             // checks if there are missing Vissim types
             if (missingVissimTypes.Count > 0)
             {

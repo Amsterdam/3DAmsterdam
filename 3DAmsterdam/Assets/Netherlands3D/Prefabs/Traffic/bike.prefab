@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3240875749451875764}
   - component: {fileID: 1969828716600019473}
   - component: {fileID: 4373781999200911067}
+  - component: {fileID: 254462346397753098}
+  - component: {fileID: -9114527991545308376}
   m_Layer: 0
   m_Name: bike
   m_TagString: Untagged
@@ -82,6 +84,40 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &254462346397753098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2860410278031499022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7cc8880601b45347ba1670f29e24dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehicleCommandData:
+    simsec: 0
+    id: 0
+    vehicleType: 300
+    coordFront: {x: 0, y: 0, z: 0}
+    coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+--- !u!111 &-9114527991545308376
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2860410278031499022}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1001 &1743418730767826507
 PrefabInstance:
   m_ObjectHideFlags: 0

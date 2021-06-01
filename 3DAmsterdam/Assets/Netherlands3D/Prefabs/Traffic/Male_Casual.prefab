@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2251146877334895052}
   - component: {fileID: 5322554357453644726}
   - component: {fileID: -473426360338757070}
+  - component: {fileID: -1222487179653784581}
   m_Layer: 0
   m_Name: Male_Casual
   m_TagString: Untagged
@@ -64,6 +65,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d09400445bb0a41875db5170b8c848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vehicleCommandData:
+    simsec: 0
+    id: 0
+    vehicleType: 0
+    coordFront: {x: 0, y: 0, z: 0}
+    coordRear: {x: 0, y: 0, z: 0}
+  futurePosition: {x: 0, y: 0, z: 0}
+  pedestrianAnimator: {fileID: 0}
+--- !u!111 &-1222487179653784581
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474505037479076726}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &7865275167199348992
 GameObject:
   m_ObjectHideFlags: 0
