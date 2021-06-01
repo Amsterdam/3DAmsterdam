@@ -99,7 +99,7 @@ canvas+* {
 	animation: spinner-spin 1.1s infinite linear;
 }
 
-#objUploadClickRegisterArea {
+.clickRegisterArea {
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -107,11 +107,12 @@ canvas+* {
 	width: 0px;
 	height: 0px;
 }
-	#objUploadClickRegisterArea input {
-		height: 100%;
-		width: 100%;
-		opacity: 0;
-	}
+
+.clickRegisterArea input {
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+}
 
 #sharedUrl {
 	position: fixed;
