@@ -149,8 +149,6 @@ namespace Netherlands3D.Interface.Layers
 
 		private void AddTwoWayConnectionToLinkedObject()
 		{
-			var interfaceLinkedObject = LinkedObject.GetComponent<InterfaceLayerLinkedObject>();
-
 			LinkedObject.AddComponent<InterfaceLayerLinkedObject>().InterfaceLayer = this;
 		}
 

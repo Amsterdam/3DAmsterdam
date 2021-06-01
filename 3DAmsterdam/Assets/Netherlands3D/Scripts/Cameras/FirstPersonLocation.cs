@@ -18,6 +18,9 @@ namespace Netherlands3D.Interface
 	{
 		private CameraModeChanger cameraModeChanger;
 
+		[SerializeField]
+		private Animator placedAnimator;
+
 		[HideInInspector]
 		public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
 		public override void Start()
@@ -32,9 +35,16 @@ namespace Netherlands3D.Interface
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
 
-			HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen");
+			HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 			PropertiesPanel.Instance.OpenCustomObjects();
+		}
+
+		protected override void Placed()
+		{
+			base.Placed();
+			placedAnimator.enabled = true;
+			HelpMessage.Instance.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
 		}
 
 		private void EnableObject()

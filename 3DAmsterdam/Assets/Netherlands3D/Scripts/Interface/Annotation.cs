@@ -69,10 +69,11 @@ namespace Netherlands3D.Interface
             {
                 StartEditingText();
             }
+
             lastClickTime = Time.time;
         }
 
-		protected override void Placed()
+        protected override void Placed()
 		{
 			base.Placed();
             //After we placed the annotation, start editing it, so the user can immediatly change its content
