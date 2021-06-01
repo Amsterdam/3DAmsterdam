@@ -52,9 +52,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2d24ffe98aa06438b9b4281d2ccb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionMapName: 
   contextMenuState: 1
+  blockMouseSelectionInteractions: 1
+  blockMouseNavigationInteractions: 0
+  blockKeyboardNavigationInteractions: 0
   waitingForClick: 1
+  raycastTarget: {fileID: 5175667602179568161}
   savedRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &893245956948469509
 CanvasRenderer:

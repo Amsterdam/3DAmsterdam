@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -23,8 +24,12 @@ namespace Netherlands3D.Interface
 
         private Vector3 targetLocation;
 
+        [SerializeField]
+        private Image raycastTarget;
+
         public virtual void Awake()
 		{
+            if (raycastTarget) raycastTarget.raycastTarget = false;
             WorldPointerFollower = GetComponent<WorldPointFollower>(); 
         }
 
@@ -38,6 +43,17 @@ namespace Netherlands3D.Interface
                 PlaceUsingPointer();
             }
         }
+
+        public override void Escape()
+        {
+            base.Escape();
+            if (waitingForClick)
+            {
+                placeAction.UnSubscribe(actionEvent);
+                Destroy(this.gameObject);
+            }
+        }
+
 
         public virtual void OnDrag(PointerEventData eventData)
         {
@@ -58,6 +74,7 @@ namespace Netherlands3D.Interface
         {
             Debug.Log("Placed object", this.gameObject);
             waitingForClick = false;
+            if(raycastTarget)raycastTarget.raycastTarget = true;
         }
 
         public void PlaceUsingPointer()

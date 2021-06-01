@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Help;
 using Netherlands3D.Interface.Menu;
 using Netherlands3D.Interface.SidePanel;
 using System;
@@ -30,6 +31,8 @@ namespace Netherlands3D.Interface
 			cameraModeChanger = CameraModeChanger.Instance;
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
+
+			HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen");
 
 			PropertiesPanel.Instance.OpenCustomObjects();
 		}

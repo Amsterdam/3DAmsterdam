@@ -102,14 +102,17 @@ namespace Netherlands3D.Interface
 			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
 		}
 
-		public void SetActiveInteractable(Interactable interactable)
+		public void SetActiveInteractable(Interactable newActiveInteractable)
 		{
-			if (interactable == null || interactable != activeInteractable)
+			if (newActiveInteractable != null)
 			{
 				//Abort/escape our current interactable
 				if (activeInteractable) activeInteractable.Escape();
-
-				activeInteractable = interactable;
+				activeInteractable = newActiveInteractable;
+			}
+			else
+			{
+				activeInteractable = null;
 			}
 		}
 
