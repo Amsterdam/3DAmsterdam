@@ -106,8 +106,7 @@ namespace Netherlands3D.Interface.SidePanel
         private VerticalLayoutGroup verticalLayoutGroup;
 
         private GameObject thumbnailImage = null;
-
-        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; } 
 
 		void Awake()
 		{
