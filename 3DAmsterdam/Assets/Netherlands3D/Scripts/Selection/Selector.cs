@@ -104,7 +104,7 @@ namespace Netherlands3D.Interface
 
 		public void SetActiveInteractable(Interactable newActiveInteractable)
 		{
-			if (newActiveInteractable != null)
+			if (newActiveInteractable != null && newActiveInteractable != activeInteractable)
 			{
 				//Abort/escape our current interactable
 				if (activeInteractable) activeInteractable.Escape();
