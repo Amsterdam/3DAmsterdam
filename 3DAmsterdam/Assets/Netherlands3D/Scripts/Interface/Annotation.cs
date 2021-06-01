@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Help;
 using Netherlands3D.Interface.SidePanel;
 using System.Collections;
 using UnityEngine;
@@ -47,9 +48,14 @@ namespace Netherlands3D.Interface
 
 		public override void Start()
 		{
-			MoveOnTopOfUI();
 			base.Start();
-		}
+
+            if (waitingForClick)
+            {
+			    MoveOnTopOfUI();
+                HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om de annotatie te plaatsen");
+            }
+        }
 
         /// <summary>
         /// We move this object on top of the UI so we can start dragging it from UI panels

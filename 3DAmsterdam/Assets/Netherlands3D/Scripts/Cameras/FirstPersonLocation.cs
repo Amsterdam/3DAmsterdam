@@ -35,9 +35,11 @@ namespace Netherlands3D.Interface
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
 
-			HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
-
-			PropertiesPanel.Instance.OpenCustomObjects();
+			if (waitingForClick)
+			{
+				HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
+				PropertiesPanel.Instance.OpenCustomObjects();
+			}
 		}
 
 		protected override void Placed()
