@@ -102,7 +102,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": ""modifier"",
                     ""id"": ""b015cfff-a810-4270-9ce5-26c1fbe1e400"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
