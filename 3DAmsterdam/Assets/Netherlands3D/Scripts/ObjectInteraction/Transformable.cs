@@ -81,7 +81,6 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void PlacementSettings()
 		{
-			UpdateBounds();
 			gridShaped = IsGridShaped(bounds);
 			if (gridShaped)
 			{
@@ -235,13 +234,13 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			lastSelectedTransformable = this;
 			PropertiesPanel.Instance.OpenCustomObjects(this, gizmoTransformType);
-			UpdateBounds();
+
 		}
 
 		/// <summary>
 		/// Method allowing the triggers for when this object bounds were changed so the thumbnail will be rerendered.
 		/// </summary>
-		public void UpdateBounds()
+		public void RenderTransformableThumbnail()
 		{
 			int objectOriginalLayer = this.gameObject.layer;
 			this.gameObject.layer = PropertiesPanel.Instance.ThumbnailExclusiveLayer;
