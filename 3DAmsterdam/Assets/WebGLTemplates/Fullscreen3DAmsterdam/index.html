@@ -15,12 +15,13 @@
   </head>
   <body>
     <div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
-	
-	<div id="objUploadClickRegisterArea" class="clickRegisterArea" style="display:none;">
+	<div id="objUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
 	</div>
-
-	<div id="csvUploadClickRegisterArea" class="clickRegisterArea" style="display:none;">
+	<div id="vissimUploadasdasd" class="hiddenFollower" style="display:none;">
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
+	</div>
+	<div id="csvUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
 		<input id="csv" type="file" accept=".csv" onchange="ReadFilesCsv(this.files)">
 	</div>
 
@@ -35,7 +36,13 @@
   <script>
 	  var forceFocus = false;
 	  var unityCanvas;
-  
+	  var fileReader;
+	  
+	  var unityObjectName = "FileUploads";
+	  var objData = "";
+	  var mtlData = "";
+	  var dataType = 0;
+    
 	  var unityInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%" , {
 		  compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 			if (!UnityLoader.SystemInfo.hasWebGL) {
@@ -53,12 +60,8 @@
 		  },
 		  onProgress: UnityProgress
 	  });
-	  var fileReader;
-	  var unityObjectName = "FileUploads";
-	  var objData = "";
-	  var mtlData = "";
-	  var dataType = 0;
-
+	  
+	  //Support for dragging dropping files on browser window
 	  document.addEventListener("dragover", function (event) {
 		  event.preventDefault();
 	  });
@@ -68,6 +71,7 @@
 
 		  ReadFiles(event.dataTransfer.files);
 	  });
+	  
 
 	  function UnityProgress(unityInstance, progress) {
 		  if (!unityInstance.Module) {
@@ -82,14 +86,31 @@
 		  }
 		  unityInstance.progress.style.transform = `scaleX(${progress})`;
 		  if (progress === 1) {
+			  //Done loading
 			  loader.style.display = "none";
 			  unityCanvas = document.getElementById("#canvas");
 			  window.onhashchange = locationHashChanged;
 			  if (window.location.hash) {
 				  locationHashChanged();
 			  }
+			  
+			  //Check if our tab is active
+			  CheckVisibilityState();
+			  document.addEventListener('visibilitychange', function () {
+					CheckVisibilityState();
+				});
 		  }
 	  }
+	 
+	 function CheckVisibilityState()
+	 {
+		if (document.visibilityState == "hidden") {
+			unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
+		} 
+		else {
+			unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
+		}
+	 }
 	 
 	  if ("onpointerlockchange" in document) {
 		  document.addEventListener('pointerlockchange', OnCursorStateChanged, false);
@@ -122,8 +143,12 @@
 		  //Reset file selection
 		  document.getElementById("obj").value = "";
 	  }
-
-	  function HandleInUnity() {		  
+	  function AbortInUnity() {
+		  console.log("Abort import in Unity");
+		  unityInstance.SendMessage(unityObjectName, "AbortImport");
+		  document.getElementById("obj").value = "";
+	  }
+	  function HandleCsvInUnity() {		  
 		  unityInstance.SendMessage("CSVTab", "LoadCSVFromJavascript");		  
 		  document.getElementById("csv").value = "";
 	  }
@@ -145,16 +170,34 @@
 			  var mtlFileSelectionIndex = -1;
 			  var objFileSelectionIndex = -1;
 
+			  var amountOfObjs = 0;
+			  var amountOfMtls = 0;
+
 			  //Check what index is the obj file, and optionaly the mtl file
 			  for (var i = 0; i < selectedFiles.length; i++) {
 				  var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
 				  if (extension == "mtl") {
 					  console.log("MTL file");
 					  mtlFileSelectionIndex = i;
+					  amountOfMtls ++;
 				  } else if (extension == "obj") {
 					  console.log("OBJ file");
 					  objFileSelectionIndex = i;
+					  amountOfObjs ++;
 				  }
+			  }
+			  
+			  //Selected too many files?
+			  if(amountOfObjs > 1 || amountOfMtls > 1)
+			  {
+				 AbortInUnity();
+				 return false;
+			  }
+			  
+			  //Check if we at least found an obj in our selection of files
+			  if(objFileSelectionIndex == -1){
+				AbortInUnity();
+				return false;
 			  }
 
 			  //What to do when files are done loading
@@ -182,8 +225,8 @@
 		  }
 		  return true;
 	  }
-
-	  function ReadFilesCsv(selectedFiles) {
+	
+	function ReadFilesCsv(selectedFiles) {
 
 			fileReader = new FileReader();
 		  //If we selected at least one file
@@ -197,7 +240,7 @@
 			  //What to do when files are done loading
 			  fileReader.onload = function (e) {
 				objData = e.target.result;
-				HandleInUnity();
+				HandleCsvInUnity();
 			  };
 			  
 			fileReader.readAsText(selectedFiles[0]);
@@ -205,5 +248,6 @@
 		  }
 		  return true;
 	  }
+
 	</script>
 </html>
