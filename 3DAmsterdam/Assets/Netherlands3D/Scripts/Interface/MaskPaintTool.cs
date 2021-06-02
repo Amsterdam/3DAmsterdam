@@ -36,6 +36,7 @@ namespace Netherlands3D.Interface
             runtimeRectangularMask.MoveToBounds(bounds);
             PropertiesPanel.Instance.OpenLayers();
 
+            maskLayer.ToggleLinkedObject(true);
             if (!maskSettings.gameObject.activeSelf)
                 maskLayer.ToggleLayerOpenedWithCustomOptions(maskSettings.gameObject);
 
