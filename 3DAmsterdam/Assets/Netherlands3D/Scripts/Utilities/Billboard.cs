@@ -19,31 +19,31 @@ namespace Netherlands3D
 
         private bool isFiltered;
 
-        Renderer ren;
-        SphereCollider col;
+        new Renderer renderer;
+        new SphereCollider collider;
 
         public void FilterOn(int columnIndex, string filter)
         {
             isFiltered = Row[columnIndex] != filter;
             var show = isFiltered == false;
-            ren.enabled = show;
-            col.enabled = show;
+            renderer.enabled = show;
+            collider.enabled = show;
             textmeshGameObject.SetActive(show);
         }
 
         public void Show()
         {
             isFiltered = false;
-            ren.enabled = true;
-            col.enabled = true;
+            renderer.enabled = true;
+            collider.enabled = true;
             textmeshGameObject.SetActive(true);
         }
 
         private void Start()
         {
             textmeshGameObject = GetComponentInChildren<TextMesh>().gameObject;
-            ren = GetComponent<Renderer>();
-            col = GetComponent<SphereCollider>();
+            renderer = GetComponent<Renderer>();
+            collider = GetComponent<SphereCollider>();
         }
 
         public override void Select()
