@@ -30,7 +30,7 @@
         </div>
       </div>
       <div id="unity-mobile-warning">
-        WebGL builds are not supported on mobile devices.
+        Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten.
       </div>
     </div>
 	<script src="netherlands3d.js"></script>
@@ -54,31 +54,22 @@
           productVersion: "{{{ PRODUCT_VERSION }}}",
       };
 
+	  //dom element references
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
+	  // Avoid draining fillrate performance on mobile devices,
+      // and default/override low DPI mode on mobile browsers.
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
           container.className = "unity-mobile";
-          // Avoid draining fillrate performance on mobile devices,
-          // and default/override low DPI mode on mobile browsers.
           config.devicePixelRatio = 1;
           mobileWarning.style.display = "block";
           setTimeout(() => {
               mobileWarning.style.display = "none";
           }, 5000);
-      } else {
-          canvas.style.width = "100vw";
-          canvas.style.height = "100vh";
       }
 
       loadingBar.style.display = "block";
