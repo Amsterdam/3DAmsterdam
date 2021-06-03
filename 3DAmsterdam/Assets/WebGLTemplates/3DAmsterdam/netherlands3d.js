@@ -38,7 +38,7 @@ function ListenerInit()
 	
 	//A user can provide a lat,lon coordinate in the url has
 	//This listener catches those changes
-	window.onhashchange = locationHashChanged;
+	window.onhashchange = LocationHashChanged;
 	if (window.location.hash) {
 		  LocationHashChanged();
 	}
