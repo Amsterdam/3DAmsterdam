@@ -24,11 +24,24 @@
 	</div>
 	<div id="unity-container" class="unity-desktop">		  
 	  <canvas id="unity-canvas" width="100%" height="100%"></canvas>
-	  <div id="unity-loading-bar">
-		<img src="logo.png">
+	  <div id="unity-loading-bar" class="noselect">
+		<div class="logo_container">
+		  <div id="cube">
+			<div class="front"><img class="logo noselect" src="cube_texture.png"/></div>
+			<div class="back"><img class="logo noselect" src="cube_texture.png"/></div>
+			<div class="right"></div>
+			<div class="left"></div>
+			<div class="top"></div>
+			<div class="bottom"></div>
+			<div class="shadow"></div>
+		  </div>
+		</div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
+		<div id="unity-progress-text" style="display:none">
+			{{{ PRODUCT_NAME }}} v{{{ PRODUCT_VERSION  }}}
+		</div>
       </div>
       <div id="unity-mobile-warning">
         Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten.
@@ -59,8 +72,27 @@
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
+      var loadingCube = document.querySelector("#cube");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+	  //loading cube waiting easer
+	  var fallOff = 0.95;
+	  var cubeRotationSpeed = 1;
+      var cubeRotation = 0;
+	  var defaultSpeed = 0.2;
+	  var addSpeedWithClick = 10;
+	  loadingBar.onclick = function(){
+		  cubeRotationSpeed += addSpeedWithClick;
+	  };
+  
+  	  var spinCube = window.setInterval(function() {
+	  	 cubeRotationSpeed = cubeRotationSpeed * fallOff;
+         cubeRotation += cubeRotationSpeed;
+		 cubeRotation += defaultSpeed;
+         cubeRotation = cubeRotation % 360;
+	     loadingCube.style.transform = "rotateY(-" + cubeRotation + "deg)";
+	  }, 10)
 
 	  // Avoid draining fillrate performance on mobile devices,
       // and default/override low DPI mode on mobile browsers.
