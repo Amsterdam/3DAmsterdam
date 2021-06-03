@@ -19,9 +19,6 @@
 	<div id="objUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
 	</div>
-	<div id="vissimUploadasdasd" class="hiddenFollower" style="display:none;">
-		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
-	</div>
 	<div id="csvUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
 		<input id="csv" type="file" accept=".csv" onchange="ReadFilesCsv(this.files)">
 	</div>
@@ -36,23 +33,25 @@
         WebGL builds are not supported on mobile devices.
       </div>
     </div>
+	<script src="netherlands3d.js"></script>
     <script>
+	  var unityInstance;
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
       var config = {
-        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
-        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
-        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+          dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+          frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+          codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
 #if MEMORY_FILENAME
-        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
-#endif
+          memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+           # endif
 #if SYMBOLS_FILENAME
-        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+          symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
 #endif
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "{{{ COMPANY_NAME }}}",
-        productName: "{{{ PRODUCT_NAME }}}",
-        productVersion: "{{{ PRODUCT_VERSION }}}",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "{{{ COMPANY_NAME }}}",
+          productName: "{{{ PRODUCT_NAME }}}",
+          productVersion: "{{{ PRODUCT_VERSION }}}",
       };
 
       var container = document.querySelector("#unity-container");
@@ -69,36 +68,37 @@
       // config.matchWebGLToCanvasSize = false;
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        container.className = "unity-mobile";
-        // Avoid draining fillrate performance on mobile devices,
-        // and default/override low DPI mode on mobile browsers.
-        config.devicePixelRatio = 1;
-        mobileWarning.style.display = "block";
-        setTimeout(() => {
-          mobileWarning.style.display = "none";
-        }, 5000);
+          container.className = "unity-mobile";
+          // Avoid draining fillrate performance on mobile devices,
+          // and default/override low DPI mode on mobile browsers.
+          config.devicePixelRatio = 1;
+          mobileWarning.style.display = "block";
+          setTimeout(() => {
+              mobileWarning.style.display = "none";
+          }, 5000);
       } else {
-        canvas.style.width = "100vw";
-        canvas.style.height = "100vh";
+          canvas.style.width = "100vw";
+          canvas.style.height = "100vh";
       }
-#if BACKGROUND_FILENAME
-      canvas.style.background = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
-#endif
+
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-        }).catch((message) => {
-          alert(message);
-        });
+          createUnityInstance(canvas, config, (progress) => {
+              progressBarFull.style.width = 100 * progress + "%";
+          }).then((unity) => {
+			  unityInstance = unity;
+              loadingBar.style.display = "none";
+			  
+			  ListenerInit(); //Application methods are within netherlands3d.js
+			  
+          }).catch((message) => {
+              alert(message);
+          });
       };
       document.body.appendChild(script);
     </script>
-	<script></script>
   </body>
 </html>
