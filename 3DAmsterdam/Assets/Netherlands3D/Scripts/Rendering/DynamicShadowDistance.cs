@@ -16,6 +16,8 @@ namespace Netherlands3D.Rendering
 
         [SerializeField]
         private float maxShadowDistance = 4000;
+        [SerializeField]
+        private float minShadowDistance = 100;
 
         [SerializeField]
         private bool useFixedValue = false;
@@ -31,7 +33,7 @@ namespace Netherlands3D.Rendering
 
         void Update()
         {
-            universalRenderPipelineAsset.shadowDistance = Mathf.Min(this.transform.position.y * range, maxShadowDistance);
+            universalRenderPipelineAsset.shadowDistance = Mathf.Min(Mathf.Max(this.transform.position.y * range, minShadowDistance),maxShadowDistance);
         }
     }
 }
