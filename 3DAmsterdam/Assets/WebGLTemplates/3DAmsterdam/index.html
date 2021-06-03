@@ -44,7 +44,7 @@
           codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
 #if MEMORY_FILENAME
           memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
-           # endif
+#endif
 #if SYMBOLS_FILENAME
           symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
 #endif
@@ -79,12 +79,10 @@
       script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
               progressBarFull.style.width = 100 * progress + "%";
-          }).then((unity) => {
-			  unityInstance = unity;
-              loadingBar.style.display = "none";
-			  
-			  ListenerInit(); //Application methods are within netherlands3d.js
-			  
+          }).then((instance) => {
+			  unityInstance = instance;
+              loadingBar.style.display = "none";		  
+			  ListenerInit(); //Application methods are within netherlands3d.js		  
           }).catch((message) => {
               alert(message);
           });
