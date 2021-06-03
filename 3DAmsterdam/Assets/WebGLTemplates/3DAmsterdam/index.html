@@ -114,7 +114,8 @@
               progressBarFull.style.width = 100 * progress + "%";
           }).then((instance) => {
 			  unityInstance = instance;
-              loadingBar.style.display = "none";		  
+              loadingBar.style.display = "none";
+              clearInterval(spinCube); 			  
 			  ListenerInit(); //Application methods are within netherlands3d.js		  
           }).catch((message) => {
               alert(message);
