@@ -89,6 +89,7 @@ namespace Netherlands3D.Masking
 			{
 				current = previousMask;
 				previousMask.gameObject.SetActive(true);
+				previousMask.Clear();
 			}
 			else{
 				current = null;
