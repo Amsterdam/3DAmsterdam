@@ -23,6 +23,9 @@ namespace Netherlands3D.Rendering
         [SerializeField]
         private GameObject realtimeReflectionProbe;
 
+        [SerializeField]
+        private ScriptableRendererFeature aoRenderFeature;
+
         /// <summary>
         /// Toggles antialiasing on or off.
         /// </summary>
@@ -84,6 +87,11 @@ namespace Netherlands3D.Rendering
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
             //urp.mainLightShadowmapResolution = calculatehere; //This is only a getter now. Its on the unity backlog to be able to be set as well
         }
+
+        public void ToggleAO(bool enabled)
+        {
+            aoRenderFeature.SetActive(enabled);
+		}
 
         public void SetRenderScale(float renderScale)
         {
