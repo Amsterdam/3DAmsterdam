@@ -54,7 +54,7 @@ function CheckVisibilityState() {
 
 
 function OnCursorStateChanged() {
-    if (document.pointerLockElement != unityCanvas && document.mozPointerLockElement != unityCanvas) {
+    if (document.pointerLockElement != canvas && document.mozPointerLockElement != canvas) {
         unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
     }
     if (forceFocus == true) {
