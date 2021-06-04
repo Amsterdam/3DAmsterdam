@@ -32,7 +32,7 @@ public class CsvFilePanel : MonoBehaviour
 
     private GameObject LocationMarkersParent;
 
-    private void Start()
+    private void Awake()
     {
         ToggleActiveEvent.Subscribe(OnToggleActive);
     }
@@ -245,16 +245,10 @@ public class CsvFilePanel : MonoBehaviour
         }
     }
 
-
     public void LoadCSVFromJavascript()
     {        
         var csv = JavascriptMethodCaller.FetchOBJDataAsString();     
         ParseCsv(csv);
-    }
-
-    void ClearUiFields()
-    {        
-        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
     }
 
 #if UNITY_EDITOR
