@@ -120,6 +120,10 @@ namespace Netherlands3D.Settings {
 				settings.postProcessingEffects = toggle;
 				ApplySettings();
             });
+			PropertiesPanel.Instance.AddActionCheckbox("Ambient Occlusion", settings.ambientOcclusion, (toggle) => {
+				settings.ambientOcclusion = toggle;
+				ApplySettings();
+			});
 			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
@@ -170,8 +174,10 @@ namespace Netherlands3D.Settings {
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+			renderSettings.ToggleAO(settings.ambientOcclusion);
 
-            SaveSettings();
+
+			SaveSettings();
         }
 
         [ContextMenu("Save application settings")]

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{{ PRODUCT_NAME }}} | {{{ PRODUCT_VERSION  }}}</title>
+	<link rel="stylesheet" href="style.css" />
+	<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+	<link rel="manifest" href="site.webmanifest">
+	<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+  </head>
+  <body>
+	<div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
+	<div id="objUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
+		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
+	</div>
+	<div id="csvUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
+		<input id="csv" type="file" accept=".csv" onchange="ReadFilesCsv(this.files)">
+	</div>
+	<div id="unity-container" class="unity-desktop">		  
+	  <canvas id="unity-canvas" width="100%" height="100%"></canvas>
+	  <div id="unity-loading-bar" class="noselect">
+		<div class="logo_container">
+		  <div id="cube">
+			<div class="front"><img class="logo noselect" src="cube_texture.png"/></div>
+			<div class="back"><img class="logo noselect" src="cube_texture.png"/></div>
+			<div class="right"></div>
+			<div class="left"></div>
+			<div class="top"></div>
+			<div class="bottom"></div>
+			<div class="shadow"></div>
+		  </div>
+		</div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+		<div id="unity-progress-text" style="display:none">
+			{{{ PRODUCT_NAME }}} v{{{ PRODUCT_VERSION  }}}
+		</div>
+      </div>
+      <div id="unity-mobile-warning">
+        Unity WebGL is momenteel niet volledig ondersteund op mobiele apparaten.
+      </div>
+    </div>
+	<script src="netherlands3d.js"></script>
+    <script>
+	  var unityInstance;
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      var config = {
+          dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+          frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+          codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+          memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+          symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "{{{ COMPANY_NAME }}}",
+          productName: "{{{ PRODUCT_NAME }}}",
+          productVersion: "{{{ PRODUCT_VERSION }}}",
+      };
+
+	  //dom element references
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var loadingCube = document.querySelector("#cube");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+	  //loading cube waiting easer
+	  var fallOff = 0.95;
+	  var cubeRotationSpeed = 1;
+      var cubeRotation = 0;
+	  var defaultSpeed = 0.2;
+	  var addSpeedWithClick = 10;
+	  loadingBar.onclick = function(){
+		  cubeRotationSpeed += addSpeedWithClick;
+	  };
+  
+  	  var spinCube = window.setInterval(function() {
+	  	 cubeRotationSpeed = cubeRotationSpeed * fallOff;
+         cubeRotation += cubeRotationSpeed;
+		 cubeRotation += defaultSpeed;
+         cubeRotation = cubeRotation % 360;
+	     loadingCube.style.transform = "rotateY(-" + cubeRotation + "deg)";
+	  }, 10)
+
+	  // Avoid draining fillrate performance on mobile devices,
+      // and default/override low DPI mode on mobile browsers.
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+          container.className = "unity-mobile";
+          config.devicePixelRatio = 1;
+          mobileWarning.style.display = "block";
+          setTimeout(() => {
+              mobileWarning.style.display = "none";
+          }, 5000);
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+          createUnityInstance(canvas, config, (progress) => {
+              progressBarFull.style.width = 100 * progress + "%";
+          }).then((instance) => {
+			  unityInstance = instance;
+              loadingBar.style.display = "none";
+              clearInterval(spinCube); 			  
+			  ListenerInit(); //Application methods are within netherlands3d.js		  
+          }).catch((message) => {
+              alert(message);
+          });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>

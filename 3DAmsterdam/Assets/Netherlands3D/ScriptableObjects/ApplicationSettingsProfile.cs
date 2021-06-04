@@ -22,6 +22,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public int shadowQuality = 3;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
+    public bool ambientOcclusion = false;
     public bool postProcessingEffects = true;
     public bool realtimeReflections = false;
 
