@@ -32,6 +32,17 @@ public class CsvFilePanel : MonoBehaviour
 
     private GameObject LocationMarkersParent;
 
+    private void Start()
+    {
+        ToggleActiveEvent.Subscribe(OnToggleActive);
+    }
+
+    private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
+    {
+        var toggle = (bool)sender;
+        gameObject.SetActive(toggle);
+    }
+
     public void ParseCsv(string csv)
     {
         if (LocationMarkersParent == null)
@@ -92,8 +103,6 @@ public class CsvFilePanel : MonoBehaviour
         });
 
     }
-
-
 
     void MapAndShow()
     {
@@ -267,16 +276,4 @@ public class CsvFilePanel : MonoBehaviour
     }
 
 #endif
-
-    private void OnEnable()
-    {
-        ToggleActiveEvent.Subscribe(OnToggleActive);
-    }
-
-    private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
-    {
-        var toggle = (bool)sender;
-        gameObject.SetActive(toggle);
-    }
-
 }
