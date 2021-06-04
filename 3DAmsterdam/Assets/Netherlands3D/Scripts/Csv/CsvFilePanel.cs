@@ -1,5 +1,6 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D;
+using Netherlands3D.Events;
 using Netherlands3D.Interface.Search;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.JavascriptConnection;
@@ -49,7 +50,18 @@ public class CsvFilePanel : MonoBehaviour
 
         csvGeoLocation = new CsvGeoLocation(csv);
 
-        if (csvGeoLocation.CoordinateColumns.Length == 0) return; //TODO add error info to the user
+        if (csvGeoLocation.Status != CsvGeoLocation.CsvGeoLocationStatus.Success)
+        {
+            PropertiesPanel.Instance.AddSpacer(20);
+
+            foreach (var line in csvGeoLocation.StatusMessageLines)
+            {
+                PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+            }
+
+            return;
+        }
+        
                
         PropertiesPanel.Instance.AddLabel("Label");
         PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
@@ -231,6 +243,10 @@ public class CsvFilePanel : MonoBehaviour
         ParseCsv(csv);
     }
 
+    void ClearUiFields()
+    {        
+        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+    }
 
 #if UNITY_EDITOR
     /// <summary>
@@ -241,7 +257,7 @@ public class CsvFilePanel : MonoBehaviour
     public void LoadCsvViaEditor()
     {
         if (!Application.isPlaying) return;
-
+        
         string path = EditorUtility.OpenFilePanel("Selecteer .csv", "", "csv");
         if (path.Length != 0)
         {
@@ -249,6 +265,18 @@ public class CsvFilePanel : MonoBehaviour
             ParseCsv(csv);
         }
     }
+
 #endif
+
+    private void OnEnable()
+    {
+        ToggleActiveEvent.Subscribe(OnToggleActive);
+    }
+
+    private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
+    {
+        var toggle = (bool)sender;
+        gameObject.SetActive(toggle);
+    }
 
 }
