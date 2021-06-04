@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5175667602179568161}
   - component: {fileID: -5861045808506588389}
   - component: {fileID: -3394169075420353282}
+  - component: {fileID: 5346644480528076636}
   m_Layer: 0
   m_Name: FirstPersonLocation
   m_TagString: Untagged
@@ -52,9 +53,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2d24ffe98aa06438b9b4281d2ccb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionMapName: 
   contextMenuState: 1
+  blockMouseSelectionInteractions: 1
+  blockMouseNavigationInteractions: 0
+  blockKeyboardNavigationInteractions: 0
   waitingForClick: 1
+  raycastTarget: {fileID: 5175667602179568161}
+  placedAnimator: {fileID: 5346644480528076636}
   savedRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &893245956948469509
 CanvasRenderer:
@@ -118,3 +123,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
+--- !u!95 &5346644480528076636
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3104785432663551129}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 03e312e936bedf94e82d57ba24e44917, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

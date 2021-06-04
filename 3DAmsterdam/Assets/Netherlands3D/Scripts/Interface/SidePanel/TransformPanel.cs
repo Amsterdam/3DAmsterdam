@@ -161,7 +161,6 @@ namespace Netherlands3D.Interface.SidePanel
 
             SetRDCoordinateFields();
             UpdateWithCurrentTransform();
-            transformableTarget.UpdateBounds();
 
             ignoreChangeEvents = false;
         }
@@ -278,8 +277,6 @@ namespace Netherlands3D.Interface.SidePanel
             {
                 ApplyTranslation();
             }
-
-            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
@@ -297,8 +294,6 @@ namespace Netherlands3D.Interface.SidePanel
             );
 
             transformableTarget.transform.localScale = normalisedScaler;
-
-            transformableTarget.UpdateBounds();
         }
 
         /// <summary>

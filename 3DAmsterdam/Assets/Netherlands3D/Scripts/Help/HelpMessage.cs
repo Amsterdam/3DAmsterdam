@@ -60,12 +60,19 @@ namespace Netherlands3D.Help
             gameObject.SetActive(false);
         }
 
-        public void Hide()
+        public void Hide(bool instantHide = false)
         {
-            if (gameObject.activeSelf && allowHideViaInteraction)
+            if (gameObject.activeSelf && (allowHideViaInteraction || instantHide))
             {
                 StopAllCoroutines();
-                StartCoroutine(FadeOut());
+                if (instantHide)
+                {
+                    gameObject.SetActive(false);
+                }
+                else
+                {
+                    StartCoroutine(FadeOut());
+                }
             }
         }
     }

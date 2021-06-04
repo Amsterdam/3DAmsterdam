@@ -26,7 +26,7 @@ namespace Netherlands3D.ModelParsing
 		private UnityEvent doneLoadingModel;
 
 		[SerializeField]
-		public Underground.RuntimeMask mask;
+		public Masking.RuntimeMask mask;
 
 		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
@@ -87,6 +87,15 @@ namespace Netherlands3D.ModelParsing
 		}
 
 		/// <summary>
+		/// Method to remove loading screen if somehow the import/loading was aborted
+		/// </summary>
+		public void AbortImport()
+		{
+			loadingObjScreen.Hide();
+			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
+		}
+
+		/// <summary>
 		/// Start the parsing of OBJ and MTL strings
 		/// </summary>
 		/// <param name="objText">The OBJ string data</param>
@@ -94,6 +103,14 @@ namespace Netherlands3D.ModelParsing
 		/// <returns></returns>
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
+			//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
+			Debug.Log("OBJ length: " + objText.Length);
+			if (objText.Length < 5)
+			{
+				AbortImport();
+				yield break;
+			}
+
 			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
 			float remainingLinesToParse;

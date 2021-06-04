@@ -21,13 +21,13 @@ namespace Netherlands3D.ObjectInteraction
 		private Vector3 offset;
 
 		[SerializeField]
-		public Underground.RuntimeMask mask;
+		public Masking.RuntimeMask mask;
 
 		private bool snapToGround = true;
 
 		public bool madeWithExternalTool = false;
 		public bool gridShaped = false;
-		public bool placeOnGrid = false;
+		public bool snapToGrid = false;
 		private bool maskArea = false;
 		[SerializeField]
 		public bool stickToMouse = true;
@@ -37,10 +37,19 @@ namespace Netherlands3D.ObjectInteraction
 
 		private Bounds bounds;
 		private IAction placeAction;
+		private ActionEventClass placeActionEvent;
 
 		[System.Serializable]
 		public class ObjectPlacedEvent : UnityEvent<GameObject> { };
 		public ObjectPlacedEvent placedTransformable;
+
+		private void Awake()
+		{
+			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
+			blockMouseSelectionInteractions = true;
+			blockKeyboardNavigationInteractions = false;
+			blockMouseNavigationInteractions = false;
+		}
 
 		private void Start()
 		{
@@ -60,10 +69,10 @@ namespace Netherlands3D.ObjectInteraction
 			transform.position = Vector3.zero;
 			if (stickToMouse)
 			{
-				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden");
+				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
 
 				PlacementSettings();
-				placeAction.SubscribePerformed(Place);
+				placeActionEvent = placeAction.SubscribePerformed(Place);
 				TakeInteractionPriority();
 				StartCoroutine(StickToMouse());
 				meshCollider.enabled = false;
@@ -72,15 +81,19 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void PlacementSettings()
 		{
-			UpdateBounds();
 			gridShaped = IsGridShaped(bounds);
 			if (gridShaped)
 			{
+				PlaceOnGrid(true);
+
 				PropertiesPanel.Instance.OpenObjectInformation("", true, 10);
-				placeOnGrid = true;
 				PropertiesPanel.Instance.AddTitle("Plaatsingsopties");
 				PropertiesPanel.Instance.AddTextfield("De afmetingen van dit object passen binnen ons grid.\nGebruik de volgende opties om direct uit te lijnen en/of het bestaande gebied weg te maskeren.");
-				PropertiesPanel.Instance.AddActionCheckbox("Uitlijnen op grid", true, (action) => placeOnGrid = action);
+				PropertiesPanel.Instance.AddSpacer(20);
+				PropertiesPanel.Instance.AddActionCheckbox("Uitlijnen op grid", true, (action) =>
+				{
+					PlaceOnGrid(action);
+				});
 				PropertiesPanel.Instance.AddActionCheckbox("Gebied maskeren", maskArea, (action) =>
 				{
 					maskArea = action;
@@ -92,11 +105,24 @@ namespace Netherlands3D.ObjectInteraction
 			}
 		}
 
+		private void PlaceOnGrid(bool enable)
+		{
+			snapToGrid = enable;
+			if (snapToGrid)
+			{
+				VisualGrid.Instance.Show();
+			}
+			else
+			{
+				VisualGrid.Instance.Hide();
+			}
+		}
+
 		private bool IsGridShaped(Bounds bounds)
 		{
-			if (((bounds.max.x - bounds.min.x) % 100) + 1 < 2)
+			if (((bounds.max.x - bounds.min.x) % VisualGrid.Instance.CellSize) + 1 < 2)
 			{
-				if (((bounds.max.z - bounds.min.z) % 100) + 1 < 2)
+				if (((bounds.max.z - bounds.min.z) % VisualGrid.Instance.CellSize) + 1 < 2)
 				{
 					return true;
 				}
@@ -122,23 +148,34 @@ namespace Netherlands3D.ObjectInteraction
 
 		public void Place(IAction action)
 		{
-
 			if (!Selector.Instance.HoveringInterface() && stickToMouse && action.Performed)
 			{
 				Debug.Log("Placed Transformable");
-				Debug.Log(Selector.Instance.HoveringInterface());
-				Debug.Log(stickToMouse);
-				Debug.Log(action.Performed);
+
+				blockMouseSelectionInteractions = false;
+				blockKeyboardNavigationInteractions = false;
+				blockMouseNavigationInteractions = true;
+
 				stickToMouse = false;
 				placedTransformable.Invoke(this.gameObject);
+
 				Select();
 				StopInteraction();
+				
+				//If we used grid snapping, make sure to hide grid after placing
+				if(snapToGrid)
+				{
+					PlaceOnGrid(false);
+				}
+
+				//If we enabled the auto masking, make sure it is applied
 				if (mask && maskArea)
 				{
 					mask.MoveToBounds(gameObject.GetComponent<Renderer>().bounds);
 				}
 
 				//If this is a custom made transformable, check for a material remap
+				PropertiesPanel.Instance.ClearGeneratedFields();
 				if (madeWithExternalTool && !MaterialLibrary.Instance.AutoRemap(gameObject))
 				{
 					PropertiesPanel.Instance.OpenCustomObjects();
@@ -146,10 +183,7 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			else
 			{
-				Debug.Log("NOT Placed Transformable");
-				Debug.Log(Selector.Instance.HoveringInterface());
-				Debug.Log(stickToMouse);
-				Debug.Log(action.Performed);
+				Debug.Log("Did not place Transformable");
 			}
 		}
 
@@ -170,6 +204,8 @@ namespace Netherlands3D.ObjectInteraction
 		}
 		public override void SecondarySelect()
 		{
+			if (stickToMouse) return;
+
 			Select();
 		}
 
@@ -177,6 +213,17 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			base.Deselect();
 			PropertiesPanel.Instance.DeselectTransformable(this, true);
+		}
+
+		public override void Escape()
+		{
+			base.Escape();
+
+			if(stickToMouse)
+			{
+				//Im still placing this object, use escape to abort placement, and remove this object
+				Destroy(gameObject);
+			}
 		}
 
 		/// <summary>
@@ -187,13 +234,13 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			lastSelectedTransformable = this;
 			PropertiesPanel.Instance.OpenCustomObjects(this, gizmoTransformType);
-			UpdateBounds();
+
 		}
 
 		/// <summary>
 		/// Method allowing the triggers for when this object bounds were changed so the thumbnail will be rerendered.
 		/// </summary>
-		public void UpdateBounds()
+		public void RenderTransformableThumbnail()
 		{
 			int objectOriginalLayer = this.gameObject.layer;
 			this.gameObject.layer = PropertiesPanel.Instance.ThumbnailExclusiveLayer;
@@ -219,12 +266,10 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			newPosition = aimedPosition - offset;
 
-			//offset.x = -bounds.min.x % 100;
-			//offset.z = -bounds.min.z % 100;
-			if (placeOnGrid)
+			if (snapToGrid)
 			{
-				newPosition.x -= ((newPosition.x + bounds.min.x) % 100);
-				newPosition.z -= ((newPosition.z + bounds.min.z) % 100);
+				newPosition.x -= ((newPosition.x + bounds.min.x) % VisualGrid.Instance.CellSize);
+				newPosition.z -= ((newPosition.z + bounds.min.z) % VisualGrid.Instance.CellSize);
 
 			}
 			if (mask && maskArea)
@@ -239,6 +284,9 @@ namespace Netherlands3D.ObjectInteraction
 		{
 			//Hide transformpanel if we were destroyed
 			PropertiesPanel.Instance.DeselectTransformable(this);
+
+			//Remove our placement event
+			placeAction.UnSubscribe(placeActionEvent);
 		}
 
 		/// <summary>

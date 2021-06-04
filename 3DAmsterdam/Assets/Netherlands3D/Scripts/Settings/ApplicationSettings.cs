@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Interface;
+﻿using Netherlands3D.Events;
+using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
@@ -79,6 +80,13 @@ namespace Netherlands3D.Settings {
 				settings.drawFPS = toggle;
 				ApplySettings();
             });
+
+			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
+				settings.showExperimentelFeatures = toggle;
+				ApplySettings();
+			});
+
+
 			PropertiesPanel.Instance.AddLabel("Interface schaal");
 			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
@@ -155,7 +163,9 @@ namespace Netherlands3D.Settings {
 				minimap.gameObject.SetActive(settings.drawMap);
 			}
 
-            canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
+
+			canvasSettings.ChangeCanvasScale(settings.canvasDPI);
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);

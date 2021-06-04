@@ -1,4 +1,5 @@
-﻿using Netherlands3D.InputHandler;
+﻿using Netherlands3D.Help;
+using Netherlands3D.InputHandler;
 using Netherlands3D.Interface;
 using System;
 using System.Collections;
@@ -55,6 +56,10 @@ namespace Netherlands3D.ObjectInteraction
         public virtual void Select() { }
         public virtual void SecondarySelect() { }
         public virtual void Deselect() { }
+        public virtual void Escape() 
+        {
+            HelpMessage.Instance.Hide(true); //Instantly hide help message
+        }
 
 		private void OnDisable()
 		{

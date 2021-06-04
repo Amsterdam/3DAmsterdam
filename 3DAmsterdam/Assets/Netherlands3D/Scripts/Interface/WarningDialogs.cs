@@ -30,8 +30,9 @@ namespace Netherlands3D.Interface
                     Destroy(child.gameObject);
             }
 
-            var bodyText = Instantiate(warningPrefab, this.transform);
-            bodyText.SetMessage(message);
+            var newWarning = Instantiate(warningPrefab, this.transform);
+            newWarning.SetMessage(message);
+            this.transform.SetAsLastSibling();
         }
     }
 }
