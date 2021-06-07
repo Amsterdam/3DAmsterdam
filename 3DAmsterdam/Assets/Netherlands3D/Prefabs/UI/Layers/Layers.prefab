@@ -61,9 +61,64 @@ MonoBehaviour:
   sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
   sewerPipeSpawner: {fileID: 1484382064384571549}
   sewerManholeSpawner: {fileID: 5050187975766108088}
-  activeCount: 0
+  maxSimultaneous: 1
   SewerLineObjectPool: {fileID: 1620230286426900701}
   manHoleObjectPool: {fileID: 7130575673976826797}
+--- !u!1 &2352775316738161639
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7554844549336345184}
+  - component: {fileID: 7142445150767561515}
+  m_Layer: 0
+  m_Name: CablesAndPipes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7554844549336345184
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352775316738161639}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4498901013433943612}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7142445150767561515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352775316738161639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2b20ded4dc5eed4daf0cb9824cd0f7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 1
+  tileSize: 1000
+  layerPriority: 4
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: hardcoded
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 0
+  pauseLoading: 0
+  nlcsColorPalette: {fileID: 11400000, guid: 4415c3698f0a89249b24581844475dbf, type: 2}
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +241,7 @@ Transform:
   - {fileID: 4498901013737045448}
   - {fileID: 6030816391891915778}
   - {fileID: 1144097372}
+  - {fileID: 7554844549336345184}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

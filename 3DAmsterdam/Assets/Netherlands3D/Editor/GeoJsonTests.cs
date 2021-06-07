@@ -247,6 +247,17 @@ public class GeoJsonTests
     }
 
     [Test]
+    public void TestReadingPropertyStringValue()
+    {
+        GeoJSON geojson = new GeoJSON(testStringMultipleSegmentPdok);
+
+        geojson.GotoNextFeature();
+
+        var stringValue = geojson.getPropertyStringValue("Dataset");
+        Assert.AreEqual("Utrecht", stringValue);
+    }
+
+    [Test]
     public void TestConvertCoordinatesAmsterdam()
     {
         Config.activeConfiguration = new ConfigurationFile();

@@ -199,7 +199,16 @@ namespace Netherlands3D.Utilities
             int nextstartposition;
             return (float)StringManipulation.ParseNextDouble(geoJSONString, ',', propertyStartIndex, out nextstartposition);
         }
-    
-    
+
+        public string getPropertyStringValue(string propertyName)
+        {
+            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + 4;
+            if (propertyValueStartIndex == -1)
+            {
+                return string.Empty;
+            }
+            return geoJSONString.Substring(propertyValueStartIndex, geoJSONString.IndexOf(',', propertyValueStartIndex, featureLength) -1);
+        }
+
     }
 }
