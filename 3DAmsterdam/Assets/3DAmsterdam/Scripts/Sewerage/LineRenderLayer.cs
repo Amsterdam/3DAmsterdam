@@ -17,6 +17,9 @@ namespace Amsterdam3D.Sewerage
 		[SerializeField]
 		private ColorPalette nlcsColorPalette;
 
+		[SerializeField]
+		private Material lineRendererMaterial;
+
 		public override void OnDisableTiles(bool isenabled) { }
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
@@ -54,22 +57,25 @@ namespace Amsterdam3D.Sewerage
 
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
-			StartCoroutine(BuildInfrastructure(tileChange));
+			StartCoroutine(BuildInfrastructure(tileChange, tile,callback));
 		}
 
-		IEnumerator BuildInfrastructure(TileChange tileChange)
+		IEnumerator BuildInfrastructure(TileChange tileChange, Tile tile, Action<TileChange> callback = null)
 		{
-			var bbox = tileChange.X + "," + tileChange.Y + "," + (tileChange.X + tileSize) + "," + (tileChange.Y + tileSize);
+			var bbox = tile.tileKey.x + "," + tile.tileKey.y + "," + (tile.tileKey.x + tileSize) + "," + (tile.tileKey.y + tileSize);
 			int startIndex = 0;
 			var pagesRemaining = true;
+			int maxResultsCount = 5000;
 
 			var mesh = new Mesh();
+			List<int> indices = new List<int>();
 			List<Vector3> vertices = new List<Vector3>();
-			List<Vector3> colors = new List<Vector3>();
+			List<Color> colors = new List<Color>();
 
 			while (pagesRemaining)
 			{
-				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/gml+xml&BBox={bbox}&count=5000&startIndex={startIndex}";
+				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/json&BBox={bbox}&count={maxResultsCount}&startIndex={startIndex}";
+				Debug.Log(url);
 				using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
 				{
 					yield return webRequest.SendWebRequest();
@@ -77,23 +83,38 @@ namespace Amsterdam3D.Sewerage
 					if (webRequest.result == UnityWebRequest.Result.Success)
 					{
 						GeoJSON customJsonHandler = new GeoJSON(webRequest.downloadHandler.text);
-						yield return null;
 
-						Vector3 startPoint;
-						Vector3 endPoint;
+						//Determine if there is a page after this
+						if (customJsonHandler.geoJSONString.LastIndexOf("\"title\":\"next page\"") > -1)
+						{
+							startIndex += maxResultsCount - 1;
+						}
+						else
+						{
+							pagesRemaining = false;
+						}
+
+						yield return null;
 
 						while (customJsonHandler.GotoNextFeature())
 						{
+							//Get the parameters that make up our feature line
 							List<double> coordinates = customJsonHandler.getGeometryLineString();
 							float depth = customJsonHandler.getPropertyFloatValue("diepte");
-							//var lineColor = customJsonHandler.getPropertyFloatValue
 							var lineColor = GetNLCSColor(customJsonHandler.getPropertyStringValue("thema"));
 
-							startPoint = CoordConvert.RDtoUnity(new Vector3((float)coordinates[0]- tileChange.X, (float)coordinates[1]-tileChange.Y, depth));
-							endPoint = CoordConvert.RDtoUnity(new Vector3((float)coordinates[0], (float)coordinates[1], depth));
-
-							vertices.Add(startPoint);
-							colors.Add(endPoint);
+							//Min. of two points? This is a line we can draw!
+							if (coordinates.Count > 1)
+							{
+								//For every two coordinates
+								for (int i = 0; i < coordinates.Count/2; i+=2)
+								{
+									var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], depth));
+									vertices.Add(point);
+									colors.Add(lineColor);
+									indices.Add(vertices.Count-1);
+								}								
+							}
 						}
 					}
 					else
@@ -103,7 +124,21 @@ namespace Amsterdam3D.Sewerage
 				}
 			}
 
-			mesh.SetIndices(new int[] { 0, 1, 2, 3, 4, 5 }, MeshTopology.Lines, 0, true);
+			Debug.Log("Constructing line mesh");
+
+			yield return null;
+
+			//All lines are read into mesh. Lets finish it
+			mesh.vertices = vertices.ToArray();
+			mesh.colors = colors.ToArray();
+			mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
+
+			tile.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
+			tile.gameObject.AddComponent<MeshRenderer>().material = lineRendererMaterial;
+
+			tile.gameObject.SetActive(true);
+
+			callback(tileChange);
 		}
 
 		private Color GetNLCSColor(string theme)

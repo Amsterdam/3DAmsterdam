@@ -11,6 +11,14 @@ using UnityEngine.TestTools;
 
 public class GeoJsonTests
 {
+    string testCableApiString = @"{""type"":""FeatureCollection"",""timeStamp"":""2021-06-07T13:52:45.245595+00:00"",""crs"":{""type"":""name"",""properties"":{""name"":""urn:ogc:def:crs:EPSG::28992""}},
+  ""features"": [
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302136"",""geometry_name"":2302136,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.56,487676.948],[121096.941,487676.732]]},""properties"":{""id"":2302136,""wkt"":""LINESTRING (121096.56 487676.948,121096.941 487676.732)"",""class"":""Kabelbed"",""thema"":""datatransport"",""diam_mm"":null,""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Ziggo B.V."",""buurtcode"":""A02b"",""buurtnaam"":""Leliegracht e.o."",""materiaal"":null}},
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302137"",""geometry_name"":2302137,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.56,487676.948],[121098.082,487679.648]]},""properties"":{""id"":2302137,""wkt"":""LINESTRING (121096.56 487676.948,121098.082 487679.648)"",""class"":""Kabelbed"",""thema"":""datatransport"",""diam_mm"":null,""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Ziggo B.V."",""buurtcode"":""A02b"",""buurtnaam"":""Leliegracht e.o."",""materiaal"":null}},
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302143"",""geometry_name"":2302143,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.591,487223.251],[121101.863,487222.733]]},""properties"":{""id"":2302143,""wkt"":""LINESTRING (121096.591 487223.251,121101.863 487222.733)"",""class"":""OlieGasChemicalienPijpleiding"",""thema"":""gas lage druk"",""diam_mm"":""170"",""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Liander N.V. Pac 2Ai68G2"",""buurtcode"":""A01f"",""buurtnaam"":""Spuistraat Zuid"",""materiaal"":""grijsGietijzer""}}
+  ],
+""links"":[{""href"":""https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application%2Fjson&BBOX=121000%2C487000%2C122000%2C488000&COUNT=3&STARTINDEX=9523"",""rel"":""next"",""type"":""application/geo+json"",""title"":""next page""},{""href"":""https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application%2Fjson&BBOX=121000%2C487000%2C122000%2C488000&COUNT=3&STARTINDEX=9517"",""rel"":""previous"",""type"":""application/geo+json"",""title"":""previous page""}],""numberReturned"":3,""numberMatched"":117014}";
+
 
     string testStringAmsterdam = @"{""type"":""FeatureCollection"",""timeStamp"":""2021-05-10T15:44:28.734787+00:00"",""crs"":{""type"":""name"",""properties"":{""name"":""urn:ogc:def:crs:EPSG::4258""}},
   ""features"": [
@@ -247,10 +255,24 @@ public class GeoJsonTests
     }
 
     [Test]
-    public void TestReadingPropertyStringValue()
+    public void TestReadingPropertyStringValueAmsterdam()
     {
-        GeoJSON geojson = new GeoJSON(testStringMultipleSegmentPdok);
+        Config.activeConfiguration = new ConfigurationFile();
+        Config.activeConfiguration.sewerageApiType = SewerageApiType.Amsterdam;
 
+        GeoJSON geojson = new GeoJSON(testCableApiString);
+        geojson.GotoNextFeature();
+
+        var stringValue = geojson.getPropertyStringValue("id");
+        Assert.AreEqual("ligging_lijn_totaal.2302136", stringValue);
+    }
+    [Test]
+    public void TestReadingPropertyStringValueUtrecht()
+    {
+        Config.activeConfiguration = new ConfigurationFile();
+        Config.activeConfiguration.sewerageApiType = SewerageApiType.Pdok;
+
+        GeoJSON geojson = new GeoJSON(testStringMultipleSegmentPdok);
         geojson.GotoNextFeature();
 
         var stringValue = geojson.getPropertyStringValue("Dataset");

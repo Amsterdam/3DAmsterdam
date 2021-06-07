@@ -202,13 +202,12 @@ namespace Netherlands3D.Utilities
 
         public string getPropertyStringValue(string propertyName)
         {
-            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + 4;
-            if (propertyValueStartIndex == -1)
+            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + ((Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam) ? 3 : 4);
+            if (propertyValueStartIndex == -1) 
             {
                 return string.Empty;
             }
-            return geoJSONString.Substring(propertyValueStartIndex, geoJSONString.IndexOf(',', propertyValueStartIndex, featureLength) -1);
+            return geoJSONString.Substring(propertyValueStartIndex, geoJSONString.IndexOf(',', propertyValueStartIndex) - propertyValueStartIndex - 1);
         }
-
     }
 }
