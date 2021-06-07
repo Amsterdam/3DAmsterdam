@@ -194,7 +194,7 @@ namespace Netherlands3D.Utilities
             int propertyStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + 1;
             if (propertyStartIndex == -1)
             {
-                return float.MaxValue;
+                return 0.0f;
             }
             int nextstartposition;
             return (float)StringManipulation.ParseNextDouble(geoJSONString, ',', propertyStartIndex, out nextstartposition);

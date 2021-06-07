@@ -33,6 +33,7 @@ namespace Amsterdam3D.Sewerage
 					tiles.Add(tileKey, newTile);
 					break;
 				case TileAction.Remove:
+					InteruptRunningProcesses(tileKey);
 					RemoveTile(tileChange, callback);
 					return;
 				default:
@@ -55,6 +56,21 @@ namespace Amsterdam3D.Sewerage
 			return tile;
 		}
 
+		/*public override void InteruptRunningProcesses(Vector2Int tileKey)
+		{
+			if (!tiles.ContainsKey(tileKey)) return;
+
+			if (tiles[tileKey].runningWebRequest != null)
+				tiles[tileKey].runningWebRequest.Abort();
+
+			if (tiles[tileKey].runningCoroutine != null)
+			{
+				if (coroutinesWaiting.ContainsKey(tiles[tileKey].runningCoroutine))
+					coroutinesWaiting.Remove(tiles[tileKey].runningCoroutine);
+				StopCoroutine(tiles[tileKey].runningCoroutine);
+			}
+		}*/
+
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
 			StartCoroutine(BuildInfrastructure(tileChange, tile,callback));
@@ -68,6 +84,7 @@ namespace Amsterdam3D.Sewerage
 			int maxResultsCount = 5000;
 
 			var mesh = new Mesh();
+			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 			List<int> indices = new List<int>();
 			List<Vector3> vertices = new List<Vector3>();
 			List<Color> colors = new List<Color>();
@@ -107,12 +124,22 @@ namespace Amsterdam3D.Sewerage
 							if (coordinates.Count > 1)
 							{
 								//For every two coordinates
-								for (int i = 0; i < coordinates.Count/2; i+=2)
+								for (int i = 0; i < coordinates.Count/4; i+=4)
 								{
-									var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], depth));
-									vertices.Add(point);
+									var pointA = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
+									pointA.y = depth;
+
+									var pointB = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i+2], (float)coordinates[i + 3], 0));
+									pointB.y = depth;
+
+									vertices.Add(pointA);
+									vertices.Add(pointB);
+
 									colors.Add(lineColor);
+									colors.Add(lineColor);
+
 									indices.Add(vertices.Count-1);
+									indices.Add(vertices.Count-2);
 								}								
 							}
 						}
@@ -144,7 +171,14 @@ namespace Amsterdam3D.Sewerage
 		private Color GetNLCSColor(string theme)
 		{
 			//return color based on template
-			return nlcsColorPalette.colors[UnityEngine.Random.Range(0, nlcsColorPalette.colors.Count)].color;
+			foreach(NamedColor namedColor in nlcsColorPalette.colors)
+			{
+				if(namedColor.name.ToLower() == theme) 
+				{
+					return namedColor.color;
+				}
+			}
+			return Color.white;
 		}
 
 		private void RemoveTile(TileChange tileChange, System.Action<TileChange> callback = null)
