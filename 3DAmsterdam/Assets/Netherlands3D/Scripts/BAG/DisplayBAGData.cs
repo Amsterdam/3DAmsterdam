@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,35 +20,57 @@ namespace Netherlands3D.BAG
 
             StopAllCoroutines(); //Make sure all delayed Api coroutines are stopped before running this one again
 
-			StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
-			{
-                EstimateBuildingThumbnailFrame(buildingData);
-				Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("BAG ID", buildingData._display);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Buurt", buildingData._buurt.naam);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
-				Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
-				Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+			if( Config.activeConfiguration.BagApiType == BagApyType.Amsterdam)
+            {
+                StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
+                {
+                    EstimateBuildingThumbnailFrame(buildingData);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("BAG ID", buildingData._display);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Buurt", buildingData._buurt.naam);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
+                    Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
-				Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
+                    Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
 
-				//Load up the list of addresses tied to this building (in a Seperate API call)
-				Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Adressen");
-				StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
-				{
-					foreach (var address in addressList.results)
-					{
-						//We create a field and make it clickable, so addresses cant contain more data
-						var dataKeyAndValue = Interface.SidePanel.PropertiesPanel.Instance.AddDataField(address._display, "");
-						var button = dataKeyAndValue.GetComponent<Button>();
-						button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
-					}
-				}));
-			}));
-        }
+                    //Load up the list of addresses tied to this building (in a Seperate API call)
+                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Adressen");
+                    StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
+                    {
+                        foreach (var address in addressList.results)
+                        {
+                            //We create a field and make it clickable, so addresses cant contain more data
+                            var dataKeyAndValue = Interface.SidePanel.PropertiesPanel.Instance.AddDataField(address._display, "");
+                            var button = dataKeyAndValue.GetComponent<Button>();
+                            button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
+                        }
+                    }));
+                }));
+            }
+			else if (Config.activeConfiguration.BagApiType == BagApyType.KadasterBagViewer)
+            {
+                StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
+                {                    
+                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Naam", buildingData.openbareruimte.naam);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("DisplayString", buildingData.adresseerbaarobject.displayString);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Postcode", buildingData.nummeraanduiding.postcode);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
+                    
+                }));
+            }
+            else
+            {
+                Interface.SidePanel.PropertiesPanel.Instance.AddLabel($"ApiType {Config.activeConfiguration.BagApiType} is niet geimplementeerd..");
+            }
+
+		}
 
 		private static void EstimateBuildingThumbnailFrame(BagData.Rootobject buildingData)
 		{
