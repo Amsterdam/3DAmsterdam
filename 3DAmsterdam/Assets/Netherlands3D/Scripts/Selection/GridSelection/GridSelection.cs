@@ -284,8 +284,12 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-			if(scaleBlock)
+			if (scaleBlock)
+			{
+				var bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
+				Debug.Log("bbox="+(bounds.min.x + Config.activeConfiguration.RelativeCenterRD.x)+"," + (bounds.min.z + Config.activeConfiguration.RelativeCenterRD.y) + "," + (bounds.max.x + Config.activeConfiguration.RelativeCenterRD.x) + ","+(bounds.max.z + Config.activeConfiguration.RelativeCenterRD.y));
 				onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			}
 		}
 	}
 }
