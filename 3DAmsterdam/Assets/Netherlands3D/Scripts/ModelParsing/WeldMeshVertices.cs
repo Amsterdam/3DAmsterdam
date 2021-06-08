@@ -28,6 +28,11 @@ public class WeldMeshVertices: MonoBehaviour
             }
             Mesh combinedMesh = new Mesh();
             combinedMesh.CombineMeshes(ci,false, false, false);
+            // remove combineInstances
+            for (int i = ci.Length - 1; i >= 0; i--)
+            {
+                Destroy(ci[i].mesh);
+            }
             return combinedMesh;
         }
 
@@ -198,6 +203,14 @@ public class WeldMeshVertices: MonoBehaviour
         }
         Mesh mesh = new Mesh();
         mesh.CombineMeshes(combine, true, false, false);
+
+
+        // remove combineInstances
+        for ( i = combine.Length - 1; i >= 0; i--)
+        {
+            Destroy(combine[i].mesh);
+        }
+
         return mesh;
     }
 

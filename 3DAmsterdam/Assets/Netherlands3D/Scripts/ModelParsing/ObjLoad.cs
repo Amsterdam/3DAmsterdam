@@ -553,6 +553,8 @@ public class ObjLoad : MonoBehaviour
 				meshname = gameobject.GetComponent<MeshFilter>().sharedMesh.name;
 				Mesh newMesh = vertexWelder.WeldVertices(gameobject.GetComponent<MeshFilter>().sharedMesh);
 				newMesh.name = meshname;
+				// destroy the old mesh;
+				Destroy(gameobject.GetComponent<MeshFilter>().sharedMesh);
 				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
 			}
 			
