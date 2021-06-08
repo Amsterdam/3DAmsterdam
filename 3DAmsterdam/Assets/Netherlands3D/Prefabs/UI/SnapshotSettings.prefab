@@ -1246,6 +1246,7 @@ GameObject:
   - component: {fileID: 709583476302009613}
   - component: {fileID: 8033335347037436223}
   - component: {fileID: 6387119902659046699}
+  - component: {fileID: 6317659124323231062}
   m_Layer: 5
   m_Name: SnapshotSettings
   m_TagString: Untagged
@@ -1344,6 +1345,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9274b11f9c1f2d4299622a94bf7c327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6317659124323231062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082173924246429680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b92f3afe660160b4a92d34560e244b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuState: 1
+  blockMouseSelectionInteractions: 1
+  blockMouseNavigationInteractions: 1
+  blockKeyboardNavigationInteractions: 1
+  closeWindowButton: {fileID: 1750715269}
 --- !u!1 &1546071819650012734
 GameObject:
   m_ObjectHideFlags: 0

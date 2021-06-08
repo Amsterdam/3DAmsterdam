@@ -17,20 +17,10 @@ namespace Netherlands3D.Traffic.VISSIM
 
         [SerializeField]
         private UnityEvent doneLoadingModel;
-
         [SerializeField] private LoadingScreen loadingObjScreen = default;
         [SerializeField] private Playback playback = default;
         [SerializeField] private ConvertFZP converter = default;
-        [SerializeField] private GameObject vissimLayerObject = default;
         [SerializeField] private Transform vissimScriptObject = default;
-
-        private void Start()
-        {
-            vissimLayerObject.SetActive(false);
-            //loadingObjScreen = FindObjectOfType<LoadingScreen>();
-            //playback = FindObjectOfType<VissimPlayback>();
-            //converter = FindObjectOfType<ConvertFZP>();
-        }
 
 #if UNITY_EDITOR
         /// <summary>
@@ -59,7 +49,6 @@ namespace Netherlands3D.Traffic.VISSIM
         IEnumerator LoadingProgress(string vissimData)
         {
             // starts loading and sets to 50% by default
-            vissimLayerObject.SetActive(true);
             loadingObjScreen.ProgressBar.SetMessage("50%");
             loadingObjScreen.ProgressBar.Percentage(.5f);
             loadingObjScreen.ShowMessage("FZP wordt geladen: Vissim");
@@ -79,7 +68,6 @@ namespace Netherlands3D.Traffic.VISSIM
 
         public void DestroyVissim()
         {
-
             converter.allVissimData.Clear(); // cleans all old files
             converter.finishedLoadingData = false;
             playback.vehicles.Clear(); //  clears all old data
@@ -88,8 +76,6 @@ namespace Netherlands3D.Traffic.VISSIM
                 // disables all old cars
                 child.gameObject.SetActive(false);
             }
-
-            vissimLayerObject.SetActive(false); // disables layer
         }
     }
 }

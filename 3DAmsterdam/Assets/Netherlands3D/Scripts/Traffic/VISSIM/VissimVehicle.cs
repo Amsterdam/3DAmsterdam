@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.LayerSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ namespace Netherlands3D.Traffic.VISSIM
 
         protected float timeSinceCommand = 0.0f;
         protected float cleanUpTime = 5;
+
+        protected AssetbundleMeshLayer meshLayer;
         protected virtual void Awake()
         {
             anim = GetComponent<Animation>();
@@ -52,12 +55,20 @@ namespace Netherlands3D.Traffic.VISSIM
                 startLastRecordedHeight = hit.point;
                 vehicleCommandData.coordFront.y = hit.point.y;
             }
+            else
+            {
+                meshLayer.AddMeshColliders(hit.point);
+            }
             // checks the positional height of there the car will be in the future/next simulation second
             temp = endPos;
             temp.y = 50f;
             if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
             {
                 endLastRecordedHeight = hit.point;
+            }
+            else
+            {
+                meshLayer.AddMeshColliders(hit.point);
             }
 
             vehicleCommandData.coordFront.y = startLastRecordedHeight.y;
@@ -98,6 +109,11 @@ namespace Netherlands3D.Traffic.VISSIM
         protected virtual void CleanUpVehicle()
         {
             this.gameObject.SetActive(false);
+        }
+
+        public virtual void SetMeshLayer(AssetbundleMeshLayer layer)
+        {
+            meshLayer = layer;
         }
     }
 }

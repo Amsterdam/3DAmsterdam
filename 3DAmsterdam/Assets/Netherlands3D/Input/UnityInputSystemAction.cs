@@ -9,16 +9,11 @@ namespace Netherlands3D.InputHandler
     // class made to implement IComparable
     public class ActionEventClass : IComparable<ActionEventClass>
     {
-
-
         public UnityInputSystemAction.ActionDelegate del;
         public bool Performed;
         public bool Cancelled;
         public bool Started;
         public int priority = 0;
-
-
-
 
         public ActionEventClass(UnityInputSystemAction.ActionDelegate del, int priority)
         {
@@ -35,7 +30,6 @@ namespace Netherlands3D.InputHandler
         {
             return this.priority - other.priority;
         }
-
     }
 
     public enum ActionPhase 
@@ -48,7 +42,6 @@ namespace Netherlands3D.InputHandler
     public interface IAction
     {
         T ReadValue<T>() where T : struct;
-
 
         void SetValue(dynamic value);
 
@@ -69,9 +62,7 @@ namespace Netherlands3D.InputHandler
         /// </summary>
         ActionEventClass SubscribeStarted(UnityInputSystemAction.ActionDelegate del, int priority = 0);
 
-
         void UnSubscribe(ActionEventClass ev);
-
 
         bool Used { get; set; }
         bool Performed { get; }
@@ -105,8 +96,6 @@ namespace Netherlands3D.InputHandler
             }
             return (T)value;
         }
-
-
 
         public void SetValue(object value)
         {
@@ -145,7 +134,6 @@ namespace Netherlands3D.InputHandler
             }
         }
 
-
         public void FireStartedEvent()
         {
             //create copy of action so it can't change while handling event
@@ -162,7 +150,6 @@ namespace Netherlands3D.InputHandler
             }
         }
 
-
         public ActionEventClass SubscribePerformed(ActionDelegate del, int priority = 0)
         {
             ActionEventClass eventClass = new ActionEventClass(del, sortedDelegates.Count);
@@ -171,8 +158,6 @@ namespace Netherlands3D.InputHandler
 
             return eventClass;
         }
-
-
 
         public ActionEventClass SubscribeCancelled(ActionDelegate del, int priority = 0)
         {
@@ -200,9 +185,5 @@ namespace Netherlands3D.InputHandler
         {
             this.name = name;
         }
-
-
-
-
     }
 }

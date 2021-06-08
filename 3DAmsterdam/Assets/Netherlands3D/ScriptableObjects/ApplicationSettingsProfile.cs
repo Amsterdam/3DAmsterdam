@@ -15,12 +15,14 @@ public class ApplicationSettingsProfile : ScriptableObject
     public bool drawMap = true;
     public bool drawFPS = false;
     public float canvasDPI = 1.0f;
+    public bool showExperimentelFeatures = true;
 
     //Quality
     public float renderResolution = 1.0f;
     public int shadowQuality = 3;
     public float textureQuality = 1.0f;
     public bool antiAliasing = true;
+    public bool ambientOcclusion = false;
     public bool postProcessingEffects = true;
     public bool realtimeReflections = false;
 

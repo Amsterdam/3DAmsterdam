@@ -51,13 +51,14 @@ MonoBehaviour:
   finishedLoadingData: 0
   frameCounter: 0
   timeBetweenFrames: 1
-  vissimCarPrefabs: {fileID: 0}
-  vissimTruckPrefabs: {fileID: 0}
-  vissimBusPrefabs: {fileID: 0}
-  vissimTramPrefabs: {fileID: 0}
-  vissimPedestrianPrefabs: {fileID: 0}
-  vissimCyclePrefabs: {fileID: 0}
-  vissimVanPrefabs: {fileID: 0}
+  vissimCarPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimTruckPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimBusPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimTramPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimPedestrianPrefabs: {fileID: 11400000, guid: 6a50893d45928c04e97935af8802e91d,
+    type: 2}
+  vissimCyclePrefabs: {fileID: 11400000, guid: 9b502c2ed8efa534391722508d4f66e0, type: 2}
+  vissimVanPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
 --- !u!114 &7594738720079039875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileConverter: {fileID: -6045966924988825885}
+  meshLayer: {fileID: 0}
   timeCounter: 0
   loopCounter: 0
   loopCounterFuture: 0

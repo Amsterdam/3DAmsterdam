@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.LayerSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Netherlands3D.Traffic.VISSIM
     {
         public Dictionary<int, VissimVehicle> vehicles = new Dictionary<int, VissimVehicle>();
         [SerializeField] private ConvertFZP fileConverter = default;
+        [SerializeField] private AssetbundleMeshLayer meshLayer;
 
         public float timeCounter;
         public int loopCounter = 0;
@@ -63,9 +65,10 @@ namespace Netherlands3D.Traffic.VISSIM
                         {
                             // change 0 with i when you have more models
                             GameObject tempObject = Instantiate(fileConverter.vehicleTypes[dataList[i].vehicleType][Random.Range(0, fileConverter.vehicleTypes[dataList[i].vehicleType].Length)], transform.position, new Quaternion(0f, 0f, 0f, 0f));
-                            tempObject.transform.SetParent(this.transform);
+                            //tempObject.transform.SetParent(this.transform); This used to cause the vehicles to spawn where the button was.
 
                             VissimVehicle carInstance = tempObject.GetComponent<VissimVehicle>();
+                            carInstance.SetMeshLayer(meshLayer);
                             vehicles.Add(dataList[i].id, carInstance);
                             vehicles[dataList[i].id].vehicleCommandData = dataList[i];
                         }

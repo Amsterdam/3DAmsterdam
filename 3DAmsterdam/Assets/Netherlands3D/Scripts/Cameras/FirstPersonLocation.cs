@@ -1,5 +1,7 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Help;
 using Netherlands3D.Interface.Menu;
+using Netherlands3D.Interface.SidePanel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,9 @@ namespace Netherlands3D.Interface
 	{
 		private CameraModeChanger cameraModeChanger;
 
+		[SerializeField]
+		private Animator placedAnimator;
+
 		[HideInInspector]
 		public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
 		public override void Start()
@@ -29,6 +34,19 @@ namespace Netherlands3D.Interface
 			cameraModeChanger = CameraModeChanger.Instance;
 			cameraModeChanger.OnGodViewModeEvent += EnableObject;
 			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
+
+			if (waitingForClick)
+			{
+				HelpMessage.Instance.Show("<b>Klik</b> op het maaiveld om een camerastandpunt te plaatsen\n\nGebruik de <b>Escape</b> toets om te annuleren");
+				PropertiesPanel.Instance.OpenCustomObjects();
+			}
+		}
+
+		protected override void Placed()
+		{
+			base.Placed();
+			placedAnimator.enabled = true;
+			HelpMessage.Instance.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
 		}
 
 		private void EnableObject()

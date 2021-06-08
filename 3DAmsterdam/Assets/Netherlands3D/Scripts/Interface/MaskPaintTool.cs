@@ -1,8 +1,7 @@
 ﻿using Netherlands3D.Help;
+using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.SidePanel;
-using Netherlands3D.Underground;
-using System.Collections;
-using System.Collections.Generic;
+using Netherlands3D.Masking;
 using UnityEngine;
 
 namespace Netherlands3D.Interface
@@ -18,6 +17,11 @@ namespace Netherlands3D.Interface
 
         private string helpMessage = "<b>Shift+Klik+Sleep</b> om het masker gebied te selecteren";
 
+        [SerializeField]
+        private RectTransform maskSettings;
+        [SerializeField]
+        private InterfaceLayer maskLayer;
+
         public void WaitForMaskBounds()
         {
             HelpMessage.Instance.Show(helpMessage);
@@ -31,6 +35,11 @@ namespace Netherlands3D.Interface
             previousBounds = bounds;
             runtimeRectangularMask.MoveToBounds(bounds);
             PropertiesPanel.Instance.OpenLayers();
+
+            maskLayer.ToggleLinkedObject(true);
+            if (!maskSettings.gameObject.activeSelf)
+                maskLayer.ToggleLayerOpenedWithCustomOptions(maskSettings.gameObject);
+
             gridSelection.gameObject.SetActive(false);
         }
     }
