@@ -58,6 +58,7 @@ public class ObjLoad : MonoBehaviour
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
 	private bool flipYZ = false;
+	private bool weldVertices = false;
 	private int maxSubMeshes = 0;
 
 	/// <summary>
@@ -68,7 +69,7 @@ public class ObjLoad : MonoBehaviour
 	public bool FlipYZ { get => flipYZ; set => flipYZ = value; }
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
-
+	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -541,5 +542,24 @@ public class ObjLoad : MonoBehaviour
 		buffer.Trace();
 		buffer.flipTriangleDirection = flipFaceDirection;
 		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
+
+		// weld vertices if required
+        if (weldVertices)
+        {
+			string meshname = "";
+			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
+			foreach (var gameobject in gameObjects)
+            {
+				meshname = gameobject.GetComponent<MeshFilter>().sharedMesh.name;
+				Mesh newMesh = vertexWelder.WeldVertices(gameobject.GetComponent<MeshFilter>().sharedMesh);
+				newMesh.name = meshname;
+				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+			}
+			
+			
+
+
+			// strart the vertex-welding
+        }
 	}
 }
