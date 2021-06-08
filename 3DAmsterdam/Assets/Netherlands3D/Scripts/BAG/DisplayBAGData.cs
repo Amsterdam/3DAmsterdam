@@ -3,6 +3,7 @@ using Netherlands3D.Interface.SidePanel;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,15 +25,15 @@ namespace Netherlands3D.BAG
             {
                 StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
                 {
-                    EstimateBuildingThumbnailFrame(buildingData);
+                    EstimateBuildingThumbnailFrame(buildingData.bbox);
                     Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("BAG ID", buildingData._display);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Stadsdeel", buildingData._stadsdeel.naam);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Wijk", buildingData._buurtcombinatie.naam);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Buurt", buildingData._buurt.naam);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Bouwlagen", buildingData.bouwlagen.ToString());
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count.ToString());
+                    CheckAddDataField("BAG ID", buildingData._display);
+                    CheckAddDataField("Stadsdeel", buildingData._stadsdeel.naam);
+                    CheckAddDataField("Wijk", buildingData._buurtcombinatie.naam);
+                    CheckAddDataField("Buurt", buildingData._buurt.naam);
+                    CheckAddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
+                    CheckAddDataField("Bouwlagen", buildingData.bouwlagen);
+                    CheckAddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count);
                     Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
                     Interface.SidePanel.PropertiesPanel.Instance.AddSeperatorLine();
@@ -54,15 +55,51 @@ namespace Netherlands3D.BAG
 			else if (Config.activeConfiguration.BagApiType == BagApyType.KadasterBagViewer)
             {
                 StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
-                {                    
+                {
+                    Debug.Log($"buildingData.adresseerbaarobject.geometry.type: {buildingData.adresseerbaarobject.geometry.type}");
+
+                    var geometry = buildingData.adresseerbaarobject.geometry;
+
+                    var firstpand = buildingData.panden.First();
+
+                    if (geometry.type == null && firstpand != null)
+                    {
+                        geometry = firstpand.geometry;
+                    }
+
+                    if (geometry.type == "Point")
+                    {
+                        //create bounding box 50x50 meter
+                        float[] bbox = new float[4];
+                        var point = geometry.coordinates;
+                        bbox[0] = point[0] - 25;
+                        bbox[1] = point[1] - 25;
+                        bbox[2] = point[0] + 25;
+                        bbox[3] = point[1] + 25;
+                        EstimateBuildingThumbnailFrame(bbox);
+                    }
+
                     Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Naam", buildingData.openbareruimte.naam);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("DisplayString", buildingData.adresseerbaarobject.displayString);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Postcode", buildingData.nummeraanduiding.postcode);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
-                    Interface.SidePanel.PropertiesPanel.Instance.AddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
-                    
+
+                    CheckAddDataField("Naam", buildingData.openbareruimte.naam);
+                    CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);
+                    CheckAddDataField("Postcode", buildingData.nummeraanduiding.postcode);
+                    CheckAddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
+                    CheckAddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
+                    CheckAddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
+
+                    if (firstpand != null)
+                    {
+                        CheckAddDataField("Status", firstpand.status);
+                        CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
+                    }
+
+                    Interface.SidePanel.PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
+                    {
+                        x = geometry.coordinates[0],
+                        y = geometry.coordinates[1],
+                        id = bagId
+                    }));
                 }));
             }
             else
@@ -72,12 +109,19 @@ namespace Netherlands3D.BAG
 
 		}
 
-		private static void EstimateBuildingThumbnailFrame(BagData.Rootobject buildingData)
+        private void CheckAddDataField(string label, object data)
+        {
+            var result = $"{data}";
+            if (result.Trim() == "") return;
+            Interface.SidePanel.PropertiesPanel.Instance.AddDataField(label, $"{data}");           
+        }
+
+		private static void EstimateBuildingThumbnailFrame(float[] bbox)
 		{
             //Create our building area using bbox coming from the building data
             List<Vector3> points = new List<Vector3>();
-			var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0.0));
-			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0.0));
+			var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0.0));
+			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0.0));
            
             //Estimate height using a raycast shot from above at the center of the bounding box
             float estimatedHeight = 100.0f;
@@ -88,8 +132,8 @@ namespace Netherlands3D.BAG
             }
 
             //Add extra points giving our points shape a height
-            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[0], buildingData.bbox[1], 0));
-			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(buildingData.bbox[2], buildingData.bbox[3], 0));
+            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0));
+			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0));
             rdC.y = estimatedHeight;
             rdD.y = estimatedHeight;
 

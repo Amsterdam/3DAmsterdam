@@ -378,6 +378,7 @@
         public openbareruimte_model openbareruimte;
         public adresseerbaarobject_model adresseerbaarobject;
         public nummeraanduiding_model nummeraanduiding;
+        public pand_model[] panden;
 
         [System.Serializable]
         public class openbareruimte_model
@@ -390,11 +391,19 @@
 
         [System.Serializable]
         public class adresseerbaarobject_model
-        {            
+        {
             public string displayString;
             public string gebruiksdoel;
             public string oppervlakte;
             public string documentnummer;
+            public geometry_model geometry;
+        }
+
+        [System.Serializable]
+        public class geometry_model
+        {
+            public string type;
+            public float[] coordinates;
         }
 
         [System.Serializable]
@@ -405,6 +414,14 @@
             public string huisnummer;
         }
 
+        [System.Serializable]
+        public class pand_model
+        {
+            public string status;
+            public string documentnummer;
+            public geometry_model geometry;
+            public string bouwjaar;
+        }
     }
 
 
