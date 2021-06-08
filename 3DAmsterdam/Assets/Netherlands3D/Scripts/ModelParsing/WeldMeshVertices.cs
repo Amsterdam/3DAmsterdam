@@ -13,8 +13,26 @@ public class WeldMeshVertices: MonoBehaviour
     /// <returns>mesh with welded vertices</returns>
     public Mesh WeldVertices(Mesh oldMesh)
     {
-        Mesh mesh = SubdivideMesh(oldMesh);
-        return mesh;
+        int submeshCount = oldMesh.subMeshCount;
+        if (submeshCount ==1)
+        {
+            Mesh mesh = SubdivideMesh(oldMesh,0);
+            return mesh;
+        }
+        else
+        {
+            CombineInstance[] ci = new CombineInstance[submeshCount];
+            for (int i = 0; i < submeshCount; i++)
+            {
+                ci[i].mesh = SubdivideMesh(oldMesh, i);
+            }
+            Mesh combinedMesh = new Mesh();
+            combinedMesh.CombineMeshes(ci,false, false, false);
+            return combinedMesh;
+        }
+
+
+        
     }
 
     /// <summary>
@@ -44,21 +62,21 @@ public class WeldMeshVertices: MonoBehaviour
     /// </summary>
     /// <param name="inputMesh"></param>
     /// <returns></returns>
-    private Mesh SubdivideMesh(Mesh inputMesh)
+    private Mesh SubdivideMesh(Mesh inputMesh, int submeshIndex)
     {
         float cosAngleThreshold = Mathf.Cos(MaxAngle * Mathf.Deg2Rad);
 
-        // turn the mesh inot a mesh with 1 submesh
-        int submeshcount = inputMesh.subMeshCount;
-        if (submeshcount > 1)
-        {
-            inputMesh.SetTriangles(inputMesh.triangles, 0);
-            inputMesh.subMeshCount = 1;
-        }
+        //// turn the mesh inot a mesh with 1 submesh
+        //int submeshcount = inputMesh.subMeshCount;
+        //if (submeshcount > 1)
+        //{
+        //    inputMesh.SetTriangles(inputMesh.triangles, 0);
+        //    inputMesh.subMeshCount = 1;
+        //}
 
         // get the triangledata
         Vector3[] vertices = inputMesh.vertices;
-        int[] inputIndices = inputMesh.GetIndices(0);
+        int[] inputIndices = inputMesh.GetIndices(submeshIndex);
 
         //prepare triangles
         List<triangle> unUsedTriangles = new List<triangle>(); // all the trangles that have not been added to a submesh
