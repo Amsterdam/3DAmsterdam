@@ -250,7 +250,7 @@ namespace Netherlands3D.Interface.Layers
 		{
 			expanded = !expanded;
 			customOptions.SetActive(expanded);
-			customOptions.transform.SetAsLastSibling();
+			customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
 			Expand(expanded);
 		}
 

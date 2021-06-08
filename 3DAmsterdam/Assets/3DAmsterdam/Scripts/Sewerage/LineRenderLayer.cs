@@ -84,7 +84,6 @@ namespace Amsterdam3D.Sewerage
 			while (pagesRemaining)
 			{
 				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/json&BBox={bbox}&count={maxResultsCount}&startIndex={startIndex}";
-				Debug.Log(url);
 
 				//Create a new page per mesh, to see our results as fast as we can
 				var mesh = new Mesh();
@@ -124,20 +123,19 @@ namespace Amsterdam3D.Sewerage
 						{
 							//For every two coordinates
 							for (int i = 0; i < coordinates.Count/2; i+=2)
-							{	
+							{
 								//Add coordinate with vertex color
 								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
-								point.y = depth;
+								point.y = 0;
 								vertices.Add(point);
-
 								colors.Add(lineColor);
 
-								if (i > 3)
+								if(i != 0)
 								{
-									//Add the previous as line starting point
+									//Add line connecting to previous point (MeshTopology.Lines expects sets of 2 indices per line)
 									indices.Add(vertices.Count - 2);
+									indices.Add(vertices.Count - 1);
 								}
-								indices.Add(vertices.Count - 1);
 							}								
 						}
 					}
