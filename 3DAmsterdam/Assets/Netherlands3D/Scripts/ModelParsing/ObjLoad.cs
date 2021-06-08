@@ -161,7 +161,7 @@ public class ObjLoad : MonoBehaviour
 				{
 					if (flipYZ)
 					{
-						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[1]))));
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))));
 					}
 					else
 					{
