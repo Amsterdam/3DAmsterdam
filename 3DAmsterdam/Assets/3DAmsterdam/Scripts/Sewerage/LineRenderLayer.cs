@@ -56,7 +56,7 @@ namespace Amsterdam3D.Sewerage
 			return tile;
 		}
 
-		/*public override void InteruptRunningProcesses(Vector2Int tileKey)
+		public override void InteruptRunningProcesses(Vector2Int tileKey)
 		{
 			if (!tiles.ContainsKey(tileKey)) return;
 
@@ -65,15 +65,13 @@ namespace Amsterdam3D.Sewerage
 
 			if (tiles[tileKey].runningCoroutine != null)
 			{
-				if (coroutinesWaiting.ContainsKey(tiles[tileKey].runningCoroutine))
-					coroutinesWaiting.Remove(tiles[tileKey].runningCoroutine);
 				StopCoroutine(tiles[tileKey].runningCoroutine);
 			}
-		}*/
+		}
 
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
-			StartCoroutine(BuildInfrastructure(tileChange, tile,callback));
+			tile.runningCoroutine = StartCoroutine(BuildInfrastructure(tileChange, tile,callback));
 		}
 
 		IEnumerator BuildInfrastructure(TileChange tileChange, Tile tile, Action<TileChange> callback = null)
@@ -83,87 +81,91 @@ namespace Amsterdam3D.Sewerage
 			var pagesRemaining = true;
 			int maxResultsCount = 5000;
 
-			var mesh = new Mesh();
-			mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-			List<int> indices = new List<int>();
-			List<Vector3> vertices = new List<Vector3>();
-			List<Color> colors = new List<Color>();
-
 			while (pagesRemaining)
 			{
 				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/json&BBox={bbox}&count={maxResultsCount}&startIndex={startIndex}";
 				Debug.Log(url);
-				using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+
+				//Create a new page per mesh, to see our results as fast as we can
+				var mesh = new Mesh();
+				mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+				List<int> indices = new List<int>();
+				List<Vector3> vertices = new List<Vector3>();
+				List<Color> colors = new List<Color>();
+
+				tile.runningWebRequest = UnityWebRequest.Get(url);	
+				yield return tile.runningWebRequest.SendWebRequest();
+
+				if (tile.runningWebRequest.result == UnityWebRequest.Result.Success)
 				{
-					yield return webRequest.SendWebRequest();
+					GeoJSON customJsonHandler = new GeoJSON(tile.runningWebRequest.downloadHandler.text);
 
-					if (webRequest.result == UnityWebRequest.Result.Success)
+					//Determine if there is a page after this
+					if (customJsonHandler.geoJSONString.LastIndexOf("\"title\":\"next page\"") > -1)
 					{
-						GeoJSON customJsonHandler = new GeoJSON(webRequest.downloadHandler.text);
-
-						//Determine if there is a page after this
-						if (customJsonHandler.geoJSONString.LastIndexOf("\"title\":\"next page\"") > -1)
-						{
-							startIndex += maxResultsCount - 1;
-						}
-						else
-						{
-							pagesRemaining = false;
-						}
-
-						yield return null;
-
-						while (customJsonHandler.GotoNextFeature())
-						{
-							//Get the parameters that make up our feature line
-							List<double> coordinates = customJsonHandler.getGeometryLineString();
-							float depth = customJsonHandler.getPropertyFloatValue("diepte");
-							var lineColor = GetNLCSColor(customJsonHandler.getPropertyStringValue("thema"));
-
-							//Min. of two points? This is a line we can draw!
-							if (coordinates.Count > 1)
-							{
-								//For every two coordinates
-								for (int i = 0; i < coordinates.Count/4; i+=4)
-								{
-									var pointA = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
-									pointA.y = depth;
-
-									var pointB = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i+2], (float)coordinates[i + 3], 0));
-									pointB.y = depth;
-
-									vertices.Add(pointA);
-									vertices.Add(pointB);
-
-									colors.Add(lineColor);
-									colors.Add(lineColor);
-
-									indices.Add(vertices.Count-1);
-									indices.Add(vertices.Count-2);
-								}								
-							}
-						}
+						startIndex += maxResultsCount - 1;
 					}
 					else
 					{
 						pagesRemaining = false;
 					}
+
+					yield return null;
+
+					while (customJsonHandler.GotoNextFeature())
+					{
+						//Get the parameters that make up our feature line
+						List<double> coordinates = customJsonHandler.getGeometryLineString();
+						float depth = customJsonHandler.getPropertyFloatValue("diepte");
+						var lineColor = GetNLCSColor(customJsonHandler.getPropertyStringValue("thema"));
+
+						//Min. of two points? This is a line we can draw!
+						if (coordinates.Count > 1)
+						{
+							//For every two coordinates
+							for (int i = 0; i < coordinates.Count/2; i+=2)
+							{	
+								//Add coordinate with vertex color
+								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
+								point.y = depth;
+								vertices.Add(point);
+
+								colors.Add(lineColor);
+
+								if (i > 3)
+								{
+									//Add the previous as line starting point
+									indices.Add(vertices.Count - 2);
+								}
+								indices.Add(vertices.Count - 1);
+							}								
+						}
+					}
+
+					//All lines are read into mesh. Lets finish it
+					GameObject childMeshGameObject = new GameObject();
+					childMeshGameObject.transform.SetParent(tile.gameObject.transform,false);
+
+					mesh.vertices = vertices.ToArray();
+					mesh.colors = colors.ToArray();
+					mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
+
+					childMeshGameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
+					childMeshGameObject.AddComponent<MeshRenderer>().material = lineRendererMaterial;
+
+					tile.gameObject.SetActive(true);
+					yield return new WaitForEndOfFrame();
 				}
+				else
+				{
+					pagesRemaining = false;
+				}
+				
 			}
 
 			Debug.Log("Constructing line mesh");
 
 			yield return null;
-
-			//All lines are read into mesh. Lets finish it
-			mesh.vertices = vertices.ToArray();
-			mesh.colors = colors.ToArray();
-			mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
-
-			tile.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
-			tile.gameObject.AddComponent<MeshRenderer>().material = lineRendererMaterial;
-
-			tile.gameObject.SetActive(true);
 
 			callback(tileChange);
 		}
@@ -189,7 +191,7 @@ namespace Amsterdam3D.Sewerage
 				Tile tile = tiles[tileKey];
 				if (tile.gameObject)
 				{
-					MeshFilter[] meshFilters = tile.gameObject.GetComponents<MeshFilter>();
+					MeshFilter[] meshFilters = tile.gameObject.GetComponentsInChildren<MeshFilter>();
 
 					foreach (var meshfilter in meshFilters)
 					{
