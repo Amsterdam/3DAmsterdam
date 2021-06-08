@@ -5,6 +5,7 @@ public class WeldMeshVertices: MonoBehaviour
 {
     private List<Mesh> submeshes;
     public float MaxAngle = 5;
+    private UnityEngine.Rendering.IndexFormat meshformat;
 
     /// <summary>
     /// welds mesh vertices where the angle between adjacent triangles is smaller than MaxAngle
@@ -13,6 +14,7 @@ public class WeldMeshVertices: MonoBehaviour
     /// <returns>mesh with welded vertices</returns>
     public Mesh WeldVertices(Mesh oldMesh)
     {
+        meshformat = UnityEngine.Rendering.IndexFormat.UInt32;
         int submeshCount = oldMesh.subMeshCount;
         if (submeshCount ==1)
         {
@@ -27,6 +29,7 @@ public class WeldMeshVertices: MonoBehaviour
                 ci[i].mesh = SubdivideMesh(oldMesh, i);
             }
             Mesh combinedMesh = new Mesh();
+            combinedMesh.indexFormat = meshformat;
             combinedMesh.CombineMeshes(ci,false, false, false);
             // remove combineInstances
             for (int i = ci.Length - 1; i >= 0; i--)
@@ -171,6 +174,7 @@ public class WeldMeshVertices: MonoBehaviour
             }
             
             Mesh childmesh = new Mesh();
+            childmesh.indexFormat = meshformat;
             childmesh.vertices = childVertices.ToArray();
             childmesh.SetIndices(childIndices.ToArray(), MeshTopology.Triangles, 0);
             childmesh.RecalculateNormals();
@@ -202,6 +206,7 @@ public class WeldMeshVertices: MonoBehaviour
             i++;
         }
         Mesh mesh = new Mesh();
+        mesh.indexFormat = meshformat;
         mesh.CombineMeshes(combine, true, false, false);
 
 
