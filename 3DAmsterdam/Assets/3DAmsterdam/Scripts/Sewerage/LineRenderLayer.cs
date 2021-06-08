@@ -161,8 +161,6 @@ namespace Amsterdam3D.Sewerage
 				
 			}
 
-			Debug.Log("Constructing line mesh");
-
 			yield return null;
 
 			callback(tileChange);
