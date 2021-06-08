@@ -57,6 +57,7 @@ public class ObjLoad : MonoBehaviour
 	private bool splitNestedObjects = false;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
+	private bool flipYZ = false;
 	private int maxSubMeshes = 0;
 
 	/// <summary>
@@ -64,7 +65,7 @@ public class ObjLoad : MonoBehaviour
 	/// </summary>
 	public bool SplitNestedObjects { get => splitNestedObjects; set => splitNestedObjects = value; }
 	public bool ObjectUsesRDCoordinates { get => RDCoordinates; set => RDCoordinates = value; }
-
+	public bool FlipYZ { get => flipYZ; set => flipYZ = value; }
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 
@@ -139,9 +140,16 @@ public class ObjLoad : MonoBehaviour
                 {
                     if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
                     {
+						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
 						Debug.Log("model appears to be in RD-coordiantes");
                     }
+					else if(CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
+                    {
+						flipYZ = true;
+						ObjectUsesRDCoordinates = true;
+						Debug.Log("model appears to be in RD-coordiantes");
+					}
 					else
                     {
 						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
@@ -151,11 +159,25 @@ public class ObjLoad : MonoBehaviour
 
 				if (ObjectUsesRDCoordinates)
 				{
-					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
+					if (flipYZ)
+					{
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))));
+					}
+					else
+					{
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
+					}
 				}
 				else
 				{
-					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
+					if (flipYZ)
+					{
+						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[3]), cf(linePart[2])));
+					}
+					else
+					{
+						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
+					}
 				}
 				break;
 			case VT:
