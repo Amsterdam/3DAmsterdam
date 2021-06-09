@@ -122,7 +122,7 @@ namespace Amsterdam3D.Sewerage
 						if (coordinates.Count > 1)
 						{
 							//For every two coordinates
-							for (int i = 0; i < coordinates.Count/2; i+=2)
+							for (int i = 0; i < coordinates.Count; i+=2)
 							{
 								//Add coordinate with vertex color
 								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
