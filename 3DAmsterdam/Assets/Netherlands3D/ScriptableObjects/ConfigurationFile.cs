@@ -1,5 +1,6 @@
 ﻿using Amsterdam3D.Sewerage;
 using ConvertCoordinates;
+using Netherlands3D.BAG;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,7 @@ namespace Netherlands3D
         public string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
 
         [Header("Bag Api URLs")]
+        public BagApyType BagApiType;
         public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
         public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=";
         public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";

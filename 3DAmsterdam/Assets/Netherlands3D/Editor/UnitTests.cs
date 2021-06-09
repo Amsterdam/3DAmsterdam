@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine.TestTools;
 using ConvertCoordinates;
 using System;
+using System.Linq;
 
 public class UnitTests 
 {
@@ -15,6 +16,21 @@ public class UnitTests
         string template = "terrain/terrain_{x}_{y}.lod1.mesh";
         var result = template.ReplaceXY(444000, 123000);
         Assert.AreEqual("terrain/terrain_444000_123000.lod1.mesh", result);
+    }
+
+
+    [Test]
+    public void TestReplacePlaceholders()
+    {
+        string template = "test_{x}_{y}_{z}";
+        object d = new
+        {
+            x = 1,
+            y = 2,
+            z = 3
+        };
+        var test = template.ReplacePlaceholders(d);
+        Assert.AreEqual("test_1_2_3", test);
     }
 
     [Test]
