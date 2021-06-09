@@ -69,10 +69,10 @@ namespace Amsterdam3D.Sewerage
 
 		public void Generate(TileChange tileChange,Tile tile, System.Action<TileChange> callback = null)
 		{
-			tile.runningCoroutine = StartCoroutine(BuildInfrastructure(tileChange, tile,callback));
+			tile.runningCoroutine = StartCoroutine(BuildLineNetwork(tileChange, tile,callback));
 		}
 
-		IEnumerator BuildInfrastructure(TileChange tileChange, Tile tile, Action<TileChange> callback = null)
+		IEnumerator BuildLineNetwork(TileChange tileChange, Tile tile, Action<TileChange> callback = null)
 		{
 			var bbox = tile.tileKey.x + "," + tile.tileKey.y + "," + (tile.tileKey.x + tileSize) + "," + (tile.tileKey.y + tileSize);
 			int startIndex = 0;
@@ -81,7 +81,6 @@ namespace Amsterdam3D.Sewerage
 
 			while (pagesRemaining)
 			{
-				
 				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/json&BBox={bbox}&count={maxResultsCount}&startIndex={startIndex}";
 
 				//Create a new page per mesh, to see our results as fast as we can
@@ -115,7 +114,7 @@ namespace Amsterdam3D.Sewerage
 						//Get the parameters that make up our feature line
 						var theme = customJsonHandler.getPropertyStringValue("thema");
 						var lineColor = GetLineColor(theme);
-						float depth = customJsonHandler.getPropertyFloatValue("diepte");
+						float height = EstimateHeight(customJsonHandler.getPropertyFloatValue("diepte"));
 						List<double> coordinates = customJsonHandler.getGeometryLineString();
 
 						//Min. of two points? This is a line we can draw!
@@ -126,7 +125,7 @@ namespace Amsterdam3D.Sewerage
 							{
 								//Add coordinate with vertex color
 								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
-								point.y = 0;
+								point.y = height;
 								vertices.Add(point);
 								colors.Add(lineColor);
 
@@ -168,6 +167,11 @@ namespace Amsterdam3D.Sewerage
 			callback(tileChange);
 		}
 
+		/// <summary>
+		/// Find the name based on theme name in our colorpalette
+		/// </summary>
+		/// <param name="theme">Theme name</param>
+		/// <returns></returns>
 		private Color GetLineColor(string theme)
 		{
 			//return color based on template
@@ -179,6 +183,30 @@ namespace Amsterdam3D.Sewerage
 				}
 			}
 			return Color.black;
+		}
+
+		/// <summary>
+		/// The depth field can contain different ways to describe the height of the line.
+		/// With this method we try to interpret the height as best as we can.
+		/// </summary>
+		/// <param name="heightValue">The value set in the depth field</param>
+		/// <returns></returns>
+		private float EstimateHeight(float heightValue)
+		{
+			if (heightValue > 0)
+			{
+				//Probably NAP. use as height directly.
+				return heightValue;
+			}
+			else if(heightValue<0)
+			{
+				//Probably offset based on ground (at that specific spot)
+				return heightValue;
+			}
+			else{
+				// default, just be somewhere underground
+				return -1;
+			}
 		}
 
 		private void RemoveTile(TileChange tileChange, System.Action<TileChange> callback = null)
