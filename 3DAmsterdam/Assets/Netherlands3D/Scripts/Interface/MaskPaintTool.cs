@@ -18,8 +18,6 @@ namespace Netherlands3D.Interface
         private string helpMessage = "<b>Shift+Klik+Sleep</b> om het masker gebied te selecteren";
 
         [SerializeField]
-        private RectTransform maskSettings;
-        [SerializeField]
         private InterfaceLayer maskLayer;
 
         public void WaitForMaskBounds()
@@ -37,8 +35,7 @@ namespace Netherlands3D.Interface
             PropertiesPanel.Instance.OpenLayers();
 
             maskLayer.ToggleLinkedObject(true);
-            if (!maskSettings.gameObject.activeSelf)
-                maskLayer.ToggleLayerOpenedWithCustomOptions(maskSettings.gameObject);
+            maskLayer.ExpandLayerOptions(true);
 
             gridSelection.gameObject.SetActive(false);
         }

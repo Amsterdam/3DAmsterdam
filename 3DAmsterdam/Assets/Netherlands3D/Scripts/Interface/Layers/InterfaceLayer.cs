@@ -26,6 +26,9 @@ namespace Netherlands3D.Interface.Layers
 		private GameObject linkedObject;
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
+		[SerializeField]
+		private GameObject customOptions;
+
 		public Material opaqueShaderSourceOverride;
 		public Material transparentShaderSourceOverride;
 
@@ -224,6 +227,15 @@ namespace Netherlands3D.Interface.Layers
 		public void ToggleLayerOpened()
 		{
 			expanded = !expanded;
+
+			if(customOptions)
+			{
+				customOptions.SetActive(expanded);
+				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
+			}
+
+			ExpandLayerOptions(expanded);
+
 			if(expanded)
 			{
 				//In case of own models,make sure to always grab the latest materials
@@ -234,42 +246,34 @@ namespace Netherlands3D.Interface.Layers
 					UpdateLayerPrimaryColor();
 				}
 
-				parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
+				//If we do not use any custom options for this layer, use the default layer visuals panel
+				if(!customOptions)
+					parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
 			}
 			else{
 				parentInterfaceLayers.LayerVisuals.Close();
 			}
-			Expand(expanded);
-		}
-
-		/// <summary>
-		/// Open up layer with a custom set of tools, instead of the general LayerVisuals panel
-		/// </summary>
-		/// <param name="customOptions">The gameobject</param>
-		public void ToggleLayerOpenedWithCustomOptions(GameObject customOptions)
-		{
-			expanded = !expanded;
-			customOptions.SetActive(expanded);
-			customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
-			Expand(expanded);
 		}
 
 		/// <summary>
 		/// Should these layer options be expanded
 		/// </summary>
-		/// <param name="openChevron">Expanded or closed</param>
-		public void Expand(bool openChevron = true)
+		/// <param name="expandLayer">Expanded or closed</param>
+		public void ExpandLayerOptions(bool expandLayer = true)
 		{
-			expanded = openChevron;
-			if(expandIcon)
+			expanded = expandLayer;
+			if (!expandLayer && customOptions) customOptions.SetActive(false);
+
+			if (expandIcon)
 				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
+
 			if (expanded && autoCloseNeighbourLayers)
 			{
 				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
 				foreach(var layer in neighbourLayers)
 				{
 					if (layer != this)
-						layer.Expand(false);
+						layer.ExpandLayerOptions(false);
 				}
 			}
 		}
