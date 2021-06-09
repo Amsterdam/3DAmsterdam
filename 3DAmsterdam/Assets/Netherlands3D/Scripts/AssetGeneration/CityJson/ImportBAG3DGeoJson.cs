@@ -334,7 +334,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 //And clean up memory
                 for (int i = 0; i < combine.Length; i++)
                 {
-                    Destroy(meshFilters[i].sharedMesh);
+                    DestroyImmediate(meshFilters[i].sharedMesh,true);
                     Destroy(meshFilters[i].gameObject);
                 }
             }
