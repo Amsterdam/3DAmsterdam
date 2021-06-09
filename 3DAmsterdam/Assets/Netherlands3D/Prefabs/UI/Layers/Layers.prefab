@@ -64,6 +64,19 @@ MonoBehaviour:
   maxSimultaneous: 1
   SewerLineObjectPool: {fileID: 1620230286426900701}
   manHoleObjectPool: {fileID: 7130575673976826797}
+--- !u!114 &1663672272712614261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d014604257af7e747b2eae38a8d3c70b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backdropObject: {fileID: 4797514454882316407}
 --- !u!1 &2352775316738161639
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,6 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7554844549336345184}
   - component: {fileID: 7142445150767561515}
+  - component: {fileID: 5357162363248221443}
   m_Layer: 0
   m_Name: CablesAndPipes
   m_TagString: Untagged
@@ -121,6 +135,19 @@ MonoBehaviour:
   lineThemeColorPalette: {fileID: 11400000, guid: 4415c3698f0a89249b24581844475dbf,
     type: 2}
   lineRendererMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+--- !u!114 &5357162363248221443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2352775316738161639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d014604257af7e747b2eae38a8d3c70b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backdropObject: {fileID: 4797514454882316407}
 --- !u!1 &4498901013071965061
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +271,7 @@ Transform:
   - {fileID: 6030816391891915778}
   - {fileID: 1144097372}
   - {fileID: 7554844549336345184}
+  - {fileID: 4797514454882316410}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -328,6 +356,32 @@ MonoBehaviour:
   createMeshcollider: 0
   addHighlightuvs: 0
   tileShadowCastingMode: 1
+--- !u!1001 &444147156461335792
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4498901013433943612}
+    m_Modifications:
+    - target: {fileID: 4953357633947911306, guid: 17909f1f0b003374f994eafe5c4313ae,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 17909f1f0b003374f994eafe5c4313ae, type: 3}
+--- !u!1 &4797514454882316407 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4953357633947911303, guid: 17909f1f0b003374f994eafe5c4313ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 444147156461335792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4797514454882316410 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4953357633947911306, guid: 17909f1f0b003374f994eafe5c4313ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 444147156461335792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5998426874923413135
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -20,8 +20,6 @@ namespace Amsterdam3D.Sewerage
 		[SerializeField]
 		private Material lineRendererMaterial;
 
-		public override void OnDisableTiles(bool isenabled) { }
-
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
@@ -83,6 +81,7 @@ namespace Amsterdam3D.Sewerage
 
 			while (pagesRemaining)
 			{
+				
 				var url = $"https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application/json&BBox={bbox}&count={maxResultsCount}&startIndex={startIndex}";
 
 				//Create a new page per mesh, to see our results as fast as we can
@@ -152,7 +151,9 @@ namespace Amsterdam3D.Sewerage
 					childMeshGameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
 					childMeshGameObject.AddComponent<MeshRenderer>().material = lineRendererMaterial;
 
-					tile.gameObject.SetActive(true);
+					//Finaly activate our new tile gameobject (if layer is not disabled)
+					tile.gameObject.SetActive(isEnabled);
+
 					yield return new WaitForEndOfFrame();
 				}
 				else
