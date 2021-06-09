@@ -15,7 +15,7 @@ namespace Amsterdam3D.Sewerage
 	public class LineRenderLayer : Layer
     {
 		[SerializeField]
-		private ColorPalette nlcsColorPalette;
+		private ColorPalette lineThemeColorPalette;
 
 		[SerializeField]
 		private Material lineRendererMaterial;
@@ -114,9 +114,10 @@ namespace Amsterdam3D.Sewerage
 					while (customJsonHandler.GotoNextFeature())
 					{
 						//Get the parameters that make up our feature line
-						List<double> coordinates = customJsonHandler.getGeometryLineString();
+						var theme = customJsonHandler.getPropertyStringValue("thema");
+						var lineColor = GetLineColor(theme);
 						float depth = customJsonHandler.getPropertyFloatValue("diepte");
-						var lineColor = GetNLCSColor(customJsonHandler.getPropertyStringValue("thema"));
+						List<double> coordinates = customJsonHandler.getGeometryLineString();
 
 						//Min. of two points? This is a line we can draw!
 						if (coordinates.Count > 1)
@@ -136,7 +137,7 @@ namespace Amsterdam3D.Sewerage
 									indices.Add(vertices.Count - 2);
 									indices.Add(vertices.Count - 1);
 								}
-							}								
+							}
 						}
 					}
 
@@ -166,17 +167,17 @@ namespace Amsterdam3D.Sewerage
 			callback(tileChange);
 		}
 
-		private Color GetNLCSColor(string theme)
+		private Color GetLineColor(string theme)
 		{
 			//return color based on template
-			foreach(NamedColor namedColor in nlcsColorPalette.colors)
+			foreach(NamedColor namedColor in lineThemeColorPalette.colors)
 			{
 				if(namedColor.name.ToLower() == theme) 
 				{
 					return namedColor.color;
 				}
 			}
-			return Color.white;
+			return Color.black;
 		}
 
 		private void RemoveTile(TileChange tileChange, System.Action<TileChange> callback = null)
