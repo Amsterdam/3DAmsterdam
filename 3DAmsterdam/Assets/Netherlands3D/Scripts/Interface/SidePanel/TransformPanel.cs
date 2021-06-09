@@ -140,7 +140,8 @@ namespace Netherlands3D.Interface.SidePanel
             //Display this panel
             gameObject.SetActive(true);
 
-            StartCoroutine(SortLayout());
+            //StartCoroutine(SortLayout());
+            this.transform.SetSiblingIndex(1);
         }
         private IEnumerator SortLayout()
         {
@@ -160,7 +161,6 @@ namespace Netherlands3D.Interface.SidePanel
 
             SetRDCoordinateFields();
             UpdateWithCurrentTransform();
-            transformableTarget.UpdateBounds();
 
             ignoreChangeEvents = false;
         }
@@ -277,8 +277,6 @@ namespace Netherlands3D.Interface.SidePanel
             {
                 ApplyTranslation();
             }
-
-            transformableTarget.UpdateBounds();
         }
 
         /// <summary>
@@ -296,8 +294,6 @@ namespace Netherlands3D.Interface.SidePanel
             );
 
             transformableTarget.transform.localScale = normalisedScaler;
-
-            transformableTarget.UpdateBounds();
         }
 
         /// <summary>

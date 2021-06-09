@@ -17,7 +17,6 @@ namespace Netherlands3D.LayerSystem
             set
             {
                 isenabled = value;
-                Debug.Log(transform.childCount);
                 for (int i = 0; i < transform.childCount; i++)
                 {
                     transform.GetChild(i).gameObject.SetActive(isenabled);
@@ -41,5 +40,15 @@ namespace Netherlands3D.LayerSystem
                 dataset.maximumDistanceSquared = dataset.maximumDistance * dataset.maximumDistance;
             }
         }
+
+		public virtual void InteruptRunningProcesses(Vector2Int tileKey)
+		{
+			if (!tiles.ContainsKey(tileKey)) return;
+
+            if (tiles[tileKey].assetBundle) tiles[tileKey].assetBundle.Unload(true);
+
+			if (tiles[tileKey].runningWebRequest != null) tiles[tileKey].runningWebRequest.Abort();
+			if (tiles[tileKey].runningCoroutine != null) StopCoroutine(tiles[tileKey].runningCoroutine);
+		}
     }
 }

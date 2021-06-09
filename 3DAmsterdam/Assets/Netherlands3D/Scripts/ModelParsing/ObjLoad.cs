@@ -57,6 +57,8 @@ public class ObjLoad : MonoBehaviour
 	private bool splitNestedObjects = false;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
+	private bool flipYZ = false;
+	private bool weldVertices = false;
 	private int maxSubMeshes = 0;
 
 	/// <summary>
@@ -64,10 +66,10 @@ public class ObjLoad : MonoBehaviour
 	/// </summary>
 	public bool SplitNestedObjects { get => splitNestedObjects; set => splitNestedObjects = value; }
 	public bool ObjectUsesRDCoordinates { get => RDCoordinates; set => RDCoordinates = value; }
-
+	public bool FlipYZ { get => flipYZ; set => flipYZ = value; }
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
-
+	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -135,20 +137,55 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
+                if (buffer.Vertices.Count==0)
+                {
+                    if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+                    {
+						flipYZ = false;
+						ObjectUsesRDCoordinates = true;
+						Debug.Log("model appears to be in RD-coordiantes");
+                    }
+					else if(CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
+                    {
+						flipYZ = true;
+						ObjectUsesRDCoordinates = true;
+						Debug.Log("model appears to be in RD-coordiantes");
+					}
+					else
+                    {
+						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
+						Debug.Log("model appears not to be in RD-coordinates");
+                    }
+                }
+
 				if (ObjectUsesRDCoordinates)
 				{
-					buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3]))));
+					if (flipYZ)
+					{
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))));
+					}
+					else
+					{
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
+					}
 				}
 				else
 				{
-					buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+					if (flipYZ)
+					{
+						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[3]), cf(linePart[2])));
+					}
+					else
+					{
+						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
+					}
 				}
 				break;
 			case VT:
 				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
 				break;
 			case VN:
-				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), cf(linePart[3])));
+				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
 				break;
 			case F:
 				var faces = new FaceIndices[linePart.Length - 1];
@@ -157,8 +194,8 @@ public class ObjLoad : MonoBehaviour
 				{
 					//tris
 					buffer.PushFace(faces[0]);
-					buffer.PushFace(faces[1]);
 					buffer.PushFace(faces[2]);
+					buffer.PushFace(faces[1]);
 				}
 				else if (linePart.Length == 5)
 				{
@@ -324,7 +361,20 @@ public class ObjLoad : MonoBehaviour
 	{
 		try
 		{
-			return float.Parse(v);
+			return float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
+		}
+		catch (Exception e)
+		{
+			print(e + " -> " + v);
+			return 0;
+		}
+	}
+
+	static double cd(string v)
+    {
+		try
+		{
+			return double.Parse(v,System.Globalization.CultureInfo.InvariantCulture);
 		}
 		catch (Exception e)
 		{
@@ -492,5 +542,26 @@ public class ObjLoad : MonoBehaviour
 		buffer.Trace();
 		buffer.flipTriangleDirection = flipFaceDirection;
 		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
+
+		// weld vertices if required
+        if (weldVertices)
+        {
+			string meshname = "";
+			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
+			foreach (var gameobject in gameObjects)
+            {
+				meshname = gameobject.GetComponent<MeshFilter>().sharedMesh.name;
+				Mesh newMesh = vertexWelder.WeldVertices(gameobject.GetComponent<MeshFilter>().sharedMesh);
+				newMesh.name = meshname;
+				// destroy the old mesh;
+				Destroy(gameobject.GetComponent<MeshFilter>().sharedMesh);
+				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+			}
+			
+			
+
+
+			// strart the vertex-welding
+        }
 	}
 }

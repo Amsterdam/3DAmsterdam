@@ -6,13 +6,17 @@ namespace Amsterdam3D.Sewerage
 {
     public class SewerageObjectPool : MonoBehaviour
     {
-        public GameObject prefab;
+        [SerializeField]
+        private GameObject prefab;
         private List<GameObject> pooledObjects;
         private Queue<GameObject> objectQueue;
-        public int amountToPool;
+
+        [SerializeField]
+        private int amountToPool;
         // Start is called before the first frame update
         void Start()
         {
+
             objectQueue = new Queue<GameObject>();
             pooledObjects = new List<GameObject>();
             GameObject tmp;

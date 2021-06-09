@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -34,6 +35,7 @@ namespace Netherlands3D.Interface
 		private IAction clickedAction;
 		private IAction clickedSecondaryAction;
 		private IAction multiSelectAction;
+		private IAction escapeAction;
 
 		public static bool doingMultiselect = false;
 
@@ -63,14 +65,20 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Interactable multiSelector;
 
-		void Awake()
-		{
-			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
+		[Header("Report any click action to these objects")]
+		public UnityEvent registeredClickInput;
 
+		private void Awake()
+		{
 			if (Instance == null)
 			{
 				Instance = this;
 			}
+		}
+
+		void Start()
+		{
+			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
 			selectedObjects = new List<OutlineObject>();
 			InitializeActions();
 		}
@@ -78,32 +86,34 @@ namespace Netherlands3D.Interface
 		private void InitializeActions()
 		{
 			selectorActionMap = ActionHandler.actions.Selector;
+			selectorActionMap.Enable();
 
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
 			multiSelectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
+			escapeAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Escape);
 
 			//Listeners
 			clickedAction.SubscribePerformed(Click);
 			multiSelectAction.SubscribePerformed(Multiselect);
 			multiSelectAction.SubscribeCancelled(Multiselect);
+			escapeAction.SubscribePerformed(Escape);
 
 			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
 		}
 
-
-		private void OnEnable()
+		public void SetActiveInteractable(Interactable newActiveInteractable)
 		{
-			selectorActionMap.Enable();
-		}
-		private void OnDisable()
-		{
-			selectorActionMap.Disable();
-		}
-
-		public void SetActiveInteractable(Interactable interactable)
-		{
-			activeInteractable = interactable;
+			if (newActiveInteractable != null && newActiveInteractable != activeInteractable)
+			{
+				//Abort/escape our current interactable
+				if (activeInteractable) activeInteractable.Escape();
+				activeInteractable = newActiveInteractable;
+			}
+			else
+			{
+				activeInteractable = null;
+			}
 		}
 
 		private void Update()
@@ -128,6 +138,10 @@ namespace Netherlands3D.Interface
 			{
 				EnableCameraActionMaps(true, true);
 			}
+
+			//TODO: Mobile touch inputs will be handled from here as well. For example: 
+			//Two fingers and pinch out on Interactable (shoot ray from centroid of 2 touches) --> send pinch delta to interactable, to maybe scale the object if its a Transformable.
+			//Two fingers pinch without raycast hit? Zoom camera. Centroid of pinches delta rotates around point.
 		}
 
 		/// <summary>
@@ -181,13 +195,19 @@ namespace Netherlands3D.Interface
 		}
 
 		private void Click(IAction action)
-		{ 
+		{
+			//Let any listeners know we have made a general click
+			registeredClickInput.Invoke();
+
 			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
-			if(!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
+			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 				Select();
 		}
 		private void SecondaryClick(IAction action)
 		{
+			//Let any listeners know we have made a general click
+			registeredClickInput.Invoke();
+
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 			{
 				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
@@ -205,6 +225,16 @@ namespace Netherlands3D.Interface
 			else if (action.Performed)
 			{
 				doingMultiselect = true;
+				//Let any listeners know we have made a general click action
+				registeredClickInput.Invoke();
+			}
+		}
+
+		private void Escape(IAction action)
+		{
+			if(activeInteractable)
+			{
+				activeInteractable.Escape();
 			}
 		}
 

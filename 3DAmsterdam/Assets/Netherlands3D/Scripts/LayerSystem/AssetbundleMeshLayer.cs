@@ -23,49 +23,54 @@ namespace Netherlands3D.LayerSystem
         }
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
-        {
+		{
 			TileAction action = tileChange.action;
+			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+
+
 			switch (action)
 			{
 				case TileAction.Create:
-					Tile newTile = CreateNewTile(tileChange);
-					tiles.Add(new Vector2Int(tileChange.X, tileChange.Y), newTile);
+					Tile newTile = CreateNewTile(tileKey);
+					tiles.Add(tileKey, newTile);
 					break;
 				case TileAction.Upgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD++;
+					tiles[tileKey].LOD++;
 					break;
 				case TileAction.Downgrade:
-					tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD--;
+					tiles[tileKey].LOD--;
 					break;
 				case TileAction.Remove:
-					RemoveGameObjectFromTile(tileChange);
-					tiles.Remove(new Vector2Int(tileChange.X, tileChange.Y));
+					InteruptRunningProcesses(tileKey);
+					RemoveGameObjectFromTile(tileKey);
+					tiles.Remove(tileKey);
 					callback(tileChange);
 					return;
 				default:
 					break;
 			}
-			StartCoroutine(DownloadAssetBundle(tileChange,callback));
+			tiles[tileKey].runningCoroutine = StartCoroutine(DownloadAssetBundle(tileChange, callback));
 		}
-		private Tile CreateNewTile(TileChange tileChange)
+
+		private Tile CreateNewTile(Vector2Int tileKey)
 		{
 			Tile tile = new Tile();
 			tile.LOD = 0;
-			tile.tileKey = new Vector2Int(tileChange.X,tileChange.Y);
+			tile.tileKey = tileKey;
 			tile.layer = transform.gameObject.GetComponent<Layer>();
 			tile.gameObject = new GameObject();
 			tile.gameObject.transform.parent = transform.gameObject.transform;
 			tile.gameObject.layer = tile.gameObject.transform.parent.gameObject.layer;
-			tile.gameObject.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X, tileChange.Y));
+			tile.gameObject.transform.position = CoordConvert.RDtoUnity(tileKey);
 
 			return tile;
 		}
-		private void RemoveGameObjectFromTile(TileChange tileChange)
+		private void RemoveGameObjectFromTile(Vector2Int tileKey)
 		{
-			if (tiles.ContainsKey(new Vector2Int(tileChange.X, tileChange.Y)))
+			if (tiles.ContainsKey(tileKey))
 			{
 
-				Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+				Tile tile = tiles[tileKey];
 				if (tile == null)
 				{
 					return;
@@ -79,58 +84,54 @@ namespace Netherlands3D.LayerSystem
 				{
 					DestroyImmediate(tile.gameObject.GetComponent<MeshFilter>().sharedMesh, true);
 				}
-				Destroy(tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject);
+				Destroy(tiles[tileKey].gameObject);
 				
 			}
 		}
 		private IEnumerator DownloadAssetBundle(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
-			int lod = tiles[new Vector2Int(tileChange.X, tileChange.Y)].LOD;
+			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
+			int lod = tiles[tileKey].LOD;
 			string url = Config.activeConfiguration.webserverRootPath + Datasets[lod].path;
-            if (Datasets[lod].path.StartsWith("https://"))
+            if (Datasets[lod].path.StartsWith("https://") || Datasets[lod].path.StartsWith("file://"))
             {
 				url = Datasets[lod].path;
 			}
-			if (Datasets[lod].path.StartsWith("file://"))
+
+			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+			var webRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);
+			tiles[tileKey].runningWebRequest = webRequest;
+			yield return webRequest.SendWebRequest();
+			tiles[tileKey].runningWebRequest = null;
+
+			if (webRequest.isNetworkError || webRequest.isHttpError)
 			{
-				url = Datasets[lod].path;
+				RemoveGameObjectFromTile(tileKey);
+				callback(tileChange);
 			}
-
-			url = url.Replace("{x}", tileChange.X.ToString());
-			url = url.Replace("{y}", tileChange.Y.ToString());
-			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(url))
+			else
 			{
-				yield return uwr.SendWebRequest();
-
-				if (uwr.isNetworkError || uwr.isHttpError)
+				AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(webRequest);
+				tiles[tileKey].assetBundle = assetBundle;
+				yield return new WaitUntil(() => pauseLoading == false);
+				GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
+				if (newGameobject != null)
 				{
-					RemoveGameObjectFromTile(tileChange);
-					callback(tileChange);
-				}
-				else
-				{
-					AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-					yield return new WaitUntil(() => pauseLoading == false);
-					GameObject newGameobject = CreateNewGameObject(assetBundle, tileChange);
-					if (newGameobject != null)
+					if (TileHasHighlight(tileChange))
 					{
-						if (TileHasHighlight(tileChange))
-						{
-							StartCoroutine(DownloadIDMappingData(tileChange, newGameobject,callback));
-						}
-						else
-						{
-							RemoveGameObjectFromTile(tileChange);
-							tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
-							callback(tileChange);
-						}
+						yield return UpdateObjectIDMapping(tileChange, newGameobject,callback);
 					}
 					else
 					{
-
+						RemoveGameObjectFromTile(tileKey);
+						tiles[tileKey].gameObject = newGameobject;
 						callback(tileChange);
 					}
+				}
+				else
+				{
 
+					callback(tileChange);
 				}
 			}
 		}
@@ -164,7 +165,7 @@ namespace Netherlands3D.LayerSystem
 			return true;
 		}
 
-		private IEnumerator DownloadIDMappingData(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
+		private IEnumerator UpdateObjectIDMapping(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
 		{
 			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
 			ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
@@ -202,8 +203,8 @@ namespace Netherlands3D.LayerSystem
 				}
 			}
 			yield return new WaitUntil(() => pauseLoading == false);
-			RemoveGameObjectFromTile(tileChange);
-			tiles[new Vector2Int(tileChange.X, tileChange.Y)].gameObject = newGameobject;
+			RemoveGameObjectFromTile(tile.tileKey);
+			tiles[tile.tileKey].gameObject = newGameobject;
 
 			yield return null;
 			callback(tileChange);

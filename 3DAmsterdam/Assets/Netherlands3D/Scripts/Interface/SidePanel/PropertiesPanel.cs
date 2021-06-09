@@ -26,6 +26,8 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Tab annotationsTab;
         [SerializeField]
+        private Tab layersTab;
+        [SerializeField]
         private Tab settingsTab;
 
         [Header("Animation")]
@@ -60,9 +62,13 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private GameObject textfieldPrefab;
         [SerializeField]
+        private GameObject textfieldPrefabColor;
+        [SerializeField]
         private GameObject loadingSpinnerPrefab;
         [SerializeField]
         private GameObject labelPrefab;
+        [SerializeField]
+        private GameObject labelPrefabColor;
         [SerializeField]
         private DataKeyAndValue dataFieldPrefab;
         [SerializeField]
@@ -104,8 +110,7 @@ namespace Netherlands3D.Interface.SidePanel
         private VerticalLayoutGroup verticalLayoutGroup;
 
         private GameObject thumbnailImage = null;
-
-        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; }
+        public int ThumbnailExclusiveLayer { get => thumbnailRenderer.gameObject.layer; } 
 
 		void Awake()
 		{
@@ -124,7 +129,7 @@ namespace Netherlands3D.Interface.SidePanel
             transformPanel.gameObject.SetActive(false);
         }
 
-        private void SetDynamicFieldsTargetContainer(Transform targetContainer)
+        public void SetDynamicFieldsTargetContainer(Transform targetContainer)
         {
             generatedFieldsRootContainer = targetContainer;
             targetFieldsContainer = targetContainer;
@@ -143,7 +148,7 @@ namespace Netherlands3D.Interface.SidePanel
 
             objectInformationTab.OpenTab();
             verticalLayoutGroup.spacing = spacing;
-            OpenPanel();
+            OpenPanel(title);
         }
 
         /// <summary>
@@ -164,6 +169,15 @@ namespace Netherlands3D.Interface.SidePanel
         public void OpenAnnotations()
         {
             annotationsTab.OpenTab(true);
+            OpenPanel();
+        }
+
+        /// <summary>
+        /// Open the static tile layers tab
+        /// </summary>
+        public void OpenLayers()
+        {
+            layersTab.OpenTab(true);
             OpenPanel();
         }
 
@@ -399,6 +413,24 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(labelPrefab, targetFieldsContainer).GetComponent<Text>().text = labelText;
         }
 
+        public void AddLabelColor(string text, Color color, FontStyle style)
+        {
+            var gam = Instantiate(labelPrefabColor, targetFieldsContainer);
+            var textComponent = gam.GetComponent<Text>();
+            textComponent.text = text;
+            textComponent.color = color;
+            textComponent.fontStyle = style;
+        }
+
+        public void AddTextfieldColor(string text, Color color, FontStyle style)
+        {
+            var gam = Instantiate(textfieldPrefabColor, targetFieldsContainer);
+            var textComponent = gam.GetComponent<Text>();
+            textComponent.text = text;
+            textComponent.color = color;
+            textComponent.fontStyle = style;
+        }
+
         public void AddLoadingSpinner()
         {
             Instantiate(loadingSpinnerPrefab, targetFieldsContainer);
@@ -452,13 +484,31 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(prefab, targetFieldsContainer);
         }
-        public void ClearGeneratedFields()
+
+        private void ClearGeneratedFields(GameObject ignoreGameObject, List<GameObject> ignoreGameObjects)
         {
             thumbnailImage = null;
             foreach (Transform field in generatedFieldsRootContainer)
             {
+                if(ignoreGameObject != null && field.gameObject == ignoreGameObject) continue;
+                else if (ignoreGameObjects != null && field.gameObject == ignoreGameObjects.Contains(field.gameObject)) continue;
+
                 Destroy(field.gameObject);
             }
+        }
+
+        public void ClearGeneratedFields(GameObject ignoreGameObject)
+        {
+            ClearGeneratedFields(ignoreGameObject, null);
+        }
+        public void ClearGeneratedFields(List<GameObject> ignoreGameObjects)
+        {
+            ClearGeneratedFields(null, ignoreGameObjects);
+        }
+
+        public void ClearGeneratedFields()
+        {
+            ClearGeneratedFields(null,null);
         }
         #endregion
     }

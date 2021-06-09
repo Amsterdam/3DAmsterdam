@@ -1,5 +1,4 @@
-﻿using BruTile.Wms;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,21 +69,20 @@ namespace Netherlands3D.Interface.Layers
 			
 			if (type == LayerType.ANNOTATION)
 			{
-				newCustomlayer = Instantiate(annotationLayerPrefab, customLayersContainer);
-				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
-
-				newCustomlayer.transform.SetParent(annotationsContainer);
 				annotationsContainer.gameObject.SetActive(true);
+				newCustomlayer = Instantiate(annotationLayerPrefab, annotationsContainer);
+				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
+				newCustomlayer.transform.SetParent(annotationsContainer);
 
 				if (createdByUser)
 					linkedWorldObject.GetComponent<Annotation>().PlaceUsingPointer();
 			}
 			else if (type == LayerType.CAMERA) 
 			{
+				cameraContainer.gameObject.SetActive(true);
 				newCustomlayer = Instantiate(camerasLayerPrefab, customLayersContainer);
 				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
 				newCustomlayer.transform.SetParent(cameraContainer);
-				cameraContainer.gameObject.SetActive(true);
 			}
 			else
 			{

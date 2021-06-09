@@ -43,6 +43,11 @@ namespace ConvertCoordinates
             y = Y;
             z = Z;
         }
+
+        public override string ToString()
+        {
+            return $"x:{x} y:{y} z:{z}";
+        }
     }
 
     /// <summary>
@@ -327,28 +332,23 @@ namespace ConvertCoordinates
         public static bool RDIsValid(Vector3RD coordinaat)
         {
             bool IsValid = true;
+            
             double[,] Zonegrens = new double[,] { { 141000, 629000 }, { 100000, 600000 }, { 80000, 500000 }, { -7000, 392000 }, { -7000, 336000 }, { 101000, 336000 }, { 161000, 289000 }, { 219000, 289000 }, { 300000, 451000 }, { 300000, 614000 }, { 259000, 629000 } };
-            double[] hoeken = new double[Zonegrens.GetLength(0)];
-            //calculate angles from coordinate to Zonegrens-points
-            for (int i = 0; i < Zonegrens.GetLength(0); i++)
+            var j = 10;
+            Debug.Log(j);
+            var inside = false;
+            for (int i = 0; i < 11; i++)
             {
-                hoeken[i] = Math.Atan((Zonegrens[i, 1] - coordinaat.z) / (Zonegrens[i, 0] - coordinaat.x));
+                var pix = Zonegrens[i,0];
+                var piy = Zonegrens[i, 1];
+                var pjx = Zonegrens[j,0];
+                var pjy = Zonegrens[j, 1];
+                if (((piy <= coordinaat.y && coordinaat.y < pjy) || (pjy <= coordinaat.y && coordinaat.y < piy)) &&
+                    (coordinaat.x < (pjx - pix) * (coordinaat.y - piy) / (pjy - piy) + pix))
+                    inside = !inside;
             }
-            double TotalAngle = 0;
-            //add angle-difference between points
-            TotalAngle += hoeken[0] - hoeken[hoeken.Length - 1];
-            for (int i = 1; i < hoeken.Length; i++)
-            {
-                TotalAngle += hoeken[i] - hoeken[i - 1];
-            }
-            //if TotalAngle is zero, coordinate is outside Zonegrens
-            // else Totalangle is 360 degrees (2*pi) and coordinate is inside Zonegrens
-            if (Math.Abs(TotalAngle) < 0.1)
-            {
-                IsValid = false;
-            }
-
-            return IsValid;
+            return inside;
+            
         }
         /// <summary>
         /// checks if WGS-coordinate is valid

@@ -43,36 +43,48 @@ namespace Netherlands3D.Interface
             Hide();
         }
 
-        private void Update()
-        {
-            FollowPointer();
-        }
-
         private void FollowPointer()
+		{
+			rectTransform.position = Mouse.current.position.ReadValue();
+
+			SwapPivot();
+		}
+
+		private void SwapPivot()
+		{
+			//Swap pivot based on place in screen (to try to stay in the screen horizontally)
+			if (!pivotRight && rectTransform.position.x > Screen.width * 0.9f)
+			{
+				pivotRight = true;
+				rectTransform.pivot = Vector2.right;
+			}
+			else if (pivotRight && rectTransform.position.x <= Screen.width * 0.9f)
+			{
+				pivotRight = false;
+				rectTransform.pivot = Vector2.zero;
+			}
+		}
+
+		public void AlignOnElement(RectTransform element)
         {
-            rectTransform.position = Mouse.current.position.ReadValue();
-            
-            //Swap pivot based on place in screen (to try to stay in the screen horizontally)
-            if(!pivotRight && rectTransform.position.x > Screen.width * 0.9f)
+            if (element)
             {
-                pivotRight = true;
-                rectTransform.pivot = Vector2.right;
-            }
-            else if(pivotRight && rectTransform.position.x <= Screen.width * 0.9f)
-            {
-                pivotRight = false;
-                rectTransform.pivot = Vector2.zero;
+                rectTransform.position = Vector3.Lerp(GetRectTransformBounds(element).center, GetRectTransformBounds(element).max, 0.5f);
+                SwapPivot();
             }
         }
 
-        public void ShowMessage(string message = "Tooltip"){
+        public void ShowMessage(string message = "Tooltip", RectTransform hoverTarget = null){
             //Restart our animator
             gameObject.transform.SetAsLastSibling(); //Make sure we are in front of all the UI
+
+            AlignOnElement(hoverTarget);
 
             gameObject.SetActive(false);
             gameObject.SetActive(true);
 
             tooltiptext.text = message;
+
             StartCoroutine(FitContent());
         }
 
@@ -84,6 +96,18 @@ namespace Netherlands3D.Interface
 
         public void Hide(){
             gameObject.SetActive(false);
+        }
+
+        private Vector3[] worldCorners = new Vector3[4];
+        private Bounds GetRectTransformBounds(RectTransform transform)
+        {
+            transform.GetWorldCorners(worldCorners);
+            Bounds bounds = new Bounds(worldCorners[0], Vector3.zero);
+            for (int i = 1; i < 4; ++i)
+            {
+                bounds.Encapsulate(worldCorners[i]);
+            }
+            return bounds;
         }
     }
 }
