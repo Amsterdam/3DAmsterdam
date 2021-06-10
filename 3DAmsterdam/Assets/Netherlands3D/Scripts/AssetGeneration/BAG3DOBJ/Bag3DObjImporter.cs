@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Netherlands3D;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -59,7 +59,13 @@ public class Bag3DObjImporter : MonoBehaviour
 			//Start a new ObjLoader
 			if (objLoader) Destroy(objLoader);
 			objLoader = this.gameObject.AddComponent<ObjLoad>();
-			objLoader.ObjectUsesRDCoordinates = true;
+			//objLoader.ObjectUsesRDCoordinates = true; //automatic
+			objLoader.MaxRDBounds = new Rect(
+				(float)Config.activeConfiguration.MinBoundingBox.x,
+				(float)Config.activeConfiguration.MinBoundingBox.y,
+				(float)Config.activeConfiguration.MaxBoundingBox.x - (float)Config.activeConfiguration.MinBoundingBox.x,
+				(float)Config.activeConfiguration.MaxBoundingBox.y - (float)Config.activeConfiguration.MinBoundingBox.y
+				);
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
@@ -97,14 +103,11 @@ public class Bag3DObjImporter : MonoBehaviour
 			{
 				child.name = filterNameObject.newName;
 				
-				//Copy this object into our target containers
-				foreach(Transform targetContainer in targetChildContainers)
-				{
-					var copy = Instantiate(child.gameObject, targetContainer);
-					copy.transform.position = child.position;
-					copy.transform.rotation = child.rotation;
-					copy.name = child.name;
-				}
+				//Copy this object into our target container
+				var copy = Instantiate(child.gameObject, transform);
+				copy.transform.position = child.position;
+				copy.transform.rotation = child.rotation;
+				copy.name = child.name;
 			}
 		}
 	}
