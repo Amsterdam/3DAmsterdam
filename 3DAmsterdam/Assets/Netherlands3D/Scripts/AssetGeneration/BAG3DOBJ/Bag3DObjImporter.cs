@@ -36,6 +36,9 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private bool skipExistingFiles = true;
 
+	[SerializeField]
+	private bool renderInViewport = true;
+
 	private ObjLoad objLoader;
 
 	[SerializeField]
@@ -84,7 +87,7 @@ public class Bag3DObjImporter : MonoBehaviour
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
-			objLoader.EnableMeshRenderer = false;
+			objLoader.EnableMeshRenderer = renderInViewport;
 			objLoader.SetGeometryData(ref objString);
 
 			var objLinesToBeParsed = 100;
@@ -106,7 +109,6 @@ public class Bag3DObjImporter : MonoBehaviour
 	private IEnumerator BakeIntoTiles()
 	{	
 		print("Added all gameobjects from obj files.");
-		print("Baking into tiles");
 		print("Baking objects into tiles");
 		var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.x - (float)Config.activeConfiguration.MinBoundingBox.x) / (float)tileSize);
 		var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.y - (float)Config.activeConfiguration.MinBoundingBox.y) / (float)tileSize);
@@ -147,23 +149,38 @@ public class Bag3DObjImporter : MonoBehaviour
 				newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
 				newTileContainer.name = tileName;
 				//And move children in this tile
-				foreach (Transform child in transform)
+				int childrenInTile = 0;
+
+
+				MeshRenderer[] remainingBuildings = GetComponentsInChildren<MeshRenderer>();
+				foreach (MeshRenderer meshRenderer in remainingBuildings)
 				{
-					child.gameObject.name = child.gameObject.name.Replace(removePrefix, "");
-					var RDCenter = CoordConvert.UnitytoRD(child.gameObject.GetComponent<MeshRenderer>().bounds.center);
-					if(RDCenter.x < x+tileSize && RDCenter.x > x && RDCenter.y < y+tileSize && RDCenter.y > y)
+					meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
+					var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
+					if(childCenterPoint.x < tileRD.x+tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
 					{
 						//This child object center falls within this tile. Lets move it in there.
-						child.SetParent(newTileContainer.transform, true);
+						meshRenderer.transform.SetParent(newTileContainer.transform, true);
+						childrenInTile++;
 					}
 				}
+
+				if (childrenInTile == 0)
+				{
+					print($"No children found for tile {tileName}");
+					continue;
+				}
+
 				//And when we are done, bake it.
-				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, false, defaultMaterial, true);
+				print($"Baking tile with {childrenInTile} buildings");
+				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+
+				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
 				print("Finished tile " + tileName);
-				yield return new WaitForEndOfFrame();
+				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}
 
-		yield return new WaitForEndOfFrame();
+		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 	}
 }
