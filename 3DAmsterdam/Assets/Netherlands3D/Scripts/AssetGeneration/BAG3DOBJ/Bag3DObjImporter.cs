@@ -1,6 +1,8 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D;
+using Netherlands3D.AssetGeneration;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -12,8 +14,27 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private string filter = "*.obj";
 
+	[Header("Optional. Leave blank to create all tiles")]
 	[SerializeField]
-	private string prefix = "NL.IMBAG.Pand.";
+	private string exclusivelyGenerateTilesWithSubstring = "";
+
+	[Tooltip("LOD level name")]
+	[SerializeField]
+	private string lodLevel = "2.2";
+
+	[Tooltip("Width and height in meters")]
+	[SerializeField]
+	private int tileSize = 1000; //1x1 km
+
+	[SerializeField]
+	private Vector2 tileOffset;
+
+	[SerializeField]
+	private string removePrefix = "NL.IMBAG.Pand.";
+
+	[Header("Tile generation settings")]
+	[SerializeField]
+	private bool skipExistingFiles = true;
 
 	private ObjLoad objLoader;
 
@@ -21,7 +42,7 @@ public class Bag3DObjImporter : MonoBehaviour
 	private int parsePerFrame = 1000;
 
 	[SerializeField]
-	private Material applyMaterial;
+	private Material defaultMaterial;
 
 	[SerializeField]
 	private GameObject enableOnFinish;
@@ -35,10 +56,10 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void Start()
 	{
-		StartCoroutine(ParseSpecificFiles());
+		StartCoroutine(ParseObjFiles());
 	}
 
-	private IEnumerator ParseSpecificFiles()
+	private IEnumerator ParseObjFiles()
 	{
 		//Read files list 
 		var info = new DirectoryInfo(bag3DSourceFilesFolder);
@@ -72,22 +93,77 @@ public class Bag3DObjImporter : MonoBehaviour
 				objLinesToBeParsed = objLoader.ParseNextObjLines(parsePerFrame);
 				yield return new WaitForEndOfFrame();
 			}
-			objLoader.Build(applyMaterial);
+			objLoader.Build(defaultMaterial);
 			print(i + "/" + fileInfo.Length + " " + file.Name + " done.");
 			yield return new WaitForEndOfFrame();
 		}
 		yield return new WaitForEndOfFrame();
-		RenameObjects();
+		yield return BakeIntoTiles();
 
 		if (enableOnFinish) enableOnFinish.SetActive(true);
 	}
 
-	private void RenameObjects()
+	private IEnumerator BakeIntoTiles()
 	{	
-		print("Added all gameobjects from obj file.");
-		foreach (Transform child in transform)
+		print("Added all gameobjects from obj files.");
+		print("Baking into tiles");
+		print("Baking objects into tiles");
+		var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.x - (float)Config.activeConfiguration.MinBoundingBox.x) / (float)tileSize);
+		var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.y - (float)Config.activeConfiguration.MinBoundingBox.y) / (float)tileSize);
+
+		var totalTiles = xTiles * yTiles;
+		int currentTile = 0;
+
+		//Walk the tilegrid
+		var tileRD = new Vector2Int(0, 0);
+		for (int x = 0; x < xTiles; x++)
 		{
-			child.gameObject.name = child.gameObject.name.Replace(prefix, "");
+			tileRD.x = (int)Config.activeConfiguration.MinBoundingBox.x + (x * tileSize);
+			for (int y = 0; y < yTiles; y++)
+			{
+				currentTile++;
+				tileRD.y = (int)Config.activeConfiguration.MinBoundingBox.y + (y * tileSize);
+				string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
+
+				//If we supplied a filter we check if this tile contains this substring in order to be (re)generated
+				if (exclusivelyGenerateTilesWithSubstring != "" && !tileName.Contains(exclusivelyGenerateTilesWithSubstring))
+				{
+					print("Skipping tile because we supplied a specific name we want to replace.");
+					if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+					continue;
+				}
+
+				//Skip files if we enabled that option and it exists
+				string assetFileName = TileCombineUtility.unityMeshAssetFolder + tileName + ".asset";
+				if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName))
+				{
+					print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+					if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+					continue;
+				}
+
+				//Spawn our tile container
+				GameObject newTileContainer = new GameObject();
+				newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
+				newTileContainer.name = tileName;
+				//And move children in this tile
+				foreach (Transform child in transform)
+				{
+					child.gameObject.name = child.gameObject.name.Replace(removePrefix, "");
+					var RDCenter = CoordConvert.UnitytoRD(child.gameObject.GetComponent<MeshRenderer>().bounds.center);
+					if(RDCenter.x < x+tileSize && RDCenter.x > x && RDCenter.y < y+tileSize && RDCenter.y > y)
+					{
+						//This child object center falls within this tile. Lets move it in there.
+						child.SetParent(newTileContainer.transform, true);
+					}
+				}
+				//And when we are done, bake it.
+				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, false, defaultMaterial, true);
+				print("Finished tile " + tileName);
+				yield return new WaitForEndOfFrame();
+			}
 		}
+
+		yield return new WaitForEndOfFrame();
 	}
 }
