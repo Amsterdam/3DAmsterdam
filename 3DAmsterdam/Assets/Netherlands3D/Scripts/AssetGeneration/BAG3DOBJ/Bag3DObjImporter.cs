@@ -152,7 +152,7 @@ public class Bag3DObjImporter : MonoBehaviour
 				int childrenInTile = 0;
 
 
-				MeshRenderer[] remainingBuildings = GetComponentsInChildren<MeshRenderer>();
+				MeshRenderer[] remainingBuildings = GetComponentsInChildren<MeshRenderer>(true);
 				foreach (MeshRenderer meshRenderer in remainingBuildings)
 				{
 					meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
@@ -180,6 +180,8 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}
+
+		print("All done!");
 
 		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 	}
