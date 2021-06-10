@@ -64,6 +64,7 @@ public class ObjLoad : MonoBehaviour
 	private bool weldVertices = false;
 	private int maxSubMeshes = 0;
 	private bool tracing = false;
+	private bool enableMeshRenderer = true;
 
 	/// <summary>
 	/// Disabled is the default. Otherwise SketchUp models would have a loooot of submodels (we cant use batching for rendering in WebGL, so this is bad for performance)
@@ -75,6 +76,7 @@ public class ObjLoad : MonoBehaviour
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
+	public bool EnableMeshRenderer { get => enableMeshRenderer; set => enableMeshRenderer = value; }
 	public Vector2RD BottomLeftBounds { get => bottomLeftBounds; set => bottomLeftBounds = value; }
 	public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
 
@@ -527,11 +529,11 @@ public class ObjLoad : MonoBehaviour
 		}
 
 		var gameObjects = new GameObject[buffer.NumberOfObjects];
-		if (buffer.NumberOfObjects == 1)
+		if (buffer.NumberOfObjects == 1 && !IgnoreObjectsOutsideOfBounds)
 		{
 			//Single gameobject, single mesh
-			gameObject.AddComponent(typeof(MeshFilter));
-			gameObject.AddComponent(typeof(MeshRenderer));
+			gameObject.AddComponent<MeshFilter>();
+			gameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
 			gameObjects[0] = gameObject;
 		}
 		else if (buffer.NumberOfObjects > 1)
@@ -541,8 +543,8 @@ public class ObjLoad : MonoBehaviour
 				//Multi object with nested children
 				var go = new GameObject();
 				go.transform.parent = gameObject.transform;
-				go.AddComponent(typeof(MeshFilter));
-				go.AddComponent(typeof(MeshRenderer));
+				go.AddComponent<MeshFilter>();
+				go.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
 				gameObjects[i] = go;
 			}
 		}

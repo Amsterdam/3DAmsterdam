@@ -63,6 +63,7 @@ public class Bag3DObjImporter : MonoBehaviour
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
+			objLoader.EnableMeshRenderer = false;
 			objLoader.SetGeometryData(ref objString);
 
 			var objLinesToBeParsed = 100;
