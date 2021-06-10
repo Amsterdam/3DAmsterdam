@@ -19,8 +19,9 @@ namespace Netherlands3D
         }
 
         [Header("Coordinates")]
-
         public Vector2RD RelativeCenterRD;
+        public Vector2RD MinBoundingBox;
+        public Vector2RD MaxBoundingBox;
 
         public float zeroGroundLevelY = 43.0f;
 
