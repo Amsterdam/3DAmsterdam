@@ -331,24 +331,14 @@ namespace ConvertCoordinates
         /// <returns>true if coordinate is valid</returns>
         public static bool RDIsValid(Vector3RD coordinaat)
         {
-            bool IsValid = true;
-            
-            double[,] Zonegrens = new double[,] { { 141000, 629000 }, { 100000, 600000 }, { 80000, 500000 }, { -7000, 392000 }, { -7000, 336000 }, { 101000, 336000 }, { 161000, 289000 }, { 219000, 289000 }, { 300000, 451000 }, { 300000, 614000 }, { 259000, 629000 } };
-            var j = 10;
-            Debug.Log(j);
-            var inside = false;
-            for (int i = 0; i < 11; i++)
+            if (coordinaat.x > -7000 && coordinaat.x < 300000)
             {
-                var pix = Zonegrens[i,0];
-                var piy = Zonegrens[i, 1];
-                var pjx = Zonegrens[j,0];
-                var pjy = Zonegrens[j, 1];
-                if (((piy <= coordinaat.y && coordinaat.y < pjy) || (pjy <= coordinaat.y && coordinaat.y < piy)) &&
-                    (coordinaat.x < (pjx - pix) * (coordinaat.y - piy) / (pjy - piy) + pix))
-                    inside = !inside;
+                if (coordinaat.y > 289000 && coordinaat.y < 629000)
+                {
+                    return true;
+                }
             }
-            return inside;
-            
+            return false;
         }
         /// <summary>
         /// checks if WGS-coordinate is valid

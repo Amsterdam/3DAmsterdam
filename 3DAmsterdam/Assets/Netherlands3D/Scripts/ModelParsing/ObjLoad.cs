@@ -55,7 +55,7 @@ public class ObjLoad : MonoBehaviour
 	private List<MaterialData> materialDataSlots;
 
 	private bool splitNestedObjects = false;
-	private Rect maxRDBounds;
+	private Rect maxBounds;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
 	private bool flipYZ = false;
@@ -71,7 +71,7 @@ public class ObjLoad : MonoBehaviour
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
-	public Rect MaxRDBounds { get => maxRDBounds; set => maxRDBounds = value; }
+	public Rect MaxBounds { get => maxBounds; set => maxBounds = value; }
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -87,7 +87,7 @@ public class ObjLoad : MonoBehaviour
 	{
 		objLines = data.Split(lineSplitChar);
 		data = "";
-		
+
 		parseLinePointer = 0;
 	}
 	/// <summary>
@@ -114,7 +114,8 @@ public class ObjLoad : MonoBehaviour
 			if (parseLinePointer < objLines.Length)
 			{
 				line = objLines[parseLinePointer];
-				if(!ParseObjLine(ref line)){
+				if (!ParseObjLine(ref line))
+				{
 					return -1;
 				}
 				parseLinePointer++;
@@ -139,26 +140,26 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
-                if (buffer.Vertices.Count==0)
-                {
-                    if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
-                    {
+				if (buffer.Vertices.Count == 0)
+				{
+					if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+					{
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
 						Debug.Log("model appears to be in RD-coordinates");
-                    }
-					else if(CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
-                    {
+					}
+					else if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
+					{
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
 						Debug.Log("model appears to be in RD-coordinates");
 					}
 					else
-                    {
-						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
+					{
+						Debug.Log(cd(linePart[1]) + "-" + -cd(linePart[3]) + "-" + cd(linePart[2]));
 						Debug.Log("model appears not to be in RD-coordinates");
-                    }
-                }
+					}
+				}
 
 				if (ObjectUsesRDCoordinates)
 				{
@@ -278,9 +279,9 @@ public class ObjLoad : MonoBehaviour
 				case ILLUM:
 					targetMaterialData.IllumType = ci(linePart[1]);
 					break;
-				/*default:
-					Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
-					break;*/
+					/*default:
+						Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
+						break;*/
 			}
 		}
 	}
@@ -314,7 +315,7 @@ public class ObjLoad : MonoBehaviour
 			targetFacesList[i - 1] = faceIndices;
 		}
 	}
-	
+
 	static Material GetMaterial(MaterialData md, Material sourceMaterial)
 	{
 		Material newMaterial;
@@ -373,10 +374,10 @@ public class ObjLoad : MonoBehaviour
 	}
 
 	static double cd(string v)
-    {
+	{
 		try
 		{
-			return double.Parse(v,System.Globalization.CultureInfo.InvariantCulture);
+			return double.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
 		}
 		catch (Exception e)
 		{
@@ -502,7 +503,7 @@ public class ObjLoad : MonoBehaviour
 	{
 		//Clear our large arrays
 		if (mtlLines != null)
-			Array.Clear(mtlLines, 0, mtlLines.Length);			
+			Array.Clear(mtlLines, 0, mtlLines.Length);
 
 		Array.Clear(objLines, 0, objLines.Length);
 
@@ -543,23 +544,29 @@ public class ObjLoad : MonoBehaviour
 
 		buffer.Trace();
 		buffer.flipTriangleDirection = flipFaceDirection;
-		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
+		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial, this);
 
 		// weld vertices if required
-        if (weldVertices)
-        {
+		if (weldVertices)
+		{
 			string meshname = "";
 			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
-			foreach (var gameobject in gameObjects)
-            {
-				meshname = gameobject.GetComponent<MeshFilter>().sharedMesh.name;
-				Mesh newMesh = vertexWelder.WeldVertices(gameobject.GetComponent<MeshFilter>().sharedMesh);
+			foreach (var listGameObject in gameObjects)
+			{
+				if (!listGameObject) continue;
+
+				var meshFilter = listGameObject.GetComponent<MeshFilter>();
+				if (!meshFilter) continue;
+
+				meshname = meshFilter.sharedMesh.name;
+				Mesh newMesh = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
 				newMesh.name = meshname;
 				// destroy the old mesh;
-				Destroy(gameobject.GetComponent<MeshFilter>().sharedMesh);
-				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+
+				Destroy(vertexWelder);
 			}
-			// strart the vertex-welding
-        }
+		}
 	}
 }

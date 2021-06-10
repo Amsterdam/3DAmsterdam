@@ -1,4 +1,5 @@
-﻿using Netherlands3D;
+﻿using ConvertCoordinates;
+using Netherlands3D;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,9 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private string filter = "*.obj";
 
+	[SerializeField]
+	private string prefix = "NL.IMBAG.Pand.";
+
 	private ObjLoad objLoader;
 
 	[SerializeField]
@@ -18,9 +22,6 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	[SerializeField]
 	private Material applyMaterial;
-
-	[SerializeField]
-	private RemapObjectNames[] specificModelNamesToKeep;
 
 	[SerializeField]
 	private Transform[] targetChildContainers;
@@ -60,12 +61,20 @@ public class Bag3DObjImporter : MonoBehaviour
 			if (objLoader) Destroy(objLoader);
 			objLoader = this.gameObject.AddComponent<ObjLoad>();
 			//objLoader.ObjectUsesRDCoordinates = true; //automatic
-			objLoader.MaxRDBounds = new Rect(
-				(float)Config.activeConfiguration.MinBoundingBox.x,
-				(float)Config.activeConfiguration.MinBoundingBox.y,
-				(float)Config.activeConfiguration.MaxBoundingBox.x - (float)Config.activeConfiguration.MinBoundingBox.x,
-				(float)Config.activeConfiguration.MaxBoundingBox.y - (float)Config.activeConfiguration.MinBoundingBox.y
-				);
+
+			//Define unity coordinate rectangle bounding box
+			var min = CoordConvert.RDtoUnity(new Vector3RD(Config.activeConfiguration.MinBoundingBox.x, Config.activeConfiguration.MinBoundingBox.y,0));
+			var max = CoordConvert.RDtoUnity(new Vector3RD(Config.activeConfiguration.MaxBoundingBox.x, Config.activeConfiguration.MaxBoundingBox.y,0));
+
+			var rect = new Rect();
+			//Bottomleft
+			rect.xMin = min.x;
+			rect.yMin = min.y;
+			//Topright
+			rect.xMax = max.x;
+			rect.yMax = max.y;
+
+			objLoader.MaxBounds = rect;
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
@@ -93,22 +102,11 @@ public class Bag3DObjImporter : MonoBehaviour
 		print("Filtering by specific object names and renaming");
 		foreach (Transform child in transform)
 		{
-			//Destroy objects if we supplied a filter list and it is not in there
-			var filterNameObject = specificModelNamesToKeep.Where(foundName => foundName.sourceName == child.name).SingleOrDefault();
-			if (specificModelNamesToKeep.Length > 0 && filterNameObject == null)
-			{
-				Destroy(child.gameObject);
-			}
-			else
-			{
-				child.name = filterNameObject.newName;
-				
-				//Copy this object into our target container
-				var copy = Instantiate(child.gameObject, transform);
-				copy.transform.position = child.position;
-				copy.transform.rotation = child.rotation;
-				copy.name = child.name;
-			}
+			//Copy this object into our target container
+			var copy = Instantiate(child.gameObject, transform);
+			copy.transform.position = child.position;
+			copy.transform.rotation = child.rotation;
+			copy.name = child.name.Replace(prefix, "");
 		}
 	}
 }
