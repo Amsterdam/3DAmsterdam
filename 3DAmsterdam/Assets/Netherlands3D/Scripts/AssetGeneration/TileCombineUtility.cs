@@ -1,12 +1,14 @@
-﻿using Netherlands3D.LayerSystem;
+﻿using ConvertCoordinates;
+using Netherlands3D.LayerSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 namespace Netherlands3D.AssetGeneration
 {
-	public class TileCombiner
+	public class TileCombineUtility
 	{
 		public static string unityMeshAssetFolder = "Assets/GeneratedTileAssets/";
 		[SerializeField] 
@@ -102,10 +104,29 @@ namespace Netherlands3D.AssetGeneration
 			}
 #endif
 		}
-
 		private static void CreateAssetFolder()
 		{
 			Directory.CreateDirectory($"{Application.dataPath}/../{unityMeshAssetFolder}");
+		}
+
+		public static bool IsAnyVertexWithinConfigBounds(Vector3[] allVertices)
+		{
+			return IsAnyVertexWithinBounds(allVertices,Config.activeConfiguration.MinBoundingBox, Config.activeConfiguration.MaxBoundingBox);
+		}
+
+		public static bool IsAnyVertexWithinBounds(Vector3[] allVertices, Vector2RD minBoundingBox, Vector2RD maxBoundingBox)
+		{
+			var unityBottomLeft = CoordConvert.RDtoUnity(minBoundingBox);
+			var unityTopRight = CoordConvert.RDtoUnity(maxBoundingBox);
+
+			Debug.Log(unityBottomLeft);
+			Debug.Log(unityTopRight);
+
+			return allVertices.Any(
+				vert => (vert.x > unityBottomLeft.x &&
+				vert.x < unityTopRight.x && vert.z > unityBottomLeft.z &&
+				vert.z < unityTopRight.z)
+			);
 		}
 	}
 }

@@ -177,7 +177,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     }
 
                     //Skip files if we enabled that option and it exists
-                    string assetFileName = TileCombiner.unityMeshAssetFolder + tileName + ".asset";
+                    string assetFileName = TileCombineUtility.unityMeshAssetFolder + tileName + ".asset";
                     if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
@@ -216,8 +216,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Now bake the tile into an asset file
                     if (generateAssetFiles)
-                    { 
-                        TileCombiner.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial,writeAsAssetFile);
+                    {
+                        TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial,writeAsAssetFile);
                         print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
                     }
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();

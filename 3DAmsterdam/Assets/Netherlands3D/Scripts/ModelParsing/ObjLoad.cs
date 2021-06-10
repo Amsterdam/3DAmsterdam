@@ -55,23 +55,28 @@ public class ObjLoad : MonoBehaviour
 	private List<MaterialData> materialDataSlots;
 
 	private bool splitNestedObjects = false;
-	private Rect maxBounds;
+	private bool ignoreObjectsOutsideOfBounds = false;
+	private Vector2RD bottomLeftBounds;
+	private Vector2RD topRightBounds;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
 	private bool flipYZ = false;
 	private bool weldVertices = false;
 	private int maxSubMeshes = 0;
+	private bool tracing = false;
 
 	/// <summary>
 	/// Disabled is the default. Otherwise SketchUp models would have a loooot of submodels (we cant use batching for rendering in WebGL, so this is bad for performance)
 	/// </summary>
 	public bool SplitNestedObjects { get => splitNestedObjects; set => splitNestedObjects = value; }
 	public bool ObjectUsesRDCoordinates { get => RDCoordinates; set => RDCoordinates = value; }
+	public bool IgnoreObjectsOutsideOfBounds { get => ignoreObjectsOutsideOfBounds; set => ignoreObjectsOutsideOfBounds = value; }
 	public bool FlipYZ { get => flipYZ; set => flipYZ = value; }
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
-	public Rect MaxBounds { get => maxBounds; set => maxBounds = value; }
+	public Vector2RD BottomLeftBounds { get => bottomLeftBounds; set => bottomLeftBounds = value; }
+	public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -542,7 +547,7 @@ public class ObjLoad : MonoBehaviour
 			}
 		}
 
-		buffer.Trace();
+		if(tracing) buffer.Trace();
 		buffer.flipTriangleDirection = flipFaceDirection;
 		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial, this);
 
@@ -564,9 +569,8 @@ public class ObjLoad : MonoBehaviour
 				// destroy the old mesh;
 				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
 				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMesh;
-
-				Destroy(vertexWelder);
 			}
+			Destroy(vertexWelder);
 		}
 	}
 }

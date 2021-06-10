@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Rendering;
+using Netherlands3D.AssetGeneration;
 
 public class GeometryBuffer
 {
@@ -56,7 +57,6 @@ public class GeometryBuffer
 
 	public void AddObject(string name)
 	{
-		Debug.Log("Adding new object " + name + ". Current is empty: " + IsEmpty);
 		if (IsEmpty) Objects.Remove(currentObjectData);
 
 		// Object Data
@@ -179,11 +179,12 @@ public class GeometryBuffer
 			}
 
 			//If the bounds of this object fall outside the RD bounds, skip making the object
-			if (objLoad.MaxBounds.width != 0)
+			if (objLoad.IgnoreObjectsOutsideOfBounds)
 			{
 				//if one vert of model is within bounds, continue. else skip creating mesh/building
-				if (!allVertices.Any(vert => objLoad.MaxBounds.Contains(new Vector2(vert.x, vert.z))))
+				if (!TileCombineUtility.IsAnyVertexWithinBounds(allVertices, objLoad.BottomLeftBounds, objLoad.TopRightBounds))
 				{
+					MonoBehaviour.Destroy(gameObjects[i]);
 					gameObjects[i] = null;
 					Debug.Log("Skip object. Outside given bounds.");
 					continue;

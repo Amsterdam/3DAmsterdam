@@ -150,6 +150,18 @@ namespace ConvertCoordinates
         {
             return RDtoUnity(coordinaat.x, coordinaat.y, coordinaat.z);
         }
+
+        /// <summary>
+        /// Convert RD-coordinate to Unity-Coordinate
+        /// </summary>
+        /// <param name="coordinaat">Vector3RD RD-Coordinate XYH</param>
+        /// <returns>Vector3 Unity-Coordinate</returns>
+        public static Vector3 RDtoUnity(Vector2RD coordinaat)
+        {
+            return RDtoUnity(coordinaat.x, coordinaat.y, 0);
+        }
+
+
         /// <summary>
         /// Convert RD-coordinate to Unity-coordinate
         /// </summary>

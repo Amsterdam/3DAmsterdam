@@ -24,9 +24,6 @@ public class Bag3DObjImporter : MonoBehaviour
 	private Material applyMaterial;
 
 	[SerializeField]
-	private Transform[] targetChildContainers;
-
-	[SerializeField]
 	private GameObject enableOnFinish;
 
 	[System.Serializable]
@@ -38,7 +35,6 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void Start()
 	{
-		objLoader = this.gameObject.AddComponent<ObjLoad>();
 		StartCoroutine(ParseSpecificFiles());
 	}
 
@@ -48,12 +44,11 @@ public class Bag3DObjImporter : MonoBehaviour
 		var info = new DirectoryInfo(bag3DSourceFilesFolder);
 		var fileInfo = info.GetFiles(filter);
 		print("Found " + fileInfo.Length + " obj files.");
-		//First create gameobjects for all the buildigns we parse
-		int parsed = 0;
+		//First create gameobjects for all the buildings we parse
 		for (int i = 0; i < fileInfo.Length; i++)
 		{
 			var file = fileInfo[i];
-			print(parsed + "/" + fileInfo.Length + " " + file.Name);
+			print(i + "/" + fileInfo.Length + " " + file.Name);
 
 			var objString = File.ReadAllText(file.FullName);
 
@@ -62,19 +57,9 @@ public class Bag3DObjImporter : MonoBehaviour
 			objLoader = this.gameObject.AddComponent<ObjLoad>();
 			//objLoader.ObjectUsesRDCoordinates = true; //automatic
 
-			//Define unity coordinate rectangle bounding box
-			var min = CoordConvert.RDtoUnity(new Vector3RD(Config.activeConfiguration.MinBoundingBox.x, Config.activeConfiguration.MinBoundingBox.y,0));
-			var max = CoordConvert.RDtoUnity(new Vector3RD(Config.activeConfiguration.MaxBoundingBox.x, Config.activeConfiguration.MaxBoundingBox.y,0));
-
-			var rect = new Rect();
-			//Bottomleft
-			rect.xMin = min.x;
-			rect.yMin = min.y;
-			//Topright
-			rect.xMax = max.x;
-			rect.yMax = max.y;
-
-			objLoader.MaxBounds = rect;
+			objLoader.IgnoreObjectsOutsideOfBounds = true;
+			objLoader.BottomLeftBounds = Config.activeConfiguration.MinBoundingBox;
+			objLoader.TopRightBounds = Config.activeConfiguration.MaxBoundingBox;
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
@@ -84,29 +69,24 @@ public class Bag3DObjImporter : MonoBehaviour
 			while (objLinesToBeParsed > 0)
 			{
 				objLinesToBeParsed = objLoader.ParseNextObjLines(parsePerFrame);
-				print(objLinesToBeParsed + " obj lines remaining");
 				yield return new WaitForEndOfFrame();
 			}
 			objLoader.Build(applyMaterial);
-
+			print(i + "/" + fileInfo.Length + " " + file.Name + " done.");
 			yield return new WaitForEndOfFrame();
 		}
-
-		RemapObjectNamesAndCleanUp();
+		yield return new WaitForEndOfFrame();
+		RenameObjects();
 
 		if (enableOnFinish) enableOnFinish.SetActive(true);
 	}
 
-	private void RemapObjectNamesAndCleanUp()
+	private void RenameObjects()
 	{	
-		print("Filtering by specific object names and renaming");
+		print("Added all gameobjects from obj file.");
 		foreach (Transform child in transform)
 		{
-			//Copy this object into our target container
-			var copy = Instantiate(child.gameObject, transform);
-			copy.transform.position = child.position;
-			copy.transform.rotation = child.rotation;
-			copy.name = child.name.Replace(prefix, "");
+			child.gameObject.name = child.gameObject.name.Replace(prefix, "");
 		}
 	}
 }
