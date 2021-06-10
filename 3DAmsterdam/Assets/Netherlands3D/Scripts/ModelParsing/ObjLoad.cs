@@ -55,6 +55,7 @@ public class ObjLoad : MonoBehaviour
 	private List<MaterialData> materialDataSlots;
 
 	private bool splitNestedObjects = false;
+	private Rect maxRDBounds;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
 	private bool flipYZ = false;
@@ -70,6 +71,7 @@ public class ObjLoad : MonoBehaviour
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
+	public Rect MaxRDBounds { get => maxRDBounds; set => maxRDBounds = value; }
 
 	// Awake so that the Buffer is always instantiated in time.
 	void Awake()
@@ -143,13 +145,13 @@ public class ObjLoad : MonoBehaviour
                     {
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordiantes");
+						Debug.Log("model appears to be in RD-coordinates");
                     }
 					else if(CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
                     {
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordiantes");
+						Debug.Log("model appears to be in RD-coordinates");
 					}
 					else
                     {
@@ -557,10 +559,6 @@ public class ObjLoad : MonoBehaviour
 				Destroy(gameobject.GetComponent<MeshFilter>().sharedMesh);
 				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
 			}
-			
-			
-
-
 			// strart the vertex-welding
         }
 	}

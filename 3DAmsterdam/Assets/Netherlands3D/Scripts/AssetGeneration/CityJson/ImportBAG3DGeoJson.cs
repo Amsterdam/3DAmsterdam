@@ -39,17 +39,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private List<int> meshTriangles;
         private int vertIndex;
 
-        public Material DefaultMaterial;
-
         [SerializeField]
         private string geoJsonSourceFilesFolder = "C:/Users/Sam/Desktop/downloaded_tiles_amsterdam/";
-        private string unityMeshAssetFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
 
         [Header("Tile generation settings")]
         [SerializeField]
         private bool skipExistingFiles = true;
+
+        [SerializeField]
+        private Material defaultMaterial;
+
+        [SerializeField]
+        private bool writeAsAssetFile;
+
         [SerializeField]
         private bool renderInViewport = true;
+
         [SerializeField]
         private bool generateAssetFiles = false;
         [SerializeField]
@@ -90,15 +95,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 		public void Start()
 		{
             vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
-			//Make sure our tile assets folder is there
-			var exportPath = Application.dataPath + "/../" + unityMeshAssetFolder;
-			if (!Directory.Exists(exportPath))
-			{
-				Directory.CreateDirectory(exportPath);
-			}
-
 			FindCustomOverrideObjects();
-
 			StartCoroutine(CreateTilesAndReadInGeoJSON());
 		}
 
@@ -180,7 +177,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     }
 
                     //Skip files if we enabled that option and it exists
-                    string assetFileName = unityMeshAssetFolder + tileName + ".asset";
+                    string assetFileName = TileCombiner.unityMeshAssetFolder + tileName + ".asset";
                     if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
@@ -219,8 +216,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Now bake the tile into an asset file
                     if (generateAssetFiles)
-                    {
-                        CreateBuildingTile(newTileContainer, newTileContainer.transform.position);
+                    { 
+                        TileCombiner.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial,writeAsAssetFile);
                         print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
                     }
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
@@ -270,95 +267,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 }
             }
             return buildingsAdded;
-        }
-
-        /// <summary>
-        /// Combine all the children of this tile into a single mesh
-        /// </summary>
-        /// <param name="buildingTile">Target tile</param>
-        /// <param name="worldPosition">Original position to move the tile to for previewing it</param>
-        private void CreateBuildingTile(GameObject buildingTile, Vector3 worldPosition)
-        {
-            MeshFilter[] meshFilters = buildingTile.GetComponentsInChildren<MeshFilter>();
-            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-            //Construct the seperate metadata containing the seperation of the buildings
-            ObjectMappingClass buildingMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
-            buildingMetaData.ids = new List<string>();
-            foreach (var meshFilter in meshFilters)
-            {
-                buildingMetaData.ids.Add(meshFilter.gameObject.name);
-            }
-            var textureSize = ObjectIDMapping.GetTextureSize(buildingMetaData.ids.Count);
-            List<Vector2> allObjectUVs = new List<Vector2>();
-            List<int> allVectorMapIndices = new List<int>();
-            buildingMetaData.uvs = allObjectUVs.ToArray();
-
-            //Generate the combined tile mesh
-            buildingTile.transform.position = Vector3.zero;
-
-            string assetFileName = unityMeshAssetFolder + buildingTile.name + ".asset";
-            string assetMetaDataFileName = unityMeshAssetFolder + buildingTile.name + "-data.asset";
-
-            var totalVertexCount = 0;
-            for (int i = 0; i < combine.Length; i++)
-            {
-                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-                Mesh buildingMesh = meshFilters[i].sharedMesh;
-                totalVertexCount += buildingMesh.vertexCount;
-                //Create UVS
-                var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
-                for (int v = 0; v < buildingMesh.vertexCount; v++)
-                {
-                    //UV count should match vert count
-                    allObjectUVs.Add(buildingUV);
-                    //Create vector map reference for vert
-                    allVectorMapIndices.Add(i);
-                }
-
-                combine[i].mesh = buildingMesh;
-                meshFilters[i].gameObject.SetActive(false);
-            }
-            //Now add all the combined uvs to our metadata
-            buildingMetaData.uvs = allObjectUVs.ToArray();
-            buildingMetaData.vectorMap = allVectorMapIndices;
-
-            Mesh newCombinedMesh = new Mesh();
-            if (totalVertexCount > Mathf.Pow(2, 16))
-                newCombinedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-
-            if (meshFilters.Length > 0)
-            {
-                newCombinedMesh.name = buildingTile.name;
-                newCombinedMesh.CombineMeshes(combine, true);
-                newCombinedMesh.RecalculateNormals();
-                newCombinedMesh.Optimize();
-
-                //And clean up memory
-                for (int i = 0; i < combine.Length; i++)
-                {
-                    DestroyImmediate(meshFilters[i].sharedMesh,true);
-                    Destroy(meshFilters[i].gameObject);
-                }
-            }
-            if (renderInViewport)
-            {
-                buildingTile.AddComponent<MeshFilter>().sharedMesh = newCombinedMesh;
-                buildingTile.AddComponent<MeshRenderer>().material = DefaultMaterial;
-                buildingTile.transform.position = worldPosition;
-            }
-            else{
-                Destroy(buildingTile);
-			}
-
-#if UNITY_EDITOR
-            if (generateAssetFiles)
-            {
-                AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
-                AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
-                AssetDatabase.SaveAssets();
-            }
-#endif
         }
 
         /// <summary>
@@ -484,7 +392,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     buildingMesh = vertexWelder.WeldVertices(buildingMesh);
 
                     var meshRenderer = building.AddComponent<MeshRenderer>();
-                    meshRenderer.material = DefaultMaterial;
+                    meshRenderer.material = defaultMaterial;
                     meshRenderer.enabled = renderInViewport;
                     building.AddComponent<MeshFilter>().sharedMesh = buildingMesh;
                     buildingCount++;
