@@ -12,6 +12,9 @@ namespace Netherlands3D.JavascriptConnection
 		private static extern string FetchOBJData();
 
 		[DllImport("__Internal")]
+		private static extern string FetchVissimData();
+
+		[DllImport("__Internal")]
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
@@ -75,6 +78,11 @@ namespace Netherlands3D.JavascriptConnection
 				HideUniqueShareURL();
 			}
 #endif
+		}
+
+		public static string FetchVissimDataAsString()
+		{
+			return FetchVissimData();
 		}
 
 		public static string FetchOBJDataAsString()
