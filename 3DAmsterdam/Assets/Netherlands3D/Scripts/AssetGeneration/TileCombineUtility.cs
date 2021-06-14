@@ -111,7 +111,7 @@ namespace Netherlands3D.AssetGeneration
 
 		public static bool IsAnyVertexWithinConfigBounds(Vector3[] allVertices)
 		{
-			return IsAnyVertexWithinBounds(allVertices,Config.activeConfiguration.MinBoundingBox, Config.activeConfiguration.MaxBoundingBox);
+			return IsAnyVertexWithinBounds(allVertices,Config.activeConfiguration.BottomLeftRD, Config.activeConfiguration.TopRightRD);
 		}
 
 		public static bool IsAnyVertexWithinBounds(Vector3[] allVertices, Vector2RD minBoundingBox, Vector2RD maxBoundingBox)

@@ -82,8 +82,8 @@ public class Bag3DObjImporter : MonoBehaviour
 			//objLoader.ObjectUsesRDCoordinates = true; //automatic
 
 			objLoader.IgnoreObjectsOutsideOfBounds = true;
-			objLoader.BottomLeftBounds = Config.activeConfiguration.MinBoundingBox;
-			objLoader.TopRightBounds = Config.activeConfiguration.MaxBoundingBox;
+			objLoader.BottomLeftBounds = Config.activeConfiguration.BottomLeftRD;
+			objLoader.TopRightBounds = Config.activeConfiguration.TopRightRD;
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
@@ -110,8 +110,8 @@ public class Bag3DObjImporter : MonoBehaviour
 	{	
 		print("Added all gameobjects from obj files.");
 		print("Baking objects into tiles");
-		var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.x - (float)Config.activeConfiguration.MinBoundingBox.x) / (float)tileSize);
-		var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.MaxBoundingBox.y - (float)Config.activeConfiguration.MinBoundingBox.y) / (float)tileSize);
+		var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / (float)tileSize);
+		var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y) / (float)tileSize);
 
 		var totalTiles = xTiles * yTiles;
 		int currentTile = 0;
@@ -120,11 +120,11 @@ public class Bag3DObjImporter : MonoBehaviour
 		var tileRD = new Vector2Int(0, 0);
 		for (int x = 0; x < xTiles; x++)
 		{
-			tileRD.x = (int)Config.activeConfiguration.MinBoundingBox.x + (x * tileSize);
+			tileRD.x = (int)Config.activeConfiguration.BottomLeftRD.x + (x * tileSize);
 			for (int y = 0; y < yTiles; y++)
 			{
 				currentTile++;
-				tileRD.y = (int)Config.activeConfiguration.MinBoundingBox.y + (y * tileSize);
+				tileRD.y = (int)Config.activeConfiguration.BottomLeftRD.y + (y * tileSize);
 				string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
 
 				//If we supplied a filter we check if this tile contains this substring in order to be (re)generated

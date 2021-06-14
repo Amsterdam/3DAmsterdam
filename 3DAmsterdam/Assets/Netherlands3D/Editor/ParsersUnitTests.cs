@@ -17,8 +17,8 @@ public class ParserUnitTests
         //Very small boundingbox for RD config
         Config.activeConfiguration = new ConfigurationFile();
         Config.activeConfiguration.RelativeCenterRD = new Vector2RD(15000, 15000);
-        Config.activeConfiguration.MinBoundingBox = new Vector2RD(10000, 10000);
-        Config.activeConfiguration.MaxBoundingBox = new Vector2RD(20000, 20000);
+        Config.activeConfiguration.BottomLeftRD = new Vector2RD(10000, 10000);
+        Config.activeConfiguration.TopRightRD = new Vector2RD(20000, 20000);
 
         var vertArrayWithVertInBounds = new Vector3[2] { 
             CoordConvert.RDtoUnity(new Vector3(16000, 17000, 0)),
