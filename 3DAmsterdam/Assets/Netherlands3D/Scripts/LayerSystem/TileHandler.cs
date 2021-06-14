@@ -133,7 +133,10 @@ namespace Netherlands3D.LayerSystem
 			RemoveOutOfViewTiles();
 			GetTileChanges();
 
-			if (pendingTileChanges.Count == 0) { return; }
+			OverallProgressIndicator.Show((pendingTileChanges.Count > 0));
+
+			if (pendingTileChanges.Count == 0) 	return; 
+
 
 			//Start with all remove changes to clear resources. We to all remove actions, and stop any running tilechanges that share the same position and layerindex
 			InstantlyStartRemoveChanges();

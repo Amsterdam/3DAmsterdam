@@ -31,6 +31,12 @@ namespace Netherlands3D.Utilities
                     }
                     continue;
                 }
+                else if (character == 'n')
+                {
+                    //if we find null return 0
+                    endposition = startpostition;
+                    return 0;
+                }
                 else if (character == seperator && charactercounter > 0)
                 {
                     endposition = charNumber + 1;
@@ -47,7 +53,6 @@ namespace Netherlands3D.Utilities
                 {
                     isinDecimal = true;
                 }
-
                 else if (character == '-')
                 {
                     currentSignValue = -1;
@@ -59,7 +64,6 @@ namespace Netherlands3D.Utilities
                     {
                         break;
                     }
-
                 }
             }
             endposition = charNumber + 1;

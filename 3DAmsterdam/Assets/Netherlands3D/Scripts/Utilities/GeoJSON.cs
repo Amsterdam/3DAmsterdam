@@ -194,12 +194,20 @@ namespace Netherlands3D.Utilities
             int propertyStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + 1;
             if (propertyStartIndex == -1)
             {
-                return float.MaxValue;
+                return 0.0f;
             }
             int nextstartposition;
             return (float)StringManipulation.ParseNextDouble(geoJSONString, ',', propertyStartIndex, out nextstartposition);
         }
-    
-    
+
+        public string getPropertyStringValue(string propertyName)
+        {
+            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + ((Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam) ? 3 : 4);
+            if (propertyValueStartIndex == -1) 
+            {
+                return string.Empty;
+            }
+            return geoJSONString.Substring(propertyValueStartIndex, geoJSONString.IndexOf(',', propertyValueStartIndex) - propertyValueStartIndex - 1);
+        }
     }
 }
