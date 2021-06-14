@@ -62,7 +62,7 @@ public class Bag3DObjImporter : MonoBehaviour
 			objLoader.ObjectUsesRDCoordinates = true;
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
-			objLoader.FlipFaceDirection = true;
+			objLoader.WeldVertices = true;
 			objLoader.SetGeometryData(ref objString);
 
 			var objLinesToBeParsed = 100;

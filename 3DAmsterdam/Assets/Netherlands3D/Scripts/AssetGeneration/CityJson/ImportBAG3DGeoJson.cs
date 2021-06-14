@@ -79,6 +79,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         [SerializeField]
         private RawImage gridPixelsRawImage;
 
+        private WeldMeshVertices vertexWelder;
+
         [Header("Chaining other exports")]
         [SerializeField]
         private GameObject optionalObjectToEnableWhenFinished;
@@ -87,6 +89,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 		public void Start()
 		{
+            vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
 			//Make sure our tile assets folder is there
 			var exportPath = Application.dataPath + "/../" + unityMeshAssetFolder;
 			if (!Directory.Exists(exportPath))
@@ -334,7 +337,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 //And clean up memory
                 for (int i = 0; i < combine.Length; i++)
                 {
-                    Destroy(meshFilters[i].sharedMesh);
+                    DestroyImmediate(meshFilters[i].sharedMesh,true);
                     Destroy(meshFilters[i].gameObject);
                 }
             }
@@ -477,6 +480,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     buildingMesh.vertices = thisMeshVerts.ToArray();
                     buildingMesh.triangles = meshTriangles.ToArray();
                     buildingMesh.RecalculateNormals();
+
+                    buildingMesh = vertexWelder.WeldVertices(buildingMesh);
 
                     var meshRenderer = building.AddComponent<MeshRenderer>();
                     meshRenderer.material = DefaultMaterial;
