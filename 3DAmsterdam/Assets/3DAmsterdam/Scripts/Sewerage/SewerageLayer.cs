@@ -77,8 +77,6 @@ namespace Amsterdam3D.Sewerage
 			coroutinesWaiting = new Dictionary<Coroutine, bool>();
 		}
 
-		public override void OnDisableTiles(bool isenabled) { }
-
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
         {
 			TileAction action = tileChange.action;
