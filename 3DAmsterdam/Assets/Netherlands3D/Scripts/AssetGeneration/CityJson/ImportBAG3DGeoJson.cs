@@ -50,9 +50,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private Material defaultMaterial;
 
         [SerializeField]
-        private bool writeAsAssetFile;
-
-        [SerializeField]
         private bool renderInViewport = true;
 
         [SerializeField]
@@ -217,7 +214,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     //Now bake the tile into an asset file
                     if (generateAssetFiles)
                     {
-                        TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial,writeAsAssetFile);
+                        TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial, generateAssetFiles);
                         print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
                     }
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
