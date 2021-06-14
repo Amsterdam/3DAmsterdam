@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Netherlands3D {
+namespace Netherlands3D.Interface {
     public class ColorLegend : MonoBehaviour
     {
         [SerializeField]
