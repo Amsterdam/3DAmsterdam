@@ -123,9 +123,12 @@ namespace Netherlands3D.AssetGeneration
 			Debug.Log(unityTopRight);
 
 			return allVertices.Any(
-				vert => (vert.x > unityBottomLeft.x &&
-				vert.x < unityTopRight.x && vert.z > unityBottomLeft.z &&
-				vert.z < unityTopRight.z)
+				vert => (
+					vert.x >= unityBottomLeft.x &&
+					vert.x < unityTopRight.x && 
+					vert.z >= unityBottomLeft.z &&
+					vert.z < unityTopRight.z
+				)
 			);
 		}
 	}
