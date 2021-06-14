@@ -45,10 +45,10 @@ public class GeometryBuffer
 	public GeometryBuffer()
 	{
 		Objects = new List<ObjectData>();
-		var d = new ObjectData();
-		d.Name = "default";
-		Objects.Add(d);
-		currentObjectData = d;
+		var defaultObject = new ObjectData();
+		defaultObject.Name = "default";
+		Objects.Add(defaultObject);
+		currentObjectData = defaultObject;
 
 		Vertices = new List<Vector3>();
 		Uvs = new List<Vector2>();

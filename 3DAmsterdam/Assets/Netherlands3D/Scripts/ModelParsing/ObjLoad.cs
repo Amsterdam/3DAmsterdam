@@ -79,12 +79,7 @@ public class ObjLoad : MonoBehaviour
 	public bool EnableMeshRenderer { get => enableMeshRenderer; set => enableMeshRenderer = value; }
 	public Vector2RD BottomLeftBounds { get => bottomLeftBounds; set => bottomLeftBounds = value; }
 	public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
-
-	// Awake so that the Buffer is always instantiated in time.
-	void Awake()
-	{
-		buffer = new GeometryBuffer();
-	}
+	public GeometryBuffer Buffer { get => buffer; }
 
 	/// <summary>
 	/// Sets the obj string and turns it into an array with every newline
@@ -92,6 +87,7 @@ public class ObjLoad : MonoBehaviour
 	/// <param name="data">obj string</param>
 	public void SetGeometryData(ref string data)
 	{
+		buffer = new GeometryBuffer();
 		objLines = data.Split(lineSplitChar);
 		data = "";
 
@@ -532,6 +528,7 @@ public class ObjLoad : MonoBehaviour
 		if (buffer.NumberOfObjects == 1 && !IgnoreObjectsOutsideOfBounds)
 		{
 			//Single gameobject, single mesh
+			Debug.Log("Single mesh OBJ. Putting renderer on root object.");
 			gameObject.AddComponent<MeshFilter>();
 			gameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
 			gameObjects[0] = gameObject;
@@ -541,11 +538,11 @@ public class ObjLoad : MonoBehaviour
 			for (int i = 0; i < buffer.NumberOfObjects; i++)
 			{
 				//Multi object with nested children
-				var go = new GameObject();
-				go.transform.parent = gameObject.transform;
-				go.AddComponent<MeshFilter>();
-				go.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
-				gameObjects[i] = go;
+				var childGameObject = new GameObject();
+				childGameObject.transform.parent = gameObject.transform;
+				childGameObject.AddComponent<MeshFilter>();
+				childGameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
+				gameObjects[i] = childGameObject;
 			}
 		}
 

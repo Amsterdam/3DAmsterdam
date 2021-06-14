@@ -119,9 +119,6 @@ namespace Netherlands3D.AssetGeneration
 			var unityBottomLeft = CoordConvert.RDtoUnity(minBoundingBox);
 			var unityTopRight = CoordConvert.RDtoUnity(maxBoundingBox);
 
-			Debug.Log(unityBottomLeft);
-			Debug.Log(unityTopRight);
-
 			return allVertices.Any(
 				vert => (
 					vert.x >= unityBottomLeft.x &&

@@ -18,6 +18,9 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private string exclusivelyGenerateTilesWithSubstring = "";
 
+	[SerializeField]
+	private bool skipImportOfObjectsOutsideRDBounds = false;
+
 	[Tooltip("LOD level name")]
 	[SerializeField]
 	private string lodLevel = "2.2";
@@ -72,7 +75,7 @@ public class Bag3DObjImporter : MonoBehaviour
 		for (int i = 0; i < fileInfo.Length; i++)
 		{
 			var file = fileInfo[i];
-			print(i + "/" + fileInfo.Length + " " + file.Name);
+			print((i+1) + "/" + fileInfo.Length + " " + file.Name);
 
 			var objString = File.ReadAllText(file.FullName);
 
@@ -81,9 +84,9 @@ public class Bag3DObjImporter : MonoBehaviour
 			objLoader = this.gameObject.AddComponent<ObjLoad>();
 			//objLoader.ObjectUsesRDCoordinates = true; //automatic
 
-			objLoader.IgnoreObjectsOutsideOfBounds = true;
 			objLoader.BottomLeftBounds = Config.activeConfiguration.BottomLeftRD;
 			objLoader.TopRightBounds = Config.activeConfiguration.TopRightRD;
+			objLoader.IgnoreObjectsOutsideOfBounds = skipImportOfObjectsOutsideRDBounds;
 			objLoader.MaxSubMeshes = 1;
 			objLoader.SplitNestedObjects = true;
 			objLoader.WeldVertices = true;
@@ -167,12 +170,13 @@ public class Bag3DObjImporter : MonoBehaviour
 
 				if (childrenInTile == 0)
 				{
-					print($"No children found for tile {tileName}");
+					Destroy(newTileContainer);
+					print($"<color=#FFBD38>No children found for tile {tileName}</color>");
 					continue;
 				}
 
 				//And when we are done, bake it.
-				print($"Baking tile with {childrenInTile} buildings");
+				print($"<color=#00FF00>Baking tile {tileName} with {childrenInTile} buildings</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
 				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
