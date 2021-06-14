@@ -21,8 +21,8 @@ public class ParserUnitTests
         Config.activeConfiguration.TopRightRD = new Vector2RD(20000, 20000);
 
         var vertArrayWithVertInBounds = new Vector3[2] { 
-            CoordConvert.RDtoUnity(new Vector3(16000, 17000, 0)),
-            CoordConvert.RDtoUnity(new Vector3(25000, 26000, 0))
+            CoordConvert.RDtoUnity(new Vector3(10001, 10000, 0)),
+            CoordConvert.RDtoUnity(new Vector3(20000, 20000, 0))
          };
         var vertArrayWithWithoutVertsInBounds = new Vector3[2] {
             CoordConvert.RDtoUnity(new Vector3(30000, 34000, 0)),
@@ -34,7 +34,5 @@ public class ParserUnitTests
 
         Assert.AreEqual(true, shouldReturnTrue);
         Assert.AreEqual(false, shouldReturnFalse);
-
-
     }
 }

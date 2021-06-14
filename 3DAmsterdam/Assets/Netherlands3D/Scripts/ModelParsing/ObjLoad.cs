@@ -566,11 +566,11 @@ public class ObjLoad : MonoBehaviour
 				if (!meshFilter) continue;
 
 				meshname = meshFilter.sharedMesh.name;
-				Mesh newMesh = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
-				newMesh.name = meshname;
+				Mesh newMeshWithCombinedVerts = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+				newMeshWithCombinedVerts.name = meshname;
 				// destroy the old mesh;
 				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
-				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMeshWithCombinedVerts;
 			}
 			Destroy(vertexWelder);
 		}
