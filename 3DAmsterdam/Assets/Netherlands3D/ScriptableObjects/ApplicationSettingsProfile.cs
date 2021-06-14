@@ -15,7 +15,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public bool drawMap = true;
     public bool drawFPS = false;
     public float canvasDPI = 1.0f;
-    public bool showExperimentelFeatures = true;
+    public bool showExperimentelFeatures = false;
 
     //Quality
     public float renderResolution = 1.0f;
