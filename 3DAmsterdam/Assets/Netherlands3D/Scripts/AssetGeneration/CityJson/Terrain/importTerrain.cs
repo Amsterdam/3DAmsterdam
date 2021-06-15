@@ -124,6 +124,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private int tileSize = 1000; //1x1 km
 
         [SerializeField]
+        private int minimumHeight = -10; //1x1 km
+        [SerializeField]
+        private int maximumHeight = 25; //1x1 km
+
+        [SerializeField]
         private string geoJsonSourceFilesFolder = "D:/3DRotterdam/Terrain/cityjson";
         //private string unityMeshAssetFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
 
@@ -135,7 +140,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         // Start is called before the first frame update
         void Start()
         {
-            
+            importCityjsonterrainScript.heightMin = minimumHeight;
+            importCityjsonterrainScript.heightMax = maximumHeight;
             List<string> foldernames = GetFileList(geoJsonSourceFilesFolder);
             Debug.Log(foldernames.Count + " files");
 
@@ -226,6 +232,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Debug.Log("reading vertices");
                 yield return null;
                 Vector3RD[] vertices = readVertices(cityModel);
+
 
             double Xmin = vertices.Min(x => x.x);
             Xmin = Xmin + (2500 - Xmin % 2500);
@@ -322,6 +329,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                         meshes.Add(item.type, mesh);
                     }
                     importCityjsonterrainScript.CreateCombinedMeshes(meshes, tile.Key, tileSize);
+
                 }
 
 

@@ -7,6 +7,7 @@ using System.IO;
 using ConvertCoordinates;
 using SimpleJSON;
 using System.Threading;
+using System.Linq;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
@@ -15,6 +16,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private List<Material> materialList = new List<Material>(7);
         private Material[] materialsArray;
         private List<Vector3RD> vertsRD = new List<Vector3RD>();
+
+        public float heightMax;
+        public float heightMin;
         // Start is called before the first frame update
         void Start()
         {
@@ -178,12 +182,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         public void CreateCombinedMeshes(Dictionary<terrainType, Mesh>meshes,Vector2 tileID, float tileSize)
         {
             //create LOD1 Mesh
-            UnityMeshSimplifier.MeshSimplifier meshSimplifier1 = null;
-            Thread thread1 = null;
-            UnityMeshSimplifier.MeshSimplifier meshSimplifier2 = null;
-            Thread thread2 = null;
-            UnityMeshSimplifier.MeshSimplifier meshSimplifier3 = null;
-            Thread thread3 = null;
+            //UnityMeshSimplifier.MeshSimplifier meshSimplifier1 = null;
+            //Thread thread1 = null;
+            //UnityMeshSimplifier.MeshSimplifier meshSimplifier2 = null;
+            //Thread thread2 = null;
+            //UnityMeshSimplifier.MeshSimplifier meshSimplifier3 = null;
+            //Thread thread3 = null;
 
             CombineInstance[] combi = new CombineInstance[12];
             for (int i = 0; i < combi.Length; i++)
@@ -209,15 +213,15 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             if (meshes.ContainsKey(terrainType.begroeid))
             {
-                combi[4].mesh = SimplifyMesh(meshes[terrainType.begroeid], 0.2f); //
+                combi[4].mesh = SimplifyMesh(meshes[terrainType.begroeid], 0.05f); //
             }
             if (meshes.ContainsKey(terrainType.erven))
             {
-                combi[5].mesh = SimplifyMesh(meshes[terrainType.erven], 0.2f); // //
+                combi[5].mesh = SimplifyMesh(meshes[terrainType.erven], 0.05f); // //
             }
             if (meshes.ContainsKey(terrainType.onbegroeid))
             {
-                combi[6].mesh = SimplifyMesh(meshes[terrainType.onbegroeid], 0.2f); // //
+                combi[6].mesh = SimplifyMesh(meshes[terrainType.onbegroeid], 0.05f); // //
             }
             if (meshes.ContainsKey(terrainType.spoorbanen))
             {
@@ -246,14 +250,19 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
             //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
             //remove old asset
-            string assetName = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
 
+            //remove spikes
+           lod1Mesh.vertices = RemoveSpikes(lod1Mesh).vertices;
+            string baseMeshNameLod0 = "terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0";
+            string assetName = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
+            string assetNameLod0 = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
             Mesh existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh));
             if (existingMesh != null)
             {
                 //combine meshes;
                 lod1Mesh = CombineMeshes(lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
                 AssetDatabase.DeleteAsset(assetName);
+                AssetDatabase.DeleteAsset(assetNameLod0);
                 AssetDatabase.SaveAssets();
             }
             lod1Mesh.Optimize();
@@ -265,8 +274,63 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Destroy(combi[i].mesh);
             }
             //DestroyImmediate(lod1Mesh,true);
-           
+            // create lod0-mesh with reduces trianglecount
+
+            Mesh lod0Mesh = SimplifyMesh(lod1Mesh, 0.05f);
+            lod0Mesh.name = baseMeshNameLod0;
+            AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
+            AssetDatabase.SaveAssets();
+            // DestroyImmediate(lod1Mesh,true);
+            // DestroyImmediate(lod0Mesh, true);
         }
+
+        
+
+        private Mesh RemoveSpikes(Mesh mesh)
+        {
+            if (mesh.vertices.Length == 0)
+            {
+                return mesh;
+            };
+
+            var verts = mesh.vertices;
+
+            var correctverts = verts.Where(o => o.y < heightMax && o.y > heightMin);
+
+            var correctvertsAvgHeight = verts.Average(o => o.y);
+
+            bool hasspike = false;
+            for (int i = 0; i < verts.Length; i++)
+            {
+                if (verts[i].y > heightMax || verts[i].y < heightMin)
+                {
+                    hasspike = true;
+                    verts[i].y = correctvertsAvgHeight; //for now just use the average height
+
+                    //experimental code, needs further testing
+                    //var x = verts[i].x;
+                    //var z = verts[i].z;
+                    //var vertsaround = correctverts.Where(o => o.x < x + lookaroundWidth
+                    //								&& o.x > x - lookaroundWidth
+                    //								&& o.z < z + lookaroundWidth
+                    //								&& o.z > z - lookaroundWidth);
+                    //if (vertsaround.Any())
+                    //{
+                    //	var avgh = vertsaround.Max(o => o.y);
+                    //	verts[i].y = avgh;
+                    //}
+                    //else
+                    //{
+                    //	verts[i].y = correctvertsAvgHeight;
+                    //}
+                }
+            }
+
+            if (hasspike) mesh.vertices = verts;
+
+            return mesh;
+        }
+
         private Mesh CombineMeshes(Mesh mesh1, Mesh mesh2)
         {
             Mesh newMesh = new Mesh();
@@ -312,7 +376,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             if (mesh.triangles.Length < 100)
             {
-                return mesh;
+                return copyMesh(mesh);
             }
 
             var DecimatedMesh = mesh;
@@ -329,7 +393,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             return DecimatedMesh;
         }
 
+        private Mesh copyMesh(Mesh mesh)
+        {
+            Mesh newMesh = new Mesh();
+            newMesh.name = mesh.name;
+            newMesh.indexFormat = mesh.indexFormat;
+            newMesh.vertices = mesh.vertices;
+            int submeshcount = mesh.subMeshCount;
+            newMesh.subMeshCount = submeshcount;
+            for (int i = 0; i < submeshcount; i++)
+            {
+                newMesh.SetTriangles(mesh.GetTriangles(i), i);
+            }
+            newMesh.normals = mesh.normals;
+            return newMesh;
 
+        }
         private bool PointISInsideArea(Vector3RD point, double OriginX, double OriginY, float tileSize)
         {
 
