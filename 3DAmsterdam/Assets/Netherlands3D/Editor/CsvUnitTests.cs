@@ -46,6 +46,17 @@ public class CsvUnitTests
         Assert.AreEqual("http://url;234", lines[0][5]);
     }
 
+    [Test]
+    public void TestCsvParseComma()
+    {
+        var csv = @"150000,123 ; 350000,123;2021;2022; Project ""Herziening"" rotonde 231 ;""http://url;234""";
+        var lines = CsvParser.ReadLines(csv, 0);
+        Assert.AreEqual(1, lines.Count);
+        Assert.AreEqual("150000,123", lines[0][0]);
+        
+        
+    }
+
 
     //[Test]
     //public void TestCsvParseFile()

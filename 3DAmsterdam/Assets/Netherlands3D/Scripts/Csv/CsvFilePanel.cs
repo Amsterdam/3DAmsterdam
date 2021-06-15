@@ -157,8 +157,8 @@ public class CsvFilePanel : MonoBehaviour
                 Show(action);
             });
 
-            double x = double.Parse(row[csvGeoLocation.XColumnIndex]);
-            double y = double.Parse(row[csvGeoLocation.YColumnIndex]);
+            double x = CsvGeoLocation.GetCoordinateNumber(row[csvGeoLocation.XColumnIndex]);
+            double y = CsvGeoLocation.GetCoordinateNumber(row[csvGeoLocation.YColumnIndex]);
 
             Vector3 pos;
 
