@@ -17,11 +17,6 @@ namespace Netherlands3D.LayerSystem
 		public bool addHighlightuvs = false;
 		public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.On;
 
-		public override void OnDisableTiles(bool isenabled)
-        {
-
-        }
-
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			TileAction action = tileChange.action;

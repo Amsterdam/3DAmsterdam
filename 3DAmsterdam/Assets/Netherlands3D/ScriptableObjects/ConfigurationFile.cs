@@ -18,9 +18,10 @@ namespace Netherlands3D
             QuadTrees //Used by Microsoft
         }
 
-        [Header("Coordinates")]
-
+        [Header("Bounding Box coordinates")]
         public Vector2RD RelativeCenterRD;
+        public Vector2RD BottomLeftRD;
+        public Vector2RD TopRightRD;
 
         public float zeroGroundLevelY = 43.0f;
 

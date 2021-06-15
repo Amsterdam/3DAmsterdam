@@ -173,6 +173,7 @@ namespace Netherlands3D.Cameras
             else if(!enabled && ((!rotatingAroundPoint && !dragging) || Selector.Instance.GetActiveInteractable()) && ActionHandler.actions.GodViewMouse.enabled)
             {
                 dragging = false;
+                dragMomentum = Vector3.zero;
                 rotatingAroundPoint = false;
                 ActionHandler.actions.GodViewMouse.Disable();
             }

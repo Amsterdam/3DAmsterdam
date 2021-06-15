@@ -55,27 +55,31 @@ public class ObjLoad : MonoBehaviour
 	private List<MaterialData> materialDataSlots;
 
 	private bool splitNestedObjects = false;
+	private bool ignoreObjectsOutsideOfBounds = false;
+	private Vector2RD bottomLeftBounds;
+	private Vector2RD topRightBounds;
 	private bool RDCoordinates = false;
 	private bool flipFaceDirection = false;
 	private bool flipYZ = false;
 	private bool weldVertices = false;
 	private int maxSubMeshes = 0;
+	private bool tracing = false;
+	private bool enableMeshRenderer = true;
 
 	/// <summary>
 	/// Disabled is the default. Otherwise SketchUp models would have a loooot of submodels (we cant use batching for rendering in WebGL, so this is bad for performance)
 	/// </summary>
 	public bool SplitNestedObjects { get => splitNestedObjects; set => splitNestedObjects = value; }
 	public bool ObjectUsesRDCoordinates { get => RDCoordinates; set => RDCoordinates = value; }
+	public bool IgnoreObjectsOutsideOfBounds { get => ignoreObjectsOutsideOfBounds; set => ignoreObjectsOutsideOfBounds = value; }
 	public bool FlipYZ { get => flipYZ; set => flipYZ = value; }
 	public int MaxSubMeshes { get => maxSubMeshes; set => maxSubMeshes = value; }
 	public bool FlipFaceDirection { get => flipFaceDirection; set => flipFaceDirection = value; }
 	public bool WeldVertices { get => weldVertices; set => weldVertices = value; }
-
-	// Awake so that the Buffer is always instantiated in time.
-	void Awake()
-	{
-		buffer = new GeometryBuffer();
-	}
+	public bool EnableMeshRenderer { get => enableMeshRenderer; set => enableMeshRenderer = value; }
+	public Vector2RD BottomLeftBounds { get => bottomLeftBounds; set => bottomLeftBounds = value; }
+	public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
+	public GeometryBuffer Buffer { get => buffer; }
 
 	/// <summary>
 	/// Sets the obj string and turns it into an array with every newline
@@ -83,9 +87,10 @@ public class ObjLoad : MonoBehaviour
 	/// <param name="data">obj string</param>
 	public void SetGeometryData(ref string data)
 	{
+		buffer = new GeometryBuffer();
 		objLines = data.Split(lineSplitChar);
 		data = "";
-		
+
 		parseLinePointer = 0;
 	}
 	/// <summary>
@@ -112,7 +117,8 @@ public class ObjLoad : MonoBehaviour
 			if (parseLinePointer < objLines.Length)
 			{
 				line = objLines[parseLinePointer];
-				if(!ParseObjLine(ref line)){
+				if (!ParseObjLine(ref line))
+				{
 					return -1;
 				}
 				parseLinePointer++;
@@ -137,26 +143,26 @@ public class ObjLoad : MonoBehaviour
 					buffer.AddSubMeshGroup(linePart[1].Trim());
 				break;
 			case V:
-                if (buffer.Vertices.Count==0)
-                {
-                    if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
-                    {
+				if (buffer.Vertices.Count == 0)
+				{
+					if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+					{
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordiantes");
-                    }
-					else if(CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
-                    {
+						Debug.Log("model appears to be in RD-coordinates");
+					}
+					else if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
+					{
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordiantes");
+						Debug.Log("model appears to be in RD-coordinates");
 					}
 					else
-                    {
-						Debug.Log(cd(linePart[1]) + "-" +  -cd(linePart[3]) + "-" + cd(linePart[2]));
+					{
+						Debug.Log(cd(linePart[1]) + "-" + -cd(linePart[3]) + "-" + cd(linePart[2]));
 						Debug.Log("model appears not to be in RD-coordinates");
-                    }
-                }
+					}
+				}
 
 				if (ObjectUsesRDCoordinates)
 				{
@@ -276,9 +282,9 @@ public class ObjLoad : MonoBehaviour
 				case ILLUM:
 					targetMaterialData.IllumType = ci(linePart[1]);
 					break;
-				/*default:
-					Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
-					break;*/
+					/*default:
+						Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
+						break;*/
 			}
 		}
 	}
@@ -312,7 +318,7 @@ public class ObjLoad : MonoBehaviour
 			targetFacesList[i - 1] = faceIndices;
 		}
 	}
-	
+
 	static Material GetMaterial(MaterialData md, Material sourceMaterial)
 	{
 		Material newMaterial;
@@ -371,10 +377,10 @@ public class ObjLoad : MonoBehaviour
 	}
 
 	static double cd(string v)
-    {
+	{
 		try
 		{
-			return double.Parse(v,System.Globalization.CultureInfo.InvariantCulture);
+			return double.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
 		}
 		catch (Exception e)
 		{
@@ -500,7 +506,7 @@ public class ObjLoad : MonoBehaviour
 	{
 		//Clear our large arrays
 		if (mtlLines != null)
-			Array.Clear(mtlLines, 0, mtlLines.Length);			
+			Array.Clear(mtlLines, 0, mtlLines.Length);
 
 		Array.Clear(objLines, 0, objLines.Length);
 
@@ -519,11 +525,12 @@ public class ObjLoad : MonoBehaviour
 		}
 
 		var gameObjects = new GameObject[buffer.NumberOfObjects];
-		if (buffer.NumberOfObjects == 1)
+		if (buffer.NumberOfObjects == 1 && !IgnoreObjectsOutsideOfBounds)
 		{
 			//Single gameobject, single mesh
-			gameObject.AddComponent(typeof(MeshFilter));
-			gameObject.AddComponent(typeof(MeshRenderer));
+			Debug.Log("Single mesh OBJ. Putting renderer on root object.");
+			gameObject.AddComponent<MeshFilter>();
+			gameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
 			gameObjects[0] = gameObject;
 		}
 		else if (buffer.NumberOfObjects > 1)
@@ -531,37 +538,38 @@ public class ObjLoad : MonoBehaviour
 			for (int i = 0; i < buffer.NumberOfObjects; i++)
 			{
 				//Multi object with nested children
-				var go = new GameObject();
-				go.transform.parent = gameObject.transform;
-				go.AddComponent(typeof(MeshFilter));
-				go.AddComponent(typeof(MeshRenderer));
-				gameObjects[i] = go;
+				var childGameObject = new GameObject();
+				childGameObject.transform.parent = gameObject.transform;
+				childGameObject.AddComponent<MeshFilter>();
+				childGameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
+				gameObjects[i] = childGameObject;
 			}
 		}
 
-		buffer.Trace();
+		if(tracing) buffer.Trace();
 		buffer.flipTriangleDirection = flipFaceDirection;
-		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial);
+		buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial, this);
 
 		// weld vertices if required
-        if (weldVertices)
-        {
+		if (weldVertices)
+		{
 			string meshname = "";
 			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
-			foreach (var gameobject in gameObjects)
-            {
-				meshname = gameobject.GetComponent<MeshFilter>().sharedMesh.name;
-				Mesh newMesh = vertexWelder.WeldVertices(gameobject.GetComponent<MeshFilter>().sharedMesh);
-				newMesh.name = meshname;
+			foreach (var listGameObject in gameObjects)
+			{
+				if (!listGameObject) continue;
+
+				var meshFilter = listGameObject.GetComponent<MeshFilter>();
+				if (!meshFilter) continue;
+
+				meshname = meshFilter.sharedMesh.name;
+				Mesh newMeshWithCombinedVerts = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+				newMeshWithCombinedVerts.name = meshname;
 				// destroy the old mesh;
-				Destroy(gameobject.GetComponent<MeshFilter>().sharedMesh);
-				gameobject.GetComponent<MeshFilter>().sharedMesh = newMesh;
+				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMeshWithCombinedVerts;
 			}
-			
-			
-
-
-			// strart the vertex-welding
-        }
+			Destroy(vertexWelder);
+		}
 	}
 }

@@ -115,8 +115,24 @@ namespace Netherlands3D.Settings {
             }, profileNames[selectedTemplate]);
 
 			PropertiesPanel.Instance.AddSpacer(20);
+			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
+				settings.antiAliasing = toggle;
+				ApplySettings();
+			});
+			PropertiesPanel.Instance.AddLabel("Render resolutie:");
+			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
+				settings.renderResolution = value;
+				ApplySettings();
+			});
+			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
+			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
+				settings.shadowQuality = (int)value;
+				ApplySettings();
+			}, true);
 
-            PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+			PropertiesPanel.Instance.AddSpacer(20);
+			PropertiesPanel.Instance.AddTitle("Extra");
+			PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
 				settings.postProcessingEffects = toggle;
 				ApplySettings();
             });
@@ -124,24 +140,12 @@ namespace Netherlands3D.Settings {
 				settings.ambientOcclusion = toggle;
 				ApplySettings();
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
-				settings.antiAliasing = toggle;
-				ApplySettings();
-            });
+
 			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
 				settings.realtimeReflections = toggle;
 				ApplySettings();
             });
-			PropertiesPanel.Instance.AddLabel("Render resolutie:");
-			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
-				settings.renderResolution = value;
-				ApplySettings();
-            });
-			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
-			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
-				settings.shadowQuality = (int)value;
-				ApplySettings();
-            }, true);
+
 
 			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
 				selectedTemplate = 0;

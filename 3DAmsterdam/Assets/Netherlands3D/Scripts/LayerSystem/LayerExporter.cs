@@ -54,7 +54,7 @@ namespace Netherlands3D.Interface
 				exportLayerToggles[2] = action;
 				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Rioolnetwerk", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[3] = action;
 				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));

@@ -86,6 +86,10 @@ function HandleCsvInUnity() {
     unityInstance.SendMessage("CSVTab", "LoadCSVFromJavascript");
     document.getElementById("csv").value = "";
 }
+function HandleFzpInUnity() {
+    unityInstance.SendMessage(unityObjectName, "LoadVissimFromJavascript");
+    document.getElementById("fzp").value = "";
+}
 
 function ReadFiles(selectedFiles) {
     //Check browser support
@@ -178,6 +182,23 @@ function ReadFilesCsv(selectedFiles) {
 
         fileReader.readAsText(selectedFiles[0]);
 
+    }
+    return true;
+}
+
+function ReadFilesFzp(selectedFiles) {
+
+    fileReader = new FileReader();
+    //If we selected at least one file
+    if (selectedFiles && selectedFiles[0]) {
+
+        	//What to do when files are done loading
+        	fileReader.onload = function (e) {
+            	objData = e.target.result;
+            	HandleFzpInUnity();
+        	};
+
+        	fileReader.readAsText(selectedFiles[0]);
     }
     return true;
 }

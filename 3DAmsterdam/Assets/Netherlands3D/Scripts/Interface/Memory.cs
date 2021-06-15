@@ -37,7 +37,7 @@ namespace Netherlands3D.Interface
 		/// </summary>
 		private void DrawMemoryUsageInHeap()
 		{
-			memoryOutput.text = ConvertBytesToMegabytes(System.GC.GetTotalMemory(false)).ToString("F2") + "MB";
+			memoryOutput.text = "Heap size: " + SystemInfo.systemMemorySize + "MB \nGC: " + ConvertBytesToMegabytes(System.GC.GetTotalMemory(false)).ToString("F2") + "MB";
 		}
 
 		/// <summary>
