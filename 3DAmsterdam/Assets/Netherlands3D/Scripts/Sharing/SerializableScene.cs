@@ -1,6 +1,14 @@
 ﻿namespace Netherlands3D.Sharing
 {
     [System.Serializable]
+    public struct SerializableSceneAndMeshes 
+    {
+        public SerializableScene SerializableScene;
+        public SerializableMesh[] Meshes;
+    }
+
+
+    [System.Serializable]
     public struct SerializableScene
     {
         public string appVersion;

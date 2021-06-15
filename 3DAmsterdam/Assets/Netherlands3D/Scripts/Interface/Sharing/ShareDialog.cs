@@ -1,5 +1,7 @@
 ﻿using Netherlands3D.JavascriptConnection;
 using Netherlands3D.Sharing;
+using Netherlands3D.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -65,67 +67,41 @@ namespace Netherlands3D.Interface.Sharing
 		private IEnumerator Share()
 		{
 			progressBar.SetMessage("Instellingen opslaan..");
-			progressBar.Percentage(0.2f);
 
 			ChangeState(SharingState.SHARING_SCENE);
-			yield return new WaitForEndOfFrame(); 
-			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
-			//Post basic scene, and optionaly get unique tokens in return
-			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php", jsonScene);
-			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
-			yield return sceneSaveRequest.SendWebRequest();
+			yield return new WaitForEndOfFrame();
 
-			if (sceneSaveRequest.isNetworkError || sceneSaveRequest.isHttpError || !sceneSaveRequest.downloadHandler.text.StartsWith("{"))
+			string guid = Guid.NewGuid().ToString().Split('-')[0];
+
+			var sceneAndMeshes = new SerializableSceneAndMeshes();
+			sceneAndMeshes.SerializableScene = sceneSerializer.SerializeScene(editAllowToggle.isOn);
+			sceneAndMeshes.Meshes = sceneSerializer.GetMeshes();
+
+			var data = BinarySerializer.ObjectToByteArray(sceneAndMeshes);
+
+			UnityWebRequest sceneSaveRequestObject = UnityWebRequest.Put(Config.activeConfiguration.shareUploadURL + guid, data);
+			sceneSaveRequestObject.SendWebRequest();
+
+			while (!sceneSaveRequestObject.isDone)
 			{
-				ChangeState(SharingState.SERVER_PROBLEM);
-				yield break;
-			}
-			else
-			{
-				//Check if we got some tokens for model upload, and download them 1 at a time.
-				ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
-				sceneSerializer.sharedSceneId = serverReturn.sceneId;
-				Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
-
-				if (serverReturn.modelUploadTokens.Length > 0)
-				{
-					progressBar.SetMessage("Objecten opslaan..");
-					progressBar.Percentage(0.3f);
-					var currentModel = 0;
-					while (currentModel < serverReturn.modelUploadTokens.Length)
-					{
-						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-						var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token), false);
-
-						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
-						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
-						yield return modelSaveRequest.SendWebRequest();
-
-						if (modelSaveRequest.isNetworkError || modelSaveRequest.isHttpError)
-						{
-							ChangeState(SharingState.SERVER_PROBLEM);
-							yield break;
-						}
-						else
-						{
-							Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
-							currentModel++;
-							var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
-							progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
-							yield return new WaitForSeconds(0.2f);
-						}
-					}
-				}
-
-				//Make sure the progressbar shows 100% before jumping to the next state
-				progressBar.Percentage(1.0f);
-				yield return new WaitForSeconds(0.1f);
-
-				ChangeState(SharingState.SHOW_URL);
-				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
+				progressBar.Percentage(sceneSaveRequestObject.uploadProgress );					
 				yield return null;
 			}
+
+            if (sceneSaveRequestObject.isNetworkError || sceneSaveRequestObject.isHttpError )
+            {
+                ChangeState(SharingState.SERVER_PROBLEM);
+                yield break;
+            }
+
+            progressBar.Percentage(1.0f);
+			yield return new WaitForSeconds(0.1f);
+
+			ChangeState(SharingState.SHOW_URL);
+			Debug.Log(Config.activeConfiguration.sharingViewUrl + guid);
+			JavascriptMethodCaller.ShowUniqueShareToken(true, guid);
+			yield return null;
+
 		}
 
 		/// <summary>

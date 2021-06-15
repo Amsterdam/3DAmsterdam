@@ -2,6 +2,7 @@
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -63,6 +64,16 @@ namespace Netherlands3D.Sharing
         [SerializeField]
         private GameObject[] objectsRemovedInEditMode;
 
+        internal SerializableMesh[] GetMeshes()
+        {
+            List<SerializableMesh> list = new List<SerializableMesh>();
+            for(int i=0; i< customMeshObjects.Count; i++)
+            {
+                list.Add(SerializeCustomObject(i, "", ""));
+            }
+            return list.ToArray();
+        }
+
         [Tooltip("Remove these objects when we are looking at a shared scene with editing not allowed")]
         [SerializeField]
         private GameObject[] objectsRemovedInViewMode;
@@ -96,26 +107,19 @@ namespace Netherlands3D.Sharing
         }
         #endif
 
-        /// <summary>
-        /// Download a shared scene JSON file from the objectstore using a unique ID.
-        /// </summary>
-        /// <param name="sceneId">The unique sharing ID</param>
-        /// <returns></returns>
         IEnumerator GetSharedScene(string sceneId)
         {
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
-
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
-            getSceneRequest.SetRequestHeader("Content-Type", "application/json");
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.shareDownloadURL + sceneId);
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
+
+            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError )
             {
                 WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
             else
             {
-                Debug.Log("Return: " + getSceneRequest.downloadHandler.text);
-                ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(getSceneRequest.downloadHandler.text), sceneId);
+                var sceneAndMeshes = (SerializableSceneAndMeshes)BinarySerializer.ByteArrayToObject(getSceneRequest.downloadHandler.data);                
+                ParseSerializableScene(sceneAndMeshes, sceneId);
             }
 
             yield return null;
@@ -126,8 +130,11 @@ namespace Netherlands3D.Sharing
         /// </summary>
         /// <param name="scene">The scene data we parsed from JSON</param>
         /// <param name="sceneId">The unique ID of the scene, used for downloading custom objects</param>
-        public void ParseSerializableScene(SerializableScene scene, string sceneId)
+        //public void ParseSerializableScene(SerializableScene scene, string sceneId)
+        public void ParseSerializableScene(SerializableSceneAndMeshes sceneAndMeshes, string sceneId)
         {
+            var scene = sceneAndMeshes.SerializableScene;
+
             HideObjectsInViewMode(scene.allowSceneEdit);
 
             CameraModeChanger.Instance.ActiveCamera.transform.position = new Vector3(scene.camera.position.x, scene.camera.position.y, scene.camera.position.z);
@@ -183,7 +190,14 @@ namespace Netherlands3D.Sharing
                 newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
 
-                StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
+                var serMesh = sceneAndMeshes.Meshes[i];
+
+                //create the custom mesh
+                Mesh parsedMesh = ParseSerializableMesh(serMesh);
+                customObject.AddComponent<MeshFilter>().mesh = parsedMesh;
+                customObject.transform.position = new Vector3(customLayer.position.x, customLayer.position.y, customLayer.position.z);
+                customObject.transform.rotation = new Quaternion(customLayer.rotation.x, customLayer.rotation.y, customLayer.rotation.z, customLayer.rotation.w);
+                customObject.transform.localScale = new Vector3(customLayer.scale.x, customLayer.scale.y, customLayer.scale.z);                
             }
 
             //Create all custom camera points
@@ -247,40 +261,6 @@ namespace Netherlands3D.Sharing
         }
 
         /// <summary>
-        /// Download a custom mesh object, and put it onto a target object.
-        /// </summary>
-        /// <param name="gameObjectTarget">The target GameObject where to mesh will be added to</param>
-        /// <param name="sceneId">The unique scene ID this mesh is part of</param>
-        /// <param name="token">The unqiue token received from the server we can use to download this mesh</param>
-        /// <param name="position">The new position for the target GameObject</param>
-        /// <param name="rotation">The new rotation for the target GameObject</param>
-        /// <param name="scale">The new scale for the target GameObject</param>
-        /// <returns></returns>
-        private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
-        {
-            
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
-            getModelRequest.SetRequestHeader("Content-Type", "application/json");
-            yield return getModelRequest.SendWebRequest();
-            if (getModelRequest.isNetworkError || getModelRequest.isHttpError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
-            }
-            else
-            {
-                Debug.Log(getModelRequest.downloadHandler.text);
-                Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
-                gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
-                gameObjectTarget.transform.position = new Vector3(position.x, position.y, position.z);
-                gameObjectTarget.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
-                gameObjectTarget.transform.localScale = new Vector3(scale.x, scale.y, scale.z);
-            }
-
-            yield return null;
-        }
-
-        /// <summary>
         /// Parse a mesh object we downloaded
         /// </summary>
         /// <param name="serializableMesh">The data object we use to construct our mesh</param>
@@ -291,7 +271,7 @@ namespace Netherlands3D.Sharing
             var subMeshCount = serializableMesh.subMeshes.Length;
             parsedMesh.subMeshCount = subMeshCount;
             parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
-            parsedMesh.SetUVs(0, MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
+           // parsedMesh.SetUVs(0, MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
             parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
             for (int i = 0; i < subMeshCount; i++)
             {
@@ -308,6 +288,8 @@ namespace Netherlands3D.Sharing
         /// <param name="fixedLayerProperties">The data object containing the loaded properties</param>
         private void SetFixedLayerProperties(InterfaceLayer targetLayer, SerializableScene.FixedLayer fixedLayerProperties)
         {
+            if (fixedLayerProperties.materials == null) return;
+
             //Apply all materials
             for (int i = 0; i < fixedLayerProperties.materials.Length; i++)
             {
