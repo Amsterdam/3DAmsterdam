@@ -41,6 +41,7 @@ namespace Netherlands3D.Interface
 		/// <param name="open">Is this tab opened</param>
 		public void OpenTab(bool open = true)
         {
+            Debug.Log("Opened tab", this.gameObject);
             GetComponent<Toggle>().isOn = open;
             TabPanel.Open(open);
             if (open)

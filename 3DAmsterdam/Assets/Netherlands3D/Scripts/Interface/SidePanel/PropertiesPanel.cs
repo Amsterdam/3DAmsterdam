@@ -119,13 +119,21 @@ namespace Netherlands3D.Interface.SidePanel
 				Instance = this;
 			}
 
-			//Start with our main container. Groups may change this target.
-			targetFieldsContainer = generatedFieldsRootContainer;
+            //Open/closed at start
+            if (startingActiveTab)
+            {
+                startingActiveTab.OpenTab(true);
+            }
+            else{
+                movePanelRectTransform.anchoredPosition = Vector3.right * collapsedShift;
+            }
+
+            //Start with our main container. Groups may change this target.
+            targetFieldsContainer = generatedFieldsRootContainer;
 
             //Our disabled thumbnail rendering camera. (We call .Render() via script to trigger a render)
             thumbnailRenderer = Instantiate(thumbnailCameraPrefab);
 
-            startingActiveTab.OpenTab(true);
             transformPanel.gameObject.SetActive(false);
         }
 
