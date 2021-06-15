@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7590023009504579814}
   - component: {fileID: 7590023009504579809}
   - component: {fileID: 2243999760766328421}
+  - component: {fileID: 5943081213541711405}
   m_Layer: 0
   m_Name: FileUploads
   m_TagString: Untagged
@@ -51,6 +52,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -61,6 +63,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  mask: {fileID: 0}
   customObjectPlacer: {fileID: 2243999760766328421}
   maxLinesPerFrame: 10000
 --- !u!114 &2243999760766328421
@@ -78,3 +81,22 @@ MonoBehaviour:
   customObject: {fileID: 0}
   layerType: 1
   targetParent: {fileID: 0}
+--- !u!114 &5943081213541711405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7590023009504579808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65bd83130be6ca74f80998548631c1be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doneLoadingModel:
+    m_PersistentCalls:
+      m_Calls: []
+  loadingObjScreen: {fileID: 0}
+  playback: {fileID: 0}
+  converter: {fileID: 0}
+  vissimScriptObject: {fileID: 0}

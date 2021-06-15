@@ -115,29 +115,37 @@ namespace Netherlands3D.Settings {
             }, profileNames[selectedTemplate]);
 
 			PropertiesPanel.Instance.AddSpacer(20);
-
-            PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
-				settings.postProcessingEffects = toggle;
-				ApplySettings();
-            });
 			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
-            });
-			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
-				settings.realtimeReflections = toggle;
-				ApplySettings();
-            });
+			});
 			PropertiesPanel.Instance.AddLabel("Render resolutie:");
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
-            });
+			});
 			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
 			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
-            }, true);
+			}, true);
+
+			PropertiesPanel.Instance.AddSpacer(20);
+			PropertiesPanel.Instance.AddTitle("Extra");
+			PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+				settings.postProcessingEffects = toggle;
+				ApplySettings();
+            });
+			PropertiesPanel.Instance.AddActionCheckbox("Ambient Occlusion", settings.ambientOcclusion, (toggle) => {
+				settings.ambientOcclusion = toggle;
+				ApplySettings();
+			});
+
+			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
+				settings.realtimeReflections = toggle;
+				ApplySettings();
+            });
+
 
 			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
 				selectedTemplate = 0;
@@ -170,8 +178,10 @@ namespace Netherlands3D.Settings {
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+			renderSettings.ToggleAO(settings.ambientOcclusion);
 
-            SaveSettings();
+
+			SaveSettings();
         }
 
         [ContextMenu("Save application settings")]

@@ -8,13 +8,13 @@ namespace Netherlands3D.AssetGeneration
 {
 	public class AssetBundleExport
 	{
-		public const string assetsFolder = "/3DAmsterdam/GeneratedTileAssets/";	
+		public const string assetsFolder = "/GeneratedTileAssets/";	
 		public const string metaDataSubstring = "-data";
 
 		/// <summary>
 		/// Converts all the data files found in the GeneratedTileAssets folder to AssetBundles
 		/// </summary>
-		[MenuItem("3D Amsterdam/Tools/Export .asset files to AssetBundles")]
+		[MenuItem("Netherlands 3D/Tools/Export .asset files to AssetBundles")]
 		public static void GenerateBuildingsAssetBundles()
 		{
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + assetsFolder);

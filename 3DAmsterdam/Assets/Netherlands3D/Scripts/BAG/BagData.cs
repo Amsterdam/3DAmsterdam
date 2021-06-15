@@ -1,5 +1,7 @@
 ﻿namespace Netherlands3D.BAG
 {
+    public enum BagApyType { Amsterdam, KadasterBagViewer, Kadaster }
+
     [System.Serializable]
     public class BagData
     {
@@ -369,4 +371,58 @@
             public _Links _links;
         }
     }
+
+    [System.Serializable]
+    public class BagDataKadasterViewer
+    {
+        public openbareruimte_model openbareruimte;
+        public adresseerbaarobject_model adresseerbaarobject;
+        public nummeraanduiding_model nummeraanduiding;
+        public pand_model[] panden;
+
+        [System.Serializable]
+        public class openbareruimte_model
+        {
+            public string naam;
+            public string displayString;
+            public string postcode;
+            public string documentnummer;
+        }
+
+        [System.Serializable]
+        public class adresseerbaarobject_model
+        {
+            public string displayString;
+            public string gebruiksdoel;
+            public string oppervlakte;
+            public string documentnummer;
+            public geometry_model geometry;
+        }
+
+        [System.Serializable]
+        public class geometry_model
+        {
+            public string type;
+            public float[] coordinates;
+        }
+
+        [System.Serializable]
+        public class nummeraanduiding_model
+        {
+            public string postcode;
+            public string huisletter;
+            public string huisnummer;
+        }
+
+        [System.Serializable]
+        public class pand_model
+        {
+            public string status;
+            public string documentnummer;
+            public geometry_model geometry;
+            public string bouwjaar;
+        }
+    }
+
+
 }

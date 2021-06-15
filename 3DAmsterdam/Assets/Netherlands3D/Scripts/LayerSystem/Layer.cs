@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ConvertCoordinates;
+using UnityEngine.Events;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -15,23 +16,24 @@ namespace Netherlands3D.LayerSystem
                 return isenabled;
             }
             set
-            {
-                isenabled = value;
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    transform.GetChild(i).gameObject.SetActive(isenabled);
-                }
-                OnDisableTiles(isenabled);
+			{
+				isenabled = value;
+				LayerToggled();
             }
-        }
-        public int tileSize = 1000;
+		}
+
+		public int tileSize = 1000;
         public int layerPriority = 0;
         public List<DataSet> Datasets = new List<DataSet>();
         public Dictionary<Vector2Int, Tile> tiles = new Dictionary<Vector2Int, Tile>();
         public bool pauseLoading = false;
 
-        public abstract void OnDisableTiles(bool isenabled);
         public abstract void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null);
+
+        [HideInInspector]
+        public UnityEvent onLayerEnabled;
+        [HideInInspector]
+        public UnityEvent onLayerDisabled;
 
         public void Start()
         {
@@ -41,7 +43,26 @@ namespace Netherlands3D.LayerSystem
             }
         }
 
-		public virtual void InteruptRunningProcesses(Vector2Int tileKey)
+        private void LayerToggled()
+        {
+            //Invoke enabled/disabled event
+            if (isEnabled)
+            {
+                onLayerEnabled.Invoke();
+            }
+            else
+            {
+                onLayerDisabled.Invoke();
+            }
+
+            //Activate children accordingly
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.SetActive(isenabled);
+            }
+        }
+
+        public virtual void InteruptRunningProcesses(Vector2Int tileKey)
 		{
 			if (!tiles.ContainsKey(tileKey)) return;
 

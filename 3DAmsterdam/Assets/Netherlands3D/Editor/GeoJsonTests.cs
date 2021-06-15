@@ -11,7 +11,6 @@ using UnityEngine.TestTools;
 
 public class GeoJsonTests
 {
-
     string testStringAmsterdam = @"{""type"":""FeatureCollection"",""timeStamp"":""2021-05-10T15:44:28.734787+00:00"",""crs"":{""type"":""name"",""properties"":{""name"":""urn:ogc:def:crs:EPSG::4258""}},
   ""features"": [
     {""type"":""Feature"",""id"":""rioolleidingen.138075"",""geometry_name"":138075,""geometry"":{""type"":""LineString"",""coordinates"":[[4.90698478562009,52.3429529014738],[4.90702608778446,52.3428382055533]]},""properties"":{""vorm"":""Rond"",""objnr"":138075,""ggwcode"":""DX12"",""ggwnaam"":""De Pijp, Rivierenbuurt"",""diameter"":""297"",""wijkcode"":""K54"",""wijknaam"":""Rijnbuurt"",""buurtcode"":""K54b,K54a"",""buurtnaam"":""Rijnbuurt Oost,Kromme Mijdrechtbuurt"",""materiaal"":""Ultra 3"",""bob_eindpunt"":""-1.60"",""leidingnaam"":""131108(M50764 N51136)"",""type_leiding"":""HWA-Riool"",""type_stelsel"":""Regenwaterstelsel"",""bob_beginpunt"":""-1.00"",""stadsdeelcode"":""K"",""stadsdeelnaam"":""Zuid"",""type_fundering"":""Standaard"",""lengte_in_meters"":""13.07"",""bemalingsgebied"":null,""leiding_toelichting"":""Onbekend""}},
@@ -29,6 +28,15 @@ public class GeoJsonTests
     { ""type"": ""Feature"", ""properties"": { ""Dataset"": ""Utrecht"", ""Stelsel"": """", ""stelseltype"": """", ""naam"": ""25008F-250352-1"", ""uri"": ""lei18206-18505-1"", ""type"": ""http:\/\/data.gwsw.nl\/1.4\/totaal\/Drain"", ""beginpunt"": ""25008F"", ""uriB"": ""knp18206"", ""eindpunt"": ""250352"", ""uriE"": ""knp18505"", ""Begindatum"": ""2008-01-01"", ""Einddatum"": """", ""MateriaalLeiding"": ""http:\/\/data.gwsw.nl\/1.4\/totaal\/PVC"", ""VormLeiding"": ""http:\/\/data.gwsw.nl\/1.4\/totaal\/Rond"", ""BreedteLeiding"": ""150"", ""HoogteLeiding"": ""150"", ""LengteLeiding"": ""7.67"", ""BobBeginpuntLeiding"": ""-1.25"", ""BobEindpuntLeiding"": ""-1.25"", ""Wanddikte"": """", ""Verbindingstype"": """", ""Fundering"": """", ""DatumInspectie"": """", ""DatumReiniging"": """", ""WIONThema"": """", ""AantalWoningen"": """", ""Aantal_ieBedrijven"": """", ""Aantal_ieRecreatie"": """", ""AfvoerendOppervlak"": ""0"" }, ""geometry"": { ""type"": ""LineString"", ""coordinates"": [ [ 132652.29, 457103.23 ], [ 132655.03, 457110.39 ] ] } }   
     ]
     }";
+
+    string testStringAmsterdamCablesAndPipelineApi = @"{""type"":""FeatureCollection"",""timeStamp"":""2021-06-07T13:52:45.245595+00:00"",""crs"":{""type"":""name"",""properties"":{""name"":""urn:ogc:def:crs:EPSG::28992""}},
+  ""features"": [
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302136"",""geometry_name"":2302136,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.56,487676.948],[121096.941,487676.732]]},""properties"":{""id"":2302136,""wkt"":""LINESTRING (121096.56 487676.948,121096.941 487676.732)"",""class"":""Kabelbed"",""thema"":""datatransport"",""diam_mm"":null,""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Ziggo B.V."",""buurtcode"":""A02b"",""buurtnaam"":""Leliegracht e.o."",""materiaal"":null}},
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302137"",""geometry_name"":2302137,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.56,487676.948],[121098.082,487679.648]]},""properties"":{""id"":2302137,""wkt"":""LINESTRING (121096.56 487676.948,121098.082 487679.648)"",""class"":""Kabelbed"",""thema"":""datatransport"",""diam_mm"":null,""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Ziggo B.V."",""buurtcode"":""A02b"",""buurtnaam"":""Leliegracht e.o."",""materiaal"":null}},
+    {""type"":""Feature"",""id"":""ligging_lijn_totaal.2302143"",""geometry_name"":2302143,""geometry"":{""type"":""LineString"",""coordinates"":[[121096.591,487223.251],[121101.863,487222.733]]},""properties"":{""id"":2302143,""wkt"":""LINESTRING (121096.591 487223.251,121101.863 487222.733)"",""class"":""OlieGasChemicalienPijpleiding"",""thema"":""gas lage druk"",""diam_mm"":""170"",""diepte"":""-1"",""status"":""functional"",""voltage"":null,""beheerder"":""Liander N.V. Pac 2Ai68G2"",""buurtcode"":""A01f"",""buurtnaam"":""Spuistraat Zuid"",""materiaal"":""grijsGietijzer""}}
+  ],
+""links"":[{""href"":""https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application%2Fjson&BBOX=121000%2C487000%2C122000%2C488000&COUNT=3&STARTINDEX=9523"",""rel"":""next"",""type"":""application/geo+json"",""title"":""next page""},{""href"":""https://api.data.amsterdam.nl/v1/wfs/leidingeninfrastructuur/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ligging_lijn_totaal&OUTPUTFORMAT=application%2Fjson&BBOX=121000%2C487000%2C122000%2C488000&COUNT=3&STARTINDEX=9517"",""rel"":""previous"",""type"":""application/geo+json"",""title"":""previous page""}],""numberReturned"":3,""numberMatched"":117014}";
+
 
     string testStringManholesAmsterdam = @"{""type"":""FeatureCollection"",""timeStamp"":""2021-05-10T14:45:47.524395+00:00"",""crs"":{""type"":""name"",""properties"":{""name"":""urn:ogc:def:crs:EPSG::4258""}},
   ""features"": [
@@ -244,6 +252,40 @@ public class GeoJsonTests
         Assert.AreEqual(geom3[2], 128980.46, 0.1);
         Assert.AreEqual(geom3[3], 456704.58, 0.1);
 
+    }
+
+    [Test]
+    public void TestReadingMixedValuesAmsterdam()
+    {
+        Config.activeConfiguration = new ConfigurationFile();
+        Config.activeConfiguration.sewerageApiType = SewerageApiType.Amsterdam;
+
+        GeoJSON geojson = new GeoJSON(testStringAmsterdamCablesAndPipelineApi);
+        geojson.GotoNextFeature();
+
+        var stringValue = geojson.getPropertyStringValue("id");
+        var floatValueWithNull = geojson.getPropertyFloatValue("diam_mm");
+
+        var floatWrappedInQuotesAsFloat = geojson.getPropertyFloatValue("diepte");
+        var floatWrappedInQuotesAsString = geojson.getPropertyStringValue("diepte");
+
+        Assert.AreEqual("ligging_lijn_totaal.2302136", stringValue);
+        Assert.AreEqual(0, floatValueWithNull);
+
+        Assert.AreEqual(-1, floatWrappedInQuotesAsFloat);
+        Assert.AreEqual("-1", floatWrappedInQuotesAsString);
+    }
+    [Test]
+    public void TestReadingPropertyStringValueUtrecht()
+    {
+        Config.activeConfiguration = new ConfigurationFile();
+        Config.activeConfiguration.sewerageApiType = SewerageApiType.Pdok;
+
+        GeoJSON geojson = new GeoJSON(testStringMultipleSegmentPdok);
+        geojson.GotoNextFeature();
+
+        var stringValue = geojson.getPropertyStringValue("Dataset");
+        Assert.AreEqual("Utrecht", stringValue);
     }
 
     [Test]

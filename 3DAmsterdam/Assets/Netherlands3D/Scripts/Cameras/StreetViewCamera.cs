@@ -100,6 +100,7 @@ namespace Netherlands3D.Cameras
 		void Update()
 		{
 #if !UNITY_WEBGL || UNITY_EDITOR
+			//In WebGL we catch this unlocking on the JS side
 			if(Input.GetKeyDown(KeyCode.Escape) && PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
 			{
 				EnableMenus();
