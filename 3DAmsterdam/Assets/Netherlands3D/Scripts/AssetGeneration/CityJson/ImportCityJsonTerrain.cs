@@ -188,64 +188,80 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Thread thread2 = null;
             //UnityMeshSimplifier.MeshSimplifier meshSimplifier3 = null;
             //Thread thread3 = null;
-
+            int vertcount = 0;
             CombineInstance[] combi = new CombineInstance[12];
             for (int i = 0; i < combi.Length; i++)
             {
                 combi[i].mesh = CreateEmptyMesh();
-                combi[i].mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                //combi[i].mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                vertcount += combi[i].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.voetpad))
             {
                 combi[0].mesh = meshes[terrainType.voetpad]; //
+                vertcount += combi[0].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.fietspad))
             {
                 combi[1].mesh = meshes[terrainType.fietspad]; //
+                vertcount += combi[1].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.parkeervakken))
             {
                 combi[2].mesh = meshes[terrainType.parkeervakken]; //
+                vertcount += combi[2].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.wegen))
             {
                 combi[3].mesh = meshes[terrainType.wegen]; //
+                vertcount += combi[3].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.begroeid))
             {
                 combi[4].mesh = SimplifyMesh(meshes[terrainType.begroeid], 0.05f); //
+                vertcount += combi[4].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.erven))
             {
                 combi[5].mesh = SimplifyMesh(meshes[terrainType.erven], 0.05f); // //
+                vertcount += combi[5].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.onbegroeid))
             {
                 combi[6].mesh = SimplifyMesh(meshes[terrainType.onbegroeid], 0.05f); // //
+                vertcount += combi[6].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.spoorbanen))
             {
                 combi[7].mesh = meshes[terrainType.spoorbanen]; //
+                vertcount += combi[7].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.woonerven))
             {
                 combi[8].mesh = meshes[terrainType.woonerven]; //
+                vertcount += combi[8].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.constructies))
             {
                 combi[9].mesh = meshes[terrainType.constructies];
+                vertcount += combi[9].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.bruggen))
             {
                 combi[10].mesh = meshes[terrainType.bruggen];
+                vertcount += combi[10].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.water))
             {
                 combi[11].mesh = meshes[terrainType.water];
+                vertcount += combi[11].mesh.vertexCount;
             }
 
             Mesh lod1Mesh = new Mesh();
-            lod1Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            if (vertcount > 65500)
+            {
+                lod1Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
             lod1Mesh.CombineMeshes(combi, false, false);
             lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
             //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
@@ -269,19 +285,28 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             AssetDatabase.CreateAsset(lod1Mesh, assetName);
             AssetDatabase.SaveAssets();
 
+            vertcount = 0;
+            for (int i = 0; i < combi.Length; i++)
+            {
+                combi[i].mesh = SimplifyMesh(combi[i].mesh, 0.05f);
+                vertcount += combi[i].mesh.vertexCount;
+            }
+
+            Mesh lod0Mesh = new Mesh();
+            if (vertcount > 65500)
+            {
+                lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
+            lod0Mesh.CombineMeshes(combi, false, false);
+            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
+            AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
+            AssetDatabase.SaveAssets();
+
             for (int i = 0; i < combi.Length; i++)
             {
                 Destroy(combi[i].mesh);
             }
-            //DestroyImmediate(lod1Mesh,true);
-            // create lod0-mesh with reduces trianglecount
 
-            Mesh lod0Mesh = SimplifyMesh(lod1Mesh, 0.05f);
-            lod0Mesh.name = baseMeshNameLod0;
-            AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
-            AssetDatabase.SaveAssets();
-            // DestroyImmediate(lod1Mesh,true);
-            // DestroyImmediate(lod0Mesh, true);
         }
 
         
@@ -334,13 +359,17 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         private Mesh CombineMeshes(Mesh mesh1, Mesh mesh2)
         {
             Mesh newMesh = new Mesh();
-            newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            
             //newMesh.
             List<Vector3> verts = new List<Vector3>(mesh1.vertices);
             verts.AddRange(mesh2.vertices);
             List<Vector2> newUVs = new List<Vector2>(mesh1.uv2);
             newUVs.AddRange(new List<Vector2>(mesh2.uv2));
 
+            if (verts.Count> 65500)
+            {
+                newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
             newMesh.vertices = verts.ToArray();
             newMesh.uv2 = newUVs.ToArray();
             newMesh.subMeshCount = mesh1.subMeshCount;
@@ -535,7 +564,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 return CreateEmptyMesh();
             }
             Mesh mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            if (verts.Count > 65000)
+            {
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
             mesh.vertices = verts.ToArray();
             mesh.triangles = ints.ToArray();
             mesh = WeldVertices(mesh);
@@ -594,7 +626,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 newIndices[i] = vertexMapping[originalVerts[originlints[i]]];
             }
             mesh.Clear();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            if (vertexMapping.Count>65500)
+            {
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            }
+            
             mesh.vertices = new List<Vector3>(vertexMapping.Keys).ToArray();
             mesh.triangles = newIndices;
 
