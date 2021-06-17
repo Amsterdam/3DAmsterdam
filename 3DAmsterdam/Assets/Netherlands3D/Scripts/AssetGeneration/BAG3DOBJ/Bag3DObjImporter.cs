@@ -189,4 +189,10 @@ public class Bag3DObjImporter : MonoBehaviour
 
 		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 	}
+
+	[ContextMenu("Bake this")]
+	private void TestBakeThis()
+	{
+		TileCombineUtility.CombineSource(gameObject, transform.position, renderInViewport, defaultMaterial, true);
+	}
 }
