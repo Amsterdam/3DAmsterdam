@@ -27,7 +27,11 @@ namespace Netherlands3D.AssetGeneration
 
 			//Construct the seperate metadata containing the seperation of the buildings
 			ObjectMappingClass buildingMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
-			
+			buildingMetaData.ids = new List<string>();
+			foreach (var meshFilter in meshFilters)
+			{
+				buildingMetaData.ids.Add(meshFilter.gameObject.name);
+			}
 			var textureSize = ObjectIDMapping.GetTextureSize(buildingMetaData.ids.Count);
 			List<Vector2> allObjectUVs = new List<Vector2>();
 			List<int> allVectorMapIndices = new List<int>();
@@ -40,11 +44,8 @@ namespace Netherlands3D.AssetGeneration
 			string assetMetaDataFileName = unityMeshAssetFolder + sourceGameobject.name + "-data.asset";
 
 			var totalVertexCount = 0;
-			buildingMetaData.ids = new List<string>();
-
 			for (int i = 0; i < combine.Length; i++)
 			{
-				buildingMetaData.ids.Add(meshFilters[i].gameObject.name);
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
 				Mesh buildingMesh = meshFilters[i].sharedMesh;
 				totalVertexCount += buildingMesh.vertexCount;
@@ -74,7 +75,7 @@ namespace Netherlands3D.AssetGeneration
 				newCombinedMesh.name = sourceGameobject.name;
 				newCombinedMesh.CombineMeshes(combine, true);
 				newCombinedMesh.RecalculateNormals();
-				newCombinedMesh.Optimize();
+				//newCombinedMesh.Optimize();
 
 				//And clean up memory
 				for (int i = 0; i < combine.Length; i++)
