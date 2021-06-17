@@ -32,6 +32,8 @@ public class CsvFilePanel : MonoBehaviour
 
     private GameObject LocationMarkersParent;
 
+    private ActionDropDown currentFilterDropdown;
+
     private void Awake()
     {
         ToggleActiveEvent.Subscribe(OnToggleActive);
@@ -187,6 +189,7 @@ public class CsvFilePanel : MonoBehaviour
     {
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
+        //dropdown to select the label of the pointer
         PropertiesPanel.Instance.AddLabel("Label");
         PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
         {
@@ -195,9 +198,7 @@ public class CsvFilePanel : MonoBehaviour
             csvGeoLocation.SetlabelIndex(action);
 
             UpdateLabels();
-
-            //TODO for now we just call Show again to fill the filter dropdown, better update the dropdown directly
-            Show(index);
+            currentFilterDropdown.UpdateOptions(csvGeoLocation.GetFiltersByColumn());
 
         }, csvGeoLocation.LabelColumnName);
 
@@ -205,7 +206,8 @@ public class CsvFilePanel : MonoBehaviour
 
         string[] filters = csvGeoLocation.GetFiltersByColumn();        
 
-        PropertiesPanel.Instance.AddActionDropdown(filters, (action) =>
+        //filter dropdown
+        currentFilterDropdown = PropertiesPanel.Instance.AddActionDropdown(filters, (action) =>
         {
             Debug.Log($"label: {action}");
             foreach (Transform marker in LocationMarkersParent.transform)
