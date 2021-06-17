@@ -7,19 +7,27 @@ using System;
 
 public class CsvGeoLocationUnitTests
 {
+    string csv = @"Omschrijving;RD X;RD Y;Datum aanvraag;Datum oplevering;3d object
+Project 'Herziening rotonde 231';150000;350000;11/8/2021;3/2/2022;projects/423_1
+Bouwplan 'De Nieuwe Stad'; 178000; 312000; 2 / 1 / 2022; 14/6/2023; projects / 423_2
+Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects / 423_3";
 
     [Test]
     public void TestCsvGeoLocationParse()
     {
-        var csv = @"Omschrijving;RD X;RD Y;Datum aanvraag;Datum oplevering;3d object
-Project 'Herziening rotonde 231';150000;350000;11/8/2021;3/2/2022;projects/423_1
-Bouwplan 'De Nieuwe Stad'; 178000; 312000; 2 / 1 / 2022; 14/6/2023; projects / 423_2
-Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects / 423_3";
-        
         var csvgeoloc = new CsvGeoLocation(csv);
-
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
         Assert.AreEqual(2, csvgeoloc.CoordinateColumns.Length );       
+    }
+
+    [Test]
+    public void TestCsvGeoLocationRows()
+    {
+        var csvgeoloc = new CsvGeoLocation(csv);
+        Assert.AreEqual(3, csvgeoloc.Rows.Count);
+
+        var omschrijving1 = csvgeoloc.Rows[0][0];
+        Assert.AreEqual("Project 'Herziening rotonde 231'", omschrijving1);
     }
 
     [Test]
