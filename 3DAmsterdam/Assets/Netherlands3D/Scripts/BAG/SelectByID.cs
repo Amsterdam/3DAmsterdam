@@ -251,14 +251,15 @@ namespace Netherlands3D.LayerSystem
 
             //Get the mesh we selected and check if it has an ID stored in the UV2 slot
             Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-            int vertexIndex = lastRaycastHit.triangleIndex * 3;
-            if (vertexIndex > mesh.uv2.Length)
+            int triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
+            if (triangleVertexIndex > mesh.uv2.Length)
             {
                 Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
 
                 yield break;
             }
 
+            var vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
             var hitUvCoordinate = mesh.uv2[vertexIndex];
             var gameObjectToHighlight = lastRaycastHit.collider.gameObject;
 
@@ -274,8 +275,9 @@ namespace Netherlands3D.LayerSystem
                     Vector3 deeperHitPoint = lastRaycastHit.point + (ray.direction * 0.01f);
                     ray = new Ray(deeperHitPoint, ray.direction);
                     if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
-                    {
-                        vertexIndex = lastRaycastHit.triangleIndex * 3;
+					{
+						triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
+                        vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
                         hitUvCoordinate = mesh.uv2[vertexIndex];
 
                         hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
@@ -285,8 +287,8 @@ namespace Netherlands3D.LayerSystem
                 }
             }
 
-            //Not retrieve the selected BAG ID tied to the selected triangle
-            containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
+            //Now retrieve the selected BAG ID tied to the selected triangle
+            containerLayer.GetIDData(gameObjectToHighlight, vertexIndex, HighlightSelectedID);
         }
 
         IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
