@@ -11,6 +11,11 @@ public class Bag3DObjImporter : MonoBehaviour
 {
 	[SerializeField]
 	private string bag3DSourceFilesFolder = "";
+
+	[Tooltip("A .txt list of bag ID's on new lines, with all IDS that should be skipped")]
+	[SerializeField]
+	private string optionalSkipListPath = "";
+
 	[SerializeField]
 	private string filter = "*.obj";
 
@@ -53,6 +58,8 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private GameObject enableOnFinish;
 
+	private string[] bagIdsToSkip;
+
 	[System.Serializable]
 	public class RemapObjectNames
 	{
@@ -62,7 +69,16 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void Start()
 	{
+		ReadSkipIDs();
 		StartCoroutine(ParseObjFiles());
+	}
+
+	private void ReadSkipIDs()
+	{
+		if (optionalSkipListPath != "" && File.Exists(optionalSkipListPath))
+		{
+			bagIdsToSkip = File.ReadAllLines(optionalSkipListPath);
+		}
 	}
 
 	private IEnumerator ParseObjFiles()
@@ -159,12 +175,21 @@ public class Bag3DObjImporter : MonoBehaviour
 				foreach (MeshRenderer meshRenderer in remainingBuildings)
 				{
 					meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
-					var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
-					if(childCenterPoint.x < tileRD.x+tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
+					if (bagIdsToSkip.Contains(meshRenderer.gameObject.name))
 					{
-						//This child object center falls within this tile. Lets move it in there.
-						meshRenderer.transform.SetParent(newTileContainer.transform, true);
-						childrenInTile++;
+						//In the skiplist? Skip this by removing it
+						Destroy(meshRenderer.gameObject);
+					}
+					else
+					{
+						//Check if this object center falls within the tile we are creating
+						var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
+						if (childCenterPoint.x < tileRD.x + tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
+						{
+							//This child object center falls within this tile. Lets move it in there.
+							meshRenderer.transform.SetParent(newTileContainer.transform, true);
+							childrenInTile++;
+						}
 					}
 				}
 
