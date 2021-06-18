@@ -219,7 +219,7 @@ namespace Netherlands3D.LayerSystem
 			container.name = tileChange.X.ToString() + "-" + tileChange.Y.ToString();
 			container.transform.parent = transform.gameObject.transform;
 			container.layer = container.transform.parent.gameObject.layer;
-			container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X + 500, tileChange.Y + 500));
+			container.transform.position = CoordConvert.RDtoUnity(new Vector2(tileChange.X + (tileSize/2), tileChange.Y + (tileSize/2)));
 			
 			container.SetActive(isEnabled);
 			//Mesh[] meshesInAssetbundle = new Mesh[0];
@@ -234,7 +234,7 @@ namespace Netherlands3D.LayerSystem
 				return null;
 			}
 			mesh = meshesInAssetbundle[0];
-			
+			mesh.RecalculateNormals();
 			int count = mesh.vertexCount;
 
             // creating the UV-s runtime takes a lot of time and causes the garbage-collector to kick in.
