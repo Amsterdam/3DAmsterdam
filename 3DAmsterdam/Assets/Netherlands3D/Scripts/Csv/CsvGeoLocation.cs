@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ConvertCoordinates;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -132,14 +134,30 @@ public class CsvGeoLocation
         LabelColumnIndex = Array.IndexOf( Columns, labelcolumn  );       
     }
 
+    public static double GetCoordinateNumber(string numberString)
+    {
+        double num;
+        bool parsed = ParseNumber (numberString, out num);
+        if (parsed == false) throw new Exception("numberString must be a number");
+        return num;
+    }
+
+    public static bool ParseNumber(string numberString, out double number)
+    {
+        return double.TryParse(numberString.Replace(",", "."), System.Globalization.NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out number);
+    }
+   
 
     public static bool IsCoordinate(string stringdata)
     {
-        double num;
-        bool canConvert = double.TryParse(stringdata, out num);
+        double num;        
+        if (ParseNumber(stringdata, out num) == false) return false;
+        
+        return IsCoordinate(num);                
+    }
 
-        if (canConvert == false) return false;
-
+    public static bool IsCoordinate(double num)
+    {
         //RD ranges
         //range x = 7000 - 280000
         //range y = 289000 - 629000

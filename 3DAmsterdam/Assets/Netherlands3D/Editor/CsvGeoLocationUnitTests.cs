@@ -7,19 +7,27 @@ using System;
 
 public class CsvGeoLocationUnitTests
 {
+    string csv = @"Omschrijving;RD X;RD Y;Datum aanvraag;Datum oplevering;3d object
+Project 'Herziening rotonde 231';150000;350000;11/8/2021;3/2/2022;projects/423_1
+Bouwplan 'De Nieuwe Stad'; 178000; 312000; 2 / 1 / 2022; 14/6/2023; projects / 423_2
+Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects / 423_3";
 
     [Test]
     public void TestCsvGeoLocationParse()
     {
-        var csv = @"Omschrijving;RD X;RD Y;Datum aanvraag;Datum oplevering;3d object
-Project 'Herziening rotonde 231';150000;350000;11/8/2021;3/2/2022;projects/423_1
-Bouwplan 'De Nieuwe Stad'; 178000; 312000; 2 / 1 / 2022; 14/6/2023; projects / 423_2
-Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects / 423_3";
-        
         var csvgeoloc = new CsvGeoLocation(csv);
-
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
         Assert.AreEqual(2, csvgeoloc.CoordinateColumns.Length );       
+    }
+
+    [Test]
+    public void TestCsvGeoLocationRows()
+    {
+        var csvgeoloc = new CsvGeoLocation(csv);
+        Assert.AreEqual(3, csvgeoloc.Rows.Count);
+
+        var omschrijving1 = csvgeoloc.Rows[0][0];
+        Assert.AreEqual("Project 'Herziening rotonde 231'", omschrijving1);
     }
 
     [Test]
@@ -79,16 +87,30 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
     }
 
     [Test]
-    public void TestPanoramaData()
+    public void TestPanoramaDataNoColumns()
     {
-        string csv = @"gps_seconds[s]	panorama_file_name	latitude[deg]	longitude[deg]	altitude_ellipsoidal[m]	roll[deg]	pitch[deg]	heading[deg]
+        string panoramadata = @"gps_seconds[s]	panorama_file_name	latitude[deg]	longitude[deg]	altitude_ellipsoidal[m]	roll[deg]	pitch[deg]	heading[deg]
 1178263175.056717	1178263175_056717_0	52.3516092805462	4.84263355846614	44.4415162112564	-0.955654841566599	0.0973349014609538	87.3409739047135
 1178263176.196691	1178263176_196691_1	52.3516076631198	4.84248741326708	44.4738408364356	-0.725916665867848	-0.031401407848429	88.5896089189283
 1178263177.306679	1178263177_306679_2	52.3516082396404	4.84234135030321	44.5097852116451	-0.708516704927227	-0.108377587284742	90.0325795636947
 1178263178.386648	1178263178_386648_3	52.3516118476512	4.8421957188643	44.5319389142096	-1.065234147629	0.242642421605154	92.0613240058035";
 
-        var panoramas = new CsvGeoLocation(csv);
+        var panoramas = new CsvGeoLocation(panoramadata);
         Assert.AreEqual(CsvGeoLocation.CsvGeoLocationStatus.FailedNoColumns, panoramas.Status);
+    }
+
+    [Test]
+    public void TestPanoramaDataCoordinates()
+    {
+        string panoramadata = @"gps_seconds[s];panorama_file_name;latitude[deg];longitude[deg];altitude_ellipsoidal[m];roll[deg];pitch[deg];heading[deg]
+1178263175.056717;1178263175_056717_0;52.3516092805462;4.84263355846614;44.4415162112564;-0.955654841566599;0.0973349014609538;87.3409739047135
+1178263176.196691;1178263176_196691_1;52.3516076631198;4.84248741326708;44.4738408364356;-0.725916665867848;-0.031401407848429;88.5896089189283
+1178263177.306679;1178263177_306679_2;52.3516082396404;4.84234135030321;44.5097852116451;-0.708516704927227;-0.108377587284742;90.0325795636947
+1178263178.386648;1178263178_386648_3;52.3516118476512;4.8421957188643;44.5319389142096;-1.065234147629;0.242642421605154;92.0613240058035";
+
+        var panoramas = new CsvGeoLocation(panoramadata);
+        Assert.AreEqual(CsvGeoLocation.CsvGeoLocationStatus.Success, panoramas.Status);
+        Assert.AreEqual(panoramas.CoordinateColumns.Length, 2);
 
     }
 
@@ -109,7 +131,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 
     [Test]
     public void TestIsCoordinate()
-    {        
+    {
         //Netherlands bounding box RD
         //sw x/y 7000, 289000
         //ne x/y 280000, 629000
@@ -122,7 +144,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
         //range lat 50.57222 - 53.62702
         //range lon 3.29804 - 7.57893
 
-        bool iscoordinate1 =  CsvGeoLocation.IsCoordinate("title");
+        bool iscoordinate1 = CsvGeoLocation.IsCoordinate("title");
         Assert.AreEqual(false, iscoordinate1, "IsCoordinate title");
 
         bool iscoordinate2 = CsvGeoLocation.IsCoordinate("2343");
@@ -146,6 +168,11 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
         bool iscoordinate8 = CsvGeoLocation.IsCoordinate("450000");
         Assert.AreEqual(true, iscoordinate8, "IsCoordinate 450000");
 
+        bool iscoordinate9 = CsvGeoLocation.IsCoordinate("450000,12342134");
+        Assert.AreEqual(true, iscoordinate9, "IsCoordinate 450000,12342134");
+
+        bool iscoordinate10 = CsvGeoLocation.IsCoordinate("450000.12342134");
+        Assert.AreEqual(true, iscoordinate10, "IsCoordinate 450000.12342134");
 
     }
 

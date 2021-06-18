@@ -475,9 +475,11 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
         }
 
-        public void AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
+        public ActionDropDown AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
         {
-            Instantiate(dropdownPrefab, targetFieldsContainer).SetAction(dropdownOptions, selectOptionAction, selected);
+            var actionDropdown = Instantiate(dropdownPrefab, targetFieldsContainer);
+            actionDropdown.SetAction(dropdownOptions, selectOptionAction, selected);
+            return actionDropdown;
         }
 
         public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
