@@ -427,7 +427,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     return terrainType.woonerven;
                 }
-                return terrainType.woonerven;
+                return terrainType.wegen;
             }
             if (cityObjectType == "LandUse")
             {
