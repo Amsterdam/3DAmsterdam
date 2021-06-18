@@ -130,7 +130,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private string geoJsonSourceFilesFolder = "D:/3DRotterdam/Terrain/cityjson";
-        //private string unityMeshAssetFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
+        //private string unityMeshAssetFolder = "Assets/GeneratedTileAssets/";
 
         [SerializeField]
         Netherlands3D.AssetGeneration.CityJSON.ImportCityJsonTerrain importCityjsonterrainScript;

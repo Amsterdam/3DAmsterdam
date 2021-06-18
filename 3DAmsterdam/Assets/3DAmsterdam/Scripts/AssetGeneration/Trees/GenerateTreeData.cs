@@ -39,7 +39,7 @@ namespace Netherlands3D.AssetGeneration
 			public GameObject prefab;
 		}
 
-		private const string treeTileAssetsFolder = "Assets/3DAmsterdam/GeneratedTileAssets/";
+		private const string treeTileAssetsFolder = "Assets/GeneratedTileAssets/";
 		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;

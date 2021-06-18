@@ -124,7 +124,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //    lod1Mesh.CombineMeshes(combi, false, false);
             //    lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
             //    //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
-            //    AssetDatabase.CreateAsset(lod1Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod1.mesh");
+            //    AssetDatabase.CreateAsset(lod1Mesh, "Assets/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod1.mesh");
             //    //for debug
 
             //    //GetComponent<MeshFilter>().sharedMesh = lod1Mesh;
@@ -175,7 +175,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //    lod0Mesh.CombineMeshes(combi, false, false);
             //    lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
             //    //Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
-            //    AssetDatabase.CreateAsset(lod0Mesh, "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
+            //    AssetDatabase.CreateAsset(lod0Mesh, "Assets/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
 
             //}
         }
@@ -270,8 +270,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //remove spikes
            lod1Mesh.vertices = RemoveSpikes(lod1Mesh).vertices;
             string baseMeshNameLod0 = "terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0";
-            string assetName = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
-            string assetNameLod0 = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
+            string assetName = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
+            string assetNameLod0 = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
             Mesh existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh));
 
 
