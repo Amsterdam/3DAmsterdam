@@ -273,17 +273,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             string assetName = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
             string assetNameLod0 = "Assets/3DAmsterdam/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
             Mesh existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh));
-            if (existingMesh != null)
-            {
-                //combine meshes;
-                lod1Mesh = CombineMeshes(lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
-                AssetDatabase.DeleteAsset(assetName);
-                AssetDatabase.DeleteAsset(assetNameLod0);
-                AssetDatabase.SaveAssets();
-            }
-            lod1Mesh.Optimize();
-            AssetDatabase.CreateAsset(lod1Mesh, assetName);
-            AssetDatabase.SaveAssets();
+
 
             vertcount = 0;
             for (int i = 0; i < combi.Length; i++)
@@ -298,7 +288,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             }
             lod0Mesh.CombineMeshes(combi, false, false);
+            lod0Mesh.vertices = RemoveSpikes(lod0Mesh).vertices;
             lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
+
+            
+            if (existingMesh != null)
+            {
+                //combine meshes;
+                lod1Mesh = CombineMeshes(lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
+                lod0Mesh = CombineMeshes(lod0Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetNameLod0, typeof(Mesh)));
+                AssetDatabase.DeleteAsset(assetName);
+                AssetDatabase.DeleteAsset(assetNameLod0);
+                AssetDatabase.SaveAssets();
+            }
+            lod1Mesh.Optimize();
+            lod0Mesh.Optimize();
+            AssetDatabase.CreateAsset(lod1Mesh, assetName);
             AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
             AssetDatabase.SaveAssets();
 
