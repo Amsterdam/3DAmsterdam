@@ -8,6 +8,8 @@ using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Interface.SidePanel;
+using static Netherlands3D.ObjectInteraction.Transformable;
 
 namespace Netherlands3D.ModelParsing
 {
@@ -23,12 +25,17 @@ namespace Netherlands3D.ModelParsing
 		private UnityEvent doneLoadingModel;
 
 		[SerializeField]
+		public Masking.RuntimeMask mask;
+
+		[SerializeField]
 		private PlaceCustomObject customObjectPlacer;
 
 		private string objModelName = "model";
 
 		[SerializeField]
 		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
+
+		private Transformable transformable;
 
 		private void Start()
 		{
@@ -40,15 +47,22 @@ namespace Netherlands3D.ModelParsing
 		/// For Editor testing only.
 		/// This method loads a obj and a mtl file.
 		/// </summary>
-		[ContextMenu("Load test models")]
-		private void LoadTestModels()
+		[ContextMenu("Open selection dialog")]
+		public void OpenModelViaEditor()
 		{
 			if (!Application.isPlaying) return;
-				StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.obj"),
-					File.ReadAllText(Application.dataPath + "/../TestModels/house.mtl")
-				));
 
+			string pathObj = UnityEditor.EditorUtility.OpenFilePanel("Open OBJ", "", "obj");
+			string pathMtl = pathObj.Replace(".obj", ".mtl");
+			if (!File.Exists(pathMtl))
+			{
+				pathMtl = "";
+			}
+
+			StartCoroutine(ParseOBJFromString(
+					File.ReadAllText(pathObj),
+					File.ReadAllText(pathMtl)
+			));
 		}
 #endif
 		/// <summary>
@@ -72,6 +86,15 @@ namespace Netherlands3D.ModelParsing
 		}
 
 		/// <summary>
+		/// Method to remove loading screen if somehow the import/loading was aborted
+		/// </summary>
+		public void AbortImport()
+		{
+			loadingObjScreen.Hide();
+			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
+		}
+
+		/// <summary>
 		/// Start the parsing of OBJ and MTL strings
 		/// </summary>
 		/// <param name="objText">The OBJ string data</param>
@@ -79,6 +102,14 @@ namespace Netherlands3D.ModelParsing
 		/// <returns></returns>
 		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
 		{
+			//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
+			Debug.Log("OBJ length: " + objText.Length);
+			if (objText.Length < 5)
+			{
+				AbortImport();
+				yield break;
+			}
+
 			//Create a new gameobject that parses OBJ lines one by one
 			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
 			float remainingLinesToParse;
@@ -131,18 +162,34 @@ namespace Netherlands3D.ModelParsing
 				newOBJLoader.Build(defaultLoadedObjectsMaterial);
 
 				//Make interactable
-				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, -1.0f);
+				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 				newOBJLoader.name = objModelName;
-				newOBJLoader.gameObject.AddComponent<Transformable>();
+				
 				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
 				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-				customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+				transformable.madeWithExternalTool = true;
+				transformable.mask = mask;
+
+				if (newOBJLoader.ObjectUsesRDCoordinates==false)
+                {
+					if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+					//transformable.placedTransformable.AddListener(RemapMaterials);
+					customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+				}
+				else
+                {
+					transformable.stickToMouse = false;
+                }
+				
 			}
+			//placementSettings();
 			//hide panel and loading screen after loading
 			loadingObjScreen.Hide();
 
 			//Invoke done event
 			doneLoadingModel.Invoke();
+			
 
 			//Remove this loader from finished object
 			Destroy(newOBJLoader);

@@ -150,6 +150,18 @@ namespace ConvertCoordinates
         {
             return RDtoUnity(coordinaat.x, coordinaat.y, coordinaat.z);
         }
+
+        /// <summary>
+        /// Convert RD-coordinate to Unity-Coordinate
+        /// </summary>
+        /// <param name="coordinaat">Vector3RD RD-Coordinate XYH</param>
+        /// <returns>Vector3 Unity-Coordinate</returns>
+        public static Vector3 RDtoUnity(Vector2RD coordinaat)
+        {
+            return RDtoUnity(coordinaat.x, coordinaat.y, 0);
+        }
+
+
         /// <summary>
         /// Convert RD-coordinate to Unity-coordinate
         /// </summary>
@@ -331,29 +343,14 @@ namespace ConvertCoordinates
         /// <returns>true if coordinate is valid</returns>
         public static bool RDIsValid(Vector3RD coordinaat)
         {
-            bool IsValid = true;
-            double[,] Zonegrens = new double[,] { { 141000, 629000 }, { 100000, 600000 }, { 80000, 500000 }, { -7000, 392000 }, { -7000, 336000 }, { 101000, 336000 }, { 161000, 289000 }, { 219000, 289000 }, { 300000, 451000 }, { 300000, 614000 }, { 259000, 629000 } };
-            double[] hoeken = new double[Zonegrens.GetLength(0)];
-            //calculate angles from coordinate to Zonegrens-points
-            for (int i = 0; i < Zonegrens.GetLength(0); i++)
+            if (coordinaat.x > -7000 && coordinaat.x < 300000)
             {
-                hoeken[i] = Math.Atan((Zonegrens[i, 1] - coordinaat.z) / (Zonegrens[i, 0] - coordinaat.x));
+                if (coordinaat.y > 289000 && coordinaat.y < 629000)
+                {
+                    return true;
+                }
             }
-            double TotalAngle = 0;
-            //add angle-difference between points
-            TotalAngle += hoeken[0] - hoeken[hoeken.Length - 1];
-            for (int i = 1; i < hoeken.Length; i++)
-            {
-                TotalAngle += hoeken[i] - hoeken[i - 1];
-            }
-            //if TotalAngle is zero, coordinate is outside Zonegrens
-            // else Totalangle is 360 degrees (2*pi) and coordinate is inside Zonegrens
-            if (Math.Abs(TotalAngle) < 0.1)
-            {
-                IsValid = false;
-            }
-
-            return IsValid;
+            return false;
         }
         /// <summary>
         /// checks if WGS-coordinate is valid

@@ -15,21 +15,21 @@ namespace Netherlands3D.Utilities
         private const string webGlBuildPrefix = "BuildWebGL_";
         private const string desktopBuildPrefix = "BuildDesktop_";
 
-        [MenuItem("3D Amsterdam/Set data target/Production")]
+        [MenuItem("Netherlands 3D/Set data target/Production")]
         public static void SwitchBranchMaster()
         {
             PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
-        [MenuItem("3D Amsterdam/Set data target/Development")]
+        [MenuItem("Netherlands 3D/Set data target/Development")]
         public static void SwitchBranchDevelop()
         {
             PlayerSettings.bundleVersion = "develop";
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "DEVELOPMENT");
             Debug.Log("Set scripting define symbols to DEVELOPMENT");
         }
-        [MenuItem("3D Amsterdam/Set data target/Specific feature")]
+        [MenuItem("Netherlands 3D/Set data target/Specific feature")]
         public static void SwitchBranchFeature()
         {
             PlayerSettings.bundleVersion = ReadGitHead();
@@ -55,7 +55,7 @@ namespace Netherlands3D.Utilities
             return headName;
         }
 
-        [MenuItem("3D Amsterdam/Build by feature name")]
+        [MenuItem("Netherlands 3D/Build by feature name")]
         public static void BuildWebGL()
         {
             TargetedBuild(BuildTarget.WebGL);

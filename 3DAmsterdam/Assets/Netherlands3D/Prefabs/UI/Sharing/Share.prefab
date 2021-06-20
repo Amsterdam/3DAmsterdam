@@ -1070,6 +1070,7 @@ GameObject:
   - component: {fileID: 2204540070109781081}
   - component: {fileID: 8330157431471038816}
   - component: {fileID: 7290942634790313212}
+  - component: {fileID: 4381295789107300757}
   m_Layer: 5
   m_Name: Share
   m_TagString: Untagged
@@ -1188,6 +1189,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9274b11f9c1f2d4299622a94bf7c327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4381295789107300757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142480002819127958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b92f3afe660160b4a92d34560e244b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuState: 1
+  blockMouseSelectionInteractions: 0
+  blockMouseNavigationInteractions: 0
+  blockKeyboardNavigationInteractions: 0
+  closeWindowButton: {fileID: 8206748659150925539}
 --- !u!1 &9214276340206746549
 GameObject:
   m_ObjectHideFlags: 0

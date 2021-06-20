@@ -17,18 +17,12 @@ namespace Netherlands3D.Interface
 
 		private Bounds exportBounds;
 
-		public GridSelection grid;
+		public GridSelection gridSelection;
 
 		public void WaitForGridBounds()
 		{
 			//Make sure you only subscribe once
-			GridSelection.onGridSelected -= SetBounds;
-			GridSelection.onGridSelected += SetBounds;
-		}
-
-		public void StopWaitingForGridBounds()
-		{
-			GridSelection.onGridSelected -= SetBounds;
+			gridSelection.onGridSelected.AddListener(SetBounds);
 		}
 
 		public void SetBounds(Bounds gridBounds)
@@ -42,7 +36,7 @@ namespace Netherlands3D.Interface
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
 			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
 
-			grid.RenderGridToThumbnail();
+			gridSelection.RenderGridToThumbnail();
 
 			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
@@ -60,7 +54,7 @@ namespace Netherlands3D.Interface
 				exportLayerToggles[2] = action;
 				PlayerPrefs.SetInt("exportLayer2Toggle", Convert.ToInt32(exportLayerToggles[2]));
 			});
-			PropertiesPanel.Instance.AddActionCheckbox("Ondergrond", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
+			PropertiesPanel.Instance.AddActionCheckbox("Rioolnetwerk", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer3Toggle", 1)), (action) =>
 			{
 				exportLayerToggles[3] = action;
 				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));

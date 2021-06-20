@@ -99,10 +99,7 @@ namespace RuntimeHandle
                 gameObject.SetActive(false);
                 return;
             }
-            if (autoScale)
-                transform.localScale =
-                    Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
-            
+                        
             if (previousType != type || previousAxes != axes)
             {
                 Clear();
@@ -149,6 +146,13 @@ namespace RuntimeHandle
             {
                 transform.rotation = Quaternion.identity;
             }
+        }
+
+		private void LateUpdate()
+		{
+            if (autoScale)
+                transform.localScale =
+                    Vector3.one * (Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position) * autoScaleFactor) / 15;
         }
 
 		void HandleOverEffect(HandleBase p_axis)

@@ -4,8 +4,10 @@ using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -14,6 +16,7 @@ namespace Netherlands3D.Interface
     {
         public bool waitingForClick = true;
         private IAction placeAction;
+        private ActionEventClass actionEvent;
 
         private WorldPointFollower worldPointerFollower;
 		public WorldPointFollower WorldPointerFollower { get => worldPointerFollower; private set => worldPointerFollower = value; }
@@ -21,8 +24,12 @@ namespace Netherlands3D.Interface
 
         private Vector3 targetLocation;
 
+        [SerializeField]
+        private Image raycastTarget;
+
         public virtual void Awake()
 		{
+            if (raycastTarget) raycastTarget.raycastTarget = false;
             WorldPointerFollower = GetComponent<WorldPointFollower>(); 
         }
 
@@ -32,10 +39,21 @@ namespace Netherlands3D.Interface
             placeAction = ActionHandler.instance.GetAction(ActionHandler.actions.PlaceOnClick.Place);
             if (waitingForClick)
             {
-                placeAction.SubscribePerformed(Place);
+                actionEvent = placeAction.SubscribePerformed(Place);
                 PlaceUsingPointer();
             }
         }
+
+        public override void Escape()
+        {
+            base.Escape();
+            if (waitingForClick)
+            {
+                placeAction.UnSubscribe(actionEvent);
+                Destroy(this.gameObject);
+            }
+        }
+
 
         public virtual void OnDrag(PointerEventData eventData)
         {
@@ -51,10 +69,12 @@ namespace Netherlands3D.Interface
                 Placed();
             }
         }
-        protected virtual void Placed()
+
+		protected virtual void Placed()
         {
             Debug.Log("Placed object", this.gameObject);
             waitingForClick = false;
+            if(raycastTarget)raycastTarget.raycastTarget = true;
         }
 
         public void PlaceUsingPointer()

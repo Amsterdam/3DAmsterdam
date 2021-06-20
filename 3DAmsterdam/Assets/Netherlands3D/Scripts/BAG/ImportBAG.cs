@@ -38,6 +38,31 @@ namespace Netherlands3D.BAG
         }
 
         /// <summary>
+        /// Returns a building data object
+        /// </summary>
+        /// <param name="bagId">The unique building BAG id</param>
+        /// <param name="callback">The callback action containing the building data object</param>
+        public static IEnumerator GetBuildingDataKadasterViewer(string bagId, Action<BagDataKadasterViewer> callback)
+        {
+            // adds data id and url in one string
+            string url = Config.activeConfiguration.buildingUrl + bagId;
+
+            // send http request
+            var request = UnityWebRequest.Get(url);
+
+            yield return request.SendWebRequest();
+
+            if (request.isNetworkError || request.isHttpError)
+            {
+                WarningDialogs.Instance.ShowNewDialog(requestFailureMessage);
+            }
+            else
+            {
+                callback?.Invoke(JsonUtility.FromJson<BagDataKadasterViewer>(request.downloadHandler.text));
+            }
+        }
+
+        /// <summary>
         /// Returns a list of addresses tied to a building Bag ID
         /// </summary>
         /// <param name="bagId">The building Bag ID</param>

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ConvertCoordinates;
-using System.IO;
+using System.Linq;
 using System.Text;
 using System;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 public static class StringExtensions
 {
@@ -24,6 +25,25 @@ public static class StringExtensions
         sb.Replace("{x}", $"{x}");
         sb.Replace("{y}", $"{y}");
         return sb.ToString();        
+    }
+
+    /// <summary>
+    /// Replace the template properties defined in a dynamic object
+    /// </summary>
+    /// <param name="template">The template string</param>
+    /// <param name="d">dynamic object</param>    
+    /// <returns>The replaced template string</returns>
+    public static string ReplacePlaceholders(this string template, object d)
+    {
+        StringBuilder sb = new StringBuilder(template);
+        object o = d;
+        string[] propertyNames = o.GetType().GetProperties().Select(p => p.Name).ToArray();
+        foreach (var prop in propertyNames)
+        {
+            object val = o.GetType().GetProperty(prop).GetValue(o, null);
+            sb.Replace($"{{{prop}}}", $"{val}");
+        }
+        return sb.ToString();
     }
 
     /// <summary>
@@ -50,5 +70,10 @@ public static class StringExtensions
 		}
 	}
 
+
+    public static string ToInvariant(this double d)
+    {
+        return d.ToString(CultureInfo.InvariantCulture);
+    }
 
 }

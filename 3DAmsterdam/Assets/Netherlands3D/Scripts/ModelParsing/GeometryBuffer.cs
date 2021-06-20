@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Rendering;
+using Netherlands3D.AssetGeneration;
 
 public class GeometryBuffer
 {
@@ -44,10 +45,10 @@ public class GeometryBuffer
 	public GeometryBuffer()
 	{
 		Objects = new List<ObjectData>();
-		var d = new ObjectData();
-		d.Name = "default";
-		Objects.Add(d);
-		currentObjectData = d;
+		var defaultObject = new ObjectData();
+		defaultObject.Name = "default";
+		Objects.Add(defaultObject);
+		currentObjectData = defaultObject;
 
 		Vertices = new List<Vector3>();
 		Uvs = new List<Vector2>();
@@ -56,7 +57,6 @@ public class GeometryBuffer
 
 	public void AddObject(string name)
 	{
-		Debug.Log("Adding new object " + name + ". Current is empty: " + IsEmpty);
 		if (IsEmpty) Objects.Remove(currentObjectData);
 
 		// Object Data
@@ -138,7 +138,7 @@ public class GeometryBuffer
 	// Max Vertices Limit for a given Mesh.
 	public static long MaxVerticesLimit = 4294967296;
 
-	public void PopulateMeshes(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary, Material defaultMaterial)
+	public void PopulateMeshes(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary, Material defaultMaterial, ObjLoad objLoad)
 	{
 		// Check is valid file.
 		if (gameObjects.Length != NumberOfObjects)
@@ -153,7 +153,7 @@ public class GeometryBuffer
 			bool objectHasNormals = (HasNormals && objectData.NormalCount > 0);
 
 			if (objectData.Name != "default") gameObjects[i].name = objectData.Name;
-		
+
 			//Some OBJ's will reuse verts, uvs or normals.
 			//Our faces are in the lead. Lets make copies and rewrite ID's so our 
 			//Unity arrays can all be the same length.
@@ -164,11 +164,11 @@ public class GeometryBuffer
 			for (int j = 0; j < objectData.AllFacesIndices.Count; j++)
 			{
 				allVertices[j] = Vertices[objectData.AllFacesIndices[j].vertexIndex];
-				
-				if(HasUVs)
+
+				if (HasUVs)
 					allUVs[j] = Uvs[objectData.AllFacesIndices[j].vertexUV];
 
-				if(HasNormals)
+				if (HasNormals)
 					allNormals[j] = Normals[objectData.AllFacesIndices[j].vertexNormal];
 
 				//set new unique id's
@@ -178,88 +178,108 @@ public class GeometryBuffer
 				faceIndices.vertexNormal = j;
 			}
 
-			Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
-			mesh.indexFormat = (allVertices.Length > 65536) ? IndexFormat.UInt32 : IndexFormat.UInt32; //Supports 4 billion verts for larger models
-			mesh.vertices = allVertices;
-			if (HasUVs)
-				mesh.SetUVs(0, allUVs);
-			if(HasNormals)
-				mesh.SetNormals(allNormals);
-
-			if (objectData.SubMeshGroups.Count == 1)
+			//If the bounds of this object fall outside the RD bounds, skip making the object
+			if (objLoad.IgnoreObjectsOutsideOfBounds)
 			{
-				SubMeshGroupData firstSubMeshGroup = objectData.SubMeshGroups.Values.First();
-				string matName = firstSubMeshGroup.Name;
-				if (materialDictionary.ContainsKey(matName))
-				{ 
-					gameObjects[i].GetComponent<Renderer>().material = materialDictionary[matName];
-				}
-				else
+				//if one vert of model is within bounds, continue. else skip creating mesh/building
+				if (!TileCombineUtility.IsAnyVertexWithinBounds(allVertices, objLoad.BottomLeftBounds, objLoad.TopRightBounds))
 				{
-					gameObjects[i].GetComponent<Renderer>().material = new Material(defaultMaterial);
-					gameObjects[i].GetComponent<Renderer>().material.name = firstSubMeshGroup.Name;
+					MonoBehaviour.Destroy(gameObjects[i]);
+					gameObjects[i] = null;
+					Debug.Log("Skip object. Outside given bounds.");
+					continue;
 				}
+			}
 
-				var triangles = new int[firstSubMeshGroup.FaceIndices.Count];
-				for (int j = 0; j < triangles.Length; j++)
-				{
-					triangles[j] = firstSubMeshGroup.FaceIndices[j].vertexIndex;
-				}
+			Mesh mesh = CreateMesh(gameObjects, materialDictionary, defaultMaterial, i, objectData, allVertices, allUVs, allNormals);
+			mesh.Optimize();
+			if (!objectHasNormals)
+				mesh.RecalculateNormals();
+		}
+	}
 
-				if(flipTriangleDirection)
-				{
-					mesh.triangles = triangles.Reverse().ToArray();
-				}
-				else
-				{
-					mesh.triangles = triangles;
-				}
+	private Mesh CreateMesh(GameObject[] gameObjects, Dictionary<string, Material> materialDictionary, Material defaultMaterial, int i, ObjectData objectData, Vector3[] allVertices, Vector3[] allUVs, Vector3[] allNormals)
+	{
+		Mesh mesh = gameObjects[i].GetComponent<MeshFilter>().mesh;
+		mesh.indexFormat = (allVertices.Length > 65536) ? IndexFormat.UInt32 : IndexFormat.UInt32; //Supports 4 billion verts for larger models
+		mesh.vertices = allVertices;
+		if (HasUVs)
+			mesh.SetUVs(0, allUVs);
+		if (HasNormals)
+			mesh.SetNormals(allNormals);
+
+		if (objectData.SubMeshGroups.Count == 1)
+		{
+			SubMeshGroupData firstSubMeshGroup = objectData.SubMeshGroups.Values.First();
+			string matName = firstSubMeshGroup.Name;
+			if (materialDictionary.ContainsKey(matName))
+			{
+				gameObjects[i].GetComponent<Renderer>().material = materialDictionary[matName];
 			}
 			else
 			{
-				int subMeshCount = objectData.SubMeshGroups.Count;
-				var materials = new Material[subMeshCount];
-				mesh.subMeshCount = subMeshCount;
-
-				int submeshIndex = 0;
-				Debug.Log("PopulateMeshes group count: " + subMeshCount);
-				foreach (KeyValuePair<string, SubMeshGroupData> subMesh in objectData.SubMeshGroups)
-				{
-					string matName = subMesh.Value.Name;
-					if (materialDictionary.ContainsKey(matName))
-					{
-						materials[submeshIndex] = materialDictionary[matName];
-						Debug.Log("PopulateMeshes mat: " + matName + " set.");
-					}
-					else
-					{
-						materials[submeshIndex] = new Material(defaultMaterial);
-						materials[submeshIndex].name = matName;
-						Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
-					}
-
-					var triangles = new int[subMesh.Value.FaceIndices.Count];
-					for (int v = 0; v < subMesh.Value.FaceIndices.Count; v++)
-					{
-						triangles[v] = subMesh.Value.FaceIndices[v].vertexIndex;
-					}
-
-					if (flipTriangleDirection)
-					{
-						mesh.SetTriangles(triangles.Reverse().ToArray(), submeshIndex);
-					}
-					else
-					{
-						mesh.SetTriangles(triangles, submeshIndex);
-					}
-					submeshIndex++;
-				}
-
-				gameObjects[i].GetComponent<Renderer>().materials = materials;
+				gameObjects[i].GetComponent<Renderer>().material = new Material(defaultMaterial);
+				gameObjects[i].GetComponent<Renderer>().material.name = firstSubMeshGroup.Name;
 			}
 
-			if(!objectHasNormals)
-				mesh.RecalculateNormals();
+			var triangles = new int[firstSubMeshGroup.FaceIndices.Count];
+			for (int j = 0; j < triangles.Length; j++)
+			{
+				triangles[j] = firstSubMeshGroup.FaceIndices[j].vertexIndex;
+			}
+
+			if (flipTriangleDirection)
+			{
+				mesh.triangles = triangles.Reverse().ToArray();
+			}
+			else
+			{
+				mesh.triangles = triangles;
+			}
 		}
+		else
+		{
+			int subMeshCount = objectData.SubMeshGroups.Count;
+			var materials = new Material[subMeshCount];
+			mesh.subMeshCount = subMeshCount;
+
+			int submeshIndex = 0;
+			Debug.Log("PopulateMeshes group count: " + subMeshCount);
+			foreach (KeyValuePair<string, SubMeshGroupData> subMesh in objectData.SubMeshGroups)
+			{
+				string matName = subMesh.Value.Name;
+				if (materialDictionary.ContainsKey(matName))
+				{
+					materials[submeshIndex] = materialDictionary[matName];
+					Debug.Log("PopulateMeshes mat: " + matName + " set.");
+				}
+				else
+				{
+					materials[submeshIndex] = new Material(defaultMaterial);
+					materials[submeshIndex].name = matName;
+					Debug.LogWarning("PopulateMeshes mat: " + matName + " not found.");
+				}
+
+				var triangles = new int[subMesh.Value.FaceIndices.Count];
+				for (int v = 0; v < subMesh.Value.FaceIndices.Count; v++)
+				{
+					triangles[v] = subMesh.Value.FaceIndices[v].vertexIndex;
+				}
+
+				if (flipTriangleDirection)
+				{
+					mesh.SetTriangles(triangles.Reverse().ToArray(), submeshIndex);
+				}
+				else
+				{
+					mesh.SetTriangles(triangles, submeshIndex);
+				}
+				submeshIndex++;
+			}
+
+			gameObjects[i].GetComponent<Renderer>().materials = materials;
+		}
+
+		return mesh;
 	}
 }

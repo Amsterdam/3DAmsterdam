@@ -83,7 +83,7 @@ namespace Netherlands3D.Interface.Minimap
         {
             loadedBottomLayer = false;
 
-            canvas = transform.root.GetComponent<Canvas>();
+            canvas = FindObjectOfType<Canvas>();
 
             tilesDraggableContainer = drag;
             viewBoundsArea = view;

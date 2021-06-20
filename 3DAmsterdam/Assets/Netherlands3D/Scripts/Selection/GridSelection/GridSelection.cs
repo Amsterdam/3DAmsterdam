@@ -9,25 +9,14 @@ using UnityEngine.InputSystem;
 using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
-using Netherlands3D.Traffic;
-using ConvertCoordinates;
-using Netherlands3D.LayerSystem;
+using UnityEngine.Events;
 
 namespace Netherlands3D.Interface
 {
 	public class GridSelection : Interactable
 	{
 		[SerializeField]
-		private Material gridMaterial;
-
-		[SerializeField]
 		private GameObject gridSelectionBlock;
-
-		[SerializeField]
-		private float gridSize = 100.0f; //Meter
-
-		[SerializeField]
-		private float gridPlaneSize = 10000.0f;
 
 		private Vector3 gridBlockPosition;
 		private Vector3Int mouseGridPosition;
@@ -47,9 +36,9 @@ namespace Netherlands3D.Interface
 		private bool freePaint = false;
 		private Vector3Int startGridPosition;
 
-		public delegate void GridSelectedCallback(Bounds bounds);
-
-		public static event GridSelectedCallback onGridSelected;
+		[System.Serializable]
+		public class BoundsEvent : UnityEvent<Bounds> { };
+		public BoundsEvent onGridSelected;
 
 		private void Awake()
 		{
@@ -70,6 +59,23 @@ namespace Netherlands3D.Interface
 			}
 
 			voxels = new Dictionary<Vector3Int, GameObject>();
+		}
+
+		/// <summary>
+		/// Fresh start for the grid selection tool with optional material override (to have a unique block color)
+		/// </summary>
+		/// <param name="toolMaterial">Optional material override for the selection blocks</param>
+		public void StartSelection( Material toolMaterial)
+		{
+			if(toolMaterial)
+			{
+				SetMainMaterial(toolMaterial);
+			}
+
+			onGridSelected.RemoveAllListeners();
+			gameObject.SetActive(true);
+			//Fresh start, clear a previous selection block visual
+			if (scaleBlock) Destroy(scaleBlock);
 		}
 
 		void Start()
@@ -128,13 +134,28 @@ namespace Netherlands3D.Interface
 			}
 		}
 
+		private void SetMainMaterial(Material material)
+		{
+			gridSelectionBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
+			if(scaleBlock)
+				scaleBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
+		}
+
 		private void OnEnable()
 		{
+			VisualGrid.Instance.Show();
 			TakeInteractionPriority();
 		}
 		private void OnDisable()
 		{
+			VisualGrid.Instance.Hide();
 			StopInteraction();
+		}
+
+		public override void Escape()
+		{
+			base.Escape();
+			gameObject.SetActive(false);
 		}
 
 		private void Update()
@@ -200,29 +221,29 @@ namespace Netherlands3D.Interface
 				scaleBlock.transform.position = startGridPosition;
 				scaleBlock.transform.Translate(xDifference / 2.0f, 0, zDifference / 2.0f);
 				scaleBlock.transform.localScale = new Vector3(
-						(mouseGridPosition.x - startGridPosition.x) + ((xDifference < 0 ) ? -gridSize : gridSize),
-						gridSize,
-						(mouseGridPosition.z - startGridPosition.z) + ((zDifference < 0) ? -gridSize : gridSize)
+						(mouseGridPosition.x - startGridPosition.x) + ((xDifference < 0 ) ? -VisualGrid.Instance.CellSize : VisualGrid.Instance.CellSize),
+						VisualGrid.Instance.CellSize,
+						(mouseGridPosition.z - startGridPosition.z) + ((zDifference < 0) ? -VisualGrid.Instance.CellSize : VisualGrid.Instance.CellSize)
 				);
 			}
 			else{
 				//Just make sure it is default size
-				scaleBlock.transform.localScale = Vector3.one * gridSize;
+				scaleBlock.transform.localScale = Vector3.one * VisualGrid.Instance.CellSize;
 			}
 		}
 
 		private Vector3Int GetGridPosition(Vector3 samplePosition)
 		{
-			samplePosition.x += (gridSize * 0.5f);
-			samplePosition.z += (gridSize * 0.5f);
+			samplePosition.x += (VisualGrid.Instance.CellSize * 0.5f);
+			samplePosition.z += (VisualGrid.Instance.CellSize * 0.5f);
 
-			samplePosition.x = (Mathf.Round(samplePosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
-			samplePosition.z = (Mathf.Round(samplePosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
+			samplePosition.x = (Mathf.Round(samplePosition.x / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
+			samplePosition.z = (Mathf.Round(samplePosition.z / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
 
 			Vector3Int roundedPosition = new Vector3Int
 			{
 				x = Mathf.RoundToInt(samplePosition.x),
-				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (gridSize * 0.5f)),
+				y = Mathf.RoundToInt(Config.activeConfiguration.zeroGroundLevelY + (VisualGrid.Instance.CellSize * 0.5f)),
 				z = Mathf.RoundToInt(samplePosition.z)
 			};
 
@@ -231,23 +252,22 @@ namespace Netherlands3D.Interface
 
 		private void SetGridSize()
 		{
-			gridMaterial.SetTextureScale("_MainTex", Vector2.one * (gridPlaneSize / (gridSize * 0.1f)));
-			gridSelectionBlock.transform.localScale = new Vector3(gridSize, gridSize, gridSize);
+			gridSelectionBlock.transform.localScale = new Vector3(VisualGrid.Instance.CellSize, VisualGrid.Instance.CellSize, VisualGrid.Instance.CellSize);
 		}
 
 		private void MoveSelectionBlock()
 		{
 			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
 			//Offset to make up for grid object origin (centered)
-			gridBlockPosition.x += (gridSize * 0.5f);
-			gridBlockPosition.z += (gridSize * 0.5f);
+			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
+			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);
 
 			//Snap block to grid
-			gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / gridSize) * gridSize) - (gridSize * 0.5f);
-			gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / gridSize) * gridSize) - (gridSize * 0.5f);
+			gridBlockPosition.x = (Mathf.Round(gridBlockPosition.x / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
+			gridBlockPosition.z = (Mathf.Round(gridBlockPosition.z / VisualGrid.Instance.CellSize) * VisualGrid.Instance.CellSize) - (VisualGrid.Instance.CellSize * 0.5f);
 
 			gridSelectionBlock.transform.position = gridBlockPosition;
-			gridSelectionBlock.transform.Translate(Vector3.up * (gridSize * 0.5f));
+			gridSelectionBlock.transform.Translate(Vector3.up * (VisualGrid.Instance.CellSize * 0.5f));
 		}
 
 		public void RenderGridToThumbnail()
@@ -268,13 +288,12 @@ namespace Netherlands3D.Interface
 
 		private void FinishSelection()
 		{
-			onGridSelected?.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			if (scaleBlock)
+			{
+				var bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
+				Debug.Log("bbox="+(bounds.min.x + Config.activeConfiguration.RelativeCenterRD.x)+"," + (bounds.min.z + Config.activeConfiguration.RelativeCenterRD.y) + "," + (bounds.max.x + Config.activeConfiguration.RelativeCenterRD.x) + ","+(bounds.max.z + Config.activeConfiguration.RelativeCenterRD.y));
+				onGridSelected.Invoke(scaleBlock.GetComponent<MeshRenderer>().bounds);
+			}
 		}
-
-		public void OnValidate()
-		{
-			SetGridSize();
-		}
-
 	}
 }

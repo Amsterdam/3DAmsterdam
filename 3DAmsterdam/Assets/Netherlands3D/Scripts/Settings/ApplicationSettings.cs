@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Interface;
+﻿using Netherlands3D.Events;
+using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
@@ -79,6 +80,13 @@ namespace Netherlands3D.Settings {
 				settings.drawFPS = toggle;
 				ApplySettings();
             });
+
+			PropertiesPanel.Instance.AddActionCheckbox("Toon Experimentele functies", settings.showExperimentelFeatures, (toggle) => {
+				settings.showExperimentelFeatures = toggle;
+				ApplySettings();
+			});
+
+
 			PropertiesPanel.Instance.AddLabel("Interface schaal");
 			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
@@ -107,29 +115,37 @@ namespace Netherlands3D.Settings {
             }, profileNames[selectedTemplate]);
 
 			PropertiesPanel.Instance.AddSpacer(20);
-
-            PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
-				settings.postProcessingEffects = toggle;
-				ApplySettings();
-            });
 			PropertiesPanel.Instance.AddActionCheckbox("Antialiasing", settings.antiAliasing, (toggle) => {
 				settings.antiAliasing = toggle;
 				ApplySettings();
-            });
-			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
-				settings.realtimeReflections = toggle;
-				ApplySettings();
-            });
+			});
 			PropertiesPanel.Instance.AddLabel("Render resolutie:");
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
-            });
+			});
 			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
 			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
-            }, true);
+			}, true);
+
+			PropertiesPanel.Instance.AddSpacer(20);
+			PropertiesPanel.Instance.AddTitle("Extra");
+			PropertiesPanel.Instance.AddActionCheckbox("Effecten", settings.postProcessingEffects, (toggle) => {
+				settings.postProcessingEffects = toggle;
+				ApplySettings();
+            });
+			PropertiesPanel.Instance.AddActionCheckbox("Ambient Occlusion", settings.ambientOcclusion, (toggle) => {
+				settings.ambientOcclusion = toggle;
+				ApplySettings();
+			});
+
+			PropertiesPanel.Instance.AddActionCheckbox("Live reflecties", settings.realtimeReflections, (toggle) => {
+				settings.realtimeReflections = toggle;
+				ApplySettings();
+            });
+
 
 			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
 				selectedTemplate = 0;
@@ -155,13 +171,17 @@ namespace Netherlands3D.Settings {
 				minimap.gameObject.SetActive(settings.drawMap);
 			}
 
-            canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
+
+			canvasSettings.ChangeCanvasScale(settings.canvasDPI);
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);
             renderSettings.ToggleAA(settings.antiAliasing);
+			renderSettings.ToggleAO(settings.ambientOcclusion);
 
-            SaveSettings();
+
+			SaveSettings();
         }
 
         [ContextMenu("Save application settings")]

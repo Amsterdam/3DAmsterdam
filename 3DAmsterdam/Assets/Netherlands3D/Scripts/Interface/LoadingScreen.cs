@@ -18,6 +18,7 @@ namespace Netherlands3D.Interface
 
 		public void ShowMessage(string text)
 		{
+			this.transform.SetAsLastSibling(); //Always on top
 			gameObject.SetActive(true);
 			textMessage.text = text;
 		}

@@ -1,4 +1,6 @@
-﻿using ConvertCoordinates;
+﻿using Amsterdam3D.Sewerage;
+using ConvertCoordinates;
+using Netherlands3D.BAG;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,9 +18,10 @@ namespace Netherlands3D
             QuadTrees //Used by Microsoft
         }
 
-        [Header("Coordinates")]
-
+        [Header("Bounding Box coordinates")]
         public Vector2RD RelativeCenterRD;
+        public Vector2RD BottomLeftRD;
+        public Vector2RD TopRightRD;
 
         public float zeroGroundLevelY = 43.0f;
 
@@ -45,10 +48,12 @@ namespace Netherlands3D
         public string LookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
 
         [Header("Sewerage Api URLs")]
+        public SewerageApiType sewerageApiType;
         public string sewerPipesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=";
         public string sewerManholesWfsUrl = "https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=";
 
         [Header("Bag Api URLs")]
+        public BagApyType BagApiType;
         public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
         public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=";
         public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";

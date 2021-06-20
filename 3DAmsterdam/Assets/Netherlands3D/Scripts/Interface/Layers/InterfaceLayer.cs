@@ -26,6 +26,9 @@ namespace Netherlands3D.Interface.Layers
 		private GameObject linkedObject;
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
+		[SerializeField]
+		private GameObject customOptions;
+
 		public Material opaqueShaderSourceOverride;
 		public Material transparentShaderSourceOverride;
 
@@ -127,6 +130,10 @@ namespace Netherlands3D.Interface.Layers
 		{
 			LinkedObject = newLinkedObject;
 
+			//Add script that keeps a two way connection to this layer
+			AddTwoWayConnectionToLinkedObject();
+
+			//linkedObject.Add
 			switch (layerType)
 			{
 				case LayerType.BASICSHAPE:
@@ -141,6 +148,11 @@ namespace Netherlands3D.Interface.Layers
 
 			UpdateLayerPrimaryColor();
 			GetResetColorValues();
+		}
+
+		private void AddTwoWayConnectionToLinkedObject()
+		{
+			LinkedObject.AddComponent<InterfaceLayerLinkedObject>().InterfaceLayer = this;
 		}
 
 		/// <summary>
@@ -169,7 +181,7 @@ namespace Netherlands3D.Interface.Layers
 			{
 				foreach (Material sharedMaterial in renderer.sharedMaterials)
 				{
-					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial))
+					if (!uniqueLinkedObjectMaterials.Contains(sharedMaterial) && !sharedMaterial.name.Contains("Outline"))
 					{
 						uniqueLinkedObjectMaterials.Add(sharedMaterial);
 					}
@@ -190,21 +202,23 @@ namespace Netherlands3D.Interface.Layers
 		{
 			if (layerType == LayerType.STATIC)
 			{
-				if (LinkedObject.GetComponent<LayerSystem.Layer>() == null)
+				var staticLayer = LinkedObject.GetComponent<Layer>();
+				if (staticLayer == null)
 				{
 					LinkedObject.SetActive(isOn);
 				}
 				else
 				{
-					LinkedObject.GetComponent<LayerSystem.Layer>().isEnabled = isOn;
+					//Static layer components better use their method to enable/disable, because maybe only the children should be disabled/reenabled
+					staticLayer.isEnabled = isOn;
 				}
-
-
 			}
 			else
 			{
 				LinkedObject.SetActive(isOn);
 			}
+
+			toggleActiveLayer.SetIsOnWithoutNotify(isOn);
 		}
 
 		/// <summary>
@@ -213,31 +227,53 @@ namespace Netherlands3D.Interface.Layers
 		public void ToggleLayerOpened()
 		{
 			expanded = !expanded;
+
+			if(customOptions)
+			{
+				customOptions.SetActive(expanded);
+				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
+			}
+
+			ExpandLayerOptions(expanded);
+
 			if(expanded)
 			{
-				parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
+				//In case of own models,make sure to always grab the latest materials
+				if (layerType == LayerType.OBJMODEL)
+				{
+					GetUniqueNestedMaterials();
+					GetResetColorValues();
+					UpdateLayerPrimaryColor();
+				}
+
+				//If we do not use any custom options for this layer, use the default layer visuals panel
+				if(!customOptions)
+					parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
 			}
 			else{
 				parentInterfaceLayers.LayerVisuals.Close();
 			}
-			Expand(expanded);
 		}
 
 		/// <summary>
 		/// Should these layer options be expanded
 		/// </summary>
-		/// <param name="openChevron">Expanded or closed</param>
-		public void Expand(bool openChevron = true)
+		/// <param name="expandLayer">Expanded or closed</param>
+		public void ExpandLayerOptions(bool expandLayer = true)
 		{
-			expanded = openChevron;
-			expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
+			expanded = expandLayer;
+			if (!expandLayer && customOptions) customOptions.SetActive(false);
+
+			if (expandIcon)
+				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
+
 			if (expanded && autoCloseNeighbourLayers)
 			{
 				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
 				foreach(var layer in neighbourLayers)
 				{
 					if (layer != this)
-						layer.Expand(false);
+						layer.ExpandLayerOptions(false);
 				}
 			}
 		}

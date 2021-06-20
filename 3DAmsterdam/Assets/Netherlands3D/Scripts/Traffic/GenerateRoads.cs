@@ -29,6 +29,7 @@ namespace Netherlands3D.Traffic
         private Vector3WGS topRightWGS;
 
         public GridSelection grid;
+        public GameObject stopButton;
         private void Awake()
         {
             if (Instance == null)
@@ -40,20 +41,30 @@ namespace Netherlands3D.Traffic
         public void WaitForGridBounds()
         {
             //Make sure you only subscribe once
-            GridSelection.onGridSelected -= ShowTraffic;
-            GridSelection.onGridSelected += ShowTraffic;
+            grid.onGridSelected.RemoveListener(ShowTraffic);
+            grid.onGridSelected.AddListener(ShowTraffic);
         }
 
         public void StopWaitingForGridBounds()
         {
-            GridSelection.onGridSelected -= ShowTraffic;
+            grid.onGridSelected.RemoveListener(ShowTraffic);
         }
 
         public void ShowTraffic(Bounds bounds)
         {
             bottomLeftWGS = CoordConvert.UnitytoWGS84(bounds.min);
             topRightWGS = CoordConvert.UnitytoWGS84(bounds.max);
-            DisplayUI();
+            StartSimulation();
+        }
+
+        public void StartSimulation()
+        {
+            gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
+            grid.gameObject.SetActive(false);
+            stopButton.SetActive(true);
+            allLoadedRoads.Clear();
+            gameObject.GetComponent<TrafficSimulator>().StartSimulation(true);
+            StartCoroutine(GetRoadsJson());
         }
 
         private void Update()
@@ -66,35 +77,6 @@ namespace Netherlands3D.Traffic
                     shuffledRoadsList = GenerateRoads.Instance.allLoadedRoads.OrderBy(x => Random.value).ToList();
                 }
             }
-        }
-
-        private void DisplayUI()
-        {
-            PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
-            PropertiesPanel.Instance.AddActionButtonBig("Verkeer weergeven", (action) =>
-            { 
-                gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
-                grid.gameObject.SetActive(false);
-                allLoadedRoads.Clear();
-                gameObject.GetComponent<TrafficSimulator>().StartSimulation(true);
-                StartCoroutine(GetRoadsJson());
-            });
-
-            PropertiesPanel.Instance.AddActionButtonBig("Verkeer verbergen", (action) =>
-            {
-                GridSelection.onGridSelected -= ShowTraffic;
-                grid.gameObject.SetActive(false);
-                allLoadedRoads.Clear();
-                gameObject.GetComponent<TrafficSimulator>().StartSimulation(false);
-            });
-
-            PropertiesPanel.Instance.AddActionButtonBig("Kies een ander gebied", (action) =>
-            {
-                grid.gameObject.SetActive(true);
-                //Make sure you only subscribe once
-                GridSelection.onGridSelected -= ShowTraffic;
-                GridSelection.onGridSelected += ShowTraffic;
-            });
         }
 
         /// <summary>
@@ -113,7 +95,7 @@ namespace Netherlands3D.Traffic
             {
                 yield return request.SendWebRequest();
 
-                if (request.isDone && !request.isHttpError)
+                if (request.isDone && request.result != UnityWebRequest.Result.ProtocolError)
                 {
                     // catches the data
                     StartRoadGeneration(request.downloadHandler.text);
