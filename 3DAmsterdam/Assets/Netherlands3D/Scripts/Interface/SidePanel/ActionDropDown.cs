@@ -16,9 +16,8 @@ namespace Netherlands3D.Interface.SidePanel
 			optionAction = selectOptionAction;
 
 			dropdown.ClearOptions();
-			var options = new List<Dropdown.OptionData>();
-			foreach (var option in dropdownOptions)
-				dropdown.options.Add(new Dropdown.OptionData() { text = option });
+
+			UpdateOptions(dropdownOptions);
 
 			if (selected != "")
 				dropdown.value = Array.IndexOf(dropdownOptions,selected);
@@ -28,6 +27,16 @@ namespace Netherlands3D.Interface.SidePanel
 				optionAction.Invoke(dropdown.options[dropdown.value].text);
 			});
 		}
+
+		public void UpdateOptions(string[] dropdownOptions)
+		{
+			dropdown.value = 0;
+			dropdown.options.Clear();
+			foreach (var option in dropdownOptions)
+				dropdown.options.Add(new Dropdown.OptionData() { text = option });
+			
+		}
+
 
 		private void OnDestroy()
 		{
