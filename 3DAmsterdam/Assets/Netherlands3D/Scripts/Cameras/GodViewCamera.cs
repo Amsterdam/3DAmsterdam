@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
+using Netherlands3D.Settings;
 
 namespace Netherlands3D.Cameras
 {
@@ -453,8 +454,8 @@ namespace Netherlands3D.Cameras
 			var previousPosition = cameraComponent.transform.position;
 			var previousRotation = cameraComponent.transform.rotation;
 
-			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed);
-			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed);
+			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
 
 			if (cameraComponent.transform.position.y < minUndergroundY)
 			{

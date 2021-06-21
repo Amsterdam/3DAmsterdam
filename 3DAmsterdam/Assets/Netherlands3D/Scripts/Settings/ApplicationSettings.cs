@@ -13,7 +13,7 @@ namespace Netherlands3D.Settings {
         [SerializeField]
         private bool automaticOptimalSettings = true;
 
-        public ApplicationSettingsProfile settings;
+        public static ApplicationSettingsProfile settings;
 
         [SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
@@ -36,12 +36,14 @@ namespace Netherlands3D.Settings {
         [SerializeField]
         private GameObject stats;
 
-        void Start()
+		public static ApplicationSettings Instance;
+
+		void Start()
 		{
 			canvasSettings = GetComponent<CanvasSettings>();
 			renderSettings = GetComponent<Rendering.RenderSettings>();
 
-			LoadTemplate(settings);
+			LoadTemplate(settingsProfilesTemplates[selectedTemplate]);
 
 			//Load previous or auto detect optimal settings
 			if (PlayerPrefs.HasKey(playerPrefKey))
@@ -91,9 +93,6 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
 				ApplySettings();
-            });
-			PropertiesPanel.Instance.AddActionButtonBig("Herstel alle kleuren", (action) => {
-				interfaceLayers.ResetAllLayerMaterialColors();
             });
 
 			//Graphic options
@@ -146,8 +145,20 @@ namespace Netherlands3D.Settings {
 				ApplySettings();
             });
 
+			PropertiesPanel.Instance.AddTitle("Invoer");
+			PropertiesPanel.Instance.AddLabel("Gevoeligheid camera draaien:");
+			PropertiesPanel.Instance.AddActionSlider("Langzaam", "Snel", 0.1f, 2.0f, settings.rotateSensitivity, (value) => {
+				settings.rotateSensitivity = value;
+				ApplySettings();
+			}, false);
 
-			PropertiesPanel.Instance.AddActionButtonBig("Herstel instellingen", (action) => {
+			PropertiesPanel.Instance.AddSeperatorLine();
+			PropertiesPanel.Instance.AddSpacer(20);
+
+			PropertiesPanel.Instance.AddActionButtonText("Herstel alle kleuren", (action) => {
+				interfaceLayers.ResetAllLayerMaterialColors();
+			});
+			PropertiesPanel.Instance.AddActionButtonText("Herstel alle instellingen", (action) => {
 				selectedTemplate = 0;
 				settings = Instantiate(settingsProfilesTemplates[selectedTemplate]);
 				ApplySettings();
