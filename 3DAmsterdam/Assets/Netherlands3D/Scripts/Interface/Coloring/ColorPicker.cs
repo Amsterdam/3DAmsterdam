@@ -64,11 +64,8 @@ namespace Netherlands3D.Interface.Coloring
 		}
 
 		public void SetColorIntensity(float intensityValue) {
-			if (!ignoreChanges)
-			{
-				intensity = intensityValue;
-				PickColorFromPalette();
-			}
+			intensity = intensityValue;
+			PickColorFromPalette();
 		}
 
 		private void MovePointer()
@@ -145,9 +142,7 @@ namespace Netherlands3D.Interface.Coloring
 			float xOffset = Mathf.Cos(angle) * colorRadius; //offset from the midpoint of the circle
 			float yOffset = Mathf.Sin(angle) * colorRadius;
 
-			ignoreChanges = true;
-			intensitySlider.value = value;
-			ignoreChanges = false;
+			intensitySlider.SetValueWithoutNotify(value);
 
 			Vector3 anchorTarget = new Vector3();
 			anchorTarget.x = xOffset;
