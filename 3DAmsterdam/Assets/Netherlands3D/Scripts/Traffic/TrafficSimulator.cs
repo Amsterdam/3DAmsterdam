@@ -8,6 +8,7 @@ namespace Netherlands3D.Traffic
     public class TrafficSimulator : MonoBehaviour
     {
         public List<Car> allCars = new List<Car>();
+        public Dictionary<Color32, int> carColors;
         public GameObject carPrefab;
         public static TrafficSimulator Instance = null;
         private int frames;
@@ -23,11 +24,32 @@ namespace Netherlands3D.Traffic
 
         [SerializeField]
         private AssetbundleMeshLayer terrainLayer;
+
+        public int totalWeight;
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
+            }
+
+            // Dictionary created based on the color distribution of cars within the Netherlands
+            // The number is based on how common the car is out of 100
+            carColors = new Dictionary<Color32, int>();
+            carColors.Add(new Color32(145, 145, 145, 255),34); //gray
+            carColors.Add(new Color32(30, 30, 30, 255),24); //black
+            carColors.Add(new Color32(57, 71, 245, 255),14); //blue
+            carColors.Add(new Color32(220, 220, 220, 255),13); //white
+            carColors.Add(new Color32(200, 10, 10, 255),7); //red
+            carColors.Add(new Color32(10, 160, 10, 255),3); //green
+            carColors.Add(new Color32(100, 35, 15, 255),2); //brown
+            carColors.Add(new Color32(244, 226, 198, 255),1); //beige
+            carColors.Add(new Color32(255, 223, 0, 255),1); //yellow
+            carColors.Add(new Color32(255, 94, 19, 255),1); //orange
+
+            foreach (KeyValuePair<Color32,int> carColor in carColors)
+            {
+                totalWeight += carColor.Value;
             }
         }
 

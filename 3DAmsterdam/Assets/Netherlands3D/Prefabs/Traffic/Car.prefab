@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 100422141189343710}
   - component: {fileID: 100422141189343706}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Car
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,11 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentRoad: {fileID: 0}
+  nextRoad: {fileID: 0}
+  currentRoadIndex: 0
   speed: 20
   cars:
   - {fileID: 1122418637806678227}
   - {fileID: 8862572979208252712}
   debugCar: 0
+  needToStop: 0
 --- !u!1001 &7654141471592644300
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -152,8 +155,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 782032297653149876, guid: a8e639404a11e9a4ca94dc085a928a37,
         type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 782032297653149876, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2340105192963461859, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374286676602815393, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392121235727075276, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803647602314776875, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3833444497262935709, guid: a8e639404a11e9a4ca94dc085a928a37,
         type: 3}
@@ -209,6 +237,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305903282403093783, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5404760956341584524, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951744781956918331, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645234717214030823, guid: a8e639404a11e9a4ca94dc085a928a37,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8e639404a11e9a4ca94dc085a928a37, type: 3}

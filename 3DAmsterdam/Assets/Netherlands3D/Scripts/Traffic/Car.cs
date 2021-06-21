@@ -49,8 +49,8 @@ namespace Netherlands3D.Traffic
             {
                 car.SetActive(false);
             }
-            // Chooses a random car out of all the car objects.
 
+            // Chooses a random car out of all the car objects.
             carType = cars[UnityEngine.Random.Range(0, cars.Length)];
             vehicleProperties = carType.GetComponent<VehicleProperties>();
             if (carType.name == "BasicCar")
@@ -63,49 +63,30 @@ namespace Netherlands3D.Traffic
 
         private void ApplySettings(GameObject car)
         {
-            float colorPercentage = UnityEngine.Random.Range(0.0f, 1.0f);
+            int colorPercentage = UnityEngine.Random.Range(0, TrafficSimulator.Instance.totalWeight);
             car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
         }
 
+        /// <summary>
+        /// Checks the random number against each rarity of car colors
+        /// </summary>
+        /// <param name="colorPercentage"></param>
+        /// <returns></returns>
         private Color32 GenerateColor(float colorPercentage)
         {
-            if(colorPercentage > 0.66f)
+            Color32 defaultColor = Color.gray;
+            foreach (KeyValuePair<Color32,int> carColor in TrafficSimulator.Instance.carColors)
             {
-                return new Color32(145, 145, 145, 255); //gray 34%
+                if(colorPercentage < carColor.Value)
+                {
+                    return carColor.Key;
+                }
+                else
+                {
+                    colorPercentage -= carColor.Value;
+                }
             }
-            if(colorPercentage <= 0.66f && colorPercentage > 0.42f)
-            {
-                return new Color32(30, 30, 30, 255); //black 24%
-            }
-            if(colorPercentage <= 0.42f && colorPercentage > 0.28f)
-            {
-                return new Color32(57, 71, 245, 255); //blue 14%
-            }
-            if(colorPercentage <= 0.28f && colorPercentage > 0.15f)
-            {
-                return new Color32(220, 220, 220, 255); //white 13%
-            }
-            if(colorPercentage <= 0.15f && colorPercentage > 0.08f)
-            {
-                return new Color32(200, 10, 10, 255); //red 7%
-            } 
-            if(colorPercentage <= 0.08f && colorPercentage > 0.05f)
-            {
-                return new Color32(10, 160, 10, 255); //green 3%
-            }  
-            if(colorPercentage <= 0.05f && colorPercentage > 0.03f)
-            {
-                return new Color32(100, 35, 15, 255); //brown 2%
-            }    
-            if(colorPercentage <= 0.03f && colorPercentage > 0.02f)
-            {
-                return new Color32(244, 226,198, 255); //beige 1%
-            } 
-            if(colorPercentage <= 0.02f && colorPercentage > 0.01f)
-            {
-                return new Color32(255, 223, 0, 255); //yellow 1%
-            }  
-            return new Color32(255, 94, 19, 255); //orange 1%
+            return defaultColor;
         }
 
         // Update is called once per frame
@@ -152,7 +133,7 @@ namespace Netherlands3D.Traffic
                         if (Physics.Raycast(carPos, transform.forward, out hit, 20f))
                         {
                             // if the map tiles are loaded beneath the car
-                            if (hit.collider.gameObject.name == "BasicTruck" || hit.collider.gameObject.name == "BasicCar")
+                            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Traffic"))
                             {
                                 if(Math.Abs(Quaternion.Dot(hit.collider.transform.parent.transform.rotation, transform.rotation)) < 0.4f)
                                 {
@@ -180,7 +161,7 @@ namespace Netherlands3D.Traffic
                             // if the map tiles are loaded beneath the car
                             if (!needToStop)
                             {
-                                if (hit.collider.gameObject.name != "BasicTruck" && hit.collider.gameObject.name != "BasicCar")
+                                if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Traffic"))
                                 {
                                     MoveCar(hit.point);
                                 }
