@@ -48,7 +48,14 @@ namespace Netherlands3D.LayerSystem
         {
             base.Select();
             //On a secondary click, only select if we did not make a multisselection yet.
-            if (selectedIDs.Count < 2) Select();
+            if (selectedIDs.Count < 2)
+            {
+                Select();
+            }
+            else{
+                //Simply retrigger the selection list we already have to trigger the right state for the context menu
+                HighlightObjectsWithIDs(selectedIDs);
+            }
         }
 
         public override void Deselect()
