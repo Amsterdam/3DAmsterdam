@@ -159,7 +159,7 @@ namespace Netherlands3D.Interface.Layers
 		/// Reset all the colors while holding shift, or just the material(s) we selected
 		/// </summary>
 		public void ResetColorsInSelectedMaterials(){
-			var resetAll = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+			var resetAll = Selector.doingMultiselect;
 			if (resetAll)
 			{
 				//Simple reset all material slots, instead of our selected list

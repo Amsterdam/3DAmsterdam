@@ -24,7 +24,7 @@ namespace Netherlands3D.Interface.SidePanel
 		/// <param name="multiply"></param>
 		public void AddValue(float multiply)
 		{
-			var add = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? modifierAmount * multiply : addAmount * multiply;
+			var add = Selector.doingMultiselect ? modifierAmount * multiply : addAmount * multiply;
 			if (double.TryParse(inputField.text, out double inputValue))
 			{
 				inputValue += add;
