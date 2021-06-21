@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraComponent: {fileID: 0}
   zoomSpeed: 0.01
-  spinSpeed: 0.5
+  spinSpeed: 0.2
   dragging: 0
   rotatingAroundPoint: 0
   cameraOffsetForTargetLocation: {x: 100, y: 200, z: -100}
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_StopNaN: 0
   m_Dithering: 0
   m_ClearDepth: 1
+  m_AllowXRRendering: 1
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
@@ -177,6 +178,7 @@ MonoBehaviour:
     type: 2}
   range: 3
   maxShadowDistance: 4000
+  minShadowDistance: 100
   useFixedValue: 0
 --- !u!114 &8354288608701459187
 MonoBehaviour:
@@ -193,5 +195,17 @@ MonoBehaviour:
   width: 1920
   height: 1080
   snapshotCamera: {fileID: 0}
-  screenshot: {fileID: 0}
+  screenShot: {fileID: 0}
   screenshotRenderTexture: {fileID: 0}
+  fileType: 
+  fileName: 
+  snapshotSettings: {fileID: 0}
+  snapshotUI: {fileID: 0}
+  snapshotNavigation: {fileID: 0}
+  snapshotLogo: {fileID: 0}
+  snapshotMainMenu: {fileID: 0}
+  snapshotLoD: {fileID: 0}
+  snapshotResolution: {fileID: 0}
+  snapshotFileType: {fileID: 0}
+  snapshotName: {fileID: 0}
+  responsiveCanvas: {fileID: 0}
