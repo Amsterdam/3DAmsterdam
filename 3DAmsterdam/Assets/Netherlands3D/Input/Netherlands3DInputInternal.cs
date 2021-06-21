@@ -770,7 +770,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""163a4000-02b6-46c0-a4bd-f113fdc02572"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Pick"",
