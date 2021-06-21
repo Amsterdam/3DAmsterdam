@@ -29,4 +29,7 @@ public class ApplicationSettingsProfile : ScriptableObject
     public bool realtimeReflections = false;
 
     public int qualitySettingsSlot = 0;
+
+    //Input
+    public float rotateSensitivity = 0.3f;
 }

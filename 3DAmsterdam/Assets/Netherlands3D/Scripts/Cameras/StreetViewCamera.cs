@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Help;
+using Netherlands3D.Settings;
 
 namespace Netherlands3D.Cameras
 {
@@ -114,8 +115,8 @@ namespace Netherlands3D.Cameras
 
 		private void FollowMouseRotation()
 		{
-			rotation.y += Input.GetAxis("Mouse X") * speed;
-			rotation.x += -Input.GetAxis("Mouse Y") * speed;
+			rotation.y += Mouse.current.delta.ReadValue().x * speed * ApplicationSettings.settings.rotateSensitivity;
+			rotation.x += -Mouse.current.delta.ReadValue().y * speed * ApplicationSettings.settings.rotateSensitivity;
 			rotation.x = ClampAngle(rotation.x, -90, 90);
 			transform.eulerAngles = (Vector2)rotation;
 		}

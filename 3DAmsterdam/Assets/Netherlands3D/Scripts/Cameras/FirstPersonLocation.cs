@@ -22,7 +22,8 @@ namespace Netherlands3D.Interface
 		private Animator placedAnimator;
 
 		[HideInInspector]
-		public Quaternion savedRotation = Quaternion.Euler(Vector3.zero);
+		public Quaternion savedRotation = Quaternion.identity;
+
 		public override void Start()
 		{
 			base.Start();
@@ -46,6 +47,7 @@ namespace Netherlands3D.Interface
 		{
 			base.Placed();
 			placedAnimator.enabled = true;
+			savedRotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
 			HelpMessage.Instance.Show("<b>Klik</b> op het nieuwe camerastandpunt om rond te lopen");
 		}
 
