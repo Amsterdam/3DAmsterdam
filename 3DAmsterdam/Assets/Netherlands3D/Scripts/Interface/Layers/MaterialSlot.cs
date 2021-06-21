@@ -109,6 +109,7 @@ namespace Netherlands3D.Interface.Layers
 		/// </summary>
 		public void ResetColor()
 		{
+			materialOpacity = 1.0f;
 			ChangeColor(resetMaterialColor);
 		}
 

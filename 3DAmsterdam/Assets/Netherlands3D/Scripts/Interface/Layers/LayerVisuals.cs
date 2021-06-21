@@ -175,6 +175,7 @@ namespace Netherlands3D.Interface.Layers
 			}
 			hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
 			colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+			opacitySlider.value = selectedMaterialSlots[0].materialOpacity;
 			targetInterfaceLayer.UpdateLayerPrimaryColor();
 		}
 
