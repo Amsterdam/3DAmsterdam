@@ -18,6 +18,7 @@ namespace Netherlands3D
             //Only logging events if we are not in the editor, and are in production/live
             Debug.Log($"Netherlands3D Analytics event: {eventName}");
             Analytics.CustomEvent(eventName, eventData);
+            Analytics.FlushEvents();
 #endif
         }
     }
