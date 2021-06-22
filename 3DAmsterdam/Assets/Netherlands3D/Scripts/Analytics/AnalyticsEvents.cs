@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 namespace Netherlands3D
 {
-    public class Analytics
+    public class AnalyticsEvents
     {
         /// <summary>
         /// Own custom events wrapper. This allows us to easily swap the Unity analytics with something else, for example Google Analytics
@@ -16,7 +17,7 @@ namespace Netherlands3D
 #if !UNITY_EDITOR
             //Only logging events if we are not in the editor, and are in production/live
             Debug.Log($"Netherlands3D Analytics event: {eventName}");
-            UnityEngine.Analytics.Analytics.CustomEvent(eventName, eventData);
+            Analytics.CustomEvent(eventName, eventData);
 #endif
         }
     }

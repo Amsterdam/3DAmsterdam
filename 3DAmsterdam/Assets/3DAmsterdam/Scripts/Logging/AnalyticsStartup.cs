@@ -13,7 +13,7 @@ namespace Netherlands3D.Logging
         [RuntimeInitializeOnLoadMethod]
         static void FilterAnalitics()
         {
-            Analytics.CustomEvent("DevelopmentBuild", new Dictionary<string, object> {
+            AnalyticsEvents.CustomEvent("DevelopmentBuild", new Dictionary<string, object> {
                 {"developer", Debug.isDebugBuild}
             });
         }

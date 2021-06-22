@@ -83,7 +83,7 @@ namespace Netherlands3D.Interface
 				}
 				print(selectedExportFormat);
 
-				Analytics.CustomEvent("LayersExport",
+				AnalyticsEvents.CustomEvent("LayersExport",
 					new Dictionary<string, object>
 					{
 						{ "Format", selectedExportFormat },

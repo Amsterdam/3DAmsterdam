@@ -121,7 +121,7 @@ namespace Netherlands3D.Interface.Sharing
 				}
 
 				//Let analytics know we saved a scene, with the amount of objects and vertex count
-				Analytics.CustomEvent("SharedScene",
+				AnalyticsEvents.CustomEvent("SharedScene",
 					new Dictionary<string, object>
 					{
 						{ "CustomObjectsCount", serverReturn.modelUploadTokens.Length },
