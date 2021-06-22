@@ -13,10 +13,10 @@ namespace Netherlands3D
         /// <param name="eventData">Event data</param>
 		public static void CustomEvent(string eventName, Dictionary<string,object> eventData)
         {
-            Debug.Log($"Netherlands3D Analytics event: {eventName}");
-#if !UNITY_EDITOR && PRODUCTION
+#if !UNITY_EDITOR
             //Only logging events if we are not in the editor, and are in production/live
-            UnityEngine.Analytics.AnalyticsEvent.Custom(eventName, eventData);
+            Debug.Log($"Netherlands3D Analytics event: {eventName}");
+            UnityEngine.Analytics.Analytics.CustomEvent(eventName, eventData);
 #endif
         }
     }
