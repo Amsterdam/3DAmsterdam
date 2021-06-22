@@ -87,6 +87,7 @@ namespace Netherlands3D.Interface.Sharing
 				sceneSerializer.sharedSceneId = serverReturn.sceneId;
 				Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
 
+				var totalVerts = 0;
 				if (serverReturn.modelUploadTokens.Length > 0)
 				{
 					progressBar.SetMessage("Objecten opslaan..");
@@ -95,8 +96,10 @@ namespace Netherlands3D.Interface.Sharing
 					while (currentModel < serverReturn.modelUploadTokens.Length)
 					{
 						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-						var jsonCustomObject = JsonUtility.ToJson(sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token), false);
-
+						var serializedCustomObject = sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token);
+						totalVerts += serializedCustomObject.verts.Length / 3;
+						var jsonCustomObject = JsonUtility.ToJson(serializedCustomObject, false);
+						
 						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 						yield return modelSaveRequest.SendWebRequest();
@@ -108,7 +111,7 @@ namespace Netherlands3D.Interface.Sharing
 						}
 						else
 						{
-							Debug.Log("Model return: " + modelSaveRequest.downloadHandler.text);
+							Debug.Log("Model return " + currentModel);
 							currentModel++;
 							var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
 							progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
@@ -116,6 +119,15 @@ namespace Netherlands3D.Interface.Sharing
 						}
 					}
 				}
+
+				//Let analytics know we saved a scene, with the amount of objects and vertex count
+				Analytics.CustomEvent("SharedScene",
+					new Dictionary<string, object>
+					{
+						{ "CustomObjectsCount", serverReturn.modelUploadTokens.Length },
+						{ "TotalVertexCount", totalVerts }
+					}
+				);
 
 				//Make sure the progressbar shows 100% before jumping to the next state
 				progressBar.Percentage(1.0f);
