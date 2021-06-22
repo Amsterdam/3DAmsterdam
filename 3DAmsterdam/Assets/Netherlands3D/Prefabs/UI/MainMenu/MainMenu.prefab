@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -110,6 +111,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!114 &3476863442995011303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSelection: {fileID: 0}
   runtimeRectangularMask: {fileID: 0}
+  maskLayer: {fileID: 0}
 --- !u!114 &1421598967944650877
 MonoBehaviour:
   m_ObjectHideFlags: 0
