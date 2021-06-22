@@ -122,7 +122,7 @@ namespace Netherlands3D.Interface
 		{
 			int fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);			
 			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
-			Analytics.CustomEvent("FPS",
+			AnalyticsEvents.CustomEvent("FPS",
 			new Dictionary<string, object>
 			  {
 				{ "fpsGroup", fpsLogGroup },
