@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Interface.SidePanel;
-
+using ConvertCoordinates;
 
 namespace Netherlands3D.Interface
 {
@@ -82,6 +82,16 @@ namespace Netherlands3D.Interface
 					}
 				}
 				print(selectedExportFormat);
+
+				Analytics.CustomEvent("LayersExport",
+					new Dictionary<string, object>
+					{
+						{ "Format", selectedExportFormat },
+						{ "BottomLeftRD", CoordConvert.UnitytoRD(exportBounds.min) },
+						{ "TopRightRD", CoordConvert.UnitytoRD(exportBounds.max) },
+					}
+				);
+
 				switch (selectedExportFormat)
 				{
 					case "AutoCAD DXF (.dxf)":

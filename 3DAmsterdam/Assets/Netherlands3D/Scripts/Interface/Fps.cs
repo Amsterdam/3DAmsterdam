@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.Analytics;
 using System.Collections.Generic;
 
 namespace Netherlands3D.Interface

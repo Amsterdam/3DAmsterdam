@@ -1,9 +1,8 @@
 ﻿#if UNITY_EDITOR || !PRODUCTION
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 
-namespace Amsterdam3D.Logging
+namespace Netherlands3D.Logging
 {
     public class AnalyticsStartup
     {
@@ -14,7 +13,6 @@ namespace Amsterdam3D.Logging
         [RuntimeInitializeOnLoadMethod]
         static void FilterAnalitics()
         {
-            Debug.Log("Analytics: Sending developer filter event.");
             Analytics.CustomEvent("DevelopmentBuild", new Dictionary<string, object> {
                 {"developer", Debug.isDebugBuild}
             });
