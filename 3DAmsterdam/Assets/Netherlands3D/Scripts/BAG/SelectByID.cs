@@ -145,7 +145,7 @@ namespace Netherlands3D.LayerSystem
             AnalyticsEvents.CustomEvent("SelectedBuilding",
                 new Dictionary<string, object>
                 {
-                    { "ID", lastSelectedID }
+                    { "BagID", lastSelectedID }
                 }
             );
 

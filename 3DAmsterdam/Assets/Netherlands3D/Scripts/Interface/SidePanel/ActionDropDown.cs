@@ -11,25 +11,40 @@ namespace Netherlands3D.Interface.SidePanel
 		private Dropdown dropdown;
 		private Action<string> optionAction;
 
+		private string currentValue = "";
+
 		private void Start()
 		{
-			gameObject.AddComponent<AnalyticsClickTrigger>();
+			dropdown.gameObject.AddComponent<AnalyticsClickTrigger>();
 		}
 
 		public void SetAction(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
 		{
 			optionAction = selectOptionAction;
-
+			gameObject.name = "Dropdown: " + selected;
 			dropdown.ClearOptions();
 
 			UpdateOptions(dropdownOptions);
 
 			if (selected != "")
-				dropdown.value = Array.IndexOf(dropdownOptions,selected);
-
+			{
+				dropdown.value = Array.IndexOf(dropdownOptions, selected);
+				currentValue = selected;
+			}
 			dropdown.onValueChanged.AddListener(delegate
 			{
-				optionAction.Invoke(dropdown.options[dropdown.value].text);
+				var newSelection = dropdown.options[dropdown.value].text;
+
+				AnalyticsEvents.CustomEvent("ChangedDropdownValue",
+					new Dictionary<string, object>
+					{
+						{ "From", currentValue },
+						{ "To",  newSelection },
+						{ "Container", (transform.parent) ? transform.parent.name : ""}
+					}
+				);
+				gameObject.name = "Dropdown: " + newSelection;
+				optionAction.Invoke(newSelection);
 			});
 		}
 

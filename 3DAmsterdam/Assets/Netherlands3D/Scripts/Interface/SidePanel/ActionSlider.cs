@@ -21,7 +21,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         private void Start()
         {
-            gameObject.AddComponent<AnalyticsClickTrigger>();
+            slider.gameObject.AddComponent<AnalyticsClickTrigger>();
         }
 
         public void SliderChange(float value)

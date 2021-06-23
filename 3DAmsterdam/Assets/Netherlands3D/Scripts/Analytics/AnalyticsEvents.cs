@@ -21,10 +21,10 @@ namespace Netherlands3D
             Analytics.FlushEvents();
             return;
 #endif
-            Debug.Log($"<color=#61A196>Analytics Event:  {eventName} (Not sent in Editor)</color>");
+            Debug.Log($"<color=#61A196>[Analytics Event]  {eventName} (Not sent in Editor)</color>");
             foreach(KeyValuePair<string,object> keyValue in eventData)
             {
-                Debug.Log($"<color=#61A196>  Event data: {keyValue.Key} : {keyValue.Value}</color>");
+                Debug.Log($"<color=#61A146>[Event data] {keyValue.Key} : {keyValue.Value}</color>");
             }
         }
     }
