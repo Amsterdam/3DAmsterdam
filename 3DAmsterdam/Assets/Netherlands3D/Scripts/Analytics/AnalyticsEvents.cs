@@ -19,7 +19,13 @@ namespace Netherlands3D
             Debug.Log($"Netherlands3D Analytics event: {eventName}");
             Analytics.CustomEvent(eventName, eventData);
             Analytics.FlushEvents();
+            return;
 #endif
+            Debug.Log($"<color=#61A196>Analytics Event:  {eventName} (Not sent in Editor)</color>");
+            foreach(KeyValuePair<string,object> keyValue in eventData)
+            {
+                Debug.Log($"<color=#61A196>  Event data: {keyValue.Key} : {keyValue.Value}</color>");
+            }
         }
     }
 }
