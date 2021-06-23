@@ -126,7 +126,6 @@ namespace Netherlands3D.LayerSystem
             {
                 selectedIDs.Remove(id);
                 HighlightObjectsWithIDs(selectedIDs);
-
             }
         }
 
@@ -141,6 +140,14 @@ namespace Netherlands3D.LayerSystem
 
             lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
             containerLayer.Highlight(selectedIDs);
+
+            //Analytic
+            AnalyticsEvents.CustomEvent("SelectedBuilding",
+                new Dictionary<string, object>
+                {
+                    { "ID", lastSelectedID }
+                }
+            );
 
             //Specific context menu /sidepanel items per selection count
             if (selectedIDs.Count == 1)

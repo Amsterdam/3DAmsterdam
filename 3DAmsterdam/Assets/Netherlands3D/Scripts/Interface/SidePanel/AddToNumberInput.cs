@@ -18,6 +18,11 @@ namespace Netherlands3D.Interface.SidePanel
 		[SerializeField]
 		private float modifierAmount = 15.0f;
 
+		private void Start()
+		{
+			gameObject.AddComponent<AnalyticsClickTrigger>();
+		}
+
 		/// <summary>
 		/// Add a value to the numeric (text) input field
 		/// </summary>

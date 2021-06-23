@@ -13,6 +13,11 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Text buttonText;
 
+        private void Start()
+        {
+            gameObject.AddComponent<AnalyticsClickTrigger>();
+        }
+
         public void Select()
         {
             if (clickAction != null) clickAction.Invoke("");
@@ -20,6 +25,7 @@ namespace Netherlands3D.Interface.SidePanel
 
         public void SetAction(string title, Action<string> action)
         {
+            gameObject.name = title;
             buttonText.text = title;
             clickAction = action;
         }

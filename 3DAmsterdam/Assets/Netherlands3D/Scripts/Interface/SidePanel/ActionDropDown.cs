@@ -11,6 +11,11 @@ namespace Netherlands3D.Interface.SidePanel
 		private Dropdown dropdown;
 		private Action<string> optionAction;
 
+		private void Start()
+		{
+			gameObject.AddComponent<AnalyticsClickTrigger>();
+		}
+
 		public void SetAction(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
 		{
 			optionAction = selectOptionAction;
@@ -36,7 +41,6 @@ namespace Netherlands3D.Interface.SidePanel
 				dropdown.options.Add(new Dropdown.OptionData() { text = option });
 			
 		}
-
 
 		private void OnDestroy()
 		{
