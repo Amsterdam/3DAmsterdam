@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Netherlands3D.Cameras;
+using Netherlands3D.LayerSystem;
+using System.CodeDom.Compiler;
+using System;
 
 namespace Netherlands3D.Traffic
 {
@@ -9,8 +13,8 @@ namespace Netherlands3D.Traffic
     {
         public RoadObject currentRoad;
         private RoadObject lastRoad = null;
-        private RoadObject nextRoad = null;
-        private int currentRoadIndex = 0;
+        public RoadObject nextRoad = null;
+        public int currentRoadIndex = 0;
         public int speed = 20;
 
         public GameObject[] cars;
@@ -26,9 +30,18 @@ namespace Netherlands3D.Traffic
 
         private float lastRecordedHeight = 0.0f;
         private RaycastHit hit;
-        // Start is called before the first frame update
+
+        private AssetbundleMeshLayer terrainLayer;
+
+        public bool needToStop = false;
+
+        private GameObject carType;
+
+        private VehicleProperties vehicleProperties;
+
         void Start()
         {
+            maxWaitingTime = UnityEngine.Random.Range(3f, 7f);
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
             currentRoadIndex++;
             // disables all car objects
@@ -36,9 +49,44 @@ namespace Netherlands3D.Traffic
             {
                 car.SetActive(false);
             }
+
             // Chooses a random car out of all the car objects.
-            cars[Random.Range(0, cars.Length - 1)].SetActive(true);
+            carType = cars[UnityEngine.Random.Range(0, cars.Length)];
+            vehicleProperties = carType.GetComponent<VehicleProperties>();
+            if (carType.name == "BasicCar")
+            {
+                ApplySettings(carType);
+            }
+            carType.SetActive(true);
             speed = TrafficSimulator.Instance.carSpeed;
+        }
+
+        private void ApplySettings(GameObject car)
+        {
+            int colorPercentage = UnityEngine.Random.Range(0, TrafficSimulator.Instance.totalWeight);
+            car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
+        }
+
+        /// <summary>
+        /// Checks the random number against each rarity of car colors
+        /// </summary>
+        /// <param name="colorPercentage"></param>
+        /// <returns></returns>
+        private Color32 GenerateColor(float colorPercentage)
+        {
+            Color32 defaultColor = Color.gray;
+            foreach (KeyValuePair<Color32,int> carColor in TrafficSimulator.Instance.carColors)
+            {
+                if(colorPercentage < carColor.Value)
+                {
+                    return carColor.Key;
+                }
+                else
+                {
+                    colorPercentage -= carColor.Value;
+                }
+            }
+            return defaultColor;
         }
 
         // Update is called once per frame
@@ -49,7 +97,7 @@ namespace Netherlands3D.Traffic
                 speed = TrafficSimulator.Instance.carSpeed;
             }
             updateCarFrames++;
-            float distanceToCar = Vector3.Distance(GenerateRoads.Instance.mainCameraTransform.position, transform.position);
+            float distanceToCar = Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position);
             if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
             else if (distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
@@ -75,21 +123,64 @@ namespace Netherlands3D.Traffic
                             currentRoadIndex++;
                         }
 
-                        Vector3 temp = transform.position;
-                        temp.y = 50f;
+                        Vector3 carPos = transform.position;
 
-                        if (Physics.Raycast(temp, -Vector3.up, out hit, Mathf.Infinity))
+
+                        //ask wheels where their position is
+                        //calculate center point
+                        //rotate car body based on center point
+                        carPos.y += 1.5f;
+                        if (Physics.Raycast(carPos, transform.forward, out hit, 20f))
                         {
                             // if the map tiles are loaded beneath the car
-                            MoveCar(hit.point);
+                            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Traffic"))
+                            {
+                                if(Math.Abs(Quaternion.Dot(hit.collider.transform.parent.transform.rotation, transform.rotation)) < 0.4f)
+                                {
+                                    needToStop = false;
+                                }
+                                else
+                                {
+                                    needToStop = true;
+                                }
+                            }
+                            else
+                            {
+                                needToStop = false;
+                            }
                         }
                         else
                         {
-                            if (currentRoad.roadPoints.Count > currentRoadIndex)
+                            needToStop = false;
+                        }
+
+                        carPos.y = 50f;
+
+                        if (Physics.Raycast(carPos, -Vector3.up, out hit, Mathf.Infinity))
+                        {
+                            // if the map tiles are loaded beneath the car
+                            if (!needToStop)
+                            {
+                                if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Traffic"))
+                                {
+                                    MoveCar(hit.point);
+                                }
+                                else
+                                {
+                                    speed -= 10;
+                                    carPos.y = lastRecordedHeight;
+                                    MoveCar(carPos);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (currentRoad.roadPoints.Count >= currentRoadIndex)
                             {
                                 // if the car cant find an underground
-                                temp.y = lastRecordedHeight;
-                                MoveCar(temp);
+                                terrainLayer.AddMeshColliders(carPos);
+                                carPos.y = lastRecordedHeight;
+                                MoveCar(carPos);
                             }
                         }
                     }
@@ -113,7 +204,8 @@ namespace Netherlands3D.Traffic
                     transform.position = compensationVector;
                     // looks at the point where the car is driving
                     transform.LookAt(tempLook); // MAYBE U CAN PUT THIS IN THE ELSE SO ITS ONLY EXECUTED ONCE????
-                                                // propels the car forward
+                    transform.rotation = vehicleProperties.GetNewRotation(transform.rotation);
+                    // propels the car forward
                     gameObject.transform.Translate(transform.forward * Time.deltaTime * speed * vehicleFrameSpeedCompensator, Space.World);
                 }
                 else
@@ -132,14 +224,14 @@ namespace Netherlands3D.Traffic
                 if (findRoadLoopFrames % 10 == 0 && nextRoad == null)
                 {
                     transform.position = compensationVector;
-                    // resets the point DEMO ONLY
+                    // resets the point
                     foreach (RoadObject obj in GenerateRoads.Instance.shuffledRoadsList)
                     {
                         // calculates distance between the car and the 1st object of the found road, this should indicate wether the road is close or not
                         float distance = Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates);
 
                         // finds new road segment based on distance
-                        if (distance < Mathf.Round(Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
+                        if (distance < Mathf.Round(UnityEngine.Random.Range(7, 13)) && currentRoad != obj && obj != lastRoad)
                         {
                             if (Vector3.Distance(transform.position, obj.roadPoints[0].pointCoordinates) < Vector3.Distance(transform.position, obj.roadPoints[obj.roadPoints.Count - 1].pointCoordinates))
                             {
@@ -148,9 +240,10 @@ namespace Netherlands3D.Traffic
                                 if (Vector3.Dot(toTarget, transform.forward) > 0)
                                 {
                                     // assigns the newly found road
+                                    currentRoadIndex = 0;
                                     lastRoad = currentRoad;
                                     currentRoad = obj;
-                                    nextRoad = obj;
+                                    //nextRoad = obj;
                                     break;
                                 }
                             }
@@ -177,6 +270,8 @@ namespace Netherlands3D.Traffic
                         transform.position = compensationVector;
                         // looks at the point where the car is driving
                         transform.LookAt(tempLook);
+
+                        transform.rotation = vehicleProperties.GetNewRotation(transform.rotation);
                         // propels the car forward
                         gameObject.transform.Translate(transform.forward * Time.deltaTime * speed * vehicleFrameSpeedCompensator, Space.World);
                     }
@@ -188,6 +283,11 @@ namespace Netherlands3D.Traffic
 
                 }
             }
+        }
+
+        public void SetTerrainLayer(AssetbundleMeshLayer layer)
+        {
+            terrainLayer = layer;
         }
 
     }
