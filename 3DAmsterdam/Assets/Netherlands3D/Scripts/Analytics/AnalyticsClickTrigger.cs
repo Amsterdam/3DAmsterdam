@@ -12,10 +12,9 @@ namespace Netherlands3D
             var selectedName = this.gameObject.name;
             var containerName = (this.transform.parent) ? this.transform.parent.name : "";
 
-            AnalyticsEvents.CustomEvent("InterfaceItemClicked",
+            AnalyticsEvents.CustomEvent($"InterfaceItemClicked-{selectedName}",
                 new Dictionary<string, object>
                 {
-                    { "Name", selectedName },
                     { "Container",  containerName}
                 }
             );
