@@ -9,6 +9,7 @@ using System.Globalization;
 using Netherlands3D.Interface.Selection;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -126,7 +127,6 @@ namespace Netherlands3D.LayerSystem
             {
                 selectedIDs.Remove(id);
                 HighlightObjectsWithIDs(selectedIDs);
-
             }
         }
 
@@ -141,6 +141,14 @@ namespace Netherlands3D.LayerSystem
 
             lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
             containerLayer.Highlight(selectedIDs);
+
+            //Analytic
+            Analytics.SendEvent("SelectedBuilding",
+                new Dictionary<string, object>
+                {
+                    { "BagID", lastSelectedID }
+                }
+            );
 
             //Specific context menu /sidepanel items per selection count
             if (selectedIDs.Count == 1)
