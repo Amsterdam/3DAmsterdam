@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.Interface
 {
