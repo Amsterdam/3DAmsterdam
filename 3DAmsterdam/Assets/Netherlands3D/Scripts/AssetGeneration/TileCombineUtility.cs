@@ -48,6 +48,9 @@ namespace Netherlands3D.AssetGeneration
 			{
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
 				Mesh buildingMesh = meshFilters[i].sharedMesh;
+
+				if (buildingMesh == null) continue;
+
 				totalVertexCount += buildingMesh.vertexCount;
 				//Create UVS
 				var buildingUV = ObjectIDMapping.GetUV(i, textureSize);

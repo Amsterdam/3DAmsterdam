@@ -86,6 +86,20 @@ public class UnitTests
 
     }
 
+    [Test]
+    public void TestRDIsInThousands()
+    {
+        Vector2RD rd1 = new Vector2RD(163409, 483129);
+        Assert.AreEqual(false, rd1.IsInThousands, $"x:{rd1.x} y:{rd1.y}");
+
+        Vector2RD rd2 = new Vector2RD(163000, 483129);
+        Assert.AreEqual(false, rd2.IsInThousands, $"x:{rd2.x} y:{rd2.y}");
+
+        Vector2RD rd3 = new Vector2RD(163000, 483000);
+        Assert.AreEqual(true, rd3.IsInThousands, $"x:{rd3.x} y:{rd3.y}");
+
+    }
+
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
     // `yield return null;` to skip a frame.
     [UnityTest]

@@ -645,10 +645,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         void Import()
         {
-            int Xmin = 109000;
-            int Ymin = 474000;
-            int Xmax = 140000;
-            int Ymax = 500000;
+            int Xmin = (int)Config.activeConfiguration.BottomLeftRD.x;
+            int Ymin = (int)Config.activeConfiguration.BottomLeftRD.y;
+            int Xmax = (int)Config.activeConfiguration.TopRightRD.x;
+            int Ymax = (int)Config.activeConfiguration.TopRightRD.y;
 
             int stepSize = 1000;
 
@@ -668,13 +668,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //sw.Stop();
             //Debug.Log(sw.ElapsedMilliseconds + " ms");
         }
-
-
-
-
-
-
-
 
 
         private List<Vector3RD> GetVertsRD(CityModel cityModel)
