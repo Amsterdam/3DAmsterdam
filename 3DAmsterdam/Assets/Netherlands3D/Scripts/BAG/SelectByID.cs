@@ -9,6 +9,7 @@ using System.Globalization;
 using Netherlands3D.Interface.Selection;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -142,7 +143,7 @@ namespace Netherlands3D.LayerSystem
             containerLayer.Highlight(selectedIDs);
 
             //Analytic
-            AnalyticsEvents.CustomEvent("SelectedBuilding",
+            Analytics.SendEvent("SelectedBuilding",
                 new Dictionary<string, object>
                 {
                     { "BagID", lastSelectedID }

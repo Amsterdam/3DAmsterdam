@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.JavascriptConnection;
+using Netherlands3D.Logging;
 using Netherlands3D.Sharing;
 using System.Collections;
 using System.Collections.Generic;
@@ -121,7 +122,7 @@ namespace Netherlands3D.Interface.Sharing
 				}
 
 				//Let analytics know we saved a scene, with the amount of objects and vertex count
-				AnalyticsEvents.CustomEvent("SharedScene",
+				Analytics.SendEvent("SharedScene",
 					new Dictionary<string, object>
 					{
 						{ "CustomObjectsCount", serverReturn.modelUploadTokens.Length },

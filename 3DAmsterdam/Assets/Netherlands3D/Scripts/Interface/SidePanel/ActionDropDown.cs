@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Netherlands3D.Logging;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,7 @@ namespace Netherlands3D.Interface.SidePanel
 			{
 				var newSelection = dropdown.options[dropdown.value].text;
 
-				AnalyticsEvents.CustomEvent("ChangedDropdownValue",
+				Analytics.SendEvent("ChangedDropdownValue",
 					new Dictionary<string, object>
 					{
 						{ "From", currentValue },

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Netherlands3D
+namespace Netherlands3D.Logging
 {
     public class AnalyticsClickTrigger : MonoBehaviour, IPointerUpHandler
     {
@@ -12,7 +12,7 @@ namespace Netherlands3D
             var selectedName = this.gameObject.name;
             var containerName = (this.transform.parent) ? this.transform.parent.name : "";
 
-            AnalyticsEvents.CustomEvent($"InterfaceItemClicked-{selectedName}",
+            Analytics.SendEvent($"InterfaceItemClicked-{selectedName}",
                 new Dictionary<string, object>
                 {
                     { "Container",  containerName}

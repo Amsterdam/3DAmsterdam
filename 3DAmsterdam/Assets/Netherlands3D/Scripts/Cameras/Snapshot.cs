@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -154,7 +155,7 @@ namespace Netherlands3D
                             break;
                     }
 
-                    AnalyticsEvents.CustomEvent("Snapshot",
+                    Analytics.SendEvent("Snapshot",
                         new Dictionary<string, object>
                         {
                             { "FileType", fileType }

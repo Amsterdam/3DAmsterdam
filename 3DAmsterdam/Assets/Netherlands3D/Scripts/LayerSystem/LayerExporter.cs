@@ -4,6 +4,7 @@ using UnityEngine;
 using Netherlands3D.Interface.SidePanel;
 using ConvertCoordinates;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.Interface
 {
@@ -85,7 +86,7 @@ namespace Netherlands3D.Interface
 				print(selectedExportFormat);
 
 				var amountOfCellsInBounds = (exportBounds.size.x / VisualGrid.Instance.CellSize) * (exportBounds.size.z / VisualGrid.Instance.CellSize);
-				AnalyticsEvents.CustomEvent("LayersExport",
+				Analytics.SendEvent("LayersExport",
 					new Dictionary<string, object>
 					{
 						{ "Format", selectedExportFormat },
