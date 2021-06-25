@@ -7,6 +7,12 @@ namespace Netherlands3D.Logging.Services
 {
 	public class UnityAnalyticsService : AnalyticsService
 	{
+		private void Start()
+		{
+			Debug.Log("Privacy URL");
+			DataPrivacy.FetchPrivacyUrl((action) => { Debug.Log(action); });
+		}
+
 		public override void SendEvent(string eventName, Dictionary<string, object> eventData)
 		{
 #if !UNITY_EDITOR && UNITY_ANALYTICS
