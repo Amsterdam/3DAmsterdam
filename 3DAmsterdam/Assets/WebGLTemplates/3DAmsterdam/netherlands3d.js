@@ -2,6 +2,8 @@ var forceFocus = false;
 var unityCanvas;
 var fileReader;
 
+var sharedUrlText = "";
+
 var unityObjectName = "FileUploads";
 var objData = "";
 var mtlData = "";
@@ -68,15 +70,12 @@ function LocationHashChanged() {
 }
 
 function CopySharedURL() {
-  let div = document.getElementById('sharedUrl');
-  
   //create a temporary textfield that we can select and copy from, and remove it again
-  let sharedUrlText = div.innerText;
   let textArea  = document.createElement('textarea');
   textArea.width  = "1px"; 
   textArea.height = "1px";
   textArea.background =  "transparent";
-  textArea.value = text;
+  textArea.value = sharedUrlText;
   document.body.append(textArea);
   textArea.select();
   document.execCommand('copy');
