@@ -18,9 +18,6 @@ namespace Netherlands3D.JavascriptConnection
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
-		private static extern string DisplayUniqueShareURL(string uniqueToken = "");
-
-		[DllImport("__Internal")]
 		private static extern string HideUniqueShareURL();
 
 		[DllImport("__Internal")]
@@ -65,18 +62,6 @@ namespace Netherlands3D.JavascriptConnection
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
 			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
-#endif
-		}
-
-		public static void ShowUniqueShareToken(bool show, string uniqueToken = "")
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			 if(show){
-				DisplayUniqueShareURL(uniqueToken);
-			 }
-			 else {
-				HideUniqueShareURL();
-			}
 #endif
 		}
 

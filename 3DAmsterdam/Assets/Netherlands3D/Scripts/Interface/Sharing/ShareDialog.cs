@@ -49,7 +49,6 @@ namespace Netherlands3D.Interface.Sharing
 		private void OnDisable()
 		{
 			StopAllCoroutines();
-			JavascriptMethodCaller.ShowUniqueShareToken(false);
 		}
 
 		/// <summary>
@@ -136,7 +135,7 @@ namespace Netherlands3D.Interface.Sharing
 
 				ChangeState(SharingState.SHOW_URL);
 				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				JavascriptMethodCaller.ShowUniqueShareToken(true, serverReturn.sceneId);
+				generatedURL.GetComponentInChildren<InputField>().text = Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId;
 				yield return null;
 			}
 		}
