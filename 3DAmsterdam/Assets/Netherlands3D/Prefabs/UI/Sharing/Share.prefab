@@ -623,11 +623,11 @@ RectTransform:
   m_Father: {fileID: 6383524394567577345}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 125, y: -67}
-  m_SizeDelta: {x: -350, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 109.5, y: 98}
+  m_SizeDelta: {x: 31, y: 30}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &2458494965701153461
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -764,7 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  htmlObjectID: sharedUrl
+  htmlObjectID: copySharedURLButton
   alignEveryUpdate: 1
 --- !u!1 &5065783172730832157
 GameObject:
