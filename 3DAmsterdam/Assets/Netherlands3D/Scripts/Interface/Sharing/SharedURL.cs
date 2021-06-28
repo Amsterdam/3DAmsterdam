@@ -19,6 +19,8 @@ public class SharedURL : MonoBehaviour
         #else
             GUIUtility.systemCopyBuffer = inputField.text;
         #endif
+
+        //Trigger animator start
         copiedText.gameObject.SetActive(false);
         copiedText.gameObject.SetActive(true);
     }
