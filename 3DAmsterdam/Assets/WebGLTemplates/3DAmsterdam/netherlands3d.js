@@ -67,8 +67,26 @@ function LocationHashChanged() {
     unityInstance.SendMessage("CameraModeChanger", "ChangedPointFromUrl", window.location.hash.replace("#", ""));
 }
 
-function SelectSharedURL() {
-    window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
+function CopySharedURL() {
+  let div = document.getElementById('sharedUrl');
+  
+  //create a temporary textfield that we can select and copy from, and remove it again
+  let sharedUrlText = div.innerText;
+  let textArea  = document.createElement('textarea');
+  textArea.width  = "1px"; 
+  textArea.height = "1px";
+  textArea.background =  "transparent";
+  textArea.value = text;
+  document.body.append(textArea);
+  textArea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textArea);
+  
+  
+  //feedback animation in unity
+  unityInstance.SendMessage("SharedURL", "CopiedText");
+  
+  console.log("Copied the url to clipboard: " + sharedUrlText);
 }
 
 function BuildInUnity() {

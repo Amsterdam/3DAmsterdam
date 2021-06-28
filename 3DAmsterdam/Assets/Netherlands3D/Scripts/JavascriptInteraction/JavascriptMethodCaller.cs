@@ -18,7 +18,7 @@ namespace Netherlands3D.JavascriptConnection
 		private static extern string FetchMTLData();
 
 		[DllImport("__Internal")]
-		private static extern string HideUniqueShareURL();
+		private static extern string SetUniqueShareURL(string token);
 
 		[DllImport("__Internal")]
 		private static extern string SetCSSCursor(string cursorName = "pointer");
@@ -62,6 +62,13 @@ namespace Netherlands3D.JavascriptConnection
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
 			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
+#endif
+		}
+
+		public static void SetUniqueShareURLToken(string token)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			SetUniqueShareURL(token);
 #endif
 		}
 

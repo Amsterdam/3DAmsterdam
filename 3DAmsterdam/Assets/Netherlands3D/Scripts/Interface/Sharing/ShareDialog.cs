@@ -34,7 +34,7 @@ namespace Netherlands3D.Interface.Sharing
 		private ProgressBar progressBar;
 
 		[SerializeField]
-		private RectTransform generatedURL;
+		private SharedURL sharedURL;
 
 		[SerializeField]
 		private SceneSerializer sceneSerializer;
@@ -134,8 +134,11 @@ namespace Netherlands3D.Interface.Sharing
 				yield return new WaitForSeconds(0.1f);
 
 				ChangeState(SharingState.SHOW_URL);
+
 				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				generatedURL.GetComponentInChildren<InputField>().text = Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId;
+				sharedURL.ShowURL(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
+				JavascriptMethodCaller.SetUniqueShareURLToken(serverReturn.sceneId);
+
 				yield return null;
 			}
 		}
@@ -157,16 +160,16 @@ namespace Netherlands3D.Interface.Sharing
 					shareOptions.gameObject.SetActive(true);
 
 					progressFeedback.gameObject.SetActive(false);
-					generatedURL.gameObject.SetActive(false);
+					sharedURL.gameObject.SetActive(false);
 					break;
 				case SharingState.SHARING_SCENE:
 					progressFeedback.gameObject.SetActive(true);
 
 					shareOptions.gameObject.SetActive(false);
-					generatedURL.gameObject.SetActive(false);
+					sharedURL.gameObject.SetActive(false);
 					break;
 				case SharingState.SHOW_URL:
-					generatedURL.gameObject.SetActive(true);
+					sharedURL.gameObject.SetActive(true);
 
 					shareOptions.gameObject.SetActive(false);
 					progressFeedback.gameObject.SetActive(false);
