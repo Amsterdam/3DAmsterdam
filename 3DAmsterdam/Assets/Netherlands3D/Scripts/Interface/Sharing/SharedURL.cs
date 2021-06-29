@@ -11,15 +11,19 @@ public class SharedURL : MonoBehaviour
     [SerializeField]
     private RectTransform copiedText;
 
+    [SerializeField]
+    private WebGLCopyAndPaste copyPasteWrapper;
+
     public void CopiedText()
     {
-#if UNITY_EDITOR || !UNITY_WEBGL 
-        GUIUtility.systemCopyBuffer = inputField.text;
-#endif
-
         //Highlight our text for visual feedback the text was selected
         inputField.Select();
 
+        GUIUtility.systemCopyBuffer = inputField.text;
+#if !UNITY_EDITOR && UNITY_WEBGL
+        copyPasteWrapper.GetClipboard("c");
+#endif
+    
         //Trigger animator start
         copiedText.gameObject.SetActive(false);
         copiedText.gameObject.SetActive(true);

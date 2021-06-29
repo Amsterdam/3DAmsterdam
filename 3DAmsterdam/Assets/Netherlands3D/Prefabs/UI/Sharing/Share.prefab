@@ -444,6 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 3666786177153504958}
   copiedText: {fileID: 9206379978498801553}
+  copyPasteWrapper: {fileID: 0}
 --- !u!1 &3459068860935789896
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +457,7 @@ GameObject:
   - component: {fileID: 1946125469812671480}
   - component: {fileID: 8413917860993980161}
   - component: {fileID: 3666786177153504958}
+  - component: {fileID: 7847940012977644765}
   m_Layer: 5
   m_Name: InputFieldWithURL
   m_TagString: Untagged
@@ -586,6 +588,19 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_ShouldActivateOnSelect: 1
+--- !u!114 &7847940012977644765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3459068860935789896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 2
 --- !u!1 &4518287904330615377
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +614,6 @@ GameObject:
   - component: {fileID: 2528706450739381697}
   - component: {fileID: 6476343019236296602}
   - component: {fileID: 4641394055923539631}
-  - component: {fileID: 3152677506134775924}
   - component: {fileID: 2373453738643077541}
   m_Layer: 5
   m_Name: ButtonCopyURL
@@ -709,7 +723,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2528706450739381697}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3700895606279585345}
+        m_TargetAssemblyTypeName: SharedURL, Assembly-CSharp
+        m_MethodName: CopiedText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4641394055923539631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -723,35 +749,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: Kopieer link naar klembord
---- !u!114 &3152677506134775924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4518287904330615377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3700895606279585345}
-          m_TargetAssemblyTypeName: SharedURL, Assembly-CSharp
-          m_MethodName: CopiedText
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &2373453738643077541
 MonoBehaviour:
   m_ObjectHideFlags: 0

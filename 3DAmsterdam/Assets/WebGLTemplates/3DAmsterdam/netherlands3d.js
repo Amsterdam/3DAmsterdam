@@ -9,6 +9,8 @@ var objData = "";
 var mtlData = "";
 var dataType = 0;
 
+var preventNativeCopyEvents = true;
+
 function ListenerInit()
 {
 	//Cursor locking for First Person camera mode
@@ -70,17 +72,13 @@ function LocationHashChanged() {
 }
 
 function CopySharedURL() {
-  //create a temporary textfield that we can select and copy from, and remove it again
-  let textArea  = document.createElement('textarea');
-  textArea.width  = "1px"; 
-  textArea.height = "1px";
-  textArea.background =  "transparent";
-  textArea.value = sharedUrlText;
-  document.body.append(textArea);
-  textArea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textArea);
+  //copy text from out hidden textfield
+  let copySharedURLButton  = document.getElementById("copySharedURLButton");
+  copySharedURLButton.focus();
+  copySharedURLButton.select();
   
+  preventNativeCopyEvents = false;
+  document.execCommand('copy');
   
   //feedback animation in unity
   unityInstance.SendMessage("SharedURL", "CopiedText");
