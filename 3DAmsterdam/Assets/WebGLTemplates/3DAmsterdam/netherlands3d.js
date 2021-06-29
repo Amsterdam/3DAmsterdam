@@ -2,10 +2,14 @@ var forceFocus = false;
 var unityCanvas;
 var fileReader;
 
+var sharedUrlText = "";
+
 var unityObjectName = "FileUploads";
 var objData = "";
 var mtlData = "";
 var dataType = 0;
+
+var preventNativeCopyEvents = true;
 
 function ListenerInit()
 {
@@ -67,8 +71,19 @@ function LocationHashChanged() {
     unityInstance.SendMessage("CameraModeChanger", "ChangedPointFromUrl", window.location.hash.replace("#", ""));
 }
 
-function SelectSharedURL() {
-    window.getSelection().selectAllChildren(document.getElementById("sharedUrl"));
+function CopySharedURL() {
+  //copy text from out hidden textfield
+  let copySharedURLButton  = document.getElementById("copySharedURLButton");
+  copySharedURLButton.focus();
+  copySharedURLButton.select();
+  
+  preventNativeCopyEvents = false;
+  document.execCommand('copy');
+  
+  //feedback animation in unity
+  unityInstance.SendMessage("SharedURL", "CopiedText");
+  
+  console.log("Copied the url to clipboard: " + sharedUrlText);
 }
 
 function BuildInUnity() {

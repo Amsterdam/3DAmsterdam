@@ -28,10 +28,14 @@ SpriteAtlas:
       allowAlphaSplitting: 0
       enableRotation: 0
       enableTightPacking: 0
+    secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 32fe519f385dbf2489dbd2e5e87a9563, type: 3}
+    totalSpriteSurfaceArea: 186361
     bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: dd54df2095af6b24c82dc8872ec30417, type: 3}
@@ -45,6 +49,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6b789571438818b4b8b8d7619600a09d, type: 3}
   - {fileID: 21300000, guid: dd170f71c70c8274fae0b403e4e2d104, type: 3}
   - {fileID: 21300000, guid: 6c73d72281fc19e4e871fddc020f4205, type: 3}
+  - {fileID: 21300000, guid: 5b735742d8583584fb9ed9bcf4c9be09, type: 3}
   - {fileID: 21300000, guid: 4f29bda2145a47c4aaa0d25017c64cb9, type: 3}
   - {fileID: 21300000, guid: 9b5d8cd2f438d654b8a3a8e38e038322, type: 3}
   - {fileID: 21300000, guid: b6ae0ee2278413b4f9693aaef97366aa, type: 3}
@@ -61,20 +66,26 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6adacc45f456a4c44b75815be5336caf, type: 3}
   - {fileID: 21300000, guid: eac168551ab770f44aaa25f6144b66e1, type: 3}
   - {fileID: 21300000, guid: a4403a95fcadff846bfc11a3d3295390, type: 3}
+  - {fileID: 21300000, guid: 282de9d52b878d4488b9a8fbdb890aee, type: 3}
   - {fileID: 21300000, guid: 1772942681d606140b352c19a544650c, type: 3}
   - {fileID: 21300000, guid: 67cfd04716ac34d43a9af111a9c9c47b, type: 3}
+  - {fileID: 21300000, guid: fce9f047552e6dd4f95599fc698a4560, type: 3}
   - {fileID: 21300000, guid: 58d609b78c854cd41a93f9ba61a98444, type: 3}
   - {fileID: 21300000, guid: 145de90810f5c7c49b210732ec2e7627, type: 3}
   - {fileID: 21300000, guid: 7b1b6b18776685241aca28b4c7e01f95, type: 3}
+  - {fileID: 21300000, guid: 6fab7e280e7572f4f972ea06a2499737, type: 3}
   - {fileID: 21300000, guid: d228fd78350965c4c8f66113ce878be2, type: 3}
   - {fileID: 21300000, guid: ae65c3c84db67e44e82190a95c9ad45c, type: 3}
   - {fileID: 21300000, guid: e03430e817e31bc48a7730a403233299, type: 3}
+  - {fileID: 21300000, guid: 0ace31394a7dc5541927ad12e66497e1, type: 3}
   - {fileID: 21300000, guid: 171aa359297e80949a666c7471e9f9b9, type: 3}
+  - {fileID: 21300000, guid: e4540d59ff611394b95b9abaf91361e9, type: 3}
   - {fileID: 21300000, guid: 51499ab96b9610c4181d7b4a51b9787d, type: 3}
   - {fileID: 21300000, guid: 4aa82a1b7669da44c99b2f8db7c4638b, type: 3}
   - {fileID: 21300000, guid: 8794ab1b15160844fb2ba383a954acf2, type: 3}
   - {fileID: 21300000, guid: 61fac12b79e337c4580e242041640704, type: 3}
   - {fileID: 21300000, guid: 4211f99bb7fb1974fbaf07f8d4b301a4, type: 3}
+  - {fileID: 21300000, guid: 6023cdab23dae1545bddb3dd0285325b, type: 3}
   - {fileID: 21300000, guid: b28e70cb347a1904ab096f75b3186a00, type: 3}
   - {fileID: 21300000, guid: 3010f0dbc5bca1446bba45736bb1dd62, type: 3}
   - {fileID: 21300000, guid: 4950f25cb1cf8c04c98c1dad0523c778, type: 3}
@@ -102,6 +113,7 @@ SpriteAtlas:
   - Icon_Pipette
   - Icon_DottedCircle
   - Icon_Object
+  - Vissim-Pedestrian
   - Streetview
   - Icon_Search
   - Icon_Annotation
@@ -118,20 +130,26 @@ SpriteAtlas:
   - FieldDark
   - Icon_Layers
   - intensitySlider
+  - csv-file-white64
   - Field
   - TabField_Unactive
+  - city-car_1
   - LocationPointer
   - Field_BlackOutline
   - Icon_Play
+  - Vissim-Car
   - Icon_SeeUnderground
   - Icon_Download
   - Icon_Pause
+  - Vissim-Bike
   - Icon_Settings
+  - Copy
   - Icon_Trash
   - Icon_Plus
   - loadingCircle
   - Icon_Moon
   - Icon_SelectGrid
+  - CablesIcon
   - HeightSlider
   - StreetView_SavePoint
   - Compass
@@ -147,5 +165,6 @@ SpriteAtlas:
   - ColorPipettePointer
   - Field_RightSidePanel
   - Icon_Info
+  m_RenderDataMap: {}
   m_Tag: UIAtlas
   m_IsVariant: 0
