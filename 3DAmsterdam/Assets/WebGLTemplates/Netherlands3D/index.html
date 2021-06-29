@@ -98,10 +98,10 @@
 	  }, 10)
 
 	  // Avoid draining fillrate performance on mobile devices,
-      // and default/override low DPI mode on mobile browsers.
+      // and default/override low DPI mode on mobile browsers by setting devicePixelRatio to 1.
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
           container.className = "unity-mobile";
-          config.devicePixelRatio = 1;
+          config.devicePixelRatio = 2; 
           mobileWarning.style.display = "block";
           setTimeout(() => {
               mobileWarning.style.display = "none";
