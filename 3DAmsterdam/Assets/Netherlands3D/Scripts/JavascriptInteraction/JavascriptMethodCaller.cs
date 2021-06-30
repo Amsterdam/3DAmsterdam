@@ -47,7 +47,6 @@ namespace Netherlands3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern void LockCursorInternal();
 
-
 		public static void DownloadByteArrayAsFile(byte[] array, int byteLength, string fileName)
 		{
 			DownloadFile(array, byteLength, fileName);
@@ -55,7 +54,7 @@ namespace Netherlands3D.JavascriptConnection
 
 		public static void DownloadByteArrayAsZippedFile(byte[] array, int byteLength, string fileName)
 		{
-			DownloadFile(array, byteLength, fileName);
+			DownloadFileAsZip(array, byteLength, fileName);
 		}
 
 		/// <summary>
