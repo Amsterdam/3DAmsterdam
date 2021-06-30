@@ -172,7 +172,6 @@ namespace Netherlands3D.Sharing
                 SerializableScene.CustomLayer customLayer = scene.customLayers[i];
                 GameObject customObject = new GameObject();
                 customObject.name = customLayer.layerName;
-                if(scene.allowSceneEdit) customObject.AddComponent<Interactable>();
                 ApplyLayerMaterialsToObject(customLayer, customObject);
 
                 CustomLayer newCustomLayer = interfaceLayers.AddNewCustomObjectLayer(customObject, LayerType.OBJMODEL, false);
@@ -183,7 +182,7 @@ namespace Netherlands3D.Sharing
                 newCustomLayer.GetUniqueNestedMaterials();
                 newCustomLayer.UpdateLayerPrimaryColor();
 
-                StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale));
+                StartCoroutine(GetCustomMeshObject(customObject, sceneId, customLayer.token, customLayer.position, customLayer.rotation, customLayer.scale, scene.allowSceneEdit));
             }
 
             //Create all custom camera points
@@ -256,25 +255,31 @@ namespace Netherlands3D.Sharing
         /// <param name="rotation">The new rotation for the target GameObject</param>
         /// <param name="scale">The new scale for the target GameObject</param>
         /// <returns></returns>
-        private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale)
+        private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale, bool transformable = false)
         {
             
             Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
             UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
-            if (getModelRequest.isNetworkError || getModelRequest.isHttpError)
+            
+            if (getModelRequest.result == UnityWebRequest.Result.Success)
             {
-                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
-            }
-            else
-            {
-                Debug.Log(getModelRequest.downloadHandler.text);
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
                 gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
+                if (transformable)
+                {
+                    gameObjectTarget.AddComponent<MeshCollider>().sharedMesh = parsedMesh;
+                    gameObjectTarget.AddComponent<Transformable>().stickToMouse = false;
+                }
+
                 gameObjectTarget.transform.position = new Vector3(position.x, position.y, position.z);
                 gameObjectTarget.transform.rotation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
                 gameObjectTarget.transform.localScale = new Vector3(scale.x, scale.y, scale.z);
+            }
+            else
+            {
+                WarningDialogs.Instance.ShowNewDialog("Een van de modellen kon niet worden geladen.\nDe scene is waarschijnlijk dus niet compleet.");
             }
 
             yield return null;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.Logging;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -18,13 +19,18 @@ namespace Netherlands3D.Interface.SidePanel
 		[SerializeField]
 		private float modifierAmount = 15.0f;
 
+		private void Start()
+		{
+			gameObject.AddComponent<AnalyticsClickTrigger>();
+		}
+
 		/// <summary>
 		/// Add a value to the numeric (text) input field
 		/// </summary>
 		/// <param name="multiply"></param>
 		public void AddValue(float multiply)
 		{
-			var add = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? modifierAmount * multiply : addAmount * multiply;
+			var add = Selector.doingMultiselect ? modifierAmount * multiply : addAmount * multiply;
 			if (double.TryParse(inputField.text, out double inputValue))
 			{
 				inputValue += add;

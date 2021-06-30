@@ -11,6 +11,11 @@ public class Bag3DObjImporter : MonoBehaviour
 {
 	[SerializeField]
 	private string bag3DSourceFilesFolder = "";
+
+	[Tooltip("A .txt list of bag ID's on new lines, with all IDS that should be skipped")]
+	[SerializeField]
+	private string optionalSkipListPath = "";
+
 	[SerializeField]
 	private string filter = "*.obj";
 
@@ -53,6 +58,8 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private GameObject enableOnFinish;
 
+	private string[] bagIdsToSkip;
+
 	[System.Serializable]
 	public class RemapObjectNames
 	{
@@ -62,7 +69,16 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void Start()
 	{
+		ReadSkipIDs();
 		StartCoroutine(ParseObjFiles());
+	}
+
+	private void ReadSkipIDs()
+	{
+		if (optionalSkipListPath != "" && File.Exists(optionalSkipListPath))
+		{
+			bagIdsToSkip = File.ReadAllLines(optionalSkipListPath);
+		}
 	}
 
 	private IEnumerator ParseObjFiles()
@@ -159,33 +175,42 @@ public class Bag3DObjImporter : MonoBehaviour
 				foreach (MeshRenderer meshRenderer in remainingBuildings)
 				{
 					meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
-					var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
-					if(childCenterPoint.x < tileRD.x+tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
+					if (bagIdsToSkip.Contains(meshRenderer.gameObject.name))
 					{
-						//This child object center falls within this tile. Lets move it in there.
-						meshRenderer.transform.SetParent(newTileContainer.transform, true);
-						childrenInTile++;
+						//In the skiplist? Skip this by removing it
+						Destroy(meshRenderer.gameObject);
+					}
+					else
+					{
+						//Check if this object center falls within the tile we are creating
+						var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
+						if (childCenterPoint.x < tileRD.x + tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
+						{
+							//This child object center falls within this tile. Lets move it in there.
+							meshRenderer.transform.SetParent(newTileContainer.transform, true);
+							childrenInTile++;
+						}
 					}
 				}
 
 				if (childrenInTile == 0)
 				{
 					Destroy(newTileContainer);
-					print($"<color=#FFBD38>No children found for tile {tileName}</color>");
+					print($"<color={ConsoleColors.GeneralDataWarningHexColor}>No children found for tile {tileName}</color>");
 					continue;
 				}
 
 				//And when we are done, bake it.
-				print($"<color=#00FF00>Baking tile {tileName} with {childrenInTile} buildings</color>");
+				print($"<color={ConsoleColors.GeneralStartProgressHexColor}>Baking tile {tileName} with {childrenInTile} buildings</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
 				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
-				print("Finished tile " + tileName);
+				print($"<color={ConsoleColors.GeneralSuccessHexColor}>Finished tile {tileName}</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}
 
-		print("All done!");
+		print($"<color={ConsoleColors.GeneralSuccessHexColor}>All done!</color>");
 
 		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 	}

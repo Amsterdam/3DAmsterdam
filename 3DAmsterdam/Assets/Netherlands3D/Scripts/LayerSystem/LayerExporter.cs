@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Interface.SidePanel;
-
+using ConvertCoordinates;
+using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.Interface
 {
@@ -34,9 +36,9 @@ namespace Netherlands3D.Interface
 		private void DisplayUI()
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenObjectInformation("Grid selectie", true, 10);
+			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true, 10);
 
-			gridSelection.RenderGridToThumbnail();
+			RenderToThumbnail();
 
 			PropertiesPanel.Instance.AddTitle("Lagen");
 			PropertiesPanel.Instance.AddActionCheckbox("Gebouwen", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer0Toggle", 1)), (action) =>
@@ -82,6 +84,18 @@ namespace Netherlands3D.Interface
 					}
 				}
 				print(selectedExportFormat);
+
+				var amountOfCellsInBounds = (exportBounds.size.x / VisualGrid.Instance.CellSize) * (exportBounds.size.z / VisualGrid.Instance.CellSize);
+				Analytics.SendEvent("LayersExport",
+					new Dictionary<string, object>
+					{
+						{ "Format", selectedExportFormat },
+						{ "Cells", amountOfCellsInBounds },
+						{ "BottomLeftRD", CoordConvert.UnitytoRD(exportBounds.min) },
+						{ "TopRightRD", CoordConvert.UnitytoRD(exportBounds.max) },
+					}
+				);
+
 				switch (selectedExportFormat)
 				{
 					case "AutoCAD DXF (.dxf)":
@@ -97,6 +111,16 @@ namespace Netherlands3D.Interface
 						break;
 				}
 			});
+		}
+
+		private void RenderToThumbnail()
+		{
+			//Lets render a ortographic thumbnail for a proper grid topdown view
+				PropertiesPanel.Instance.RenderThumbnailContaining(
+				exportBounds,
+				PropertiesPanel.ThumbnailRenderMethod.ORTOGRAPHIC,
+				exportBounds.center + Vector3.up * 150.0f
+			);
 		}
 	}
 }

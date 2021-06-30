@@ -24,7 +24,7 @@ namespace Netherlands3D.Cameras
         }
        public IEnumerator MoveToPositionReverse(Transform objectToMove ,Vector3 position, Quaternion rotation) 
         {
-            while(objectToMove.position.y < position.y - 0.1f)
+            while(objectToMove.position.y < position.y - 2.0f)
             {
                 if (Input.GetMouseButtonDown(0)) 
                 {
@@ -41,13 +41,7 @@ namespace Netherlands3D.Cameras
 
       public  IEnumerator MoveToPosition(Transform objectToMove, Vector3 position, Quaternion rotation)
         {
-            //small hack to make sure quaterion.lerp actually does something
-            if (rotation.eulerAngles.x == 0 && rotation.eulerAngles.y == 0 && rotation.eulerAngles.z == 0) 
-            {
-                rotation = Quaternion.Euler(0.1f, 0.1f, 0.1f);
-            }
-            yield return null;
-            while (objectToMove.position.y > position.y + 0.1f)
+            while (objectToMove.position.y > position.y + 2.0f)
             {
                 if (Input.GetMouseButtonDown(0) || stopMovement) 
                 {

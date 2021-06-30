@@ -192,6 +192,7 @@ public class GeometryBuffer
 			}
 
 			Mesh mesh = CreateMesh(gameObjects, materialDictionary, defaultMaterial, i, objectData, allVertices, allUVs, allNormals);
+			mesh.Optimize();
 			if (!objectHasNormals)
 				mesh.RecalculateNormals();
 		}

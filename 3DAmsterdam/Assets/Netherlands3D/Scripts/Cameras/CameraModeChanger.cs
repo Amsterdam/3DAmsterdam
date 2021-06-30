@@ -65,6 +65,7 @@ namespace Netherlands3D.Cameras
             Quaternion oldRotation = currentCamera.transform.rotation;
             oldGodViewRotation = currentCamera.transform.rotation;
             currentCamera.SetActive(false);
+
             currentCamera = streetView.EnableFPSCam();
             currentCamera.transform.position = oldPosition;
             currentCamera.transform.rotation = oldRotation;

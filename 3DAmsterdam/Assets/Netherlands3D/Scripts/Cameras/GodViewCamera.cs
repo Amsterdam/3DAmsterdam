@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using Netherlands3D.ObjectInteraction;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
+using Netherlands3D.Settings;
 
 namespace Netherlands3D.Cameras
 {
@@ -364,8 +365,8 @@ namespace Netherlands3D.Cameras
             var mouseDelta = Mouse.current.delta.ReadValue();
 
 			//Convert mouse position into local rotations
-			currentRotation.x += mouseDelta.x * rotationSensitivity * Time.deltaTime;
-			currentRotation.y -= mouseDelta.y * rotationSensitivity * Time.deltaTime;
+			currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+			currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
 
 			//Adjust camera rotation
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
@@ -453,8 +454,8 @@ namespace Netherlands3D.Cameras
 			var previousPosition = cameraComponent.transform.position;
 			var previousRotation = cameraComponent.transform.rotation;
 
-			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed);
-			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed);
+			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
 
 			if (cameraComponent.transform.position.y < minUndergroundY)
 			{

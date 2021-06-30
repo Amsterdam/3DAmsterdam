@@ -8,7 +8,7 @@ namespace Netherlands3D.AssetGeneration
 {
 	public class AssetBundleExport
 	{
-		public const string assetsFolder = "/3DAmsterdam/GeneratedTileAssets/";	
+		public const string assetsFolder = "/GeneratedTileAssets/";	
 		public const string metaDataSubstring = "-data";
 
 		/// <summary>

@@ -27,6 +27,16 @@ namespace ConvertCoordinates
             x = X;
             y = Y;
         }
+
+        public bool IsInThousands 
+        {
+            get 
+            {
+                Debug.Log($"x:{x} y:{y}");
+                return x % 1000 == 0 && y % 1000 == 0;
+            }
+        }
+        
     }
 
     /// <summary>

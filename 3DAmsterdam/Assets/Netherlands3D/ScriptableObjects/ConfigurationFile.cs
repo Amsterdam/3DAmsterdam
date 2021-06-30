@@ -55,7 +55,7 @@ namespace Netherlands3D
         [Header("Bag Api URLs")]
         public BagApyType BagApiType;
         public string buildingUrl = "https://api.data.amsterdam.nl/bag/v1.1/pand/";
-        public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?pand=";
+        public string numberIndicatorURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand=";
         public string numberIndicatorInstanceURL = "https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/";
         public string monumentURL = "https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=";
         public string moreBuildingInfoUrl = "https://data.amsterdam.nl/data/bag/pand/id{bagid}/";

@@ -49,17 +49,23 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: terrain/terrain_{x}-{y}-lod0
+    path: Terrain/terrain_{x}-{y}-lod0
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 0
   - Description: LOD1
     lod: 1
-    path: terrain/terrain_{x}-{y}-lod1
+    path: Terrain/terrain_{x}-{y}-lod1
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 0
   pauseLoading: 0
+  onLayerEnabled:
+    m_PersistentCalls:
+      m_Calls: []
+  onLayerDisabled:
+    m_PersistentCalls:
+      m_Calls: []
   DefaultMaterialList:
   - {fileID: 2100000, guid: aca3b592882510047a4de2020cd5cafc, type: 2}
   - {fileID: 2100000, guid: bb7ac713e126c8945bcac94241300b1f, type: 2}

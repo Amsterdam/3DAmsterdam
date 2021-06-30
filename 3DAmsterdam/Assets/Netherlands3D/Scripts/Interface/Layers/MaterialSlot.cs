@@ -96,7 +96,7 @@ namespace Netherlands3D.Interface.Layers
 		/// </summary>
 		private void Select()
 		{
-			var multiSelect = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+			var multiSelect = Selector.doingMultiselect;
 			Selected = (multiSelect) ? !Selected : true;
 
 			layerVisuals.SelectMaterialSlot(this, multiSelect);
@@ -109,6 +109,7 @@ namespace Netherlands3D.Interface.Layers
 		/// </summary>
 		public void ResetColor()
 		{
+			materialOpacity = 1.0f;
 			ChangeColor(resetMaterialColor);
 		}
 

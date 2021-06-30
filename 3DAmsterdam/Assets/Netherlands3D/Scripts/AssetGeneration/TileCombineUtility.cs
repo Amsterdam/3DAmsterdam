@@ -48,6 +48,9 @@ namespace Netherlands3D.AssetGeneration
 			{
 				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
 				Mesh buildingMesh = meshFilters[i].sharedMesh;
+
+				if (buildingMesh == null) continue;
+
 				totalVertexCount += buildingMesh.vertexCount;
 				//Create UVS
 				var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
@@ -75,7 +78,7 @@ namespace Netherlands3D.AssetGeneration
 				newCombinedMesh.name = sourceGameobject.name;
 				newCombinedMesh.CombineMeshes(combine, true);
 				newCombinedMesh.RecalculateNormals();
-				newCombinedMesh.Optimize();
+				//newCombinedMesh.Optimize();
 
 				//And clean up memory
 				for (int i = 0; i < combine.Length; i++)

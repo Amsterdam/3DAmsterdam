@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Netherlands3D.Interface;
 
 public class SunSettings : MonoBehaviour
 {
@@ -86,7 +87,7 @@ public class SunSettings : MonoBehaviour
 
     private void ChangedTime(int withOffset)
     {
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        if (Selector.doingMultiselect)
         {
             dateTimeNow = dateTimeNow.AddMinutes(withOffset);
         }

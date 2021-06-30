@@ -9,6 +9,7 @@ using System.Globalization;
 using Netherlands3D.Interface.Selection;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -48,7 +49,14 @@ namespace Netherlands3D.LayerSystem
         {
             base.Select();
             //On a secondary click, only select if we did not make a multisselection yet.
-            if (selectedIDs.Count < 2) Select();
+            if (selectedIDs.Count < 2)
+            {
+                Select();
+            }
+            else{
+                //Simply retrigger the selection list we already have to trigger the right state for the context menu
+                HighlightObjectsWithIDs(selectedIDs);
+            }
         }
 
         public override void Deselect()
@@ -119,7 +127,6 @@ namespace Netherlands3D.LayerSystem
             {
                 selectedIDs.Remove(id);
                 HighlightObjectsWithIDs(selectedIDs);
-
             }
         }
 
@@ -134,6 +141,14 @@ namespace Netherlands3D.LayerSystem
 
             lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
             containerLayer.Highlight(selectedIDs);
+
+            //Analytic
+            Analytics.SendEvent("SelectedBuilding",
+                new Dictionary<string, object>
+                {
+                    { "BagID", lastSelectedID }
+                }
+            );
 
             //Specific context menu /sidepanel items per selection count
             if (selectedIDs.Count == 1)
@@ -251,7 +266,8 @@ namespace Netherlands3D.LayerSystem
 
             //Get the mesh we selected and check if it has an ID stored in the UV2 slot
             Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-            int vertexIndex = lastRaycastHit.triangleIndex * 3;
+            int triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
+            var vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
             if (vertexIndex > mesh.uv2.Length)
             {
                 Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
@@ -274,8 +290,9 @@ namespace Netherlands3D.LayerSystem
                     Vector3 deeperHitPoint = lastRaycastHit.point + (ray.direction * 0.01f);
                     ray = new Ray(deeperHitPoint, ray.direction);
                     if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
-                    {
-                        vertexIndex = lastRaycastHit.triangleIndex * 3;
+					{
+						triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
+                        vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
                         hitUvCoordinate = mesh.uv2[vertexIndex];
 
                         hitPixelColor = objectMapping.GetUVColorID(hitUvCoordinate);
@@ -285,8 +302,8 @@ namespace Netherlands3D.LayerSystem
                 }
             }
 
-            //Not retrieve the selected BAG ID tied to the selected triangle
-            containerLayer.GetIDData(gameObjectToHighlight, lastRaycastHit.triangleIndex * 3, HighlightSelectedID);
+            //Now retrieve the selected BAG ID tied to the selected triangle
+            containerLayer.GetIDData(gameObjectToHighlight, vertexIndex, HighlightSelectedID);
         }
 
         IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)

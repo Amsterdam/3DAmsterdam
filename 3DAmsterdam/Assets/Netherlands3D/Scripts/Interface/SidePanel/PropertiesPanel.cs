@@ -459,25 +459,29 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(spacerPrefab, targetFieldsContainer).GetComponent<RectTransform>().sizeDelta = new Vector2(100, height);
         }
         public void AddLink(string urlText, string urlPath)
-        {
-            Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
+		{
+            var nameAndUrl = Instantiate(urlPrefab, targetFieldsContainer);
+            nameAndUrl.SetURL(urlText, urlPath);
         }
-        public void AddActionButtonText(string buttonText, Action<string> clickAction)
+		public void AddActionButtonText(string buttonText, Action<string> clickAction)
         {
-            Instantiate(buttonTextPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
+            var button = Instantiate(buttonTextPrefab, targetFieldsContainer);
+            button.SetAction(buttonText,clickAction);
         }
         public void AddActionButtonBig(string buttonText, Action<string> clickAction)
         {
             Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
         }
-        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false)
+        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false, string description = "")
         {
-            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
+            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps, description);
         }
 
-        public void AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
+        public ActionDropDown AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")
         {
-            Instantiate(dropdownPrefab, targetFieldsContainer).SetAction(dropdownOptions, selectOptionAction, selected);
+            var actionDropdown = Instantiate(dropdownPrefab, targetFieldsContainer);
+            actionDropdown.SetAction(dropdownOptions, selectOptionAction, selected);
+            return actionDropdown;
         }
 
         public void AddActionCheckbox(string buttonText, bool checkedBox, Action<bool> checkAction)
