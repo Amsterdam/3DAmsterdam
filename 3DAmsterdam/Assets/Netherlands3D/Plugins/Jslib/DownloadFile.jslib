@@ -31,10 +31,8 @@ mergeInto(LibraryManager.library, {
  
     	//var blob = new Blob([bytes]);
     	var zip = new JSZip();
-		zip.file(fileName, blob);
-		var img = zip.folder("images");
 		zip.file("LICENCE.txt", "License placeholder\n");
-		img.file(fileName, bytes, {binary: true});
+		zip.file(fileName, bytes, {binary: true});
 		zip.generateAsync({type:"blob"})
 		.then(function(content) {
 			// see FileSaver.js
