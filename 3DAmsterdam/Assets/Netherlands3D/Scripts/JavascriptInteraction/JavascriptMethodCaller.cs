@@ -40,6 +40,8 @@ namespace Netherlands3D.JavascriptConnection
 
 		[DllImport("__Internal")]
 		private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
+		[DllImport("__Internal")]
+		private static extern void DownloadFileAsZip(byte[] array, int byteLength, string fileName);
 
 
 		[DllImport("__Internal")]
@@ -47,6 +49,11 @@ namespace Netherlands3D.JavascriptConnection
 
 
 		public static void DownloadByteArrayAsFile(byte[] array, int byteLength, string fileName)
+		{
+			DownloadFile(array, byteLength, fileName);
+		}
+
+		public static void DownloadByteArrayAsZippedFile(byte[] array, int byteLength, string fileName)
 		{
 			DownloadFile(array, byteLength, fileName);
 		}

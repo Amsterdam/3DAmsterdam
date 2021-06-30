@@ -46,7 +46,7 @@ public class DxfFile
         {
             if (dxfDocument.Save(stream))
             {
-                JavascriptMethodCaller.DownloadByteArrayAsFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
+                JavascriptMethodCaller.DownloadByteArrayAsZippedFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
             }
             else
             {

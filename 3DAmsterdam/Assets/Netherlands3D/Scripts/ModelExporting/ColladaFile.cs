@@ -400,7 +400,7 @@ public class ColladaFile
 			byte[] byteArray = Encoding.UTF8.GetBytes(stringWriter.ToString());
 			stringWriter = null;
 			writer = null;
-			JavascriptMethodCaller.DownloadByteArrayAsFile(byteArray, byteArray.Length, (filename!="") ? filename : "ColladaExport.dae");
+			JavascriptMethodCaller.DownloadByteArrayAsZippedFile(byteArray, byteArray.Length, (filename!="") ? filename : "ColladaExport.dae");
 		}
 		else
 		{
