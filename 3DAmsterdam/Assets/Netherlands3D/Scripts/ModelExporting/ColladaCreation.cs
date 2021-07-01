@@ -90,6 +90,10 @@ public class ColladaCreation : ModelFormatCreation
         //Save the collada file, with the coordinates embedded in the name.
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
 
+#if UNITY_EDITOR || !UNITY_WEBGL
+        loadingScreen.Hide();
+#endif
+
         FreezeLayers(layerList, false);
 
         Debug.Log("file saved");

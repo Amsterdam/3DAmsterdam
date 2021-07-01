@@ -69,6 +69,10 @@ public class DXFCreation : ModelFormatCreation
         loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
         dxfFile.Save();
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+        loadingScreen.Hide();
+#endif
         FreezeLayers(layerList, false);
 
         Debug.Log("file saved");
