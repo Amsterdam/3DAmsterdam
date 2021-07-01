@@ -28,9 +28,6 @@ public class DxfFile
         dxfLayer = new Layer(layerName);
         dxfLayer.Color = layerColor;
         dxfDocument.Layers.Add(dxfLayer);
-        
-        //AddTriangles(triangleVertices, layerName);
-
 
         AddMesh(triangleVertices, layerName);
     }
