@@ -70,7 +70,7 @@ public class ColladaCreation : ModelFormatCreation
                             meshClipper.clippedVerticesRD[i] = vert;
                         }
 					}
-
+                    yield return new WaitForEndOfFrame();
                     colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]);
                     yield return new WaitForEndOfFrame();
                 }

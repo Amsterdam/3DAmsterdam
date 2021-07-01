@@ -54,8 +54,8 @@ public class DXFCreation : ModelFormatCreation
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
                     loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
                     yield return new WaitForEndOfFrame();
-
                     meshClipper.ClipSubMesh(boundingbox, submeshID);
+                    yield return new WaitForEndOfFrame();
                     dxfFile.AddLayer(meshClipper.clippedVerticesRD, layerName,GetColor(gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]));
                     yield return new WaitForEndOfFrame();
                 }
