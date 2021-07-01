@@ -38,7 +38,7 @@ mergeInto(LibraryManager.library, {
 		zip.generateAsync({type:"blob"})
 		.then(function(content) {
 			// see FileSaver.js
-			saveAs(content, fileName + ".zip");
+			saveAs(content, fileName.split(".")[0] + ".zip");
 			
 			//hide loadingscreen
 			unityInstance.SendMessage("LoadingScreen","Hide");
