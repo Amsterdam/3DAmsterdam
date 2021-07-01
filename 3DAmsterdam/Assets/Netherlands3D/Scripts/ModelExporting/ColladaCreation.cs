@@ -78,7 +78,7 @@ public class ColladaCreation : ModelFormatCreation
             }
             yield return new WaitForEndOfFrame();
         }
-
+        yield return new WaitForEndOfFrame();
         loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
         loadingScreen.ProgressBar.SetMessage("Het Collada (.dae) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();

@@ -63,7 +63,7 @@ public class DXFCreation : ModelFormatCreation
             }
             yield return new WaitForEndOfFrame();
         }
-
+        yield return new WaitForEndOfFrame();
         loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
         loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
