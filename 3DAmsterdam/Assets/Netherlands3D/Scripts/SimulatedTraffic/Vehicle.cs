@@ -9,7 +9,7 @@ using System;
 
 namespace Netherlands3D.Traffic
 {
-    public class Car : MonoBehaviour
+    public class Vehicle : MonoBehaviour
     {
         public RoadObject currentRoad;
         private RoadObject lastRoad = null;
@@ -46,7 +46,7 @@ namespace Netherlands3D.Traffic
             {
                 ApplyCarSettings(gameObject);
             }
-            speed = TrafficSimulator.Instance.carSpeed;
+            speed = TrafficSimulator.Instance.vehicleSpeed;
         }
 
         /// <summary>
@@ -84,28 +84,28 @@ namespace Netherlands3D.Traffic
         // Update is called once per frame
         void Update()
         {
-            if (TrafficSimulator.Instance.enableCarSimulation && speed != TrafficSimulator.Instance.carSpeed)
+            if (TrafficSimulator.Instance.enableVehicleSimulation && speed != TrafficSimulator.Instance.vehicleSpeed)
             {
-                speed = TrafficSimulator.Instance.carSpeed;
+                speed = TrafficSimulator.Instance.vehicleSpeed;
             }
             updateCarFrames++;
             float distanceToCar = Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position);
-            if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
+            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
-            else if (distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
+            else if (distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0)
                 vehicleFrameSpeedCompensator = 5f;
-            else if (distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+            else if (distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
                 vehicleFrameSpeedCompensator = 10f;
 
-            if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
-                 distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
-                distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance ||
+                 distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0 ||
+                distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
             {
                 if (!gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
                 {
                     gameObject.SetActive(true);
                 }
-                if (TrafficSimulator.Instance.enableCarSimulation)
+                if (TrafficSimulator.Instance.enableVehicleSimulation)
                 {
                     if (currentRoad != null)
                     {

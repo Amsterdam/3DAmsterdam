@@ -8,19 +8,19 @@ namespace Netherlands3D.Traffic
 {
     public class TrafficSimulator : MonoBehaviour
     {
-        public List<Car> allCars = new List<Car>();
+        public List<Vehicle> allVehicles = new List<Vehicle>();
         public Dictionary<Color32, int> carColors;
         public static TrafficSimulator Instance = null;
         private int frames;
 
-        public int carSpeed = 20;
+        public int vehicleSpeed = 20;
 
-        public bool enableCarSimulation = false;
+        public bool enableVehicleSimulation = false;
         public bool enableBoundsSimulation = false;
 
-        public int minimumCarRenderDistance = 500;
-        public int mediumCarRenderDistance = 1000;
-        public int maximumCarRenderDistance = 1500;
+        public int minimumVehicleRenderDistance = 500;
+        public int mediumVehicleRenderDistance = 1000;
+        public int maximumVehicleRenderDistance = 1500;
 
         [SerializeField]
         private AssetbundleMeshLayer terrainLayer;
@@ -80,11 +80,11 @@ namespace Netherlands3D.Traffic
 
             GameObject tempCarObject = Instantiate(vehicleTypePrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
             tempCarObject.name = vehicleTypePrefab.name;
-            Car tempCar = tempCarObject.GetComponent<Car>();
+            Vehicle tempCar = tempCarObject.GetComponent<Vehicle>();
             tempCar.currentRoad = currentRoadObject;
             tempCar.SetTerrainLayer(terrainLayer);
             tempCarObject.transform.SetParent(this.transform);
-            allCars.Add(tempCar);
+            allVehicles.Add(tempCar);
         }
 
         /// <summary>
@@ -122,44 +122,44 @@ namespace Netherlands3D.Traffic
                 correctedBounds.max = new Vector3(correctedBounds.max.x, 60f, correctedBounds.max.z);
                 Debug.Log(correctedBounds.min + " " + correctedBounds.max);
 
-                foreach (Car car in allCars)
+                foreach (Vehicle vehicle in allVehicles)
                 {
-                    if (car.debugCar)
+                    if (vehicle.debugCar)
                     {
-                        Debug.Log(bound.Contains(car.transform.position));
+                        Debug.Log(bound.Contains(vehicle.transform.position));
                     }
-                    if (!bound.Contains(car.gameObject.transform.position))
+                    if (!bound.Contains(vehicle.gameObject.transform.position))
                     {
-                        if (car.debugCar)
+                        if (vehicle.debugCar)
                         {
-                            Debug.Log(car.transform.position);
+                            Debug.Log(vehicle.transform.position);
                         }
-                        car.gameObject.SetActive(false);
+                        vehicle.gameObject.SetActive(false);
                     }
                 }
             }
         }
         /// <summary>
-        /// Enables/Disables all the cars from driving
+        /// Enables/Disables all the vvehicles from driving
         /// </summary>
         /// <param name="value"></param>
         public void StartSimulation(bool value)
         {
-            foreach (Car car in allCars)
+            foreach (Vehicle vehicle in allVehicles)
             {
-                Destroy(car.gameObject);
+                Destroy(vehicle.gameObject);
             }
-            allCars.Clear();
-            enableCarSimulation = value;
+            allVehicles.Clear();
+            enableVehicleSimulation = value;
             gameObject.SetActive(value);
         }
         /// <summary>
-        /// Updates the car speed of all cars
+        /// Updates the speed of all vehicles
         /// </summary>
         /// <param name="speed"></param>
-        public void UpdateCarSpeed(int speed)
+        public void UpdateVehicleSpeed(int speed)
         {
-            carSpeed = speed;
+            vehicleSpeed = speed;
         }
     }
 }

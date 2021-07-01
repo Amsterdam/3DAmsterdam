@@ -18,7 +18,7 @@ namespace Netherlands3D.Traffic
         void Start()
         {
             speedSlider.onValueChanged.AddListener(delegate { UpdateVehicleSpeed(); });
-            speedSlider.value = trafficSimulator.carSpeed;
+            speedSlider.value = trafficSimulator.vehicleSpeed;
             startCarToggle.onValueChanged.AddListener(delegate { StartCars(); });
         }
 
@@ -28,11 +28,11 @@ namespace Netherlands3D.Traffic
         public void UpdateVehicleSpeed()
         {
             speedText.text = speedSlider.value.ToString();
-            trafficSimulator.carSpeed = Mathf.RoundToInt(speedSlider.value);
+            trafficSimulator.vehicleSpeed = Mathf.RoundToInt(speedSlider.value);
         }
 
         /// <summary>
-        /// Start/Stops all cars through an UI element
+        /// Start/Stops all vehicles through an UI element
         /// </summary>
         public void StartCars()
         {
