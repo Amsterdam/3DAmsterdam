@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9127570079713357770}
   - component: {fileID: 666515666712532573}
   - component: {fileID: 8488118195944559137}
+  - component: {fileID: 733927048591406620}
   m_Layer: 15
   m_Name: BasicCar
   m_TagString: Untagged
@@ -118,6 +119,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.2, y: 1, z: 0.3}
   m_Center: {x: 0, y: 1, z: -2.3}
+--- !u!114 &733927048591406620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7326046871663922719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f39048697119aee498e4b34d4e06e58b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentRoad: {fileID: 0}
+  nextRoad: {fileID: 0}
+  currentRoadIndex: 0
+  speed: 20
+  debugCar: 0
+  needToStop: 0
 --- !u!1001 &2371216805397052284
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.LayerSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,6 @@ namespace Netherlands3D.Traffic
     {
         public List<Car> allCars = new List<Car>();
         public Dictionary<Color32, int> carColors;
-        public GameObject carPrefab;
         public static TrafficSimulator Instance = null;
         private int frames;
 
@@ -25,12 +25,28 @@ namespace Netherlands3D.Traffic
         [SerializeField]
         private AssetbundleMeshLayer terrainLayer;
 
-        public int totalWeight;
+        [Serializable]
+        public struct VehicleType
+        {
+            public GameObject vehicleType;
+            public int vehicleFrequency;
+        }
+
+        public List<VehicleType> vehicles;
+
+        public int totalColorWeight;
+
+        public int totalVehicleTypeWeight;
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
+            }
+
+            foreach (VehicleType vehicle in vehicles)
+            {
+                totalVehicleTypeWeight += vehicle.vehicleFrequency;
             }
 
             // Dictionary created based on the color distribution of cars within the Netherlands
@@ -47,27 +63,53 @@ namespace Netherlands3D.Traffic
             carColors.Add(new Color32(255, 223, 0, 255),1); //yellow
             carColors.Add(new Color32(255, 94, 19, 255),1); //orange
 
-            foreach (KeyValuePair<Color32,int> carColor in carColors)
+            foreach (KeyValuePair<Color32,int> vehicleColor in carColors)
             {
-                totalWeight += carColor.Value;
+                totalColorWeight += vehicleColor.Value;
             }
         }
 
         /// <summary>
-        /// Places a car on a roadobject
+        /// Places a vehicle on a roadobject
         /// </summary>
         /// <param name="currentRoadObject"></param>
         public void PlaceCar(RoadObject currentRoadObject)
         {
-            GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            // Chooses a random vehicle out of all the vehicle objects.
+            GameObject vehicleTypePrefab = GenerateVehicleType(UnityEngine.Random.Range(0, totalVehicleTypeWeight));
+
+            GameObject tempCarObject = Instantiate(vehicleTypePrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            tempCarObject.name = vehicleTypePrefab.name;
             Car tempCar = tempCarObject.GetComponent<Car>();
             tempCar.currentRoad = currentRoadObject;
             tempCar.SetTerrainLayer(terrainLayer);
             tempCarObject.transform.SetParent(this.transform);
             allCars.Add(tempCar);
         }
+
         /// <summary>
-        /// Simulates all cars inside the bounds
+        /// Checks the random number against each rarity of vehicle type
+        /// </summary>
+        /// <param name="vehiclePercentage"></param>
+        /// <returns></returns>
+        private GameObject GenerateVehicleType(float vehiclePercentage)
+        {
+            foreach (VehicleType vehicleType in vehicles)
+            {
+                if (vehiclePercentage < vehicleType.vehicleFrequency)
+                {
+                    return vehicleType.vehicleType;
+                }
+                else
+                {
+                    vehiclePercentage -= vehicleType.vehicleFrequency;
+                }
+            }
+            return vehicles[0].vehicleType;
+        }
+
+        /// <summary>
+        /// Simulates all vehicles inside the bounds
         /// </summary>
         /// <param name="bound"></param>
         public void SimulateInBounds(Bounds bound)

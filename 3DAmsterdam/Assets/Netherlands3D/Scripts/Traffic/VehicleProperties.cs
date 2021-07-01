@@ -34,7 +34,7 @@ public class VehicleProperties : MonoBehaviour
 
     private Vector3 GetCoordinatesUnderWheel(Vector3 position)
     {
-        if (Physics.Raycast(position, -Vector3.up, out hit, 5f))
+        if (Physics.Raycast(position, -Vector3.up, out hit, 10f))
         {
             return hit.point;
         }
