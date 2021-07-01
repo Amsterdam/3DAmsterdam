@@ -36,7 +36,7 @@ public class DxfFile
 #if UNITY_EDITOR
 
         var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        dxfDocument.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
+        dxfDocument.Save(Path.Combine(mydocs, "DXFBinary.dxf"), true);        
         return;
 #endif
         using (var stream = new MemoryStream())
@@ -44,7 +44,7 @@ public class DxfFile
             if (dxfDocument.Save(stream))
             {
                 var streamAsByArray = stream.ToArray();
-                JavascriptMethodCaller.DownloadByteArrayAsZippedFile(streamAsByArray, streamAsByArray.Length, "testfile.dxf");
+                JavascriptMethodCaller.DownloadByteArrayAsZippedFile(streamAsByArray, streamAsByArray.Length, "DXFBinary.dxf");
             }
             else
             {
