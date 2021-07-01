@@ -29,7 +29,6 @@ mergeInto(LibraryManager.library, {
     	   bytes[i] = HEAPU8[array + i];
 		}
  
-    	//var blob = new Blob([bytes]);
     	var zip = new JSZip();
 		zip.file("LICENCE.txt", "License placeholder\n");
 		zip.file(fileName, bytes, {binary: true});
