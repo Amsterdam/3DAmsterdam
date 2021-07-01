@@ -355,9 +355,13 @@ namespace Netherlands3D.Interface.SidePanel
         {
             if (ignoreChangeEvents) return;
 
-            rdCoordinates.x = double.Parse(rdX.text, CultureInfo.InvariantCulture);
-            rdCoordinates.y = double.Parse(rdY.text, CultureInfo.InvariantCulture);
-            rdCoordinates.z = double.Parse(napZ.text, CultureInfo.InvariantCulture);
+            if (rdX.text == "") rdX.text = "0";
+            if (rdY.text == "") rdY.text = "0";
+            if (napZ.text == "") napZ.text = "0";
+
+            rdCoordinates.x = double.Parse(MakeInputParsable(rdX.text), CultureInfo.InvariantCulture);
+            rdCoordinates.y = double.Parse(MakeInputParsable(rdY.text), CultureInfo.InvariantCulture);
+            rdCoordinates.z = double.Parse(MakeInputParsable(napZ.text), CultureInfo.InvariantCulture);
 
             transformableTarget.transform.position = CoordConvert.RDtoUnity(rdCoordinates);
         }

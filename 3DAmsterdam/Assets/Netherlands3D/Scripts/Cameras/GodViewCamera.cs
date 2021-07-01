@@ -365,8 +365,8 @@ namespace Netherlands3D.Cameras
             var mouseDelta = Mouse.current.delta.ReadValue();
 
 			//Convert mouse position into local rotations
-			currentRotation.x += mouseDelta.x * rotationSensitivity * Time.deltaTime;
-			currentRotation.y -= mouseDelta.y * rotationSensitivity * Time.deltaTime;
+			currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+			currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
 
 			//Adjust camera rotation
 			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);

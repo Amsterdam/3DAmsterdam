@@ -15,7 +15,7 @@
 	<meta name="theme-color" content="#ffffff">
   </head>
   <body>
-	<div id="sharedUrl" onclick="SelectSharedURL()" style="display:none;"></div>
+	<input type="text" id="copySharedURLButton" class="hiddenFollower" onclick="CopySharedURL()" style="display:none;">
 	<div id="objUploadClickRegisterArea" class="hiddenFollower" style="display:none;">
 		<input id="obj" type="file" accept=".obj,.mtl" onchange="ReadFiles(this.files)" multiple>
 	</div>
@@ -98,10 +98,10 @@
 	  }, 10)
 
 	  // Avoid draining fillrate performance on mobile devices,
-      // and default/override low DPI mode on mobile browsers.
+      // and default/override low DPI mode on mobile browsers by setting devicePixelRatio to 1.
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
           container.className = "unity-mobile";
-          config.devicePixelRatio = 1;
+          config.devicePixelRatio = 2; 
           mobileWarning.style.display = "block";
           setTimeout(() => {
               mobileWarning.style.display = "none";
