@@ -76,6 +76,7 @@ public class ColladaCreation : ModelFormatCreation
                 }
                 yield return new WaitForEndOfFrame();
             }
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' afgerond...");
             yield return new WaitForEndOfFrame();
         }
         yield return new WaitForEndOfFrame();
@@ -90,7 +91,7 @@ public class ColladaCreation : ModelFormatCreation
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
 
         FreezeLayers(layerList, false);
-        loadingScreen.Hide();
+
         Debug.Log("file saved");
     }
 }

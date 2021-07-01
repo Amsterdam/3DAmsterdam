@@ -18,6 +18,9 @@ mergeInto(LibraryManager.library, {
     	event.initMouseEvent("click");
     	link.dispatchEvent(event);
 		window.URL.revokeObjectURL(link.href);
+		
+		//hide loadingscreen
+		unityInstance.SendMessage("LoadingScreen","Hide");
 	},
 	DownloadFileAsZip : function(array, size, fileNamePtr)
 	{
@@ -36,6 +39,9 @@ mergeInto(LibraryManager.library, {
 		.then(function(content) {
 			// see FileSaver.js
 			saveAs(content, fileName + ".zip");
+			
+			//hide loadingscreen
+			unityInstance.SendMessage("LoadingScreen","Hide");
 		});
 	}
 });

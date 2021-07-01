@@ -61,6 +61,7 @@ public class DXFCreation : ModelFormatCreation
                 }
                 yield return new WaitForEndOfFrame();
             }
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' afgerond...");
             yield return new WaitForEndOfFrame();
         }
         yield return new WaitForEndOfFrame();
@@ -68,9 +69,8 @@ public class DXFCreation : ModelFormatCreation
         loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
         dxfFile.Save();
-
-        loadingScreen.Hide();
         FreezeLayers(layerList, false);
+
         Debug.Log("file saved");
     }
 
