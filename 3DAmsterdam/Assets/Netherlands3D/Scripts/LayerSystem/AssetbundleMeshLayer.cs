@@ -97,7 +97,8 @@ namespace Netherlands3D.LayerSystem
 			var webRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);
 			tiles[tileKey].runningWebRequest = webRequest;
 			yield return webRequest.SendWebRequest();
-			tiles[tileKey].runningWebRequest = null;
+
+			if(tiles[tileKey] != null)	tiles[tileKey].runningWebRequest = null;
 
 			if (webRequest.isNetworkError || webRequest.isHttpError)
 			{
@@ -125,7 +126,6 @@ namespace Netherlands3D.LayerSystem
 				}
 				else
 				{
-
 					callback(tileChange);
 				}
 			}
