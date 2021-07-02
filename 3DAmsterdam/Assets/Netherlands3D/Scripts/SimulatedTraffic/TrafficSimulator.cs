@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.LayerSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,30 +8,45 @@ namespace Netherlands3D.Traffic
 {
     public class TrafficSimulator : MonoBehaviour
     {
-        public List<Car> allCars = new List<Car>();
+        public List<Vehicle> allVehicles = new List<Vehicle>();
         public Dictionary<Color32, int> carColors;
-        public GameObject carPrefab;
         public static TrafficSimulator Instance = null;
         private int frames;
 
-        public int carSpeed = 20;
+        public int vehicleSpeed = 20;
 
-        public bool enableCarSimulation = false;
+        public bool enableVehicleSimulation = false;
         public bool enableBoundsSimulation = false;
 
-        public int minimumCarRenderDistance = 500;
-        public int mediumCarRenderDistance = 1000;
-        public int maximumCarRenderDistance = 1500;
+        public int minimumVehicleRenderDistance = 500;
+        public int mediumVehicleRenderDistance = 1000;
+        public int maximumVehicleRenderDistance = 1500;
 
         [SerializeField]
         private AssetbundleMeshLayer terrainLayer;
 
-        public int totalWeight;
+        [Serializable]
+        public struct VehicleType
+        {
+            public GameObject vehicleType;
+            public int vehicleFrequency;
+        }
+
+        public List<VehicleType> vehicles;
+
+        public int totalColorWeight;
+
+        public int totalVehicleTypeWeight;
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
+            }
+
+            foreach (VehicleType vehicle in vehicles)
+            {
+                totalVehicleTypeWeight += vehicle.vehicleFrequency;
             }
 
             // Dictionary created based on the color distribution of cars within the Netherlands
@@ -47,27 +63,53 @@ namespace Netherlands3D.Traffic
             carColors.Add(new Color32(255, 223, 0, 255),1); //yellow
             carColors.Add(new Color32(255, 94, 19, 255),1); //orange
 
-            foreach (KeyValuePair<Color32,int> carColor in carColors)
+            foreach (KeyValuePair<Color32,int> vehicleColor in carColors)
             {
-                totalWeight += carColor.Value;
+                totalColorWeight += vehicleColor.Value;
             }
         }
 
         /// <summary>
-        /// Places a car on a roadobject
+        /// Places a vehicle on a roadobject
         /// </summary>
         /// <param name="currentRoadObject"></param>
         public void PlaceCar(RoadObject currentRoadObject)
         {
-            GameObject tempCarObject = Instantiate(carPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
-            Car tempCar = tempCarObject.GetComponent<Car>();
+            // Chooses a random vehicle out of all the vehicle objects.
+            GameObject vehicleTypePrefab = GenerateVehicleType(UnityEngine.Random.Range(0, totalVehicleTypeWeight));
+
+            GameObject tempCarObject = Instantiate(vehicleTypePrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            tempCarObject.name = vehicleTypePrefab.name;
+            Vehicle tempCar = tempCarObject.GetComponent<Vehicle>();
             tempCar.currentRoad = currentRoadObject;
             tempCar.SetTerrainLayer(terrainLayer);
             tempCarObject.transform.SetParent(this.transform);
-            allCars.Add(tempCar);
+            allVehicles.Add(tempCar);
         }
+
         /// <summary>
-        /// Simulates all cars inside the bounds
+        /// Checks the random number against each rarity of vehicle type
+        /// </summary>
+        /// <param name="vehiclePercentage"></param>
+        /// <returns></returns>
+        private GameObject GenerateVehicleType(float vehiclePercentage)
+        {
+            foreach (VehicleType vehicleType in vehicles)
+            {
+                if (vehiclePercentage < vehicleType.vehicleFrequency)
+                {
+                    return vehicleType.vehicleType;
+                }
+                else
+                {
+                    vehiclePercentage -= vehicleType.vehicleFrequency;
+                }
+            }
+            return vehicles[0].vehicleType;
+        }
+
+        /// <summary>
+        /// Simulates all vehicles inside the bounds
         /// </summary>
         /// <param name="bound"></param>
         public void SimulateInBounds(Bounds bound)
@@ -80,44 +122,44 @@ namespace Netherlands3D.Traffic
                 correctedBounds.max = new Vector3(correctedBounds.max.x, 60f, correctedBounds.max.z);
                 Debug.Log(correctedBounds.min + " " + correctedBounds.max);
 
-                foreach (Car car in allCars)
+                foreach (Vehicle vehicle in allVehicles)
                 {
-                    if (car.debugCar)
+                    if (vehicle.debugCar)
                     {
-                        Debug.Log(bound.Contains(car.transform.position));
+                        Debug.Log(bound.Contains(vehicle.transform.position));
                     }
-                    if (!bound.Contains(car.gameObject.transform.position))
+                    if (!bound.Contains(vehicle.gameObject.transform.position))
                     {
-                        if (car.debugCar)
+                        if (vehicle.debugCar)
                         {
-                            Debug.Log(car.transform.position);
+                            Debug.Log(vehicle.transform.position);
                         }
-                        car.gameObject.SetActive(false);
+                        vehicle.gameObject.SetActive(false);
                     }
                 }
             }
         }
         /// <summary>
-        /// Enables/Disables all the cars from driving
+        /// Enables/Disables all the vvehicles from driving
         /// </summary>
         /// <param name="value"></param>
         public void StartSimulation(bool value)
         {
-            foreach (Car car in allCars)
+            foreach (Vehicle vehicle in allVehicles)
             {
-                Destroy(car.gameObject);
+                Destroy(vehicle.gameObject);
             }
-            allCars.Clear();
-            enableCarSimulation = value;
+            allVehicles.Clear();
+            enableVehicleSimulation = value;
             gameObject.SetActive(value);
         }
         /// <summary>
-        /// Updates the car speed of all cars
+        /// Updates the speed of all vehicles
         /// </summary>
         /// <param name="speed"></param>
-        public void UpdateCarSpeed(int speed)
+        public void UpdateVehicleSpeed(int speed)
         {
-            carSpeed = speed;
+            vehicleSpeed = speed;
         }
     }
 }

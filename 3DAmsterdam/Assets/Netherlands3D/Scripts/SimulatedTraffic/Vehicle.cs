@@ -9,15 +9,13 @@ using System;
 
 namespace Netherlands3D.Traffic
 {
-    public class Car : MonoBehaviour
+    public class Vehicle : MonoBehaviour
     {
         public RoadObject currentRoad;
         private RoadObject lastRoad = null;
         public RoadObject nextRoad = null;
         public int currentRoadIndex = 0;
         public int speed = 20;
-
-        public GameObject[] cars;
 
         public bool debugCar = false;
         private int findRoadLoopFrames = 0;
@@ -35,8 +33,6 @@ namespace Netherlands3D.Traffic
 
         public bool needToStop = false;
 
-        private GameObject carType;
-
         private VehicleProperties vehicleProperties;
 
         void Start()
@@ -44,26 +40,22 @@ namespace Netherlands3D.Traffic
             maxWaitingTime = UnityEngine.Random.Range(3f, 7f);
             transform.position = currentRoad.roadPoints[0].pointCoordinates;
             currentRoadIndex++;
-            // disables all car objects
-            foreach (GameObject car in cars)
-            {
-                car.SetActive(false);
-            }
 
-            // Chooses a random car out of all the car objects.
-            carType = cars[UnityEngine.Random.Range(0, cars.Length)];
-            vehicleProperties = carType.GetComponent<VehicleProperties>();
-            if (carType.name == "BasicCar")
+            vehicleProperties = gameObject.GetComponent<VehicleProperties>();
+            if (gameObject.name == "BasicCar")
             {
-                ApplySettings(carType);
+                ApplyCarSettings(gameObject);
             }
-            carType.SetActive(true);
-            speed = TrafficSimulator.Instance.carSpeed;
+            speed = TrafficSimulator.Instance.vehicleSpeed;
         }
 
-        private void ApplySettings(GameObject car)
+        /// <summary>
+        /// Applies settings specific to the car vehicle
+        /// </summary>
+        /// <param name="car"></param>
+        private void ApplyCarSettings(GameObject car)
         {
-            int colorPercentage = UnityEngine.Random.Range(0, TrafficSimulator.Instance.totalWeight);
+            int colorPercentage = UnityEngine.Random.Range(0, TrafficSimulator.Instance.totalColorWeight);
             car.GetComponent<Renderer>().material.color = GenerateColor(colorPercentage);
         }
 
@@ -92,28 +84,28 @@ namespace Netherlands3D.Traffic
         // Update is called once per frame
         void Update()
         {
-            if (TrafficSimulator.Instance.enableCarSimulation && speed != TrafficSimulator.Instance.carSpeed)
+            if (TrafficSimulator.Instance.enableVehicleSimulation && speed != TrafficSimulator.Instance.vehicleSpeed)
             {
-                speed = TrafficSimulator.Instance.carSpeed;
+                speed = TrafficSimulator.Instance.vehicleSpeed;
             }
             updateCarFrames++;
             float distanceToCar = Vector3.Distance(CameraModeChanger.Instance.ActiveCamera.transform.position, transform.position);
-            if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance)
+            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance)
                 vehicleFrameSpeedCompensator = 1f;
-            else if (distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0)
+            else if (distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0)
                 vehicleFrameSpeedCompensator = 5f;
-            else if (distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+            else if (distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
                 vehicleFrameSpeedCompensator = 10f;
 
-            if (distanceToCar < TrafficSimulator.Instance.minimumCarRenderDistance ||
-                 distanceToCar < TrafficSimulator.Instance.mediumCarRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumCarRenderDistance && updateCarFrames % 5 == 0 ||
-                distanceToCar > TrafficSimulator.Instance.mediumCarRenderDistance && updateCarFrames % 10 == 0)
+            if (distanceToCar < TrafficSimulator.Instance.minimumVehicleRenderDistance ||
+                 distanceToCar < TrafficSimulator.Instance.mediumVehicleRenderDistance && distanceToCar > TrafficSimulator.Instance.minimumVehicleRenderDistance && updateCarFrames % 5 == 0 ||
+                distanceToCar > TrafficSimulator.Instance.mediumVehicleRenderDistance && updateCarFrames % 10 == 0)
             {
                 if (!gameObject.activeSelf && TrafficSimulator.Instance.enableBoundsSimulation == false)
                 {
                     gameObject.SetActive(true);
                 }
-                if (TrafficSimulator.Instance.enableCarSimulation)
+                if (TrafficSimulator.Instance.enableVehicleSimulation)
                 {
                     if (currentRoad != null)
                     {
@@ -203,7 +195,7 @@ namespace Netherlands3D.Traffic
                     // puts the car on the road
                     transform.position = compensationVector;
                     // looks at the point where the car is driving
-                    transform.LookAt(tempLook); // MAYBE U CAN PUT THIS IN THE ELSE SO ITS ONLY EXECUTED ONCE????
+                    transform.LookAt(tempLook);
                     transform.rotation = vehicleProperties.GetNewRotation(transform.rotation);
                     // propels the car forward
                     gameObject.transform.Translate(transform.forward * Time.deltaTime * speed * vehicleFrameSpeedCompensator, Space.World);

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4373781999200911067}
   - component: {fileID: 254462346397753098}
   - component: {fileID: -9114527991545308376}
+  - component: {fileID: 3619561933322718693}
   m_Layer: 0
   m_Name: bike
   m_TagString: Untagged
@@ -60,6 +61,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -84,6 +86,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &254462346397753098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +121,23 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &3619561933322718693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2860410278031499022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1bde442adf08274190500a5f0c6154b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontLeftWheel: {fileID: 4113342564907028127}
+  frontRightWheel: {fileID: 4113342564907028127}
+  backLeftWheel: {fileID: 7255886430454295878}
+  backRightWheel: {fileID: 7255886430454295878}
+  otherWheels: []
 --- !u!1001 &1743418730767826507
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -183,10 +203,16 @@ PrefabInstance:
     - target: {fileID: 8972235175281005325, guid: 503ed622901e9fe46ab7960f80c2bbab,
         type: 3}
       propertyPath: m_Name
-      value: bike_wheel (1)
+      value: bike_wheel_back
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503ed622901e9fe46ab7960f80c2bbab, type: 3}
+--- !u!1 &7255886430454295878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8972235175281005325, guid: 503ed622901e9fe46ab7960f80c2bbab,
+    type: 3}
+  m_PrefabInstance: {fileID: 1743418730767826507}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8068698939282323452 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8631176131859696055, guid: 503ed622901e9fe46ab7960f80c2bbab,
@@ -258,10 +284,16 @@ PrefabInstance:
     - target: {fileID: 8972235175281005325, guid: 503ed622901e9fe46ab7960f80c2bbab,
         type: 3}
       propertyPath: m_Name
-      value: bike_wheel
+      value: bike_wheel_front
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 503ed622901e9fe46ab7960f80c2bbab, type: 3}
+--- !u!1 &4113342564907028127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8972235175281005325, guid: 503ed622901e9fe46ab7960f80c2bbab,
+    type: 3}
+  m_PrefabInstance: {fileID: 5014282226115059090}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3629435005504541733 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8631176131859696055, guid: 503ed622901e9fe46ab7960f80c2bbab,

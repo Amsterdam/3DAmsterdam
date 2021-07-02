@@ -1,4 +1,5 @@
-﻿using Netherlands3D.LayerSystem;
+﻿using Netherlands3D.Cameras;
+using Netherlands3D.LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Netherlands3D.Traffic.VISSIM
         [SerializeField] private ConvertFZP fileConverter = default;
         [SerializeField] private AssetbundleMeshLayer meshLayer;
 
+        private Vector3 cameraStartPosition;
         public float timeCounter;
         public int loopCounter = 0;
         public int loopCounterFuture = 0;
@@ -95,6 +97,17 @@ namespace Netherlands3D.Traffic.VISSIM
             }
 
 
+        }
+
+        public void SendCameraToVissim()
+        {
+             cameraStartPosition = CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position;
+             CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position = new Vector3(fileConverter.allVissimData[0].coordRear.x, cameraStartPosition.y ,fileConverter.allVissimData[0].coordRear.z);
+        }
+
+        public void SendCameraToStart()
+        {
+            CameraModeChanger.Instance.ActiveCamera.gameObject.transform.position = cameraStartPosition;
         }
     }
 }

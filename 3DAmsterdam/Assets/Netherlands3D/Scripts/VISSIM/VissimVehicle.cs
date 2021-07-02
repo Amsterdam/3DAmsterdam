@@ -22,10 +22,13 @@ namespace Netherlands3D.Traffic.VISSIM
         protected float cleanUpTime = 5;
 
         protected AssetbundleMeshLayer meshLayer;
+        protected VehicleProperties vehicleProperties;
+
         protected virtual void Awake()
         {
             anim = GetComponent<Animation>();
             timeSinceCommand = Time.time + cleanUpTime;
+            vehicleProperties = gameObject.GetComponent<VehicleProperties>();
         }
 
         protected virtual void Update()
@@ -34,6 +37,16 @@ namespace Netherlands3D.Traffic.VISSIM
             if (Time.time > timeSinceCommand && gameObject.activeSelf)
             {
                 CleanUpVehicle();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (vehicleProperties != null)
+            {
+                float degrees = 5.0f;
+                Quaternion targetRotation = new Quaternion(vehicleProperties.GetNewRotation(transform.rotation).x,transform.rotation.y, vehicleProperties.GetNewRotation(transform.rotation).z,transform.rotation.w); 
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, degrees * Time.deltaTime);
             }
         }
 
@@ -92,15 +105,18 @@ namespace Netherlands3D.Traffic.VISSIM
             // rotation animation
             if (Vector3.Distance(startPos, endPos) > minimumDistanceForAnimation)
             {
+
                 //clip.SetCurve("", typeof(Transform), "localRotation.x", AnimationCurve.Linear(0.0f, transform.rotation.x, animationTime, Quaternion.LookRotation(_direction).x)); //convert to quaternions
                 clip.SetCurve("", typeof(Transform), "localRotation.y", AnimationCurve.Linear(0.0f, transform.rotation.y, animationTime, Quaternion.LookRotation(_direction).y)); //convert to quaternions
-                                                                                                                                                                                  //clip.SetCurve("", typeof(Transform), "localRotation.z", AnimationCurve.Linear(0.0f, transform.rotation.z, animationTime, Quaternion.LookRotation(_direction).z)); //convert to quaternions
-                clip.SetCurve("", typeof(Transform), "localRotation.w", AnimationCurve.Linear(0.0f, transform.rotation.w, animationTime, Quaternion.LookRotation(_direction).w)); //convert to quaternions
+                //clip.SetCurve("", typeof(Transform), "localRotation.z", AnimationCurve.Linear(0.0f, transform.rotation.z, animationTime, Quaternion.LookRotation(_direction).z)); //convert to quaternions
+                clip.SetCurve("", typeof(Transform), "localRotation.w", AnimationCurve.Linear(0.0f, transform.rotation.w, animationTime, Quaternion.LookRotation(_direction).w)); //convert to quaternions 
+  
             }
 
             // Plays the animated clip of the vehicle
             anim.AddClip(clip, clip.name);
             anim.Play(clip.name);
+
         }
 
         /// <summary>
