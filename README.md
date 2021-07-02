@@ -34,5 +34,5 @@ Mesh Simplifier - MIT License<br/>
 Clipping Triangles - MIT License<br/>
 scripts/extentions/ListExtensions.cs - MIT License<br/>
 Scripts/RuntimeHandle derivative work - MIT License<br/>
-quantized mesh tiles (no longer used) - MIT License
+quantized mesh tiles (no longer used) - MIT License<br/>
 JSZip - MIT License
