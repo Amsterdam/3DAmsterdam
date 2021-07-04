@@ -67,17 +67,17 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             List<Vector2> overlappingTiles = new List<Vector2>();
             // get boundingbox of total cityObject
             double Xmin = bboxVertices.Min(x => x.x);
-            Xmin = Xmin - (Xmin % tileSize);
+            Xmin = Xmin - (Xmin % tileSize) - tileSize;
             double Xmax = bboxVertices.Max(x => x.x);
-            Xmax = Xmax - (Xmax % tileSize) + tileSize;
+            Xmax = Xmax - (Xmax % tileSize) + (2*tileSize);
             double Ymin = bboxVertices.Min(x => x.y);
-            Ymin = Ymin - (Ymin % tileSize);
+            Ymin = Ymin - (Ymin % tileSize) - tileSize;
             double Ymax = bboxVertices.Max(x => x.y);
-            Ymax = Ymax - (Ymax % tileSize) + tileSize;
+            Ymax = Ymax - (Ymax % tileSize) + (2*tileSize);
             Vector2 tile = vertexTile(Xmin, Ymin, tileSize);
-            for (int x = (int)Xmin; x < (int)Xmax+tileSize; x+=tileSize)
+            for (int x = (int)Xmin; x < (int)Xmax; x+=tileSize)
             {
-                for (int y = (int)Ymin; y < (int)Ymax+tileSize; y+=tileSize)
+                for (int y = (int)Ymin; y < (int)Ymax; y+=tileSize)
                 {
                     overlappingTiles.Add( vertexTile(x, y, tileSize));
                 }
@@ -107,8 +107,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         {
             Vector2 tileIndex = new Vector2
                 (
-                (float)(x - (x % tileSize)),
-                (float)(y - (y % tileSize))
+                (float)(x),
+                (float)(y )                
                 ) ;
             return tileIndex;
         }
@@ -158,8 +158,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 yield return new WaitWhile(() => bewerkingGereed ==false);
                 Debug.Log("file " + counter + " van " + folderNames.Count);
                 bewerkingGereed = false;
-                StartCoroutine(ReadJSONFile(item));
                 
+                StartCoroutine(ReadJSONFile(item));
+                for (int i = 0; i < 20; i++)
+                {
+                    System.GC.Collect();
+
+                }
+
             }
 
         }
@@ -228,20 +234,25 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             Debug.Log("parsing file: " + file);
             yield return null;
             JSONNode cityModel = JSON.Parse(jsonstring);
+            jsonstring = "";
+            for (int i = 0; i < 20; i++)
+            {
+                System.GC.Collect();
 
-                Debug.Log("reading vertices");
+            }
+            Debug.Log("reading vertices");
                 yield return null;
                 Vector3RD[] vertices = readVertices(cityModel);
 
 
             double Xmin = vertices.Min(x => x.x);
-            Xmin = Xmin + (2500 - Xmin % 2500);
+            //Xmin = Xmin + (2500 - Xmin % 2500);
             double Xmax = vertices.Max(x => x.x);
-            Xmax = Xmax - (Xmax % 2500);
+            //Xmax = Xmax - (Xmax % 2500);
             double Ymin = vertices.Min(x => x.y);
-            Ymin = Ymin + (3125 - (Ymin) % 3125);
+            //Ymin = Ymin + (3125 - (Ymin) % 3125);
             double Ymax = vertices.Max(x => x.y);
-            Ymax = Ymax - ((Ymax) % 3125);
+            //Ymax = Ymax - ((Ymax) % 3125);
  
                 if (Xmin < totalBoundingBox.x){totalBoundingBox.x = (float)Xmin;}
                 if (Ymin < totalBoundingBox.y) { totalBoundingBox.y = (float)Ymin; }
@@ -254,8 +265,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 yield return null;
                 CityObject[] filecityObjects = GetCityObjects(cityModel["CityObjects"],vertices);
                 cityObjects.AddRange(filecityObjects.ToList());
+
                 cityModel = null;
-            
+            for (int i = 0; i < 20; i++)
+            {
+                System.GC.Collect();
+
+            }
 
             Dictionary<Vector2, List<CityObject>> Tiles = new Dictionary<Vector2, List<CityObject>>();
 
@@ -265,42 +281,29 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 int counter = 0;
                 Parallel.ForEach(cityObjects, cityObject => { cityObject.GenerateTriangleLists( tileSize,totalBoundingBox); });
 
-                Debug.Log("collecting cityobjects");
+                Debug.Log("combining cityobjects");
                 yield return null;
-                foreach (var cityObject in cityObjects)
-                {
+            int cityobjectcount = cityObjects.Count;
+            
+            for (int coI = cityobjectcount - 1; coI >= 0; coI--)
+            {
+
+            
                     Dictionary<Vector2, List<Vector3RD>> coTriangleList = new Dictionary<Vector2, List<Vector3RD>>();
-                    terrainType coterraintype = cityObject.type;
-                    foreach (var tile in cityObject.triangleLists)
+                    terrainType coterraintype = cityObjects[coI].type;
+                    foreach (var tile in cityObjects[coI].triangleLists)
                     {
-                    //check if tile is inside totalBoundingbox
-                    //if (tile.Key.x < totalBoundingBox.x)
-                    //    {
-                    //        continue;
-                    //    }
-                    //if (tile.Key.x >= totalBoundingBox.z)
-                    //{
-                    //    continue;
-                    //}
-                    //if (tile.Key.y < totalBoundingBox.y)
-                    //{
-                    //    continue;
-                    //}
-                    //if (tile.Key.y >= totalBoundingBox.w)
-                    //{
-                    //    continue;
-                    //}
-                    if (!Tiles.ContainsKey(tile.Key))
+                        if (!Tiles.ContainsKey(tile.Key)) //add the tile if not present in Tiles
                         {
                             Tiles.Add(tile.Key, new List<CityObject>());
                         }
 
                         bool found = false;
-                        for (int i = 0; i < Tiles[tile.Key].Count; i++)
+                        for (int i = 0; i < Tiles[tile.Key].Count; i++) // loop through cityobjects in tile
                         {
                             if (Tiles[tile.Key][i].type == coterraintype)
                             {
-                                Tiles[tile.Key][i].vertices.AddRange(cityObject.vertices);
+                                Tiles[tile.Key][i].vertices.AddRange(cityObjects[coI].vertices);
                                 found = true;
                                 i = Tiles[tile.Key].Count + 2;
                             }
@@ -313,9 +316,22 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                             Tiles[tile.Key].Add(newCityObject);
                         }
                     }
+                cityObjects[coI] = null;
+                if (coI%200==0)
+                {
+                    System.GC.Collect();
                 }
+                
+            }
+            
+            cityObjects = new List<CityObject>();
+            for (int i = 0; i < 20; i++)
+            {
 
-                Debug.Log("creating submeshes");
+                System.GC.Collect();
+            }
+
+            Debug.Log("creating submeshes");
 
                 yield return null;
                 foreach (var tile in Tiles)
@@ -329,10 +345,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                         meshes.Add(item.type, mesh);
                     }
                     importCityjsonterrainScript.CreateCombinedMeshes(meshes, tile.Key, tileSize);
+                
+                for (int i = 0; i < 20; i++){System.GC.Collect();}
 
-                }
+            }
 
-
+            Tiles = new Dictionary<Vector2, List<CityObject>>();
+            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
             moveFile(file);
             //moveFolder(foldername);
             bewerkingGereed = true;

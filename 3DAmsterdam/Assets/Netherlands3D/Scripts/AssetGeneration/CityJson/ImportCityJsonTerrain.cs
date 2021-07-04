@@ -264,11 +264,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             lod1Mesh.CombineMeshes(combi, false, false);
             lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
+
             //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
             //remove old asset
 
             //remove spikes
-           lod1Mesh.vertices = RemoveSpikes(lod1Mesh).vertices;
+           lod1Mesh = RemoveSpikes(lod1Mesh);
             string baseMeshNameLod0 = "terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0";
             string assetName = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
             string assetNameLod0 = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
@@ -327,7 +328,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             var correctverts = verts.Where(o => o.y < heightMax && o.y > heightMin);
 
-            var correctvertsAvgHeight = verts.Average(o => o.y);
+            var correctvertsAvgHeight = correctverts.Average(o => o.y);
 
             bool hasspike = false;
             for (int i = 0; i < verts.Length; i++)
