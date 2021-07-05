@@ -17,8 +17,7 @@ Open up the <YourManucipality>/Scenes/DataGeneration/GenerateBuildingTilesFromOB
 
 You will see that it contains a ApplicationConfiguration object. Make sure the script points to the same config file we created in [getting started](gettingstarted.md), and save the scene.
 
-Next you see that there are 3 objects with a Bag3DObjImporter script on it for different LOD levels. 
-These practically do the same thing but use different source files, so as a example we will start with just one LOD level. 
+Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LOD levels. These practically do the same thing but use different source files, so as a example we will start with just one LOD level. 
 
 Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters:
 
@@ -29,7 +28,7 @@ Remove the two that are disabled, and select the remaining active BAG3DObjImport
 | Filter                                    | Filter for files to parse in the source files folder. By default this is *.obj, but you can specify it even more if you would like. |
 | Exclusively Generate Tiles With Substring | If you fill in something here, for example an RD coordinate seperated by _, then only the tile with that substring will be generated. If you leave it open all tiles within the config boundingbox range are generated. |
 | Skip Import of Objects Outside RD Bounds  | Set to True if you want the importer to skip importing objects that have no vertices inside the configurated boundingbox range |
-| Lod Level                                 | This string will be used as a suffix for the generated data files. This way you can distinguish between LOD levels in the generated asset files later on |
+| Lod Level                                 | This string will be used as a suffix for the generated data files, for example '2.2'. This way you can distinguish between LOD levels of different datasets in the generated asset files later on. |
 | Tile Size                                 | The width and height in units of the generated tiles. Set to 1000 meter by default, which is the value used by all layers in 3DAmsterdam |
 | Tile Offset                               | The offset of the origin of the generated meshes. 3DAmsterdam assets have the origin in the centre of the 1000x1000 tiles, so this is set to 500,500 by default. |
 | Remove Prefix                             | The 3dbag.nl source .obj files contain building objects named by building BAG ID prefixed with 'NL.IMBAG.Pand.' We remove the prefix to retrieve the BAG ID. If your source files do not have this prefix you can leave this blank. |
