@@ -83,6 +83,7 @@ You will see that the entire application lives inside a prefab called Netherland
 If we pull Netherlands3D updates the contents of this prefab will update with it, but any overrides to the prefab or new objects we add to our scene will remain saved in our main scene file.
 
 Select the Netherlands3D object and target our configuration file in the ApplicationConfiguration script that is on the prefab. ( Optionally you can add an additional configuration file for an acceptation environment with different datapaths. Set that to 'None' if you do not need it )
+
 This is our first override to the Netherlands3D prefab that we want to save, so go ahead and save the scene file (Ctrl-S).
 
 If you already added a reference to your own logo in the config file you can press 'Play' in the unity editor and should be able to see your logo appear in the top left instead of the 3DAmsterdam logo.
