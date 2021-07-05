@@ -14,4 +14,5 @@ Unity offers ongoing support for WebGL with a [roadmap](https://portal.productbo
 
 ## Why use tiles?
 
-The amount of unique objects and their geometry on a city or municipality scale is too much too fit in the memory limits of web- or mobile platforms. The ongoing steps to add more detail or objects only keeps adding to this amount of data. Therefore the tile system makes sure only the geometry that is in view is loaded into the runtime memory, and the separation of different unique objects is only loaded on demand
+The total amount of unique objects and their geometry in a city or municipality is too much too fit in the memory limits of web- or mobile platforms at once. The ongoing steps to add more objects and detail only keeps adding to this amount of data. The tile system splits this data up and makes sure that only geometry that is in view is loaded into the runtime memory, and the separation of different unique objects is only loaded on demand.
+
