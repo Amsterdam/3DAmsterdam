@@ -10,8 +10,9 @@ The total amount of unique objects and their geometry in a city or municipality 
 
 ## Why 3D and not 2D?
 
-Where an abstract 2D representation of data can give a better oversight or means to filter specific data, a 3D view focusses more on the actual experience that is closer to a real-life experience.
+Where an abstract 2D representation of data can give a better oversight or means to filter specific data, our 3D platform focusses more on the actual experience of data that is closer to real-life.
 
 ## Can I use Analytics?
 
 ...
+
