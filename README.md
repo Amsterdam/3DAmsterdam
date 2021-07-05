@@ -42,6 +42,9 @@ The files structure of the project looks like this.
 |      └──WebGLTemplates     #Special Unity folder containing our Netherlands3D WebGL template
 ```
 
+To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/gettingstarted.md)
+Then you can start generating your own tile-based layers using the [asset generation documentation](docs/generatingdata.md)
+
 ## Unity Input System
 
 The project uses the new Unity input system called Input Action Assets. The input mappings are defined in 
@@ -80,8 +83,6 @@ To create assets the workflow is as follows
   This will create the asset as text based YAML file
 - Then build the asset for WebGL using BuildPipeline.BuildAssetBundles. 
   This will create binary files and needs to be copied to the webserver that will serve them.
-
-To start creating your own layer asset files refer to the [asset generation documentation](docs/generatingdata.md)
 
 ## Third parties and licenses
 
