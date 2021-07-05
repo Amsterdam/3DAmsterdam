@@ -21,7 +21,7 @@ Next you see that there are 3 objects in the scene with a Bag3DObjImporter scrip
 
 Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters:
 
-| Property name                             | Property value                                               |
+| Field name                                | Field explanation                                            |
 | ----------------------------------------- | ------------------------------------------------------------ |
 | Bag 3D Source Files Folder                | Local folder path containing .OBJ files downloaded from www.3dbag.nl, for example "C:\BagObjs\\"  containing all our building models |
 | Optional Skip List Path                   | An optional path to a text file, containing a list of BAG id's that you would like to skip importing. Use a newline for every bag ID you would like to skip. |

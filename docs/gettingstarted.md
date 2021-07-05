@@ -14,7 +14,7 @@ Right click our new 3DMyManucipality folder and select Create>ScriptableObjects>
 
 Now use the inspector to set the properties of our new config file:
 
-| Property group/name                     | Property explanation                                         |
+| Field group/name                        | Field explanation                                            |
 | --------------------------------------- | ------------------------------------------------------------ |
 | **Bounding Box coordinates**            |                                                              |
 | Relative Center RD                      | The RD x and y coordinate that will be the center ( 0,0,0 ) of our main Unity scene |
