@@ -81,7 +81,7 @@ To create assets the workflow is as follows
 - Then build the asset for WebGL using BuildPipeline.BuildAssetBundles. 
   This will create binary files and needs to be copied to the webserver that will serve them.
 
-To start creating your own layer asset files refer to the [asset generation documentation](docs/assetgeneration.md)
+To start creating your own layer asset files refer to the [asset generation documentation](docs/generatingdata.md)
 
 ## Third parties and licenses
 
