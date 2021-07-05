@@ -43,7 +43,8 @@ The files structure of the project looks like this.
 ```
 
 To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/gettingstarted.md)
-Then you can start generating your own tile-based layers using the [asset generation documentation](docs/generatingdata.md)
+
+After setting up your project you can start generating your own tile-based layer datasets using the [asset generation documentation](docs/generatingdata.md)
 
 ## Unity Input System
 
