@@ -14,8 +14,9 @@ Right click our new 3DMyManucipality folder and select Create>ScriptableObjects>
 
 Now use the inspector to set the properties of our new config file:
 
-| **Bounding Box coordinates**            |                                                              |
+| Property group/name                     | Property explanation                                         |
 | --------------------------------------- | ------------------------------------------------------------ |
+| **Bounding Box coordinates**            |                                                              |
 | Relative Center RD                      | The RD x and y coordinate that will be the center ( 0,0,0 ) of our main Unity scene |
 | Bottom Left RD                          | The bottom-left coordinate of our bounding-box in RD coordinates |
 | Top Right RD                            | The top-right coordinate of our bounding-box in RD coordinates |
@@ -50,14 +51,40 @@ Now use the inspector to set the properties of our new config file:
 | More Address Info URL                   | The URL used as a hyperlink when more information for an address is requested, using {bagid} as a placeholder for the BAG id |
 | Bag Id Request Service Bounding Box URL | The mapserver API used to retrieve the BAG id's found within a bounding box used for selections. A boundingbox is appended to the url in runtime. |
 | Bag Id Request Service Polygon Url      | The mapserver API used to retrieve the BAG id's found within a polygon used for selections, using a hardcoded mapserver Intersect filter. |
-|                                         |                                                              |
-|                                         |                                                              |
-|                                         |                                                              |
-|                                         |                                                              |
-|                                         |                                                              |
-|                                         |                                                              |
-|                                         |                                                              |
+| Preview Backdrop Image                  | Url used by generation scenes to retrieve a satellite image using a boundingbox, to display progress information on top of it. |
+| **Graphics**                            |                                                              |
+| Logo                                    | Target 2D UI sprite to be used as a logo in the top left of the application |
+| Primary Color                           | Color to be applied to UI items/prefabs that have a StyleColor.cs script on it set to use the Primary Color |
+| Secondary Color                         | Color to be applied to UI items/prefabs that have a StyleColor.cs script on it set to use the Secondary Color |
 
 
 
-Next we want to create our unity scenes. The fastest way is to copy the Scenes folder from 3DAmsterdam, so we can change make changes to those scenes.
+## Scenes
+
+Next we want to create our unity scenes. The fastest way is to copy the Scenes folder from 3DAmsterdam, and make changes to those scenes. After copying the Scenes folder to our own folder the  3DMyManucipality folder contents should look similar to this:
+
+```
+.
+├── 3DAmsterdam
+├── 3DMyManucipality                    #Our own manucipality folder
+|   ├── Scenes                          #The scenes folder we copied from 3DAmsterdam
+|   |  ├── DataGeneration               #Folder containing data generation scenes
+|   |  └── 3DMyManucipality.unity       #Our main scene file
+|   └── Config3DMyManucipality.asset    #Our configuration file
+├── Netherlands3D
+├── Resources
+├── WebGLTemplates      
+└── csc.rsp
+```
+
+Open up our new main scene file ( 3DMyManucipality.unity if that is what you named it )
+
+You will see that the entire application lives inside a prefab called Netherlands3D. 
+If we pull Netherlands3D updates the contents of this prefab will update with it, but any overrides to the prefab or new objects we add to our scene will remain saved in our main scene file.
+
+Select the Netherlands3D object and target our configuration file in the ApplicationConfiguration script that is on the prefab. ( Optionally you can add an additional configuration file for an acceptation environment with different datapaths. Set that to 'None' if you do not need it )
+This is our first override to the Netherlands3D prefab that we want to save, so go ahead and save the scene file (Ctrl-S).
+
+If you already added a reference to your own logo in the config file you can press 'Play' in the unity editor and should be able to see your logo appear in the top left instead of the 3DAmsterdam logo.
+
+Next, we want to generate and and host the datasets for the tile layers. We already copied the data generation scenes into our Scenes/DataGeneration/ folder so you are all set to continue to [generating the datasets](generatingdata.md)

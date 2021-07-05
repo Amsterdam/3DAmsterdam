@@ -37,9 +37,9 @@ The files structure of the project looks like this.
 |   └── faq.md               #Frequently asked questions
 ├── 3DAmsterdam              #Main Unity project folder
 |   └──Assets
-|      ├──3DAmsterdam        #Manucipality/city specific config and files
+|      ├──3DAmsterdam        #Amsterdam specific config, scenes and assets
 |      ├──Netherlands3D      #Shared assets for all manucipalities where we encourage contribution
-|      └──WebGLTemplates     #Special Unity folder containing our Netherlands3D WebGL template
+|      └──WebGLTemplates     #Special Unity folder containing our Netherlands3D fullscreen WebGL template
 ```
 
 To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/gettingstarted.md)
