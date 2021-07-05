@@ -2,7 +2,7 @@
 
 ## Why Unity?
 
-Unity offers ongoing support for WebGL with a [roadmap](https://portal.productboard.com/gupat5mdsl4luvs35fqy5vlq/tabs/60-web) containing multithreading, better mobile support and the new 3D webstandard WebGPU. The crossplatform nature of Unity allows distribution to native platforms (desktop, mobile etc.) if specific features/use-cases have different system requirements, like a larger accessible memory range. 
+Unity offers ongoing support for WebGL with a [roadmap](https://portal.productboard.com/gupat5mdsl4luvs35fqy5vlq/tabs/60-web) containing multithreading, better mobile support and the new 3D webstandard WebGPU. The crossplatform nature of Unity allows distribution to other, native platforms (desktop, mobile etc.) in case specific features/use-cases have different system requirements, like a larger accessible memory range. 
 
 ## Why use tiles?
 
