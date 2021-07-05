@@ -70,6 +70,24 @@ public static class StringExtensions
 		}
 	}
 
+    public static Vector3RD? GetRDCoordinateByUrl(this string url)
+    {
+        var xpart = url.Split(new string[] { "x=" }, StringSplitOptions.None);
+        if (xpart.Length == 1) return null;
+
+        var xypart = xpart[1].Split(new string[] { "&y=" }, StringSplitOptions.None);
+        if (xpart.Length == 1) return null;
+
+        var ypart = xypart[1].Split(new string[] { "&" }, StringSplitOptions.None);
+
+
+        return new Vector3RD()
+        {
+            x = double.Parse(xypart[0]),
+            y = double.Parse(ypart[0])
+        };
+
+    }
 
     public static string ToInvariant(this double d)
     {

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
+  m_Name: Totaal3DConfig
+  m_EditorClassIdentifier: 
+  RelativeCenterRD:
+    x: 121000
+    y: 487000
+  BottomLeftRD:
+    x: 109000
+    y: 474000
+  TopRightRD:
+    x: 141000
+    y: 501000
+  zeroGroundLevelY: 0
+  EnableMinimap: 0
+  minimapServiceUrl: https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png
+  MinimapTileNumberingType: 0
+  minimapBottomLeftRD_X: -285401.9
+  minimapBottomLeftRD_Y: 22598.08
+  MinimapZoom0RDSize: 880803.8
+  webserverRootPath: https://3d.amsterdam.nl/web/data/RD/
+  buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/RD/Buildings_AHN4/
+  sharingBaseURL: https://3d.amsterdam.nl/
+  sharingSceneSubdirectory: customScene.php?id=
+  sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
+  LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
+  LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
+  sewerageApiType: 0
+  sewerPipesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolleidingen&bbox=
+  sewerManholesWfsUrl: https://api.data.amsterdam.nl/v1/wfs/rioolnetwerk/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=geojson&srsname=epsg:4258&typeName=rioolknopen&bbox=
+  BagApiType: 0
+  buildingUrl: https://api.data.amsterdam.nl/bag/v1.1/pand/
+  numberIndicatorURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/?page_size=10000&pand=
+  numberIndicatorInstanceURL: https://api.data.amsterdam.nl/bag/v1.1/nummeraanduiding/
+  monumentURL: https://api.data.amsterdam.nl/monumenten/monumenten/?betreft_pand=
+  moreBuildingInfoUrl: https://data.amsterdam.nl/data/bag/pand/id{bagid}/
+  moreAddressInfoUrl: https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/
+  bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
+  bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=
+  previewBackdropImage: https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992
+  logo: {fileID: 21300000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
+  primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
+  secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}

@@ -86,6 +86,25 @@ public class UnitTests
 
     }
 
+    [Test]
+    public void TestGetRDCoordinateByUrl()
+    {
+        var testurl = "https://3d.amsterdam.nl?x=123.4&y=456.77";
+        var rd = testurl.GetRDCoordinateByUrl();
+        Assert.AreEqual(123.4, rd.Value.x);
+        Assert.AreEqual(456.77, rd.Value.y);
+
+        var testurl2 = "https://3d.amsterdam.nl?x=23424.4&y=234234.84&anotherparam=test";
+        var rd2 = testurl2.GetRDCoordinateByUrl();
+        Assert.AreEqual(23424.4, rd2.Value.x);
+        Assert.AreEqual(234234.84, rd2.Value.y);
+
+        var testurl3 = "https://3d.amsterdam.nl";
+        var rd3 = testurl3.GetRDCoordinateByUrl();
+        Assert.AreEqual(null, rd3);
+
+    }
+
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
     // `yield return null;` to skip a frame.
     [UnityTest]

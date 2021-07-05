@@ -22,7 +22,8 @@ namespace Netherlands3D
         /// <param name="showIndicator">Show indicator on screen</param>
         public static void Show(bool showIndicator)
         {
-            fillImage.gameObject.SetActive(showIndicator);
+            if (fillImage == null) return;            
+            fillImage.gameObject.SetActive(showIndicator);            
         }
     }
 }

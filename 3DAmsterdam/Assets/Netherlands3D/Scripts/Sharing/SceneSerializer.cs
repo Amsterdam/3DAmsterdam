@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Cameras;
+﻿using ConvertCoordinates;
+using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
@@ -71,8 +72,9 @@ namespace Netherlands3D.Sharing
 		{
             //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
 			CheckURLForSharedSceneID();
+            CheckURLForPosition();
 
-			customMeshObjects = new List<GameObject>();
+            customMeshObjects = new List<GameObject>();
 		}
 
 		private void CheckURLForSharedSceneID()
@@ -85,12 +87,23 @@ namespace Netherlands3D.Sharing
 			}
 		}
 
+        private void CheckURLForPosition()
+        {                        
+            var rd = Application.absoluteURL.GetRDCoordinateByUrl();
+            if (rd != null)
+            {
+                CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(CoordConvert.RDtoUnity(rd.Value), new Quaternion());
+            }
+        }
+
+
+
 #if UNITY_EDITOR
-		/// <summary>
-		/// This test method allows you to right click this MonoBehaviour in the editor.
-		/// And test the downloading of a specific sharedSceneId.
-		/// </summary>
-		[ContextMenu("Load last saved ID")] 
+            /// <summary>
+            /// This test method allows you to right click this MonoBehaviour in the editor.
+            /// And test the downloading of a specific sharedSceneId.
+            /// </summary>
+            [ContextMenu("Load last saved ID")] 
         public void GetTestId(){
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
