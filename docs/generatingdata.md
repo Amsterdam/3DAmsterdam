@@ -46,13 +46,20 @@ First, the script goes through all the .obj source files and creates GameObjects
 After importing all the .obj files, the script will combine the imported building GameObjects that reside inside the same tile into a single mesh per-tile. These .mesh assets will start appearing in a folder named GeneratedTileAssets. The folder will be auto-generated at that stage.
 Metadata with the object seperation are saved next to the mesh data files and have a '-data' suffix.
 
-The unity editor is pretty choked up while generating but you can use a file explorer to inspect the contents of the /Assets/GeneratedTileAssets/ folder. There the mesh assets will appear one by one.
+The unity editor is pretty choked up while generating the tiles but you can use a file explorer to inspect the contents of the /Assets/GeneratedTileAssets/ folder. There the mesh assets will appear one by one.
 
 When the script is done, the generated asset files will need to be turned into AssetBundles.
 At the top bar of the Unity editor ( next to File, Edit, etc ) select 'Netherlands 3D>Tools>Export .asset files to AssetBundles'.
 This will create the AssetBundles in the folder '/BuildingAssetBundles/', next to the '/Assets/' folder of the Unity project.
 
+Upload the assetbundle files to a unique folder on your webserver (for example https://example.nl/buildings/)
 
+Now open up our project main scene and select the Buildings layer GameObject (Netherlands3D>Layers>Buildings) in the hierarchy. Change the Datasets length to 1 for now (we only generated one LOD level) on the AssetbundleMeshLayer script.
+Change the remaining dataset description to a nice description, and change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}' and '{y}' as the RD coordinate placeholders in the filename. 
+In case of the of the example above, this path would be 'buildings/buildings\_{x}\_{y}.2.2' and our application config file would have https://example.nl/ as a webserver root path.
+
+Press the unity editor 'Play' button to see your building tiles appear in runtime.
+If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Buildings AssetbundleMeshLayer script.
 
 ## Terrain
 
