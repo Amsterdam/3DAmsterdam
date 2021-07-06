@@ -76,9 +76,8 @@ namespace Netherlands3D.AssetGeneration
 			if (meshFilters.Length > 0)
 			{
 				newCombinedMesh.name = sourceGameobject.name;
-				newCombinedMesh.CombineMeshes(combine, true);
+				newCombinedMesh.CombineMeshes(combine, true, true, false);
 				newCombinedMesh.RecalculateNormals();
-				//newCombinedMesh.Optimize();
 
 				//And clean up memory
 				for (int i = 0; i < combine.Length; i++)
