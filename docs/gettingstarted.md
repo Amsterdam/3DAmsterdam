@@ -2,15 +2,15 @@
 
 After opening the Unity project in the latest Unity 2020.3 LTS we want to create the root folder for our new municipality/city similar to the Assets/3DAmsterdam/ folder. 
 
-In this example we will refer to our new folder as '3DMyManucipality' so we create this new folder in the Assets folder:
+In this example we will refer to our new folder as '3DMyMunicipality' so we create this new folder in the Assets folder:
 
-Assets/3DMyManucipality/
+Assets/3DMyMunicipality/
 
 ## Application config file
 
 Now we want to add a config file that will contain our application settings. 
 
-Right click our new 3DMyManucipality folder and select Create>ScriptableObjects>ConfigurationFile. Give the config file a logical name like 'Config3DMyManucipality'.
+Right click our new 3DMyMunicipality folder and select Create>ScriptableObjects>ConfigurationFile. Give the config file a logical name like 'Config3DMyMunicipality'.
 
 Now use the inspector to set the properties of our new config file:
 
@@ -61,23 +61,23 @@ Now use the inspector to set the properties of our new config file:
 
 ## Scenes
 
-Next we want to create our unity scenes. The fastest way is to copy the Scenes folder from 3DAmsterdam, and make changes to those scenes. After copying the Scenes folder to our own folder the  3DMyManucipality folder contents should look similar to this:
+Next we want to create our unity scenes. The fastest way is to copy the Scenes folder from 3DAmsterdam, and make changes to those scenes. After copying the Scenes folder to our own folder the  3DMyMunicipality folder contents should look similar to this:
 
 ```
 .
 ├── 3DAmsterdam
-├── 3DMyManucipality                    #Our own manucipality folder
+├── 3DMyMunicipality                    #Our own municipality folder
 |   ├── Scenes                          #The scenes folder we copied from 3DAmsterdam
 |   |  ├── DataGeneration               #Folder containing data generation scenes
-|   |  └── 3DMyManucipality.unity       #Our main scene file
-|   └── Config3DMyManucipality.asset    #Our configuration file
+|   |  └── 3DMyMunicipality.unity       #Our main scene file
+|   └── Config3DMyMunicipality.asset    #Our configuration file
 ├── Netherlands3D
 ├── Resources
 ├── WebGLTemplates      
 └── csc.rsp
 ```
 
-Open up our new main scene file ( 3DMyManucipality.unity if that is what you named it )
+Open up our new main scene file ( 3DMyMunicipality.unity if that is what you named it )
 
 You will see that the entire application lives inside a prefab called Netherlands3D. 
 If we pull Netherlands3D updates the contents of this prefab will update with it, but any overrides to the prefab or new objects we add to our scene will remain saved in our main scene file.
