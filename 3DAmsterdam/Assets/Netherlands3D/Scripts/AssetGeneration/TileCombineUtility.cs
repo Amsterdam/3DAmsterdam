@@ -26,16 +26,16 @@ namespace Netherlands3D.AssetGeneration
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
 			//Construct the seperate metadata containing the seperation of the buildings
-			ObjectMappingClass buildingMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
-			buildingMetaData.ids = new List<string>();
+			ObjectMappingClass subObjectsMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
+			subObjectsMetaData.ids = new List<string>();
 			foreach (var meshFilter in meshFilters)
 			{
-				buildingMetaData.ids.Add(meshFilter.gameObject.name);
+				subObjectsMetaData.ids.Add(meshFilter.gameObject.name);
 			}
-			var textureSize = ObjectIDMapping.GetTextureSize(buildingMetaData.ids.Count);
+			var textureSize = ObjectIDMapping.GetTextureSize(subObjectsMetaData.ids.Count);
 			List<Vector2> allObjectUVs = new List<Vector2>();
 			List<int> allVectorMapIndices = new List<int>();
-			buildingMetaData.uvs = allObjectUVs.ToArray();
+			subObjectsMetaData.uvs = allObjectUVs.ToArray();
 
 			//Generate the combined tile mesh
 			sourceGameobject.transform.position = Vector3.zero;
@@ -46,18 +46,18 @@ namespace Netherlands3D.AssetGeneration
 			var totalVertexCount = 0;
 			for (int i = 0; i < combine.Length; i++)
 			{
-				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+				combine[i].transform = sourceGameobject.transform.worldToLocalMatrix * meshFilters[i].transform.localToWorldMatrix;
 				Mesh buildingMesh = meshFilters[i].sharedMesh;
 
 				if (buildingMesh == null) continue;
 
 				totalVertexCount += buildingMesh.vertexCount;
 				//Create UVS
-				var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
+				var objectIdMappingUV = ObjectIDMapping.GetUV(i, textureSize);
 				for (int v = 0; v < buildingMesh.vertexCount; v++)
 				{
 					//UV count should match vert count
-					allObjectUVs.Add(buildingUV);
+					allObjectUVs.Add(objectIdMappingUV);
 					//Create vector map reference for vert
 					allVectorMapIndices.Add(i);
 				}
@@ -66,8 +66,8 @@ namespace Netherlands3D.AssetGeneration
 				meshFilters[i].gameObject.SetActive(false);
 			}
 			//Now add all the combined uvs to our metadata
-			buildingMetaData.uvs = allObjectUVs.ToArray();
-			buildingMetaData.vectorMap = allVectorMapIndices;
+			subObjectsMetaData.uvs = allObjectUVs.ToArray();
+			subObjectsMetaData.vectorMap = allVectorMapIndices;
 
 			Mesh newCombinedMesh = new Mesh();
 			if (totalVertexCount > Mathf.Pow(2, 16))
@@ -76,14 +76,17 @@ namespace Netherlands3D.AssetGeneration
 			if (meshFilters.Length > 0)
 			{
 				newCombinedMesh.name = sourceGameobject.name;
-				newCombinedMesh.CombineMeshes(combine, true);
+				newCombinedMesh.CombineMeshes(combine, true, true, false);
 				newCombinedMesh.RecalculateNormals();
-				//newCombinedMesh.Optimize();
 
 				//And clean up memory
 				for (int i = 0; i < combine.Length; i++)
 				{
-					MonoBehaviour.DestroyImmediate(meshFilters[i].sharedMesh, true);
+					if (!AssetDatabase.Contains(meshFilters[i].sharedMesh))
+					{
+						//Destroy child mesh ( if it is not an asset from our database )
+						MonoBehaviour.DestroyImmediate(meshFilters[i].sharedMesh, true);
+					}
 					MonoBehaviour.Destroy(meshFilters[i].gameObject);
 				}
 			}
@@ -102,7 +105,7 @@ namespace Netherlands3D.AssetGeneration
 			if (writeAsAssetFile)
 			{
 				AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
-				AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
+				AssetDatabase.CreateAsset(subObjectsMetaData, assetMetaDataFileName);
 				AssetDatabase.SaveAssets();
 			}
 #endif
