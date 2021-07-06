@@ -46,7 +46,7 @@ namespace Netherlands3D.AssetGeneration
 			var totalVertexCount = 0;
 			for (int i = 0; i < combine.Length; i++)
 			{
-				combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+				combine[i].transform = sourceGameobject.transform.worldToLocalMatrix * meshFilters[i].transform.localToWorldMatrix;
 				Mesh buildingMesh = meshFilters[i].sharedMesh;
 
 				if (buildingMesh == null) continue;
@@ -82,7 +82,11 @@ namespace Netherlands3D.AssetGeneration
 				//And clean up memory
 				for (int i = 0; i < combine.Length; i++)
 				{
-					MonoBehaviour.DestroyImmediate(meshFilters[i].sharedMesh, true);
+					if (!AssetDatabase.Contains(meshFilters[i].sharedMesh))
+					{
+						//Destroy child mesh ( if it is not an asset from our database )
+						MonoBehaviour.DestroyImmediate(meshFilters[i].sharedMesh, true);
+					}
 					MonoBehaviour.Destroy(meshFilters[i].gameObject);
 				}
 			}
