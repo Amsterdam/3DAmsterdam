@@ -7,13 +7,13 @@ The next step is to set up our data generation scenes that generate the external
 - Trees
 - Terrain
 
-Because our manucipality folder is created as a copy from the 3DAmsterdam folder there are already a few scenes in our <YourManucipality>/Scenes/DataGeneration/ folder. These scenes are made to import different source files and generate unity .asset files when pressing 'Play' in the unity editor.
+Because our municipality folder is created as a copy from the 3DAmsterdam folder there are already a few scenes in our <YourMunicipality>/Scenes/DataGeneration/ folder. These scenes are made to import different source files and generate unity .asset files when pressing 'Play' in the unity editor.
 
-We will alter these scenes so they generate the files for our new manucipality, starting with the Buildings:
+We will alter these scenes so they generate the files for our new municipality, starting with the Buildings:
 
 ## Buildings
 
-Open up the <YourManucipality>/Scenes/DataGeneration/GenerateBuildingTilesFromOBJ.scene 
+Open up the <YourMunicipality>/Scenes/DataGeneration/GenerateBuildingTilesFromOBJ.scene 
 
 You will see that it contains a ApplicationConfiguration object. Make sure the script points to the same config file we created in [getting started](gettingstarted.md), and save the scene.
 
