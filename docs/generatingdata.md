@@ -68,7 +68,7 @@ You can determine the right location for the transform by temporarily adding the
 
 Exit playmode, and paste the model with the right position in the generation scene and parent it to the BAG3DObjImportBuildings2.2 object.
 
-The 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override.
+If you now Play the generation scene the 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override.
 
 
 
