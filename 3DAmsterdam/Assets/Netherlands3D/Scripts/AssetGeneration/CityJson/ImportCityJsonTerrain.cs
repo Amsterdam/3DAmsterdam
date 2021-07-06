@@ -179,7 +179,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             //}
         }
-        public void CreateCombinedMeshes(Dictionary<terrainType, Mesh>meshes,Vector2 tileID, float tileSize)
+        public void CreateCombinedMeshes(ref Dictionary<terrainType, Mesh>meshes,Vector2 tileID, float tileSize)
         {
             //create LOD1 Mesh
             //UnityMeshSimplifier.MeshSimplifier meshSimplifier1 = null;
@@ -198,62 +198,86 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             if (meshes.ContainsKey(terrainType.voetpad))
             {
+                DestroyImmediate(combi[0].mesh, false);
                 combi[0].mesh = meshes[terrainType.voetpad]; //
+
                 vertcount += combi[0].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.fietspad))
             {
+                DestroyImmediate(combi[1].mesh, false);
                 combi[1].mesh = meshes[terrainType.fietspad]; //
+
                 vertcount += combi[1].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.parkeervakken))
             {
+                DestroyImmediate(combi[2].mesh, false);
                 combi[2].mesh = meshes[terrainType.parkeervakken]; //
+
                 vertcount += combi[2].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.wegen))
             {
+                DestroyImmediate(combi[3].mesh, false);
                 combi[3].mesh = meshes[terrainType.wegen]; //
+
                 vertcount += combi[3].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.begroeid))
             {
-                combi[4].mesh = SimplifyMesh(meshes[terrainType.begroeid], 0.05f); //
+                DestroyImmediate(combi[4].mesh, false);
+                combi[4].mesh = meshes[terrainType.begroeid]; //
+
                 vertcount += combi[4].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.erven))
             {
-                combi[5].mesh = SimplifyMesh(meshes[terrainType.erven], 0.05f); // //
+                DestroyImmediate(combi[5].mesh, false);
+                combi[5].mesh = meshes[terrainType.erven]; // //
+ 
                 vertcount += combi[5].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.onbegroeid))
             {
-                combi[6].mesh = SimplifyMesh(meshes[terrainType.onbegroeid], 0.05f); // //
+                DestroyImmediate(combi[6].mesh, false);
+                combi[6].mesh = meshes[terrainType.onbegroeid]; // //
+
                 vertcount += combi[6].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.spoorbanen))
             {
+                DestroyImmediate(combi[7].mesh, false);
                 combi[7].mesh = meshes[terrainType.spoorbanen]; //
+
                 vertcount += combi[7].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.woonerven))
             {
+                DestroyImmediate(combi[8].mesh, false);
                 combi[8].mesh = meshes[terrainType.woonerven]; //
+
                 vertcount += combi[8].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.constructies))
             {
+                DestroyImmediate(combi[9].mesh, false);
                 combi[9].mesh = meshes[terrainType.constructies];
+
                 vertcount += combi[9].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.bruggen))
             {
+                DestroyImmediate(combi[10].mesh, false);
                 combi[10].mesh = meshes[terrainType.bruggen];
+
                 vertcount += combi[10].mesh.vertexCount;
             }
             if (meshes.ContainsKey(terrainType.water))
             {
+                DestroyImmediate(combi[11].mesh, false);
                 combi[11].mesh = meshes[terrainType.water];
+
                 vertcount += combi[11].mesh.vertexCount;
             }
 
@@ -296,8 +320,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             if (existingMesh != null)
             {
                 //combine meshes;
-                lod1Mesh = CombineMeshes(lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
-                lod0Mesh = CombineMeshes(lod0Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetNameLod0, typeof(Mesh)));
+                CombineMeshes(ref lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
+                CombineMeshes(ref lod0Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetNameLod0, typeof(Mesh)));
                 AssetDatabase.DeleteAsset(assetName);
                 AssetDatabase.DeleteAsset(assetNameLod0);
                 AssetDatabase.SaveAssets();
@@ -307,12 +331,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             AssetDatabase.CreateAsset(lod1Mesh, assetName);
             AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
             AssetDatabase.SaveAssets();
-
+            AssetDatabase.Refresh();
             for (int i = 0; i < combi.Length; i++)
             {
                 Destroy(combi[i].mesh);
             }
-
+            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
         }
 
         
@@ -362,11 +386,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             return mesh;
         }
 
-        private Mesh CombineMeshes(Mesh mesh1, Mesh mesh2)
+        private void CombineMeshes(ref Mesh mesh1, Mesh mesh2)
         {
-            Mesh newMesh = new Mesh();
-            
+            //Mesh newMesh = new Mesh();
+
             //newMesh.
+            int meshVertexCount = mesh1.vertexCount;
             List<Vector3> verts = new List<Vector3>(mesh1.vertices);
             verts.AddRange(mesh2.vertices);
             List<Vector2> newUVs = new List<Vector2>(mesh1.uv2);
@@ -374,12 +399,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             if (verts.Count> 65500)
             {
-                newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                mesh1.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             }
-            newMesh.vertices = verts.ToArray();
-            newMesh.uv2 = newUVs.ToArray();
-            newMesh.subMeshCount = mesh1.subMeshCount;
-            int meshVertexCount = mesh1.vertexCount;
+            mesh1.vertices = verts.ToArray();
+            mesh1.uv2 = newUVs.ToArray();
+            
+            
             for (int submeshIndex = 0; submeshIndex < mesh1.subMeshCount; submeshIndex++)
             {
                 // = new List<int>();
@@ -397,38 +422,42 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     extraIndices[i] += meshVertexCount+mesh2BaseVertex;
                 }
                 submeshIndices.AddRange(extraIndices);
-                newMesh.SetIndices(submeshIndices, MeshTopology.Triangles, submeshIndex);
+                mesh1.SetIndices(submeshIndices, MeshTopology.Triangles, submeshIndex);
             }
            // DestroyImmediate(mesh1,true);
             
             //DestroyImmediate(mesh2,true);
-            newMesh.RecalculateNormals();
+            mesh1.RecalculateNormals();
             
-            return newMesh;
+            
             }
-        private Mesh SimplifyMesh(Mesh mesh, float quality)
+        public Mesh SimplifyMesh(Mesh mesh, float quality)
         {
 
             if (mesh.triangles.Length < 100)
             {
-                return copyMesh(mesh);
+                return copyMesh(ref mesh);
             }
 
-            var DecimatedMesh = mesh;
+            //var DecimatedMesh = mesh;
 
             var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
-            meshSimplifier.Initialize(DecimatedMesh);
+            meshSimplifier.Initialize(mesh);
             meshSimplifier.PreserveBorderEdges = true;
             meshSimplifier.MaxIterationCount = 500;
-            meshSimplifier.SimplifyMesh(quality);
             meshSimplifier.EnableSmartLink = true;
-            DecimatedMesh = meshSimplifier.ToMesh();
-            DecimatedMesh.RecalculateNormals();
-            DecimatedMesh.Optimize();
-            return DecimatedMesh;
+            meshSimplifier.SimplifyMesh(quality);
+
+            mesh.SetIndices(meshSimplifier.GetSubMeshTriangles(0), MeshTopology.Triangles, 0);
+            mesh.vertices = meshSimplifier.Vertices;
+            
+            meshSimplifier= new UnityMeshSimplifier.MeshSimplifier();
+            mesh.RecalculateNormals();
+            mesh.Optimize();
+            return mesh;
         }
 
-        private Mesh copyMesh(Mesh mesh)
+        private Mesh copyMesh(ref Mesh mesh)
         {
             Mesh newMesh = new Mesh();
             newMesh.name = mesh.name;
@@ -463,8 +492,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         {
 
             List<Vector3RD> clippedRDTriangles = new List<Vector3RD>();
+            clippedRDTriangles.Capacity = RDTriangles.Count;
             List<Vector3> vectors = new List<Vector3>();
-
+            vectors.Capacity = RDTriangles.Count;
             List<Vector3> clipboundary = CreateClippingPolygon(tileSize);
 
             if (RDTriangles.Count == 0)
@@ -541,6 +571,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     vectorRD.z = defshape[j].y;
                     clippedRDTriangles.Add(vectorRD);
                 }
+                defshape.Clear();
             }
 
             //createMesh
@@ -576,9 +607,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
             mesh.vertices = verts.ToArray();
             mesh.triangles = ints.ToArray();
-            mesh = WeldVertices(mesh);
+            WeldVertices(ref mesh);
             mesh.RecalculateNormals();
             mesh.Optimize();
+            clippedRDTriangles.Clear();
+            vectors.Clear();
+            
+            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
             return mesh;
         }
 
@@ -593,6 +628,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             emptyIndices.Add(0);
             emptyMesh.vertices = emptyVertsList;
             emptyMesh.SetIndices(emptyIndices.ToArray(), MeshTopology.Triangles, 0);
+            emptyIndices = new List<int>();
             return emptyMesh;
         }
 
@@ -613,12 +649,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             return uv2;
         }
 
-        private Mesh WeldVertices(Mesh mesh)
+        private Mesh WeldVertices(ref Mesh mesh)
         {
             Vector3[] originalVerts = mesh.vertices;
             int[] originlints = mesh.GetIndices(0);
             int[] newIndices = new int[originlints.Length];
             Dictionary<Vector3, int> vertexMapping = new Dictionary<Vector3, int>();
+            
             //fill the dictionary
             foreach (Vector3 vert in originalVerts)
             {
