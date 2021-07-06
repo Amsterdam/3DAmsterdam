@@ -26,16 +26,16 @@ namespace Netherlands3D.AssetGeneration
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
 			//Construct the seperate metadata containing the seperation of the buildings
-			ObjectMappingClass buildingMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
-			buildingMetaData.ids = new List<string>();
+			ObjectMappingClass subObjectsMetaData = ScriptableObject.CreateInstance<ObjectMappingClass>();
+			subObjectsMetaData.ids = new List<string>();
 			foreach (var meshFilter in meshFilters)
 			{
-				buildingMetaData.ids.Add(meshFilter.gameObject.name);
+				subObjectsMetaData.ids.Add(meshFilter.gameObject.name);
 			}
-			var textureSize = ObjectIDMapping.GetTextureSize(buildingMetaData.ids.Count);
+			var textureSize = ObjectIDMapping.GetTextureSize(subObjectsMetaData.ids.Count);
 			List<Vector2> allObjectUVs = new List<Vector2>();
 			List<int> allVectorMapIndices = new List<int>();
-			buildingMetaData.uvs = allObjectUVs.ToArray();
+			subObjectsMetaData.uvs = allObjectUVs.ToArray();
 
 			//Generate the combined tile mesh
 			sourceGameobject.transform.position = Vector3.zero;
@@ -53,11 +53,11 @@ namespace Netherlands3D.AssetGeneration
 
 				totalVertexCount += buildingMesh.vertexCount;
 				//Create UVS
-				var buildingUV = ObjectIDMapping.GetUV(i, textureSize);
+				var objectIdMappingUV = ObjectIDMapping.GetUV(i, textureSize);
 				for (int v = 0; v < buildingMesh.vertexCount; v++)
 				{
 					//UV count should match vert count
-					allObjectUVs.Add(buildingUV);
+					allObjectUVs.Add(objectIdMappingUV);
 					//Create vector map reference for vert
 					allVectorMapIndices.Add(i);
 				}
@@ -66,8 +66,8 @@ namespace Netherlands3D.AssetGeneration
 				meshFilters[i].gameObject.SetActive(false);
 			}
 			//Now add all the combined uvs to our metadata
-			buildingMetaData.uvs = allObjectUVs.ToArray();
-			buildingMetaData.vectorMap = allVectorMapIndices;
+			subObjectsMetaData.uvs = allObjectUVs.ToArray();
+			subObjectsMetaData.vectorMap = allVectorMapIndices;
 
 			Mesh newCombinedMesh = new Mesh();
 			if (totalVertexCount > Mathf.Pow(2, 16))
@@ -105,7 +105,7 @@ namespace Netherlands3D.AssetGeneration
 			if (writeAsAssetFile)
 			{
 				AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
-				AssetDatabase.CreateAsset(buildingMetaData, assetMetaDataFileName);
+				AssetDatabase.CreateAsset(subObjectsMetaData, assetMetaDataFileName);
 				AssetDatabase.SaveAssets();
 			}
 #endif
