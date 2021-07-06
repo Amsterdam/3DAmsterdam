@@ -75,6 +75,7 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void ReadSkipIDs()
 	{
+		bagIdsToSkip = new string[] { };
 		if (optionalSkipListPath != "" && File.Exists(optionalSkipListPath))
 		{
 			bagIdsToSkip = File.ReadAllLines(optionalSkipListPath);
