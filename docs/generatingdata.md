@@ -17,13 +17,13 @@ Open up the <YourMunicipality>/Scenes/DataGeneration/GenerateBuildingTilesFromOB
 
 You will see that it contains a ApplicationConfiguration object. Make sure the script points to the same config file we created in [getting started](gettingstarted.md), and save the scene.
 
-Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LOD levels. These practically do the same thing but use different source files, so as a example we will start with just one LOD level. 
+Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LOD levels. These practically do the same thing but use different source files, so as an example we will start with just one LOD level. 
 
 Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters:
 
 | Field name                                | Field explanation                                            |
 | ----------------------------------------- | ------------------------------------------------------------ |
-| Bag 3D Source Files Folder                | Local folder path containing .OBJ files downloaded from www.3dbag.nl, for example "C:\BagObjs\\"  containing all our building models |
+| Bag 3D Source Files Folder                | Local folder path containing .OBJ tile files downloaded from www.3dbag.nl, for example "C:\BagObjs\\"  containing all our building models |
 | Optional Skip List Path                   | An optional path to a text file, containing a list of BAG id's that you would like to skip importing. Use a newline for every bag ID you would like to skip. |
 | Filter                                    | Filter for files to parse in the source files folder. By default this is *.obj, but you can specify it even more if you would like. |
 | Exclusively Generate Tiles With Substring | If you fill in something here, for example an RD coordinate seperated by _, then only the tile with that substring will be generated. If you leave it open all tiles within the config boundingbox range are generated. |
@@ -59,6 +59,19 @@ In case of the of the example above, this path would be 'buildings/buildings\_{x
 
 Press the unity editor 'Play' button to see your building tiles appear in runtime.
 If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Buildings AssetbundleMeshLayer script.
+
+### Buildings: Replacing a specific building
+
+If you have a custom made 3D model for a specific building you can add it manually to the BAG3DObjImportBuildings2.2 object, and name the object by the building BAG ID, to override that imported building with the custom model.
+
+You can determine the right location for the transform by temporarily adding the model during playmode in the main scene, positioning it relative to the loaded tiles, and then copying the model (Ctrl+C). 
+
+Exit playmode, and paste the model with the right position in the generation scene and parent it to the BAG3DObjImportBuildings2.2 object.
+
+The 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override.
+
+
+
 
 ## Terrain
 
