@@ -8,7 +8,7 @@ Assets/3DMyMunicipality/
 
 ## Application config file
 
-Now we want to add a config file that will contain our application settings. 
+Now we want to add a config file that will contain our application settings.  
 
 Right click our new 3DMyMunicipality folder and select *Create>ScriptableObjects>ConfigurationFile*. Give the config file a logical name like 'Config3DMyMunicipality'.
 
