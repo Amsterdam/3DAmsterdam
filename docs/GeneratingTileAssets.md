@@ -88,7 +88,7 @@ You can also use this method to add new or missing buildings to the tiles.
 
 ## Terrain
 
-<Terrain tile generation is currently being reworked. Documentation will follow. Feel free to explore the GenerateTerrainTiles scene.>
+> Terrain tile generation is currently being reworked. Documentation will follow. Feel free to explore the GenerateTerrainTiles scene.
 
 ## Trees
 
@@ -124,3 +124,6 @@ Make sure your references to the .csv file, and terrain tile paths are set, and 
 Check out the console for the progress. At some point you will see the generated tree tiles appear in the scene view:
 
 ![Scene-trees](images/Trees_SceneView.png)
+
+> The trees 3D meshes have a very low polycount and share a single material+texture to keep the tile size low and speed up the rendering
+
