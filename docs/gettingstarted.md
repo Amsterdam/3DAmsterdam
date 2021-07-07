@@ -86,7 +86,7 @@ If we pull Netherlands3D updates the contents of this prefab will update with it
 
 Select the Netherlands3D object and target our configuration file in the ApplicationConfiguration script that is on the prefab. ( Optionally you can add an additional configuration file for an acceptation environment with different datapaths. Set that to 'None' if you do not need it )
 
-![image-20210707161532487](C:\Projects\Git\3DAmsterdam\docs\images\Config.png)
+![ConfigAssignment](images/Config.png)
 
 > This is our first override to the Netherlands3D prefab that we want to save, so go ahead and save the scene file (Ctrl-S). 
 > You can see the fields with an override have a blue label on the left side of the inspector.
