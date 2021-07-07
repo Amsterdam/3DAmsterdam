@@ -20,4 +20,3 @@ Please refer to the Unity docs for their explanation on GDRP compliance of Unity
 https://docs.unity3d.com/Manual/UnityAnalyticsDataPrivacy.html
 
 Our Netherlands3D.Analytics is an intermediate system that allows you to add your own event tracking API/service(s).
-

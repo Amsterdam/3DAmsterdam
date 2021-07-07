@@ -75,23 +75,37 @@ If you now Play the generation scene the 3D Bag importer script will detect that
 
 ## Terrain
 
-<TODO>
+<Terrain tile generation is currently being reworked. Documentation will follow. Feel free to explore the GenerateTerrainTiles scene.>
 
 ## Trees
 
 The GenerateTreeTiles scene allows you to generate the mesh tiles for the Trees layer. 
 The script spawns tree prefabs onto the terrain tiles that we created earlier ( using raycasts to determine their position in height ) based on trees data stored in .csv file(s) and combines them into tile layer assets. 
 
-All tree prefabs share the same material/texture sheet containing 36 different trees.
-Your source file should use ';' as a seperator character and must at least contain the following data fields (order doesn't matter):
+All tree prefabs share the same material and texture sheet containing 36 different trees, to speed up rendering and memory usage.
+Your source file should use ';' as a separator character ad can contain the following data fields (order doesn't matter):
+
+| Field       | Explanation                                                  |
+| ----------- | ------------------------------------------------------------ |
+| id          | Unique identifier for the tree.                              |
+| typeName    | Description of the tree. The substrings are used to find a matching tree model from the list of prefabs. |
+| treeHeight  | The tree height in meters. This is used to scale the spawned trees. This should be a string and can contain multiple numbers, for example "from 12 to 18 meters" will take the average of 12 and 18. |
+| plantedYear | The year the tree was planted, for example '1995' (Not used right now) |
+| radius      | The radius of the tree (Not used right now)                  |
+| lng         | The longitude of the GPS coordinate (WGS84) for the position of the tree |
+| lat         | The lattitude of the GPS coordinate (WGS84) for the position of the tree |
+
+Example trees.csv file with 2 trees:
 
 	id;typeName;treeHeight;plantedYear;radius;lng;lat;
+	1337;"Amerikaanse linde";"12 tot 18 m.";1948;5;4.904675;52.339808;
+	1338;"Honingboom";"tot 6 m.";2002;5;4.880373;52.332886;
+
+If your .csv file fields are named differently than the field names above, you can change the mapping using the FieldNameMapping list in the inspector:
+
+<img src="images\GenerateTreeTiles_FieldNameMapping.png" alt="image-20210707150814309"  />
 
 
 
-
-
-OBJECTNUMMER;Soortnaam_NL;Boomnummer;Soortnaam_WTS;Boomtype;Boomhoogte;Plantjaar;Eigenaar;Beheerder;Categorie;SOORT_KORT;SDVIEW;RADIUS;WKT_LNG_LAT;WKT_LAT_LNG;LNG;LAT;
-
-The script tries to find the best fitting tree prefab by comparing the typename: 'Soortnaam_NL' of the tree data to the name of the prefabs, to see if there is a match in a substring.
+The script tries to find the best fitting tree prefab by comparing the typename value of the tree to the name of the prefabs, to see if there is a match in a substring, and places that prefab for the tree.
 
