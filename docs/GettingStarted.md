@@ -12,7 +12,7 @@ Now we want to add a config file that will contain our application settings.
 
 Right click our new 3DMyMunicipality folder and select *Create>ScriptableObjects>ConfigurationFile*. Give the config file a logical name like 'Config3DMyMunicipality'.
 
-<img src="images/ConfigFile.png" alt="ConfigFile" style="width:100%;" />
+<img src="images/ConfigFile.png" alt="ConfigFile" width="100%" />
 
 Now use the inspector to set the properties of our new config file:
 
