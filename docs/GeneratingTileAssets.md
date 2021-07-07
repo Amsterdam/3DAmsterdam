@@ -103,7 +103,7 @@ Example trees.csv file with 2 trees:
 
 If your .csv file fields are named differently than the field names above, you can change the mapping using the FieldNameMapping list in the inspector:
 
-<img src="images\GenerateTreeTiles_FieldNameMapping.png" alt="image-20210707150814309"  />
+<img src="images\GenerateTreeTiles_FieldNameMapping.png" width="100%" alt="Field name remap example"  />
 
 
 
