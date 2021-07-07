@@ -55,7 +55,7 @@ Metadata with the object seperation are saved next to the mesh data files and ha
 When the script is done, the generated asset files will need to be turned into AssetBundles.
 At the top bar of the Unity editor ( next to File, Edit, etc ) select *'Netherlands 3D>Tools>Export .asset files to AssetBundles'*.
 
-This will create the AssetBundles in the folder '/BuildingAssetBundles/', next to the '/Assets/' folder of the Unity project.
+This will create the AssetBundles in the folder '/TileAssetBundles/', next to the '/Assets/' folder of the Unity project.
 
 ![AssetBundles](images/AssetBundles.png)
 
@@ -66,8 +66,6 @@ Upload the assetbundles to a unique folder on your webserver (for example https:
 Now open up our project main scene and select the Buildings layer GameObject (Netherlands3D>Layers>Buildings) and change the Datasets length to 1 for now on the AssetbundleMeshLayer script (We only generated one LOD level dataset).
 Change the remaining dataset description to a nice description, and change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}'* and '{y}' as the RD coordinate placeholders in the filename. 
 In case of the of the example above, this path would be 'buildings/buildings\_{x}\_{y}.2.2' and our application config file would have https://example.nl/ as a webserver root path.
-
-
 
 Press the unity editor 'Play' button to see your building tiles appear in runtime.
 If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Buildings AssetbundleMeshLayer script.
