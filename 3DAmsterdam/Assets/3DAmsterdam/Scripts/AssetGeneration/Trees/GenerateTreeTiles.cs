@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Netherlands3D.AssetGeneration
 {
-	public class GenerateTreeData : MonoBehaviour
+	public class GenerateTreeTiles : MonoBehaviour
 	{
 		[Serializable]
 		private class Tree
@@ -33,25 +33,32 @@ namespace Netherlands3D.AssetGeneration
 		private class CsvFieldNameMapping
 		{
 			public string id = "OBJECTNUMMER";
-			public int id_Index = 0;
+			[HideInInspector]
+			public int id_Index = -1;
 
 			public string typeName = "Soortnaam_NL";
-			public int typeName_Index = 0;
+			[HideInInspector]
+			public int typeName_Index = -1;
 
 			public string treeHeight = "Boomhoogte";
-			public int treeHeight_Index = 0;
+			[HideInInspector]
+			public int treeHeight_Index = -1;
 
 			public string plantedYear = "Plantjaar";
-			public int plantedYear_Index = 0;
+			[HideInInspector]
+			public int plantedYear_Index = -1;
 
 			public string radius = "RADIUS";
-			public int radius_Index = 0;
+			[HideInInspector]
+			public int radius_Index = -1;
 
 			public string lng = "LNG";
-			public int lng_Index = 0;
+			[HideInInspector]
+			public int lng_Index = -1;
 
 			public string lat = "LAT";
-			public int lat_Index = 0;
+			[HideInInspector]
+			public int lat_Index = -1;
 		}
 
 		[SerializeField]
@@ -311,42 +318,54 @@ namespace Netherlands3D.AssetGeneration
 					
 					Vector3RD tileRDCoordinatesBottomLeft = new Vector3RD(double.Parse(coordinates[0], System.Globalization.CultureInfo.InvariantCulture), double.Parse(coordinates[1], System.Globalization.CultureInfo.InvariantCulture), 0);
 					Vector3RD tileCenter = new Vector3RD(tileRDCoordinatesBottomLeft.x+500, tileRDCoordinatesBottomLeft.y+500, tileRDCoordinatesBottomLeft.z);
-					var assetBundleTile = AssetBundle.LoadFromFile(file.FullName);
+					AssetBundle assetBundleTerrainTile = AssetBundle.LoadFromFile(file.FullName);
 					Mesh[] meshesInAssetbundle = new Mesh[0];
 					try
 					{
-						meshesInAssetbundle = assetBundleTile.LoadAllAssets<Mesh>();
+						meshesInAssetbundle = assetBundleTerrainTile.LoadAllAssets<Mesh>();
 					}
 					catch (Exception)
 					{
 						Debug.Log("Could not find a mesh in this assetbundle.");
-						assetBundleTile.Unload(true);
+						assetBundleTerrainTile.Unload(true);
 					}
 
 					//Spawn a new gameobject in our scene for the tile with a meshcollider
-					GameObject newTile = new GameObject();
-					newTile.isStatic = true;
-					newTile.name = file.Name;
-					Mesh mesh = meshesInAssetbundle[0];
-					newTile.AddComponent<MeshFilter>().sharedMesh = mesh;
-					newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
-					MeshRenderer tileRenderer = newTile.AddComponent<MeshRenderer>();
+					GameObject terrainTile = new GameObject();
+					terrainTile.name = file.Name;
+					var mesh = meshesInAssetbundle[0];
+					var terrainTileMeshFilter = terrainTile.AddComponent<MeshFilter>();
+					terrainTileMeshFilter.sharedMesh = mesh;
+
+					//Collision meshes can only be made on meshes with more then 3 distict vertices
+					if (mesh.vertices.Distinct().Count() >= 3)
+					{
+						terrainTile.AddComponent<MeshCollider>().sharedMesh = mesh;
+					}
+
+					MeshRenderer tileRenderer = terrainTile.AddComponent<MeshRenderer>();
 					Material[] materials = new Material[mesh.subMeshCount];
 					for (int i = 0; i < mesh.subMeshCount; i++)
 					{
 						materials[i] = previewMaterial;
 					}
 					tileRenderer.materials = materials;
-					newTile.transform.position = CoordConvert.RDtoUnity(tileCenter);
+					terrainTile.transform.position = CoordConvert.RDtoUnity(tileCenter);
 
 					//Spawn a new container for our trees that lines up with the tile
 					GameObject treeRoot = new GameObject();
 					treeRoot.name = file.Name.Replace("terrain", "trees");
-					treeRoot.transform.position = newTile.transform.position;
+					treeRoot.transform.position = terrainTile.transform.position;
 
 					yield return new WaitForEndOfFrame(); //Make sure collider is processed
 
 					SpawnTreesInTile(treeRoot, tileRDCoordinatesBottomLeft);
+
+					//Clean up our terrain tile to clear memory/physX objects
+					assetBundleTerrainTile.Unload(true);
+					Destroy(mesh);
+					Destroy(terrainTile);
+
 				}
 				currentFile++;
 			}
@@ -355,7 +374,7 @@ namespace Netherlands3D.AssetGeneration
 		/// <summary>
 		/// Spawn all the trees located within the RD coordinate bounds of the 1x1km tile.
 		/// </summary>
-		/// <param name="treeTile">The target 1x1 km ground tile</param>
+		/// <param name="treeTile">The target tree tile container that lines up with the terrain tile</param>
 		/// <param name="tileCoordinates">RD Coordinates of the tile</param>
 		/// <returns></returns>
 		private void SpawnTreesInTile(GameObject treeTile, Vector3RD tileCoordinates)
