@@ -39,7 +39,6 @@ namespace Netherlands3D.AssetGeneration
 			public GameObject prefab;
 		}
 
-		private const string treeTileAssetsFolder = "Assets/GeneratedTileAssets/";
 		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
 		private GameObjectsGroup treeTypes;
@@ -70,8 +69,8 @@ namespace Netherlands3D.AssetGeneration
 
 		public void Start()
 		{
-            //Calculate offset. ( Our viewer expects tiles with the origin in the center )
-            tileOffset = new Vector3RD()
+			//Calculate offset. ( Our viewer expects tiles with the origin in the center )
+			tileOffset = new Vector3RD()
             {
                 x = Config.activeConfiguration.RelativeCenterRD.x,
                 y = Config.activeConfiguration.RelativeCenterRD.y,
@@ -129,7 +128,9 @@ namespace Netherlands3D.AssetGeneration
 
 			Debug.Log("No prefabs were found for the following tree names: ");
 			string listOfNamesNotFound = string.Join("\n", noPrefabFoundNames);
-			File.WriteAllText(Application.dataPath + "/TreesNotFound.csv", listOfNamesNotFound);
+			var treesNotFoundList = Application.dataPath + "/TreesNotFound.csv";
+			File.WriteAllText(treesNotFoundList, listOfNamesNotFound);
+			Debug.Log($"A list of trees that were not found is saved in {treesNotFoundList}");
 
 			Debug.Log("Done parsing tree lines. Start filling the tiles with trees..");
 
@@ -242,6 +243,11 @@ namespace Netherlands3D.AssetGeneration
 			var info = new DirectoryInfo(sourceGroundTilesFolder);
 			var fileInfo = info.GetFiles();
 
+			//Initialize preview progress map
+			var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / (float)tileSize);
+			var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y) / (float)tileSize);
+			yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
+
 			var currentFile = 0;
 			while(currentFile < fileInfo.Length)
 			{
@@ -268,15 +274,23 @@ namespace Netherlands3D.AssetGeneration
 						assetBundleTile.Unload(true);
 					}
 
+					//Spawn a new gameobject in our scene for the tile with a meshcollider
 					GameObject newTile = new GameObject();
 					newTile.isStatic = true;
 					newTile.name = file.Name;
-					newTile.AddComponent<MeshFilter>().sharedMesh = meshesInAssetbundle[0];
-					newTile.AddComponent<MeshCollider>().sharedMesh = meshesInAssetbundle[0];
-					
-					newTile.AddComponent<MeshRenderer>().material = previewMaterial;
+					Mesh mesh = meshesInAssetbundle[0];
+					newTile.AddComponent<MeshFilter>().sharedMesh = mesh;
+					newTile.AddComponent<MeshCollider>().sharedMesh = mesh;
+					MeshRenderer tileRenderer = newTile.AddComponent<MeshRenderer>();
+					Material[] materials = new Material[mesh.subMeshCount];
+					for (int i = 0; i < mesh.subMeshCount; i++)
+					{
+						materials[i] = previewMaterial;
+					}
+					tileRenderer.materials = materials;
 					newTile.transform.position = CoordConvert.RDtoUnity(tileCenter);
 
+					//Spawn a new container for our trees that lines up with the tile
 					GameObject treeRoot = new GameObject();
 					treeRoot.name = file.Name.Replace("terrain", "trees");
 					treeRoot.transform.position = newTile.transform.position;
@@ -299,17 +313,23 @@ namespace Netherlands3D.AssetGeneration
 		{
 			//TODO: Add all trees within this tile (1x1km)
 			int treeChecked = trees.Count -1;
+			int treesAddedToTile = 0;
 			while (treeChecked >= 0)
 			{
 				Tree tree = trees[treeChecked];
-
 				if (tree.RD.x > tileCoordinates.x && tree.RD.y > tileCoordinates.y && tree.RD.x < tileCoordinates.x + tileSize && tree.RD.y < tileCoordinates.y + tileSize)
 				{
 					SpawnTreeOnGround(treeTile, tree);
+					treesAddedToTile++;
 					trees.RemoveAt(treeChecked);
 				}
 				treeChecked--;
 			}
+
+			//Update our preview image
+			var xPreviewCoordinate = (tileCoordinates.x - Config.activeConfiguration.BottomLeftRD.x) / tileSize;
+			var yPreviewCoordinate = (tileCoordinates.y - Config.activeConfiguration.BottomLeftRD.y) / tileSize;
+			ProgressPreviewMap.Instance.ColorTile((int)xPreviewCoordinate, (int)yPreviewCoordinate, (treesAddedToTile>0) ? TilePreviewState.DONE : TilePreviewState.EMPTY);
 
 			//Define a preview position to preview the tree tile in our scene
 			Vector3 previewPosition = treeTile.transform.position;
@@ -351,7 +371,8 @@ namespace Netherlands3D.AssetGeneration
 		/// <param name="worldPosition">The position to move the tile to when it is done (for previewing purposes)</param>
 		private void CreateTreeTile(GameObject treeTile, Vector3 worldPosition)
 		{
-			string assetName = treeTileAssetsFolder + treeTile.name + ".asset";
+			TileCombineUtility.CreateAssetFolder();
+			string assetName = TileCombineUtility.unityMeshAssetFolder + treeTile.name + ".asset";
 
 			MeshFilter[] meshFilters = treeTile.GetComponentsInChildren<MeshFilter>();
 			CombineInstance[] combine = new CombineInstance[meshFilters.Length];
