@@ -66,15 +66,16 @@ If nothing appears, double-check if you set the right paths in the application c
 
 If you have a custom made 3D model for a specific building you can add it manually to the BAG3DObjImportBuildings scene object, and name the object with the building BAG ID, to override that imported building with the custom model.
 
-You can determine the right location for the transform by temporarily adding the model during playmode in the main scene, positioning it relative to the loaded tiles, and then copying the model (Ctrl+C). 
+You can determine the right location for the transform by temporarily adding the model to the main scene during playmode, positioning it, and then copying the model (Ctrl+C). 
 
-Exit playmode, and paste the model with the right position in the generation scene and parent it to the importer parent object:
+![image-20210707153849527](images/Building_CopyPaste.png)
+
+Exit playmode, open the building generation scene and paste it inside the importer parent object. This way the transform properties of the object will be the same as the one you had during playmode:
 
 ![Building-override](images/BuildingOverride.png)
 
-If you now Play the generation scene the 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override.
-
-
+If you now Play the generation scene the 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override for the building in the tile at that location.
+You can also use this method to add new or missing buildings to the tiles.
 
 
 ## Terrain
