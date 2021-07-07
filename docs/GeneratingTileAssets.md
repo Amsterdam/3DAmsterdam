@@ -50,7 +50,6 @@ Metadata with the object seperation are saved next to the mesh data files and ha
 ![GeneratedTileAssets](images/GeneratedTileAssets.png)
 
 > Tip: The unity editor is pretty choked up while generating the tiles but you can use a file explorer to inspect the contents of the /Assets/GeneratedTileAssets/ folder. There the mesh assets will appear one by one.
->
 
 When the script is done, the generated asset files will need to be turned into AssetBundles.
 At the top bar of the Unity editor ( next to File, Edit, etc ) select *'Netherlands 3D>Tools>Export .asset files to AssetBundles'*.
@@ -126,4 +125,3 @@ Check out the console for the progress. At some point you will see the generated
 ![Scene-trees](images/Trees_SceneView.png)
 
 > The trees 3D meshes have a very low polycount and share a single material+texture to keep the tile size low and speed up the rendering
-

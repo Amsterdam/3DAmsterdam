@@ -93,4 +93,4 @@ Select the Netherlands3D object and target our configuration file in the Applica
 
 If you already added a reference to your own logo in the config file you can press 'Play' in the unity editor and should be able to see your logo appear in the top left instead of the 3DAmsterdam logo.
 
-Next, we want to generate and and host the datasets for the tile layers. We already copied the data generation scenes into our Scenes/DataGeneration/ folder so you are all set to continue to [generating the datasets](generatingdata.md)
+Next, we want to generate and and host the datasets for the tile layers. We already copied the data generation scenes into our Scenes/DataGeneration/ folder so you are all set to continue to the explanation for: [Generating tile assets>](GeneratingTileAssets.md)
