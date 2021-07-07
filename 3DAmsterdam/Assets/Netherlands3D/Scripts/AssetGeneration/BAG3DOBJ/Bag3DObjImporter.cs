@@ -146,6 +146,8 @@ public class Bag3DObjImporter : MonoBehaviour
 		var totalTiles = xTiles * yTiles;
 		int currentTile = 0;
 
+		yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
+
 		//Walk the tilegrid
 		var tileRD = new Vector2Int(0, 0);
 		for (int x = 0; x < xTiles; x++)
@@ -170,6 +172,7 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName))
 				{
 					print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+					ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
 					if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 					continue;
 				}
@@ -206,6 +209,7 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (childrenInTile == 0)
 				{
 					Destroy(newTileContainer);
+					ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.EMPTY);
 					print($"<color={ConsoleColors.GeneralDataWarningHexColor}>No children found for tile {tileName}</color>");
 					continue;
 				}
@@ -216,6 +220,9 @@ public class Bag3DObjImporter : MonoBehaviour
 
 				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
 				print($"<color={ConsoleColors.GeneralSuccessHexColor}>Finished tile {tileName}</color>");
+
+				ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.DONE);
+
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}

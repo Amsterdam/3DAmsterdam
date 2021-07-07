@@ -110,7 +110,7 @@ namespace Netherlands3D.AssetGeneration
 			}
 #endif
 		}
-		private static void CreateAssetFolder()
+		public static void CreateAssetFolder()
 		{
 			Directory.CreateDirectory($"{Application.dataPath}/../{unityMeshAssetFolder}");
 		}
