@@ -14,5 +14,9 @@ Where an abstract 2D representation of data can give a better oversight or means
 
 ## Can I use Analytics?
 
-...
+Unity offers Unity Analytics that sends a fair amount of events/data by default when enabled.
+Please refer to the Unity docs for their explanation on GDRP compliance of Unity Analytics:
 
+https://docs.unity3d.com/Manual/UnityAnalyticsDataPrivacy.html
+
+Our Netherlands3D.Analytics is an intermediate system that allows you to add your own event tracking API/service(s).
