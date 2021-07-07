@@ -10,7 +10,9 @@ Assets/3DMyMunicipality/
 
 Now we want to add a config file that will contain our application settings. 
 
-Right click our new 3DMyMunicipality folder and select Create>ScriptableObjects>ConfigurationFile. Give the config file a logical name like 'Config3DMyMunicipality'.
+Right click our new 3DMyMunicipality folder and select *Create>ScriptableObjects>ConfigurationFile*. Give the config file a logical name like 'Config3DMyMunicipality'.
+
+![ConfigFile](images/ConfigFile.png)
 
 Now use the inspector to set the properties of our new config file:
 
@@ -84,7 +86,10 @@ If we pull Netherlands3D updates the contents of this prefab will update with it
 
 Select the Netherlands3D object and target our configuration file in the ApplicationConfiguration script that is on the prefab. ( Optionally you can add an additional configuration file for an acceptation environment with different datapaths. Set that to 'None' if you do not need it )
 
-This is our first override to the Netherlands3D prefab that we want to save, so go ahead and save the scene file (Ctrl-S).
+![image-20210707161532487](C:\Projects\Git\3DAmsterdam\docs\images\Config.png)
+
+> This is our first override to the Netherlands3D prefab that we want to save, so go ahead and save the scene file (Ctrl-S). 
+> You can see the fields with an override have a blue label on the left side of the inspector.
 
 If you already added a reference to your own logo in the config file you can press 'Play' in the unity editor and should be able to see your logo appear in the top left instead of the 3DAmsterdam logo.
 
