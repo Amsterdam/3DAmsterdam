@@ -1,4 +1,4 @@
-# Generating data assets
+# Generating tile data assets
 
 We have set up the Unity Project and our own municipality folder as described in [getting started](gettingstarted.md).
 The next step is to set up our data generation scenes that generate the external asset files for the tile-based layers used in our Netherlands3D application:
@@ -62,7 +62,7 @@ If nothing appears, double-check if you set the right paths in the application c
 
 ### Buildings: Replacing a specific building
 
-If you have a custom made 3D model for a specific building you can add it manually to the BAG3DObjImportBuildings2.2 object, and name the object by the building BAG ID, to override that imported building with the custom model.
+If you have a custom made 3D model for a specific building you can add it manually to the BAG3DObjImportBuildings scene object, and name the object with the building BAG ID, to override that imported building with the custom model.
 
 You can determine the right location for the transform by temporarily adding the model during playmode in the main scene, positioning it relative to the loaded tiles, and then copying the model (Ctrl+C). 
 
@@ -75,9 +75,23 @@ If you now Play the generation scene the 3D Bag importer script will detect that
 
 ## Terrain
 
-
+<TODO>
 
 ## Trees
 
+The GenerateTreeTiles scene allows you to generate the mesh tiles for the Trees layer. 
+The script spawns tree prefabs onto the terrain tiles that we created earlier ( using raycasts to determine their position in height ) based on trees data stored in .csv file(s) and combines them into tile layer assets. 
 
+All tree prefabs share the same material/texture sheet containing 36 different trees.
+Your source file should use ';' as a seperator character and must at least contain the following data fields (order doesn't matter):
+
+	id;typeName;treeHeight;plantedYear;radius;lng;lat;
+
+
+
+
+
+OBJECTNUMMER;Soortnaam_NL;Boomnummer;Soortnaam_WTS;Boomtype;Boomhoogte;Plantjaar;Eigenaar;Beheerder;Categorie;SOORT_KORT;SDVIEW;RADIUS;WKT_LNG_LAT;WKT_LAT_LNG;LNG;LAT;
+
+The script tries to find the best fitting tree prefab by comparing the typename: 'Soortnaam_NL' of the tree data to the name of the prefabs, to see if there is a match in a substring.
 
