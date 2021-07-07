@@ -19,6 +19,8 @@ You will see that it contains a ApplicationConfiguration object. Make sure the s
 
 Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LOD levels. These practically do the same thing but use different source files, so as an example we will start with just one LOD level. 
 
+![BuildingImporter](images\Bag3DObjImporter.png)
+
 Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters:
 
 | Field name                                | Field explanation                                            |
@@ -66,7 +68,9 @@ If you have a custom made 3D model for a specific building you can add it manual
 
 You can determine the right location for the transform by temporarily adding the model during playmode in the main scene, positioning it relative to the loaded tiles, and then copying the model (Ctrl+C). 
 
-Exit playmode, and paste the model with the right position in the generation scene and parent it to the BAG3DObjImportBuildings2.2 object.
+Exit playmode, and paste the model with the right position in the generation scene and parent it to the importer parent object:
+
+![Building-override](images\BuildingOverride.png)
 
 If you now Play the generation scene the 3D Bag importer script will detect that it has a child object with an ID that already exists, and will use that model as an override.
 
@@ -95,7 +99,7 @@ Your source file should use ';' as a separator character ad can contain the foll
 | lng         | The longitude of the GPS coordinate (WGS84) for the position of the tree |
 | lat         | The lattitude of the GPS coordinate (WGS84) for the position of the tree |
 
-Example trees.csv file with 2 trees:
+Example trees.csv file with two trees:
 
 	id;typeName;treeHeight;plantedYear;radius;lng;lat;
 	1337;"Amerikaanse linde";"12 tot 18 m.";1948;5;4.904675;52.339808;
@@ -103,9 +107,11 @@ Example trees.csv file with 2 trees:
 
 If your .csv file fields are named differently than the field names above, you can change the mapping using the FieldNameMapping list in the inspector:
 
-<img src="images\GenerateTreeTiles_FieldNameMapping.png" width="100%" alt="Field name remap example"  />
-
-
+![Fieldname-remap](images\GenerateTreeTiles_FieldNameMapping.png)
 
 The script tries to find the best fitting tree prefab by comparing the typename value of the tree to the name of the prefabs, to see if there is a match in a substring, and places that prefab for the tree.
 
+Make sure your references to the .csv file, and terrain tile paths are set, and press 'Play' to start generating the tree tiles.
+Check out the console for the progress. At some point you will see the generated tree tiles appear in the scene view:
+
+![Scene-trees](C:\Projects\Git\3DAmsterdam\docs\images\Trees_SceneView.png)
