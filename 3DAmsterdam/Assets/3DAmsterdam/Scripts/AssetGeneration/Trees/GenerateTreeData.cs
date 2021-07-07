@@ -14,30 +14,48 @@ namespace Netherlands3D.AssetGeneration
 		[Serializable]
 		private class Tree
 		{
-			public string OBJECTNUMMER;
-			public string Soortnaam_NL;
-			public string Boomnummer;
-			public string Soortnaam_WTS;
-			public string Boomtype;
-			public string Boomhoogte;
-			public int Plantjaar;
-			public string Eigenaar;
-			public string Beheerder;
-			public string Categorie;
-			public string SOORT_KORT;
-			public string SDVIEW;
-			public string RADIUS;
-			public string WKT_LNG_LAT;
-			public string WKT_LAT_LNG;
-			public double LNG;
-			public double LAT;
+			public string id;
+			public string typeName;
+			public string treeHeight;
+			public int plantedYear;
+			public string radius;
+			public double lng;
+			public double lat;
 
 			public Vector3RD RD;
 			public Vector3 position;
-			public float averageTreeHeight;
+			public float averageTreeRootOriginHeight;
 
 			public GameObject prefab;
 		}
+
+		[Serializable]
+		private class CsvFieldNameMapping
+		{
+			public string id = "OBJECTNUMMER";
+			public int id_Index = 0;
+
+			public string typeName = "Soortnaam_NL";
+			public int typeName_Index = 0;
+
+			public string treeHeight = "Boomhoogte";
+			public int treeHeight_Index = 0;
+
+			public string plantedYear = "Plantjaar";
+			public int plantedYear_Index = 0;
+
+			public string radius = "RADIUS";
+			public int radius_Index = 0;
+
+			public string lng = "LNG";
+			public int lng_Index = 0;
+
+			public string lat = "LAT";
+			public int lat_Index = 0;
+		}
+
+		[SerializeField]
+		private CsvFieldNameMapping fieldNameMapping;
 
 		private const float raycastYRandomOffsetRange = 0.08f;
 		[SerializeField]
@@ -93,6 +111,9 @@ namespace Netherlands3D.AssetGeneration
 			foreach (var csvData in bomenCsvDataFiles)
 			{
 				string[] lines = csvData.text.Split('\n');
+
+				ReadHeader(lines[0]);
+
 				for (int i = 1; i < lines.Length; i++)
 				{
 					if (lines[i].Contains(";"))
@@ -104,6 +125,46 @@ namespace Netherlands3D.AssetGeneration
 			Debug.Log("Tree dataset contains " + treeLines.Count);
 
 			StartCoroutine(ParseTreeLines());
+		}
+
+		/// <summary>
+		/// Determine at what location the fieldnames are
+		/// </summary>
+		/// <param name="header">The top line of the csv containing the field names</param>
+		private void ReadHeader(string header)
+		{
+			string[] headerFields = header.Split(';');
+			for (int i = 0; i < headerFields.Length; i++)
+			{
+				var fieldName = headerFields[i];
+				if(fieldName == fieldNameMapping.id){
+					fieldNameMapping.id_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.lat)
+				{
+					fieldNameMapping.lat_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.lng)
+				{
+					fieldNameMapping.lng_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.plantedYear)
+				{
+					fieldNameMapping.plantedYear_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.radius)
+				{
+					fieldNameMapping.radius_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.treeHeight)
+				{
+					fieldNameMapping.treeHeight_Index = i;
+				}
+				else if (fieldName == fieldNameMapping.typeName)
+				{
+					fieldNameMapping.typeName_Index = i;
+				}
+			}
 		}
 
 		/// <summary>
@@ -140,8 +201,7 @@ namespace Netherlands3D.AssetGeneration
 		}
 
 		/// <summary>
-		/// Parse a tree from a string line to a new List item containing the following ; seperated fields:
-		/// OBJECTNUMMER;Soortnaam_NL;Boomnummer;Soortnaam_WTS;Boomtype;Boomhoogte;Plantjaar;Eigenaar;Beheerder;Categorie;SOORT_KORT;SDVIEW;RADIUS;WKT_LNG_LAT;WKT_LAT_LNG;LNG;LAT;
+		/// Parse a tree from a string line to a new List item. Make sure to check your csv file header field names, and the ; as seperator character.
 		/// </summary>
 		/// <param name="line">Text line matching the same fields as the header</param>
 		private void ParseTree(string line)
@@ -150,30 +210,19 @@ namespace Netherlands3D.AssetGeneration
 
 			Tree newTree = new Tree()
 			{
-				OBJECTNUMMER = cell[0],
-				Soortnaam_NL = cell[1],
-				Boomnummer = cell[2],
-				Soortnaam_WTS = cell[3],
-				Boomtype = cell[4],
-				Boomhoogte = cell[5],
-				Plantjaar = int.Parse(cell[6]),
-				Eigenaar = cell[7],
-				Beheerder = cell[8],
-				Categorie = cell[9],
-				SOORT_KORT = cell[10],
-				SDVIEW = cell[11],
-				RADIUS = cell[12],
-				WKT_LNG_LAT = cell[13],
-				WKT_LAT_LNG = cell[14],
-				LNG = double.Parse(cell[15], System.Globalization.CultureInfo.InvariantCulture),
-				LAT = double.Parse(cell[16], System.Globalization.CultureInfo.InvariantCulture)
+				id = cell[fieldNameMapping.id_Index],
+				typeName = cell[fieldNameMapping.typeName_Index],
+				treeHeight = cell[fieldNameMapping.treeHeight_Index],	
+				radius = cell[fieldNameMapping.radius_Index],
+				lng = double.Parse(cell[fieldNameMapping.lng_Index], System.Globalization.CultureInfo.InvariantCulture),
+				lat = double.Parse(cell[fieldNameMapping.lat_Index], System.Globalization.CultureInfo.InvariantCulture)
 			};
 
 			//Extra generated tree data
-			newTree.RD = CoordConvert.WGS84toRD(newTree.LNG, newTree.LAT);
-			newTree.position = CoordConvert.WGS84toUnity(newTree.LNG, newTree.LAT);
-			newTree.averageTreeHeight = EstimateTreeHeight(newTree.Boomhoogte);
-			newTree.prefab = FindClosestPrefabTypeByName(newTree.Soortnaam_NL);
+			newTree.RD = CoordConvert.WGS84toRD(newTree.lng, newTree.lat);
+			newTree.position = CoordConvert.WGS84toUnity(newTree.lng, newTree.lat);
+			newTree.averageTreeRootOriginHeight = EstimateTreeHeight(newTree.treeHeight);
+			newTree.prefab = FindClosestPrefabTypeByName(newTree.typeName);
 
 			trees.Add(newTree);
 		}
@@ -348,8 +397,8 @@ namespace Netherlands3D.AssetGeneration
 			GameObject newTreeInstance = Instantiate(tree.prefab, treeTile.transform);
 
 			//Apply properties/variations based on tree data
-			newTreeInstance.name = tree.OBJECTNUMMER;
-			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeHeight;
+			newTreeInstance.name = tree.id;
+			newTreeInstance.transform.localScale = Vector3.one * 0.1f * tree.averageTreeRootOriginHeight;
 			newTreeInstance.transform.Rotate(0, UnityEngine.Random.value * 360.0f, 0);
 
 			float raycastHitY = 0;
