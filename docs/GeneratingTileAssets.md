@@ -7,21 +7,21 @@ The next step is to set up our data generation scenes that generate the external
 - Trees
 - Terrain
 
-Because our municipality folder is created as a copy from the 3DAmsterdam folder there are already a few scenes in our <YourMunicipality>/Scenes/DataGeneration/ folder. These scenes are made to import different source files and generate unity .asset files when pressing 'Play' in the unity editor.
+Because our municipality folder is created as a copy from the 3DAmsterdam folder there are already a few scenes in our *YourMunicipality*/Scenes/DataGeneration/ folder. These scenes are made to import different source files and generate unity .asset files when pressing 'Play' in the unity editor.
 
 We will alter these scenes so they generate the files for our new municipality, starting with the Buildings:
 
 ## Buildings
 
-Open up the <YourMunicipality>/Scenes/DataGeneration/GenerateBuildingTilesFromOBJ.scene 
+Open up the *YourMunicipality*/Scenes/DataGeneration/GenerateBuildingTilesFromOBJ.scene 
 
 You will see that it contains a ApplicationConfiguration object. Make sure the script points to the same config file we created in [getting started](gettingstarted.md), and save the scene.
 
-Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LOD levels. These practically do the same thing but use different source files, so as an example we will start with just one LOD level. 
+Next you see that there are 3 objects in the scene with a Bag3DObjImporter script on it for different LODs(Level of detail). These practically do the same thing but use different LOD source files, so as an example we will start with generating LOD level 2.2.
 
 ![BuildingImporter](images/Bag3DObjImporter.png)
 
-Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters:
+Remove the two that are disabled, and select the remaining active BAG3DObjImportBuildings2.2 object so we can start setting the parameters of the import script:
 
 | Field name                                | Field explanation                                            |
 | ----------------------------------------- | ------------------------------------------------------------ |
@@ -47,17 +47,27 @@ First, the script goes through all the .obj source files and creates GameObjects
 After importing all the .obj files, the script will combine the imported building GameObjects that reside inside the same tile into a single mesh per-tile. These .mesh assets will start appearing in a folder named GeneratedTileAssets. The folder will be auto-generated at that stage.
 Metadata with the object seperation are saved next to the mesh data files and have a '-data' suffix.
 
-The unity editor is pretty choked up while generating the tiles but you can use a file explorer to inspect the contents of the /Assets/GeneratedTileAssets/ folder. There the mesh assets will appear one by one.
+![GeneratedTileAssets](images/GeneratedTileAssets.png)
+
+> Tip: The unity editor is pretty choked up while generating the tiles but you can use a file explorer to inspect the contents of the /Assets/GeneratedTileAssets/ folder. There the mesh assets will appear one by one.
+>
 
 When the script is done, the generated asset files will need to be turned into AssetBundles.
-At the top bar of the Unity editor ( next to File, Edit, etc ) select 'Netherlands 3D>Tools>Export .asset files to AssetBundles'.
+At the top bar of the Unity editor ( next to File, Edit, etc ) select *'Netherlands 3D>Tools>Export .asset files to AssetBundles'*.
+
 This will create the AssetBundles in the folder '/BuildingAssetBundles/', next to the '/Assets/' folder of the Unity project.
 
-Upload the assetbundle files to a unique folder on your webserver (for example https://example.nl/buildings/)
+![AssetBundles](images/AssetBundles.png)
 
-Now open up our project main scene and select the Buildings layer GameObject (Netherlands3D>Layers>Buildings) in the hierarchy. Change the Datasets length to 1 for now (we only generated one LOD level) on the AssetbundleMeshLayer script.
-Change the remaining dataset description to a nice description, and change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}' and '{y}' as the RD coordinate placeholders in the filename. 
+### Buildings: Testing our generated dataset
+
+Upload the assetbundles to a unique folder on your webserver (for example https://example.nl/buildings/)
+
+Now open up our project main scene and select the Buildings layer GameObject (Netherlands3D>Layers>Buildings) and change the Datasets length to 1 for now on the AssetbundleMeshLayer script (We only generated one LOD level dataset).
+Change the remaining dataset description to a nice description, and change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}'* and '{y}' as the RD coordinate placeholders in the filename. 
 In case of the of the example above, this path would be 'buildings/buildings\_{x}\_{y}.2.2' and our application config file would have https://example.nl/ as a webserver root path.
+
+
 
 Press the unity editor 'Play' button to see your building tiles appear in runtime.
 If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Buildings AssetbundleMeshLayer script.
