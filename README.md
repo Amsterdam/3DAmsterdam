@@ -42,9 +42,9 @@ The files structure of the project looks like this.
 |      └──WebGLTemplates     #Special Unity folder containing our Netherlands3D fullscreen WebGL template
 ```
 
-To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/gettingstarted.md)
+To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/GettingStarted.md)
 
-After setting up your project you can start generating your own tile-based layer datasets using the [asset generation documentation](docs/generatingdata.md)
+After setting up your project you can start generating your own tile-based layer datasets using the [asset generation documentation](docs/GeneratingTileAssets.md)
 
 ## Unity Input System
 
