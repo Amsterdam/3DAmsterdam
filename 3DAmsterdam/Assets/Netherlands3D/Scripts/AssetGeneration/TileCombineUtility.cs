@@ -20,6 +20,7 @@ namespace Netherlands3D.AssetGeneration
 		/// <param name="worldPosition">Original position to move the tile to for previewing it</param>
 		public static void CombineSource(GameObject sourceGameobject, Vector3 worldPosition, bool renderInViewport, Material defaultMaterial,bool writeAsAssetFile)
 		{
+#if UNITY_EDITOR
 			CreateAssetFolder();
 
 			MeshFilter[] meshFilters = sourceGameobject.GetComponentsInChildren<MeshFilter>();
@@ -101,7 +102,6 @@ namespace Netherlands3D.AssetGeneration
 				MonoBehaviour.Destroy(sourceGameobject);
 			}
 
-#if UNITY_EDITOR
 			if (writeAsAssetFile)
 			{
 				AssetDatabase.CreateAsset(newCombinedMesh, assetFileName);
