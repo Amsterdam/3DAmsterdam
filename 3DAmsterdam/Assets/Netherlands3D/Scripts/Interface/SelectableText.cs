@@ -17,7 +17,7 @@ namespace Netherlands3D.Interface
 		private Text text;
 		private Text inputFieldText;
 
-		void Start()
+		void Awake()
 		{
 			text = this.GetComponent<Text>();
 			text.raycastTarget = true;
@@ -37,12 +37,22 @@ namespace Netherlands3D.Interface
 
 		public void OnPointerEnter(PointerEventData eventData)
 		{
-			if (!inputField && text.text.Length > 0)
+			if (inputField)
+			{
+				DisplayInputWithText();
+			}
+			else if (text.text.Length > 0)
 			{
 				CreateInputFieldCopy();
 			}
-			inputField.text = text.text;
+		}
+
+		private void DisplayInputWithText()
+		{
 			inputField.gameObject.SetActive(true);
+
+			//Copy the text from the source Text component as a value
+			inputField.text = text.text;
 		}
 
 		private void CreateInputFieldCopy()
@@ -54,6 +64,8 @@ namespace Netherlands3D.Interface
 			inputFieldText.font = text.font;
 			inputFieldText.fontSize = text.fontSize;
 			inputFieldText.fontStyle = text.fontStyle;
+
+			DisplayInputWithText();
 
 			inputField.onEndEdit.AddListener(FinishedSelectingText);
 		}
