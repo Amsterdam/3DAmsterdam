@@ -13,10 +13,12 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Text valueText;
 
-        public void SetTexts(string key, string value)
+		public Text ValueText { get => valueText; }
+
+		public void SetTexts(string key, string value)
         {
             keyText.text = key;
-            valueText.text = value;
+            ValueText.text = value;
         }
     }
 }
