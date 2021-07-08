@@ -175,18 +175,11 @@ public class ObjLoad : MonoBehaviour
 					{
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordinates");
 					}
 					else if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
 					{
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordinates");
-					}
-					else
-					{
-						Debug.Log(cd(linePart[1]) + "-" + -cd(linePart[3]) + "-" + cd(linePart[2]));
-						Debug.Log("model appears not to be in RD-coordinates");
 					}
 				}
 
