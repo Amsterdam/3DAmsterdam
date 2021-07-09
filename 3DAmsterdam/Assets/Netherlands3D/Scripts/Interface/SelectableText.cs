@@ -11,11 +11,20 @@ namespace Netherlands3D.Interface
 {
 	public class SelectableText : MonoBehaviour, IPointerEnterHandler
 	{
+		[SerializeField]
 		private InputField inputFieldSource;
 		private InputField inputField;
 
 		private Text text;
 		private Text inputFieldText;
+
+		[SerializeField]
+		private bool readOnly = true;
+
+		[System.Serializable]
+		public class ChangedTextEvent : UnityEvent<string>{}
+		[SerializeField]
+		private ChangedTextEvent changedTextEvent;
 
 		void Awake()
 		{
@@ -30,9 +39,26 @@ namespace Netherlands3D.Interface
 			gameObject.AddComponent<ChangePointerStyleHandler>().StyleOnHover = ChangePointerStyleHandler.Style.TEXT;
 		}
 
-		private void FinishedSelectingText(string newString = "")
+		/// <summary>
+		/// Clear the generated inputfield and its listeners
+		/// </summary>
+		public void Clear()
+		{
+			if (inputField)
+			{
+				Destroy(inputField);
+				inputField.onEndEdit.RemoveAllListeners();
+			}
+		}
+
+		private void OnEndEdit(string newString = "")
 		{
 			inputField.gameObject.SetActive(false);
+			changedTextEvent.Invoke(newString);
+		}
+		private void OnEdit(string newString = "")
+		{
+			changedTextEvent.Invoke(newString);
 		}
 
 		public void OnPointerEnter(PointerEventData eventData)
@@ -64,10 +90,12 @@ namespace Netherlands3D.Interface
 			inputFieldText.font = text.font;
 			inputFieldText.fontSize = text.fontSize;
 			inputFieldText.fontStyle = text.fontStyle;
+			inputField.readOnly = readOnly;
 
 			DisplayInputWithText();
 
-			inputField.onEndEdit.AddListener(FinishedSelectingText);
+			inputField.onEndEdit.AddListener(OnEndEdit);
+			inputField.onValueChanged.AddListener(OnEdit);
 		}
 
 		private void OnDestroy()

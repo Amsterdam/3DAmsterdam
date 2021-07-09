@@ -1,4 +1,5 @@
 ﻿using ConvertCoordinates;
+using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
 using RuntimeHandle;
 using System.Collections;
@@ -86,6 +87,15 @@ namespace Netherlands3D.Interface.SidePanel
             napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
+        public void RenameTransformable(string newName)
+        {
+            transformTitle.text = newName;
+            TransformableTarget.name = newName;
+
+            var interfaceLayer = TransformableTarget.GetComponent<InterfaceLayerLinkedObject>();
+            if(interfaceLayer) interfaceLayer.InterfaceLayer.RenameLayer(newName);
+        }
+
         /// <summary>
         /// Create the object containing our 3D gizmos if it does not exist yet
         /// </summary>
@@ -123,7 +133,6 @@ namespace Netherlands3D.Interface.SidePanel
 		/// <param name="target">The target transformable we want to manipulate using the transform panel</param>
 		public void SetTarget(Transformable target)
         {
-            transformTitle.text = target.name;
             transformableTarget = target;
 
             ApplyTransformOffsets(); //Our starting percentage scale is always 100% (even if our imported/created stuff has a strange scale)
@@ -139,6 +148,11 @@ namespace Netherlands3D.Interface.SidePanel
 
             //Display this panel
             gameObject.SetActive(true);
+
+            //Update the object name field
+            transformTitle.text = target.name;
+            foreach (Transform child in transformTitle.transform)
+                Destroy(child.gameObject);
 
             //StartCoroutine(SortLayout());
             this.transform.SetSiblingIndex(1);
