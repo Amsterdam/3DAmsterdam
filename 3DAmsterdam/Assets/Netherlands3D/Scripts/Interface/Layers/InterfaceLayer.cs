@@ -19,6 +19,10 @@ namespace Netherlands3D.Interface.Layers
 	public class InterfaceLayer : ChangePointerStyleHandler
 	{
 		[SerializeField]
+		private Text layerNameText;
+		public string GetName => layerNameText.text;
+
+		[SerializeField]
 		protected LayerType layerType = LayerType.STATIC;
 		public LayerType LayerType { get => layerType; }
 
@@ -74,6 +78,7 @@ namespace Netherlands3D.Interface.Layers
 		[Tooltip("Override shaders instead of copying material source properties")]
 		public bool swapTransparentMaterialSources = false;
 
+		private int maxNameLength = 24;
 		private void Awake()
 		{
 			//If we set a linkedObject manualy, get the color.
@@ -277,5 +282,14 @@ namespace Netherlands3D.Interface.Layers
 				}
 			}
 		}
+
+        public void RenameLayer(string newName){
+            name = newName; //use our object name to store our full name
+
+            if (newName.Length > maxNameLength)
+                newName = newName.Substring(0, maxNameLength - 3) + "...";
+
+            layerNameText.text = newName;
+        }
 	}
 }

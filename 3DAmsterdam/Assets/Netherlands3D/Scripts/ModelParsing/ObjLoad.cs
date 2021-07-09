@@ -182,7 +182,6 @@ public class ObjLoad : MonoBehaviour
 						ObjectUsesRDCoordinates = true;
 					}
 				}
-
 				if (ObjectUsesRDCoordinates)
 				{
 					if (flipYZ)

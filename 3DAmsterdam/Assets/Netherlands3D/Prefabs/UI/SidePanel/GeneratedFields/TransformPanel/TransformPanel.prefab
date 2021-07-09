@@ -91,17 +91,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1357c2f7d61db8445ac0a766707886cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  readOnly: 1
+  inputFieldSource: {fileID: 3338736845400313218, guid: e36caabffdace394f81b7cbbab4edc9b,
+    type: 3}
+  readOnly: 0
   changedTextEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8204464804396968670}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 8672078815327666604}
+        m_TargetAssemblyTypeName: Netherlands3D.Interface.SidePanel.TransformPanel,
+          Assembly-CSharp
+        m_MethodName: RenameTransformable
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2692,7 +2695,7 @@ PrefabInstance:
     - target: {fileID: 944822513809012924, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
       propertyPath: m_Text
-      value: Transformeren
+      value: Objectnaam
       objectReference: {fileID: 0}
     - target: {fileID: 944822513809012924, guid: 44a303078c0f68e4eb64f0a01b440f08,
         type: 3}
