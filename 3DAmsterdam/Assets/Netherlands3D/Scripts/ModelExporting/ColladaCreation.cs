@@ -70,15 +70,16 @@ public class ColladaCreation : ModelFormatCreation
                             meshClipper.clippedVerticesRD[i] = vert;
                         }
 					}
-
+                    yield return new WaitForEndOfFrame();
                     colladaFile.AddObject(meshClipper.clippedVerticesRD, layerName, gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID]);
                     yield return new WaitForEndOfFrame();
                 }
                 yield return new WaitForEndOfFrame();
             }
+            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' afgerond...");
             yield return new WaitForEndOfFrame();
         }
-
+        yield return new WaitForEndOfFrame();
         loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
         loadingScreen.ProgressBar.SetMessage("Het Collada (.dae) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
@@ -89,8 +90,12 @@ public class ColladaCreation : ModelFormatCreation
         //Save the collada file, with the coordinates embedded in the name.
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
 
-        FreezeLayers(layerList, false);
+#if UNITY_EDITOR || !UNITY_WEBGL
         loadingScreen.Hide();
+#endif
+
+        FreezeLayers(layerList, false);
+
         Debug.Log("file saved");
     }
 }

@@ -28,9 +28,6 @@ public class DxfFile
         dxfLayer = new Layer(layerName);
         dxfLayer.Color = layerColor;
         dxfDocument.Layers.Add(dxfLayer);
-        
-        //AddTriangles(triangleVertices, layerName);
-
 
         AddMesh(triangleVertices, layerName);
     }
@@ -39,14 +36,15 @@ public class DxfFile
 #if UNITY_EDITOR
 
         var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        dxfDocument.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
+        dxfDocument.Save(Path.Combine(mydocs, "DXFBinary.dxf"), true);        
         return;
 #endif
         using (var stream = new MemoryStream())
         {
             if (dxfDocument.Save(stream))
             {
-                JavascriptMethodCaller.DownloadByteArrayAsFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
+                var streamAsByArray = stream.ToArray();
+                JavascriptMethodCaller.DownloadByteArrayAsZippedFile(streamAsByArray, streamAsByArray.Length, "DXFBinary.dxf");
             }
             else
             {
