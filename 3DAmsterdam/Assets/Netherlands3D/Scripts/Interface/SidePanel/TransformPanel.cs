@@ -86,6 +86,12 @@ namespace Netherlands3D.Interface.SidePanel
             napZ.onValueChanged.AddListener(RDInputChanged);
         }
 
+        public void RenameTransformable(string newName)
+        {
+            transformTitle.text = newName;
+
+        }
+
         /// <summary>
         /// Create the object containing our 3D gizmos if it does not exist yet
         /// </summary>

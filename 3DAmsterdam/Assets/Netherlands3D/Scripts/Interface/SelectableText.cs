@@ -17,6 +17,14 @@ namespace Netherlands3D.Interface
 		private Text text;
 		private Text inputFieldText;
 
+		[SerializeField]
+		private bool readOnly = true;
+
+		[System.Serializable]
+		public class ChangedTextEvent : UnityEvent<string>{}
+		[SerializeField]
+		private ChangedTextEvent changedTextEvent;
+
 		void Awake()
 		{
 			text = this.GetComponent<Text>();
@@ -30,9 +38,11 @@ namespace Netherlands3D.Interface
 			gameObject.AddComponent<ChangePointerStyleHandler>().StyleOnHover = ChangePointerStyleHandler.Style.TEXT;
 		}
 
-		private void FinishedSelectingText(string newString = "")
+		private void FinishedInteractionWithText(string newString = "")
 		{
 			inputField.gameObject.SetActive(false);
+
+			changedTextEvent.Invoke(newString);
 		}
 
 		public void OnPointerEnter(PointerEventData eventData)
@@ -64,10 +74,11 @@ namespace Netherlands3D.Interface
 			inputFieldText.font = text.font;
 			inputFieldText.fontSize = text.fontSize;
 			inputFieldText.fontStyle = text.fontStyle;
+			inputField.readOnly = readOnly;
 
 			DisplayInputWithText();
 
-			inputField.onEndEdit.AddListener(FinishedSelectingText);
+			inputField.onEndEdit.AddListener(FinishedInteractionWithText);
 		}
 
 		private void OnDestroy()
