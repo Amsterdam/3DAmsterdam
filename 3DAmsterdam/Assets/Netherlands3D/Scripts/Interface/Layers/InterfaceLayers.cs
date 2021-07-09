@@ -33,6 +33,7 @@ namespace Netherlands3D.Interface.Layers
 		void Awake()
 		{
 			animator = GetComponent<Animator>();
+			LayerVisuals.gameObject.SetActive(false);
 		}
 
 		/// <summary>

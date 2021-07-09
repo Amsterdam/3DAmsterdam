@@ -138,6 +138,11 @@ namespace Netherlands3D.Interface.Layers
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
 
+			RefreshSize();
+		}
+
+		public void RefreshSize()
+		{
 			StartCoroutine(SortLayout());
 		}
 
