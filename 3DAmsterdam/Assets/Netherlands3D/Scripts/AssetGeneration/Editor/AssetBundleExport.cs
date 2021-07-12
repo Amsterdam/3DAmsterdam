@@ -8,7 +8,8 @@ namespace Netherlands3D.AssetGeneration
 {
 	public class AssetBundleExport
 	{
-		public const string assetsFolder = "/GeneratedTileAssets/";	
+		public const string assetsFolder = "/GeneratedTileAssets/";	//Relative to project Assets folder
+		public const string assetBundlesFolder = "/TileAssetBundles/";	//Relative to project root folder
 		public const string metaDataSubstring = "-data";
 
 		/// <summary>
@@ -19,6 +20,8 @@ namespace Netherlands3D.AssetGeneration
 		{
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + assetsFolder);
 			var fileInfo = directory.GetFiles();
+
+			Directory.CreateDirectory(Application.dataPath + "/.." + assetBundlesFolder);
 
 			List<AssetBundleBuild> buildMap = new List<AssetBundleBuild>();
 			foreach (var file in fileInfo)
