@@ -30,7 +30,7 @@ namespace Netherlands3D.Interface.Layers
 		private LayerVisuals layerVisualsDialog;
 		public LayerVisuals LayerVisuals { get => layerVisualsDialog; }
 
-		void Awake()
+		void Start()
 		{
 			animator = GetComponent<Animator>();
 			LayerVisuals.gameObject.SetActive(false);

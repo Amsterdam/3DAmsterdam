@@ -233,12 +233,6 @@ namespace Netherlands3D.Interface.Layers
 		{
 			expanded = !expanded;
 
-			if(customOptions)
-			{
-				customOptions.SetActive(expanded);
-				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
-			}
-
 			ExpandLayerOptions(expanded);
 
 			if(expanded)
@@ -267,7 +261,12 @@ namespace Netherlands3D.Interface.Layers
 		public void ExpandLayerOptions(bool expandLayer = true)
 		{
 			expanded = expandLayer;
-			if (!expandLayer && customOptions) customOptions.SetActive(false);
+
+			if (customOptions)
+			{
+				customOptions.SetActive(expandLayer);
+				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
+			}
 
 			if (expandIcon)
 				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
