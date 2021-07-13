@@ -86,7 +86,7 @@ To create assets the workflow is as follows
   This will create binary files and needs to be copied to the webserver that will serve them.
 
 ## License
-This project is licensed under the [terms of the EUPL license](LICENCE.txt)
+This project is licensed under the terms of the EUPL license (LICENCE.txt)
 
 ## Third parties and licenses
 
