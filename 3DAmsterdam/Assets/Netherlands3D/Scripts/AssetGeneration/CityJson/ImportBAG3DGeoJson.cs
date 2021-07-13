@@ -62,19 +62,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private Vector2 tileOffset;
-              
-        private Texture2D backDropTexture;
-        private Texture2D drawIntoPixels;
-
-        [Header("Progress preview")]
-        [SerializeField]
-        private int backgroundSize = 500;
-
-        [SerializeField]
-        private RawImage backgroundRawImage;
-
-        [SerializeField]
-        private RawImage gridPixelsRawImage;
 
         private WeldMeshVertices vertexWelder;
 
@@ -132,34 +119,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             var totalTiles = xTiles * yTiles;
             int currentTile = 0;
 
-            //Show a previewmap
-            backDropTexture = new Texture2D(500, 500, TextureFormat.RGBA32, false);
-            drawIntoPixels = new Texture2D(yTiles, yTiles, TextureFormat.RGBA32, false);
-            drawIntoPixels.filterMode = FilterMode.Point;
-
-            gridPixelsRawImage.texture = drawIntoPixels;
-
-            //Download background preview image
-            var downloadUrl = Config.activeConfiguration.previewBackdropImage
-                .Replace("{xmin}", Config.activeConfiguration.BottomLeftRD.x.ToString())
-                .Replace("{ymin}", Config.activeConfiguration.BottomLeftRD.y.ToString())
-                .Replace("{xmax}", Config.activeConfiguration.TopRightRD.x.ToString())
-                .Replace("{ymax}", Config.activeConfiguration.TopRightRD.y.ToString())
-                .Replace("{w}", backgroundSize.ToString())
-                .Replace("{h}", backgroundSize.ToString());
-            print(downloadUrl);
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                backDropTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            }
-            backgroundRawImage.texture = backDropTexture;
+            yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
 
             //Walk the tilegrid
             var tileRD = new Vector2Int(0,0);
@@ -187,8 +147,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
-                        drawIntoPixels.SetPixel(x, y, Color.grey);
-                        drawIntoPixels.Apply();
+                        ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
+
                         if(!Application.isBatchMode) yield return new WaitForEndOfFrame();
                         continue;
                     }
@@ -208,15 +168,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
                     int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer, true);
-                    if (buildingsAdded == 0)
-                    {
-                        drawIntoPixels.SetPixel(x, y, Color.black);
-                    }
-                    else
-                    {
-                        drawIntoPixels.SetPixel(x, y, Color.clear);
-                    }
-                    drawIntoPixels.Apply();
+
+                    ProgressPreviewMap.Instance.ColorTile(x, y, (buildingsAdded == 0) ? TilePreviewState.EMPTY : TilePreviewState.DONE);
 
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 

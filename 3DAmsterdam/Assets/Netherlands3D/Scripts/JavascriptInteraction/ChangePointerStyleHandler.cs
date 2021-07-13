@@ -20,9 +20,11 @@ namespace Netherlands3D.JavascriptConnection {
         private Style styleOnHover = Style.POINTER;
         public static Style cursorType = Style.AUTO;
 
-        //We can use a static method here, since we change the style as a whole for the 
-        //entire WebGL canvas. Check out w3schools for more cursor styles: https://www.w3schools.com/cssref/pr_class_cursor.asp
-        public static void ChangeCursor(Style type)
+		public Style StyleOnHover { get => styleOnHover; set => styleOnHover = value; }
+
+		//We can use a static method here, since we change the style as a whole for the 
+		//entire WebGL canvas. Check out w3schools for more cursor styles: https://www.w3schools.com/cssref/pr_class_cursor.asp
+		public static void ChangeCursor(Style type)
         {
             cursorType = type;
 
@@ -56,7 +58,7 @@ namespace Netherlands3D.JavascriptConnection {
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            ChangeCursor(styleOnHover);
+            ChangeCursor(StyleOnHover);
         }
 
         public void OnPointerExit(PointerEventData eventData)

@@ -26,7 +26,7 @@ namespace Netherlands3D.BAG
                 StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
                 {
                     EstimateBuildingThumbnailFrame(buildingData.bbox);
-                    PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
                     CheckAddDataField("BAG ID", buildingData._display);
                     CheckAddDataField("Stadsdeel", buildingData._stadsdeel.naam);
                     CheckAddDataField("Wijk", buildingData._buurtcombinatie.naam);
