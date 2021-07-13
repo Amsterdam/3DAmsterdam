@@ -134,10 +134,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         //private string unityMeshAssetFolder = "Assets/GeneratedTileAssets/";
 
         [SerializeField]
-        Netherlands3D.AssetGeneration.CityJSON.ImportCityJsonTerrain importCityjsonterrainScript;
-        private TerrainFilter terrainFilter = new TerrainFilter();
-        private bool bewerkingGereed = true;
+        ImportCityJsonTerrain importCityjsonterrainScript;
+        [SerializeField]
+        private CityJSONterrainParser cityjsonTerrainParser;
 
+        private bool bewerkingGereed = true;
+        private CityObject[] cityObjects;
         // Start is called before the first frame update
         void Start()
         {
@@ -154,10 +156,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             int counter = 0;
             foreach (var item in folderNames)
             {
+                yield return new WaitForSeconds(1f);
                 counter++;
                 
                 
                 Debug.Log("file " + counter + " van " + folderNames.Count);
+                yield return null;
                 bewerkingGereed = false;
                 
                 StartCoroutine(ReadJSONFile(item));
@@ -169,7 +173,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 }
 
             }
-
+            Debug.Log("gereed");
             for (int i = 0; i < 20; i++)
             {
                 System.GC.Collect();
@@ -191,11 +195,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             System.IO.Directory.Move(geoJsonSourceFilesFolder + "/" + filename, geoJsonSourceFilesFolder + "/gereed/" + filename);
         }
 
-        private void moveFolder(string foldername)
-        {
-            string newfoldername = foldername.Replace("original","gereed");
-            Directory.Move(foldername, newfoldername);
-        }
+        
         List<string> GetFileList(string folder)
         {
             var info = new DirectoryInfo(folder);
@@ -215,17 +215,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             return filenames;
         }
 
-        List<string> GetFolders()
-        {
-            List<string> foldernames = new List<string>();
-            var info = new DirectoryInfo(geoJsonSourceFilesFolder);
-            var fileInfo = info.GetDirectories();
-            for (int i = 0; i < fileInfo.Length; i++)
-            {
-                foldernames.Add(fileInfo[i].FullName);
-            }
-            return foldernames;
-        }
+ 
 
         private Vector4 getJSONbounds(Vector3RD[] vertices)
         {
@@ -233,11 +223,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             double Xmin = vertices.Min(x => x.x);
             Xmin = Xmin - (Xmin % tileSize);
             double Xmax = vertices.Max(x => x.x);
-            Xmax = Xmax + tileSize - (Xmax % tileSize);
+            Xmax = Xmax + (2*tileSize) - (Xmax % tileSize);
             double Ymin = vertices.Min(x => x.y);
             Ymin = Ymin - (Ymin % tileSize);
             double Ymax = vertices.Max(x => x.y);
-            Ymax = Ymax +tileSize - (Ymax % tileSize);
+            Ymax = Ymax + (2*tileSize )- (Ymax % tileSize);
 
             if (Xmin < totalBoundingBox.x) { totalBoundingBox.x = (float)Xmin; }
             if (Ymin < totalBoundingBox.y) { totalBoundingBox.y = (float)Ymin; }
@@ -248,46 +238,23 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         IEnumerator ReadJSONFile(string file)
         {
-
-            //List<string> filenames = GetFileList(foldername);
-           
-            
-                        
-           Debug.Log("reading file: " + file);
-           yield return null;
-            var jsonstring = File.ReadAllText(file);
-            Debug.Log("parsing file: " + file);
+            cityjsonTerrainParser = new CityJSONterrainParser();
+            Debug.Log("parsing file");
             yield return null;
-            JSONNode cityModel = JSON.Parse(jsonstring);
-            jsonstring = "";
-            for (int i = 0; i < 10; i++)
-            {
-                System.GC.Collect();
+            cityjsonTerrainParser.Parse(file);
+            Debug.Log("file parsed");
+            yield return null;
+            Vector4 totalBoundingBox = getJSONbounds(cityjsonTerrainParser.vertices.ToArray());
+            cityjsonTerrainParser.vertices = null;
 
-            }
-            Debug.Log("reading vertices");
-                yield return null;
-                Vector3RD[] vertices = readVertices(cityModel);
-            Vector4 totalBoundingBox = getJSONbounds(vertices);
-
-            //loop through cityobjects
-            Debug.Log("collecting cityobjects");
-                yield return null;
-                CityObject[] cityObjects = GetCityObjects(cityModel["CityObjects"],vertices);
-                
-            vertices = null;
-                cityModel = null;
-            
-
-            for (int i = 0; i < 20; i++)
-            {
-                System.GC.Collect();
-
-            }
+            cityObjects = cityjsonTerrainParser.cityobjects.ToArray();
+            cityjsonTerrainParser.cityobjects = null;
+            cityjsonTerrainParser = null;
+            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
 
             Dictionary<Vector2, List<CityObject>> Tiles = new Dictionary<Vector2, List<CityObject>>();
 
-                Debug.Log("find cityobjectlocations("+cityObjects.Length+")");
+                Debug.Log("number of cityobjects: ("+cityObjects.Length+")");
                 yield return null;
                 int total = cityObjects.Count();
                 int counter = 0;
@@ -304,15 +271,19 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 for (int Y = Ymin; Y < Ymax; Y+=tileSize)
                 {
-                    FindCityObjectsForTile(new Vector2(X, Y), ref cityObjects);
+                    for (int i = 0; i < 20; i++) { System.GC.Collect(); }
+                    //yield return new WaitForSeconds(1f);
                     Debug.Log("create tile " + X + "-" + Y);
                     yield return null;
+                    FindCityObjectsForTile(new Vector2(X, Y));
+                    
                 }
             }
+            cityObjects = null;
+            Resources.UnloadUnusedAssets();
 
-            cityObjects = new CityObject[0];
 
-           
+
             for (int i = 0; i < 20; i++) { System.GC.Collect(); }
             moveFile(file);
             //moveFolder(foldername);
@@ -320,11 +291,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         }
 
 
-        private void FindCityObjectsForTile(Vector2 tileKey, ref CityObject[] cityObjects)
+        private void FindCityObjectsForTile(Vector2 tileKey)
         {
-            Dictionary<terrainType, CityObject> tileCityObjects = new Dictionary<terrainType, CityObject>();
+            //Dictionary<terrainType, CityObject> tileCityObjects = new Dictionary<terrainType, CityObject>();
             int cityobjectcount = cityObjects.Length;
-            Dictionary<terrainType, int> terraintypeSizes = new Dictionary<terrainType, int>();
+            int enumIndex;
+            List<Vector3RD> vertices = new List<Vector3RD>();
+            int[] terraintypeSizes = Enumerable.Range(0, 12).ToArray();
             // find the total number of vertices for each terraintype in the tile, so we can set the arraysize in advance.
             for (int i = 0; i < cityobjectcount; i++)
             {
@@ -332,213 +305,52 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     continue;
                 }
-                if (terraintypeSizes.ContainsKey(cityObjects[i].type))
+                enumIndex = (int)cityObjects[i].type;
+
+                if (enumIndex<12)
                 {
-                    terraintypeSizes[cityObjects[i].type]+=cityObjects[i].vertices.Count;
-                }
-                else
-                {
-                    terraintypeSizes.Add(cityObjects[i].type, cityObjects[i].vertices.Count);
+                    terraintypeSizes[enumIndex]+=cityObjects[i].vertices.Count;
                 }
             }
 
 
-
-
-
-            for (int i = 0; i < cityobjectcount; i++)
+            List<Mesh> meshes = new List<Mesh>();
+            for (int i = 0; i < 12; i++)
             {
-                if (!cityObjects[i].triangleLists.ContainsKey(tileKey))
+                terraintypeSizes[i]++;
+                vertices.Capacity = terraintypeSizes[i];
+                for (int coI = 0; coI < cityobjectcount; coI++)
                 {
-                    continue;
-                }
-                if (tileCityObjects.ContainsKey(cityObjects[i].type))
-                {
-                    tileCityObjects[cityObjects[i].type].vertices.AddRange(cityObjects[i].vertices);
-                }
-                else
-                {
-                    tileCityObjects.Add(cityObjects[i].type, cityObjects[i]);
-                    cityObjects[i].vertices.Capacity = terraintypeSizes[cityObjects[i].type];
-                }
-            }
+                    if (cityObjects[coI].triangleLists.ContainsKey(tileKey))
+                    {
+                        if ((int)cityObjects[coI].type == i)
+                        {
+                            vertices.AddRange(cityObjects[coI].vertices);
+                        }
+                    }
 
-            Dictionary<terrainType, Mesh> meshes = new Dictionary<terrainType, Mesh>();
-            foreach (var item in tileCityObjects)
-            {
-                Mesh mesh = importCityjsonterrainScript.CreateCityObjectMesh(item.Value.vertices, tileKey.x, tileKey.y, tileSize);
-                if (item.Key == terrainType.begroeid || item.Key == terrainType.erven || item.Key == terrainType.onbegroeid)
-                {
-                    mesh = importCityjsonterrainScript.SimplifyMesh(mesh, 0.05f);
                 }
-                meshes.Add(item.Key, mesh);
-                item.Value.vertices.Clear();
+                //create submesh
+                Mesh mesh = importCityjsonterrainScript.CreateCityObjectMesh(vertices, tileKey.x, tileKey.y, tileSize); ;
+                vertices.Clear();
+                if (i == (int)terrainType.begroeid || i == (int)terrainType.erven || i == (int)terrainType.onbegroeid)
+                {
+                    importCityjsonterrainScript.SimplifyMesh(ref mesh, 0.05f);
+                }
+
+                meshes.Add(mesh);
             }
-            tileCityObjects = new Dictionary<terrainType, CityObject>();
-            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
             importCityjsonterrainScript.CreateCombinedMeshes(ref meshes, tileKey, tileSize);
-            foreach (var item in meshes.Values)
+            for (int i = 0; i < meshes.Count; i++)
             {
-                DestroyImmediate(item, true);
+                DestroyImmediate(meshes[i], true);
             }
             meshes = null;
             for (int i = 0; i < 20; i++) { System.GC.Collect(); }
-        }
 
-        Vector3RD[] readVertices(JSONNode citymodel)
-        {
-            //needs to be sequential
-            JSONNode verticesNode = citymodel["vertices"];
-            Vector3 transformScale = Vector3.one;
-            Vector3RD transformTranslate = new Vector3RD(0, 0, 0);
-
-
-            if (citymodel["transform"] != null)
-            {
-                if (citymodel["transform"]["scale"] != null)
-                {
-                    transformScale = new Vector3
-                    (
-                        citymodel["transform"]["scale"][0].AsFloat,
-                        citymodel["transform"]["scale"][1].AsFloat,
-                        citymodel["transform"]["scale"][2].AsFloat
-                   );
-                }
-                if (citymodel["transform"]["translate"] != null)
-                {
-                    transformTranslate = new Vector3RD
-                    (
-                        citymodel["transform"]["translate"][0].AsDouble,
-                        citymodel["transform"]["translate"][1].AsDouble,
-                        citymodel["transform"]["translate"][2].AsDouble
-                   );
-                }
-            }
             
-            long vertcount = verticesNode.Count;
-            Vector3RD[] vertices = new Vector3RD[vertcount];
-            for (int i = 0; i < vertcount; i++)
-            {
-                Vector3RD vert = new Vector3RD();
-                vert.x = (verticesNode[i][0].AsDouble*transformScale.x) + transformTranslate.x;
-                vert.y = (verticesNode[i][1].AsDouble * transformScale.y) + transformTranslate.y;
-                vert.z = (verticesNode[i][2].AsDouble * transformScale.z) + transformTranslate.z;
-                vertices[i]=vert;
-            }
-            return vertices;
         }
 
-        private CityObject[] GetCityObjects(JSONNode cityobjects, Vector3RD[] vertices)
-        {
-            CityObject[] cityObjects = new CityObject[cityobjects.Count];
-            for (int i = 0; i < cityobjects.Count; i++)
-            {
-                CityObject cityObject = new CityObject();
-                List<int> indices = ReadTriangles(cityobjects[i]);
-                List<Vector3RD> coVerts = new List<Vector3RD>();
-                for (int index = 0; index < indices.Count; index++)
-                {
-                    coVerts.Add(vertices[indices[index]]);
-                }
-                cityObject.vertices = coVerts;
-                cityObject.type = getTerrainType(cityobjects[i]);
-                cityObjects[i] = cityObject;
-            }
-            return cityObjects;
-        }
-
-        private terrainType getTerrainType(JSONNode cityObject)
-        {
-
-            string cityObjectType = cityObject["type"];
-
-            if (cityObjectType == "Road")
-            {
-                if (terrainFilter.RoadsVoetpad.Contains(cityObject["attributes"][terrainFilter.RoadsVoetpadPropertyName]))
-                {
-                    return terrainType.voetpad;
-                }
-                if (terrainFilter.RoadsFietspad.Contains(cityObject["attributes"][terrainFilter.RoadsFietsPropertyName]))
-                {
-                    return terrainType.fietspad;
-                }
-                if (terrainFilter.RoadsParkeervak.Contains(cityObject["attributes"][terrainFilter.RoadsParkeervakPropertyName]))
-                {
-                    return terrainType.parkeervakken;
-                }
-                if (terrainFilter.RoadsSpoorbaan.Contains(cityObject["attributes"][terrainFilter.RoadsSpoorbaanPropertyName]))
-                {
-                    return terrainType.spoorbanen;
-                }
-                if (terrainFilter.RoadsWoonerf.Contains(cityObject["attributes"][terrainFilter.RoadsWoonerfPropertyName]))
-                {
-                    return terrainType.woonerven;
-                }
-                return terrainType.wegen;
-            }
-            if (cityObjectType == "LandUse")
-            {
-                if (terrainFilter.LandUseVoetpad.Contains(cityObject["attributes"][terrainFilter.LandUseVoetpadPropertyName]))
-                {
-                    return terrainType.voetpad;
-                }
-                if (terrainFilter.LandUseRoads.Contains(cityObject["attributes"][terrainFilter.LandUseRoadsPropertyName]))
-                {
-                    return terrainType.wegen;
-                }
-                if (terrainFilter.LandUseGroen.Contains(cityObject["attributes"][terrainFilter.LandUseGroenPropertyName]))
-                {
-                    return terrainType.begroeid;
-                }
-                if (terrainFilter.LandUseErf.Contains(cityObject["attributes"][terrainFilter.LandUseErfPropertyName]))
-                {
-                    return terrainType.erven;
-                }
-                return terrainType.onbegroeid;
-            }
-            if (cityObjectType == "PlantCover")
-            {
-                return terrainType.begroeid;
-            }
-            if (cityObjectType == "GenericCityObject")
-            {
-                return terrainType.constructies;
-            }
-            if (cityObjectType == "WaterBody")
-            {
-                return terrainType.water;
-            }
-            if (cityObjectType == "Bridge")
-            {
-                return terrainType.bruggen;
-            }
-            if (cityObjectType =="Building")
-            {
-                return terrainType.anders;
-            }
-            Debug.Log(cityObjectType);
-            return terrainType.anders;
-        }
-
-        private List<int> ReadTriangles(JSONNode cityObject)
-        {
-            List<int> triangles = new List<int>();
-            JSONNode boundariesNode = cityObject["geometry"][0]["boundaries"];
-            // End if no BoundariesNode
-            if (boundariesNode is null)
-            {
-                return triangles;
-            }
-            foreach (JSONNode boundary in boundariesNode)
-            {
-                JSONNode outerRing = boundary[0];
-                triangles.Add(outerRing[2].AsInt);
-                triangles.Add(outerRing[1].AsInt);
-                triangles.Add(outerRing[0].AsInt);
-            }
-
-            return triangles;
-        }
 
 
     }

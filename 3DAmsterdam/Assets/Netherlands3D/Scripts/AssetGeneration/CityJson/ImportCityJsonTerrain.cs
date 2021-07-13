@@ -13,10 +13,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 {
     public class ImportCityJsonTerrain : MonoBehaviour
     {
+        public List<string> missedTiles = new List<string>();
+
         private List<Material> materialList = new List<Material>(7);
         private Material[] materialsArray;
         private List<Vector3RD> vertsRD = new List<Vector3RD>();
-
+        private List<Vector3> defshape;
         public float heightMax;
         public float heightMin;
         // Start is called before the first frame update
@@ -29,323 +31,99 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //Import();
         }
 
-        void ImportSingle(double OriginX, double OriginY)
+        public void CreateCombinedMeshes(ref List<Mesh> meshes,Vector2 tileID, float tileSize)
         {
-            double originX = OriginX;
-            double originY = OriginY;
-            string basefilepath = "E:/TiledData/Terrain1000x1000/";
-
-            string jsonfilename = originX.ToString() + "-" + originY.ToString() + ".json";
-
-            float tileSize = 1000;
-            string filepath = basefilepath;
-            Debug.Log(filepath);
-           
-            //if (File.Exists(filepath + jsonfilename))
-            //{
-            //    CityModel cm = new CityModel(filepath, jsonfilename);
-            //    vertsRD = GetVertsRD(cm);
-            //    //type voetpad
-            //    Mesh RoadsvoetpadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "voetpad", "voetgangersgebied", "ruiterpad", "voetpad op trap" }, true);
-            //    Mesh LandUseVoetpadMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "open verharding" }, true);
-            //    LandUseVoetpadMesh = SimplifyMesh(LandUseVoetpadMesh, 0.5f);
-            //    //combine meshes of type "voetpad"
-            //    CombineInstance[] voetpadcombi = new CombineInstance[2];
-            //    voetpadcombi[0].mesh = RoadsvoetpadMesh;
-            //    voetpadcombi[1].mesh = LandUseVoetpadMesh;
-            //    Mesh voetpadmesh = new Mesh();
-            //    voetpadmesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    voetpadmesh.CombineMeshes(voetpadcombi, true, false);
-
-
-            //    //type fietspad
-            //    Mesh fietspadMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad" }, true);
-
-            //    //type parkeervak
-            //    Mesh parkeervlakMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "parkeervlak" }, true);
-            //    //type spoorbaan
-            //    Mesh spoorbaanMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "spoorbaan" }, true);
-            //    //type woonerf
-            //    Mesh WoonerfMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "transitie", "woonerf" }, true);
-
-            //    // type weg
-            //    Mesh roadsMesh = CreateCityObjectMesh(cm, "Road", originX, originY, tileSize, "bgt_functie", new List<string> { "fietspad", "parkeervlak", "ruiterpad", "spoorbaan", "voetgangersgebied", "voetpad", "voetpad op trap", "woonerf" }, false);
-            //    Mesh LandUseVerhardMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "gesloten verharding" }, true);
-            //    LandUseVerhardMesh = SimplifyMesh(LandUseVerhardMesh, 0.5f);
-            //    // combine meshes of type "weg"
-            //    CombineInstance[] wegcombi = new CombineInstance[2];
-            //    wegcombi[0].mesh = roadsMesh;
-            //    wegcombi[1].mesh = LandUseVerhardMesh;
-            //    Mesh wegmesh = new Mesh();
-            //    wegmesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    wegmesh.CombineMeshes(wegcombi, true, false);
-
-            //    // type groen
-            //    Mesh plantcoverMesh = CreateCityObjectMesh(cm, "PlantCover", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "alles" }, false);
-            //    plantcoverMesh = SimplifyMesh(plantcoverMesh, 0.5f);
-            //    Mesh LanduseGroenMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "groenvoorziening" }, true);
-            //    LanduseGroenMesh = SimplifyMesh(LanduseGroenMesh, 0.5f);
-            //    //combine meshes of type "groen"
-            //    CombineInstance[] groencombi = new CombineInstance[2];
-            //    groencombi[0].mesh = plantcoverMesh;
-            //    groencombi[1].mesh = LanduseGroenMesh;
-            //    Mesh groenMesh = new Mesh();
-            //    groenMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    groenMesh.CombineMeshes(groencombi, true, false);
-
-            //    //type erf
-            //    Mesh erfMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf" }, true);
-            //    erfMesh = SimplifyMesh(erfMesh, 0.5f);
-
-            //    //type onverhard
-            //    Mesh LandUseMesh = CreateCityObjectMesh(cm, "LandUse", originX, originY, tileSize, "bgt_fysiekvoorkomen", new List<string> { "erf", "groenvoorziening", "gesloten verharding", "open verharding" }, false);
-            //    LandUseMesh = SimplifyMesh(LandUseMesh, 0.5f);
-
-            //    Mesh genericCityObjectMesh = CreateCityObjectMesh(cm, "GenericCityObject", originX, originY, tileSize, "bgt_type", null, true);
-            //    Mesh waterBodyMesh = CreateCityObjectMesh(cm, "WaterBody", originX, originY, tileSize, "bgt_type", null, true);
-            //    Mesh bridgeMesh = CreateCityObjectMesh(cm, "Bridge", originX, originY, tileSize, "bgt_type", null, true);
-
-            //    //create LOD1 Mesh
-            //    CombineInstance[] combi = new CombineInstance[12];
-            //    combi[0].mesh = voetpadmesh; //
-            //    combi[1].mesh = fietspadMesh; //
-            //    combi[2].mesh = parkeervlakMesh; //
-            //    combi[3].mesh = wegmesh; //
-            //    combi[4].mesh = groenMesh; //
-            //    combi[5].mesh = erfMesh; //
-            //    combi[6].mesh = LandUseMesh; //
-            //    combi[7].mesh = spoorbaanMesh; //
-            //    combi[8].mesh = WoonerfMesh; //
-            //    combi[9].mesh = genericCityObjectMesh;
-            //    combi[10].mesh = bridgeMesh;
-            //    combi[11].mesh = waterBodyMesh;
-
-            //    Mesh lod1Mesh = new Mesh();
-            //    lod1Mesh.CombineMeshes(combi, false, false);
-            //    lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
-            //    //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
-            //    AssetDatabase.CreateAsset(lod1Mesh, "Assets/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod1.mesh");
-            //    //for debug
-
-            //    //GetComponent<MeshFilter>().sharedMesh = lod1Mesh;
-
-            //    //create LOD0MEsh
-            //    combi = new CombineInstance[5];
-            //    combi[0].mesh = voetpadmesh;
-            //    combi[1].mesh = fietspadMesh;
-            //    combi[2].mesh = parkeervlakMesh;
-            //    combi[3].mesh = wegmesh;
-            //    combi[4].mesh = spoorbaanMesh;
-
-
-            //    Mesh Roads = new Mesh();
-            //    Roads.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    Roads.CombineMeshes(combi, true, false);
-            //    Roads = SimplifyMesh(Roads, 0.05f);
-
-            //    combi = new CombineInstance[3];
-            //    combi[0].mesh = erfMesh;
-            //    combi[1].mesh = LandUseMesh;
-            //    combi[2].mesh = WoonerfMesh;
-
-            //    Mesh landuse = new Mesh();
-            //    landuse.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    landuse.CombineMeshes(combi, true, false);
-            //    landuse = SimplifyMesh(landuse, 0.05f);
-
-            //    combi = new CombineInstance[12];
-
-
-            //    combi[0].mesh = CreateEmptyMesh(); //
-            //    combi[1].mesh = CreateEmptyMesh(); //
-            //    combi[2].mesh = CreateEmptyMesh(); //
-            //    combi[3].mesh = Roads; //
-            //    combi[4].mesh = SimplifyMesh(groenMesh, 0.05f);//
-            //    combi[5].mesh = CreateEmptyMesh(); //
-            //    combi[6].mesh = landuse; //
-            //    combi[7].mesh = CreateEmptyMesh(); //
-            //    combi[8].mesh = CreateEmptyMesh(); //
-            //    combi[9].mesh = genericCityObjectMesh;
-            //    combi[10].mesh = bridgeMesh;
-            //    combi[11].mesh = waterBodyMesh;
-
-
-            //    Mesh lod0Mesh = new Mesh();
-            //    lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            //    lod0Mesh.CombineMeshes(combi, false, false);
-            //    lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(originX, originY, 0)), tileSize);
-            //    //Physics.BakeMesh(lod0Mesh.GetInstanceID(), false);
-            //    AssetDatabase.CreateAsset(lod0Mesh, "Assets/GeneratedTileAssets/terrain_" + originX + "-" + originY + "-lod0.mesh");
-
-            //}
-        }
-        public void CreateCombinedMeshes(ref Dictionary<terrainType, Mesh>meshes,Vector2 tileID, float tileSize)
-        {
-            //create LOD1 Mesh
-            //UnityMeshSimplifier.MeshSimplifier meshSimplifier1 = null;
-            //Thread thread1 = null;
-            //UnityMeshSimplifier.MeshSimplifier meshSimplifier2 = null;
-            //Thread thread2 = null;
-            //UnityMeshSimplifier.MeshSimplifier meshSimplifier3 = null;
-            //Thread thread3 = null;
             int vertcount = 0;
-            CombineInstance[] combi = new CombineInstance[12];
+            CombineInstance[] combi = new CombineInstance[meshes.Count];
             for (int i = 0; i < combi.Length; i++)
             {
-                combi[i].mesh = CreateEmptyMesh();
-                //combi[i].mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-                vertcount += combi[i].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.voetpad))
-            {
-                DestroyImmediate(combi[0].mesh, false);
-                combi[0].mesh = meshes[terrainType.voetpad]; //
-
-                vertcount += combi[0].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.fietspad))
-            {
-                DestroyImmediate(combi[1].mesh, false);
-                combi[1].mesh = meshes[terrainType.fietspad]; //
-
-                vertcount += combi[1].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.parkeervakken))
-            {
-                DestroyImmediate(combi[2].mesh, false);
-                combi[2].mesh = meshes[terrainType.parkeervakken]; //
-
-                vertcount += combi[2].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.wegen))
-            {
-                DestroyImmediate(combi[3].mesh, false);
-                combi[3].mesh = meshes[terrainType.wegen]; //
-
-                vertcount += combi[3].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.begroeid))
-            {
-                DestroyImmediate(combi[4].mesh, false);
-                combi[4].mesh = meshes[terrainType.begroeid]; //
-
-                vertcount += combi[4].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.erven))
-            {
-                DestroyImmediate(combi[5].mesh, false);
-                combi[5].mesh = meshes[terrainType.erven]; // //
- 
-                vertcount += combi[5].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.onbegroeid))
-            {
-                DestroyImmediate(combi[6].mesh, false);
-                combi[6].mesh = meshes[terrainType.onbegroeid]; // //
-
-                vertcount += combi[6].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.spoorbanen))
-            {
-                DestroyImmediate(combi[7].mesh, false);
-                combi[7].mesh = meshes[terrainType.spoorbanen]; //
-
-                vertcount += combi[7].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.woonerven))
-            {
-                DestroyImmediate(combi[8].mesh, false);
-                combi[8].mesh = meshes[terrainType.woonerven]; //
-
-                vertcount += combi[8].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.constructies))
-            {
-                DestroyImmediate(combi[9].mesh, false);
-                combi[9].mesh = meshes[terrainType.constructies];
-
-                vertcount += combi[9].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.bruggen))
-            {
-                DestroyImmediate(combi[10].mesh, false);
-                combi[10].mesh = meshes[terrainType.bruggen];
-
-                vertcount += combi[10].mesh.vertexCount;
-            }
-            if (meshes.ContainsKey(terrainType.water))
-            {
-                DestroyImmediate(combi[11].mesh, false);
-                combi[11].mesh = meshes[terrainType.water];
-
-                vertcount += combi[11].mesh.vertexCount;
+                combi[i].mesh = meshes[i];
+                vertcount += meshes[i].vertexCount;
             }
 
             Mesh lod1Mesh = new Mesh();
-            if (vertcount > 65500)
-            {
                 lod1Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            }
+
             lod1Mesh.CombineMeshes(combi, false, false);
-            lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
 
-            //Physics.BakeMesh(lod1Mesh.GetInstanceID(), false);
-            //remove old asset
-
+           
             //remove spikes
-           lod1Mesh = RemoveSpikes(lod1Mesh);
-            string baseMeshNameLod0 = "terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0";
+            RemoveSpikes(ref lod1Mesh);
+            lod1Mesh.Optimize();
             string assetName = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod1.mesh";
-            string assetNameLod0 = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
+
+
             Mesh existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh));
 
+            if (existingMesh != null)
+            {
+                //combine meshes;
+                CombineMeshes(ref lod1Mesh, ref existingMesh);
+                DestroyImmediate(existingMesh, true);
+            }
+            lod1Mesh.uv2 = RDuv2(lod1Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
+            lod1Mesh.RecalculateNormals();
+            AssetDatabase.CreateAsset(lod1Mesh, assetName);
+           AssetDatabase.SaveAssets();
+            Resources.UnloadAsset(lod1Mesh);
 
+           
+
+            // create lod0-mesh
             vertcount = 0;
+            //simplify all submeshes
+            Mesh tempMesh;
             for (int i = 0; i < combi.Length; i++)
             {
-                combi[i].mesh = SimplifyMesh(combi[i].mesh, 0.05f);
+                tempMesh = combi[i].mesh;
+                SimplifyMesh(ref tempMesh, 0.05f);
+                combi[i].mesh = tempMesh;
                 vertcount += combi[i].mesh.vertexCount;
             }
 
             Mesh lod0Mesh = new Mesh();
-            if (vertcount > 65500)
-            {
-                lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            }
-            lod0Mesh.CombineMeshes(combi, false, false);
-            lod0Mesh.vertices = RemoveSpikes(lod0Mesh).vertices;
-            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
 
+                lod0Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
+            lod0Mesh.CombineMeshes(combi, false, false);
+
+            RemoveSpikes(ref lod0Mesh);
             
+            string assetNameLod0 = "Assets/GeneratedTileAssets/terrain_" + (int)tileID.x + "-" + (int)tileID.y + "-lod0.mesh";
+            lod0Mesh.Optimize();
+            existingMesh = (Mesh)AssetDatabase.LoadAssetAtPath(assetNameLod0, typeof(Mesh));
             if (existingMesh != null)
             {
                 //combine meshes;
-                CombineMeshes(ref lod1Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetName, typeof(Mesh)));
-                CombineMeshes(ref lod0Mesh, (Mesh)AssetDatabase.LoadAssetAtPath(assetNameLod0, typeof(Mesh)));
-                AssetDatabase.DeleteAsset(assetName);
-                AssetDatabase.DeleteAsset(assetNameLod0);
-                AssetDatabase.SaveAssets();
+                CombineMeshes(ref lod0Mesh, ref existingMesh);
+                DestroyImmediate(existingMesh, true);
+
             }
-            lod1Mesh.Optimize();
-            lod0Mesh.Optimize();
-            AssetDatabase.CreateAsset(lod1Mesh, assetName);
+            lod0Mesh.uv2 = RDuv2(lod0Mesh.vertices, CoordConvert.RDtoUnity(new Vector3RD(tileID.x, tileID.y, 0)), tileSize);
+            lod0Mesh.RecalculateNormals();
             AssetDatabase.CreateAsset(lod0Mesh, assetNameLod0);
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            Resources.UnloadAsset(lod0Mesh);
+
+
+            //cleanup
             for (int i = 0; i < combi.Length; i++)
             {
                 Destroy(combi[i].mesh);
             }
             for (int i = 0; i < 20; i++) { System.GC.Collect(); }
+            //DestroyImmediate(lod1Mesh);
+            //DestroyImmediate(lod0Mesh);
+            //for (int i = 0; i < 20; i++) { System.GC.Collect(); }
         }
 
-        
 
-        private Mesh RemoveSpikes(Mesh mesh)
+
+        private void RemoveSpikes(ref Mesh mesh)
         {
             if (mesh.vertices.Length == 0)
             {
-                return mesh;
+                return;
             };
 
             var verts = mesh.vertices;
@@ -382,61 +160,81 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             }
 
             if (hasspike) mesh.vertices = verts;
-
-            return mesh;
+            verts = null;
+            
         }
 
-        private void CombineMeshes(ref Mesh mesh1, Mesh mesh2)
+        private void CombineMeshes(ref Mesh mesh1, ref Mesh mesh2)
         {
-            //Mesh newMesh = new Mesh();
 
+            
+            if (mesh2.subMeshCount<2)
+            {
+                missedTiles.Add(mesh2.name+"-combining");
+
+                ////newMesh = copyMesh(ref mesh1);
+                //DestroyImmediate(mesh1,true);
+                return;
+            }
             //newMesh.
+            
             int meshVertexCount = mesh1.vertexCount;
             List<Vector3> verts = new List<Vector3>(mesh1.vertices);
             verts.AddRange(mesh2.vertices);
             List<Vector2> newUVs = new List<Vector2>(mesh1.uv2);
             newUVs.AddRange(new List<Vector2>(mesh2.uv2));
 
-            if (verts.Count> 65500)
+            if (verts.Count > 65500 && mesh1.indexFormat== UnityEngine.Rendering.IndexFormat.UInt16)
             {
+                Mesh newMesh = new Mesh();
+                newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                newMesh.vertices = mesh1.vertices;
+                newMesh.subMeshCount = mesh1.subMeshCount;
+                for (int i = 0; i < mesh1.subMeshCount; i++)
+                {
+                    newMesh.SetIndices(mesh1.GetIndices(i), MeshTopology.Triangles, i);
+                }
+                mesh1.subMeshCount = newMesh.subMeshCount;
                 mesh1.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                for (int i = 0; i < mesh1.subMeshCount; i++)
+                {
+                    mesh1.SetIndices(newMesh.GetIndices(i), MeshTopology.Triangles, i);
+                }
+                DestroyImmediate(newMesh,true);
             }
             mesh1.vertices = verts.ToArray();
             mesh1.uv2 = newUVs.ToArray();
-            
+           
             
             for (int submeshIndex = 0; submeshIndex < mesh1.subMeshCount; submeshIndex++)
             {
                 // = new List<int>();
                 List<int> submeshIndices = new List<int>(mesh1.GetIndices(submeshIndex));
-                int subMesh1BaseVertex = mesh1.GetSubMesh(submeshIndex).baseVertex;
-                for (int i = 0; i < submeshIndices.Count; i++)
-                {
-                    submeshIndices[i] += subMesh1BaseVertex;
-                }
+
                 List<int> extraIndices = new List<int>(mesh2.GetIndices(submeshIndex));
 
-                int mesh2BaseVertex = mesh2.GetSubMesh(submeshIndex).baseVertex;
                 for (int i = 0; i < extraIndices.Count; i++)
                 {
-                    extraIndices[i] += meshVertexCount+mesh2BaseVertex;
+                    extraIndices[i] += meshVertexCount;
                 }
                 submeshIndices.AddRange(extraIndices);
                 mesh1.SetIndices(submeshIndices, MeshTopology.Triangles, submeshIndex);
             }
-           // DestroyImmediate(mesh1,true);
-            
-            //DestroyImmediate(mesh2,true);
+
             mesh1.RecalculateNormals();
+            verts.Clear();
+            newUVs.Clear();
+            for (int i = 0; i < 20; i++) { System.GC.Collect(); }
             
             
             }
-        public Mesh SimplifyMesh(Mesh mesh, float quality)
+        public void SimplifyMesh(ref Mesh mesh, float quality)
         {
 
             if (mesh.triangles.Length < 100)
             {
-                return copyMesh(ref mesh);
+                // mesh = copyMesh(ref mesh);
+                return;
             }
 
             //var DecimatedMesh = mesh;
@@ -446,33 +244,19 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             meshSimplifier.PreserveBorderEdges = true;
             meshSimplifier.MaxIterationCount = 500;
             meshSimplifier.EnableSmartLink = true;
+            DestroyImmediate(mesh, true);
             meshSimplifier.SimplifyMesh(quality);
+            mesh = meshSimplifier.ToMesh();
+            //mesh.SetIndices(meshSimplifier.GetSubMeshTriangles(0), MeshTopology.Triangles, 0);
+            //mesh.vertices = meshSimplifier.Vertices;
 
-            mesh.SetIndices(meshSimplifier.GetSubMeshTriangles(0), MeshTopology.Triangles, 0);
-            mesh.vertices = meshSimplifier.Vertices;
-            
-            meshSimplifier= new UnityMeshSimplifier.MeshSimplifier();
+            meshSimplifier = null;
             mesh.RecalculateNormals();
             mesh.Optimize();
-            return mesh;
+            
         }
 
-        private Mesh copyMesh(ref Mesh mesh)
-        {
-            Mesh newMesh = new Mesh();
-            newMesh.name = mesh.name;
-            newMesh.indexFormat = mesh.indexFormat;
-            newMesh.vertices = mesh.vertices;
-            int submeshcount = mesh.subMeshCount;
-            newMesh.subMeshCount = submeshcount;
-            for (int i = 0; i < submeshcount; i++)
-            {
-                newMesh.SetTriangles(mesh.GetTriangles(i), i);
-            }
-            newMesh.normals = mesh.normals;
-            return newMesh;
 
-        }
         private bool PointISInsideArea(Vector3RD point, double OriginX, double OriginY, float tileSize)
         {
 
@@ -499,6 +283,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             if (RDTriangles.Count == 0)
             {
+                //Debug.Log("no triangles in mesh");
                 return CreateEmptyMesh();
             }
 
@@ -522,9 +307,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 vectors.Add(new Vector3((float)(RDTriangles[i + 2].x - originX), (float)RDTriangles[i + 2].z, (float)(RDTriangles[i + 2].y - originY)));
                 vectors.Add(new Vector3((float)(RDTriangles[i + 1].x - originX), (float)RDTriangles[i + 1].z, (float)(RDTriangles[i + 1].y - originY)));
                 vectors.Add(new Vector3((float)(RDTriangles[i].x - originX), (float)RDTriangles[i].z, (float)(RDTriangles[i].y - originY)));
-
-
-                List<Vector3> defshape = Netherlands3D.Utilities.TriangleClipping.SutherlandHodgman.ClipPolygon(vectors, clipboundary);
+                vectors.Reverse();
+                defshape = Netherlands3D.Utilities.TriangleClipping.SutherlandHodgman.ClipPolygon(vectors, clipboundary);
 
                 if (defshape.Count < 3)
                 {
@@ -576,12 +360,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             //createMesh
             List<Vector3> verts = new List<Vector3>();
+            verts.Capacity = clippedRDTriangles.Count();
             Vector3RD tileCenterRD = new Vector3RD();
             tileCenterRD.x = originX + (tileSize / 2);
             tileCenterRD.y = originY + (tileSize / 2);
             tileCenterRD.z = 0;
-            Vector3 tileCenterUnity = CoordConvert.RDtoUnity(tileCenterRD);
             List<int> ints = new List<int>();
+            ints.Capacity = clippedRDTriangles.Count();
             for (int i = 0; i < clippedRDTriangles.Count; i++)
             {
                 Vector3 coord = new Vector3(
@@ -598,6 +383,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             if (ints.Count == 0)
             {
+               // Debug.Log("no ints");
                 return CreateEmptyMesh();
             }
             Mesh mesh = new Mesh();
@@ -649,8 +435,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             return uv2;
         }
 
-        private Mesh WeldVertices(ref Mesh mesh)
+        private void WeldVertices(ref Mesh mesh)
         {
+            //Mesh weldedMesh = new Mesh();
             Vector3[] originalVerts = mesh.vertices;
             int[] originlints = mesh.GetIndices(0);
             int[] newIndices = new int[originlints.Length];
@@ -673,39 +460,14 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             {
                 mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             }
-            
+
             mesh.vertices = new List<Vector3>(vertexMapping.Keys).ToArray();
             mesh.triangles = newIndices;
-
-            return mesh;
+            
         }
 
 
-        void Import()
-        {
-            int Xmin = 109000;
-            int Ymin = 474000;
-            int Xmax = 140000;
-            int Ymax = 500000;
-
-            int stepSize = 1000;
-
-            //debug
-            //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            //Xmax = 110000;
-            //Ymax = 479000;
-            //sw.Start();
-            for (int X = Xmin; X < Xmax; X += stepSize)
-            {
-                for (int Y = Ymin; Y < Ymax; Y += stepSize)
-                {
-                    Debug.Log(X + "=" + Y);
-                    ImportSingle(X, Y);
-                }
-            }
-            //sw.Stop();
-            //Debug.Log(sw.ElapsedMilliseconds + " ms");
-        }
+        
 
 
 
