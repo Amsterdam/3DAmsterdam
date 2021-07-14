@@ -87,7 +87,43 @@ You can also use this method to add new or missing buildings to the tiles.
 
 ## Terrain
 
-> Terrain tile generation is currently being reworked. Documentation will follow. Feel free to explore the GenerateTerrainTiles scene.
+Open up the *YourMunicipality*/Scenes/DataGeneration/GenerateBuildingTilesFromOBJ.scene 
+You will see that it contains a ApplicationConfiguration object. Make sure the script points to the same config file we created in [getting started](gettingstarted.md), and save the scene.
+next you see 1 gameObject named GenerateTerrain with a ImportTerrainScript.
+
+![TerrainImporter](images/TerrainImporter.png)
+
+Set the parameters of the import script:
+
+| Field                      | Explanation                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Tile Size                  | the length and width of the tiles that are going to be generated                                        |
+| Minimum height             | to remove spikes, points below this elevation (NAP) will be movend to the average elevation of the tile |
+| Maximum height             | to remove spikes, points above this elevation (NAP) will be movend to the average elevation of the tile |
+| GeoJSON SourceFiles Folder | Local folder path containing .json files downloaded from 3d.kadaster.nl/basisvoorziening-3d/            |
+
+Save your scene after applying your settings, and press the unity editor 'Play' button to start the scene, and start generating the terrain. 
+
+The script loads the json-files one by one, cuts it up into tiles, reduces the vertexcount for some parts and tries to remove spikes.
+it ctreates meshes for LOD1 and LOD0.
+The created meshes will start appearing in a folder named GeneratedTileAssets.
+> Tip: It takes a while to create the terrainMeshes. (10-15 min. per json-file) 
+
+When the script is done, the generated asset files will need to be turned into AssetBundles.
+At the top bar of the Unity editor ( next to File, Edit, etc ) select *'Netherlands 3D>Tools>Export .asset files to AssetBundles'*.
+
+This will create the AssetBundles in the folder '/TileAssetBundles/', next to the '/Assets/' folder of the Unity project.
+
+### Buildings: Testing our generated dataset
+
+Upload the assetbundles to a unique folder on your webserver (for example https://example.nl/terrain/)
+
+Now open up our project main scene and select the Terrain layer GameObject (Netherlands3D>Layers>Terrain).
+You can Change the dataset descriptions to a nice description. Change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}'* and '{y}' as the RD coordinate placeholders in the filename. 
+In case of the of the example above, these paths would be 'terrain/terrain\_{x}\_{y}-lod0' and 'terrain/terrain\_{x}\_{y}-lod1' and our application config file would have https://example.nl/ as a webserver root path.
+
+Press the unity editor 'Play' button to see your building tiles appear in runtime.
+If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Terrain AssetbundleMeshLayer script.
 
 ## Trees
 
