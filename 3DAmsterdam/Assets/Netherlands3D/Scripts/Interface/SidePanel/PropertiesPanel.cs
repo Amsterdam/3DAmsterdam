@@ -89,9 +89,10 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
-
         [SerializeField]
         private TransformPanel transformPanel;
+        [SerializeField]
+        private InputField selectableText;
 
         [Header("Thumbnail rendering")]
         [SerializeField]
@@ -408,13 +409,31 @@ namespace Netherlands3D.Interface.SidePanel
         }
 
         #region Methods for generating the main field types (spawning prefabs)
-        public void AddTitle(string titleText)
+        public void AddTitle(string titleText, bool selectable = false)
         {
-            Instantiate(titlePrefab, targetFieldsContainer).GetComponent<Text>().text = titleText;
-        }
-        public void AddTextfield(string content)
+            var newTitleField = Instantiate(titlePrefab, targetFieldsContainer);
+            newTitleField.GetComponent<Text>().text = titleText;
+
+            if(selectable)
+			{
+				MakeTextItemSelectable(newTitleField);
+			}
+		}
+
+		private void MakeTextItemSelectable(GameObject textGameObject)
+		{
+            textGameObject.AddComponent<SelectableText>().SetFieldPrefab(selectableText);
+		}
+
+		public void AddTextfield(string content, bool selectable = false)
         {
-            Instantiate(textfieldPrefab, targetFieldsContainer).GetComponent<Text>().text = content;
+            var newTextField = Instantiate(textfieldPrefab, targetFieldsContainer);
+            newTextField.GetComponent<Text>().text = content;
+
+            if (selectable)
+            {
+                MakeTextItemSelectable(newTextField);
+            }
         }
         public void AddLabel(string labelText)
         {
@@ -444,10 +463,16 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(loadingSpinnerPrefab, targetFieldsContainer);
         }
 
-        public DataKeyAndValue AddDataField(string keyTitle, string valueText)
+        public DataKeyAndValue AddDataField(string keyTitle, string valueText, bool selectableValueText = true)
         {
             DataKeyAndValue dataKeyAndValue = Instantiate(dataFieldPrefab, targetFieldsContainer);
             dataKeyAndValue.SetTexts(keyTitle, valueText);
+
+            if (selectableValueText)
+            {
+                MakeTextItemSelectable(dataKeyAndValue.ValueText.gameObject);
+            }
+
             return dataKeyAndValue;
         }
         public void AddSeperatorLine()
@@ -459,20 +484,22 @@ namespace Netherlands3D.Interface.SidePanel
             Instantiate(spacerPrefab, targetFieldsContainer).GetComponent<RectTransform>().sizeDelta = new Vector2(100, height);
         }
         public void AddLink(string urlText, string urlPath)
-        {
-            Instantiate(urlPrefab, targetFieldsContainer).SetURL(urlText,urlPath);
+		{
+            var nameAndUrl = Instantiate(urlPrefab, targetFieldsContainer);
+            nameAndUrl.SetURL(urlText, urlPath);
         }
-        public void AddActionButtonText(string buttonText, Action<string> clickAction)
+		public void AddActionButtonText(string buttonText, Action<string> clickAction)
         {
-            Instantiate(buttonTextPrefab, targetFieldsContainer).SetAction(buttonText,clickAction);
+            var button = Instantiate(buttonTextPrefab, targetFieldsContainer);
+            button.SetAction(buttonText,clickAction);
         }
         public void AddActionButtonBig(string buttonText, Action<string> clickAction)
         {
             Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
         }
-        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false)
+        public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false, string description = "")
         {
-            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps);
+            Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps, description);
         }
 
         public ActionDropDown AddActionDropdown(string[] dropdownOptions, Action<string> selectOptionAction, string selected = "")

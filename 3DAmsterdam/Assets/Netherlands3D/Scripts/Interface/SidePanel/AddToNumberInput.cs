@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.Logging;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -17,6 +18,11 @@ namespace Netherlands3D.Interface.SidePanel
 
 		[SerializeField]
 		private float modifierAmount = 15.0f;
+
+		private void Start()
+		{
+			gameObject.AddComponent<AnalyticsClickTrigger>();
+		}
 
 		/// <summary>
 		/// Add a value to the numeric (text) input field

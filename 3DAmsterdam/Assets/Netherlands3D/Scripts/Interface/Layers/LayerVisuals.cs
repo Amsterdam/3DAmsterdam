@@ -38,11 +38,6 @@ namespace Netherlands3D.Interface.Layers
 			containerRectTransform = GetComponent<RectTransform>();
 		}
 
-		private void Start()
-		{
-			this.gameObject.SetActive(false);
-		}
-
 		/// <summary>
 		/// Change the color, and update all the color selectors to match the same color.
 		/// </summary>
@@ -143,6 +138,11 @@ namespace Netherlands3D.Interface.Layers
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
 			}
 
+			RefreshSize();
+		}
+
+		public void RefreshSize()
+		{
 			StartCoroutine(SortLayout());
 		}
 

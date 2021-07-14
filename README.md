@@ -9,8 +9,8 @@ The main goals are:
 
 More and more information and data is embedded, allowing future features like running simulations, visualization of solar and wind studies and showing impact of spatial urban changes. It will improve public insight in decision making processes.
 
-## Unity 2019.4. (LTS)
-The project is using the latest LTS (long-term support) release of Unity: 2019.4.<br/>
+## Unity 2020.3 (LTS)
+The project is using the latest LTS (long-term support) release of Unity: 2020.3.<br/>
 We will stick to this version untill new engine feature updates are required for the sake of maximum stability.
 ## WebGL/Universal Render Pipeline
 Currently the main target platform is a WebGL(2.0) application.<br/>
@@ -21,6 +21,72 @@ For C#/.NET coding conventions please refer to the Microsoft conventions:<br/>
 [https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)<br/>
 For variable naming please refer to:<br/>
 [https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions)<br/>
+
+## Project Setup 
+
+The files structure of the project looks like this. 
+
+```
+3DAmsterdam
+├── README.md
+├── .gitattributes
+├── .gitignore
+├── docs
+|   ├── gettingstarted.md    #Getting started with a new manucipality
+|   ├── assetgeneration.md   #How to generate assets for the 3D layers
+|   └── faq.md               #Frequently asked questions
+├── 3DAmsterdam              #Main Unity project folder
+|   └──Assets
+|      ├──3DAmsterdam        #Amsterdam specific config, scenes and assets
+|      ├──Netherlands3D      #Shared assets for all manucipalities where we encourage contribution
+|      └──WebGLTemplates     #Special Unity folder containing our Netherlands3D fullscreen WebGL template
+```
+
+To set-up a project for a new municipality or city, please refer to the [getting started documentation](docs/GettingStarted.md)
+
+After setting up your project you can start generating your own tile-based layer datasets using the [asset generation documentation](docs/GeneratingTileAssets.md)
+
+## Unity Input System
+
+The project uses the new Unity input system called Input Action Assets. The input mappings are defined in 
+`\Assets\Netherlands3D\Input\3DNetherlands.inputactions`
+
+This will then generate a c# class that will be used in 
+`\Assets\Netherlands3D\Input\ActionHandler.cs`
+
+## Tile System
+
+The platform uses a tile based system consisting of 1km by 1km tiles. The handling of the tiles is initiated by the TileHandler which resides under the /Layers in the scene and needs to be configured with the active Layers that implement the Layer baseclass. 
+
+We currently have 4 implemented Layers which are 
+
+- Buildings
+- Trees
+- Sewerage
+- Terrain
+
+Each Layer script needs implement the HandleLayer method. This function receives a TileChange variable that provides the [RD](https://nl.wikipedia.org/wiki/Rijksdriehoeksco%C3%B6rdinaten)  X and Y coordinate and an action.
+
+The available actions are
+
+- Create (create the tile)
+- Upgrade (the Level of detail increases)
+- Downgrade (the Level of detail decreases)
+- Remove (remove the tile)
+
+## AssetBundles
+
+To improve performance and reduce memory usage the platform uses prebuild assets that are downloaded from the webserver in runtime. 
+
+To create assets the workflow is as follows
+
+- Generate the assets from code using AssetDatabase.CreateAsset. 
+  This will create the asset as text based YAML file
+- Then build the asset for WebGL using BuildPipeline.BuildAssetBundles. 
+  This will create binary files and needs to be copied to the webserver that will serve them.
+
+## License
+This project is licensed under the terms of the EUPL license (LICENCE.txt)
 
 ## Third parties and licenses
 
@@ -34,4 +100,5 @@ Mesh Simplifier - MIT License<br/>
 Clipping Triangles - MIT License<br/>
 scripts/extentions/ListExtensions.cs - MIT License<br/>
 Scripts/RuntimeHandle derivative work - MIT License<br/>
-quantized mesh tiles (no longer used) - MIT License
+quantized mesh tiles (no longer used) - MIT License<br/>
+JSZip - MIT License

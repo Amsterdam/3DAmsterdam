@@ -8,17 +8,20 @@ namespace Netherlands3D.AssetGeneration
 {
 	public class AssetBundleExport
 	{
-		public const string assetsFolder = "/GeneratedTileAssets/";	
+		public const string assetsFolder = "/GeneratedTileAssets/";	//Relative to project Assets folder
+		public const string assetBundlesFolder = "/TileAssetBundles/";	//Relative to project root folder
 		public const string metaDataSubstring = "-data";
 
 		/// <summary>
 		/// Converts all the data files found in the GeneratedTileAssets folder to AssetBundles
 		/// </summary>
 		[MenuItem("Netherlands 3D/Tools/Export .asset files to AssetBundles")]
-		public static void GenerateBuildingsAssetBundles()
+		public static void GenerateAssetBundles()
 		{
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath + assetsFolder);
 			var fileInfo = directory.GetFiles();
+
+			Directory.CreateDirectory(Application.dataPath + "/.." + assetBundlesFolder);
 
 			List<AssetBundleBuild> buildMap = new List<AssetBundleBuild>();
 			foreach (var file in fileInfo)
@@ -36,7 +39,7 @@ namespace Netherlands3D.AssetGeneration
 					buildMap.Add(buildMesh);
 				}
 			}
-			BuildPipeline.BuildAssetBundles("BuildingsAssetBundles", buildMap.ToArray(), BuildAssetBundleOptions.None, BuildTarget.WebGL);
+			BuildPipeline.BuildAssetBundles("TileAssetBundles", buildMap.ToArray(), BuildAssetBundleOptions.None, BuildTarget.WebGL);
 			Debug.Log("Done exporting tile assets to AssetBundles");
 		}
 	}

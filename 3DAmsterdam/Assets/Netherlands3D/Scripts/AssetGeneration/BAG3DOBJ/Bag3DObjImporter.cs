@@ -58,7 +58,8 @@ public class Bag3DObjImporter : MonoBehaviour
 	[SerializeField]
 	private GameObject enableOnFinish;
 
-	private string[] bagIdsToSkip;
+	private List<string> bagIdsToSkip;
+	private MeshRenderer[] replacementObjects;
 
 	[System.Serializable]
 	public class RemapObjectNames
@@ -69,15 +70,25 @@ public class Bag3DObjImporter : MonoBehaviour
 
 	private void Start()
 	{
+		replacementObjects = this.GetComponentsInChildren<MeshRenderer>();
 		ReadSkipIDs();
 		StartCoroutine(ParseObjFiles());
 	}
 
 	private void ReadSkipIDs()
 	{
+		bagIdsToSkip = new List<string>();
+
+		//Read optional txt file with id's to skip to our skiplist
 		if (optionalSkipListPath != "" && File.Exists(optionalSkipListPath))
 		{
-			bagIdsToSkip = File.ReadAllLines(optionalSkipListPath);
+			bagIdsToSkip = File.ReadAllLines(optionalSkipListPath).ToList<string>();
+		}
+
+		//Add our override objects to our skip list
+		foreach(var replacementObject in replacementObjects)
+		{
+			bagIdsToSkip.Add(replacementObject.name);
 		}
 	}
 
@@ -135,6 +146,8 @@ public class Bag3DObjImporter : MonoBehaviour
 		var totalTiles = xTiles * yTiles;
 		int currentTile = 0;
 
+		yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
+
 		//Walk the tilegrid
 		var tileRD = new Vector2Int(0, 0);
 		for (int x = 0; x < xTiles; x++)
@@ -159,6 +172,7 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName))
 				{
 					print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+					ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
 					if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 					continue;
 				}
@@ -170,14 +184,13 @@ public class Bag3DObjImporter : MonoBehaviour
 				//And move children in this tile
 				int childrenInTile = 0;
 
-
 				MeshRenderer[] remainingBuildings = GetComponentsInChildren<MeshRenderer>(true);
 				foreach (MeshRenderer meshRenderer in remainingBuildings)
 				{
 					meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
-					if (bagIdsToSkip.Contains(meshRenderer.gameObject.name))
+					if (bagIdsToSkip.Contains(meshRenderer.gameObject.name) && !IsReplacementObject(meshRenderer))
 					{
-						//In the skiplist? Skip this by removing it
+						//Is this ID in the skip list, and it is not our own override? Remove it.
 						Destroy(meshRenderer.gameObject);
 					}
 					else
@@ -196,22 +209,38 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (childrenInTile == 0)
 				{
 					Destroy(newTileContainer);
-					print($"<color=#FFBD38>No children found for tile {tileName}</color>");
+					ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.EMPTY);
+					print($"<color={ConsoleColors.GeneralDataWarningHexColor}>No children found for tile {tileName}</color>");
 					continue;
 				}
 
 				//And when we are done, bake it.
-				print($"<color=#00FF00>Baking tile {tileName} with {childrenInTile} buildings</color>");
+				print($"<color={ConsoleColors.GeneralStartProgressHexColor}>Baking tile {tileName} with {childrenInTile} buildings</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
 				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
-				print("Finished tile " + tileName);
+				print($"<color={ConsoleColors.GeneralSuccessHexColor}>Finished tile {tileName}</color>");
+
+				ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.DONE);
+
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}
 
-		print("All done!");
+		print($"<color={ConsoleColors.GeneralSuccessHexColor}>All done!</color>");
 
 		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+	}
+
+	private bool IsReplacementObject(MeshRenderer compareRenderer)
+	{
+		foreach(var replacementObjectRenderer in replacementObjects)
+		{
+			if(replacementObjectRenderer == compareRenderer)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -12,13 +12,7 @@ namespace Netherlands3D.Interface.Layers
     public class CustomLayer : InterfaceLayer, IPointerClickHandler
     {               
         [SerializeField]
-        private Text layerNameText;
-        public string GetName => layerNameText.text;
-
-        [SerializeField]
         private GameObject removeButton;
-
-        private int maxNameLength = 24;
 
         private void Start()
         {
@@ -57,24 +51,16 @@ namespace Netherlands3D.Interface.Layers
         public void Create(string layerName, GameObject link, LayerType type, InterfaceLayers interfaceLayers)
         {
             layerType = type;
-            layerNameText.text = layerName;
+            RenameLayer(layerName);
             LinkObject(link);
             parentInterfaceLayers = interfaceLayers;
         }
 
-        public void RenameLayer(string newName){
-            name = newName; //use our object name to store our full name
-
-            if (newName.Length > maxNameLength)
-                newName = newName.Substring(0, maxNameLength - 3) + "...";
-
-            layerNameText.text = newName;
-        }
-        /// <summary>
-        /// Enable or disable layer options based on view mode
-        /// </summary>
-        /// <param name="viewOnly">Only view mode enabled</param>
-        public void ViewingOnly(bool viewOnly)
+		/// <summary>
+		/// Enable or disable layer options based on view mode
+		/// </summary>
+		/// <param name="viewOnly">Only view mode enabled</param>
+		public void ViewingOnly(bool viewOnly)
         {
             removeButton.SetActive(!viewOnly);
         }

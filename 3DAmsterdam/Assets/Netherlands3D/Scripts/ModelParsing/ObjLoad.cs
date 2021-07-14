@@ -36,8 +36,7 @@ public class ObjLoad : MonoBehaviour
 
 	string mtllib;
 
-	private string[] objLines;
-	private string[] mtlLines;
+	private int totalDataLines = 0;
 
 	private string line;
 	private string[] linePart;
@@ -81,6 +80,8 @@ public class ObjLoad : MonoBehaviour
 	public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
 	public GeometryBuffer Buffer { get => buffer; }
 
+	private StringReader stringReader;
+
 	/// <summary>
 	/// Sets the obj string and turns it into an array with every newline
 	/// </summary>
@@ -88,8 +89,14 @@ public class ObjLoad : MonoBehaviour
 	public void SetGeometryData(ref string data)
 	{
 		buffer = new GeometryBuffer();
-		objLines = data.Split(lineSplitChar);
-		data = "";
+		stringReader = new StringReader(data);
+
+		//Count newlines
+		totalDataLines = 0;
+		foreach (var character in data)
+		{
+			if (character == lineSplitChar) totalDataLines++;
+		}
 
 		parseLinePointer = 0;
 	}
@@ -99,8 +106,14 @@ public class ObjLoad : MonoBehaviour
 	/// <param name="data">obj string</param>
 	public void SetMaterialData(ref string data)
 	{
-		mtlLines = data.Split(lineSplitChar);
-		data = "";
+		stringReader = new StringReader(data);
+
+		//Count newlines
+		totalDataLines = 0;
+		foreach (var character in data)
+		{
+			if (character == lineSplitChar) totalDataLines++;
+		}
 
 		parseLinePointer = 0;
 		materialDataSlots = new List<MaterialData>();
@@ -112,21 +125,34 @@ public class ObjLoad : MonoBehaviour
 	/// <returns>How many lines remain to be parsed</returns>
 	public int ParseNextObjLines(int maxLines)
 	{
-		for (int i = 0; i < maxLines; i++)
+		int currentLine = 0;
+		while (parseLinePointer < totalDataLines && currentLine < maxLines)
 		{
-			if (parseLinePointer < objLines.Length)
+			parseLinePointer++;
+			currentLine++;
+			line = stringReader.ReadLine();
+			if (line != null)
 			{
-				line = objLines[parseLinePointer];
 				if (!ParseObjLine(ref line))
 				{
 					return -1;
 				}
-				parseLinePointer++;
+			}
+			else
+			{
+				//No lines remain
+				return -1;
 			}
 		}
-		return objLines.Length - parseLinePointer;
+
+		return totalDataLines - parseLinePointer;
 	}
 
+	/// <summary>
+	/// Parses a single objline
+	/// </summary>
+	/// <param name="objline">the obj line</param>
+	/// <returns>Returns false on failure</returns>
 	private bool ParseObjLine(ref string objline)
 	{
 		linePart = objline.Trim().Split(linePartSplitChar);
@@ -149,21 +175,13 @@ public class ObjLoad : MonoBehaviour
 					{
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordinates");
 					}
 					else if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
 					{
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
-						Debug.Log("model appears to be in RD-coordinates");
-					}
-					else
-					{
-						Debug.Log(cd(linePart[1]) + "-" + -cd(linePart[3]) + "-" + cd(linePart[2]));
-						Debug.Log("model appears not to be in RD-coordinates");
 					}
 				}
-
 				if (ObjectUsesRDCoordinates)
 				{
 					if (flipYZ)
@@ -229,17 +247,23 @@ public class ObjLoad : MonoBehaviour
 	/// <returns>How many lines remain to be parsed</returns>
 	public int ParseNextMtlLines(int maxLines)
 	{
-		for (int i = 0; i < maxLines; i++)
+		int currentLine = 0;
+		while (parseLinePointer < totalDataLines && currentLine < maxLines)
 		{
-			if (parseLinePointer < mtlLines.Length)
+			parseLinePointer++;
+			currentLine++;
+			line = stringReader.ReadLine();
+			if (line != null)
 			{
-				line = mtlLines[parseLinePointer];
 				ParseMtlLine(ref line);
-				parseLinePointer++;
+			}
+			else
+			{
+				//No lines remain
+				return -1;
 			}
 		}
-
-		return mtlLines.Length - parseLinePointer;
+		return totalDataLines - parseLinePointer;
 	}
 
 	private void ParseMtlLine(ref string mtlLine)
@@ -504,11 +528,8 @@ public class ObjLoad : MonoBehaviour
 
 	public void Build(Material defaultMaterial)
 	{
-		//Clear our large arrays
-		if (mtlLines != null)
-			Array.Clear(mtlLines, 0, mtlLines.Length);
-
-		Array.Clear(objLines, 0, objLines.Length);
+		//Close our stringreader
+		stringReader.Close();		
 
 		var materialLibrary = new Dictionary<string, Material>();
 		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)

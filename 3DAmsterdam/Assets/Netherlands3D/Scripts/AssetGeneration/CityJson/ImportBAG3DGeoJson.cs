@@ -17,11 +17,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 {
     public class ImportBAG3DGeoJson : MonoBehaviour
     {
-        [Header("Bounding box in RD coordinates")]
-        [SerializeField]
-        private Vector2 boundingBoxBottomLeft;
-        [SerializeField]
-        private Vector2 boundingBoxTopRight;
 
         [Tooltip("Width and height in meters")]
         [SerializeField]
@@ -67,19 +62,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private Vector2 tileOffset;
-              
-        private Texture2D backDropTexture;
-        private Texture2D drawIntoPixels;
-
-        [Header("Progress preview")]
-        [SerializeField]
-        private int backgroundSize = 500;
-
-        [SerializeField]
-        private RawImage backgroundRawImage;
-
-        [SerializeField]
-        private RawImage gridPixelsRawImage;
 
         private WeldMeshVertices vertexWelder;
 
@@ -91,6 +73,13 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 		public void Start()
 		{
+            //Check if bounding box uses coordinates that are in thousands
+            if(!Config.activeConfiguration.BottomLeftRD.IsInThousands || !Config.activeConfiguration.TopRightRD.IsInThousands)
+            {
+                print($"<color=#ff0000>Bounding box should be in thousands</color>");
+                return;
+            }
+
             vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
 			FindCustomOverrideObjects();
 			StartCoroutine(CreateTilesAndReadInGeoJSON());
@@ -122,46 +111,26 @@ namespace Netherlands3D.AssetGeneration.CityJSON
         /// <returns></returns>
         private IEnumerator CreateTilesAndReadInGeoJSON()
         {
+
             print("Baking objects into tiles");
-            var xTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.x - (float)boundingBoxBottomLeft.x) / (float)tileSize);
-            var yTiles = Mathf.RoundToInt(((float)boundingBoxTopRight.y - (float)boundingBoxBottomLeft.y) / (float)tileSize);
+            var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / (float)tileSize);
+            var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y) / (float)tileSize);
 
             var totalTiles = xTiles * yTiles;
             int currentTile = 0;
 
-            //Show a previewmap
-            backDropTexture = new Texture2D(500, 500, TextureFormat.RGBA32, false);
-            drawIntoPixels = new Texture2D(yTiles, yTiles, TextureFormat.RGBA32, false);
-            drawIntoPixels.filterMode = FilterMode.Point;
-
-            gridPixelsRawImage.texture = drawIntoPixels;
-
-            //Download background preview image
-            var downloadUrl = Config.activeConfiguration.previewBackdropImage.Replace("{xmin}", boundingBoxBottomLeft.x.ToString()).Replace("{ymin}", boundingBoxBottomLeft.y.ToString()).Replace("{xmax}", boundingBoxTopRight.x.ToString()).Replace("{ymax}", boundingBoxTopRight.y.ToString()).Replace("{w}", backgroundSize.ToString()).Replace("{h}", backgroundSize.ToString());
-            print(downloadUrl);
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                backDropTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            }
-            backgroundRawImage.texture = backDropTexture;
+            yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
 
             //Walk the tilegrid
             var tileRD = new Vector2Int(0,0);
             for (int x = 0; x < xTiles; x++)
 			{
-                tileRD.x = (int)boundingBoxBottomLeft.x + (x * tileSize);
+                tileRD.x = (int)Config.activeConfiguration.BottomLeftRD.x + (x * tileSize);
                 for (int y = 0; y < yTiles; y++)
                 {
                     currentTile++;
 
-                    tileRD.y = (int)boundingBoxBottomLeft.y + (y * tileSize);
+                    tileRD.y = (int)Config.activeConfiguration.BottomLeftRD.y + (y * tileSize);
 
                     string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
 
@@ -178,8 +147,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
-                        drawIntoPixels.SetPixel(x, y, Color.grey);
-                        drawIntoPixels.Apply();
+                        ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
+
                         if(!Application.isBatchMode) yield return new WaitForEndOfFrame();
                         continue;
                     }
@@ -199,15 +168,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Now move them into the tile if their centerpoint is within our defined tile region
                     int buildingsAdded = MoveChildrenIntoTile(tileRD, newTileContainer, true);
-                    if (buildingsAdded == 0)
-                    {
-                        drawIntoPixels.SetPixel(x, y, Color.black);
-                    }
-                    else
-                    {
-                        drawIntoPixels.SetPixel(x, y, Color.clear);
-                    }
-                    drawIntoPixels.Apply();
+
+                    ProgressPreviewMap.Instance.ColorTile(x, y, (buildingsAdded == 0) ? TilePreviewState.EMPTY : TilePreviewState.DONE);
 
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
@@ -346,7 +308,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     var name = buildingNode["attributes"]["identificatie"].Value.Replace("NL.IMBAG.Pand.", "");
 
                     //Check if this name/ID exists in our list of manualy added child objects. If it is there, skip it.
-                    if(overrideChildObjects.Where(overrideGameObject => overrideGameObject.name == name).SingleOrDefault())
+                    if(overrideChildObjects.Where(overrideGameObject => overrideGameObject!= null && overrideGameObject.name == name).SingleOrDefault())
                     {
                         print("Skipped parsing " + name + " because we have added a custom object for that");
                         continue;
