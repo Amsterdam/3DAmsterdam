@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Particles/Grid" {
+Shader "Particles/GridSelectionBlock" {
     Properties{
         _TintColor("Tint Color", Color) = (0.5,0.5,0.5,0.5)
         _MainTex("Grid Texture", 2D) = "white" {}
