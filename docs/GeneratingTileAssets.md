@@ -98,8 +98,8 @@ Set the parameters of the import script:
 | Field                      | Explanation                                                                                             |
 | -------------------------- | ------------------------------------------------------------------------------------------------------- |
 | Tile Size                  | the length and width of the tiles that are going to be generated                                        |
-| Minimum height             | to remove spikes, points below this elevation (NAP) will be movend to the average elevation of the tile |
-| Maximum height             | to remove spikes, points above this elevation (NAP) will be movend to the average elevation of the tile |
+| Minimum height             | to remove spikes, points below this elevation (NAP) will be moved to the average elevation of the tile  |
+| Maximum height             | to remove spikes, points above this elevation (NAP) will be moved to the average elevation of the tile  |
 | GeoJSON SourceFiles Folder | Local folder path containing .json files downloaded from 3d.kadaster.nl/basisvoorziening-3d/            |
 
 Save your scene after applying your settings, and press the unity editor 'Play' button to start the scene, and start generating the terrain. 
@@ -107,14 +107,14 @@ Save your scene after applying your settings, and press the unity editor 'Play' 
 The script loads the json-files one by one, cuts it up into tiles, reduces the vertexcount for some parts and tries to remove spikes.
 it ctreates meshes for LOD1 and LOD0.
 The created meshes will start appearing in a folder named GeneratedTileAssets.
-> Tip: It takes a while to create the terrainMeshes. (10-15 min. per json-file) 
+> It takes a while to create the terrainMeshes. (10-15 min. per json-file) 
 
 When the script is done, the generated asset files will need to be turned into AssetBundles.
 At the top bar of the Unity editor ( next to File, Edit, etc ) select *'Netherlands 3D>Tools>Export .asset files to AssetBundles'*.
 
 This will create the AssetBundles in the folder '/TileAssetBundles/', next to the '/Assets/' folder of the Unity project.
 
-### Buildings: Testing our generated dataset
+### Terrain: Testing our generated dataset
 
 Upload the assetbundles to a unique folder on your webserver (for example https://example.nl/terrain/)
 
