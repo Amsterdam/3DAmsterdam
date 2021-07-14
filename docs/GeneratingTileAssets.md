@@ -122,6 +122,8 @@ Now open up our project main scene and select the Terrain layer GameObject (Neth
 You can Change the dataset descriptions to a nice description. Change the 'Path' property so it reflect the path to the dataset on your webserver. Use '{x}'* and '{y}' as the RD coordinate placeholders in the filename. 
 In case of the of the example above, these paths would be 'terrain/terrain\_{x}\_{y}-lod0' and 'terrain/terrain\_{x}\_{y}-lod1' and our application config file would have https://example.nl/ as a webserver root path.
 
+If you want to test it without uploading the files to a server the path would be 'file://folderWhereTheAssetbundlesAre/terrain/terrain\_{x}\_{y}-lod0'
+
 Press the unity editor 'Play' button to see your building tiles appear in runtime.
 If nothing appears, double-check if you set the right paths in the application config file, and the Datasets properties of the Layers>Terrain AssetbundleMeshLayer script.
 
