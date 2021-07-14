@@ -184,26 +184,26 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             List<Vector2> newUVs = new List<Vector2>(mesh1.uv2);
             newUVs.AddRange(new List<Vector2>(mesh2.uv2));
 
-            if (verts.Count > 65500 && mesh1.indexFormat== UnityEngine.Rendering.IndexFormat.UInt16)
-            {
-                Mesh newMesh = new Mesh();
-                newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-                newMesh.vertices = mesh1.vertices;
-                newMesh.subMeshCount = mesh1.subMeshCount;
-                for (int i = 0; i < mesh1.subMeshCount; i++)
-                {
-                    newMesh.SetIndices(mesh1.GetIndices(i), MeshTopology.Triangles, i);
-                }
-                mesh1.subMeshCount = newMesh.subMeshCount;
-                mesh1.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-                for (int i = 0; i < mesh1.subMeshCount; i++)
-                {
-                    mesh1.SetIndices(newMesh.GetIndices(i), MeshTopology.Triangles, i);
-                }
-                DestroyImmediate(newMesh,true);
-            }
+            //if (verts.Count > 65500 && mesh1.indexFormat== UnityEngine.Rendering.IndexFormat.UInt16)
+            //{
+            //    Mesh newMesh = new Mesh();
+            //    newMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            //    newMesh.vertices = mesh1.vertices;
+            //    newMesh.subMeshCount = mesh1.subMeshCount;
+            //    for (int i = 0; i < mesh1.subMeshCount; i++)
+            //    {
+            //        newMesh.SetIndices(mesh1.GetIndices(i), MeshTopology.Triangles, i);
+            //    }
+            //    mesh1.subMeshCount = newMesh.subMeshCount;
+            //    mesh1.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            //    for (int i = 0; i < mesh1.subMeshCount; i++)
+            //    {
+            //        mesh1.SetIndices(newMesh.GetIndices(i), MeshTopology.Triangles, i);
+            //    }
+            //    DestroyImmediate(newMesh,true);
+            //}
             mesh1.vertices = verts.ToArray();
-            mesh1.uv2 = newUVs.ToArray();
+            //mesh1.uv2 = newUVs.ToArray();
            
             
             for (int submeshIndex = 0; submeshIndex < mesh1.subMeshCount; submeshIndex++)
@@ -319,6 +319,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 {
                     continue;
                 }
+
+                defshape.Reverse();
 
                 Vector3RD vectorRD = new Vector3RD();
                 // add first three vectors
