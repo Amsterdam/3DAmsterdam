@@ -55,6 +55,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -79,6 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5279267763681953430
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,11 +129,10 @@ MonoBehaviour:
   blockMouseSelectionInteractions: 1
   blockMouseNavigationInteractions: 0
   blockKeyboardNavigationInteractions: 0
-  gridMaterial: {fileID: 2100000, guid: 00c6806b73cd33441a9c97ba07adc915, type: 2}
   gridSelectionBlock: {fileID: 4066160254706343728}
-  gridSize: 100
-  gridPlaneSize: 10000
-  freePaint: 0
   onGridSelected:
     m_PersistentCalls:
       m_Calls: []
+  coordinateVisual: {fileID: 3583797890790366707, guid: 3da9860100a96754c9fc0ae2b79bca47,
+    type: 3}
+  selectionBlockMeshRenderer: {fileID: 5366328271299638312}
