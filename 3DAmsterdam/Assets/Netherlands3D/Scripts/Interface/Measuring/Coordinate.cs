@@ -12,12 +12,13 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private Text coordinateText;
 
-        public void DrawCoordinate(Vector3 coordinate)
+        public void DrawCoordinate(Vector3 coordinate, bool drawHeight = false)
         {
             var rd = CoordConvert.UnitytoRD(coordinate);
             AlignWithWorldPosition(coordinate);
 
-            coordinateText.text = rd.x.ToString(CultureInfo.InvariantCulture) + "," + rd.y.ToString(CultureInfo.InvariantCulture) + "," + rd.z.ToString(CultureInfo.InvariantCulture);
+            coordinateText.text = "x " + rd.x.ToString(CultureInfo.InvariantCulture) + "\ny " + rd.y.ToString(CultureInfo.InvariantCulture);
+            if (drawHeight) coordinateText.text += "\n" + rd.z.ToString(CultureInfo.InvariantCulture);
         }
     }
 }
