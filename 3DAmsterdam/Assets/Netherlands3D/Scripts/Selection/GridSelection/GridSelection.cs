@@ -39,10 +39,6 @@ namespace Netherlands3D.Interface
 		public class BoundsEvent : UnityEvent<Bounds> { };
 		public BoundsEvent onGridSelected;
 
-		[SerializeField]
-		private Coordinate coordinateVisual;
-		[SerializeField]
-		private RectTransform coordinateNumbersContainer;
 		private Coordinate bottomLeftCoordinateVisual;
 		private Coordinate topRightCoordinateVisual;
 
@@ -64,8 +60,8 @@ namespace Netherlands3D.Interface
 
 			var canvas = FindObjectOfType<Canvas>();
 
-			bottomLeftCoordinateVisual = Instantiate(coordinateVisual, coordinateNumbersContainer);
-			topRightCoordinateVisual = Instantiate(coordinateVisual, coordinateNumbersContainer);
+			bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+			topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
 		}
 
 		/// <summary>
