@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5569696231675204980}
-  - component: {fileID: 5569696231675204982}
   - component: {fileID: 5569696231675204983}
+  - component: {fileID: 5569696231675204982}
   m_Layer: 0
   m_Name: MeasuringLine
   m_TagString: Untagged
@@ -34,6 +34,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5569696231675204983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569696231675204981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e343d4a973d87d941b37ec7483ec5ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuState: 1
+  blockMouseSelectionInteractions: 1
+  blockMouseNavigationInteractions: 0
+  blockKeyboardNavigationInteractions: 0
+  lineWidth: 0.005
+  pointScale: 0.02
 --- !u!120 &5569696231675204982
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -141,20 +159,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &5569696231675204983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5569696231675204981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e343d4a973d87d941b37ec7483ec5ded, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineWidth: 0.005
-  pointScale: 0.02
 --- !u!1001 &5569696232127709034
 PrefabInstance:
   m_ObjectHideFlags: 0

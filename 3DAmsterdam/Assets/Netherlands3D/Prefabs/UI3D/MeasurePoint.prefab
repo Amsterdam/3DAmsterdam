@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 2040584401554614774}
   - component: {fileID: 2040584401554614775}
   - component: {fileID: 2040584401554614772}
-  - component: {fileID: 2040584401554614773}
-  - component: {fileID: 8342501920036870445}
   m_Layer: 0
   m_Name: MeasurePoint
   m_TagString: Untagged
@@ -84,47 +82,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &2040584401554614773
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040584401554614778}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8342501920036870445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040584401554614778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a15743b8f0019d54cbd2b1fbd4a70eca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contextMenuState: 1
-  blockMouseSelectionInteractions: 0
-  blockMouseNavigationInteractions: 1
-  blockKeyboardNavigationInteractions: 0
-  dropTargetLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  offset: {x: 0, y: 0, z: 0}
-  mask: {fileID: 0}
-  madeWithExternalTool: 0
-  gridShaped: 0
-  snapToGrid: 0
-  stickToMouse: 0
-  placedTransformable:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &5415592728742702107
 GameObject:
   m_ObjectHideFlags: 0
