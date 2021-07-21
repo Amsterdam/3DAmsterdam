@@ -25,10 +25,12 @@ namespace Netherlands3D.Utilities
             {       
                 if(geometryPointLocatorString == null)
                 {
-                    if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
-                    {
-                        geometryPointLocatorString = "\"geometry\":{\"type\":\"Point\",\"coordinates\":[";
-                    }
+
+                        if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"Point\",\"coordinates\":[")>0)
+                        {
+                            geometryPointLocatorString = "\"geometry\":{\"type\":\"Point\",\"coordinates\":[";
+                        }
+ 
                     else geometryPointLocatorString = "\"geometry\": { \"type\": \"Point\", \"coordinates\": [";
                 }
                 return geometryPointLocatorString;
@@ -42,7 +44,7 @@ namespace Netherlands3D.Utilities
             {
                 if (geometryLineStringLocatorString == null)
                 {
-                    if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
+                    if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[") > 0)
                     {
                         geometryLineStringLocatorString = "\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[";
                     }
@@ -75,7 +77,7 @@ namespace Netherlands3D.Utilities
             {
                 if (featureString == null)
                 {
-                    if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
+                    if (geoJSONString.IndexOf("{\"type\":\"Feature\"") > 0)
                     {
                         featureString = "{\"type\":\"Feature\"";
                     }
@@ -88,6 +90,8 @@ namespace Netherlands3D.Utilities
         public GeoJSON(string geoJSON)
         {
             geoJSONString = geoJSON;
+            
+
             featureStartIndex = -1;
             featureEndIndex = 0;
             featureLength = 0;
@@ -202,12 +206,14 @@ namespace Netherlands3D.Utilities
 
         public string getPropertyStringValue(string propertyName)
         {
-            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + ((Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam) ? 3 : 4);
+            int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length;
+            
             if (propertyValueStartIndex == -1) 
             {
                 return string.Empty;
             }
-            return geoJSONString.Substring(propertyValueStartIndex, geoJSONString.IndexOf(',', propertyValueStartIndex) - propertyValueStartIndex - 1);
+            propertyValueStartIndex = geoJSONString.IndexOf('"', propertyValueStartIndex+1, 3);
+            return geoJSONString.Substring(propertyValueStartIndex+1, geoJSONString.IndexOf(',', propertyValueStartIndex) - propertyValueStartIndex - 2);
         }
     }
 }
