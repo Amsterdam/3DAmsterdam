@@ -21,8 +21,6 @@ namespace Netherlands3D.LayerSystem
 		{
 			TileAction action = tileChange.action;
 			var tileKey = new Vector2Int(tileChange.X, tileChange.Y);
-
-
 			switch (action)
 			{
 				case TileAction.Create:
