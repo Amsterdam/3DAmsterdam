@@ -36,6 +36,7 @@ namespace Netherlands3D.Interface.Tools
 		private void OnDisable()
 		{
             gridSelection.onGridSelected.RemoveListener(SelectedMaskBounds);
+            gridSelection.gameObject.SetActive(false);
         }
 
 		private void SelectedMaskBounds(Bounds bounds)

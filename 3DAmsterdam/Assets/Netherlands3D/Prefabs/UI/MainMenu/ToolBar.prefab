@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMenuTool: {fileID: 8175567301244853182}
-  activeMenuTool: {fileID: 0}
+  activeMenuTool: {fileID: 8175567301244853182}
   highlightImage: {fileID: 332848613138019727}
 --- !u!114 &8636449579473402725
 MonoBehaviour:
@@ -1902,7 +1902,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -1923,7 +1923,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4337098991468270347}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -1962,7 +1962,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartSelection
+      value: ActivateToolGameObject
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -1982,7 +1982,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: 
+      value: Netherlands3D.Interface.Tools.MenuTool, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -2008,11 +2008,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 2100000, guid: decb9374e7762bb4ebcfd392bf9399b4, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Material, UnityEngine
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -2401,7 +2401,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActivateInteractable
+      value: ActivateToolGameObject
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
