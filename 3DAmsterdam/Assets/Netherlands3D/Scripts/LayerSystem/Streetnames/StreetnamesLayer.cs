@@ -21,15 +21,15 @@ namespace Netherlands3D.LayerSystem
 				case TileAction.Create:
 					Tile newTile = CreateNewTile(tileKey);
 					tiles.Add(tileKey, newTile);
-					StartCoroutine(DownloadStreetNameData(tileChange, newTile, callback));
+					newTile.runningCoroutine = StartCoroutine(DownloadStreetNameData(tileChange, newTile, callback));
 					break;
 				case TileAction.Upgrade:
 					tiles[tileKey].LOD++;
-					callback(tileChange);
+					//callback(tileChange);
 					break;
 				case TileAction.Downgrade:
 					tiles[tileKey].LOD--;
-					callback(tileChange);
+					//callback(tileChange);
 					break;
 				case TileAction.Remove:
 					InteruptRunningProcesses(tileKey);
