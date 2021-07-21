@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Netherlands3D.Interface.Menu {
+namespace Netherlands3D.Interface.Tools {
 	public class SwitchTool : MonoBehaviour
 	{
 		public static SwitchTool Instance;
