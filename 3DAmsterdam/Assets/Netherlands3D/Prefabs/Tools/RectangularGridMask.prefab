@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1296907203840066137}
   - component: {fileID: 7323204035689323076}
+  - component: {fileID: 8024993546397222591}
   m_Layer: 0
   m_Name: RectangularGridMask
   m_TagString: Untagged
@@ -67,3 +68,18 @@ MonoBehaviour:
   maskScaleMultiplier: 1
   maskSize: {x: 1, y: 1}
   maskTexture: {fileID: 2800000, guid: 4674e37102ccba1449e961962b4b922d, type: 3}
+--- !u!114 &8024993546397222591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014527292949071638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4e01a841ffd6a4c9ef568e885493f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSelection: {fileID: 0}
+  runtimeRectangularMask: {fileID: 7323204035689323076}
+  maskLayer: {fileID: 0}

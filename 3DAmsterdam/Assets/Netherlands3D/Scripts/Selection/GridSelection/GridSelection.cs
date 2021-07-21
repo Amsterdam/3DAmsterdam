@@ -68,7 +68,7 @@ namespace Netherlands3D.Interface
 		/// Fresh start for the grid selection tool with optional material override (to have a unique block color)
 		/// </summary>
 		/// <param name="toolMaterial">Optional material override for the selection blocks</param>
-		public void StartSelection( Material toolMaterial)
+		public void StartSelection(Material toolMaterial)
 		{
 			if(toolMaterial)
 			{
