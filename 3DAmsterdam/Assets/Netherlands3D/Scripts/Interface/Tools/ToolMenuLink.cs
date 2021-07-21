@@ -2,7 +2,7 @@
 
 namespace Netherlands3D.Interface.Tools
 {
-	public class ToolInteractable : MonoBehaviour
+	public class ToolMenuLink : MonoBehaviour
 	{
 		[SerializeField]
 		private MenuTool menuTool;

@@ -46,8 +46,6 @@ public class MeasuringLine : Interactable
 		HideLineAndPoints(); //Start hidden, wait for clicks
 		TakeInteractionPriority();
 
-		PrepareColliders(default);
-
 		Selector.Instance.registeredClickInput.AddListener(PlacePoint);
 	}
 

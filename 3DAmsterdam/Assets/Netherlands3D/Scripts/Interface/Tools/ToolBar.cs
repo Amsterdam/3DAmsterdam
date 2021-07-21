@@ -24,9 +24,9 @@ namespace Netherlands3D.Interface.Tools
 			Instance = this;
 		}
 
-		public void DisableOtherTools(ToolInteractable activatedToolInteractable = null)
+		public void DisableOtherTools(ToolMenuLink activatedToolInteractable = null)
 		{
-			ToolInteractable[] otherToolInteractables = FindObjectsOfType<ToolInteractable>();
+			ToolMenuLink[] otherToolInteractables = FindObjectsOfType<ToolMenuLink>();
 			foreach (var otherTool in otherToolInteractables)
 				if (otherTool != activatedToolInteractable) otherTool.gameObject.SetActive(false);
 

@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface.Tools
 		private void Awake()
 		{
 			if (toolGameObject)
-				toolGameObject.AddComponent<ToolInteractable>().SetMenuTool(this);
+				toolGameObject.AddComponent<ToolMenuLink>().SetMenuTool(this);
 		}
 
 		public void ActivateToolGameObject()

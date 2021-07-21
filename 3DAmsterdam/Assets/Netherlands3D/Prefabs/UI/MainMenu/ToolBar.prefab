@@ -1013,6 +1013,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 6386056772865539106}
+    - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivateToolGameObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39658359fa9dff740a6639817b1915a4, type: 3}
@@ -1174,7 +1179,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActivateInteractable
+      value: ActivateToolGameObject
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
@@ -1366,7 +1371,7 @@ PrefabInstance:
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActivateInteractable
+      value: ActivateToolGameObject
       objectReference: {fileID: 0}
     - target: {fileID: 8729436291002256461, guid: 39658359fa9dff740a6639817b1915a4,
         type: 3}

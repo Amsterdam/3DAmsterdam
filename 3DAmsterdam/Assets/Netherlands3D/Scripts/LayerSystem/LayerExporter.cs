@@ -21,10 +21,22 @@ namespace Netherlands3D.Interface
 
 		public GridSelection gridSelection;
 
-		public void WaitForGridBounds()
+		private string helpMessage = "<b>Shift+Klik+Sleep</b> om het download gebied te selecteren";
+
+		[SerializeField]
+		private Material downloadBlockMaterial;
+
+		public void OnEnable()
 		{
 			//Make sure you only subscribe once
+			gridSelection.StartSelection(downloadBlockMaterial);
 			gridSelection.onGridSelected.AddListener(SetBounds);
+		}
+
+		private void OnDisable()
+		{
+			gridSelection.onGridSelected.RemoveListener(SetBounds);
+			gridSelection.gameObject.SetActive(false);
 		}
 
 		public void SetBounds(Bounds gridBounds)

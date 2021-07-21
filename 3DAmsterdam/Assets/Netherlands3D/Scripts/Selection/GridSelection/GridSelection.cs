@@ -75,7 +75,6 @@ namespace Netherlands3D.Interface
 				SetMainMaterial(toolMaterial);
 			}
 
-			onGridSelected.RemoveAllListeners();
 			gameObject.SetActive(true);
 			//Fresh start, clear a previous selection block visual
 			if (scaleBlock) Destroy(scaleBlock);
