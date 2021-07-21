@@ -168,7 +168,7 @@ public class MeasuringLine : Interactable
 			var distanceMeasured = Vector3.Distance(positions[0], positions[1]);
 			distanceText.DrawDistance(distanceMeasured, "m");
 
-			HelpMessage.Instance.Show($"De gemeten afstand is <b>{distanceMeasured:F2}</b> meter.\n\n<b>Klik</b> om een nieuw begintpunt te plaatsen of\ndruk op <b>Escape</b> om te annuleren.");
+			HelpMessage.Instance.Show($"De gemeten afstand is <b>~{distanceMeasured:F2}</b> meter.\n\n<b>Klik</b> om een nieuw begintpunt te plaatsen of\ndruk op <b>Escape</b> om te annuleren.");
 		}
 		else if (distanceText)
 		{

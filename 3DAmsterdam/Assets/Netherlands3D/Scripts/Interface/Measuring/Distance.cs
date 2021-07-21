@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
 
         public void DrawDistance(float distance, string suffix)
         {
-            distanceText.text = distance.ToString("F2") + suffix;
+            distanceText.text = "~"+ distance.ToString("F2") + suffix;
         }
     }
 }
