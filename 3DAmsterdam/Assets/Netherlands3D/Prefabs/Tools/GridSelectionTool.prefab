@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5279267763681953419}
   - component: {fileID: 3294253040189116214}
   m_Layer: 0
-  m_Name: GridSelection
+  m_Name: GridSelectionTool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,6 +133,7 @@ MonoBehaviour:
   onGridSelected:
     m_PersistentCalls:
       m_Calls: []
-  coordinateVisual: {fileID: 3583797890790366707, guid: 3da9860100a96754c9fc0ae2b79bca47,
-    type: 3}
+  onToolDisabled:
+    m_PersistentCalls:
+      m_Calls: []
   selectionBlockMeshRenderer: {fileID: 5366328271299638312}

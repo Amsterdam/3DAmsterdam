@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Netherlands3D.Interface.Tools
 {
-	public class ToolMenuLink : MonoBehaviour
+	public class Tool : MonoBehaviour
 	{
 		[SerializeField]
 		private MenuTool menuTool;
