@@ -40,9 +40,11 @@ namespace Netherlands3D.Interface.Tools
 			highlightImage.transform.SetParent(activeMenuTool.transform, false);
 		}
 
-		public void DisabledTool(ToolMenuLink tool)
+		public void DisabledTool(ToolMenuLink disabledTool)
 		{
-			if (tool == activeMenuTool)
+			Debug.Log("Current active tool:", activeMenuTool.gameObject);
+			Debug.Log("Disabled tool:", disabledTool.gameObject);
+			if (disabledTool == activeMenuTool)
 			{
 				activeMenuTool = defaultMenuTool;
 				MoveMenuHighlightToTool();
