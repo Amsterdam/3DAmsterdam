@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5677879847769832369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6942225889636194097}
+  - component: {fileID: -6045966924988825885}
+  - component: {fileID: 7594738720079039875}
+  - component: {fileID: 1310524803368978713}
+  m_Layer: 0
+  m_Name: VissimTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6942225889636194097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677879847769832369}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6045966924988825885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677879847769832369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73e6a97b7155434f96f81a23ea07f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missingVissimTypes: 
+  fileLocationVISSIM: 921929autoluw2030ref005.fzp
+  allVissimData: []
+  finishedLoadingData: 0
+  frameCounter: 0
+  timeBetweenFrames: 1
+  vissimCarPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimTruckPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimBusPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimTramPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+  vissimPedestrianPrefabs: {fileID: 11400000, guid: 6a50893d45928c04e97935af8802e91d,
+    type: 2}
+  vissimCyclePrefabs: {fileID: 11400000, guid: 9b502c2ed8efa534391722508d4f66e0, type: 2}
+  vissimVanPrefabs: {fileID: 11400000, guid: f5a647c9f93285c44be061e8ce312cdd, type: 2}
+--- !u!114 &7594738720079039875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677879847769832369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05ce43a0f79ac34fa284940f37bd921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileConverter: {fileID: -6045966924988825885}
+  meshLayer: {fileID: 0}
+  timeCounter: 0
+  loopCounter: 0
+  loopCounterFuture: 0
+--- !u!114 &1310524803368978713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677879847769832369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a78e0cb2b510ea4aa0765bbcec70fb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vissimTypesPrefab: {fileID: 6973187733590255334, guid: a9334206527e03149b82fed7d870156f,
+    type: 3}
+  vissimTypeInstance: {fileID: 1855987397301544435, guid: aa41a0da0a6c552488a20bc3fe9ca8ee,
+    type: 3}
+  vissimChooseTypesButton: {fileID: 4209275311892659223, guid: 5f5874355f8ce874493d6e7bc91c6061,
+    type: 3}
+  vissimStartVissim: {fileID: 1317824500824119919, guid: 52c248da44a328a458ce990bd1bf9a46,
+    type: 3}

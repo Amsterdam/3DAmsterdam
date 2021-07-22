@@ -13,7 +13,6 @@ namespace Netherlands3D.InputHandler
     /// </summary>
     /// 
     //TODO: When old input system is needed, replace parts in this script that require new input system
-    [DefaultExecutionOrder(-1000)]
     public class ActionHandler:MonoBehaviour
     {
 
