@@ -16,5 +16,11 @@ namespace Netherlands3D.Interface
         {
             distanceText.text = "~"+ distance.ToString("F2") + suffix;
         }
-    }
+
+		public void ResetInput()
+		{
+            var input = GetComponentInChildren<InputField>();
+            if(input) input.text = distanceText.text;
+        }
+	}
 }
