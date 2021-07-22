@@ -29,7 +29,7 @@ public class MeasuringLine : Interactable
 	private AssetbundleMeshLayer[] targetLayers;
 
 	[SerializeField]
-	private List<Transform> linePoints;
+	private List<MeasurePoint> linePoints;
 
 	[SerializeField]
 	private Transform previewTargetPoint;
@@ -52,14 +52,14 @@ public class MeasuringLine : Interactable
 		lineRenderer = GetComponent<LineRenderer>();
 		positions = new Vector3[linePoints.Count];
 
-		StartCoroutine(SnapToClosestVertex());
+		//StartCoroutine(SnapToClosestVertex()); //Implementation of vertex snapping with modifier. Way too slow. Might be improved/usable later.
 	}
 
 	private void OnEnable()
 	{
 		HelpMessage.Instance.Show("<b>Klik</b> om een beginpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 
-		HideLineAndPoints(); //Start hidden, wait for clicks
+		ResetLine(); //Start hidden, wait for clicks
 		TakeInteractionPriority();
 
 		Selector.Instance.registeredClickInput.AddListener(PlacePoint);
@@ -68,13 +68,13 @@ public class MeasuringLine : Interactable
 	public override void OnDisable()
 	{
 		base.OnDisable();
-		HideLineAndPoints();
+		ResetLine();
 		Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
 	}
 
 	public override void Escape()
 	{
-		HideLineAndPoints();		
+		ResetLine();		
 		gameObject.SetActive(false);
 	}
 
@@ -83,22 +83,18 @@ public class MeasuringLine : Interactable
 		targetPoint.gameObject.SetActive(true);
 	}
 
-	private void HideLineAndPoints()
+	private void ResetLine()
 	{
 		placementStepIndex = -1;
 		lineRenderer.enabled = false;
 		lineRenderer.material = lineMaterial;
 
-		for (int i = 1; i < linePoints.Count; i++)
-		{
-			linePoints[i].gameObject.SetActive(false);
-		} 
 		if(distanceText) Destroy(distanceText.gameObject);
 	}
 
 	private void PlacePoint()
 	{
-		Vector3 placementPoint = previewTargetPoint.position;
+		Vector3 placementPoint = (Selector.doingMultiselect) ? linePoints[1].transform.position : previewTargetPoint.position;
 		StepThroughPlacement(placementPoint);
 	}
 
@@ -114,24 +110,30 @@ public class MeasuringLine : Interactable
 			if(hitCollider != targetCollider)
 			{
 				targetCollider = hitCollider;
-				newColliderFound = true;
-			}
-
-			if(targetCollider)
 				targetMesh = targetCollider.sharedMesh;
-
+			}
 			previewPoint = hit.point;
 		}
-
-		previewTargetPoint.position = previewPoint;
-		AutoScalePointByDistance(previewTargetPoint);
 
 		//Move the next point in line to the previewposition if it was not the last point
 		if (placementStepIndex == 0)
 		{
-			linePoints[1].transform.position = previewPoint;
-			positions[1] = previewPoint;
+			if (Selector.doingMultiselect)
+			{
+				//Only do height, straight up when using modifier
+				linePoints[1].transform.position = new Vector3(linePoints[0].transform.position.x, previewPoint.y, linePoints[0].transform.position.z);
+
+				foreach (var linePoint in linePoints) linePoint.ChangeShape(MeasurePoint.Shape.HEIGHT);
+			}
+			else{
+				linePoints[1].transform.position = previewPoint;
+
+				foreach (var linePoint in linePoints) linePoint.ChangeShape(MeasurePoint.Shape.POINT);
+			}
 		}
+
+		previewTargetPoint.position = previewPoint;
+		AutoScalePointByDistance(previewTargetPoint);
 	}
 
 	private void PrepareColliders(Vector3 placementPoint)
@@ -153,13 +155,12 @@ public class MeasuringLine : Interactable
 		placementStepIndex++;
 		if (placementStepIndex == linePoints.Count) placementStepIndex = 0;
 
-		print("Measure step index: " + placementStepIndex);
 		if (placementStepIndex == 0)
 		{
 			//Change line to dotted line
 			lineRenderer.material = lineMaterial;
 			lineRenderer.enabled = true;
-			foreach (var linePoint in linePoints) linePoint.position = placementPoint;
+			foreach (var linePoint in linePoints) linePoint.transform.position = placementPoint;
 
 			HelpMessage.Instance.Show("<b>Klik</b> ergens anders om een eindpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 		}
@@ -168,16 +169,13 @@ public class MeasuringLine : Interactable
 			lineRenderer.material = linePlacedMaterial;
 			linePoints[placementStepIndex].transform.position = placementPoint;
 		}
-		DisplayPoint(linePoints[placementStepIndex]);
+		DisplayPoint(linePoints[placementStepIndex].transform);
 	}
 
 	private void Update()
 	{
 		//Always preview next point
-		if (!Selector.doingMultiselect)
-		{
-			PreviewNextPoint();
-		}
+		PreviewNextPoint();
 
 		if (placementStepIndex > -1)
 		{
@@ -188,29 +186,36 @@ public class MeasuringLine : Interactable
 
 	private IEnumerator SnapToClosestVertex()
 	{
-		while (Selector.doingMultiselect && newColliderFound)
+		while (true)
 		{
-			Debug.Log("Trying to snap");
-			newColliderFound = false;
-
-			var closestDistance = float.MaxValue;
-			var closestVertex = Vector3.one * float.MaxValue;
-
-			//Check all mesh verts tied to this triangle for distance;
-			for (int i = 0; i < targetMesh.vertices.Length; i++)
+			if (Selector.doingMultiselect && targetMesh)
 			{
-				if ((i % maxVertexSnapPerFrame) == 0)
+				Debug.Log("Trying to snap");
+				Mesh runningThroughMesh = targetMesh;
+
+				var closestDistance = float.MaxValue;
+				var closestVertex = Vector3.one * float.MaxValue;
+
+				//Check all mesh verts tied to this triangle for distance;
+				for (int i = 0; i < targetMesh.vertices.Length; i++)
 				{
-					yield return new WaitForEndOfFrame();
+					if (targetMesh != runningThroughMesh) yield break;
+
+					var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
+					var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
+					if (vertexDistance < closestDistance)
+						closestVertex = vertexWorldCoordinate;
+
+					if ((i % maxVertexSnapPerFrame) == 0)
+					{
+						yield return new WaitForEndOfFrame();
+					}
 				}
 
-				var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
-				var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
-				if (vertexDistance < closestDistance)
-					closestVertex = vertexWorldCoordinate;
+				//We need to have finished going through the vertices, before we can override out target position:
+				previewTargetPoint.transform.position = closestVertex;
 			}
-
-			previewTargetPoint.transform.position = closestVertex;
+			yield return null;
 		}
 	}
 
@@ -218,9 +223,9 @@ public class MeasuringLine : Interactable
 	{
 		//Autoscaling of line and points, based on point positions from camera
 		var closestPointDistance = float.MaxValue;
-		for (int i = 0; i < positions.Length; i++)
+		for (int i = 0; i < linePoints.Count; i++)
 		{
-			var point = linePoints[i];
+			var point = linePoints[i].transform;
 			var pointDistance = AutoScalePointByDistance(point);
 
 			if (pointDistance < closestPointDistance)
@@ -242,7 +247,7 @@ public class MeasuringLine : Interactable
 		//Update our positions array we can feed the linerenderer
 		for (int i = 0; i < linePoints.Count; i++)
 		{
-			positions[i] = linePoints[i].position;
+			positions[i] = linePoints[i].transform.position;
 		}
 		lineRenderer.SetPositions(positions);
 
