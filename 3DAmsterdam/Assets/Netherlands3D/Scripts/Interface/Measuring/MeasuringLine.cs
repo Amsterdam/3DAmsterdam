@@ -52,15 +52,13 @@ public class MeasuringLine : Interactable
 	public override void OnDisable()
 	{
 		base.OnDisable();
-		Escape();
+		HideLineAndPoints();
 		Selector.Instance.registeredClickInput.RemoveListener(PlacePoint);
 	}
 
 	public override void Escape()
 	{
-		HideLineAndPoints();
-		HelpMessage.Instance.Hide(true);
-		
+		HideLineAndPoints();		
 		gameObject.SetActive(false);
 	}
 
