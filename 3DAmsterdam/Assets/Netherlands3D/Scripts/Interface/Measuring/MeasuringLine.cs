@@ -28,15 +28,31 @@ public class MeasuringLine : Interactable
 	[SerializeField]
 	private AssetbundleMeshLayer[] targetLayers;
 
-	private List<Transform> childPoints;
+	[SerializeField]
+	private List<Transform> linePoints;
+
+	[SerializeField]
+	private Transform previewTargetPoint;
+
+	[SerializeField]
+	private Material lineMaterial;
+
+	[SerializeField]
+	private Material linePlacedMaterial;
+
+	private Mesh targetMesh;
+	private bool newColliderFound = false;
+	private MeshCollider targetCollider;
+
+	[SerializeField]
+	private int maxVertexSnapPerFrame = 10000;
 
 	private void Awake()
 	{
 		lineRenderer = GetComponent<LineRenderer>();
+		positions = new Vector3[linePoints.Count];
 
-		childPoints = new List<Transform>();
-		foreach (Transform child in transform) childPoints.Add(child);
-		positions = new Vector3[childPoints.Count];
+		StartCoroutine(SnapToClosestVertex());
 	}
 
 	private void OnEnable()
@@ -62,31 +78,60 @@ public class MeasuringLine : Interactable
 		gameObject.SetActive(false);
 	}
 
-	private void ShowPoint(Transform targetPoint)
+	private void DisplayPoint(Transform targetPoint)
 	{
-		lineRenderer.enabled = true;
 		targetPoint.gameObject.SetActive(true);
 	}
+
 	private void HideLineAndPoints()
 	{
 		placementStepIndex = -1;
 		lineRenderer.enabled = false;
-		foreach (var point in childPoints) point.gameObject.SetActive(false);
+		lineRenderer.material = lineMaterial;
+
+		for (int i = 1; i < linePoints.Count; i++)
+		{
+			linePoints[i].gameObject.SetActive(false);
+		} 
 		if(distanceText) Destroy(distanceText.gameObject);
 	}
 
 	private void PlacePoint()
 	{
-		Vector3 placementPoint = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-		PrepareColliders(placementPoint);
+		Vector3 placementPoint = previewTargetPoint.position;
+		StepThroughPlacement(placementPoint);
+	}
+
+	private void PreviewNextPoint()
+	{
+		Vector3 previewPoint = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+		PrepareColliders(previewPoint);
 
 		//Shoot ray to get precise point on collider
 		if (Physics.Raycast(Selector.mainSelectorRay, out RaycastHit hit))
 		{
-			placementPoint = hit.point;
+			var hitCollider = hit.collider.GetComponent<MeshCollider>();
+			if(hitCollider != targetCollider)
+			{
+				targetCollider = hitCollider;
+				newColliderFound = true;
+			}
+
+			if(targetCollider)
+				targetMesh = targetCollider.sharedMesh;
+
+			previewPoint = hit.point;
 		}
 
-		StepThroughPlacement(placementPoint);
+		previewTargetPoint.position = previewPoint;
+		AutoScalePointByDistance(previewTargetPoint);
+
+		//Move the next point in line to the previewposition if it was not the last point
+		if (placementStepIndex == 0)
+		{
+			linePoints[1].transform.position = previewPoint;
+			positions[1] = previewPoint;
+		}
 	}
 
 	private void PrepareColliders(Vector3 placementPoint)
@@ -105,53 +150,99 @@ public class MeasuringLine : Interactable
 	/// <param name="placementPoint"></param>
 	private void StepThroughPlacement(Vector3 placementPoint)
 	{
-		print("Measure step: " + placementStepIndex);
 		placementStepIndex++;
-		if (placementStepIndex == childPoints.Count) placementStepIndex = 0;
+		if (placementStepIndex == linePoints.Count) placementStepIndex = 0;
 
+		print("Measure step index: " + placementStepIndex);
 		if (placementStepIndex == 0)
 		{
-			//First click places all points
-			foreach (var childPoint in childPoints) childPoint.transform.position = placementPoint;
+			//Change line to dotted line
+			lineRenderer.material = lineMaterial;
+			lineRenderer.enabled = true;
+			foreach (var linePoint in linePoints) linePoint.position = placementPoint;
+
 			HelpMessage.Instance.Show("<b>Klik</b> ergens anders om een eindpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 		}
 		else
 		{
-			childPoints[placementStepIndex].transform.position = placementPoint;
+			lineRenderer.material = linePlacedMaterial;
+			linePoints[placementStepIndex].transform.position = placementPoint;
+		}
+		DisplayPoint(linePoints[placementStepIndex]);
+	}
+
+	private void Update()
+	{
+		//Always preview next point
+		if (!Selector.doingMultiselect)
+		{
+			PreviewNextPoint();
 		}
 
-		ShowPoint(childPoints[placementStepIndex]);
-		UpdateLinePositions();
+		if (placementStepIndex > -1)
+		{
+			UpdateLinePositions();
+			DrawAutoScalingLine();
+		}
 	}
 
-	private void LateUpdate()
+	private IEnumerator SnapToClosestVertex()
 	{
-		AutoScale();
+		while (Selector.doingMultiselect && newColliderFound)
+		{
+			Debug.Log("Trying to snap");
+			newColliderFound = false;
+
+			var closestDistance = float.MaxValue;
+			var closestVertex = Vector3.one * float.MaxValue;
+
+			//Check all mesh verts tied to this triangle for distance;
+			for (int i = 0; i < targetMesh.vertices.Length; i++)
+			{
+				if ((i % maxVertexSnapPerFrame) == 0)
+				{
+					yield return new WaitForEndOfFrame();
+				}
+
+				var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
+				var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
+				if (vertexDistance < closestDistance)
+					closestVertex = vertexWorldCoordinate;
+			}
+
+			previewTargetPoint.transform.position = closestVertex;
+		}
 	}
 
-	private void AutoScale()
+	private void DrawAutoScalingLine()
 	{
-		if (!lineRenderer.enabled) return;
-
 		//Autoscaling of line and points, based on point positions from camera
 		var closestPointDistance = float.MaxValue;
 		for (int i = 0; i < positions.Length; i++)
 		{
-			var cameraDistanceToPoint = Vector3.Distance(positions[i], CameraModeChanger.Instance.ActiveCamera.transform.position);
-			childPoints[i].transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
+			var point = linePoints[i];
+			var pointDistance = AutoScalePointByDistance(point);
 
-			if (cameraDistanceToPoint < closestPointDistance)
-				closestPointDistance = cameraDistanceToPoint;
+			if (pointDistance < closestPointDistance)
+				closestPointDistance = pointDistance;
 		}
 		lineRenderer.startWidth = lineRenderer.endWidth = lineWidth * closestPointDistance;
+	}
+
+	private float AutoScalePointByDistance(Transform point)
+	{
+		var cameraDistanceToPoint = Vector3.Distance(point.position, CameraModeChanger.Instance.ActiveCamera.transform.position);
+		point.transform.localScale = Vector3.one * cameraDistanceToPoint * pointScale;
+
+		return cameraDistanceToPoint;
 	}
 
 	private void UpdateLinePositions()
 	{
 		//Update our positions array we can feed the linerenderer
-		for (int i = 0; i < transform.childCount; i++)
+		for (int i = 0; i < linePoints.Count; i++)
 		{
-			positions[i] = transform.GetChild(i).position;
+			positions[i] = linePoints[i].position;
 		}
 		lineRenderer.SetPositions(positions);
 
@@ -160,6 +251,7 @@ public class MeasuringLine : Interactable
 		{
 			var lineCenter = Vector3.Lerp(positions[0], positions[1], 0.5f);
 			if (!distanceText) distanceText = CoordinateNumbers.Instance.CreateDistanceNumber();
+
 			distanceText.AlignWithWorldPosition(lineCenter);
 			var distanceMeasured = Vector3.Distance(positions[0], positions[1]);
 			distanceText.DrawDistance(distanceMeasured, "m");

@@ -224,8 +224,6 @@ namespace Netherlands3D.Interface
 			else if (action.Performed)
 			{
 				doingMultiselect = true;
-				//Let any listeners know we have made a general click action
-				registeredClickInput.Invoke();
 			}
 		}
 
