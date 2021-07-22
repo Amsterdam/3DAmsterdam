@@ -24,10 +24,10 @@ namespace Netherlands3D.Interface.Tools
 			Instance = this;
 		}
 
-		public void ActivatedTool(ToolMenuLink activatedToolInteractable = null)
+		public void ActivatedTool(Tool activatedToolInteractable = null)
 		{
 			//Disable other tools
-			ToolMenuLink[] otherToolInteractables = FindObjectsOfType<ToolMenuLink>();
+			Tool[] otherToolInteractables = FindObjectsOfType<Tool>();
 			foreach (var otherTool in otherToolInteractables)
 				if (otherTool != activatedToolInteractable) otherTool.gameObject.SetActive(false);
 
@@ -40,11 +40,9 @@ namespace Netherlands3D.Interface.Tools
 			highlightImage.transform.SetParent(activeMenuTool.transform, false);
 		}
 
-		public void DisabledTool(ToolMenuLink disabledTool)
+		public void DisabledTool(Tool disabledTool)
 		{
-			Debug.Log("Current active tool:", activeMenuTool.gameObject);
-			Debug.Log("Disabled tool:", disabledTool.gameObject);
-			if (disabledTool == activeMenuTool)
+			if (disabledTool.MenuTool == activeMenuTool)
 			{
 				activeMenuTool = defaultMenuTool;
 				MoveMenuHighlightToTool();

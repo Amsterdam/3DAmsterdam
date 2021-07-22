@@ -30,12 +30,20 @@ namespace Netherlands3D.Interface.Tools
 
             gridSelection.StartSelection(maskBlockMaterial);
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
+            gridSelection.onToolDisabled.AddListener(ToolWasDisabled);
             runtimeRectangularMask.Clear();
         }
+
+        private void ToolWasDisabled()
+        {
+            this.gameObject.SetActive(false);
+		}
 
 		private void OnDisable()
 		{
             gridSelection.onGridSelected.RemoveListener(SelectedMaskBounds);
+            gridSelection.onToolDisabled.RemoveListener(ToolWasDisabled);
+
             gridSelection.gameObject.SetActive(false);
         }
 

@@ -38,6 +38,7 @@ namespace Netherlands3D.Interface
 		[System.Serializable]
 		public class BoundsEvent : UnityEvent<Bounds> { };
 		public BoundsEvent onGridSelected;
+		public UnityEvent onToolDisabled;
 
 		private Coordinate bottomLeftCoordinateVisual;
 		private Coordinate topRightCoordinateVisual;
@@ -146,6 +147,8 @@ namespace Netherlands3D.Interface
 		{
 			bottomLeftCoordinateVisual.gameObject.SetActive(false);
 			topRightCoordinateVisual.gameObject.SetActive(false);
+
+			onToolDisabled.Invoke();
 
 			VisualGrid.Instance.Hide();
 			StopInteraction();
