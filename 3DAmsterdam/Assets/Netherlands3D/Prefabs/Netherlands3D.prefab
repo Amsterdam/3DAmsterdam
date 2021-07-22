@@ -2583,18 +2583,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c1131b4803eb164eb80461beb38f2f1, type: 3}
---- !u!114 &5106945215166549958 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3472545479949792286, guid: 2c1131b4803eb164eb80461beb38f2f1,
+--- !u!20 &4628101437496626286 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3951107774055692214, guid: 2c1131b4803eb164eb80461beb38f2f1,
     type: 3}
   m_PrefabInstance: {fileID: 8570198541818510296}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87a20399635cf294fb08830818bc71a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8226164199495947995 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 344036002472684803, guid: 2c1131b4803eb164eb80461beb38f2f1,
@@ -3526,6 +3520,16 @@ PrefabInstance:
       propertyPath: m_ChildForceExpandHeight
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 878335835179925140, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: snapshotCamera
+      value: 
+      objectReference: {fileID: 4628101437496626286}
+    - target: {fileID: 878335835179925140, guid: 551dff695a15b634a97abe62e9edd824,
+        type: 3}
+      propertyPath: responsiveCanvas
+      value: 
+      objectReference: {fileID: 242408158398813518}
     - target: {fileID: 879734253930386688, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
       propertyPath: m_IsActive
@@ -3660,11 +3664,6 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1358674161540110543, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 1359986264732673695, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
@@ -7300,28 +7299,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 5106945215166549958}
-    - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TakeScreenshot
       objectReference: {fileID: 0}
     - target: {fileID: 8461909806835964774, guid: 551dff695a15b634a97abe62e9edd824,
         type: 3}

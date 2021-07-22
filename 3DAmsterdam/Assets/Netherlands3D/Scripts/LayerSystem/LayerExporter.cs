@@ -5,6 +5,7 @@ using Netherlands3D.Interface.SidePanel;
 using ConvertCoordinates;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Logging;
+using Netherlands3D.Help;
 
 namespace Netherlands3D.Interface
 {
@@ -28,6 +29,7 @@ namespace Netherlands3D.Interface
 
 		public void OnEnable()
 		{
+			HelpMessage.Instance.Show(helpMessage);
 			//Make sure you only subscribe once
 			gridSelection.StartSelection(downloadBlockMaterial);
 			gridSelection.onGridSelected.AddListener(SetBounds);

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Netherlands3D.Help;
+using UnityEngine;
 
 namespace Netherlands3D.Interface.Tools
 {
@@ -21,6 +22,7 @@ namespace Netherlands3D.Interface.Tools
 
 		private void OnDisable()
 		{
+			HelpMessage.Instance.Hide(true);
 			ToolBar.Instance.DisabledTool(this);
 		}
 	}
