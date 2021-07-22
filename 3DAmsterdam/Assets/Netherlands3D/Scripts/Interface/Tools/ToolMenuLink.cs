@@ -16,12 +16,12 @@ namespace Netherlands3D.Interface.Tools
 
 		private void OnEnable()
 		{
-			ToolBar.Instance.DisableOtherTools(this);
+			ToolBar.Instance.ActivatedTool(this);
 		}
 
 		private void OnDisable()
 		{
-			ToolBar.Instance.DisableOtherTools();
+			ToolBar.Instance.DisabledTool(this);
 		}
 	}
 }
