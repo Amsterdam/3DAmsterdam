@@ -88,8 +88,9 @@ public class MeasuringLine : Interactable
 		placementStepIndex = -1;
 		lineRenderer.enabled = false;
 		lineRenderer.material = lineMaterial;
+		foreach (var linePoint in linePoints) linePoint.gameObject.SetActive(false);
 
-		if(distanceText) Destroy(distanceText.gameObject);
+		if (distanceText) Destroy(distanceText.gameObject);
 	}
 
 	private void PlacePoint()
@@ -161,8 +162,6 @@ public class MeasuringLine : Interactable
 			lineRenderer.material = lineMaterial;
 			lineRenderer.enabled = true;
 			foreach (var linePoint in linePoints) linePoint.transform.position = placementPoint;
-
-			HelpMessage.Instance.Show("<b>Klik</b> ergens anders om een eindpunt te plaatsen.\nDruk op <b>Escape</b> om te annuleren.");
 		}
 		else
 		{
@@ -262,7 +261,7 @@ public class MeasuringLine : Interactable
 			distanceText.DrawDistance(distanceMeasured, "m");
 			distanceText.ResetInput();
 
-			HelpMessage.Instance.Show($"De gemeten afstand is <b>~{distanceMeasured:F2}</b> meter.\n\n<b>Klik</b> om een nieuw begintpunt te plaatsen of\ndruk op <b>Escape</b> om te annuleren.");
+			HelpMessage.Instance.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
 		}
 		else if (distanceText)
 		{
