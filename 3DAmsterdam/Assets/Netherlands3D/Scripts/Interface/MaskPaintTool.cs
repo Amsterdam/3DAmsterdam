@@ -11,8 +11,6 @@ namespace Netherlands3D.Interface.Tools
         [SerializeField]
         private GridSelection gridSelection;
 
-        private Bounds previousBounds;
-
         [SerializeField]
         private RuntimeMask runtimeRectangularMask;
 
@@ -49,7 +47,6 @@ namespace Netherlands3D.Interface.Tools
 
 		private void SelectedMaskBounds(Bounds bounds)
         {
-            previousBounds = bounds;
             runtimeRectangularMask.MoveToBounds(bounds);
             PropertiesPanel.Instance.OpenLayers();
 

@@ -12,7 +12,7 @@ namespace Netherlands3D.Masking
     public class MaskDome : Interactable
     {
         private RuntimeMask runtimeMask;
-        void Start()
+        void Awake()
         {
             runtimeMask = GetComponent<RuntimeMask>();
         }
@@ -21,7 +21,8 @@ namespace Netherlands3D.Masking
 		{
             HelpMessage.Instance.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
             TakeInteractionPriority();
-		}
+            runtimeMask.ClearAllMasks();
+        }
 		public override void OnDisable()
 		{
             StopInteraction();

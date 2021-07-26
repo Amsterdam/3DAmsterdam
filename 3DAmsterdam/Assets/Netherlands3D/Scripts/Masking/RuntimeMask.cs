@@ -53,14 +53,29 @@ namespace Netherlands3D.Masking
 
 		public float MaskScaleMultiplier { get => maskScaleMultiplier; }
 
+		private static List<RuntimeMask> runtimeMasks;
+
 		private void Awake()
 		{
+			RegisterRuntimeMask();
 			Clear();
+		}
+
+		public void ClearAllMasks()
+		{
+			foreach (RuntimeMask runtimeMask in runtimeMasks) runtimeMask.Clear();
+		}
+
+		private void RegisterRuntimeMask()
+		{
+			if (runtimeMasks == null) runtimeMasks = new List<RuntimeMask>();
+			runtimeMasks.Add(this);
 		}
 
 		private void OnEnable()
 		{
-			if(lastBounds != null)
+			//Make sure any previously activated mask is cleared (shaders only can have one mask at a time)
+			if (lastBounds != null)
 			{
 				MoveToBounds(lastBounds);
 			}
