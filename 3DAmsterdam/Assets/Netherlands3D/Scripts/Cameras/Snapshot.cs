@@ -261,6 +261,10 @@ namespace Netherlands3D
             snapshotMainMenu.isOn = true;
             snapshotLoD.isOn = true;
 
+            // Cleanup textures
+            Destroy(screenshotRenderTexture);
+            Destroy(screenShot);
+
             // If no filetype is given, make it a png
             if (fileType == "")
             {
