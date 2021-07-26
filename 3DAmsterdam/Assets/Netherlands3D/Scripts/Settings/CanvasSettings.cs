@@ -21,23 +21,6 @@ namespace Netherlands3D.Interface
 
         private float referenceWidth = 1920.0f;
 
-        [SerializeField]
-        private GameObject mainMenu;
-
-        [SerializeField]
-        private GameObject interfaceLayers;
-
-        void Start()
-        {
-            CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
-        }
-
-        void DisableMainCanvasItems()
-        {
-            interfaceLayers.SetActive(false);
-            mainMenu.SetActive(false);
-        }
-
         [ContextMenu("Clear the stored Canvas settings PlayerPrefs")]
         public void ClearPlayerPrefs()
         {

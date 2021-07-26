@@ -138,7 +138,7 @@ namespace Netherlands3D.Interface.SidePanel
             transformPanel.gameObject.SetActive(false);
         }
 
-        public void SetDynamicFieldsTargetContainer(Transform targetContainer)
+		public void SetDynamicFieldsTargetContainer(Transform targetContainer)
         {
             generatedFieldsRootContainer = targetContainer;
             targetFieldsContainer = targetContainer;
