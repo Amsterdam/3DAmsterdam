@@ -95,7 +95,7 @@ public class MeasuringLine : Interactable
 
 	private void PlacePoint()
 	{
-		Vector3 placementPoint = (Selector.doingMultiselect) ? linePoints[1].transform.position : previewTargetPoint.position;
+		Vector3 placementPoint = (Selector.doingMultiselect && placementStepIndex == 0) ? linePoints[1].transform.position : previewTargetPoint.position;
 		StepThroughPlacement(placementPoint);
 	}
 
