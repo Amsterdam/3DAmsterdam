@@ -196,21 +196,21 @@ public class Bag3DObjImporter : MonoBehaviour
 				if (childrenInTile == 0)
 				{
 					Destroy(newTileContainer);
-					print($"<color=#FFBD38>No children found for tile {tileName}</color>");
+					print($"<color={ConsoleColors.GeneralDataWarningHexColor}>No children found for tile {tileName}</color>");
 					continue;
 				}
 
 				//And when we are done, bake it.
-				print($"<color=#00FF00>Baking tile {tileName} with {childrenInTile} buildings</color>");
+				print($"<color={ConsoleColors.GeneralStartProgressHexColor}>Baking tile {tileName} with {childrenInTile} buildings</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 
 				TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
-				print("Finished tile " + tileName);
+				print($"<color={ConsoleColors.GeneralSuccessHexColor}>Finished tile {tileName}</color>");
 				if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 			}
 		}
 
-		print("All done!");
+		print($"<color={ConsoleColors.GeneralSuccessHexColor}>All done!</color>");
 
 		if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
 	}

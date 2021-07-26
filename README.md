@@ -9,8 +9,8 @@ The main goals are:
 
 More and more information and data is embedded, allowing future features like running simulations, visualization of solar and wind studies and showing impact of spatial urban changes. It will improve public insight in decision making processes.
 
-## Unity 2019.4. (LTS)
-The project is using the latest LTS (long-term support) release of Unity: 2019.4.<br/>
+## Unity 2020.3 (LTS)
+The project is using the latest LTS (long-term support) release of Unity: 2020.3.<br/>
 We will stick to this version untill new engine feature updates are required for the sake of maximum stability.
 ## WebGL/Universal Render Pipeline
 Currently the main target platform is a WebGL(2.0) application.<br/>
@@ -34,4 +34,5 @@ Mesh Simplifier - MIT License<br/>
 Clipping Triangles - MIT License<br/>
 scripts/extentions/ListExtensions.cs - MIT License<br/>
 Scripts/RuntimeHandle derivative work - MIT License<br/>
-quantized mesh tiles (no longer used) - MIT License
+quantized mesh tiles (no longer used) - MIT License<br/>
+JSZip - MIT License

@@ -93,7 +93,7 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
 				settings.canvasDPI = value;
 				ApplySettings();
-            });
+            },false,"Interface schaal");
 
 			//Graphic options
 			PropertiesPanel.Instance.AddTitle("Grafisch");
@@ -122,12 +122,12 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("25%", "100%", 0.25f, 1.0f, settings.renderResolution, (value) => {
 				settings.renderResolution = value;
 				ApplySettings();
-			});
+			},false, "Render resolutie");
 			PropertiesPanel.Instance.AddLabel("Schaduw detail:");
 			PropertiesPanel.Instance.AddActionSlider("Laag (Uit)", "Hoog", 0, 3, settings.shadowQuality, (value) => {
 				settings.shadowQuality = (int)value;
 				ApplySettings();
-			}, true);
+			}, true, "Schaduw detail");
 
 			PropertiesPanel.Instance.AddSpacer(20);
 			PropertiesPanel.Instance.AddTitle("Extra");
@@ -150,7 +150,7 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddActionSlider("Langzaam", "Snel", 0.1f, 2.0f, settings.rotateSensitivity, (value) => {
 				settings.rotateSensitivity = value;
 				ApplySettings();
-			}, false);
+			}, false, "Gevoeligheid camera draaien");
 
 			PropertiesPanel.Instance.AddSeperatorLine();
 			PropertiesPanel.Instance.AddSpacer(20);

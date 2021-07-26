@@ -502,6 +502,7 @@ GameObject:
   - component: {fileID: 433275809947432894}
   - component: {fileID: 2899662676325430322}
   - component: {fileID: 6142871240182118183}
+  - component: {fileID: 2632625269445421784}
   m_Layer: 5
   m_Name: Pipette
   m_TagString: Untagged
@@ -658,6 +659,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
+--- !u!114 &2632625269445421784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894039922996019997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: Kies een kleur van het scherm
 --- !u!1 &2042001055311714516
 GameObject:
   m_ObjectHideFlags: 0

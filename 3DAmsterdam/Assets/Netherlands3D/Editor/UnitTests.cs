@@ -89,19 +89,40 @@ public class UnitTests
     [Test]
     public void TestGetRDCoordinateByUrl()
     {
-        var testurl = "https://3d.amsterdam.nl?x=123.4&y=456.77";
+        var testurl = "https://3d.amsterdam.nl?position=123.4_456.77";
         var rd = testurl.GetRDCoordinateByUrl();
-        Assert.AreEqual(123.4, rd.Value.x);
-        Assert.AreEqual(456.77, rd.Value.y);
+        Assert.AreEqual(123.4, rd.x);
+        Assert.AreEqual(456.77, rd.y);
 
-        var testurl2 = "https://3d.amsterdam.nl?x=23424.4&y=234234.84&anotherparam=test";
+        var testurl2 = "https://3d.amsterdam.nl?position=23424.4_234234.84&anotherparam=test";
         var rd2 = testurl2.GetRDCoordinateByUrl();
-        Assert.AreEqual(23424.4, rd2.Value.x);
-        Assert.AreEqual(234234.84, rd2.Value.y);
+        Assert.AreEqual(23424.4, rd2.x);
+        Assert.AreEqual(234234.84, rd2.y);
 
         var testurl3 = "https://3d.amsterdam.nl";
         var rd3 = testurl3.GetRDCoordinateByUrl();
-        Assert.AreEqual(null, rd3);
+        Vector3RD nodata = new Vector3RD(0, 0, 0);
+        Assert.AreEqual(nodata, rd3);
+
+        var testurl4 = "http://localhost:8080/?position=121705_486658";
+        var rd4 = testurl4.GetRDCoordinateByUrl();
+        Assert.AreEqual(121705, rd4.x);
+        Assert.AreEqual(486658, rd4.y);
+
+
+    }
+
+    [Test]
+    public void TestRDIsInThousands()
+    {
+        Vector2RD rd1 = new Vector2RD(163409, 483129);
+        Assert.AreEqual(false, rd1.IsInThousands, $"x:{rd1.x} y:{rd1.y}");
+
+        Vector2RD rd2 = new Vector2RD(163000, 483129);
+        Assert.AreEqual(false, rd2.IsInThousands, $"x:{rd2.x} y:{rd2.y}");
+
+        Vector2RD rd3 = new Vector2RD(163000, 483000);
+        Assert.AreEqual(true, rd3.IsInThousands, $"x:{rd3.x} y:{rd3.y}");
 
     }
 

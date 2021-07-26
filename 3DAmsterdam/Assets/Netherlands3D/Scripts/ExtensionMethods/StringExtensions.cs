@@ -70,20 +70,20 @@ public static class StringExtensions
 		}
 	}
 
-    public static Vector3RD? GetRDCoordinateByUrl(this string url)
+    public static Vector3RD GetRDCoordinateByUrl(this string url)
     {
-        var xpart = url.Split(new string[] { "x=" }, StringSplitOptions.None);
-        if (xpart.Length == 1) return null;
+        Vector3RD nodata = new Vector3RD(0, 0, 0);
+        var xypart = url.Split(new string[] { "position=" }, StringSplitOptions.None);
+        if (xypart.Length == 1) return nodata;
 
-        var xypart = xpart[1].Split(new string[] { "&y=" }, StringSplitOptions.None);
-        if (xpart.Length == 1) return null;
+        var position = xypart[1].Split('_');
+        if (position.Length == 1) return nodata;
 
-        var ypart = xypart[1].Split(new string[] { "&" }, StringSplitOptions.None);
-
+        var ypart = position[1].Split('&');
 
         return new Vector3RD()
         {
-            x = double.Parse(xypart[0]),
+            x = double.Parse(position[0]),
             y = double.Parse(ypart[0])
         };
 

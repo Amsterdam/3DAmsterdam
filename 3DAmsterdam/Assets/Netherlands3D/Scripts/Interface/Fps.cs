@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.Analytics;
 using System.Collections.Generic;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.Interface
 {
@@ -123,7 +123,7 @@ namespace Netherlands3D.Interface
 		{
 			int fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);			
 			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
-			Analytics.CustomEvent("FPS",
+			Analytics.SendEvent("FPS",
 			new Dictionary<string, object>
 			  {
 				{ "fpsGroup", fpsLogGroup },

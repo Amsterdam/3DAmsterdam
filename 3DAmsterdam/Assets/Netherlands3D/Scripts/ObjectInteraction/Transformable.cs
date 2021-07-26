@@ -60,23 +60,25 @@ namespace Netherlands3D.ObjectInteraction
 
 			meshCollider = GetComponent<Collider>();
 
-			gameObject.transform.position = Vector3.zero;
 			bounds = new Bounds(gameObject.transform.position, Vector3.zero);
 			Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-
 			bounds = mesh.bounds;
 
-			transform.position = Vector3.zero;
 			if (stickToMouse)
 			{
-				HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
-
-				PlacementSettings();
-				placeActionEvent = placeAction.SubscribePerformed(Place);
-				TakeInteractionPriority();
-				StartCoroutine(StickToMouse());
-				meshCollider.enabled = false;
+				StartPlacementByClick();
 			}
+		}
+
+		private void StartPlacementByClick()
+		{
+			HelpMessage.Instance.Show("<b>Klik</b> op het punt waar het object geplaatst moet worden\n\nGebruik de <b>Escape</b> toets om te annuleren");
+
+			PlacementSettings();
+			placeActionEvent = placeAction.SubscribePerformed(Place);
+			TakeInteractionPriority();
+			StartCoroutine(StickToMouse());
+			meshCollider.enabled = false;
 		}
 
 		private void PlacementSettings()
