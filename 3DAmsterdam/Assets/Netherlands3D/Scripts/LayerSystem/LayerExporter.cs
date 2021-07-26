@@ -27,6 +27,8 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Material downloadBlockMaterial;
 
+		private bool acceptedTerms = false;
+
 		public void OnEnable()
 		{
 			HelpMessage.Instance.Show(helpMessage);
@@ -85,7 +87,15 @@ namespace Netherlands3D.Interface
 
 			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
 
-			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
+
+			PropertiesPanel.Instance.AddTitle("Voorwaarden");
+			PropertiesPanel.Instance.AddLink("Gebruiksvoorwaarden 3D BAG", "https://docs.3dbag.nl/en/copyright/");
+			PropertiesPanel.Instance.AddLink("Rechtenbeleid 3D basisvoorziening", "https://docs.geostandaarden.nl/3dbv/prod/");
+			PropertiesPanel.Instance.AddActionCheckbox("Ik ga akkoord met de voorwaarden", acceptedTerms, (action) =>
+			{
+				acceptedTerms = action;
+				DisplayUI();//Redraw to enable/disable downloads button
+			});
 
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
@@ -124,7 +134,9 @@ namespace Netherlands3D.Interface
 						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
 						break;
 				}
-			});
+			}).ToggleButtonInteraction(acceptedTerms);
+
+			if(acceptedTerms) PropertiesPanel.Instance.AddTextfieldColor("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht", Color.red, FontStyle.Normal);
 		}
 
 		private void RenderToThumbnail()
