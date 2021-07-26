@@ -18,7 +18,7 @@ namespace Netherlands3D.Interface
             var rd = CoordConvert.UnitytoRD(coordinate);
             AlignWithWorldPosition(coordinate);
 
-            coordinateText.text = FormattableString.Invariant($"x {rd.x}\n y{rd.y}");
+            coordinateText.text = FormattableString.Invariant($"x {rd.x}\ny {rd.y}");
             if (drawHeight) coordinateText.text += FormattableString.Invariant($"\n{rd.z}");
         }
     }
