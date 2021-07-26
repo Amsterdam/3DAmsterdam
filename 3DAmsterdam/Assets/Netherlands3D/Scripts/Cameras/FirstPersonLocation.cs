@@ -1,12 +1,6 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.Help;
-using Netherlands3D.Interface.Menu;
 using Netherlands3D.Interface.SidePanel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

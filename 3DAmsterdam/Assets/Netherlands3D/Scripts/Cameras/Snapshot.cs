@@ -62,9 +62,21 @@ namespace Netherlands3D
         [DllImport("__Internal")]
         private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
+		private void Awake()
+		{
+            screenshotCoroutine = Screenshotting();
+#if UNITY_EDITOR
+            screenshotCoroutine = ScreenshottingEditor();
+#endif
+        }
+
         private void OnEnable()
         {
+            UpdateFields();            
+        }
 
+        public void SaveSettings()
+        {
             if (snapshotResolution.text != "")
             {
                 // no resolutionSeparator -> × means not a number×number resolution
@@ -103,15 +115,9 @@ namespace Netherlands3D
 
             snapshotSettings.SetActive(false);
 
-            snapshotCamera = transform.GetComponent<Camera>();
+            //Align snapshot camera with our own active camera
             snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
             snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-
-
-            screenshotCoroutine = Screenshotting();
-#if UNITY_EDITOR
-            screenshotCoroutine = ScreenshottingEditor();
-#endif
         }
 
         private IEnumerator Screenshotting()
@@ -280,6 +286,8 @@ namespace Netherlands3D
         /// </summary>
         public void TakeScreenshot()
         {
+            SaveSettings();
+
             // Allows the camera to see what is on the canvas if user wants to see UI
             if (snapshotUI.isOn)
             {
