@@ -78,9 +78,9 @@ public class MeasuringLine : Interactable
 		gameObject.SetActive(false);
 	}
 
-	private void DisplayPoint(Transform targetPoint)
+	private void DisplayPoints()
 	{
-		targetPoint.gameObject.SetActive(true);
+		foreach (var linePoint in linePoints) linePoint.gameObject.SetActive(true);
 	}
 
 	private void ResetLine()
@@ -117,24 +117,33 @@ public class MeasuringLine : Interactable
 		}
 
 		//Move the next point in line to the previewposition if it was not the last point
-		if (placementStepIndex == 0)
+		if(placementStepIndex == -1 && Selector.doingMultiselect)
+		{
+			//Only do height, straight up when using modifier
+			linePoints[1].transform.position = previewPoint;
+			foreach (var linePoint in linePoints) linePoint.ChangeShape(MeasurePoint.Shape.HEIGHT);
+		}
+		else if (placementStepIndex == 0)
 		{
 			if (Selector.doingMultiselect)
 			{
 				//Only do height, straight up when using modifier
 				linePoints[1].transform.position = new Vector3(linePoints[0].transform.position.x, previewPoint.y, linePoints[0].transform.position.z);
-
-				foreach (var linePoint in linePoints) linePoint.ChangeShape(MeasurePoint.Shape.HEIGHT);
+				ChangeLineType(MeasurePoint.Shape.HEIGHT);
 			}
 			else{
 				linePoints[1].transform.position = previewPoint;
-
-				foreach (var linePoint in linePoints) linePoint.ChangeShape(MeasurePoint.Shape.POINT);
+				ChangeLineType(MeasurePoint.Shape.POINT);
 			}
 		}
 
 		previewTargetPoint.position = previewPoint;
 		AutoScalePointByDistance(previewTargetPoint);
+	}
+
+	private void ChangeLineType(MeasurePoint.Shape shape)
+	{
+		foreach (var linePoint in linePoints) linePoint.ChangeShape(shape);
 	}
 
 	private void PrepareColliders(Vector3 placementPoint)
@@ -168,7 +177,7 @@ public class MeasuringLine : Interactable
 			lineRenderer.material = linePlacedMaterial;
 			linePoints[placementStepIndex].transform.position = placementPoint;
 		}
-		DisplayPoint(linePoints[placementStepIndex].transform);
+		DisplayPoints();
 	}
 
 	private void Update()
