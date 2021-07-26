@@ -52,7 +52,7 @@ namespace Netherlands3D.Interface
 		private void DisplayUI()
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true, 10);
+			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true,10);
 
 			RenderToThumbnail();
 
