@@ -16,16 +16,15 @@ namespace Netherlands3D.Cameras
 		public float speed = 3;
 
 		[SerializeField]
-		private GameObject mainMenu;
+		private GameObject toolBar;
+		[SerializeField]
+		private GameObject lodOptions;
 
 		[SerializeField]
 		private Button hideMenuButton;
 
 		[SerializeField]
 		private Button exitFirstPersonButton;
-
-		[SerializeField]
-		private GameObject interfaceLayers;
 
 		private Camera cameraComponent;
 
@@ -47,6 +46,7 @@ namespace Netherlands3D.Cameras
 		private void OnDisable()
 		{
 			exitFirstPersonButton.gameObject.SetActive(true);
+			HelpMessage.Instance.Hide();
 			hideMenuButton.gameObject.SetActive(false);
 		}
 
@@ -64,7 +64,9 @@ namespace Netherlands3D.Cameras
 		{
 			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
 			PropertiesPanel.Instance.gameObject.SetActive(true);
-			mainMenu.SetActive(true);
+
+			toolBar.SetActive(true);
+			lodOptions.SetActive(true);
 			hideMenuButton.gameObject.SetActive(true);
 		}
 
@@ -72,7 +74,9 @@ namespace Netherlands3D.Cameras
 		{
 			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
 			PropertiesPanel.Instance.gameObject.SetActive(false);
-			mainMenu.SetActive(false);
+
+			toolBar.SetActive(false);
+			lodOptions.SetActive(false);
 			hideMenuButton.gameObject.SetActive(false);
 		}
 

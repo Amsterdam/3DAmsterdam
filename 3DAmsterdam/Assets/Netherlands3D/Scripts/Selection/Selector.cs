@@ -29,6 +29,7 @@ namespace Netherlands3D.Interface
 
 		public static Ray mainSelectorRay;
 		public static RaycastHit[] hits;
+		public static RaycastHit[] sortedHits;
 
 		private InputActionMap selectorActionMap;
 
@@ -60,13 +61,11 @@ namespace Netherlands3D.Interface
 		private int priority3DInterfaceHitLayer;
 
 		[SerializeField]
-		private RaycastHit[] sortedHits;
-
-		[SerializeField]
 		private Interactable multiSelector;
 
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
+		public UnityEvent registeredSecondaryClickInput;
 
 		private void Awake()
 		{
@@ -197,7 +196,7 @@ namespace Netherlands3D.Interface
 		private void Click(IAction action)
 		{
 			//Let any listeners know we have made a general click
-			registeredClickInput.Invoke();
+			if (!HoveringInterface()) registeredClickInput.Invoke();
 
 			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
@@ -206,7 +205,7 @@ namespace Netherlands3D.Interface
 		private void SecondaryClick(IAction action)
 		{
 			//Let any listeners know we have made a general click
-			registeredClickInput.Invoke();
+			if (!HoveringInterface()) registeredSecondaryClickInput.Invoke();
 
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 			{
@@ -225,8 +224,6 @@ namespace Netherlands3D.Interface
 			else if (action.Performed)
 			{
 				doingMultiselect = true;
-				//Let any listeners know we have made a general click action
-				registeredClickInput.Invoke();
 			}
 		}
 

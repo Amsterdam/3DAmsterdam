@@ -4,13 +4,12 @@ using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Masking;
 using UnityEngine;
 
-namespace Netherlands3D.Interface
+namespace Netherlands3D.Interface.Tools
 {
     public class MaskPaintTool : MonoBehaviour
     {
         [SerializeField]
         private GridSelection gridSelection;
-        private Bounds previousBounds;
 
         [SerializeField]
         private RuntimeMask runtimeRectangularMask;
@@ -20,17 +19,34 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private InterfaceLayer maskLayer;
 
-        public void WaitForMaskBounds()
+        [SerializeField]
+        private Material maskBlockMaterial;
+
+        private void OnEnable()
         {
             HelpMessage.Instance.Show(helpMessage);
+
+            gridSelection.StartSelection(maskBlockMaterial);
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
-            runtimeRectangularMask.gameObject.SetActive(true);
+            gridSelection.onToolDisabled.AddListener(ToolWasDisabled);
             runtimeRectangularMask.Clear();
         }
 
-        private void SelectedMaskBounds(Bounds bounds)
+        private void ToolWasDisabled()
         {
-            previousBounds = bounds;
+            this.gameObject.SetActive(false);
+		}
+
+		private void OnDisable()
+		{
+            gridSelection.onGridSelected.RemoveListener(SelectedMaskBounds);
+            gridSelection.onToolDisabled.RemoveListener(ToolWasDisabled);
+
+            gridSelection.gameObject.SetActive(false);
+        }
+
+		private void SelectedMaskBounds(Bounds bounds)
+        {
             runtimeRectangularMask.MoveToBounds(bounds);
             PropertiesPanel.Instance.OpenLayers();
 
