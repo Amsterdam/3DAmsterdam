@@ -1,13 +1,5 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D.Interface;
-using Netherlands3D.Interface.Menu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 

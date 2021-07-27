@@ -5,6 +5,7 @@ using Netherlands3D.Interface.SidePanel;
 using ConvertCoordinates;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Logging;
+using Netherlands3D.Help;
 
 namespace Netherlands3D.Interface
 {
@@ -21,10 +22,25 @@ namespace Netherlands3D.Interface
 
 		public GridSelection gridSelection;
 
-		public void WaitForGridBounds()
+		private string helpMessage = "<b>Shift+Klik+Sleep</b> om het download gebied te selecteren";
+
+		[SerializeField]
+		private Material downloadBlockMaterial;
+
+		private bool acceptedTerms = false;
+
+		public void OnEnable()
 		{
+			HelpMessage.Instance.Show(helpMessage);
 			//Make sure you only subscribe once
+			gridSelection.StartSelection(downloadBlockMaterial);
 			gridSelection.onGridSelected.AddListener(SetBounds);
+		}
+
+		private void OnDisable()
+		{
+			gridSelection.onGridSelected.RemoveListener(SetBounds);
+			gridSelection.gameObject.SetActive(false);
 		}
 
 		public void SetBounds(Bounds gridBounds)
@@ -36,7 +52,7 @@ namespace Netherlands3D.Interface
 		private void DisplayUI()
 		{
 			//TODO: send this boundingbox to the mesh selection logic, and draw the sidepanel
-			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true, 10);
+			PropertiesPanel.Instance.OpenObjectInformation("Download selectiegebied", true,10);
 
 			RenderToThumbnail();
 
@@ -71,7 +87,15 @@ namespace Netherlands3D.Interface
 
 			}, PlayerPrefs.GetString("exportFormat", exportFormats[0]));
 
-			PropertiesPanel.Instance.AddLabel("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht");
+
+			PropertiesPanel.Instance.AddTitle("Voorwaarden");
+			PropertiesPanel.Instance.AddLink("Gebruiksvoorwaarden 3D BAG", "https://docs.3dbag.nl/en/copyright/");
+			PropertiesPanel.Instance.AddLink("Rechtenbeleid 3D basisvoorziening", "https://docs.geostandaarden.nl/3dbv/prod/");
+			PropertiesPanel.Instance.AddActionCheckbox("Ik ga akkoord met de voorwaarden", acceptedTerms, (action) =>
+			{
+				acceptedTerms = action;
+				DisplayUI();//Redraw to enable/disable downloads button
+			});
 
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
@@ -110,7 +134,9 @@ namespace Netherlands3D.Interface
 						WarningDialogs.Instance.ShowNewDialog("Exporteer " + selectedExportFormat + " nog niet geactiveerd.");
 						break;
 				}
-			});
+			}).ToggleButtonInteraction(acceptedTerms);
+
+			if(acceptedTerms) PropertiesPanel.Instance.AddTextfieldColor("Pas Op! bij een selectie van meer dan 16 tegels is het mogelijk dat uw browser niet genoeg geheugen heeft en crasht", Color.red, FontStyle.Normal);
 		}
 
 		private void RenderToThumbnail()
