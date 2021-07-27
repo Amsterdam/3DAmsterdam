@@ -162,7 +162,14 @@ namespace Netherlands3D.Cameras
 		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
 		{
 			var pointerPosition = Input.mousePosition;
-			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+			if (optionalPositionOverride != default)
+			{
+				pointerPosition = optionalPositionOverride;
+			}
+			else if(PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				pointerPosition = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f,0);
+			}
 
 			if(cameraComponent)
 				ray = cameraComponent.ScreenPointToRay(pointerPosition);
