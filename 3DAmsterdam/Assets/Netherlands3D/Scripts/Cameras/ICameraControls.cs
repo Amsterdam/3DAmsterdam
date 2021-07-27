@@ -20,6 +20,8 @@ namespace Netherlands3D.Cameras
 
         Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
 
+        Ray GetMainPointerRay();
+
         void EnableKeyboardActionMap(bool enabled);
 
         void EnableMouseActionMap(bool enabled);
