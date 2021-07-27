@@ -95,8 +95,7 @@ namespace Netherlands3D.Cameras
         List<InputActionMap> availableActionMaps;
 
         void Awake()
-        {
-            
+        {     
             cameraComponent = GetComponent<Camera>();
         }
 
@@ -433,7 +432,13 @@ namespace Netherlands3D.Cameras
 			}
 		}
 
-		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+        public Ray GetMainPointerRay()
+        {
+            var pointerPosition = Mouse.current.position.ReadValue();
+            return cameraComponent.ScreenPointToRay(pointerPosition);
+        }
+
+        public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
             var pointerPosition = Mouse.current.position.ReadValue();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
