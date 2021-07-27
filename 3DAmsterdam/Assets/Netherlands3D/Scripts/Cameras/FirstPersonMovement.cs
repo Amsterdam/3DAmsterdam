@@ -31,7 +31,6 @@ namespace Netherlands3D.Cameras
 
         private RaycastHit hit;
 
-        public InputActionAsset actionAsset;
         private IAction moveAction;
 
         void Start()
