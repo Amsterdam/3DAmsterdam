@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Netherlands3D.Utilities;
+using System.Globalization;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -120,6 +121,36 @@ namespace Netherlands3D.LayerSystem
 
 				yield return null;
 			}
+
+
+			//get OSM important streetnames
+			/// <summary>
+			/// Retrieves the road Json from Open Street Maps
+			/// </summary>
+			//Vector3WGS bottomLeftWGS = CoordConvert.RDtoWGS84(tileChange.X, tileChange.Y);
+			//Vector3WGS topRightWGS = CoordConvert.RDtoWGS84(tileChange.X + tileSize, tileChange.Y + tileSize);
+
+			//	string prefixRequest = "https://overpass-api.de/api/interpreter?data=[out:json];";
+			//	string paramRequest = "way[highway~\" ^ (trunk | primary | secondary | tertiary)$\"]";
+			//	string bbox = "(" + bottomLeftWGS.lat.ToString(CultureInfo.InvariantCulture) + "," + bottomLeftWGS.lon.ToString(CultureInfo.InvariantCulture) + "," + topRightWGS.lat.ToString(CultureInfo.InvariantCulture) + "," + topRightWGS.lon.ToString(CultureInfo.InvariantCulture) + ");";
+			//	string suffixRequest = "out tags;";
+			//	string fullRequest = prefixRequest + paramRequest + bbox + suffixRequest;
+			//Debug.Log(fullRequest);
+			//	// send http request
+			//	var request = UnityWebRequest.Get(fullRequest);
+			//	{
+			//		yield return request.SendWebRequest();
+
+			//		if (request.isDone && request.result != UnityWebRequest.Result.ProtocolError)
+			//		{
+			//			// catches the data
+			//			Debug.Log(request.downloadHandler.text);
+			//		}
+			//	}
+
+
+
+
 			callback(tileChange);
 		}
 	}
