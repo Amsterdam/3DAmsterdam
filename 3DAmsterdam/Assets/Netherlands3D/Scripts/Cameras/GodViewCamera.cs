@@ -9,6 +9,7 @@ using Netherlands3D.ObjectInteraction;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
 using Netherlands3D.Settings;
+using System.Collections;
 
 namespace Netherlands3D.Cameras
 {
@@ -50,7 +51,9 @@ namespace Netherlands3D.Cameras
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
 
         private float scrollDelta;
+
 #if UNITY_WEBGL && !UNITY_EDITOR
+        //This is a temporary solution untill unity normalizes the WebGL input
         float webGLScrollMultiplier = 100.0f;
 #endif
 
@@ -94,7 +97,11 @@ namespace Netherlands3D.Cameras
 
         List<InputActionMap> availableActionMaps;
 
-        void Awake()
+        [SerializeField]
+		private float resetTransitionSpeed = 0.5f;
+		private Coroutine resetNorthTransition;
+
+		void Awake()
         {     
             cameraComponent = GetComponent<Camera>();
         }
@@ -205,11 +212,11 @@ namespace Netherlands3D.Cameras
 
         private void Zoom(IAction action)
         {
-                scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
+            scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
 
             //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
 #if UNITY_WEBGL && !UNITY_EDITOR
-                scrollDelta *= webGLScrollMultiplier;
+            scrollDelta *= webGLScrollMultiplier;
 #endif
 
             if (scrollDelta != 0)
@@ -284,6 +291,7 @@ namespace Netherlands3D.Cameras
             }
 
             LimitPosition();
+            //ClampRotation(); //clamping doesnt work..
         }
 
         void CheckRotatingAround()
@@ -373,10 +381,11 @@ namespace Netherlands3D.Cameras
 
         private void ClampRotation()
         {
-            cameraComponent.transform.rotation = Quaternion.Euler(new Vector3(
-                ClampAngle(cameraComponent.transform.localEulerAngles.x, minAngle, maxAngle),
+            cameraComponent.transform.rotation = Quaternion.Euler(
+                Mathf.Clamp(cameraComponent.transform.localEulerAngles.x, minAngle, maxAngle),
                 cameraComponent.transform.localEulerAngles.y,
-                cameraComponent.transform.localEulerAngles.z));
+                cameraComponent.transform.localEulerAngles.z
+            );
         }
 
         /// <summary>
@@ -452,6 +461,41 @@ namespace Netherlands3D.Cameras
             return samplePoint;
         }
 
+        /// <summary>
+        /// Resets the camera rotation so it points north
+        /// The general modifier key input is used to optionaly also reset the camera so it looks down
+        /// </summary>
+        public void ResetNorth(){
+
+            if (resetNorthTransition!= null) StopCoroutine(resetNorthTransition);
+            resetNorthTransition = StartCoroutine(TransitionResetToNorth());
+		}
+
+        private IEnumerator TransitionResetToNorth(){
+
+            Quaternion newTargetRotation;
+
+            //If main modifier key is used, also make camera to look down
+            if (Selector.doingMultiselect)
+            {
+                newTargetRotation = Quaternion.LookRotation(Vector3.down, Vector3.forward);
+            }
+            else{
+                newTargetRotation = Quaternion.Euler(cameraComponent.transform.eulerAngles.x, 0, cameraComponent.transform.eulerAngles.z);
+            }
+
+            //Transition north, with camera looking down
+            while (Quaternion.Angle(cameraComponent.transform.rotation,newTargetRotation) > 0.01f)
+            {
+                cameraComponent.transform.rotation = Quaternion.Lerp(cameraComponent.transform.rotation, newTargetRotation, resetTransitionSpeed);
+                yield return new WaitForEndOfFrame();
+            }
+
+            //Round it up
+            cameraComponent.transform.rotation = newTargetRotation;
+            resetNorthTransition = null;
+        }
+
         private void RotateAroundPoint()
 		{
 			var mouseDelta = Mouse.current.delta.ReadValue();
@@ -497,13 +541,6 @@ namespace Netherlands3D.Cameras
 				focusingOnTargetPoint(rotatePoint);
 			}
 		}
-
-		private float ClampAngle(float angle, float from, float to)
-        {
-            if (angle < 0f) angle = 360 + angle;
-            if (angle > 180f) return Mathf.Max(angle, 360 + from);
-            return Mathf.Min(angle, to);
-        }
 
 		public bool UsesActionMap(InputActionMap actionMap)
 		{

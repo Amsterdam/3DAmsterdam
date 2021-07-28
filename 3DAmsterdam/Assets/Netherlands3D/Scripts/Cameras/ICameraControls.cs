@@ -27,5 +27,7 @@ namespace Netherlands3D.Cameras
         void EnableMouseActionMap(bool enabled);
 
         bool UsesActionMap(InputActionMap actionMap);
-    }
+
+		void ResetNorth();
+	}
 }
