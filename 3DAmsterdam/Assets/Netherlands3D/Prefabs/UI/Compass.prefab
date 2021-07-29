@@ -161,7 +161,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7240f5e2c5685479b6a96edeb98c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipText: Draai camera naar noorden
+  tooltipText: '<b>Klik</b> Kijk naar het noorden
+
+    <b>Shift+Klik</b> Kijk naar
+    beneden'
 --- !u!1 &3724894983124572339
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,15 +267,15 @@ RectTransform:
   m_GameObject: {fileID: 7633573266288027757}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071099, w: -0.7071037}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.4981396, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6516341115367222266}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 269.999}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8, y: -31.6}
-  m_SizeDelta: {x: 24, y: 16}
+  m_AnchoredPosition: {x: -8, y: -20}
+  m_SizeDelta: {x: 40, y: 16}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &886971251268071683
 CanvasRenderer:
