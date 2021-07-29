@@ -34,9 +34,13 @@ namespace Netherlands3D.Cameras
 		[SerializeField]
 		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.";
 
-		private void OnEnable()
+		private void Awake()
 		{
 			cameraComponent = GetComponent<Camera>();
+		}
+
+		private void OnEnable()
+		{
 			HelpMessage.Instance.Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
@@ -159,10 +163,28 @@ namespace Netherlands3D.Cameras
 			this.rotation = rotationEuler;
 		}
 
+		public Ray GetMainPointerRay()
+		{
+			var pointerPosition = Mouse.current.position.ReadValue();
+			if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				pointerPosition = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
+			}
+
+			return cameraComponent.ScreenPointToRay(pointerPosition);
+		}
+
 		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
 		{
-			var pointerPosition = Input.mousePosition;
-			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+			var pointerPosition = Mouse.current.position.ReadValue();
+			if (optionalPositionOverride != default)
+			{
+				pointerPosition = optionalPositionOverride;
+			}
+			else if(PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				pointerPosition = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f,0);
+			}
 
 			if(cameraComponent)
 				ray = cameraComponent.ScreenPointToRay(pointerPosition);
