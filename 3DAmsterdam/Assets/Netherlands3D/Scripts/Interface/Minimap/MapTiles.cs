@@ -150,8 +150,6 @@ namespace Netherlands3D.Interface.Minimap
 
         private void CalculateMapCoordinates()
         {
-            var gridCellTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
-
             bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.BottomLeftRD.y, 0.0f));
             topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.TopRightRD.x, (float)Config.activeConfiguration.TopRightRD.y, 0.0f));
 
@@ -159,10 +157,14 @@ namespace Netherlands3D.Interface.Minimap
         }
         private void CalculateGridOffset()
         {
-            keyTileSize = ((float)Config.activeConfiguration.BottomLeftRD.x - (float)Config.activeConfiguration.TopRightRD.x ) / Mathf.Pow(2, Zoom);
+            keyTileSize = ((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / Mathf.Pow(2, Zoom);
+            print($"keyTileSize {keyTileSize}");
 
             tileOffsetX = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.x / keyTileSize);
             tileOffsetY = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.y / keyTileSize);
+
+            print($"tileOffsetX {tileOffsetX}");
+            print($"tileOffsetY {tileOffsetY}");
         }
 
         public void LoadTilesInView()
