@@ -26,9 +26,6 @@ namespace Netherlands3D.Interface.Minimap
         [SerializeField]
         private RectTransform pointer;
 
-        private Vector2 mapBottomLeftRDCoordinates;
-        private Vector2 mapTopRightRDCoordinates;
-
         [SerializeField]
         private int zoom = 6;
         [SerializeField]
@@ -36,12 +33,7 @@ namespace Netherlands3D.Interface.Minimap
 
         private int baseGridCells = 3;
 
-        public Vector2 MapBottomLeftRDCoordinates { get => mapBottomLeftRDCoordinates; }
-        public Vector2 MapTopRightRDCoordinates { get => mapTopRightRDCoordinates; }
-
         private Vector3 bottomLeftUnityCoordinates, topRightUnityCoordinates;
-        public Vector3 BottomLeftUnityCoordinates { get => bottomLeftUnityCoordinates; }
-        public Vector3 TopRightUnityCoordinates { get => topRightUnityCoordinates; }
 
         public int Zoom { get => zoom; }
         public int GridCells { get => gridCells; }
@@ -52,8 +44,6 @@ namespace Netherlands3D.Interface.Minimap
 		public bool Initialized { get => initialized; private set => initialized = value; }
 
 		private float keyTileSize;
-        private float distanceX;
-        private float distanceY;
         private float tileOffsetX;
         private float tileOffsetY;
 
@@ -129,8 +119,8 @@ namespace Netherlands3D.Interface.Minimap
         {
             var cameraRDPosition = CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position);
 
-            var posX = Mathf.InverseLerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, (float)cameraRDPosition.x);
-            var posY = Mathf.InverseLerp(mapBottomLeftRDCoordinates.y, mapTopRightRDCoordinates.y, (float)cameraRDPosition.y);
+            var posX = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.TopRightRD.x, (float)cameraRDPosition.x);
+            var posY = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.y, (float)Config.activeConfiguration.TopRightRD.y, (float)cameraRDPosition.y);
 
             pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, posY * mapPixelWidth * transform.localScale.y, 0.0f);
         }
@@ -150,8 +140,8 @@ namespace Netherlands3D.Interface.Minimap
 
             var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
             {
-                x = Mathf.Lerp(mapBottomLeftRDCoordinates.x, mapTopRightRDCoordinates.x, localClickPosition.x / mapPixelWidth),
-                y = Mathf.Lerp(MapBottomLeftRDCoordinates.y, MapTopRightRDCoordinates.y, localClickPosition.y / mapPixelWidth),
+                x = Mathf.Lerp((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.BottomLeftRD.x, localClickPosition.x / mapPixelWidth),
+                y = Mathf.Lerp((float)Config.activeConfiguration.BottomLeftRD.y, (float)Config.activeConfiguration.TopRightRD.y, localClickPosition.y / mapPixelWidth),
                 z = 0.0
             });
             RDcoordinate.y = CameraModeChanger.Instance.ActiveCamera.transform.position.y;
@@ -161,22 +151,18 @@ namespace Netherlands3D.Interface.Minimap
         private void CalculateMapCoordinates()
         {
             var gridCellTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
-            mapBottomLeftRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * StartCellX), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * StartCellY));
-            mapTopRightRDCoordinates = new Vector2(Config.activeConfiguration.minimapBottomLeftRD_X + (gridCellTileSize * (StartCellX + gridCells)), Config.activeConfiguration.minimapBottomLeftRD_Y + (gridCellTileSize * (StartCellY + gridCells)));
 
-            bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapBottomLeftRDCoordinates.x, mapBottomLeftRDCoordinates.y, 0.0f));
-            topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3(mapTopRightRDCoordinates.x, mapTopRightRDCoordinates.y, 0.0f));
+            bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.BottomLeftRD.y, 0.0f));
+            topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.TopRightRD.x, (float)Config.activeConfiguration.TopRightRD.y, 0.0f));
 
             CalculateGridOffset();
         }
         private void CalculateGridOffset()
         {
-            keyTileSize = Config.activeConfiguration.MinimapZoom0RDSize / Mathf.Pow(2, Zoom);
+            keyTileSize = ((float)Config.activeConfiguration.BottomLeftRD.x - (float)Config.activeConfiguration.TopRightRD.x ) / Mathf.Pow(2, Zoom);
 
-            distanceX = MapBottomLeftRDCoordinates.x - Config.activeConfiguration.minimapBottomLeftRD_X;
-            distanceY = MapBottomLeftRDCoordinates.y - Config.activeConfiguration.minimapBottomLeftRD_Y;
-            tileOffsetX = Mathf.Floor(distanceX / keyTileSize);
-            tileOffsetY = Mathf.Floor(distanceY / keyTileSize);
+            tileOffsetX = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.x / keyTileSize);
+            tileOffsetY = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.y / keyTileSize);
         }
 
         public void LoadTilesInView()
