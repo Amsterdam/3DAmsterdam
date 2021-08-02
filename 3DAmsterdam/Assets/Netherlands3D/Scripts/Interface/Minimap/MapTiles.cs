@@ -33,8 +33,6 @@ namespace Netherlands3D.Interface.Minimap
 
         private int baseGridCells = 3;
 
-        private Vector3 bottomLeftUnityCoordinates, topRightUnityCoordinates;
-
         public int Zoom { get => zoom; }
         public int GridCells { get => gridCells; }
         public int StartCellX { get => startCellX; }
@@ -43,8 +41,9 @@ namespace Netherlands3D.Interface.Minimap
         public int MapPixelWidth { get => mapPixelWidth; }
 		public bool Initialized { get => initialized; private set => initialized = value; }
 
-		private float keyTileSize;
+        [SerializeField]
         private float tileOffsetX;
+        [SerializeField]
         private float tileOffsetY;
 
         private const float viewLoadMargin = 500.0f;
@@ -68,6 +67,11 @@ namespace Netherlands3D.Interface.Minimap
         private Canvas canvas;
 
         private bool initialized = false;
+
+        //Based on TileMatrix topleft corner:
+        //https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0?layer=standaard&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetCapabilities
+        private double topLeftRDCoordinateX = -285401.92;
+        private double topLeftRDCoordinateY = 903401.92;
 
         public void Initialize(RectTransform view, RectTransform drag)
         {
@@ -101,7 +105,7 @@ namespace Netherlands3D.Interface.Minimap
 
         public void CenterMapOnPointer()
         {
-            tilesDraggableContainer.anchoredPosition = -pointer.transform.localPosition* tilesDraggableContainer.localScale.x;
+            tilesDraggableContainer.anchoredPosition = -pointer.transform.localPosition * tilesDraggableContainer.localScale.x;
 
             if (Vector3.Distance(lastDraggedPointerPosition, tilesDraggableContainer.localPosition) > tilePixelSize / tilesDraggableContainer.localScale.y)
             {
@@ -122,11 +126,14 @@ namespace Netherlands3D.Interface.Minimap
             var posX = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.TopRightRD.x, (float)cameraRDPosition.x);
             var posY = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.y, (float)Config.activeConfiguration.TopRightRD.y, (float)cameraRDPosition.y);
 
-            pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, posY * mapPixelWidth * transform.localScale.y, 0.0f);
+            pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, -(posY * mapPixelWidth * transform.localScale.y), 0.0f);
         }
 
         public void ClampInViewBounds(Vector3 targetPosition)
         {
+            tilesDraggableContainer.position = targetPosition;
+            return;
+
             tilesDraggableContainer.position = new Vector3()
             {
                 x = Mathf.Clamp(targetPosition.x, viewBoundsArea.position.x - (MapPixelWidth * tilesDraggableContainer.localScale.x * canvas.scaleFactor), viewBoundsArea.position.x - TilePixelSize),
@@ -150,18 +157,17 @@ namespace Netherlands3D.Interface.Minimap
 
         private void CalculateMapCoordinates()
         {
-            bottomLeftUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.BottomLeftRD.y, 0.0f));
-            topRightUnityCoordinates = CoordConvert.RDtoUnity(new Vector3((float)Config.activeConfiguration.TopRightRD.x, (float)Config.activeConfiguration.TopRightRD.y, 0.0f));
-
             CalculateGridOffset();
         }
         private void CalculateGridOffset()
         {
-            keyTileSize = ((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / Mathf.Pow(2, Zoom);
-            print($"keyTileSize {keyTileSize}");
+            var keyTileSize = (float)topLeftRDCoordinateY / Mathf.Pow(2, Zoom);
+            print($"keyTileSizeY {keyTileSize}");
 
-            tileOffsetX = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.x / keyTileSize);
-            tileOffsetY = Mathf.Floor((float)Config.activeConfiguration.BottomLeftRD.y / keyTileSize);
+            tileOffsetX = Mathf.Floor(((float)Config.activeConfiguration.BottomLeftRD.x - (float)topLeftRDCoordinateX) / keyTileSize);
+
+            //Based on tile numbering type
+            tileOffsetY = Mathf.Floor(((float)topLeftRDCoordinateY - (float)Config.activeConfiguration.TopRightRD.y) / keyTileSize);
 
             print($"tileOffsetX {tileOffsetX}");
             print($"tileOffsetY {tileOffsetY}");
@@ -175,14 +181,15 @@ namespace Netherlands3D.Interface.Minimap
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
-                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize*x) + currentRelativeTileSize/2.0f) < viewLoadMargin && Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
+                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize * x) + currentRelativeTileSize/2.0f) < viewLoadMargin && 
+                                       Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
 
                     //Only load a tile if its the initial bottom layer, or if it is in view and didnt load yet 
                     if ((zoom == minZoom && !loadedBottomLayer) || (zoom != minZoom && tileIsInView && !loadedTiles.ContainsKey(key)))
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
-                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, y, key, (zoom == minZoom));
+                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, -y, key, (zoom == minZoom));
                         loadedTiles.Add(key, mapTile);
                     }
                     else if (zoom != minZoom && !tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))

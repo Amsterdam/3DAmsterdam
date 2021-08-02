@@ -21,16 +21,17 @@ namespace Netherlands3D.Interface.Minimap
 			name = tileKey.x + "/" + tileKey.y;
 
 			transform.SetParent(parentTo, false);
-
 			//generate a new rawimage
 			TextureTargetRawImage = this.gameObject.AddComponent<RawImage>();
 			TextureTargetRawImage.raycastTarget = rayCastTile;
-			TextureTargetRawImage.rectTransform.pivot = Vector2.zero;
+			TextureTargetRawImage.rectTransform.pivot = new Vector2(0, 1);
+			TextureTargetRawImage.rectTransform.anchorMin = TextureTargetRawImage.rectTransform.anchorMax = new Vector2(0, 1);
 			TextureTargetRawImage.rectTransform.sizeDelta = Vector2.one * size;
 			TextureTargetRawImage.enabled = false;
 
-			//Posotion it in our parent according to x an y grid
+			//Position it in our parent according to x an y grid
 			transform.localPosition = new Vector3(xLocation * size, yLocation * size, 0);
+
 			StartCoroutine(LoadTexture(zoomLevel, (int)key.x, (int)key.y));
 		}
 
@@ -48,6 +49,7 @@ namespace Netherlands3D.Interface.Minimap
 				}
 				else
 				{
+					Debug.Log("Minimap tile :" + tileImageUrl);
 					var texture = DownloadHandlerTexture.GetContent(uwr);
 					TextureTargetRawImage.texture = texture;
 					TextureTargetRawImage.enabled = true;

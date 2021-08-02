@@ -130,7 +130,6 @@ namespace Netherlands3D.Interface.Minimap
             }
         }
 
-
         IEnumerator HoverResize(Vector2 targetScale)
         {
             while (Vector2.Distance(targetScale, transform.localScale) > 0.01f)
