@@ -17,6 +17,8 @@ namespace Netherlands3D.Interface.Minimap
 
 		private int zoomLevel = 0;
 
+		private bool loadedSubTiles = false;
+
 		public void Initialize(Transform parentTo, int zoom, float size, float xLocation, float yLocation, Vector2 key, bool rayCastTile)
 		{
 			zoomLevel = zoom;
@@ -47,22 +49,26 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void LoadMoreDetail()
 		{
+			if (loadedSubTiles) return;
+
 			for (int x = 0; x < 2; x++)
 			{
 				for (int y = 0; y < 2; y++){ 
 					var size = TextureTargetRawImage.rectTransform.sizeDelta.x / 2.0f;
-					var childTopleft = new GameObject("ChildTile");
-					childTopleft.AddComponent<MapTile>().Initialize(
+					var subTile = new GameObject("ChildTile");
+					subTile.AddComponent<MapTile>().Initialize(
 						this.transform,
 						zoomLevel + 1,
 						size,
-						x * size,
-						y * size,
+						x,
+						-y,
 						new Vector2((tileKey.x * 2) + x, (tileKey.y * 2) + y),
 						true
 					);
 				}
 			}
+
+			loadedSubTiles = true;
 		}
 
 		private IEnumerator LoadTexture(int zoom, int x, int y)
