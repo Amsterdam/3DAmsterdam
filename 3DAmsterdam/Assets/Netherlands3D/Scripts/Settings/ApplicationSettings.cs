@@ -25,7 +25,7 @@ namespace Netherlands3D.Settings {
         private InterfaceLayers interfaceLayers;
 
         [SerializeField]
-        private Map minimap;
+        private MapViewer minimap;
 
         [SerializeField]
         private Fps fpsCounter;

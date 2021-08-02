@@ -8,20 +8,18 @@ using UnityEngine.EventSystems;
 
 namespace Netherlands3D.Interface.Minimap
 {
-    public class Map : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
+    public class MapViewer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
     {
         private Vector3 dragOffset;
 
         [SerializeField]
-        private MapTiles mapTiles;
+        private RectTransform mapTiles;
 
         private RectTransform rectTransform;
 
         [SerializeField]
         private float hoverResizeSpeed = 1.0f;
 
-        [SerializeField]
-        private RectTransform dragTarget;
         [SerializeField]
         private RectTransform navigation;
 
@@ -38,29 +36,6 @@ namespace Netherlands3D.Interface.Minimap
             rectTransform = this.GetComponent<RectTransform>();
             defaultSize = rectTransform.sizeDelta;
             navigation.gameObject.SetActive(false);
-        }
-
-		private void OnEnable()
-		{
-            StartCoroutine(InitializeMapTiles());
-        }
-
-        IEnumerator InitializeMapTiles(){
-            while (!Config.activeConfiguration)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
-            mapTiles.Initialize(rectTransform, dragTarget);
-        }
-
-
-        void LateUpdate()
-        {
-            if(!interactingWithMap && mapTiles.Initialized)
-            {
-                mapTiles.CenterMapOnPointer();
-            }
         }
 
         private void StartedMapInteraction()
@@ -91,13 +66,12 @@ namespace Netherlands3D.Interface.Minimap
 
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
 
-            dragOffset = dragTarget.position - Input.mousePosition;
+            dragOffset = mapTiles.position - Input.mousePosition;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            mapTiles.ClampInViewBounds(Input.mousePosition + dragOffset);
-            mapTiles.LoadTilesInView();
+            mapTiles.transform.position = Input.mousePosition + dragOffset;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -110,11 +84,11 @@ namespace Netherlands3D.Interface.Minimap
         {
             if (eventData.scrollDelta.y > 0)
             {
-                mapTiles.ZoomIn();
+                //mapTiles.ZoomIn();
             }
             else if (eventData.scrollDelta.y < 0)
             {
-                mapTiles.ZoomOut();
+                //mapTiles.ZoomOut();
             }
         }
         public void OnPointerEnter(PointerEventData eventData)

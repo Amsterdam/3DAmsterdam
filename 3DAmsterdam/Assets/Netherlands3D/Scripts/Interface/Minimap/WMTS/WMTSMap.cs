@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Netherlands3D.Interface.Minimap
 {
-	public class WMTSMapLayer : MonoBehaviour
+	public class WMTSMap : MonoBehaviour
 	{
 		private double topLeftRDCoordinateX = -285401.92;
 		private double topLeftRDCoordinateY = 903401.92;
@@ -12,8 +12,10 @@ namespace Netherlands3D.Interface.Minimap
 		private Dictionary<Vector2, MapTile> loadedTiles;
 
 		[SerializeField]
-		private int zoom = 0;
-		private int minZoom = 6;
+		private RectTransform pointer;
+
+		[SerializeField]
+		private int zoom = 5;
 
 		private int totalTilesX = 0;
 		private int totalTilesY = 0;
@@ -75,6 +77,8 @@ namespace Netherlands3D.Interface.Minimap
 					loadedTiles.Add(tileKey, mapTile);
 				}
 			}
+
+			pointer.SetAsLastSibling(); //Pointer is on top of map
 		}
 	}
 }
