@@ -70,24 +70,29 @@ public static class StringExtensions
 		}
 	}
 
+    public static string GetUrlParamValue(this string url, string param)
+    {
+        var groups = Regex.Match(url, $"[?&]{param}=([^&]*)").Groups;
+        if (groups.Count < 2) return null;
+        return groups[1].Value;
+    }
+
     public static Vector3RD GetRDCoordinateByUrl(this string url)
     {
-        Vector3RD nodata = new Vector3RD(0, 0, 0);
-        var xypart = url.Split(new string[] { "position=" }, StringSplitOptions.None);
-        if (xypart.Length == 1) return nodata;
+        var coord = url.GetUrlParamValue("position");
+        Vector3RD nodata = new Vector3RD(0, 0, 0);        
+        if (string.IsNullOrEmpty(coord)) return nodata;
 
-        var position = xypart[1].Split('_');
-        if (position.Length == 1) return nodata;
-
-        var ypart = position[1].Split('&');
+        var splitted = coord.Split('_');
+        if (splitted.Length != 2) return nodata;
 
         return new Vector3RD()
         {
-            x = double.Parse(position[0]),
-            y = double.Parse(ypart[0])
+            x = double.Parse(splitted[0]),
+            y = double.Parse(splitted[1])
         };
-
     }
+
 
     public static string ToInvariant(this double d)
     {

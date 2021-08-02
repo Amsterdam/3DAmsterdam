@@ -113,6 +113,31 @@ public class UnitTests
     }
 
     [Test]
+    public void TestGetUrlParamValue()
+    {
+        string url = "website.nl?position=123_456";
+        var result1 = url.GetUrlParamValue("position");
+        Assert.AreEqual("123_456", result1);
+
+        string url2 = "website.nl?position=123_456&param2=test";
+        var result2 = url2.GetUrlParamValue("position");
+        var result2a = url2.GetUrlParamValue("param2");
+        Assert.AreEqual("123_456", result2);
+        Assert.AreEqual("test", result2a);
+
+        string url3 = "website.nl?param1=test";
+        var result3 = url3.GetUrlParamValue("position");
+        Assert.AreEqual(null, result3);
+
+        string url4 = "website.nl?param1=test&position=123_456";
+        var result4 = url4.GetUrlParamValue("position");
+        var result4a = url4.GetUrlParamValue("param1");
+        Assert.AreEqual("123_456", result4);
+        Assert.AreEqual("test", result4a);
+    }
+
+
+    [Test]
     public void TestRDIsInThousands()
     {
         Vector2RD rd1 = new Vector2RD(163409, 483129);
