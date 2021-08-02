@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-
+using UnityEngine.EventSystems;
 namespace Netherlands3D.Interface.Minimap
 {
-	public class MapTile : MonoBehaviour
+	public class MapTile : MonoBehaviour, IPointerDownHandler
 	{
 		private RawImage rawImage;
 		public RawImage TextureTargetRawImage { get => rawImage; private set => rawImage = value; }
@@ -15,8 +15,12 @@ namespace Netherlands3D.Interface.Minimap
 		private const float fadeSpeed = 3.0f;
 		private UnityWebRequest uwr;
 
-		public void Initialize(Transform parentTo, int zoomLevel, int size, int xLocation, int yLocation, Vector2 key, bool rayCastTile)
+		private int zoomLevel = 0;
+
+		public void Initialize(Transform parentTo, int zoom, float size, float xLocation, float yLocation, Vector2 key, bool rayCastTile)
 		{
+			zoomLevel = zoom;
+
 			tileKey = key;
 			name = tileKey.x + "/" + tileKey.y;
 
@@ -32,7 +36,33 @@ namespace Netherlands3D.Interface.Minimap
 			//Position it in our parent according to x an y grid
 			transform.localPosition = new Vector3(xLocation * size, yLocation * size, 0);
 
-			StartCoroutine(LoadTexture(zoomLevel, (int)key.x, (int)key.y));
+			StartCoroutine(LoadTexture(zoom, (int)key.x, (int)key.y));
+		}
+
+
+		public void OnPointerDown(PointerEventData eventData)
+		{
+			LoadMoreDetail();
+		}
+
+		private void LoadMoreDetail()
+		{
+			for (int x = 0; x < 2; x++)
+			{
+				for (int y = 0; y < 2; y++){ 
+					var size = TextureTargetRawImage.rectTransform.sizeDelta.x / 2.0f;
+					var childTopleft = new GameObject("ChildTile");
+					childTopleft.AddComponent<MapTile>().Initialize(
+						this.transform,
+						zoomLevel + 1,
+						size,
+						x * size,
+						y * size,
+						new Vector2((tileKey.x * 2) + x, (tileKey.y * 2) + y),
+						true
+					);
+				}
+			}
 		}
 
 		private IEnumerator LoadTexture(int zoom, int x, int y)

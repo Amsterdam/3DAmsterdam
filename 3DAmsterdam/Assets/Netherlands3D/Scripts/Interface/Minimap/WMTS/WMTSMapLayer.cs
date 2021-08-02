@@ -71,7 +71,7 @@ namespace Netherlands3D.Interface.Minimap
 
 					var newTileObject = new GameObject();
 					var mapTile = newTileObject.AddComponent<MapTile>();
-					mapTile.Initialize(this.transform, zoom, 256, x-tileOffsetX, -(y-tileOffsetY), tileKey, (zoom == minZoom));
+					mapTile.Initialize(this.transform, zoom, 256, x-tileOffsetX, -(y-tileOffsetY), tileKey, true/*(zoom == minZoom)*/);
 					loadedTiles.Add(tileKey, mapTile);
 				}
 			}
