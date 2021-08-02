@@ -73,6 +73,10 @@ namespace Netherlands3D.Sharing
             //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
 			CheckURLForSharedSceneID();
             CheckURLForPosition();
+            //TODO check url for perceel
+
+            //TODO check url for bag id
+
 
             customMeshObjects = new List<GameObject>();
 		}
@@ -80,7 +84,11 @@ namespace Netherlands3D.Sharing
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P)){
-                CheckURLForPosition();
+                //var pos = new Vector3RD(136784.367, 455755.712, 0);
+                var pos = new Vector3RD(116135,488309, 0);
+                
+
+                StartCoroutine(GotoPosition(pos));
             }
         }
 
@@ -100,13 +108,46 @@ namespace Netherlands3D.Sharing
             var rd = Application.absoluteURL.GetRDCoordinateByUrl();
             if (rd.Equals(new Vector3RD(0, 0, 0))) return;
 
-            StartCoroutine(GotoPosition(rd));            
+            StartCoroutine(GotoPosition(rd));
+            StartCoroutine(GetPerceel(rd));
         }
 
         IEnumerator GotoPosition(Vector3RD position)
         {
             yield return null;
-            CameraModeChanger.Instance.CurrentCameraControls.MoveAndFocusOnLocation(CoordConvert.RDtoUnity(position), new Quaternion());
+            Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
+            CameraModeChanger.Instance.ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
+            CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);            
+        }
+
+        IEnumerator GetPerceel(Vector3RD position)
+        {
+            yield return null;
+            var bbox = $"{ position.x - 0.5},${ position.y - 0.5},${ position.x + 0.5},${ position.y + 0.5}";
+
+            var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX=${bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
+
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            //getSceneRequest.SetRequestHeader("Content-Type", "application/json");
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError )
+            {
+                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+            }
+            else
+            {
+                Debug.Log("Perceel data: " + req.downloadHandler.text);
+                //ParseSerializableScene(JsonUtility.FromJson<SerializableScene>(req.downloadHandler.text), sceneId);
+
+                //TODO teken het perceel polygon
+
+                //let feature = data.features[0];
+                //this.kadastraleGrootteWaarde = feature.properties.kadastraleGrootteWaarde;
+                ////TODO support multiple polygons
+                //this.polygon_rd = feature.geometry.coordinates[0];
+
+            }
+            
         }
 
 
