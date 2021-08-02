@@ -126,7 +126,7 @@ namespace Netherlands3D.Interface.Minimap
             var posX = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.x, (float)Config.activeConfiguration.TopRightRD.x, (float)cameraRDPosition.x);
             var posY = Mathf.InverseLerp((float)Config.activeConfiguration.BottomLeftRD.y, (float)Config.activeConfiguration.TopRightRD.y, (float)cameraRDPosition.y);
 
-            pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, -(posY * mapPixelWidth * transform.localScale.y), 0.0f);
+            pointer.anchoredPosition = new Vector3(posX * mapPixelWidth * transform.localScale.x, (1-posY * mapPixelWidth * transform.localScale.y), 0.0f);
         }
 
         public void ClampInViewBounds(Vector3 targetPosition)
@@ -181,8 +181,10 @@ namespace Netherlands3D.Interface.Minimap
                 for (int y = 0; y < GridCells; y++)
                 {
                     var key = new Vector2(tileOffsetX + x, tileOffsetY + y);
-                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize * x) + currentRelativeTileSize/2.0f) < viewLoadMargin && 
+                    var tileIsInView = Mathf.Abs(tilesDraggableContainer.localPosition.x + (currentRelativeTileSize * x) + currentRelativeTileSize / 2.0f) < viewLoadMargin && 
                                        Mathf.Abs(tilesDraggableContainer.localPosition.y + (currentRelativeTileSize * y) + currentRelativeTileSize / 2.0f) < 500.0f;
+
+                    tileIsInView = true;
 
                     //Only load a tile if its the initial bottom layer, or if it is in view and didnt load yet 
                     if ((zoom == minZoom && !loadedBottomLayer) || (zoom != minZoom && tileIsInView && !loadedTiles.ContainsKey(key)))
