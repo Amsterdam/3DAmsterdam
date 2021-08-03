@@ -1,84 +1,192 @@
+using ConvertCoordinates;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Netherlands3D.Interface.Minimap
 {
+	[HelpURL("http://example.com/docs/MyComponent.html")]
 	public class WMTSMap : MonoBehaviour
 	{
 		private double topLeftRDCoordinateX = -285401.92;
 		private double topLeftRDCoordinateY = 903401.92;
 
-		private Dictionary<Vector2, MapTile> loadedTiles;
+		private Dictionary<int, Dictionary<Vector2, MapTile>> mapTileLayers;
 
 		[SerializeField]
 		private RectTransform pointer;
 
 		[SerializeField]
-		private int zoom = 5;
-
-		private int totalTilesX = 0;
-		private int totalTilesY = 0;
-
-		private int tileOffsetX = 0;
-		private int tileOffsetY = 0;
+		private int startIdentifier = 5;
+		private int layerIdentifier = 5;
 
 		[SerializeField]
-		private int tileSize = 256;
+		private int maxIdentifier = 14;
+
+		private float totalTilesX = 0;
+		private float totalTilesY = 0;
+
+		private float tileOffsetX = 0;
+		private float tileOffsetY = 0;
+
+		[SerializeField]
+		private float tileSize = 256;
+		private float baseTileSize = 256;
+		private double tileSizeInMeters = 0;
 
 		//Source: https://portal.opengeospatial.org/files/?artifact_id=35326
 		private double pixelInMeters = 0.00028;
 		private double scaleDenominator = 12288000; //Zero zoomlevel is 1:12288000 
 
+		private MapViewer parentMapViewer;
+		private RectTransform viewerTransform;
+		private RectTransform mapTransform;
+
+		[SerializeField]
+		private double mapWidthInMeters = 0;
+
+		private Vector2 layerTilesOffset = Vector2.zero;
+
+		//config EPSG:28992
+		/*
+		 * <ScaleDenominator>12288000.0</ScaleDenominator>
+			<TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+			<TileWidth>256</TileWidth>
+			<TileHeight>256</TileHeight>
+*/
 		private void Start()
 		{
-			loadedTiles = new Dictionary<Vector2, MapTile>();
+			layerIdentifier = startIdentifier;
+			baseTileSize = tileSize;
 
-			CalculateGridOffset();
-			LoadTilesInView();
+			mapTileLayers = new Dictionary<int, Dictionary<Vector2, MapTile>>();
+
+			parentMapViewer = GetComponentInParent<MapViewer>();
+			viewerTransform = parentMapViewer.transform as RectTransform;
+			mapTransform = parentMapViewer.transform as RectTransform;
+			mapWidthInMeters = tileSize * pixelInMeters * scaleDenominator;
+			print($"mapWidthInMeters = {tileSize} * {pixelInMeters} * {scaleDenominator}");
+
+			CalculateGridScaling();
+			ActivateMapLayer();
 		}
 
-		private void CalculateGridOffset()
+		public void PositionObjectOnMap(RectTransform targetObject, Vector2RD targetPosition)
 		{
-			var keyTileSizeInMeters = tileSize * (scaleDenominator / Mathf.Pow(2, zoom)) * pixelInMeters;
-			print($"keyTileSizeInMeters {keyTileSizeInMeters}");
+			
+		}
+		public void Zoomed(int viewerZoom)
+		{
+			tileSize = baseTileSize / Mathf.Pow(2, viewerZoom+1);
 
-			tileOffsetX = Mathf.FloorToInt(((float)Config.activeConfiguration.BottomLeftRD.x - (float)topLeftRDCoordinateX) / (float)keyTileSizeInMeters);
+			layerIdentifier = startIdentifier + viewerZoom;
+			CalculateGridScaling();
+			ActivateMapLayer();
+		}
+
+		private void CalculateGridScaling()
+		{
+			tileSizeInMeters = mapWidthInMeters / Mathf.Pow(2, layerIdentifier);
+
+			layerTilesOffset = new Vector2(
+				((float)Config.activeConfiguration.BottomLeftRD.x - (float)topLeftRDCoordinateX) / (float)tileSizeInMeters,
+				((float)topLeftRDCoordinateY - (float)Config.activeConfiguration.TopRightRD.y) / (float)tileSizeInMeters
+			);
 
 			//Based on tile numbering type
-			tileOffsetY = Mathf.FloorToInt(((float)topLeftRDCoordinateY - (float)Config.activeConfiguration.TopRightRD.y) / (float)keyTileSizeInMeters);
+			tileOffsetX = Mathf.Floor(layerTilesOffset.x);
+			tileOffsetY = Mathf.Floor(layerTilesOffset.y);
 
-			//Should do offset of viewer here too
-			var maxXSpanXInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)topLeftRDCoordinateX;
-			var maxXSpanYInMeters = (float)topLeftRDCoordinateY - (float)Config.activeConfiguration.BottomLeftRD.y;
-			print($"maxXSpanXInMeters {maxXSpanXInMeters}");
-			print($"maxXSpanYInMeters {maxXSpanYInMeters}");
+			//Store the remaining value to offset layer
+			layerTilesOffset.x -= tileOffsetX;
+			layerTilesOffset.y -= tileOffsetY;
 
-			totalTilesX = Mathf.FloorToInt(maxXSpanXInMeters / (float)keyTileSizeInMeters);
-			totalTilesY = Mathf.FloorToInt(maxXSpanYInMeters / (float)keyTileSizeInMeters);
-			print($"totalTilesX {totalTilesX}");
-			print($"totalTilesX {totalTilesY}");
-
-			print($"tileOffsetX {tileOffsetX}");
-			print($"tileOffsetY {tileOffsetY}");
+			//Coverage of our application bounds
+			var spanXInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
+			var spanYInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
+			totalTilesX = Mathf.CeilToInt(spanXInMeters / (float)tileSizeInMeters);
+			totalTilesY = Mathf.CeilToInt(spanYInMeters / (float)tileSizeInMeters);
 		}
 
-		public void LoadTilesInView()
+		private void RemoveOtherLayers()
 		{
-			for (int x = tileOffsetX; x <= totalTilesX; x++)
+			List<int> mapTileKeys = new List<int>(mapTileLayers.Keys);
+			foreach (int layerKey in mapTileKeys)
 			{
-				for (int y = tileOffsetY; y <= totalTilesY; y++)
+				//Remove all layers behind top layer except the first, and the one right below our layer
+				if((layerKey < layerIdentifier-1 && layerKey != startIdentifier) || layerKey > layerIdentifier)
 				{
-					var tileKey = new Vector2(x, y);
-
-					var newTileObject = new GameObject();
-					var mapTile = newTileObject.AddComponent<MapTile>();
-					mapTile.Initialize(this.transform, zoom, 256, x-tileOffsetX, -(y-tileOffsetY), tileKey, true/*(zoom == minZoom)*/);
-					loadedTiles.Add(tileKey, mapTile);
+					foreach(var tile in mapTileLayers[layerKey])
+					{
+						Destroy(tile.Value.gameObject);
+					}
+					mapTileLayers.Remove(layerKey);
 				}
 			}
+		}
 
+		private void Update()
+		{
+			//Continiously check if tiles of the active layer identifier should be loaded
+			ShowLayerTiles(mapTileLayers[layerIdentifier]);
+			MovePointer();
+		}
+
+		private void MovePointer()
+		{
 			pointer.SetAsLastSibling(); //Pointer is on top of map
+		}
+
+		private void ActivateMapLayer()
+		{
+			RemoveOtherLayers();
+	
+			Dictionary<Vector2, MapTile> tileList;
+			if (!mapTileLayers.ContainsKey(layerIdentifier))
+			{
+				tileList = new Dictionary<Vector2, MapTile>();
+				mapTileLayers.Add(layerIdentifier, tileList);
+			}
+			else
+			{
+				tileList = mapTileLayers[layerIdentifier];
+			}
+		}
+
+		private void ShowLayerTiles(Dictionary<Vector2, MapTile> tileList)
+		{
+			for (int x = 0; x < totalTilesX; x++)
+			{
+				for (int y = 0; y < totalTilesY; y++)
+				{
+					var tileKey = new Vector2(x + tileOffsetX, y + tileOffsetY);
+
+					//Tile position within this container
+					float xPosition = (x * tileSize) - (layerTilesOffset.x * tileSize);
+					float yPosition = -((y * tileSize) - (layerTilesOffset.y * tileSize)); 
+
+					//Check if this tile rect would overlap with our viewer rectangle
+					Rect tileRect = new Rect(mapTransform.position.x + xPosition, mapTransform.position.y + yPosition, tileSize, tileSize);
+					Rect viewRect = new Rect(parentMapViewer.transform.position.x, parentMapViewer.transform.position.y, viewerTransform.rect.width, viewerTransform.rect.height);
+
+					if (true)
+					{
+						if (!tileList.ContainsKey(tileKey))
+						{
+							var newTileObject = new GameObject();
+							var mapTile = newTileObject.AddComponent<MapTile>();
+							mapTile.Initialize(this.transform, layerIdentifier, tileSize, xPosition, yPosition, tileKey, true);
+
+							tileList.Add(tileKey, mapTile);
+						}
+					}
+					else if (tileList.ContainsKey(tileKey))
+					{
+						Destroy(tileList[tileKey].gameObject);
+						tileList.Remove(tileKey);
+					}
+				}
+			}
 		}
 	}
 }

@@ -191,7 +191,7 @@ namespace Netherlands3D.Interface.Minimap
                     {
                         var newTileObject = new GameObject();
                         var mapTile = newTileObject.AddComponent<MapTile>();
-                        mapTile.Initialize(zoomLevelParent, Zoom, tilePixelSize, x, -y, key, (zoom == minZoom));
+                        //mapTile.Initialize(zoomLevelParent, Zoom, 100, tilePixelSize, x, -y, key, (zoom == minZoom));
                         loadedTiles.Add(key, mapTile);
                     }
                     else if (zoom != minZoom && !tileIsInView && loadedTiles.Count > maxTilesToLoad && loadedTiles.ContainsKey(key) && loadedTiles.TryGetValue(key, out MapTile mapTile))
@@ -294,7 +294,7 @@ namespace Netherlands3D.Interface.Minimap
             //Match pointer scale to resized container
             pointer.localScale = Vector3.one / tilesDraggableContainer.localScale.x;
         }
-
+        
         public void ScaleOverOrigin(GameObject target, Vector3 scaleOrigin, Vector3 newScale)
         {
             var targetPosition = target.transform.position;

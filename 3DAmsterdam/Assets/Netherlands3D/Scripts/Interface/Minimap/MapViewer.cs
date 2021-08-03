@@ -15,6 +15,8 @@ namespace Netherlands3D.Interface.Minimap
         [SerializeField]
         private RectTransform mapTiles;
 
+        private WMTSMap wmtsMap;
+
         private RectTransform rectTransform;
 
         [SerializeField]
@@ -31,9 +33,18 @@ namespace Netherlands3D.Interface.Minimap
 
         private bool interactingWithMap = false;
 
+        [SerializeField]
+        private float maxZoomScale = 6.0f;
+
+        private float minZoomScale = 0.0f;
+        private float zoomScale = 0.0f;
+
         private void Awake()
         {
+            zoomScale = minZoomScale;
+            wmtsMap = mapTiles.GetComponent<WMTSMap>();
             rectTransform = this.GetComponent<RectTransform>();
+
             defaultSize = rectTransform.sizeDelta;
             navigation.gameObject.SetActive(false);
         }
@@ -84,11 +95,11 @@ namespace Netherlands3D.Interface.Minimap
         {
             if (eventData.scrollDelta.y > 0)
             {
-                //mapTiles.ZoomIn();
+                ZoomIn();
             }
             else if (eventData.scrollDelta.y < 0)
             {
-                //mapTiles.ZoomOut();
+                ZoomOut();
             }
         }
         public void OnPointerEnter(PointerEventData eventData)
@@ -102,6 +113,52 @@ namespace Netherlands3D.Interface.Minimap
             {
                 StoppedMapInteraction();
             }
+        }
+
+        public void ZoomIn(bool useMousePosition = true)
+        {
+            if (zoomScale < maxZoomScale)
+            {
+                zoomScale++;         
+                ZoomTowardsLocation(useMousePosition);
+                wmtsMap.Zoomed((int)zoomScale);
+            }
+        }
+
+        public void ZoomOut(bool useMousePosition = true)
+        {
+            if (zoomScale > minZoomScale)
+            {
+                zoomScale--;
+                ZoomTowardsLocation(useMousePosition);
+                wmtsMap.Zoomed((int)zoomScale);
+            }
+        }
+        private void ZoomTowardsLocation(bool useMouse = true)
+        {
+            var zoomTarget = Vector3.zero;
+            if (useMouse)
+            {
+                zoomTarget = Input.mousePosition;
+            }
+            else
+            {
+                zoomTarget = rectTransform.position + new Vector3(-rectTransform.sizeDelta.x * 0.5f, rectTransform.sizeDelta.y * 0.5f);
+            }
+
+            ScaleMapOverOrigin(zoomTarget, Vector3.one * Mathf.Pow(2.0f, zoomScale));
+        }
+
+        public void ScaleMapOverOrigin(Vector3 scaleOrigin, Vector3 newScale)
+        {
+            var targetPosition = mapTiles.position;
+            var origin = scaleOrigin;
+            var newOrigin = targetPosition - origin;
+            var relativeScale = newScale.x / mapTiles.localScale.x;
+            var finalPosition = origin + newOrigin * relativeScale;
+
+            mapTiles.localScale = newScale;
+            mapTiles.position = finalPosition;
         }
 
         IEnumerator HoverResize(Vector2 targetScale)
