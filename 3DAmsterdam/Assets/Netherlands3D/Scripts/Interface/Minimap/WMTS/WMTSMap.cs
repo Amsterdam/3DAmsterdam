@@ -166,7 +166,7 @@ namespace Netherlands3D.Interface.Minimap
 					float yPosition = -((y * tileSize) - (layerTilesOffset.y * tileSize)); 
 
 					//Check if this tile rect would overlap with our viewer rectangle
-					Rect tileRect = new Rect(mapTransform.position.x + xPosition, mapTransform.position.y + yPosition, tileSize, tileSize);
+					Rect tileRect = new Rect(mapTransform.position.x + xPosition, mapTransform.position.y + yPosition, baseTileSize, baseTileSize);
 					Rect viewRect = new Rect(parentMapViewer.transform.position.x, parentMapViewer.transform.position.y, viewerTransform.rect.width, viewerTransform.rect.height);
 
 					if (viewRect.Overlaps(tileRect,true))
