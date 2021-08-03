@@ -77,7 +77,7 @@ namespace Netherlands3D.Interface.Minimap
 		}
 		public void Zoomed(int viewerZoom)
 		{
-			tileSize = baseTileSize / Mathf.Pow(2, viewerZoom+1);
+			tileSize = baseTileSize / Mathf.Pow(2, viewerZoom);
 
 			layerIdentifier = startIdentifier + viewerZoom;
 			CalculateGridScaling();
@@ -155,9 +155,9 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void ShowLayerTiles(Dictionary<Vector2, MapTile> tileList)
 		{
-			for (int x = 0; x < totalTilesX; x++)
+			for (int x = 0; x <= totalTilesX; x++)
 			{
-				for (int y = 0; y < totalTilesY; y++)
+				for (int y = 0; y <= totalTilesY; y++)
 				{
 					var tileKey = new Vector2(x + tileOffsetX, y + tileOffsetY);
 
@@ -169,7 +169,7 @@ namespace Netherlands3D.Interface.Minimap
 					Rect tileRect = new Rect(mapTransform.position.x + xPosition, mapTransform.position.y + yPosition, tileSize, tileSize);
 					Rect viewRect = new Rect(parentMapViewer.transform.position.x, parentMapViewer.transform.position.y, viewerTransform.rect.width, viewerTransform.rect.height);
 
-					if (true)
+					if (viewRect.Overlaps(tileRect,true))
 					{
 						if (!tileList.ContainsKey(tileKey))
 						{
