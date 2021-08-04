@@ -1,13 +1,31 @@
+/*
+*  Copyright (C) X Gemeente
+*                X Amsterdam
+*                X Economic Services Departments
+*
+*  Licensed under the EUPL, Version 1.2 or later (the "License");
+*  You may not use this work except in compliance with the License.
+*  You may obtain a copy of the License at:
+*
+*    https://github.com/Amsterdam/3DAmsterdam/blob/master/LICENSE.txt
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" basis,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+*  implied. See the License for the specific language governing
+*  permissions and limitations under the License.
+*/
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Netherlands3D.Interface.Minimap
 {
 	[HelpURL("http://example.com/docs/MyComponent.html")]
-	public class WMTSMap : MonoBehaviour
+	public class WMTSMap : MonoBehaviour, IPointerClickHandler
 	{
 		private double topLeftRDCoordinateX = -285401.92;
 		private double topLeftRDCoordinateY = 903401.92;
@@ -84,6 +102,22 @@ namespace Netherlands3D.Interface.Minimap
 
 			CalculateGridScaling();
 			ActivateMapLayer();
+		}
+
+		public void OnPointerClick(PointerEventData eventData)
+		{
+			/*Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
+			print(localClickPosition);
+			var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
+			{
+				x = (float)Config.activeConfiguration.BottomLeftRD.x + localClickPosition.x / pixelInMeters / divide,
+				y = 0,
+				z = 0.0
+			});
+			RDcoordinate.y = CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+			print(RDcoordinate);
+
+			CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;*/
 		}
 
 		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)

@@ -53,7 +53,7 @@ namespace Netherlands3D.Interface.Minimap
         {
             interactingWithMap = true;
             navigation.gameObject.SetActive(true);
-
+            wmtsMap.CenterPointerInView = false;
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
 
             StopAllCoroutines();
@@ -64,7 +64,7 @@ namespace Netherlands3D.Interface.Minimap
         {
             interactingWithMap = false;
             navigation.gameObject.SetActive(false);
-
+            wmtsMap.CenterPointerInView = true;
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.AUTO);
 
             StopAllCoroutines();
