@@ -72,6 +72,9 @@ namespace Netherlands3D.Interface.Minimap
 		[SerializeField]
 		private MinimapConfig minimapConfig;
 
+		[SerializeField]
+		private bool clampWithinParent = true;
+
 		private void Start()
 		{
 			layerIdentifier = startIdentifier;
@@ -205,6 +208,19 @@ namespace Netherlands3D.Interface.Minimap
 			//Continiously check if tiles of the active layer identifier should be loaded
 			ShowLayerTiles(mapTileLayers[layerIdentifier]);
 			MovePointer();
+
+			if(clampWithinParent)
+			{
+				Clamp();
+			}
+		}
+
+		private void Clamp()
+		{
+			//TODO clamp within view
+			/*this.transform.localPosition = new Vector3(
+				
+			);*/
 		}
 
 		private void MovePointer()

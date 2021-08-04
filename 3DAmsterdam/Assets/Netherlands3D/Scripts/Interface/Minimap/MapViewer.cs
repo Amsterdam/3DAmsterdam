@@ -53,7 +53,6 @@ namespace Netherlands3D.Interface.Minimap
         {
             interactingWithMap = true;
             navigation.gameObject.SetActive(true);
-            wmtsMap.CenterPointerInView = false;
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
 
             StopAllCoroutines();
@@ -74,6 +73,7 @@ namespace Netherlands3D.Interface.Minimap
         public void OnBeginDrag(PointerEventData eventData)
         {
             dragging = true;
+            wmtsMap.CenterPointerInView = false;
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
             dragOffset = mapTiles.position - Input.mousePosition;
         }
