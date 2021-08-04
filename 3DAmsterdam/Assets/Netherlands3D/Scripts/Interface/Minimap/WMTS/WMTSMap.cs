@@ -63,7 +63,9 @@ namespace Netherlands3D.Interface.Minimap
 
 			parentMapViewer = GetComponentInParent<MapViewer>();
 			viewerTransform = parentMapViewer.transform as RectTransform;
-			mapTransform = parentMapViewer.transform as RectTransform;
+
+			mapTransform = transform as RectTransform;
+
 			mapWidthInMeters = tileSize * pixelInMeters * scaleDenominator;
 			print($"mapWidthInMeters = {tileSize} * {pixelInMeters} * {scaleDenominator}");
 
@@ -163,13 +165,16 @@ namespace Netherlands3D.Interface.Minimap
 
 					//Tile position within this container
 					float xPosition = (x * tileSize) - (layerTilesOffset.x * tileSize);
-					float yPosition = -((y * tileSize) - (layerTilesOffset.y * tileSize)); 
+					float yPosition = -((y * tileSize) - (layerTilesOffset.y * tileSize));
 
-					//Check if this tile rect would overlap with our viewer rectangle
-					Rect tileRect = new Rect(mapTransform.position.x + xPosition, mapTransform.position.y + yPosition, baseTileSize, baseTileSize);
-					Rect viewRect = new Rect(parentMapViewer.transform.position.x, parentMapViewer.transform.position.y, viewerTransform.rect.width, viewerTransform.rect.height);
+					//Tile position to check if they are in viewer
+					float compareXPosition = xPosition * mapTransform.localScale.x + mapTransform.transform.localPosition.x;
+					float compareYPosition = yPosition * mapTransform.localScale.x + mapTransform.transform.localPosition.y;
 
-					if (viewRect.Overlaps(tileRect,true))
+					bool xWithinView = (compareXPosition+baseTileSize > 0 && compareXPosition < viewerTransform.sizeDelta.x);
+					bool yWithinView = (compareYPosition > 0 && compareYPosition-baseTileSize < viewerTransform.sizeDelta.y);
+
+					if (xWithinView && yWithinView)
 					{
 						if (!tileList.ContainsKey(tileKey))
 						{
