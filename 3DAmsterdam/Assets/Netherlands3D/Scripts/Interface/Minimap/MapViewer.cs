@@ -74,9 +74,7 @@ namespace Netherlands3D.Interface.Minimap
         public void OnBeginDrag(PointerEventData eventData)
         {
             dragging = true;
-
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
-
             dragOffset = mapTiles.position - Input.mousePosition;
         }
 
@@ -88,7 +86,6 @@ namespace Netherlands3D.Interface.Minimap
         public void OnEndDrag(PointerEventData eventData)
         {
             dragging = false;
-
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.POINTER);
         }
         public void OnScroll(PointerEventData eventData)
@@ -143,7 +140,7 @@ namespace Netherlands3D.Interface.Minimap
             }
             else
             {
-                zoomTarget = rectTransform.position + new Vector3(-rectTransform.sizeDelta.x * 0.5f, rectTransform.sizeDelta.y * 0.5f);
+                zoomTarget = rectTransform.position + new Vector3(rectTransform.sizeDelta.x * 0.5f, rectTransform.sizeDelta.y * 0.5f);
             }
 
             ScaleMapOverOrigin(zoomTarget, Vector3.one * Mathf.Pow(2.0f, zoomScale));

@@ -24,11 +24,11 @@ using UnityEngine.EventSystems;
 
 namespace Netherlands3D.Interface.Minimap
 {
-	[HelpURL("http://example.com/docs/MyComponent.html")]
+	[HelpURL("https://portal.opengeospatial.org/files/?artifact_id=35326")]
 	public class WMTSMap : MonoBehaviour, IPointerClickHandler
 	{
-		private double topLeftRDCoordinateX = -285401.92;
-		private double topLeftRDCoordinateY = 903401.92;
+		private double minimapOriginX = -285401.92;
+		private double minimapOriginY = 903401.92;
 
 		private Dictionary<int, Dictionary<Vector2, MapTile>> mapTileLayers;
 
@@ -48,14 +48,12 @@ namespace Netherlands3D.Interface.Minimap
 		private float tileOffsetX = 0;
 		private float tileOffsetY = 0;
 
-		[SerializeField]
 		private float tileSize = 256;
 		private float baseTileSize = 256;
 		private double tileSizeInMeters = 0;
 
 		private double divide = 0;
 
-		//Source: https://portal.opengeospatial.org/files/?artifact_id=35326
 		private double pixelInMeters = 0.00028;
 		private double scaleDenominator = 12288000; //Zero zoomlevel is 1:12288000 
 
@@ -68,23 +66,28 @@ namespace Netherlands3D.Interface.Minimap
 
 		private Vector2 layerTilesOffset = Vector2.zero;
 
-		float spanXInMeters;
-		float spanYInMeters;
+		float boundsWidthInMeters;
+		float boundsHeightInMeters;
 
 		[SerializeField]
 		private bool centerPointerInView;
 		public bool CenterPointerInView { get => centerPointerInView; set => centerPointerInView = value; }
 
-		//config EPSG:28992
-		/*
-		 * <ScaleDenominator>12288000.0</ScaleDenominator>
-			<TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
-			<TileWidth>256</TileWidth>
-			<TileHeight>256</TileHeight>
-*/
 		private void Start()
 		{
 			layerIdentifier = startIdentifier;
+
+			//Use application config minimap settings
+			tileSize = Config.activeConfiguration.minimapTileSize;
+			pixelInMeters = Config.activeConfiguration.minimapPixelInMeters;
+			scaleDenominator = Config.activeConfiguration.minimapScaleDenominator;
+			minimapOriginX = Config.activeConfiguration.minimapOrigin.x;
+			minimapOriginY = Config.activeConfiguration.minimapOrigin.y;
+
+			//Coverage of our application bounds
+			boundsWidthInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
+			boundsHeightInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
+
 			baseTileSize = tileSize;
 
 			mapTileLayers = new Dictionary<int, Dictionary<Vector2, MapTile>>();
@@ -92,10 +95,6 @@ namespace Netherlands3D.Interface.Minimap
 			parentMapViewer = GetComponentInParent<MapViewer>();
 			viewerTransform = parentMapViewer.transform as RectTransform;
 			mapTransform = transform as RectTransform;
-
-			//Coverage of our application bounds
-			spanXInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
-			spanYInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
 
 			mapWidthInMeters = baseTileSize * pixelInMeters * scaleDenominator;
 			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
@@ -146,8 +145,8 @@ namespace Netherlands3D.Interface.Minimap
 			tileSizeInMeters = mapWidthInMeters / divide;
 
 			layerTilesOffset = new Vector2(
-				((float)Config.activeConfiguration.BottomLeftRD.x - (float)topLeftRDCoordinateX) / (float)tileSizeInMeters,
-				((float)topLeftRDCoordinateY - (float)Config.activeConfiguration.TopRightRD.y) / (float)tileSizeInMeters
+				((float)Config.activeConfiguration.BottomLeftRD.x - (float)minimapOriginX) / (float)tileSizeInMeters,
+				((float)minimapOriginY - (float)Config.activeConfiguration.TopRightRD.y) / (float)tileSizeInMeters
 			);
 
 			//Based on tile numbering type
@@ -158,8 +157,8 @@ namespace Netherlands3D.Interface.Minimap
 			layerTilesOffset.x -= tileOffsetX;
 			layerTilesOffset.y -= tileOffsetY;
 
-			totalTilesX = Mathf.CeilToInt(spanXInMeters / (float)tileSizeInMeters);
-			totalTilesY = Mathf.CeilToInt(spanYInMeters / (float)tileSizeInMeters);
+			totalTilesX = Mathf.CeilToInt(boundsWidthInMeters / (float)tileSizeInMeters);
+			totalTilesY = Mathf.CeilToInt(boundsHeightInMeters / (float)tileSizeInMeters);
 		}
 
 		private void RemoveOtherLayers()

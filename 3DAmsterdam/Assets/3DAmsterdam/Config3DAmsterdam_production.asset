@@ -24,10 +24,13 @@ MonoBehaviour:
   zeroGroundLevelY: 0
   EnableMinimap: 1
   minimapServiceUrl: https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0?layer=standaard&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A28992%3A{zoom}&TileCol={x}&TileRow={y}
-  MinimapTileNumberingType: 0
-  minimapBottomLeftRD_X: -285401.9
-  minimapBottomLeftRD_Y: 22598.08
-  MinimapZoom0RDSize: 880803.8
+  minimapTileSize: 256
+  minimapOriginAlignment: 0
+  minimapOrigin:
+    x: -285401.92
+    y: 903401.92
+  minimapPixelInMeters: 0.00028
+  minimapScaleDenominator: 12288000
   webserverRootPath: https://3d.amsterdam.nl/web/data/RD/
   buildingsMetaDataPath: https://3d.amsterdam.nl/web/data/RD/Buildings_AHN4/
   sharingBaseURL: https://3d.amsterdam.nl/

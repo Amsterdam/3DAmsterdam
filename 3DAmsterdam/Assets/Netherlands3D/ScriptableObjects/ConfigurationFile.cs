@@ -11,11 +11,10 @@ namespace Netherlands3D
     [System.Serializable]
     public class ConfigurationFile : ScriptableObject
     {
-        public enum TmsTileNumberingType
+        public enum MinimapOriginAlignment
         {
-            GoogleAndOSM, // (0 to 2zoom-1, 0 to 2zoom-1) for the range(-180, +85.0511) - (+180, -85.0511)
-            TMS, //'Tile Map Service' (0 to 2zoom-1, 2zoom-1 to 0) for the range(-180, +85.0511) - (+180, -85.0511). (That is, the same as the previous with the Y value flipped.)
-            QuadTrees //Used by Microsoft
+            TopLeft,
+            BottomLeft
         }
 
         [Header("Bounding Box coordinates")]
@@ -29,11 +28,11 @@ namespace Netherlands3D
         [Tooltip("The variables {x} and {y} in the URL will be replaced with their corresponding RD coordinates.")]
         public bool EnableMinimap = true;
         public string minimapServiceUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
-        public TmsTileNumberingType MinimapTileNumberingType = TmsTileNumberingType.GoogleAndOSM;
-        public float minimapBottomLeftRD_X = -285401.920f; // zoomlevel 0 at RD WMTS
-        public float minimapBottomLeftRD_Y = 22598.080f; // zoomlevel 0 at RD WMTS
-        [Tooltip("Zoomlevel 0 width/height of tiles")]
-        public float MinimapZoom0RDSize = 880803.84f;
+		public int minimapTileSize = 256;
+        public MinimapOriginAlignment minimapOriginAlignment = MinimapOriginAlignment.TopLeft;
+        public Vector2RD minimapOrigin;
+        public double minimapPixelInMeters = 0.00028;
+        public double minimapScaleDenominator = 12288000;
 
         [Header("Tile layers external assets paths")]
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
@@ -70,5 +69,5 @@ namespace Netherlands3D
 
         public Color primaryColor;
         public Color secondaryColor;
-    }
+	}
 }
