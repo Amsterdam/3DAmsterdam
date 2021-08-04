@@ -53,6 +53,10 @@ namespace Netherlands3D.Interface.Minimap
 		float spanXInMeters;
 		float spanYInMeters;
 
+		[SerializeField]
+		private bool centerPointerInView;
+		public bool CenterPointerInView { get => centerPointerInView; set => centerPointerInView = value; }
+
 		//config EPSG:28992
 		/*
 		 * <ScaleDenominator>12288000.0</ScaleDenominator>
@@ -151,7 +155,13 @@ namespace Netherlands3D.Interface.Minimap
 		private void MovePointer()
 		{
 			pointer.SetAsLastSibling(); //Pointer is on top of map
+
 			PositionObjectOnMap(pointer, CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position));
+
+			if(CenterPointerInView)
+			{
+				this.transform.localPosition = -pointer.localPosition* mapTransform.localScale.x + (Vector3)viewerTransform.sizeDelta*0.5f;
+			}
 		}
 
 		private void ActivateMapLayer()
