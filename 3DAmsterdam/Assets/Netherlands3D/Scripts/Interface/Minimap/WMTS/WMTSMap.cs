@@ -1,4 +1,5 @@
 using ConvertCoordinates;
+using Netherlands3D.Cameras;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace Netherlands3D.Interface.Minimap
 		private float baseTileSize = 256;
 		private double tileSizeInMeters = 0;
 
+		private double divide = 0;
+
 		//Source: https://portal.opengeospatial.org/files/?artifact_id=35326
 		private double pixelInMeters = 0.00028;
 		private double scaleDenominator = 12288000; //Zero zoomlevel is 1:12288000 
@@ -46,6 +49,9 @@ namespace Netherlands3D.Interface.Minimap
 		private double mapWidthInMeters = 0;
 
 		private Vector2 layerTilesOffset = Vector2.zero;
+
+		float spanXInMeters;
+		float spanYInMeters;
 
 		//config EPSG:28992
 		/*
@@ -63,19 +69,28 @@ namespace Netherlands3D.Interface.Minimap
 
 			parentMapViewer = GetComponentInParent<MapViewer>();
 			viewerTransform = parentMapViewer.transform as RectTransform;
-
 			mapTransform = transform as RectTransform;
 
-			mapWidthInMeters = tileSize * pixelInMeters * scaleDenominator;
-			print($"mapWidthInMeters = {tileSize} * {pixelInMeters} * {scaleDenominator}");
+			//Coverage of our application bounds
+			spanXInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
+			spanYInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
+
+			mapWidthInMeters = baseTileSize * pixelInMeters * scaleDenominator;
+			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
 
 			CalculateGridScaling();
 			ActivateMapLayer();
 		}
 
-		public void PositionObjectOnMap(RectTransform targetObject, Vector2RD targetPosition)
-		{
-			
+		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)
+		{		
+			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
+			var meterY = targetPosition.y - (float)Config.activeConfiguration.BottomLeftRD.y;
+
+			var pixelX = meterX * pixelInMeters * divide;
+			var pixelY = meterY * pixelInMeters * divide;
+
+			targetObject.transform.localPosition = new Vector3((float)pixelX, -(float)pixelY);
 		}
 		public void Zoomed(int viewerZoom)
 		{
@@ -88,7 +103,8 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void CalculateGridScaling()
 		{
-			tileSizeInMeters = mapWidthInMeters / Mathf.Pow(2, layerIdentifier);
+			divide = Mathf.Pow(2, layerIdentifier);
+			tileSizeInMeters = mapWidthInMeters / divide;
 
 			layerTilesOffset = new Vector2(
 				((float)Config.activeConfiguration.BottomLeftRD.x - (float)topLeftRDCoordinateX) / (float)tileSizeInMeters,
@@ -103,9 +119,6 @@ namespace Netherlands3D.Interface.Minimap
 			layerTilesOffset.x -= tileOffsetX;
 			layerTilesOffset.y -= tileOffsetY;
 
-			//Coverage of our application bounds
-			var spanXInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
-			var spanYInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
 			totalTilesX = Mathf.CeilToInt(spanXInMeters / (float)tileSizeInMeters);
 			totalTilesY = Mathf.CeilToInt(spanYInMeters / (float)tileSizeInMeters);
 		}
@@ -137,6 +150,7 @@ namespace Netherlands3D.Interface.Minimap
 		private void MovePointer()
 		{
 			pointer.SetAsLastSibling(); //Pointer is on top of map
+			PositionObjectOnMap(pointer, CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position));
 		}
 
 		private void ActivateMapLayer()
@@ -171,6 +185,7 @@ namespace Netherlands3D.Interface.Minimap
 					float compareXPosition = xPosition * mapTransform.localScale.x + mapTransform.transform.localPosition.x;
 					float compareYPosition = yPosition * mapTransform.localScale.x + mapTransform.transform.localPosition.y;
 
+					//Is this tile within the viewer rectangle?
 					bool xWithinView = (compareXPosition+baseTileSize > 0 && compareXPosition < viewerTransform.sizeDelta.x);
 					bool yWithinView = (compareYPosition > 0 && compareYPosition-baseTileSize < viewerTransform.sizeDelta.y);
 
