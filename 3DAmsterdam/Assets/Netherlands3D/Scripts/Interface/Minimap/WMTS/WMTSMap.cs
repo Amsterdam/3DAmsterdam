@@ -39,9 +39,6 @@ namespace Netherlands3D.Interface.Minimap
 		private int startIdentifier = 5;
 		private int layerIdentifier = 5;
 
-		[SerializeField]
-		private int maxIdentifier = 14;
-
 		private float totalTilesX = 0;
 		private float totalTilesY = 0;
 
@@ -52,39 +49,40 @@ namespace Netherlands3D.Interface.Minimap
 		private float baseTileSize = 256;
 		private double tileSizeInMeters = 0;
 		private float startMetersInPixels = 0;
-		private float baseDivide = 0;
 
 		private double divide = 0;
 
 		private double pixelInMeters = 0.00028;
 		private double scaleDenominator = 12288000; //Zero zoomlevel is 1:12288000 
+		private double mapWidthInMeters = 0;
 
 		private MapViewer parentMapViewer;
 		private RectTransform viewerTransform;
 		private RectTransform mapTransform;
 
-		[SerializeField]
-		private double mapWidthInMeters = 0;
-
 		private Vector2 layerTilesOffset = Vector2.zero;
 
-		float boundsWidthInMeters;
-		float boundsHeightInMeters;
+		private float boundsWidthInMeters;
+		private float boundsHeightInMeters;
 
 		[SerializeField]
 		private bool centerPointerInView;
 		public bool CenterPointerInView { get => centerPointerInView; set => centerPointerInView = value; }
 
+		[SerializeField]
+		private MinimapConfig minimapConfig;
+
 		private void Start()
 		{
 			layerIdentifier = startIdentifier;
 
-			//Use application config minimap settings
-			tileSize = Config.activeConfiguration.minimapTileSize;
-			pixelInMeters = Config.activeConfiguration.minimapPixelInMeters;
-			scaleDenominator = Config.activeConfiguration.minimapScaleDenominator;
-			minimapOriginX = Config.activeConfiguration.minimapOrigin.x;
-			minimapOriginY = Config.activeConfiguration.minimapOrigin.y;
+			//Use settingsprofile values
+			tileSize = minimapConfig.TileMatrixSet.TileSize;
+			pixelInMeters = minimapConfig.TileMatrixSet.PixelInMeters;
+			scaleDenominator = minimapConfig.TileMatrixSet.ScaleDenominator;
+
+			minimapOriginX = minimapConfig.TileMatrixSet.Origin.x;
+			minimapOriginY = minimapConfig.TileMatrixSet.Origin.y;
 
 			//Coverage of our application bounds
 			boundsWidthInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
@@ -98,19 +96,20 @@ namespace Netherlands3D.Interface.Minimap
 			viewerTransform = parentMapViewer.transform as RectTransform;
 			mapTransform = transform as RectTransform;
 
-			//Calculate zoom level 0 mapWidthInmeters
+			//Calculate map width in meters based on zoomlevel 0 setting values
 			mapWidthInMeters = baseTileSize * pixelInMeters * scaleDenominator;
 			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
 
 			CalculateGridScaling();
 			ActivateMapLayer();
 
-			//Calculate base meters in pixels to determine RD location in map
+			//Calculate base meters in pixels to do calculations converting local coordinates to meters
 			startMetersInPixels = (float)tileSizeInMeters / (float)baseTileSize;
 		}
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
+			//The point we clicked on the map in local coordinates
 			Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
 			
 			//Distance in meters from top left corner of this map
@@ -128,9 +127,14 @@ namespace Netherlands3D.Interface.Minimap
 			print(RDcoordinate);
 
 			CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;
-
 		}
 
+		/// <summary>
+		/// Position a RectTransform object on the map using RD coordinates
+		/// Handy if you want to place markers/location indicators on the minimap.
+		/// </summary>
+		/// <param name="targetObject">RectTransform object to be placed</param>
+		/// <param name="targetPosition">RD coordinate to place the object</param>
 		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)
 		{		
 			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
@@ -143,6 +147,11 @@ namespace Netherlands3D.Interface.Minimap
 			targetObject.transform.localPosition = new Vector3((float)pixelX, (float)pixelY);
 		}
 
+		/// <summary>
+		/// The zoomlevel of the viewer. Not to be confused with the map identifier.
+		/// The viewer starts at zoom level 0, our map identifier can start at a different identifier.
+		/// </summary>
+		/// <param name="viewerZoom">The viewer zoomlevel</param>
 		public void Zoomed(int viewerZoom)
 		{
 			tileSize = baseTileSize / Mathf.Pow(2, viewerZoom);
@@ -252,7 +261,7 @@ namespace Netherlands3D.Interface.Minimap
 						{
 							var newTileObject = new GameObject();
 							var mapTile = newTileObject.AddComponent<MapTile>();
-							mapTile.Initialize(this.transform, layerIdentifier, tileSize, xPosition, yPosition, tileKey, true);
+							mapTile.Initialize(this.transform, layerIdentifier, tileSize, xPosition, yPosition, tileKey, true, minimapConfig);
 
 							tileList.Add(tileKey, mapTile);
 						}
