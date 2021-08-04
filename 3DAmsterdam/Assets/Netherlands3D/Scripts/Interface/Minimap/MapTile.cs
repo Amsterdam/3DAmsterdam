@@ -62,7 +62,6 @@ namespace Netherlands3D.Interface.Minimap
 				}
 				else
 				{
-					Debug.Log("Minimap tile :" + tileImageUrl);
 					var texture = DownloadHandlerTexture.GetContent(uwr);
 					texture.wrapMode = TextureWrapMode.Clamp;
 					TextureTargetRawImage.texture = texture;

@@ -51,6 +51,8 @@ namespace Netherlands3D.Interface.Minimap
 		private float tileSize = 256;
 		private float baseTileSize = 256;
 		private double tileSizeInMeters = 0;
+		private float startMetersInPixels = 0;
+		private float baseDivide = 0;
 
 		private double divide = 0;
 
@@ -96,27 +98,37 @@ namespace Netherlands3D.Interface.Minimap
 			viewerTransform = parentMapViewer.transform as RectTransform;
 			mapTransform = transform as RectTransform;
 
+			//Calculate zoom level 0 mapWidthInmeters
 			mapWidthInMeters = baseTileSize * pixelInMeters * scaleDenominator;
 			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
 
 			CalculateGridScaling();
 			ActivateMapLayer();
+
+			startMetersInPixels = (float)tileSizeInMeters / (float)baseTileSize;
 		}
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
-			/*Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
+			Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
 			print(localClickPosition);
+			
+			//Distance in meters from top left corner of this map
+			var meterX = localClickPosition.x * startMetersInPixels;
+			var meterY = localClickPosition.y * startMetersInPixels;
+
 			var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
 			{
-				x = (float)Config.activeConfiguration.BottomLeftRD.x + localClickPosition.x / pixelInMeters / divide,
-				y = 0,
+				x = (float)Config.activeConfiguration.BottomLeftRD.x + meterX,
+				y = (float)Config.activeConfiguration.TopRightRD.y + meterY,
 				z = 0.0
 			});
 			RDcoordinate.y = CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+
 			print(RDcoordinate);
 
-			CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;*/
+			CameraModeChanger.Instance.ActiveCamera.transform.position = RDcoordinate;
+
 		}
 
 		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)
@@ -124,12 +136,13 @@ namespace Netherlands3D.Interface.Minimap
 			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
 			var meterY = targetPosition.y - (float)Config.activeConfiguration.TopRightRD.y;
 
-			var pixelX = meterX * pixelInMeters * divide / mapTransform.localScale.x;
-			var pixelY = meterY * pixelInMeters * divide / mapTransform.localScale.x;
+			var pixelX = meterX / startMetersInPixels;
+			var pixelY = meterY / startMetersInPixels;
 
 			targetObject.transform.localScale = Vector3.one / mapTransform.localScale.x;
 			targetObject.transform.localPosition = new Vector3((float)pixelX, (float)pixelY);
 		}
+
 		public void Zoomed(int viewerZoom)
 		{
 			tileSize = baseTileSize / Mathf.Pow(2, viewerZoom);
