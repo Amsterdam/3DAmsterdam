@@ -105,13 +105,13 @@ namespace Netherlands3D.Interface.Minimap
 			CalculateGridScaling();
 			ActivateMapLayer();
 
+			//Calculate base meters in pixels to determine RD location in map
 			startMetersInPixels = (float)tileSizeInMeters / (float)baseTileSize;
 		}
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
 			Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
-			print(localClickPosition);
 			
 			//Distance in meters from top left corner of this map
 			var meterX = localClickPosition.x * startMetersInPixels;
