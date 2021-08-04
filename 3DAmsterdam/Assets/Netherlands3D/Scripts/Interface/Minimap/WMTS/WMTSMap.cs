@@ -85,12 +85,13 @@ namespace Netherlands3D.Interface.Minimap
 		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)
 		{		
 			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
-			var meterY = targetPosition.y - (float)Config.activeConfiguration.BottomLeftRD.y;
+			var meterY = targetPosition.y - (float)Config.activeConfiguration.TopRightRD.y;
 
-			var pixelX = meterX * pixelInMeters * divide;
-			var pixelY = meterY * pixelInMeters * divide;
+			var pixelX = meterX * pixelInMeters * divide / mapTransform.localScale.x;
+			var pixelY = meterY * pixelInMeters * divide / mapTransform.localScale.x;
 
-			targetObject.transform.localPosition = new Vector3((float)pixelX, -(float)pixelY);
+			targetObject.transform.localScale = Vector3.one / mapTransform.localScale.x;
+			targetObject.transform.localPosition = new Vector3((float)pixelX, (float)pixelY);
 		}
 		public void Zoomed(int viewerZoom)
 		{
