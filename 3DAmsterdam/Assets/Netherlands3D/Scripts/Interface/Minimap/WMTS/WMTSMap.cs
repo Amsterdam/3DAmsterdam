@@ -235,12 +235,12 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void Clamp()
 		{
-			var maxPositionXInUnits = -(boundsWidthInMeters / startMeterInPixels);
-			var maxPositionYInUnits = boundsHeightInMeters / startMeterInPixels;
+			var maxPositionXInUnits = -(boundsWidthInMeters / startMeterInPixels) * transform.localScale.x;
+			var maxPositionYInUnits = (boundsHeightInMeters / startMeterInPixels) * transform.localScale.x;
 
 			this.transform.localPosition = new Vector3(
-				Mathf.Clamp(this.transform.localPosition.x, maxPositionXInUnits, 0),
-				Mathf.Clamp(this.transform.localPosition.y, 0, maxPositionYInUnits),
+				Mathf.Clamp(this.transform.localPosition.x, maxPositionXInUnits + viewerTransform.sizeDelta.x, 0),
+				Mathf.Clamp(this.transform.localPosition.y, viewerTransform.sizeDelta.y, maxPositionYInUnits),
 				0
 			);
 		}
@@ -253,7 +253,7 @@ namespace Netherlands3D.Interface.Minimap
 
 			if(CenterPointerInView)
 			{
-				this.transform.localPosition = -pointer.localPosition* mapTransform.localScale.x + (Vector3)viewerTransform.sizeDelta*0.5f;
+				this.transform.localPosition = -pointer.localPosition * mapTransform.localScale.x + (Vector3)viewerTransform.sizeDelta*0.5f;
 			}
 		}
 
