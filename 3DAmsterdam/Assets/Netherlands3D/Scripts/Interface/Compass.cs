@@ -11,7 +11,10 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private bool counterRotate = false;
-        
+
+        private float lastClick = 0;
+        private float clickModifierTimer = 0.2f;
+
         void Update()
         {
             direction.z = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles.y;
@@ -24,7 +27,15 @@ namespace Netherlands3D.Interface
         public void ResetCameraToNorth()
         {
             print("Reset camera to north");
-            CameraModeChanger.Instance.CurrentCameraControls.ResetNorth();
+            if ((Time.realtimeSinceStartup - lastClick) < clickModifierTimer)
+            {
+                CameraModeChanger.Instance.CurrentCameraControls.ResetNorth(true);
+            }
+            else{
+                CameraModeChanger.Instance.CurrentCameraControls.ResetNorth(false);
+            }
+
+            lastClick = Time.realtimeSinceStartup;
         }
     }
 }

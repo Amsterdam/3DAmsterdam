@@ -15,8 +15,8 @@ namespace Netherlands3D.Cameras
         float GetCameraHeight();
 
         void SetNormalizedCameraHeight(float height);
-
-        void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
+		bool ToggleCameraPerspective();
+		void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
         Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
 
@@ -28,6 +28,6 @@ namespace Netherlands3D.Cameras
 
         bool UsesActionMap(InputActionMap actionMap);
 
-		void ResetNorth();
+		void ResetNorth(bool resetTopDown = false);
 	}
 }
