@@ -220,20 +220,14 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void Update()
 		{
+			Clamp();
+
 			//Continiously check if tiles of the active layer identifier should be loaded
 			ShowLayerTiles(mapTileLayers[layerIdentifier]);
 			MovePointer();
 		}
 
-		private void LateUpdate()
-		{
-			if (clampWithinParent)
-			{
-				Clamp();
-			}
-		}
-
-		private void Clamp()
+		public void Clamp()
 		{
 			var maxPositionXInUnits = -(boundsWidthInMeters / startMeterInPixels) * transform.localScale.x;
 			var maxPositionYInUnits = (boundsHeightInMeters / startMeterInPixels) * transform.localScale.x;
