@@ -213,5 +213,10 @@ namespace Netherlands3D.Cameras
 			//TODO: Requires switch to actionmap inputs
 			return false;
 		}
+
+		public void ResetNorth()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

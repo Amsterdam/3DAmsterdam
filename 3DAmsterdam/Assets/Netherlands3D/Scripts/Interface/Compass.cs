@@ -24,9 +24,7 @@ namespace Netherlands3D.Interface
         public void ResetCameraToNorth()
         {
             print("Reset camera to north");
-            var resetEuler = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles;
-            resetEuler.y = 0;
-            CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles = resetEuler;
+            CameraModeChanger.Instance.CurrentCameraControls.ResetNorth();
         }
     }
 }
