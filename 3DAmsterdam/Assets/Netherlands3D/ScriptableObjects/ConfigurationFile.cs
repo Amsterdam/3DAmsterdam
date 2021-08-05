@@ -1,4 +1,21 @@
-﻿using Amsterdam3D.Sewerage;
+﻿/*
+*  Copyright (C) X Gemeente
+*                X Amsterdam
+*                X Economic Services Departments
+*
+*  Licensed under the EUPL, Version 1.2 or later (the "License");
+*  You may not use this work except in compliance with the License.
+*  You may obtain a copy of the License at:
+*
+*    https://github.com/Amsterdam/3DAmsterdam/blob/master/LICENSE.txt
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" basis,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+*  implied. See the License for the specific language governing
+*  permissions and limitations under the License.
+*/
+using Amsterdam3D.Sewerage;
 using ConvertCoordinates;
 using Netherlands3D.BAG;
 using System.Collections;
@@ -11,11 +28,10 @@ namespace Netherlands3D
     [System.Serializable]
     public class ConfigurationFile : ScriptableObject
     {
-        public enum TmsTileNumberingType
+        public enum MinimapOriginAlignment
         {
-            GoogleAndOSM, // (0 to 2zoom-1, 0 to 2zoom-1) for the range(-180, +85.0511) - (+180, -85.0511)
-            TMS, //'Tile Map Service' (0 to 2zoom-1, 2zoom-1 to 0) for the range(-180, +85.0511) - (+180, -85.0511). (That is, the same as the previous with the Y value flipped.)
-            QuadTrees //Used by Microsoft
+            TopLeft,
+            BottomLeft
         }
 
         [Header("Bounding Box coordinates")]
@@ -24,16 +40,6 @@ namespace Netherlands3D
         public Vector2RD TopRightRD;
 
         public float zeroGroundLevelY = 43.0f;
-
-        [Header("Minimap Tiled Web Map")]
-        [Tooltip("The variables {x} and {y} in the URL will be replaced with their corresponding RD coordinates.")]
-        public bool EnableMinimap = true;
-        public string minimapServiceUrl = "https://t1.data.amsterdam.nl/topo_rd/{zoom}/{x}/{y}.png";
-        public TmsTileNumberingType MinimapTileNumberingType = TmsTileNumberingType.GoogleAndOSM;
-        public float minimapBottomLeftRD_X = -285401.920f; // zoomlevel 0 at RD WMTS
-        public float minimapBottomLeftRD_Y = 22598.080f; // zoomlevel 0 at RD WMTS
-        [Tooltip("Zoomlevel 0 width/height of tiles")]
-        public float MinimapZoom0RDSize = 880803.84f;
 
         [Header("Tile layers external assets paths")]
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
@@ -70,5 +76,5 @@ namespace Netherlands3D
 
         public Color primaryColor;
         public Color secondaryColor;
-    }
+	}
 }
