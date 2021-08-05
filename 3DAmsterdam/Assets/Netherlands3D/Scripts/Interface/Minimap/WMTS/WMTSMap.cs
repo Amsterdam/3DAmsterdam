@@ -25,10 +25,10 @@ using UnityEngine.EventSystems;
 namespace Netherlands3D.Interface.Minimap
 {
 	[HelpURL("https://portal.opengeospatial.org/files/?artifact_id=35326")]
-	public class WMTSMap : MonoBehaviour, IPointerClickHandler
+	public class WMTSMap : MonoBehaviour
 	{
-		private double minimapOriginX = -285401.92;
-		private double minimapOriginY = 903401.92;
+		private double minimapTopLeftX = -285401.92;
+		private double minimapTopLeftY = 903401.92;
 
 		private Dictionary<int, Dictionary<Vector2, MapTile>> mapTileLayers;
 
@@ -39,8 +39,8 @@ namespace Netherlands3D.Interface.Minimap
 		private int startIdentifier = 5;
 		private int layerIdentifier = 5;
 
-		private float totalTilesX = 0;
-		private float totalTilesY = 0;
+		private float boundsTilesX = 0;
+		private float boundsTilesY = 0;
 
 		private float tileOffsetX = 0;
 		private float tileOffsetY = 0;
@@ -54,7 +54,7 @@ namespace Netherlands3D.Interface.Minimap
 
 		private double pixelInMeters = 0.00028;
 		private double scaleDenominator = 12288000; //Zero zoomlevel is 1:12288000 
-		private double mapWidthInMeters = 0;
+		private double mapSizeInMeters = 0;
 
 		private MapViewer parentMapViewer;
 		private RectTransform viewerTransform;
@@ -84,9 +84,6 @@ namespace Netherlands3D.Interface.Minimap
 			pixelInMeters = minimapConfig.TileMatrixSet.PixelInMeters;
 			scaleDenominator = minimapConfig.TileMatrixSet.ScaleDenominator;
 
-			minimapOriginX = minimapConfig.TileMatrixSet.Origin.x;
-			minimapOriginY = minimapConfig.TileMatrixSet.Origin.y;
-
 			//Coverage of our application bounds
 			boundsWidthInMeters = (float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x;
 			boundsHeightInMeters = (float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y;
@@ -100,8 +97,10 @@ namespace Netherlands3D.Interface.Minimap
 			mapTransform = transform as RectTransform;
 
 			//Calculate map width in meters based on zoomlevel 0 setting values
-			mapWidthInMeters = baseTileSize * pixelInMeters * scaleDenominator;
+			mapSizeInMeters = baseTileSize * pixelInMeters * scaleDenominator;
 			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
+
+			DetermineTopLeftOrigin();
 
 			CalculateGridScaling();
 			ActivateMapLayer();
@@ -110,7 +109,21 @@ namespace Netherlands3D.Interface.Minimap
 			startMetersInPixels = (float)tileSizeInMeters / (float)baseTileSize;
 		}
 
-		public void OnPointerClick(PointerEventData eventData)
+		private void DetermineTopLeftOrigin()
+		{
+			switch(minimapConfig.TileMatrixSet.minimapOriginAlignment){
+				case TileMatrixSet.OriginAlignment.BottomLeft:
+					minimapTopLeftX = minimapConfig.TileMatrixSet.Origin.x;
+					minimapTopLeftY = minimapConfig.TileMatrixSet.Origin.y + mapSizeInMeters;
+					break;
+				default:
+					minimapTopLeftX = minimapConfig.TileMatrixSet.Origin.x;
+					minimapTopLeftY = minimapConfig.TileMatrixSet.Origin.y;
+					break;
+			}
+		}
+
+		public void ClickedMap(PointerEventData eventData)
 		{
 			//The point we clicked on the map in local coordinates
 			Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
@@ -167,11 +180,12 @@ namespace Netherlands3D.Interface.Minimap
 		private void CalculateGridScaling()
 		{
 			divide = Mathf.Pow(2, layerIdentifier);
-			tileSizeInMeters = mapWidthInMeters / divide;
+			tileSizeInMeters = mapSizeInMeters / divide;
 
+			//The tile 0,0 its top left does not align with our region top left. So here we determine the offset.
 			layerTilesOffset = new Vector2(
-				((float)Config.activeConfiguration.BottomLeftRD.x - (float)minimapOriginX) / (float)tileSizeInMeters,
-				((float)minimapOriginY - (float)Config.activeConfiguration.TopRightRD.y) / (float)tileSizeInMeters
+				((float)Config.activeConfiguration.BottomLeftRD.x - (float)minimapTopLeftX) / (float)tileSizeInMeters,
+				((float)minimapTopLeftY - (float)Config.activeConfiguration.TopRightRD.y) / (float)tileSizeInMeters
 			);
 
 			//Based on tile numbering type
@@ -182,8 +196,9 @@ namespace Netherlands3D.Interface.Minimap
 			layerTilesOffset.x -= tileOffsetX;
 			layerTilesOffset.y -= tileOffsetY;
 
-			totalTilesX = Mathf.CeilToInt(boundsWidthInMeters / (float)tileSizeInMeters);
-			totalTilesY = Mathf.CeilToInt(boundsHeightInMeters / (float)tileSizeInMeters);
+			//Calculate the amount of tiles needed for our app bounding box
+			boundsTilesX = Mathf.CeilToInt(boundsWidthInMeters / (float)tileSizeInMeters);
+			boundsTilesY = Mathf.CeilToInt(boundsHeightInMeters / (float)tileSizeInMeters);
 		}
 
 		private void RemoveOtherLayers()
@@ -253,15 +268,27 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void ShowLayerTiles(Dictionary<Vector2, MapTile> tileList)
 		{
-			for (int x = 0; x <= totalTilesX; x++)
+			for (int x = 0; x <= boundsTilesX; x++)
 			{
-				for (int y = 0; y <= totalTilesY; y++)
+				for (int y = 0; y <= boundsTilesY; y++)
 				{
-					var tileKey = new Vector2(x + tileOffsetX, y + tileOffsetY);
+					Vector2 tileKey;
 
 					//Tile position within this container
 					float xPosition = (x * tileSize) - (layerTilesOffset.x * tileSize);
 					float yPosition = -((y * tileSize) - (layerTilesOffset.y * tileSize));
+
+					//Origin alignment determines the way we count our grid
+					switch (minimapConfig.TileMatrixSet.minimapOriginAlignment)
+					{
+						case TileMatrixSet.OriginAlignment.BottomLeft:
+							tileKey = new Vector2(x + tileOffsetX, (float)(divide-1) - (y + tileOffsetY));
+							break;
+						case TileMatrixSet.OriginAlignment.TopLeft:
+						default:
+							tileKey = new Vector2(x + tileOffsetX, y + tileOffsetY);
+							break;
+					}
 
 					//Tile position to check if they are in viewer
 					float compareXPosition = xPosition * mapTransform.localScale.x + mapTransform.transform.localPosition.x;
@@ -277,7 +304,7 @@ namespace Netherlands3D.Interface.Minimap
 						{
 							var newTileObject = new GameObject();
 							var mapTile = newTileObject.AddComponent<MapTile>();
-							mapTile.Initialize(this.transform, layerIdentifier, tileSize, xPosition, yPosition, tileKey, true, minimapConfig);
+							mapTile.Initialize(this.transform, layerIdentifier, tileSize, xPosition, yPosition, tileKey, minimapConfig);
 
 							tileList.Add(tileKey, mapTile);
 						}

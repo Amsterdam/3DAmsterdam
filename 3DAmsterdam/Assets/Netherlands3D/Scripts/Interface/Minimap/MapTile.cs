@@ -36,7 +36,7 @@ namespace Netherlands3D.Interface.Minimap
 		private int zoomLevel = 0;
 		private MinimapConfig config;
 
-		public void Initialize(Transform container, int zoom, float size, float xLocation, float yLocation, Vector2 key, bool rootTile, MinimapConfig minimapConfig)
+		public void Initialize(Transform container, int zoom, float size, float xLocation, float yLocation, Vector2 key, MinimapConfig minimapConfig)
 		{
 			zoomLevel = zoom;
 			tileKey = key;
@@ -48,7 +48,7 @@ namespace Netherlands3D.Interface.Minimap
 
 			//generate a new rawimage
 			TextureTargetRawImage = this.gameObject.AddComponent<RawImage>();
-			TextureTargetRawImage.raycastTarget = rootTile;
+			TextureTargetRawImage.raycastTarget = false;
 			TextureTargetRawImage.rectTransform.pivot = new Vector2(0, 1);
 			TextureTargetRawImage.rectTransform.anchorMin = TextureTargetRawImage.rectTransform.anchorMax = new Vector2(0, 1);
 			TextureTargetRawImage.rectTransform.sizeDelta = Vector2.one * size;

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Netherlands3D.Interface.Minimap
 {
-    public class MapViewer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler
+    public class MapViewer : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IScrollHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         private Vector3 dragOffset;
 
@@ -30,7 +30,6 @@ namespace Netherlands3D.Interface.Minimap
         private Vector2 hoverSize;
 
         private bool dragging = false;
-
         private bool interactingWithMap = false;
 
         [SerializeField]
@@ -146,6 +145,14 @@ namespace Netherlands3D.Interface.Minimap
             ScaleMapOverOrigin(zoomTarget, Vector3.one * Mathf.Pow(2.0f, zoomScale));
         }
 
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!dragging)
+            {
+                wmtsMap.ClickedMap(eventData);
+            }
+        }
+
         public void ScaleMapOverOrigin(Vector3 scaleOrigin, Vector3 newScale)
         {
             var targetPosition = mapTiles.position;
@@ -160,11 +167,20 @@ namespace Netherlands3D.Interface.Minimap
 
         IEnumerator HoverResize(Vector2 targetScale)
         {
-            while (Vector2.Distance(targetScale, transform.localScale) > 0.01f)
+            while (true)
             {
-                rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
+                if (Vector2.Distance(targetScale, rectTransform.sizeDelta) > 0.5f) 
+                {
+                    //Eaze out to target scale
+                    rectTransform.sizeDelta = Vector2.Lerp(rectTransform.sizeDelta, targetScale, hoverResizeSpeed * Time.deltaTime);
+                }
+                else{
+                    //Finish animation
+                    rectTransform.sizeDelta = targetScale;
+                    yield break;
+                }
                 yield return null;
             }
         }
-    }
+	}
 }
