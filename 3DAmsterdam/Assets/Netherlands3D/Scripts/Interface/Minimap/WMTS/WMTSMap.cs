@@ -48,7 +48,7 @@ namespace Netherlands3D.Interface.Minimap
 		private float tileSize = 256;
 		private float baseTileSize = 256;
 		private double tileSizeInMeters = 0;
-		private float startMetersInPixels = 0;
+		private float startMeterInPixels = 0;
 
 		private double divide = 0;
 
@@ -106,7 +106,7 @@ namespace Netherlands3D.Interface.Minimap
 			ActivateMapLayer();
 
 			//Calculate base meters in pixels to do calculations converting local coordinates to meters
-			startMetersInPixels = (float)tileSizeInMeters / (float)baseTileSize;
+			startMeterInPixels = (float)tileSizeInMeters / (float)baseTileSize;
 		}
 
 		private void DetermineTopLeftOrigin()
@@ -129,8 +129,8 @@ namespace Netherlands3D.Interface.Minimap
 			Vector3 localClickPosition = transform.InverseTransformPoint(eventData.position);
 			
 			//Distance in meters from top left corner of this map
-			var meterX = localClickPosition.x * startMetersInPixels;
-			var meterY = localClickPosition.y * startMetersInPixels;
+			var meterX = localClickPosition.x * startMeterInPixels;
+			var meterY = localClickPosition.y * startMeterInPixels;
 
 			var RDcoordinate = CoordConvert.RDtoUnity(new Vector3RD
 			{
@@ -156,8 +156,8 @@ namespace Netherlands3D.Interface.Minimap
 			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
 			var meterY = targetPosition.y - (float)Config.activeConfiguration.TopRightRD.y;
 
-			var pixelX = meterX / startMetersInPixels;
-			var pixelY = meterY / startMetersInPixels;
+			var pixelX = meterX / startMeterInPixels;
+			var pixelY = meterY / startMeterInPixels;
 
 			targetObject.transform.localScale = Vector3.one / mapTransform.localScale.x;
 			targetObject.transform.localPosition = new Vector3((float)pixelX, (float)pixelY);
@@ -223,8 +223,11 @@ namespace Netherlands3D.Interface.Minimap
 			//Continiously check if tiles of the active layer identifier should be loaded
 			ShowLayerTiles(mapTileLayers[layerIdentifier]);
 			MovePointer();
+		}
 
-			if(clampWithinParent)
+		private void LateUpdate()
+		{
+			if (clampWithinParent)
 			{
 				Clamp();
 			}
@@ -232,10 +235,14 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void Clamp()
 		{
-			//TODO clamp within view
-			/*this.transform.localPosition = new Vector3(
-				
-			);*/
+			var maxPositionXInUnits = -(boundsWidthInMeters / startMeterInPixels);
+			var maxPositionYInUnits = boundsHeightInMeters / startMeterInPixels;
+
+			this.transform.localPosition = new Vector3(
+				Mathf.Clamp(this.transform.localPosition.x, maxPositionXInUnits, 0),
+				Mathf.Clamp(this.transform.localPosition.y, 0, maxPositionYInUnits),
+				0
+			);
 		}
 
 		private void MovePointer()
