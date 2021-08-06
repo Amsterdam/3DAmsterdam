@@ -13,7 +13,9 @@ namespace Netherlands3D.Interface
         private bool counterRotate = false;
 
         private float lastClick = 0;
-        private float clickModifierTimer = 0.2f;
+
+        [SerializeField]
+        private float doubleClickTime = 0.5f;
 
         void Update()
         {
@@ -27,7 +29,7 @@ namespace Netherlands3D.Interface
         public void ResetCameraToNorth()
         {
             print("Reset camera to north");
-            if ((Time.realtimeSinceStartup - lastClick) < clickModifierTimer)
+            if ((Time.realtimeSinceStartup - lastClick) < doubleClickTime)
             {
                 CameraModeChanger.Instance.CurrentCameraControls.ResetNorth(true);
             }
