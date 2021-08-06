@@ -70,7 +70,5 @@ namespace Netherlands3D
 
         public Color primaryColor;
         public Color secondaryColor;
-
-        public Material PerceelMaterial;
     }
 }

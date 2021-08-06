@@ -97,7 +97,7 @@ namespace Netherlands3D.Sharing
                 //var pos = new Vector3RD(116135,488309, 0);
 
                 StartCoroutine(GotoPosition(pos));
-                StartCoroutine(GetPerceel(pos));
+                StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos));
             }
         }
 
@@ -118,7 +118,7 @@ namespace Netherlands3D.Sharing
             if (rd.Equals(new Vector3RD(0, 0, 0))) return;
 
             StartCoroutine(GotoPosition(rd));
-            StartCoroutine(GetPerceel(rd));
+            StartCoroutine(  PerceelRenderer.Instance.HandlePosition(rd));
         }
 
         IEnumerator GotoPosition(Vector3RD position)
@@ -127,131 +127,6 @@ namespace Netherlands3D.Sharing
             Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
             CameraModeChanger.Instance.ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
             CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);            
-        }
-
-        IEnumerator GetPerceel(Vector3RD position)
-        {
-            yield return null;
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-
-            var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX={bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            //getSceneRequest.SetRequestHeader("Content-Type", "application/json");
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError )
-            {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
-            }
-            else
-            {
-                Debug.Log("Perceel data: " + req.downloadHandler.text);
-                
-                List<Vector2[]> list = new List<Vector2[]>();
-
-                //Deserialize WFS perceel data
-                using (JsonTextReader reader = new JsonTextReader(new StringReader(req.downloadHandler.text)))
-                {
-                    reader.SupportMultipleContent = true;
-                    var serializer = new JsonSerializer();
-                    JsonModels.WebFeatureService.WFSRootobject wfs = serializer.Deserialize<JsonModels.WebFeatureService.WFSRootobject>(reader);
-
-                    yield return null;
-
-                    foreach (var feature in wfs.features)
-                    {
-                        List<Vector2> polygonList = new List<Vector2>();
-
-                        var coordinates = feature.geometry.coordinates;
-                        foreach (var points in coordinates)
-                        {
-                            foreach (var point in points)
-                            {
-                                polygonList.Add(new Vector2(point[0], point[1]));
-                            }
-                        }
-                        list.Add(polygonList.ToArray());
-                    }
-                }
-
-                //TODO teken het perceel polygon
-                //StartCoroutine(RenderPolygons(list));
-                RenderPolygonMesh(list);
-
-
-                //let feature = data.features[0];
-                //this.kadastraleGrootteWaarde = feature.properties.kadastraleGrootteWaarde;
-                ////TODO support multiple polygons
-                //this.polygon_rd = feature.geometry.coordinates[0];
-
-            }
-            
-        }
-
-        void RenderPolygonMesh(List<Vector2[]> polygons)
-        {
-            var perceelGameObject = new GameObject();
-
-            var go = new GameObject();
-            go.name = "Perceel mesh";
-            go.transform.parent = perceelGameObject.transform;
-            ProBuilderMesh m_Mesh = go.gameObject.AddComponent<ProBuilderMesh>();
-            go.GetComponent<MeshRenderer>().material = Config.activeConfiguration.PerceelMaterial;
-
-            List<Vector3> verts = new List<Vector3>();
-            
-            foreach (var points in polygons)
-            {
-                foreach(var point in points)
-                {
-                    var pos = CoordConvert.RDtoUnity(point);
-                    verts.Add(pos);                   
-                }
-            }
-
-            m_Mesh.CreateShapeFromPolygon(verts.ToArray(), 5, false);  // TODO place op top of maaiveld            
-
-
-            var go_rev = new GameObject();
-            go_rev.transform.parent = perceelGameObject.transform;
-            go_rev.name = "Perceel mesh_rev";
-            ProBuilderMesh m_Mesh_rev = go_rev.gameObject.AddComponent<ProBuilderMesh>();
-            go_rev.GetComponent<MeshRenderer>().material = Config.activeConfiguration.PerceelMaterial;
-            verts.Reverse();
-            m_Mesh_rev.CreateShapeFromPolygon(verts.ToArray(), 5, false);
-
-        }
-
-        IEnumerator RenderPolygons(List<Vector2[]> polygons)
-        {
-
-            List<Vector2> vertices = new List<Vector2>();
-            List<int> indices = new List<int>();
-
-            int count = 0;
-            foreach (var list in polygons)
-            {
-                for (int i = 0; i < list.Length - 1; i++)
-                {
-                    indices.Add(count + i);
-                    indices.Add(count + i + 1);
-                }
-                count += list.Length;
-                vertices.AddRange(list);
-            }
-
-            GameObject newgameobject = new GameObject();
-            newgameobject.name = "Perceel";
-            //newgameobject.transform.transform.SetParent(gameObject.transform, false); ;
-            MeshFilter filter = newgameobject.AddComponent<MeshFilter>();
-            newgameobject.AddComponent<MeshRenderer>().material = Config.activeConfiguration.PerceelMaterial;
-
-            yield return null;
-
-            var mesh = new Mesh();
-            mesh.vertices = vertices.Select(o => CoordConvert.RDtoUnity(o)).ToArray();
-            mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
-            filter.sharedMesh = mesh;
         }
 
 
