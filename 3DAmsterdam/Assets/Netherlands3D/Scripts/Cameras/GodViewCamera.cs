@@ -414,14 +414,23 @@ namespace Netherlands3D.Cameras
 
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
+            var cameraHeight = cameraComponent.transform.position.y; //The higher we are, the faster we zoom       
+
             if (cameraComponent.orthographic)
             {
-                cameraComponent.orthographicSize -= zoomAmount;
+                cameraComponent.orthographicSize -= cameraComponent.orthographicSize * zoomAmount * zoomSpeed;
+                //An ortographic camera moves towards the zoom direction point in its own 2D plane
+                var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
+                localPointPosition.z = 0;
+
+                cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+            }
+            else{
+                //A perspective camera moves its position towards to zoom direction point
+                zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
+                cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * cameraHeight, Space.World);
             }
 
-            var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
-            zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
-            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
             focusingOnTargetPoint.Invoke(zoomDirectionPoint);
         }
 
