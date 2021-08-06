@@ -57,11 +57,11 @@ namespace Netherlands3D.Cameras
             }
 
             // Convert min and max to WGS84 coordinates
-            var wGSMin = CoordConvert.UnitytoWGS84(unityMin);
-            var wGSMax = CoordConvert.UnitytoWGS84(unityMax);
+            var rdMin = CoordConvert.UnitytoRD(unityMin);
+            var rdMax = CoordConvert.UnitytoRD(unityMax);
 
             // Area that should be loaded
-            var extent = new Extent(wGSMin.lon, wGSMin.lat, wGSMax.lon, wGSMax.lat);
+            var extent = new Extent(rdMin.x, rdMin.y, rdMax.x, rdMax.y);
             return extent;
         }
 
