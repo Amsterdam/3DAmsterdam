@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+*  Copyright (C) X Gemeente
+*                X Amsterdam
+*                X Economic Services Departments
+*
+*  Licensed under the EUPL, Version 1.2 or later (the "License");
+*  You may not use this work except in compliance with the License.
+*  You may obtain a copy of the License at:
+*
+*    https://github.com/Amsterdam/3DAmsterdam/blob/master/LICENSE.txt
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" basis,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+*  implied. See the License for the specific language governing
+*  permissions and limitations under the License.
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,24 +32,18 @@ namespace Netherlands3D.InputHandler
     //TODO: When old input system is needed, replace parts in this script that require new input system
     public class ActionHandler:MonoBehaviour
     {
-
         public static Netherlands3DInputActions actions;
         InputActionAsset actionMaps;
 
-
         public static ActionHandler instance;
-
 
         public Dictionary<InputAction, UnityInputSystemAction> ActionDictionary = new Dictionary<InputAction, UnityInputSystemAction>();
         public List<UnityActionMap> unityActionMaps = new List<UnityActionMap>();
 
-
         private bool inputEnabled = true;
-
 
         private void Awake()
         {
-
             instance = this;
             actions = new Netherlands3DInputActions();
             actionMaps = actions.asset;
@@ -52,11 +63,7 @@ namespace Netherlands3D.InputHandler
                     ActionHandler.actions.StreetView.Disable();
                 }
                 unityActionMaps.Add(unityMap);
-
-
-
             }
-
         }
 
         private void InputAction_canceled(InputAction.CallbackContext obj)
@@ -109,9 +116,6 @@ namespace Netherlands3D.InputHandler
             return false;
         }
 
-
-
-
         /// <summary>
         /// Subscribe to IAction performed without returning IAction.
         /// Returns true if succesful and false if Action doesn't exist.
@@ -135,9 +139,6 @@ namespace Netherlands3D.InputHandler
             ActionDictionary[action].SubscribePerformed(func);
             return true;
         }
-
-
-
 
         /// <summary>
         /// Gets the corresponding Action class by either name or by Unity input system Action.
@@ -164,7 +165,6 @@ namespace Netherlands3D.InputHandler
             return null;
         }
 
-
         /// <summary>
         /// Gets the corresponding Action map class, to enable or disable, or get actions from
         /// </summary>
@@ -180,7 +180,6 @@ namespace Netherlands3D.InputHandler
             return null;
         }
 
-
         /// <summary>
         /// Enables or disables all input. 
         /// </summary>
@@ -188,7 +187,5 @@ namespace Netherlands3D.InputHandler
         {
             this.inputEnabled = enabled;
         }
-
-
     }
 }
