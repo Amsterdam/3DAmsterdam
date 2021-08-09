@@ -290,7 +290,7 @@ namespace Netherlands3D.Cameras
                 }
             }
 
-            LimitPosition();
+            Clamping();
             //ClampRotation(); //clamping doesnt work because we rotate around point, moving the camera
         }
 
@@ -310,9 +310,15 @@ namespace Netherlands3D.Cameras
         /// <summary>
         /// Clamps the camera within the max travel distance bounding box
         /// </summary>
-		private void LimitPosition()
+		private void Clamping()
         {
-            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x, -maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+            this.transform.position = new Vector3(
+                Mathf.Clamp(this.transform.position.x, -maxTravelDistance, maxTravelDistance), 
+                Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), 
+                Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance)
+            );
+
+            Vector3 limitInLocalSpace = cameraComponent.transform.InverseTransformPoint(this.transform.position);
         }
 
         private bool BlockedByTextInput() {
@@ -334,8 +340,6 @@ namespace Netherlands3D.Cameras
             
             Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
             if (movement == Vector3.zero && heightchange == 0) return;
-
-
 
             movement.z = movement.y;
             movement.y = heightchange * 0.1f;
@@ -379,15 +383,6 @@ namespace Netherlands3D.Cameras
 
             //Adjust camera rotation
             cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
-        }
-
-        private void ClampRotation()
-        {
-            cameraComponent.transform.rotation = Quaternion.Euler(
-                Mathf.Clamp(cameraComponent.transform.localEulerAngles.x, minAngle, maxAngle),
-                cameraComponent.transform.localEulerAngles.y,
-                cameraComponent.transform.localEulerAngles.z
-            );
         }
 
         /// <summary>
