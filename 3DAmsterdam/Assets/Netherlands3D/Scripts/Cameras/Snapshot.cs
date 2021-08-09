@@ -249,7 +249,14 @@ namespace Netherlands3D
             screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
             snapshotCamera.targetTexture = screenshotRenderTexture;
+            snapshotCamera.fieldOfView = CameraModeChanger.Instance.ActiveCamera.fieldOfView;
+            snapshotCamera.orthographic = CameraModeChanger.Instance.ActiveCamera.orthographic;
+            snapshotCamera.orthographicSize = CameraModeChanger.Instance.ActiveCamera.orthographicSize;
             RenderTexture.active = screenshotRenderTexture;
+
+            //Hide these panel renderers
+            Graphic[] allGraphics = GetComponentsInChildren<Graphic>();
+            foreach (var graphic in allGraphics) graphic.enabled = false;
 
             // Calls events on the camera related to rendering
             snapshotCamera.Render();
@@ -272,6 +279,9 @@ namespace Netherlands3D
             // Cleanup textures
             Destroy(screenshotRenderTexture);
             Destroy(screenShot);
+
+            //Show this panel again
+            foreach (var graphic in allGraphics) graphic.enabled = true;
 
             // If no filetype is given, make it a png
             if (fileType == "")
