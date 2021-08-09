@@ -427,9 +427,12 @@ namespace Netherlands3D.Cameras
                 cameraComponent.orthographicSize = Mathf.Clamp(cameraComponent.orthographicSize - cameraComponent.orthographicSize * zoomAmount * zoomSpeed, minOrtographicZoom, maxZoomOut);
 
                 //An ortographic camera moves towards the zoom direction point in its own 2D plane
-                var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
-                localPointPosition.z = 0;
-                cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+                if (cameraComponent.transform.position.y < maxZoomOut)
+                {
+                    var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
+                    localPointPosition.z = 0;
+                    cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+                }
             }
             else{
                 //A perspective camera moves its position towards to zoom direction point
@@ -462,13 +465,11 @@ namespace Netherlands3D.Cameras
                 this.transform.position -= dragMomentum;
             }
         }
-
         public Ray GetMainPointerRay()
         {
             var pointerPosition = Mouse.current.position.ReadValue();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
-
         public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
             var pointerPosition = Mouse.current.position.ReadValue();
