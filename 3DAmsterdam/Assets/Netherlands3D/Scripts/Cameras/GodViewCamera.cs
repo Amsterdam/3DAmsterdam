@@ -24,6 +24,8 @@ namespace Netherlands3D.Cameras
         [SerializeField]
         private float spinSpeed = 0.5f;
 
+        private const float minOrtographicZoom = 20f;
+
         private const float maxZoomOut = 2500f;
 
         [SerializeField]
@@ -312,13 +314,22 @@ namespace Netherlands3D.Cameras
         /// </summary>
 		private void Clamping()
         {
+            //Make sure orto cameras only look down, and do not go too low
+            if (cameraComponent.orthographic)
+            {
+                cameraComponent.transform.rotation = Quaternion.LookRotation(Vector3.down,cameraComponent.transform.up);
+                this.transform.position = new Vector3(
+                    this.transform.position.x, 
+                    Mathf.Clamp(cameraComponent.orthographicSize, 100, maxZoomOut), 
+                    this.transform.position.z
+                );
+            }
+
             this.transform.position = new Vector3(
                 Mathf.Clamp(this.transform.position.x, -maxTravelDistance, maxTravelDistance), 
                 Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), 
                 Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance)
             );
-
-            Vector3 limitInLocalSpace = cameraComponent.transform.InverseTransformPoint(this.transform.position);
         }
 
         private bool BlockedByTextInput() {
@@ -413,11 +424,11 @@ namespace Netherlands3D.Cameras
 
             if (cameraComponent.orthographic)
             {
-                cameraComponent.orthographicSize -= cameraComponent.orthographicSize * zoomAmount * zoomSpeed;
+                cameraComponent.orthographicSize = Mathf.Clamp(cameraComponent.orthographicSize - cameraComponent.orthographicSize * zoomAmount * zoomSpeed, minOrtographicZoom, maxZoomOut);
+
                 //An ortographic camera moves towards the zoom direction point in its own 2D plane
                 var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
                 localPointPosition.z = 0;
-
                 cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
             }
             else{
@@ -514,7 +525,8 @@ namespace Netherlands3D.Cameras
             var previousPosition = cameraComponent.transform.position;
             var previousRotation = cameraComponent.transform.rotation;
 
-            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+            if(!cameraComponent.orthographic)
+                cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
             cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
 
             if (cameraComponent.transform.position.y < minUndergroundY)
@@ -564,13 +576,18 @@ namespace Netherlands3D.Cameras
             {
                 //Orto camera
                 cameraComponent.orthographic = false;
+
+                //Slide forward based on camera angle, to get an expected orto point
+                var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
+                cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
+
                 print("Perspective");
                 return false;
             }
             else{
                 //Perspective camera
                 cameraComponent.orthographic = true;
-                cameraComponent.orthographicSize = cameraComponent.transform.position.y / 2.0f;
+                cameraComponent.orthographicSize = cameraComponent.transform.position.y;
                 print("Ortographic");
                 return true;
             }
