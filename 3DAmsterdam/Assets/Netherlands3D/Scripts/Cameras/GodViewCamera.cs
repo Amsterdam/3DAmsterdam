@@ -103,7 +103,7 @@ namespace Netherlands3D.Cameras
         private float resetTransitionSpeed = 0.5f;
         private Coroutine resetNorthTransition;
 
-        void Awake()
+		void Awake()
         {
             cameraComponent = GetComponent<Camera>();
         }
@@ -570,26 +570,22 @@ namespace Netherlands3D.Cameras
             return availableActionMaps.Contains(actionMap);
         }
 
-        public bool ToggleCameraPerspective()
-        { 
-            if(cameraComponent.orthographic)
-            {
-                //Orto camera
-                cameraComponent.orthographic = false;
+        public void ToggleOrtographic(bool ortographicOn)
+        {
+            cameraComponent.orthographic = ortographicOn;
 
-                //Slide forward based on camera angle, to get an expected orto point
+            if (ortographicOn)
+            {
+                //Set the orto size according to camera height, so our fov looks a bit like the perspective fov
+                cameraComponent.orthographicSize = cameraComponent.transform.position.y;
+
+                //Slide forward based on camera angle, to get an expected centerpoint for our view
                 var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
                 cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
-
-                print("Perspective");
-                return false;
+                print("Ortographic");
             }
             else{
-                //Perspective camera
-                cameraComponent.orthographic = true;
-                cameraComponent.orthographicSize = cameraComponent.transform.position.y;
-                print("Ortographic");
-                return true;
+                print("Perspective");                
             }
 		}
 	}

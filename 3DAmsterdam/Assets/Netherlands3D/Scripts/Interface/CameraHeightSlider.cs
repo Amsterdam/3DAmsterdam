@@ -18,6 +18,8 @@ namespace Netherlands3D.Interface
 
         private float heightInNAP;
 
+        private Graphic[] allGraphics;
+
         private void Awake()
         {
             slider = GetComponent<Slider>();
@@ -25,6 +27,24 @@ namespace Netherlands3D.Interface
             {
                 mode = Navigation.Mode.None
             };
+        }
+
+		private void Start()
+		{
+            CameraModeChanger.Instance.OnGodViewModeEvent += EnableObject;
+            CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableObject;
+
+            CameraModeChanger.Instance.OnOrtographicModeEvent += DisableObject;
+            CameraModeChanger.Instance.OnPerspectiveModeEvent += EnableObject;
+        }
+
+        private void EnableObject()
+        {
+            gameObject.SetActive(true);
+		}
+        private void DisableObject()
+        {
+            gameObject.SetActive(false);
         }
 
         public void HeightSliderChanged(float sliderValue)

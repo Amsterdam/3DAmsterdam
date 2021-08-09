@@ -15,8 +15,10 @@ namespace Netherlands3D.Cameras
         float GetCameraHeight();
 
         void SetNormalizedCameraHeight(float height);
-		bool ToggleCameraPerspective();
-		void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
+
+        void ToggleOrtographic(bool ortographicOn);
+
+        void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
         Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
 

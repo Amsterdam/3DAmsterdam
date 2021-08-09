@@ -24,6 +24,12 @@ namespace Netherlands3D.Cameras
         public delegate void OnGodViewMode();
         public event OnGodViewMode OnGodViewModeEvent;
 
+        public delegate void OnOrtographicMode();
+        public event OnOrtographicMode OnOrtographicModeEvent;
+
+        public delegate void OnPerspectiveMode();
+        public event OnPerspectiveMode OnPerspectiveModeEvent;
+
         private Quaternion oldGodViewRotation;
 
         public CameraMode CameraMode { get; private set; }
@@ -32,6 +38,8 @@ namespace Netherlands3D.Cameras
 
         [SerializeField]
         private float groundTransitionOffset = 2.0f;
+
+        private bool ortographic = false;
 
         private void Awake()
         {
@@ -78,6 +86,25 @@ namespace Netherlands3D.Cameras
             {
                 StartCoroutine(streetView.MoveToPosition(cameraTransform, position + Vector3.up * groundTransitionOffset, rotation));
             }
+        }
+
+        public bool TogglePerspective()
+        {
+            ortographic = !ortographic;
+            CurrentCameraControls.ToggleOrtographic(ortographic);
+
+            //Invoke an event, so UI a.o. items can hide/show themselves
+			switch (ortographic)
+			{
+                case true:
+                    OnOrtographicModeEvent?.Invoke();
+                    break;
+                case false:
+                    OnPerspectiveModeEvent?.Invoke();
+                    break;
+            }
+
+            return ortographic;
         }
 
         /// <summary>
