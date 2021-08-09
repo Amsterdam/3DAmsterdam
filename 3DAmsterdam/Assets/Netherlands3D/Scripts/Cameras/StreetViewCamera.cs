@@ -120,7 +120,6 @@ namespace Netherlands3D.Cameras
 				FollowMouseRotation();
 			}
 		}
-
 		private void FollowMouseRotation()
 		{
 			rotation.y += Mouse.current.delta.ReadValue().x * speed * ApplicationSettings.settings.rotateSensitivity;
