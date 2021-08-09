@@ -121,7 +121,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6379330094824325985}
         m_TargetAssemblyTypeName: Netherlands3D.Interface.Minimap.MapViewer, Assembly-CSharp
         m_MethodName: ZoomOut
         m_Mode: 6
@@ -224,6 +224,8 @@ GameObject:
   - component: {fileID: 2032325224665107851}
   - component: {fileID: 4132106878187041419}
   - component: {fileID: 490243889082863675}
+  - component: {fileID: 3654069850783846351}
+  - component: {fileID: 6379330094824325985}
   m_Layer: 5
   m_Name: MapViewer
   m_TagString: Untagged
@@ -304,6 +306,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &3654069850783846351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5603594167461659991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 0
+--- !u!114 &6379330094824325985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5603594167461659991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9356d64e9f0ff1d4f8f6da6e1966ccb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapTiles: {fileID: 5559758686376464639}
+  hoverResizeSpeed: 10
+  navigation: {fileID: 1404701913117016804}
+  hoverSize: {x: 222, y: 222}
+  maxZoomScale: 6
 --- !u!1 &6370989592938413191
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,7 +496,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6379330094824325985}
         m_TargetAssemblyTypeName: Netherlands3D.Interface.Minimap.MapViewer, Assembly-CSharp
         m_MethodName: ZoomIn
         m_Mode: 6

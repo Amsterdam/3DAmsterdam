@@ -107,6 +107,8 @@ namespace Netherlands3D.Interface.Minimap
 
 			//Calculate base meters in pixels to do calculations converting local coordinates to meters
 			startMeterInPixels = (float)tileSizeInMeters / (float)baseTileSize;
+
+			pointer.gameObject.SetActive(true);
 		}
 
 		private void DetermineTopLeftOrigin()

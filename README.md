@@ -85,9 +85,24 @@ To create assets the workflow is as follows
 - Then build the asset for WebGL using BuildPipeline.BuildAssetBundles. 
   This will create binary files and needs to be copied to the webserver that will serve them.
 
-## License
-This project is licensed under the terms of the EUPL license (LICENCE.txt)
+## Copyright and License
+```
+Copyright (C) X Gemeente
+              X Amsterdam
+              X Economic Services Departments
 
+Licensed under the EUPL, Version 1.2 or later (the "License");
+You may not use this work except in compliance with the License.
+You may obtain a copy of the License at:
+
+  https://github.com/Amsterdam/3DAmsterdam/blob/master/LICENSE.txt
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+```
 ## Third parties and licenses
 
 DXF export library - [Lesser General Public Licence](https://github.com/Amsterdam/3DAmsterdam/blob/master/3DAmsterdam/Assets/Netherlands3D/Plugins/netDxf/README.md)<br/>
