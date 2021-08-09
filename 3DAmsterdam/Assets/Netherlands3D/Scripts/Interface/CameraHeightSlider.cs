@@ -18,8 +18,6 @@ namespace Netherlands3D.Interface
 
         private float heightInNAP;
 
-        private Graphic[] allGraphics;
-
         private void Awake()
         {
             slider = GetComponent<Slider>();

@@ -25,7 +25,6 @@ namespace Netherlands3D.Cameras
         private float spinSpeed = 0.5f;
 
         private const float minOrtographicZoom = 20f;
-
         private const float maxZoomOut = 2500f;
 
         [SerializeField]
@@ -35,17 +34,10 @@ namespace Netherlands3D.Cameras
         public bool HoldingInteraction => (dragging || rotatingAroundPoint);
 
         private const float rotationSpeed = 50.0f;
-
-        private const float minAngle = -89f;
-        private const float maxAngle = 89f;
         private const float speedFactor = 50.0f;
 
         private float maxClickDragDistance = 5000.0f;
         private float maxTravelDistance = 20000.0f;
-
-        private const float rotationSensitivity = 20.0f;
-
-        private const float floorOffset = 1.8f;
 
         private Vector3 startMouseDrag;
 
@@ -413,9 +405,10 @@ namespace Netherlands3D.Cameras
             return Mathf.InverseLerp(minUndergroundY, maxZoomOut, cameraComponent.transform.position.y);
         }
 
+        //Return value representing camera height in borth ortographic as default 
         public float GetCameraHeight()
         {
-            return cameraComponent.transform.position.y;
+            return (cameraComponent.orthographic) ? cameraComponent.orthographicSize : cameraComponent.transform.position.y;
         }
 
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
