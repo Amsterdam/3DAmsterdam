@@ -214,9 +214,21 @@ namespace Netherlands3D.Cameras
 			return false;
 		}
 
-		public void ResetNorth()
+		public void ResetNorth(bool resetTopDown = false)
 		{
-			throw new System.NotImplementedException();
+			//Not implemented
+		}
+
+		public bool ToggleCameraPerspective()
+		{
+			if (cameraComponent.fieldOfView != 60)
+			{
+				cameraComponent.fieldOfView = 60;
+				return false;
+			}
+
+			cameraComponent.fieldOfView = 30;
+			return true;
 		}
 	}
 }

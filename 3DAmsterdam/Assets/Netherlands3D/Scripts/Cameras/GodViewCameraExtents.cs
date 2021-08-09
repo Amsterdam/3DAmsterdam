@@ -57,11 +57,11 @@ namespace Netherlands3D.Cameras
             }
 
             // Convert min and max to WGS84 coordinates
-            var wGSMin = CoordConvert.UnitytoWGS84(unityMin);
-            var wGSMax = CoordConvert.UnitytoWGS84(unityMax);
+            var rdMin = CoordConvert.UnitytoRD(unityMin);
+            var rdMax = CoordConvert.UnitytoRD(unityMax);
 
             // Area that should be loaded
-            var extent = new Extent(wGSMin.lon, wGSMin.lat, wGSMax.lon, wGSMax.lat);
+            var extent = new Extent(rdMin.x, rdMin.y, rdMax.x, rdMax.y);
             return extent;
         }
 
@@ -72,31 +72,32 @@ namespace Netherlands3D.Cameras
             switch (corner)
             {
                 case Corners.TOP_LEFT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
+                    screenPosition.x = 0;
+                    screenPosition.y = 1;
+
                     break;
                 case Corners.TOP_RIGHT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMax;
+                    screenPosition.x = 1;
+                    screenPosition.y = 1;
                     break;
                 case Corners.BOTTOM_LEFT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMin;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
+                    screenPosition.x = 0;
+                    screenPosition.y = 0;
                     break;
                 case Corners.BOTTOM_RIGHT:
-                    screenPosition.x = CameraModeChanger.Instance.ActiveCamera.pixelRect.xMax;
-                    screenPosition.y = CameraModeChanger.Instance.ActiveCamera.pixelRect.yMin;
+                    screenPosition.x = 1;
+                    screenPosition.y = 0;
                     break;
                 default:
                     break;
             }
             var output = new Vector3();
 
-            var topLeftCornerStart = CameraModeChanger.Instance.ActiveCamera.transform.position;
-            var topLeftCornerFar = CameraModeChanger.Instance.ActiveCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 3010));
-
+            var topScreenPointFar = CameraModeChanger.Instance.ActiveCamera.ViewportToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 10000));
+            var topScreenPointNear = CameraModeChanger.Instance.ActiveCamera.ViewportToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 10));
+            
             // Calculate direction vector
-            Vector3 direction = topLeftCornerStart - topLeftCornerFar;
+            Vector3 direction = topScreenPointNear - topScreenPointFar;
             float factor; //factor waarmee de Richtingvector vermenigvuldigd moet worden om op het maaiveld te stoppen
             if (direction.y < 0) //wanneer de Richtingvector omhooggaat deze factor op 1 instellen
             {
@@ -104,13 +105,13 @@ namespace Netherlands3D.Cameras
             }
             else
             {
-                factor = ((CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - 40) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
+                factor = ((topScreenPointNear.y) / direction.y); //factor bepalen t.o.v. maaiveld (aanname maaiveld op 0 NAP = ca 40 Unityeenheden in Y-richting)
             }
 
             // Determine the X, Y, en Z location where the viewline ends
-            output.x = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.x - Mathf.Clamp((factor * direction.x), -1 * maximumViewDistance, maximumViewDistance);
-            output.y = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
-            output.z = CameraModeChanger.Instance.ActiveCamera.transform.localPosition.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
+            output.x = topScreenPointNear.x - Mathf.Clamp((factor * direction.x), -1 * maximumViewDistance, maximumViewDistance);
+            output.y = topScreenPointNear.y - Mathf.Clamp((factor * direction.y), -1 * maximumViewDistance, maximumViewDistance);
+            output.z = topScreenPointNear.z - Mathf.Clamp((factor * direction.z), -1 * maximumViewDistance, maximumViewDistance);
 
             return output;
         }

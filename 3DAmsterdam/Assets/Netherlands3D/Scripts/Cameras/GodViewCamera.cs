@@ -48,7 +48,7 @@ namespace Netherlands3D.Cameras
         private Vector3 startMouseDrag;
 
         [SerializeField]
-        private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
+        private Vector3 cameraOffsetForTargetLocation = new Vector3(100, 100, 200);
 
         private float scrollDelta;
 
@@ -98,39 +98,39 @@ namespace Netherlands3D.Cameras
         List<InputActionMap> availableActionMaps;
 
         [SerializeField]
-		private float resetTransitionSpeed = 0.5f;
-		private Coroutine resetNorthTransition;
+        private float resetTransitionSpeed = 0.5f;
+        private Coroutine resetNorthTransition;
 
-		void Awake()
-        {     
+        void Awake()
+        {
             cameraComponent = GetComponent<Camera>();
         }
 
         void Start()
-		{
+        {
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
-            
+
             availableActionMaps = new List<InputActionMap>()
             {
                 ActionHandler.actions.GodViewMouse,
-                ActionHandler.actions.GodViewKeyboard                
+                ActionHandler.actions.GodViewKeyboard
             };
-            
+
             currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
-			AddActionListeners();
-		}
+            AddActionListeners();
+        }
 
         private void AddActionListeners()
-		{
+        {
             //Mouse actions
             dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
-			rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
+            rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
             zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
             //Keyboard actions
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
-			rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
+            rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
             zoomActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.Zoom);
             moveHeightActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCameraHeight);
 
@@ -177,7 +177,7 @@ namespace Netherlands3D.Cameras
             {
                 ActionHandler.actions.GodViewMouse.Enable();
             }
-            else if(!enabled && ((!rotatingAroundPoint && !dragging) || Selector.Instance.GetActiveInteractable()) && ActionHandler.actions.GodViewMouse.enabled)
+            else if (!enabled && ((!rotatingAroundPoint && !dragging) || Selector.Instance.GetActiveInteractable()) && ActionHandler.actions.GodViewMouse.enabled)
             {
                 dragging = false;
                 dragMomentum = Vector3.zero;
@@ -227,12 +227,12 @@ namespace Netherlands3D.Cameras
         }
 
         private void Drag(IAction action)
-		{
-            if(action.Cancelled)
+        {
+            if (action.Cancelled)
             {
                 dragging = false;
                 rotatingAroundPoint = false;
-            } 
+            }
             else if (action.Performed)
             {
                 startMouseDrag = GetMousePositionInWorld();
@@ -254,7 +254,7 @@ namespace Netherlands3D.Cameras
         }
 
         void Update()
-		{
+        {
             if (dragging)
             {
                 CheckRotatingAround();
@@ -278,7 +278,7 @@ namespace Netherlands3D.Cameras
                 {
                     RotateAroundPoint();
                 }
-                else if(!BlockedByTextInput())
+                else if (!BlockedByTextInput())
                 {
                     HandleTranslationInput();
                     HandleRotationInput();
@@ -291,7 +291,7 @@ namespace Netherlands3D.Cameras
             }
 
             LimitPosition();
-            //ClampRotation(); //clamping doesnt work..
+            //ClampRotation(); //clamping doesnt work because we rotate around point, moving the camera
         }
 
         void CheckRotatingAround()
@@ -311,16 +311,16 @@ namespace Netherlands3D.Cameras
         /// Clamps the camera within the max travel distance bounding box
         /// </summary>
 		private void LimitPosition()
-		{
-            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x,-maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
-		}
+        {
+            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x, -maxTravelDistance, maxTravelDistance), Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance));
+        }
 
-		private bool BlockedByTextInput(){
+        private bool BlockedByTextInput() {
             return EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
         }
 
-		public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
-		{
+        public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion targetRotation = new Quaternion())
+        {
             cameraComponent.transform.position = targetLocation + cameraOffsetForTargetLocation;
             cameraComponent.transform.LookAt(targetLocation, Vector3.up);
 
@@ -331,14 +331,16 @@ namespace Netherlands3D.Cameras
         {
             moveSpeed = Mathf.Sqrt(Mathf.Abs(cameraComponent.transform.position.y)) * speedFactor;
             var heightchange = moveHeightActionKeyboard.ReadValue<float>();
-            Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
-
-            if (movement == Vector3.zero && heightchange == 0) return;
             
+            Vector3 movement = moveActionKeyboard.ReadValue<Vector2>();
+            if (movement == Vector3.zero && heightchange == 0) return;
+
+
+
             movement.z = movement.y;
             movement.y = heightchange * 0.1f;
             movement = Quaternion.AngleAxis(cameraComponent.transform.eulerAngles.y, Vector3.up) * movement;
-            cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;            
+            cameraComponent.transform.position += movement * moveSpeed * Time.deltaTime;
         }
 
         private void HandleRotationInput()
@@ -359,7 +361,7 @@ namespace Netherlands3D.Cameras
             Vector2 val = flyActionGamepad.ReadValue<Vector2>();
 
             if (val == Vector2.zero) return;
-            
+
             var newpos = cameraComponent.transform.position += cameraComponent.transform.forward.normalized * val.y * moveSpeed * Time.deltaTime * 0.3f;
             newpos += cameraComponent.transform.right * val.x * moveSpeed * Time.deltaTime * 0.1f;
 
@@ -368,15 +370,15 @@ namespace Netherlands3D.Cameras
         }
 
         private void FirstPersonLook()
-		{
+        {
             var mouseDelta = Mouse.current.delta.ReadValue();
 
-			//Convert mouse position into local rotations
-			currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
-			currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            //Convert mouse position into local rotations
+            currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
 
-			//Adjust camera rotation
-			cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
+            //Adjust camera rotation
+            cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
         }
 
         private void ClampRotation()
@@ -392,7 +394,7 @@ namespace Netherlands3D.Cameras
         /// Use a normalized value to set the camera height between floor level and maximum height 
         /// </summary>
         /// <param name="normalizedHeight">Range from 0 to 1</param>
-        public void SetNormalizedCameraHeight(float normalizedHeight){
+        public void SetNormalizedCameraHeight(float normalizedHeight) {
             var newHeight = Mathf.Lerp(minUndergroundY, maxZoomOut, normalizedHeight);
             cameraComponent.transform.position = new Vector3(cameraComponent.transform.position.x, newHeight, cameraComponent.transform.position.z);
         }
@@ -401,7 +403,7 @@ namespace Netherlands3D.Cameras
         /// Returns the normalized 0 to 1 value of the camera height
         /// </summary>
         /// <returns>Normalized 0 to 1 value of the camera height</returns>
-        public float GetNormalizedCameraHeight(){
+        public float GetNormalizedCameraHeight() {
             return Mathf.InverseLerp(minUndergroundY, maxZoomOut, cameraComponent.transform.position.y);
         }
 
@@ -412,34 +414,48 @@ namespace Netherlands3D.Cameras
 
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
-            var heightSpeed = cameraComponent.transform.position.y; //The higher we are, the faster we zoom
-            zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
-            cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * heightSpeed, Space.World);
+            var cameraHeight = cameraComponent.transform.position.y; //The higher we are, the faster we zoom       
+
+            if (cameraComponent.orthographic)
+            {
+                cameraComponent.orthographicSize -= cameraComponent.orthographicSize * zoomAmount * zoomSpeed;
+                //An ortographic camera moves towards the zoom direction point in its own 2D plane
+                var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
+                localPointPosition.z = 0;
+
+                cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+            }
+            else{
+                //A perspective camera moves its position towards to zoom direction point
+                zoomDirection = (zoomDirectionPoint - cameraComponent.transform.position).normalized;
+                cameraComponent.transform.Translate(zoomDirection * zoomSpeed * zoomAmount * cameraHeight, Space.World);
+            }
+
             focusingOnTargetPoint.Invoke(zoomDirectionPoint);
         }
 
         private void Dragging()
-		{
+        {
             if (!ActionHandler.actions.GodViewMouse.enabled) return;
 
             dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
 
-			if (dragMomentum.magnitude > 0.1f)
-				transform.position -= dragMomentum;
+            if (dragMomentum.magnitude > 0.1f)
+                transform.position -= dragMomentum;
 
             //Filter out extreme swings
-            if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.ClampMagnitude(dragMomentum, maxMomentum); 
-		}
+            if (dragMomentum.magnitude > maxMomentum) dragMomentum = Vector3.ClampMagnitude(dragMomentum, maxMomentum);
+        }
 
-		private void EazeOutDragVelocity()
-		{
-			//Slide forward in dragged direction
-			dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
-			if (dragMomentum.magnitude > 0.1f)
-			{
-				this.transform.position -= dragMomentum;
-			}
-		}
+        private void EazeOutDragVelocity()
+        {
+            //Slide forward in dragged direction
+            dragMomentum = Vector3.Lerp(dragMomentum, Vector3.zero, Time.deltaTime * deceleration);
+            if (dragMomentum.magnitude > 0.1f)
+            {
+                this.transform.position -= dragMomentum;
+            }
+        }
 
         public Ray GetMainPointerRay()
         {
@@ -452,7 +468,7 @@ namespace Netherlands3D.Cameras
             var pointerPosition = Mouse.current.position.ReadValue();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
-            var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);            
+            var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
             worldPlane.Raycast(screenRay, out float distance);
 
             var samplePoint = screenRay.GetPoint(Mathf.Min(maxClickDragDistance, distance));
@@ -465,27 +481,27 @@ namespace Netherlands3D.Cameras
         /// Resets the camera rotation so it points north
         /// The general modifier key input is used to optionaly also reset the camera so it looks down
         /// </summary>
-        public void ResetNorth(){
+        public void ResetNorth(bool resetTopDown = false) {
 
-            if (resetNorthTransition!= null) StopCoroutine(resetNorthTransition);
-            resetNorthTransition = StartCoroutine(TransitionResetToNorth());
-		}
+            if (resetNorthTransition != null) StopCoroutine(resetNorthTransition);
+            resetNorthTransition = StartCoroutine(TransitionResetToNorth(resetTopDown));
+        }
 
-        private IEnumerator TransitionResetToNorth(){
+        private IEnumerator TransitionResetToNorth(bool resetTopDown = false) {
 
             Quaternion newTargetRotation;
 
-            //If main modifier key is used, also make camera to look down
-            if (Selector.doingMultiselect)
+            //If modifier is used, also make camera to look down
+            if (resetTopDown)
             {
                 newTargetRotation = Quaternion.LookRotation(Vector3.down, Vector3.forward);
             }
-            else{
+            else {
                 newTargetRotation = Quaternion.Euler(cameraComponent.transform.eulerAngles.x, 0, cameraComponent.transform.eulerAngles.z);
             }
 
             //Transition north, with camera looking down
-            while (Quaternion.Angle(cameraComponent.transform.rotation,newTargetRotation) > 0.01f)
+            while (Quaternion.Angle(cameraComponent.transform.rotation, newTargetRotation) > 0.01f)
             {
                 cameraComponent.transform.rotation = Quaternion.Lerp(cameraComponent.transform.rotation, newTargetRotation, resetTransitionSpeed);
                 yield return new WaitForEndOfFrame();
@@ -497,54 +513,72 @@ namespace Netherlands3D.Cameras
         }
 
         private void RotateAroundPoint()
-		{
-			var mouseDelta = Mouse.current.delta.ReadValue();
+        {
+            var mouseDelta = Mouse.current.delta.ReadValue();
 
-			var previousPosition = cameraComponent.transform.position;
-			var previousRotation = cameraComponent.transform.rotation;
+            var previousPosition = cameraComponent.transform.position;
+            var previousRotation = cameraComponent.transform.rotation;
 
-			cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
-			cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+            cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
 
-			if (cameraComponent.transform.position.y < minUndergroundY)
-			{
-				//Do not let the camera go beyond the rotationpoint height
-				cameraComponent.transform.position = previousPosition;
-				cameraComponent.transform.rotation = previousRotation;
-			}
+            if (cameraComponent.transform.position.y < minUndergroundY)
+            {
+                //Do not let the camera go beyond the rotationpoint height
+                cameraComponent.transform.position = previousPosition;
+                cameraComponent.transform.rotation = previousRotation;
+            }
 
-			currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
+            currentRotation = new Vector2(cameraComponent.transform.rotation.eulerAngles.y, cameraComponent.transform.rotation.eulerAngles.x);
 
-			focusingOnTargetPoint.Invoke(rotatePoint);
-		}
+            focusingOnTargetPoint.Invoke(rotatePoint);
+        }
 
-		private void SetFocusPoint()
-		{
-			var pointerPosition = Mouse.current.position.ReadValue();
+        private void SetFocusPoint()
+        {
+            var pointerPosition = Mouse.current.position.ReadValue();
 
-			RaycastHit hit;
-			var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
+            RaycastHit hit;
+            var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
 
-			//Determine the point we will spin around
-			if (Transformable.lastSelectedTransformable != null)
-			{
-				rotatePoint = Transformable.lastSelectedTransformable.transform.position;
-			}
-			else if (Physics.Raycast(screenRay, out hit))
-			{
-				rotatePoint = hit.point;
-				focusingOnTargetPoint(rotatePoint);
-			}
-			else
-			{
-				rotatePoint = GetMousePositionInWorld();
-				focusingOnTargetPoint(rotatePoint);
-			}
-		}
+            //Determine the point we will spin around
+            if (Transformable.lastSelectedTransformable != null)
+            {
+                rotatePoint = Transformable.lastSelectedTransformable.transform.position;
+            }
+            else if (Physics.Raycast(screenRay, out hit))
+            {
+                rotatePoint = hit.point;
+                focusingOnTargetPoint(rotatePoint);
+            }
+            else
+            {
+                rotatePoint = GetMousePositionInWorld();
+                focusingOnTargetPoint(rotatePoint);
+            }
+        }
 
-		public bool UsesActionMap(InputActionMap actionMap)
-		{
-            return availableActionMaps.Contains(actionMap);         
+        public bool UsesActionMap(InputActionMap actionMap)
+        {
+            return availableActionMaps.Contains(actionMap);
+        }
+
+        public bool ToggleCameraPerspective()
+        { 
+            if(cameraComponent.orthographic)
+            {
+                //Orto camera
+                cameraComponent.orthographic = false;
+                print("Perspective");
+                return false;
+            }
+            else{
+                //Perspective camera
+                cameraComponent.orthographic = true;
+                cameraComponent.orthographicSize = cameraComponent.transform.position.y / 2.0f;
+                print("Ortographic");
+                return true;
+            }
 		}
 	}
 }
