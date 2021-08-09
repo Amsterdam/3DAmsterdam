@@ -218,16 +218,18 @@ namespace Netherlands3D.Cameras
 			//Not implemented
 		}
 
-		public bool ToggleCameraPerspective()
+		/// <summary>
+		/// Ortographic wouldnt make sense in an FPS camera, but we can change the fov to something a little less extreme as a fallback.
+		/// </summary>
+		/// <returns>Ortographic on</returns>
+		public void ToggleOrtographic(bool ortographicOn)
 		{
-			if (cameraComponent.fieldOfView != 60)
+			if (ortographicOn)
 			{
-				cameraComponent.fieldOfView = 60;
-				return false;
+				cameraComponent.fieldOfView = 30;
 			}
 
-			cameraComponent.fieldOfView = 30;
-			return true;
+			cameraComponent.fieldOfView = 60;
 		}
 	}
 }

@@ -24,6 +24,7 @@ namespace Netherlands3D.Cameras
         [SerializeField]
         private float spinSpeed = 0.5f;
 
+        private const float minOrtographicZoom = 20f;
         private const float maxZoomOut = 2500f;
 
         [SerializeField]
@@ -33,17 +34,10 @@ namespace Netherlands3D.Cameras
         public bool HoldingInteraction => (dragging || rotatingAroundPoint);
 
         private const float rotationSpeed = 50.0f;
-
-        private const float minAngle = -89f;
-        private const float maxAngle = 89f;
         private const float speedFactor = 50.0f;
 
         private float maxClickDragDistance = 5000.0f;
         private float maxTravelDistance = 20000.0f;
-
-        private const float rotationSensitivity = 20.0f;
-
-        private const float floorOffset = 1.8f;
 
         private Vector3 startMouseDrag;
 
@@ -101,7 +95,7 @@ namespace Netherlands3D.Cameras
         private float resetTransitionSpeed = 0.5f;
         private Coroutine resetNorthTransition;
 
-        void Awake()
+		void Awake()
         {
             cameraComponent = GetComponent<Camera>();
         }
@@ -312,13 +306,22 @@ namespace Netherlands3D.Cameras
         /// </summary>
 		private void Clamping()
         {
+            //Make sure orto cameras only look down, and do not go too low
+            if (cameraComponent.orthographic)
+            {
+                cameraComponent.transform.rotation = Quaternion.LookRotation(Vector3.down,cameraComponent.transform.up);
+                this.transform.position = new Vector3(
+                    this.transform.position.x, 
+                    Mathf.Clamp(cameraComponent.orthographicSize, 100, maxZoomOut), 
+                    this.transform.position.z
+                );
+            }
+
             this.transform.position = new Vector3(
                 Mathf.Clamp(this.transform.position.x, -maxTravelDistance, maxTravelDistance), 
                 Mathf.Clamp(this.transform.position.y, minUndergroundY, maxZoomOut), 
                 Mathf.Clamp(this.transform.position.z, -maxTravelDistance, maxTravelDistance)
             );
-
-            Vector3 limitInLocalSpace = cameraComponent.transform.InverseTransformPoint(this.transform.position);
         }
 
         private bool BlockedByTextInput() {
@@ -402,9 +405,10 @@ namespace Netherlands3D.Cameras
             return Mathf.InverseLerp(minUndergroundY, maxZoomOut, cameraComponent.transform.position.y);
         }
 
+        //Return value representing camera height in borth ortographic as default 
         public float GetCameraHeight()
         {
-            return cameraComponent.transform.position.y;
+            return (cameraComponent.orthographic) ? cameraComponent.orthographicSize : cameraComponent.transform.position.y;
         }
 
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
@@ -413,12 +417,15 @@ namespace Netherlands3D.Cameras
 
             if (cameraComponent.orthographic)
             {
-                cameraComponent.orthographicSize -= cameraComponent.orthographicSize * zoomAmount * zoomSpeed;
-                //An ortographic camera moves towards the zoom direction point in its own 2D plane
-                var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
-                localPointPosition.z = 0;
+                cameraComponent.orthographicSize = Mathf.Clamp(cameraComponent.orthographicSize - cameraComponent.orthographicSize * zoomAmount * zoomSpeed, minOrtographicZoom, maxZoomOut);
 
-                cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+                //An ortographic camera moves towards the zoom direction point in its own 2D plane
+                if (cameraComponent.transform.position.y < maxZoomOut)
+                {
+                    var localPointPosition = cameraComponent.transform.InverseTransformPoint(zoomDirectionPoint);
+                    localPointPosition.z = 0;
+                    cameraComponent.transform.Translate(localPointPosition * zoomSpeed * zoomAmount);
+                }
             }
             else{
                 //A perspective camera moves its position towards to zoom direction point
@@ -451,13 +458,11 @@ namespace Netherlands3D.Cameras
                 this.transform.position -= dragMomentum;
             }
         }
-
         public Ray GetMainPointerRay()
         {
             var pointerPosition = Mouse.current.position.ReadValue();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
-
         public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
             var pointerPosition = Mouse.current.position.ReadValue();
@@ -514,7 +519,8 @@ namespace Netherlands3D.Cameras
             var previousPosition = cameraComponent.transform.position;
             var previousRotation = cameraComponent.transform.rotation;
 
-            cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
+            if(!cameraComponent.orthographic)
+                cameraComponent.transform.RotateAround(rotatePoint, cameraComponent.transform.right, -mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
             cameraComponent.transform.RotateAround(rotatePoint, Vector3.up, mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity);
 
             if (cameraComponent.transform.position.y < minUndergroundY)
@@ -558,21 +564,22 @@ namespace Netherlands3D.Cameras
             return availableActionMaps.Contains(actionMap);
         }
 
-        public bool ToggleCameraPerspective()
-        { 
-            if(cameraComponent.orthographic)
+        public void ToggleOrtographic(bool ortographicOn)
+        {
+            cameraComponent.orthographic = ortographicOn;
+
+            if (ortographicOn)
             {
-                //Orto camera
-                cameraComponent.orthographic = false;
-                print("Perspective");
-                return false;
+                //Set the orto size according to camera height, so our fov looks a bit like the perspective fov
+                cameraComponent.orthographicSize = cameraComponent.transform.position.y;
+
+                //Slide forward based on camera angle, to get an expected centerpoint for our view
+                var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
+                cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
+                print("Ortographic");
             }
             else{
-                //Perspective camera
-                cameraComponent.orthographic = true;
-                cameraComponent.orthographicSize = cameraComponent.transform.position.y / 2.0f;
-                print("Ortographic");
-                return true;
+                print("Perspective");                
             }
 		}
 	}
