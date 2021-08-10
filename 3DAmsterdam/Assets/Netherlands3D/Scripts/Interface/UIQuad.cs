@@ -39,8 +39,8 @@ namespace Netherlands3D.Interface
 
             vert0.color = color;
             vert1.color = color;
-            vert2.color = Color.clear;
-            vert3.color = Color.clear;
+            vert2.color = color;
+            vert3.color = color;
 
             vert0.position = QuadVertices[0];
             vert1.position = QuadVertices[1];
