@@ -260,7 +260,7 @@ public class MeasuringLine : Interactable
 		lineRenderer.SetPositions(positions);
 
 		//Draw the distance text on top of our line if points differ
-		if (positions[0] != positions[1])
+		if (positions[0] != positions[1] || Selector.doingMultiselect)
 		{
 			var lineCenter = Vector3.Lerp(positions[0], positions[1], 0.5f);
 			if (!distanceText) distanceText = CoordinateNumbers.Instance.CreateDistanceNumber();

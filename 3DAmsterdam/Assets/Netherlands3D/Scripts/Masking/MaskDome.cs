@@ -49,7 +49,7 @@ namespace Netherlands3D.Masking
             }
 
             transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight();
         }
     }
 }

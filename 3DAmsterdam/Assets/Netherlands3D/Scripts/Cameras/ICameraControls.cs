@@ -16,6 +16,8 @@ namespace Netherlands3D.Cameras
 
         void SetNormalizedCameraHeight(float height);
 
+        void ToggleOrtographic(bool ortographicOn);
+
         void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
         Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
@@ -27,5 +29,7 @@ namespace Netherlands3D.Cameras
         void EnableMouseActionMap(bool enabled);
 
         bool UsesActionMap(InputActionMap actionMap);
-    }
+
+		void ResetNorth(bool resetTopDown = false);
+	}
 }

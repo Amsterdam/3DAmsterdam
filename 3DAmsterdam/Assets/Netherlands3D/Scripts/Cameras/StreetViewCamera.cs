@@ -120,7 +120,6 @@ namespace Netherlands3D.Cameras
 				FollowMouseRotation();
 			}
 		}
-
 		private void FollowMouseRotation()
 		{
 			rotation.y += Mouse.current.delta.ReadValue().x * speed * ApplicationSettings.settings.rotateSensitivity;
@@ -212,6 +211,25 @@ namespace Netherlands3D.Cameras
 		{
 			//TODO: Requires switch to actionmap inputs
 			return false;
+		}
+
+		public void ResetNorth(bool resetTopDown = false)
+		{
+			//Not implemented
+		}
+
+		/// <summary>
+		/// Ortographic wouldnt make sense in an FPS camera, but we can change the fov to something a little less extreme as a fallback.
+		/// </summary>
+		/// <returns>Ortographic on</returns>
+		public void ToggleOrtographic(bool ortographicOn)
+		{
+			if (ortographicOn)
+			{
+				cameraComponent.fieldOfView = 30;
+			}
+
+			cameraComponent.fieldOfView = 60;
 		}
 	}
 }

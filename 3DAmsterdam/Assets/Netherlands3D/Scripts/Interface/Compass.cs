@@ -11,7 +11,15 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private bool counterRotate = false;
-        
+
+        private float lastClick = 0;
+
+        [SerializeField]
+        private bool doubleClickLooksDown = false;
+
+        [SerializeField]
+        private float doubleClickTime = 0.5f;
+
         void Update()
         {
             direction.z = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles.y;
@@ -24,9 +32,15 @@ namespace Netherlands3D.Interface
         public void ResetCameraToNorth()
         {
             print("Reset camera to north");
-            var resetEuler = CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles;
-            resetEuler.y = 0;
-            CameraModeChanger.Instance.ActiveCamera.transform.eulerAngles = resetEuler;
+            if (doubleClickLooksDown && (Time.realtimeSinceStartup - lastClick) < doubleClickTime)
+            {
+                CameraModeChanger.Instance.CurrentCameraControls.ResetNorth(true);
+            }
+            else{
+                CameraModeChanger.Instance.CurrentCameraControls.ResetNorth(false);
+            }
+
+            lastClick = Time.realtimeSinceStartup;
         }
     }
 }

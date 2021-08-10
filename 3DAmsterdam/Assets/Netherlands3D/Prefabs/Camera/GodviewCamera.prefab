@@ -113,6 +113,7 @@ MonoBehaviour:
   rotatingAroundPoint: 0
   cameraOffsetForTargetLocation: {x: 100, y: 200, z: -100}
   LockFunctions: 0
+  resetTransitionSpeed: 0.1
 --- !u!114 &8089436527420917118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +200,6 @@ MonoBehaviour:
   screenshotRenderTexture: {fileID: 0}
   fileType: 
   fileName: 
-  snapshotSettings: {fileID: 0}
   snapshotUI: {fileID: 0}
   snapshotNavigation: {fileID: 0}
   snapshotLogo: {fileID: 0}
@@ -209,3 +209,4 @@ MonoBehaviour:
   snapshotFileType: {fileID: 0}
   snapshotName: {fileID: 0}
   responsiveCanvas: {fileID: 0}
+  panelGraphics: []

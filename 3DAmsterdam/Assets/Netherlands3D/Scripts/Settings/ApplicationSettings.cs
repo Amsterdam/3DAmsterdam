@@ -25,7 +25,7 @@ namespace Netherlands3D.Settings {
         private InterfaceLayers interfaceLayers;
 
         [SerializeField]
-        private Map minimap;
+        private MapViewer minimap;
 
         [SerializeField]
         private Fps fpsCounter;
@@ -177,10 +177,7 @@ namespace Netherlands3D.Settings {
 
             fpsCounter.ToggleVisualFPS(settings.drawFPS);
 			
-			if (Config.activeConfiguration.EnableMinimap)
-			{
-				minimap.gameObject.SetActive(settings.drawMap);
-			}
+			minimap.gameObject.SetActive(settings.drawMap);
 
 			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
 
