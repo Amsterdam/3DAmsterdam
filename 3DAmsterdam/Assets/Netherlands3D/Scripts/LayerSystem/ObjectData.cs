@@ -81,6 +81,7 @@ namespace Netherlands3D.LayerSystem
 				else if (highlightIDs.Contains(targetId))
 				{
 					pixelColor = HIGHLIGHTED_COLOR;
+					Debug.Log($"found pixel for targetid:{targetId}");
 				}
 				else
 				{

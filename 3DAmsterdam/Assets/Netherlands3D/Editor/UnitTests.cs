@@ -77,12 +77,11 @@ public class UnitTests
 
         foreach (var filePath in testFilePaths3)
         {
-            Assert.Throws<Exception>(
-             delegate { filePath.GetRDCoordinate(); });
+            Vector3RD rd = filePath.GetRDCoordinate();
+            Assert.AreEqual(new Vector3RD(), rd);            
         }
 
-        Exception ex = Assert.Throws<Exception>(
-            delegate { "AssetBundles".GetRDCoordinate(); });        
+        
 
     }
 

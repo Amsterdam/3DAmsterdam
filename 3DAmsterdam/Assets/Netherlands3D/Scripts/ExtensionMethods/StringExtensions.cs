@@ -66,7 +66,8 @@ public static class StringExtensions
 		}
         else
         {
-			throw new Exception($"Could not get RD coordinate of string: {filepath}");
+            return new Vector3RD();
+			//throw new Exception($"Could not get RD coordinate of string: {filepath}");
 		}
 	}
 

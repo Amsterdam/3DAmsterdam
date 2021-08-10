@@ -472,6 +472,14 @@ namespace Netherlands3D.Interface.SidePanel
         {
             Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
         }
+
+        public ActionButton AddActionButtonBigRef(string buttonText, Action<string> clickAction)
+        {
+            ActionButton btn = Instantiate(buttonBigPrefab, targetFieldsContainer);
+            btn.SetAction(buttonText, clickAction);
+            return btn;
+        }
+
         public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false, string description = "")
         {
             Instantiate(sliderPrefab, targetFieldsContainer).SetAction(minText, maxText, minValue, maxValue, defaultValue, changeAction, wholeNumberSteps, description);

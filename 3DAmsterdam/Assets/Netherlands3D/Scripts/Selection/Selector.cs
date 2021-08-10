@@ -99,7 +99,7 @@ namespace Netherlands3D.Interface
 			multiSelectAction.SubscribeCancelled(Multiselect);
 			escapeAction.SubscribePerformed(Escape);
 
-			clickedSecondaryAction.SubscribePerformed(SecondaryClick);
+			//clickedSecondaryAction.SubscribePerformed(SecondaryClick);
 		}
 
 		public void SetActiveInteractable(Interactable newActiveInteractable)

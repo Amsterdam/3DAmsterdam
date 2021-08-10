@@ -1,6 +1,7 @@
 using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.Interface;
+using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
 using Newtonsoft.Json;
 using System.Collections;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
-
+using UnityEngine.UI;
 
 public class PerceelRenderer : MonoBehaviour
 {
@@ -20,11 +21,26 @@ public class PerceelRenderer : MonoBehaviour
     public GameObject TerrainLayer;
     public GameObject BuildingsLayer;
 
+    public GameObject Uitbouw;
+
+    [SerializeField]
+    private Text MainTitle;
+
+    [SerializeField]
+    private Transform GeneratedFieldsContainer;
+
+    private float terrainFloor;
+
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
+        MainTitle.text = "Uitbouw plaatsen";
+    }
 
     public IEnumerator GetAndRenderPerceel(Vector3RD position)
     {
@@ -53,6 +69,8 @@ public class PerceelRenderer : MonoBehaviour
                 var serializer = new JsonSerializer();
                 JsonModels.WebFeatureService.WFSRootobject wfs = serializer.Deserialize<JsonModels.WebFeatureService.WFSRootobject>(reader);
 
+                UpdateSidePanelPerceelData(wfs);
+
                 yield return null;
 
                 foreach (var feature in wfs.features)
@@ -71,10 +89,6 @@ public class PerceelRenderer : MonoBehaviour
                 }
             }
 
-            //TODO teken het perceel polygon
-            //StartCoroutine(RenderPolygons(list));
-            //RenderPolygonMesh(list);
-
             foreach (Transform gam in TerrainLayer.transform)
             {
                 // Debug.Log(gam.name);
@@ -85,67 +99,114 @@ public class PerceelRenderer : MonoBehaviour
 
             StartCoroutine(RenderPolygons(list));
 
-            //TODO raycast from position to building to hit the building and get the vertex index
-
-
-
-            //let feature = data.features[0];
-            //this.kadastraleGrootteWaarde = feature.properties.kadastraleGrootteWaarde;
-            ////TODO support multiple polygons
-            //this.polygon_rd = feature.geometry.coordinates[0];
 
         }
     }
 
+    IEnumerator UpdateSidePanelAddress(string bagId)
+    {        
+        var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagId}";
 
-    public IEnumerator HandlePosition(Vector3RD position)
+        UnityWebRequest req = UnityWebRequest.Get(url);
+        req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
+        req.SetRequestHeader("Accept-Crs", "epsg:28992");
+
+        yield return req.SendWebRequest();
+
+        if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+        {
+            WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+        }
+        else
+        {
+            //Deserialize data
+            using (JsonTextReader reader = new JsonTextReader(new StringReader(req.downloadHandler.text)))
+            {
+                reader.SupportMultipleContent = true;
+                var serializer = new JsonSerializer();
+                JsonModels.RootobjectAdressen adres = serializer.Deserialize<JsonModels.RootobjectAdressen>(reader);
+
+                var adres1 = adres._embedded.adressen[0];
+
+                PropertiesPanel.Instance.AddTextfield($"{adres1.korteNaam} {adres1.huisnummer}\n{adres1.postcode} {adres1.woonplaatsNaam}");
+               
+            }
+
+        }
+
+        
+
+    }
+
+    ActionButton btn;
+    Transform uitbouwTransform;
+    Vector3 startPosition;
+
+    void UpdateSidePanelPerceelData(JsonModels.WebFeatureService.WFSRootobject wfs)
     {
+        var perceelGrootte = $"Perceeloppervlakte: {wfs.features[0].properties.kadastraleGrootteWaarde} m2";
+        PropertiesPanel.Instance.AddLabel(perceelGrootte);
+
+        btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
+        {
+            var rd = new Vector2RD(wfs.features[0].properties.perceelnummerPlaatscoordinaatX, wfs.features[0].properties.perceelnummerPlaatscoordinaatY);
+            var pos = CoordConvert.RDtoUnity(rd);
+            
+            var uitbouw = Instantiate(Uitbouw);
+            pos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
+            uitbouw.transform.position = pos;
+            startPosition = pos;
+            uitbouwTransform = uitbouw.transform;
+
+            Invoke("RemoveButton", 0.3f);
+
+            PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
+            PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
+                uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
+            }, false, "Draai de uitbouw");
+
+            PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
+            PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
+            {
+                uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
+            }, false, "Draai de uitbouw");
+
+        });
+
+    }
+
+    void RemoveButton()
+    {
+        Destroy(btn.gameObject);
+    }
+
+    public IEnumerator HandlePosition(Vector3RD position, string id)
+    {
+        StartCoroutine(UpdateSidePanelAddress(id));
+
+        yield return new WaitForSeconds(1);
+
         StartCoroutine(GetAndRenderPerceel(position));
 
-        StartCoroutine(HighlightBuilding(CoordConvert.RDtoUnity(position)));
+        StartCoroutine(HighlightBuilding(CoordConvert.RDtoUnity(position), id));
+
+        //PropertiesPanel.Instance.AddCustomPrefab(UitbouwWizard);
+
+        
 
         yield return null;
 
     }
 
-    IEnumerator HighlightBuilding(Vector3 position)
-    {
-        //TODO detect when tile is loaded..
-        yield return new WaitForSeconds(2);
+    IEnumerator HighlightBuilding(Vector3 position, string id)
+    {        
+        yield return null;
 
+        var child = BuildingsLayer.transform.GetChild(0);
+        var rd = child.name.GetRDCoordinate();
+        //Debug.Log($"downloadobjectdata {child.name}");
+        StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
-        foreach (Transform gam in BuildingsLayer.transform)
-        {
-            var rd = gam.name.GetRDCoordinate();
-
-            gam.gameObject.AddComponent<MeshCollider>();
-
-            yield return null;
-
-            RaycastHit hit;
-            position.y += 100;
-            Ray ray = new Ray(position, Vector3.down);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                int triangleVertexIndex = hit.triangleIndex * 3;
-                var vertexIndex = gam.gameObject.GetComponent<MeshFilter>().mesh.GetIndices(0)[triangleVertexIndex];
-
-                Mesh mesh = hit.collider.gameObject.GetComponent<MeshFilter>().mesh;
-                if (vertexIndex > mesh.uv2.Length)
-                {
-                    Debug.LogWarning("UV index out of bounds. This object/LOD level does not contain highlight/hidden uv2 slot");
-                    yield break;
-                }
-
-                StartCoroutine(DownloadObjectData(rd, vertexIndex, gam.gameObject ));
-            }
-            else
-            {
-                Debug.Log("no building was hit");
-            }
-
-            //Debug.Log($"building gameobject: {gam.name}");
-        }
     }
 
     IEnumerator HighlightBuildingArea(List<Vector2[]> polygons, Vector3 position)
@@ -160,7 +221,7 @@ public class PerceelRenderer : MonoBehaviour
 
         foreach (var point in polyPoints)
         {
-            Debug.Log($"pointx:{point.x} pointy:{point.y}"); //unity absolute 
+          //  Debug.Log($"pointx:{point.x} pointy:{point.y}"); //unity absolute 
         }
 
         foreach (Transform gam in BuildingsLayer.transform)
@@ -177,7 +238,7 @@ public class PerceelRenderer : MonoBehaviour
             var zmin = tile.z + verts.Min(o => o.z) + 500;
             var zmax = tile.z + verts.Max(o => o.z) + 500;
 
-            Debug.Log($"xmin:{xmin} xmax:{xmax} zmin:{zmin} zmax:{zmax}");  //unity absolute ( tile + relative verts pos)
+            //Debug.Log($"xmin:{xmin} xmax:{xmax} zmin:{zmin} zmax:{zmax}");  //unity absolute ( tile + relative verts pos)
 
             Color[] colors = new Color[filter.mesh.vertexCount];
 
@@ -204,7 +265,7 @@ public class PerceelRenderer : MonoBehaviour
 
             filter.mesh.colors = colors;
 
-            Debug.Log($"building gameobject: {gam.name}"  );
+            //Debug.Log($"building gameobject: {gam.name}"  );
         }
     }
 
@@ -269,6 +330,8 @@ public class PerceelRenderer : MonoBehaviour
 
         var verts = vertices.Select(o => CoordConvert.RDtoUnity(o)).ToArray();
 
+        List<float> terrainFloorPoints = new List<float>();
+
         //use collider to place the polygon points on the terrain
         for(int i=0; i < verts.Length; i++)
         {
@@ -284,14 +347,17 @@ public class PerceelRenderer : MonoBehaviour
             //raycast from the polygon point to hit the terrain so we can place the outline so that it is visible
             if(Physics.Raycast( ray, out hit, Mathf.Infinity  ))
             {
-                Debug.Log("we have a hit");
+                //Debug.Log("we have a hit");
                 verts[i].y = hit.point.y + 0.5f;
+                terrainFloorPoints.Add(hit.point.y);
             }
             else
             {
                 Debug.Log("raycast failed..");
             }
         }
+
+        terrainFloor = terrainFloorPoints.Average();
 
         var mesh = new Mesh();
         mesh.vertices = verts;
@@ -316,13 +382,11 @@ public class PerceelRenderer : MonoBehaviour
     }
 
     //private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
-    private IEnumerator DownloadObjectData( Vector3RD rd, int vertexIndex, GameObject buildingGameObject )
+    private IEnumerator DownloadObjectData( Vector3RD rd, string id, GameObject buildingGameObject )
     {
-
         var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
 
         ObjectMappingClass data;
-        string id = "null";
 
         using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
         {
@@ -330,14 +394,15 @@ public class PerceelRenderer : MonoBehaviour
 
             if (uwr.isNetworkError || uwr.isHttpError)
             {
+                Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
             }
             else
             {
+              //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
+
                 ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
                 AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
                 data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                int idIndex = data.vectorMap[vertexIndex];
-                id = data.ids[idIndex];
                 objectMapping.ids = data.ids;
                 objectMapping.uvs = data.uvs;
                 objectMapping.vectorMap = data.vectorMap;
@@ -347,13 +412,14 @@ public class PerceelRenderer : MonoBehaviour
                     id
                 };
 
+                Debug.Log($"hasid:{data.ids.Contains(id)}");
+
                 newAssetBundle.Unload(true);
 
                 objectMapping.ApplyDataToIDsTexture();
             }
             
-        }
-        //callback?.Invoke(id);
+        }        
         yield return null;
         
     }
