@@ -58,5 +58,10 @@ namespace Netherlands3D.Cameras
         {
             return transform.position;
         }
+
+        public Vector3[] GetWorldSpaceCorners()
+        {
+            return corners;
+        }
     }
 }
