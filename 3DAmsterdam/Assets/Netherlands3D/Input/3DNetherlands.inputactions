@@ -123,6 +123,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Position",
+                    "type": "PassThrough",
+                    "id": "a896eb87-67ac-4a66-9c3a-fb2a73699504",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "DoubleClick",
                     "type": "Button",
                     "id": "fe0aaeea-4249-440a-9e12-7aaead39a843",
@@ -140,7 +148,7 @@
                 },
                 {
                     "name": "Click",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "ac9497e2-93a6-4f44-947a-f2e56bafe8e3",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -213,12 +221,45 @@
                 },
                 {
                     "name": "",
-                    "id": "77fd9c58-cdfa-465b-b495-0076e1cde5db",
+                    "id": "ff1185f8-51f6-4bf4-9570-bf9476fd2915",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "462be44e-ccd1-4331-a558-34b433352941",
                     "path": "<Touchscreen>/touch*/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3de1e7c7-7187-4906-b4ce-2ac30bdc6bb0",
+                    "path": "<Touchscreen>/touch*/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
                     "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "62d9d07d-3e19-42fa-bc6c-2e53c1dad083",
+                    "path": "<Touchscreen>/touch1/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "ClickSecondary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -560,14 +601,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ZoomDrag",
-                    "type": "Button",
-                    "id": "6c591bd6-36dd-4c10-903a-22e22b2016fe",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Drag",
                     "type": "Button",
                     "id": "903b8b44-4759-4735-9cb9-f43f9490d7b1",
@@ -603,6 +636,14 @@
                     "name": "Position",
                     "type": "PassThrough",
                     "id": "c49c049d-757c-46a9-b9c5-5cf0aa7f0ccf",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "SecondTouch",
+                    "type": "Value",
+                    "id": "f5ce8530-ea0d-4077-9b8f-6373737b92b9",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
@@ -644,17 +685,6 @@
                 },
                 {
                     "name": "",
-                    "id": "a091bbae-e6cd-491b-9d82-98ec8164c56c",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ZoomDrag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "95d405f2-cc8e-4b00-ae5f-c7c2edbf1366",
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
@@ -688,8 +718,19 @@
                 },
                 {
                     "name": "",
-                    "id": "8faf4fd7-bec0-4113-97f3-f220e1c71a30",
+                    "id": "e8bbc32b-4afa-421c-8e73-acb3d19a3bce",
                     "path": "<Touchscreen>/touch*/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "20e0743f-0354-4971-b67c-6dc37696102b",
+                    "path": "<Touchscreen>/touch*/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
@@ -699,12 +740,12 @@
                 },
                 {
                     "name": "",
-                    "id": "e8bbc32b-4afa-421c-8e73-acb3d19a3bce",
-                    "path": "<Touchscreen>/touch*/position",
+                    "id": "a1034129-4b15-44d6-a056-7a2bce9c837d",
+                    "path": "<Touchscreen>/touch1/indirectTouch",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
-                    "action": "Position",
+                    "action": "SecondTouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

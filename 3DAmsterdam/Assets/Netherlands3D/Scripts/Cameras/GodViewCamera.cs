@@ -72,10 +72,10 @@ namespace Netherlands3D.Cameras
 
         private Plane worldPlane;
 
+        private IAction mousePosition;
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
         private IAction zoomScrollActionMouse;
-        private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
         private IAction modifierRotateAroundAction;
@@ -86,6 +86,8 @@ namespace Netherlands3D.Cameras
         private IAction moveHeightActionKeyboard;
 
         private IAction flyActionGamepad;
+
+        private IAction secondTouch;
 
         private float minUndergroundY = -30f;
 
@@ -117,10 +119,12 @@ namespace Netherlands3D.Cameras
         private void AddActionListeners()
         {
             //Mouse actions
+            mousePosition = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Position);
             dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
             rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
-            zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
+
+            secondTouch = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SecondTouch);
 
             //Keyboard actions
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
@@ -149,6 +153,8 @@ namespace Netherlands3D.Cameras
 
             modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
             modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
+
+            secondTouch.SubscribePerformed(SecondTouch);
 
         }
 
@@ -179,6 +185,12 @@ namespace Netherlands3D.Cameras
                 ActionHandler.actions.GodViewMouse.Disable();
             }
         }
+
+        private void SecondTouch(IAction action)
+        {
+            Debug.Log("SECOND TOUCH DETECTED AT X" + action.ReadValue<Vector2>().x);
+            Debug.Log("SECOND TOUCH DETECTED AT Y" + action.ReadValue<Vector2>().y);
+		}
 
         private void FirstPersonModifier(IAction action)
         {
@@ -461,12 +473,12 @@ namespace Netherlands3D.Cameras
         }
         public Ray GetMainPointerRay()
         {
-            var pointerPosition = Mouse.current.position.ReadValue();
+            var pointerPosition = mousePosition.ReadValue<Vector2>();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
         public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var pointerPosition = Mouse.current.position.ReadValue();
+            var pointerPosition = mousePosition.ReadValue<Vector2>();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
             var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);

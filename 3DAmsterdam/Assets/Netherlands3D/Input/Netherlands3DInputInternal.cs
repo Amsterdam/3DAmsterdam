@@ -136,6 +136,14 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Position"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""a896eb87-67ac-4a66-9c3a-fb2a73699504"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""DoubleClick"",
                     ""type"": ""Button"",
                     ""id"": ""fe0aaeea-4249-440a-9e12-7aaead39a843"",
@@ -153,7 +161,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""ac9497e2-93a6-4f44-947a-f2e56bafe8e3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -226,12 +234,45 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""77fd9c58-cdfa-465b-b495-0076e1cde5db"",
+                    ""id"": ""ff1185f8-51f6-4bf4-9570-bf9476fd2915"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""462be44e-ccd1-4331-a558-34b433352941"",
                     ""path"": ""<Touchscreen>/touch*/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3de1e7c7-7187-4906-b4ce-2ac30bdc6bb0"",
+                    ""path"": ""<Touchscreen>/touch*/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
                     ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62d9d07d-3e19-42fa-bc6c-2e53c1dad083"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""ClickSecondary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -573,14 +614,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""ZoomDrag"",
-                    ""type"": ""Button"",
-                    ""id"": ""6c591bd6-36dd-4c10-903a-22e22b2016fe"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Drag"",
                     ""type"": ""Button"",
                     ""id"": ""903b8b44-4759-4735-9cb9-f43f9490d7b1"",
@@ -616,6 +649,14 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""name"": ""Position"",
                     ""type"": ""PassThrough"",
                     ""id"": ""c49c049d-757c-46a9-b9c5-5cf0aa7f0ccf"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""SecondTouch"",
+                    ""type"": ""Value"",
+                    ""id"": ""f5ce8530-ea0d-4077-9b8f-6373737b92b9"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -657,17 +698,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a091bbae-e6cd-491b-9d82-98ec8164c56c"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ZoomDrag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""95d405f2-cc8e-4b00-ae5f-c7c2edbf1366"",
                     ""path"": ""<Mouse>/middleButton"",
                     ""interactions"": """",
@@ -701,8 +731,19 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""8faf4fd7-bec0-4113-97f3-f220e1c71a30"",
+                    ""id"": ""e8bbc32b-4afa-421c-8e73-acb3d19a3bce"",
                     ""path"": ""<Touchscreen>/touch*/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20e0743f-0354-4971-b67c-6dc37696102b"",
+                    ""path"": ""<Touchscreen>/touch*/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
@@ -712,12 +753,12 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e8bbc32b-4afa-421c-8e73-acb3d19a3bce"",
-                    ""path"": ""<Touchscreen>/touch*/position"",
+                    ""id"": ""a1034129-4b15-44d6-a056-7a2bce9c837d"",
+                    ""path"": ""<Touchscreen>/touch1/indirectTouch"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
-                    ""action"": ""Position"",
+                    ""action"": ""SecondTouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1759,6 +1800,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         // Selector
         m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
         m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
+        m_Selector_Position = m_Selector.FindAction("Position", throwIfNotFound: true);
         m_Selector_DoubleClick = m_Selector.FindAction("DoubleClick", throwIfNotFound: true);
         m_Selector_ClickSecondary = m_Selector.FindAction("ClickSecondary", throwIfNotFound: true);
         m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
@@ -1773,12 +1815,12 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         // GodViewMouse
         m_GodViewMouse = asset.FindActionMap("GodViewMouse", throwIfNotFound: true);
         m_GodViewMouse_Zoom = m_GodViewMouse.FindAction("Zoom", throwIfNotFound: true);
-        m_GodViewMouse_ZoomDrag = m_GodViewMouse.FindAction("ZoomDrag", throwIfNotFound: true);
         m_GodViewMouse_Drag = m_GodViewMouse.FindAction("Drag", throwIfNotFound: true);
         m_GodViewMouse_SpinDrag = m_GodViewMouse.FindAction("SpinDrag", throwIfNotFound: true);
         m_GodViewMouse_FirstPersonModifier = m_GodViewMouse.FindAction("FirstPersonModifier", throwIfNotFound: true);
         m_GodViewMouse_RotateAroundModifier = m_GodViewMouse.FindAction("RotateAroundModifier", throwIfNotFound: true);
         m_GodViewMouse_Position = m_GodViewMouse.FindAction("Position", throwIfNotFound: true);
+        m_GodViewMouse_SecondTouch = m_GodViewMouse.FindAction("SecondTouch", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Place = m_Transformable.FindAction("Place", throwIfNotFound: true);
@@ -1912,6 +1954,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Selector;
     private ISelectorActions m_SelectorActionsCallbackInterface;
     private readonly InputAction m_Selector_Multiselect;
+    private readonly InputAction m_Selector_Position;
     private readonly InputAction m_Selector_DoubleClick;
     private readonly InputAction m_Selector_ClickSecondary;
     private readonly InputAction m_Selector_Click;
@@ -1921,6 +1964,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         private @Netherlands3DInputActions m_Wrapper;
         public SelectorActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Multiselect => m_Wrapper.m_Selector_Multiselect;
+        public InputAction @Position => m_Wrapper.m_Selector_Position;
         public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
         public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
         public InputAction @Click => m_Wrapper.m_Selector_Click;
@@ -1937,6 +1981,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Multiselect.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
                 @Multiselect.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
                 @Multiselect.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnMultiselect;
+                @Position.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
+                @Position.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
+                @Position.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
                 @DoubleClick.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @DoubleClick.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
@@ -1956,6 +2003,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Multiselect.started += instance.OnMultiselect;
                 @Multiselect.performed += instance.OnMultiselect;
                 @Multiselect.canceled += instance.OnMultiselect;
+                @Position.started += instance.OnPosition;
+                @Position.performed += instance.OnPosition;
+                @Position.canceled += instance.OnPosition;
                 @DoubleClick.started += instance.OnDoubleClick;
                 @DoubleClick.performed += instance.OnDoubleClick;
                 @DoubleClick.canceled += instance.OnDoubleClick;
@@ -2042,23 +2092,23 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputActionMap m_GodViewMouse;
     private IGodViewMouseActions m_GodViewMouseActionsCallbackInterface;
     private readonly InputAction m_GodViewMouse_Zoom;
-    private readonly InputAction m_GodViewMouse_ZoomDrag;
     private readonly InputAction m_GodViewMouse_Drag;
     private readonly InputAction m_GodViewMouse_SpinDrag;
     private readonly InputAction m_GodViewMouse_FirstPersonModifier;
     private readonly InputAction m_GodViewMouse_RotateAroundModifier;
     private readonly InputAction m_GodViewMouse_Position;
+    private readonly InputAction m_GodViewMouse_SecondTouch;
     public struct GodViewMouseActions
     {
         private @Netherlands3DInputActions m_Wrapper;
         public GodViewMouseActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Zoom => m_Wrapper.m_GodViewMouse_Zoom;
-        public InputAction @ZoomDrag => m_Wrapper.m_GodViewMouse_ZoomDrag;
         public InputAction @Drag => m_Wrapper.m_GodViewMouse_Drag;
         public InputAction @SpinDrag => m_Wrapper.m_GodViewMouse_SpinDrag;
         public InputAction @FirstPersonModifier => m_Wrapper.m_GodViewMouse_FirstPersonModifier;
         public InputAction @RotateAroundModifier => m_Wrapper.m_GodViewMouse_RotateAroundModifier;
         public InputAction @Position => m_Wrapper.m_GodViewMouse_Position;
+        public InputAction @SecondTouch => m_Wrapper.m_GodViewMouse_SecondTouch;
         public InputActionMap Get() { return m_Wrapper.m_GodViewMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2071,9 +2121,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Zoom.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoom;
-                @ZoomDrag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
-                @ZoomDrag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
-                @ZoomDrag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnZoomDrag;
                 @Drag.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
                 @Drag.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnDrag;
@@ -2089,6 +2136,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
+                @SecondTouch.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
+                @SecondTouch.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
+                @SecondTouch.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
             }
             m_Wrapper.m_GodViewMouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -2096,9 +2146,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
-                @ZoomDrag.started += instance.OnZoomDrag;
-                @ZoomDrag.performed += instance.OnZoomDrag;
-                @ZoomDrag.canceled += instance.OnZoomDrag;
                 @Drag.started += instance.OnDrag;
                 @Drag.performed += instance.OnDrag;
                 @Drag.canceled += instance.OnDrag;
@@ -2114,6 +2161,9 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started += instance.OnPosition;
                 @Position.performed += instance.OnPosition;
                 @Position.canceled += instance.OnPosition;
+                @SecondTouch.started += instance.OnSecondTouch;
+                @SecondTouch.performed += instance.OnSecondTouch;
+                @SecondTouch.canceled += instance.OnSecondTouch;
             }
         }
     }
@@ -2507,6 +2557,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     public interface ISelectorActions
     {
         void OnMultiselect(InputAction.CallbackContext context);
+        void OnPosition(InputAction.CallbackContext context);
         void OnDoubleClick(InputAction.CallbackContext context);
         void OnClickSecondary(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
@@ -2523,12 +2574,12 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     public interface IGodViewMouseActions
     {
         void OnZoom(InputAction.CallbackContext context);
-        void OnZoomDrag(InputAction.CallbackContext context);
         void OnDrag(InputAction.CallbackContext context);
         void OnSpinDrag(InputAction.CallbackContext context);
         void OnFirstPersonModifier(InputAction.CallbackContext context);
         void OnRotateAroundModifier(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
+        void OnSecondTouch(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
     {
