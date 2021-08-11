@@ -215,7 +215,8 @@ namespace Netherlands3D.Cameras
 
             if (scrollDelta != 0)
             {
-                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
+                var mousePointerPosition = Mouse.current.position.ReadValue();
+                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(mousePointerPosition.x, mousePointerPosition.y, 1000.0f));
                 ZoomInDirection(scrollDelta, zoomPoint);
             }
         }
