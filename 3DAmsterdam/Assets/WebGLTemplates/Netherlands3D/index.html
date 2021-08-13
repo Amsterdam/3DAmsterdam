@@ -55,6 +55,7 @@
 	<script src="netherlands3d.js?v={{{ PRODUCT_VERSION  }}}"></script>
     <script>
 	  var unityInstance;
+	  var isMobileDevice = false;
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
       var config = {
@@ -102,6 +103,7 @@
 	  // Avoid draining fillrate performance on mobile devices,
       // and default/override low DPI mode on mobile browsers by setting devicePixelRatio to 1.
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+		  isMobileDevice = true;
           container.className = "unity-mobile";
           config.devicePixelRatio = 2; 
           mobileWarning.style.display = "block";
