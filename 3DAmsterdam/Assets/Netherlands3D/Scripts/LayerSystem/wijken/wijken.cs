@@ -67,10 +67,10 @@ public class wijken : MonoBehaviour
                 GameObject go = Instantiate(wijkmarker, transform);
                 //go.transform.position = coordinate;
                 //go.GetComponentInChildren<Text>().text = name;
-                go.GetComponentInChildren<TextMesh>().text=name;
+                go.GetComponentInChildren<TMPro.TextMeshPro>().text=name;
                 go.transform.position = coordinate;
                 wijknamen.Add(go.GetComponent<wijknaam>());
-                Debug.Log(index);
+                //Debug.Log(index);
 
                 yield return null;
             }
@@ -80,6 +80,7 @@ public class wijken : MonoBehaviour
 
         var buurtenRequest = UnityWebRequest.Get(buurtenFilepath);
         yield return buurtenRequest.SendWebRequest();
+        index = 0;
         if (!buurtenRequest.isNetworkError && !buurtenRequest.isHttpError)
         {
             string wijkentext = buurtenRequest.downloadHandler.text;
@@ -110,8 +111,8 @@ public class wijken : MonoBehaviour
 
                 GameObject go = Instantiate(wijkmarker, transform);
                 //go.transform.position = coordinate;
-                //go.GetComponentInChildren<Text>().text = name;
-                go.GetComponentInChildren<TextMesh>().text = name;
+                go.GetComponentInChildren<TMPro.TextMeshPro>().text = name;
+
                 go.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 go.transform.position = coordinate;
                 buurtnamen.Add(go.GetComponent<wijknaam>());
@@ -163,7 +164,7 @@ public class wijken : MonoBehaviour
                 item.gameObject.SetActive(false);
             }
             itemTransform.rotation = camTransform.rotation;
-                item.textmesh.characterSize = characterSize;
+                item.textemesh.fontSize = characterSize*200;
             }
         foreach (wijknaam item in buurtnamen)
         {
@@ -179,7 +180,8 @@ public class wijken : MonoBehaviour
             }
 
             itemTransform.rotation = camRotation;
-            item.textmesh.characterSize = characterSize;
+            //
+            item.textemesh.fontSize = characterSize * 200;
         }
 
         //}

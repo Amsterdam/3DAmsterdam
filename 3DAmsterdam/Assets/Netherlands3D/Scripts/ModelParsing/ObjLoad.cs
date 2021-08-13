@@ -6,9 +6,21 @@ using System.Text.RegularExpressions;
 using System.IO;
 using UnityEngine.Networking;
 using ConvertCoordinates;
+using Netherlands3D.Utilities;
 
 public class ObjLoad : MonoBehaviour
 {
+	public enum objTag
+    {
+		O,
+		V,
+		vt,
+		vn,
+		f,
+		mtllib,
+		usemtl,
+		none
+    }
 	// OBJ File Tags
 	const string O = "o";
 	const string V = "v";
@@ -155,28 +167,38 @@ public class ObjLoad : MonoBehaviour
 	/// <returns>Returns false on failure</returns>
 	private bool ParseObjLine(ref string objline)
 	{
-		linePart = objline.Trim().Split(linePartSplitChar);
-		switch (linePart[0])
+		objTag tag = getOBJTag(objline);
+		//linePart = objline.Trim().Split(linePartSplitChar);
+		switch (tag)
 		{
-			case O:
-				if (SplitNestedObjects) buffer.AddObject(linePart[1].Trim());
+			case objTag.O:
+				int startposition = objline.IndexOf('o')+1;
+				if (SplitNestedObjects) buffer.AddObject(objline.Substring(startposition));
 				break;
-			case MTLLIB:
-				mtllib = line.Substring(linePart[0].Length + 1).Trim();
+			case objTag.mtllib:
+				startposition = objline.IndexOf(MTLLIB) + MTLLIB.Length;
+				mtllib = objline.Substring(startposition);
 				break;
-			case USEMTL:
+			case objTag.usemtl:
 				if (MaxSubMeshes == 0 || buffer.currentObjectData.SubMeshGroups.Count < MaxSubMeshes)
-					buffer.AddSubMeshGroup(linePart[1].Trim());
+				{
+					startposition = objline.IndexOf(USEMTL) + USEMTL.Length;
+					buffer.AddSubMeshGroup(objline.Substring(startposition));
+				}
 				break;
-			case V:
+			case objTag.V:
+				int startpos = 2;
+				Vector3RD coord = new Vector3RD(StringManipulation.ParseNextDouble(objline, ' ', startpos, out startpos), StringManipulation.ParseNextDouble(objline, ' ', startpos, out startpos), StringManipulation.ParseNextDouble(objline, ' ', startpos, out startpos));
+
 				if (buffer.Vertices.Count == 0)
 				{
-					if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))))
+					
+					if (CoordConvert.RDIsValid(new Vector3RD(coord.x, -coord.z,coord.y)))
 					{
 						flipYZ = false;
 						ObjectUsesRDCoordinates = true;
 					}
-					else if (CoordConvert.RDIsValid(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))))
+					else if (CoordConvert.RDIsValid(coord))
 					{
 						flipYZ = true;
 						ObjectUsesRDCoordinates = true;
@@ -186,42 +208,44 @@ public class ObjLoad : MonoBehaviour
 				{
 					if (flipYZ)
 					{
-						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), cd(linePart[2]), cd(linePart[3]))));
+						buffer.PushVertex(CoordConvert.RDtoUnity(coord));
 					}
 					else
 					{
-						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(cd(linePart[1]), -cd(linePart[3]), cd(linePart[2]))));
+						buffer.PushVertex(CoordConvert.RDtoUnity(new Vector3RD(coord.x, -coord.z, coord.y)));
 					}
 				}
 				else
 				{
 					if (flipYZ)
 					{
-						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[3]), cf(linePart[2])));
+						buffer.PushVertex(new Vector3((float)coord.x, (float)coord.z, (float)coord.y));
 					}
 					else
 					{
-						buffer.PushVertex(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
+						buffer.PushVertex(new Vector3((float)coord.x, (float)coord.y, -(float)coord.z));
 					}
 				}
 				break;
-			case VT:
-				buffer.PushUV(new Vector2(cf(linePart[1]), cf(linePart[2])));
+			case objTag.vt:
+				int startindex = 3;
+				buffer.PushUV(new Vector2((float)StringManipulation.ParseNextDouble(objline,' ',startindex, out startindex), (float)StringManipulation.ParseNextDouble(objline, ' ', startindex, out startindex)));
 				break;
-			case VN:
-				buffer.PushNormal(new Vector3(cf(linePart[1]), cf(linePart[2]), -cf(linePart[3])));
+			case objTag.vn:
+				startindex = 3;
+
+				buffer.PushNormal(new Vector3((float)StringManipulation.ParseNextDouble(objline, ' ', startindex, out startindex), (float)StringManipulation.ParseNextDouble(objline, ' ', startindex, out startindex), -(float)StringManipulation.ParseNextDouble(objline, ' ', startindex, out startindex)));
 				break;
-			case F:
-				var faces = new FaceIndices[linePart.Length - 1];
-				GetFaceIndices(faces, linePart);
-				if (linePart.Length == 4)
+			case objTag.f:
+				var faces = GetFaceIndices(objline);
+				if (faces.Count == 3)
 				{
 					//tris
 					buffer.PushFace(faces[0]);
 					buffer.PushFace(faces[2]);
 					buffer.PushFace(faces[1]);
 				}
-				else if (linePart.Length == 5)
+				else if (faces.Count == 4)
 				{
 					//quad
 					buffer.PushFace(faces[0]);
@@ -233,7 +257,7 @@ public class ObjLoad : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log("face vertex count :" + (linePart.Length - 1) + " larger than 4. Ngons not supported.");
+					Debug.Log("face vertex count :" + faces.Count + " larger than 4. Ngons not supported.");
 					return false; //Return failure. Not triangulated.
 				}
 				break;
@@ -313,34 +337,93 @@ public class ObjLoad : MonoBehaviour
 		}
 	}
 
-	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
-	{
-		string[] indices;
-		for (int i = 1; i < linePart.Length; i++)
+	private objTag getOBJTag(string objLine)
+    {
+		if (objLine.IndexOf(MTLLIB) > -1)
 		{
-			indices = linePart[i].Trim().Split(faceSplitChar);
+			return objTag.mtllib;
+		}
+		if (objLine.IndexOf(USEMTL) > -1)
+		{
+			return objTag.usemtl;
+		}
+		if (objLine.IndexOf(VT) > -1)
+		{
+			return objTag.vt;
+		}
+		if (objLine.IndexOf(VN) > -1)
+		{
+			return objTag.vn;
+		}
+		if (objLine.IndexOf(V)>-1)
+        {
+			return objTag.V;
+        }
+		if (objLine.IndexOf(F) > -1)
+		{
+			return objTag.f;
+		}
+		if (objLine.IndexOf(O) > -1)
+		{
+			return objTag.O;
+		}
+		return objTag.none;
+
+	}
+
+	List<FaceIndices> GetFaceIndices( string objLine)
+	{
+		List<FaceIndices> targetFacesList = new List<FaceIndices>();
+
+		bool moreThanIndices = false;
+        if (objLine.IndexOf('/')>-1)
+        {
+			moreThanIndices = true;
+		}
+		bool keepGoing = true;
+		int startIndex = 0;
+
+        while (keepGoing)
+        {
 			var faceIndices = new FaceIndices();
-			// vertex
-			int vertexIndex = ci(indices[0]);
-			faceIndices.vertexIndex = vertexIndex - 1;
-			// uv
-			if (indices.Length > 1 && indices[1] != "")
+			if (moreThanIndices)
 			{
-				int uvIndex = ci(indices[1]);
-				faceIndices.vertexUV = uvIndex - 1;
-			}
-			// normal
-			if (indices.Length > 2 && indices[2] != "")
-			{
-				int normalIndex = ci(indices[2]);
-				faceIndices.vertexNormal = normalIndex - 1;
+				faceIndices.vertexIndex = StringManipulation.ParseNextInt(objLine, '/', startIndex, out startIndex)-1;
+
+                if (startIndex<1)
+                {
+					keepGoing = false;
+					break;
+                }
+				if (objLine.IndexOf('/', startIndex) > startIndex + 1)
+				{
+					faceIndices.vertexUV = StringManipulation.ParseNextInt(objLine, '/', startIndex, out startIndex)-1;
+				}
+
+				faceIndices.vertexNormal = StringManipulation.ParseNextInt(objLine, ' ', startIndex, out startIndex)-1;
+
+				targetFacesList.Add(faceIndices);
+				if (objLine.Length>startIndex)
+                {
+					if (objLine.IndexOf('/', startIndex) < 0)
+					{
+						keepGoing = false;
+						break;
+					}
+				}
+				else
+                {
+					break;
+                }
+				
 			}
 			else
 			{
-				faceIndices.vertexNormal = -1;
+				break;
 			}
-			targetFacesList[i - 1] = faceIndices;
+			
 		}
+		return targetFacesList;
 	}
 
 	static Material GetMaterial(MaterialData md, Material sourceMaterial)
