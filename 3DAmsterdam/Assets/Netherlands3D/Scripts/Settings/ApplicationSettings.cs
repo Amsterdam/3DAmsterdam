@@ -12,19 +12,15 @@ using UnityEngine.UI;
 namespace Netherlands3D.Settings {
     public class ApplicationSettings : MonoBehaviour
     {
-        [SerializeField]
-        private bool automaticOptimalSettings = true;
 		[SerializeField]
 		private bool forceMobileDevice = false;
+		private bool mobileDevice = false;
 
 		public static ApplicationSettingsProfile settings;
 
         [SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
 		private int selectedTemplate = 0;
-
-		[SerializeField]
-		private ApplicationSettingsProfile mobileSettingsProfile;
 
 		private const string playerPrefKey = "applicationSettings";
 
@@ -37,7 +33,8 @@ namespace Netherlands3D.Settings {
         [SerializeField]
         private Fps fpsCounter;
 
-        private CanvasSettings canvasSettings;
+		[SerializeField]
+		private CanvasSettings canvasSettings;
         private Rendering.RenderSettings renderSettings;
 
         [SerializeField]
@@ -47,43 +44,39 @@ namespace Netherlands3D.Settings {
 
 		[SerializeField]
 		private Slider lodSlider;
+		private string customName = "*Aangepast";
 
 		void Start()
 		{
-			canvasSettings = GetComponent<CanvasSettings>();
 			renderSettings = GetComponent<Rendering.RenderSettings>();
-
-			LoadTemplate(settingsProfilesTemplates[selectedTemplate]);
-
-			//Load previous or auto detect optimal settings
-			if (PlayerPrefs.HasKey(playerPrefKey))
-			{
-				LoadSettings();
-			}
-			else if (automaticOptimalSettings && !PlayerPrefs.HasKey(playerPrefKey))
-			{
-				DetermineOptimalSettings();
-			}
+			StartupSettings();
 		}
 
-		private void LoadTemplate(ApplicationSettingsProfile templateProfile)
+		private void StartupSettings()
+		{
+			if (!forceMobileDevice && PlayerPrefs.HasKey(playerPrefKey))
+			{
+				Debug.Log("Loaded custom user settings");
+				LoadSavedSettings();
+			}
+			else if (forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser())
+			{
+				Debug.Log("Mobile application settings");
+				mobileDevice = true;
+				selectedTemplate = 3;
+				lodSlider.value = lodSlider.minValue;
+			}
+
+			LoadSettingsFromProfile(settingsProfilesTemplates[selectedTemplate]);
+			ApplySettings(false);
+		}
+
+		private void LoadSettingsFromProfile(ApplicationSettingsProfile templateProfile)
 		{
 			//Start with a copy of the selected base profile so we do not alter the templates
 			settings = Instantiate(templateProfile);
 			settings.name = "UserProfile";
 			settings.applicationVersion = Application.version;
-		}
-
-		private void DetermineOptimalSettings()
-		{
-			//settings.canvasDPI = canvasSettings.DetectPreferedCanvasScale();
-
-			//On mobile devices, switch to low settings profile
-			if(forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser())
-			{
-				LoadTemplate(mobileSettingsProfile);
-				lodSlider.value = lodSlider.minValue;
-			}
 		}
 
 		public void OpenSettingsPanel()
@@ -118,7 +111,10 @@ namespace Netherlands3D.Settings {
 			//Fill our dropdown using the templates and their titles
 			List<string> profileNames = new List<string>();
 			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
+			{
+				if (profile.mobileProfile && !mobileDevice) continue;
 				profileNames.Add(profile.profileName);
+			}
 
 			PropertiesPanel.Instance.AddActionDropdown(profileNames.ToArray(), (action)=>
             {
@@ -186,7 +182,7 @@ namespace Netherlands3D.Settings {
 			PropertiesPanel.Instance.AddCustomPrefab(stats);
         }
 
-        public void ApplySettings()
+        public void ApplySettings(bool save = true)
         {
             //Currently we only use the quality settings files for shadow quality differences
             //3 = 2045, 2 = 1024, 1=514, 0=Off
@@ -205,8 +201,7 @@ namespace Netherlands3D.Settings {
             renderSettings.ToggleAA(settings.antiAliasing);
 			renderSettings.ToggleAO(settings.ambientOcclusion);
 
-
-			SaveSettings();
+			if(save) SaveSettings();
         }
 
         [ContextMenu("Save application settings")]
@@ -216,10 +211,18 @@ namespace Netherlands3D.Settings {
         }
 
         [ContextMenu("Load application settings")]
-        public void LoadSettings()
+        public void LoadSavedSettings()
         {
             JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(playerPrefKey), settings);
-            ApplySettings();
+			ApplySettings();
         }
-    }
+
+		[ContextMenu("Reset settings")]
+		public void ResetSettings()
+		{
+			PlayerPrefs.DeleteKey(playerPrefKey);
+		}
+
+
+	}
 }
