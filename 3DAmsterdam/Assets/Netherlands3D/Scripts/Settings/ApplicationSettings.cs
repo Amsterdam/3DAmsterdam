@@ -3,23 +3,30 @@ using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.JavascriptConnection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Settings {
     public class ApplicationSettings : MonoBehaviour
     {
         [SerializeField]
         private bool automaticOptimalSettings = true;
+		[SerializeField]
+		private bool forceMobileDevice = false;
 
-        public static ApplicationSettingsProfile settings;
+		public static ApplicationSettingsProfile settings;
 
         [SerializeField]
         private ApplicationSettingsProfile[] settingsProfilesTemplates;
 		private int selectedTemplate = 0;
 
-        private const string playerPrefKey = "applicationSettings";
+		[SerializeField]
+		private ApplicationSettingsProfile mobileSettingsProfile;
+
+		private const string playerPrefKey = "applicationSettings";
 
         [SerializeField]
         private InterfaceLayers interfaceLayers;
@@ -37,6 +44,9 @@ namespace Netherlands3D.Settings {
         private GameObject stats;
 
 		public static ApplicationSettings Instance;
+
+		[SerializeField]
+		private Slider lodSlider;
 
 		void Start()
 		{
@@ -66,7 +76,14 @@ namespace Netherlands3D.Settings {
 
 		private void DetermineOptimalSettings()
 		{
-			settings.canvasDPI = canvasSettings.DetectPreferedCanvasScale();
+			//settings.canvasDPI = canvasSettings.DetectPreferedCanvasScale();
+
+			//On mobile devices, switch to low settings profile
+			if(forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser())
+			{
+				LoadTemplate(mobileSettingsProfile);
+				lodSlider.value = lodSlider.minValue;
+			}
 		}
 
 		public void OpenSettingsPanel()
