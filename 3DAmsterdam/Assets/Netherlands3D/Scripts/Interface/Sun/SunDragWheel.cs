@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -60,29 +61,39 @@ public class SunDragWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IPoi
     {
         while (true)
         {
-            if(Input.mouseScrollDelta.y != 0.0f)
-                deltaTurn.Invoke(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+            var mouseScroll = Mouse.current.scroll.ReadValue();
+            if(mouseScroll.y > 0.0f)
+            {
+                mouseScroll.y = 1.0f;
+            }
+            else if (mouseScroll.y < 0.0f)
+            {
+                mouseScroll.y = -1.0f;
+            }
+
+            if (mouseScroll.y != 0.0f)
+                deltaTurn.Invoke(mouseScroll.y * scrollWheelSensitivity);
             yield return null;
         }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        previousPosition = Input.mousePosition;
+        previousPosition = eventData.position;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         Vector3 relativePosition = transform.position;
-        relativePosition = Input.mousePosition - relativePosition;
+        relativePosition = eventData.position - (Vector2)relativePosition;
 
         //Rotate wheel according to relative mouse position
-        float increment = (relativePosition.y > 0) ? Input.mousePosition.x - previousPosition.x : -(Input.mousePosition.x - previousPosition.x);
-        increment += (relativePosition.x < 0) ? Input.mousePosition.y - previousPosition.y : -(Input.mousePosition.y - previousPosition.y);
+        float increment = (relativePosition.y > 0) ? eventData.position.x - previousPosition.x : -(eventData.position.x - previousPosition.x);
+        increment += (relativePosition.x < 0) ? eventData.position.y - previousPosition.y : -(eventData.position.y - previousPosition.y);
 
         deltaTurn.Invoke(increment * dragSensitivity);
 
-        previousPosition = Input.mousePosition;
+        previousPosition = eventData.position;
     }
 
     /// <summary>

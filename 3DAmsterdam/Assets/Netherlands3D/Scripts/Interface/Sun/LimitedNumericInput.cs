@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -45,7 +46,17 @@ public class LimitedNumericInput : MonoBehaviour, IPointerEnterHandler, IPointer
 	/// </summary>
 	IEnumerator ReadScrollWheelInput() {
 		while (true){
-			offset = Mathf.RoundToInt(Input.mouseScrollDelta.y * scrollWheelSensitivity);
+			var mouseScroll = Mouse.current.scroll.ReadValue();
+			if (mouseScroll.y > 0.0f)
+			{
+				mouseScroll.y = 1.0f;
+			}
+			else if (mouseScroll.y < 0.0f)
+			{
+				mouseScroll.y = -1.0f;
+			}
+
+			offset = Mathf.RoundToInt(mouseScroll.y * scrollWheelSensitivity);
 			if(offset != 0.0f)
 				addedOffset.Invoke(offset);
 			yield return null;
