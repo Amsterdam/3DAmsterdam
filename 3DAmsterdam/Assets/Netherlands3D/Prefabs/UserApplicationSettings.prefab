@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &84358254195307228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4844926604623465392}
+  m_Layer: 0
+  m_Name: MobileCameraStartPosition
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4844926604623465392
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84358254195307228}
+  m_LocalRotation: {x: -0.44225287, y: 0.11874839, z: -0.059205774, w: -0.8870208}
+  m_LocalPosition: {x: 963.6947, y: 320.0724, z: 46.830963}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5808193173905523447}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5891215064021093206
 GameObject:
   m_ObjectHideFlags: 0
@@ -28,7 +58,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4844926604623465392}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -66,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceMobileDevice: 0
+  mobileCameraStartPosition: {fileID: 4844926604623465392}
   settingsProfilesTemplates:
   - {fileID: 11400000, guid: 63b3d26ffbd2e0944ac6f2b55ea548e8, type: 2}
   - {fileID: 11400000, guid: d8a703f0e05b09145a20afdca8874501, type: 2}
