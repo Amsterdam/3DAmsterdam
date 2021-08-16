@@ -32,15 +32,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""50924954-e46f-44f9-8127-9103ef424e23"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold(duration=0.02)""
-                },
-                {
-                    ""name"": ""EraseVoxels"",
-                    ""type"": ""Button"",
-                    ""id"": ""87d5dffa-a017-433c-addc-62c08df7c975"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Hold(duration=0.02)""
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -54,39 +46,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""ToggleVoxel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Left mouse button + shift"",
-                    ""id"": ""e143cc7b-d8d7-465b-89b9-43fcf1f91d70"",
-                    ""path"": ""ButtonWithOneModifier"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""EraseVoxels"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""modifier"",
-                    ""id"": ""009480b6-4d28-4514-8291-b214f6366771"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""EraseVoxels"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""button"",
-                    ""id"": ""5845d8ef-034a-40a1-b724-1c2646d177eb"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""EraseVoxels"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""Left mouse button + shift"",
@@ -105,7 +64,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""DrawVoxels"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -116,10 +75,21 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""DrawVoxels"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""16d93ead-4757-4e6a-9268-10b5d549591c"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""ToggleVoxel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -257,7 +227,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3de1e7c7-7187-4906-b4ce-2ac30bdc6bb0"",
-                    ""path"": ""<Touchscreen>/touch*/press"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
@@ -268,11 +238,22 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""62d9d07d-3e19-42fa-bc6c-2e53c1dad083"",
-                    ""path"": ""<Touchscreen>/touch1/press"",
+                    ""path"": ""<Touchscreen>/touch1/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
                     ""action"": ""ClickSecondary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f4b842b-1964-4393-969f-9079643a323e"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""DoubleClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -652,14 +633,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""SecondTouch"",
-                    ""type"": ""Value"",
-                    ""id"": ""f5ce8530-ea0d-4077-9b8f-6373737b92b9"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -709,17 +682,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e26af352-df3d-42b7-9c87-8a09f846590d"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Position"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9f7a1fe3-d6f3-4b8e-8595-f880cb550645"",
                     ""path"": ""<Keyboard>/alt"",
                     ""interactions"": """",
@@ -742,8 +704,8 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""20e0743f-0354-4971-b67c-6dc37696102b"",
-                    ""path"": ""<Touchscreen>/touch*/press"",
+                    ""id"": ""90ad2647-1a2b-400e-882f-641a1c8f90ef"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
@@ -753,12 +715,23 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a1034129-4b15-44d6-a056-7a2bce9c837d"",
-                    ""path"": ""<Touchscreen>/touch1/indirectTouch"",
+                    ""id"": ""c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
-                    ""action"": ""SecondTouch"",
+                    ""action"": ""SpinDrag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e26af352-df3d-42b7-9c87-8a09f846590d"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Position"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -788,6 +761,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Place"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd836219-fb1f-4612-85d5-40a1c579007f"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -812,6 +796,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c207dce6-4de1-4c3d-84e6-2bfbf53f9103"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
                     ""action"": ""Place"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -861,6 +856,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""CancelPick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""868dfe02-b1d9-4b46-9979-8698ab1a527c"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""Pick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -885,6 +891,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""72984564-fa05-4af7-874c-fadf5d2f0dc6"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
                     ""action"": ""Drag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1725,6 +1742,17 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""StartSelection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c663ca35-1f02-493d-a8dc-bf9081960785"",
+                    ""path"": ""<Touchscreen>/touch1/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""StartSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1796,7 +1824,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         m_GridSelection = asset.FindActionMap("GridSelection", throwIfNotFound: true);
         m_GridSelection_ToggleVoxel = m_GridSelection.FindAction("ToggleVoxel", throwIfNotFound: true);
         m_GridSelection_DrawVoxels = m_GridSelection.FindAction("DrawVoxels", throwIfNotFound: true);
-        m_GridSelection_EraseVoxels = m_GridSelection.FindAction("EraseVoxels", throwIfNotFound: true);
         // Selector
         m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
         m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
@@ -1820,7 +1847,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         m_GodViewMouse_FirstPersonModifier = m_GodViewMouse.FindAction("FirstPersonModifier", throwIfNotFound: true);
         m_GodViewMouse_RotateAroundModifier = m_GodViewMouse.FindAction("RotateAroundModifier", throwIfNotFound: true);
         m_GodViewMouse_Position = m_GodViewMouse.FindAction("Position", throwIfNotFound: true);
-        m_GodViewMouse_SecondTouch = m_GodViewMouse.FindAction("SecondTouch", throwIfNotFound: true);
         // Transformable
         m_Transformable = asset.FindActionMap("Transformable", throwIfNotFound: true);
         m_Transformable_Place = m_Transformable.FindAction("Place", throwIfNotFound: true);
@@ -1906,14 +1932,12 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private IGridSelectionActions m_GridSelectionActionsCallbackInterface;
     private readonly InputAction m_GridSelection_ToggleVoxel;
     private readonly InputAction m_GridSelection_DrawVoxels;
-    private readonly InputAction m_GridSelection_EraseVoxels;
     public struct GridSelectionActions
     {
         private @Netherlands3DInputActions m_Wrapper;
         public GridSelectionActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleVoxel => m_Wrapper.m_GridSelection_ToggleVoxel;
         public InputAction @DrawVoxels => m_Wrapper.m_GridSelection_DrawVoxels;
-        public InputAction @EraseVoxels => m_Wrapper.m_GridSelection_EraseVoxels;
         public InputActionMap Get() { return m_Wrapper.m_GridSelection; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1929,9 +1953,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @DrawVoxels.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
                 @DrawVoxels.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
                 @DrawVoxels.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnDrawVoxels;
-                @EraseVoxels.started -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
-                @EraseVoxels.performed -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
-                @EraseVoxels.canceled -= m_Wrapper.m_GridSelectionActionsCallbackInterface.OnEraseVoxels;
             }
             m_Wrapper.m_GridSelectionActionsCallbackInterface = instance;
             if (instance != null)
@@ -1942,9 +1963,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @DrawVoxels.started += instance.OnDrawVoxels;
                 @DrawVoxels.performed += instance.OnDrawVoxels;
                 @DrawVoxels.canceled += instance.OnDrawVoxels;
-                @EraseVoxels.started += instance.OnEraseVoxels;
-                @EraseVoxels.performed += instance.OnEraseVoxels;
-                @EraseVoxels.canceled += instance.OnEraseVoxels;
             }
         }
     }
@@ -2097,7 +2115,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_GodViewMouse_FirstPersonModifier;
     private readonly InputAction m_GodViewMouse_RotateAroundModifier;
     private readonly InputAction m_GodViewMouse_Position;
-    private readonly InputAction m_GodViewMouse_SecondTouch;
     public struct GodViewMouseActions
     {
         private @Netherlands3DInputActions m_Wrapper;
@@ -2108,7 +2125,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         public InputAction @FirstPersonModifier => m_Wrapper.m_GodViewMouse_FirstPersonModifier;
         public InputAction @RotateAroundModifier => m_Wrapper.m_GodViewMouse_RotateAroundModifier;
         public InputAction @Position => m_Wrapper.m_GodViewMouse_Position;
-        public InputAction @SecondTouch => m_Wrapper.m_GodViewMouse_SecondTouch;
         public InputActionMap Get() { return m_Wrapper.m_GodViewMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2136,9 +2152,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
                 @Position.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnPosition;
-                @SecondTouch.started -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
-                @SecondTouch.performed -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
-                @SecondTouch.canceled -= m_Wrapper.m_GodViewMouseActionsCallbackInterface.OnSecondTouch;
             }
             m_Wrapper.m_GodViewMouseActionsCallbackInterface = instance;
             if (instance != null)
@@ -2161,9 +2174,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started += instance.OnPosition;
                 @Position.performed += instance.OnPosition;
                 @Position.canceled += instance.OnPosition;
-                @SecondTouch.started += instance.OnSecondTouch;
-                @SecondTouch.performed += instance.OnSecondTouch;
-                @SecondTouch.canceled += instance.OnSecondTouch;
             }
         }
     }
@@ -2552,7 +2562,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     {
         void OnToggleVoxel(InputAction.CallbackContext context);
         void OnDrawVoxels(InputAction.CallbackContext context);
-        void OnEraseVoxels(InputAction.CallbackContext context);
     }
     public interface ISelectorActions
     {
@@ -2579,7 +2588,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         void OnFirstPersonModifier(InputAction.CallbackContext context);
         void OnRotateAroundModifier(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
-        void OnSecondTouch(InputAction.CallbackContext context);
     }
     public interface ITransformableActions
     {

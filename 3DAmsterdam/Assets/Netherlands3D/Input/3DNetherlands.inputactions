@@ -19,15 +19,7 @@
                     "id": "50924954-e46f-44f9-8127-9103ef424e23",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold(duration=0.02)"
-                },
-                {
-                    "name": "EraseVoxels",
-                    "type": "Button",
-                    "id": "87d5dffa-a017-433c-addc-62c08df7c975",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Hold(duration=0.02)"
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -41,39 +33,6 @@
                     "action": "ToggleVoxel",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "Left mouse button + shift",
-                    "id": "e143cc7b-d8d7-465b-89b9-43fcf1f91d70",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EraseVoxels",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "009480b6-4d28-4514-8291-b214f6366771",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "EraseVoxels",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "5845d8ef-034a-40a1-b724-1c2646d177eb",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "EraseVoxels",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 },
                 {
                     "name": "Left mouse button + shift",
@@ -92,7 +51,7 @@
                     "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "DrawVoxels",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -103,10 +62,21 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "DrawVoxels",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "16d93ead-4757-4e6a-9268-10b5d549591c",
+                    "path": "<Touchscreen>/touch0/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "ToggleVoxel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -244,7 +214,7 @@
                 {
                     "name": "",
                     "id": "3de1e7c7-7187-4906-b4ce-2ac30bdc6bb0",
-                    "path": "<Touchscreen>/touch*/press",
+                    "path": "<Touchscreen>/touch0/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
@@ -255,11 +225,22 @@
                 {
                     "name": "",
                     "id": "62d9d07d-3e19-42fa-bc6c-2e53c1dad083",
-                    "path": "<Touchscreen>/touch1/press",
+                    "path": "<Touchscreen>/touch1/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
                     "action": "ClickSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f4b842b-1964-4393-969f-9079643a323e",
+                    "path": "<Touchscreen>/touch0/tap",
+                    "interactions": "MultiTap",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "DoubleClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -639,14 +620,6 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "SecondTouch",
-                    "type": "Value",
-                    "id": "f5ce8530-ea0d-4077-9b8f-6373737b92b9",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -696,17 +669,6 @@
                 },
                 {
                     "name": "",
-                    "id": "e26af352-df3d-42b7-9c87-8a09f846590d",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Position",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9f7a1fe3-d6f3-4b8e-8595-f880cb550645",
                     "path": "<Keyboard>/alt",
                     "interactions": "",
@@ -729,8 +691,8 @@
                 },
                 {
                     "name": "",
-                    "id": "20e0743f-0354-4971-b67c-6dc37696102b",
-                    "path": "<Touchscreen>/touch*/press",
+                    "id": "90ad2647-1a2b-400e-882f-641a1c8f90ef",
+                    "path": "<Touchscreen>/touch0/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
@@ -740,12 +702,23 @@
                 },
                 {
                     "name": "",
-                    "id": "a1034129-4b15-44d6-a056-7a2bce9c837d",
-                    "path": "<Touchscreen>/touch1/indirectTouch",
+                    "id": "c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563",
+                    "path": "<Touchscreen>/touch1/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
-                    "action": "SecondTouch",
+                    "action": "SpinDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e26af352-df3d-42b7-9c87-8a09f846590d",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Position",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -775,6 +748,17 @@
                     "action": "Place",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd836219-fb1f-4612-85d5-40a1c579007f",
+                    "path": "<Touchscreen>/touch0/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -799,6 +783,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c207dce6-4de1-4c3d-84e6-2bfbf53f9103",
+                    "path": "<Touchscreen>/touch0/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
                     "action": "Place",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -848,6 +843,17 @@
                     "action": "CancelPick",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "868dfe02-b1d9-4b46-9979-8698ab1a527c",
+                    "path": "<Touchscreen>/touch0/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "Pick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -872,6 +878,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "Drag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "72984564-fa05-4af7-874c-fadf5d2f0dc6",
+                    "path": "<Touchscreen>/touch0/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
                     "action": "Drag",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1712,6 +1729,17 @@
                     "action": "StartSelection",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c663ca35-1f02-493d-a8dc-bf9081960785",
+                    "path": "<Touchscreen>/touch1/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "StartSelection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
