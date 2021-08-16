@@ -124,8 +124,6 @@ namespace Netherlands3D.Cameras
             rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
 
-            secondTouch = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SecondTouch);
-
             //Keyboard actions
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
             rotateActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.RotateCamera);
@@ -153,9 +151,6 @@ namespace Netherlands3D.Cameras
 
             modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
             modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
-
-            secondTouch.SubscribePerformed(SecondTouch);
-
         }
 
 
@@ -185,12 +180,6 @@ namespace Netherlands3D.Cameras
                 ActionHandler.actions.GodViewMouse.Disable();
             }
         }
-
-        private void SecondTouch(IAction action)
-        {
-            Debug.Log("SECOND TOUCH DETECTED AT X" + action.ReadValue<Vector2>().x);
-            Debug.Log("SECOND TOUCH DETECTED AT Y" + action.ReadValue<Vector2>().y);
-		}
 
         private void FirstPersonModifier(IAction action)
         {

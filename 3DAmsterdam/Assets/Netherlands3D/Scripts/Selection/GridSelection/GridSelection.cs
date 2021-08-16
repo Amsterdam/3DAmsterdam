@@ -24,14 +24,12 @@ namespace Netherlands3D.Interface
 
 		private IAction toggleAction;
 		private IAction drawAction;
-		private IAction clearAction;
 
+		[SerializeField]
 		private bool drawing = false;
-		private bool add = true;
 
 		private GameObject scaleBlock;
 		private Dictionary<Vector3Int, GameObject> selectionBlocks;
-		private int maxVoxels = 200;
 
 		private Vector3Int startGridPosition;
 
@@ -90,7 +88,6 @@ namespace Netherlands3D.Interface
 		{
 			if (action.Performed)
 			{
-
 				if (Selector.Instance.HoveringInterface()) return;
 
 				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
@@ -110,21 +107,8 @@ namespace Netherlands3D.Interface
 			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
 				drawing = true;
-				add = true;
 
 				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-			}
-		}
-		private void Clear(IAction action)
-		{
-			if (action.Cancelled)
-			{
-				drawing = false;
-			}
-			else if (action.Performed)
-			{
-				drawing = true;
-				add = false;
 			}
 		}
 
