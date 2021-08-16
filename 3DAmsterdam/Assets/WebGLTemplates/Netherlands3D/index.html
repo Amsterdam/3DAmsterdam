@@ -122,7 +122,9 @@
           }).then((instance) => {
 			  unityInstance = instance;
               loadingBar.style.display = "none";
-              clearInterval(spinCube); 			  
+              clearInterval(spinCube); 	
+			  loadingBar.remove();
+			  
 			  ListenerInit(); //Application methods are within netherlands3d.js		  
           }).catch((message) => {
               alert(message);
