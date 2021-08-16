@@ -1,4 +1,5 @@
-﻿using Netherlands3D.Events;
+﻿using Netherlands3D.Cameras;
+using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
@@ -14,7 +15,10 @@ namespace Netherlands3D.Settings {
     {
 		[SerializeField]
 		private bool forceMobileDevice = false;
-		private bool mobileDevice = false;
+		private bool isMobileDevice = false;
+
+		[SerializeField]
+		private Transform mobileCameraStartPosition;
 
 		public static ApplicationSettingsProfile settings;
 
@@ -44,11 +48,14 @@ namespace Netherlands3D.Settings {
 
 		[SerializeField]
 		private Slider lodSlider;
-		private string customName = "*Aangepast";
+
+		public bool IsMobileDevice { get => isMobileDevice; set => isMobileDevice = value; }
 
 		void Start()
 		{
-			renderSettings = GetComponent<Rendering.RenderSettings>();
+			Instance = this;
+			renderSettings = Rendering.RenderSettings.Instance;
+
 			StartupSettings();
 		}
 
@@ -62,13 +69,20 @@ namespace Netherlands3D.Settings {
 			else if (forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser())
 			{
 				Debug.Log("Mobile application settings");
-				mobileDevice = true;
+				IsMobileDevice = true;
 				selectedTemplate = 3;
+				CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
+
 				lodSlider.value = lodSlider.minValue;
 			}
 
+			//Load up our enviroment, optimised for a mobile device
+			EnviromentSettings.Instance.ApplyEnviroment(isMobileDevice);
+
+			//Load up and apply our loaded/selected settings profile
 			LoadSettingsFromProfile(settingsProfilesTemplates[selectedTemplate]);
-			ApplySettings(false);
+			//Apply but do not save
+			ApplySettings(false); 
 		}
 
 		private void LoadSettingsFromProfile(ApplicationSettingsProfile templateProfile)
@@ -112,7 +126,7 @@ namespace Netherlands3D.Settings {
 			List<string> profileNames = new List<string>();
 			foreach (ApplicationSettingsProfile profile in settingsProfilesTemplates)
 			{
-				if (profile.mobileProfile && !mobileDevice) continue;
+				if (profile.mobileProfile && !IsMobileDevice) continue;
 				profileNames.Add(profile.profileName);
 			}
 
@@ -195,6 +209,7 @@ namespace Netherlands3D.Settings {
 			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
 
 			canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
             renderSettings.TogglePostEffects(settings.postProcessingEffects);

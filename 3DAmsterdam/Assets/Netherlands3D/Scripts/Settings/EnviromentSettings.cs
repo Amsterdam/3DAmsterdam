@@ -11,6 +11,12 @@ public class EnviromentSettings : MonoBehaviour
     public static Light sun;
 
     [SerializeField]
+    private int skyIndexMobile = 1;
+
+    [SerializeField]
+    private int skyIndexDesktop = 0;
+
+    [SerializeField]
     private EnviromentProfile[] selectableProfiles;
 
 	public EnviromentProfile[] SelectableProfiles { get => selectableProfiles; private set => selectableProfiles = value; }
@@ -40,8 +46,18 @@ public class EnviromentSettings : MonoBehaviour
     [SerializeField]
     private MeshRenderer sunHaloGraphic;
 
-    private void Awake()
+    public static EnviromentSettings Instance;
+
+	private void Awake()
 	{
+        Instance = this;
+
+        //Work on copies of our EnviromentSettings profiles
+		for (int i = 0; i < selectableProfiles.Length; i++)
+		{
+            selectableProfiles[i] = Instantiate(selectableProfiles[i]);
+        }
+
         if (directionalLightSun)
         {
             sun = directionalLightSun;
@@ -50,9 +66,19 @@ public class EnviromentSettings : MonoBehaviour
         {
             sun = FindObjectOfType<Light>();
         }
+    }
 
-        //Use first slot as default
-        ApplyEnviromentProfile(0);
+	private void OnDisable()
+	{
+        //Clear loaded asset texture reference
+        texturedSkyMaterial.SetTexture("_Tex", null);
+    }
+
+	public void ApplyEnviroment(bool mobile = false)
+    {
+        //Load up our enviroment based on platform (mobile should be lightweight)
+        ApplyEnviromentProfile((mobile) ? skyIndexMobile : skyIndexDesktop);
+        UpdateSunBasedVisuals();
     }
 
     public static void SetSunAngle(Vector3 angles)
@@ -67,19 +93,13 @@ public class EnviromentSettings : MonoBehaviour
             UpdateSunBasedVisuals();
     }
 
-	private void Start()
+    public void ApplyEnviromentProfile(EnviromentProfile enviromentProfile)
     {
-        UpdateSunBasedVisuals();
-    }
+        activeEnviromentProfile = enviromentProfile;
 
-    public void ApplyEnviromentProfile(int profileIndex)
-    {
-        var profile = selectableProfiles[profileIndex];
-        activeEnviromentProfile = profile;
-
-        if(activeEnviromentProfile.skyMap)
+        if (activeEnviromentProfile.isTexturedSky && activeEnviromentProfile.SkyMap)
         {
-            texturedSkyMaterial.SetTexture("_Tex",activeEnviromentProfile.skyMap);
+            texturedSkyMaterial.SetTexture("_Tex", activeEnviromentProfile.SkyMap);
             //texturedSkyMaterial.SetColor();
             RenderSettings.skybox = texturedSkyMaterial;
 
@@ -100,15 +120,27 @@ public class EnviromentSettings : MonoBehaviour
 
         UpdateSunBasedVisuals();
     }
+    public void ApplyEnviromentProfile(int profileIndex)
+    {
+        var profile = selectableProfiles[profileIndex];
+        ApplyEnviromentProfile(profile);
+        ApplyReflectionSettings();
+    }
 
     public static void SetReflections(bool realtimeReflectionsAreOn = false)
     {
         useSkyboxForReflections = realtimeReflectionsAreOn;
 
-        if (!useSkyboxForReflections && activeEnviromentProfile.skyMap)
+        if (!activeEnviromentProfile) return;
+        ApplyReflectionSettings();
+    }
+
+    private static void ApplyReflectionSettings()
+    {
+        if (!useSkyboxForReflections && activeEnviromentProfile.SkyMap)
         {
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
-            RenderSettings.customReflection = activeEnviromentProfile.skyMap;
+            RenderSettings.customReflection = activeEnviromentProfile.SkyMap;
         }
         else
         {
@@ -148,7 +180,7 @@ public class EnviromentSettings : MonoBehaviour
             sun.intensity
         );
 
-        if(activeEnviromentProfile.skyMap)
+        if(activeEnviromentProfile.SkyMap)
             RenderSettings.skybox.SetFloat("_Exposure", sun.intensity);
 
         var sunHorizon = Mathf.Clamp(Mathf.InverseLerp(0.6f, 0.7f, sun.intensity),0.0f,1.0f);
