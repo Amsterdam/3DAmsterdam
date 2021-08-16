@@ -19,8 +19,9 @@ public class EnviromentProfile : ScriptableObject
 
     [Header("Textured sky settings")]
     public bool isTexturedSky = true;
-    public string textureResourcePath = "Cubemaps/grey";
-    private Cubemap skyMap = null;
+    public string texturePath = "skybox_grey.png";
+    public Texture2D loadedTexture = null;
+
 	public float exposureDay = 1.0f;
     public float exposureNight = 0.1f;
 
@@ -31,14 +32,4 @@ public class EnviromentProfile : ScriptableObject
     public Texture2D haloTexture; 
     public Color sunTextureTintColor = Color.yellow;
     public Color sunHaloTextureTintColor = Color.yellow;
-
-	public Cubemap SkyMap {
-        get
-        {
-            if (skyMap) return skyMap;
-
-            skyMap = Resources.Load<Cubemap>(textureResourcePath);
-            return skyMap;
-        }
-    }
 }

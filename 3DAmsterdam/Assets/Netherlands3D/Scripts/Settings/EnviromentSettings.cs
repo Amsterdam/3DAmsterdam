@@ -2,7 +2,9 @@
 using Netherlands3D.Settings;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Rendering;
 
 public class EnviromentSettings : MonoBehaviour
@@ -48,12 +50,14 @@ public class EnviromentSettings : MonoBehaviour
 
     public static EnviromentSettings Instance;
 
+    private Coroutine loadingTextureProgress;
+
 	private void Awake()
 	{
         Instance = this;
 
         //Work on copies of our EnviromentSettings profiles
-		for (int i = 0; i < selectableProfiles.Length; i++)
+        for (int i = 0; i < selectableProfiles.Length; i++)
 		{
             selectableProfiles[i] = Instantiate(selectableProfiles[i]);
         }
@@ -93,17 +97,58 @@ public class EnviromentSettings : MonoBehaviour
             UpdateSunBasedVisuals();
     }
 
-    public void ApplyEnviromentProfile(EnviromentProfile enviromentProfile)
+    public void ApplyEnviromentProfile(int profileIndex)
     {
+        var profile = selectableProfiles[profileIndex];
+
+        if (loadingTextureProgress != null) StopCoroutine(loadingTextureProgress);
+        loadingTextureProgress = StartCoroutine(LoadEnviromentProfile(profile));
+
+        ApplyReflectionSettings();
+    }
+    private IEnumerator LoadEnviromentProfile(EnviromentProfile enviromentProfile)
+    {
+        //Always destroy our prevous loaded skybox texture
+        if(activeEnviromentProfile && activeEnviromentProfile.loadedTexture != null)
+        {
+            Destroy(activeEnviromentProfile.loadedTexture);
+		}
+
+        //Select our new profile
         activeEnviromentProfile = enviromentProfile;
 
-        if (activeEnviromentProfile.isTexturedSky && activeEnviromentProfile.SkyMap)
+        if (activeEnviromentProfile.isTexturedSky && activeEnviromentProfile.texturePath != "")
         {
-            texturedSkyMaterial.SetTexture("_Tex", activeEnviromentProfile.SkyMap);
-            //texturedSkyMaterial.SetColor();
-            RenderSettings.skybox = texturedSkyMaterial;
+            var skyboxTextureUrl = "";
+            var splitTarget = Application.absoluteURL.LastIndexOf('/');
+            if (splitTarget != -1)
+            {
+                var relativeDirectory = Application.absoluteURL.Substring(0, splitTarget);
+                skyboxTextureUrl = $"{relativeDirectory}/{activeEnviromentProfile.texturePath}";
+            }
+#if UNITY_EDITOR
+            skyboxTextureUrl = $"file:///{Application.dataPath}/WebGLTemplates/Netherlands3D/{activeEnviromentProfile.texturePath}";
+ #endif
 
-            SetReflections(useSkyboxForReflections);
+            Debug.Log("Loading skybox texture:" + skyboxTextureUrl);
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(skyboxTextureUrl))
+            {
+                yield return uwr.SendWebRequest();
+                if (uwr.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(uwr.error);
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    activeEnviromentProfile.loadedTexture = (Texture2D)DownloadHandlerTexture.GetContent(uwr);
+                    texturedSkyMaterial.SetTexture("_Tex", activeEnviromentProfile.loadedTexture);
+                    //texturedSkyMaterial.SetColor();
+                    RenderSettings.skybox = texturedSkyMaterial;
+
+                    SetReflections(useSkyboxForReflections);
+                }
+            }
         }
         else
         {
@@ -120,12 +165,6 @@ public class EnviromentSettings : MonoBehaviour
 
         UpdateSunBasedVisuals();
     }
-    public void ApplyEnviromentProfile(int profileIndex)
-    {
-        var profile = selectableProfiles[profileIndex];
-        ApplyEnviromentProfile(profile);
-        ApplyReflectionSettings();
-    }
 
     public static void SetReflections(bool realtimeReflectionsAreOn = false)
     {
@@ -137,10 +176,10 @@ public class EnviromentSettings : MonoBehaviour
 
     private static void ApplyReflectionSettings()
     {
-        if (!useSkyboxForReflections && activeEnviromentProfile.SkyMap)
+        if (!useSkyboxForReflections && activeEnviromentProfile.isTexturedSky)
         {
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
-            RenderSettings.customReflection = activeEnviromentProfile.SkyMap;
+            //RenderSettings.customReflection = activeEnviromentProfile.loadedTexture;
         }
         else
         {
@@ -180,7 +219,7 @@ public class EnviromentSettings : MonoBehaviour
             sun.intensity
         );
 
-        if(activeEnviromentProfile.SkyMap)
+        if(activeEnviromentProfile.isTexturedSky)
             RenderSettings.skybox.SetFloat("_Exposure", sun.intensity);
 
         var sunHorizon = Mathf.Clamp(Mathf.InverseLerp(0.6f, 0.7f, sun.intensity),0.0f,1.0f);
