@@ -112,7 +112,6 @@ namespace Netherlands3D.Masking
 			}
 			maskTexture.SetPixels(pixels);
 			maskTexture.Apply();
-			
 		}
 
 		public void MoveToBounds(Bounds bounds)
