@@ -131,7 +131,7 @@ public class EnviromentSettings : MonoBehaviour
  #endif
 
             Debug.Log("Loading skybox texture:" + skyboxTextureUrl);
-            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(skyboxTextureUrl))
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(skyboxTextureUrl,true))
             {
                 yield return uwr.SendWebRequest();
                 if (uwr.result != UnityWebRequest.Result.Success)
