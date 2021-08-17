@@ -172,17 +172,6 @@
                 },
                 {
                     "name": "",
-                    "id": "ff1185f8-51f6-4bf4-9570-bf9476fd2915",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Position",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "462be44e-ccd1-4331-a558-34b433352941",
                     "path": "<Touchscreen>/touch*/position",
                     "interactions": "",
@@ -220,7 +209,7 @@
                     "path": "<Touchscreen>/touch0/press",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Touch",
                     "action": "ClickSecondary",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -231,10 +220,21 @@
                     "path": "<Touchscreen>/touch1/tap",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Touch",
                     "action": "ClickSecondary",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "ff1185f8-51f6-4bf4-9570-bf9476fd2915",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -650,17 +650,6 @@
                 },
                 {
                     "name": "",
-                    "id": "95d405f2-cc8e-4b00-ae5f-c7c2edbf1366",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "SpinDrag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9f7a1fe3-d6f3-4b8e-8595-f880cb550645",
                     "path": "<Keyboard>/alt",
                     "interactions": "",
@@ -694,23 +683,34 @@
                 },
                 {
                     "name": "",
-                    "id": "c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563",
-                    "path": "<Touchscreen>/touch1/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "SpinDrag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e26af352-df3d-42b7-9c87-8a09f846590d",
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95d405f2-cc8e-4b00-ae5f-c7c2edbf1366",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SpinDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563",
+                    "path": "<Touchscreen>/touch1/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "SpinDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

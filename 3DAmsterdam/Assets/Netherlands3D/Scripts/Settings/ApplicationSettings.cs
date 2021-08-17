@@ -61,6 +61,9 @@ namespace Netherlands3D.Settings {
 
 		private void StartupSettings()
 		{
+			//Load up and apply our loaded/selected settings profile
+			CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
+
 			if (!forceMobileDevice && PlayerPrefs.HasKey(playerPrefKey))
 			{
 				Debug.Log("Loaded custom user settings");
@@ -79,14 +82,14 @@ namespace Netherlands3D.Settings {
 			//Load up our enviroment, optimised for a mobile device
 			EnviromentSettings.Instance.ApplyEnviroment(isMobileDevice);
 
-			//Load up and apply our loaded/selected settings profile
-			LoadSettingsFromProfile(settingsProfilesTemplates[selectedTemplate]);
 			//Apply but do not save
 			ApplySettings(false); 
 		}
 
-		private void LoadSettingsFromProfile(ApplicationSettingsProfile templateProfile)
+		private void CreateSettingsProfile(ApplicationSettingsProfile templateProfile)
 		{
+			if (settings) Destroy(settings);
+
 			//Start with a copy of the selected base profile so we do not alter the templates
 			settings = Instantiate(templateProfile);
 			settings.name = "UserProfile";

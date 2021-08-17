@@ -114,14 +114,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""DoubleClick"",
-                    ""type"": ""Button"",
-                    ""id"": ""fe0aaeea-4249-440a-9e12-7aaead39a843"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""ClickSecondary"",
                     ""type"": ""Button"",
                     ""id"": ""15c19d74-0310-409f-9e60-c9040640d172"",
@@ -160,17 +152,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f8316239-ec1c-4536-828e-244cd9633fc2"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""MultiTap"",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""DoubleClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""6a41e736-680f-4b49-8848-9864b8217f1d"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Tap"",
@@ -204,17 +185,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ff1185f8-51f6-4bf4-9570-bf9476fd2915"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Position"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""462be44e-ccd1-4331-a558-34b433352941"",
                     ""path"": ""<Touchscreen>/touch*/position"",
                     ""interactions"": """",
@@ -236,24 +206,46 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""62d9d07d-3e19-42fa-bc6c-2e53c1dad083"",
+                    ""name"": ""DoubleTouch"",
+                    ""id"": ""382b0df6-c845-43d8-91f9-0416e87f6038"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClickSecondary"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""cade574b-789e-41f5-99f9-e7027ff20eec"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""ClickSecondary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""4fded5e2-8e43-4153-a699-aae6ae91bc91"",
                     ""path"": ""<Touchscreen>/touch1/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
                     ""action"": ""ClickSecondary"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7f4b842b-1964-4393-969f-9079643a323e"",
-                    ""path"": ""<Touchscreen>/touch0/tap"",
-                    ""interactions"": ""MultiTap"",
+                    ""id"": ""ff1185f8-51f6-4bf4-9570-bf9476fd2915"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""DoubleClick"",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Position"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -671,17 +663,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""95d405f2-cc8e-4b00-ae5f-c7c2edbf1366"",
-                    ""path"": ""<Mouse>/middleButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""SpinDrag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9f7a1fe3-d6f3-4b8e-8595-f880cb550645"",
                     ""path"": ""<Keyboard>/alt"",
                     ""interactions"": """",
@@ -715,23 +696,34 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563"",
-                    ""path"": ""<Touchscreen>/touch1/press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""SpinDrag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""e26af352-df3d-42b7-9c87-8a09f846590d"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95d405f2-cc8e-4b00-ae5f-c7c2edbf1366"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SpinDrag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2f7e2fd-679c-4b2c-a4a5-d24c6c7ff563"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""SpinDrag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1828,7 +1820,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         m_Selector = asset.FindActionMap("Selector", throwIfNotFound: true);
         m_Selector_Multiselect = m_Selector.FindAction("Multiselect", throwIfNotFound: true);
         m_Selector_Position = m_Selector.FindAction("Position", throwIfNotFound: true);
-        m_Selector_DoubleClick = m_Selector.FindAction("DoubleClick", throwIfNotFound: true);
         m_Selector_ClickSecondary = m_Selector.FindAction("ClickSecondary", throwIfNotFound: true);
         m_Selector_Click = m_Selector.FindAction("Click", throwIfNotFound: true);
         m_Selector_Escape = m_Selector.FindAction("Escape", throwIfNotFound: true);
@@ -1973,7 +1964,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     private ISelectorActions m_SelectorActionsCallbackInterface;
     private readonly InputAction m_Selector_Multiselect;
     private readonly InputAction m_Selector_Position;
-    private readonly InputAction m_Selector_DoubleClick;
     private readonly InputAction m_Selector_ClickSecondary;
     private readonly InputAction m_Selector_Click;
     private readonly InputAction m_Selector_Escape;
@@ -1983,7 +1973,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
         public SelectorActions(@Netherlands3DInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Multiselect => m_Wrapper.m_Selector_Multiselect;
         public InputAction @Position => m_Wrapper.m_Selector_Position;
-        public InputAction @DoubleClick => m_Wrapper.m_Selector_DoubleClick;
         public InputAction @ClickSecondary => m_Wrapper.m_Selector_ClickSecondary;
         public InputAction @Click => m_Wrapper.m_Selector_Click;
         public InputAction @Escape => m_Wrapper.m_Selector_Escape;
@@ -2002,9 +1991,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
                 @Position.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
                 @Position.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnPosition;
-                @DoubleClick.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
-                @DoubleClick.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
-                @DoubleClick.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnDoubleClick;
                 @ClickSecondary.started -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
                 @ClickSecondary.performed -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
                 @ClickSecondary.canceled -= m_Wrapper.m_SelectorActionsCallbackInterface.OnClickSecondary;
@@ -2024,9 +2010,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 @Position.started += instance.OnPosition;
                 @Position.performed += instance.OnPosition;
                 @Position.canceled += instance.OnPosition;
-                @DoubleClick.started += instance.OnDoubleClick;
-                @DoubleClick.performed += instance.OnDoubleClick;
-                @DoubleClick.canceled += instance.OnDoubleClick;
                 @ClickSecondary.started += instance.OnClickSecondary;
                 @ClickSecondary.performed += instance.OnClickSecondary;
                 @ClickSecondary.canceled += instance.OnClickSecondary;
@@ -2567,7 +2550,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
     {
         void OnMultiselect(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
-        void OnDoubleClick(InputAction.CallbackContext context);
         void OnClickSecondary(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
