@@ -82,8 +82,31 @@ namespace Netherlands3D.ModelParsing
 		/// </summary>
 		public void LoadOBJFromJavascript()
 		{
-			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
+			//StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
+
+
+		public void LoadOBJFromIndexedDB(List<string> filenames )
+        {
+			Debug.Log(filenames.Count + " files received");
+			string objstring = null;
+			string mtlstring = null;
+            for (int i = 0; i < filenames.Count; i++)
+            {
+				string extention = filenames[i].Substring(filenames[i].Length - 4);
+                if (extention.IndexOf("obj")>-1)
+                {
+					objstring = File.ReadAllText(Application.persistentDataPath+"/"+ filenames[i]);
+					Debug.Log("objstringlength: "+objstring.Length);
+                }
+				if (extention.IndexOf("mtl") > -1)
+				{
+					mtlstring = File.ReadAllText(Application.persistentDataPath + "/" + filenames[i]);
+					Debug.Log("mtlstringlength: "+mtlstring.Length);
+				}
+			}
+			StartCoroutine(ParseOBJFromString(objstring, mtlstring));
+        }
 
 		/// <summary>
 		/// Method to remove loading screen if somehow the import/loading was aborted
