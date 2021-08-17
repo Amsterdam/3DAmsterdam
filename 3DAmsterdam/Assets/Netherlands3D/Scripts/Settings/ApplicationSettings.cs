@@ -78,6 +78,8 @@ namespace Netherlands3D.Settings {
 				Debug.Log("Mobile application settings");
 				IsMobileDevice = true;
 				selectedTemplate = 3;
+				CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
+
 				CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
 
 				lodSlider.value = lodSlider.minValue;
