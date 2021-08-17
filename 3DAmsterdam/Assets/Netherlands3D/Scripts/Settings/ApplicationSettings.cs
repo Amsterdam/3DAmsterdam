@@ -51,11 +51,15 @@ namespace Netherlands3D.Settings {
 
 		public bool IsMobileDevice { get => isMobileDevice; set => isMobileDevice = value; }
 
-		void Start()
+		private void Awake()
 		{
 			Instance = this;
-			renderSettings = Rendering.RenderSettings.Instance;
+			IsMobileDevice = (forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser());
+		}
 
+		void Start()
+		{
+			renderSettings = Rendering.RenderSettings.Instance;
 			StartupSettings();
 		}
 
@@ -69,7 +73,7 @@ namespace Netherlands3D.Settings {
 				Debug.Log("Loaded custom user settings");
 				LoadSavedSettings();
 			}
-			else if (forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser())
+			else if (IsMobileDevice)
 			{
 				Debug.Log("Mobile application settings");
 				IsMobileDevice = true;
