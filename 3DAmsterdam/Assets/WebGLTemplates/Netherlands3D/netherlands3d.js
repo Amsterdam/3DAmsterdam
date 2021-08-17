@@ -22,16 +22,16 @@ function ListenerInit()
 		console.log(document.mozPointerLockElement);
 	}
 	
-	//Support for dragging dropping files on browser window
-	document.addEventListener("dragover", function (event) {
-		event.preventDefault();
-	});
-	document.addEventListener("drop", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
+	////Support for dragging dropping files on browser window
+	//document.addEventListener("dragover", function (event) {
+	//	event.preventDefault();
+	//});
+	//document.addEventListener("drop", function (event) {
+	//	event.stopPropagation();
+	//	event.preventDefault();
 
-		ReadFiles(event.dataTransfer.files);
-	});
+	//	ReadFiles(event.dataTransfer.files);
+	//});
 
 	//Listener and method to let Unity know our tab/application is active
 	//FPS counting is not done on an inactive tab (those tabs are throttled down to 1~5fps)
@@ -87,15 +87,15 @@ function CopySharedURL() {
 }
 
 function BuildInUnity() {
-    console.log("Build model in Unity");
-    unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
-    //Reset file selection
-    document.getElementById("obj").value = "";
+    //console.log("Build model in Unity");
+    //unityInstance.SendMessage(unityObjectName, "LoadOBJFromJavascript");
+    ////Reset file selection
+    //document.getElementById("obj").value = "";
 }
 function AbortInUnity() {
-    console.log("Abort import in Unity");
-    unityInstance.SendMessage(unityObjectName, "AbortImport");
-    document.getElementById("obj").value = "";
+    //console.log("Abort import in Unity");
+    //unityInstance.SendMessage(unityObjectName, "AbortImport");
+    //document.getElementById("obj").value = "";
 }
 function HandleCsvInUnity() {
     unityInstance.SendMessage("CSVTab", "LoadCSVFromJavascript");
@@ -106,77 +106,77 @@ function HandleFzpInUnity() {
     document.getElementById("fzp").value = "";
 }
 
-function ReadFiles(selectedFiles) {
-    //Check browser support
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-        fileReader = new FileReader();
-    } else {
-        alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
-    }
+//function ReadFiles(selectedFiles) {
+//    //Check browser support
+//    if (window.File && window.FileReader && window.FileList && window.Blob) {
+//        fileReader = new FileReader();
+//    } else {
+//        alert("Bestanden uploaden wordt helaas niet ondersteund door deze browser.");
+//    }
 
-    //Set the obj name to display in Unity, and open progress overlay
-    unityInstance.SendMessage(unityObjectName, "SetOBJFileName", selectedFiles.item(0).name);
+//    //Set the obj name to display in Unity, and open progress overlay
+//    unityInstance.SendMessage(unityObjectName, "SetOBJFileName", selectedFiles.item(0).name);
 
-    //If we selected at least one file
-    if (selectedFiles && selectedFiles[0]) {
-        //parse obj and optionaly the mtl file
-        var mtlFileSelectionIndex = -1;
-        var objFileSelectionIndex = -1;
+//    //If we selected at least one file
+//    if (selectedFiles && selectedFiles[0]) {
+//        //parse obj and optionaly the mtl file
+//        var mtlFileSelectionIndex = -1;
+//        var objFileSelectionIndex = -1;
 
-        var amountOfObjs = 0;
-        var amountOfMtls = 0;
+//        var amountOfObjs = 0;
+//        var amountOfMtls = 0;
 
-        //Check what index is the obj file, and optionaly the mtl file
-        for (var i = 0; i < selectedFiles.length; i++) {
-            var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
-            if (extension == "mtl") {
-                console.log("MTL file");
-                mtlFileSelectionIndex = i;
-                amountOfMtls++;
-            } else if (extension == "obj") {
-                console.log("OBJ file");
-                objFileSelectionIndex = i;
-                amountOfObjs++;
-            }
-        }
+//        //Check what index is the obj file, and optionaly the mtl file
+//        for (var i = 0; i < selectedFiles.length; i++) {
+//            var extension = selectedFiles[i].name.split(".").pop().toLowerCase();
+//            if (extension == "mtl") {
+//                console.log("MTL file");
+//                mtlFileSelectionIndex = i;
+//                amountOfMtls++;
+//            } else if (extension == "obj") {
+//                console.log("OBJ file");
+//                objFileSelectionIndex = i;
+//                amountOfObjs++;
+//            }
+//        }
 
-        //Selected too many files?
-        if (amountOfObjs > 1 || amountOfMtls > 1) {
-            AbortInUnity();
-            return false;
-        }
+//        //Selected too many files?
+//        if (amountOfObjs > 1 || amountOfMtls > 1) {
+//            AbortInUnity();
+//            return false;
+//        }
 
-        //Check if we at least found an obj in our selection of files
-        if (objFileSelectionIndex == -1) {
-            AbortInUnity();
-            return false;
-        }
+//        //Check if we at least found an obj in our selection of files
+//        if (objFileSelectionIndex == -1) {
+//            AbortInUnity();
+//            return false;
+//        }
 
-        //What to do when files are done loading
-        fileReader.onload = function (e) {
-            console.log("OBJ file loaded.");
-            //After reading the text for the OBJ
-            objData = e.target.result;
-            if (mtlFileSelectionIndex > -1) {
-                //Load material after loading obj (optionaly)
-                fileReader.onload = function (e) {
-                    console.log("MTL file loaded.");
-                    mtlData = e.target.result;
-                    BuildInUnity();
-                };
-                fileReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
-            } else {
-                BuildInUnity();
-            }
-        };
+//        //What to do when files are done loading
+//        fileReader.onload = function (e) {
+//            console.log("OBJ file loaded.");
+//            //After reading the text for the OBJ
+//            objData = e.target.result;
+//            if (mtlFileSelectionIndex > -1) {
+//                //Load material after loading obj (optionaly)
+//                fileReader.onload = function (e) {
+//                    console.log("MTL file loaded.");
+//                    mtlData = e.target.result;
+//                    BuildInUnity();
+//                };
+//                fileReader.readAsText(selectedFiles[mtlFileSelectionIndex]);
+//            } else {
+//                BuildInUnity();
+//            }
+//        };
 
-        //Start loading the obj file
-        if (objFileSelectionIndex != -1) {
-            fileReader.readAsText(selectedFiles[objFileSelectionIndex])
-        };
-    }
-    return true;
-}
+//        //Start loading the obj file
+//        if (objFileSelectionIndex != -1) {
+//            fileReader.readAsText(selectedFiles[objFileSelectionIndex])
+//        };
+//    }
+//    return true;
+//}
 
 function ReadFilesCsv(selectedFiles) {
 
