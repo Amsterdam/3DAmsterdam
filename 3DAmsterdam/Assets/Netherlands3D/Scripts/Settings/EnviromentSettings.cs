@@ -176,7 +176,7 @@ public class EnviromentSettings : MonoBehaviour
 
     private static void ApplyReflectionSettings()
     {
-        if (!useSkyboxForReflections && activeEnviromentProfile.isTexturedSky)
+        if (!useSkyboxForReflections)
         {
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
         }
