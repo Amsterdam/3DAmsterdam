@@ -87,7 +87,6 @@ namespace Netherlands3D.Rendering
 
                                 // Copy the pixels over to mipmap 0
                                 mipTexture.SetPixels(loadedTexture.GetPixels());
-                                mipTexture.alphaIsTransparency = true;
                                 mipTexture.Apply(); //Apply now generates our mipmap steps
 
                                 Destroy(loadedTexture);
