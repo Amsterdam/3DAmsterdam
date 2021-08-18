@@ -70,7 +70,7 @@ namespace Netherlands3D.Rendering
                     else
                     {
                         var materialTextureUrl = $"{relativeDirectory}/{texturesFolder}/{materialTextureFileName}";
-                        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(materialTextureUrl, true))
+                        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(materialTextureUrl))
                         {
                             yield return uwr.SendWebRequest();
                             if (uwr.result != UnityWebRequest.Result.Success)
@@ -81,8 +81,19 @@ namespace Netherlands3D.Rendering
                             {
                                 // Get downloaded asset bundle
                                 var loadedTexture = (Texture2D)DownloadHandlerTexture.GetContent(uwr);
-                                loadedTextures.Add(materialTextureFileName, loadedTexture);
-                                material.SetTexture(materialBaseMap, loadedTexture);
+
+                                // Mipmapped texture
+                                var mipTexture = new Texture2D(loadedTexture.width, loadedTexture.height, TextureFormat.ARGB32,true);
+
+                                // Copy the pixels over to mipmap 0
+                                mipTexture.SetPixels(loadedTexture.GetPixels());
+                                mipTexture.alphaIsTransparency = true;
+                                mipTexture.Apply(); //Apply now generates our mipmap steps
+
+                                Destroy(loadedTexture);
+
+                                loadedTextures.Add(materialTextureFileName, mipTexture);
+                                material.SetTexture(materialBaseMap, mipTexture);
                             }
                         }
                     }

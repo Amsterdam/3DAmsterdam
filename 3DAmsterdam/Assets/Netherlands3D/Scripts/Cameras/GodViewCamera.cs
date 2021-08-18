@@ -25,7 +25,8 @@ namespace Netherlands3D.Cameras
         private float spinSpeed = 0.5f;
 
         private const float minOrtographicZoom = 20f;
-        private const float maxZoomOut = 2500f;
+        private float maxZoomOut = 2500f;
+        private float minUndergroundY = -30f;
 
         [SerializeField]
         private bool dragging = false;
@@ -40,6 +41,9 @@ namespace Netherlands3D.Cameras
         private float maxTravelDistance = 20000.0f;
 
         private Vector3 startMouseDrag;
+
+        private float startFov = 60.0f;
+        private float mobileFov = 40.0f;
 
         [SerializeField]
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100, 100, 200);
@@ -89,7 +93,6 @@ namespace Netherlands3D.Cameras
 
         private IAction secondTouch;
 
-        private float minUndergroundY = -30f;
 
         List<InputActionMap> availableActionMaps;
 
@@ -100,10 +103,18 @@ namespace Netherlands3D.Cameras
 		void Awake()
         {
             cameraComponent = GetComponent<Camera>();
+            startFov = cameraComponent.fieldOfView;
         }
 
         void Start()
         {
+            if (ApplicationSettings.Instance.IsMobileDevice)
+            {
+                cameraComponent.fieldOfView = mobileFov;
+                maxZoomOut = 670.0f;
+                minUndergroundY = 100.0f;
+            }
+
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
 
             availableActionMaps = new List<InputActionMap>()
