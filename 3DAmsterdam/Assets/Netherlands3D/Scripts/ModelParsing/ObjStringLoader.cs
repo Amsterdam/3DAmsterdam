@@ -69,14 +69,16 @@ namespace Netherlands3D.ModelParsing
 			{
 				pathMtl = "";
 			}
+			LoadOBJFromIndexedDB(new List<string>() { pathObj, pathMtl }, finished);
+			// StartCoroutine(ParseOBJfromStream(pathObj, pathMtl));
 
-			StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(pathObj),
-					File.ReadAllText(pathMtl)
+			//StartCoroutine(ParseOBJFromString(
+			//		File.ReadAllText(pathObj),
+			//		File.ReadAllText(pathMtl)
 					
-			));
+			//));
 		}
-		private void done(bool succes)
+		public void finished(bool value)
         {
 
         }
@@ -106,10 +108,11 @@ namespace Netherlands3D.ModelParsing
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
 			Debug.Log(filenames.Count + " files received");
-			string objstring = null;
-			string mtlstring = null;
+			string objstring = "";
+			string mtlstring = "";
             for (int i = 0; i < filenames.Count; i++)
             {
+				Debug.Log(filenames[i]);
 				string extention = filenames[i].Substring(filenames[i].Length - 4);
                 if (extention.IndexOf("obj")>-1)
                 {
@@ -136,6 +139,14 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.Hide();
 			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
+
+
+		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath)
+        {
+			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
+			objstreamReader.ReadOBJ(objFilePath);
+			yield return null;
+        }
 
 		/// <summary>
 		/// Start the parsing of OBJ and MTL strings
