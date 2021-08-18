@@ -67,6 +67,9 @@ namespace Netherlands3D.Interface
 		public UnityEvent registeredClickInput;
 		public UnityEvent registeredSecondaryClickInput;
 
+		private bool allowDelayedInteractables = true;
+		public bool AllowDelayedInteractables { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
+
 		private void Awake()
 		{
 			if (Instance == null)
@@ -244,17 +247,23 @@ namespace Netherlands3D.Interface
 			{
 				hoveringInteractable.Select();
 
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					if (interactable != hoveringInteractable)
-						interactable.Deselect();
+					foreach (var interactable in delayedInteractables)
+					{
+						if (interactable != hoveringInteractable)
+							interactable.Deselect();
+					}
 				}
 			}
 			else
 			{
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					interactable.Select();
+					foreach (var interactable in delayedInteractables)
+					{
+						interactable.Select();
+					}
 				}
 				DeselectAll();
 			}
@@ -272,19 +281,26 @@ namespace Netherlands3D.Interface
 				ContextPointerMenu.Instance.Appear();
 				hoveringInteractable.SecondarySelect();
 
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					if (interactable != hoveringInteractable)
-						interactable.Deselect();
+					foreach (var interactable in delayedInteractables)
+					{
+						if (interactable != hoveringInteractable)
+							interactable.Deselect();
+					}
 				}
 			}
 			else
 			{
 				ContextPointerMenu.Instance.SetTargetInteractable(null);
 				ContextPointerMenu.Instance.Appear();
-				foreach (var interactable in delayedInteractables)
+
+				if (AllowDelayedInteractables)
 				{
-					interactable.SecondarySelect();
+					foreach (var interactable in delayedInteractables)
+					{
+						interactable.SecondarySelect();
+					}
 				}
 			}
 		}
