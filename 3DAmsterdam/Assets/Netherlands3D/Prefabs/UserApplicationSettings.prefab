@@ -39,8 +39,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5808193173905523447}
-  - component: {fileID: 1620163357301275705}
   - component: {fileID: 1744183435973826930}
+  - component: {fileID: 1620163357301275705}
   m_Layer: 0
   m_Name: UserApplicationSettings
   m_TagString: Untagged
@@ -63,27 +63,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1620163357301275705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5891215064021093206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ccef527f2f293449a14025b6383723a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  postProcessingVolumes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  postEffectGameObjects:
-  - {fileID: 0}
-  realtimeReflectionProbe: {fileID: 0}
-  aoRenderFeature: {fileID: -8540687902898676516, guid: d190a601dc54b944ca6d4c59c10fdbca,
-    type: 2}
 --- !u!114 &1744183435973826930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,5 +86,27 @@ MonoBehaviour:
   minimap: {fileID: 0}
   fpsCounter: {fileID: 0}
   canvasSettings: {fileID: 0}
+  terrainLayer: {fileID: 0}
   stats: {fileID: 1802846755166398200, guid: 68c29ab80d86caf4398981161cc8f686, type: 3}
   lodSlider: {fileID: 0}
+--- !u!114 &1620163357301275705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891215064021093206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ccef527f2f293449a14025b6383723a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postProcessingVolumes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  postEffectGameObjects:
+  - {fileID: 0}
+  realtimeReflectionProbe: {fileID: 0}
+  aoRenderFeature: {fileID: -8540687902898676516, guid: d190a601dc54b944ca6d4c59c10fdbca,
+    type: 2}

@@ -5,6 +5,7 @@ using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.JavascriptConnection;
+using Netherlands3D.LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,9 @@ namespace Netherlands3D.Settings {
 		[SerializeField]
 		private CanvasSettings canvasSettings;
         private Rendering.RenderSettings renderSettings;
+
+		[SerializeField]
+		private AssetbundleMeshLayer terrainLayer;
 
         [SerializeField]
         private GameObject stats;
@@ -78,6 +82,8 @@ namespace Netherlands3D.Settings {
 				Debug.Log("Mobile application settings");
 				IsMobileDevice = true;
 				selectedTemplate = 3;
+				//Only enable lod 0 for the terrainlayer
+				terrainLayer.Datasets[1].enabled = false;
 				CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
 
 				CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
