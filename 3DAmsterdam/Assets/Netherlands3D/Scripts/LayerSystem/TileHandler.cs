@@ -435,7 +435,7 @@ namespace Netherlands3D.LayerSystem
 			foreach (DataSet dataSet in layer.Datasets)
 			{
 				//Are we within distance
-				if (dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
+				if (dataSet.enabled && dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
 				{
 					if (lodCalculationMethod == LODCalculationMethod.Lod1)
 					{
