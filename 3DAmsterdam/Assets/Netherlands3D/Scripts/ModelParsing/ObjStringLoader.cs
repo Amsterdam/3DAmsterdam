@@ -106,8 +106,8 @@ namespace Netherlands3D.ModelParsing
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
 			Debug.Log(filenames.Count + " files received");
-			string objstring = null;
-			string mtlstring = null;
+			string objstring = "";
+			string mtlstring = "";
             for (int i = 0; i < filenames.Count; i++)
             {
 				string extention = filenames[i].Substring(filenames[i].Length - 4);
