@@ -80,15 +80,7 @@ namespace Netherlands3D.Settings {
 			else if (IsMobileDevice)
 			{
 				Debug.Log("Mobile application settings");
-				IsMobileDevice = true;
-				selectedTemplate = 3;
-				//Only enable lod 0 for the terrainlayer
-				terrainLayer.Datasets[1].enabled = false;
-				CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
-
-				CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
-
-				lodSlider.value = lodSlider.minValue;
+				ApplyMobileSpecificSettings();
 			}
 
 			//Load up our enviroment, optimised for a mobile device
@@ -96,6 +88,26 @@ namespace Netherlands3D.Settings {
 
 			//Apply but do not save
 			ApplySettings(false); 
+		}
+
+		private void ApplyMobileSpecificSettings()
+		{
+			IsMobileDevice = true;
+			
+			//Select the mobile settings slot
+			selectedTemplate = 3;
+			
+			//Only enable lod 0 for the terrainlayer
+			terrainLayer.Datasets[1].enabled = false;
+
+			CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
+
+			//Place camera at the mobile starting position ( closer to the ground )
+			CameraModeChanger.Instance.ActiveCamera.transform.SetPositionAndRotation(mobileCameraStartPosition.position, mobileCameraStartPosition.rotation);
+			
+			lodSlider.value = lodSlider.minValue;
+
+			Selector.Instance.AllowDelayedInteractables = false;
 		}
 
 		private void CreateSettingsProfile(ApplicationSettingsProfile templateProfile)
