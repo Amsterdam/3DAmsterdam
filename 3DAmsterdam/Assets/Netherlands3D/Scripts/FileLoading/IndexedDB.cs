@@ -1,3 +1,16 @@
+/* Copyright(C)  X Gemeente
+                 X Amsterdam
+                 X Economic Services Departments
+Licensed under the EUPL, Version 1.2 or later (the "License");
+You may not use this work except in compliance with the License. You may obtain a copy of the License at:
+https://joinup.ec.europa.eu/software/page/eupl
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing permissions and limitations under the License.
+*/
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +20,7 @@ using System;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
-
+using Netherlands3D.Traffic.VISSIM;
 
 
 
@@ -19,6 +32,8 @@ public class IndexedDB : MonoBehaviour
     private static extern void SyncFilesToIndexedDB();
     [DllImport("__Internal")]
     private static extern void SendPersistentDataPath(string str);
+
+    public CsvFilePanel csvLoader;
 
     public Text urlstring;
     public List<string> filenames = new List<string>();
@@ -43,7 +58,7 @@ public class IndexedDB : MonoBehaviour
     //called from javascript
     public void LoadFile(string filename)
     {
-        filenames.Add(filename);
+        filenames.Add(Application.persistentDataPath+"/"+filename);
         fileCount++;
         Debug.Log("received: "+filename);        
     }
@@ -84,37 +99,34 @@ public class IndexedDB : MonoBehaviour
 
     void processAllFiles()
     {
-        ReadOBJ();
-        //for (int i = 0; i < filenames.Count; i++)
-        //{
-        //    ProcessFile(filenames[i]);
-        //}
-        filenames.Clear();
-        //SyncFilesToIndexedDB();
+        //figure out the filetypes so we know which function to start
+
+        string extention = Path.GetExtension(filenames[0]);
+        Debug.Log("first file-extention = " +extention);
+        if (extention == ".obj" || extention == ".mtl")
+        {
+            GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames, ClearDatabase);
+        }
+        else if (extention == ".csv")
+        {
+            csvLoader.LoadCsvFromFile(filenames[0], ClearDatabase);
+        }
+        else if (extention == ".fzp")
+        {
+            GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
+        }
+        else
+        { }
     }
+
 
     void ReadOBJ()
     {
 
-        GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames);
+       
     }
 
-    void ProcessFile(string filename)
-    { 
-        if (File.Exists(Application.persistentDataPath + "/"+filename))
-        {
-            Debug.Log("file found");
-            streamreadfile(Application.persistentDataPath + "/"+filename);
-            
-            //BinaryFormatter bf = new BinaryFormatter();
-            //string text = File.ReadAllText(Application.persistentDataPath + "/MySharedData.txt");
-            //Debug.Log(text);
-        }
-        else
-        {
-            Debug.Log(Application.persistentDataPath + "/" + filename + " not found");
-        }
-    }
+   
     void streamreadfile(string path)
     {
         FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -139,5 +151,11 @@ public class IndexedDB : MonoBehaviour
         Debug.Log("filesize =" + size + "characters");
        // File.Delete(path);
        
+    }
+
+    public void ClearDatabase(bool succes)
+    {
+        filenames.Clear();
+        SyncFilesToIndexedDB();
     }
 }
