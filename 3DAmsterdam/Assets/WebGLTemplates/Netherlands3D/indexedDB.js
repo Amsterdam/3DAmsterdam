@@ -25,7 +25,6 @@ document.addEventListener("drop", function (event) {
     event.preventDefault();
     // tell Unity how many files to expect
     ReadFiles(event.dataTransfer.files);
-
 });
 
 function FileSaved() {
