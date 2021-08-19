@@ -277,7 +277,7 @@ namespace Netherlands3D.LayerSystem
         IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
         {
             //Check area that we clicked, and add the (heavy) mesh collider there
-            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
             containerLayer.AddMeshColliders(planeHit);
 
             yield return new WaitForEndOfFrame();

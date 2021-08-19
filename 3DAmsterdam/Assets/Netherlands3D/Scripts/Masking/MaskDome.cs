@@ -48,7 +48,7 @@ namespace Netherlands3D.Masking
                 return;
             }
 
-            transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+            transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
             transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight();
         }
     }

@@ -90,9 +90,10 @@ namespace Netherlands3D.Interface
 			{
 				if (Selector.Instance.HoveringInterface()) return;
 
-				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-				ScaleSelectionBlockUnderPointer(false);
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
 
+				ScaleSelectionBlockUnderPointer(false);
+				Debug.Log("TOGGLE PERFORMED");
 				FinishSelection();
 			}
 		}
@@ -108,7 +109,8 @@ namespace Netherlands3D.Interface
 			{
 				drawing = true;
 
-				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
+				Debug.Log($"Startgrid: {startGridPosition}");
 			}
 		}
 
@@ -177,7 +179,7 @@ namespace Netherlands3D.Interface
 				scaleBlock = selectionBlocks.First().Value;
 			}
 			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
 
 			scaleBlock.transform.position = mouseGridPosition;
 
@@ -229,7 +231,7 @@ namespace Netherlands3D.Interface
 
 		private void MoveSelectionBlock()
 		{
-			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
 			//Offset to make up for grid object origin (centered)
 			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
 			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);

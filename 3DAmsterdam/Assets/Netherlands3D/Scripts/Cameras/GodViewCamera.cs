@@ -242,7 +242,7 @@ namespace Netherlands3D.Cameras
             }
             else if (action.Performed)
             {
-                startMouseDrag = GetMousePositionInWorld();
+                startMouseDrag = GetPointerPositionInWorld();
                 dragging = true;
             }
         }
@@ -453,7 +453,7 @@ namespace Netherlands3D.Cameras
         {
             if (!ActionHandler.actions.GodViewMouse.enabled) return;
 
-            dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
+            dragMomentum = (GetPointerPositionInWorld() - startMouseDrag);
 
             if (dragMomentum.magnitude > 0.1f)
                 transform.position -= dragMomentum;
@@ -476,7 +476,7 @@ namespace Netherlands3D.Cameras
             var pointerPosition = mousePosition.ReadValue<Vector2>();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
-        public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+        public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
         {
             var pointerPosition = mousePosition.ReadValue<Vector2>();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
@@ -567,7 +567,7 @@ namespace Netherlands3D.Cameras
             }
             else
             {
-                rotatePoint = GetMousePositionInWorld();
+                rotatePoint = GetPointerPositionInWorld();
                 focusingOnTargetPoint(rotatePoint);
             }
         }
