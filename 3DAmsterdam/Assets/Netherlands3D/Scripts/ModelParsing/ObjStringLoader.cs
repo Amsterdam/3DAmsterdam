@@ -1,4 +1,15 @@
-﻿using Netherlands3D.Cameras;
+﻿/* Copyright(C)  X Gemeente
+                 X Amsterdam
+                 X Economic Services Departments
+Licensed under the EUPL, Version 1.2 or later (the "License");
+You may not use this work except in compliance with the License. You may obtain a copy of the License at:
+https://joinup.ec.europa.eu/software/page/eupl
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing permissions and limitations under the License.
+*/
+
+using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,8 +73,14 @@ namespace Netherlands3D.ModelParsing
 			StartCoroutine(ParseOBJFromString(
 					File.ReadAllText(pathObj),
 					File.ReadAllText(pathMtl)
+					
 			));
 		}
+		private void done(bool succes)
+        {
+
+        }
+
 #endif
 		/// <summary>
 		/// Allows setting the model file name from Javascript and opening the loading screen
@@ -82,8 +99,34 @@ namespace Netherlands3D.ModelParsing
 		/// </summary>
 		public void LoadOBJFromJavascript()
 		{
-			StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
+			//StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
 		}
+
+
+		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
+        {
+			Debug.Log(filenames.Count + " files received");
+			string objstring = "";
+			string mtlstring = "";
+            for (int i = 0; i < filenames.Count; i++)
+            {
+				string extention = filenames[i].Substring(filenames[i].Length - 4);
+                if (extention.IndexOf("obj")>-1)
+                {
+					objstring = File.ReadAllText(filenames[i]);
+					Debug.Log("objstringlength: "+objstring.Length);
+					
+                }
+				if (extention.IndexOf("mtl") > -1)
+				{
+					mtlstring = File.ReadAllText(filenames[i]);
+					Debug.Log("mtlstringlength: "+mtlstring.Length);
+				}
+				File.Delete(filenames[i]);
+			}
+			callback(true);
+			StartCoroutine(ParseOBJFromString(objstring, mtlstring));
+        }
 
 		/// <summary>
 		/// Method to remove loading screen if somehow the import/loading was aborted
