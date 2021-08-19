@@ -63,6 +63,7 @@ namespace Netherlands3D.Masking
 
 		public void ClearAllMasks()
 		{
+			if (runtimeMasks == null) runtimeMasks = new List<RuntimeMask>();
 			foreach (RuntimeMask runtimeMask in runtimeMasks) runtimeMask.Clear();
 		}
 
@@ -111,7 +112,6 @@ namespace Netherlands3D.Masking
 			}
 			maskTexture.SetPixels(pixels);
 			maskTexture.Apply();
-			
 		}
 
 		public void MoveToBounds(Bounds bounds)

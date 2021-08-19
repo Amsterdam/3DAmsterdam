@@ -24,14 +24,12 @@ namespace Netherlands3D.Interface
 
 		private IAction toggleAction;
 		private IAction drawAction;
-		private IAction clearAction;
 
+		[SerializeField]
 		private bool drawing = false;
-		private bool add = true;
 
 		private GameObject scaleBlock;
 		private Dictionary<Vector3Int, GameObject> selectionBlocks;
-		private int maxVoxels = 200;
 
 		private Vector3Int startGridPosition;
 
@@ -90,12 +88,12 @@ namespace Netherlands3D.Interface
 		{
 			if (action.Performed)
 			{
-
 				if (Selector.Instance.HoveringInterface()) return;
 
-				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-				ScaleSelectionBlockUnderPointer(false);
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
 
+				ScaleSelectionBlockUnderPointer(false);
+				Debug.Log("TOGGLE PERFORMED");
 				FinishSelection();
 			}
 		}
@@ -110,21 +108,9 @@ namespace Netherlands3D.Interface
 			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
 				drawing = true;
-				add = true;
 
-				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-			}
-		}
-		private void Clear(IAction action)
-		{
-			if (action.Cancelled)
-			{
-				drawing = false;
-			}
-			else if (action.Performed)
-			{
-				drawing = true;
-				add = false;
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
+				Debug.Log($"Startgrid: {startGridPosition}");
 			}
 		}
 
@@ -193,7 +179,7 @@ namespace Netherlands3D.Interface
 				scaleBlock = selectionBlocks.First().Value;
 			}
 			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
+			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
 
 			scaleBlock.transform.position = mouseGridPosition;
 
@@ -245,7 +231,7 @@ namespace Netherlands3D.Interface
 
 		private void MoveSelectionBlock()
 		{
-			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
 			//Offset to make up for grid object origin (centered)
 			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
 			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);

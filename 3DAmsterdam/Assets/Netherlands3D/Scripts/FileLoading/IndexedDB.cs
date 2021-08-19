@@ -9,8 +9,6 @@ distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRAN
 implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,8 +19,6 @@ using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
 using Netherlands3D.Traffic.VISSIM;
-
-
 
 public class IndexedDB : MonoBehaviour
 {
@@ -39,13 +35,15 @@ public class IndexedDB : MonoBehaviour
     public List<string> filenames = new List<string>();
     public int numberOfFIlesToLoad = 0;
     private int fileCount = 0;
+
     public void Start()
     {
+        #if !UNITY_EDITOR && UNITY_WEBGL
         SendPersistentDataPath(Application.persistentDataPath);
-       // System.Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
+        #endif
     }
 
-   // called from javascript, the total number of files that are being loaded
+    // Called from javascript, the total number of files that are being loaded
     public void FileCount(int count)
     {
         numberOfFIlesToLoad = count;
@@ -81,23 +79,20 @@ public class IndexedDB : MonoBehaviour
         numberOfFIlesToLoad = 0;
         fileCount = 0;
         ProcessFiles();
-    }
-
-    
+    }    
     public void ProcessFiles()
     {
         // start js-function to update the contents of application.persistentdatapath to match the contents of indexedDB.
         SyncFilesFromIndexedDB();
     }
-
     public void IndexedDBUpdated() // called from SyncFilesFromIndexedDB
     {
        // GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames);
        // filenames.Clear();
-        processAllFiles();
+        ProcessAllFiles();
     }
 
-    void processAllFiles()
+    private void ProcessAllFiles()
     {
         //figure out the filetypes so we know which function to start
 
@@ -117,17 +112,8 @@ public class IndexedDB : MonoBehaviour
         }
         else
         { }
-    }
-
-
-    void ReadOBJ()
-    {
-
-       
-    }
-
-   
-    void streamreadfile(string path)
+    } 
+    private void StreamReadFile(string path)
     {
         FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
         char[] foundChar = new char[1];
@@ -149,8 +135,6 @@ public class IndexedDB : MonoBehaviour
         }
         Debug.Log(lineEndCounter + " lines");
         Debug.Log("filesize =" + size + "characters");
-       // File.Delete(path);
-       
     }
 
     public void ClearDatabase(bool succes)
