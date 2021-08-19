@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,8 +28,8 @@ namespace Netherlands3D.MemoryManagement
             if (Application.absoluteURL.Contains(allocVariableName))
             {
                 allocateMemory = int.Parse(Application.absoluteURL.Split('=')[1]);
-                Debug.Log($"Preallocate {allocateMemory}mb memory");
                 Allocate(allocateMemory);
+                Debug.Log($"Preallocated {allocateMemory}mb memory");
 
                 yield return new WaitForEndOfFrame();
             }
