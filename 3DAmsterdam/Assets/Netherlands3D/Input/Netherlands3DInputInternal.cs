@@ -24,7 +24,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""id"": ""4d71f97d-97df-4265-8641-cd87068cac97"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Tap""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""DrawVoxels"",
@@ -40,7 +40,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""60312e81-d621-4a52-b35e-16557370191c"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""ToggleVoxel"",
@@ -79,17 +79,6 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                     ""action"": ""DrawVoxels"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""16d93ead-4757-4e6a-9268-10b5d549591c"",
-                    ""path"": ""<Touchscreen>/touch0/tap"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""ToggleVoxel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -186,7 +175,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""462be44e-ccd1-4331-a558-34b433352941"",
-                    ""path"": ""<Touchscreen>/touch*/position"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
@@ -675,7 +664,7 @@ public class @Netherlands3DInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e8bbc32b-4afa-421c-8e73-acb3d19a3bce"",
-                    ""path"": ""<Touchscreen>/touch*/position"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch"",
