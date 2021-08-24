@@ -22,10 +22,10 @@ using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
 using Netherlands3D.Traffic.VISSIM;
 
-
-
 public class IndexedDB : MonoBehaviour
 {
+
+
     [DllImport("__Internal")]
     private static extern void SyncFilesFromIndexedDB();
     [DllImport("__Internal")]
@@ -39,14 +39,19 @@ public class IndexedDB : MonoBehaviour
     public List<string> filenames = new List<string>();
     public int numberOfFIlesToLoad = 0;
     private int fileCount = 0;
+
     public void Start()
     {
-        SendPersistentDataPath(Application.persistentDataPath);
-       // System.Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
-    }
 
-   // called from javascript, the total number of files that are being loaded
-    public void FileCount(int count)
+
+
+        SendPersistentDataPath(Application.persistentDataPath);
+
+    // System.Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
+}
+
+// called from javascript, the total number of files that are being loaded
+public void FileCount(int count)
     {
         numberOfFIlesToLoad = count;
         fileCount = 0;
@@ -58,7 +63,7 @@ public class IndexedDB : MonoBehaviour
     //called from javascript
     public void LoadFile(string filename)
     {
-        filenames.Add(Application.persistentDataPath+"/"+filename);
+        filenames.Add(filename);
         fileCount++;
         Debug.Log("received: "+filename);        
     }
@@ -156,6 +161,10 @@ public class IndexedDB : MonoBehaviour
     public void ClearDatabase(bool succes)
     {
         filenames.Clear();
-        SyncFilesToIndexedDB();
+        if (succes)
+        {
+            SyncFilesToIndexedDB();
+        }
     }
+
 }

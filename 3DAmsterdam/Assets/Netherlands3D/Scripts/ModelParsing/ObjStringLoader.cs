@@ -22,6 +22,7 @@ using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
 
+
 namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
@@ -69,8 +70,18 @@ namespace Netherlands3D.ModelParsing
 			{
 				pathMtl = "";
 			}
-			LoadOBJFromIndexedDB(new List<string>() { pathObj, pathMtl }, finished);
-			// StartCoroutine(ParseOBJfromStream(pathObj, pathMtl));
+
+
+			string newobjstring = Path.GetFileName(pathObj);
+
+			if (File.Exists(pathObj))
+			{
+				File.Copy(pathObj, Application.persistentDataPath + "/" + newobjstring,true);
+				Debug.Log(Application.persistentDataPath + "/" + newobjstring);
+			}
+
+			//LoadOBJFromIndexedDB(new List<string>() { pathObj, pathMtl }, finished);
+			StartCoroutine(ParseOBJfromStream(newobjstring, pathMtl, finished));
 
 			//StartCoroutine(ParseOBJFromString(
 			//		File.ReadAllText(pathObj),
@@ -107,6 +118,9 @@ namespace Netherlands3D.ModelParsing
 
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
+
+
+
 			Debug.Log(filenames.Count + " files received");
 			string objstring = "";
 			string mtlstring = "";
@@ -116,19 +130,19 @@ namespace Netherlands3D.ModelParsing
 				string extention = filenames[i].Substring(filenames[i].Length - 4);
                 if (extention.IndexOf("obj")>-1)
                 {
-					objstring = File.ReadAllText(filenames[i]);
-					Debug.Log("objstringlength: "+objstring.Length);
+					objstring = filenames[i];
+
 					
                 }
 				if (extention.IndexOf("mtl") > -1)
 				{
-					mtlstring = File.ReadAllText(filenames[i]);
-					Debug.Log("mtlstringlength: "+mtlstring.Length);
+					mtlstring = filenames[i];
+
 				}
-				File.Delete(filenames[i]);
+
 			}
-			callback(true);
-			StartCoroutine(ParseOBJFromString(objstring, mtlstring));
+
+			StartCoroutine(ParseOBJfromStream(objstring, mtlstring, callback));
         }
 
 		/// <summary>
@@ -141,12 +155,49 @@ namespace Netherlands3D.ModelParsing
 		}
 
 
-		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath)
+		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath, System.Action<bool> callback)
         {
 			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
+			Debug.Log(objFilePath);
 			objstreamReader.ReadOBJ(objFilePath);
+			bool isBusy = true;
+			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			while (isBusy)
+            {
+				isBusy = !objstreamReader.isFinished;
+				yield return null;
+            }
+			Debug.Log("done reading");
+			Debug.Log("readsucces = " + objstreamReader.succes.ToString());
+			callback(objstreamReader.succes);
+            
+			loadingObjScreen.Hide();
+			 GameObject createdGO = objstreamReader.Build(defaultLoadedObjectsMaterial);
+			objstreamReader.Buffer = new GeometryBuffer(); ;
+			//newOBJLoader.name = objModelName;
+
+			createdGO.AddComponent<MeshCollider>().sharedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			createdGO.AddComponent<ClearMeshAndMaterialsOnDestroy>();
+			transformable = createdGO.AddComponent<Transformable>();
+			transformable.madeWithExternalTool = true;
+			transformable.mask = mask;
+
+			if (objstreamReader.ObjectUsesRDCoordinates == false)
+			{
+				if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+				//transformable.placedTransformable.AddListener(RemapMaterials);
+				customObjectPlacer.PlaceExistingObjectAtPointer(objstreamReader.gameObject);
+				
+			}
+			else
+			{
+				transformable.stickToMouse = false;
+			}
+			Destroy(objstreamReader);
 			yield return null;
         }
+		
+		
 
 		/// <summary>
 		/// Start the parsing of OBJ and MTL strings
