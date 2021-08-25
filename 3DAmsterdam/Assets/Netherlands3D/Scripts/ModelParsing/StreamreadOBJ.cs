@@ -9,7 +9,7 @@ namespace Netherlands3D.ModelParsing
 {
 	public class StreamreadOBJ : MonoBehaviour
 	{
-		public int maxLinesPerFrame = 500;
+		public int maxLinesPerFrame = 10000;
 
 		// OBJ File Tags
 		const char COMMENT = '#';
@@ -119,8 +119,8 @@ namespace Netherlands3D.ModelParsing
 				activeSubmesh = new Submesh();
 				activeSubmesh.name = submeshName;
 				activeSubmesh.startIndex = indices.Count;
-				activeSubmesh.vertices = new Dictionary<int, Vertex>();
-				activeSubmesh.indices = new List<int>();
+				activeSubmesh.vertices = new Dictionary<Vector3, Vertex>(10000);
+				activeSubmesh.indices = new List<int>(10000);
 				submeshes.Add(submeshName, activeSubmesh);
 			}
 		}
@@ -190,13 +190,14 @@ namespace Netherlands3D.ModelParsing
 			switch (tag)
 			{
 				case objTag.Object:
+					ReadString();
 					//buffer.AddObject(ReadString());
 					break;
 				case objTag.Vertex:
 					ReadVertex();
 					break;
 				case objTag.VertexTexture:
-					//ReadVertexTexture();
+					ReadString();
 					break;
 				case objTag.VertexNormal:
 					ReadNormal();
@@ -532,8 +533,8 @@ namespace Netherlands3D.ModelParsing
 			{
 				Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[2].vertexIndex]);
 				SaveVertexToSubmesh(faces[0], triangleNormal);
-				SaveVertexToSubmesh(faces[1], triangleNormal);
 				SaveVertexToSubmesh(faces[2], triangleNormal);
+				SaveVertexToSubmesh(faces[1], triangleNormal);
 				
 
 				
@@ -542,10 +543,10 @@ namespace Netherlands3D.ModelParsing
 			{
 				Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[3].vertexIndex]);
 				SaveVertexToSubmesh(faces[0], triangleNormal);
+				SaveVertexToSubmesh(faces[2], triangleNormal);
 				SaveVertexToSubmesh(faces[1], triangleNormal);
+				SaveVertexToSubmesh(faces[0], triangleNormal);
 				SaveVertexToSubmesh(faces[3], triangleNormal);
-				SaveVertexToSubmesh(faces[3], triangleNormal);
-				SaveVertexToSubmesh(faces[1], triangleNormal);
 				SaveVertexToSubmesh(faces[2], triangleNormal);
 			}
 			else
@@ -557,9 +558,9 @@ namespace Netherlands3D.ModelParsing
         {
 
 			Vertex vert1 = new Vertex();
-			Vector3 normal = new Vector3();
+			Vector3 normal;
 			vert1.coordinate = vertices[v1.vertexIndex];
-            if (v1.vertexNormal == -10)
+            if (v1.vertexNormal == -1)
             {
 				normal = fallbackNormal;
             }
@@ -569,16 +570,18 @@ namespace Netherlands3D.ModelParsing
             }
 
 			Vertex vertex;
-            if (activeSubmesh.vertices.ContainsKey(v1.vertexIndex))
+            if (activeSubmesh.vertices.ContainsKey(vert1.coordinate))
             {
-				vertex = activeSubmesh.vertices[v1.vertexIndex];
+				vertex = activeSubmesh.vertices[vert1.coordinate];
             }
 			else
             {
 				vertex = new Vertex();
+				
 				vertex.coordinate = vertices[v1.vertexIndex];
-				vertex.normals = new Dictionary<Vector3, int>();
-				activeSubmesh.vertices.Add(v1.vertexIndex, vertex);
+				vertex.normals = new Dictionary<Vector3, int>(3);
+				
+				activeSubmesh.vertices.Add(vert1.coordinate, vertex);
             }
 
 			
@@ -590,14 +593,16 @@ namespace Netherlands3D.ModelParsing
             }
 			else
             {
+				newIndex = activeSubmesh.vertexCount ;
 				activeSubmesh.vertexCount++;
-				newIndex = activeSubmesh.indexCount+1;
-				activeSubmesh.indexCount++;
 				vertex.normals.Add(normal, newIndex);
+				
+				activeSubmesh.indexCount++;
+				
             }
 
 			activeSubmesh.indices.Add(newIndex);
-			activeSubmesh.vertices[v1.vertexIndex] = vertex;
+			activeSubmesh.vertices[vert1.coordinate] = vertex;
 			
 			
            
@@ -607,7 +612,7 @@ namespace Netherlands3D.ModelParsing
 		bool ReadSingleFace(out GeometryBuffer.FaceIndices faceIndex, out char readChar)
 		{
 			GeometryBuffer.FaceIndices face = new GeometryBuffer.FaceIndices();
-			face.vertexNormal = -10;
+			face.vertexNormal = -1;
 			int number;
 			char lastChar;
 
@@ -841,45 +846,54 @@ namespace Netherlands3D.ModelParsing
                     maxVerticesPerSubmesh = meshvertices;
                 }
             }
-            // collect all the vertices and indices
-            List<Vector3> defvertices = new List<Vector3>();
-			List<Vector3> defNormals = new List<Vector3>();
-            defvertices.Capacity = vertexcount;
-			defNormals.Capacity = vertexcount;
-            List<int> defIndices = new List<int>();
-            defIndices.Capacity = defvertices.Count;
-
-			
-            foreach (var kvp in submeshes)
+			// collect all the vertices and indices
+			Vector3[] defVertices = new Vector3[vertexcount];
+			Vector3[] defNormals = new Vector3[vertexcount];
+			List<int> defIndices = new List<int>();
+			List<string> keyList = new List<string>(submeshes.Keys);
+			int usedVertices = 0;
+            for (int i = 0; i < keyList.Count; i++)
             {
-				Submesh submesh = kvp.Value;
-				submesh.startVertex = defvertices.Count;
+				Submesh submesh = submeshes[keyList[i]];
+				submesh.startVertex = usedVertices; 
+                submesh.indexCount = 0;
                 foreach (var vertex in submesh.vertices)
                 {
                     foreach (var normal in vertex.Value.normals)
                     {
-						defvertices.Add(vertex.Value.coordinate);
-						defNormals.Add(normal.Key);
+						usedVertices++;
+						defVertices[normal.Value+submesh.startVertex] = vertex.Value.coordinate;
+                        defNormals[normal.Value+submesh.startVertex]=normal.Key;
                     }
                 }
-                for (int i = 0; i < submesh.indices.Count; i++)
-                {
-					defIndices.Add(submesh.indices[i]);
-                }
+     //           for (int j = 0; j < submesh.indices.Count; j++)
+     //           {
+					////submesh.indices[j] += submesh;	
+     //               defIndices.Add(submesh.indices[j]);
+                    
+     //           }
+
                 submesh.vertices.Clear();
+				
+				submeshes[keyList[i]] = submesh;
 
             }
             // set all the vertices
-            mesh.SetVertices(defvertices);
-            defvertices = new List<Vector3>(); ;
+            mesh.SetVertices(defVertices);
+			mesh.SetNormals(defNormals);
+            defVertices = null ;
             IndexFormat indexFormat = IndexFormat.UInt32;
-            //if (maxVerticesPerSubmesh < 65535)
-            //{
-            //    indexFormat = IndexFormat.UInt16;
-            //}
+            if (maxVerticesPerSubmesh < 65535)
+            {
+                indexFormat = IndexFormat.UInt16;
+            }
+			mesh.indexFormat = indexFormat;
             // set all the indices;
-            mesh.SetIndexBufferParams(defIndices.Count, indexFormat);
-            mesh.SetIndexBufferData(defIndices, 0, 0, defIndices.Count);
+
+
+
+            //mesh.SetIndexBufferParams(defIndices.Count, indexFormat);
+            //mesh.SetIndexBufferData(defIndices, 0, 0, defIndices.Count);
             defIndices = new List<int>();
             // set up the submeshes;
             mesh.subMeshCount = submeshes.Count;
@@ -889,27 +903,29 @@ namespace Netherlands3D.ModelParsing
             int submeshIndex = 0;
             foreach (var submesh in submeshes)
             {
-                SubMeshDescriptor smd = new SubMeshDescriptor();
-                smd.indexStart = indexcounter;
-                smd.indexCount = submesh.Value.indices.Count;
-                smd.topology = MeshTopology.Triangles;
-                smd.baseVertex = startvertex;
-				startvertex += submesh.Value.vertexCount;
-				smd.vertexCount = submesh.Value.vertexCount;
-                mesh.SetSubMesh(submeshIndex, smd);
+				mesh.SetIndices(submesh.Value.indices.ToArray(), MeshTopology.Triangles, submeshIndex,true,submesh.Value.startVertex);
+    //            SubMeshDescriptor smd = new SubMeshDescriptor();
+    //            smd.indexStart = indexcounter;
+				//indexcounter += submesh.Value.indexCount;
+    //            smd.indexCount = submesh.Value.indices.Count;
+    //            smd.topology = MeshTopology.Triangles;
+    //            smd.baseVertex = startvertex;
+				//startvertex += submesh.Value.vertexCount;
+				//smd.vertexCount = submesh.Value.vertexCount;
+    //            mesh.SetSubMesh(submeshIndex, smd);
 
                 materials[submeshIndex] = new Material(defaultMaterial);
                 materials[submeshIndex].name = submesh.Key;
 
                 submeshIndex++;
-                indexcounter += submesh.Value.indices.Count;
+                
                 submesh.Value.indices.Clear();
             }
             submeshes.Clear();
 
 
 			//set up all the materials;
-			mesh.RecalculateNormals();
+			//mesh.RecalculateNormals();
             GameObject go = new GameObject();
             MeshFilter mf = go.AddComponent<MeshFilter>();
             MeshRenderer mr = go.AddComponent<MeshRenderer>();
