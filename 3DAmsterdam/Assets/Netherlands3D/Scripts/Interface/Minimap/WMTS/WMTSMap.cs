@@ -100,7 +100,6 @@ namespace Netherlands3D.Interface.Minimap
 
 			//Calculate map width in meters based on zoomlevel 0 setting values
 			mapSizeInMeters = baseTileSize * pixelInMeters * scaleDenominator;
-			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
 
 			DetermineTopLeftOrigin();
 

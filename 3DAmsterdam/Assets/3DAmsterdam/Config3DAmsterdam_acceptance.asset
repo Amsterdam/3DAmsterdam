@@ -22,15 +22,6 @@ MonoBehaviour:
     x: 141000
     y: 501000
   zeroGroundLevelY: 0
-  EnableMinimap: 1
-  minimapServiceUrl: https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0?layer=standaard&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A28992%3A{zoom}&TileCol={x}&TileRow={y}
-  minimapTileSize: 256
-  minimapOriginAlignment: 0
-  minimapOrigin:
-    x: -285401.92
-    y: 903401.92
-  minimapPixelInMeters: 0.00028
-  minimapScaleDenominator: 12288000
   webserverRootPath: https://acc.3d.amsterdam.nl/web/data/develop/RD/
   buildingsMetaDataPath: https://acc.3d.amsterdam.nl/web/data/develop/RD/Buildings_AHN4/
   sharingBaseURL: https://acc.3d.amsterdam.nl/
@@ -50,7 +41,7 @@ MonoBehaviour:
   moreAddressInfoUrl: https://data.amsterdam.nl/data/bag/nummeraanduiding/id{bagid}/
   bagIdRequestServiceBoundingBoxUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&bbox=
   bagIdRequestServicePolygonUrl: https://map.data.amsterdam.nl/maps/bag?REQUEST=GetFeature&SERVICE=wfs&version=2.0.0&typeName=bag:pand&propertyName=bag:id&outputFormat=csv&Filter=
-  previewBackdropImage: https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992
+  previewBackdropImage: https://service.pdok.nl/hwh/luchtfotocir/wms/v1_0?styles=&layers=Actueel_ortho25&service=WMS&request=GetMap&format=image%2Fpng&version=1.1.0&bbox={xmin},{ymin},{xmax},{ymax}&width={w}&height={h}&srs=EPSG:28992
   logo: {fileID: 21300000, guid: 7b89507bd6661454db94d29bc1defd1d, type: 3}
   primaryColor: {r: 0.9254902, g: 0, b: 0, a: 1}
   secondaryColor: {r: 0, g: 0.27450982, b: 0.6, a: 1}

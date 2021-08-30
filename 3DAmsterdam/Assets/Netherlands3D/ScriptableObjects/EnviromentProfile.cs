@@ -18,8 +18,11 @@ public class EnviromentProfile : ScriptableObject
     public Color[] skyColorsNight = new Color[3];
 
     [Header("Textured sky settings")]
-    public Cubemap skyMap;
-    public float exposureDay = 1.0f;
+    public bool isTexturedSky = true;
+    public string texturePath = "skybox_grey.png";
+    public Texture2D loadedTexture = null;
+
+	public float exposureDay = 1.0f;
     public float exposureNight = 0.1f;
 
     public Color skyTintColorDay = Color.gray;

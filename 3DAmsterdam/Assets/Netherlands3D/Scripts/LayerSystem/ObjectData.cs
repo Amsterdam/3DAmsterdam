@@ -72,13 +72,13 @@ namespace Netherlands3D.LayerSystem
 			Color pixelColor;
 			for (int i = 0; i < ids.Count; i++)
 			{
-				var targetId = ids[i];
+				var myTargetId = ids[i];	
 
-				if (hideIDs.Contains(targetId))
+				if (hideIDs.Contains(myTargetId))
 				{
 					pixelColor = HIDDEN_COLOR;
 				}
-				else if (highlightIDs.Contains(targetId))
+				else if (highlightIDs.Contains(myTargetId))
 				{
 					pixelColor = HIGHLIGHTED_COLOR;
 				}

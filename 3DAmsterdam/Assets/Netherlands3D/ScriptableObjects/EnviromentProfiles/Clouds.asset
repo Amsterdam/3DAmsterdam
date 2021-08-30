@@ -18,13 +18,15 @@ MonoBehaviour:
   fogColorNight: {r: 0.011764707, g: 0.011764707, b: 0.015686275, a: 1}
   skyColorsDay:
   - {r: 0.5424528, g: 0.8051825, b: 1, a: 1}
-  - {r: 0.44722322, g: 0.4601805, b: 0.4716981, a: 0}
+  - {r: 0.59927905, g: 0.617168, b: 0.6320754, a: 0}
   - {r: 0.3472321, g: 0.42039484, b: 0.4811321, a: 0}
   skyColorsNight:
   - {r: 0.740566, g: 0.870283, b: 1, a: 1}
   - {r: 0.122152, g: 0.14032628, b: 0.4245283, a: 1}
   - {r: 0, g: 0, b: 0, a: 0}
-  skyMap: {fileID: 8900000, guid: a52eda9bbe07d2c4684cfc95a7e88f97, type: 3}
+  isTexturedSky: 1
+  texturePath: TexturesDesktop/skybox_clouds.png
+  loadedTexture: {fileID: 0}
   exposureDay: 1
   exposureNight: 0.1
   skyTintColorDay: {r: 0.5, g: 0.5, b: 0.5, a: 1}
