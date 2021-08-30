@@ -99,8 +99,8 @@ namespace Netherlands3D.LayerSystem
 			Debug.Log(url);
 
 			var streetnameRequest = UnityWebRequest.Get(url);
-			streetnameRequest.SendWebRequest();
 			tile.runningWebRequest = streetnameRequest;
+			yield return streetnameRequest.SendWebRequest();
 
 			if (streetnameRequest.result == UnityWebRequest.Result.Success)
 			{	
