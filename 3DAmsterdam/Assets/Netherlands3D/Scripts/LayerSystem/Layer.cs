@@ -43,7 +43,7 @@ namespace Netherlands3D.LayerSystem
             }
         }
 
-        private void LayerToggled()
+        public virtual void LayerToggled()
         {
             //Invoke enabled/disabled event
             if (isEnabled)

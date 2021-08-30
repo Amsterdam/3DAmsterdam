@@ -5,7 +5,7 @@ using Netherlands3D.Cameras;
 
 public class StreetName : MonoBehaviour
 {
-	float currentAngle;
+	private float currentAngle;
 
 	void Start()
 	{

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Netherlands3D.Utilities;
 using System.Globalization;
+using TMPro;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -109,8 +110,9 @@ namespace Netherlands3D.LayerSystem
 					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
 					var textObject = Instantiate(TextObject);
 					textObject.transform.parent = tile.gameObject.transform;
-					textObject.GetComponent<TextMesh>().text = name;
+					textObject.GetComponent<TextMeshPro>().text = name;
 					textObject.transform.position = startpoint;
+					textObject.transform.Rotate(Vector3.left, -90,Space.Self);
 					textObject.transform.Rotate(Vector3.up, angle,Space.World);
 				}
 				yield return null;
