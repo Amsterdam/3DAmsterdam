@@ -123,7 +123,7 @@ namespace Netherlands3D.LayerSystem
 					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
 					startpoint.y = offsetFromGround;
 					var textObject = Instantiate(TextObject);
-					textObject.transform.parent = tile.gameObject.transform;
+					textObject.transform.SetParent(tile.gameObject.transform,true);
 					textObject.GetComponent<TextMeshPro>().text = name;
 					textObject.transform.position = startpoint;
 					textObject.transform.Rotate(Vector3.left, -90,Space.Self);
