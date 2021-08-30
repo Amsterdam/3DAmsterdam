@@ -266,7 +266,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 //Parse the file
                 var jsonstring = File.ReadAllText(file.FullName);
                 var cityjsonNode = JSON.Parse(jsonstring);
-                if (cityjsonNode["CityObjects"] == null)
+                if (cityjsonNode == null || cityjsonNode["CityObjects"] == null)
                 {
                     Debug.Log("FAILURE PARSING: " + file.Name);
                     continue; //Failed to parse the json
