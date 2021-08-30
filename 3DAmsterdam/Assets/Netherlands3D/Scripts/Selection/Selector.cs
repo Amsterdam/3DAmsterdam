@@ -17,7 +17,7 @@ namespace Netherlands3D.Interface
 	/// We provide a main raycast for objects that require a ray based on the mouse/pointer position.
 	/// Here we also maintain the lists of multiselected objects, and set the right context menu.
 	/// This is also the place from where we determine what camera movement actions are allowed. They may be overruled by other interactions.
-	/// </summary>
+	/// </summary> 
 	public class Selector : MonoBehaviour
 	{
 		[SerializeField]
@@ -27,11 +27,14 @@ namespace Netherlands3D.Interface
 
 		public List<OutlineObject> selectedObjects;
 
+		public static Vector2 pointerPosition;
 		public static Ray mainSelectorRay;
 		public static RaycastHit[] hits;
+		public static RaycastHit[] sortedHits;
 
 		private InputActionMap selectorActionMap;
 
+		private IAction mainPointerPosition;
 		private IAction clickedAction;
 		private IAction clickedSecondaryAction;
 		private IAction multiSelectAction;
@@ -60,13 +63,14 @@ namespace Netherlands3D.Interface
 		private int priority3DInterfaceHitLayer;
 
 		[SerializeField]
-		private RaycastHit[] sortedHits;
-
-		[SerializeField]
 		private Interactable multiSelector;
 
 		[Header("Report any click action to these objects")]
 		public UnityEvent registeredClickInput;
+		public UnityEvent registeredSecondaryClickInput;
+
+		private bool allowDelayedInteractables = true;
+		public bool AllowDelayedInteractables { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
 
 		private void Awake()
 		{
@@ -88,6 +92,7 @@ namespace Netherlands3D.Interface
 			selectorActionMap = ActionHandler.actions.Selector;
 			selectorActionMap.Enable();
 
+			mainPointerPosition = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Position);
 			clickedAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Click);
 			clickedSecondaryAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.ClickSecondary);
 			multiSelectAction = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Multiselect);
@@ -119,7 +124,8 @@ namespace Netherlands3D.Interface
 		private void Update()
 		{
 			//Always update our main selector ray, and raycast for Interactables that we are hovering
-			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+			pointerPosition = mainPointerPosition.ReadValue<Vector2>();
+			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(pointerPosition);
 			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
 			{
@@ -197,7 +203,7 @@ namespace Netherlands3D.Interface
 		private void Click(IAction action)
 		{
 			//Let any listeners know we have made a general click
-			registeredClickInput.Invoke();
+			if (!HoveringInterface()) registeredClickInput.Invoke();
 
 			//Catch clicks if we do not have an active interactable, or one that does not block our clicks.
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
@@ -206,7 +212,7 @@ namespace Netherlands3D.Interface
 		private void SecondaryClick(IAction action)
 		{
 			//Let any listeners know we have made a general click
-			registeredClickInput.Invoke();
+			if (!HoveringInterface()) registeredSecondaryClickInput.Invoke();
 
 			if (!activeInteractable || !activeInteractable.blockMouseSelectionInteractions)
 			{
@@ -225,8 +231,6 @@ namespace Netherlands3D.Interface
 			else if (action.Performed)
 			{
 				doingMultiselect = true;
-				//Let any listeners know we have made a general click action
-				registeredClickInput.Invoke();
 			}
 		}
 
@@ -247,17 +251,23 @@ namespace Netherlands3D.Interface
 			{
 				hoveringInteractable.Select();
 
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					if (interactable != hoveringInteractable)
-						interactable.Deselect();
+					foreach (var interactable in delayedInteractables)
+					{
+						if (interactable != hoveringInteractable)
+							interactable.Deselect();
+					}
 				}
 			}
 			else
 			{
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					interactable.Select();
+					foreach (var interactable in delayedInteractables)
+					{
+						interactable.Select();
+					}
 				}
 				DeselectAll();
 			}
@@ -275,19 +285,26 @@ namespace Netherlands3D.Interface
 				ContextPointerMenu.Instance.Appear();
 				hoveringInteractable.SecondarySelect();
 
-				foreach (var interactable in delayedInteractables)
+				if (AllowDelayedInteractables)
 				{
-					if (interactable != hoveringInteractable)
-						interactable.Deselect();
+					foreach (var interactable in delayedInteractables)
+					{
+						if (interactable != hoveringInteractable)
+							interactable.Deselect();
+					}
 				}
 			}
 			else
 			{
 				ContextPointerMenu.Instance.SetTargetInteractable(null);
 				ContextPointerMenu.Instance.Appear();
-				foreach (var interactable in delayedInteractables)
+
+				if (AllowDelayedInteractables)
 				{
-					interactable.SecondarySelect();
+					foreach (var interactable in delayedInteractables)
+					{
+						interactable.SecondarySelect();
+					}
 				}
 			}
 		}

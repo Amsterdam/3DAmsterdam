@@ -49,51 +49,41 @@ namespace Netherlands3D.Masking
 		[SerializeField]
 		private Texture2D maskTexture;
 
-		public static RuntimeMask current;
-		private RuntimeMask previousMask;
-
 		private Bounds lastBounds;
-
-		private MeshRenderer visual;
 
 		public float MaskScaleMultiplier { get => maskScaleMultiplier; }
 
+		private static List<RuntimeMask> runtimeMasks;
+
 		private void Awake()
 		{
-			visual = GetComponent<MeshRenderer>();
+			RegisterRuntimeMask();
 			Clear();
 		}
 
-		//We enable shadows for the underground when we use the mask sphere, to give more depth
+		public void ClearAllMasks()
+		{
+			if (runtimeMasks == null) runtimeMasks = new List<RuntimeMask>();
+			foreach (RuntimeMask runtimeMask in runtimeMasks) runtimeMask.Clear();
+		}
+
+		private void RegisterRuntimeMask()
+		{
+			if (runtimeMasks == null) runtimeMasks = new List<RuntimeMask>();
+			runtimeMasks.Add(this);
+		}
+
 		private void OnEnable()
 		{
-			//We only allow one runtime mask atm. Make sure to enable any active one.
-			if (current && current != this)
-			{
-				previousMask = current; //Save this, because we want to restore this one if we deactive this mask
-				current.gameObject.SetActive(false);
-			}
-			current = this;
-
-			if(lastBounds != null)
+			//Make sure any previously activated mask is cleared (shaders only can have one mask at a time)
+			if (lastBounds != null)
 			{
 				MoveToBounds(lastBounds);
 			}
 		}
 
-		//We enable shadows for the underground when we use the mask sphere, to give more depth
 		private void OnDisable()
 		{
-			//Enable previous masking object if it was active when we enabled this one
-			if (previousMask)
-			{
-				current = previousMask;
-				previousMask.gameObject.SetActive(true);
-				previousMask.Clear();
-			}
-			else{
-				current = null;
-			}
 			//make sure to reset mask shaders
 			Clear();
 		}
@@ -122,7 +112,6 @@ namespace Netherlands3D.Masking
 			}
 			maskTexture.SetPixels(pixels);
 			maskTexture.Apply();
-			
 		}
 
 		public void MoveToBounds(Bounds bounds)

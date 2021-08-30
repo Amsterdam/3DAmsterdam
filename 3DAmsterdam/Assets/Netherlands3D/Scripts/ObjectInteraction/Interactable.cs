@@ -61,7 +61,7 @@ namespace Netherlands3D.ObjectInteraction
             HelpMessage.Instance.Hide(true); //Instantly hide help message
         }
 
-		private void OnDisable()
+		public virtual void OnDisable()
 		{
             //Make sure to always release the priority for input when we are disabled
             StopInteraction();

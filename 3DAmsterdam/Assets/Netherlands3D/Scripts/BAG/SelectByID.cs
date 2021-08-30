@@ -42,11 +42,15 @@ namespace Netherlands3D.LayerSystem
 
         public override void Select()
         {
+            if (!enabled) return;
+
             base.Select();
             FindSelectedID();
         }
         public override void SecondarySelect()
         {
+            if (!enabled) return;
+
             base.Select();
             //On a secondary click, only select if we did not make a multisselection yet.
             if (selectedIDs.Count < 2)
@@ -61,6 +65,8 @@ namespace Netherlands3D.LayerSystem
 
         public override void Deselect()
         {
+            if (!enabled) return;
+
             base.Deselect();
             ClearSelection();
         }
@@ -83,6 +89,8 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         public void FindSelectedIDsInArea()
         {
+            if (!enabled) return;
+
             SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
             var vertices = selectionTools.GetVertices();
             var bounds = selectionTools.GetBounds();
@@ -97,6 +105,8 @@ namespace Netherlands3D.LayerSystem
         /// <param name="id">The object ID</param>
         public void HighlightSelectedID(string id)
         {
+            if (!enabled) return;
+
             if (id == emptyID && !Selector.doingMultiselect)
             {
                 ClearSelection();
@@ -123,6 +133,8 @@ namespace Netherlands3D.LayerSystem
         /// <param name="id">The unique ID of this item</param>
         public void DeselectSpecificID(string id)
         {
+            if (!enabled) return;
+
             if (selectedIDs.Contains(id))
             {
                 selectedIDs.Remove(id);
@@ -136,10 +148,14 @@ namespace Netherlands3D.LayerSystem
         /// <param name="ids">List of IDs to add to our selection</param>
         private void HighlightObjectsWithIDs(List<string> ids = null)
         {
+            if (!enabled) return;
+
             if (ids != null) selectedIDs.AddRange(ids);
             selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
 
             lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
+
+            //Make the selected object blink/highlight
             containerLayer.Highlight(selectedIDs);
 
             //Analytic
@@ -179,6 +195,8 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         public void ClearSelection()
         {
+            if (!enabled) return;
+
             if (selectedIDs.Count != 0)
             {
                 lastSelectedID = emptyID;
@@ -199,6 +217,8 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         public void HideSelectedIDs()
         {
+            if (!enabled) return;
+
             if (selectedIDs.Count > 0)
             {
                 //Adds selected ID's to our hidding objects of our layer
@@ -215,6 +235,8 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         public void UnhideAll()
         {
+            if (!enabled) return;
+
             lastSelectedID = emptyID;
             selectedIDs.Clear();
             containerLayer.Hide(selectedIDs);
@@ -225,6 +247,8 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         public void ShowBAGDataForSelectedID(string id = "")
         {
+            if (!enabled) return;
+
             var thumbnailFrom = lastRaycastHit.point + (Vector3.up * 300) + (Vector3.back * 300);
             var lookAtTarget = lastRaycastHit.point;
 
@@ -253,8 +277,10 @@ namespace Netherlands3D.LayerSystem
         IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
         {
             //Check area that we clicked, and add the (heavy) mesh collider there
-            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+            Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
             containerLayer.AddMeshColliders(planeHit);
+
+            yield return new WaitForEndOfFrame();
 
             //No fire a raycast towards our meshcolliders to see what face we hit 
             if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)

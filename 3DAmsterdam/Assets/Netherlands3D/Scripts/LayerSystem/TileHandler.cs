@@ -221,13 +221,12 @@ namespace Netherlands3D.LayerSystem
 		/// </summary>
 		private Vector4 GetViewRange(ICameraExtents cameraExtents)
 		{
-			var bottomLeft = CoordConvert.WGS84toRD(cameraExtents.GetExtent().MinX, cameraExtents.GetExtent().MinY);
-			var topRight = CoordConvert.WGS84toRD(cameraExtents.GetExtent().MaxX, cameraExtents.GetExtent().MaxY);
+			Extent extent = cameraExtents.GetExtent();
 			Vector4 viewRange = new Vector4();
-			viewRange.x = (float)bottomLeft.x;
-			viewRange.y = (float)bottomLeft.y;
-			viewRange.z = (float)(topRight.x - bottomLeft.x);
-			viewRange.w = (float)(topRight.y - bottomLeft.y);
+			viewRange.x = (float)extent.MinX;
+			viewRange.y = (float)extent.MinY;
+			viewRange.z = (float)(extent.MaxX - extent.MinX);
+			viewRange.w = (float)(extent.MaxY - extent.MinY);
 
 			return viewRange;
 		}
@@ -436,7 +435,7 @@ namespace Netherlands3D.LayerSystem
 			foreach (DataSet dataSet in layer.Datasets)
 			{
 				//Are we within distance
-				if (dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
+				if (dataSet.enabled && dataSet.maximumDistanceSquared*maxDistanceMultiplier > (tiledistance.z))
 				{
 					if (lodCalculationMethod == LODCalculationMethod.Lod1)
 					{

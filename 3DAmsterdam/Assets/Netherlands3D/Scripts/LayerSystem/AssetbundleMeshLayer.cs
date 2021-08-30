@@ -95,6 +95,9 @@ namespace Netherlands3D.LayerSystem
 			var webRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);
 			tiles[tileKey].runningWebRequest = webRequest;
 			yield return webRequest.SendWebRequest();
+
+			if (!tiles.ContainsKey(tileKey)) yield break;
+
 			tiles[tileKey].runningWebRequest = null;
 
 			if (webRequest.isNetworkError || webRequest.isHttpError)
@@ -170,6 +173,7 @@ namespace Netherlands3D.LayerSystem
 			dataName = dataName.Replace("-", "_") + "-data";
 			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
 			Debug.Log(dataURL);
+
 			ObjectMappingClass data;
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
 			{
@@ -183,7 +187,10 @@ namespace Netherlands3D.LayerSystem
 				{
 					ObjectData objectMapping = newTile.AddComponent<ObjectData>();
 					AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+
+					yield return new WaitForEndOfFrame();
 					data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+					yield return new WaitForEndOfFrame();
 
 					objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
 					objectMapping.hideIDs = oldObjectMapping.hideIDs;
@@ -193,6 +200,8 @@ namespace Netherlands3D.LayerSystem
 					objectMapping.mesh = newTile.GetComponent<MeshFilter>().sharedMesh;
 					objectMapping.ApplyDataToIDsTexture();
 					newAssetBundle.Unload(true);
+
+					yield return new WaitForEndOfFrame();
 				}
 			}
 			yield return new WaitUntil(() => pauseLoading == false);
@@ -290,6 +299,7 @@ namespace Netherlands3D.LayerSystem
 		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
 		{
 			yield return new WaitUntil(() => pauseLoading == false); //wait for opportunity to start
+
 			pauseLoading = true;
 			var meshFilter = obj.GetComponent<MeshFilter>();
 			if (!meshFilter) yield break;
@@ -317,6 +327,9 @@ namespace Netherlands3D.LayerSystem
 
 					ObjectData objectMapping = obj.AddComponent<ObjectData>();
 					AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+
+					yield return new WaitForEndOfFrame();
+
 					data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
 					int idIndex = data.vectorMap[vertexIndex];
 					id = data.ids[idIndex];
@@ -390,6 +403,7 @@ namespace Netherlands3D.LayerSystem
 			pauseLoading = true;
 			ObjectData objectData;
 
+			//Check all tiles that have metadata if they have matching ID's
 			foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
 			{
 				if (kvp.Value.gameObject == null)
@@ -407,7 +421,10 @@ namespace Netherlands3D.LayerSystem
 					{
 						objectData.highlightIDs.Clear();
 					}
+
+					yield return new WaitForEndOfFrame();
 					objectData.ApplyDataToIDsTexture();
+					yield return new WaitForEndOfFrame();
 				}
 			}
 			pauseLoading = false;
@@ -435,7 +452,9 @@ namespace Netherlands3D.LayerSystem
 					{
 						objectData.hideIDs.Clear();
 					}
+					yield return new WaitForEndOfFrame();
 					objectData.ApplyDataToIDsTexture();
+					yield return new WaitForEndOfFrame();
 				}
 			}
 			pauseLoading = false;

@@ -545,7 +545,7 @@ PlayerSettings:
   blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 1024
-  webGLExceptionSupport: 0
+  webGLExceptionSupport: 3
   webGLNameFilesAsHashes: 0
   webGLDataCaching: 1
   webGLDebugSymbols: 0
@@ -671,7 +671,11 @@ PlayerSettings:
   activeInputHandler: 2
   cloudProjectId: 3af3d3a2-3882-4600-8a6a-b392403e1cf6
   framebufferDepthMemorylessMode: 0
-  qualitySettingsNames: []
+  qualitySettingsNames:
+  - Lowest
+  - Low
+  - Medium
+  - High
   projectName: 3D Amsterdam
   organizationId: gemeente-amsterdam-3d
   cloudEnabled: 0

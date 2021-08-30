@@ -12,7 +12,7 @@ namespace Netherlands3D.Masking
     public class MaskDome : Interactable
     {
         private RuntimeMask runtimeMask;
-        void Start()
+        void Awake()
         {
             runtimeMask = GetComponent<RuntimeMask>();
         }
@@ -21,8 +21,9 @@ namespace Netherlands3D.Masking
 		{
             HelpMessage.Instance.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
             TakeInteractionPriority();
-		}
-		private void OnDisable()
+            runtimeMask.ClearAllMasks();
+        }
+		public override void OnDisable()
 		{
             StopInteraction();
         }
@@ -47,8 +48,8 @@ namespace Netherlands3D.Masking
                 return;
             }
 
-            transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
-            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.ActiveCamera.transform.position.y;
+            transform.position = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
+            transform.transform.localScale = Vector3.one * runtimeMask.MaskScaleMultiplier * CameraModeChanger.Instance.CurrentCameraControls.GetCameraHeight();
         }
     }
 }

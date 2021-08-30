@@ -49,16 +49,16 @@ MonoBehaviour:
   Datasets:
   - Description: LOD0
     lod: 0
-    path: Terrain/terrain_{x}-{y}-lod0
+    path: Terrain_2020_R1/terrain_{x}-{y}-lod0
     maximumDistance: 6000
     maximumDistanceSquared: 0
-    enabled: 0
+    enabled: 1
   - Description: LOD1
     lod: 1
-    path: Terrain/terrain_{x}-{y}-lod1
+    path: Terrain_2020_R1/terrain_{x}-{y}-lod1
     maximumDistance: 3000
     maximumDistanceSquared: 0
-    enabled: 0
+    enabled: 1
   pauseLoading: 0
   onLayerEnabled:
     m_PersistentCalls:

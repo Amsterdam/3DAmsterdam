@@ -16,16 +16,15 @@ namespace Netherlands3D.Cameras
 		public float speed = 3;
 
 		[SerializeField]
-		private GameObject mainMenu;
+		private GameObject toolBar;
+		[SerializeField]
+		private GameObject lodOptions;
 
 		[SerializeField]
 		private Button hideMenuButton;
 
 		[SerializeField]
 		private Button exitFirstPersonButton;
-
-		[SerializeField]
-		private GameObject interfaceLayers;
 
 		private Camera cameraComponent;
 
@@ -35,9 +34,13 @@ namespace Netherlands3D.Cameras
 		[SerializeField]
 		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.";
 
-		private void OnEnable()
+		private void Awake()
 		{
 			cameraComponent = GetComponent<Camera>();
+		}
+
+		private void OnEnable()
+		{
 			HelpMessage.Instance.Show(helpMessage);
 
 			exitFirstPersonButton.gameObject.SetActive(false);
@@ -47,6 +50,7 @@ namespace Netherlands3D.Cameras
 		private void OnDisable()
 		{
 			exitFirstPersonButton.gameObject.SetActive(true);
+			HelpMessage.Instance.Hide();
 			hideMenuButton.gameObject.SetActive(false);
 		}
 
@@ -64,7 +68,9 @@ namespace Netherlands3D.Cameras
 		{
 			PointerLock.SetMode(PointerLock.Mode.DEFAULT);
 			PropertiesPanel.Instance.gameObject.SetActive(true);
-			mainMenu.SetActive(true);
+
+			toolBar.SetActive(true);
+			lodOptions.SetActive(true);
 			hideMenuButton.gameObject.SetActive(true);
 		}
 
@@ -72,7 +78,9 @@ namespace Netherlands3D.Cameras
 		{
 			PointerLock.SetMode(PointerLock.Mode.FIRST_PERSON);
 			PropertiesPanel.Instance.gameObject.SetActive(false);
-			mainMenu.SetActive(false);
+
+			toolBar.SetActive(false);
+			lodOptions.SetActive(false);
 			hideMenuButton.gameObject.SetActive(false);
 		}
 
@@ -112,7 +120,6 @@ namespace Netherlands3D.Cameras
 				FollowMouseRotation();
 			}
 		}
-
 		private void FollowMouseRotation()
 		{
 			rotation.y += Mouse.current.delta.ReadValue().x * speed * ApplicationSettings.settings.rotateSensitivity;
@@ -155,10 +162,28 @@ namespace Netherlands3D.Cameras
 			this.rotation = rotationEuler;
 		}
 
-		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+		public Ray GetMainPointerRay()
 		{
-			var pointerPosition = Input.mousePosition;
-			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
+			var pointerPosition = Mouse.current.position.ReadValue();
+			if (PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				pointerPosition = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
+			}
+
+			return cameraComponent.ScreenPointToRay(pointerPosition);
+		}
+
+		public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
+		{
+			var pointerPosition = Mouse.current.position.ReadValue();
+			if (optionalPositionOverride != default)
+			{
+				pointerPosition = optionalPositionOverride;
+			}
+			else if(PointerLock.GetMode() == PointerLock.Mode.FIRST_PERSON)
+			{
+				pointerPosition = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f,0);
+			}
 
 			if(cameraComponent)
 				ray = cameraComponent.ScreenPointToRay(pointerPosition);
@@ -186,6 +211,25 @@ namespace Netherlands3D.Cameras
 		{
 			//TODO: Requires switch to actionmap inputs
 			return false;
+		}
+
+		public void ResetNorth(bool resetTopDown = false)
+		{
+			//Not implemented
+		}
+
+		/// <summary>
+		/// Ortographic wouldnt make sense in an FPS camera, but we can change the fov to something a little less extreme as a fallback.
+		/// </summary>
+		/// <returns>Ortographic on</returns>
+		public void ToggleOrtographic(bool ortographicOn)
+		{
+			if (ortographicOn)
+			{
+				cameraComponent.fieldOfView = 30;
+			}
+
+			cameraComponent.fieldOfView = 60;
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using ConvertCoordinates;
 
 namespace Netherlands3D.Interface
 {
@@ -23,22 +24,25 @@ namespace Netherlands3D.Interface
 
 		private IAction toggleAction;
 		private IAction drawAction;
-		private IAction clearAction;
-
-		private bool drawing = false;
-		private bool add = true;
-
-		private GameObject scaleBlock;
-		private Dictionary<Vector3Int, GameObject> voxels;
-		private int maxVoxels = 200;
 
 		[SerializeField]
-		private bool freePaint = false;
+		private bool drawing = false;
+
+		private GameObject scaleBlock;
+		private Dictionary<Vector3Int, GameObject> selectionBlocks;
+
 		private Vector3Int startGridPosition;
 
 		[System.Serializable]
 		public class BoundsEvent : UnityEvent<Bounds> { };
 		public BoundsEvent onGridSelected;
+		public UnityEvent onToolDisabled;
+
+		private Coordinate bottomLeftCoordinateVisual;
+		private Coordinate topRightCoordinateVisual;
+
+		[SerializeField]
+		private MeshRenderer selectionBlockMeshRenderer;
 
 		private void Awake()
 		{
@@ -51,28 +55,25 @@ namespace Netherlands3D.Interface
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
 
-			if (freePaint)
-			{
-				clearAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.EraseVoxels);
-				clearAction.SubscribePerformed(Clear);
-				clearAction.SubscribeCancelled(Clear);
-			}
+			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
 
-			voxels = new Dictionary<Vector3Int, GameObject>();
+			var canvas = FindObjectOfType<Canvas>();
+
+			bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+			topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
 		}
 
 		/// <summary>
 		/// Fresh start for the grid selection tool with optional material override (to have a unique block color)
 		/// </summary>
 		/// <param name="toolMaterial">Optional material override for the selection blocks</param>
-		public void StartSelection( Material toolMaterial)
+		public void StartSelection(Material toolMaterial)
 		{
 			if(toolMaterial)
 			{
 				SetMainMaterial(toolMaterial);
 			}
 
-			onGridSelected.RemoveAllListeners();
 			gameObject.SetActive(true);
 			//Fresh start, clear a previous selection block visual
 			if (scaleBlock) Destroy(scaleBlock);
@@ -87,19 +88,12 @@ namespace Netherlands3D.Interface
 		{
 			if (action.Performed)
 			{
-
 				if (Selector.Instance.HoveringInterface()) return;
 
-				if (freePaint)
-				{
-					DrawVoxelsUnderMouse(true);
-				}
-				else
-				{
-					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-					ScaleSingleVoxelUnderMouse(false);
-				}
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld());
 
+				ScaleSelectionBlockUnderPointer(false);
+				Debug.Log("TOGGLE PERFORMED");
 				FinishSelection();
 			}
 		}
@@ -114,40 +108,34 @@ namespace Netherlands3D.Interface
 			else if (!Selector.Instance.HoveringInterface() && action.Performed)
 			{
 				drawing = true;
-				add = true;
-				if (!freePaint)
-				{
-					startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-				}
-			}
-		}
-		private void Clear(IAction action)
-		{
-			if (action.Cancelled)
-			{
-				drawing = false;
-			}
-			else if (action.Performed)
-			{
-				drawing = true;
-				add = false;
+
+				startGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
+				Debug.Log($"Startgrid: {startGridPosition}");
 			}
 		}
 
 		private void SetMainMaterial(Material material)
 		{
-			gridSelectionBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
+			selectionBlockMeshRenderer.sharedMaterial = material;
 			if(scaleBlock)
 				scaleBlock.GetComponent<MeshRenderer>().sharedMaterial = material;
 		}
 
 		private void OnEnable()
 		{
+			bottomLeftCoordinateVisual.gameObject.SetActive(true);
+			topRightCoordinateVisual.gameObject.SetActive(true);
+
 			VisualGrid.Instance.Show();
 			TakeInteractionPriority();
 		}
 		private void OnDisable()
 		{
+			bottomLeftCoordinateVisual.gameObject.SetActive(false);
+			topRightCoordinateVisual.gameObject.SetActive(false);
+
+			onToolDisabled.Invoke();
+
 			VisualGrid.Instance.Hide();
 			StopInteraction();
 		}
@@ -170,47 +158,29 @@ namespace Netherlands3D.Interface
 				MoveSelectionBlock();
 				if (drawing)
 				{
-					if (freePaint)
-					{
-						DrawVoxelsUnderMouse();
-					}
-					else
-					{
-						ScaleSingleVoxelUnderMouse();
-					}				
+					ScaleSelectionBlockUnderPointer();			
+					selectionBlockMeshRenderer.enabled = false;
+				}
+				else{
+					selectionBlockMeshRenderer.enabled = true;
 				}
 			}
 		}
 
-		private void DrawVoxelsUnderMouse(bool toggled = false)
-		{
-			if (Selector.Instance.HoveringInterface()) return;
-			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());
-			if (!voxels.ContainsKey(mouseGridPosition) && add && voxels.Count < maxVoxels)
-			{
-				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
-			}
-			else if ((toggled || !add) && voxels.ContainsKey(mouseGridPosition))
-			{
-				Destroy(voxels[mouseGridPosition]);
-				voxels.Remove(mouseGridPosition);
-			}
-		}
-
-		private void ScaleSingleVoxelUnderMouse(bool calculateScale = true)
+		private void ScaleSelectionBlockUnderPointer(bool calculateScale = true)
 		{
 			if (Selector.Instance.HoveringInterface()) return;
 
 			//Just make sure there is one voxel that we can scale
 			if (!scaleBlock)
 			{
-				voxels.Clear();
-				voxels.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
-				scaleBlock = voxels.First().Value;
+				selectionBlocks.Clear();
+				selectionBlocks.Add(mouseGridPosition, Instantiate(gridSelectionBlock, new Vector3(mouseGridPosition.x, mouseGridPosition.y, mouseGridPosition.z), Quaternion.identity, gridSelectionBlock.transform.parent));
+				scaleBlock = selectionBlocks.First().Value;
 			}
 			
-			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld());		
+			mouseGridPosition = GetGridPosition(CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld(Selector.pointerPosition));
+
 			scaleBlock.transform.position = mouseGridPosition;
 
 			if (calculateScale)
@@ -230,6 +200,10 @@ namespace Netherlands3D.Interface
 				//Just make sure it is default size
 				scaleBlock.transform.localScale = Vector3.one * VisualGrid.Instance.CellSize;
 			}
+
+			//Draw coordinate numbers
+			var bounds = scaleBlock.GetComponent<MeshRenderer>().bounds;
+			DrawCoordinateNumbers(bounds, true);
 		}
 
 		private Vector3Int GetGridPosition(Vector3 samplePosition)
@@ -257,7 +231,7 @@ namespace Netherlands3D.Interface
 
 		private void MoveSelectionBlock()
 		{
-			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+			gridBlockPosition = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
 			//Offset to make up for grid object origin (centered)
 			gridBlockPosition.x += (VisualGrid.Instance.CellSize * 0.5f);
 			gridBlockPosition.z += (VisualGrid.Instance.CellSize * 0.5f);
@@ -268,6 +242,19 @@ namespace Netherlands3D.Interface
 
 			gridSelectionBlock.transform.position = gridBlockPosition;
 			gridSelectionBlock.transform.Translate(Vector3.up * (VisualGrid.Instance.CellSize * 0.5f));
+			DrawCoordinateNumbers(gridSelectionBlock.GetComponent<MeshRenderer>().bounds, true);
+		}
+
+		private void DrawCoordinateNumbers(Bounds bounds, bool zeroHeight = false)
+		{
+			var min = bounds.min;
+			if(zeroHeight) min.y = 0;
+
+			var max = bounds.max;
+			if (zeroHeight) max.y = 0;
+
+			bottomLeftCoordinateVisual.DrawCoordinate(min);
+			topRightCoordinateVisual.DrawCoordinate(max);
 		}
 
 		private void FinishSelection()

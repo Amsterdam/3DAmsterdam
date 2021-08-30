@@ -21,6 +21,7 @@ namespace Netherlands3D.Help
         private float fadeOutTime = 1.0f;
 
         private bool allowHideViaInteraction = false;
+        private bool oneFrameHasPassed = false;
 
         void Awake()
         {
@@ -31,6 +32,7 @@ namespace Netherlands3D.Help
         public void Show(string textMessage)
         {
             allowHideViaInteraction = false;
+            oneFrameHasPassed = false; 
 
             Instance.textMessageField.text = textMessage;
 
@@ -43,6 +45,8 @@ namespace Netherlands3D.Help
 
         private IEnumerator StartWaitForAllowHide()
         {
+            yield return new WaitForEndOfFrame();
+            oneFrameHasPassed = true;
             yield return new WaitForSeconds(minimumMessageTime);
             allowHideViaInteraction = true;
         }
@@ -62,7 +66,7 @@ namespace Netherlands3D.Help
 
         public void Hide(bool instantHide = false)
         {
-            if (gameObject.activeSelf && (allowHideViaInteraction || instantHide))
+            if (gameObject.activeSelf && oneFrameHasPassed && (allowHideViaInteraction || instantHide))
             {
                 StopAllCoroutines();
                 if (instantHide)

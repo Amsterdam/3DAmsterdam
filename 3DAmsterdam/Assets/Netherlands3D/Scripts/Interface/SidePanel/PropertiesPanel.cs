@@ -138,7 +138,7 @@ namespace Netherlands3D.Interface.SidePanel
             transformPanel.gameObject.SetActive(false);
         }
 
-        public void SetDynamicFieldsTargetContainer(Transform targetContainer)
+		public void SetDynamicFieldsTargetContainer(Transform targetContainer)
         {
             generatedFieldsRootContainer = targetContainer;
             targetFieldsContainer = targetContainer;
@@ -493,9 +493,11 @@ namespace Netherlands3D.Interface.SidePanel
             var button = Instantiate(buttonTextPrefab, targetFieldsContainer);
             button.SetAction(buttonText,clickAction);
         }
-        public void AddActionButtonBig(string buttonText, Action<string> clickAction)
+        public ActionButton AddActionButtonBig(string buttonText, Action<string> clickAction)
         {
-            Instantiate(buttonBigPrefab, targetFieldsContainer).SetAction(buttonText, clickAction);
+            ActionButton actionButton = Instantiate(buttonBigPrefab, targetFieldsContainer);
+            actionButton.SetAction(buttonText, clickAction);
+            return actionButton;
         }
         public void AddActionSlider(string minText, string maxText, float minValue, float maxValue, float defaultValue, Action<float> changeAction, bool wholeNumberSteps = false, string description = "")
         {

@@ -13,7 +13,6 @@ namespace Netherlands3D
 {
     public class Snapshot : MonoBehaviour
     {
-
         [SerializeField]
         private int width = 1920;
         [SerializeField]
@@ -35,8 +34,6 @@ namespace Netherlands3D
         private String fileName;
 
         private const string resolutionSeparator = "×";
-
-        public GameObject snapshotSettings;
 
         public Toggle snapshotUI;
         private bool snapshotPreferenceUI = true;
@@ -62,9 +59,32 @@ namespace Netherlands3D
         [DllImport("__Internal")]
         private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 
+        [SerializeField]
+        private Graphic[] panelGraphics;
+
+		private void Awake()
+		{
+            panelGraphics = this.GetComponentsInChildren<Graphic>();
+
+            screenshotCoroutine = Screenshotting();
+#if UNITY_EDITOR
+            screenshotCoroutine = ScreenshottingEditor();
+#endif
+        }
+
         private void OnEnable()
         {
+            EnablePanelGraphics(true);
+            UpdateFields();            
+        }
 
+        private void EnablePanelGraphics(bool enabled = true)
+        {
+            foreach (var renderer in panelGraphics) renderer.enabled = enabled;
+		}
+
+        public void SaveSettings()
+        {
             if (snapshotResolution.text != "")
             {
                 // no resolutionSeparator -> × means not a number×number resolution
@@ -101,24 +121,17 @@ namespace Netherlands3D
             snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
             snapshotPreferenceLoD = snapshotLoD.isOn;
 
-            snapshotSettings.SetActive(false);
-
-            snapshotCamera = transform.GetComponent<Camera>();
+            //Align snapshot camera with our own active camera
             snapshotCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position;
             snapshotCamera.transform.rotation = CameraModeChanger.Instance.ActiveCamera.transform.rotation;
-
-
-            screenshotCoroutine = Screenshotting();
-#if UNITY_EDITOR
-            screenshotCoroutine = ScreenshottingEditor();
-#endif
         }
 
         private IEnumerator Screenshotting()
         {
             while (true)
             {
-                // Helps with making sure the camera is ready to render
+                EnablePanelGraphics(false);
+
                 yield return new WaitForEndOfFrame();
 
                 if (takeScreenshotOnNextFrame)
@@ -178,7 +191,8 @@ namespace Netherlands3D
         {
             while (true)
             {
-                // Helps with making sure the camera is ready to render
+                EnablePanelGraphics(false);
+
                 yield return new WaitForEndOfFrame();
 
                 if (takeScreenshotOnNextFrame)
@@ -235,7 +249,14 @@ namespace Netherlands3D
             screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
             snapshotCamera.targetTexture = screenshotRenderTexture;
+            snapshotCamera.fieldOfView = CameraModeChanger.Instance.ActiveCamera.fieldOfView;
+            snapshotCamera.orthographic = CameraModeChanger.Instance.ActiveCamera.orthographic;
+            snapshotCamera.orthographicSize = CameraModeChanger.Instance.ActiveCamera.orthographicSize;
             RenderTexture.active = screenshotRenderTexture;
+
+            //Hide these panel renderers
+            Graphic[] allGraphics = GetComponentsInChildren<Graphic>();
+            foreach (var graphic in allGraphics) graphic.enabled = false;
 
             // Calls events on the camera related to rendering
             snapshotCamera.Render();
@@ -254,6 +275,13 @@ namespace Netherlands3D
             snapshotLogo.isOn = true;
             snapshotMainMenu.isOn = true;
             snapshotLoD.isOn = true;
+
+            // Cleanup textures
+            Destroy(screenshotRenderTexture);
+            Destroy(screenShot);
+
+            //Show this panel again
+            foreach (var graphic in allGraphics) graphic.enabled = true;
 
             // If no filetype is given, make it a png
             if (fileType == "")
@@ -280,6 +308,8 @@ namespace Netherlands3D
         /// </summary>
         public void TakeScreenshot()
         {
+            SaveSettings();
+
             // Allows the camera to see what is on the canvas if user wants to see UI
             if (snapshotUI.isOn)
             {

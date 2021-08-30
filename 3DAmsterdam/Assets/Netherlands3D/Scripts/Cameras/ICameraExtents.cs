@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 public interface ICameraExtents
 {
-    Extent GetExtent();
+	Vector3[] GetWorldSpaceCorners();
+	Extent GetExtent();
     Vector3 GetPosition();
 }

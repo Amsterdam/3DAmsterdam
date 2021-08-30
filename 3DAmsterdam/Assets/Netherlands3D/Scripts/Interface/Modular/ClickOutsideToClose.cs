@@ -14,15 +14,22 @@ namespace Netherlands3D.Interface.Modular
 
         private int numberOfClicksToIgnore = 0;
 
-        void Update()
-        {
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
-            {
-                this.gameObject.SetActive(numberOfClicksToIgnore > 0 || ClickingSelfOrChild());
+		private void OnEnable()
+		{
+            //Listen to general clicks from selector
+            Selector.Instance.registeredClickInput.AddListener(GotAClick);
+        }
+		private void OnDisable()
+		{
+            Selector.Instance.registeredClickInput.RemoveListener(GotAClick);
+        }
 
-                if (numberOfClicksToIgnore > 0)
-                    numberOfClicksToIgnore--;
-            }
+		void GotAClick()
+        {
+            this.gameObject.SetActive(ClickingSelfOrChild());
+
+            if (numberOfClicksToIgnore > 0)
+                numberOfClicksToIgnore--;
         }
 
         public void IgnoreClicks(int ignore = 0)

@@ -13,6 +13,6 @@ public class BetaFeature : MonoBehaviour
     private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
     {
         var toggle = (bool)sender;
-        gameObject.SetActive(toggle);
+        gameObject.transform.parent.gameObject.SetActive(toggle);
     }
 }

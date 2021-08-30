@@ -251,6 +251,13 @@ public class CsvFilePanel : MonoBehaviour
         var csv = JavascriptMethodCaller.FetchOBJDataAsString();     
         ParseCsv(csv);
     }
+    public void LoadCsvFromFile(string filename, System.Action<bool> callback)
+    {
+        var csv = File.ReadAllText(filename);
+        File.Delete(filename);
+        callback(true);
+        ParseCsv(csv);
+    }
 
 #if UNITY_EDITOR
     /// <summary>
