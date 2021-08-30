@@ -399,7 +399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &983049218708631939
 Transform:
   m_ObjectHideFlags: 0
@@ -445,6 +445,7 @@ MonoBehaviour:
       m_Calls: []
   TextObject: {fileID: 8383371600766724334, guid: 226771f56b5021248b0ab1f2e594a611,
     type: 3}
+  offsetFromGround: 10
 --- !u!114 &6254689430208423389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,6 +462,8 @@ MonoBehaviour:
   neighbourhoodsFilepath: districts_amsterdam.txt
   districtMarker: {fileID: 6092693534695716574, guid: 7e0a4ae1636fabf438177d3baef1ec6e,
     type: 3}
+  hideDistance: 300
+  offsetFromGround: 30
 --- !u!1001 &444147156461335792
 PrefabInstance:
   m_ObjectHideFlags: 0

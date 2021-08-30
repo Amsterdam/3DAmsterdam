@@ -22,6 +22,12 @@ public class Districts : MonoBehaviour
 	private string namestring = "\"name\": ";
 	private int index = 0;
 
+	[SerializeField]
+	private float hideDistance = 300;
+
+	[SerializeField]
+	private float offsetFromGround = 30;
+
 	void Start()
 	{
 		StartCoroutine(ReadFile());
@@ -34,38 +40,36 @@ public class Districts : MonoBehaviour
 
 		if (districtsRequest.result == UnityWebRequest.Result.Success)
 		{
-			string wijkentext = districtsRequest.downloadHandler.text;
+			string districtsText = districtsRequest.downloadHandler.text;
 			int nextIndex;
 			int nameEndIndex;
 			bool keepGoing = true;
 			while (keepGoing)
 			{
-				nextIndex = wijkentext.IndexOf(latstring, index) + latstring.Length;
+				nextIndex = districtsText.IndexOf(latstring, index) + latstring.Length;
 				if (nextIndex < index)
 				{
 					keepGoing = false; break;
 				}
 				index = nextIndex;
 				if (index == -1) { keepGoing = false; break; }
-				double lat = StringManipulation.ParseNextDouble(wijkentext, ',', index, out index);
-				index = wijkentext.IndexOf(lonstring, index) + lonstring.Length;
+				double lat = StringManipulation.ParseNextDouble(districtsText, ',', index, out index);
+				index = districtsText.IndexOf(lonstring, index) + lonstring.Length;
 				if (index == -1) { keepGoing = false; break; }
-				double lon = StringManipulation.ParseNextDouble(wijkentext, ',', index, out index);
-				index = wijkentext.IndexOf(namestring, index) + namestring.Length + 1;
+				double lon = StringManipulation.ParseNextDouble(districtsText, ',', index, out index);
+				index = districtsText.IndexOf(namestring, index) + namestring.Length + 1;
 				if (index == -1) { keepGoing = false; break; }
-				nameEndIndex = wijkentext.IndexOf('"', index);
-				string name = wijkentext.Substring(index, nameEndIndex - index);
+				nameEndIndex = districtsText.IndexOf('"', index);
+				string name = districtsText.Substring(index, nameEndIndex - index);
 				index = nameEndIndex;
 				if (index < 0) { keepGoing = false; break; }
 				Vector3 coordinate = CoordConvert.WGS84toUnity(lon, lat);
-				coordinate.y = Config.activeConfiguration.zeroGroundLevelY + 2.0f;
+				coordinate.y = Config.activeConfiguration.zeroGroundLevelY + offsetFromGround;
 
-				GameObject go = Instantiate(districtMarker, transform);
-				//go.transform.position = coordinate;
-				//go.GetComponentInChildren<Text>().text = name;
-				go.GetComponentInChildren<TMPro.TextMeshPro>().text = name;
-				go.transform.position = coordinate;
-				districtNames.Add(go.GetComponent<District>());
+				GameObject newGameObject = Instantiate(districtMarker, transform);
+				newGameObject.GetComponentInChildren<TMPro.TextMeshPro>().text = name;
+				newGameObject.transform.position = coordinate;
+				districtNames.Add(newGameObject.GetComponent<District>());
 				//Debug.Log(index);
 
 				yield return null;
@@ -78,27 +82,27 @@ public class Districts : MonoBehaviour
 		index = 0;
 		if (districtsRequest.result == UnityWebRequest.Result.Success)
 		{
-			string neighbourhoodstext = neighbourhoodsRequest.downloadHandler.text;
+			string neighbourhoodsText = neighbourhoodsRequest.downloadHandler.text;
 			int nextIndex;
 			int nameEndIndex;
 			bool keepGoing = true;
 			while (keepGoing)
 			{
-				nextIndex = neighbourhoodstext.IndexOf(latstring, index) + latstring.Length;
+				nextIndex = neighbourhoodsText.IndexOf(latstring, index) + latstring.Length;
 				if (nextIndex < index)
 				{
 					keepGoing = false; break;
 				}
 				index = nextIndex;
 				if (index == -1) { keepGoing = false; break; }
-				double lat = StringManipulation.ParseNextDouble(neighbourhoodstext, ',', index, out index);
-				index = neighbourhoodstext.IndexOf(lonstring, index) + lonstring.Length;
+				double lat = StringManipulation.ParseNextDouble(neighbourhoodsText, ',', index, out index);
+				index = neighbourhoodsText.IndexOf(lonstring, index) + lonstring.Length;
 				if (index == -1) { keepGoing = false; break; }
-				double lon = StringManipulation.ParseNextDouble(neighbourhoodstext, ',', index, out index);
-				index = neighbourhoodstext.IndexOf(namestring, index) + namestring.Length + 1;
+				double lon = StringManipulation.ParseNextDouble(neighbourhoodsText, ',', index, out index);
+				index = neighbourhoodsText.IndexOf(namestring, index) + namestring.Length + 1;
 				if (index == -1) { keepGoing = false; break; }
-				nameEndIndex = neighbourhoodstext.IndexOf('"', index);
-				string name = neighbourhoodstext.Substring(index, nameEndIndex - index);
+				nameEndIndex = neighbourhoodsText.IndexOf('"', index);
+				string name = neighbourhoodsText.Substring(index, nameEndIndex - index);
 				index = nameEndIndex;
 				if (index < 0) { keepGoing = false; break; }
 				Vector3 coordinate = CoordConvert.WGS84toUnity(lon, lat);
@@ -142,7 +146,7 @@ public class Districts : MonoBehaviour
 		{
 			maxDistance = 5 * camheight;
 		}
-		if (camheight < 100)
+		if (camheight < hideDistance)
 		{
 			maxDistance = 0;
 		}
