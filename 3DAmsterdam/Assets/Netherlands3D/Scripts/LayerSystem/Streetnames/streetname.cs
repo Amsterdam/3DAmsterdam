@@ -3,43 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Cameras;
 
-public class streetname : MonoBehaviour
+public class StreetName : MonoBehaviour
 {
-    float currentAngle;
-    // Start is called before the first frame update
-    void Start()
-    {
+	float currentAngle;
 
-        currentAngle = transform.transform.localRotation.eulerAngles.y;
-        if (currentAngle <0)
-        {
-            currentAngle += 360;
-        }
+	void Start()
+	{
+		currentAngle = transform.transform.localRotation.eulerAngles.y;
+		if (currentAngle < 0)
+		{
+			currentAngle += 360;
+		}
+	}
 
-    }
+	void Update()
+	{
+		FlipTextByLookDirection();
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-       float cameraAngle = CameraModeChanger.Instance.ActiveCamera.transform.rotation.eulerAngles.y;
-        bool flip = false;
-        float angleDelta;
-        angleDelta = Mathf.DeltaAngle(cameraAngle, currentAngle);
-        if (Mathf.Abs(angleDelta)>90)
-        {
-            flip = true;
-        }
+	private void FlipTextByLookDirection()
+	{
+		float cameraAngle = CameraModeChanger.Instance.ActiveCamera.transform.rotation.eulerAngles.y;
+		bool flip = false;
+		float angleDelta;
+		angleDelta = Mathf.DeltaAngle(cameraAngle, currentAngle);
 
-        if (flip)
-        {
-            transform.Rotate(Vector3.forward, 180f, Space.Self);
-            currentAngle = transform.transform.localRotation.eulerAngles.y;
-                if (currentAngle<0)
-                {
-                    currentAngle += 360;
-                }
-        
-        }
+		if (Mathf.Abs(angleDelta) > 90)
+		{
+			flip = true;
+		}
 
-    }
+		if (flip)
+		{
+			transform.Rotate(Vector3.forward, 180f, Space.Self);
+			currentAngle = transform.transform.localRotation.eulerAngles.y;
+			if (currentAngle < 0)
+			{
+				currentAngle += 360;
+			}
+		}
+	}
 }

@@ -9,10 +9,11 @@ using System.Globalization;
 
 namespace Netherlands3D.LayerSystem
 {
-	public class StreetnamesLayer : Layer
+	public class StreetNamesLayer : Layer
 	{
 		public GameObject TextObject;
 		private string baseURL = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";
+		
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			TileAction action = tileChange.action;
@@ -40,11 +41,8 @@ namespace Netherlands3D.LayerSystem
 					return;
 				default:
 					break;
-			}
-			
+			}	
 		}
-
-
 
 		private Tile CreateNewTile(Vector2Int tileKey)
 		{
@@ -82,19 +80,16 @@ namespace Netherlands3D.LayerSystem
 
 			}
 		}
-			private IEnumerator DownloadStreetNameData(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
+		private IEnumerator DownloadStreetNameData(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
-			string url = baseURL + (tileChange.X.ToString() + "," + tileChange.Y.ToString() + "," + (tileChange.X + tileSize).ToString() + "," + (tileChange.Y + tileSize).ToString());
+			string url = $"{baseURL}{tileChange.X},{tileChange.Y},{(tileChange.X + tileSize)},{(tileChange.Y + tileSize)}";
 			Debug.Log(url);
 
-			var streetnameRequest = UnityWebRequest.Get(url);
-
-			
+			var streetnameRequest = UnityWebRequest.Get(url);		
 			yield return streetnameRequest.SendWebRequest();
 
-			if (!streetnameRequest.isNetworkError && !streetnameRequest.isHttpError)
-			{
-				
+			if (streetnameRequest.result == UnityWebRequest.Result.Success)
+			{	
 				GeoJSON customJsonHandler = new GeoJSON(streetnameRequest.downloadHandler.text);
 				yield return null;
 				Vector3 startpoint;
@@ -109,48 +104,17 @@ namespace Netherlands3D.LayerSystem
 					string name = customJsonHandler.getPropertyStringValue("tekst");
 
 					List<double> coordinates = customJsonHandler.getGeometryLineString();
+
 					double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
 					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
-					var To = Instantiate(TextObject);
-					To.transform.parent = tile.gameObject.transform;
-					To.GetComponent<TextMesh>().text = name;
-					To.transform.position = startpoint;
-					To.transform.Rotate(Vector3.up, angle,Space.World);
-
+					var textObject = Instantiate(TextObject);
+					textObject.transform.parent = tile.gameObject.transform;
+					textObject.GetComponent<TextMesh>().text = name;
+					textObject.transform.position = startpoint;
+					textObject.transform.Rotate(Vector3.up, angle,Space.World);
 				}
-
 				yield return null;
 			}
-
-
-			//get OSM important streetnames
-			/// <summary>
-			/// Retrieves the road Json from Open Street Maps
-			/// </summary>
-			//Vector3WGS bottomLeftWGS = CoordConvert.RDtoWGS84(tileChange.X, tileChange.Y);
-			//Vector3WGS topRightWGS = CoordConvert.RDtoWGS84(tileChange.X + tileSize, tileChange.Y + tileSize);
-
-			//	string prefixRequest = "https://overpass-api.de/api/interpreter?data=[out:json];";
-			//	string paramRequest = "way[highway~\" ^ (trunk | primary | secondary | tertiary)$\"]";
-			//	string bbox = "(" + bottomLeftWGS.lat.ToString(CultureInfo.InvariantCulture) + "," + bottomLeftWGS.lon.ToString(CultureInfo.InvariantCulture) + "," + topRightWGS.lat.ToString(CultureInfo.InvariantCulture) + "," + topRightWGS.lon.ToString(CultureInfo.InvariantCulture) + ");";
-			//	string suffixRequest = "out tags;";
-			//	string fullRequest = prefixRequest + paramRequest + bbox + suffixRequest;
-			//Debug.Log(fullRequest);
-			//	// send http request
-			//	var request = UnityWebRequest.Get(fullRequest);
-			//	{
-			//		yield return request.SendWebRequest();
-
-			//		if (request.isDone && request.result != UnityWebRequest.Result.ProtocolError)
-			//		{
-			//			// catches the data
-			//			Debug.Log(request.downloadHandler.text);
-			//		}
-			//	}
-
-
-
-
 			callback(tileChange);
 		}
 	}
