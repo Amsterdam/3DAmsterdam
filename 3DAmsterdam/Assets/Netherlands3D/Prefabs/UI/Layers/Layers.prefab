@@ -314,6 +314,7 @@ MonoBehaviour:
   - {fileID: 7005504237309713869}
   - {fileID: 1144097373}
   - {fileID: 7142445150767561515}
+  - {fileID: 9076108747654979101}
   pendingTileChanges: []
   activeTileChangesView: []
 --- !u!1 &4498901013737045302
@@ -398,7 +399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &983049218708631939
 Transform:
   m_ObjectHideFlags: 0
@@ -425,7 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a38316f36dee24748a32f2b70687e118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isenabled: 1
+  isenabled: 0
   tileSize: 1000
   layerPriority: 1
   Datasets:
@@ -434,7 +435,7 @@ MonoBehaviour:
     path: 
     maximumDistance: 2000
     maximumDistanceSquared: 0
-    enabled: 0
+    enabled: 1
   pauseLoading: 0
   onLayerEnabled:
     m_PersistentCalls:

@@ -1,13 +1,12 @@
+using ConvertCoordinates;
+using Netherlands3D;
+using Netherlands3D.Cameras;
+using Netherlands3D.Interface;
+using Netherlands3D.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using Netherlands3D.Utilities;
-using ConvertCoordinates;
-using UnityEngine.UI;
-using Netherlands3D.Interface;
-using Netherlands3D;
-using Netherlands3D.Cameras;
 
 public class Districts : MonoBehaviour
 {
@@ -128,11 +127,8 @@ public class Districts : MonoBehaviour
 	{
 		Transform cameraTransform = CameraModeChanger.Instance.ActiveCamera.transform;
 
-		Vector3 camposition = cameraTransform.position;
-		cameraTransform.Rotate(Vector3.up, 180f, Space.Self);
-
-		Quaternion camRotation = cameraTransform.rotation;
-		cameraTransform.Rotate(Vector3.up, 180f, Space.Self);
+		Vector3 cameraPosition = cameraTransform.position;
+		Quaternion cameraRotation = cameraTransform.rotation;
 
 		float camheight = cameraTransform.position.y;
 		float camAngle = cameraTransform.localRotation.eulerAngles.x;
@@ -151,12 +147,12 @@ public class Districts : MonoBehaviour
 			maxDistance = 0;
 		}
 		Transform itemTransform;
-		float characterSize = 1 + Mathf.Max(camheight / 500, 0);
+		float characterSize = (1 + Mathf.Max(camheight / 500, 0)) * 200;
 
 		foreach (District item in districtNames)
 		{
 			itemTransform = item.transform;
-			if ((itemTransform.position - camposition).magnitude < maxDistance)
+			if ((itemTransform.position - cameraPosition).magnitude < maxDistance)
 			{
 				item.gameObject.SetActive(true);
 			}
@@ -164,14 +160,14 @@ public class Districts : MonoBehaviour
 			{
 				item.gameObject.SetActive(false);
 			}
-			itemTransform.rotation = cameraTransform.rotation;
-			item.textemesh.fontSize = characterSize * 200;
+			itemTransform.rotation = cameraRotation;
+			item.textMeshPro.fontSize = characterSize;
 		}
 
 		foreach (District item in neighbourhoodNames)
 		{
 			itemTransform = item.transform;
-			if ((itemTransform.position - camposition).magnitude < 0.5 * maxDistance)
+			if ((itemTransform.position - cameraPosition).magnitude < 0.5 * maxDistance)
 			{
 				item.gameObject.SetActive(true);
 			}
@@ -180,8 +176,8 @@ public class Districts : MonoBehaviour
 				item.gameObject.SetActive(false);
 			}
 
-			itemTransform.rotation = camRotation;
-			item.textemesh.fontSize = characterSize * 200;
+			itemTransform.rotation = cameraRotation;
+			item.textMeshPro.fontSize = characterSize;
 		}
 	}
 }
