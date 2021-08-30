@@ -15,6 +15,18 @@ namespace Netherlands3D.LayerSystem
 		public GameObject TextObject;
 		private string baseURL = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";
 		
+		[SerializeField]
+		private float offsetFromGround = 10.0f;
+
+		[SerializeField]
+		private int maxSpawnsPerFrame = 100;
+
+		public override void LayerToggled()
+		{
+			base.LayerToggled();
+			gameObject.SetActive(isEnabled);
+		}
+
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			TileAction action = tileChange.action;
@@ -86,8 +98,9 @@ namespace Netherlands3D.LayerSystem
 			string url = $"{baseURL}{tileChange.X},{tileChange.Y},{(tileChange.X + tileSize)},{(tileChange.Y + tileSize)}";
 			Debug.Log(url);
 
-			var streetnameRequest = UnityWebRequest.Get(url);		
-			yield return streetnameRequest.SendWebRequest();
+			var streetnameRequest = UnityWebRequest.Get(url);
+			streetnameRequest.SendWebRequest();
+			tile.runningWebRequest = streetnameRequest;
 
 			if (streetnameRequest.result == UnityWebRequest.Result.Success)
 			{	
@@ -100,7 +113,7 @@ namespace Netherlands3D.LayerSystem
 				while (customJsonHandler.GotoNextFeature())
 				{
 					parseCounter++;
-					//if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
+					if ((parseCounter % maxSpawnsPerFrame) == 0) yield return null;
 					float angle = customJsonHandler.getPropertyFloatValue("hoek");
 					string name = customJsonHandler.getPropertyStringValue("tekst");
 
@@ -108,6 +121,7 @@ namespace Netherlands3D.LayerSystem
 
 					double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
 					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
+					startpoint.y = offsetFromGround;
 					var textObject = Instantiate(TextObject);
 					textObject.transform.parent = tile.gameObject.transform;
 					textObject.GetComponent<TextMeshPro>().text = name;
