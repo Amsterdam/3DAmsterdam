@@ -10,6 +10,8 @@ using UnityEngine.Networking;
 
 public class Districts : MonoBehaviour
 {
+	private string baseUrl = "https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_buurten_2020&srs=EPSG:28992&bbox="; //109000,474000,141000,501000
+
 	public string districtsFilepath = "D:/3DAmsterdam/wijken_amsterdam.txt";
 	public string neighbourhoodsFilepath = "D:/3DAmsterdam/buurten_amsterdam.txt";
 	public GameObject districtMarker;
@@ -28,12 +30,59 @@ public class Districts : MonoBehaviour
 	[SerializeField]
 	private float offsetFromGround = 30;
 
+	[SerializeField]
+	private float maxSpawnsPerFrame = 100;
+
 	void Start()
 	{
-		StartCoroutine(ReadFile());
+		StartCoroutine(ReadFromFile());
+
+		StartCoroutine(LoadDistrictsFromWFS());
 	}
 
-	IEnumerator ReadFile()
+	private IEnumerator LoadDistrictsFromWFS()
+	{
+		string url = $"{baseUrl}{Config.activeConfiguration.BottomLeftRD.x},{Config.activeConfiguration.BottomLeftRD.y},{Config.activeConfiguration.TopRightRD.x},{Config.activeConfiguration.TopRightRD.y}";
+		Debug.Log(url);
+
+		var districtNamesRequest = UnityWebRequest.Get(url);
+		yield return districtNamesRequest.SendWebRequest();
+
+		if (districtNamesRequest.result == UnityWebRequest.Result.Success)
+		{
+			GeoJSON customJsonHandler = new GeoJSON(districtNamesRequest.downloadHandler.text);
+			yield return null;
+			Vector3 startpoint;
+			Vector3 endpoint;
+			int parseCounter = 0;
+
+			while (customJsonHandler.GotoNextFeature())
+			{
+				parseCounter++;
+				if ((parseCounter % maxSpawnsPerFrame) == 0) yield return null;
+				string districtName = customJsonHandler.getPropertyStringValue("buurtnaam");
+
+				if (districtName.Length > 1)
+				{
+					List<double> multiPolygonCoordinates = customJsonHandler.getGeometryLineString();
+
+					double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
+					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
+					startpoint.y = offsetFromGround;
+
+					GameObject newDistrictMarkerGameObject = Instantiate(districtMarker, transform);
+					//go.transform.position = coordinate;
+					newDistrictMarkerGameObject.GetComponentInChildren<TMPro.TextMeshPro>().text = name;
+
+					newDistrictMarkerGameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+					newDistrictMarkerGameObject.transform.position = CoordConvert.RDtoUnity(new Vector2RD(multiPolygonCoordinates[0], multiPolygonCoordinates[1]));
+				}
+			}
+			yield return null;
+		}
+	}
+
+	IEnumerator ReadFromFile()
 	{
 		var districtsRequest = UnityWebRequest.Get($"{Config.activeConfiguration.webserverRootPath}{districtsFilepath}");
 		yield return districtsRequest.SendWebRequest();
