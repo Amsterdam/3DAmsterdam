@@ -9,6 +9,6 @@ namespace Netherlands3D.Interface
 {
     public class District : MonoBehaviour
     {
-        public TextMeshPro textMeshPro; 
+        public TextMeshPro textMeshPro;
 	}
 }
