@@ -54,9 +54,24 @@ namespace Netherlands3D.Utilities
             }
         }
 
+        private string geometryMultiPolygonStringLocatorString = null;
+        public string GeometryMultiPolygonStringLocatorString
+        {
+            get
+            {
+                if (geometryMultiPolygonStringLocatorString == null)
+                {
+                    if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[") > 0)
+                    {
+                        geometryMultiPolygonStringLocatorString = "\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[";
+                    }
+                    else geometryMultiPolygonStringLocatorString = "\"geometry\": { \"type\": \"MultiPolygon\", \"coordinates\": [ [";
+                }
+                return geometryMultiPolygonStringLocatorString;
+            }
+        }
 
-        private string geometryLineStringLocatorEndString = null;
-        public string GeometryLineStringLocatorEndString
+        public string GeometryStringLocatorEndString
         {
             get
             {
@@ -100,7 +115,12 @@ namespace Netherlands3D.Utilities
         public bool FindFirstFeature()
         {
             featureStartIndex = geoJSONString.IndexOf(FeatureString, 0);
-            featureEndIndex = geoJSONString.IndexOf("\n", featureStartIndex + FeatureString.Length);           
+            featureEndIndex = geoJSONString.IndexOf(FeatureString, featureStartIndex + FeatureString.Length);    
+            if(featureEndIndex == -1)
+            {
+                featureEndIndex = geoJSONString.Length - 1;
+            }
+
             featureLength = featureEndIndex - featureStartIndex;
             if (featureStartIndex > -1)
             {
@@ -168,7 +188,41 @@ namespace Netherlands3D.Utilities
         public List<double> getGeometryLineString()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryLineStringLocatorString, featureStartIndex, featureLength) + GeometryLineStringLocatorString.Length;
-            int geometryEnd = geoJSONString.IndexOf(GeometryLineStringLocatorEndString, geometrystart) - 1;
+            int geometryEnd = geoJSONString.IndexOf(GeometryStringLocatorEndString, geometrystart) - 1;
+            doubleOutputList.Clear();
+            int counter = 1;
+            for (int i = geometrystart; i < geometryEnd; i++)
+            {
+                if (geoJSONString[i] == ',')
+                {
+                    counter++;
+                }
+            }
+            if (doubleOutputList.Capacity < counter)
+            {
+                doubleOutputList.Capacity = counter;
+            }
+            int nextstartposition = geometrystart;
+            counter = 0;
+            while (nextstartposition < geometryEnd)
+            {
+                doubleOutputList.Add((float)StringManipulation.ParseNextDouble(geoJSONString, ',', nextstartposition, out nextstartposition));
+                counter++;
+            }
+
+            return doubleOutputList;
+        }
+
+        public List<double> getGeometryMultiPolygonString()
+        {
+            int geometrystart = geoJSONString.IndexOf(GeometryMultiPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryMultiPolygonStringLocatorString.Length;
+            int geometryEnd = geoJSONString.IndexOf(GeometryStringLocatorEndString, geometrystart) - 1;
+
+            if(geometryEnd == -1)
+            {
+                geometryEnd = featureLength;
+            }
+
             doubleOutputList.Clear();
             int counter = 1;
             for (int i = geometrystart; i < geometryEnd; i++)
@@ -207,13 +261,12 @@ namespace Netherlands3D.Utilities
         public string getPropertyStringValue(string propertyName)
         {
             int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length;
-            
             if (propertyValueStartIndex == -1) 
             {
                 return string.Empty;
             }
             propertyValueStartIndex = geoJSONString.IndexOf('"', propertyValueStartIndex+1, 3);
-            return geoJSONString.Substring(propertyValueStartIndex+1, geoJSONString.IndexOf(',', propertyValueStartIndex) - propertyValueStartIndex - 2);
+            return geoJSONString.Substring(propertyValueStartIndex+1, geoJSONString.IndexOf('"', propertyValueStartIndex+1) - propertyValueStartIndex-1);
         }
     }
 }
