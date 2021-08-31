@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 0
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 1
   Datasets:
   - Description: 
     lod: 0
@@ -63,13 +63,19 @@ MonoBehaviour:
   TextObject: {fileID: 6092693534695716574, guid: 7e0a4ae1636fabf438177d3baef1ec6e,
     type: 3}
   geoJsonUrl: https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_buurten_2020&propertyName=wijknaam,buurtnaam,geom&bbox=
-  offsetFromGround: 30
   maxSpawnsPerFrame: 100
-  textProperty: buurtnaam
+  textsAndSizes:
+  - textPropertyName: wijknaam
+    drawWithSize: 1
+    offset: 60
+  - textPropertyName: buurtnaam
+    drawWithSize: 0.5
+    offset: 15
   positionSourceType: 1
   autoOrientationMode: 1
   readAngleFromProperty: 0
   angleProperty: 
+  filterUniqueNames: 1
 --- !u!114 &1484382064384571549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,7 +505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isenabled: 0
   tileSize: 1000
-  layerPriority: 0
+  layerPriority: 1
   Datasets:
   - Description: 
     lod: 0
@@ -517,13 +523,16 @@ MonoBehaviour:
   TextObject: {fileID: 8383371600766724334, guid: 226771f56b5021248b0ab1f2e594a611,
     type: 3}
   geoJsonUrl: https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=
-  offsetFromGround: 10
   maxSpawnsPerFrame: 100
-  textProperty: tekst
+  textsAndSizes:
+  - textPropertyName: tekst
+    drawWithSize: 1
+    offset: 10
   positionSourceType: 0
   autoOrientationMode: 2
   readAngleFromProperty: 1
   angleProperty: hoek
+  filterUniqueNames: 0
 --- !u!1001 &444147156461335792
 PrefabInstance:
   m_ObjectHideFlags: 0
