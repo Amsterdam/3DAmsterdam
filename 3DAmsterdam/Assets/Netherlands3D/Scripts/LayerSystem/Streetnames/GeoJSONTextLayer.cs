@@ -16,16 +16,13 @@ namespace Netherlands3D.LayerSystem
 		public GameObject TextObject;
 
 		[SerializeField]
-		private string geoJsonUrl = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";
-		
-		[SerializeField]
-		private float offsetFromGround = 10.0f;
+		private string geoJsonUrl = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";	
 
 		[SerializeField]
 		private int maxSpawnsPerFrame = 100;
 
 		[SerializeField]
-		private string textProperty = "tekst";
+		private TextsAndSize[] textsAndSizes;
 
 		[SerializeField]
 		private PositionSourceType positionSourceType = PositionSourceType.Point;
@@ -33,11 +30,21 @@ namespace Netherlands3D.LayerSystem
 		[SerializeField]
 		private AutoOrientationMode autoOrientationMode = AutoOrientationMode.AutoFlip;
 
+		private List<string> uniqueNames;
+
 		[Header("Optional:")]
 		[SerializeField]
 		private bool readAngleFromProperty = false;
 		[SerializeField]
 		private string angleProperty = "hoek";
+		[SerializeField]
+		private bool filterUniqueNames = true;
+
+		
+		private void Awake()
+		{
+			uniqueNames = new List<string>();
+		}
 
 		private enum AutoOrientationMode
 		{
@@ -50,6 +57,14 @@ namespace Netherlands3D.LayerSystem
 		{
 			Point,
 			MultiPolygonCentroid
+		}
+
+		[System.Serializable]
+		private class TextsAndSize
+		{
+			public string textPropertyName = "";
+			public float drawWithSize = 1.0f;
+			public float offset = 10.0f;
 		}
 
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
@@ -138,62 +153,73 @@ namespace Netherlands3D.LayerSystem
 					featureCounter++;
 					if ((featureCounter % maxSpawnsPerFrame) == 0) yield return null;
 
-					string textPropertyValue = customJsonHandler.getPropertyStringValue(textProperty);
-
-					if (textPropertyValue.Length > 1)
+					//string textPropertyValue = customJsonHandler.getPropertyStringValue(textProperty);
+					foreach(TextsAndSize textAndSize in textsAndSizes)
 					{
-						var textObject = Instantiate(TextObject);
-						textObject.transform.SetParent(tile.gameObject.transform, true);
-						textObject.GetComponent<TextMeshPro>().text = textPropertyValue;
+						string textPropertyValue = customJsonHandler.getPropertyStringValue(textAndSize.textPropertyName);	
 
-						//Determine text position by either a geometry point node, or the centroid of a geometry MultiPolygon node
-						switch (positionSourceType)
+						if (textPropertyValue.Length > 1 && (!filterUniqueNames || !uniqueNames.Contains(textPropertyValue)))
 						{
-							case PositionSourceType.Point:
-								double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
-								locationPoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
-								locationPoint.y = offsetFromGround;
+							//Instantiate a new text object
+							var textObject = Instantiate(TextObject);
+							textObject.name = textPropertyValue;
+							textObject.transform.SetParent(tile.gameObject.transform, true);
+							textObject.GetComponent<TextMeshPro>().text = textPropertyValue;
+							uniqueNames.Add(textPropertyValue);
 
-								//Turn the text object so it faces up
-								textObject.transform.Rotate(Vector3.left, -90, Space.Self);
+							//Determine text position by either a geometry point node, or the centroid of a geometry MultiPolygon node
+							switch (positionSourceType)
+							{
+								case PositionSourceType.Point:
+									double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
+									locationPoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
+									locationPoint.y = textAndSize.offset;
 
-								break;
-							case PositionSourceType.MultiPolygonCentroid:
-								List<double> coordinates = customJsonHandler.getGeometryMultiPolygonString();
-								double centroidX = 0;
-								double centroidY = 0;
-								for (int i = 0; i < coordinates.Count; i++)
-								{
-									if (i % 2 == 0)
+									//Turn the text object so it faces up
+									textObject.transform.Rotate(Vector3.left, -90, Space.Self);
+
+									break;
+								case PositionSourceType.MultiPolygonCentroid:
+									List<double> coordinates = customJsonHandler.getGeometryMultiPolygonString();
+									double centroidX = 0;
+									double centroidY = 0;
+									for (int i = 0; i < coordinates.Count; i++)
 									{
-										centroidX += coordinates[i];
-										centroidY += coordinates[i + 1];
+										if (i % 2 == 0)
+										{
+											centroidX += coordinates[i];
+											centroidY += coordinates[i + 1];
+										}
 									}
-								}
 
-								locationPoint = CoordConvert.RDtoUnity(new Vector2RD(centroidX / (coordinates.Count / 2), centroidY / (coordinates.Count / 2)));
-								locationPoint.y = offsetFromGround;
-								break;
-						}
-						textObject.transform.position = locationPoint;
+									locationPoint = CoordConvert.RDtoUnity(new Vector2RD(centroidX / (coordinates.Count / 2), centroidY / (coordinates.Count / 2)));
+									locationPoint.y = textAndSize.offset;
+									break;
+							}
+							textObject.transform.position = locationPoint;
+							textObject.transform.localScale = Vector3.one * textAndSize.drawWithSize;
 
-						//Determine how the spawned texts auto orientate
-						switch (autoOrientationMode)
-						{
-							case AutoOrientationMode.FaceToCamera:
-								textObject.AddComponent<FaceToCamera>().HideDistance = 200;
-								break;
-							case AutoOrientationMode.AutoFlip:
-								if (readAngleFromProperty)
-								{
-									float angle = customJsonHandler.getPropertyFloatValue(angleProperty);
-									textObject.transform.Rotate(Vector3.up, angle, Space.World);
-								}
-								textObject.AddComponent<FlipToCamera>();
-								break;
-							case AutoOrientationMode.None:
-							default:
-								break;
+							//Determine how the spawned texts auto orientate
+							switch (autoOrientationMode)
+							{
+								case AutoOrientationMode.FaceToCamera:
+									var faceToCameraText = textObject.AddComponent<FaceToCamera>();
+									faceToCameraText.HideDistance = 200;
+									faceToCameraText.UniqueNamesList = uniqueNames;
+									break;
+								case AutoOrientationMode.AutoFlip:
+									if (readAngleFromProperty)
+									{
+										float angle = customJsonHandler.getPropertyFloatValue(angleProperty);
+										textObject.transform.Rotate(Vector3.up, angle, Space.World);
+									}
+									var flipToCameraText = textObject.AddComponent<FlipToCamera>();
+									flipToCameraText.UniqueNamesList = uniqueNames;
+									break;
+								case AutoOrientationMode.None:
+								default:
+									break;
+							}
 						}
 					}
 				}
