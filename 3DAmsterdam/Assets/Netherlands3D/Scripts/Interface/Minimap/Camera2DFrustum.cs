@@ -41,14 +41,17 @@ namespace Netherlands3D.Interface.Minimap
 			//Get corners
 			var cameraCorners = CameraModeChanger.Instance.CurrentCameraExtends.GetWorldSpaceCorners();
 
-			//Align quad with camera extent points
-			uiQuad.QuadVertices[0] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[3]));
-			uiQuad.QuadVertices[1] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[2]));
-			uiQuad.QuadVertices[2] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[1]));
-			uiQuad.QuadVertices[3] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[0]));
+			if (cameraCorners != null)
+			{
+				//Align quad with camera extent points
+				uiQuad.QuadVertices[0] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[3]));
+				uiQuad.QuadVertices[1] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[2]));
+				uiQuad.QuadVertices[2] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[1]));
+				uiQuad.QuadVertices[3] = wmtsMap.DeterminePositionOnMap(CoordConvert.UnitytoRD(cameraCorners[0]));
 
-			//Make sure our graphic width/height is set to the max distance of our verts, so culling works properly
-			uiQuad.Redraw();
+				//Make sure our graphic width/height is set to the max distance of our verts, so culling works properly
+				uiQuad.Redraw();
+			}
 		}
 	}
 }
