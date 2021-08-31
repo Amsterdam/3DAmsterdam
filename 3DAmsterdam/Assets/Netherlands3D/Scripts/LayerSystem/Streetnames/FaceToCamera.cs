@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -7,13 +8,19 @@ namespace Netherlands3D.LayerSystem
 	public class FaceToCamera : MonoBehaviour
 	{
 		private TextMeshPro textMeshPro;
-		private MeshRenderer renderer;
+
 		private float hideDistance = 0;
 		public float HideDistance { get => hideDistance; set => hideDistance = value; }
+		public List<string> UniqueNamesList { get; internal set; }
 
 		private void Start()
 		{
 			textMeshPro = GetComponent<TextMeshPro>();
+		}
+
+		private void OnDestroy()
+		{
+			UniqueNamesList.Remove(name);
 		}
 
 		void Update()
