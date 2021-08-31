@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 
 public class Districts : MonoBehaviour
 {
-	private string baseUrl = "https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_buurten_2020&srs=EPSG:28992&bbox="; //109000,474000,141000,501000
+	private string baseUrl = "https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_buurten_2020&propertyName=wijknaam,buurtnaam,geom&bbox="; //109000,474000,141000,501000 , 
 
 	public string districtsFilepath = "D:/3DAmsterdam/wijken_amsterdam.txt";
 	public string neighbourhoodsFilepath = "D:/3DAmsterdam/buurten_amsterdam.txt";
@@ -35,7 +35,7 @@ public class Districts : MonoBehaviour
 
 	void Start()
 	{
-		StartCoroutine(ReadFromFile());
+		//StartCoroutine(ReadFromFile());
 
 		StartCoroutine(LoadDistrictsFromWFS());
 	}
@@ -52,30 +52,27 @@ public class Districts : MonoBehaviour
 		{
 			GeoJSON customJsonHandler = new GeoJSON(districtNamesRequest.downloadHandler.text);
 			yield return null;
-			Vector3 startpoint;
-			Vector3 endpoint;
+			Vector3 placementPoint;
 			int parseCounter = 0;
 
 			while (customJsonHandler.GotoNextFeature())
 			{
 				parseCounter++;
 				if ((parseCounter % maxSpawnsPerFrame) == 0) yield return null;
-				string districtName = customJsonHandler.getPropertyStringValue("buurtnaam");
+				
+				string districtName = customJsonHandler.getPropertyStringValue("wijknaam");
+				string neighbourhoodName = customJsonHandler.getPropertyStringValue("buurtnaam");
 
 				if (districtName.Length > 1)
 				{
-					List<double> multiPolygonCoordinates = customJsonHandler.getGeometryLineString();
-
-					double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
-					startpoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
-					startpoint.y = offsetFromGround;
+					List<double> multiPolygonCoordinates = customJsonHandler.getGeometryMultiPolygonString();
+					placementPoint = CoordConvert.RDtoUnity(new Vector2RD(multiPolygonCoordinates[0], multiPolygonCoordinates[1]));
+					placementPoint.y = offsetFromGround;
 
 					GameObject newDistrictMarkerGameObject = Instantiate(districtMarker, transform);
-					//go.transform.position = coordinate;
-					newDistrictMarkerGameObject.GetComponentInChildren<TMPro.TextMeshPro>().text = name;
-
-					newDistrictMarkerGameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+					newDistrictMarkerGameObject.GetComponent<TMPro.TextMeshPro>().text = districtName;
 					newDistrictMarkerGameObject.transform.position = CoordConvert.RDtoUnity(new Vector2RD(multiPolygonCoordinates[0], multiPolygonCoordinates[1]));
+					districtNames.Add(newDistrictMarkerGameObject.GetComponent<District>());
 				}
 			}
 			yield return null;
