@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Netherlands3D.LayerSystem
 	{
 		private float currentAngle;
 
+		public List<string> UniqueNamesList { get; internal set; }
+
 		void Start()
 		{
 			currentAngle = transform.transform.localRotation.eulerAngles.y;
@@ -15,6 +18,11 @@ namespace Netherlands3D.LayerSystem
 			{
 				currentAngle += 360;
 			}
+		}
+
+		private void OnDestroy()
+		{
+			UniqueNamesList.Remove(name);
 		}
 
 		void Update()
