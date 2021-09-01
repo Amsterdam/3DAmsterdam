@@ -14,7 +14,7 @@ namespace Netherlands3D.ModelParsing
 		public LoadingScreen loadingObjScreen;
 		public int maxLinesPerFrame = 25000;
 		public GameObject createdGameObject;
-
+		public List<ReadMTL.MaterialData> materialDataSlots;
 		// OBJ File Tags
 		const char COMMENT = '#';
 		const char O = 'o';
@@ -40,13 +40,8 @@ namespace Netherlands3D.ModelParsing
 			Other,
 			LineEnd
 		}
-
-		private const char faceSplitChar = '/';
-		private const char lineSplitChar = '\r';
-		private const char linePartSplitChar = ' ';
-
 		[SerializeField]
-		private GeometryBuffer buffer;
+		//private GeometryBuffer buffer;
 
 		private bool splitNestedObjects = false;
 		private bool ignoreObjectsOutsideOfBounds = false;
@@ -73,7 +68,7 @@ namespace Netherlands3D.ModelParsing
 		public bool EnableMeshRenderer { get => enableMeshRenderer; set => enableMeshRenderer = value; }
 		public Vector2RD BottomLeftBounds { get => bottomLeftBounds; set => bottomLeftBounds = value; }
 		public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
-		public GeometryBuffer Buffer { get => buffer; set => buffer = value; }
+		//public GeometryBuffer Buffer { get => buffer; set => buffer = value; }
 
 
 
@@ -89,6 +84,7 @@ namespace Netherlands3D.ModelParsing
 		private Dictionary<string, Submesh> submeshes = new Dictionary<string, Submesh>();
 		private Submesh activeSubmesh = new Submesh();
 		private bool hasNormals = true;
+
 		void AddSubMesh(string submeshName)
 		{
 			if (activeSubmesh.name == submeshName)
@@ -479,7 +475,7 @@ namespace Netherlands3D.ModelParsing
 			{
 				if (NextChar(out readChar))
 				{
-					if (readChar == lineSplitChar)
+					if (readChar == '\r')
 					{
 						return sb.ToString();
 					}
@@ -559,7 +555,7 @@ namespace Netherlands3D.ModelParsing
 			float y = ReadFloat();
 			if (x != float.NaN && y != float.NaN)
 			{
-				buffer.PushUV(new Vector2(x, y));
+				//buffer.PushUV(new Vector2(x, y));
 			}
 		}
 
@@ -575,7 +571,7 @@ namespace Netherlands3D.ModelParsing
 				if (ReadSingleFace(out faceindex, out lastChar))
 				{//succesfully read a face
 					faces.Add(faceindex);
-					if (lastChar == lineSplitChar)
+					if (lastChar == '\r')
 					{ // reached the end of the line
 						keepGoing = false;
 					}
@@ -762,7 +758,7 @@ namespace Netherlands3D.ModelParsing
 								keepGoing = false;
 							}
 							break;
-						case lineSplitChar:
+						case '\r':
 							// end of the line, end of the floatvalue
 							keepGoing = false;
 							break;
@@ -849,7 +845,7 @@ namespace Netherlands3D.ModelParsing
 		}
 
 
-		static Material GetMaterial(MaterialData md, Material sourceMaterial)
+		static Material GetMaterial(ReadMTL.MaterialData md, Material sourceMaterial)
 		{
 			Material newMaterial;
 
@@ -1067,8 +1063,21 @@ namespace Netherlands3D.ModelParsing
                 smd.baseVertex = sm.Value.startVertex;
                 smd.vertexCount = sm.Value.vertexCount;
                 mesh.SetSubMesh(submeshIndex, smd);
+				Material mat=null;
+                for (int i = 0; i < materialDataSlots.Count; i++)
+                {
+                    if (materialDataSlots[i].Name == sm.Value.name)
+                    {
+						mat = GetMaterial(materialDataSlots[i], defaultMaterial);
 
-                materials[submeshIndex] = new Material(defaultMaterial);
+					}
+                }
+                if (mat==null)
+                {
+					mat = new Material(defaultMaterial);
+                }
+				materials[submeshIndex] = mat;
+				mat = null;
                 materials[submeshIndex].name = sm.Key;
 
                 submeshIndex++;

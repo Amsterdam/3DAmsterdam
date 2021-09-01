@@ -106,17 +106,17 @@ public class ObjLoad : MonoBehaviour
     //	/// <param name="data">obj string</param>
     public void SetMaterialData(ref string data)
     {
-        //		stringReader = new StringReader(data);
+        stringReader = new StringReader(data);
 
-        //		//Count newlines
-        //		totalDataLines = 0;
-        //		foreach (var character in data)
-        //		{
-        //			if (character == lineSplitChar) totalDataLines++;
-        //		}
+        //Count newlines
+        totalDataLines = 0;
+        foreach (var character in data)
+        {
+            if (character == lineSplitChar) totalDataLines++;
+        }
 
-        //		parseLinePointer = 0;
-        //		materialDataSlots = new List<MaterialData>();
+        parseLinePointer = 0;
+        materialDataSlots = new List<MaterialData>();
     }
 
     //	/// <summary>
@@ -249,71 +249,71 @@ public class ObjLoad : MonoBehaviour
     public int ParseNextMtlLines(int maxLines)
     {
         return -1;
-        //		int currentLine = 0;
-        //		while (parseLinePointer < totalDataLines && currentLine < maxLines)
-        //		{
-        //			parseLinePointer++;
-        //			currentLine++;
-        //			line = stringReader.ReadLine();
-        //			if (line != null)
-        //			{
-        //				ParseMtlLine(ref line);
-        //			}
-        //			else
-        //			{
-        //				//No lines remain
-        //				return -1;
-        //			}
-        //		}
-        //		return totalDataLines - parseLinePointer;
+        int currentLine = 0;
+        while (parseLinePointer < totalDataLines && currentLine < maxLines)
+        {
+            parseLinePointer++;
+            currentLine++;
+            line = stringReader.ReadLine();
+            if (line != null)
+            {
+                ParseMtlLine(ref line);
+            }
+            else
+            {
+                //No lines remain
+                return -1;
+            }
+        }
+        return totalDataLines - parseLinePointer;
     }
 
-    //	private void ParseMtlLine(ref string mtlLine)
-    //	{
-    //		if (mtlLine.IndexOf("#") != -1) mtlLine = line.Substring(0, mtlLine.IndexOf("#"));
-    //		linePart = mtlLine.Trim().Split(linePartSplitChar);
+    private void ParseMtlLine(ref string mtlLine)
+    {
+        if (mtlLine.IndexOf("#") != -1) mtlLine = line.Substring(0, mtlLine.IndexOf("#"));
+        linePart = mtlLine.Trim().Split(linePartSplitChar);
 
-    //		if (linePart[0].Trim() != "")
-    //		{
-    //			switch (linePart[0])
-    //			{
-    //				case NML:
-    //					targetMaterialData = new MaterialData();
-    //					targetMaterialData.Name = linePart[1].Trim();
-    //					materialDataSlots.Add(targetMaterialData);
-    //					break;
-    //				case KA:
-    //					targetMaterialData.Ambient = gc(linePart);
-    //					break;
-    //				case KD:
-    //					targetMaterialData.Diffuse = gc(linePart);
-    //					break;
-    //				case KS:
-    //					targetMaterialData.Specular = gc(linePart);
-    //					break;
-    //				case NS:
-    //					targetMaterialData.Shininess = cf(linePart[1]) / 1000;
-    //					break;
-    //				case D:
-    //				case TR:
-    //					targetMaterialData.Alpha = cf(linePart[1]);
-    //					break;
-    //				case MAP_KD:
-    //					targetMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
-    //					break;
-    //				case MAP_BUMP:
-    //				case BUMP:
-    //					BumpParameter(targetMaterialData, linePart);
-    //					break;
-    //				case ILLUM:
-    //					targetMaterialData.IllumType = ci(linePart[1]);
-    //					break;
-    //					/*default:
-    //						Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
-    //						break;*/
-    //			}
-    //		}
-    //	}
+        if (linePart[0].Trim() != "")
+        {
+            switch (linePart[0])
+            {
+                case NML:
+                    targetMaterialData = new MaterialData();
+                    targetMaterialData.Name = linePart[1].Trim();
+                    materialDataSlots.Add(targetMaterialData);
+                    break;
+                case KA:
+                    targetMaterialData.Ambient = gc(linePart);
+                    break;
+                case KD:
+                    targetMaterialData.Diffuse = gc(linePart);
+                    break;
+                case KS:
+                    targetMaterialData.Specular = gc(linePart);
+                    break;
+                case NS:
+                    targetMaterialData.Shininess = cf(linePart[1]) / 1000;
+                    break;
+                case D:
+                case TR:
+                    targetMaterialData.Alpha = cf(linePart[1]);
+                    break;
+                case MAP_KD:
+                    targetMaterialData.DiffuseTexPath = linePart[linePart.Length - 1].Trim();
+                    break;
+                case MAP_BUMP:
+                case BUMP:
+                    BumpParameter(targetMaterialData, linePart);
+                    break;
+                case ILLUM:
+                    targetMaterialData.IllumType = ci(linePart[1]);
+                    break;
+                    /*default:
+                        Debug.Log("this line was not processed :" + line); //Skip logging for the sake of WebGL performance
+                        break;*/
+            }
+        }
+    }
 
     //	void GetFaceIndices(IList<FaceIndices> targetFacesList, string[] linePart)
     //	{
@@ -345,62 +345,62 @@ public class ObjLoad : MonoBehaviour
     //		}
     //	}
 
-    //	static Material GetMaterial(MaterialData md, Material sourceMaterial)
-    //	{
-    //		Material newMaterial;
+    static Material GetMaterial(MaterialData md, Material sourceMaterial)
+    {
+        Material newMaterial;
 
-    //		if (md.IllumType == 2)
-    //		{
-    //			newMaterial = new Material(sourceMaterial);
-    //			newMaterial.SetFloat("_EmissionColor", md.Shininess);
-    //		}
-    //		else
-    //		{
-    //			newMaterial = new Material(sourceMaterial);
-    //		}
+        if (md.IllumType == 2)
+        {
+            newMaterial = new Material(sourceMaterial);
+            newMaterial.SetFloat("_EmissionColor", md.Shininess);
+        }
+        else
+        {
+            newMaterial = new Material(sourceMaterial);
+        }
 
-    //		if (md.DiffuseTex != null)
-    //		{
-    //			newMaterial.SetTexture("_MainTex", md.DiffuseTex);
-    //		}
-    //		else
-    //		{
-    //			newMaterial.SetColor("_BaseColor", md.Diffuse);
-    //		}
-    //		if (md.BumpTex != null) newMaterial.SetTexture("_BumpMap", md.BumpTex);
+        if (md.DiffuseTex != null)
+        {
+            newMaterial.SetTexture("_MainTex", md.DiffuseTex);
+        }
+        else
+        {
+            newMaterial.SetColor("_BaseColor", md.Diffuse);
+        }
+        if (md.BumpTex != null) newMaterial.SetTexture("_BumpMap", md.BumpTex);
 
-    //		newMaterial.name = md.Name;
+        newMaterial.name = md.Name;
 
-    //		return newMaterial;
-    //	}
+        return newMaterial;
+    }
 
-    //	class BumpParamDef
-    //	{
-    //		public string OptionName;
-    //		public string ValueType;
-    //		public int ValueNumMin;
-    //		public int ValueNumMax;
-    //		public BumpParamDef(string name, string type, int numMin, int numMax)
-    //		{
-    //			OptionName = name;
-    //			ValueType = type;
-    //			ValueNumMin = numMin;
-    //			ValueNumMax = numMax;
-    //		}
-    //	}
+    class BumpParamDef
+    {
+        public string OptionName;
+        public string ValueType;
+        public int ValueNumMin;
+        public int ValueNumMax;
+        public BumpParamDef(string name, string type, int numMin, int numMax)
+        {
+            OptionName = name;
+            ValueType = type;
+            ValueNumMin = numMin;
+            ValueNumMax = numMax;
+        }
+    }
 
-    //	static float cf(string v)
-    //	{
-    //		try
-    //		{
-    //			return float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
-    //		}
-    //		catch (Exception e)
-    //		{
-    //			print(e + " -> " + v);
-    //			return 0;
-    //		}
-    //	}
+    static float cf(string v)
+    {
+        try
+        {
+            return float.Parse(v, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (Exception e)
+        {
+            print(e + " -> " + v);
+            return 0;
+        }
+    }
 
     //	static double cd(string v)
     //	{
@@ -415,18 +415,18 @@ public class ObjLoad : MonoBehaviour
     //		}
     //	}
 
-    //	static int ci(string v)
-    //	{
-    //		try
-    //		{
-    //			return int.Parse(v);
-    //		}
-    //		catch (Exception e)
-    //		{
-    //			print(e + " -> " + v);
-    //			return 0;
-    //		}
-    //	}
+    static int ci(string v)
+    {
+        try
+        {
+            return int.Parse(v);
+        }
+        catch (Exception e)
+        {
+            print(e + " -> " + v);
+            return 0;
+        }
+    }
 
     //	class MaterialData
     //	{
@@ -443,159 +443,159 @@ public class ObjLoad : MonoBehaviour
     //		public Texture2D BumpTex;
     //	}
 
-    //	static void BumpParameter(MaterialData m, string[] p)
-    //	{
-    //		var regexNumber = new Regex(@"^[-+]?[0-9]*\.?[0-9]+$");
-
-    //		var bumpParams = new Dictionary<String, BumpParamDef>();
-    //		bumpParams.Add("bm", new BumpParamDef("bm", "string", 1, 1));
-    //		bumpParams.Add("clamp", new BumpParamDef("clamp", "string", 1, 1));
-    //		bumpParams.Add("blendu", new BumpParamDef("blendu", "string", 1, 1));
-    //		bumpParams.Add("blendv", new BumpParamDef("blendv", "string", 1, 1));
-    //		bumpParams.Add("imfchan", new BumpParamDef("imfchan", "string", 1, 1));
-    //		bumpParams.Add("mm", new BumpParamDef("mm", "string", 1, 1));
-    //		bumpParams.Add("o", new BumpParamDef("o", "number", 1, 3));
-    //		bumpParams.Add("s", new BumpParamDef("s", "number", 1, 3));
-    //		bumpParams.Add("t", new BumpParamDef("t", "number", 1, 3));
-    //		bumpParams.Add("texres", new BumpParamDef("texres", "string", 1, 1));
-    //		int pos = 1;
-    //		string filename = null;
-    //		while (pos < p.Length)
-    //		{
-    //			if (!p[pos].StartsWith("-"))
-    //			{
-    //				filename = p[pos];
-    //				pos++;
-    //				continue;
-    //			}
-    //			// option processing
-    //			string optionName = p[pos].Substring(1);
-    //			pos++;
-    //			if (!bumpParams.ContainsKey(optionName))
-    //			{
-    //				continue;
-    //			}
-    //			BumpParamDef def = bumpParams[optionName];
-    //			var args = new ArrayList();
-    //			int i = 0;
-    //			bool isOptionNotEnough = false;
-    //			for (; i < def.ValueNumMin; i++, pos++)
-    //			{
-    //				if (pos >= p.Length)
-    //				{
-    //					isOptionNotEnough = true;
-    //					break;
-    //				}
-    //				if (def.ValueType == "number")
-    //				{
-    //					Match match = regexNumber.Match(p[pos]);
-    //					if (!match.Success)
-    //					{
-    //						isOptionNotEnough = true;
-    //						break;
-    //					}
-    //				}
-    //				args.Add(p[pos]);
-    //			}
-    //			if (isOptionNotEnough)
-    //			{
-    //				Debug.Log("Bump variable value not enough for option:" + optionName + " of material:" + m.Name);
-    //				continue;
-    //			}
-    //			for (; i < def.ValueNumMax && pos < p.Length; i++, pos++)
-    //			{
-    //				if (def.ValueType == "number")
-    //				{
-    //					Match match = regexNumber.Match(p[pos]);
-    //					if (!match.Success)
-    //					{
-    //						break;
-    //					}
-    //				}
-    //				args.Add(p[pos]);
-    //			}
-    //			// TODO: some processing of options
-    //			Debug.Log("Found option: " + optionName + " of material: " + m.Name + " args: " + String.Concat(args.ToArray()));
-    //		}
-    //		if (filename != null)
-    //		{
-    //			m.BumpTexPath = filename;
-    //		}
-    //	}
-
-    //	static Color gc(IList<string> p)
-    //	{
-    //		return new Color(cf(p[1]), cf(p[2]), cf(p[3]));
-    //	}
-
-    public void Build(Material defaultMaterial)
+    static void BumpParameter(MaterialData m, string[] p)
     {
-        //		//Close our stringreader
-        //		//stringReader.Close();		
+        var regexNumber = new Regex(@"^[-+]?[0-9]*\.?[0-9]+$");
 
-        //		var materialLibrary = new Dictionary<string, Material>();
-        //		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)
-        //		{
-        //			foreach (MaterialData md in materialDataSlots)
-        //			{
-        //				if (materialLibrary.ContainsKey(md.Name))
-        //				{
-        //					Debug.LogWarning("Duplicate material found: " + md.Name + ". ignored repeated occurences");
-        //					continue;
-        //				}
-        //				materialLibrary.Add(md.Name, GetMaterial(md, defaultMaterial));
-        //			}
-        //		}
-
-        //		var gameObjects = new GameObject[buffer.NumberOfObjects];
-        //		if (buffer.NumberOfObjects == 1 && !IgnoreObjectsOutsideOfBounds)
-        //		{
-        //			//Single gameobject, single mesh
-        //			Debug.Log("Single mesh OBJ. Putting renderer on root object.");
-        //			gameObject.AddComponent<MeshFilter>();
-        //			gameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
-        //			gameObjects[0] = gameObject;
-        //		}
-        //		else if (buffer.NumberOfObjects > 1)
-        //		{
-        //			for (int i = 0; i < buffer.NumberOfObjects; i++)
-        //			{
-        //				//Multi object with nested children
-        //				var childGameObject = new GameObject();
-        //				childGameObject.transform.parent = gameObject.transform;
-        //				childGameObject.AddComponent<MeshFilter>();
-        //				childGameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
-        //				gameObjects[i] = childGameObject;
-        //			}
-        //		}
-
-        //		if(tracing) buffer.Trace();
-        //		buffer.flipTriangleDirection = flipFaceDirection;
-        //		//buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial, this);
-
-        //		// weld vertices if required
-        //		if (weldVertices)
-        //		{
-        //			string meshname = "";
-        //			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
-        //			foreach (var listGameObject in gameObjects)
-        //			{
-        //				if (!listGameObject) continue;
-
-        //				var meshFilter = listGameObject.GetComponent<MeshFilter>();
-        //				if (!meshFilter) continue;
-
-        //				meshname = meshFilter.sharedMesh.name;
-        //				Mesh newMeshWithCombinedVerts = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
-        //				newMeshWithCombinedVerts.name = meshname;
-        //				// destroy the old mesh;
-        //				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
-        //				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMeshWithCombinedVerts;
-        //			}
-        //			Destroy(vertexWelder);
-        //		}
+        var bumpParams = new Dictionary<String, BumpParamDef>();
+        bumpParams.Add("bm", new BumpParamDef("bm", "string", 1, 1));
+        bumpParams.Add("clamp", new BumpParamDef("clamp", "string", 1, 1));
+        bumpParams.Add("blendu", new BumpParamDef("blendu", "string", 1, 1));
+        bumpParams.Add("blendv", new BumpParamDef("blendv", "string", 1, 1));
+        bumpParams.Add("imfchan", new BumpParamDef("imfchan", "string", 1, 1));
+        bumpParams.Add("mm", new BumpParamDef("mm", "string", 1, 1));
+        bumpParams.Add("o", new BumpParamDef("o", "number", 1, 3));
+        bumpParams.Add("s", new BumpParamDef("s", "number", 1, 3));
+        bumpParams.Add("t", new BumpParamDef("t", "number", 1, 3));
+        bumpParams.Add("texres", new BumpParamDef("texres", "string", 1, 1));
+        int pos = 1;
+        string filename = null;
+        while (pos < p.Length)
+        {
+            if (!p[pos].StartsWith("-"))
+            {
+                filename = p[pos];
+                pos++;
+                continue;
+            }
+            // option processing
+            string optionName = p[pos].Substring(1);
+            pos++;
+            if (!bumpParams.ContainsKey(optionName))
+            {
+                continue;
+            }
+            BumpParamDef def = bumpParams[optionName];
+            var args = new ArrayList();
+            int i = 0;
+            bool isOptionNotEnough = false;
+            for (; i < def.ValueNumMin; i++, pos++)
+            {
+                if (pos >= p.Length)
+                {
+                    isOptionNotEnough = true;
+                    break;
+                }
+                if (def.ValueType == "number")
+                {
+                    Match match = regexNumber.Match(p[pos]);
+                    if (!match.Success)
+                    {
+                        isOptionNotEnough = true;
+                        break;
+                    }
+                }
+                args.Add(p[pos]);
+            }
+            if (isOptionNotEnough)
+            {
+                Debug.Log("Bump variable value not enough for option:" + optionName + " of material:" + m.Name);
+                continue;
+            }
+            for (; i < def.ValueNumMax && pos < p.Length; i++, pos++)
+            {
+                if (def.ValueType == "number")
+                {
+                    Match match = regexNumber.Match(p[pos]);
+                    if (!match.Success)
+                    {
+                        break;
+                    }
+                }
+                args.Add(p[pos]);
+            }
+            // TODO: some processing of options
+            Debug.Log("Found option: " + optionName + " of material: " + m.Name + " args: " + String.Concat(args.ToArray()));
+        }
+        if (filename != null)
+        {
+            m.BumpTexPath = filename;
+        }
     }
-   
+
+    static Color gc(IList<string> p)
+    {
+        return new Color(cf(p[1]), cf(p[2]), cf(p[3]));
+    }
+
+    //public void Build(Material defaultMaterial)
+    //{
+    //    //		//Close our stringreader
+    //    //		//stringReader.Close();		
+
+    //    //		var materialLibrary = new Dictionary<string, Material>();
+    //    //		if (!string.IsNullOrEmpty(mtllib) && materialDataSlots != null)
+    //    //		{
+    //    //			foreach (MaterialData md in materialDataSlots)
+    //    //			{
+    //    //				if (materialLibrary.ContainsKey(md.Name))
+    //    //				{
+    //    //					Debug.LogWarning("Duplicate material found: " + md.Name + ". ignored repeated occurences");
+    //    //					continue;
+    //    //				}
+    //    //				materialLibrary.Add(md.Name, GetMaterial(md, defaultMaterial));
+    //    //			}
+    //    //		}
+
+    //    //		var gameObjects = new GameObject[buffer.NumberOfObjects];
+    //    //		if (buffer.NumberOfObjects == 1 && !IgnoreObjectsOutsideOfBounds)
+    //    //		{
+    //    //			//Single gameobject, single mesh
+    //    //			Debug.Log("Single mesh OBJ. Putting renderer on root object.");
+    //    //			gameObject.AddComponent<MeshFilter>();
+    //    //			gameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
+    //    //			gameObjects[0] = gameObject;
+    //    //		}
+    //    //		else if (buffer.NumberOfObjects > 1)
+    //    //		{
+    //    //			for (int i = 0; i < buffer.NumberOfObjects; i++)
+    //    //			{
+    //    //				//Multi object with nested children
+    //    //				var childGameObject = new GameObject();
+    //    //				childGameObject.transform.parent = gameObject.transform;
+    //    //				childGameObject.AddComponent<MeshFilter>();
+    //    //				childGameObject.AddComponent<MeshRenderer>().enabled = EnableMeshRenderer;
+    //    //				gameObjects[i] = childGameObject;
+    //    //			}
+    //    //		}
+
+    //    //		if(tracing) buffer.Trace();
+    //    //		buffer.flipTriangleDirection = flipFaceDirection;
+    //    //		//buffer.PopulateMeshes(gameObjects, materialLibrary, defaultMaterial, this);
+
+    //    //		// weld vertices if required
+    //    //		if (weldVertices)
+    //    //		{
+    //    //			string meshname = "";
+    //    //			WeldMeshVertices vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
+    //    //			foreach (var listGameObject in gameObjects)
+    //    //			{
+    //    //				if (!listGameObject) continue;
+
+    //    //				var meshFilter = listGameObject.GetComponent<MeshFilter>();
+    //    //				if (!meshFilter) continue;
+
+    //    //				meshname = meshFilter.sharedMesh.name;
+    //    //				Mesh newMeshWithCombinedVerts = vertexWelder.WeldVertices(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+    //    //				newMeshWithCombinedVerts.name = meshname;
+    //    //				// destroy the old mesh;
+    //    //				Destroy(listGameObject.GetComponent<MeshFilter>().sharedMesh);
+    //    //				listGameObject.GetComponent<MeshFilter>().sharedMesh = newMeshWithCombinedVerts;
+    //    //			}
+    //    //			Destroy(vertexWelder);
+    //    //		}
+    //}
+
 }
 class MaterialData
 {
