@@ -70,9 +70,14 @@ MonoBehaviour:
     offset: 15
   positionSourceType: 1
   autoOrientationMode: 1
+  drawGeometry: 1
+  lineRenderMaterial: {fileID: 2100000, guid: 143d1b601a82c22498d2c7cf9a42a833, type: 2}
+  lineColor: {r: 0.84705883, g: 0.6392157, b: 0.29803923, a: 1}
+  lineWidth: 5
   readAngleFromProperty: 0
   angleProperty: 
   filterUniqueNames: 1
+  textMinDrawDistance: 0
 --- !u!114 &1484382064384571549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +396,7 @@ MonoBehaviour:
   - {fileID: 7142445150767561515}
   - {fileID: 9076108747654979101}
   - {fileID: 6968953490573422267}
+  - {fileID: 996894627356133273}
   pendingTileChanges: []
   activeTileChangesView: []
 --- !u!1 &4498901013737045302
@@ -528,9 +534,14 @@ MonoBehaviour:
     offset: 60
   positionSourceType: 1
   autoOrientationMode: 1
+  drawGeometry: 1
+  lineRenderMaterial: {fileID: 2100000, guid: 143d1b601a82c22498d2c7cf9a42a833, type: 2}
+  lineColor: {r: 0.8235294, g: 0.39215687, b: 0.19607843, a: 1}
+  lineWidth: 5
   readAngleFromProperty: 0
   angleProperty: 
   filterUniqueNames: 1
+  textMinDrawDistance: 0
 --- !u!1 &7559307113914201270
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,9 +612,14 @@ MonoBehaviour:
     offset: 10
   positionSourceType: 0
   autoOrientationMode: 2
+  drawGeometry: 0
+  lineRenderMaterial: {fileID: 0}
+  lineColor: {r: 0, g: 0, b: 0, a: 1}
+  lineWidth: 5
   readAngleFromProperty: 1
   angleProperty: hoek
   filterUniqueNames: 0
+  textMinDrawDistance: 0
 --- !u!1001 &444147156461335792
 PrefabInstance:
   m_ObjectHideFlags: 0
