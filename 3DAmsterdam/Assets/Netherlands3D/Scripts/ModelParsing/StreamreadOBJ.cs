@@ -499,15 +499,36 @@ namespace Netherlands3D.ModelParsing
 		void ReadVertex()
 		{
 
+
+
 			float x = ReadFloat();
 			float y = ReadFloat();
 			float z = ReadFloat();
 
 			if (x != float.NaN && y != float.NaN & z != float.NaN)
 			{
+                if (vertices.Count()==0)
+                {// this is the first vertex, check if it is in rd-coordinates
+					CheckForRD(x, y, z);
+                }
+                if (ObjectUsesRDCoordinates)
+                {
+					Vector3 coord;
+					if (flipYZ)
+					{
+					coord = CoordConvert.RDtoUnity(new Vector3(x,z,y));
+					}
+					else
+                    {
+						coord = CoordConvert.RDtoUnity(new Vector3(x, y, z));
+					}
+					vertices.Add(coord.x, coord.y, coord.z);
+					return;
+                }
+
 				if (FlipYZ)
 				{
-					vertices.Add(x, y, z);
+					vertices.Add(x, z, y);
 					
 				}
 				else
@@ -516,6 +537,21 @@ namespace Netherlands3D.ModelParsing
 				}
 			}
 		}
+		void CheckForRD(float x, float y, float z)
+        {
+            if (CoordConvert.RDIsValid(new Vector3RD(x, z, y)))
+            {
+				ObjectUsesRDCoordinates = true;
+				FlipYZ = true;
+			}
+            else if (CoordConvert.RDIsValid(new Vector3RD(x, y, z)))
+            {
+				ObjectUsesRDCoordinates = true;
+				FlipYZ = false;
+			}
+            
+        }
+
 		void ReadVertexTexture()
 		{
 
