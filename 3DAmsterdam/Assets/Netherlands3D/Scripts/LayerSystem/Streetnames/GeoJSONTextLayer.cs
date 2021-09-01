@@ -32,6 +32,15 @@ namespace Netherlands3D.LayerSystem
 
 		private List<string> uniqueNames;
 
+		[SerializeField]
+		private bool drawGeometry = false;
+		[SerializeField]
+		private Material lineRenderMaterial;
+		[SerializeField]
+		private Color lineColor;
+		[SerializeField]
+		private float lineWidth = 5.0f;
+
 		[Header("Optional:")]
 		[SerializeField]
 		private bool readAngleFromProperty = false;
@@ -39,8 +48,9 @@ namespace Netherlands3D.LayerSystem
 		private string angleProperty = "hoek";
 		[SerializeField]
 		private bool filterUniqueNames = true;
+		[SerializeField]
+		private float textMinDrawDistance = 0;
 
-		
 		private void Awake()
 		{
 			uniqueNames = new List<string>();
@@ -133,6 +143,32 @@ namespace Netherlands3D.LayerSystem
 
 			}
 		}
+
+		private GameObject CreateMultiPolygonGeometry(List<double> coordinates)
+		{
+			var lineRenderObject = new GameObject();
+			LineRenderer newLineRenderer = lineRenderObject.AddComponent<LineRenderer>();
+			newLineRenderer.positionCount = coordinates.Count / 2;
+			newLineRenderer.material = lineRenderMaterial;
+			newLineRenderer.startWidth = lineWidth;
+			newLineRenderer.endWidth = lineWidth;
+			newLineRenderer.startColor = lineColor;
+			newLineRenderer.endColor = lineColor;
+
+			for (int i = 0; i < coordinates.Count; i++)
+			{
+				if (i % 2 == 0)
+				{
+					var centroidX = coordinates[i];
+					var centroidY = coordinates[i + 1];
+					var linePoint = CoordConvert.RDtoUnity(new Vector2RD(centroidX, centroidY));
+					newLineRenderer.SetPosition(Mathf.FloorToInt(i / 2), linePoint);
+				}
+			}
+
+			return lineRenderObject;			
+		}
+
 		private IEnumerator DownloadTextNameData(TileChange tileChange, Tile tile, System.Action<TileChange> callback = null)
 		{
 			string url = $"{geoJsonUrl}{tileChange.X},{tileChange.Y},{(tileChange.X + tileSize)},{(tileChange.Y + tileSize)}";
@@ -181,18 +217,32 @@ namespace Netherlands3D.LayerSystem
 									break;
 								case PositionSourceType.MultiPolygonCentroid:
 									List<double> coordinates = customJsonHandler.getGeometryMultiPolygonString();
-									double centroidX = 0;
-									double centroidY = 0;
+
+									if (drawGeometry)
+									{
+										CreateMultiPolygonGeometry(coordinates).transform.SetParent(textObject.transform,false);
+									}
+
+									double minX = double.MaxValue;
+									double minY = double.MaxValue;
+									double maxX = -double.MaxValue;
+									double maxY = -double.MaxValue;
 									for (int i = 0; i < coordinates.Count; i++)
 									{
 										if (i % 2 == 0)
 										{
-											centroidX += coordinates[i];
-											centroidY += coordinates[i + 1];
+											if (coordinates[i] < minX)	minX = coordinates[i];
+											else if (coordinates[i] > maxX)	maxX = coordinates[i];
+
+											if (coordinates[i + 1] < minY) minY = coordinates[i + 1];
+											else if (coordinates[i + 1] > maxY) maxY = coordinates[i + 1];
 										}
 									}
 
-									locationPoint = CoordConvert.RDtoUnity(new Vector2RD(centroidX / (coordinates.Count / 2), centroidY / (coordinates.Count / 2)));
+									double centerX = minX + ((maxX - minX) / 2);
+									double centerY = minY + ((maxY - minY) / 2);
+
+									locationPoint = CoordConvert.RDtoUnity(new Vector2RD(centerX, centerY));
 									locationPoint.y = textAndSize.offset;
 									break;
 							}
@@ -204,7 +254,7 @@ namespace Netherlands3D.LayerSystem
 							{
 								case AutoOrientationMode.FaceToCamera:
 									var faceToCameraText = textObject.AddComponent<FaceToCamera>();
-									faceToCameraText.HideDistance = 200;
+									faceToCameraText.HideDistance = textMinDrawDistance;
 									faceToCameraText.UniqueNamesList = uniqueNames;
 									break;
 								case AutoOrientationMode.AutoFlip:
