@@ -125,38 +125,9 @@ public void FileCount(int count)
     }
 
 
-    void ReadOBJ()
-    {
-
-       
-    }
+    
 
    
-    void streamreadfile(string path)
-    {
-        FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        char[] foundChar = new char[1];
-        int lineEndCounter = 0;
-        long size=0;
-        using (StreamReader streamReader = new StreamReader(fileStream,System.Text.Encoding.UTF8))
-        {
-           
-            while (streamReader.Peek() >= 0)
-            {
-                size++;
-                char character = (char)streamReader.Read();
-                if (character == '\r')
-                {
-                    lineEndCounter++;
-                }
-                
-            }
-        }
-        Debug.Log(lineEndCounter + " lines");
-        Debug.Log("filesize =" + size + "characters");
-       // File.Delete(path);
-       
-    }
 
     public void ClearDatabase(bool succes)
     {

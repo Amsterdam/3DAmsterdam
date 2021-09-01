@@ -159,6 +159,7 @@ namespace Netherlands3D.ModelParsing
         {
 			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
 			Debug.Log(objFilePath);
+			objstreamReader.loadingObjScreen = loadingObjScreen;
 			objstreamReader.ReadOBJ(objFilePath);
 			bool isBusy = true;
 			loadingObjScreen.ShowMessage("Objecten worden geladen...");
@@ -169,10 +170,19 @@ namespace Netherlands3D.ModelParsing
             }
 			Debug.Log("done reading");
 			Debug.Log("readsucces = " + objstreamReader.succes.ToString());
-			callback(objstreamReader.succes);
-            
-			loadingObjScreen.Hide();
-			 GameObject createdGO = objstreamReader.Build(defaultLoadedObjectsMaterial);
+
+
+			 objstreamReader.CreateGameObject(defaultLoadedObjectsMaterial);
+			isBusy = true;
+			while (isBusy)
+            {
+				isBusy = !objstreamReader.isFinished;
+				yield return null;
+			}
+
+			GameObject createdGO = objstreamReader.createdGameObject;
+
+
 			objstreamReader.Buffer = new GeometryBuffer(); ;
 			//newOBJLoader.name = objModelName;
 
@@ -186,7 +196,7 @@ namespace Netherlands3D.ModelParsing
 			{
 				if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
 				//transformable.placedTransformable.AddListener(RemapMaterials);
-				customObjectPlacer.PlaceExistingObjectAtPointer(objstreamReader.gameObject);
+				customObjectPlacer.PlaceExistingObjectAtPointer(createdGO);
 				
 			}
 			else
@@ -194,6 +204,9 @@ namespace Netherlands3D.ModelParsing
 				transformable.stickToMouse = false;
 			}
 			Destroy(objstreamReader);
+			loadingObjScreen.Hide();
+			
+			callback(objstreamReader.succes);
 			yield return null;
         }
 		

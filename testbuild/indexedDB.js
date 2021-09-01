@@ -40,7 +40,7 @@ function saveDatabaseName(dbname) {
 }
 
 function ReadFiles(SelectedFiles) {
-
+	
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
 		connectToDatabase(SelectedFiles);
 		myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);

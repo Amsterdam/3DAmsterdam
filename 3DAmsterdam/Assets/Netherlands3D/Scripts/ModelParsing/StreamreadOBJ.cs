@@ -5,11 +5,15 @@ using ConvertCoordinates;
 using System.IO;
 using System.Text;
 using UnityEngine.Rendering;
+using Netherlands3D.Interface;
+
 namespace Netherlands3D.ModelParsing
 {
 	public class StreamreadOBJ : MonoBehaviour
 	{
-		public int maxLinesPerFrame = 10000;
+		public LoadingScreen loadingObjScreen;
+		public int maxLinesPerFrame = 25000;
+		public GameObject createdGameObject;
 
 		// OBJ File Tags
 		const char COMMENT = '#';
@@ -79,20 +83,23 @@ namespace Netherlands3D.ModelParsing
 
 		private List<GeometryBuffer.FaceIndices> faces = new List<GeometryBuffer.FaceIndices>();
 
-		private List<Vector3> vertices = new List<Vector3>();
-		private List<Vector3> normals = new List<Vector3>();
+		private Vector3List vertices = new Vector3List();
+		private Vector3List normals = new Vector3List();
 		private List<int> indices = new List<int>();
 		private Dictionary<string, Submesh> submeshes = new Dictionary<string, Submesh>();
 		private Submesh activeSubmesh = new Submesh();
+		private bool hasNormals = true;
 		void AddSubMesh(string submeshName)
 		{
 			if (activeSubmesh.name == submeshName)
 			{
 				return;
 			}
+			
 			if (activeSubmesh.name != null)
 			{
-				if (activeSubmesh.vertices.Count > 0)
+				activeSubmesh.rawData.EndWriting();
+				if (activeSubmesh.vertexCount > 0)
 				{
 					if (submeshes.ContainsKey(activeSubmesh.name))
 					{
@@ -112,15 +119,18 @@ namespace Netherlands3D.ModelParsing
 			if (submeshes.ContainsKey(submeshName))
 			{
 				activeSubmesh = submeshes[submeshName];
+				activeSubmesh.rawData.SetupWriting(submeshName);
 
 			}
 			else
 			{
 				activeSubmesh = new Submesh();
+				activeSubmesh.rawData = new SubMeshRawData();
+				activeSubmesh.rawData.SetupWriting(submeshName);
 				activeSubmesh.name = submeshName;
 				activeSubmesh.startIndex = indices.Count;
-				activeSubmesh.vertices = new Dictionary<Vector3, Vertex>(10000);
-				activeSubmesh.indices = new List<int>(10000);
+				//activeSubmesh.vertices = new Dictionary<Vector3, Vertex>(10000);
+				//activeSubmesh.indices = new List<int>(10000);
 				submeshes.Add(submeshName, activeSubmesh);
 			}
 		}
@@ -130,7 +140,7 @@ namespace Netherlands3D.ModelParsing
 		public void ReadOBJ(string filename)
 		{
 			faces.Capacity = 4;
-
+			
 
 
 			if (!File.Exists(Application.persistentDataPath + "/" + filename))
@@ -146,12 +156,16 @@ namespace Netherlands3D.ModelParsing
 
 		IEnumerator StreamReadFile(string filename)
 		{
+
+			vertices.SetupWriting("vertices");
+			normals.SetupWriting("normals");
 			//setup first submesh;
 			AddSubMesh("default");
 			int lineCount = 0;
 
 			int characterCount = 0;
 			bool lineRead = true;
+			int totalLinesCount = 0;
 			FileStream fileStream = new FileStream(Application.persistentDataPath + "/" + filename, FileMode.Open, FileAccess.Read);
 
 			streamReader = new StreamReader(fileStream, System.Text.Encoding.UTF8);
@@ -162,6 +176,7 @@ namespace Netherlands3D.ModelParsing
 				if (lineCount == maxLinesPerFrame)
 				{
 					lineCount = 0;
+					loadingObjScreen.ProgressBar.SetMessage(totalLinesCount + " regels ingelezen");
 					yield return null;
 				}
 				if (streamReader.Peek() == -1)
@@ -170,6 +185,7 @@ namespace Netherlands3D.ModelParsing
 					continue;
 				}
 				lineCount++;
+				totalLinesCount++;
 				ReadLine();
 
 
@@ -177,7 +193,8 @@ namespace Netherlands3D.ModelParsing
 
 			streamReader.Close();
 			fileStream.Close();
-
+			vertices.EndWriting();
+			normals.EndWriting();
 			File.Delete(Application.persistentDataPath + "/" + filename);
 
 			isFinished = true;
@@ -466,6 +483,10 @@ namespace Netherlands3D.ModelParsing
 					{
 						return sb.ToString();
 					}
+                    else if (readChar == '\n')
+                    {
+						return sb.ToString();
+					}
 					else
 					{
 						sb.Append(readChar);
@@ -486,11 +507,12 @@ namespace Netherlands3D.ModelParsing
 			{
 				if (FlipYZ)
 				{
-					vertices.Add(new Vector3(x, z, y));
+					vertices.Add(x, y, z);
+					
 				}
 				else
 				{
-					vertices.Add(new Vector3(x, y, -z));
+					vertices.Add(x, y, -z);
 				}
 			}
 		}
@@ -521,6 +543,11 @@ namespace Netherlands3D.ModelParsing
 					{ // reached the end of the line
 						keepGoing = false;
 					}
+                    if (lastChar == '\n')
+					{// reached the end of the line
+						keepGoing = false;
+
+					}
 				}
 				else
 				{
@@ -531,81 +558,36 @@ namespace Netherlands3D.ModelParsing
 			/// process faces
 			if (faces.Count == 3)
 			{
-				Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[2].vertexIndex]);
-				SaveVertexToSubmesh(faces[0], triangleNormal);
-				SaveVertexToSubmesh(faces[2], triangleNormal);
-				SaveVertexToSubmesh(faces[1], triangleNormal);
+				//Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[2].vertexIndex]);
+				SaveVertexToSubmesh(faces[0]);
+				SaveVertexToSubmesh(faces[2]);
+				SaveVertexToSubmesh(faces[1]);
 				
 
 				
 			}
 			else if (faces.Count == 4)
 			{
-				Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[3].vertexIndex]);
-				SaveVertexToSubmesh(faces[0], triangleNormal);
-				SaveVertexToSubmesh(faces[2], triangleNormal);
-				SaveVertexToSubmesh(faces[1], triangleNormal);
-				SaveVertexToSubmesh(faces[0], triangleNormal);
-				SaveVertexToSubmesh(faces[3], triangleNormal);
-				SaveVertexToSubmesh(faces[2], triangleNormal);
+				//Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[3].vertexIndex]);
+				SaveVertexToSubmesh(faces[0]);
+				SaveVertexToSubmesh(faces[2]);
+				SaveVertexToSubmesh(faces[1]);
+				SaveVertexToSubmesh(faces[0]);
+				SaveVertexToSubmesh(faces[3]);
+				SaveVertexToSubmesh(faces[2]);
 			}
 			else
 			{
 				Debug.Log(faces.Count + " vertices in a face");
 			}
 		}
-		void SaveVertexToSubmesh(GeometryBuffer.FaceIndices v1, Vector3 fallbackNormal)
+		void SaveVertexToSubmesh(GeometryBuffer.FaceIndices v1)
         {
 
-			Vertex vert1 = new Vertex();
-			Vector3 normal;
-			vert1.coordinate = vertices[v1.vertexIndex];
-            if (v1.vertexNormal == -1)
-            {
-				normal = fallbackNormal;
-            }
-			else
-            {
-				normal = normals[v1.vertexNormal];
-            }
-
-			Vertex vertex;
-            if (activeSubmesh.vertices.ContainsKey(vert1.coordinate))
-            {
-				vertex = activeSubmesh.vertices[vert1.coordinate];
-            }
-			else
-            {
-				vertex = new Vertex();
-				
-				vertex.coordinate = vertices[v1.vertexIndex];
-				vertex.normals = new Dictionary<Vector3, int>(3);
-				
-				activeSubmesh.vertices.Add(vert1.coordinate, vertex);
-            }
-
+			activeSubmesh.rawData.Add(v1.vertexIndex, v1.vertexNormal, v1.vertexUV);
+			activeSubmesh.vertexCount++;
+			return;
 			
-			int newIndex;
-            if (vertex.normals.ContainsKey(normal))
-            {
-				newIndex = vertex.normals[normal];
-
-            }
-			else
-            {
-				newIndex = activeSubmesh.vertexCount ;
-				activeSubmesh.vertexCount++;
-				vertex.normals.Add(normal, newIndex);
-				
-				activeSubmesh.indexCount++;
-				
-            }
-
-			activeSubmesh.indices.Add(newIndex);
-			activeSubmesh.vertices[vert1.coordinate] = vertex;
-			
-			
-           
 
 		}
 
@@ -620,7 +602,7 @@ namespace Netherlands3D.ModelParsing
 			{
                 if (number<0)
                 {
-					number += vertices.Count;
+					number += vertices.Count();
                 }
 				face.vertexIndex = number - 1; //subtract 1 because objindexes start with 1
 				if (lastChar == '/') // vertex is followed by texture and / or normal;
@@ -634,7 +616,7 @@ namespace Netherlands3D.ModelParsing
 					if (readInt(out number, out lastChar))
                         if (number<0)
                         {
-							number += normals.Count;
+							number += normals.Count();
                         }
 					{// succesfully read Normal
 						face.vertexNormal = number - 1;
@@ -673,6 +655,10 @@ namespace Netherlands3D.ModelParsing
 					{
 						sign = -1;
 					}
+					else if (readChar == ' ' && numberFound == false)
+                    {// found a space before the start of the number
+
+                    }
 					else
 					{
 						keepGoing = false;
@@ -698,11 +684,11 @@ namespace Netherlands3D.ModelParsing
 			{
 				if (FlipYZ)
 				{
-					normals.Add(new Vector3(x, z, y));
+					normals.Add(x, z, y);
 				}
 				else
 				{
-					normals.Add(new Vector3(x, y, -z));
+					normals.Add(x, y, -z);
 				}
 			}
 		}
@@ -711,10 +697,13 @@ namespace Netherlands3D.ModelParsing
 		{
 			char readChar;
 			bool numberFound = false;
-			int number = 0;
+			long number = 0;
 			int decimalPlaces = 0;
 			bool isDecimal = false;
 			int sign = 1;
+			bool hasExponent = false;
+			int exponentSign = 1;
+			int exponent = 0;
 			bool keepGoing = true;
 			while (keepGoing)
 			{
@@ -722,14 +711,17 @@ namespace Netherlands3D.ModelParsing
 				{
 					switch (readChar)
 					{
-						case ' ':
-							//found a space
-							if (number > 0)
+						case '\0':
+							//found a null-value
+							if (numberFound)
 							{ // if we start with a space we continue
 								keepGoing = false;
 							}
-							else
-							{// if we end with a space we are finished
+							break;
+						case ' ':
+							//found a space
+							if (numberFound)
+							{ // if we start with a space we continue
 								keepGoing = false;
 							}
 							break;
@@ -737,23 +729,49 @@ namespace Netherlands3D.ModelParsing
 							// end of the line, end of the floatvalue
 							keepGoing = false;
 							break;
+						case '\n':
+							// end of the line, end of the floatvalue
+							keepGoing = false;
+							break;
 						case '.':
 							// found a decimalpoint
 							isDecimal = true;
 							break;
+						case 'e':
+                            if (numberFound)
+                            {
+								hasExponent = true;
+							}
+							break;
 						case '-':
 							// found a negative-sign
-							sign = -1;
+							if (hasExponent)
+							{
+								exponentSign = -1;
+							}
+							else
+							{
+								sign = -1;
+							}
 							break;
 						default:
 							// no space or endof the line
 							if (char.IsDigit(readChar))
 							{
 								numberFound = true;
+                                if (!hasExponent)
+                                {
+
+                                
 								number = (number * 10) + (int)char.GetNumericValue(readChar);
 								if (isDecimal)
 								{
 									decimalPlaces++;
+								}
+								}
+								else
+                                {
+									exponent = (exponent * 10) + (int)char.GetNumericValue(readChar);
 								}
 							}
 							else
@@ -768,6 +786,10 @@ namespace Netherlands3D.ModelParsing
 			if (numberFound)
 			{
 				float value = sign * number / (Mathf.Pow(10, decimalPlaces));
+                if (hasExponent)
+                {
+					value *= Mathf.Pow(10, (exponentSign * exponent));
+                }
 				return value;
 			}
 			else
@@ -819,123 +841,222 @@ namespace Netherlands3D.ModelParsing
 			return newMaterial;
 		}
 
-		public GameObject Build(Material defaultMaterial)
+
+		public void CreateGameObject(Material defaultMaterial)
+        {
+			isFinished = false;
+			StartCoroutine(Build(defaultMaterial));
+        }
+
+		public IEnumerator Build(Material defaultMaterial)
 		{
-
+			
 			// remove de indices en vertices-lists because wo no longer need them
-			vertices = new List<Vector3>();
-			indices = new List<int>();
-
+			vertices.EndWriting();
+			vertices.SetupReading();
+			//vertices.RemoveData();
+			normals.EndWriting();
+			normals.SetupReading();
+			if(normals.Count()==0)
+            {
+				hasNormals = false;
+            }
 			//finish up the last submeshdata
+			activeSubmesh.rawData.EndWriting();
 			submeshes[activeSubmesh.name] = activeSubmesh;
 
 
             // set up materialList
             Material[] materials = new Material[submeshes.Count];
 			
-            Mesh mesh = new Mesh();
             // analyze all the vertices
             int vertexcount = 0;
+			int indexcount = 0;
             int maxVerticesPerSubmesh = 0;
-            foreach (var submesh in submeshes)
-            {
-                int meshvertices = submesh.Value.vertexCount;
-                vertexcount += meshvertices;
-                if (maxVerticesPerSubmesh < meshvertices)
-                {
-                    maxVerticesPerSubmesh = meshvertices;
-                }
-            }
-			// collect all the vertices and indices
-			Vector3[] defVertices = new Vector3[vertexcount];
-			Vector3[] defNormals = new Vector3[vertexcount];
-			List<int> defIndices = new List<int>();
 			List<string> keyList = new List<string>(submeshes.Keys);
-			int usedVertices = 0;
-            for (int i = 0; i < keyList.Count; i++)
-            {
-				Submesh submesh = submeshes[keyList[i]];
-				submesh.startVertex = usedVertices; 
-                submesh.indexCount = 0;
-                foreach (var vertex in submesh.vertices)
+			Submesh submesh;
+			Vector3Int originalIndex;
+			intList finalIndices = new intList();
+			finalIndices.SetupWriting("finalIndices");
+			Vector3List finalVertices = new Vector3List();
+			finalVertices.SetupWriting("finalVertices");
+			Vector3List finalNormals = new Vector3List();
+			finalNormals.SetupWriting("finalNormals");
+			for (int i = 0; i < keyList.Count; i++)
+			{
+				loadingObjScreen.ShowMessage("Model wordt samengesteld voor materiaal " + (i+1) + " van " +keyList.Count);
+				yield return null;
+				submesh = submeshes[keyList[i]];
+				submesh.startVertex = vertexcount;
+				Debug.Log(submesh.name);
+				submesh.startIndex = indexcount;
+				submesh.rawData.SetupReading();
+				int numberOfIndices = submesh.rawData.numberOfVertices();
+				Dictionary<Vector3Int, int> indexMap = new Dictionary<Vector3Int, int>(numberOfIndices);
+				int subMeshIndexcount = 0;
+                for (int j = 0; j < numberOfIndices; j++)
                 {
-                    foreach (var normal in vertex.Value.normals)
+                    if (j%2000==1)
                     {
-						usedVertices++;
-						defVertices[normal.Value+submesh.startVertex] = vertex.Value.coordinate;
-                        defNormals[normal.Value+submesh.startVertex]=normal.Key;
+						float percentage = (float)j / (float)numberOfIndices;
+						loadingObjScreen.ProgressBar.Percentage(percentage);
+						loadingObjScreen.ProgressBar.SetMessage(Mathf.RoundToInt(percentage * 100).ToString() + "%");
+						yield return null;
+						
+
                     }
+					int index;
+					originalIndex = submesh.rawData.ReadNext();
+                    if (indexMap.ContainsKey(originalIndex))
+                    {// use the already created vertexIndex
+						index = indexMap[originalIndex];
+                    }
+					else
+                    {// create an new vertex
+						vertexcount++;
+						Vector3 vertex = vertices.ReadItem(originalIndex.x);
+						finalVertices.Add(vertex.x, vertex.y, vertex.z);
+                        if (hasNormals)
+                        {
+							Vector3 normal = normals.ReadItem(originalIndex.y);
+							finalNormals.Add(normal.x, normal.y, normal.z);
+                        }
+						
+						index = indexMap.Count;
+						indexMap.Add(originalIndex, index);
+                    }
+					finalIndices.Add(index);
+					subMeshIndexcount++;
                 }
-     //           for (int j = 0; j < submesh.indices.Count; j++)
-     //           {
-					////submesh.indices[j] += submesh;	
-     //               defIndices.Add(submesh.indices[j]);
-                    
-     //           }
 
-                submesh.vertices.Clear();
-				
-				submeshes[keyList[i]] = submesh;
+				submesh.rawData.EndReading();
+				submesh.rawData.RemoveData();
+				submesh.vertexCount = vertexcount - submesh.startVertex;
+				submesh.indexCount = subMeshIndexcount;
+				indexcount += submesh.indexCount;
+				submeshes[keyList[i]]=submesh;
+			}
+			vertices.EndReading();
+			vertices.RemoveData();
+			normals.EndReading();
+			normals.RemoveData();
+			finalIndices.EndWriting();
+			finalIndices.SetupReading();
+			finalVertices.EndWriting();
+			finalVertices.SetupReading();
+			finalNormals.EndWriting();
+			
 
-            }
-            // set all the vertices
-            mesh.SetVertices(defVertices);
-			mesh.SetNormals(defNormals);
-            defVertices = null ;
-            IndexFormat indexFormat = IndexFormat.UInt32;
-            if (maxVerticesPerSubmesh < 65535)
+
+
+
+			// create an array of all the finalVertices
+
+			Mesh mesh = new Mesh();
+			int finalVertexCount = finalVertices.Count();
+			Vector3[] defVertices = new Vector3[finalVertexCount];
+			loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 1 van 3");
+			for (int i = 0; i < finalVertexCount; i++)
             {
-                indexFormat = IndexFormat.UInt16;
+                if (i%10000==1)
+                {
+					float percentage = (float)i / (float)finalVertexCount;
+					loadingObjScreen.ProgressBar.Percentage(percentage);
+					loadingObjScreen.ProgressBar.SetMessage(Mathf.RoundToInt(percentage * 100).ToString() + "%");
+					yield return null;
+				}
+				defVertices[i] = finalVertices.ReadItem(i);
             }
-			mesh.indexFormat = indexFormat;
-            // set all the indices;
+			finalVertices.EndReading();
+			finalVertices.RemoveData();
+			mesh.vertices = defVertices;
 
-
-
-            //mesh.SetIndexBufferParams(defIndices.Count, indexFormat);
-            //mesh.SetIndexBufferData(defIndices, 0, 0, defIndices.Count);
-            defIndices = new List<int>();
-            // set up the submeshes;
-            mesh.subMeshCount = submeshes.Count;
-
-			int startvertex = 0;
-            int indexcounter = 0;
-            int submeshIndex = 0;
-            foreach (var submesh in submeshes)
+			if (hasNormals)
             {
-				mesh.SetIndices(submesh.Value.indices.ToArray(), MeshTopology.Triangles, submeshIndex,true,submesh.Value.startVertex);
-    //            SubMeshDescriptor smd = new SubMeshDescriptor();
-    //            smd.indexStart = indexcounter;
-				//indexcounter += submesh.Value.indexCount;
-    //            smd.indexCount = submesh.Value.indices.Count;
-    //            smd.topology = MeshTopology.Triangles;
-    //            smd.baseVertex = startvertex;
-				//startvertex += submesh.Value.vertexCount;
-				//smd.vertexCount = submesh.Value.vertexCount;
-    //            mesh.SetSubMesh(submeshIndex, smd);
+				loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 2 van 3");
+				finalNormals.SetupReading();
+				Vector3[] defNormals = new Vector3[finalVertexCount];
+				for (int i = 0; i < finalVertexCount; i++)
+				{
+					if (i % 10000 == 1)
+					{
+						float percentage = (float)i / (float)finalVertexCount;
+						loadingObjScreen.ProgressBar.Percentage(percentage);
+						loadingObjScreen.ProgressBar.SetMessage(Mathf.RoundToInt(percentage * 100).ToString() + "%");
+						yield return null;
+					}
+					defNormals[i] = finalNormals.ReadItem(i);
+				}
+				mesh.normals = defNormals;
+			finalNormals.EndReading();
+			}
+			
+
+			finalNormals.RemoveData();
+
+			int indexCount = finalIndices.numberOfVertices();
+			int[] defIndices = new int[indexCount];
+			loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 3 van 3");
+			for (int i = 0; i < indexCount; i++)
+			{
+				if (i % 10000 == 1)
+				{
+					float percentage = (float)i / (float)indexCount;
+					loadingObjScreen.ProgressBar.Percentage(percentage);
+					loadingObjScreen.ProgressBar.SetMessage(Mathf.RoundToInt(percentage * 100).ToString() + "%");
+					yield return null;
+				}
+				defIndices[i] = finalIndices.ReadNext();
+			}
+
+			finalIndices.EndReading();
+			finalIndices.RemoveData();
+
+			mesh.SetIndexBufferParams(indexCount, IndexFormat.UInt32);
+			mesh.SetIndexBufferData(defIndices, 0, 0, indexCount);
+
+			mesh.subMeshCount = submeshes.Count;
+
+
+
+			int submeshIndex = 0;
+            foreach (var sm in submeshes)
+            {
+
+                SubMeshDescriptor smd = new SubMeshDescriptor();
+                smd.indexStart = sm.Value.startIndex;
+                smd.indexCount = sm.Value.indexCount;
+                smd.topology = MeshTopology.Triangles;
+                smd.baseVertex = sm.Value.startVertex;
+                smd.vertexCount = sm.Value.vertexCount;
+                mesh.SetSubMesh(submeshIndex, smd);
 
                 materials[submeshIndex] = new Material(defaultMaterial);
-                materials[submeshIndex].name = submesh.Key;
+                materials[submeshIndex].name = sm.Key;
 
                 submeshIndex++;
-                
-                submesh.Value.indices.Clear();
             }
-            submeshes.Clear();
+
+				mesh.RecalculateNormals();
+
+				
 
 
-			//set up all the materials;
-			//mesh.RecalculateNormals();
-            GameObject go = new GameObject();
-            MeshFilter mf = go.AddComponent<MeshFilter>();
-            MeshRenderer mr = go.AddComponent<MeshRenderer>();
+			//         submeshes.Clear();
+
+
+			////set up all the materials;
+			////mesh.RecalculateNormals();
+			createdGameObject = new GameObject();
+            MeshFilter mf = createdGameObject.AddComponent<MeshFilter>();
+            MeshRenderer mr = createdGameObject.AddComponent<MeshRenderer>();
             mr.materials = materials;
             mf.mesh = mesh;
 
-            return go;
 
-
-		}
+			loadingObjScreen.Hide();
+			isFinished = true;
+        }
 
 		private Vector3 CalculateNormal(Vector3 v1,Vector3 v2, Vector3 v3)
         {
