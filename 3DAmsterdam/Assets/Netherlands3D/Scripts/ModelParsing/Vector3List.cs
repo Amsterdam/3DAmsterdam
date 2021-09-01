@@ -59,9 +59,9 @@ namespace Netherlands3D.ModelParsing
             reader.Position = startindex;
             int bytesRead = reader.Read(readBytes,0,12);
             
-            ReturnItem.x = System.BitConverter.ToInt32(readBytes, 0)/1000;
-            ReturnItem.y = System.BitConverter.ToInt32(readBytes, 4)/1000;
-            ReturnItem.z = System.BitConverter.ToInt32(readBytes, 8)/1000;
+            ReturnItem.x = System.BitConverter.ToInt32(readBytes, 0)/1000f;
+            ReturnItem.y = System.BitConverter.ToInt32(readBytes, 4)/1000f;
+            ReturnItem.z = System.BitConverter.ToInt32(readBytes, 8)/1000f;
 
 
             return ReturnItem;

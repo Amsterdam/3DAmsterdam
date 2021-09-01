@@ -614,11 +614,12 @@ namespace Netherlands3D.ModelParsing
 						face.vertexUV = number - 1;
 					}
 					if (readInt(out number, out lastChar))
+					{ 
                         if (number<0)
                         {
 							number += normals.Count();
                         }
-					{// succesfully read Normal
+					// succesfully read Normal
 						face.vertexNormal = number - 1;
 					}
 
@@ -1036,9 +1037,10 @@ namespace Netherlands3D.ModelParsing
 
                 submeshIndex++;
             }
-
+			if (!hasNormals)
+			{
 				mesh.RecalculateNormals();
-
+			}
 				
 
 
