@@ -70,8 +70,7 @@ namespace Netherlands3D.LayerSystem
 
 		private void Awake()
 		{
-			if(filterUniqueNames)
-				uniqueNames = new List<string>();
+			uniqueNames = new List<string>();
 		}
 
 		private enum AutoOrientationMode
@@ -219,7 +218,9 @@ namespace Netherlands3D.LayerSystem
 							textObject.name = textPropertyValue;
 							textObject.transform.SetParent(tile.gameObject.transform, true);
 							textObject.GetComponent<TextMeshPro>().text = textPropertyValue;
-							uniqueNames.Add(textPropertyValue);
+							
+							if(filterUniqueNames)
+								uniqueNames.Add(textPropertyValue);
 
 							//Determine text position by either a geometry point node, or the centroid of a geometry MultiPolygon node
 							switch (positionSourceType)
