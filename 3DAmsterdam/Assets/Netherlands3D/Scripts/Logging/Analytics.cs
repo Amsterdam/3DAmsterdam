@@ -10,7 +10,7 @@ namespace Netherlands3D.Logging
 {
 	public class Analytics : MonoBehaviour
     {
-		[Header("You can replace Unity Analytics, or add more services using the AnalyticsService base class")]
+		[Header("Add own custom services using the AnalyticsService base class")]
 
 		[SerializeField]
 		private AnalyticsService[] analyticsServices;
@@ -32,9 +32,7 @@ namespace Netherlands3D.Logging
 #if UNITY_EDITOR || !PRODUCTION
 			//Start with a first log stating if this is a dev build or in editor
 			//so we can filter out Production results in the Unity DashBoard
-			SendEvent("DevelopmentBuild", new Dictionary<string, object> {
-				{"developer", Debug.isDebugBuild}
-			});
+			SendEvent("Build", "Started Development build");
 #endif
 		}
 
@@ -43,22 +41,18 @@ namespace Netherlands3D.Logging
 		/// </summary>
 		/// <param name="eventName">Main name of the event</param>
 		/// <param name="eventData">Event data with field names and their values</param>
-		public static void SendEvent(string eventName, Dictionary<string, object> eventData)
+		public static void SendEvent(string category, string action, string label = "")
 		{
 			//Show our events in the console
 			if(Instance.logInConsole)
 			{
-				Debug.Log($"<color={ConsoleColors.EventHexColor}>[Analytics Event]  {eventName} (Not sent in Editor)</color>");
-				foreach (KeyValuePair<string, object> keyValue in eventData)
-				{
-					Debug.Log($"<color={ConsoleColors.EventDataHexColor}>[Event data] {keyValue.Key} : {keyValue.Value}</color>");
-				}
+				Debug.Log($"<color={ConsoleColors.EventHexColor}>[Analytics Event]  {category},{action},{label} (Not sent in Editor)</color>");
 			}
 
 			//Send the event down to our analytics service(s)
 			foreach (var service in Instance.analyticsServices)
 			{
-				if(service.enabled)	service.SendEvent(eventName, eventData);
+				if(service.enabled) service.SendEvent(category, action, label);
 			}			
 		}
 
