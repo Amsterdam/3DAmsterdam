@@ -1,6 +1,6 @@
 using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
-using Newtonsoft.Json;
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,34 +65,26 @@ public class PolygonLayer : Layer
 		yield return tile.runningWebRequest.SendWebRequest();
 
 		if (tile.runningWebRequest.result == UnityWebRequest.Result.Success)
-		{
-			using (JsonTextReader reader = new JsonTextReader(new StringReader(tile.runningWebRequest.downloadHandler.text)))
+		{			
+			var json = JSON.Parse(tile.runningWebRequest.downloadHandler.text);
+
+			yield return null;
+
+			foreach (JSONNode feature in json["features"])
 			{
-				reader.SupportMultipleContent = true;
-				var serializer = new JsonSerializer();
-				JsonModels.WebFeatureService.WFSRootobject wfs = serializer.Deserialize<JsonModels.WebFeatureService.WFSRootobject>(reader);
+				List<Vector2> polygonList = new List<Vector2>();
 
-				yield return null;
-
-				foreach (var feature in wfs.features)
-				{
-					List<Vector2> polygonList = new List<Vector2>();
-
-					var coordinates = feature.geometry.coordinates;
-					foreach (var points in coordinates)
-					{
-						foreach (var point in points)
-						{
-							polygonList.Add(new Vector2(point[0], point[1]));
-						}
-					}
-					list.Add(polygonList.ToArray());
-				}
-
-			}
-
+				var coordinates = feature["geometry"]["coordinates"];
+                foreach (JSONNode points in coordinates)
+                {
+                    foreach (JSONNode point in points)
+                    {
+                        polygonList.Add(new Vector2(point[0], point[1]));
+                    }
+                }
+                list.Add(polygonList.ToArray());
+            }
 		}
-
 
 		StartCoroutine (RenderPolygons(list, LineMaterial, tile));
 
