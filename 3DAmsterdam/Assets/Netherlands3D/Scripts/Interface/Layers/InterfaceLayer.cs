@@ -31,6 +31,9 @@ namespace Netherlands3D.Interface.Layers
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
 		[SerializeField]
+		private bool hasOptions = true;
+
+		[SerializeField]
 		private GameObject customOptions;
 
 		public Material opaqueShaderSourceOverride;
@@ -233,7 +236,8 @@ namespace Netherlands3D.Interface.Layers
 		{
 			expanded = !expanded;
 
-			ExpandLayerOptions(expanded);
+			if(hasOptions)
+				ExpandLayerOptions(expanded);
 
 			if(expanded)
 			{
@@ -246,7 +250,7 @@ namespace Netherlands3D.Interface.Layers
 				}
 
 				//If we do not use any custom options for this layer, use the default layer visuals panel
-				if(!customOptions)
+				if(hasOptions && !customOptions)
 					parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
 			}
 			else{
