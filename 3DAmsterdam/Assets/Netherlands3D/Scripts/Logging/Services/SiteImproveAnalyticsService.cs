@@ -14,7 +14,7 @@ namespace Netherlands3D.Logging.Services
 
 		public override void SendEvent(string category, string action, string label = "")
 		{
-#if UNITY_EDITOR && UNITY_WEBGL
+#if !UNITY_EDITOR && UNITY_WEBGL
 			PushEvent(category, action, label);
 #endif
 		}
