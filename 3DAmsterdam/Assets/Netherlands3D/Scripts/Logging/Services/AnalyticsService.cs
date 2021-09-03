@@ -8,7 +8,7 @@ namespace Netherlands3D.Logging.Services
 	[System.Serializable]
 	public class AnalyticsService : MonoBehaviour
 	{
-		public virtual void SendEvent(string eventName, Dictionary<string, object> eventData) { }
+		public virtual void SendEvent(string category, string action, string label = "") { }
 
 		private void OnEnable()
 		{
