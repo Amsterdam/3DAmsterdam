@@ -122,7 +122,6 @@ namespace Netherlands3D.Interface
 		private void LogFPS(float fps)
 		{
 			int fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);			
-			Debug.Log("Analytics: fpsGroup " + fpsLogGroup);
 			Analytics.SendEvent("FPS",$"{fpsLogGroup}",$"{fps}");
 		}
 
