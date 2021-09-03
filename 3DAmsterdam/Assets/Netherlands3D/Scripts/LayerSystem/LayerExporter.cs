@@ -113,6 +113,7 @@ namespace Netherlands3D.Interface
 
 				var bottomLeftRD = CoordConvert.UnitytoRD(exportBounds.min);
 				var topRightRD = CoordConvert.UnitytoRD(exportBounds.max);
+
 				Analytics.SendEvent("LayersExport", selectedExportFormat, $"{amountOfCellsInBounds} cells with bounds: {bottomLeftRD.x},{bottomLeftRD.y},{topRightRD.x},{topRightRD.y}");
 
 				switch (selectedExportFormat)

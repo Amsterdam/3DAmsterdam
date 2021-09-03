@@ -10,7 +10,7 @@ namespace Netherlands3D.Logging
 {
 	public class Analytics : MonoBehaviour
     {
-		[Header("You can replace Unity Analytics, or add more services using the AnalyticsService base class")]
+		[Header("Add own custom services using the AnalyticsService base class")]
 
 		[SerializeField]
 		private AnalyticsService[] analyticsServices;
