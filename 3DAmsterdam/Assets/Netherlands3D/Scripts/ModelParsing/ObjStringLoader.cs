@@ -179,19 +179,23 @@ namespace Netherlands3D.ModelParsing
             }
 			Debug.Log("done reading");
 			Debug.Log("readsucces = " + objstreamReader.succes.ToString());
-
-			// read the mtl-file
-			string mtldata = File.ReadAllText(Application.persistentDataPath + "/" + mtlFilePath);
 			ReadMTL mtlreader = objstreamReader.gameObject.AddComponent<ReadMTL>();
-			isBusy = true;
-			mtlreader.StartMTLParse(ref mtldata);
-            while (isBusy)
-            {
-				isBusy = mtlreader.isBusy;
-				yield return null;
-            }
+			// read the mtl-file
+			if (File.Exists(Application.persistentDataPath + "/" + mtlFilePath))
+			{
+				string mtldata = File.ReadAllText(Application.persistentDataPath + "/" + mtlFilePath);
+				
+				isBusy = true;
+				mtlreader.StartMTLParse(ref mtldata);
+				while (isBusy)
+				{
+					isBusy = mtlreader.isBusy;
+					yield return null;
+				}
+				
+			}
 			objstreamReader.materialDataSlots = mtlreader.GetMaterialData();
-			 objstreamReader.CreateGameObject(defaultLoadedObjectsMaterial);
+			objstreamReader.CreateGameObject(defaultLoadedObjectsMaterial);
 			isBusy = true;
 			while (isBusy)
             {

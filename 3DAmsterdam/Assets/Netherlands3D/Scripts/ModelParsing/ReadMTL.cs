@@ -49,6 +49,10 @@ namespace Netherlands3D.ModelParsing
 
         public List<MaterialData> GetMaterialData()
         {
+            if (materialDataSlots==null)
+            {
+                materialDataSlots = new List<MaterialData>();
+            }
             return materialDataSlots;
         }
 

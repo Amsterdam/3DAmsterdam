@@ -40,7 +40,7 @@ function saveDatabaseName(dbname) {
 }
 
 function ReadFiles(SelectedFiles) {
-	
+
 	if (window.File && window.FileReader && window.FileList && window.Blob) {
 		connectToDatabase(SelectedFiles);
 		myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
@@ -52,12 +52,14 @@ function ReadFiles(SelectedFiles) {
 
 function ReadFile(file) {
 	filereader = new FileReader();
+	filereader.readAsText(file);
 	filereader.onload = function (e) {
+		console.log("file read");
 		datastring = e.target.result;
 		SaveData(datastring, file.name);
 		counter = counter + 1;
 	};
-	filereader.readAsText(file);
+	
 }
 
 function SaveData(datastring, filename) {
@@ -66,11 +68,20 @@ function SaveData(datastring, filename) {
 	data.timestamp = new Date();
 	data.contents = new TextEncoder("utf-8").encode(datastring);
 	var transaction = db.transaction(["FILE_DATA"], "readwrite");
-	transaction.oncomplete = function () {
+
+	let request = transaction.objectStore("FILE_DATA").put(data, databasenaam + "/" + filename);
+	console.log("saving file");
+	request.onsuccess = function () {
 		myGameInstance.SendMessage('FileUploads', 'LoadFile', filename);
+		console.log("file saved");
 		FileSaved();
 	};
-	transaction.objectStore("FILE_DATA").put(data, databasenaam + "/" + filename);
+	request.onerror = function () {
+		myGameInstance.SendMessage('FileUploads', 'LoadFileError', filename);
+		alert("kan " + filename + " niet opslaan");
+		FileSaved();
+	};
+	request.o
 }
 
 function connectToDatabase(SelectedFiles) {
@@ -79,13 +90,18 @@ function connectToDatabase(SelectedFiles) {
 	window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
 		IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
 		dbVersion = 21;
-	var request = indexedDB.open("/idbfs", dbVersion);
-	request.onsuccess = function (event) {
+	let request = indexedDB.open("/idbfs", dbVersion);
+	request.onsuccess = function () {
+		console.log("connected to database");
 		db = request.result;
 		for (var i = 0; i < SelectedFiles.length; i++) {
 			ReadFile(SelectedFiles[i])
 		};
+		request.onerror = function () {
+			alert("kan geen verbinding maken met de indexedDatabase");
+        }
 
+		
 	}
 }
 
