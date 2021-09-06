@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 
 namespace Netherlands3D.LayerSystem
-{ 
+{
     public class BuildingMeshGenerator : MonoBehaviour
     {
 
@@ -56,25 +56,31 @@ namespace Netherlands3D.LayerSystem
             triangles = new List<int>();
             uvs = new List<Vector2>();
 
-            //List<int> usedVerts = new List<int>(); 
+            List<int> usedVerts = new List<int>();
             for (int i = 0; i < sourceTriangles.Length; i += 3)
             {
                 if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
                 {
                     //add matching vert to my mesh
-                    vertices.Add(sourceVerts[sourceTriangles[i]]);
-                    vertices.Add(sourceVerts[sourceTriangles[i + 1]]);
-                    vertices.Add(sourceVerts[sourceTriangles[i + 2]]);
+                    for (int j = 0; j < 3; j++)
+                    {
 
-                    //add triangle to my own mesh
-                    triangles.Add(vertices.Count - 3);
-                    triangles.Add(vertices.Count - 2);
-                    triangles.Add(vertices.Count - 1);
+                        var existingVertIndex = usedVerts.FindIndex(x => x == sourceTriangles[i + j]);
+                        int newTriIndex = -1;
+                        if (existingVertIndex == -1)
+                        {
+                            vertices.Add(sourceVerts[sourceTriangles[i + j]]);
+                            uvs.Add(sourceUVs[sourceTriangles[i + j]]);
+                            newTriIndex = vertices.Count - 1;
+                            usedVerts.Add(sourceTriangles[i + j]);
+                        }
+                        else
+                        {
+                            newTriIndex = existingVertIndex;
+                        }
 
-                    //add uvs
-                    uvs.Add(sourceUVs[sourceTriangles[i]]);
-                    uvs.Add(sourceUVs[sourceTriangles[i + 1]]);
-                    uvs.Add(sourceUVs[sourceTriangles[i + 2]]);
+                        triangles.Add(newTriIndex);
+                    }
                 }
             }
 
