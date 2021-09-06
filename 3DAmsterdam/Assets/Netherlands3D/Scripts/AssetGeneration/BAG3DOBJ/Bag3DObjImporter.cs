@@ -126,7 +126,7 @@ public class Bag3DObjImporter : MonoBehaviour
 				objLinesToBeParsed = objLoader.ParseNextObjLines(parsePerFrame);
 				yield return new WaitForEndOfFrame();
 			}
-			objLoader.Build(defaultMaterial);
+			//objLoader.Build(defaultMaterial);
 			print(i + "/" + fileInfo.Length + " " + file.Name + " done.");
 			yield return new WaitForEndOfFrame();
 		}

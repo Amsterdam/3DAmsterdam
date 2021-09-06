@@ -22,6 +22,7 @@ using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
 
+
 namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
@@ -65,18 +66,36 @@ namespace Netherlands3D.ModelParsing
 
 			string pathObj = UnityEditor.EditorUtility.OpenFilePanel("Open OBJ", "", "obj");
 			string pathMtl = pathObj.Replace(".obj", ".mtl");
+			string newmtlstring = Path.GetFileName(pathMtl);
 			if (!File.Exists(pathMtl))
 			{
-				pathMtl = "";
+				newmtlstring = "";
+			}
+			else
+            {
+				
+				File.Copy(pathMtl, Application.persistentDataPath + "/" + newmtlstring, true);
 			}
 
-			StartCoroutine(ParseOBJFromString(
-					File.ReadAllText(pathObj),
-					File.ReadAllText(pathMtl)
+
+			string newobjstring = Path.GetFileName(pathObj);
+
+			if (File.Exists(pathObj))
+			{
+				File.Copy(pathObj, Application.persistentDataPath + "/" + newobjstring,true);
+				Debug.Log(Application.persistentDataPath + "/" + newobjstring);
+			}
+
+			//LoadOBJFromIndexedDB(new List<string>() { pathObj, pathMtl }, finished);
+			StartCoroutine(ParseOBJfromStream(newobjstring, newmtlstring, finished));
+
+			//StartCoroutine(ParseOBJFromString(
+			//		File.ReadAllText(pathObj),
+			//		File.ReadAllText(pathMtl)
 					
-			));
+			//));
 		}
-		private void done(bool succes)
+		public void finished(bool value)
         {
 
         }
@@ -105,27 +124,31 @@ namespace Netherlands3D.ModelParsing
 
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
+
+
+
 			Debug.Log(filenames.Count + " files received");
 			string objstring = "";
 			string mtlstring = "";
             for (int i = 0; i < filenames.Count; i++)
             {
+				Debug.Log(filenames[i]);
 				string extention = filenames[i].Substring(filenames[i].Length - 4);
                 if (extention.IndexOf("obj")>-1)
                 {
-					objstring = File.ReadAllText(filenames[i]);
-					Debug.Log("objstringlength: "+objstring.Length);
+					objstring = filenames[i];
+
 					
                 }
 				if (extention.IndexOf("mtl") > -1)
 				{
-					mtlstring = File.ReadAllText(filenames[i]);
-					Debug.Log("mtlstringlength: "+mtlstring.Length);
+					mtlstring = filenames[i];
+
 				}
-				File.Delete(filenames[i]);
+
 			}
-			callback(true);
-			StartCoroutine(ParseOBJFromString(objstring, mtlstring));
+
+			StartCoroutine(ParseOBJfromStream(objstring, mtlstring, callback));
         }
 
 		/// <summary>
@@ -137,105 +160,180 @@ namespace Netherlands3D.ModelParsing
 			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
 
+
+		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath, System.Action<bool> callback)
+        {
+
+			// read the obj-file
+			SetOBJFileName(objFilePath);
+			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
+			Debug.Log(objFilePath);
+			objstreamReader.loadingObjScreen = loadingObjScreen;
+			objstreamReader.ReadOBJ(objFilePath);
+			bool isBusy = true;
+			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			while (isBusy)
+            {
+				isBusy = !objstreamReader.isFinished;
+				yield return null;
+            }
+			Debug.Log("done reading");
+			Debug.Log("readsucces = " + objstreamReader.succes.ToString());
+			ReadMTL mtlreader = objstreamReader.gameObject.AddComponent<ReadMTL>();
+			// read the mtl-file
+			if (File.Exists(Application.persistentDataPath + "/" + mtlFilePath))
+			{
+				string mtldata = File.ReadAllText(Application.persistentDataPath + "/" + mtlFilePath);
+				
+				isBusy = true;
+				mtlreader.StartMTLParse(ref mtldata);
+				while (isBusy)
+				{
+					isBusy = mtlreader.isBusy;
+					yield return null;
+				}
+				
+			}
+			objstreamReader.materialDataSlots = mtlreader.GetMaterialData();
+			objstreamReader.CreateGameObject(defaultLoadedObjectsMaterial);
+			isBusy = true;
+			while (isBusy)
+            {
+				isBusy = !objstreamReader.isFinished;
+				yield return null;
+			}
+
+			GameObject createdGO = objstreamReader.createdGameObject;
+
+			createdGO.name = objModelName;
+
+			//newOBJLoader.name = objModelName;
+
+			createdGO.AddComponent<MeshCollider>().sharedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			createdGO.AddComponent<ClearMeshAndMaterialsOnDestroy>();
+			transformable = createdGO.AddComponent<Transformable>();
+			transformable.madeWithExternalTool = true;
+			transformable.mask = mask;
+
+			if (objstreamReader.ObjectUsesRDCoordinates == false)
+			{
+				if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+				//transformable.placedTransformable.AddListener(RemapMaterials);
+				customObjectPlacer.PlaceExistingObjectAtPointer(createdGO);
+				
+			}
+			else
+			{
+				transformable.stickToMouse = false;
+			}
+			Destroy(objstreamReader);
+			loadingObjScreen.Hide();
+			
+			callback(objstreamReader.succes);
+			yield return null;
+        }
+		
+		
+
 		/// <summary>
 		/// Start the parsing of OBJ and MTL strings
 		/// </summary>
 		/// <param name="objText">The OBJ string data</param>
 		/// <param name="mtlText">The MTL string data</param>
 		/// <returns></returns>
-		private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
-		{
-			//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
-			Debug.Log("OBJ length: " + objText.Length);
-			if (objText.Length < 5)
-			{
-				AbortImport();
-				yield break;
-			}
+		//private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
+		//{
+		//	//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
+		//	Debug.Log("OBJ length: " + objText.Length);
+		//	if (objText.Length < 5)
+		//	{
+		//		AbortImport();
+		//		yield break;
+		//	}
 
-			//Create a new gameobject that parses OBJ lines one by one
-			var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
-			float remainingLinesToParse;
-			float totalLines;
-			float percentage;
+		//	//Create a new gameobject that parses OBJ lines one by one
+		//	var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
+		//	float remainingLinesToParse;
+		//	float totalLines;
+		//	float percentage;
 
-			//Parse the mtl file, filling our material library
-			if (mtlText != "")
-			{
-				newOBJLoader.SetMaterialData(ref mtlText);
-				remainingLinesToParse = newOBJLoader.ParseNextMtlLines(1);
-				totalLines = remainingLinesToParse;
+		//	//Parse the mtl file, filling our material library
+		//	if (mtlText != "")
+		//	{
+		//		newOBJLoader.SetMaterialData(ref mtlText);
+		//		remainingLinesToParse = newOBJLoader.ParseNextMtlLines(1);
+		//		totalLines = remainingLinesToParse;
 
-				loadingObjScreen.ShowMessage("Materialen worden geladen...");
-				while (remainingLinesToParse > 0)
-				{
-					remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
-					percentage = 1.0f - (remainingLinesToParse / totalLines);
-					loadingObjScreen.ProgressBar.Percentage(percentage/100.0f); //Show first percent
-					yield return null;
-				}
-			}
+		//		loadingObjScreen.ShowMessage("Materialen worden geladen...");
+		//		while (remainingLinesToParse > 0)
+		//		{
+		//			remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
+		//			percentage = 1.0f - (remainingLinesToParse / totalLines);
+		//			loadingObjScreen.ProgressBar.Percentage(percentage/100.0f); //Show first percent
+		//			yield return null;
+		//		}
+		//	}
 
-			//Parse the obj line by line
-			newOBJLoader.SetGeometryData(ref objText);
-			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+		//	//Parse the obj line by line
+		//	newOBJLoader.SetGeometryData(ref objText);
+		//	loadingObjScreen.ShowMessage("Objecten worden geladen...");
 
-			var parsingSucceeded = true;
-			remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
-			totalLines = remainingLinesToParse;
-			while (remainingLinesToParse > 0)
-			{
-				remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
-				if (remainingLinesToParse == -1)
-				{
-					//Failed to parse the line. Probably not a triangulated OBJ
-					parsingSucceeded = false;
-					JavascriptMethodCaller.Alert("Het is niet gelukt dit model te importeren.\nZorg dat de OBJ is opgeslagen met 'Triangulated' als instelling.");
-				}
-				else
-				{
-					percentage = 1.0f - (remainingLinesToParse / totalLines);
-					loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-					loadingObjScreen.ProgressBar.Percentage(percentage);
-				}
-				yield return null;
-			}
-			if (parsingSucceeded)
-			{
-				newOBJLoader.Build(defaultLoadedObjectsMaterial);
+		//	var parsingSucceeded = true;
+		//	remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
+		//	totalLines = remainingLinesToParse;
+		//	while (remainingLinesToParse > 0)
+		//	{
+		//		remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
+		//		if (remainingLinesToParse == -1)
+		//		{
+		//			//Failed to parse the line. Probably not a triangulated OBJ
+		//			parsingSucceeded = false;
+		//			JavascriptMethodCaller.Alert("Het is niet gelukt dit model te importeren.\nZorg dat de OBJ is opgeslagen met 'Triangulated' als instelling.");
+		//		}
+		//		else
+		//		{
+		//			percentage = 1.0f - (remainingLinesToParse / totalLines);
+		//			loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
+		//			loadingObjScreen.ProgressBar.Percentage(percentage);
+		//		}
+		//		yield return null;
+		//	}
+		//	if (parsingSucceeded)
+		//	{
+		//		newOBJLoader.Build(defaultLoadedObjectsMaterial);
 
-				//Make interactable
-				newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-				newOBJLoader.name = objModelName;
+		//		//Make interactable
+		//		newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		//		newOBJLoader.name = objModelName;
 				
-				newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
-				newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-				transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
-				transformable.madeWithExternalTool = true;
-				transformable.mask = mask;
+		//		newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
+		//		newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
+		//		transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
+		//		transformable.madeWithExternalTool = true;
+		//		transformable.mask = mask;
 
-				if (newOBJLoader.ObjectUsesRDCoordinates==false)
-                {
-					if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
-					//transformable.placedTransformable.AddListener(RemapMaterials);
-					customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
-				}
-				else
-                {
-					transformable.stickToMouse = false;
-                }
+		//		if (newOBJLoader.ObjectUsesRDCoordinates==false)
+  //              {
+		//			if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
+		//			//transformable.placedTransformable.AddListener(RemapMaterials);
+		//			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
+		//		}
+		//		else
+  //              {
+		//			transformable.stickToMouse = false;
+  //              }
 				
-			}
-			//placementSettings();
-			//hide panel and loading screen after loading
-			loadingObjScreen.Hide();
+		//	}
+		//	//placementSettings();
+		//	//hide panel and loading screen after loading
+		//	loadingObjScreen.Hide();
 
-			//Invoke done event
-			doneLoadingModel.Invoke();
+		//	//Invoke done event
+		//	doneLoadingModel.Invoke();
 			
 
-			//Remove this loader from finished object
-			Destroy(newOBJLoader);
-		}
+		//	//Remove this loader from finished object
+		//	Destroy(newOBJLoader);
+		//}
 	}
 }
