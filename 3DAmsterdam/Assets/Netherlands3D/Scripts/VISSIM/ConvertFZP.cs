@@ -62,16 +62,6 @@ namespace Netherlands3D.Traffic.VISSIM
             LoadDefaultVissimData();
         }
 
-#if UNITY_EDITOR
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.P))
-            {
-                StartCoroutine(RetrieveVissim("https://acc.3d.amsterdam.nl/web/data/develop/" + "traffic/" + fileLocationVISSIM)); // code to test VISSIM in editor
-            }
-        }
-#endif
-
         /// <summary>
         /// Reads the vissim file and converts the lines into individual lines.
         /// </summary>

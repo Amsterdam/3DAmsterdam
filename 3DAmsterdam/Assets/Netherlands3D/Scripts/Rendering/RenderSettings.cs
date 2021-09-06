@@ -26,11 +26,18 @@ namespace Netherlands3D.Rendering
         [SerializeField]
         private ScriptableRendererFeature aoRenderFeature;
 
-        /// <summary>
-        /// Toggles antialiasing on or off.
-        /// </summary>
-        /// <param name="antiAliasingOn"></param>
-        public void ToggleAA(bool antiAliasingOn)
+        public static RenderSettings Instance;
+
+		private void Awake()
+		{
+            Instance = this;
+        }
+
+		/// <summary>
+		/// Toggles antialiasing on or off.
+		/// </summary>
+		/// <param name="antiAliasingOn"></param>
+		public void ToggleAA(bool antiAliasingOn)
         {
             antiAliasing = antiAliasingOn;
 

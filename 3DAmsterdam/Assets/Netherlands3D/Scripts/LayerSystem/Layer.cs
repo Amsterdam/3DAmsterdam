@@ -35,7 +35,7 @@ namespace Netherlands3D.LayerSystem
         [HideInInspector]
         public UnityEvent onLayerDisabled;
 
-        public void Start()
+        public virtual void Start()
         {
             foreach (DataSet dataset in Datasets)
             {
@@ -43,7 +43,7 @@ namespace Netherlands3D.LayerSystem
             }
         }
 
-        private void LayerToggled()
+        public virtual void LayerToggled()
         {
             //Invoke enabled/disabled event
             if (isEnabled)

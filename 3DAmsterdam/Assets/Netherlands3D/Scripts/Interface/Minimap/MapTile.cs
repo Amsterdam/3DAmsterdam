@@ -70,7 +70,7 @@ namespace Netherlands3D.Interface.Minimap
 		{
 			var tileImageUrl = config.ServiceUrl.Replace("{zoom}", zoom.ToString()).Replace("{x}", x.ToString()).Replace("{y}", y.ToString());
 
-			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl))
+			using (uwr = UnityWebRequestTexture.GetTexture(tileImageUrl,true))
 			{
 				yield return uwr.SendWebRequest();
 

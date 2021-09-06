@@ -10,14 +10,9 @@ namespace Netherlands3D.Logging
 		public void OnPointerUp(PointerEventData eventData)
 		{
             var selectedName = this.gameObject.name;
-            var containerName = (this.transform.parent) ? this.transform.parent.name : "";
+            var containerName = (this.transform.parent) ? this.transform.parent.name : "Root";
 
-            Analytics.SendEvent($"InterfaceItemClicked-{selectedName}",
-                new Dictionary<string, object>
-                {
-                    { "Container",  containerName}
-                }
-            );
+            Analytics.SendEvent($"{containerName}", selectedName);
         }
     }
 }

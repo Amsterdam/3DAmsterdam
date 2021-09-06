@@ -59,7 +59,7 @@ namespace Netherlands3D.Interface
 			}
 
 			//Add a listener to every containing button that closes our context menu on click
-			allButtons = GetComponentsInChildren<Button>();
+			allButtons = GetComponentsInChildren<Button>(true);
 			foreach (Button button in allButtons)
 				button.onClick.AddListener(CloseContextMenu);
 

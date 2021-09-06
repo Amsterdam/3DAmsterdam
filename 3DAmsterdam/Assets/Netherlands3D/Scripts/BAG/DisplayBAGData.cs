@@ -56,6 +56,7 @@ namespace Netherlands3D.BAG
             {
                 StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
                 {
+                    if (buildingData == null) return;
                     Debug.Log($"buildingData.adresseerbaarobject.geometry.type: {buildingData.adresseerbaarobject.geometry.type}");
 
                     var geometry = buildingData.adresseerbaarobject.geometry;

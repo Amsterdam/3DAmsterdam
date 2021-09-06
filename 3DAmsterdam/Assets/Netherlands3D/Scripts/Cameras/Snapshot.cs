@@ -168,13 +168,8 @@ namespace Netherlands3D
                             break;
                     }
 
-                    Analytics.SendEvent("Snapshot",
-                        new Dictionary<string, object>
-                        {
-                            { "FileType", fileType }
-                        }
-                    );
-
+                    Analytics.SendEvent("Snapshot", fileType, $"{width}x{height}");
+    
                     DownloadFile(bytes, bytes.Length, fileName);
 
                     // Exits out of loop

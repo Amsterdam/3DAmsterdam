@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 namespace Netherlands3D.Logging.Services
 {
@@ -24,19 +23,15 @@ namespace Netherlands3D.Logging.Services
 #endif
 		}
 
-		public override void SendEvent(string eventName, Dictionary<string, object> eventData)
+		public override void SendEvent(string category, string action, string label = "")
 		{
 #if UNITY_EDITOR
 			Debug.Log($"Wrote analytics event to {targetFile}");
 
 			//Append the events as lines to our text file
 			StreamWriter writer = new StreamWriter(targetFile, true);
-			writer.WriteLine($"[{eventName}]");
+			writer.WriteLine($"[{category}] [{action}] [{label}]");
 			writer.WriteLine($"Time: { DateTime.Now }");
-			foreach(var data in eventData)
-			{
-				writer.WriteLine($"{data.Key} : {data.Value}");
-			}
 			writer.WriteLine("");
 			writer.Close();
 #endif

@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5749158748825754550}
   - component: {fileID: 3973006057321245038}
-  - component: {fileID: 4306338712125394452}
-  - component: {fileID: 7260976465284355273}
+  - component: {fileID: 3719731222783805292}
   m_Layer: 0
   m_Name: Analytics
   m_TagString: Untagged
@@ -46,30 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   analyticsServices:
-  - {fileID: 4306338712125394452}
-  - {fileID: 7260976465284355273}
-  logInConsole: 1
---- !u!114 &4306338712125394452
+  - {fileID: 3719731222783805292}
+  logInConsole: 0
+--- !u!114 &3719731222783805292
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786256697214193717}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a5de6b6a8de99848af368f8b81c6d8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7260976465284355273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 786256697214193717}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cacc504a9147154a8e8e654a7d8cfe2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2441329cbe2507641bd4a4c03521edea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

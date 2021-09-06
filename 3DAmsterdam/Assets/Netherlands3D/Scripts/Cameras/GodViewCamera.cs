@@ -25,7 +25,8 @@ namespace Netherlands3D.Cameras
         private float spinSpeed = 0.5f;
 
         private const float minOrtographicZoom = 20f;
-        private const float maxZoomOut = 2500f;
+        private float maxZoomOut = 2500f;
+        private float minUndergroundY = -30f;
 
         [SerializeField]
         private bool dragging = false;
@@ -40,6 +41,9 @@ namespace Netherlands3D.Cameras
         private float maxTravelDistance = 20000.0f;
 
         private Vector3 startMouseDrag;
+
+        private float startFov = 60.0f;
+        private float mobileFov = 40.0f;
 
         [SerializeField]
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100, 100, 200);
@@ -72,10 +76,10 @@ namespace Netherlands3D.Cameras
 
         private Plane worldPlane;
 
+        private IAction mousePosition;
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
         private IAction zoomScrollActionMouse;
-        private IAction zoomDragActionMouse;
 
         private IAction modifierFirstPersonAction;
         private IAction modifierRotateAroundAction;
@@ -87,7 +91,8 @@ namespace Netherlands3D.Cameras
 
         private IAction flyActionGamepad;
 
-        private float minUndergroundY = -30f;
+        private IAction secondTouch;
+
 
         List<InputActionMap> availableActionMaps;
 
@@ -98,10 +103,18 @@ namespace Netherlands3D.Cameras
 		void Awake()
         {
             cameraComponent = GetComponent<Camera>();
+            startFov = cameraComponent.fieldOfView;
         }
 
         void Start()
         {
+            if (ApplicationSettings.Instance.IsMobileDevice)
+            {
+                cameraComponent.fieldOfView = mobileFov;
+                maxZoomOut = 670.0f;
+                minUndergroundY = 100.0f;
+            }
+
             worldPlane = new Plane(Vector3.up, new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0));
 
             availableActionMaps = new List<InputActionMap>()
@@ -117,10 +130,10 @@ namespace Netherlands3D.Cameras
         private void AddActionListeners()
         {
             //Mouse actions
+            mousePosition = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Position);
             dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
             rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
-            zoomDragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.ZoomDrag);
 
             //Keyboard actions
             moveActionKeyboard = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewKeyboard.MoveCamera);
@@ -149,7 +162,6 @@ namespace Netherlands3D.Cameras
 
             modifierRotateAroundAction.SubscribePerformed(RotateAroundModifier);
             modifierRotateAroundAction.SubscribeCancelled(RotateAroundModifier);
-
         }
 
 
@@ -215,7 +227,8 @@ namespace Netherlands3D.Cameras
 
             if (scrollDelta != 0)
             {
-                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1000.0f));
+                var mousePointerPosition = Mouse.current.position.ReadValue();
+                var zoomPoint = cameraComponent.ScreenToWorldPoint(new Vector3(mousePointerPosition.x, mousePointerPosition.y, 1000.0f));
                 ZoomInDirection(scrollDelta, zoomPoint);
             }
         }
@@ -229,7 +242,7 @@ namespace Netherlands3D.Cameras
             }
             else if (action.Performed)
             {
-                startMouseDrag = GetMousePositionInWorld();
+                startMouseDrag = GetPointerPositionInWorld();
                 dragging = true;
             }
         }
@@ -440,7 +453,7 @@ namespace Netherlands3D.Cameras
         {
             if (!ActionHandler.actions.GodViewMouse.enabled) return;
 
-            dragMomentum = (GetMousePositionInWorld() - startMouseDrag);
+            dragMomentum = (GetPointerPositionInWorld() - startMouseDrag);
 
             if (dragMomentum.magnitude > 0.1f)
                 transform.position -= dragMomentum;
@@ -460,12 +473,12 @@ namespace Netherlands3D.Cameras
         }
         public Ray GetMainPointerRay()
         {
-            var pointerPosition = Mouse.current.position.ReadValue();
+            var pointerPosition = mousePosition.ReadValue<Vector2>();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
-        public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+        public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var pointerPosition = Mouse.current.position.ReadValue();
+            var pointerPosition = mousePosition.ReadValue<Vector2>();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
             var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);
@@ -554,7 +567,7 @@ namespace Netherlands3D.Cameras
             }
             else
             {
-                rotatePoint = GetMousePositionInWorld();
+                rotatePoint = GetPointerPositionInWorld();
                 focusingOnTargetPoint(rotatePoint);
             }
         }

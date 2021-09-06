@@ -1,11 +1,5 @@
 var forceFocus = false;
-
-
-
 var sharedUrlText = "";
-
-
-
 var preventNativeCopyEvents = true;
 
 function ListenerInit()
@@ -71,11 +65,3 @@ function CopySharedURL() {
   
   console.log("Copied the url to clipboard: " + sharedUrlText);
 }
-
-
-
-
-
-
-
-

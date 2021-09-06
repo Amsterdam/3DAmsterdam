@@ -1,19 +1,17 @@
 mergeInto(LibraryManager.library, {
-
-SyncFilesFromIndexedDB : function()
+	SyncFilesFromIndexedDB : function()
      {
-         FS.syncfs(true,function (err) {
-		 SendMessage('FileUploads', 'IndexedDBUpdated');
-         });
+        FS.syncfs(true,function (err) {
+			SendMessage('FileUploads', 'IndexedDBUpdated');
+        });
      },
-SyncFilesToIndexedDB : function()
+	SyncFilesToIndexedDB : function()
      {
-         FS.syncfs(false,function (err) {
-         });
+        FS.syncfs(false,function (err) {
+		
+		});
      },
-SendPersistentDataPath: function (str) {
-	saveDatabaseName(Pointer_stringify(str));
-  },
-	
-	
+	SendPersistentDataPath: function (str) {
+		SaveDatabaseName(Pointer_stringify(str));
+	}
 });

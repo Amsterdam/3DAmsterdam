@@ -104,7 +104,7 @@ namespace Netherlands3D.Interface
         private void FollowMousePointer()
         {
             //Check if the selector has raycast hits, otherwise use our camera world plane
-            targetLocation = (Selector.hits.Length > 0) ? Selector.hits[0].point : CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+            targetLocation = (Selector.hits.Length > 0) ? Selector.hits[0].point : CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
             targetLocation += Vector3.up * 1.8f;
 
             WorldPointerFollower.AlignWithWorldPosition(targetLocation);
