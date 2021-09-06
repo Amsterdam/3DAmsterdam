@@ -39,7 +39,6 @@ function SaveDatabaseName(dbname) {
 }
 
 function ReadFiles(SelectedFiles) {
-
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         ConnectToDatabase(SelectedFiles);
         myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
@@ -59,13 +58,12 @@ function ReadFile(file) {
 }
 
 function SaveData(datastring, filename) {
-	
 	const data = { timestamp: "timestamp", mode: 33206, contents: "contents" };
 	data.timestamp = new Date();
 	data.contents = new TextEncoder("utf-8").encode(datastring);
 	var transaction = db.transaction(["FILE_DATA"], "readwrite");
 
-	let request = transaction.objectStore("FILE_DATA").put(data, databasenaam + "/" + filename);
+	let request = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
 	console.log("saving file");
 	request.onsuccess = function () {
 		myGameInstance.SendMessage('FileUploads', 'LoadFile', filename);
@@ -77,10 +75,9 @@ function SaveData(datastring, filename) {
 		alert("kan " + filename + " niet opslaan");
 		FileSaved();
 	};
-	request.o
 }
 
-function connectToDatabase(SelectedFiles) {
+function ConnectToDatabase(SelectedFiles) {
 	
 	//connect tot database
 	window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
@@ -96,8 +93,6 @@ function connectToDatabase(SelectedFiles) {
 		request.onerror = function () {
 			alert("kan geen verbinding maken met de indexedDatabase");
         }
-
-		
 	}
 }
 

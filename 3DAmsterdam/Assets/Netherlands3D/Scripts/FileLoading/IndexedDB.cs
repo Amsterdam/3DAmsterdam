@@ -35,25 +35,21 @@ public class IndexedDB : MonoBehaviour
 
     public CsvFilePanel csvLoader;
 
-    public Text urlstring;
     public List<string> filenames = new List<string>();
-    public int numberOfFIlesToLoad = 0;
+    public int numberOfFilesToLoad = 0;
     private int fileCount = 0;
 
     public void Start()
     {
-
-
-
+        #if !UNITY_EDITOR && UNITY_WEBGL
         SendPersistentDataPath(Application.persistentDataPath);
+        #endif
+    }
 
-    // System.Environment.SetEnvironmentVariable("MONO_REFLECTION_SERIALIZER", "yes");
-}
-
-// called from javascript, the total number of files that are being loaded
-public void FileCount(int count)
+    // Called from javascript, the total number of files that are being loaded.
+    public void FileCount(int count)
     {
-        numberOfFIlesToLoad = count;
+        numberOfFilesToLoad = count;
         fileCount = 0;
         filenames = new List<string>();
         Debug.Log("expecting " + count + " files");
@@ -69,7 +65,7 @@ public void FileCount(int count)
     }
 
     // called from javascript
-    public void loadFileError(string name)
+    public void LoadFileError(string name)
     {
         fileCount++;
         Debug.Log("unable to load " + name);
@@ -79,11 +75,11 @@ public void FileCount(int count)
     // runs while javascript is busy saving files to indexedDB.
     IEnumerator WaitForFilesToBeLoaded()
     {
-        while (fileCount<numberOfFIlesToLoad)
+        while (fileCount<numberOfFilesToLoad)
         {
             yield return null;
         }
-        numberOfFIlesToLoad = 0;
+        numberOfFilesToLoad = 0;
         fileCount = 0;
         ProcessFiles();
     }
@@ -99,13 +95,12 @@ public void FileCount(int count)
     {
        // GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames);
        // filenames.Clear();
-        processAllFiles();
+        ProcessAllFiles();
     }
 
-    void processAllFiles()
+    void ProcessAllFiles()
     {
-        //figure out the filetypes so we know which function to start
-
+        //Figure out the filetypes so we know which function to start
         string extention = Path.GetExtension(filenames[0]);
         Debug.Log("first file-extention = " +extention);
         if (extention == ".obj" || extention == ".mtl")
@@ -120,14 +115,7 @@ public void FileCount(int count)
         {
             GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
         }
-        else
-        { }
     }
-
-
-    
-
-   
 
     public void ClearDatabase(bool succes)
     {
