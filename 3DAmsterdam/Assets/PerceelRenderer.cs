@@ -21,6 +21,9 @@ public class PerceelRenderer : MonoBehaviour
     public GameObject TerrainLayer;
     public GameObject BuildingsLayer;
 
+    public GameObject HuisRichtingCube;
+
+
     public GameObject Uitbouw;
 
     [SerializeField]
@@ -145,27 +148,34 @@ public class PerceelRenderer : MonoBehaviour
 
         btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
         {
-            var rd = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
-            var pos = CoordConvert.RDtoUnity(rd);
+            //var rd = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
+            //var pos = CoordConvert.RDtoUnity(rd);
             
-            var uitbouw = Instantiate(Uitbouw);
-            pos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
-            uitbouw.transform.position = pos;
-            startPosition = pos;
+            var uitbouw = Instantiate(Uitbouw);           
+            
             uitbouwTransform = uitbouw.transform;
+
+            //snap uitbouw tegen gebouw
+            uitbouw.transform.rotation = HuisRichtingCube.transform.rotation;
+            var halfHuisRichtingCube = (HuisRichtingCube.transform.localScale.z / 2);
+            var halfUitbouw = (uitbouw.transform.localScale.z / 2);
+            var snappedPos = HuisRichtingCube.transform.position - (HuisRichtingCube.transform.forward * (halfHuisRichtingCube + halfUitbouw));
+            snappedPos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
+            uitbouw.transform.position = snappedPos;
+            startPosition = snappedPos;
 
             Invoke("RemoveButton", 0.3f);
 
-            PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
-            PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
-                uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
-            }, false, "Draai de uitbouw");
+            //PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
+            //PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
+            //    uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
+            //}, false, "Draai de uitbouw");
 
-            PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
-            PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
-            {
-                uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
-            }, false, "Draai de uitbouw");
+            //PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
+            //PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
+            //{
+            //    uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
+            //}, false, "Draai de uitbouw");
 
         });
 
