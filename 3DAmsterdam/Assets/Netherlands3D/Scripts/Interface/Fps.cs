@@ -17,8 +17,9 @@ namespace Netherlands3D.Interface
 		private int framesVisualFPS = 0;
 		private double lastInterval = 0;
 
-#if !UNITY_EDITOR
+		[SerializeField]
 		private bool logFpsGroupsToAnalytics = true;
+#if !UNITY_EDITOR
 		private float updateAnalyticsInterval = 10.0f; //Every # seconds we log our average fps to the analytics
 		
 		private int framesAnalytics = 0;
