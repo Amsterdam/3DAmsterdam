@@ -14,6 +14,8 @@ var selectedFiles;
 var filesToSave;
 var counter = 0;
 
+var 
+
 //Support for dragging dropping files on browser window
 document.addEventListener("dragover", function (event) {
     event.preventDefault();
@@ -34,6 +36,14 @@ function FileSaved() {
     }
 }
 
+function ClearInputs()
+{
+	inputs = document.getElementsByTagName('input');
+	for (i = 0; i < inputs.length; ++i) {
+		inputs[i].value = '';
+	}
+}
+
 function SaveDatabaseName(dbname) {
     databaseName = dbname;
 }
@@ -45,6 +55,7 @@ function ReadFiles(SelectedFiles) {
     } else {
         alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
     };
+	ClearInputs();
 };
 
 function ReadFile(file) {
@@ -79,10 +90,10 @@ function SaveData(datastring, filename) {
 
 function ConnectToDatabase(SelectedFiles) {
 	
-	//connect tot database
+	//Connect to database
 	window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
-		IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
-		dbVersion = 21;
+	IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
+	dbVersion = 21;
 	let request = indexedDB.open("/idbfs", dbVersion);
 	request.onsuccess = function () {
 		console.log("connected to database");
@@ -92,7 +103,7 @@ function ConnectToDatabase(SelectedFiles) {
 		};
 		request.onerror = function () {
 			alert("kan geen verbinding maken met de indexedDatabase");
-        }
+		}
 	}
 }
 
