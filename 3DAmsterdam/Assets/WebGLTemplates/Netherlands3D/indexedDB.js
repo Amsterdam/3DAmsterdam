@@ -48,12 +48,11 @@ function SaveDatabaseName(dbname) {
 
 function ReadFiles(SelectedFiles) {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-		myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
-        ConnectToDatabase(SelectedFiles);   
+		ConnectToDatabase(SelectedFiles);   
+		unityInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
     } else {
         alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
     };
-	ClearInputs();
 };
 
 function ReadFile(file) {
@@ -75,12 +74,12 @@ function SaveData(datastring, filename) {
 	let request = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
 	console.log("saving file");
 	request.onsuccess = function () {
-		myGameInstance.SendMessage('FileUploads', 'LoadFile', filename);
+		unityInstance.SendMessage('FileUploads', 'LoadFile', filename);
 		console.log("file saved");
 		FileSaved();
 	};
 	request.onerror = function () {
-		myGameInstance.SendMessage('FileUploads', 'LoadFileError', filename);
+		unityInstance.SendMessage('FileUploads', 'LoadFileError', filename);
 		alert("kan " + filename + " niet opslaan");
 		FileSaved();
 	};
