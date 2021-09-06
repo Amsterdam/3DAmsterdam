@@ -87,7 +87,7 @@ namespace Netherlands3D.LayerSystem
         }
         */
 
-        public static List<int> triIndices = new List<int>();
+        public static List<int> triangles = new List<int>();
         public static List<Vector3> vertices = new List<Vector3>();
         public static List<Vector2> uvs = new List<Vector2>();
         public static Vector3 offset;
@@ -95,6 +95,9 @@ namespace Netherlands3D.LayerSystem
         private void Start()//in start to avoid race conditions
         {
             PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+            var mf = GetComponent<MeshFilter>();
+            offset = transform.position;
+            mf.mesh = Test();
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
@@ -110,6 +113,64 @@ namespace Netherlands3D.LayerSystem
             transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
             mf.mesh = buildingMesh;
+        }
+
+        public Mesh Test()
+        {
+            var mf = GetComponent<MeshFilter>();
+            var sourceVerts = mf.mesh.vertices;
+            var sourceTriangles = mf.mesh.triangles;
+            var sourceUVs = mf.mesh.uv;
+
+            List<int> vertIndices = new List<int>();
+            for (int i = 0; i < 4; i++)
+            {
+                vertIndices.Add(i);
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                print("st: " + sourceTriangles[i] + "\t" + sourceVerts[sourceTriangles[i]]);
+            }
+
+            vertices = new List<Vector3>();
+            triangles = new List<int>();
+            uvs = new List<Vector2>();
+
+            for (int i = 0; i < sourceTriangles.Length; i += 3)
+            {
+                //var triStartIndex = sourceTriangles[i];
+
+                if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                {
+                    print("adding verts: " + sourceVerts[sourceTriangles[i]] + "\t" + sourceVerts[sourceTriangles[i + 1]] + "\t" + sourceVerts[sourceTriangles[i + 2]]);
+                    vertices.Add(sourceVerts[sourceTriangles[i]]);
+                    vertices.Add(sourceVerts[sourceTriangles[i + 1]]);
+                    vertices.Add(sourceVerts[sourceTriangles[i + 2]]);
+
+                    //add triangle to my own mesh
+                    print("new vertCount: " + vertices.Count);
+                    triangles.Add(vertices.Count - 3);
+                    triangles.Add(vertices.Count - 2);
+                    triangles.Add(vertices.Count - 1);
+
+                    //add uvs
+                    uvs.Add(sourceUVs[sourceTriangles[i]]);
+                    uvs.Add(sourceUVs[sourceTriangles[i + 1]]);
+                    uvs.Add(sourceUVs[sourceTriangles[i + 2]]);
+                }
+            }
+
+            foreach (var vert in vertices)
+            {
+                print("vert: " + vert);
+            }
+
+            Mesh mesh = new Mesh();
+            mesh.vertices = vertices.ToArray();
+            mesh.triangles = triangles.ToArray();
+            mesh.uv = uvs.ToArray();
+            return mesh;
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
@@ -131,41 +192,34 @@ namespace Netherlands3D.LayerSystem
             var sourceTriangles = objectData.mesh.triangles;
             var sourceUVs = objectData.uvs;
 
+            vertices = new List<Vector3>();
+            triangles = new List<int>();
+            uvs = new List<Vector2>();
+
+            //List<int> usedVerts = new List<int>(); 
             for (int i = 0; i < sourceTriangles.Length; i += 3)
             {
-                var triStartIndex = sourceTriangles[i];
+                //var triStartIndex = sourceTriangles[i];
 
-                if (vertIndices.Contains(triStartIndex))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
                 {
                     //add matching vert to my mesh
-                    print("test " + 1);
-                    vertices.Add(sourceVerts[triStartIndex]);
-                    vertices.Add(sourceVerts[triStartIndex + 1]);
-                    vertices.Add(sourceVerts[triStartIndex + 2]);
+                    vertices.Add(sourceVerts[sourceTriangles[i]]);
+                    vertices.Add(sourceVerts[sourceTriangles[i + 1]]);
+                    vertices.Add(sourceVerts[sourceTriangles[i + 2]]);
 
                     //add triangle to my own mesh
-
-                    //determine order of triIndex
-                    for (int j = -2; j < 2; j++)
-                    {
-                        if (vertIndices.Contains(sourceTriangles[i + j]))
-                        {
-
-                        }
-                    }
-
-                    triIndices.Add(vertices.Count - 3);
-                    triIndices.Add(vertices.Count - 2);
-                    triIndices.Add(vertices.Count - 1);
-
-                    triIndices.Add(vertices.Count - 1);
-                    triIndices.Add(vertices.Count - 2);
-                    triIndices.Add(vertices.Count - 3);
+                    print("new vertCount: " + vertices.Count);
+                    triangles.Add(vertices.Count - 3);
+                    triangles.Add(vertices.Count - 2);
+                    triangles.Add(vertices.Count - 1);
 
                     //add uvs
-                    uvs.Add(sourceUVs[triStartIndex]);
-                    uvs.Add(sourceUVs[triStartIndex + 1]);
-                    uvs.Add(sourceUVs[triStartIndex + 2]);
+                    uvs.Add(sourceUVs[sourceTriangles[i]]);
+                    uvs.Add(sourceUVs[sourceTriangles[i + 1]]);
+                    uvs.Add(sourceUVs[sourceTriangles[i + 2]]);
+
+                    //usedVerts.Add(triStartIndex);
                 }
 
                 //if (vertIndices.Contains(triStartIndex + 1))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
@@ -211,7 +265,7 @@ namespace Netherlands3D.LayerSystem
 
             Mesh mesh = new Mesh();
             mesh.vertices = vertices.ToArray();
-            mesh.triangles = triIndices.ToArray();
+            mesh.triangles = triangles.ToArray();
             mesh.uv = uvs.ToArray();
             return mesh;
         }
@@ -221,7 +275,8 @@ namespace Netherlands3D.LayerSystem
             foreach (var vert in vertices)
             {
                 Debug.DrawLine(Vector3.zero, vert + offset, Color.red);
-                Gizmos.DrawCube(vert, Vector3.one);
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(vert + offset, 0.1f);
             }
         }
     }
