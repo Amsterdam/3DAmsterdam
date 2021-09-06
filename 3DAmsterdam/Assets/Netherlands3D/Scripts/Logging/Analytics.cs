@@ -14,7 +14,7 @@ namespace Netherlands3D.Logging
 
 		[SerializeField]
 		private AnalyticsService[] analyticsServices;
-		private static Analytics Instance;
+		public static Analytics Instance;
 
 		[SerializeField]
 		private bool logInConsole = true;
