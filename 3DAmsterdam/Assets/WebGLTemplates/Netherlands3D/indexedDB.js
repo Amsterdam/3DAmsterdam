@@ -40,8 +40,8 @@ function SaveDatabaseName(dbname) {
 
 function ReadFiles(SelectedFiles) {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-        ConnectToDatabase(SelectedFiles);
-        myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
+		myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
+        ConnectToDatabase(SelectedFiles);   
     } else {
         alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
     };
