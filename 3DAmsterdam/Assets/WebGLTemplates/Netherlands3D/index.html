@@ -127,6 +127,13 @@
               clearInterval(spinCube); 	
 			  loadingBar.remove();
 			  
+			  //Track initial page for for siteimproveanalytics
+			  _sz.push(["trackdynamic",{
+					   "url": window.location.origin+window.location.pathname,
+					   "ref": window.location.origin,
+					   "title": "{{{ PRODUCT_NAME }}} | {{{ PRODUCT_VERSION  }}}"
+				}]);
+			  
 			  ListenerInit(); //Application methods are within netherlands3d.js		  
           }).catch((message) => {
               alert(message);
