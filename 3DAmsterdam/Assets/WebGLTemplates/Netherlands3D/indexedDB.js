@@ -14,8 +14,6 @@ var selectedFiles;
 var filesToSave;
 var counter = 0;
 
-var 
-
 //Support for dragging dropping files on browser window
 document.addEventListener("dragover", function (event) {
     event.preventDefault();
