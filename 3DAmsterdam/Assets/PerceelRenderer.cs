@@ -4,6 +4,7 @@ using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,20 @@ using UnityEngine.Networking;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
+
+public class ObjectDataEventArgs : EventArgs
+{
+    public bool IsLoaded { get; private set; }
+    public ObjectData ObjectData { get; private set; }
+    public Vector3 TileOffset;
+
+    public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
+    {
+        IsLoaded = isLoaded;
+        ObjectData = objectData;
+        TileOffset = tileOffset;
+    }
+}
 
 public class PerceelRenderer : MonoBehaviour
 {
@@ -29,11 +44,24 @@ public class PerceelRenderer : MonoBehaviour
     [SerializeField]
     private Transform GeneratedFieldsContainer;
 
+    public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
+    public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
+
     private float terrainFloor;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+    }
+
+    private void OnDisable()
+    {
+        BuildingMetaDataLoaded -= PerceelRenderer_BuildingMetaDataLoaded;
     }
 
     private void Start()
@@ -144,6 +172,29 @@ public class PerceelRenderer : MonoBehaviour
 
     void UpdateSidePanelPerceelData(JsonModels.WebFeatureService.WFSRootobject wfs)
     {
+        
+        btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
+        {
+            var rd = new Vector2RD(wfs.features[0].properties.perceelnummerPlaatscoordinaatX, wfs.features[0].properties.perceelnummerPlaatscoordinaatY);
+            var pos = CoordConvert.RDtoUnity(rd);
+            var uitbouw = Instantiate(Uitbouw);
+            pos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
+            uitbouw.transform.position = pos;
+            startPosition = pos;
+            uitbouwTransform = uitbouw.transform;
+            Invoke("RemoveButton", 0.3f);
+            PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
+            PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
+                uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
+            }, false, "Draai de uitbouw");
+            PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
+            PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
+            {
+                uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
+            }, false, "Draai de uitbouw");
+        });
+        
+        /*
         var perceelGrootte = $"Perceeloppervlakte: {wfs.features[0].properties.kadastraleGrootteWaarde} m2";
         PropertiesPanel.Instance.AddLabel(perceelGrootte);
 
@@ -151,28 +202,19 @@ public class PerceelRenderer : MonoBehaviour
         {
             var rd = new Vector2RD(wfs.features[0].properties.perceelnummerPlaatscoordinaatX, wfs.features[0].properties.perceelnummerPlaatscoordinaatY);
             var pos = CoordConvert.RDtoUnity(rd);
-            
-            var uitbouw = Instantiate(Uitbouw);
-            pos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
-            uitbouw.transform.position = pos;
-            startPosition = pos;
-            uitbouwTransform = uitbouw.transform;
+            InstantiateUitbouw(pos);
 
-            Invoke("RemoveButton", 0.3f);
+        });*/
+    }
 
-            PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
-            PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
-                uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
-            }, false, "Draai de uitbouw");
+    private void InstantiateUitbouw(Vector3 pos)
+    {
+        pos.y = terrainFloor + Uitbouw.transform.localScale.y / 2;
+        var uitbouw = Instantiate(Uitbouw, pos, Quaternion.identity);
+        //startPosition = pos;
+        //uitbouwTransform = uitbouw.transform;
 
-            PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
-            PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
-            {
-                uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
-            }, false, "Draai de uitbouw");
-
-        });
-
+        Invoke("RemoveButton", 0.3f); //todo: why with delay?
     }
 
     void RemoveButton()
@@ -205,8 +247,28 @@ public class PerceelRenderer : MonoBehaviour
         var child = BuildingsLayer.transform.GetChild(0);
         var rd = child.name.GetRDCoordinate();
         //Debug.Log($"downloadobjectdata {child.name}");
+
         StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
+    }
+
+    private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+    {
+        print("constructing mesh");
+        print(args.ObjectData.highlightIDs[0]);
+        print(args.ObjectData.ids.Count);
+        print(args.ObjectData.uvs.Length);
+
+
+        BuildingMeshGenerator.offset = args.TileOffset;
+        var buildingMesh = BuildingMeshGenerator.ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
+        print(buildingMesh.vertexCount);
+
+        var go = new GameObject("ExtractedModel");
+        go.transform.position = args.TileOffset + new Vector3(500,0,500);
+        var mf = go.AddComponent<MeshFilter>();
+        mf.mesh = buildingMesh;
+        go.AddComponent<MeshRenderer>();
     }
 
     IEnumerator HighlightBuildingArea(List<Vector2[]> polygons, Vector3 position)
@@ -392,7 +454,7 @@ public class PerceelRenderer : MonoBehaviour
         {
             yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
             }
@@ -417,6 +479,8 @@ public class PerceelRenderer : MonoBehaviour
                 newAssetBundle.Unload(true);
 
                 objectMapping.ApplyDataToIDsTexture();
+                var tileOffset = ConvertCoordinates.CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+                BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
             }
             
         }        
