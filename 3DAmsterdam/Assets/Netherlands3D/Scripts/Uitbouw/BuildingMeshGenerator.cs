@@ -12,11 +12,6 @@ namespace Netherlands3D.LayerSystem
     public class BuildingMeshGenerator : MonoBehaviour
     {
 
-        public static List<int> triangles = new List<int>();
-        public static List<Vector3> vertices = new List<Vector3>();
-        public static List<Vector2> uvs = new List<Vector2>();
-        public static Vector3 offset;
-
         private void Start()//in start to avoid race conditions
         {
             PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
@@ -25,8 +20,6 @@ namespace Netherlands3D.LayerSystem
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
         {
             print("constructing mesh");
-
-            offset = args.TileOffset;
             var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
 
             transform.position = args.TileOffset;
@@ -52,29 +45,30 @@ namespace Netherlands3D.LayerSystem
             var sourceTriangles = objectData.mesh.triangles;
             var sourceUVs = objectData.uvs;
 
-            vertices = new List<Vector3>();
-            triangles = new List<int>();
-            uvs = new List<Vector2>();
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            var uvs = new List<Vector2>();
 
             List<int> usedVerts = new List<int>();
             for (int i = 0; i < sourceTriangles.Length; i += 3)
             {
+                //check if the current triangle is part of the extracted verts
                 if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
                 {
-                    //add matching vert to my mesh
+                    //add matching triangle to my mesh
                     for (int j = 0; j < 3; j++)
                     {
-
+                        //check if this vertex is already used
                         var existingVertIndex = usedVerts.FindIndex(x => x == sourceTriangles[i + j]);
                         int newTriIndex = -1;
-                        if (existingVertIndex == -1)
+                        if (existingVertIndex == -1) //vert not found, add this vert
                         {
                             vertices.Add(sourceVerts[sourceTriangles[i + j]]);
                             uvs.Add(sourceUVs[sourceTriangles[i + j]]);
                             newTriIndex = vertices.Count - 1;
                             usedVerts.Add(sourceTriangles[i + j]);
                         }
-                        else
+                        else //vert already in use, so just add the triangle index
                         {
                             newTriIndex = existingVertIndex;
                         }
@@ -84,6 +78,7 @@ namespace Netherlands3D.LayerSystem
                 }
             }
 
+            //generate mesh from data
             Mesh mesh = new Mesh();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
