@@ -54,16 +54,6 @@ public class PerceelRenderer : MonoBehaviour
         Instance = this;
     }
 
-    private void OnEnable()
-    {
-        BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
-    }
-
-    private void OnDisable()
-    {
-        BuildingMetaDataLoaded -= PerceelRenderer_BuildingMetaDataLoaded;
-    }
-
     private void Start()
     {
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
@@ -250,25 +240,6 @@ public class PerceelRenderer : MonoBehaviour
 
         StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
-    }
-
-    private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-    {
-        print("constructing mesh");
-        print(args.ObjectData.highlightIDs[0]);
-        print(args.ObjectData.ids.Count);
-        print(args.ObjectData.uvs.Length);
-
-
-        BuildingMeshGenerator.offset = args.TileOffset;
-        var buildingMesh = BuildingMeshGenerator.ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
-        print(buildingMesh.vertexCount);
-
-        var go = new GameObject("ExtractedModel");
-        go.transform.position = args.TileOffset + new Vector3(500,0,500);
-        var mf = go.AddComponent<MeshFilter>();
-        mf.mesh = buildingMesh;
-        go.AddComponent<MeshRenderer>();
     }
 
     IEnumerator HighlightBuildingArea(List<Vector2[]> polygons, Vector3 position)

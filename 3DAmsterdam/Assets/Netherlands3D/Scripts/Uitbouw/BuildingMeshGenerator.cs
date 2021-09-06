@@ -92,6 +92,26 @@ namespace Netherlands3D.LayerSystem
         public static List<Vector2> uvs = new List<Vector2>();
         public static Vector3 offset;
 
+        private void Start()//in start to avoid race conditions
+        {
+            PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+        }
+
+        private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+        {
+            print("constructing mesh");
+            //print(args.ObjectData.highlightIDs[0]);
+            //print(args.ObjectData.ids.Count);
+            //print(args.ObjectData.uvs.Length);
+
+            offset = args.TileOffset;
+            var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
+
+            transform.position = args.TileOffset;
+            var mf = GetComponent<MeshFilter>();
+            mf.mesh = buildingMesh;
+        }
+
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
         {
             var idIndex = objectData.ids.IndexOf(id);
@@ -105,34 +125,88 @@ namespace Netherlands3D.LayerSystem
                     vertIndices.Add(i);
                 }
             }
-            print(vertIndices.Count);
+
             //copy mesh data to avoid getting a copy every iteration in the loop
             var sourceVerts = objectData.mesh.vertices;
-            var trianglesLength = objectData.mesh.triangles.Length;
             var sourceTriangles = objectData.mesh.triangles;
             var sourceUVs = objectData.uvs;
 
-            print(trianglesLength);
-            for (int i = 0; i < trianglesLength; i += 3)
+            for (int i = 0; i < sourceTriangles.Length; i += 3)
             {
-                if (vertIndices.Contains(sourceTriangles[i]) || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                var triStartIndex = sourceTriangles[i];
+
+                if (vertIndices.Contains(triStartIndex))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
                 {
                     //add matching vert to my mesh
-                    var vertStartIndex = sourceTriangles[i];
-
-                    vertices.Add(sourceVerts[vertStartIndex]);
-                    vertices.Add(sourceVerts[vertStartIndex + 1]);
-                    vertices.Add(sourceVerts[vertStartIndex + 2]);
+                    print("test " + 1);
+                    vertices.Add(sourceVerts[triStartIndex]);
+                    vertices.Add(sourceVerts[triStartIndex + 1]);
+                    vertices.Add(sourceVerts[triStartIndex + 2]);
 
                     //add triangle to my own mesh
+
+                    //determine order of triIndex
+                    for (int j = -2; j < 2; j++)
+                    {
+                        if (vertIndices.Contains(sourceTriangles[i + j]))
+                        {
+
+                        }
+                    }
+
                     triIndices.Add(vertices.Count - 3);
                     triIndices.Add(vertices.Count - 2);
                     triIndices.Add(vertices.Count - 1);
 
-                    uvs.Add(sourceUVs[vertStartIndex]);
-                    uvs.Add(sourceUVs[vertStartIndex + 1]);
-                    uvs.Add(sourceUVs[vertStartIndex + 2]);
+                    triIndices.Add(vertices.Count - 1);
+                    triIndices.Add(vertices.Count - 2);
+                    triIndices.Add(vertices.Count - 3);
+
+                    //add uvs
+                    uvs.Add(sourceUVs[triStartIndex]);
+                    uvs.Add(sourceUVs[triStartIndex + 1]);
+                    uvs.Add(sourceUVs[triStartIndex + 2]);
                 }
+
+                //if (vertIndices.Contains(triStartIndex + 1))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                //{
+                //    //add matching vert to my mesh
+
+                //    print("test" + 2);
+                //    vertices.Add(sourceVerts[triStartIndex]);
+                //    vertices.Add(sourceVerts[triStartIndex + 1]);
+                //    vertices.Add(sourceVerts[triStartIndex + 2]);
+
+                //    //add triangle to my own mesh
+                //    triIndices.Add(vertices.Count - 3);
+                //    triIndices.Add(vertices.Count - 2);
+                //    triIndices.Add(vertices.Count - 1);
+
+                //    //add uvs
+                //    uvs.Add(sourceUVs[triStartIndex]);
+                //    uvs.Add(sourceUVs[triStartIndex + 1]);
+                //    uvs.Add(sourceUVs[triStartIndex + 2]);
+                //}
+
+                //if (vertIndices.Contains(triStartIndex + 2))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                //{
+                //    //add matching vert to my mesh
+                //    print("test" + 3);
+
+                //    vertices.Add(sourceVerts[triStartIndex]);
+                //    vertices.Add(sourceVerts[triStartIndex + 1]);
+                //    vertices.Add(sourceVerts[triStartIndex + 2]);
+
+                //    //add triangle to my own mesh
+                //    triIndices.Add(vertices.Count - 3);
+                //    triIndices.Add(vertices.Count - 2);
+                //    triIndices.Add(vertices.Count - 1);
+
+                //    //add uvs
+                //    uvs.Add(sourceUVs[triStartIndex]);
+                //    uvs.Add(sourceUVs[triStartIndex + 1]);
+                //    uvs.Add(sourceUVs[triStartIndex + 2]);
+                //}
             }
 
             Mesh mesh = new Mesh();
