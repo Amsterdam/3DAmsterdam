@@ -31,6 +31,8 @@ public class IndexedDB : MonoBehaviour
     private static extern void SyncFilesToIndexedDB();
     [DllImport("__Internal")]
     private static extern void SendPersistentDataPath(string str);
+    [DllImport("__Internal")]
+    private static extern void ClearFileInputFields();
 
     public CsvFilePanel csvLoader;
 
@@ -84,7 +86,6 @@ public class IndexedDB : MonoBehaviour
         fileCount = 0;
         ProcessFiles();
     }
-
     
     public void ProcessFiles()
     {
@@ -120,6 +121,7 @@ public class IndexedDB : MonoBehaviour
 
     public void ClearDatabase(bool succes)
     {
+        ClearFileInputFields();
         filenames.Clear();
         if (succes)
         {
