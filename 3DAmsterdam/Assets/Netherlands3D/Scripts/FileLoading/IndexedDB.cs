@@ -21,11 +21,10 @@ using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
 using Netherlands3D.Traffic.VISSIM;
+using Netherlands3D.Interface;
 
 public class IndexedDB : MonoBehaviour
 {
-
-
     [DllImport("__Internal")]
     private static extern void SyncFilesFromIndexedDB();
     [DllImport("__Internal")]
@@ -53,6 +52,7 @@ public class IndexedDB : MonoBehaviour
         fileCount = 0;
         filenames = new List<string>();
         Debug.Log("expecting " + count + " files");
+        LoadingScreen.Instance.ShowMessage($"{numberOfFilesToLoad} {((numberOfFilesToLoad>1) ? "bestanden worden" : "bestand wordt")} ingeladen..");
         StartCoroutine(WaitForFilesToBeLoaded());
     }
     
@@ -68,6 +68,7 @@ public class IndexedDB : MonoBehaviour
     public void LoadFileError(string name)
     {
         fileCount++;
+        LoadingScreen.Instance.Hide();
         Debug.Log("unable to load " + name);
     }
 

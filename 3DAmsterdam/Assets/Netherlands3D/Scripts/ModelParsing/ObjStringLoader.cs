@@ -124,9 +124,6 @@ namespace Netherlands3D.ModelParsing
 
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
-
-
-
 			Debug.Log(filenames.Count + " files received");
 			string objstring = "";
 			string mtlstring = "";
@@ -137,15 +134,12 @@ namespace Netherlands3D.ModelParsing
                 if (extention.IndexOf("obj")>-1)
                 {
 					objstring = filenames[i];
-
-					
                 }
 				if (extention.IndexOf("mtl") > -1)
 				{
 					mtlstring = filenames[i];
 
 				}
-
 			}
 
 			StartCoroutine(ParseOBJfromStream(objstring, mtlstring, callback));
@@ -163,11 +157,9 @@ namespace Netherlands3D.ModelParsing
 
 		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath, System.Action<bool> callback)
         {
-
-			// read the obj-file
+			// Read the obj-file
 			SetOBJFileName(objFilePath);
 			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
-			Debug.Log(objFilePath);
 			objstreamReader.loadingObjScreen = loadingObjScreen;
 			objstreamReader.ReadOBJ(objFilePath);
 			bool isBusy = true;
