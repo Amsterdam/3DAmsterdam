@@ -133,6 +133,12 @@ public class UnitTests
         var result4a = url4.GetUrlParamValue("param1");
         Assert.AreEqual("123_456", result4);
         Assert.AreEqual("test", result4a);
+
+        string url5 = "http://t3d.lab4242.nl/3d/?position=138350.607_455582.274&id=0344100000021804";
+        var result5 = url5.GetUrlParamValue("position");
+        var result5a = url5.GetUrlParamValue("id");
+        Assert.AreEqual("138350.607_455582.274", result5);
+        Assert.AreEqual("0344100000021804", result5a);
     }
 
 

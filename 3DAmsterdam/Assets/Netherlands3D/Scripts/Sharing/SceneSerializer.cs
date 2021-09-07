@@ -72,18 +72,18 @@ namespace Netherlands3D.Sharing
         [SerializeField]
         private GameObject[] objectsRemovedInViewMode;
 
+
+
         private void Start()
 		{
             //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
 			CheckURLForSharedSceneID();
             CheckURLForPositionAndId();
-            //TODO check url for perceel
-
-            //TODO check url for bag id
-
-
             customMeshObjects = new List<GameObject>();
-		}
+
+        }
+
+
 
         private void Update()
         {
@@ -91,19 +91,23 @@ namespace Netherlands3D.Sharing
                 //var pos = new Vector3RD(136784.367, 455755.712, 0);  //geen ruimte
                 //var pos = new Vector3RD(137400.321, 454035.816, 0);  //geen data?
 
-                var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
-
                 //var pos = new Vector3RD(138610.874, 457474.58, 0); 
                 //var pos = new Vector3RD(116135,488309, 0);
 
+                var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
                 //var pos = new Vector3RD(137383.174, 454037.042, 0); //hertestraat 15 utrechttw
 
-                StartCoroutine(GotoPosition(pos));
-                StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht
-                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344010000039387")); //hertestraat 15 utrecht
+                //StartCoroutine(GotoPosition(bagPosition));
 
+                GotoPosition(pos);
+                StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
+                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344010000039387")); //hertestraat 15 utrecht 3582EP
 
+                //137837.926_452307.472 & id = 0344100000052214 Catalonië 5 Utrecht
             }
+
+
+
         }
 
         private void CheckURLForSharedSceneID()
@@ -123,14 +127,13 @@ namespace Netherlands3D.Sharing
             if (rd.Equals(new Vector3RD(0, 0, 0))) return;
 
             var id = Application.absoluteURL.GetUrlParamValue("id");
-
-            StartCoroutine(GotoPosition(rd));
+            
+            GotoPosition(rd);
             StartCoroutine(  PerceelRenderer.Instance.HandlePosition(rd, id));
         }
 
-        IEnumerator GotoPosition(Vector3RD position)
-        {
-            yield return null;
+        void GotoPosition(Vector3RD position)
+        {      
             Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
             CameraModeChanger.Instance.ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
             CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);            
