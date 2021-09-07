@@ -8,11 +8,10 @@ namespace Netherlands3D.T3D.Test
 {
     public class Uitbouw : MonoBehaviour
     {
-        Vector2[] footprint;
-        MeshRenderer meshRenderer;
-        Mesh mesh;
-
-        public static List<Vector2[]> perceel; //todo: 
+        private Vector2[] footprint;
+        private MeshRenderer meshRenderer;
+        private Mesh mesh;
+        private List<Vector2[]> perceel;
 
         private void Awake()
         {
@@ -20,12 +19,27 @@ namespace Netherlands3D.T3D.Test
             mesh = GetComponent<MeshFilter>().mesh;
         }
 
+        private void Start()
+        {
+            PerceelRenderer.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
+        }
+
+        private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
+        {
+            perceel = args.Perceel;
+        }
+
         private void Update()
         {
-            footprint = GenerateFootprint(mesh, transform.rotation);
+            if (perceel != null)
+            {
+                CheckIfObjectIsInPerceelBounds();
+            }
+        }
 
-            if (perceel == null)
-                return;
+        private void CheckIfObjectIsInPerceelBounds()
+        {
+            footprint = GenerateFootprint(mesh, transform.rotation);
 
             if (IsInPerceel(footprint, perceel, transform.position))
             {
