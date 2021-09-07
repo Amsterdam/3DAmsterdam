@@ -1,3 +1,4 @@
+using Netherlands3D.Interface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -13,7 +14,7 @@ namespace Netherlands3D.Logging.Services
 		private static extern void PushEvent(string category = "category", string action = "action", string label = "label");
 
 		public override void SendEvent(string category, string action, string label = "")
-		{
+		{		
 #if !UNITY_EDITOR && UNITY_WEBGL
 			PushEvent(category, action, label);
 #endif
