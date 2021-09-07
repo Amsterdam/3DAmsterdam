@@ -14,6 +14,7 @@ using UnityEngine.Networking;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
+using Netherlands3D.Interface.Layers;
 
 public class ObjectDataEventArgs : EventArgs
 {
@@ -35,11 +36,9 @@ public class PerceelRenderer : MonoBehaviour
     public static PerceelRenderer Instance;
     public GameObject TerrainLayer;
     public GameObject BuildingsLayer;
-
     public GameObject HuisRichtingCube;
-
-
     public GameObject Uitbouw;
+    public InterfaceLayer BuildingInterfaceLayer;
 
     [SerializeField]
     private Text MainTitle;
@@ -61,6 +60,13 @@ public class PerceelRenderer : MonoBehaviour
     {
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
         MainTitle.text = "Uitbouw plaatsen";
+
+        PropertiesPanel.Instance.AddSpacer();
+        PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
+        {
+            BuildingInterfaceLayer.ToggleLinkedObject(action);           
+        });
+        PropertiesPanel.Instance.AddSpacer();
     }
 
     public IEnumerator GetAndRenderPerceel(Vector3RD position)
