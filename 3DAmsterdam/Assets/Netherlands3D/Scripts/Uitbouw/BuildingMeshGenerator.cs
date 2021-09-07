@@ -1,0 +1,100 @@
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+using System.Threading.Tasks;
+
+
+namespace Netherlands3D.LayerSystem
+{
+    public class BuildingMeshGenerator : MonoBehaviour
+    {
+
+        private void Start()//in start to avoid race conditions
+        {
+            PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+        }
+
+        private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+        {
+            print("constructing mesh");
+            var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
+
+            transform.position = args.TileOffset;
+            var mf = GetComponent<MeshFilter>();
+            mf.mesh = buildingMesh;
+        }
+
+        public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
+        {
+            var idIndex = objectData.ids.IndexOf(id);
+
+            List<int> vertIndices = new List<int>();
+            for (int i = 0; i < objectData.vectorMap.Count; i++)
+            {
+                if (objectData.vectorMap[i] == idIndex)
+                {
+                    vertIndices.Add(i);
+                }
+            }
+
+            //copy mesh data to avoid getting a copy every iteration in the loop
+            var sourceVerts = objectData.mesh.vertices;
+            var sourceTriangles = objectData.mesh.triangles;
+            var sourceUVs = objectData.uvs;
+
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            var uvs = new List<Vector2>();
+
+            List<int> usedVerts = new List<int>();
+            for (int i = 0; i < sourceTriangles.Length; i += 3)
+            {
+                //check if the current triangle is part of the extracted verts
+                if (vertIndices.Contains(sourceTriangles[i]))// || vertIndices.Contains(sourceTriangles[i + 1]) || vertIndices.Contains(sourceTriangles[i + 2]))
+                {
+                    //add matching triangle to my mesh
+                    for (int j = 0; j < 3; j++)
+                    {
+                        //check if this vertex is already used
+                        var existingVertIndex = usedVerts.FindIndex(x => x == sourceTriangles[i + j]);
+                        int newTriIndex = -1;
+                        if (existingVertIndex == -1) //vert not found, add this vert
+                        {
+                            vertices.Add(sourceVerts[sourceTriangles[i + j]]);
+                            uvs.Add(sourceUVs[sourceTriangles[i + j]]);
+                            newTriIndex = vertices.Count - 1;
+                            usedVerts.Add(sourceTriangles[i + j]);
+                        }
+                        else //vert already in use, so just add the triangle index
+                        {
+                            newTriIndex = existingVertIndex;
+                        }
+
+                        triangles.Add(newTriIndex);
+                    }
+                }
+            }
+
+            //generate mesh from data
+            Mesh mesh = new Mesh();
+            mesh.vertices = vertices.ToArray();
+            mesh.triangles = triangles.ToArray();
+            mesh.uv = uvs.ToArray();
+            mesh.RecalculateNormals();
+            return mesh;
+        }
+
+        //private void OnDrawGizmos()
+        //{
+        //    foreach (var vert in vertices)
+        //    {
+        //        Debug.DrawLine(Vector3.zero, vert + offset, Color.red);
+        //        Gizmos.color = Color.red;
+        //        Gizmos.DrawSphere(vert + offset, 0.1f);
+        //    }
+        //}
+    }
+}

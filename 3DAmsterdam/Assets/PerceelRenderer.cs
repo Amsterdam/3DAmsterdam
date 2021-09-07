@@ -3,6 +3,7 @@ using Netherlands3D;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
+using System;
 using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,20 @@ using UnityEngine.Networking;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
+
+public class ObjectDataEventArgs : EventArgs
+{
+    public bool IsLoaded { get; private set; }
+    public ObjectData ObjectData { get; private set; }
+    public Vector3 TileOffset;
+
+    public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
+    {
+        IsLoaded = isLoaded;
+        ObjectData = objectData;
+        TileOffset = tileOffset;
+    }
+}
 
 public class PerceelRenderer : MonoBehaviour
 {
@@ -31,6 +46,9 @@ public class PerceelRenderer : MonoBehaviour
 
     [SerializeField]
     private Transform GeneratedFieldsContainer;
+
+    public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
+    public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
     private float terrainFloor;
 
@@ -176,9 +194,29 @@ public class PerceelRenderer : MonoBehaviour
             //{
             //    uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
             //}, false, "Draai de uitbouw");
-
         });
+        
+        /*
+        var perceelGrootte = $"Perceeloppervlakte: {wfs.features[0].properties.kadastraleGrootteWaarde} m2";
+        PropertiesPanel.Instance.AddLabel(perceelGrootte);
 
+        btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
+        {
+            var rd = new Vector2RD(wfs.features[0].properties.perceelnummerPlaatscoordinaatX, wfs.features[0].properties.perceelnummerPlaatscoordinaatY);
+            var pos = CoordConvert.RDtoUnity(rd);
+            InstantiateUitbouw(pos);
+
+        });*/
+    }
+
+    private void InstantiateUitbouw(Vector3 pos)
+    {
+        pos.y = terrainFloor + Uitbouw.transform.localScale.y / 2;
+        var uitbouw = Instantiate(Uitbouw, pos, Quaternion.identity);
+        //startPosition = pos;
+        //uitbouwTransform = uitbouw.transform;
+
+        Invoke("RemoveButton", 0.3f); //todo: why with delay?
     }
 
     void RemoveButton()
@@ -207,8 +245,7 @@ public class PerceelRenderer : MonoBehaviour
 
         var child = BuildingsLayer.transform.GetChild(0);
         var rd = child.name.GetRDCoordinate();
-        
-        Debug.Log($"downloadobjectdata {child.name}");
+
         StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
     }
@@ -396,7 +433,7 @@ public class PerceelRenderer : MonoBehaviour
         {
             yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
             }
@@ -421,6 +458,8 @@ public class PerceelRenderer : MonoBehaviour
                 newAssetBundle.Unload(true);
 
                 objectMapping.ApplyDataToIDsTexture();
+                var tileOffset = ConvertCoordinates.CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+                BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
             }
             
         }        
