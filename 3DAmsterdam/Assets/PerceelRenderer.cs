@@ -118,9 +118,8 @@ public class PerceelRenderer : MonoBehaviour
 
             yield return null;
 
+            Netherlands3D.T3D.Test.Uitbouw.perceel = list;
             StartCoroutine(RenderPolygons(list));
-
-
         }
     }
 
@@ -413,7 +412,7 @@ public class PerceelRenderer : MonoBehaviour
     }
 
 
-    public bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
+    public static bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
     {
         var j = polyPoints.Length - 1;
         var inside = false;
