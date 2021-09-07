@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Netherlands3D.Logging.Services;
+using Netherlands3D.Interface;
 
 namespace Netherlands3D.Logging
 {
@@ -43,16 +44,27 @@ namespace Netherlands3D.Logging
 		/// <param name="eventData">Event data with field names and their values</param>
 		public static void SendEvent(string category, string action, string label = "")
 		{
+			#if UNITY_EDITOR
 			//Show our events in the console
 			if(Instance.logInConsole)
 			{
-				Debug.Log($"<color={ConsoleColors.EventHexColor}>[Analytics Event]  {category},{action},{label} (Not sent in Editor)</color>");
+				Debug.Log($"<color={ConsoleColors.EventHexColor}><b>[Analytics Event]</b> {category},{action},{label}</color>");
+				if(Fps.fpsLogGroup != 0)
+					Debug.Log($"<color={ConsoleColors.EventHexColor}><b>[Analytics Performance Event]</b> Fps group:{Fps.fpsLogGroup}</color>");
 			}
+			#endif
 
 			//Send the event down to our analytics service(s)
 			foreach (var service in Instance.analyticsServices)
 			{
-				if(service.enabled) service.SendEvent(category, action, label);
+				if (service.enabled)
+				{
+					service.SendEvent(category, action, label);
+
+					//We send average framerate after every action, as fps groups
+					if(Fps.fpsLogGroup != 0)
+						service.SendEvent("Performance", "FPS", $"{Fps.fpsLogGroup}");
+				}
 			}			
 		}
 

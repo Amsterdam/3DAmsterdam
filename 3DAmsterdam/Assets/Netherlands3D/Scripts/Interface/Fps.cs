@@ -18,17 +18,16 @@ namespace Netherlands3D.Interface
 		private double lastInterval = 0;
 
 		[SerializeField]
-		private bool logFpsGroupsToAnalytics = true;
-#if !UNITY_EDITOR
+		private bool automaticFpsLogging = false;
+
 		private float updateAnalyticsInterval = 10.0f; //Every # seconds we log our average fps to the analytics
 		
 		private int framesAnalytics = 0;
 		private double lastIntervalAnalytics = 0;
 
-		private int minimumFramesRenderedBeforeLogging = 5;
+		private int minimumFramesRenderedBeforeLogging = 30;
 
 		private int analyticsFpsGroupSize = 5; //The average framerate analytics are grouped in groups with this size. A value of 5 would give groups 5,10,15, and up
-#endif
 
 		private bool enabledVisualFPS = false;
 
@@ -43,6 +42,8 @@ namespace Netherlands3D.Interface
 
 		private bool applicationIsActive = true;
 
+		public static int fpsLogGroup = 0;
+
 		private void Awake()
 		{
 			ToggleVisualFPS(false);
@@ -50,10 +51,8 @@ namespace Netherlands3D.Interface
 			framesVisualFPS = 0;
 			lastInterval = Time.realtimeSinceStartup;
 
-			#if !UNITY_EDITOR
 			lastIntervalAnalytics = Time.realtimeSinceStartup;
 			framesAnalytics = 0;
-			#endif
 		}
 
 		private void Update()
@@ -86,23 +85,23 @@ namespace Netherlands3D.Interface
 				if (timeNow > lastInterval + updateInterval)
 				{
 					DrawFps((float)(framesVisualFPS / (timeNow - lastInterval)));
+
 					framesVisualFPS = 0;
 					lastInterval = timeNow;
 				}
 			}
 
-#if !UNITY_EDITOR
-			if(logFpsGroupsToAnalytics && applicationIsActive && Time.frameCount > minimumFramesRenderedBeforeLogging)
+			//Determine framerate group after we have been running for some frames, and the app is in the foreground
+			if(applicationIsActive && Time.frameCount > minimumFramesRenderedBeforeLogging)
 			{
 				++framesAnalytics;
 				if (timeNow > lastIntervalAnalytics + updateAnalyticsInterval)
 				{
-					LogFPS((float)(framesAnalytics / (timeNow - lastIntervalAnalytics)));
+					DetermineFpsGroup((float)(framesAnalytics / (timeNow - lastIntervalAnalytics)));
 					framesAnalytics = 0;
 					lastIntervalAnalytics = timeNow;
 				}
 			}
-#endif
 		}
 
 		/// <summary>
@@ -115,15 +114,19 @@ namespace Netherlands3D.Interface
 			fpsCounter.color = Color.Lerp(Color.red, Color.green, Mathf.InverseLerp(badFpsThreshold, goodFpsThreshold, fps));
 		}
 
-#if !UNITY_EDITOR
+
 		/// <summary>
-		/// Logs the FPS to Unity Analytics. Its rounded up into to FPS groups.
+		/// Calculate the average framerate group. Its rounded up into to FPS groups.
 		/// </summary>
 		/// <param name="fps">The avarage framerate count at this time of logging</param>
-		private void LogFPS(float fps)
+		private void DetermineFpsGroup(float fps)
 		{
-			int fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);			
-			Analytics.SendEvent("FPS",$"{fpsLogGroup}",$"{fps}");
+			//Determine fps log group variable. This can be used to determine performance, or show in events.
+			fpsLogGroup = Mathf.Clamp(Mathf.RoundToInt(Mathf.Round(fps / analyticsFpsGroupSize) * analyticsFpsGroupSize), analyticsFpsGroupSize, 200);
+
+			//Optionaly send this average framerate tick as an event every # seconds
+			if(automaticFpsLogging)
+				Analytics.SendEvent("FPS",$"{fpsLogGroup}",$"{fps}");
 		}
 
 		/// <summary>
@@ -144,7 +147,5 @@ namespace Netherlands3D.Interface
 				lastIntervalAnalytics = timeNow;
 			}
 		}
-
-#endif
 	}
 }
