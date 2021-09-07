@@ -9,34 +9,31 @@ namespace Netherlands3D.T3D.Test
     public class Uitbouw : MonoBehaviour
     {
         Vector2[] footprint;
-        public static List<Vector2[]> perceel;
-        public static Vector3 tileOffset;
+        MeshRenderer meshRenderer;
+        Mesh mesh;
 
-        private void Start()
+        public static List<Vector2[]> perceel; //todo: 
+
+        private void Awake()
         {
+            meshRenderer = GetComponent<MeshRenderer>();
+            mesh = GetComponent<MeshFilter>().mesh;
         }
 
         private void Update()
         {
-            footprint = GenerateFootprint(GetComponent<MeshFilter>().mesh, transform.rotation);
+            footprint = GenerateFootprint(mesh, transform.rotation);
 
             if (perceel == null)
                 return;
 
             if (IsInPerceel(footprint, perceel, transform.position))
             {
-                print("in perceel");
-                GetComponent<MeshRenderer>().material.color = Color.green;
+                meshRenderer.material.color = Color.green;
             }
             else
             {
-                print("uit perceel");
-                GetComponent<MeshRenderer>().material.color = Color.red;
-            }
-
-            foreach (var vert in footprint)
-            {
-                Debug.DrawLine(transform.position, new Vector3(transform.position.x + vert.x, 2, transform.position.z + vert.y), Color.red);
+                meshRenderer.material.color = Color.red;
             }
         }
 
@@ -44,7 +41,7 @@ namespace Netherlands3D.T3D.Test
         {
             var verts = mesh.vertices;
             var footprint = new List<Vector2>();
-            //print(verts.Length);
+
             for (int i = 0; i < verts.Length; i++)
             {
 
@@ -64,7 +61,7 @@ namespace Netherlands3D.T3D.Test
                     select CoordConvert.RDtoUnity(p) into v3
                     select new Vector2(v3.x, v3.z);
 
-            var polyPoints = q.ToArray();
+            var polyPoints = q.ToArray(); //todo: test for non-contiguous  perceels
 
             foreach (var vert in footprint)
             {
