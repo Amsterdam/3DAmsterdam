@@ -25,16 +25,11 @@ namespace Netherlands3D.LayerSystem
 	public class FlipToCamera : MonoBehaviour
 	{
 		private float currentAngle;
-
 		public List<string> UniqueNamesList { get; internal set; }
 
 		void Start()
 		{
 			currentAngle = transform.transform.localRotation.eulerAngles.y;
-			if (currentAngle < 0)
-			{
-				currentAngle += 360;
-			}
 		}
 
 		private void OnDestroy()
@@ -50,24 +45,22 @@ namespace Netherlands3D.LayerSystem
 		private void FlipTextByLookDirection()
 		{
 			float cameraAngle = CameraModeChanger.Instance.ActiveCamera.transform.rotation.eulerAngles.y;
-			bool flip = false;
 			float angleDelta;
 			angleDelta = Mathf.DeltaAngle(cameraAngle, currentAngle);
 
+			//Flip so the text is not upside down in the camera view
 			if (Mathf.Abs(angleDelta) > 90)
-			{
-				flip = true;
-			}
-
-			if (flip)
 			{
 				transform.Rotate(Vector3.forward, 180f, Space.Self);
 				currentAngle = transform.transform.localRotation.eulerAngles.y;
-				if (currentAngle < 0)
-				{
-					currentAngle += 360;
-				}
 			}
+
+			//Turn down if camera is below the text
+			this.transform.localEulerAngles = new Vector3(
+				(CameraModeChanger.Instance.ActiveCamera.transform.position.y < this.transform.position.y) ? -90 : 90,
+				this.transform.localEulerAngles.y,
+				this.transform.localEulerAngles.z
+			);
 		}
 	}
 }
