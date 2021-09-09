@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9079581066794114280}
   - component: {fileID: 6667394427083844630}
   - component: {fileID: 8350881743252471525}
+  - component: {fileID: 3375766289973435340}
   m_Layer: 5
   m_Name: Compass
   m_TagString: Untagged
@@ -93,6 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   counterRotate: 0
+  doubleClickLooksDown: 0
   doubleClickTime: 0.5
 --- !u!114 &6667394427083844630
 MonoBehaviour:
@@ -163,6 +165,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: <b>Klik</b> Kijk naar het noorden
+--- !u!114 &3375766289973435340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47477871776086899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!1 &3724894983124572339
 GameObject:
   m_ObjectHideFlags: 0
