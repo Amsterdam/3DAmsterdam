@@ -79,7 +79,10 @@ namespace Netherlands3D.Interface.Layers
 			}
 			//Set tooltip text. Users do not need to know if a material is an instance.
 			var materialName = targetMaterial.name.Replace(" (Instance)", "");
-			if (materialName.Contains("_")) materialName = materialName.Split('_')[0];
+
+			//Filter out our externail textures tag
+			if (materialName.Contains("[texture="))
+				materialName = materialName.Split('[')[0].Trim();
 
 			//GetComponent<TooltipTrigger>().TooltipText = materialName + EXPLANATION_TEXT;
 			materialTitle.text = materialName;
