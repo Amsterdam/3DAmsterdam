@@ -24,6 +24,9 @@ namespace Netherlands3D.Cameras
         [SerializeField]
         private float spinSpeed = 0.5f;
 
+        [SerializeField]
+        private float firstPersonModifierSpinSpeed = 0.5f;
+
         private const float minOrtographicZoom = 20f;
         private float maxZoomOut = 2500f;
         private float minUndergroundY = -30f;
@@ -394,8 +397,8 @@ namespace Netherlands3D.Cameras
             var mouseDelta = Mouse.current.delta.ReadValue();
 
             //Convert mouse position into local rotations
-            currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
-            currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            currentRotation.x -= mouseDelta.x * firstPersonModifierSpinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            currentRotation.y += mouseDelta.y * firstPersonModifierSpinSpeed * ApplicationSettings.settings.rotateSensitivity;
 
             //Adjust camera rotation
             cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
@@ -427,6 +430,9 @@ namespace Netherlands3D.Cameras
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
             var cameraHeight = cameraComponent.transform.position.y; //The higher we are, the faster we zoom       
+
+            //Inverse zoom multiplier when we are below the zoompoint
+            if (zoomDirectionPoint.y > cameraComponent.transform.position.y) zoomAmount *= -1;
 
             if (cameraComponent.orthographic)
             {
