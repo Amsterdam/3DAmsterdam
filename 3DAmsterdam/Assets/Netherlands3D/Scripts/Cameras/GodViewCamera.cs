@@ -68,7 +68,7 @@ namespace Netherlands3D.Cameras
 
         private Vector3 zoomDirection;
         private Vector3 rotatePoint;
-
+        private Vector3 localOffsetVector;
         private Vector2 currentRotation;
 
         public delegate void FocusPointChanged(Vector3 pointerPosition);
@@ -577,34 +577,37 @@ namespace Netherlands3D.Cameras
             return availableActionMaps.Contains(actionMap);
         }
 
-        private Vector3 moveBackPerspective;
-        private float previousCameraX = 0;
-        private float previousCameraYPosition;
         public void ToggleOrtographic(bool ortographicOn)
         {
-            cameraComponent.orthographic = ortographicOn;
-
             if (ortographicOn)
             {
-                previousCameraX = cameraComponent.transform.localEulerAngles.x;
-                previousCameraYPosition = cameraComponent.transform.position.y;
-                //Set the orto size according to camera height, so our fov looks a bit like the perspective fov
+                var twoDimensionalUp = cameraComponent.transform.up;
+                twoDimensionalUp.y = 0;
+
+                var worldViewCenter = GetPointerPositionInWorld(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+                cameraComponent.transform.localEulerAngles = new Vector3(0, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+                localOffsetVector = cameraComponent.transform.InverseTransformPoint(worldViewCenter);
+
+                //Shift camera to this point, but keep same height
+                cameraComponent.transform.position = new Vector3(worldViewCenter.x,cameraComponent.transform.position.y, worldViewCenter.z);
+                cameraComponent.transform.rotation = Quaternion.LookRotation(cameraComponent.transform.up, twoDimensionalUp);
+
+                //Set orto size based on camera height (to get a similar fov)
                 cameraComponent.orthographicSize = cameraComponent.transform.position.y;
 
-                //Slide forward based on camera angle, to get an expected centerpoint for our view
-                var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
-                moveBackPerspective = cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y;
-
-                cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
                 print("Ortographic");
             }
             else{
-                cameraComponent.transform.Translate(-moveBackPerspective);
-                cameraComponent.transform.position = new Vector3(cameraComponent.transform.position.x, previousCameraYPosition, cameraComponent.transform.position.z);
-                cameraComponent.transform.localEulerAngles = new Vector3(previousCameraX, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+                var worldViewCenter = GetPointerPositionInWorld(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
+                cameraComponent.transform.position = worldViewCenter;
+                cameraComponent.transform.localEulerAngles = new Vector3(0, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+                cameraComponent.transform.Translate(-localOffsetVector, Space.Self);
+                cameraComponent.transform.LookAt(worldViewCenter);
                 print("Perspective");                
             }
+
+            cameraComponent.orthographic = ortographicOn;
 		}
 	}
 }
