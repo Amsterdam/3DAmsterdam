@@ -4,7 +4,7 @@ using System.Linq;
 using ConvertCoordinates;
 using UnityEngine;
 
-namespace Netherlands3D.T3D.Test
+namespace Netherlands3D.T3D.Perceel
 {
     public class Uitbouw : MonoBehaviour
     {
@@ -12,6 +12,8 @@ namespace Netherlands3D.T3D.Test
         private MeshRenderer meshRenderer;
         private Mesh mesh;
         private List<Vector2[]> perceel;
+
+        private Vector3 oldPosition;
 
         private void Awake()
         {
@@ -44,10 +46,12 @@ namespace Netherlands3D.T3D.Test
             if (IsInPerceel(footprint, perceel, transform.position))
             {
                 meshRenderer.material.color = Color.green;
+                //oldPosition = transform.position;
             }
             else
             {
                 meshRenderer.material.color = Color.red;
+                //transform.position = oldPosition;
             }
         }
 
