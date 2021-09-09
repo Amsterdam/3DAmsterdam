@@ -93,7 +93,6 @@ namespace Netherlands3D.ModelParsing
             }
 
             isBusy = false;
-
         }
 
         public int ParseNextMtlLines(int maxLines)

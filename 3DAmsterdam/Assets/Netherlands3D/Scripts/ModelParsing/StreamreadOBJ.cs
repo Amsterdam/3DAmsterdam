@@ -70,8 +70,6 @@ namespace Netherlands3D.ModelParsing
 		public Vector2RD TopRightBounds { get => topRightBounds; set => topRightBounds = value; }
 		//public GeometryBuffer Buffer { get => buffer; set => buffer = value; }
 
-
-
 		StreamReader streamReader;
 		public bool isFinished = false;
 		public bool succes = true;
@@ -137,8 +135,6 @@ namespace Netherlands3D.ModelParsing
 		{
 			faces.Capacity = 4;
 			
-
-
 			if (!File.Exists(Application.persistentDataPath + "/" + filename))
 			{
 				Debug.Log("can't find file");
@@ -152,7 +148,6 @@ namespace Netherlands3D.ModelParsing
 
 		IEnumerator StreamReadFile(string filename)
 		{
-
 			vertices.SetupWriting("vertices");
 			normals.SetupWriting("normals");
 			//setup first submesh;
@@ -183,8 +178,6 @@ namespace Netherlands3D.ModelParsing
 				lineCount++;
 				totalLinesCount++;
 				ReadLine();
-
-
 			}
 
 			streamReader.Close();
@@ -494,9 +487,6 @@ namespace Netherlands3D.ModelParsing
 
 		void ReadVertex()
 		{
-
-
-
 			float x = ReadFloat();
 			float y = ReadFloat();
 			float z = ReadFloat();
@@ -550,7 +540,6 @@ namespace Netherlands3D.ModelParsing
 
 		void ReadVertexTexture()
 		{
-
 			float x = ReadFloat();
 			float y = ReadFloat();
 			if (x != float.NaN && y != float.NaN)
@@ -615,12 +604,9 @@ namespace Netherlands3D.ModelParsing
 		}
 		void SaveVertexToSubmesh(GeometryBuffer.FaceIndices v1)
         {
-
 			activeSubmesh.rawData.Add(v1.vertexIndex, v1.vertexNormal, v1.vertexUV);
 			activeSubmesh.vertexCount++;
 			return;
-			
-
 		}
 
 		bool ReadSingleFace(out GeometryBuffer.FaceIndices faceIndex, out char readChar)
@@ -630,7 +616,7 @@ namespace Netherlands3D.ModelParsing
 			int number;
 			char lastChar;
 
-			if (readInt(out number, out lastChar))
+			if (ReadInt(out number, out lastChar))
 			{
                 if (number<0)
                 {
@@ -640,12 +626,12 @@ namespace Netherlands3D.ModelParsing
 				if (lastChar == '/') // vertex is followed by texture and / or normal;
 				{
 
-					if (readInt(out number, out lastChar))
+					if (ReadInt(out number, out lastChar))
 
 					{// succesfully read vertexUV
 						face.vertexUV = number - 1;
 					}
-					if (readInt(out number, out lastChar))
+					if (ReadInt(out number, out lastChar))
 					{ 
                         if (number<0)
                         {
@@ -668,7 +654,7 @@ namespace Netherlands3D.ModelParsing
 			return true;
 		}
 
-		bool readInt(out int number, out char lastChar)
+		bool ReadInt(out int number, out char lastChar)
 		{// return if succesfully found a bool
 			char readChar = ' ';
 			bool numberFound = false;
@@ -709,7 +695,6 @@ namespace Netherlands3D.ModelParsing
 		}
 		void ReadNormal()
 		{
-
 			float x = ReadFloat();
 			float y = ReadFloat();
 			float z = ReadFloat();
@@ -1050,8 +1035,6 @@ namespace Netherlands3D.ModelParsing
 
 			mesh.subMeshCount = submeshes.Count;
 
-
-
 			int submeshIndex = 0;
             foreach (var sm in submeshes)
             {
@@ -1086,20 +1069,11 @@ namespace Netherlands3D.ModelParsing
 			{
 				mesh.RecalculateNormals();
 			}
-				
-
-
-			//         submeshes.Clear();
-
-
-			////set up all the materials;
-			////mesh.RecalculateNormals();
 			createdGameObject = new GameObject();
             MeshFilter mf = createdGameObject.AddComponent<MeshFilter>();
             MeshRenderer mr = createdGameObject.AddComponent<MeshRenderer>();
             mr.materials = materials;
             mf.mesh = mesh;
-
 
 			loadingObjScreen.Hide();
 			isFinished = true;
@@ -1112,7 +1086,4 @@ namespace Netherlands3D.ModelParsing
 			return norm;
 		}
 	}
-	
-
-	
 }
