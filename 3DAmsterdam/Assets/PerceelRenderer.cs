@@ -48,7 +48,13 @@ public class PerceelRenderer : MonoBehaviour
     public static PerceelRenderer Instance;
     public GameObject TerrainLayer;
     public GameObject BuildingsLayer;
-    public GameObject HuisRichtingCube;
+
+    public Transform HuisRichtingCube1;
+    public Transform HuisRichtingCube2;
+    public Transform HuisRichtingCube3;
+    private Transform huisRichtingCube;
+
+
     public GameObject Uitbouw;
     public InterfaceLayer BuildingInterfaceLayer;
 
@@ -194,10 +200,10 @@ public class PerceelRenderer : MonoBehaviour
             uitbouwTransform = uitbouw.transform;
 
             //snap uitbouw tegen gebouw
-            uitbouw.transform.rotation = HuisRichtingCube.transform.rotation;
-            var halfHuisRichtingCube = (HuisRichtingCube.transform.localScale.z / 2);
+            uitbouw.transform.rotation = huisRichtingCube.rotation;
+            var halfHuisRichtingCube = (huisRichtingCube.localScale.z / 2);
             var halfUitbouw = (uitbouw.transform.localScale.z / 2);
-            var snappedPos = HuisRichtingCube.transform.position - (HuisRichtingCube.transform.forward * (halfHuisRichtingCube + halfUitbouw));
+            var snappedPos = huisRichtingCube.position - (huisRichtingCube.forward * (halfHuisRichtingCube + halfUitbouw));
             snappedPos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
             uitbouw.transform.position = snappedPos;
             startPosition = snappedPos;
@@ -246,6 +252,18 @@ public class PerceelRenderer : MonoBehaviour
 
     public IEnumerator HandlePosition(Vector3RD position, string id)
     {
+        if(id == "0344100000021804")
+        {
+            huisRichtingCube = HuisRichtingCube1;
+        }
+        else if (id == "0344100000068320")
+        {
+            huisRichtingCube = HuisRichtingCube2;
+        }
+        else if (id == "0344100000052214")
+        {
+            huisRichtingCube = HuisRichtingCube3;
+        };
 
         StartCoroutine(UpdateSidePanelAddress(id));
 
@@ -263,8 +281,19 @@ public class PerceelRenderer : MonoBehaviour
         
         yield return null;
 
-        var child = BuildingsLayer.transform.GetChild(0);
-        var rd = child.name.GetRDCoordinate();
+        bool hasRD = false;
+
+        Vector3RD rd = new Vector3RD();
+        Transform child = null;
+
+        while (!hasRD)
+        {
+            child = BuildingsLayer.transform.GetChild(0);
+            rd = child.name.GetRDCoordinate();
+            if (rd.x != 0) hasRD = true;
+            yield return null;
+        }
+        
 
         StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
@@ -393,29 +422,33 @@ public class PerceelRenderer : MonoBehaviour
 
         List<float> terrainFloorPoints = new List<float>();
 
-        //use collider to place the polygon points on the terrain
-        for(int i=0; i < verts.Length; i++)
+        while (!terrainFloorPoints.Any())
         {
-            var point = verts[i];
-            var from = new Vector3(point.x, point.y + 10, point.z);
+            //use collider to place the polygon points on the terrain
+            for (int i = 0; i < verts.Length; i++)
+            {
+                var point = verts[i];
+                var from = new Vector3(point.x, point.y + 10, point.z);
 
 
-            Ray ray = new Ray(from, Vector3.down);
-            RaycastHit hit;
+                Ray ray = new Ray(from, Vector3.down);
+                RaycastHit hit;
 
+                yield return null;
+
+                //raycast from the polygon point to hit the terrain so we can place the outline so that it is visible
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                {
+                    //Debug.Log("we have a hit");
+                    verts[i].y = hit.point.y + 0.5f;
+                    terrainFloorPoints.Add(hit.point.y);
+                }
+                else
+                {
+                    Debug.Log("raycast failed..");
+                }
+            }
             yield return null;
-
-            //raycast from the polygon point to hit the terrain so we can place the outline so that it is visible
-            if(Physics.Raycast( ray, out hit, Mathf.Infinity  ))
-            {
-                //Debug.Log("we have a hit");
-                verts[i].y = hit.point.y + 0.5f;
-                terrainFloorPoints.Add(hit.point.y);
-            }
-            else
-            {
-                Debug.Log("raycast failed..");
-            }
         }
 
         terrainFloor = terrainFloorPoints.Average();
