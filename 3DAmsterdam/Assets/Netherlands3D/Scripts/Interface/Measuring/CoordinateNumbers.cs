@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Netherlands3D.Interface
 {
+    /// <summary>
+    /// Add 2D numbers on the canvas and return its objects.
+    /// </summary>
     public class CoordinateNumbers : MonoBehaviour
     {
         [SerializeField]

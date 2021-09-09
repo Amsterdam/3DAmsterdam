@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace Netherlands3D.Interface.Minimap
 {
@@ -74,12 +75,12 @@ namespace Netherlands3D.Interface.Minimap
             dragging = true;
             wmtsMap.CenterPointerInView = false;
             ChangePointerStyleHandler.ChangeCursor(ChangePointerStyleHandler.Style.GRABBING);
-            dragOffset = mapTiles.position - Input.mousePosition;
+            dragOffset = mapTiles.position - (Vector3)eventData.position;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            mapTiles.transform.position = Input.mousePosition + dragOffset;
+            mapTiles.transform.position = (Vector3)eventData.position + dragOffset;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -135,7 +136,7 @@ namespace Netherlands3D.Interface.Minimap
             var zoomTarget = Vector3.zero;
             if (useMouse)
             {
-                zoomTarget = Input.mousePosition;
+                zoomTarget = Mouse.current.position.ReadValue();
             }
             else
             {

@@ -29,6 +29,9 @@ namespace Netherlands3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern string OpenURLInNewWindow(string openUrl = "https://");
 
+		[DllImport("__Internal")]
+		private static extern bool IsMobile();
+
 		/// <summary>
 		/// Some interface items are drawn as HTML DOM elements on top of the Unity3D canvas.
 		/// This methods scales those elements with the Unity canvas.
@@ -70,6 +73,14 @@ namespace Netherlands3D.JavascriptConnection
 #if UNITY_WEBGL && !UNITY_EDITOR
 			SetUniqueShareURL(token);
 #endif
+		}
+
+		public static bool IsMobileBrowser()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			return IsMobile();
+#endif
+			return false;
 		}
 
 		public static string FetchVissimDataAsString()

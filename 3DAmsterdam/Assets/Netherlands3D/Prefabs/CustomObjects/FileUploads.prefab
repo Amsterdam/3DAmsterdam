@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7590023009504579809}
   - component: {fileID: 2243999760766328421}
   - component: {fileID: 5943081213541711405}
+  - component: {fileID: 895690607689887116}
   m_Layer: 0
   m_Name: FileUploads
   m_TagString: Untagged
@@ -100,3 +101,19 @@ MonoBehaviour:
   playback: {fileID: 0}
   converter: {fileID: 0}
   vissimScriptObject: {fileID: 0}
+--- !u!114 &895690607689887116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7590023009504579808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2870e6887e286944e98342de1a18fde8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  csvLoader: {fileID: 0}
+  urlstring: {fileID: 0}
+  filenames: []
+  numberOfFIlesToLoad: 0

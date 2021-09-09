@@ -101,7 +101,7 @@ public class MeasuringLine : Interactable
 
 	private void PreviewNextPoint()
 	{
-		Vector3 previewPoint = CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+		Vector3 previewPoint = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
 		PrepareColliders(previewPoint);
 
 		//Shoot ray to get precise point on collider

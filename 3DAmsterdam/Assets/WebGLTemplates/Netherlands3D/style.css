@@ -127,6 +127,11 @@ body {
 	left: 400px !important;
 	bottom: -50px !important;
 }
+@media (orientation: portrait) {
+  .usabilla_live_button_container {
+    display:none;
+  }
+}
 
 #unity-container { position: absolute }
 #unity-container.unity-desktop { width: 100%; height: 100% }

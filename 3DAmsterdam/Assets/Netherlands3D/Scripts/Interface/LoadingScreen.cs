@@ -16,6 +16,13 @@ namespace Netherlands3D.Interface
 
 		public ProgressBar ProgressBar { get => progressBar; }
 
+		public static LoadingScreen Instance;
+
+		private void Awake()
+		{
+			Instance = this;
+		}
+
 		public void ShowMessage(string text)
 		{
 			this.transform.SetAsLastSibling(); //Always on top

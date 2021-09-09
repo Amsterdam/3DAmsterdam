@@ -7,7 +7,7 @@ using Netherlands3D.AssetGeneration;
 public class GeometryBuffer
 {
 
-	readonly List<ObjectData> Objects;
+	public List<ObjectData> Objects;
 	public List<Vector3> Vertices;
 	public List<Vector2> Uvs;
 	public List<Vector3> Normals;
@@ -16,7 +16,12 @@ public class GeometryBuffer
 
 	SubMeshGroupData currentSubMeshGroup;
 	public ObjectData currentObjectData;
-
+	public struct  FaceIndices
+	{
+		public int vertexIndex;
+		public int vertexUV;
+		public int vertexNormal;
+	}
 	public class ObjectData
 	{
 		public string Name;

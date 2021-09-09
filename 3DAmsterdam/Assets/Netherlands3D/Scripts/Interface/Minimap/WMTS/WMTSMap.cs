@@ -34,6 +34,8 @@ namespace Netherlands3D.Interface.Minimap
 
 		[SerializeField]
 		private RectTransform pointer;
+		[SerializeField]
+		private RectTransform fov;
 
 		[SerializeField]
 		private int startIdentifier = 5;
@@ -98,7 +100,6 @@ namespace Netherlands3D.Interface.Minimap
 
 			//Calculate map width in meters based on zoomlevel 0 setting values
 			mapSizeInMeters = baseTileSize * pixelInMeters * scaleDenominator;
-			print($"mapWidthInMeters = {baseTileSize} * {pixelInMeters} * {scaleDenominator}");
 
 			DetermineTopLeftOrigin();
 
@@ -155,14 +156,24 @@ namespace Netherlands3D.Interface.Minimap
 		/// <param name="targetPosition">RD coordinate to place the object</param>
 		public void PositionObjectOnMap(RectTransform targetObject, Vector3RD targetPosition)
 		{		
-			var meterX = targetPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
-			var meterY = targetPosition.y - (float)Config.activeConfiguration.TopRightRD.y;
+			targetObject.transform.localScale = Vector3.one / mapTransform.localScale.x;
+			targetObject.transform.localPosition = DeterminePositionOnMap(targetPosition);
+		}
+
+		/// <summary>
+		/// Return the local unity map coordinates
+		/// </summary>
+		/// <param name="sourceRDPosition">The source RD position</param>
+		/// <returns></returns>
+		public Vector3 DeterminePositionOnMap(Vector3RD sourceRDPosition)
+		{
+			var meterX = sourceRDPosition.x - (float)Config.activeConfiguration.BottomLeftRD.x;
+			var meterY = sourceRDPosition.y - (float)Config.activeConfiguration.TopRightRD.y;
 
 			var pixelX = meterX / startMeterInPixels;
 			var pixelY = meterY / startMeterInPixels;
 
-			targetObject.transform.localScale = Vector3.one / mapTransform.localScale.x;
-			targetObject.transform.localPosition = new Vector3((float)pixelX, (float)pixelY);
+			return new Vector3((float)pixelX, (float)pixelY);
 		}
 
 		/// <summary>
@@ -243,7 +254,8 @@ namespace Netherlands3D.Interface.Minimap
 
 		private void MovePointer()
 		{
-			pointer.SetAsLastSibling(); //Pointer is on top of map
+			fov.SetAsLastSibling(); //Fov is on top of map
+			pointer.SetAsLastSibling(); //Pointer is on top of fov
 
 			PositionObjectOnMap(pointer, CoordConvert.UnitytoRD(CameraModeChanger.Instance.ActiveCamera.transform.position));
 

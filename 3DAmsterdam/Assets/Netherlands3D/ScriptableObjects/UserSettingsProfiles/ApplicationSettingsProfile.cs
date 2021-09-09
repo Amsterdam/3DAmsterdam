@@ -9,6 +9,8 @@ public class ApplicationSettingsProfile : ScriptableObject
 {
     public string applicationVersion = "";
 
+    public bool mobileProfile = false;
+
     public string profileName = "High";
 
     //Interface

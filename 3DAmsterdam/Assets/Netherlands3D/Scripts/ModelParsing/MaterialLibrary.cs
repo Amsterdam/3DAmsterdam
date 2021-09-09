@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.ObjectInteraction;
+using UnityEngine.Networking;
+using Netherlands3D.Settings;
 
-namespace Netherlands3D.ModelParsing
+namespace Netherlands3D.Rendering
 {
     public class MaterialLibrary : MonoBehaviour
     {
@@ -18,9 +20,84 @@ namespace Netherlands3D.ModelParsing
 
         public static MaterialLibrary Instance;
 
-		private void Awake()
+        [SerializeField]
+        private string htmlTexturesFolderDesktop = "TexturesDesktop";
+
+        [SerializeField]
+        private string htmlTexturesFolderMobile = "TexturesMobile";
+
+        [SerializeField]
+        private string textureFileExtention = ".png";
+
+        private Dictionary<string, Texture2D> loadedTextures;
+
+        private const string materialBaseMap = "_BaseMap";
+
+        private void Awake()
 		{
             Instance = this;
+            loadedTextures = new Dictionary<string, Texture2D>();
+        }
+
+		private void Start()
+		{
+            StartCoroutine(LoadTextures());
+        }
+
+		private IEnumerator LoadTextures()
+        {
+            var texturesFolder = (ApplicationSettings.Instance.IsMobileDevice) ? htmlTexturesFolderMobile : htmlTexturesFolderDesktop;
+            var splitTarget = Application.absoluteURL.LastIndexOf('/');
+            var relativeDirectory = "";
+            if (splitTarget != -1)
+            {
+                relativeDirectory = Application.absoluteURL.Substring(0, splitTarget);
+            }
+#if UNITY_EDITOR
+            relativeDirectory = $"file:///{Application.dataPath}/WebGLTemplates/Netherlands3D";
+#endif
+
+            foreach (Material material in materialLibrary)
+            {
+                //If this material name contains an underscore, use the last part as a texture path
+                if (material.name.Contains("_"))
+                {
+                    var materialTextureFileName = material.name.Split('_')[1];
+                    if (loadedTextures.ContainsKey(materialTextureFileName))
+                    {
+                        material.SetTexture(materialBaseMap, loadedTextures[materialTextureFileName]);
+                    }
+                    else
+                    {
+                        var materialTextureUrl = $"{relativeDirectory}/{texturesFolder}/{materialTextureFileName}";
+                        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(materialTextureUrl))
+                        {
+                            yield return uwr.SendWebRequest();
+                            if (uwr.result != UnityWebRequest.Result.Success)
+                            {
+                                Debug.Log($"No texture found for material {materialTextureUrl}");
+                            }
+                            else
+                            {
+                                // Get downloaded asset bundle
+                                var loadedTexture = (Texture2D)DownloadHandlerTexture.GetContent(uwr);
+
+                                // Mipmapped texture
+                                var mipTexture = new Texture2D(loadedTexture.width, loadedTexture.height, TextureFormat.ARGB32,true);
+
+                                // Copy the pixels over to mipmap 0
+                                mipTexture.SetPixels(loadedTexture.GetPixels());
+                                mipTexture.Apply(); //Apply now generates our mipmap steps
+
+                                Destroy(loadedTexture);
+
+                                loadedTextures.Add(materialTextureFileName, mipTexture);
+                                material.SetTexture(materialBaseMap, mipTexture);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 		/// <summary>

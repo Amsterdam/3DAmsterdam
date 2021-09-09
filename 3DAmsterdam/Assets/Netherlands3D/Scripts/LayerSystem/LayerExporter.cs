@@ -110,15 +110,11 @@ namespace Netherlands3D.Interface
 				print(selectedExportFormat);
 
 				var amountOfCellsInBounds = (exportBounds.size.x / VisualGrid.Instance.CellSize) * (exportBounds.size.z / VisualGrid.Instance.CellSize);
-				Analytics.SendEvent("LayersExport",
-					new Dictionary<string, object>
-					{
-						{ "Format", selectedExportFormat },
-						{ "Cells", amountOfCellsInBounds },
-						{ "BottomLeftRD", CoordConvert.UnitytoRD(exportBounds.min) },
-						{ "TopRightRD", CoordConvert.UnitytoRD(exportBounds.max) },
-					}
-				);
+
+				var bottomLeftRD = CoordConvert.UnitytoRD(exportBounds.min);
+				var topRightRD = CoordConvert.UnitytoRD(exportBounds.max);
+
+				Analytics.SendEvent("LayersExport", selectedExportFormat, $"{amountOfCellsInBounds} cells with bounds: {bottomLeftRD.x},{bottomLeftRD.y},{topRightRD.x},{topRightRD.y}");
 
 				switch (selectedExportFormat)
 				{

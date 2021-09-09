@@ -121,13 +121,7 @@ namespace Netherlands3D.Interface.Sharing
 				}
 
 				//Let analytics know we saved a scene, with the amount of objects and vertex count
-				Analytics.SendEvent("SharedScene",
-					new Dictionary<string, object>
-					{
-						{ "CustomObjectsCount", serverReturn.modelUploadTokens.Length },
-						{ "TotalVertexCount", totalVerts }
-					}
-				);
+				Analytics.SendEvent("ShareScene", "Shared", $"Objects:{serverReturn.modelUploadTokens.Length}, Verts:{totalVerts}");
 
 				//Make sure the progressbar shows 100% before jumping to the next state
 				progressBar.Percentage(1.0f);
