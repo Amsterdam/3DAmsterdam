@@ -23,6 +23,7 @@ namespace Netherlands3D.T3D.Perceel
 
         private void Start()
         {
+            perceel = PerceelRenderer.Instance.Perceel;
             PerceelRenderer.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
         }
 
@@ -41,31 +42,34 @@ namespace Netherlands3D.T3D.Perceel
 
         private void CheckIfObjectIsInPerceelBounds()
         {
-            footprint = GenerateFootprint(mesh, transform.rotation);
+            footprint = GenerateFootprint(mesh, transform.rotation, transform.lossyScale);
 
             if (IsInPerceel(footprint, perceel, transform.position))
             {
                 meshRenderer.material.color = Color.green;
+                print("In bounds");
                 //oldPosition = transform.position;
             }
             else
             {
                 meshRenderer.material.color = Color.red;
+                print("out bounds");
                 //transform.position = oldPosition;
             }
         }
 
-        public static Vector2[] GenerateFootprint(Mesh mesh, Quaternion rotation)
+        public static Vector2[] GenerateFootprint(Mesh mesh, Quaternion rotation, Vector3 scale)
         {
             var verts = mesh.vertices;
             var footprint = new List<Vector2>();
 
             for (int i = 0; i < verts.Length; i++)
             {
-
-                var rotatedVert = rotation * verts[i];
+                var transformedVert = verts[i];
+                transformedVert.Scale(scale);
+                transformedVert = rotation * transformedVert;
                 //var vert = Vector3.ProjectOnPlane(rotatedVert, Vector3.up);
-                var vert = new Vector2(rotatedVert.x, rotatedVert.z);
+                var vert = new Vector2(transformedVert.x, transformedVert.z);
 
                 footprint.Add(vert); //todo: optimize so that only the outline is in the footprint
             }
