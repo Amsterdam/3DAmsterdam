@@ -42,7 +42,11 @@ namespace Netherlands3D.Interface.Modular
         {
             KeepInFront keepInFront = rectTransform.GetComponent<KeepInFront>();
             if (keepInFront) keepInFront.MoveToFront();
+        }
 
+        public void Close()
+        {
+            rectTransform.gameObject.SetActive(false);
         }
     }
 }
