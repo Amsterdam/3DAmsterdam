@@ -30,6 +30,18 @@ public class ObjectDataEventArgs : EventArgs
     }
 }
 
+public class PerceelDataEventArgs : EventArgs
+{
+    public bool IsLoaded { get; private set; }
+    public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
+
+    public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel)
+    {
+        IsLoaded = isLoaded;
+        Perceel = perceel;
+    }
+}
+
 public class PerceelRenderer : MonoBehaviour
 {
     public Material LineMaterial;
@@ -54,6 +66,9 @@ public class PerceelRenderer : MonoBehaviour
 
     public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
     public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
+
+    public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
+    public event PerceelDataLoadedEventHandler PerceelDataLoaded;
 
     private float terrainFloor;
 
@@ -124,9 +139,8 @@ public class PerceelRenderer : MonoBehaviour
 
             yield return null;
 
+            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list));
             StartCoroutine(RenderPolygons(list));
-
-
         }
     }
 
@@ -446,7 +460,7 @@ public class PerceelRenderer : MonoBehaviour
     }
 
 
-    public bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
+    public static bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
     {
         var j = polyPoints.Length - 1;
         var inside = false;
