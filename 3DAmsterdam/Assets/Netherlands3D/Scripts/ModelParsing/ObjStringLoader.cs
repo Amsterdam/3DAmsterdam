@@ -138,7 +138,6 @@ namespace Netherlands3D.ModelParsing
 				if (extention.IndexOf("mtl") > -1)
 				{
 					mtlstring = filenames[i];
-
 				}
 			}
 
@@ -153,7 +152,6 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.Hide();
 			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
-
 
 		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath, System.Action<bool> callback)
         {
@@ -196,11 +194,7 @@ namespace Netherlands3D.ModelParsing
 			}
 
 			GameObject createdGO = objstreamReader.createdGameObject;
-
 			createdGO.name = objModelName;
-
-			//newOBJLoader.name = objModelName;
-
 			createdGO.AddComponent<MeshCollider>().sharedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
 			createdGO.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 			transformable = createdGO.AddComponent<Transformable>();
@@ -212,7 +206,6 @@ namespace Netherlands3D.ModelParsing
 				if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
 				//transformable.placedTransformable.AddListener(RemapMaterials);
 				customObjectPlacer.PlaceExistingObjectAtPointer(createdGO);
-				
 			}
 			else
 			{
