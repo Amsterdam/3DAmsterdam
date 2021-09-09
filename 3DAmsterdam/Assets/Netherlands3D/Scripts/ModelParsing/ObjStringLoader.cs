@@ -182,8 +182,9 @@ namespace Netherlands3D.ModelParsing
 					isBusy = mtlreader.isBusy;
 					yield return null;
 				}
-				
+				File.Delete(Application.persistentDataPath + "/" + mtlFilePath);
 			}
+
 			objstreamReader.materialDataSlots = mtlreader.GetMaterialData();
 			objstreamReader.CreateGameObject(defaultLoadedObjectsMaterial);
 			isBusy = true;
