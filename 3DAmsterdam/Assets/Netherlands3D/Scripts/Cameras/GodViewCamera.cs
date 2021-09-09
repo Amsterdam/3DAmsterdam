@@ -577,21 +577,32 @@ namespace Netherlands3D.Cameras
             return availableActionMaps.Contains(actionMap);
         }
 
+        private Vector3 moveBackPerspective;
+        private float previousCameraX = 0;
+        private float previousCameraYPosition;
         public void ToggleOrtographic(bool ortographicOn)
         {
             cameraComponent.orthographic = ortographicOn;
 
             if (ortographicOn)
             {
+                previousCameraX = cameraComponent.transform.localEulerAngles.x;
+                previousCameraYPosition = cameraComponent.transform.position.y;
                 //Set the orto size according to camera height, so our fov looks a bit like the perspective fov
                 cameraComponent.orthographicSize = cameraComponent.transform.position.y;
 
                 //Slide forward based on camera angle, to get an expected centerpoint for our view
                 var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
+                moveBackPerspective = cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y;
+
                 cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
                 print("Ortographic");
             }
             else{
+                cameraComponent.transform.Translate(-moveBackPerspective);
+                cameraComponent.transform.position = new Vector3(cameraComponent.transform.position.x, previousCameraYPosition, cameraComponent.transform.position.z);
+                cameraComponent.transform.localEulerAngles = new Vector3(previousCameraX, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+
                 print("Perspective");                
             }
 		}
