@@ -65,10 +65,10 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
                 var replacedLine = $"v {unityCoordinate.x} {unityCoordinate.y} {unityCoordinate.z}";
                 objLines[i] = replacedLine;
             }
-            else if (lineWithSingleSpaces.Contains("v "))
+            else if (lineWithSingleSpaces.Contains("o "))
             {
-                //Unity OBJ importer only splits up groups as seperate objects. So make sure our objects are groups.
-                objLines[i] = objLines[i].Replace("o ", "g ");
+                //Unity OBJ importer only splits up groups as seperate objects. So make sure our objects are groups, and remove BAG prefixes.
+                objLines[i] = objLines[i].Replace("o ", "g ").Replace("NL.IMBAG.Pand.","");
             }
         }
         Debug.Log("Corrected OBJ file vert positions");
