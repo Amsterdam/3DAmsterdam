@@ -16,14 +16,19 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
     void OnPreprocessModel()
     {
         //Make sure if our preprocessor changes the asset, it is not imported again
-        if(currentProcessingAssetPath == assetPath)
+        if (currentProcessingAssetPath == assetPath)
         {
             return;
         }
 
         currentProcessingAssetPath = assetPath;
-        if (assetPath.Contains(autoFolder))
+        if (assetPath.Contains(autoFolder) && assetPath.Contains(".obj"))
         {
+            ModelImporter modelImporter = assetImporter as ModelImporter;
+            modelImporter.isReadable = true;
+            modelImporter.normalSmoothingSource = ModelImporterNormalSmoothingSource.FromAngle;
+            modelImporter.normalSmoothingAngle = 5;
+
             if (continueImport || EditorUtility.DisplayDialog(
                 "Auto import OBJ's into scene",
                 "These models will be automatically placed into the current scene. Would you like to proceed?",
