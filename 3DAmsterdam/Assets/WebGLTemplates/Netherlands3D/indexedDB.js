@@ -34,15 +34,22 @@ function FileSaved() {
     }
 }
 
+function ClearInputs()
+{
+	inputs = document.getElementsByTagName('input');
+	for (i = 0; i < inputs.length; ++i) {
+		inputs[i].value = '';
+	}
+}
+
 function SaveDatabaseName(dbname) {
     databaseName = dbname;
 }
 
 function ReadFiles(SelectedFiles) {
-
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-        ConnectToDatabase(SelectedFiles);
-        myGameInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
+		ConnectToDatabase(SelectedFiles);   
+		unityInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
     } else {
         alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
     };
@@ -59,33 +66,45 @@ function ReadFile(file) {
 }
 
 function SaveData(datastring, filename) {
+	const data = { timestamp: "timestamp", mode: 33206, contents: "contents" };
+	data.timestamp = new Date();
+	data.contents = new TextEncoder("utf-8").encode(datastring);
+	var transaction = db.transaction(["FILE_DATA"], "readwrite");
 
-    const data = {
-        timestamp: "timestamp",
-        mode: 33206,
-        contents: "contents"
-    };
-    data.timestamp = new Date();
-    data.contents = new TextEncoder("utf-8").encode(datastring);
-    var transaction = db.transaction(["FILE_DATA"], "readwrite");
-    transaction.oncomplete = function () {
-        myGameInstance.SendMessage('FileUploads', 'LoadFile', filename);
-        FileSaved();
-    };
-    transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
+	let request = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
+	console.log("saving file");
+	request.onsuccess = function () {
+		unityInstance.SendMessage('FileUploads', 'LoadFile', filename);
+		console.log("file saved");
+		FileSaved();
+	};
+	request.onerror = function () {
+		unityInstance.SendMessage('FileUploads', 'LoadFileError', filename);
+		alert("kan " + filename + " niet opslaan");
+		FileSaved();
+	};
 }
 
 function ConnectToDatabase(SelectedFiles) {
-
-    //connect tot database
-    window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
-    IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
-    dbVersion = 21;
-    var request = indexedDB.open("/idbfs", dbVersion);
-    request.onsuccess = function (event) {
-        db = request.result;
-        for (var i = 0; i < SelectedFiles.length; i++) {
-            ReadFile(SelectedFiles[i])
-        };
-    }
+	
+	//Connect to database
+	window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
+	IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
+	dbVersion = 21;
+	let request = indexedDB.open("/idbfs", dbVersion);
+	request.onsuccess = function () {
+		console.log("connected to database");
+		db = request.result;
+		for (var i = 0; i < SelectedFiles.length; i++) {
+			ReadFile(SelectedFiles[i])
+		};
+		request.onerror = function () {
+			alert("kan geen verbinding maken met de indexedDatabase");
+		}
+	}
 }
+
+
+
+
+	

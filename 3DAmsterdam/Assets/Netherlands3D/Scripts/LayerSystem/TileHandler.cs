@@ -21,7 +21,7 @@ namespace Netherlands3D.LayerSystem
             {
                 foreach (Layer layer in layers)
                 {
-					layer.pauseLoading = value;
+					layer.pauseLoading = value; 
                 }
             }
 		}

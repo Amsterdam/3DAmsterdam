@@ -2,6 +2,7 @@
 using Netherlands3D.Help;
 using Netherlands3D.InputHandler;
 using Netherlands3D.Interface;
+using Netherlands3D.Interface.Modular;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Rendering;
 using System;
@@ -53,6 +54,8 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void Start()
 		{
+			HideAnyPanelsInFrontOf3DView();
+
 			contextMenuState = ContextPointerMenu.ContextState.CUSTOM_OBJECTS;
 
 			ActionMap = ActionHandler.actions.Transformable;
@@ -68,6 +71,12 @@ namespace Netherlands3D.ObjectInteraction
 			{
 				StartPlacementByClick();
 			}
+		}
+
+		private static void HideAnyPanelsInFrontOf3DView()
+		{
+			var draggablePanels = FindObjectsOfType<DraggablePanelHandle>();
+			foreach (var panel in draggablePanels) panel.Close();
 		}
 
 		private void StartPlacementByClick()

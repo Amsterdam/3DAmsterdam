@@ -159,12 +159,7 @@ namespace Netherlands3D.LayerSystem
             containerLayer.Highlight(selectedIDs);
 
             //Analytic
-            Analytics.SendEvent("SelectedBuilding",
-                new Dictionary<string, object>
-                {
-                    { "BagID", lastSelectedID }
-                }
-            );
+            Analytics.SendEvent("SelectedBuilding", lastSelectedID);
 
             //Specific context menu /sidepanel items per selection count
             if (selectedIDs.Count == 1)

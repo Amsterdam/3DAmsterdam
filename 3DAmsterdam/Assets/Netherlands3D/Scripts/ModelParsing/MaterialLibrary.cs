@@ -60,9 +60,9 @@ namespace Netherlands3D.Rendering
             foreach (Material material in materialLibrary)
             {
                 //If this material name contains an underscore, use the last part as a texture path
-                if (material.name.Contains("_"))
+                if (material.name.Contains("[texture="))
                 {
-                    var materialTextureFileName = material.name.Split('_')[1];
+                    var materialTextureFileName = material.name.Split('=')[1].Replace("]","");
                     if (loadedTextures.ContainsKey(materialTextureFileName))
                     {
                         material.SetTexture(materialBaseMap, loadedTextures[materialTextureFileName]);

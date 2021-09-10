@@ -1,0 +1,190 @@
+html {
+	box-sizing: border-box;
+}
+
+*,*:before,*:after {
+	box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #383838;
+}
+
+.noselect,.usabilla_live_button_container {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+/* loading spinning 3d cube */
+
+.logo_container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100px;
+  height: 140px;
+  position: relative;
+  -webkit-perspective: 400px;
+  -moz-perspective: 400px;
+}
+.logo_container .logo{
+  width: 100%;
+}
+
+#cube {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  /*-webkit-animation: rotatecube 5s infinite; 
+  animation-timing-function: linear;*/
+  /*-moz-animation: rotatecube 5s infinite;*/
+}
+
+#cube div {
+  width: 100px;
+  height: 100px;
+  display: block;
+  position: absolute;
+  border: none;
+  line-height: 100px;
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+}
+/*
+@-webkit-keyframes rotatecube {
+  0% { -webkit-transform: rotateY(360deg) }
+
+}
+@-moz-keyframes rotatecube {
+  0% { -webkit-transform: rotateY(360deg) }
+}
+*/
+.front {
+  background: rgba(255,255,255,1.0);
+}
+.back {
+  background: rgba(255,255,255,1.0);
+  
+}
+.right {
+  background: rgba(230,230,230,1.0);
+}
+.left {
+  background: rgba(240,240,240,1.0);
+}
+.top {
+  background: rgba(250,250,250,1.0);
+}
+.bottom {
+  background: rgba(255,255,255,1.0);
+}
+.shadow {
+  background: rgba(0,0,0,0.1);
+}
+
+#cube .front  {
+  -webkit-transform: rotateY(0deg ) translateZ( 50px );
+  -moz-transform: rotateY( 0deg ) translateZ( 50px );
+}
+#cube .back {
+  -webkit-transform: rotateZ( 180deg ) rotateX( 180deg ) translateZ( 50px );
+  -moz-transform: rotateZ( 180deg ) rotateX( 180deg ) translateZ( 50px );
+}
+#cube .right  {
+  -webkit-transform: rotateY(  90deg ) translateZ( 50px );
+  -moz-transform: rotateY(  90deg ) translateZ( 50px );
+}
+#cube .left   {
+  -webkit-transform: rotateY( -90deg ) translateZ( 50px );
+  -moz-transform: rotateY( -90deg ) translateZ( 50px );
+}
+#cube .top    {
+  -webkit-transform: rotateX(  90deg ) translateZ( 50px );
+  -moz-transform: rotateX(  90deg ) translateZ( 50px );
+}
+#cube .bottom {
+  -webkit-transform: rotateX( -90deg ) translateZ( 50px );
+  -moz-transform: rotateX( -90deg ) translateZ( 50px );
+}
+#cube .shadow {
+  -webkit-transform: rotateX( -90deg ) translateZ( 80px );
+  -moz-transform: rotateX( -90deg ) translateZ( 80px );
+}
+
+.usabilla_live_button_container
+{
+	transform: rotate(90deg);
+	top: auto !important;
+	left: 400px !important;
+	bottom: -50px !important;
+}
+
+#unity-container { position: absolute }
+#unity-container.unity-desktop { width: 100%; height: 100% }
+#unity-container.unity-mobile { width: 100%; height: 100% }
+#unity-canvas { background: #383838; }
+#unity-canvas { width: 100%; height: 100% }
+#unity-loading-bar { width: 200px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
+#unity-progress-bar-empty { width: 100%; height: 100%; margin-top: 10px; background-color:grey; }
+#unity-progress-bar-full { width: 0%; height: 10px; margin-top: 10px; background-color: #FFFFFF; }
+#unity-mobile-warning { font-family: sans-serif; box-shadow: 4px 9px 14px 0px rgb(0 0 0 / 29%); position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+#unity-progress-text{
+	margin-top: 20px;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+/* try to handle mobile dialog */
+canvas+* {
+	z-index: 2;
+}
+
+.logo {
+	display: block;
+	max-width: 100vw;
+	max-height: 70vh;
+}
+
+.progress {
+	margin: 1.5em;
+	border: 2px solid #e1e1e1;
+	width: 300px;
+	display: none;
+}
+
+.progress .full {
+	background-color: #004699;
+	height: 1em;
+	transform-origin: top left;
+}
+
+.hiddenFollower {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	width: 0px;
+	height: 0px;
+}
+
+#copySharedURLButton {
+	cursor:pointer;
+	opacity: 0;
+}
+
+.hiddenFollower input {
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+}

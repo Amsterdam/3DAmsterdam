@@ -36,14 +36,9 @@ namespace Netherlands3D.Interface.SidePanel
 			{
 				var newSelection = dropdown.options[dropdown.value].text;
 
-				Analytics.SendEvent("ChangedDropdownValue",
-					new Dictionary<string, object>
-					{
-						{ "From", currentValue },
-						{ "To",  newSelection },
-						{ "Container", (transform.parent) ? transform.parent.name : ""}
-					}
-				);
+				var category = (transform.parent) ? transform.parent.name : "RootDropdown";
+				Analytics.SendEvent($"{category} DropDown>", newSelection,"Other dropdown item was chosen");
+
 				gameObject.name = "Dropdown: " + newSelection;
 				optionAction.Invoke(newSelection);
 			});

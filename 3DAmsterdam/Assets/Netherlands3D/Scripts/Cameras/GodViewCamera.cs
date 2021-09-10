@@ -24,6 +24,9 @@ namespace Netherlands3D.Cameras
         [SerializeField]
         private float spinSpeed = 0.5f;
 
+        [SerializeField]
+        private float firstPersonModifierSpinSpeed = 0.5f;
+
         private const float minOrtographicZoom = 20f;
         private float maxZoomOut = 2500f;
         private float minUndergroundY = -30f;
@@ -68,7 +71,7 @@ namespace Netherlands3D.Cameras
 
         private Vector3 zoomDirection;
         private Vector3 rotatePoint;
-
+        private Vector3 localOffsetVector;
         private Vector2 currentRotation;
 
         public delegate void FocusPointChanged(Vector3 pointerPosition);
@@ -394,8 +397,8 @@ namespace Netherlands3D.Cameras
             var mouseDelta = Mouse.current.delta.ReadValue();
 
             //Convert mouse position into local rotations
-            currentRotation.x += mouseDelta.x * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
-            currentRotation.y -= mouseDelta.y * spinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            currentRotation.x -= mouseDelta.x * firstPersonModifierSpinSpeed * ApplicationSettings.settings.rotateSensitivity;
+            currentRotation.y += mouseDelta.y * firstPersonModifierSpinSpeed * ApplicationSettings.settings.rotateSensitivity;
 
             //Adjust camera rotation
             cameraComponent.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
@@ -427,6 +430,9 @@ namespace Netherlands3D.Cameras
         private void ZoomInDirection(float zoomAmount, Vector3 zoomDirectionPoint)
         {
             var cameraHeight = cameraComponent.transform.position.y; //The higher we are, the faster we zoom       
+
+            //Inverse zoom multiplier when we are below the zoompoint
+            if (zoomDirectionPoint.y > cameraComponent.transform.position.y) zoomAmount *= -1;
 
             if (cameraComponent.orthographic)
             {
@@ -579,21 +585,35 @@ namespace Netherlands3D.Cameras
 
         public void ToggleOrtographic(bool ortographicOn)
         {
-            cameraComponent.orthographic = ortographicOn;
-
             if (ortographicOn)
             {
-                //Set the orto size according to camera height, so our fov looks a bit like the perspective fov
+                var twoDimensionalUp = cameraComponent.transform.up;
+                twoDimensionalUp.y = 0;
+
+                var worldViewCenter = GetPointerPositionInWorld(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+                cameraComponent.transform.localEulerAngles = new Vector3(0, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+                localOffsetVector = cameraComponent.transform.InverseTransformPoint(worldViewCenter);
+
+                //Shift camera to this point, but keep same height
+                cameraComponent.transform.position = new Vector3(worldViewCenter.x,cameraComponent.transform.position.y, worldViewCenter.z);
+                cameraComponent.transform.rotation = Quaternion.LookRotation(cameraComponent.transform.up, twoDimensionalUp);
+
+                //Set orto size based on camera height (to get a similar fov)
                 cameraComponent.orthographicSize = cameraComponent.transform.position.y;
 
-                //Slide forward based on camera angle, to get an expected centerpoint for our view
-                var forwardAmount = Vector3.Dot(cameraComponent.transform.up, Vector3.up);
-                cameraComponent.transform.Translate(cameraComponent.transform.up * forwardAmount * cameraComponent.transform.position.y);
                 print("Ortographic");
             }
             else{
+                var worldViewCenter = GetPointerPositionInWorld(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+
+                cameraComponent.transform.position = worldViewCenter;
+                cameraComponent.transform.localEulerAngles = new Vector3(0, cameraComponent.transform.localEulerAngles.y, cameraComponent.transform.localEulerAngles.z);
+                cameraComponent.transform.Translate(-localOffsetVector, Space.Self);
+                cameraComponent.transform.LookAt(worldViewCenter);
                 print("Perspective");                
             }
+
+            cameraComponent.orthographic = ortographicOn;
 		}
 	}
 }

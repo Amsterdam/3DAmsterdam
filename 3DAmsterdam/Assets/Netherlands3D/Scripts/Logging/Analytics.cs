@@ -5,16 +5,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Netherlands3D.Logging.Services;
+using Netherlands3D.Interface;
 
 namespace Netherlands3D.Logging
 {
 	public class Analytics : MonoBehaviour
     {
-		[Header("You can replace Unity Analytics, or add more services using the AnalyticsService base class")]
+		[Header("Add own custom services using the AnalyticsService base class")]
 
 		[SerializeField]
 		private AnalyticsService[] analyticsServices;
-		private static Analytics Instance;
+		public static Analytics Instance;
 
 		[SerializeField]
 		private bool logInConsole = true;
@@ -32,9 +33,7 @@ namespace Netherlands3D.Logging
 #if UNITY_EDITOR || !PRODUCTION
 			//Start with a first log stating if this is a dev build or in editor
 			//so we can filter out Production results in the Unity DashBoard
-			SendEvent("DevelopmentBuild", new Dictionary<string, object> {
-				{"developer", Debug.isDebugBuild}
-			});
+			SendEvent("Build", "Started Development build");
 #endif
 		}
 
@@ -43,22 +42,29 @@ namespace Netherlands3D.Logging
 		/// </summary>
 		/// <param name="eventName">Main name of the event</param>
 		/// <param name="eventData">Event data with field names and their values</param>
-		public static void SendEvent(string eventName, Dictionary<string, object> eventData)
+		public static void SendEvent(string category, string action, string label = "")
 		{
+			#if UNITY_EDITOR
 			//Show our events in the console
 			if(Instance.logInConsole)
 			{
-				Debug.Log($"<color={ConsoleColors.EventHexColor}>[Analytics Event]  {eventName} (Not sent in Editor)</color>");
-				foreach (KeyValuePair<string, object> keyValue in eventData)
-				{
-					Debug.Log($"<color={ConsoleColors.EventDataHexColor}>[Event data] {keyValue.Key} : {keyValue.Value}</color>");
-				}
+				Debug.Log($"<color={ConsoleColors.EventHexColor}><b>[Analytics Event]</b> {category},{action},{label}</color>");
+				if(Fps.fpsLogGroup != 0)
+					Debug.Log($"<color={ConsoleColors.EventHexColor}><b>[Analytics Performance Event]</b> Fps group:{Fps.fpsLogGroup}</color>");
 			}
+			#endif
 
 			//Send the event down to our analytics service(s)
 			foreach (var service in Instance.analyticsServices)
 			{
-				if(service.enabled)	service.SendEvent(eventName, eventData);
+				if (service.enabled)
+				{
+					service.SendEvent(category, action, label);
+
+					//We send average framerate after every action, as fps groups
+					if(Fps.fpsLogGroup != 0)
+						service.SendEvent("Performance", "FPS", $"{Fps.fpsLogGroup}");
+				}
 			}			
 		}
 

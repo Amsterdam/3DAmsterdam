@@ -18,9 +18,15 @@ namespace Netherlands3D.Logging.Services
 			//DataPrivacy.FetchPrivacyUrl((action) => { Debug.Log(action); });
 		}
 
-		public override void SendEvent(string eventName, Dictionary<string, object> eventData)
+		public override void SendEvent(string category, string action, string label = "")
 		{
 #if !UNITY_EDITOR && UNITY_ANALYTICS
+			var eventName = action;
+			Dictionary<string, object> eventData = new Dictionary<string, object>
+			{
+				{ "category", category },
+				{ "label", label },
+			};
 			//Unity's own Analytics service events:
 			UnityEngine.Analytics.Analytics.CustomEvent(eventName, eventData);
 			UnityEngine.Analytics.Analytics.FlushEvents();

@@ -13,5 +13,9 @@ mergeInto(LibraryManager.library, {
      },
 	SendPersistentDataPath: function (str) {
 		SaveDatabaseName(Pointer_stringify(str));
+	},
+	ClearFileInputFields: function ()
+	{
+		ClearInputs();
 	}
 });
