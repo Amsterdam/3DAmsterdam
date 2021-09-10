@@ -40,7 +40,7 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
                     CorrectOBJToSceneUnits(assetPath);
 
                 continueImport = true;
-                ModelImporter modelImporter = assetImporter as ModelImporter;
+
                 modelImporter.materialImportMode = ModelImporterMaterialImportMode.None;
             }
         }
@@ -85,8 +85,34 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
     {
         if (!continueImport) return;
 
+        MeshFilter[] allMeshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+        foreach(var meshFilter in allMeshFilters)
+        {
+            FlipMeshNormals(meshFilter.sharedMesh);
+        }
+
         Debug.Log("Placed object into scene");
         PrefabUtility.InstantiatePrefab(gameObject,EditorSceneManager.GetActiveScene());
+    }
+
+    private void FlipMeshNormals(Mesh mesh)
+    {
+        Vector3[] normals = mesh.normals;
+        for (int i = 0; i < normals.Length; i++)
+            normals[i] = -normals[i];
+        mesh.normals = normals;
+
+        for (int m = 0; m < mesh.subMeshCount; m++)
+        {
+            int[] triangles = mesh.GetTriangles(m);
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                int temp = triangles[i + 0];
+                triangles[i + 0] = triangles[i + 1];
+                triangles[i + 1] = temp;
+            }
+            mesh.SetTriangles(triangles, m);
+        }
     }
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
