@@ -6,8 +6,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.LayerSystem;
 
-namespace Netherlands3D.LayerSystem
+namespace Netherlands3D.T3D.Uitbouw
 {
     public class BuildingMeshGenerator : MonoBehaviour
     {
