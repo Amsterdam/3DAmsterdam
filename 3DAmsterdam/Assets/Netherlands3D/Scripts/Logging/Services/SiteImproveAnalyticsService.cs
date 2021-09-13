@@ -41,7 +41,7 @@ namespace Netherlands3D.Logging.Services
 		{
 			if (Application.isPlaying)
 			{
-				string path = EditorUtility.OpenFilePanel("Open SiteImprove analytics csv file", "", "csv");
+				string path = EditorUtility.OpenFilePanel("Open SiteImprove analytics csv file", "", "analytics");
 				StartCoroutine(GetCSVStats($"file:///{path}"));
 			}
 			else
@@ -80,6 +80,8 @@ namespace Netherlands3D.Logging.Services
 
 		public void ReadAnalyticsData(string stringToRead)
 		{
+			RemoveOldStatLabels();
+
 			AnalyticsClickTrigger[] clickTriggers = this.transform.parent.GetComponentsInChildren<AnalyticsClickTrigger>(true);
 			StringReader strReader = new StringReader(stringToRead);
 			while (true)
@@ -98,7 +100,6 @@ namespace Netherlands3D.Logging.Services
 
 						foreach (var clickTrigger in clickTriggers)
 						{
-							Debug.Log($"{clickTrigger.name} == {actionObject} && {clickTrigger.transform.parent.name} == {withParentObject}");
 							if (clickTrigger.name == actionObject && clickTrigger.transform.parent.name == withParentObject)
 							{
 								InjectStatisticVisual(clickTrigger, percentageOfTotal, visitsWithThisEvent);
@@ -111,6 +112,15 @@ namespace Netherlands3D.Logging.Services
 					strReader.Close();
 					return;
 				}
+			}
+		}
+
+		private void RemoveOldStatLabels()
+		{
+			VisualStatOverlay[] existingOverlays = FindObjectOfType<Canvas>().GetComponentsInChildren<VisualStatOverlay>(true);
+			for (int i = 0; i < existingOverlays.Length; i++)
+			{
+				Destroy(existingOverlays[i].gameObject);
 			}
 		}
 	}
