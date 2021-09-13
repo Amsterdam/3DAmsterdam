@@ -23,7 +23,7 @@ namespace Netherlands3D.T3D.Perceel
 
         private void Start()
         {
-            PerceelRenderer.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
+            MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -83,7 +83,7 @@ namespace Netherlands3D.T3D.Perceel
 
             foreach (var vert in footprint)
             {
-                if (!PerceelRenderer.ContainsPoint(polyPoints, vert + new Vector2(positionOffset.x, positionOffset.z)))
+                if (!GeometryCalculator.ContainsPoint(polyPoints, vert + new Vector2(positionOffset.x, positionOffset.z)))
                 {
                     return false;
                 }

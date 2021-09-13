@@ -16,32 +16,6 @@ using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 using Netherlands3D.Interface.Layers;
 
-public class ObjectDataEventArgs : EventArgs
-{
-    public bool IsLoaded { get; private set; }
-    public ObjectData ObjectData { get; private set; }
-    public Vector3 TileOffset;
-
-    public ObjectDataEventArgs(bool isLoaded, ObjectData objectData, Vector3 tileOffset)
-    {
-        IsLoaded = isLoaded;
-        ObjectData = objectData;
-        TileOffset = tileOffset;
-    }
-}
-
-public class PerceelDataEventArgs : EventArgs
-{
-    public bool IsLoaded { get; private set; }
-    public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
-
-    public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel)
-    {
-        IsLoaded = isLoaded;
-        Perceel = perceel;
-    }
-}
-
 public class PerceelRenderer : MonoBehaviour
 {
     public Material LineMaterial;
@@ -64,11 +38,11 @@ public class PerceelRenderer : MonoBehaviour
     [SerializeField]
     private Transform GeneratedFieldsContainer;
 
-    public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
-    public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
+    //public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
+    //public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
-    public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
-    public event PerceelDataLoadedEventHandler PerceelDataLoaded;
+    //public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
+    //public event PerceelDataLoadedEventHandler PerceelDataLoaded;
 
     private float terrainFloor;
 
@@ -85,11 +59,18 @@ public class PerceelRenderer : MonoBehaviour
         PropertiesPanel.Instance.AddSpacer();
         PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
         {
-            BuildingInterfaceLayer.ToggleLinkedObject(action);           
+            BuildingInterfaceLayer.ToggleLinkedObject(action);
         });
         PropertiesPanel.Instance.AddSpacer();
+
+        MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
     }
 
+    private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
+    {
+        StartCoroutine(RenderPolygons(args.Perceel));
+    }
+    /*
     public IEnumerator GetAndRenderPerceel(Vector3RD position)
     {
         yield return null;
@@ -107,40 +88,7 @@ public class PerceelRenderer : MonoBehaviour
         }
         else
         {
-            List<Vector2[]> list = new List<Vector2[]>();
-
-            var json = JSON.Parse(req.downloadHandler.text);
-
-            yield return null;
-
-            UpdateSidePanelPerceelData(json);
-
-            foreach (JSONNode feature in json["features"])
-            {
-                List<Vector2> polygonList = new List<Vector2>();
-
-                var coordinates = feature["geometry"]["coordinates"];
-                foreach (JSONNode points in coordinates)
-                {
-                    foreach (JSONNode point in points)
-                    {
-                        polygonList.Add(new Vector2(point[0], point[1]));
-                    }
-                }
-                list.Add(polygonList.ToArray());
-            }
-
-
-            foreach (Transform gam in TerrainLayer.transform)
-            {
-                // Debug.Log(gam.name);
-                gam.gameObject.AddComponent<MeshCollider>();
-            }
-
-            yield return null;
-
-            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list));
-            StartCoroutine(RenderPolygons(list));
+           
         }
     }
 
@@ -176,11 +124,13 @@ public class PerceelRenderer : MonoBehaviour
         }
 
     }
-
+    */
+    /*
     ActionButton btn;
     Transform uitbouwTransform;
     Vector3 startPosition;
 
+    
     void UpdateSidePanelPerceelData(JSONNode json)
     {
         Debug.Log("UpdateSidePanelPerceelData");
@@ -192,37 +142,10 @@ public class PerceelRenderer : MonoBehaviour
 
         btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
         {
-            //var rd = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
-            //var pos = CoordConvert.RDtoUnity(rd);
-            
-            var uitbouw = Instantiate(Uitbouw);           
-            
-            uitbouwTransform = uitbouw.transform;
-
-            //snap uitbouw tegen gebouw
-            uitbouw.transform.rotation = huisRichtingCube.rotation;
-            var halfHuisRichtingCube = (huisRichtingCube.localScale.z / 2);
-            var halfUitbouw = (uitbouw.transform.localScale.z / 2);
-            var snappedPos = huisRichtingCube.position - (huisRichtingCube.forward * (halfHuisRichtingCube + halfUitbouw));
-            snappedPos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
-            uitbouw.transform.position = snappedPos;
-            startPosition = snappedPos;
-
-            Invoke("RemoveButton", 0.3f);
-
-            //PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
-            //PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
-            //    uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
-            //}, false, "Draai de uitbouw");
-
-            //PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
-            //PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
-            //{
-            //    uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
-            //}, false, "Draai de uitbouw");
+            PlaatsUitbouw();
         });
         
-        /*
+        
         var perceelGrootte = $"Perceeloppervlakte: {wfs.features[0].properties.kadastraleGrootteWaarde} m2";
         PropertiesPanel.Instance.AddLabel(perceelGrootte);
 
@@ -232,7 +155,38 @@ public class PerceelRenderer : MonoBehaviour
             var pos = CoordConvert.RDtoUnity(rd);
             InstantiateUitbouw(pos);
 
-        });*/
+        });
+    }*/
+
+    public void PlaatsUitbouw(Vector2RD rd)
+    {
+        var pos = CoordConvert.RDtoUnity(rd);
+
+        var uitbouw = Instantiate(Uitbouw, pos, Quaternion.identity);
+
+        //uitbouwTransform = uitbouw.transform;
+
+        //snap uitbouw tegen gebouw
+        //uitbouw.transform.rotation = huisRichtingCube.rotation;
+        //var halfHuisRichtingCube = (huisRichtingCube.localScale.z / 2);
+        //var halfUitbouw = (uitbouw.transform.localScale.z / 2);
+        //var snappedPos = huisRichtingCube.position - (huisRichtingCube.forward * (halfHuisRichtingCube + halfUitbouw));
+        //snappedPos.y = terrainFloor + uitbouw.transform.localScale.y / 2;
+        //uitbouw.transform.position = snappedPos;
+        //startPosition = snappedPos;
+
+        //Invoke("RemoveButton", 0.3f); //todo why the delay
+
+        //PropertiesPanel.Instance.AddLabel("Draai de uitbouw");
+        //PropertiesPanel.Instance.AddActionSlider("", "", 0, 1, 0.5f, (value) => {
+        //    uitbouwTransform.rotation = Quaternion.Euler(0, value * 360, 0);
+        //}, false, "Draai de uitbouw");
+
+        //PropertiesPanel.Instance.AddLabel("Verplaats de uitbouw");
+        //PropertiesPanel.Instance.AddActionSlider("", "", -10, 10, 0, (value) =>
+        //{
+        //    uitbouwTransform.position = startPosition + (uitbouwTransform.forward * value);
+        //}, false, "Draai de uitbouw");
     }
 
     private void InstantiateUitbouw(Vector3 pos)
@@ -244,7 +198,7 @@ public class PerceelRenderer : MonoBehaviour
 
         Invoke("RemoveButton", 0.3f); //todo: why with delay?
     }
-
+    /*
     void RemoveButton()
     {
         Destroy(btn.gameObject);
@@ -252,33 +206,20 @@ public class PerceelRenderer : MonoBehaviour
 
     public IEnumerator HandlePosition(Vector3RD position, string id)
     {
-        if(id == "0344100000021804")
-        {
-            huisRichtingCube = HuisRichtingCube1;
-        }
-        else if (id == "0344100000068320")
-        {
-            huisRichtingCube = HuisRichtingCube2;
-        }
-        else if (id == "0344100000052214")
-        {
-            huisRichtingCube = HuisRichtingCube3;
-        };
-
         StartCoroutine(UpdateSidePanelAddress(id));
 
         yield return new WaitForSeconds(1);
 
         yield return StartCoroutine(GetAndRenderPerceel(position));
 
-        yield return StartCoroutine(HighlightBuilding(id));        
+        yield return StartCoroutine(HighlightBuilding(id));
 
     }
 
     IEnumerator HighlightBuilding(string id)
     {
         Debug.Log($"HighlightBuilding id: {id}");
-        
+
         yield return null;
 
         bool hasRD = false;
@@ -293,12 +234,13 @@ public class PerceelRenderer : MonoBehaviour
             if (rd.x != 0) hasRD = true;
             yield return null;
         }
-        
+
 
         StartCoroutine(DownloadObjectData(rd, id, child.gameObject));
 
     }
 
+    
     IEnumerator HighlightBuildingArea(List<Vector2[]> polygons, Vector3 position)
     {
         yield return null;
@@ -340,7 +282,7 @@ public class PerceelRenderer : MonoBehaviour
                 //var dist = Vector2.Distance(polyPoints[0], new Vector2(vertx, verty) );
                 //distances.Add(dist);
                 //check if vertexpoint is in the polygon, if so color it
-                if (ContainsPoint(polyPoints, new Vector2(vertx, verty)))   //unity absolute
+                if (GeometryCalculator.ContainsPoint(polyPoints, new Vector2(vertx, verty)))   //unity absolute
                 //if (dist < 100)
                 {
                     //colors[i] = new Color(1, (dist / 100), (dist / 100));
@@ -392,6 +334,7 @@ public class PerceelRenderer : MonoBehaviour
         m_Mesh_rev.CreateShapeFromPolygon(verts.ToArray(), 5, false);
 
     }
+    */
 
     IEnumerator RenderPolygons(List<Vector2[]> polygons)
     {
@@ -405,7 +348,7 @@ public class PerceelRenderer : MonoBehaviour
             for (int i = 0; i < list.Length - 1; i++)
             {
                 indices.Add(count + i);
-                indices.Add(count + i + 1);            
+                indices.Add(count + i + 1);
             }
             count += list.Length;
             vertices.AddRange(list);
@@ -458,67 +401,5 @@ public class PerceelRenderer : MonoBehaviour
         mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
         filter.sharedMesh = mesh;
     }
-
-
-    public static bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
-    {
-        var j = polyPoints.Length - 1;
-        var inside = false;
-        for (int i = 0; i < polyPoints.Length; j = i++)
-        {
-            var pi = polyPoints[i];
-            var pj = polyPoints[j];
-            if (((pi.y <= p.y && p.y < pj.y) || (pj.y <= p.y && p.y < pi.y)) &&
-                (p.x < (pj.x - pi.x) * (p.y - pi.y) / (pj.y - pi.y) + pi.x))
-                inside = !inside;
-        }
-        return inside;
-    }
-
-    //private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
-    private IEnumerator DownloadObjectData( Vector3RD rd, string id, GameObject buildingGameObject )
-    {
-        var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
-
-        ObjectMappingClass data;
-
-        using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-        {
-            yield return uwr.SendWebRequest();
-
-            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
-            {
-                Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
-            }
-            else
-            {
-              //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
-
-                ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
-                AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                objectMapping.ids = data.ids;
-                objectMapping.uvs = data.uvs;
-                objectMapping.vectorMap = data.vectorMap;
-                
-                objectMapping.highlightIDs = new List<string>()
-                {
-                    id
-                };
-
-                //Debug.Log($"hasid:{data.ids.Contains(id)}");
-
-                newAssetBundle.Unload(true);
-
-                objectMapping.ApplyDataToIDsTexture();
-                var tileOffset = ConvertCoordinates.CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
-                BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
-            }
-            
-        }        
-        yield return null;
-        
-    }
-
 
 }

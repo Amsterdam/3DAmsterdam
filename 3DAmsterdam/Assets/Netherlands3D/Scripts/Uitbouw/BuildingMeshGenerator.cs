@@ -14,7 +14,7 @@ namespace Netherlands3D.LayerSystem
 
         private void Start()//in start to avoid race conditions
         {
-            PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+            MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
