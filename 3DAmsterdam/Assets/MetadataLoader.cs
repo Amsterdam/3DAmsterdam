@@ -45,9 +45,13 @@ public class MetadataLoader : MonoBehaviour
     private Text MainTitle;
     [SerializeField]
     private Transform GeneratedFieldsContainer;
+    [SerializeField]
+    private GameObject uitbouwPrefab;
 
-    public GameObject BuildingsLayer;
-    public GameObject TerrainLayer;
+    [SerializeField]
+    private GameObject buildingsLayer;
+    [SerializeField]
+    private GameObject terrainLayer;
 
     private ActionButton btn;
 
@@ -78,7 +82,7 @@ public class MetadataLoader : MonoBehaviour
     {
         StartCoroutine(UpdateSidePanelAddress(id));
 
-        yield return new WaitForSeconds(1);
+        //yield return new WaitForSeconds(1);
 
         yield return StartCoroutine(GetPerceelData(position));
 
@@ -99,15 +103,13 @@ public class MetadataLoader : MonoBehaviour
 
         while (!hasRD)
         {
-            child = BuildingsLayer.transform.GetChild(0);
+            child = buildingsLayer.transform.GetChild(0);
             rd = child.name.GetRDCoordinate();
             if (rd.x != 0) hasRD = true;
             yield return null;
         }
 
-
         StartCoroutine(DownloadBuildingData(rd, id, child.gameObject));
-
     }
 
     IEnumerator UpdateSidePanelAddress(string bagId)
@@ -187,7 +189,7 @@ public class MetadataLoader : MonoBehaviour
         }
 
 
-        foreach (Transform gam in TerrainLayer.transform)
+        foreach (Transform gam in terrainLayer.transform)
         {
             // Debug.Log(gam.name);
             gam.gameObject.AddComponent<MeshCollider>();
@@ -208,9 +210,15 @@ public class MetadataLoader : MonoBehaviour
         btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) =>
         {
             var rd = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
-            PerceelRenderer.Instance.PlaatsUitbouw(rd);
+            PlaatsUitbouw(rd);
             Destroy(btn);
         });
+    }
+
+    public void PlaatsUitbouw(Vector2RD rd)
+    {
+        var pos = CoordConvert.RDtoUnity(rd);
+        var uitbouw = Instantiate(uitbouwPrefab, pos, Quaternion.identity);
     }
 
     private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
