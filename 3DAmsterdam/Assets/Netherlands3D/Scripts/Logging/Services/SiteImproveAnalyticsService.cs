@@ -73,39 +73,43 @@ namespace Netherlands3D.Logging.Services
 			}
 			else
 			{
-				//Get all events firing objects
-				AnalyticsClickTrigger[] clickTriggers = this.transform.parent.GetComponentsInChildren<AnalyticsClickTrigger>(true);
+				var stringToRead = Encoding.Unicode.GetString(www.downloadHandler.data);
+				ReadAnalyticsData(stringToRead);
+			}
+		}
 
-				StringReader strReader = new StringReader(Encoding.Unicode.GetString(www.downloadHandler.data));
-				while (true)
+		public void ReadAnalyticsData(string stringToRead)
+		{
+			AnalyticsClickTrigger[] clickTriggers = this.transform.parent.GetComponentsInChildren<AnalyticsClickTrigger>(true);
+			StringReader strReader = new StringReader(stringToRead);
+			while (true)
+			{
+				var csvLine = strReader.ReadLine();
+				if (csvLine != null)
 				{
-					var csvLine = strReader.ReadLine();
-					if (csvLine != null)
+					if (csvLine.Contains("\"") && !csvLine.Contains("Performance") && !csvLine.Contains("Categorie"))
 					{
-						if (csvLine.Contains("\"") && !csvLine.Contains("Performance") && !csvLine.Contains("Categorie"))
-						{
-							//Data line (filtered out performance)
-							string[] fields = csvLine.Split('\t');
-							var actionObject = fields[1].Replace("\"","");
-							var withParentObject = fields[0].Replace("\"", "");
-							var percentageOfTotal = fields[4].Replace("\"", "");
-							var visitsWithThisEvent = fields[5].Replace("\"", "");
+						//Data line (filtered out performance)
+						string[] fields = csvLine.Split('\t');
+						var actionObject = fields[1].Replace("\"", "");
+						var withParentObject = fields[0].Replace("\"", "");
+						var percentageOfTotal = fields[4].Replace("\"", "");
+						var visitsWithThisEvent = fields[5].Replace("\"", "");
 
-							foreach (var clickTrigger in clickTriggers)
+						foreach (var clickTrigger in clickTriggers)
+						{
+							Debug.Log($"{clickTrigger.name} == {actionObject} && {clickTrigger.transform.parent.name} == {withParentObject}");
+							if (clickTrigger.name == actionObject && clickTrigger.transform.parent.name == withParentObject)
 							{
-								Debug.Log($"{clickTrigger.name} == {actionObject} && {clickTrigger.transform.parent.name} == {withParentObject}");
-								if (clickTrigger.name == actionObject && clickTrigger.transform.parent.name == withParentObject)
-								{
-									InjectStatisticVisual(clickTrigger, percentageOfTotal, visitsWithThisEvent);
-								}
+								InjectStatisticVisual(clickTrigger, percentageOfTotal, visitsWithThisEvent);
 							}
 						}
 					}
-					else
-					{
-						strReader.Close();
-						yield break;
-					}
+				}
+				else
+				{
+					strReader.Close();
+					return;
 				}
 			}
 		}
