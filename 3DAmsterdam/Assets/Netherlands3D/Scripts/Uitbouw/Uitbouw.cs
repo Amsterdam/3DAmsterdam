@@ -44,10 +44,10 @@ namespace Netherlands3D.T3D.Uitbouw
             perceel = args.Perceel;
         }
 
-        //public void SetPerceel(List<Vector2[]> perceelData)
-        //{
-        //    perceel = perceelData;
-        //}
+        public void SetPerceel(List<Vector2[]> perceelData) //todo: fix event order/enable disabling so this function is not needed
+        {
+            perceel = perceelData;
+        }
 
         //private void SetActiveHouse(BuildingMeshGenerator building)
         //{
