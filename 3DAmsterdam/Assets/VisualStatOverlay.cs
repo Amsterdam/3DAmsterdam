@@ -24,8 +24,8 @@ public class VisualStatOverlay : MonoBehaviour
 
         float colorLerp = percentageOfTotalFloat / 100.0f;
         Color bgColor = Color.blue;
-        if (percentageOfTotalFloat < 0.5f){
-            bgColor = Color.Lerp(Color.blue, Color.green, percentageOfTotalFloat/0.5f);
+        if (colorLerp < 0.5f){
+            bgColor = Color.Lerp(Color.blue, Color.green, colorLerp / 0.5f);
         }
         else{
             bgColor = Color.Lerp(Color.green, Color.red, (colorLerp- 0.5f) / 0.5f);
