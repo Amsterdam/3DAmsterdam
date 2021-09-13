@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
+using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.LayerSystem;
 
-
-namespace Netherlands3D.LayerSystem
+namespace Netherlands3D.T3D.Uitbouw
 {
     public class BuildingMeshGenerator : MonoBehaviour
     {
@@ -16,7 +17,7 @@ namespace Netherlands3D.LayerSystem
 
         private void Start()//in start to avoid race conditions
         {
-            PerceelRenderer.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+            MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)

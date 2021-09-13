@@ -3,6 +3,7 @@ using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.T3D.Uitbouw;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -93,7 +94,8 @@ namespace Netherlands3D.Sharing
                 //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
                 GotoPosition(pos);
 
-                StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
+                MetadataLoader.Instance.LoadBuildingData(pos, "0344100000021804");
+                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
             }
@@ -119,7 +121,7 @@ namespace Netherlands3D.Sharing
             var id = Application.absoluteURL.GetUrlParamValue("id");
             
             GotoPosition(rd);
-            StartCoroutine(  PerceelRenderer.Instance.HandlePosition(rd, id));
+            MetadataLoader.Instance.LoadBuildingData(rd, id);
         }
 
         void GotoPosition(Vector3RD position)

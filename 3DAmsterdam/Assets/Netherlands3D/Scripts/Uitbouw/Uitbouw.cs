@@ -5,9 +5,10 @@ using System.Linq;
 using ConvertCoordinates;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.Utilities;
 using UnityEngine;
 
-namespace Netherlands3D.T3D.Perceel
+namespace Netherlands3D.T3D.Uitbouw
 {
     public class Uitbouw : MonoBehaviour
     {
@@ -33,10 +34,9 @@ namespace Netherlands3D.T3D.Perceel
 
         private void Start()
         {
-            perceel = PerceelRenderer.Instance.Perceel;
             SetDimensions(mesh.bounds.extents * 2);
             //print(width + "\t" + height + "\t" + depth);
-            PerceelRenderer.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
+            MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -44,12 +44,16 @@ namespace Netherlands3D.T3D.Perceel
             perceel = args.Perceel;
         }
 
-        public void SetActiveHouse(BuildingMeshGenerator building)
+        public void SetPerceel(List<Vector2[]> perceelData) //todo: fix event order/enable disabling so this function is not needed
         {
-            activeHouse = building;
-
-            SnapToBuilding(activeHouse);
+            perceel = perceelData;
         }
+
+        //private void SetActiveHouse(BuildingMeshGenerator building)
+        //{
+        //    activeHouse = building;
+        //    SnapToBuilding(activeHouse);
+        //}
 
         private void SetDimensions(float w, float d, float h)
         {
@@ -143,7 +147,7 @@ namespace Netherlands3D.T3D.Perceel
 
             foreach (var vert in footprint)
             {
-                if (!PerceelRenderer.ContainsPoint(polyPoints, vert + new Vector2(positionOffset.x, positionOffset.z)))
+                if (!GeometryCalculator.ContainsPoint(polyPoints, vert + new Vector2(positionOffset.x, positionOffset.z)))
                 {
                     return false;
                 }
