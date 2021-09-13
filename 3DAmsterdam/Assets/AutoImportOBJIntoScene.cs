@@ -9,11 +9,12 @@ using Netherlands3D;
 public class AutoImportOBJIntoScene : AssetPostprocessor
 {
     private const string autoFolder = "ImportIntoScene";
-    private static bool continueImport = false;
+    private static bool skipNextQuestions = false;
 
     private static string currentProcessingAssetPath = "";
+	private static bool flipNormals = false;
 
-    void OnPreprocessModel()
+	void OnPreprocessModel()
     {
         //Make sure if our preprocessor changes the asset, it is not imported again
         if (currentProcessingAssetPath == assetPath)
@@ -29,7 +30,7 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
             modelImporter.normalSmoothingSource = ModelImporterNormalSmoothingSource.FromAngle;
             modelImporter.normalSmoothingAngle = 5;
 
-            if (continueImport || EditorUtility.DisplayDialog(
+            if (skipNextQuestions || EditorUtility.DisplayDialog(
                 "Auto import OBJ's into scene",
                 "These models will be automatically placed into the current scene. Would you like to proceed?",
                 "Proceed",
@@ -39,7 +40,7 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
                 if(assetPath.Contains(".obj"))
                     CorrectOBJToSceneUnits(assetPath);
 
-                continueImport = true;
+                skipNextQuestions = true;
 
                 modelImporter.materialImportMode = ModelImporterMaterialImportMode.None;
             }
@@ -67,7 +68,7 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
                 );
                 Vector3 unityCoordinate = CoordConvert.RDtoUnity(doubleCoordinate);
 
-                var replacedLine = $"v {unityCoordinate.x} {unityCoordinate.y} {unityCoordinate.z}";
+                var replacedLine = $"v {-unityCoordinate.x} {unityCoordinate.y} {unityCoordinate.z}";
                 objLines[i] = replacedLine;
             }
             else if (lineWithSingleSpaces.Contains("o "))
@@ -83,12 +84,15 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
 
     void OnPostprocessModel(GameObject gameObject)
     {
-        if (!continueImport) return;
+        if (!skipNextQuestions) return;
 
-        MeshFilter[] allMeshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
-        foreach(var meshFilter in allMeshFilters)
+        if (flipNormals)
         {
-            FlipMeshNormals(meshFilter.sharedMesh);
+            MeshFilter[] allMeshFilters = gameObject.GetComponentsInChildren<MeshFilter>();
+            foreach (var meshFilter in allMeshFilters)
+            {
+                FlipMeshNormals(meshFilter.sharedMesh);
+            }
         }
 
         Debug.Log("Placed object into scene");
@@ -117,15 +121,113 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
-        if (!continueImport) return;
+        if (!skipNextQuestions) return;
+
+        Debug.Log("Imported all .obj files into scene.");
+        skipNextQuestions = false;
 
         foreach (string assetPath in importedAssets)
         {
             if (assetPath.Contains(autoFolder))
             {
                 var importedObject = (GameObject)AssetDatabase.LoadAssetAtPath(assetPath, typeof(GameObject));
-                PrefabUtility.InstantiatePrefab(importedObject, EditorSceneManager.GetActiveScene());
+                GameObject spawnedObject = (GameObject)PrefabUtility.InstantiatePrefab(importedObject, EditorSceneManager.GetActiveScene());
+                //PrefabUtility.UnpackPrefabInstance(spawnedObject,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
+                //spawnedObject.transform.DetachChildren();
+                //MonoBehaviour.Destroy(spawnedObject);
             }
         }
     }
+    /*
+    private void BakeIntoTiles()
+    {
+        var xTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.x - (float)Config.activeConfiguration.BottomLeftRD.x) / (float)tileSize);
+        var yTiles = Mathf.RoundToInt(((float)Config.activeConfiguration.TopRightRD.y - (float)Config.activeConfiguration.BottomLeftRD.y) / (float)tileSize);
+
+        var totalTiles = xTiles * yTiles;
+        int currentTile = 0;
+
+        //Walk the tilegrid
+        var tileRD = new Vector2Int(0, 0);
+        for (int x = 0; x < xTiles; x++)
+        {
+            tileRD.x = (int)Config.activeConfiguration.BottomLeftRD.x + (x * tileSize);
+            for (int y = 0; y < yTiles; y++)
+            {
+                currentTile++;
+                tileRD.y = (int)Config.activeConfiguration.BottomLeftRD.y + (y * tileSize);
+                string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
+
+                //If we supplied a filter we check if this tile contains this substring in order to be (re)generated
+                if (exclusivelyGenerateTilesWithSubstring != "" && !tileName.Contains(exclusivelyGenerateTilesWithSubstring))
+                {
+                    print("Skipping tile because we supplied a specific name we want to replace.");
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+                    continue;
+                }
+
+                //Skip files if we enabled that option and it exists
+                string assetFileName = TileCombineUtility.unityMeshAssetFolder + tileName + ".asset";
+                if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName))
+                {
+                    print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
+                    ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
+                    if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+                    continue;
+                }
+
+                //Spawn our tile container
+                GameObject newTileContainer = new GameObject();
+                newTileContainer.transform.position = CoordConvert.RDtoUnity(tileRD + tileOffset);
+                newTileContainer.name = tileName;
+                //And move children in this tile
+                int childrenInTile = 0;
+
+                MeshRenderer[] remainingBuildings = GetComponentsInChildren<MeshRenderer>(true);
+                foreach (MeshRenderer meshRenderer in remainingBuildings)
+                {
+                    meshRenderer.gameObject.name = meshRenderer.gameObject.name.Replace(removePrefix, "");
+                    if (bagIdsToSkip.Contains(meshRenderer.gameObject.name) && !IsReplacementObject(meshRenderer))
+                    {
+                        //Is this ID in the skip list, and it is not our own override? Remove it.
+                        Destroy(meshRenderer.gameObject);
+                    }
+                    else
+                    {
+                        //Check if this object center falls within the tile we are creating
+                        var childCenterPoint = CoordConvert.UnitytoRD(meshRenderer.bounds.center);
+                        if (childCenterPoint.x < tileRD.x + tileSize && childCenterPoint.x > tileRD.x && childCenterPoint.y < tileRD.y + tileSize && childCenterPoint.y > tileRD.y)
+                        {
+                            //This child object center falls within this tile. Lets move it in there.
+                            meshRenderer.transform.SetParent(newTileContainer.transform, true);
+                            childrenInTile++;
+                        }
+                    }
+                }
+
+                if (childrenInTile == 0)
+                {
+                    Destroy(newTileContainer);
+                    ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.EMPTY);
+                    print($"<color={ConsoleColors.GeneralDataWarningHexColor}>No children found for tile {tileName}</color>");
+                    continue;
+                }
+
+                //And when we are done, bake it.
+                print($"<color={ConsoleColors.GeneralStartProgressHexColor}>Baking tile {tileName} with {childrenInTile} buildings</color>");
+                if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+
+                TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, true);
+                print($"<color={ConsoleColors.GeneralSuccessHexColor}>Finished tile {tileName}</color>");
+
+                ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.DONE);
+
+                if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+            }
+        }
+
+        print($"<color={ConsoleColors.GeneralSuccessHexColor}>All done!</color>");
+
+        if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
+    }*/
 }
