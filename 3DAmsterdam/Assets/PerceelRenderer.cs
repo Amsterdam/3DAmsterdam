@@ -72,6 +72,8 @@ public class PerceelRenderer : MonoBehaviour
 
     private float terrainFloor;
 
+    public List<Vector2[]> Perceel { get; private set; }
+
     private void Awake()
     {
         Instance = this;
@@ -107,7 +109,7 @@ public class PerceelRenderer : MonoBehaviour
         }
         else
         {
-            List<Vector2[]> list = new List<Vector2[]>();
+            Perceel = new List<Vector2[]>();
 
             var json = JSON.Parse(req.downloadHandler.text);
 
@@ -127,7 +129,7 @@ public class PerceelRenderer : MonoBehaviour
                         polygonList.Add(new Vector2(point[0], point[1]));
                     }
                 }
-                list.Add(polygonList.ToArray());
+                Perceel.Add(polygonList.ToArray());
             }
 
 
@@ -139,8 +141,8 @@ public class PerceelRenderer : MonoBehaviour
 
             yield return null;
 
-            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list));
-            StartCoroutine(RenderPolygons(list));
+            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, Perceel));
+            StartCoroutine(RenderPolygons(Perceel));
         }
     }
 
