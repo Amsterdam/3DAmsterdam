@@ -11,6 +11,8 @@ namespace Netherlands3D.LayerSystem
 {
     public class BuildingMeshGenerator : MonoBehaviour
     {
+        public Vector3 BuildingCenter { get; private set; }
+        public float GroundLevel { get; private set; }
 
         private void Start()//in start to avoid race conditions
         {
@@ -25,6 +27,10 @@ namespace Netherlands3D.LayerSystem
             transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
             mf.mesh = buildingMesh;
+
+            var col = gameObject.AddComponent<MeshCollider>();
+            BuildingCenter = col.bounds.center;
+            GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
