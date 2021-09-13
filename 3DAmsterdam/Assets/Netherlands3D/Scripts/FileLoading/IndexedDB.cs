@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
 using Netherlands3D.Traffic.VISSIM;
 using Netherlands3D.Interface;
+using Netherlands3D.Logging.Services;
 
 public class IndexedDB : MonoBehaviour
 {
@@ -109,13 +110,29 @@ public class IndexedDB : MonoBehaviour
         {
             GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames, ClearDatabase);
         }
+        else if (extention == ".analytics")
+        {
+            if (File.Exists(Application.persistentDataPath + "/" + filenames[0]))
+            {
+                FindObjectOfType<SiteImproveAnalyticsService>().ReadAnalyticsData(File.ReadAllText(Application.persistentDataPath + "/" + filenames[0]));
+            }
+            LoadingScreen.Instance.Hide();
+        }
         else if (extention == ".csv")
         {
-            csvLoader.LoadCsvFromFile(filenames[0], ClearDatabase);
+            if (File.Exists(Application.persistentDataPath + "/" + filenames[0]))
+            {
+                csvLoader.LoadCsvFromFile(Application.persistentDataPath + "/" + filenames[0], ClearDatabase);
+            }
+            LoadingScreen.Instance.Hide();
         }
         else if (extention == ".fzp")
         {
-            GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
+            if (File.Exists(Application.persistentDataPath + "/" + filenames[0]))
+            {
+                GetComponent<VissimStringLoader>().LoadVissimFromFile(Application.persistentDataPath + "/" + filenames[0], ClearDatabase);
+            }
+            LoadingScreen.Instance.Hide();
         }
     }
 
