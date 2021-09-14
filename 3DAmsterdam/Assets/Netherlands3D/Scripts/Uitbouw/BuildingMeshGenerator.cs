@@ -36,7 +36,7 @@ namespace Netherlands3D.T3D.Uitbouw
             BuildingCenter = col.bounds.center;
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
 
-            BuildingDataProcessed.Invoke(this);
+            BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
