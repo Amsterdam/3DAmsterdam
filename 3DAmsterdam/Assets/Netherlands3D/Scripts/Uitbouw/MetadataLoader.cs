@@ -87,7 +87,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             StartCoroutine(UpdateSidePanelAddress(id));
 
-            //yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
 
             yield return StartCoroutine(GetPerceelData(position));
 
