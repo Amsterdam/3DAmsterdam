@@ -95,6 +95,8 @@ namespace Netherlands3D.Sharing
                 GotoPosition(pos);
 
                 MetadataLoader.Instance.LoadBuildingData(pos, "0344100000021804");
+                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000068320");
+                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000052214");
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
