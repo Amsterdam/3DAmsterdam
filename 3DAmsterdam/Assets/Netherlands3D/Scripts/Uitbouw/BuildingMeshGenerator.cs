@@ -15,6 +15,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
 
+        public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building); 
+        public event BuildingDataProcessedEventHandler BuildingDataProcessed;
+
         private void Start()//in start to avoid race conditions
         {
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
@@ -32,6 +35,8 @@ namespace Netherlands3D.T3D.Uitbouw
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+
+            BuildingDataProcessed.Invoke(this);
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
