@@ -165,7 +165,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //if (Physics.BoxCast(transform.position - uitbouwAttachDirection * 0.1f, extents, uitbouwAttachDirection, out RaycastHit hit, transform.rotation, Mathf.Infinity, layerMask)) // offset origin slightly to the back
             if (Physics.Raycast(transform.position, uitbouwAttachDirection, out RaycastHit hit, Mathf.Infinity, layerMask))
             {
-                print("Raycast hit");
+                //print("Raycast hit");
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
                 uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
