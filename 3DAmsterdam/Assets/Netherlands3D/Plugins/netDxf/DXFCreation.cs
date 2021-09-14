@@ -52,6 +52,20 @@ public class DXFCreation : ModelFormatCreation
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)","");
+                    layerName = layerName.Replace("=", "");
+                    layerName = layerName.Replace("\\", "");
+                    layerName = layerName.Replace("<", "");
+                    layerName = layerName.Replace(">", "");
+                    layerName = layerName.Replace("/", "");
+                    layerName = layerName.Replace("?", "");
+                    layerName = layerName.Replace("\"" ,"");
+                    layerName = layerName.Replace(":", "");
+                    layerName = layerName.Replace(";", "");
+                    layerName = layerName.Replace("*", "");
+                    layerName = layerName.Replace("|", "");
+                    layerName = layerName.Replace(",", "");
+                    layerName = layerName.Replace("'", "");
+
                     loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
                     yield return new WaitForEndOfFrame();
 
