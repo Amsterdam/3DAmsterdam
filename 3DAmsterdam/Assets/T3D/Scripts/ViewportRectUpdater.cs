@@ -16,6 +16,7 @@ public class ViewportRectUpdater : MonoBehaviour
 
     private void Update()
     {
+        //TODO update this only on start and on resize screen
         rect.x = (LeftPanel.rect.width * CanvasScaler.scaleFactor)  / (float)Screen.width;
         Camera.rect = rect;
     }
