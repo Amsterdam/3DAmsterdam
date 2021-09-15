@@ -79,15 +79,15 @@ public class PerceelRenderer : MonoBehaviour
 
     private void Start()
     {
-        PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-        MainTitle.text = "Uitbouw plaatsen";
+        //PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
+        //MainTitle.text = "Uitbouw plaatsen";
 
-        PropertiesPanel.Instance.AddSpacer();
-        PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
-        {
-            BuildingInterfaceLayer.ToggleLinkedObject(action);           
-        });
-        PropertiesPanel.Instance.AddSpacer();
+        //PropertiesPanel.Instance.AddSpacer();
+        //PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
+        //{
+        //    BuildingInterfaceLayer.ToggleLinkedObject(action);           
+        //});
+        //PropertiesPanel.Instance.AddSpacer();
     }
 
     public IEnumerator GetAndRenderPerceel(Vector3RD position)
@@ -113,7 +113,7 @@ public class PerceelRenderer : MonoBehaviour
 
             yield return null;
 
-            UpdateSidePanelPerceelData(json);
+           // UpdateSidePanelPerceelData(json);
 
             foreach (JSONNode feature in json["features"])
             {
@@ -171,7 +171,7 @@ public class PerceelRenderer : MonoBehaviour
                 var huisnummer = adres["huisnummer"].Value;
                 var postcode = adres["postcode"].Value;
                 var plaats = adres["woonplaatsNaam"].Value;
-                PropertiesPanel.Instance.AddTextfield($"{kortenaam} {huisnummer}\n{postcode} {plaats}");
+           //     PropertiesPanel.Instance.AddTextfield($"{kortenaam} {huisnummer}\n{postcode} {plaats}");
             }
         }
 
