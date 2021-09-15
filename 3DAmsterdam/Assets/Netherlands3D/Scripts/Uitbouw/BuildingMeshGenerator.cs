@@ -14,6 +14,10 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
+        public bool IsMonument { get; private set; }
+
+        public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
+        public event BuildingDataProcessedEventHandler BuildingDataProcessed;
 
         private void Start()//in start to avoid race conditions
         {
@@ -32,6 +36,10 @@ namespace Netherlands3D.T3D.Uitbouw
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+
+            //IsMonument = args.ObjectData. //todo: where to get this data?
+
+            BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
