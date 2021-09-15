@@ -15,14 +15,16 @@ namespace Netherlands3D.T3D.Uitbouw
         private Vector2[] footprint;
         private MeshRenderer meshRenderer;
         private Mesh mesh;
-        private List<Vector2[]> perceel;
+        //private List<Vector2[]> perceel;
 
         [SerializeField]
-        private BuildingMeshGenerator activeHouse;
+        private BuildingMeshGenerator building;
+        [SerializeField]
+        private PerceelRenderer perceel;
 
-        private float width;
-        private float depth;
-        private float height;
+        public float Width { get; private set; }
+        public float Depth { get; private set; }
+        public float Height { get; private set; }
 
         private Vector3 extents;
 
@@ -36,18 +38,18 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             SetDimensions(mesh.bounds.extents * 2);
             //print(width + "\t" + height + "\t" + depth);
-            MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
+            //MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
         }
 
-        private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
-        {
-            perceel = args.Perceel;
-        }
+        //private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
+        //{
+        //    perceel = args.Perceel; //todo: maybe 
+        //}
 
-        public void SetPerceel(List<Vector2[]> perceelData) //todo: fix event order/enable disabling so this function is not needed
-        {
-            perceel = perceelData;
-        }
+        //public void SetPerceel(List<Vector2[]> perceelData) //todo: fix event order/enable disabling so this function is not needed
+        //{
+        //    perceel = perceelData;
+        //}
 
         //private void SetActiveHouse(BuildingMeshGenerator building)
         //{
@@ -57,20 +59,22 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void SetDimensions(float w, float d, float h)
         {
-            width = w * transform.lossyScale.x;
-            depth = d * transform.lossyScale.z;
-            height = h * transform.lossyScale.y;
+            Width = w * transform.lossyScale.x;
+            Depth = d * transform.lossyScale.z;
+            Height = h * transform.lossyScale.y;
 
-            extents = new Vector3(width / 2, height / 2, depth / 2);
+            extents = new Vector3(Width / 2, Height / 2, Depth / 2);
         }
 
         private void SetDimensions(Vector3 dim)
         {
-            width = dim.x * transform.lossyScale.x;
-            depth = dim.z * transform.lossyScale.z;
-            height = dim.y * transform.lossyScale.y;
+            Width = dim.x * transform.lossyScale.x;
+            Depth = dim.z * transform.lossyScale.z;
+            Height = dim.y * transform.lossyScale.y;
 
-            extents = new Vector3(width / 2, height / 2, depth / 2);
+            extents = new Vector3(Width / 2, Height / 2, Depth / 2);
+
+            print("Afmetingen uitbouw: breedte:" + Width + "\thoogte: " + Height + "\tdiepte:" + Depth);
         }
 
         private void Update()
@@ -94,9 +98,9 @@ namespace Netherlands3D.T3D.Uitbouw
             if (Input.GetKey(KeyCode.Alpha2))
                 transform.position += transform.right * moveSpeed;
 
-            if (activeHouse)
+            if (building)
             {
-                SnapToBuilding(activeHouse);
+                SnapToBuilding(building);
             }
         }
 
@@ -104,7 +108,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             footprint = GenerateFootprint(mesh, transform.rotation, transform.lossyScale);
 
-            if (IsInPerceel(footprint, perceel, transform.position))
+            if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
             {
                 meshRenderer.material.color = Color.green;
                 //print("In bounds");
@@ -116,6 +120,11 @@ namespace Netherlands3D.T3D.Uitbouw
                 //print("Out bounds");
                 //transform.position = oldPosition;
             }
+        }
+
+        public Vector2[] GetFootprint()
+        {
+            return GenerateFootprint(mesh, transform.rotation, transform.lossyScale);
         }
 
         public static Vector2[] GenerateFootprint(Mesh mesh, Quaternion rotation, Vector3 scale)
@@ -136,25 +145,6 @@ namespace Netherlands3D.T3D.Uitbouw
             return footprint.ToArray();
         }
 
-        public static bool IsInPerceel(Vector2[] footprint, List<Vector2[]> perceel, Vector3 positionOffset)
-        {
-            var q = from i in perceel
-                    from p in i
-                    select CoordConvert.RDtoUnity(p) into v3
-                    select new Vector2(v3.x, v3.z);
-
-            var polyPoints = q.ToArray(); //todo: test for non-contiguous perceels
-
-            foreach (var vert in footprint)
-            {
-                if (!GeometryCalculator.ContainsPoint(polyPoints, vert + new Vector2(positionOffset.x, positionOffset.z)))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
 
         private void SnapToBuilding(BuildingMeshGenerator building)
         {
@@ -169,33 +159,33 @@ namespace Netherlands3D.T3D.Uitbouw
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
                 uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
-                transform.position = hit.point - uitbouwAttachDirection * depth / 2;
+                transform.position = hit.point - uitbouwAttachDirection * Depth / 2;
                 //transform.Translate(0, 0, hit.distance - 0.1f, Space.Self); //dont set position directly since the impact point can be different than the current x position. subtract 0.1f due to origin displacement          
             }
             //if there is no building in the uitbouw's path, raycast to the building center to find a new surface to snap to
             //todo: this is only guaranteed to work if the building center is inside the building's collider. it may fail if the building is strangely shaped and the collider center is outside of the collider
             //var layerToHit = LayerMask.NameToLayer("ActiveSelection"); //raycast uses the inverse for some reason
-            else if (Physics.Raycast(transform.position + uitbouwAttachDirection * (depth / 2), building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
+            else if (Physics.Raycast(transform.position + uitbouwAttachDirection * (Depth / 2), building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
             {
                 print("Raycast failed, re-orienting to new wall");
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
                 uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
-                transform.position = hit.point - uitbouwAttachDirection * depth / 2;
+                transform.position = hit.point - uitbouwAttachDirection * Depth / 2;
             }
 
-            SnapToGround(activeHouse);
+            SnapToGround(this.building);
 
             //Debug.DrawRay(transform.position + uitbouwAttachDirection * (depth / 2), building.BuildingCenter - transform.position, Color.magenta);
-            if (Physics.Raycast(transform.position + uitbouwAttachDirection * (depth / 2), building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(transform.position + uitbouwAttachDirection * (Depth / 2), building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
             {
-                Debug.DrawLine(transform.position + uitbouwAttachDirection * (depth / 2), hit.point, Color.cyan);
+                Debug.DrawLine(transform.position + uitbouwAttachDirection * (Depth / 2), hit.point, Color.cyan);
             }
         }
 
         void SnapToGround(BuildingMeshGenerator building)
         {
-            transform.position = new Vector3(transform.position.x, building.GroundLevel + height / 2, transform.position.z);
+            transform.position = new Vector3(transform.position.x, building.GroundLevel + Height / 2, transform.position.z);
         }
 
         //void OnDrawGizmos()

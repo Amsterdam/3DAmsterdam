@@ -34,6 +34,9 @@ namespace Netherlands3D.T3D.Uitbouw
         private BuildingMeshGenerator building;
 
         private GameObject perceelGameObject;
+
+        public List<Vector2[]> Perceel { get; private set; }
+        public float Area { get; private set; }
         //[SerializeField]
         //private Text MainTitle;
 
@@ -71,7 +74,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
+            Perceel = args.Perceel;
             GenerateMeshFromPerceel(args.Perceel);
+
+            Area = 0;
+            foreach (var perceelPart in args.Perceel)
+            {
+                Area += GeometryCalculator.Area(perceelPart);
+            }
             //RenderPolygons(args.Perceel);
         }
 
@@ -82,8 +92,8 @@ namespace Netherlands3D.T3D.Uitbouw
         //    var uitbouw = Instantiate(Uitbouw, pos, Quaternion.identity);
         //}
 
-        public List<Vector3> vertices = new List<Vector3>();
-        public int[] tris0;
+        //public List<Vector3> vertices = new List<Vector3>();
+        //public int[] tris0;
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
         {
@@ -95,10 +105,8 @@ namespace Netherlands3D.T3D.Uitbouw
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
             perceelGameObject.AddComponent<MeshRenderer>().material = LineMaterial;
 
-            //List<Vector3> vertices = new List<Vector3>();
-            vertices = new List<Vector3>();
-            List<int[]> tris = new List<int[]>();
-            //tris = new List<int[]>();
+            var vertices = new List<Vector3>();
+            var tris = new List<int[]>();
 
             for (int i = 0; i < perceel.Count; i++)
             {
@@ -119,9 +127,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
             for (int i = 0; i < perceel.Count; i++)
             {
-                if (i == 0)
-                    tris0 = tris[i];
-
                 mesh.SetTriangles(tris[i], i);
             }
             filter.mesh = mesh;

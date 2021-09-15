@@ -226,7 +226,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var pos = CoordConvert.RDtoUnity(rd);
             uitbouwPrefab.SetActive(true);
             uitbouwPrefab.transform.position = pos;
-            uitbouwPrefab.GetComponent<Uitbouw>().SetPerceel(PerceelData);
+            //uitbouwPrefab.GetComponent<Uitbouw>().SetPerceel(PerceelData);
             //var uitbouw = Instantiate(uitbouwPrefab, pos, Quaternion.identity);
             //uitbouw.GetComponent<Uitbouw>().SetPerceel(PerceelData);
         }
