@@ -11,7 +11,8 @@ using UnityEngine.UI;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
-    public GameObject BuildingsLayer;
+    public Layer BuildingsLayer;
+    public Layer TerrainLayer;
     public GameObject Zonnepaneel;
     public Texture2D RotateIcon;
 
@@ -54,9 +55,9 @@ public class HandleButtonsT3D : MonoBehaviour
     }
 
     public void ToggleBuildings()
-    {
-        var buildingsLayer = BuildingsLayer.GetComponent<Layer>();
-        buildingsLayer.isEnabled = !buildingsLayer.isEnabled;
+    {        
+        BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
+        TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
     }
 
     #region Sun related

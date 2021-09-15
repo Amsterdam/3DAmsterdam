@@ -45,10 +45,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public static MetadataLoader Instance;
 
         [SerializeField]
-        private Text MainTitle;
-        [SerializeField]
-        private Transform GeneratedFieldsContainer;
-        [SerializeField]
         private GameObject uitbouwPrefab;
 
         [SerializeField]
@@ -66,17 +62,15 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public List<Vector2[]> PerceelData;
 
+        public string Adres;
+        public string PerceelGrootte;
+        public Vector2RD perceelnummerPlaatscoordinaat;
+
         void Awake()
         {
             Instance = this;
         }
 
-        // Update is called once per frame
-        void Start()
-        {
-            PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-            MainTitle.text = "Uitbouw plaatsen";
-        }
 
         public void LoadBuildingData(Vector3RD position, string id)
         {
@@ -144,7 +138,8 @@ namespace Netherlands3D.T3D.Uitbouw
                     var huisnummer = adres["huisnummer"].Value;
                     var postcode = adres["postcode"].Value;
                     var plaats = adres["woonplaatsNaam"].Value;
-                    PropertiesPanel.Instance.AddTextfield($"{kortenaam} {huisnummer}\n{postcode} {plaats}");
+                    
+                    Adres= $"{kortenaam} {huisnummer}\n{postcode} {plaats}";
                 }
             }
         }
@@ -210,20 +205,17 @@ namespace Netherlands3D.T3D.Uitbouw
 
             JSONNode feature = json["features"][0];
 
-            var perceelGrootte = $"Perceeloppervlakte: {feature["properties"]["kadastraleGrootteWaarde"]} m2";
-            PropertiesPanel.Instance.AddLabel(perceelGrootte);
+            PerceelGrootte = $"Perceeloppervlakte: {feature["properties"]["kadastraleGrootteWaarde"]} m2";
+            
+            perceelnummerPlaatscoordinaat = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
 
-            btn = PropertiesPanel.Instance.AddActionButtonBigRef("Plaats uitbouw", (action) => //todo: move this to uitbouw, but we need the position
-            {
-                var rd = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
-                PlaatsUitbouw(rd);
-                Destroy(btn);
-            });
         }
 
-        public void PlaatsUitbouw(Vector2RD rd)
+
+
+        public void PlaatsUitbouw()
         {
-            var pos = CoordConvert.RDtoUnity(rd);
+            var pos = CoordConvert.RDtoUnity( perceelnummerPlaatscoordinaat  );
             uitbouwPrefab.SetActive(true);
             uitbouwPrefab.transform.position = pos;
             //uitbouwPrefab.GetComponent<Uitbouw>().SetPerceel(PerceelData);

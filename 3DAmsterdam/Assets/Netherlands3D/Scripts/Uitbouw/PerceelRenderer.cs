@@ -27,8 +27,7 @@ namespace Netherlands3D.T3D.Uitbouw
         //public GameObject BuildingsLayer;
 
         //public GameObject Uitbouw;
-        public InterfaceLayer BuildingInterfaceLayer;
-        public InterfaceLayer TerrainInterfaceLayer;
+        
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -55,13 +54,13 @@ namespace Netherlands3D.T3D.Uitbouw
             //PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
             //MainTitle.text = "Uitbouw plaatsen";
 
-            PropertiesPanel.Instance.AddSpacer();
-            PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
-            {
-                BuildingInterfaceLayer.ToggleLinkedObject(action);
-                TerrainInterfaceLayer.ToggleLinkedObject(action);
-            });
-            PropertiesPanel.Instance.AddSpacer();
+            //PropertiesPanel.Instance.AddSpacer();
+            //PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
+            //{
+            //    BuildingInterfaceLayer.ToggleLinkedObject(action);
+            //    TerrainInterfaceLayer.ToggleLinkedObject(action);
+            //});
+            //PropertiesPanel.Instance.AddSpacer();
 
             MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
