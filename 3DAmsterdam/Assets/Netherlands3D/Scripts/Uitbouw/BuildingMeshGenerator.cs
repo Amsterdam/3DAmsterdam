@@ -15,6 +15,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
         public bool IsMonument { get; private set; }
+        public Vector3[] BuildingCorners { get; private set; }
 
         public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
         public event BuildingDataProcessedEventHandler BuildingDataProcessed;
@@ -100,6 +101,21 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.uv = uvs.ToArray();
             mesh.RecalculateNormals();
             return mesh;
+        }
+
+        public static Vector3[] EstimateBuildingCorners(Mesh mesh, float heightThreshold)
+        {
+            var verts = mesh.vertices;
+            var corners = new List<Vector3>();
+            foreach (var vert in verts)
+            {
+                if(vert.y < heightThreshold)
+                {
+                    corners.Add(vert);
+                }
+            }
+
+            return corners.ToArray();
         }
 
         //private void OnDrawGizmos()
