@@ -44,7 +44,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private float terrainFloor;
 
-        //private void Awake()
+        //private void awake()
         //{
         //    Instance = this;
         //}

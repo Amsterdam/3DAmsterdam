@@ -11,6 +11,14 @@ using UnityEngine.UI;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
+    public Button ButtonOmgeving;
+    public Button ButtonZon;
+    public Button ButtonMinusHour;
+    public Button ButtonAddHour;
+
+    public Button ButtonZoomIn;
+    public Button ButtonZoomOut;
+
     public Layer BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
@@ -19,9 +27,9 @@ public class HandleButtonsT3D : MonoBehaviour
     public DropUp MaandenDropup;
 
     //Sun related
-    public Text Dag;
-    public Text Maand;
-    public Text Tijd;
+    public Text DagText;
+    public Text MaandText;
+    public Text TijdText;
     private DateTime dateTimeNow;
     private double longitude;
     private double latitude;
@@ -34,8 +42,17 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
+
+        ButtonOmgeving.onClick.AddListener(ToggleBuildings);
+        ButtonZon.onClick.AddListener(ToggleZonnepaneel);
+        ButtonMinusHour.onClick.AddListener(MinusHour);
+        ButtonAddHour.onClick.AddListener(AddHour);
+
+        ButtonZoomIn.onClick.AddListener(ZoomIn);
+        ButtonZoomOut.onClick.AddListener(ZoomOut);
+
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
-                
+
         //Sun related
         dateTimeNow = DateTime.Now;        
         var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
@@ -54,19 +71,19 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();      
     }
 
-    public void ToggleBuildings()
+    void ToggleBuildings()
     {        
         BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
         TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
     }
 
     #region Sun related
-    public void ToggleZonnepaneel()
+    void ToggleZonnepaneel()
     {
         Zonnepaneel.SetActive(!Zonnepaneel.active);
     }
 
-    public void AddHour()
+    void AddHour()
     {
         dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, 0, 0);
         dateTimeNow =  dateTimeNow.AddHours(1);
@@ -76,7 +93,7 @@ public class HandleButtonsT3D : MonoBehaviour
         Debug.Log(dateTimeNow);
     }
 
-    public void MinusHour()
+    void MinusHour()
     {
         dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, 0, 0);
         dateTimeNow = dateTimeNow.AddHours(-1);
@@ -84,13 +101,25 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateSun();
         Debug.Log(dateTimeNow);
     }
+    
+    void ZoomIn()
+    {
+        Debug.Log("zoomin");
+    }
+
+    void ZoomOut()
+    {
+        Debug.Log("zoomout");
+    }
 
     private void UpdateTijd()
     {
-        Dag.text = $"{dateTimeNow.Day}";
-        Maand.text = GetMonthString(dateTimeNow.Month-1);        
-        Tijd.text = $"{ dateTimeNow:HH:mm}";
+        DagText.text = $"{dateTimeNow.Day}";
+        MaandText.text = GetMonthString(dateTimeNow.Month-1);        
+        TijdText.text = $"{ dateTimeNow:HH:mm}";
     }
+
+
 
     void UpdateSun()
     {

@@ -33,12 +33,32 @@ namespace Netherlands3D.T3D.Uitbouw
         public bool IsLoaded { get; private set; }
         public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
 
-        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel)
+        public string PerceelGrootte;
+
+        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, string perceelGrootte)
         {
             IsLoaded = isLoaded;
             Perceel = perceel;
+            PerceelGrootte = perceelGrootte;
         }
     }
+
+    public class AdressDataEventArgs : EventArgs
+    {
+        public string StraatEnNummer { get; private set; }
+
+        public string PostcodeEnPlaats { get; private set; }
+
+        public AdressDataEventArgs(string straat, string postcode)
+        {
+            StraatEnNummer = straat;
+            PostcodeEnPlaats = postcode;
+        }
+    }
+
+
+
+
 
     public class MetadataLoader : MonoBehaviour
     {
@@ -52,18 +72,17 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private GameObject terrainLayer;
 
-        private ActionButton btn;
-
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;
 
+        public delegate void AddressLoadedEventHandler(object source, AdressDataEventArgs args);
+        public event AddressLoadedEventHandler AddressLoaded;
+
         public List<Vector2[]> PerceelData;
 
-        public string Adres;
-        public string PerceelGrootte;
         public Vector2RD perceelnummerPlaatscoordinaat;
 
         void Awake()
@@ -139,7 +158,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     var postcode = adres["postcode"].Value;
                     var plaats = adres["woonplaatsNaam"].Value;
                     
-                    Adres= $"{kortenaam} {huisnummer}\n{postcode} {plaats}";
+                    AddressLoaded?.Invoke(this, new AdressDataEventArgs($"{kortenaam} {huisnummer}", $"{postcode} {plaats}"));
                 }
             }
         }
@@ -162,17 +181,18 @@ namespace Netherlands3D.T3D.Uitbouw
             else
             {
                 var json = JSON.Parse(req.downloadHandler.text);
-                UpdateSidePanelPerceelData(json);
                 ProcessPerceelData(json);
             }
         }
 
         void ProcessPerceelData(JSONNode jsonData)
         {
-            //var json = JSON.Parse(jsonData);
+            JSONNode feature1 = jsonData["features"][0];
+            var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]} m2";
+            perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
+            
             List<Vector2[]> list = new List<Vector2[]>();
-
-            //yield return null;
+            
             foreach (JSONNode feature in jsonData["features"])
             {
                 List<Vector2> polygonList = new List<Vector2>();
@@ -195,22 +215,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 gam.gameObject.AddComponent<MeshCollider>();
             }
 
-            PerceelData = list;
-            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, PerceelData));
+            PerceelData = list;            
+            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, PerceelData, perceelGrootte));
+            PlaatsUitbouw();
         }
 
-        void UpdateSidePanelPerceelData(JSONNode json)
-        {
-            Debug.Log("UpdateSidePanelPerceelData");
-
-            JSONNode feature = json["features"][0];
-
-            PerceelGrootte = $"Perceeloppervlakte: {feature["properties"]["kadastraleGrootteWaarde"]} m2";
-            
-            perceelnummerPlaatscoordinaat = new Vector2RD(feature["properties"]["perceelnummerPlaatscoordinaatX"], feature["properties"]["perceelnummerPlaatscoordinaatY"]);
-
-        }
-
+        
 
 
         public void PlaatsUitbouw()
