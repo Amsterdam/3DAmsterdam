@@ -92,6 +92,7 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			url = url.ReplaceXY(tileChange.X, tileChange.Y);
+			Debug.Log(url);
 			var webRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);
 			tiles[tileKey].runningWebRequest = webRequest;
 			yield return webRequest.SendWebRequest();
@@ -171,7 +172,7 @@ namespace Netherlands3D.LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
+			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
 			Debug.Log(dataURL);
 
 			ObjectMappingClass data;
@@ -308,7 +309,7 @@ namespace Netherlands3D.LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
+			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
 
 			ObjectMappingClass data;
 			string id = "null";
