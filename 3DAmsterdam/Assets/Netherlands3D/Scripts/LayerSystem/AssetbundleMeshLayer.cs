@@ -92,7 +92,6 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			url = url.ReplaceXY(tileChange.X, tileChange.Y);
-			Debug.Log(url);
 			var webRequest = UnityWebRequestAssetBundle.GetAssetBundle(url);
 			tiles[tileKey].runningWebRequest = webRequest;
 			yield return webRequest.SendWebRequest();
