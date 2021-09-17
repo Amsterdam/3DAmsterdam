@@ -59,7 +59,6 @@ namespace Netherlands3D.T3D.Uitbouw
             for (int i = 0; i < coPlanarCorners.Length; i++)
             {
                 var dst = uitbouwWall.GetDistanceToPoint(coPlanarCorners[i]);
-                print(coPlanarCorners[i] + "\t" + dst);
                 if (dst > 0 && dst < smallestDst)
                 {
                     smallestDst = dst;
@@ -87,15 +86,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 }
             }
             return corners.ToArray();
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.cyan;
-            //foreach (var a in GetCoplanarCorners(building.AbsoluteBuildingCornders, uitbouw.SnapWall, 0.1f))
-            //{
-            //    Gizmos.DrawSphere(a, 0.1f);
-            //}
         }
     }
 }

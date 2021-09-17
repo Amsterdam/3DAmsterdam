@@ -31,9 +31,6 @@ public class BuildingMeasuring : Interactable
     [SerializeField]
     private List<MeasurePoint> linePoints;
 
-    //[SerializeField]
-    //private Transform previewTargetPoint;
-
     [SerializeField]
     private Material lineMaterial;
 
@@ -41,7 +38,6 @@ public class BuildingMeasuring : Interactable
     private Material linePlacedMaterial;
 
     private Mesh targetMesh;
-    private bool newColliderFound = false;
     private MeshCollider targetCollider;
 
     [SerializeField]
@@ -53,8 +49,6 @@ public class BuildingMeasuring : Interactable
     {
         lineRenderer = GetComponent<LineRenderer>();
         positions = new Vector3[linePoints.Count];
-
-        //StartCoroutine(SnapToClosestVertex()); //Implementation of vertex snapping with modifier. Way too slow. Might be improved/usable later.
     }
 
     private void OnEnable()

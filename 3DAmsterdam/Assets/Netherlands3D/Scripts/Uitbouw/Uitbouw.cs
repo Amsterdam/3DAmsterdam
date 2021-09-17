@@ -128,14 +128,10 @@ namespace Netherlands3D.T3D.Uitbouw
             if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
             {
                 meshRenderer.material.color = Color.green;
-                //print("In bounds");
-                //oldPosition = transform.position;
             }
             else
             {
                 meshRenderer.material.color = Color.red;
-                //print("Out bounds");
-                //transform.position = oldPosition;
             }
         }
 
@@ -206,63 +202,5 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             transform.position = new Vector3(transform.position.x, building.GroundLevel + Height / 2, transform.position.z);
         }
-
-        //void OnDrawGizmos()
-        //{
-        //    float maxDistance = Mathf.Infinity;
-        //    RaycastHit hit;
-        //    LayerMask layerMask = LayerMask.GetMask("ActiveSelection");
-
-        //    bool isHit = Physics.BoxCast(transform.position - transform.forward * .1f, extents, transform.forward, out hit,
-        //        transform.rotation, maxDistance, layerMask);
-        //    if (isHit)
-        //    {
-        //        Gizmos.color = Color.red;
-        //        Gizmos.DrawLine(transform.position, transform.position + transform.forward * hit.distance);
-        //        Gizmos.DrawWireCube(transform.position + transform.forward * hit.distance, extents * 2);
-        //    }
-        //    else
-        //    {
-        //        Gizmos.color = Color.green;
-        //        Gizmos.DrawRay(transform.position, transform.forward * 20);
-        //    }
-        //}
-
-        //public static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
-        //{
-        //    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-        //}
-
-        //public static bool IsPointInTriangle(Vector2 pt, Vector2 v1, Vector2 v2, Vector2 v3)
-        //{
-        //    float d1, d2, d3;
-        //    bool has_neg, has_pos;
-
-        //    d1 = Sign(pt, v1, v2);
-        //    d2 = Sign(pt, v2, v3);
-        //    d3 = Sign(pt, v3, v1);
-
-        //    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        //    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-        //    return !(has_neg && has_pos);
-        //}
-
-        //private void OnDrawGizmos()
-        //{
-        //    footprint = GenerateFootprint(GetComponent<MeshFilter>().mesh, transform.rotation);
-
-        //    foreach (var vert in footprint)
-        //    {
-        //        Gizmos.DrawSphere(new Vector3(transform.position.x + vert.x, 0, transform.position.z + vert.y), 0.1f);
-        //        print(vert);
-        //    }
-
-        //    for (int i = 0; i < footprint.Length - 1; i++)
-        //    {
-        //        Debug.DrawLine(transform.position + new Vector3(footprint[i].x, 0, footprint[i].y), transform.position + new Vector3(footprint[i + 1].x, 0, footprint[i + 1].y));
-        //    }
-        //    Debug.DrawLine(transform.position + new Vector3(footprint[0].x, 0, footprint[0].y), transform.position + new Vector3(footprint[footprint.Length - 1].x, 0, footprint[footprint.Length - 1].y));
-        //}
     }
 }

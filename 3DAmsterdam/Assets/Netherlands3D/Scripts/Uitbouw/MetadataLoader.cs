@@ -95,13 +95,7 @@ namespace Netherlands3D.T3D.Uitbouw
             MainTitle.text = "Uitbouw plaatsen";
         }
 
-        public void LoadBuildingData(Vector3RD position, string id)
-        {
-            //StartCoroutine(HandlePosition(position, id));
-            HandlePosition(position, id);
-        }
-
-        private void HandlePosition(Vector3RD position, string id)
+        public void RequestBuildingData(Vector3RD position, string id)
         {
             StartCoroutine(UpdateSidePanelAddress(id));
 
@@ -285,9 +279,6 @@ namespace Netherlands3D.T3D.Uitbouw
             var pos = CoordConvert.RDtoUnity(rd);
             uitbouwPrefab.SetActive(true);
             uitbouwPrefab.transform.position = pos;
-            //uitbouwPrefab.GetComponent<Uitbouw>().SetPerceel(PerceelData);
-            //var uitbouw = Instantiate(uitbouwPrefab, pos, Quaternion.identity);
-            //uitbouw.GetComponent<Uitbouw>().SetPerceel(PerceelData);
         }
 
         private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)

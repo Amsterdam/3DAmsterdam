@@ -1,27 +1,9 @@
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using System.Threading.Tasks;
-using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
 using ConvertCoordinates;
-
-public struct Line
-{
-    public Vector3 Start;
-    public Vector3 End;
-    public Quaternion Rotation; //rotation with respect to the z axis
-
-    public Line(Vector3 start, Vector3 end)
-    {
-        Start = start;
-        End = end;
-        Rotation = Quaternion.FromToRotation(Vector3.forward, (end - start).normalized);
-    }
-}
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -64,6 +46,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
         {
+            print("getting corners");
             StartCoroutine(ProcessCorners(args.Outline));
         }
 
@@ -76,7 +59,6 @@ namespace Netherlands3D.T3D.Uitbouw
                     select CoordConvert.RDtoUnity(p) into v3
                     select new Vector3(v3.x, GroundLevel, v3.z);
 
-            print(q.Count());
             AbsoluteBuildingCorners = q.ToArray();
         }
 
@@ -139,109 +121,5 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.RecalculateNormals();
             return mesh;
         }
-
-        /*public static Vector3[] EstimateBuildingCorners(Mesh mesh, float heightThreshold)
-        {
-            var verts = mesh.vertices;
-            var tris = mesh.triangles;
-
-            var corners = new List<Vector3>();
-            var vertIndices = new List<int>();
-
-            for (int i = 0; i < verts.Length; i++)
-            {
-                Vector3 vert = verts[i];
-                if (vert.y < heightThreshold)
-                {
-                    //corners.Add(vert);
-                    vertIndices.Add(i);
-                }
-            }
-
-            var lines = new List<Line>();
-            var offSetIndices = new int[][] {
-                new int[] { 1, 2 },
-                new int[] { -1, 1 },
-                new int[] { -2, -1 },
-            };
-
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = i; j < tris.Length; j += 3)
-                {
-                    var vertIndex = tris[j];
-                    if (vertIndices.Contains(vertIndex))
-                    {
-                        // get the other 2 vert indices for this triangle
-                        print("vertIndex" + vertIndex + "i: " + i + "j: " + j);
-                        //print("A\t" + indexA + "\t" + offSetIndices[indexA] + "\t" + j + offSetIndices[indexA]);
-                        //print("B\t" + indexB + "\t" + offSetIndices[indexB] + "\t" + j + offSetIndices[indexB]);
-
-                        var vertIndexA = tris[j + offSetIndices[i][0]];
-                        var vertIndexB = tris[j + offSetIndices[i][1]];
-
-                        if (vertIndices.Contains(vertIndexA))
-                        {
-                            lines.Add(new Line(verts[vertIndex], verts[vertIndexA])); //todo: does direction matter?
-                        }
-
-                        if (vertIndices.Contains(vertIndexB))
-                        {
-                            lines.Add(new Line(verts[vertIndex], verts[vertIndexB])); //todo: does direction matter?
-                        }
-                    }
-                }
-            }
-
-            foreach(Line l in lines)
-            {
-                Debug.DrawLine(l.Start, l.End, Color.green, 300f, false);
-            }
-
-            var startAngle = Quaternion.Angle(lines[0].Rotation, lines[lines.Count - 1].Rotation);
-            if (startAngle > 5 && startAngle < 175)
-            {
-                //angle change steep enough, vert is probably a corner
-                corners.Add(lines[0].Start);
-            }
-
-            for (int i = 0; i < lines.Count - 1; i++)
-            {
-                var newAngle = Quaternion.Angle(lines[i].Rotation, lines[i + 1].Rotation);
-                var deltaAngle = Mathf.Abs(newAngle - startAngle);
-                print("deltaAngle: " + deltaAngle);
-                if (deltaAngle > 5 && deltaAngle < 175)
-                {
-                    //angle change steep enough, vert is probably a corner
-                    corners.Add(lines[i].Start);
-                }
-            }
-
-            return corners.ToArray();
-        }
-        */
-
-        public Vector3 OffsetVertexPosition(Vector3 vertex)
-        {
-            return transform.rotation * vertex + transform.position;
-        }
-        //private void OnDrawGizmos()
-        //{
-        //    foreach (var vert in vertices)
-        //    {
-        //        Debug.DrawLine(Vector3.zero, vert + offset, Color.red);
-        //        Gizmos.color = Color.red;
-        //        Gizmos.DrawSphere(vert + offset, 0.1f);
-        //    }
-        //}
-
-        //private void OnDrawGizmos()
-        //{
-        //    foreach (var a in AbsoluteBuildingCorners)
-        //    {
-        //        Gizmos.color = Color.magenta;
-        //        Gizmos.DrawCube(a, Vector3.one * 0.1f);
-        //    }
-        //}
     }
 }
