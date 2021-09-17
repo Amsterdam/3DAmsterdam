@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using ConvertCoordinates;
@@ -56,10 +57,6 @@ namespace Netherlands3D.T3D.Uitbouw
         }
     }
 
-
-
-
-
     public class MetadataLoader : MonoBehaviour
     {
         public static MetadataLoader Instance;
@@ -80,6 +77,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public delegate void AddressLoadedEventHandler(object source, AdressDataEventArgs args);
         public event AddressLoadedEventHandler AddressLoaded;
+
+        public delegate void MonumentEventHandler();
+        public event MonumentEventHandler IsMonumentEvent;
+
+        public delegate void BeschermdEventHandler();
+        public event BeschermdEventHandler IsBeschermdEvent;
 
         public List<Vector2[]> PerceelData;
 
@@ -103,6 +106,10 @@ namespace Netherlands3D.T3D.Uitbouw
             //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
 
             yield return StartCoroutine(GetPerceelData(position));
+
+            yield return StartCoroutine(GetMonumentStatus(position));
+
+            yield return StartCoroutine(GetBeschermdStatus(position));
 
             yield return StartCoroutine(HighlightBuilding(id));
 
@@ -184,6 +191,70 @@ namespace Netherlands3D.T3D.Uitbouw
                 ProcessPerceelData(json);
             }
         }
+
+        IEnumerator GetMonumentStatus(Vector3RD position)
+        {
+            yield return null;
+
+            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
+
+            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
+            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:NationalListedMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
+
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+            {
+                WarningDialogs.Instance.ShowNewDialog("MonumentStatus data kon niet opgehaald worden");
+            }
+            else
+            {
+                var json = JSON.Parse(req.downloadHandler.text);
+                var ismonument = json["features"].Linq.Any();
+
+                if (ismonument)
+                {
+                    IsBeschermdEvent?.Invoke();
+                }
+
+                //if (ismonument)
+                //{
+                //    var KICH_URL = json["features"][0]["properties"]["KICH_URL"];                    
+                //}
+
+            }
+        }
+
+        IEnumerator GetBeschermdStatus(Vector3RD position)
+        {
+            yield return null;
+
+            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
+
+            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
+            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
+                      
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+            {
+                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+            }
+            else
+            {
+                var json = JSON.Parse(req.downloadHandler.text);
+                var isbeschermd = json["features"].Linq.Any();
+
+                if(isbeschermd)
+                {
+                    IsBeschermdEvent?.Invoke();
+                }
+
+                
+            }
+        }
+
+
 
         void ProcessPerceelData(JSONNode jsonData)
         {

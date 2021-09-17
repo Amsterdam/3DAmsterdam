@@ -10,12 +10,27 @@ public class HandleMetaDataUpdates : MonoBehaviour
     public Text PostcodePlaatsText;
     public Text PerceelGrootteText;
 
+    public GameObject IsMonument;
+    public GameObject IsBeschermd;
+
 
     void Start()
     {
         MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
         MetadataLoader.Instance.AddressLoaded += AddressLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += PerceelDataLoaded;
+        MetadataLoader.Instance.IsMonumentEvent += IsMonumentEvent;
+        MetadataLoader.Instance.IsBeschermdEvent += IsBeschermdEvent;
+    }
+
+    private void IsMonumentEvent()
+    {
+        IsMonument.SetActive(true);
+    }
+
+    private void IsBeschermdEvent()
+    {
+        IsBeschermd.SetActive(true);
     }
 
     private void PerceelDataLoaded(object source, PerceelDataEventArgs args)

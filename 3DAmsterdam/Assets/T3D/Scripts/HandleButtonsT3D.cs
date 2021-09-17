@@ -1,6 +1,7 @@
 using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Sun;
+using Netherlands3D.T3D.Uitbouw;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomIn;
     public Button ButtonZoomOut;
 
+    public Toggle TogglePositieIsGoed;
+    public Toggle TogglePositieIsNietGoed;
+
     public Layer BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
@@ -26,10 +30,15 @@ public class HandleButtonsT3D : MonoBehaviour
 
     public DropUp MaandenDropup;
 
+    public GameObject Step1;
+
     //Sun related
     public Text DagText;
     public Text MaandText;
     public Text TijdText;
+    
+    public GameObject GebruikToets;
+
     private DateTime dateTimeNow;
     private double longitude;
     private double latitude;
@@ -42,6 +51,7 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
+        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
 
         ButtonOmgeving.onClick.AddListener(ToggleBuildings);
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
@@ -50,6 +60,24 @@ public class HandleButtonsT3D : MonoBehaviour
 
         ButtonZoomIn.onClick.AddListener(ZoomIn);
         ButtonZoomOut.onClick.AddListener(ZoomOut);
+
+        TogglePositieIsGoed.onValueChanged.AddListener((value) =>
+        {
+            if (value == true)
+            {
+                TogglePositieIsNietGoed.isOn = false;
+                GebruikToets.SetActive(false);
+            }
+        });
+
+        TogglePositieIsNietGoed.onValueChanged.AddListener((value) =>
+        {
+            if (value == true)
+            {
+                TogglePositieIsGoed.isOn = false;
+                GebruikToets.SetActive(true);
+            }
+        });
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
 
@@ -62,6 +90,11 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();
 
         MaandenDropup.SetItems(months, dateTimeNow.Month-1, SetMonth);
+    }
+
+    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+    {
+        Step1.SetActive(true);
     }
 
     void SetMonth(int month)
@@ -111,6 +144,8 @@ public class HandleButtonsT3D : MonoBehaviour
     {
         Debug.Log("zoomout");
     }
+
+    
 
     private void UpdateTijd()
     {

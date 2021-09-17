@@ -89,12 +89,15 @@ namespace Netherlands3D.Sharing
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P)){
-                var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
+                //var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
                 //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
                 //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
+                var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
                 GotoPosition(pos);
 
-                MetadataLoader.Instance.LoadBuildingData(pos, "0344100000021804");
+                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000021804");
+                MetadataLoader.Instance.LoadBuildingData(pos, "0344100000081206"); //domplein 24 Utrecht
+
                 //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000068320");
                 //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000052214");
                 //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
