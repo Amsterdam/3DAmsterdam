@@ -53,7 +53,7 @@ namespace Netherlands3D.T3D.Uitbouw
         bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
         {
             var coPlanarCorners = GetCoplanarCorners(building.AbsoluteBuildingCorners, uitbouw.SnapWall, 0.1f);
-            print(coPlanarCorners.Length);
+
             var smallestDst = Mathf.Infinity;
             var cornerIndex = -1;
             for (int i = 0; i < coPlanarCorners.Length; i++)
