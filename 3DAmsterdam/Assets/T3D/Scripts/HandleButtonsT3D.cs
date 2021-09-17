@@ -16,9 +16,9 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZon;
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
-
     public Button ButtonZoomIn;
     public Button ButtonZoomOut;
+    public Button ButtonVolgende;
 
     public Toggle TogglePositieIsGoed;
     public Toggle TogglePositieIsNietGoed;
@@ -31,17 +31,19 @@ public class HandleButtonsT3D : MonoBehaviour
     public DropUp MaandenDropup;
 
     public GameObject Step1;
+    public GameObject Step2a;
+    public GameObject Step2b;
 
     //Sun related
     public Text DagText;
     public Text MaandText;
     public Text TijdText;
-    
-    public GameObject GebruikToets;
 
     private DateTime dateTimeNow;
     private double longitude;
     private double latitude;
+
+    bool? positieGoed = null;
 
     List<string> months = new List<string>()
     {
@@ -57,17 +59,20 @@ public class HandleButtonsT3D : MonoBehaviour
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
-
         ButtonZoomIn.onClick.AddListener(ZoomIn);
         ButtonZoomOut.onClick.AddListener(ZoomOut);
+        ButtonVolgende.onClick.AddListener(Volgende);
 
         TogglePositieIsGoed.onValueChanged.AddListener((value) =>
         {
             if (value == true)
             {
                 TogglePositieIsNietGoed.isOn = false;
-                GebruikToets.SetActive(false);
+                positieGoed = true;
             }
+            else positieGoed = null;
+            
+            
         });
 
         TogglePositieIsNietGoed.onValueChanged.AddListener((value) =>
@@ -75,8 +80,9 @@ public class HandleButtonsT3D : MonoBehaviour
             if (value == true)
             {
                 TogglePositieIsGoed.isOn = false;
-                GebruikToets.SetActive(true);
+                positieGoed = false;                
             }
+            else positieGoed = null;
         });
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
@@ -145,7 +151,24 @@ public class HandleButtonsT3D : MonoBehaviour
         Debug.Log("zoomout");
     }
 
-    
+    void Volgende()
+    {
+        if (positieGoed == null) return;
+
+        if (positieGoed == true)
+        {
+            Step1.SetActive(false);
+            Step2b.SetActive(true);
+        }
+        else
+        {
+            Step1.SetActive(false);
+            Step2a.SetActive(true);
+        }
+
+        var volgendeLabel = ButtonVolgende.GetComponentInChildren<Text>();
+        volgendeLabel.text = "Opslaan";
+    }
 
     private void UpdateTijd()
     {
