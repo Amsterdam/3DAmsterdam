@@ -77,11 +77,11 @@ namespace Netherlands3D.T3D.Uitbouw
             Perceel = args.Perceel;
             GenerateMeshFromPerceel(args.Perceel);
 
-            Area = 0;
-            foreach (var perceelPart in args.Perceel)
-            {
-                Area += GeometryCalculator.Area(perceelPart);
-            }
+            Area = args.Area;
+            //foreach (var perceelPart in args.Perceel)
+            //{
+            //    Area += GeometryCalculator.Area(perceelPart);
+            //}
             //RenderPolygons(args.Perceel);
         }
 
