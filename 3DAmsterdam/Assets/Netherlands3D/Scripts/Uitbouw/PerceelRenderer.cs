@@ -22,12 +22,13 @@ namespace Netherlands3D.T3D.Uitbouw
     public class PerceelRenderer : MonoBehaviour
     {
         public Material LineMaterial;
+        public Material PerceelMaterial;
         //public static PerceelRenderer Instance;
         //public GameObject TerrainLayer;
         //public GameObject BuildingsLayer;
 
         //public GameObject Uitbouw;
-        
+
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -102,7 +103,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             Mesh mesh = new Mesh();
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
-            perceelGameObject.AddComponent<MeshRenderer>().material = LineMaterial;
+            perceelGameObject.AddComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
             var tris = new List<int[]>();
