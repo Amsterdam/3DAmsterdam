@@ -65,6 +65,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
             Perceel = args.Perceel;
+            //RenderPolygons(args.Perceel);
             GenerateMeshFromPerceel(args.Perceel);
 
             Area = args.Area;
@@ -73,7 +74,7 @@ namespace Netherlands3D.T3D.Uitbouw
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
         {
             Mesh mesh = new Mesh();
-            MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
+            MeshFilter filter = perceelGameObject.GetComponent<MeshFilter>();
             perceelGameObject.GetComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
@@ -106,6 +107,8 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 mesh.SetTriangles(tris[i], i);
             }
+
+            mesh.RecalculateNormals();
             filter.mesh = mesh;
         }
 
@@ -114,6 +117,7 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelGameObject = new GameObject();
             perceelGameObject.name = "Perceelmesh";
             perceelGameObject.transform.parent = transform;
+            perceelGameObject.AddComponent<MeshFilter>();
             perceelGameObject.AddComponent<MeshRenderer>();
         }
 
