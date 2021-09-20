@@ -95,14 +95,12 @@ namespace Netherlands3D.Sharing
                 //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
                 GotoPosition(pos);
 
-                MetadataLoader.Instance.LoadBuildingData(pos, "0344100000021804");
-                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000081206"); //domplein 24 Utrecht
-
-                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000068320");
-                //MetadataLoader.Instance.LoadBuildingData(pos, "0344100000052214");
-                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
-                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
-                //StartCoroutine(PerceelRenderer.Instance.HandlePosition(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
+                MetadataLoader.Instance.RequestBuildingData(pos, "0344100000021804");
+                //MetadataLoader.Instance.RequestBuildingData(pos, "0344100000068320");
+                //MetadataLoader.Instance.RequestBuildingData(pos, "0344100000052214");
+                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
+                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
+                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
             }
 
         }
@@ -126,7 +124,7 @@ namespace Netherlands3D.Sharing
             var id = Application.absoluteURL.GetUrlParamValue("id");
             
             GotoPosition(rd);
-            MetadataLoader.Instance.LoadBuildingData(rd, id);
+            MetadataLoader.Instance.RequestBuildingData(rd, id);
         }
 
         void GotoPosition(Vector3RD position)

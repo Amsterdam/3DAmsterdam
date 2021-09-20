@@ -35,7 +35,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
 
     private void PerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        PerceelGrootteText.text = args.PerceelGrootte;
+        PerceelGrootteText.text = "Perceeloppervlakte: " + args.Area.ToString("F2") + "m²";
     }
 
     private void AddressLoaded(object source, AdressDataEventArgs args)

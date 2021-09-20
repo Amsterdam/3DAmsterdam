@@ -155,7 +155,7 @@ namespace Netherlands3D.Cameras
 			this.rotation = rotationEuler;
 		}
 
-		public Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default)
+		public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
 		{
 			var pointerPosition = Input.mousePosition;
 			if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;

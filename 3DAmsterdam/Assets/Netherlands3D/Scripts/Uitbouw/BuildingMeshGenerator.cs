@@ -1,12 +1,9 @@
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using System.Threading.Tasks;
-using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
+using ConvertCoordinates;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -15,6 +12,10 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
         public bool IsMonument { get; private set; }
+        //public Vector3[] RelativeBuildingCorners { get; private set; }
+        public Vector3[] AbsoluteBuildingCorners { get; private set; }
+
+        public bool BuildingDataIsProcessed { get; private set; } = false;
 
         public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
         public event BuildingDataProcessedEventHandler BuildingDataProcessed;
@@ -22,13 +23,13 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Start()//in start to avoid race conditions
         {
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+            MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
         {
             print("constructing mesh");
             var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
-
             transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
             mf.mesh = buildingMesh;
@@ -40,6 +41,25 @@ namespace Netherlands3D.T3D.Uitbouw
             //IsMonument = args.ObjectData. //todo: where to get this data?
 
             BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
+            BuildingDataIsProcessed = true;
+        }
+
+        private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
+        {
+            print("getting corners");
+            StartCoroutine(ProcessCorners(args.Outline));
+        }
+
+        private IEnumerator ProcessCorners(List<Vector2[]> coords)
+        {
+            yield return new WaitUntil(() => BuildingDataIsProcessed); //wait until ground level is set
+
+            var q = from i in coords
+                    from p in i
+                    select CoordConvert.RDtoUnity(p) into v3
+                    select new Vector3(v3.x, GroundLevel, v3.z);
+
+            AbsoluteBuildingCorners = q.ToArray();
         }
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
@@ -101,15 +121,5 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.RecalculateNormals();
             return mesh;
         }
-
-        //private void OnDrawGizmos()
-        //{
-        //    foreach (var vert in vertices)
-        //    {
-        //        Debug.DrawLine(Vector3.zero, vert + offset, Color.red);
-        //        Gizmos.color = Color.red;
-        //        Gizmos.DrawSphere(vert + offset, 0.1f);
-        //    }
-        //}
     }
 }
