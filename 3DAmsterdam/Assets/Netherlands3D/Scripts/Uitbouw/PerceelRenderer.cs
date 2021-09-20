@@ -125,6 +125,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
             mesh.SetVertices(vertices);
 
+            //set normals
+            Vector3[] normals = new Vector3[vertices.Count];
+            for(int i=0; i< normals.Length; i++)
+            {
+                normals[i] = Vector3.up;
+            }
+            mesh.normals = normals;
+
             for (int i = 0; i < perceel.Count; i++)
             {
                 mesh.SetTriangles(tris[i], i);
