@@ -11,13 +11,13 @@ namespace Netherlands3D.T3D.Uitbouw
     public class PerceelRenderer : MonoBehaviour
     {
         public Material LineMaterial;
+        public Material PerceelMaterial;
         //public static PerceelRenderer Instance;
         //public GameObject TerrainLayer;
         //public GameObject BuildingsLayer;
 
         //public GameObject Uitbouw;
-        public InterfaceLayer BuildingInterfaceLayer;
-        public InterfaceLayer TerrainInterfaceLayer;
+
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -34,7 +34,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private float terrainFloor;
 
-        //private void Awake()
+        //private void awake()
         //{
         //    Instance = this;
         //}
@@ -45,13 +45,13 @@ namespace Netherlands3D.T3D.Uitbouw
             //MainTitle.text = "Uitbouw plaatsen";
             CreatePerceelGameObject();
 
-            PropertiesPanel.Instance.AddSpacer();
-            PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
-            {
-                BuildingInterfaceLayer.ToggleLinkedObject(action);
-                TerrainInterfaceLayer.ToggleLinkedObject(action);
-            });
-            PropertiesPanel.Instance.AddSpacer();
+            //PropertiesPanel.Instance.AddSpacer();
+            //PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
+            //{
+            //    BuildingInterfaceLayer.ToggleLinkedObject(action);
+            //    TerrainInterfaceLayer.ToggleLinkedObject(action);
+            //});
+            //PropertiesPanel.Instance.AddSpacer();
 
             MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
@@ -74,7 +74,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             Mesh mesh = new Mesh();
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
-            perceelGameObject.AddComponent<MeshRenderer>().material = LineMaterial;
+            perceelGameObject.AddComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
             var tris = new List<int[]>();

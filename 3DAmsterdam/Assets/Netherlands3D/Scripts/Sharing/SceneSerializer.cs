@@ -92,6 +92,7 @@ namespace Netherlands3D.Sharing
                 var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
                 //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
                 //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
+                //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
                 GotoPosition(pos);
 
                 MetadataLoader.Instance.RequestBuildingData(pos, "0344100000021804");

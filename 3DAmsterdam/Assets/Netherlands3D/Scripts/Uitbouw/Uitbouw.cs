@@ -115,10 +115,15 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             //temp
             if (Input.GetKey(KeyCode.Alpha1))
-                transform.position -= transform.right * moveSpeed;
+                transform.position -= transform.right * moveSpeed * Time.deltaTime;
 
             if (Input.GetKey(KeyCode.Alpha2))
-                transform.position += transform.right * moveSpeed;
+                transform.position += transform.right * moveSpeed * Time.deltaTime;
+
+            if (building)
+            {
+                SnapToBuilding(building);
+            }
         }
 
         private void ProcessIfObjectIsInPerceelBounds()
