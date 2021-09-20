@@ -52,6 +52,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
         {
+            coord = new Vector3();
+            if (building.AbsoluteBuildingCorners == null)
+            {
+                return false;
+            }
+
             var coPlanarCorners = GetCoplanarCorners(building.AbsoluteBuildingCorners, uitbouw.SnapWall, 0.1f);
 
             var smallestDst = Mathf.Infinity;
@@ -71,7 +77,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 coord = coPlanarCorners[cornerIndex];
                 return true;
             }
-            coord = new Vector3();
             return false;
         }
 

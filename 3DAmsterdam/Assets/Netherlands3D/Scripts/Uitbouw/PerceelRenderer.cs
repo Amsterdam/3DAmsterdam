@@ -74,7 +74,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             Mesh mesh = new Mesh();
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
-            perceelGameObject.AddComponent<MeshRenderer>().material = PerceelMaterial;
+            perceelGameObject.GetComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
             var tris = new List<int[]>();
@@ -108,6 +108,7 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelGameObject = new GameObject();
             perceelGameObject.name = "Perceelmesh";
             perceelGameObject.transform.parent = transform;
+            perceelGameObject.AddComponent<MeshRenderer>();
         }
 
         void RenderPolygons(List<Vector2[]> polygons)
