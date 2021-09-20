@@ -276,7 +276,7 @@ public class BuildingMeasuring : Interactable
 
             distanceText.AlignWithWorldPosition(lineCenter);
             var distanceMeasured = Vector3.Distance(positions[0], positions[1]);
-            distanceText.DrawDistance(distanceMeasured, "m");
+            distanceText.DrawDistance(distanceMeasured, "m", 2);
             distanceText.ResetInput();
 
             //HelpMessage.Instance.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
