@@ -308,7 +308,8 @@ namespace Netherlands3D.T3D.Uitbouw
         void ProcessPerceelData(JSONNode jsonData)
         {
             JSONNode feature1 = jsonData["features"][0];
-            var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]} m2";
+            //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
+
             perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
             
             List<Vector2[]> list = new List<Vector2[]>();
