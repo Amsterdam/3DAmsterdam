@@ -43,6 +43,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             //PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
             //MainTitle.text = "Uitbouw plaatsen";
+            CreatePerceelGameObject();
 
             PropertiesPanel.Instance.AddSpacer();
             PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
@@ -71,10 +72,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
         {
-            perceelGameObject = new GameObject();
-            perceelGameObject.name = "Perceelmesh";
-            perceelGameObject.transform.parent = transform;
-
             Mesh mesh = new Mesh();
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
             perceelGameObject.AddComponent<MeshRenderer>().material = LineMaterial;
@@ -104,6 +101,13 @@ namespace Netherlands3D.T3D.Uitbouw
                 mesh.SetTriangles(tris[i], i);
             }
             filter.mesh = mesh;
+        }
+
+        private void CreatePerceelGameObject()
+        {
+            perceelGameObject = new GameObject();
+            perceelGameObject.name = "Perceelmesh";
+            perceelGameObject.transform.parent = transform;
         }
 
         void RenderPolygons(List<Vector2[]> polygons)
