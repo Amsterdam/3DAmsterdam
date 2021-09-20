@@ -94,6 +94,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 tris.Add(subTris);
             }
 
+            Debug.Log("triCount: " + tris.Count);
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                Debug.Log("vert: " + i + " " + vertices[i]);
+            }
+
             mesh.SetVertices(vertices);
 
             for (int i = 0; i < perceel.Count; i++)

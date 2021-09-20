@@ -117,7 +117,7 @@ namespace Netherlands3D.T3D.Uitbouw
             StartCoroutine(GetPerceelData(position));
 
             StartCoroutine(HighlightBuilding(id));
-            
+
             StartCoroutine(GetMonumentStatus(position));
 
             StartCoroutine(GetBeschermdStatus(position));
@@ -130,8 +130,6 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             Debug.Log($"HighlightBuilding id: {id}");
 
-            yield return null;
-
             bool hasRD = false;
 
             Vector3RD rd = new Vector3RD();
@@ -139,6 +137,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             while (!hasRD)
             {
+                yield return new WaitUntil(() => buildingsLayer.transform.childCount > 0);
                 child = buildingsLayer.transform.GetChild(0);
                 rd = child.name.GetRDCoordinate();
                 if (rd.x != 0) hasRD = true;
@@ -211,7 +210,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     var huisnummer = adres["huisnummer"].Value;
                     var postcode = adres["postcode"].Value;
                     var plaats = adres["woonplaatsNaam"].Value;
-                    
+
                     AddressLoaded?.Invoke(this, new AdressDataEventArgs($"{kortenaam} {huisnummer}", $"{postcode} {plaats}"));
                 }
 
@@ -282,7 +281,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
             var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
-                      
+
             UnityWebRequest req = UnityWebRequest.Get(url);
             yield return req.SendWebRequest();
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
@@ -294,12 +293,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 var json = JSON.Parse(req.downloadHandler.text);
                 var isbeschermd = json["features"].Linq.Any();
 
-                if(isbeschermd)
+                if (isbeschermd)
                 {
                     IsBeschermdEvent?.Invoke();
                 }
 
-                
+
             }
         }
 
@@ -311,9 +310,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
 
             perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
-            
+
             List<Vector2[]> list = new List<Vector2[]>();
-            
+
             foreach (JSONNode feature in jsonData["features"])
             {
                 List<Vector2> polygonList = new List<Vector2>();
@@ -343,12 +342,12 @@ namespace Netherlands3D.T3D.Uitbouw
             PlaatsUitbouw();
         }
 
-        
+
 
 
         public void PlaatsUitbouw()
         {
-            var pos = CoordConvert.RDtoUnity( perceelnummerPlaatscoordinaat  );
+            var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             uitbouwPrefab.SetActive(true);
             uitbouwPrefab.transform.position = pos;
         }
