@@ -18,7 +18,7 @@ namespace Netherlands3D.Cameras
 
         void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation);
 
-        Vector3 GetMousePositionInWorld(Vector3 optionalPositionOverride = default);
+        Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default);
 
         void EnableKeyboardActionMap(bool enabled);
 

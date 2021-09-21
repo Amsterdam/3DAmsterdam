@@ -316,7 +316,7 @@ namespace Netherlands3D.ObjectInteraction
 			}
 			else
 			{
-				return CameraModeChanger.Instance.CurrentCameraControls.GetMousePositionInWorld();
+				return CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
 			}
 		}
 

@@ -1,19 +1,8 @@
 using ConvertCoordinates;
-using Netherlands3D;
-using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
-using Netherlands3D.LayerSystem;
-using System;
-using SimpleJSON;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.ProBuilder;
-using UnityEngine.ProBuilder.MeshOperations;
-using UnityEngine.UI;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Utilities;
 
@@ -54,6 +43,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             //PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
             //MainTitle.text = "Uitbouw plaatsen";
+            CreatePerceelGameObject();
 
             //PropertiesPanel.Instance.AddSpacer();
             //PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
@@ -77,33 +67,14 @@ namespace Netherlands3D.T3D.Uitbouw
             Perceel = args.Perceel;
             GenerateMeshFromPerceel(args.Perceel);
 
-            Area = 0;
-            foreach (var perceelPart in args.Perceel)
-            {
-                Area += GeometryCalculator.Area(perceelPart);
-            }
-            //RenderPolygons(args.Perceel);
+            Area = args.Area;
         }
-
-        //public void PlaatsUitbouw(Vector2RD rd)
-        //{
-        //    var pos = CoordConvert.RDtoUnity(rd);
-
-        //    var uitbouw = Instantiate(Uitbouw, pos, Quaternion.identity);
-        //}
-
-        //public List<Vector3> vertices = new List<Vector3>();
-        //public int[] tris0;
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
         {
-            perceelGameObject = new GameObject();
-            perceelGameObject.name = "Perceelmesh";
-            perceelGameObject.transform.parent = transform;
-
             Mesh mesh = new Mesh();
             MeshFilter filter = perceelGameObject.AddComponent<MeshFilter>();
-            perceelGameObject.AddComponent<MeshRenderer>().material = PerceelMaterial;
+            perceelGameObject.GetComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
             var tris = new List<int[]>();
@@ -138,18 +109,14 @@ namespace Netherlands3D.T3D.Uitbouw
                 mesh.SetTriangles(tris[i], i);
             }
             filter.mesh = mesh;
+        }
 
-            //var test = mesh.vertices;
-            //for (int i = 0; i < test.Length - 1; i++)
-            //{
-            //    Debug.DrawLine(test[i], test[i + 1], Color.red, 1000);
-
-            //    var g = new GameObject(i.ToString());
-            //    g.transform.position = test[i];
-            //}
-            //Debug.DrawLine(test[0], test[test.Length - 1], Color.red, 1000);
-            //var go = new GameObject((test.Length-1).ToString());
-            //go.transform.position = test[test.Length - 1];
+        private void CreatePerceelGameObject()
+        {
+            perceelGameObject = new GameObject();
+            perceelGameObject.name = "Perceelmesh";
+            perceelGameObject.transform.parent = transform;
+            perceelGameObject.AddComponent<MeshRenderer>();
         }
 
         void RenderPolygons(List<Vector2[]> polygons)

@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 3014401032633124768}
   - component: {fileID: 1545409394221912636}
   - component: {fileID: 4848938448568600653}
+  - component: {fileID: 8625902688822878573}
   m_Layer: 0
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -289,6 +290,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b9aaa24c5344d9083a25a3f7eacdb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  building: {fileID: 0}
+  perceel: {fileID: 0}
+  moveSpeed: 0.1
+--- !u!114 &8625902688822878573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604081640823115902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299e1686549e34b6d9b0f4e76ed75304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  building: {fileID: 0}
 --- !u!1 &4374090416642842998
 GameObject:
   m_ObjectHideFlags: 0

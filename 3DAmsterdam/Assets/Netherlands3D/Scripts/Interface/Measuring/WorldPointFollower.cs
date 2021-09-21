@@ -13,6 +13,7 @@ namespace Netherlands3D.Interface
 		private Vector3 worldPosition = Vector3.zero;
 		public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
+		public bool isEnabled = true;
 		private bool insideView = false;
 
 		private float maxRenderDistanceAtGround = 100;
@@ -37,14 +38,23 @@ namespace Netherlands3D.Interface
 
 		private void DrawGraphics(bool draw = true)
 		{
-			foreach (var graphic in graphics)
-				graphic.enabled = draw;
+            if (isEnabled)
+            {
+				foreach (var graphic in graphics)
+					graphic.enabled = draw;
+			}
+			else
+            {
+				foreach (var graphic in graphics)
+					graphic.enabled = false;
+			}
+			
 		}
 
 		/// <summary>
 		/// Hides the annotation based on camera type and distance
 		/// </summary>
-		private void AutoHideByCamera()
+		public void AutoHideByCamera()
 		{
 			//Always hide outside viewport
 			var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPosition);
