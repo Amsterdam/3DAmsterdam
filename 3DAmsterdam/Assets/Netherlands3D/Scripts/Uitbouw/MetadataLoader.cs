@@ -116,7 +116,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             StartCoroutine(GetPerceelData(position));
 
-            StartCoroutine(HighlightBuilding(id));
+            StartCoroutine(HighlightBuilding(position, id));
 
             StartCoroutine(GetMonumentStatus(position));
 
@@ -126,25 +126,28 @@ namespace Netherlands3D.T3D.Uitbouw
 
         }
 
-        IEnumerator HighlightBuilding(string id)
+        IEnumerator HighlightBuilding(Vector3RD position, string id)
         {
             Debug.Log($"HighlightBuilding id: {id}");
 
-            bool hasRD = false;
-
-            Vector3RD rd = new Vector3RD();
             Transform child = null;
+            Vector3RD tegelRD = new Vector3RD();
 
-            while (!hasRD)
-            {
-                yield return new WaitUntil(() => buildingsLayer.transform.childCount > 0);
-                child = buildingsLayer.transform.GetChild(0);
-                rd = child.name.GetRDCoordinate();
-                if (rd.x != 0) hasRD = true;
-                yield return null;
-            }
+            yield return new WaitUntil(
+                () =>
+                {
+                    if (buildingsLayer.transform.childCount > 0)
+                    {
+                        child = buildingsLayer.transform.GetChild(0);
+                        tegelRD = child.name.GetRDCoordinate();
+                        return position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000;
 
-            StartCoroutine(DownloadBuildingData(rd, id, child.gameObject));
+                    }
+                    return false;
+                }
+            );
+
+            StartCoroutine(DownloadBuildingData(tegelRD, id, child.gameObject));
         }
 
         IEnumerator RequestBuildingOutlineData(string bagId)
