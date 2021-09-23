@@ -40,8 +40,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
-            Perceel = args.Perceel;
-            RenderPerceelOutline(args.Perceel);
+            Perceel = args.Perceel;                        
+            //RenderPerceelOutline(args.Perceel);           
             GenerateMeshFromPerceel(args.Perceel);
 
             Area = args.Area;
