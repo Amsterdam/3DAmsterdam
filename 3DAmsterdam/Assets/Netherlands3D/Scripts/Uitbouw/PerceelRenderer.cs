@@ -12,46 +12,21 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public Material LineMaterial;
         public Material PerceelMaterial;
-        //public static PerceelRenderer Instance;
-        //public GameObject TerrainLayer;
-        //public GameObject BuildingsLayer;
-
-        //public GameObject Uitbouw;
-
 
         [SerializeField]
         private BuildingMeshGenerator building;
 
-        private GameObject perceelGameObject;
+        private GameObject perceelMeshGameObject;
+        private GameObject perceelOutlineGameObject;
 
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
-        //[SerializeField]
-        //private Text MainTitle;
 
-        //[SerializeField]
-        //private Transform GeneratedFieldsContainer;
-
-        private float terrainFloor;
-
-        //private void awake()
-        //{
-        //    Instance = this;
-        //}
 
         private void Start()
         {
-            //PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-            //MainTitle.text = "Uitbouw plaatsen";
-            CreatePerceelGameObject();
-
-            //PropertiesPanel.Instance.AddSpacer();
-            //PropertiesPanel.Instance.AddActionCheckbox("Toon alle gebouwen", true, (action) =>
-            //{
-            //    BuildingInterfaceLayer.ToggleLinkedObject(action);
-            //    TerrainInterfaceLayer.ToggleLinkedObject(action);
-            //});
-            //PropertiesPanel.Instance.AddSpacer();
+            perceelMeshGameObject = CreatePerceelGameObject();
+            perceelOutlineGameObject = CreatePerceelGameObject();
 
             MetadataLoader.Instance.PerceelDataLoaded += Instance_PerceelDataLoaded;
             building.BuildingDataProcessed += BuildingMeshGenerator_BuildingDataProcessed;
@@ -59,13 +34,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void BuildingMeshGenerator_BuildingDataProcessed(BuildingMeshGenerator building)
         {
-            perceelGameObject.transform.position = new Vector3(perceelGameObject.transform.position.x, building.GroundLevel, perceelGameObject.transform.position.z);
+            perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
+            perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
             Perceel = args.Perceel;
-            //RenderPolygons(args.Perceel);
+            RenderPerceelOutline(args.Perceel);
             GenerateMeshFromPerceel(args.Perceel);
 
             Area = args.Area;
@@ -74,8 +50,9 @@ namespace Netherlands3D.T3D.Uitbouw
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
         {
             Mesh mesh = new Mesh();
-            MeshFilter filter = perceelGameObject.GetComponent<MeshFilter>();
-            perceelGameObject.GetComponent<MeshRenderer>().material = PerceelMaterial;
+            perceelMeshGameObject.name = "Perceelmesh";
+            MeshFilter filter = perceelMeshGameObject.GetComponent<MeshFilter>();
+            perceelMeshGameObject.GetComponent<MeshRenderer>().material = PerceelMaterial;
 
             var vertices = new List<Vector3>();
             var tris = new List<int[]>();
@@ -108,23 +85,24 @@ namespace Netherlands3D.T3D.Uitbouw
             filter.mesh = mesh;
         }
 
-        private void CreatePerceelGameObject()
+        private GameObject CreatePerceelGameObject()
         {
-            perceelGameObject = new GameObject();
-            perceelGameObject.name = "Perceelmesh";
-            perceelGameObject.transform.parent = transform;
-            perceelGameObject.AddComponent<MeshFilter>();
-            perceelGameObject.AddComponent<MeshRenderer>();
+            var obj = new GameObject();
+            obj.name = "Perceelmesh";
+            obj.transform.SetParent(transform);
+            obj.AddComponent<MeshFilter>();
+            obj.AddComponent<MeshRenderer>();
+
+            return obj;
         }
 
-        void RenderPolygons(List<Vector2[]> polygons)
+        void RenderPerceelOutline(List<Vector2[]> perceel)
         {
-
             List<Vector2> vertices = new List<Vector2>();
             List<int> indices = new List<int>();
 
             int count = 0;
-            foreach (var list in polygons)
+            foreach (var list in perceel)
             {
                 for (int i = 0; i < list.Length - 1; i++)
                 {
@@ -135,47 +113,11 @@ namespace Netherlands3D.T3D.Uitbouw
                 vertices.AddRange(list);
             }
 
-            GameObject gam = new GameObject();
-            gam.name = "Perceel";
-            gam.transform.parent = transform;
-
-            MeshFilter filter = gam.AddComponent<MeshFilter>();
-            gam.AddComponent<MeshRenderer>().material = LineMaterial;
+            perceelOutlineGameObject.name = "PerceelOutline";
+            MeshFilter filter = perceelOutlineGameObject.GetComponent<MeshFilter>();
+            perceelOutlineGameObject.GetComponent<MeshRenderer>().material = LineMaterial;
 
             var verts = vertices.Select(o => CoordConvert.RDtoUnity(o)).ToArray();
-
-            List<float> terrainFloorPoints = new List<float>();
-
-            //while (!terrainFloorPoints.Any())
-            //{
-            //use collider to place the polygon points on the terrain
-            for (int i = 0; i < verts.Length; i++)
-            {
-                var point = verts[i];
-                var from = new Vector3(point.x, point.y + 10, point.z);
-
-
-                Ray ray = new Ray(from, Vector3.down);
-                RaycastHit hit;
-
-                //yield return null;
-
-                //raycast from the polygon point to hit the terrain so we can place the outline so that it is visible
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-                {
-                    //Debug.Log("we have a hit");
-                    verts[i].y = hit.point.y + 0.5f;
-                    terrainFloorPoints.Add(hit.point.y);
-                }
-                else
-                {
-                    Debug.Log("raycast failed..");
-                }
-                //}
-                //yield return null;
-            }
-
-            terrainFloor = terrainFloorPoints.Average();
 
             var mesh = new Mesh();
             mesh.vertices = verts;
