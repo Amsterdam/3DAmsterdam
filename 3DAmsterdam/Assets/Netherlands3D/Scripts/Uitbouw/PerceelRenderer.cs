@@ -89,16 +89,12 @@ namespace Netherlands3D.T3D.Uitbouw
                                select CoordConvert.RDtoUnity(p) into v3
                                select new Vector3(v3.x, 0, v3.z);
 
-                var subTris = GeometryCalculator.Triangulate(perceelPart);
+                var perceelPartUnityCoordinates = from p in v3Points select new Vector2(p.x, p.z); //in a WebGL build, using perceelPart to triangulate causes problems, not 100% sure why but I suspect an overflow issue. This issue does not occur in the editor
+
+                var subTris = GeometryCalculator.Triangulate(perceelPartUnityCoordinates.ToArray());
 
                 vertices.AddRange(v3Points);
                 tris.Add(subTris);
-            }
-
-            Debug.Log("triCount: " + tris.Count);
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                Debug.Log("vert: " + i + " " + vertices[i]);
             }
 
             mesh.SetVertices(vertices);

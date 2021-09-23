@@ -24,6 +24,12 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
             MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
+            MetadataLoader.Instance.IsBeschermdEvent += Instance_IsBeschermdEvent;
+        }
+
+        private void Instance_IsBeschermdEvent()
+        {
+            IsMonument = true;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
@@ -37,8 +43,6 @@ namespace Netherlands3D.T3D.Uitbouw
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
-
-            //IsMonument = args.ObjectData. //todo: where to get this data?
 
             BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
             BuildingDataIsProcessed = true;
