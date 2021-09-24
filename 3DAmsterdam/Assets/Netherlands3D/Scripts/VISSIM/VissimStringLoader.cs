@@ -57,7 +57,7 @@ namespace Netherlands3D.Traffic.VISSIM
         }
         public void LoadVissimFromFile(string filepath, System.Action<bool> callback)
         {
-            string contents = File.ReadAllText(filepath);
+            string contents = File.ReadAllText(Application.persistentDataPath + "/" + filepath);
             File.Delete(filepath);
             callback(true);
             StartCoroutine(LoadingProgress(contents));
