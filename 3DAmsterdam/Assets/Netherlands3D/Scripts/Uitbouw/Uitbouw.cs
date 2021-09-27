@@ -30,6 +30,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private Vector3 extents;
 
+        private DragableAxis userMovementAxis;
+
         public Vector3 LeftCorner
         {
             get
@@ -76,6 +78,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             meshRenderer = GetComponent<MeshRenderer>();
             mesh = GetComponent<MeshFilter>().mesh;
+            userMovementAxis = GetComponentInChildren<DragableAxis>();
         }
 
         private void Start()
@@ -128,7 +131,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //if (Input.GetKey(KeyCode.Alpha2))
             //    transform.position += transform.right * moveSpeed * Time.deltaTime;
 
-            transform.position += GetComponentInChildren<UitbouwMovementArrow>().deltaPosition;
+            transform.position += userMovementAxis.DeltaPosition;
 
             if (building)
             {
@@ -201,7 +204,8 @@ namespace Netherlands3D.T3D.Uitbouw
                 transform.forward = -dir; //rotate towards correct direction
                 transform.position = hit.point - uitbouwAttachDirection * Depth / 2;
 
-                GetComponentInChildren<UitbouwMovementArrow>().CalculateOffset();
+                //recalculate mouse offset position, since the uitbouw (and its controls) changed orientation
+                userMovementAxis.RecalculateOffset();
             }
 
             SnapToGround(this.building);

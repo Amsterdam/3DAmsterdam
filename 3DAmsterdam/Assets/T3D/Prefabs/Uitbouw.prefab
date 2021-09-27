@@ -418,8 +418,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9046685985098059032}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -2, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 1, z: 0.25}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.25, y: 2, z: 0.25}
   m_Children: []
   m_Father: {fileID: 6754303235095884790}
   m_RootOrder: 3
@@ -503,6 +503,4 @@ MonoBehaviour:
   blockMouseSelectionInteractions: 0
   blockMouseNavigationInteractions: 1
   blockKeyboardNavigationInteractions: 0
-  dropTargetLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
+  maxClickDragDistance: 50

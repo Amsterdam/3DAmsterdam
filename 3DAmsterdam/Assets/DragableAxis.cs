@@ -16,41 +16,29 @@ public enum InteractableState
     Active = 2,
 }
 
-public class UitbouwMovementArrow : Interactable
+public class DragableAxis : Interactable
 {
     [SerializeField]
-    private LayerMask dropTargetLayerMask;
-
-    private bool isDragging;
-    private Vector3 offset;
-    [SerializeField]
     private float maxClickDragDistance = 50f;
-    private Uitbouw uitbouw;
-    public Vector3 deltaPosition;
 
-    private void Awake()
+    private Uitbouw uitbouw;
+    private Vector3 offset;
+
+    public Vector3 DeltaPosition { get; private set; }
+    public bool IsDragging { get; private set; }
+
+    public void Awake()
     {
         uitbouw = GetComponentInParent<Uitbouw>();
-    }
-
-    public override void Select()
-    {
-        print("select");
-        //FollowMousePointer();
-    }
-
-    public override void Deselect()
-    {
-        print("");
     }
 
     private void Update()
     {
         ProcessInteractionState();
 
-        if (isDragging)
+        if (IsDragging)
         {
-            FollowMousePointer();
+            CalculateDeltaPosition();
         }
     }
 
@@ -63,9 +51,9 @@ public class UitbouwMovementArrow : Interactable
             {
                 //start drag
                 TakeInteractionPriority();
-                isDragging = true;
+                IsDragging = true;
                 SetHighlight(InteractableState.Active);
-                CalculateOffset();
+                RecalculateOffset();
             }
         }
         else if (!Input.GetMouseButton(0))
@@ -78,31 +66,24 @@ public class UitbouwMovementArrow : Interactable
         {
             //end drag
             StopInteraction();
-            isDragging = false;
+            IsDragging = false;
             offset = Vector3.zero;
+            DeltaPosition = Vector3.zero;
         }
     }
 
-    public void CalculateOffset()
+    public void RecalculateOffset()
     {
         Vector3 aimedPosition = GetPointerPositionInWorld();
         var projectedLocalPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right);
         offset = projectedLocalPoint;
     }
 
-    private void FollowMousePointer()
+    private void CalculateDeltaPosition()
     {
-        //if (Selector.Instance.HoveringInterface()) return;
         Vector3 aimedPosition = GetPointerPositionInWorld();
-        //if (aimedPosition == Vector3.zero)
-        //{
-        //    return;
-        //}
         var projectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right) + transform.position;
-
-        //transform.position = projectedPoint - offset;
-        //uitbouw.transform.position = projectedPoint - offset - transform.localPosition;
-        deltaPosition = projectedPoint - offset - transform.position;
+        DeltaPosition = projectedPoint - offset - transform.position;
     }
 
     private void SetHighlight(InteractableState status) //0: normal, 1: hover, 2: selected
@@ -121,28 +102,5 @@ public class UitbouwMovementArrow : Interactable
         samplePoint.y = Config.activeConfiguration.zeroGroundLevelY;
 
         return samplePoint;
-    }
-
-    /// <summary>
-    /// Returns the mouse position on the layer.
-    /// If the raycast fails (didnt hit anything) we use plane set at average ground height.
-    /// </summary>
-    /// <returns>The world point where our mouse is</returns>
-    private Vector3 GetMousePointOnLayerMask()
-    {
-
-        RaycastHit hit;
-        if (Physics.Raycast(Selector.mainSelectorRay, out hit, CameraModeChanger.Instance.ActiveCamera.farClipPlane, dropTargetLayerMask.value))
-        {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
-            {
-                return Vector3.zero;
-            }
-            return hit.point;
-        }
-        else
-        {
-            return CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
-        }
     }
 }
