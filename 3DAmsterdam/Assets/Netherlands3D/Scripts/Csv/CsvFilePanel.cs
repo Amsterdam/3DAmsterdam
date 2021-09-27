@@ -1,6 +1,7 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.Events;
+using Netherlands3D.Interface;
 using Netherlands3D.Interface.Search;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.JavascriptConnection;
@@ -24,6 +25,9 @@ public class CsvFilePanel : MonoBehaviour
 
     [SerializeField]
     private GameObject UIClearIgnoreObject;
+
+    [SerializeField]
+    private LoadingScreen loadingObjScreen;
 
 
     private Dictionary<string,bool> selectedColumnsToDisplay = new System.Collections.Generic.Dictionary<string,bool>();
@@ -74,7 +78,6 @@ public class CsvFilePanel : MonoBehaviour
 
             return;
         }
-        
                
         PropertiesPanel.Instance.AddLabel("Label");
         PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
@@ -246,17 +249,14 @@ public class CsvFilePanel : MonoBehaviour
         }
     }
 
-    public void LoadCSVFromJavascript()
-    {        
-        var csv = JavascriptMethodCaller.FetchOBJDataAsString();     
-        ParseCsv(csv);
-    }
+
     public void LoadCsvFromFile(string filename, System.Action<bool> callback)
     {
-        var csv = File.ReadAllText(filename);
+        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
         File.Delete(filename);
         callback(true);
         ParseCsv(csv);
+        loadingObjScreen.Hide();
     }
 
 #if UNITY_EDITOR
