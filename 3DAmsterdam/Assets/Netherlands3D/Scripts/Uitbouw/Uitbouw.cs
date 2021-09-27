@@ -62,6 +62,14 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        public Plane GroundPlane
+        {
+            get
+            {
+                return new Plane(Vector3.up, building.GroundLevel);
+            }
+        }
+
         public Plane SnapWall { get; private set; } = new Plane();
 
         private void Awake()
@@ -114,11 +122,13 @@ namespace Netherlands3D.T3D.Uitbouw
         private void ProcessUserInput()
         {
             //temp
-            if (Input.GetKey(KeyCode.Alpha1))
-                transform.position -= transform.right * moveSpeed * Time.deltaTime;
+            //if (Input.GetKey(KeyCode.Alpha1))
+            //    transform.position -= transform.right * moveSpeed * Time.deltaTime;
 
-            if (Input.GetKey(KeyCode.Alpha2))
-                transform.position += transform.right * moveSpeed * Time.deltaTime;
+            //if (Input.GetKey(KeyCode.Alpha2))
+            //    transform.position += transform.right * moveSpeed * Time.deltaTime;
+
+            transform.position += GetComponentInChildren<UitbouwMovementArrow>().deltaPosition;
 
             if (building)
             {
@@ -190,6 +200,8 @@ namespace Netherlands3D.T3D.Uitbouw
                 uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
                 transform.position = hit.point - uitbouwAttachDirection * Depth / 2;
+
+                GetComponentInChildren<UitbouwMovementArrow>().CalculateOffset();
             }
 
             SnapToGround(this.building);
