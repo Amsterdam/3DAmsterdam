@@ -75,11 +75,14 @@ namespace Netherlands3D.Utilities
         {
             get
             {
-                if (Config.activeConfiguration.sewerageApiType == SewerageApiType.Amsterdam)
+                if (geoJSONString.Contains(" ] ]"))
+                {
+                    return " ] ]";
+                }
+                else
                 {
                     return "]]";
                 }
-                else return " ] ]";
             }
         }
 
