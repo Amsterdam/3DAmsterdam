@@ -21,7 +21,7 @@ using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
-
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.ModelParsing
 {
@@ -214,7 +214,7 @@ namespace Netherlands3D.ModelParsing
 			}
 			Destroy(objstreamReader);
 			loadingObjScreen.Hide();
-			
+			Analytics.SendEvent("loadOBJ", objstreamReader.fileSizeMB.ToString()+"MB", "finished");
 			callback(objstreamReader.succes);
 			yield return null;
         }

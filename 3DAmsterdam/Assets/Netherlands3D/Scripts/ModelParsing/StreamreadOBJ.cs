@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using UnityEngine.Rendering;
 using Netherlands3D.Interface;
+using Netherlands3D.Logging;
 
 namespace Netherlands3D.ModelParsing
 {
@@ -83,6 +84,7 @@ namespace Netherlands3D.ModelParsing
 		private Submesh activeSubmesh = new Submesh();
 		private bool hasNormals = true;
 
+		public int fileSizeMB = 0;
 		void AddSubMesh(string submeshName)
 		{
 			if (activeSubmesh.name == submeshName)
@@ -148,6 +150,10 @@ namespace Netherlands3D.ModelParsing
 
 		IEnumerator StreamReadFile(string filename)
 		{
+			//get the filesize
+			fileSizeMB = (int)new FileInfo(Application.persistentDataPath + "/" + filename).Length / (1024* 1024);
+			fileSizeMB -= (fileSizeMB % 50)-50;
+			Analytics.SendEvent("loadOBJ", fileSizeMB.ToString(), "start");
 			vertices.SetupWriting("vertices");
 			normals.SetupWriting("normals");
 			//setup first submesh;
@@ -158,7 +164,7 @@ namespace Netherlands3D.ModelParsing
 			bool lineRead = true;
 			int totalLinesCount = 0;
 			FileStream fileStream = new FileStream(Application.persistentDataPath + "/" + filename, FileMode.Open, FileAccess.Read);
-
+			
 			streamReader = new StreamReader(fileStream, System.Text.Encoding.UTF8);
 
 			while (lineRead)
