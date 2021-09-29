@@ -1,6 +1,7 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D.Interface;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.Logging;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,6 +23,7 @@ public class ColladaCreation : ModelFormatCreation
 
 	private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
     {
+        logProcess("start", UnityBounds);
         FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
@@ -92,5 +94,14 @@ public class ColladaCreation : ModelFormatCreation
         FreezeLayers(layerList, false);
         loadingScreen.Hide();
         Debug.Log("file saved");
+        logProcess("finished", UnityBounds);
+    }
+
+    private void logProcess(string phase, Bounds bounds)
+    {
+        int width = (int)bounds.size.x / 100;
+        int height = (int)bounds.size.z / 100;
+        int tileCount = width * height;
+        Analytics.SendEvent("DownloadDAE", tileCount.ToString(), phase);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using ConvertCoordinates;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Interface;
+using Netherlands3D.Logging;
 
 public class DXFCreation : ModelFormatCreation
 {
@@ -18,6 +19,7 @@ public class DXFCreation : ModelFormatCreation
 
     private IEnumerator CreateFile(Bounds UnityBounds, List<Layer> layerList)
     {
+        logProcess("start", UnityBounds);
         FreezeLayers(layerList, true);
         Debug.Log(layerList.Count);
         Vector3RD bottomLeftRD = CoordConvert.UnitytoRD(UnityBounds.min);
@@ -34,6 +36,7 @@ public class DXFCreation : ModelFormatCreation
         yield return new WaitForEndOfFrame();
 
         int layercounter = 0;
+
         foreach (var layer in layerList)
         {
             layercounter++;
@@ -86,7 +89,17 @@ public class DXFCreation : ModelFormatCreation
         loadingScreen.Hide();
         FreezeLayers(layerList, false);
         Debug.Log("file saved");
+        logProcess("finished", UnityBounds);
     }
+
+    private void logProcess(string phase, Bounds bounds)
+    {
+        int width = (int)bounds.size.x / 100;
+        int height = (int)bounds.size.z / 100;
+        int tileCount = width * height;
+        Analytics.SendEvent("DownloadDXF", tileCount.ToString(), phase);
+    }
+
 
     private netDxf.AciColor GetColor(Material material)
     {
