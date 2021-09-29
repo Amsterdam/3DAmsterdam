@@ -35,11 +35,14 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
         public float Area { get; private set; }
 
-        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, float area)
+        public Vector2RD PerceelnummerPlaatscoordinaat;
+
+        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, float area, Vector2RD perceelnummerPlaatscoordinaat)
         {
             IsLoaded = isLoaded;
             Perceel = perceel;
             Area = area;
+            PerceelnummerPlaatscoordinaat = perceelnummerPlaatscoordinaat;
         }
     }
 
@@ -57,14 +60,30 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public class AdressDataEventArgs : EventArgs
     {
-        public string StraatEnNummer { get; private set; }
+        public string Straat { get; private set; }
 
-        public string PostcodeEnPlaats { get; private set; }
+        public string Huisnummer { get; private set; }
 
-        public AdressDataEventArgs(string straat, string postcode)
+        public string Plaats { get; private set; }
+
+        public string Postcode { get; private set; }
+
+        public AdressDataEventArgs(string kortenaam, string huisnummer, string postcode, string plaats)
         {
-            StraatEnNummer = straat;
-            PostcodeEnPlaats = postcode;
+            Straat = kortenaam;
+            Huisnummer = huisnummer;
+            Postcode = postcode;
+            Plaats = plaats;
+        }
+    }
+
+    public class AdresUitgebreidDataEventArgs : EventArgs
+    {
+        public Vector2RD Coordinate { get; private set; }
+
+        public AdresUitgebreidDataEventArgs(Vector2RD coordinate)
+        {
+            Coordinate = coordinate;
         }
     }
 
@@ -89,6 +108,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void AddressLoadedEventHandler(object source, AdressDataEventArgs args);
         public event AddressLoadedEventHandler AddressLoaded;
 
+        public delegate void AdresUitgebreidLoadedEventHandler(object source, AdresUitgebreidDataEventArgs args);
+        public event AdresUitgebreidLoadedEventHandler AdresUitgebreidLoaded;
+
         public delegate void MonumentEventHandler();
         public event MonumentEventHandler IsMonumentEvent;
 
@@ -99,60 +121,140 @@ namespace Netherlands3D.T3D.Uitbouw
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
         //public List<Vector2[]> PerceelData;
+        private string postcode;
+        private string huisnummer;
 
         public Vector2RD perceelnummerPlaatscoordinaat;
+        private Vector2RD buildingcenter;
 
         void Awake()
         {
             Instance = this;
+            AddressLoaded += OnAddressLoaded;
         }
 
-
-        public void RequestBuildingData(Vector3RD position, string id)
+        private void OnAddressLoaded(object source, AdressDataEventArgs args)
         {
-            StartCoroutine(UpdateSidePanelAddress(id));
-
-            //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
-
-            StartCoroutine(GetPerceelData(position));
-
-            StartCoroutine(HighlightBuilding(position, id));
-
-            StartCoroutine(GetMonumentStatus(position));
-
-            StartCoroutine(GetBeschermdStatus(position));
-
-            StartCoroutine(RequestBuildingOutlineData(id));
-
+            Debug.Log($"adres geladen: {args.Straat} {args.Huisnummer} {args.Postcode} {args.Plaats}");
+            StartCoroutine(GetAdressenUitgebreid(args.Postcode, args.Huisnummer));
         }
 
-        IEnumerator HighlightBuilding(Vector3RD position, string id)
-        {
-            Debug.Log($"HighlightBuilding id: {id}");
+            public void RequestBuildingData(Vector3RD position, string id)
+            {
+                StartCoroutine(UpdateSidePanelAddress(id));
 
-            Transform child = null;
-            Vector3RD tegelRD = new Vector3RD();
+                //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
 
-            yield return new WaitUntil(
-                () =>
-                {
-                    if (buildingsLayer.transform.childCount > 0)
+                StartCoroutine(GetPerceelData(position));
+
+                StartCoroutine(HighlightBuilding(position, id));
+
+                StartCoroutine(GetMonumentStatus(position));
+
+                StartCoroutine(GetBeschermdStatus(position));
+
+                StartCoroutine(RequestBuildingOutlineData(id));
+
+            }
+
+            IEnumerator HighlightBuilding(Vector3RD position, string id)
+            {
+                Debug.Log($"HighlightBuilding id: {id}");
+
+                Transform child = null;
+                Vector3RD tegelRD = new Vector3RD();
+
+                yield return new WaitUntil(
+                    () =>
                     {
-                        child = buildingsLayer.transform.GetChild(0);
-                        tegelRD = child.name.GetRDCoordinate();
-                        return position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000;
+                        if (buildingsLayer.transform.childCount > 0)
+                        {
+                            child = buildingsLayer.transform.GetChild(0);
+                            tegelRD = child.name.GetRDCoordinate();
+                            return position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000;
 
+                        }
+                        return false;
                     }
-                    return false;
+                );
+
+                StartCoroutine(DownloadBuildingData(tegelRD, id, child.gameObject));
+            }
+
+            IEnumerator RequestBuildingOutlineData(string bagId)
+            {
+                var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagId}";
+
+                UnityWebRequest req = UnityWebRequest.Get(url);
+                req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
+                req.SetRequestHeader("Accept-Crs", "epsg:28992");
+
+                yield return req.SendWebRequest();
+
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    WarningDialogs.Instance.ShowNewDialog("Pand data kon niet opgehaald worden");
                 }
-            );
+                else
+                {
+                    var json = JSON.Parse(req.downloadHandler.text);
+                    //var geometry = json["pand"]["geometrie"]["coordinates"];
 
-            StartCoroutine(DownloadBuildingData(tegelRD, id, child.gameObject));
-        }
+                    List<Vector2[]> list = new List<Vector2[]>();
 
-        IEnumerator RequestBuildingOutlineData(string bagId)
-        {
-            var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/panden/{bagId}";
+                    foreach (JSONNode feature in json["pand"]["geometrie"]["coordinates"])
+                    {
+                        List<Vector2> polygonList = new List<Vector2>();
+
+                        foreach (JSONNode point in feature)
+                        {
+                            polygonList.Add(new Vector2(point[0], point[1]));
+                        }
+                        list.Add(polygonList.ToArray());
+                    }
+                    //print("outline loaded");
+                    BuildingOutlineLoaded?.Invoke(this, new BuildingOutlineEventArgs(true, list));
+                }
+            }
+
+            IEnumerator UpdateSidePanelAddress(string bagId)
+            {
+                Debug.Log($"UpdateSidePanelAddress");
+
+                var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagId}";
+
+                UnityWebRequest req = UnityWebRequest.Get(url);
+                req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
+                req.SetRequestHeader("Accept-Crs", "epsg:28992");
+
+                yield return req.SendWebRequest();
+
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+                }
+                else
+                {
+                    var json = JSON.Parse(req.downloadHandler.text);
+                    var addresses = json["_embedded"]["adressen"];
+
+                    foreach (JSONObject adres in addresses)
+                    {
+                        var kortenaam = adres["korteNaam"].Value;
+                        var huisnummer = adres["huisnummer"].Value;
+                        var postcode = adres["postcode"].Value;
+                        var plaats = adres["woonplaatsNaam"].Value;
+
+                        AddressLoaded?.Invoke(this, new AdressDataEventArgs(kortenaam, huisnummer, postcode, plaats));
+                    }
+
+                    print(req.downloadHandler.text);
+                }
+            }
+
+        IEnumerator GetAdressenUitgebreid(string postcode, string huisnummer)
+        {            
+            var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode={postcode}&huisnummer={huisnummer}&exacteMatch=true";
 
             UnityWebRequest req = UnityWebRequest.Get(url);
             req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
@@ -162,240 +264,195 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Pand data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                //var geometry = json["pand"]["geometrie"]["coordinates"];
-
-                List<Vector2[]> list = new List<Vector2[]>();
-
-                foreach (JSONNode feature in json["pand"]["geometrie"]["coordinates"])
-                {
-                    List<Vector2> polygonList = new List<Vector2>();
-
-                    foreach (JSONNode point in feature)
-                    {
-                        polygonList.Add(new Vector2(point[0], point[1]));
-                    }
-                    list.Add(polygonList.ToArray());
-                }
-                //print("outline loaded");
-                BuildingOutlineLoaded?.Invoke(this, new BuildingOutlineEventArgs(true, list));
-            }
-        }
-
-        IEnumerator UpdateSidePanelAddress(string bagId)
-        {
-            Debug.Log($"UpdateSidePanelAddress");
-
-            var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagId}";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
-            req.SetRequestHeader("Accept-Crs", "epsg:28992");
-
-            yield return req.SendWebRequest();
-
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+                WarningDialogs.Instance.ShowNewDialog("Adressenuitgebreid data kon niet opgehaald worden");
             }
             else
             {
                 var json = JSON.Parse(req.downloadHandler.text);
                 var addresses = json["_embedded"]["adressen"];
-
+                
                 foreach (JSONObject adres in addresses)
                 {
-                    var kortenaam = adres["korteNaam"].Value;
-                    var huisnummer = adres["huisnummer"].Value;
-                    var postcode = adres["postcode"].Value;
-                    var plaats = adres["woonplaatsNaam"].Value;
+                    var point = adres["adresseerbaarObjectGeometrie"]["punt"]["coordinates"].AsArray;
 
-                    AddressLoaded?.Invoke(this, new AdressDataEventArgs($"{kortenaam} {huisnummer}", $"{postcode} {plaats}"));
+                    Vector2RD building_center = new Vector2RD(point[0], point[1]);
+                    AdresUitgebreidLoaded?.Invoke(this, new AdresUitgebreidDataEventArgs(building_center));                    
                 }
-
-                print(req.downloadHandler.text);
+                
             }
         }
 
         IEnumerator GetPerceelData(Vector3RD position)
-        {
-            //yield return null;
-
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
-
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-            var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX={bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
             {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                ProcessPerceelData(json);
-            }
-        }
+                //yield return null;
 
-        IEnumerator GetMonumentStatus(Vector3RD position)
-        {
-            yield return null;
+                Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
 
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
+                var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
+                var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX={bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
 
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:NationalListedMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("MonumentStatus data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var ismonument = json["features"].Linq.Any();
-
-                if (ismonument)
+                UnityWebRequest req = UnityWebRequest.Get(url);
+                yield return req.SendWebRequest();
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    IsBeschermdEvent?.Invoke();
-                }
-
-                //if (ismonument)
-                //{
-                //    var KICH_URL = json["features"][0]["properties"]["KICH_URL"];                    
-                //}
-
-            }
-        }
-
-        IEnumerator GetBeschermdStatus(Vector3RD position)
-        {
-            yield return null;
-
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
-
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var isbeschermd = json["features"].Linq.Any();
-
-                if (isbeschermd)
-                {
-                    IsBeschermdEvent?.Invoke();
-                }
-
-
-            }
-        }
-
-
-
-        void ProcessPerceelData(JSONNode jsonData)
-        {
-            JSONNode feature1 = jsonData["features"][0];
-            //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
-
-            perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
-
-            List<Vector2[]> list = new List<Vector2[]>();
-
-            foreach (JSONNode feature in jsonData["features"])
-            {
-                List<Vector2> polygonList = new List<Vector2>();
-
-                var coordinates = feature["geometry"]["coordinates"];
-                foreach (JSONNode points in coordinates)
-                {
-                    foreach (JSONNode point in points)
-                    {
-                        polygonList.Add(new Vector2(point[0], point[1]));
-                    }
-                }
-                list.Add(polygonList.ToArray());
-            }
-
-
-            foreach (Transform gam in terrainLayer.transform)
-            {
-                // Debug.Log(gam.name);
-                gam.gameObject.AddComponent<MeshCollider>();
-            }
-
-            //PerceelData = list;
-            var perceelGrootte = float.Parse(jsonData["features"][0]["properties"]["kadastraleGrootteWaarde"]);
-            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list, perceelGrootte));
-
-            PlaatsUitbouw();
-        }
-
-
-
-
-        public void PlaatsUitbouw()
-        {
-            var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            uitbouwPrefab.SetActive(true);
-            uitbouwPrefab.transform.position = pos;
-        }
-
-        private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
-        {
-            var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
-
-            ObjectMappingClass data;
-
-            using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-            {
-                yield return uwr.SendWebRequest();
-
-                if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
+                    WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
                 }
                 else
                 {
-                    //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
+                    var json = JSON.Parse(req.downloadHandler.text);
+                    ProcessPerceelData(json);
+                }
+            }
 
-                    ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
-                    AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-                    data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-                    objectMapping.ids = data.ids;
-                    objectMapping.uvs = data.uvs;
-                    objectMapping.vectorMap = data.vectorMap;
+            IEnumerator GetMonumentStatus(Vector3RD position)
+            {
+                yield return null;
 
-                    objectMapping.highlightIDs = new List<string>()
+                Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
+
+                var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
+                var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:NationalListedMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
+
+                UnityWebRequest req = UnityWebRequest.Get(url);
+                yield return req.SendWebRequest();
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    WarningDialogs.Instance.ShowNewDialog("MonumentStatus data kon niet opgehaald worden");
+                }
+                else
+                {
+                    var json = JSON.Parse(req.downloadHandler.text);
+                    var ismonument = json["features"].Linq.Any();
+
+                    if (ismonument)
+                    {
+                        IsBeschermdEvent?.Invoke();
+                    }
+
+                    //if (ismonument)
+                    //{
+                    //    var KICH_URL = json["features"][0]["properties"]["KICH_URL"];                    
+                    //}
+
+                }
+            }
+
+            IEnumerator GetBeschermdStatus(Vector3RD position)
+            {
+                yield return null;
+
+                Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
+
+                var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
+                var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
+
+                UnityWebRequest req = UnityWebRequest.Get(url);
+                yield return req.SendWebRequest();
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
+                }
+                else
+                {
+                    var json = JSON.Parse(req.downloadHandler.text);
+                    var isbeschermd = json["features"].Linq.Any();
+
+                    if (isbeschermd)
+                    {
+                        IsBeschermdEvent?.Invoke();
+                    }
+
+
+                }
+            }
+
+            void ProcessPerceelData(JSONNode jsonData)
+            {
+                JSONNode feature1 = jsonData["features"][0];
+                //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
+
+                perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
+
+                List<Vector2[]> list = new List<Vector2[]>();
+
+                foreach (JSONNode feature in jsonData["features"])
+                {
+                    List<Vector2> polygonList = new List<Vector2>();
+
+                    var coordinates = feature["geometry"]["coordinates"];
+                    foreach (JSONNode points in coordinates)
+                    {
+                        foreach (JSONNode point in points)
+                        {
+                            polygonList.Add(new Vector2(point[0], point[1]));
+                        }
+                    }
+                    list.Add(polygonList.ToArray());
+                }
+
+
+                foreach (Transform gam in terrainLayer.transform)
+                {
+                    // Debug.Log(gam.name);
+                    gam.gameObject.AddComponent<MeshCollider>();
+                }
+
+                //PerceelData = list;
+                var perceelGrootte = float.Parse(jsonData["features"][0]["properties"]["kadastraleGrootteWaarde"]);
+                PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list, perceelGrootte, perceelnummerPlaatscoordinaat));
+
+                PlaatsUitbouw();
+            }
+
+            public void PlaatsUitbouw()
+            {
+                var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
+                uitbouwPrefab.SetActive(true);
+                uitbouwPrefab.transform.position = pos;
+            }
+
+            private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)
+            {
+                var dataURL = $"{Config.activeConfiguration.buildingsMetaDataPath}/buildings_{rd.x}_{rd.y}.2.2-data";
+
+                ObjectMappingClass data;
+
+                using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+                {
+                    yield return uwr.SendWebRequest();
+
+                    if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+                    {
+                        Debug.LogError($"Error getting data file: {uwr.error} {dataURL}");
+                    }
+                    else
+                    {
+                        //  Debug.Log($"buildingGameObject:{buildingGameObject.name}");
+
+                        ObjectData objectMapping = buildingGameObject.AddComponent<ObjectData>();
+                        AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
+                        data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                        objectMapping.ids = data.ids;
+                        objectMapping.uvs = data.uvs;
+                        objectMapping.vectorMap = data.vectorMap;
+
+                        objectMapping.highlightIDs = new List<string>()
                 {
                     id
                 };
 
-                    //Debug.Log($"hasid:{data.ids.Contains(id)}");
+                        //Debug.Log($"hasid:{data.ids.Contains(id)}");
 
-                    newAssetBundle.Unload(true);
+                        newAssetBundle.Unload(true);
 
-                    objectMapping.ApplyDataToIDsTexture();
-                    var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
-                    BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
+                        objectMapping.ApplyDataToIDsTexture();
+                        var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+                        BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectMapping, tileOffset));
+                    }
+
                 }
-
+                yield return null;
             }
-            yield return null;
         }
     }
-}
+
