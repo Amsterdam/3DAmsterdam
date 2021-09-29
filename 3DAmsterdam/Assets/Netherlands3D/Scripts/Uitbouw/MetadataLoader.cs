@@ -11,7 +11,7 @@ using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-
+using Netherlands3D.Utilities;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -47,11 +47,13 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public bool IsLoaded { get; private set; }
         public List<Vector2[]> Outline { get; private set; } //in RD coordinaten
+        public float TotalArea { get; private set; }
 
-        public BuildingOutlineEventArgs(bool isLoaded, List<Vector2[]> outline)
+        public BuildingOutlineEventArgs(bool isLoaded, List<Vector2[]> outline, float totalArea)
         {
             IsLoaded = isLoaded;
             Outline = outline;
+            TotalArea = totalArea;
         }
     }
 
@@ -168,8 +170,10 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 var json = JSON.Parse(req.downloadHandler.text);
                 //var geometry = json["pand"]["geometrie"]["coordinates"];
+                print(req.downloadHandler.text);
 
                 List<Vector2[]> list = new List<Vector2[]>();
+                var builtArea = 0f;
 
                 foreach (JSONNode feature in json["pand"]["geometrie"]["coordinates"])
                 {
@@ -179,10 +183,14 @@ namespace Netherlands3D.T3D.Uitbouw
                     {
                         polygonList.Add(new Vector2(point[0], point[1]));
                     }
-                    list.Add(polygonList.ToArray());
+
+                    var polygonArray = polygonList.ToArray();
+                    list.Add(polygonArray);
+                    builtArea += GeometryCalculator.Area(polygonArray);
                 }
                 //print("outline loaded");
-                BuildingOutlineLoaded?.Invoke(this, new BuildingOutlineEventArgs(true, list));
+
+                BuildingOutlineLoaded?.Invoke(this, new BuildingOutlineEventArgs(true, list, builtArea));
             }
         }
 

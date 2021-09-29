@@ -31,15 +31,19 @@ public class DimensionRestriction : UitbouwRestriction
 
 public class PerceelAreaRestriction : UitbouwRestriction
 {
-    public static float MaxAreaPercentage = 33f;
+    public static float MaxAreaPercentage { get { return 33f; } }
+    public static float MaxAreaFraction { get { return MaxAreaPercentage / 100f; } }
 
     public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
     {
         var uitbouwArea = uitbouw.Width * uitbouw.Depth;
-        var perceelArea = perceel.Area;
+        //var totalPerceelArea = perceel.Area;
+        //var builtArea = building.Area;
 
-        var percentage = (uitbouwArea / perceelArea) * 100;
-        Debug.Log(uitbouwArea + "\t" + perceelArea + "\t" + percentage + "%");
+        var freeArea = perceel.Area - building.Area;
+
+        var percentage = (uitbouwArea / freeArea) * 100;
+        Debug.Log(uitbouwArea + "\t" + freeArea + "\t" + percentage + "%");
         return percentage <= MaxAreaPercentage;
     }
 }
