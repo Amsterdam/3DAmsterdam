@@ -8,6 +8,9 @@ namespace Netherlands3D.Logging
 {
     public class AnalyticsClickTrigger : MonoBehaviour, IPointerUpHandler
     {
+        public string category;
+        public string action;
+        public string label;
 		public void OnPointerUp(PointerEventData eventData)
 		{
             var selectedName = this.gameObject.name;
@@ -18,10 +21,10 @@ namespace Netherlands3D.Logging
             if(toggle && (!toggle.group || (toggle.group && toggle.group.allowSwitchOff)))
             {
                 //Togle isOn value is set after pointer up. So we read the opposite to log on/off:
-                Analytics.SendEvent($"{containerName}", selectedName, (toggle.isOn) ? "Off" : "On");
+                Analytics.SendEvent(category, action, (toggle.isOn) ? "Off" : "On");
 			}
             else{
-                Analytics.SendEvent($"{containerName}", selectedName);
+                Analytics.SendEvent(category,action,label);
             }
         }
     }
