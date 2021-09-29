@@ -24,11 +24,11 @@ namespace Netherlands3D.Logging
         {
 			Instance = this;
 			//Start with adding events to the already existing Selectables in the scene
-			var UISelectables = FindObjectsOfType<Selectable>(true);
-            foreach (var selectable in UISelectables)
-			{
-				AddClickEventTrigger(selectable);
-			}
+			//var UISelectables = FindObjectsOfType<Selectable>(true);
+   //         foreach (var selectable in UISelectables)
+			//{
+			//	AddClickEventTrigger(selectable);
+			//}
 
 #if UNITY_EDITOR || !PRODUCTION
 			//Start with a first log stating if this is a dev build or in editor
