@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Netherlands3D
 {
@@ -8,6 +9,11 @@ namespace Netherlands3D
     public class ColorPalette : ScriptableObject
     {
         public List<NamedColor> colors;
+
+        public Color this[string colorName]
+        {
+            get { return colors.First(namedColor => namedColor.name == colorName).color; }
+        }
     }
 
     [System.Serializable]

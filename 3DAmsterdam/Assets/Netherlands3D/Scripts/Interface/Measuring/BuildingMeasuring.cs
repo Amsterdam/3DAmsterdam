@@ -116,11 +116,11 @@ public class BuildingMeasuring : Interactable
         if (Physics.Raycast(Selector.mainSelectorRay, out RaycastHit hit))
         {
             var hitCollider = hit.collider.GetComponent<MeshCollider>();
-            if (hitCollider != targetCollider)
+            if (hitCollider && hitCollider != targetCollider)
             {
                 targetCollider = hitCollider;
                 targetMesh = targetCollider.sharedMesh;
-            }
+            }   
             previewPoint = hit.point;
         }
 
