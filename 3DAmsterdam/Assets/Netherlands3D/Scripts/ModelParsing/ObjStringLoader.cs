@@ -183,6 +183,11 @@ namespace Netherlands3D.ModelParsing
 					yield return null;
 				}
 				File.Delete(Application.persistentDataPath + "/" + mtlFilePath);
+				Analytics.SendEvent("loadOBJ", "MTLFile", "ja");
+			}
+			else
+            {
+				Analytics.SendEvent("loadOBJ", "MTLFile", "nee");
 			}
 
 			objstreamReader.materialDataSlots = mtlreader.GetMaterialData();
