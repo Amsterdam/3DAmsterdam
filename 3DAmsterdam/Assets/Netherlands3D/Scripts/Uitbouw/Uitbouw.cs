@@ -30,6 +30,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private Vector3 extents;
 
+        [SerializeField]
+        private GameObject dragableAxisPrefab;
+        private DragableAxis[] userMovementAxes;
+
         public Vector3 LeftCorner
         {
             get
@@ -62,17 +66,35 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        public Plane GroundPlane
+        {
+            get
+            {
+                return new Plane(Vector3.up, building.GroundLevel);
+            }
+        }
+
         public Plane SnapWall { get; private set; } = new Plane();
 
         private void Awake()
         {
             meshRenderer = GetComponent<MeshRenderer>();
             mesh = GetComponent<MeshFilter>().mesh;
+            //userMovementAxis = GetComponentInChildren<DragableAxis>();
         }
 
         private void Start()
         {
             SetDimensions(mesh.bounds.extents * 2);
+            userMovementAxes = new DragableAxis[3];
+
+            var arrowOffsetX = transform.right * Width / 2;
+            var arrowOffsetY = transform.up * (Height / 2 - 0.01f);
+            userMovementAxes[0] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+
+            userMovementAxes[2] = gameObject.AddComponent<DragableAxis>();
+            userMovementAxes[2].SetUitbouw(this);
         }
 
         private void SetDimensions(float w, float d, float h)
@@ -114,11 +136,16 @@ namespace Netherlands3D.T3D.Uitbouw
         private void ProcessUserInput()
         {
             //temp
-            if (Input.GetKey(KeyCode.Alpha1))
-                transform.position -= transform.right * moveSpeed * Time.deltaTime;
+            //if (Input.GetKey(KeyCode.Alpha1))
+            //    transform.position -= transform.right * moveSpeed * Time.deltaTime;
 
-            if (Input.GetKey(KeyCode.Alpha2))
-                transform.position += transform.right * moveSpeed * Time.deltaTime;
+            //if (Input.GetKey(KeyCode.Alpha2))
+            //    transform.position += transform.right * moveSpeed * Time.deltaTime;
+
+            foreach (var axis in userMovementAxes)
+            {
+                transform.position += axis.DeltaPosition;
+            }
 
             if (building)
             {
@@ -190,6 +217,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
                 transform.position = hit.point - uitbouwAttachDirection * Depth / 2;
+
+                //recalculate mouse offset position, since the uitbouw (and its controls) changed orientation
+                foreach (var axis in userMovementAxes)
+                {
+                    axis.RecalculateOffset();
+                }
             }
 
             SnapToGround(this.building);
