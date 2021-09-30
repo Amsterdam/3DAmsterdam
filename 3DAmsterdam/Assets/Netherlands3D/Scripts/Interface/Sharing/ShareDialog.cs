@@ -130,7 +130,14 @@ namespace Netherlands3D.Interface.Sharing
 				ChangeState(SharingState.SHOW_URL);
 
 				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				sharedURL.ShowURL(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
+				if (Config.activeConfiguration.sharingViewUrl == "")
+				{
+					sharedURL.ShowURL(Application.absoluteURL + serverReturn.sceneId);
+				}
+				else
+				{
+					sharedURL.ShowURL(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
+				}
 				JavascriptMethodCaller.SetUniqueShareURLToken(serverReturn.sceneId);
 
 				yield return null;
