@@ -6,13 +6,18 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class HandleMetaDataUpdates : MonoBehaviour
-{    
+{
     public Text AdresText;
     public Text PostcodePlaatsText;
     public Text PerceelGrootteText;
 
-    public GameObject IsMonument;
-    public GameObject IsBeschermd;
+    public Text IsMonumentText;
+    private const string isMonumentString = "Dit gebouw is een rijksmonument.";
+    private const string notMonumentString = "Dit gebouw is geen rijksmonument.";
+
+    public Text IsBeschermdText;
+    private const string isBeschermdtString = "Dit gebouw ligt in een rijks-\nbeschermd stads- of dorpsgezicht";
+    private const string notBeschermdString = "Dit gebouw ligt niet in een rijks-\nbeschermd stads- of dorpsgezicht.";
 
     private bool perceelIsLoaded = false;
     private bool buildingOutlineIsLoaded = false;
@@ -20,8 +25,24 @@ public class HandleMetaDataUpdates : MonoBehaviour
     private float perceelArea;
     private float builtArea;
 
+    [SerializeField]
+    private Uitbouw uitbouw;
+    [SerializeField]
+    private BuildingMeshGenerator building;
+    [SerializeField]
+    private PerceelRenderer perceel;
+
+    //todo: separate?
+    public static Uitbouw Uitbouw { get; private set; }
+    public static BuildingMeshGenerator Building { get; private set; }
+    public static PerceelRenderer Perceel { get; private set; }
+
     void Start()
     {
+        Uitbouw = uitbouw;
+        Building = building;
+        Perceel = perceel;
+
         MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
         MetadataLoader.Instance.AddressLoaded += AddressLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += PerceelDataLoaded;
@@ -29,17 +50,23 @@ public class HandleMetaDataUpdates : MonoBehaviour
         MetadataLoader.Instance.IsBeschermdEvent += IsBeschermdEvent;
         MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
 
-        StartCoroutine(SetSidebarAreaText());
+        //StartCoroutine(SetSidebarAreaText());
     }
 
-    private void IsMonumentEvent()
+    private void IsMonumentEvent(bool isMonument)
     {
-        IsMonument.SetActive(true);
+        if (isMonument)
+            IsMonumentText.text = isMonumentString;
+        else
+            IsMonumentText.text = notMonumentString;
     }
 
-    private void IsBeschermdEvent()
+    private void IsBeschermdEvent(bool isBeschermd)
     {
-        IsBeschermd.SetActive(true);
+        if (isBeschermd)
+            IsBeschermdText.text = isBeschermdtString;
+        else
+            IsBeschermdText.text = notBeschermdString;
     }
 
     private void PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -71,7 +98,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     private IEnumerator SetSidebarAreaText()
     {
         PerceelGrootteText.text = string.Empty;
-        yield return new WaitUntil(()=> perceelIsLoaded && buildingOutlineIsLoaded);
+        yield return new WaitUntil(() => perceelIsLoaded && buildingOutlineIsLoaded);
 
         var unbuiltArea = (perceelArea - builtArea);
         //var maxAllowedAreaRestriction = RestrictionChecker.ActiveRestrictions.FirstOrDefault(restriction => restriction is PerceelAreaRestriction) as PerceelAreaRestriction;

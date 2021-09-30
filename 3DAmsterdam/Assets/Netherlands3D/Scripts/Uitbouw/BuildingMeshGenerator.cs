@@ -12,6 +12,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
         public bool IsMonument { get; private set; }
+        public bool IsBeschermd { get; private set; }
         public float Area { get; private set; }
 
         //public Vector3[] RelativeBuildingCorners { get; private set; }
@@ -27,11 +28,17 @@ namespace Netherlands3D.T3D.Uitbouw
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
             MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
             MetadataLoader.Instance.IsBeschermdEvent += Instance_IsBeschermdEvent;
+            MetadataLoader.Instance.IsMonumentEvent += Instance_IsMonumentEvent;
         }
 
-        private void Instance_IsBeschermdEvent()
+        private void Instance_IsMonumentEvent(bool isMonument)
         {
-            IsMonument = true;
+            IsMonument = isMonument;
+        }
+
+        private void Instance_IsBeschermdEvent(bool isBeschermd)
+        {
+            IsBeschermd = isBeschermd;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)

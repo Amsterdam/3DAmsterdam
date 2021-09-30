@@ -22,7 +22,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
 
-
         private void Start()
         {
             perceelMeshGameObject = CreatePerceelGameObject();

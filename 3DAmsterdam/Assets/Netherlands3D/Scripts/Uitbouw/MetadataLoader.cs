@@ -91,10 +91,10 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void AddressLoadedEventHandler(object source, AdressDataEventArgs args);
         public event AddressLoadedEventHandler AddressLoaded;
 
-        public delegate void MonumentEventHandler();
+        public delegate void MonumentEventHandler(bool isMonument);
         public event MonumentEventHandler IsMonumentEvent;
 
-        public delegate void BeschermdEventHandler();
+        public delegate void BeschermdEventHandler(bool isBeschermd);
         public event BeschermdEventHandler IsBeschermdEvent;
 
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
@@ -269,12 +269,9 @@ namespace Netherlands3D.T3D.Uitbouw
             else
             {
                 var json = JSON.Parse(req.downloadHandler.text);
-                var ismonument = json["features"].Linq.Any();
+                var isMonument = json["features"].Linq.Any();
 
-                if (ismonument)
-                {
-                    IsBeschermdEvent?.Invoke();
-                }
+                IsMonumentEvent?.Invoke(isMonument);
 
                 //if (ismonument)
                 //{
@@ -302,14 +299,9 @@ namespace Netherlands3D.T3D.Uitbouw
             else
             {
                 var json = JSON.Parse(req.downloadHandler.text);
-                var isbeschermd = json["features"].Linq.Any();
+                var isBeschermd = json["features"].Linq.Any();
 
-                if (isbeschermd)
-                {
-                    IsBeschermdEvent?.Invoke();
-                }
-
-
+                IsBeschermdEvent?.Invoke(isBeschermd);
             }
         }
 
