@@ -103,9 +103,9 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         IEnumerator GetSharedScene(string sceneId)
         {
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
+            Debug.Log(Config.activeConfiguration.sharingDownloadScenePath + "?sceneid=" + sceneId);
 
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingDownloadScenePath + "?sceneid=" + sceneId);
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
             if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
@@ -256,10 +256,9 @@ namespace Netherlands3D.Sharing
         /// <param name="scale">The new scale for the target GameObject</param>
         /// <returns></returns>
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale, bool transformable = false)
-        {
-            
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
+        {      
+            Debug.Log(Config.activeConfiguration.sharingDownloadModelPath + "&sceneid=" + sceneId + "&modeid=" + token);
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingDownloadModelPath + "&sceneid=" + sceneId + "&modeid=" + token);
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
             
