@@ -24,10 +24,10 @@ MonoBehaviour:
   zeroGroundLevelY: 0
   webserverRootPath: data/
   buildingsMetaDataPath: buildings1.0/
-  sharingUploadScenePath: https://3da-o-functions.azurewebsites.net/api/Upload
-  sharingDownloadScenePath: http://localhost:7071/api/ShareScene?action=downloadScene
-  sharingUploadModelPath: http://localhost:7071/api/ShareScene?action=uploadModel
-  sharingDownloadModelPath: http://localhost:7071/api/ShareScene?action=downloadModel
+  sharingUploadScenePath: https://3da-o-functions.azurewebsites.net/api/UploadScene
+  sharingDownloadScenePath: https://3da-o-functions.azurewebsites.net/api/DownloadScene
+  sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/UploadModel
+  sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/DownloadModel
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
