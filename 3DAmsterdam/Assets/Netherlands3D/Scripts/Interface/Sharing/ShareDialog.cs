@@ -70,18 +70,24 @@ namespace Netherlands3D.Interface.Sharing
 			ChangeState(SharingState.SHARING_SCENE);
 			yield return new WaitForEndOfFrame(); 
 			var jsonScene = JsonUtility.ToJson(sceneSerializer.SerializeScene(editAllowToggle.isOn), true);
+			print(jsonScene);
+
+			print("Save scene using url:" + Config.activeConfiguration.sharingUploadScenePath);
 			//Post basic scene, and optionaly get unique tokens in return
-			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php", jsonScene);
+			UnityWebRequest sceneSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingUploadScenePath, jsonScene);
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
 
-			if (sceneSaveRequest.isNetworkError || sceneSaveRequest.isHttpError || !sceneSaveRequest.downloadHandler.text.StartsWith("{"))
+			if (sceneSaveRequest.result != UnityWebRequest.Result.Success)
 			{
+				print(sceneSaveRequest.downloadHandler.text);
 				ChangeState(SharingState.SERVER_PROBLEM);
 				yield break;
 			}
 			else
 			{
+				print(sceneSaveRequest.downloadHandler.text);
+
 				//Check if we got some tokens for model upload, and download them 1 at a time.
 				ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
 				sceneSerializer.sharedSceneId = serverReturn.sceneId;
@@ -100,7 +106,7 @@ namespace Netherlands3D.Interface.Sharing
 						totalVerts += serializedCustomObject.verts.Length / 3;
 						var jsonCustomObject = JsonUtility.ToJson(serializedCustomObject, false);
 						
-						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingBaseURL + "customUpload.php?sceneId=" + serverReturn.sceneId + "&meshToken=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
+						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingUploadModelPath + "&sceneid=" + serverReturn.sceneId + "&meshid=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
 						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 						yield return modelSaveRequest.SendWebRequest();
 
@@ -129,15 +135,9 @@ namespace Netherlands3D.Interface.Sharing
 
 				ChangeState(SharingState.SHOW_URL);
 
-				Debug.Log(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				if (Config.activeConfiguration.sharingViewUrl == "")
-				{
-					sharedURL.ShowURL(Application.absoluteURL + serverReturn.sceneId);
-				}
-				else
-				{
-					sharedURL.ShowURL(Config.activeConfiguration.sharingViewUrl + serverReturn.sceneId);
-				}
+				Debug.Log(Config.activeConfiguration.sharingDownloadScenePath + "&sceneid=" + serverReturn.sceneId);
+				sharedURL.ShowURL(Config.activeConfiguration.sharingDownloadScenePath + "&sceneid=" + serverReturn.sceneId);
+
 				JavascriptMethodCaller.SetUniqueShareURLToken(serverReturn.sceneId);
 
 				yield return null;
