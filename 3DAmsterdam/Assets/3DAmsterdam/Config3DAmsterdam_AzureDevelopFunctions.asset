@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
-  m_Name: Config3DAmsterdam_Azure
+  m_Name: Config3DAmsterdam_AzureDevelopFunctions
   m_EditorClassIdentifier: 
   RelativeCenterRD:
     x: 121000
@@ -24,10 +24,10 @@ MonoBehaviour:
   zeroGroundLevelY: 0
   webserverRootPath: data/
   buildingsMetaDataPath: buildings1.0/
-  sharingUploadScenePath: http://localhost:7071/api/ShareScene?action=uploadScene
-  sharingDownloadScenePath: http://localhost:7071/api/ShareScene?action=downloadScene
-  sharingUploadModelPath: http://localhost:7071/api/ShareScene?action=uploadModel
-  sharingDownloadModelPath: http://localhost:7071/api/ShareScene?action=downloadModel
+  sharingUploadScenePath: https://3da-o-functions.azurewebsites.net/api/ShareScene?action=uploadScene
+  sharingDownloadScenePath: https://3da-o-functions.azurewebsites.net/api/ShareScene?action=downloadScene
+  sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/ShareScene?action=uploadModel
+  sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/ShareScene?action=downloadModel
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
