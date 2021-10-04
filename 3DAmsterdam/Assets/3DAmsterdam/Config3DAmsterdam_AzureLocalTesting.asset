@@ -25,9 +25,10 @@ MonoBehaviour:
   webserverRootPath: data/
   buildingsMetaDataPath: buildings1.0/
   sharingUploadScenePath: http://localhost:7071/api/UploadScene
-  sharingDownloadScenePath: http://localhost:7071/api/DownloadScene
-  sharingUploadModelPath: http://localhost:7071/api/UploadModel
-  sharingDownloadModelPath: http://localhost:7071/api/DownloadModel
+  sharingDownloadScenePath: http://localhost:7071/api/DownloadScene/{sceneId}
+  sharingUploadModelPath: http://localhost:7071/api/UploadModel/{sceneId}/{modelToken}
+  sharingDownloadModelPath: http://localhost:7071/api/DownloadModel/{sceneId}/{modelToken}
+  sharingViewScenePath: https://3d.amsterdam.nl/web/app/index.html?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
