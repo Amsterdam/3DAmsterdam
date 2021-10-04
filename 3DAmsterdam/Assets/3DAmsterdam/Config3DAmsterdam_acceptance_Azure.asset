@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
-  m_Name: Config3DAmsterdam_Azure
+  m_Name: Config3DAmsterdam_acceptance_Azure
   m_EditorClassIdentifier: 
   RelativeCenterRD:
     x: 121000
@@ -22,13 +22,13 @@ MonoBehaviour:
     x: 141000
     y: 501000
   zeroGroundLevelY: 0
-  webserverRootPath: data/
+  webserverRootPath: https://aweuov2vhftrs2oonkckwfwu.z6.web.core.windows.net/data/
   buildingsMetaDataPath: buildings1.0/
-  sharingUploadScenePath: https://3da-o-functions.azurewebsites.net/api/UploadScene
-  sharingDownloadScenePath: https://3da-o-functions.azurewebsites.net/api/DownloadScene/{sceneId}
-  sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/UploadModel/{sceneId}/{modelToken}
-  sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/DownloadModel/{sceneId}/{modelToken}
-  sharingViewScenePath: https://3d.amsterdam.nl/web/app/index.html?view={sceneId}
+  sharingUploadScenePath: http://localhost:7071/api/UploadScene
+  sharingDownloadScenePath: http://localhost:7071/api/DownloadScene/{sceneId}
+  sharingUploadModelPath: http://localhost:7071/api/UploadModel/{sceneId}/{modelToken}
+  sharingDownloadModelPath: http://localhost:7071/api/DownloadModel/{sceneId}/{modelToken}
+  sharingViewScenePath: https://aweuov2vhftrs2oonkckwfwu.z6.web.core.windows.net/data/?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
