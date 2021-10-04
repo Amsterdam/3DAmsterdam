@@ -39,6 +39,25 @@ namespace Netherlands3D.T3D.Uitbouw
         void CreatePopup(bool conformsToRestriction)
         {
             popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
+
+            switch (restrictionType)
+            {
+                case UitbouwRestrictionType.Height:
+                    conformsText = string.Format(conformsText, HeightRestriction.MaxHeight, RestrictionChecker.ActiveUitbouw.Height);
+                    exceedsText = string.Format(exceedsText, HeightRestriction.MaxHeight, (RestrictionChecker.ActiveUitbouw.Height - HeightRestriction.MaxHeight).ToString("F2"));
+                    break;
+                case UitbouwRestrictionType.Depth:
+                    conformsText = string.Format(conformsText,  DepthRestriction.MaxDepth, RestrictionChecker.ActiveUitbouw.Depth);
+                    exceedsText = string.Format(exceedsText, DepthRestriction.MaxDepth, (RestrictionChecker.ActiveUitbouw.Depth - DepthRestriction.MaxDepth).ToString("F2"));
+                    break;
+                case UitbouwRestrictionType.Area:
+                    var freeArea = RestrictionChecker.ActivePerceel.Area - RestrictionChecker.ActiveBuilding.Area;
+                    var maxAvailableArea = freeArea * PerceelAreaRestriction.MaxAreaFraction;
+
+                    conformsText = string.Format(conformsText, PerceelAreaRestriction.MaxAreaPercentage, freeArea.ToString("F2"), RestrictionChecker.ActiveUitbouw.Area.ToString("F2"));
+                    exceedsText = string.Format(exceedsText, PerceelAreaRestriction.MaxAreaPercentage, freeArea.ToString("F2"), (RestrictionChecker.ActiveUitbouw.Area - maxAvailableArea).ToString("F2"));
+                    break;
+            }
             popup.GetComponentInChildren<PopupInfo>().SetText(conformsToRestriction ? conformsText : exceedsText);
         }
     }

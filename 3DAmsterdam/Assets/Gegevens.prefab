@@ -88,8 +88,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conformsText: 
-  exceedsText: 
+  conformsText: Volgens de omgevingswet mag de uitbouw max {0}m diep zijn. Uw uitbouw
+    is {1}m diep en voldoet aan de eisen van vergunningsvrij bouwen.
+  exceedsText: Volgens de omgevingswet mag de uitbouw max {0}m diep zijn. Uw uitbouw
+    is {1}m te diep om te voldoen aan de eisen van vergunningsvrij bouwen.
   popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
     type: 3}
   restrictionType: 4
@@ -3063,8 +3065,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conformsText: 
-  exceedsText: 
+  conformsText: "Volgens de omgevingswet mag de uitbouw max {0}% van het onbebouwde
+    perceeloppervlakte innemen. Uw onbebouwde perceeloppervlakte is {1}m\xB2. Uw
+    uitbouw is {2}m\xB2 en voldoet aan de eisen van vergunningsvrij bouwen."
+  exceedsText: "Volgens de omgevingswet mag de uitbouw max {0}% van het onbebouwde
+    perceeloppervlakte innemen. Uw onbebouwde perceeloppervlakte is {1}m\xB2. Uw
+    uitbouw heeft {2}m\xB2 te veel oppervlakte om te voldoen aan de eisen van vergunningsvrij
+    bouwen."
   popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
     type: 3}
   restrictionType: 5
@@ -3615,8 +3622,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conformsText: 
-  exceedsText: 
+  conformsText: Volgens de omgevingswet mag de uitbouw max {0}m hoog zijn. Uw uitbouw
+    is {1}m hoog en voldoet aan de eisen van vergunningsvrij bouwen.
+  exceedsText: Volgens de omgevingswet mag de uitbouw max {0}m hoog zijn. Uw uitbouw
+    is {1}m te hoog om te voldoen aan de eisen van vergunningsvrij bouwen.
   popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
     type: 3}
   restrictionType: 3

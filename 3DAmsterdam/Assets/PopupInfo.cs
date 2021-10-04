@@ -15,12 +15,6 @@ public class PopupInfo : MonoBehaviour
     [SerializeField]
     private float width = 400f;
 
-    string[] texts = new string[]
-    {
-        $"test",
-        $"Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet mag maximaal 33%"
-    };
-
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();

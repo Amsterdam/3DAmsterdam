@@ -67,7 +67,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var freeArea = perceel.Area - building.Area;
 
             var percentage = (uitbouwArea / freeArea) * 100;
-            Debug.Log(uitbouwArea + "\t" + freeArea + "\t" + percentage + "%");
+            //Debug.Log(uitbouwArea + "\t" + freeArea + "\t" + percentage + "%");
             return percentage <= MaxAreaPercentage;
         }
     }
