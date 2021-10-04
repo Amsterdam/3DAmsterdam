@@ -28,7 +28,7 @@ MonoBehaviour:
   sharingDownloadScenePath: https://3da-o-functions.azurewebsites.net/api/DownloadScene/{sceneId}
   sharingUploadModelPath: https://3da-o-functions.azurewebsites.net/api/UploadModel/{sceneId}/{modelToken}
   sharingDownloadModelPath: https://3da-o-functions.azurewebsites.net/api/DownloadModel/{sceneId}/{modelToken}
-  sharingViewScenePath: https://3d.amsterdam.nl/web/app/index.html?view=
+  sharingViewScenePath: https://3d.amsterdam.nl/web/app/index.html?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
