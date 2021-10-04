@@ -45,11 +45,13 @@ namespace Netherlands3D
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
         public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
 
-        public string sharingUploadScenePath = "http://localhost:7071/api/ShareScene?action=uploadScene";
-        public string sharingDownloadScenePath = "http://localhost:7071/api/ShareScene?action=downloadScene";
+        public string sharingUploadScenePath = "https://3d.amsterdam.nl/customUpload.php";
+        public string sharingDownloadScenePath = "https://3d.amsterdam.nl/customScene.php?id={sceneId}_scene.json";
 
-        public string sharingUploadModelPath = "http://localhost:7071/api/ShareScene?action=uploadModel";
-        public string sharingDownloadModelPath = "http://localhost:7071/api/ShareScene?action=downloadModel";
+        public string sharingUploadModelPath = "https://3d.amsterdam.nl/customUpload.php?sceneId={sceneId}&meshToken={modelToken}";
+        public string sharingDownloadModelPath = "https://3d.amsterdam.nl/customScene.php?id={modelToken}.dat";
+
+        public string sharingViewScenePath = "https://3d.amsterdam.nl/web/app/index.html?view={sceneId}";
 
         [Header("External URLs")]
         public string LocationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";

@@ -10,7 +10,7 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private ExternalData parsedJson;
 
-        public void Load(string metaDataPath = "metadata.xml")
+        public void Load(string metaDataPath = "metadata.json")
         {
             PropertiesPanel.Instance.OpenObjectInformation("Laag informatie");
             PropertiesPanel.Instance.AddLoadingSpinner();
@@ -23,7 +23,7 @@ namespace Netherlands3D.Interface.SidePanel
             UnityWebRequest www = UnityWebRequest.Get(Config.activeConfiguration.webserverRootPath + metaDataPath);
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
                 PropertiesPanel.Instance.ClearGeneratedFields();
                 PropertiesPanel.Instance.AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");

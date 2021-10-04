@@ -69,11 +69,7 @@
             public float b;
             public float a;
         }
-        [System.Serializable]
-
-
-
-        
+        [System.Serializable]        
         public struct Vector3
         {
             public static implicit operator Vector3(UnityEngine.Vector3 value)

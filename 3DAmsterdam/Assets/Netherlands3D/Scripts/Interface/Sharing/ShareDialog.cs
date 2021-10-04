@@ -105,12 +105,14 @@ namespace Netherlands3D.Interface.Sharing
 						var serializedCustomObject = sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token);
 						totalVerts += serializedCustomObject.verts.Length / 3;
 						var jsonCustomObject = JsonUtility.ToJson(serializedCustomObject, false);
-						
-						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(Config.activeConfiguration.sharingUploadModelPath + "&sceneid=" + serverReturn.sceneId + "&meshid=" + serverReturn.modelUploadTokens[currentModel].token, jsonCustomObject);
+
+						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", serverReturn.sceneId).Replace("{modelToken}", serverReturn.modelUploadTokens[currentModel].token);
+						Debug.Log("Model upload: " + putPath);
+						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(putPath, jsonCustomObject);
 						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 						yield return modelSaveRequest.SendWebRequest();
 
-						if (modelSaveRequest.isNetworkError || modelSaveRequest.isHttpError)
+						if (sceneSaveRequest.result != UnityWebRequest.Result.Success)
 						{
 							ChangeState(SharingState.SERVER_PROBLEM);
 							yield break;
@@ -135,8 +137,14 @@ namespace Netherlands3D.Interface.Sharing
 
 				ChangeState(SharingState.SHOW_URL);
 
-				Debug.Log(Config.activeConfiguration.sharingDownloadScenePath + "&sceneid=" + serverReturn.sceneId);
-				sharedURL.ShowURL(Config.activeConfiguration.sharingDownloadScenePath + "&sceneid=" + serverReturn.sceneId);
+				var sharedSceneURL = Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}",serverReturn.sceneId);
+				if (!sharedSceneURL.Contains("https://") && !sharedSceneURL.Contains("http://"))
+				{
+					//Use relative path
+					sharedSceneURL = Application.absoluteURL + Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}", serverReturn.sceneId);
+				}
+
+				sharedURL.ShowURL(sharedSceneURL);
 
 				JavascriptMethodCaller.SetUniqueShareURLToken(serverReturn.sceneId);
 
