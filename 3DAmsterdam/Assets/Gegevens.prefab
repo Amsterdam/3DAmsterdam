@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1566445103787448323}
   - component: {fileID: 2943658049471397996}
   - component: {fileID: 2755063597949964794}
+  - component: {fileID: 5660836056608095321}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -75,6 +76,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5660836056608095321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233357207743390192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conformsText: 
+  exceedsText: 
+  popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
+    type: 3}
+  restrictionType: 4
 --- !u!1 &256626565387496850
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,12 +125,12 @@ RectTransform:
   - {fileID: 4064508866712495014}
   - {fileID: 2226021252752594099}
   m_Father: {fileID: 5824579308038787204}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 120}
+  m_SizeDelta: {x: 0, y: 180}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &3021178597750664319
 MonoBehaviour:
@@ -247,6 +265,7 @@ GameObject:
   - component: {fileID: 4040794636039016839}
   - component: {fileID: 3305473775719641834}
   - component: {fileID: 7952375148165043125}
+  - component: {fileID: 4194751136864201175}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -311,6 +330,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4194751136864201175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930909498155515947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conformsText: 
+  exceedsText: Als u wilt (ver)bouwen binnen een beschermd stadsgezicht of dorpsgezicht,
+    moet u contact opnemen met de gemeente.
+  popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
+    type: 3}
+  restrictionType: 2
 --- !u!1 &1100571226605069616
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &145925727036460909
 RectTransform:
   m_ObjectHideFlags: 0
@@ -496,16 +533,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 5165484423709408791}
-  - {fileID: 515176063373683244}
+  m_Children: []
   m_Father: {fileID: 5824579308038787204}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 20, y: -390}
+  m_SizeDelta: {x: 320, y: 90}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &8445539344168314855
 MonoBehaviour:
@@ -621,7 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 2
+  restrictionType: 3
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &1647922907073186239
@@ -635,6 +670,7 @@ GameObject:
   - component: {fileID: 2683002141769928574}
   - component: {fileID: 8483280870166092408}
   - component: {fileID: 3953388516238822578}
+  - component: {fileID: 873342581769100812}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -699,6 +735,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &873342581769100812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647922907073186239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conformsText: 
+  exceedsText: Als u wilt (ver)bouwen in een rijksmonument, moet u contact opnemen
+    met de gemeente.
+  popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
+    type: 3}
+  restrictionType: 1
 --- !u!1 &1838260888719441985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1425,7 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 5
+  restrictionType: 6
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &3917179250802452003
@@ -1553,7 +1607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 3
+  restrictionType: 4
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &4531944376406992293
@@ -1644,7 +1698,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 0
+  restrictionType: 1
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &4542504358366233206
@@ -2055,7 +2109,8 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 6993590980519060190}
   m_Father: {fileID: 5824579308038787204}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2276,6 +2331,7 @@ GameObject:
   - component: {fileID: 5824579308038787207}
   - component: {fileID: 5824579308038787206}
   - component: {fileID: 5824579308038787205}
+  - component: {fileID: 4012209620376470113}
   m_Layer: 5
   m_Name: Gegevens
   m_TagString: Untagged
@@ -2298,6 +2354,8 @@ RectTransform:
   - {fileID: 4349766391068911165}
   - {fileID: 9022394751617274053}
   - {fileID: 8757459503585978099}
+  - {fileID: 5165484423709408791}
+  - {fileID: 515176063373683244}
   - {fileID: 145925727036460909}
   - {fileID: 392869720264050750}
   m_Father: {fileID: 0}
@@ -2306,7 +2364,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 360, y: 450}
+  m_SizeDelta: {x: 360, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5824579308038787207
 CanvasRenderer:
@@ -2372,6 +2430,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &4012209620376470113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824579308038787203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &6022149972447637134
 GameObject:
   m_ObjectHideFlags: 0
@@ -2524,7 +2596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 4
+  restrictionType: 5
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &6466766614373824359
@@ -2797,11 +2869,112 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet mag
-    maximaal 33%, Volgens de omgevingswet mag maximaal 33%, Volgens de omgevingswet
-    mag maximaal 33%, Volgens de omgevingswet mag maximaal 33%
+  conformsText: 'Volgens de omgevingswet moet de uitbouw binnen uw
+
+    eigen perceelsgrenzen
+    vallen. Uw uitbouw staat goed geplaatst in de tekening.'
+  exceedsText: 'Volgens de omgevingswet moet de uitbouw binnen uw
+
+    eigen perceelsgrenzen
+    vallen. In deze tekening valt deze erbuiten.'
   popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
     type: 3}
+  restrictionType: 6
+--- !u!1 &6664902442828073354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6993590980519060190}
+  - component: {fileID: 6704923303086474442}
+  - component: {fileID: 6801628805191500892}
+  - component: {fileID: 2545684397364057548}
+  m_Layer: 5
+  m_Name: Info (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6993590980519060190
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6664902442828073354}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5824579307360509577}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 22, y: 22}
+  m_Pivot: {x: 1, y: 0.5}
+--- !u!222 &6704923303086474442
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6664902442828073354}
+  m_CullTransparentMesh: 1
+--- !u!114 &6801628805191500892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6664902442828073354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 80ec46063ae1b4a2eac1166e70e4ab19, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2545684397364057548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6664902442828073354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conformsText: Meer informatie vindt u op de Helpdesk Omgevingsloket. Komt u er
+    daar niet uit? Bel het telefoonnummer 14 020, maandag tot en met vrijdag van
+    08.00 tot 18.00.
+  exceedsText: 
+  popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
+    type: 3}
+  restrictionType: 0
 --- !u!1 &6716900808572994348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2890,11 +3063,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: 'Testing
-
-    test'
+  conformsText: 
+  exceedsText: 
   popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
     type: 3}
+  restrictionType: 5
 --- !u!1 &6922857835469038381
 GameObject:
   m_ObjectHideFlags: 0
@@ -3180,6 +3353,7 @@ GameObject:
   - component: {fileID: 5165484423709408791}
   - component: {fileID: 5845234630549872025}
   - component: {fileID: 7658961869763801573}
+  - component: {fileID: 8426692757092591468}
   m_Layer: 5
   m_Name: Is monument
   m_TagString: Untagged
@@ -3199,13 +3373,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8169674021697213356}
-  m_Father: {fileID: 145925727036460909}
-  m_RootOrder: 0
+  m_Father: {fileID: 5824579308038787204}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5845234630549872025
 CanvasRenderer:
@@ -3249,6 +3423,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Dit gebouw is een rijksmonument.
+--- !u!114 &8426692757092591468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7859501344803906324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4305625080470482b96b40123d326c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restrictionType: 1
 --- !u!1 &8152636607734881617
 GameObject:
   m_ObjectHideFlags: 0
@@ -3337,7 +3524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc83c70e1c4549e680e0e1d9a8be385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictionType: 1
+  restrictionType: 2
   conformsSprite: {fileID: 21300000, guid: cd449b9631c4c46b0b68b841d6e29795, type: 3}
   exceedsSprite: {fileID: 21300000, guid: 3e9a5cb1035af480da5e77baa9980500, type: 3}
 --- !u!1 &8155812829526388097
@@ -3351,6 +3538,7 @@ GameObject:
   - component: {fileID: 2557845306537402694}
   - component: {fileID: 2094134441616128104}
   - component: {fileID: 2990616537086073922}
+  - component: {fileID: 3958838490245275436}
   m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
@@ -3415,6 +3603,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3958838490245275436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155812829526388097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b94b1e3e3894256af921a6e925dc50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  conformsText: 
+  exceedsText: 
+  popupPrefab: {fileID: 675423164268392235, guid: e25406b0617ac4beda74d8c870ae38fd,
+    type: 3}
+  restrictionType: 3
 --- !u!1 &8205073013813181702
 GameObject:
   m_ObjectHideFlags: 0
@@ -3666,6 +3871,7 @@ GameObject:
   - component: {fileID: 515176063373683244}
   - component: {fileID: 3819761255264984216}
   - component: {fileID: 2261639687109132762}
+  - component: {fileID: 2960578773598265973}
   m_Layer: 5
   m_Name: Is in beschermd gebied
   m_TagString: Untagged
@@ -3685,13 +3891,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7436367770465032763}
-  m_Father: {fileID: 145925727036460909}
-  m_RootOrder: 1
+  m_Father: {fileID: 5824579308038787204}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3819761255264984216
 CanvasRenderer:
@@ -3737,6 +3943,19 @@ MonoBehaviour:
   m_Text: 'Dit gebouw ligt in een rijks-
 
     beschermd stads- of dorpsgezicht'
+--- !u!114 &2960578773598265973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8738203873973935466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4305625080470482b96b40123d326c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restrictionType: 2
 --- !u!1 &8771853604590577819
 GameObject:
   m_ObjectHideFlags: 0

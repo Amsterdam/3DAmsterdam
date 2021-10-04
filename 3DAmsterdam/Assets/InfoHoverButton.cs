@@ -4,27 +4,42 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InfoHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace Netherlands3D.T3D.Uitbouw
 {
-    [SerializeField, TextArea]
-    private string infoText;
-    [SerializeField]
-    private GameObject popupPrefab;
-    private GameObject popup;
-
-    public void OnPointerEnter(PointerEventData eventData)
+    public class InfoHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        CreatePopup();
-    }
+        [SerializeField, TextArea]
+        private string conformsText;
+        [SerializeField, TextArea]
+        private string exceedsText;
+        [SerializeField]
+        private GameObject popupPrefab;
+        private GameObject popup;
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
+        [SerializeField]
+        private UitbouwRestrictionType restrictionType;
+        private UitbouwRestriction restrction;
+
+        private void Awake()
+        {
+            RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restrction);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            bool conforms = restrction == null || restrction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
+            CreatePopup(conforms);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
             Destroy(popup);
-    }
+        }
 
-    void CreatePopup()
-    {
-        popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
-        popup.GetComponentInChildren<PopupInfo>().SetText(infoText);
+        void CreatePopup(bool conformsToRestriction)
+        {
+            popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
+            popup.GetComponentInChildren<PopupInfo>().SetText(conformsToRestriction ? conformsText : exceedsText);
+        }
     }
 }

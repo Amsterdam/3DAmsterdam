@@ -19,19 +19,12 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private Text perceelBoundsText;
 
-        private Uitbouw uitbouw;
-
-        private void Start()
-        {
-            uitbouw = HandleMetaDataUpdates.Uitbouw;
-        }
-
         private void Update()
         {
             var perceelBoundsRestriction = RestrictionChecker.ActiveRestrictions[UitbouwRestrictionType.PerceelBounds];
-            var inPerceelBounds = perceelBoundsRestriction.ConformsToRestriction(HandleMetaDataUpdates.Building, HandleMetaDataUpdates.Perceel, HandleMetaDataUpdates.Uitbouw);
+            var inPerceelBounds = perceelBoundsRestriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
 
-            SetUitbouwText(uitbouw.Width, uitbouw.Height, uitbouw.Depth, uitbouw.Area, inPerceelBounds);
+            SetUitbouwText(RestrictionChecker.ActiveUitbouw.Width, RestrictionChecker.ActiveUitbouw.Height, RestrictionChecker.ActiveUitbouw.Depth, RestrictionChecker.ActiveUitbouw.Area, inPerceelBounds);
         }
 
         private void SetUitbouwText(float width, float height, float depth, float area, bool inPerceelBounds)

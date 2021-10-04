@@ -101,6 +101,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public enum UitbouwRestrictionType
     {
+        None,
         Monument,
         Beschermd,
         Height,
@@ -111,6 +112,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public static class RestrictionChecker
     {
+        public static BuildingMeshGenerator ActiveBuilding => HandleMetaDataUpdates.Building;
+        public static PerceelRenderer ActivePerceel => HandleMetaDataUpdates.Perceel;
+        public static Uitbouw ActiveUitbouw => HandleMetaDataUpdates.Uitbouw;
+
         private static IDictionary<UitbouwRestrictionType, UitbouwRestriction> activeRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>
         {
             {UitbouwRestrictionType.Monument, new MonumentRestriction() },
