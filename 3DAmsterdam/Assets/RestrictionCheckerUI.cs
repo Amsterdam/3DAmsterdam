@@ -22,7 +22,7 @@ namespace Netherlands3D.T3D.Uitbouw
             image = GetComponent<Image>();
         }
 
-        private void Start()
+        private void Update()
         {
             UpdateUI();
         }
@@ -35,7 +35,6 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             else
             {
-                print(HandleMetaDataUpdates.Uitbouw.Depth);
                 image.sprite = exceedsSprite;
             }
         }
