@@ -422,9 +422,7 @@ namespace Netherlands3D.LayerSystem
 						objectData.highlightIDs.Clear();
 					}
 
-					yield return new WaitForEndOfFrame();
 					objectData.ApplyDataToIDsTexture();
-					yield return new WaitForEndOfFrame();
 				}
 			}
 			pauseLoading = false;
