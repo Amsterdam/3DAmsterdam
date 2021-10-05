@@ -1,4 +1,5 @@
 using ConvertCoordinates;
+using Netherlands3D.Cameras;
 using Netherlands3D.T3D.Uitbouw;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 public class PositionCamera: MonoBehaviour
 {
-    public Camera Camera;
+    //public Camera Camera;
 
     Vector2RD? perceelcenter = null;
     Vector2RD? buildingcenter = null;
@@ -42,9 +43,10 @@ public class PositionCamera: MonoBehaviour
 
         var cameraoffset = (perceelpos - buildingpos).normalized * 10;
 
-        Camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, 7, perceelpos.z + cameraoffset.z);
-        Camera.transform.LookAt(buildingpos);
-    }
+        var camera = CameraModeChanger.Instance.ActiveCamera;
 
+        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, 7, perceelpos.z + cameraoffset.z);
+        camera.transform.LookAt(buildingpos);
+    }
 }
 

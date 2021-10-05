@@ -27,6 +27,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public float Width { get; private set; }
         public float Depth { get; private set; }
         public float Height { get; private set; }
+        public float Area { get { return Width * Depth; } }
 
         private Vector3 extents;
 
@@ -80,16 +81,16 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             meshRenderer = GetComponent<MeshRenderer>();
             mesh = GetComponent<MeshFilter>().mesh;
+            SetDimensions(mesh.bounds.extents * 2);
             //userMovementAxis = GetComponentInChildren<DragableAxis>();
         }
 
         private void Start()
         {
-            SetDimensions(mesh.bounds.extents * 2);
             userMovementAxes = new DragableAxis[3];
 
-            var arrowOffsetX = transform.right * Width / 2;
-            var arrowOffsetY = transform.up * (Height / 2 - 0.01f);
+            var arrowOffsetX = transform.right * extents.x;
+            var arrowOffsetY = transform.up * (extents.y - 0.01f);
             userMovementAxes[0] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
             userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
 

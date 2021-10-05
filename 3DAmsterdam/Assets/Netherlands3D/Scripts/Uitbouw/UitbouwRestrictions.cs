@@ -6,91 +6,137 @@ using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.Utilities;
 using UnityEngine;
 
-public interface UitbouwRestriction
+namespace Netherlands3D.T3D.Uitbouw
 {
-    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw);
-}
-
-public class MonumentRestriction : UitbouwRestriction
-{
-    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+    public interface UitbouwRestriction
     {
-        return building.IsMonument;
-    }
-}
-
-public class DimensionRestriction : UitbouwRestriction
-{
-    public static float MaxHeight = 3f;
-    public static float MaxDepth = 3f;
-    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
-    {
-        return uitbouw.Height < MaxHeight && uitbouw.Depth < MaxDepth;
-    }
-}
-
-public class PerceelAreaRestriction : UitbouwRestriction
-{
-    public static float MaxAreaPercentage = 33f;
-
-    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
-    {
-        var uitbouwArea = uitbouw.Width * uitbouw.Depth;
-        var perceelArea = perceel.Area;
-
-        var percentage = (uitbouwArea / perceelArea) * 100;
-        Debug.Log(uitbouwArea + "\t" + perceelArea + "\t" + percentage + "%");
-        return percentage <= MaxAreaPercentage;
-    }
-}
-
-public class PerceelBoundsRestriction : UitbouwRestriction
-{
-    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
-    {
-        return IsInPerceel(uitbouw.GetFootprint(), perceel.Perceel, uitbouw.transform.position);
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw);
     }
 
-    public static bool IsInPerceel(Vector2[] uitbouwFootprint, List<Vector2[]> perceel, Vector3 uitbouwPositionOffset)
+    public class MonumentRestriction : UitbouwRestriction
     {
-        var q = from i in perceel
-                from p in i
-                select CoordConvert.RDtoUnity(p) into v3
-                select new Vector2(v3.x, v3.z);
-
-        var polyPoints = q.ToArray(); //todo: test for non-contiguous perceels
-
-        foreach (var vert in uitbouwFootprint)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
         {
-            if (!GeometryCalculator.ContainsPoint(polyPoints, vert + new Vector2(uitbouwPositionOffset.x, uitbouwPositionOffset.z)))
-            {
-                return false;
-            }
+            return !building.IsMonument;
         }
-        return true;
     }
-}
 
-public static class RestrictionChecker
-{
-    private static UitbouwRestriction[] activeRestrictions = new UitbouwRestriction[]
+    public class BeschermdRestriction : UitbouwRestriction
     {
-        new MonumentRestriction(),
-        new DimensionRestriction(),
-        new PerceelAreaRestriction(),
-        new PerceelBoundsRestriction(),
-    };
-    public static UitbouwRestriction[] ActiveRestrictions => activeRestrictions;
-
-    public static bool ConformsToAllRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
-    {
-        foreach (var restriction in ActiveRestrictions)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
         {
-            if (!restriction.ConformsToRestriction(building, perceel, uitbouw))
-            {
-                return false;
-            }
+            return !building.IsBeschermd;
         }
-        return true;
+    }
+
+    public class HeightRestriction : UitbouwRestriction
+    {
+        public static float MaxHeight = 3f;
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            var roundedHeight = Mathf.RoundToInt(uitbouw.Height * 100);
+            var roundedMaxHeight = Mathf.RoundToInt(MaxHeight * 100);
+            return roundedHeight <= roundedMaxHeight;
+            //return uitbouw.Depth <= MaxDepth;
+        }
+    }
+
+    public class DepthRestriction : UitbouwRestriction
+    {
+        public static float MaxDepth = 3f;
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            var roundedDepth = Mathf.RoundToInt(uitbouw.Depth * 100);
+            var roundedMaxDepth = Mathf.RoundToInt(MaxDepth * 100);
+            return roundedDepth <= roundedMaxDepth;
+            //return uitbouw.Depth <= MaxDepth;
+        }
+    }
+
+    public class PerceelAreaRestriction : UitbouwRestriction
+    {
+        public static float MaxAreaPercentage { get { return 33f; } }
+        public static float MaxAreaFraction { get { return MaxAreaPercentage / 100f; } }
+
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            var uitbouwArea = uitbouw.Width * uitbouw.Depth;
+            //var totalPerceelArea = perceel.Area;
+            //var builtArea = building.Area;
+
+            var freeArea = perceel.Area - building.Area;
+
+            var percentage = (uitbouwArea / freeArea) * 100;
+            //Debug.Log(uitbouwArea + "\t" + freeArea + "\t" + percentage + "%");
+            return percentage <= MaxAreaPercentage;
+        }
+    }
+
+    public class PerceelBoundsRestriction : UitbouwRestriction
+    {
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            return IsInPerceel(uitbouw.GetFootprint(), perceel.Perceel, uitbouw.transform.position);
+        }
+
+        public static bool IsInPerceel(Vector2[] uitbouwFootprint, List<Vector2[]> perceel, Vector3 uitbouwPositionOffset)
+        {
+            var q = from i in perceel
+                    from p in i
+                    select CoordConvert.RDtoUnity(p) into v3
+                    select new Vector2(v3.x, v3.z);
+
+            var polyPoints = q.ToArray(); //todo: test for non-contiguous perceels
+
+            foreach (var vert in uitbouwFootprint)
+            {
+                if (!GeometryCalculator.ContainsPoint(polyPoints, vert + new Vector2(uitbouwPositionOffset.x, uitbouwPositionOffset.z)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public enum UitbouwRestrictionType
+    {
+        None,
+        Monument,
+        Beschermd,
+        Height,
+        Depth,
+        Area,
+        PerceelBounds,
+    }
+
+    public static class RestrictionChecker
+    {
+        public static BuildingMeshGenerator ActiveBuilding => HandleMetaDataUpdates.Building;
+        public static PerceelRenderer ActivePerceel => HandleMetaDataUpdates.Perceel;
+        public static Uitbouw ActiveUitbouw => HandleMetaDataUpdates.Uitbouw;
+
+        private static IDictionary<UitbouwRestrictionType, UitbouwRestriction> activeRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>
+        {
+            {UitbouwRestrictionType.Monument, new MonumentRestriction() },
+            {UitbouwRestrictionType.Beschermd, new BeschermdRestriction() },
+            {UitbouwRestrictionType.Height, new HeightRestriction() },
+            {UitbouwRestrictionType.Depth, new DepthRestriction() },
+            {UitbouwRestrictionType.Area, new PerceelAreaRestriction() },
+            {UitbouwRestrictionType.PerceelBounds, new PerceelBoundsRestriction() }
+        };
+        public static IDictionary<UitbouwRestrictionType, UitbouwRestriction> ActiveRestrictions => activeRestrictions;
+
+        public static bool ConformsToAllRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            foreach (var restriction in ActiveRestrictions)
+            {
+                if (!restriction.Value.ConformsToRestriction(building, perceel, uitbouw))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

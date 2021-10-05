@@ -3,39 +3,78 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class HandleMetaDataUpdates : MonoBehaviour
-{    
+{
     public Text AdresText;
     public Text PostcodePlaatsText;
     public Text PerceelGrootteText;
 
-    public GameObject IsMonument;
-    public GameObject IsBeschermd;
+    public Text IsMonumentText;
+    private const string isMonumentString = "Dit gebouw is een rijksmonument.";
+    private const string notMonumentString = "Dit gebouw is geen rijksmonument.";
 
+    public Text IsBeschermdText;
+    private const string isBeschermdtString = "Dit gebouw ligt in een rijks-\nbeschermd stads- of dorpsgezicht";
+    private const string notBeschermdString = "Dit gebouw ligt niet in een rijks-\nbeschermd stads- of dorpsgezicht.";
+
+    private bool perceelIsLoaded = false;
+    private bool buildingOutlineIsLoaded = false;
+
+    private float perceelArea;
+    private float builtArea;
+
+    [SerializeField]
+    private Uitbouw uitbouw;
+    [SerializeField]
+    private BuildingMeshGenerator building;
+    [SerializeField]
+    private PerceelRenderer perceel;
+
+    //todo: separate?
+    public static Uitbouw Uitbouw { get; private set; }
+    public static BuildingMeshGenerator Building { get; private set; }
+    public static PerceelRenderer Perceel { get; private set; }
 
     void Start()
     {
+        Uitbouw = uitbouw;
+        Building = building;
+        Perceel = perceel;
+
         MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
         MetadataLoader.Instance.AddressLoaded += AddressLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += PerceelDataLoaded;
         MetadataLoader.Instance.IsMonumentEvent += IsMonumentEvent;
         MetadataLoader.Instance.IsBeschermdEvent += IsBeschermdEvent;
+        MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
+
+        //StartCoroutine(SetSidebarAreaText());
     }
 
-    private void IsMonumentEvent()
+    private void IsMonumentEvent(bool isMonument)
     {
-        IsMonument.SetActive(true);
+        if (isMonument)
+            IsMonumentText.text = isMonumentString;
+        else
+            IsMonumentText.text = notMonumentString;
     }
 
-    private void IsBeschermdEvent()
+    private void IsBeschermdEvent(bool isBeschermd)
     {
-        IsBeschermd.SetActive(true);
+        if (isBeschermd)
+            IsBeschermdText.text = isBeschermdtString;
+        else
+            IsBeschermdText.text = notBeschermdString;
     }
 
     private void PerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        PerceelGrootteText.text = "Perceeloppervlakte: " + args.Area.ToString("F2") + "m²";
+        perceelIsLoaded = true;
+        perceelArea = args.Area;
+        print("perceel outline laoded");
+        //PerceelGrootteText.text += "Totaal Perceeloppervlakte: " + args.Area.ToString("F2") + "m²";
     }
 
     private void AddressLoaded(object source, AdressDataEventArgs args)
@@ -45,8 +84,29 @@ public class HandleMetaDataUpdates : MonoBehaviour
     }
 
     private void BuildingMetaDataLoaded(object source, Netherlands3D.T3D.Uitbouw.ObjectDataEventArgs args)
-    {        
+    {
     }
 
-    
+    private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
+    {
+        buildingOutlineIsLoaded = true;
+        builtArea = args.TotalArea;
+        print("building outline laoded");
+        //PerceelGrootteText.text += "Bebouwd Perceeloppervlakte: " + args.TotalArea.ToString("F2") + "m²";
+    }
+
+    private IEnumerator SetSidebarAreaText()
+    {
+        PerceelGrootteText.text = string.Empty;
+        yield return new WaitUntil(() => perceelIsLoaded && buildingOutlineIsLoaded);
+
+        var unbuiltArea = (perceelArea - builtArea);
+        //var maxAllowedAreaRestriction = RestrictionChecker.ActiveRestrictions.FirstOrDefault(restriction => restriction is PerceelAreaRestriction) as PerceelAreaRestriction;
+        //var maxAllowedFraction = maxAllowedAreaRestriction.MaxAreaPercentage;
+
+        PerceelGrootteText.text += "Totaal perceeloppervlakte: " + perceelArea.ToString("F2") + "m²\n" +
+                                    "Bebouwd perceeloppervlakte: " + builtArea.ToString("F2") + "m²\n" +
+                                    "Totaal beschikbaar oppervlakte: " + unbuiltArea.ToString("F2") + "m²\n" +
+                                    "<b>Toegestaan bouwoppervlakte: " + (unbuiltArea * PerceelAreaRestriction.MaxAreaFraction).ToString("F2") + "m²</b>";
+    }
 }
