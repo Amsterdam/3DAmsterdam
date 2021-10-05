@@ -25,10 +25,11 @@ public class PopupInfo : MonoBehaviour
     {
         TextGenerator textGen = new TextGenerator();
         TextGenerationSettings generationSettings = text.GetGenerationSettings(text.rectTransform.rect.size);
+        print(text.rectTransform.rect.size);
         //float width = textGen.GetPreferredWidth(newText, generationSettings); //width is fixed, and the height is calculated based on the width
         float height = textGen.GetPreferredHeight(newText, generationSettings);
 
         text.text = newText;
-        rectTransform.sizeDelta = new Vector2(width + margin.x + padding.x, height + margin.y + padding.y);
+        rectTransform.sizeDelta = new Vector2(width, height + margin.y + padding.y);
     }
 }
