@@ -79,8 +79,8 @@ public class HandleMetaDataUpdates : MonoBehaviour
 
     private void AddressLoaded(object source, AdressDataEventArgs args)
     {
-        AdresText.text = args.StraatEnNummer;
-        PostcodePlaatsText.text = args.PostcodeEnPlaats;
+        AdresText.text = $"{args.Straat} {args.Huisnummer}";
+        PostcodePlaatsText.text = $"{args.Postcode} {args.Plaats}";
     }
 
     private void BuildingMetaDataLoaded(object source, Netherlands3D.T3D.Uitbouw.ObjectDataEventArgs args)
