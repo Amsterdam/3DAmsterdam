@@ -9,36 +9,50 @@ public class URLParameterTriggers : MonoBehaviour
     [SerializeField]
     private List<StringEvent> urlParameterEvents = new List<StringEvent>();
   
-    void Start()
+    Dictionary<string, string> parameterNameAndValues = new Dictionary<string, string>();
+
+	public Dictionary<string, string> ParameterNameAndValues { get => parameterNameAndValues; private set => parameterNameAndValues = value; }
+
+	void Start()
     {
-        ReadURLParameters();        
+        ParameterNameAndValues = ReadURLParameters();
+        TriggerEventsWithParameterName(ParameterNameAndValues);
+    }
+
+    public void TriggerEventsWithParameterName(Dictionary<string, string> parametersAndValues)
+    {
+        foreach (var paramAndValue in parametersAndValues)
+        {
+            var trigger = urlParameterEvents.First(parameterEventTrigger => parameterEventTrigger.eventName == paramAndValue.Key);
+            if (trigger)
+            {
+                trigger.stringEvent?.Invoke(paramAndValue.Value);
+            }
+        }
     }
 
     public Dictionary<string,string> ReadURLParameters(string customUrl = "")
     {
         Dictionary<string, string> nameAndValueCombination = new Dictionary<string, string>();
         var url = (customUrl != "") ? customUrl : Application.absoluteURL;
-        Debug.Log($"Getting parameters from url: {url}");
-        var hash = url.Split('#');
-        var hasValue = (hash.Length == 2) ? hash[1] : "";
+        if(url.Contains("#"))
+        {
+            var splitParametersAndHash = url.Split('#');
+            url = splitParametersAndHash[0];
+            if (splitParametersAndHash.Length==2)
+                nameAndValueCombination.Add("#", splitParametersAndHash[1]);
+        }
 
         var parameters = url.Replace("?", "&").Split('&');
-
         foreach(var parameter in parameters)
         {
-            Debug.Log($"Parameter: {parameter}");
             if (parameter.Contains("="))
             {
                 var nameAndValue = parameter.Split('=');
                 var parameterName = nameAndValue[0];
                 var value = (nameAndValue.Length == 2) ? nameAndValue[1] : "";
                 Debug.Log($"{parameterName}={value}");
-                var trigger = urlParameterEvents.First(parameterEventTrigger => parameterEventTrigger.eventName == parameterName);
-                if (trigger)
-                {
-                    nameAndValueCombination.Add(parameterName, value);
-                    trigger.stringEvent?.Invoke(value);
-                }
+                nameAndValueCombination.Add(parameterName, value);
             }
 		}
 
