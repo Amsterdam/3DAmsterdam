@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b758a88e677e1c147be0319c4447ddc3, type: 3}
-  m_Name: Config3DAmsterdam_production
+  m_Name: Config3DAmsterdam_acceptance_Azure
   m_EditorClassIdentifier: 
   RelativeCenterRD:
     x: 121000
@@ -22,11 +22,13 @@ MonoBehaviour:
     x: 141000
     y: 501000
   zeroGroundLevelY: 0
-  webserverRootPath: https://3d.amsterdam.nl/web/data/RD/
-  buildingsMetaDataPath: Buildings_AHN4/
-  sharingBaseURL: https://3d.amsterdam.nl/
-  sharingSceneSubdirectory: customScene.php?id=
-  sharingViewUrl: https://3d.amsterdam.nl/web/app/index.html?view=
+  webserverRootPath: https://aweuov2vhftrs2oonkckwfwu.z6.web.core.windows.net/data/
+  buildingsMetaDataPath: buildings1.0/
+  sharingUploadScenePath: http://localhost:7071/api/UploadScene
+  sharingDownloadScenePath: http://localhost:7071/api/DownloadScene/{sceneId}
+  sharingUploadModelPath: http://localhost:7071/api/UploadModel/{sceneId}/{modelToken}
+  sharingDownloadModelPath: http://localhost:7071/api/DownloadModel/{sceneId}/{modelToken}
+  sharingViewScenePath: https://aweuov2vhftrs2oonkckwfwu.z6.web.core.windows.net/data/?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0
