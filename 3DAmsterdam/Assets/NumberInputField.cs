@@ -27,41 +27,49 @@ namespace Netherlands3D.Interface
         {
             if (TryParseUserString(manualInput, out float distance, out string units))
             {
-                switch (units.ToLower())
-                {
-                    case "dm":
-                        distance *= 10;
-                        break;
-                    case "cm":
-                        distance *= 100;
-                        break;
-                    case "mm":
-                        distance *= 1000;
-                        break;
-                }
-                print("ïnput: " + distance + "m");
+                //print("ïnput: " + distance + units);
+                //switch (units.ToLower())
+                //{
+                //    case "dm":
+                //        distance *= 10;
+                //        break;
+                //    case "cm":
+                //        distance *= 100;
+                //        break;
+                //    case "mm":
+                //        distance *= 1000;
+                //        break;
+                //}
+                print("input: " + distance + "m");
                 DistanceInputOverride?.Invoke(this, distance);
             }
         }
 
         private bool TryParseUserString(string inputString, out float distance, out string units)
         {
-            Regex distRex = new Regex("(?<dist>\\d+)\\s*(?<unit>|m|dm|cm|mm)", RegexOptions.IgnoreCase);
-
-            Match m = distRex.Match(inputString);
-            print(inputString);
-
-            if (m.Success)
-            {
-                units = m.Groups["unit"].Value;
-                distance = float.Parse(m.Groups["dist"].Value);
-
-                return true;
-            }
-
-            distance = 0;
+            distance = 0f;
             units = "m";
-            return false;
+            return float.TryParse(inputString, out distance);
         }
+
+        //private bool TryParseUserString(string inputString, out float distance, out string units)
+        //{
+        //    Regex distRex = new Regex("(?<dist>\\d+)\\s*(?<unit>|m|dm|cm|mm)", RegexOptions.IgnoreCase);
+
+        //    Match m = distRex.Match(inputString);
+        //    print(inputString);
+
+        //    if (m.Success)
+        //    {
+        //        units = m.Groups["unit"].Value;
+        //        distance = float.Parse(m.Groups["dist"].Value);
+
+        //        return true;
+        //    }
+
+        //    distance = 0;
+        //    units = "m";
+        //    return false;
+        //}
     }
 }

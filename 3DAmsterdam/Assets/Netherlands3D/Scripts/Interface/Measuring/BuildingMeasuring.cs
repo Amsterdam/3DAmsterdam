@@ -288,7 +288,7 @@ public class BuildingMeasuring : Interactable
 
             if (!distanceLabel.GetComponentInChildren<UnityEngine.UI.InputField>().isFocused)
             {
-                distanceLabel.Distance.DrawDistance(distanceMeasured, "m", 2);
+                distanceLabel.Distance.DrawDistance(distanceMeasured, "", 2);
                 distanceLabel.Distance.ResetInput();
             }
 
