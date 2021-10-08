@@ -16,6 +16,9 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private Distance distancePrefab;
 
+        [SerializeField]
+        private NumberInputField numberInputFieldPrefab;
+
         public static CoordinateNumbers Instance;
 
         void Awake()
@@ -31,6 +34,11 @@ namespace Netherlands3D.Interface
         public Distance CreateDistanceNumber()
         {
             return Instantiate(distancePrefab, this.transform);
+        }
+
+        public NumberInputField CreateNumberInputField()
+        {
+            return Instantiate(numberInputFieldPrefab, this.transform);
         }
     }
 }

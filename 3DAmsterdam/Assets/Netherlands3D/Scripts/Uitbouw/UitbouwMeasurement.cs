@@ -31,7 +31,15 @@ namespace Netherlands3D.T3D.Uitbouw
         void DrawNewMeasurement()
         {
             var lineObject = Instantiate(measurementLine);
-            lines.Add(lineObject.GetComponent<BuildingMeasuring>());
+            var measuring = lineObject.GetComponent<BuildingMeasuring>();
+            measuring.DistanceInputOverride += Measuring_DistanceInputOverride;
+            lines.Add(measuring);
+        }
+
+        private void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
+        {
+            //var axis = (source.LinePoints[1].transform.position - source.LinePoints[0].transform.position).normalized;
+            uitbouw.transform.position += direction * delta;
         }
 
         private void Update()

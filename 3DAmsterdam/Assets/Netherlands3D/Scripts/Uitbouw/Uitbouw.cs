@@ -91,11 +91,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
             var arrowOffsetX = transform.right * extents.x;
             var arrowOffsetY = transform.up * (extents.y - 0.01f);
-            userMovementAxes[0] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
-            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[0] = gameObject.AddComponent<DragableAxis>();
+            userMovementAxes[0].SetUitbouw(this);
 
-            userMovementAxes[2] = gameObject.AddComponent<DragableAxis>();
-            userMovementAxes[2].SetUitbouw(this);
+            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[2] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
         }
 
         private void SetDimensions(float w, float d, float h)
@@ -143,7 +143,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //if (Input.GetKey(KeyCode.Alpha2))
             //    transform.position += transform.right * moveSpeed * Time.deltaTime;
 
-            foreach (var axis in userMovementAxes)
+            foreach (var axis in userMovementAxes) //drag input
             {
                 transform.position += axis.DeltaPosition;
             }
