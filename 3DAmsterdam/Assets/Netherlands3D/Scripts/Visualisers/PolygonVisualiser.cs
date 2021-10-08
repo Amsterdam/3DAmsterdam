@@ -26,7 +26,7 @@ public class PolygonVisualiser : MonoBehaviour
 
     void Start()
     {
-        receivePointsAsStringEvent.stringEvent.AddListener(ReceivePointsString);
+       if(receivePointsAsStringEvent) receivePointsAsStringEvent.stringEvent.AddListener(ReceivePointsString);
     }
 
     // Update is called once per frame
