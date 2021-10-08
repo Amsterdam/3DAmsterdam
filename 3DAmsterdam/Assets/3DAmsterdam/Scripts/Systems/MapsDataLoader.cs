@@ -15,10 +15,12 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using Netherlands3D.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class MapsDataLoader : MonoBehaviour
 {
@@ -62,7 +64,21 @@ public class MapsDataLoader : MonoBehaviour
 
     private IEnumerator LoadGeoJSON(string geoJsonURL)
     {
-        
-        yield return new WaitForEndOfFrame();
+        Debug.Log($"Load {geoJsonURL}");
+        var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
+        yield return geoJsonDataRequest.SendWebRequest();
+
+        if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
+        {
+            GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
+            yield return null;
+
+            //We already filtered the request, so we can draw all features
+            while (geoJSON.GotoNextFeature())
+            {
+                string textPropertyValue = geoJSON.getPropertyStringValue("id");
+                Debug.Log(textPropertyValue);
+            }
+        }
 	}
 }
