@@ -19,12 +19,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class StringValueUnityEvent : UnityEvent<string> { }
+public class StringUnityEvent : UnityEvent<string> { }
 
 [CreateAssetMenu(fileName = "StringEvent", menuName = "ScriptableObjects/Events/StringEvent", order = 0)]
 [System.Serializable]
-public class StringEvent : ScriptableObjectEvent
-{
-    public StringValueUnityEvent stringEvent;
-}
+public class StringEvent : ScriptableObjectEvent<StringUnityEvent> { }
 

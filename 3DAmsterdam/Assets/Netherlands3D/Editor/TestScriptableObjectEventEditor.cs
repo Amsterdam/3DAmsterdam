@@ -17,7 +17,7 @@ public class TestScriptableObjectEventEditor : Editor
             dummyPayload = EditorGUILayout.TextField("Payload", dummyPayload);
             if (GUILayout.Button("Trigger", GUILayout.Height(40)))
             {
-                script.stringEvent?.Invoke(dummyPayload);
+                script.unityEvent?.Invoke(dummyPayload);
             }
         }
     }

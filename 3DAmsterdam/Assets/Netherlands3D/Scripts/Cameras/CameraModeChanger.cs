@@ -53,13 +53,8 @@ namespace Netherlands3D.Cameras
             ActiveCamera = currentCamera.GetComponent<Camera>();
             Instance = this;
 
-            if (latLongStringEvent) latLongStringEvent.stringEvent.AddListener(ChangedPointFromUrl);
+            if (latLongStringEvent) latLongStringEvent.unityEvent.AddListener(ChangedPointFromUrl);
         }
-
-        public void MoveToLatLong(string latlong)
-        {
-            
-		}
 
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
         {

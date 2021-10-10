@@ -26,7 +26,7 @@ public class URLParameterTriggers : MonoBehaviour
             var trigger = urlParameterEvents.First(parameterEventTrigger => parameterEventTrigger.eventName == paramAndValue.Key);
             if (trigger)
             {
-                trigger.stringEvent?.Invoke(paramAndValue.Value);
+                trigger.unityEvent?.Invoke(paramAndValue.Value);
             }
         }
     }

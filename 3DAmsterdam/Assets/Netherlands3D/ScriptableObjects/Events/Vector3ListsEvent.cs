@@ -20,11 +20,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class ScriptableObjectEvent<T> : ScriptableObject
-{
-    public string eventName;
-    public string description;
+public class Vector3ListsUnityEvent : UnityEvent<List<List<Vector3>>> { }
 
-    public T unityEvent;
-}
+[CreateAssetMenu(fileName = "Vector3ListsEvent", menuName = "ScriptableObjects/Events/Vector3ListsEvent", order = 0)]
+[System.Serializable]
+public class Vector3ListsEvent : ScriptableObjectEvent<Vector3ListsUnityEvent> { }
 

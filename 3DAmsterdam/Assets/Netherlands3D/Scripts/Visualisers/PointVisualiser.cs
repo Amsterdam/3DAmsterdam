@@ -22,7 +22,7 @@ using UnityEngine;
 public class PointVisualiser : MonoBehaviour
 {
     [SerializeField]
-    private StringEvent receivePointsEvent;
+    private Vector3ListsEvent receivePointsEvent;
     void Start()
     {
         

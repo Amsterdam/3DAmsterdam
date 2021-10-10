@@ -22,16 +22,31 @@ using UnityEngine;
 public class PolygonVisualiser : MonoBehaviour
 {
     [SerializeField]
-    private StringEvent receivePointsAsStringEvent;
+    private Vector3ListsEvent drawPolygonEvent;
+
+    [SerializeField]
+    private Material defaultMaterial;
 
     void Start()
     {
-       if(receivePointsAsStringEvent) receivePointsAsStringEvent.stringEvent.AddListener(ReceivePointsString);
+       if(drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
     }
 
-    // Update is called once per frame
-    void ReceivePointsString(string pointsString)
+    //Treat first contour as outer contour, and extra contours as holes
+    public void CreatePolygon( List<List<Vector3>> contours)
     {
-        
-    }
+        var polygon = new Poly2Mesh.Polygon();
+        polygon.outside = contours[0];
+        if(contours.Count > 1)
+        {
+			for (int i = 1; i < contours.Count; i++)
+			{
+                polygon.holes.Add(contours[i]);
+            }
+		}
+        var newPolygonMesh = Poly2Mesh.CreateMesh(polygon);
+        var newPolygonObject = new GameObject();
+        newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
+        newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
+	}
 }

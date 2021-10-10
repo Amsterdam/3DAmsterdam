@@ -48,7 +48,7 @@ public class MapsDataLoader : MonoBehaviour
 
     void Start()
     {
-        tableNameReceiveEvent.stringEvent.AddListener(LoadTable);
+        tableNameReceiveEvent.unityEvent.AddListener(LoadTable);
     }
 
     void LoadTable(string tableName)
