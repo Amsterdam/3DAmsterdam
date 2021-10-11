@@ -23,10 +23,11 @@ public class URLParameterTriggers : MonoBehaviour
     {
         foreach (var paramAndValue in parametersAndValues)
         {
-            var trigger = urlParameterEvents.First(parameterEventTrigger => parameterEventTrigger.eventName == paramAndValue.Key);
-            if (trigger)
+            var trigger = urlParameterEvents.Where(parameterEventTrigger => parameterEventTrigger.eventName == paramAndValue.Key);
+            if (trigger.Any())
             {
-                trigger.unityEvent?.Invoke(paramAndValue.Value);
+                var targetElement = trigger.First();
+                targetElement.unityEvent?.Invoke(paramAndValue.Value);
             }
         }
     }
