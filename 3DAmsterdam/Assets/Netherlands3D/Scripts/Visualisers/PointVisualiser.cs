@@ -22,15 +22,19 @@ using UnityEngine;
 public class PointVisualiser : MonoBehaviour
 {
     [SerializeField]
-    private Vector3ListsEvent receivePointsEvent;
+    private Vector3Event receiveDrawPointEvent;
+
+    [SerializeField]
+    private GameObject shape;
+
     void Start()
     {
-        
+        if (receiveDrawPointEvent) receiveDrawPointEvent.unityEvent.AddListener(DrawPointInWorld);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void DrawPointInWorld(Vector3 position)
     {
-        
+        var newPoint = Instantiate(shape, this.transform);
+        newPoint.transform.position = position;
     }
 }
