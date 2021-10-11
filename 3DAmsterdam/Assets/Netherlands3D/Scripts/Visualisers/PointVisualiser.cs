@@ -30,7 +30,7 @@ public class PointVisualiser : MonoBehaviour
     [SerializeField]
     private Vector3 offset = Vector3.up;
 
-    void Start()
+    void Awake()
     {
         if (receiveDrawPointEvent) receiveDrawPointEvent.unityEvent.AddListener(DrawPointInWorld);
     }

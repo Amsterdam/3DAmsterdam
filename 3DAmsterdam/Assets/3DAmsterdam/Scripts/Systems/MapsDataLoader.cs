@@ -38,7 +38,7 @@ public class MapsDataLoader : MonoBehaviour
         public Vector3Event drawPointEvent;
     }
 
-    void Start()
+    void Awake()
     {
         tableNameReceiveEvent.unityEvent.AddListener(LoadTable);
     }

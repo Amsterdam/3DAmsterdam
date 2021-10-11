@@ -30,7 +30,7 @@ public class PolygonVisualiser : MonoBehaviour
     [SerializeField]
     private float extrusionHeight = 100.0f;
 
-    void Start()
+    void Awake()
     {
        if(drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
     }

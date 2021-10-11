@@ -13,7 +13,7 @@ public class URLParameterTriggers : MonoBehaviour
 
 	public Dictionary<string, string> ParameterNameAndValues { get => parameterNameAndValues; private set => parameterNameAndValues = value; }
 
-	void Awake()
+	void Start()
     {
         ParameterNameAndValues = ReadURLParameters();
         TriggerEventsWithParameterName(ParameterNameAndValues);
