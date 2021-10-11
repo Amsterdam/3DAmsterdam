@@ -14,6 +14,8 @@
 //		4. [Optional] Call CalcPlaneNormal on it, passing in a hint as to which way you
 //			want the polygon to face.
 //		5. Pass it to Poly2Mesh.CreateMesh, or Poly2Mesh.CreateGameObject.
+//  
+// 11-10-2021 - Option to add thickness to poly was added by 3D Amsterdam
 
 using Poly2Tri;
 using System.Collections.Generic;
@@ -161,7 +163,7 @@ public static class Poly2Mesh
     /// </summary>
     /// <returns>The freshly minted mesh.</returns>
     /// <param name="polygon">Polygon you want to triangulate.</param>
-    public static Mesh CreateMesh(Polygon polygon)
+    public static Mesh CreateMesh(Polygon polygon, float thickness = 0)
     {
         //		long profileID = Profiler.Enter("Poly2Mesh.CreateMesh");
         // Check for the easy case (a triangle)
@@ -222,6 +224,31 @@ public static class Poly2Mesh
                 vertexList.Add(pos);
             }
         }
+
+        //Add a rim
+        if(thickness > 0)
+        {
+			//Add extra triangles for poly outside and insides
+			for (int i = 0; i < polygon.outside.Count; i++)
+			{
+                if (i < polygon.outside.Count - 1)
+                {
+                    var quadA = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
+                    var quadB = new Vector3(polygon.outside[i + 1].x, polygon.outside[i].y, polygon.outside[i+1].z);
+                    var quadC = new Vector3(polygon.outside[i].x, polygon.outside[i].y-thickness, polygon.outside[i].z);
+                    var quadD = new Vector3(polygon.outside[i+1].x, polygon.outside[i].y-thickness, polygon.outside[i+1].z);
+
+                    var startNewTriangleIndex = vertexList.Count - 1;
+                    vertexList.Add(quadA);
+                    vertexList.Add(quadB);
+                    vertexList.Add(quadC);
+                    vertexList.Add(quadD);
+
+                    //TODO: add triangle indices
+                }
+            }
+        }
+
         // Create the indices array
         int[] indices = new int[poly.Triangles.Count * 3];
         {
