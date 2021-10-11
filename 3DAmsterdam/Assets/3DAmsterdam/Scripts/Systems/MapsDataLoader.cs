@@ -48,8 +48,12 @@ public class MapsDataLoader : MonoBehaviour
         string[] tableNameValues = tableNames.Split(',');
         foreach (var tableName in tableNameValues)
         {
-            var targetDataTable = mapsDataTable.First((item) => tableName == item.name);
-            StartCoroutine(LoadGeoJSON(targetDataTable.geoJsonURL, targetDataTable.drawPointEvent));
+            var targetDataTable = mapsDataTable.Where((item) => tableName == item.name);
+            if (targetDataTable.Any())
+            {
+                var firstResult = targetDataTable.First();
+                StartCoroutine(LoadGeoJSON(firstResult.geoJsonURL, firstResult.drawPointEvent));
+            }
         }
     }
 
@@ -70,7 +74,6 @@ public class MapsDataLoader : MonoBehaviour
             {
                 double[] location = geoJSON.getGeometryPoint2DDouble();
                 var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
-                Debug.Log($"Got feature coordinates: {location}");
                 drawPointEvent.unityEvent?.Invoke(unityCoordinates);
             }
         }
