@@ -95,11 +95,11 @@ namespace Netherlands3D.Utilities
             {
                 if (featureString == null)
                 {
-                    if (geoJSONString.IndexOf("{\"type\":\"Feature\"") > 0)
+                    if (geoJSONString.IndexOf("\"type\":\"Feature\"") > 0)
                     {
-                        featureString = "{\"type\":\"Feature\"";
+                        featureString = "\"type\":\"Feature\"";
                     }
-                    else featureString = "{ \"type\": \"Feature\"";
+                    else featureString = " \"type\": \"Feature\"";
                 }
                 return featureString;
             }
