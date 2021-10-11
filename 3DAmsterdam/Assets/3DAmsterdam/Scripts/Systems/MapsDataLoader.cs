@@ -55,7 +55,7 @@ public class MapsDataLoader : MonoBehaviour
             }
             catch
             {
-                Debug.Log($"Could not find table item {tableNames}");
+                Debug.Log($"Could not find table item {tableName}");
             }
         }
     }

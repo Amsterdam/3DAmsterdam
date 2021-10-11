@@ -27,6 +27,9 @@ public class PointVisualiser : MonoBehaviour
     [SerializeField]
     private GameObject shape;
 
+    [SerializeField]
+    private Vector3 offset = Vector3.up;
+
     void Start()
     {
         if (receiveDrawPointEvent) receiveDrawPointEvent.unityEvent.AddListener(DrawPointInWorld);
@@ -35,6 +38,6 @@ public class PointVisualiser : MonoBehaviour
     private void DrawPointInWorld(Vector3 position)
     {
         var newPoint = Instantiate(shape, this.transform);
-        newPoint.transform.position = position;
+        newPoint.transform.position = position + offset;
     }
 }
