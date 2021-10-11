@@ -27,6 +27,9 @@ public class PolygonVisualiser : MonoBehaviour
     [SerializeField]
     private Material defaultMaterial;
 
+    [SerializeField]
+    private float extrusionHeight = 100.0f;
+
     void Start()
     {
        if(drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
@@ -46,6 +49,9 @@ public class PolygonVisualiser : MonoBehaviour
 		}
         var newPolygonMesh = Poly2Mesh.CreateMesh(polygon);
         newPolygonMesh.RecalculateNormals();
+
+        //Add rim
+
         var newPolygonObject = new GameObject();
         newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
         newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
