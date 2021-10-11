@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7381799465724629245}
   - component: {fileID: 6509715590529002095}
+  - component: {fileID: 606705379214648841}
   m_Layer: 0
   m_Name: MapsDataLoader
   m_TagString: Untagged
@@ -71,3 +72,17 @@ MonoBehaviour:
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>5</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
     color: {r: 0, g: 0.43137255, b: 0.34509805, a: 1}
     shape: 0
+--- !u!114 &606705379214648841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299064120455470167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4696e280ac5e4e46bd1bc68a834994f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testDrawPolyEventTrigger: {fileID: 11400000, guid: e419a05f4976933429f74ee1e727e1ef,
+    type: 2}

@@ -77,6 +77,8 @@ public class MapsDataLoader : MonoBehaviour
             while (geoJSON.GotoNextFeature())
             {
                 string textPropertyValue = geoJSON.getPropertyStringValue("id");
+                List<double> shape = geoJSON.getGeometryMultiPolygonString();
+
                 Debug.Log(textPropertyValue);
             }
         }
