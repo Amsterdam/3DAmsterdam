@@ -19,9 +19,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class StringUnityEvent : UnityEvent<string> { }
+public class FloatValueUnityEvent : UnityEvent<float> { }
 
-[CreateAssetMenu(fileName = "StringEvent", menuName = "ScriptableObjects/Events/StringEvent", order = 0)]
+[CreateAssetMenu(fileName = "FloatEvent", menuName = "ScriptableObjects/Events/FloatEvent", order = 0)]
 [System.Serializable]
-public class StringEvent : ScriptableObjectEvent<StringUnityEvent> { }
-
+public class FloatEvent : ScriptableObjectEvent<FloatValueUnityEvent>
+{
+}

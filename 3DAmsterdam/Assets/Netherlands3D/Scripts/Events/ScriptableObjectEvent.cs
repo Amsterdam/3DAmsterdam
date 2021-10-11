@@ -25,6 +25,7 @@ public class ScriptableObjectEvent<T> : ScriptableObject
     public string eventName;
     public string description;
 
+    [HideInInspector]
     public T unityEvent;
 }
 

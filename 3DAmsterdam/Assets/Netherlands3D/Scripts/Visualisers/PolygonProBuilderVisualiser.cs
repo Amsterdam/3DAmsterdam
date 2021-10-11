@@ -29,6 +29,9 @@ public class PolygonProBuilderVisualiser : MonoBehaviour
     [SerializeField]
     private Material defaultMaterial;
 
+    [SerializeField]
+    private float extrusionHeight = 100.0f;
+
     void Start()
     {
        if(drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
@@ -38,7 +41,8 @@ public class PolygonProBuilderVisualiser : MonoBehaviour
     public void CreatePolygon(List<IList<Vector3>> contours)
     {
         ProBuilderMesh probuilderObject = new GameObject().AddComponent<ProBuilderMesh>();
-        probuilderObject.CreateShapeFromPolygon(contours[0],0, false, contours.GetRange(1, contours.Count-1));
+        probuilderObject.CreateShapeFromPolygon(contours[0], extrusionHeight, false, contours.GetRange(1, contours.Count-1));
         probuilderObject.GetComponent<MeshRenderer>().material = defaultMaterial;
+        probuilderObject.transform.SetParent(this.transform);
     }
 }

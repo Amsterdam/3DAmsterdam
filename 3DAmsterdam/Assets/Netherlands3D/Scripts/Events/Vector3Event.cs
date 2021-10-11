@@ -19,11 +19,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class FloatValueUnityEvent : UnityEvent<float> { }
+public class Vector3ValueUnityEvent : UnityEvent<Vector3> { }
 
-[CreateAssetMenu(fileName = "FloatEvent", menuName = "ScriptableObjects/Events/FloatEvent", order = 0)]
+[CreateAssetMenu(fileName = "Vector3Event", menuName = "ScriptableObjects/Events/Vector3Event", order = 0)]
 [System.Serializable]
-public class FloatEvent : ScriptableObjectEvent<FloatValueUnityEvent>
+public class Vector3Event : ScriptableObjectEvent<Vector3ValueUnityEvent>
 {
 }
-
