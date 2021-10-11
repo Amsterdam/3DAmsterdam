@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class TestDrawPolygon : MonoBehaviour
@@ -7,8 +8,23 @@ public class TestDrawPolygon : MonoBehaviour
     [SerializeField]
     private Vector3ListsEvent testDrawPolyEventTrigger;
 
-    [ContextMenu("DrawRandomPoly")]
-    private void DrawRandomPoly()
+    [ContextMenu("Draw10000Polies")]
+    private void Draw10000Polies()
+    {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
+		for (int i = 0; i < 10000; i++)
+		{
+            DrawPolyWithHole();
+        }
+        stopWatch.Stop();
+
+        print("Took: " + stopWatch.ElapsedMilliseconds);
+	}
+
+    [ContextMenu("DrawPolyWithHole")]
+    private void DrawPolyWithHole()
     {
         var testPolygons = new List<IList<Vector3>>();
         var outer = new List<Vector3>();

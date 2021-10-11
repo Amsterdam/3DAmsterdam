@@ -45,6 +45,7 @@ public class PolygonVisualiser : MonoBehaviour
             }
 		}
         var newPolygonMesh = Poly2Mesh.CreateMesh(polygon);
+        newPolygonMesh.RecalculateNormals();
         var newPolygonObject = new GameObject();
         newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
         newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;

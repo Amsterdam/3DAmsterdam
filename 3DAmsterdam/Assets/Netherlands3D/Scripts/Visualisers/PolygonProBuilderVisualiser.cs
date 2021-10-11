@@ -38,7 +38,7 @@ public class PolygonProBuilderVisualiser : MonoBehaviour
     public void CreatePolygon(List<IList<Vector3>> contours)
     {
         ProBuilderMesh probuilderObject = new GameObject().AddComponent<ProBuilderMesh>();
-
-        probuilderObject.CreateShapeFromPolygon(contours[0], 200, false, contours.GetRange(1, contours.Count-1));
+        probuilderObject.CreateShapeFromPolygon(contours[0],0, false, contours.GetRange(1, contours.Count-1));
+        probuilderObject.GetComponent<MeshRenderer>().material = defaultMaterial;
     }
 }
