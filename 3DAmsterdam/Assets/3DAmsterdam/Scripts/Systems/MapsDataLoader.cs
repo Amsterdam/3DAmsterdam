@@ -30,20 +30,12 @@ public class MapsDataLoader : MonoBehaviour
     [SerializeField]
     private List<MapsDataTable> mapsDataTable;
 
-    public enum SymbolShape
-    {
-        Circle,
-        Square,
-        Triangle
-    }
-
     [System.Serializable]
     public struct MapsDataTable
     {
         public string name;
         public string geoJsonURL;
-        public Color color;
-        public SymbolShape shape;
+        public Vector3Event drawPointEvent;
     }
 
     void Start()
@@ -51,18 +43,24 @@ public class MapsDataLoader : MonoBehaviour
         tableNameReceiveEvent.unityEvent.AddListener(LoadTable);
     }
 
-    void LoadTable(string tableName)
+    void LoadTable(string tableNames)
     {
-        try{
-            var targetTable = mapsDataTable.First((item) => item.name == tableName);
-            StartCoroutine(LoadGeoJSON(targetTable.geoJsonURL));
-		}
-        catch{
-            Debug.Log($"Could not find table item {tableName}");
+        string[] tableNameValues = tableNames.Split(',');
+        foreach (var tableName in tableNameValues)
+        {
+            try
+            {
+                var targetDataTable = mapsDataTable.First((item) => tableName == item.name);
+                StartCoroutine(LoadGeoJSON(targetDataTable.geoJsonURL, targetDataTable.drawPointEvent));
+            }
+            catch
+            {
+                Debug.Log($"Could not find table item {tableNames}");
+            }
         }
     }
 
-    private IEnumerator LoadGeoJSON(string geoJsonURL)
+    private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
     {
         Debug.Log($"Load {geoJsonURL}");
         var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
@@ -70,16 +68,16 @@ public class MapsDataLoader : MonoBehaviour
 
         if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
         {
+            Debug.Log(geoJsonDataRequest.downloadHandler.text);
             GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
             yield return null;
 
             //We already filtered the request, so we can draw all features
             while (geoJSON.GotoNextFeature())
             {
-                string textPropertyValue = geoJSON.getPropertyStringValue("id");
-                List<double> shape = geoJSON.getGeometryMultiPolygonString();
-
-                Debug.Log(textPropertyValue);
+                double[] location = geoJSON.getGeometryPoint2DDouble();
+                var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
+                drawPointEvent.unityEvent?.Invoke(unityCoordinates);
             }
         }
 	}
