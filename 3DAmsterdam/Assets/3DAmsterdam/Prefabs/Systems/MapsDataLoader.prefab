@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7381799465724629245}
   - component: {fileID: 6509715590529002095}
-  - component: {fileID: 606705379214648841}
   m_Layer: 0
   m_Name: MapsDataLoader
   m_TagString: Untagged
@@ -50,39 +49,22 @@ MonoBehaviour:
   - name: GEOJSON_AFVAL_GFE
     geoJsonURL: "https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>6</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       Screen reader support enabled.      \t\t https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>6</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>"
-    color: {r: 0.23529412, g: 0.78039217, b: 0, a: 1}
-    shape: 0
+    drawPointEvent: {fileID: 11400000, guid: 827cf2788be4fa54082ba961b1062ed0, type: 2}
   - name: GEOJSON_AFVAL_GLAS
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>2</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
-    color: {r: 1, g: 1, b: 0, a: 1}
-    shape: 0
+    drawPointEvent: {fileID: 11400000, guid: 2af481410228ed741820ec71e7ff8ee6, type: 2}
   - name: GEOJSON_AFVAL_PAPIER
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>3</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
-    color: {r: 0, g: 0.36862746, b: 1, a: 1}
-    shape: 0
+    drawPointEvent: {fileID: 11400000, guid: 5066b1c4ce523ba418affe617f0a0c22, type: 2}
   - name: GEOJSON_AFVAL_PLASTIC
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>4</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
-    color: {r: 1, g: 0.5019608, b: 0, a: 1}
-    shape: 0
+    drawPointEvent: {fileID: 11400000, guid: 7e07a40b83d50d54ab0dfc8cf33d95ba, type: 2}
   - name: GEOJSON_AFVAL_REST
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>1</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
-    color: {r: 0.47843137, g: 0.47843137, b: 0.47843137, a: 1}
-    shape: 0
+    drawPointEvent: {fileID: 11400000, guid: 1722d14795cf2544490249d304dd3d6f, type: 2}
   - name: GEOJSON_AFVAL_TEXTIEL
     geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>5</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
-    color: {r: 0, g: 0.43137255, b: 0.34509805, a: 1}
-    shape: 0
---- !u!114 &606705379214648841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 299064120455470167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4696e280ac5e4e46bd1bc68a834994f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testDrawPolyEventTrigger: {fileID: 11400000, guid: e419a05f4976933429f74ee1e727e1ef,
-    type: 2}
+    drawPointEvent: {fileID: 11400000, guid: 7ff925d6ca675694f815506235c1306a, type: 2}
+  - name: OPENBARE_TOILETTEN
+    geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten
+    drawPointEvent: {fileID: 11400000, guid: 99372fba2bd1d084f85f22fe5161dadd, type: 2}
