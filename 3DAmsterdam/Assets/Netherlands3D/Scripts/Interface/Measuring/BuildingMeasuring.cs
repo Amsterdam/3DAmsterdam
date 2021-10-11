@@ -21,7 +21,7 @@ public class BuildingMeasuring : Interactable
     [SerializeField]
     private float pointScale = 1.0f;
 
-    private Distance distanceText;
+    private NumberInputField distanceLabel;
 
     private int placementStepIndex = -1;
 
@@ -30,6 +30,7 @@ public class BuildingMeasuring : Interactable
 
     [SerializeField]
     private List<MeasurePoint> linePoints;
+    public List<MeasurePoint> LinePoints => linePoints;
 
     [SerializeField]
     private Material lineMaterial;
@@ -44,6 +45,9 @@ public class BuildingMeasuring : Interactable
     private int maxVertexSnapPerFrame = 10000;
 
     public float Distance { get { return Vector3.Distance(positions[0], positions[1]); } }
+
+    public delegate void DistanceInputOverrideEventHandler(BuildingMeasuring source, Vector3 direction,float delta);
+    public event DistanceInputOverrideEventHandler DistanceInputOverride;
 
     private void Awake()
     {
@@ -89,7 +93,7 @@ public class BuildingMeasuring : Interactable
         lineRenderer.material = lineMaterial;
         foreach (var linePoint in linePoints) linePoint.gameObject.SetActive(false);
 
-        if (distanceText) Destroy(distanceText.gameObject);
+        if (distanceLabel) Destroy(distanceLabel.gameObject);
     }
 
     public void PlacePoint(Vector3 placementPoint)
@@ -120,7 +124,7 @@ public class BuildingMeasuring : Interactable
             {
                 targetCollider = hitCollider;
                 targetMesh = targetCollider.sharedMesh;
-            }   
+            }
             previewPoint = hit.point;
         }
 
@@ -201,40 +205,40 @@ public class BuildingMeasuring : Interactable
         }
     }
 
-    private IEnumerator SnapToClosestVertex()
-    {
-        while (true)
-        {
-            if (Selector.doingMultiselect && targetMesh)
-            {
-                Debug.Log("Trying to snap");
-                Mesh runningThroughMesh = targetMesh;
+    //private IEnumerator SnapToClosestVertex()
+    //{
+    //    while (true)
+    //    {
+    //        if (Selector.doingMultiselect && targetMesh)
+    //        {
+    //            Debug.Log("Trying to snap");
+    //            Mesh runningThroughMesh = targetMesh;
 
-                var closestDistance = float.MaxValue;
-                var closestVertex = Vector3.one * float.MaxValue;
+    //            var closestDistance = float.MaxValue;
+    //            var closestVertex = Vector3.one * float.MaxValue;
 
-                //Check all mesh verts tied to this triangle for distance;
-                for (int i = 0; i < targetMesh.vertices.Length; i++)
-                {
-                    if (targetMesh != runningThroughMesh) yield break;
+    //            //Check all mesh verts tied to this triangle for distance;
+    //            for (int i = 0; i < targetMesh.vertices.Length; i++)
+    //            {
+    //                if (targetMesh != runningThroughMesh) yield break;
 
-                    var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
-                    //var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
-                    //if (vertexDistance < closestDistance)
-                    //	closestVertex = vertexWorldCoordinate;
+    //                var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
+    //                //var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
+    //                //if (vertexDistance < closestDistance)
+    //                //	closestVertex = vertexWorldCoordinate;
 
-                    if ((i % maxVertexSnapPerFrame) == 0)
-                    {
-                        yield return new WaitForEndOfFrame();
-                    }
-                }
+    //                if ((i % maxVertexSnapPerFrame) == 0)
+    //                {
+    //                    yield return new WaitForEndOfFrame();
+    //                }
+    //            }
 
-                //We need to have finished going through the vertices, before we can override out target position:
-                //previewTargetPoint.transform.position = closestVertex;
-            }
-            yield return null;
-        }
-    }
+    //            //We need to have finished going through the vertices, before we can override out target position:
+    //            //previewTargetPoint.transform.position = closestVertex;
+    //        }
+    //        yield return null;
+    //    }
+    //}
 
     private void DrawAutoScalingLine()
     {
@@ -272,18 +276,35 @@ public class BuildingMeasuring : Interactable
         if (positions[0] != positions[1] || Selector.doingMultiselect)
         {
             var lineCenter = Vector3.Lerp(positions[0], positions[1], 0.5f);
-            if (!distanceText) distanceText = CoordinateNumbers.Instance.CreateDistanceNumber();
+            if (!distanceLabel)
+            {
+                distanceLabel = CoordinateNumbers.Instance.CreateNumberInputField();
+                distanceLabel.DistanceInputOverride += DistanceLabel_DistanceInputOverride;
+            }
 
-            distanceText.AlignWithWorldPosition(lineCenter);
+
+            distanceLabel.Distance.AlignWithWorldPosition(lineCenter);
             var distanceMeasured = Vector3.Distance(positions[0], positions[1]);
-            distanceText.DrawDistance(distanceMeasured, "m", 2);
-            distanceText.ResetInput();
+
+            if (!distanceLabel.GetComponentInChildren<UnityEngine.UI.InputField>().isFocused)
+            {
+                distanceLabel.Distance.DrawDistance(distanceMeasured, "", 2);
+                distanceLabel.Distance.ResetInput();
+            }
 
             //HelpMessage.Instance.Show($"De gemeten afstand is <color=#39cdfe><b>~{distanceMeasured:F2}</b></color> meter.\n<b>Klik</b> om de lijn te plaatsen.\nHoud <b>Shift</b> ingedrukt om alleen de hoogte te meten. \nDruk op <b>Escape</b> om te annuleren.");
         }
-        else if (distanceText)
+        else if (distanceLabel)
         {
-            Destroy(distanceText.gameObject);
+            Destroy(distanceLabel.gameObject);
         }
+    }
+
+    private void DistanceLabel_DistanceInputOverride(NumberInputField source, float distance)
+    {
+        var direction = positions[0] - positions[1];
+        var distanceMeasured = direction.magnitude;
+        var difference = distance - distanceMeasured;
+        DistanceInputOverride.Invoke(this, direction.normalized, difference);
     }
 }

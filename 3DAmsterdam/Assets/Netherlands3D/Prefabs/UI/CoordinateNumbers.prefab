@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1272055591877157211}
   - component: {fileID: 3414057183994575071}
   - component: {fileID: 9049540853011830321}
+  - component: {fileID: 6471192599098209242}
   m_Layer: 0
   m_Name: CoordinateNumbers
   m_TagString: Untagged
@@ -53,6 +54,8 @@ MonoBehaviour:
     type: 3}
   distancePrefab: {fileID: -4278620665694358187, guid: c357a3910cdf34b8789b44b4729818d7,
     type: 3}
+  numberInputFieldPrefab: {fileID: 3341016230029933043, guid: d56957947f473443da8dbb5a43a4e3fa,
+    type: 3}
 --- !u!223 &9049540853011830321
 Canvas:
   m_ObjectHideFlags: 0
@@ -62,7 +65,7 @@ Canvas:
   m_GameObject: {fileID: 5708392364144183810}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -74,3 +77,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &6471192599098209242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5708392364144183810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
