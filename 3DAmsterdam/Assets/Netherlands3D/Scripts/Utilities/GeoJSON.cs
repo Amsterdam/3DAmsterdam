@@ -129,7 +129,7 @@ namespace Netherlands3D.Utilities
         {
             get
             {
-                if (geoJSONString.Contains(" ] ]"))
+                if (geoJSONUsesSpaces)
                 {
                     return " ] ]";
                 }
@@ -149,7 +149,7 @@ namespace Netherlands3D.Utilities
             {
                 if (featureString == null)
                 {
-                    if (geoJSONString.IndexOf("\"type\":\"Feature\"") > 0)
+                    if (!geoJSONUsesSpaces)
                     {
                         featureString = "\"type\":\"Feature\"";
                     }
