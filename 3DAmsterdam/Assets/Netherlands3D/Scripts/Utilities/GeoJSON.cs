@@ -27,7 +27,7 @@ namespace Netherlands3D.Utilities
                 if(geometryPointLocatorString == null)
                 {
 
-                        if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"Point\",\"coordinates\":[")>0)
+                        if (!geoJSONUsesSpaces)
                         {
                             geometryPointLocatorString = "\"geometry\":{\"type\":\"Point\",\"coordinates\":[";
                         }
@@ -38,6 +38,25 @@ namespace Netherlands3D.Utilities
             }
         }
 
+        private string geometryMultiPointLocatorString = null;
+        public string GeometryMultiPointLocatorString
+        {
+            get
+            {
+                if (geometryMultiPointLocatorString == null)
+                {
+
+                    if (!geoJSONUsesSpaces)
+                    {
+                        geometryMultiPointLocatorString = "\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[";
+                    }
+
+                    else geometryMultiPointLocatorString = "\"geometry\": { \"type\": \"MultiPoint\", \"coordinates\": [";
+                }
+                return geometryMultiPointLocatorString;
+            }
+        }
+
         private string geometryLineStringLocatorString = null;
         public string GeometryLineStringLocatorString
         {
@@ -45,13 +64,47 @@ namespace Netherlands3D.Utilities
             {
                 if (geometryLineStringLocatorString == null)
                 {
-                    if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[") > 0)
+                    if (!geoJSONUsesSpaces)
                     {
                         geometryLineStringLocatorString = "\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[";
                     }
                     else geometryLineStringLocatorString = "\"geometry\": { \"type\": \"LineString\", \"coordinates\": [ [";
                 }
                 return geometryLineStringLocatorString;
+            }
+        }
+
+        private string geometryMultiLineStringLocatorString = null;
+        public string GeometryMultiLineStringLocatorString
+        {
+            get
+            {
+                if (geometryMultiLineStringLocatorString == null)
+                {
+                    if (!geoJSONUsesSpaces)
+                    {
+                        geometryMultiLineStringLocatorString = "\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[";
+                    }
+                    else geometryMultiLineStringLocatorString = "\"geometry\": { \"type\": \"MultiLineString\", \"coordinates\": [ [";
+                }
+                return geometryMultiLineStringLocatorString;
+            }
+        }
+
+        private string geometryPolygonStringLocatorString = null;
+        public string GeometryPolygonStringLocatorString
+        {
+            get
+            {
+                if (geometryPolygonStringLocatorString == null)
+                {
+                    if (!geoJSONUsesSpaces)
+                    {
+                        geometryPolygonStringLocatorString = "\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[";
+                    }
+                    else geometryPolygonStringLocatorString = "\"geometry\": { \"type\": \"Polygon\", \"coordinates\": [ [";
+                }
+                return geometryPolygonStringLocatorString;
             }
         }
 
@@ -62,7 +115,7 @@ namespace Netherlands3D.Utilities
             {
                 if (geometryMultiPolygonStringLocatorString == null)
                 {
-                    if (geoJSONString.IndexOf("\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[") > 0)
+                    if (!geoJSONUsesSpaces)
                     {
                         geometryMultiPolygonStringLocatorString = "\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[";
                     }
