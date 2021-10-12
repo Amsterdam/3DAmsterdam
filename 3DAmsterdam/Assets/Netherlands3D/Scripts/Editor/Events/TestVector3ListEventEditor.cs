@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Vector3ListEvent))]
-public class TestVector3ListsEventEditor : Editor
+public class TestVector3ListEventEditor : Editor
 {    public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();

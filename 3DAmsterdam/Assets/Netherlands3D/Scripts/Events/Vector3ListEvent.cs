@@ -26,5 +26,7 @@ public class Vector3ListValueUnityEvent : UnityEvent<List<Vector3>> { }
 [System.Serializable]
 public class Vector3ListEvent : ScriptableObjectEvent<Vector3ListValueUnityEvent>
 {
+	#if UNITY_EDITOR
 	public List<Vector3> testData;
+	#endif
 }
