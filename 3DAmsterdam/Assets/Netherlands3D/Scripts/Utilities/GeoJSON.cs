@@ -13,6 +13,18 @@ namespace Netherlands3D.Utilities
     /// </summary>
     public class GeoJSON
     {
+        public enum GeoJSONGeometryType
+        {
+            Point,
+            MultiPoint,
+            LineString,
+            MultiLineString,
+            Polygon,
+            MultiPolygon,
+            GeometryCollection,
+            Undefined
+        }
+
         public string geoJSONString;
         private bool geoJSONUsesSpaces = true;
         private int featureStartIndex;
@@ -329,6 +341,55 @@ namespace Netherlands3D.Utilities
             }
             propertyValueStartIndex = geoJSONString.IndexOf('"', propertyValueStartIndex+1, 3);
             return geoJSONString.Substring(propertyValueStartIndex+1, geoJSONString.IndexOf('"', propertyValueStartIndex+1) - propertyValueStartIndex-1);
+        }
+
+        /// <summary>
+        /// get the geometryType of the current Feature
+        /// </summary>
+        /// <returns>GeoJSONGeometryType</returns>
+        public GeoJSONGeometryType getGeometryType()
+        {
+
+            int geometrystart = geoJSONString.IndexOf(GeometryPointLocatorString, featureStartIndex, featureLength);
+            if (geometrystart > -1)
+            {
+                return GeoJSONGeometryType.Point;
+            }
+            geometrystart = geoJSONString.IndexOf(GeometryMultiPointLocatorString, featureStartIndex, featureLength);
+            if (geometrystart > -1)
+            {
+                return GeoJSONGeometryType.MultiPoint;
+            }
+            geometrystart = geoJSONString.IndexOf(GeometryLineStringLocatorString, featureStartIndex, featureLength);
+            if (geometrystart>-1)
+            {
+                return GeoJSONGeometryType.LineString;
+            }
+            geometrystart = geoJSONString.IndexOf(GeometryMultiLineStringLocatorString, featureStartIndex, featureLength);
+
+            if (geometrystart > -1)
+            {
+                return GeoJSONGeometryType.MultiLineString;
+            }
+            geometrystart = geoJSONString.IndexOf(GeometryPolygonStringLocatorString, featureStartIndex, featureLength);
+            if (geometrystart > -1)
+            {
+                return GeoJSONGeometryType.Polygon;
+            }
+
+            geometrystart = geoJSONString.IndexOf(GeometryMultiPolygonStringLocatorString, featureStartIndex, featureLength);
+            if (geometrystart > -1)
+            {
+                return GeoJSONGeometryType.MultiPolygon;
+            }
+
+            // if nothingfound
+            return GeoJSONGeometryType.Undefined;
+        }
+
+        public string GetFeatureString()
+        {
+            return geoJSONString.Substring(featureStartIndex-1, featureLength);
         }
     }
 }
