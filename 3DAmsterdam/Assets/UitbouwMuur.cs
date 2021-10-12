@@ -40,8 +40,50 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.K) && gameObject.name == "Front")
-                SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+
+                print("front;");
+                if (gameObject.name == "Front")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                if (gameObject.name == "Back")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                if (gameObject.name == "Top")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                if (gameObject.name == "Bottom")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                if (gameObject.name == "Left")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                if (gameObject.name == "Right")
+                    SetActive(true);
+                else
+                    SetActive(false);
+            }
 
             if (isActive) //moving this face
             {
@@ -61,12 +103,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 top.RecalculateScale();
                 bottom.RecalculateScale();
 
-                uitbouw.UpdateDimensions();
-            }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-
+                //uitbouw.UpdateDimensions();
             }
         }
 
