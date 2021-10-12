@@ -35,6 +35,20 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject dragableAxisPrefab;
         private DragableAxis[] userMovementAxes;
 
+        [Header("Walls")]
+        [SerializeField]
+        private UitbouwMuur left;
+        [SerializeField]
+        private UitbouwMuur right;
+        [SerializeField]
+        private UitbouwMuur bottom;
+        [SerializeField]
+        private UitbouwMuur top;
+        [SerializeField]
+        private UitbouwMuur front;
+        [SerializeField]
+        private UitbouwMuur back;
+
         public Vector3 LeftCorner
         {
             get
@@ -96,6 +110,20 @@ namespace Netherlands3D.T3D.Uitbouw
 
             userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
             userMovementAxes[2] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, transform.position + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+        }
+
+        public void UpdateDimensions()
+        {
+            SetDimensions(left, right, bottom, top, front, back);
+        }
+
+        private void SetDimensions(UitbouwMuur left, UitbouwMuur right, UitbouwMuur bottom, UitbouwMuur top, UitbouwMuur front, UitbouwMuur back)
+        {
+            var widthVector = Vector3.Project(right.transform.position - left.transform.position, left.transform.forward);
+            var heightVector = Vector3.Project(top.transform.position - bottom.transform.position, bottom.transform.forward);
+            var depthVector = Vector3.Project(back.transform.position - front.transform.position, front.transform.forward);
+
+            SetDimensions(widthVector.magnitude, depthVector.magnitude, heightVector.magnitude);
         }
 
         private void SetDimensions(float w, float d, float h)
