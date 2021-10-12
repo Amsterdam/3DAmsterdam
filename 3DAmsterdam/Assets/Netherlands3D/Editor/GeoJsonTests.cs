@@ -613,6 +613,28 @@ public class GeoJsonTests
     }
 
     [Test]
+    public void TestMultiPoint()
+    {
+        var jsontext = @"{
+""type"": ""FeatureCollection"",
+""name"": ""MultiPointTest"",
+""crs"": { ""type"": ""name"", ""properties"": { ""name"": ""urn:ogc:def:crs:OGC:1.3:CRS84"" } },
+""features"": [
+{ ""type"": ""Feature"", ""properties"": { ""id"": ""10180"", ""id_nummer"": ""REM16275"", ""serienummer"": ""HBD2.018.1507"", ""geadopteerd_ind"": 0, ""eigenaar_id"": ""111"", ""eigenaar_naam"": ""M Oost"", ""status"": 1, ""fractie_code"": ""1"", ""fractie_omschrijving"": ""Rest"", ""datum_creatie"": ""2012\/03\/29 00:00:00"", ""datum_plaatsing"": ""2018\/05\/01 00:00:00"", ""datum_operationeel"": ""2018\/05\/01 00:00:00"", ""datum_aflopen_garantie"": ""2025\/05\/01 00:00:00"", ""datum_oplevering"": ""2018\/05\/01 00:00:00"", ""locatie_id"": ""10179"", ""container_wgs84_lon"": 4.91629411, ""container_wgs84_lat"": 52.35064728, ""cluster_id"": ""122916.563|484850.550"", ""type_id"": ""3588"", ""gbd_buurt_code"": ""M30a"", ""gbd_buurt_id"": ""03630000000755"", ""bag_openbareruimte_id"": ""0363300000004573"", ""bag_hoofdadres_verblijfsobject_id"": ""0363010000782317"", ""bag_nummeraanduiding_id"": ""0363200000242048"", ""container_ral_kleur_naam"": """", ""container_ral_kleur_code"": """", ""container_ral_kleur_hexcode"": """", ""container_chip_nummber"": """", ""container_unit_card_lezer_id"": """", ""container_kleur"": ""NCS7000"", ""container_mark"": 10, ""container_datum_vervanging"": ""2028\/05\/01 00:00:00"", ""container_datum_wijziging"": ""2019\/04\/26 00:00:00"", ""container_eigenaarschap"": ""Eigendom"", ""container_eigenaarschap_opmerking"": ""Container is in eigendom van de klant"", ""container_opmerking"": """", ""wijzigingsdatum_dp"": ""2021\/04\/07 09:48:32.471"", ""verwijderd_dp"": 0, ""container_chip_nummer"": """" }, ""geometry"": { ""type"": ""MultiPoint"", ""coordinates"": [ [ 4.9162941, 52.3506473 ],[4.9262941, 52.3526473] ] } },
+]
+}";
+
+        GeoJSON customJsonHandler = new GeoJSON(jsontext);
+        customJsonHandler.GotoNextFeature();
+        List<GeoJSONPoint> points = customJsonHandler.getMultiPoint();
+        Assert.AreEqual(2, points.Count);
+        Assert.AreEqual(4.9162941, points[0].x);
+        Assert.AreEqual(52.3506473, points[0].y);
+        Assert.AreEqual(4.9262941, points[1].x);
+        Assert.AreEqual(52.3526473, points[1].y);
+    }
+
+    [Test]
     public void testGeometryType()
     {
         var jsontext = @"{
