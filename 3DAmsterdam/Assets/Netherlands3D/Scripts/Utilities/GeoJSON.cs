@@ -14,6 +14,7 @@ namespace Netherlands3D.Utilities
     public class GeoJSON
     {
         public string geoJSONString;
+        private bool geoJSONUsesSpaces = true;
         private int featureStartIndex;
         private int featureEndIndex;
         private int featureLength;
@@ -109,10 +110,15 @@ namespace Netherlands3D.Utilities
         {
             geoJSONString = geoJSON;
             
-
             featureStartIndex = -1;
             featureEndIndex = 0;
             featureLength = 0;
+
+            //check if geoJSON uses spaces
+            if (geoJSONString.IndexOf("\"type\": \"FeatureCollection\"",1,50)==-1)
+            {
+                geoJSONUsesSpaces = false;
+            }
         }
 
         public bool FindFirstFeature()
