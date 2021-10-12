@@ -47,7 +47,7 @@ public class PolygonVisualiser : MonoBehaviour
                 polygon.holes.Add((List<Vector3>)contours[i]);
             }
 		}
-        var newPolygonMesh = Poly2Mesh.CreateMesh(polygon);
+        var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
         newPolygonMesh.RecalculateNormals();
 
         //Add rim

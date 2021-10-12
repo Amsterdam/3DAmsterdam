@@ -30,7 +30,7 @@ public class TestDrawPolygon : MonoBehaviour
         var outer = new List<Vector3>();
         var inner = new List<Vector3>();
 
-        outer.Add(new Vector3(-100, 20, -100));
+        outer.Add(new Vector3(-100, 0, -100));
         outer.Add(new Vector3(-100, 0, 100));
         outer.Add(new Vector3(100, 0, 100));
         outer.Add(new Vector3(100, 0, -100));

@@ -164,123 +164,155 @@ public static class Poly2Mesh
     /// <returns>The freshly minted mesh.</returns>
     /// <param name="polygon">Polygon you want to triangulate.</param>
     public static Mesh CreateMesh(Polygon polygon, float thickness = 0)
-    {
-        //		long profileID = Profiler.Enter("Poly2Mesh.CreateMesh");
-        // Check for the easy case (a triangle)
-        if (polygon.holes.Count == 0 && (polygon.outside.Count == 3
-               || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
-        {
-            return CreateTriangle(polygon);
-        }
-        // Ensure we have the rotation properly calculated, and have a valid normal
-        if (polygon.rotation == Quaternion.identity) polygon.CalcRotation();
-        if (polygon.planeNormal == Vector3.zero) return null;       // bad data
-                                                                    // Rotate 1 point and note where it ends up in Z
-        float z = (polygon.rotation * polygon.outside[0]).z;
-        // Prepare a map from vertex codes to 3D positions.
-        Dictionary<uint, Vector3> codeToPosition = new Dictionary<uint, Vector3>();
-        // Convert the outside points (throwing out Z at this point)
-        Poly2Tri.Polygon poly = new Poly2Tri.Polygon(ConvertPoints(polygon.outside, polygon.rotation, codeToPosition));
-        // Convert each of the holes
-        foreach (List<Vector3> hole in polygon.holes)
-        {
-            poly.AddHole(new Poly2Tri.Polygon(ConvertPoints(hole, polygon.rotation, codeToPosition)));
-        }
-        // Triangulate it!  Note that this may throw an exception if the data is bogus.
-        try
-        {
-            DTSweepContext tcx = new DTSweepContext();
-            tcx.PrepareTriangulation(poly);
-            DTSweep.Triangulate(tcx);
-            tcx = null;
-        }
-        catch (System.Exception e)
-        {
-            //			Profiler.Exit(profileID);
-            return null;
-        }
-        // Now, to get back to our original positions, use our code-to-position map.  We do
-        // this instead of un-rotating to be a little more robust about noncoplanar polygons.
-        // Create the Vector3 vertices (undoing the rotation),
-        // and also build a map of vertex codes to indices
-        Quaternion? invRot = null;
-        Dictionary<uint, int> codeToIndex = new Dictionary<uint, int>();
-        List<Vector3> vertexList = new List<Vector3>();
-        foreach (DelaunayTriangle t in poly.Triangles)
-        {
-            foreach (var p in t.Points)
-            {
-                if (codeToIndex.ContainsKey(p.VertexCode)) continue;
-                codeToIndex[p.VertexCode] = vertexList.Count;
-                Vector3 pos;
-                if (!codeToPosition.TryGetValue(p.VertexCode, out pos))
-                {
-                    // This can happen in rare cases when we're hitting limits of floating-point precision.
-                    // Rather than fail, let's just do the inverse rotation.
-                    //					Output.PrintWarning("Vertex code lookup failed; using inverse rotation.");
-                    if (!invRot.HasValue) invRot = Quaternion.Inverse(polygon.rotation);
-                    pos = invRot.Value * new Vector3(p.Xf, p.Yf, z);
-                }
-                vertexList.Add(pos);
-            }
-        }
-
-        //Add a rim
-        if(thickness > 0)
-        {
-			//Add extra triangles for poly outside and insides
-			for (int i = 0; i < polygon.outside.Count; i++)
+	{
+		//		long profileID = Profiler.Enter("Poly2Mesh.CreateMesh");
+		// Check for the easy case (a triangle)
+		if (polygon.holes.Count == 0 && (polygon.outside.Count == 3
+			   || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
+		{
+			return CreateTriangle(polygon);
+		}
+		// Ensure we have the rotation properly calculated, and have a valid normal
+		if (polygon.rotation == Quaternion.identity) polygon.CalcRotation();
+		if (polygon.planeNormal == Vector3.zero) return null;       // bad data
+																	// Rotate 1 point and note where it ends up in Z
+		float z = (polygon.rotation * polygon.outside[0]).z;
+		// Prepare a map from vertex codes to 3D positions.
+		Dictionary<uint, Vector3> codeToPosition = new Dictionary<uint, Vector3>();
+		// Convert the outside points (throwing out Z at this point)
+		Poly2Tri.Polygon poly = new Poly2Tri.Polygon(ConvertPoints(polygon.outside, polygon.rotation, codeToPosition));
+		// Convert each of the holes
+		foreach (List<Vector3> hole in polygon.holes)
+		{
+			poly.AddHole(new Poly2Tri.Polygon(ConvertPoints(hole, polygon.rotation, codeToPosition)));
+		}
+		// Triangulate it!  Note that this may throw an exception if the data is bogus.
+		try
+		{
+			DTSweepContext tcx = new DTSweepContext();
+			tcx.PrepareTriangulation(poly);
+			DTSweep.Triangulate(tcx);
+			tcx = null;
+		}
+		catch (System.Exception e)
+		{
+			//			Profiler.Exit(profileID);
+			return null;
+		}
+		// Now, to get back to our original positions, use our code-to-position map.  We do
+		// this instead of un-rotating to be a little more robust about noncoplanar polygons.
+		// Create the Vector3 vertices (undoing the rotation),
+		// and also build a map of vertex codes to indices
+		Quaternion? invRot = null;
+		Dictionary<uint, int> codeToIndex = new Dictionary<uint, int>();
+		List<Vector3> vertexList = new List<Vector3>();
+		foreach (DelaunayTriangle t in poly.Triangles)
+		{
+			foreach (var p in t.Points)
 			{
-                if (i < polygon.outside.Count - 1)
-                {
-                    var quadA = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
-                    var quadB = new Vector3(polygon.outside[i + 1].x, polygon.outside[i].y, polygon.outside[i+1].z);
-                    var quadC = new Vector3(polygon.outside[i].x, polygon.outside[i].y-thickness, polygon.outside[i].z);
-                    var quadD = new Vector3(polygon.outside[i+1].x, polygon.outside[i].y-thickness, polygon.outside[i+1].z);
+				if (codeToIndex.ContainsKey(p.VertexCode)) continue;
+				codeToIndex[p.VertexCode] = vertexList.Count;
+				Vector3 pos;
+				if (!codeToPosition.TryGetValue(p.VertexCode, out pos))
+				{
+					// This can happen in rare cases when we're hitting limits of floating-point precision.
+					// Rather than fail, let's just do the inverse rotation.
+					//					Output.PrintWarning("Vertex code lookup failed; using inverse rotation.");
+					if (!invRot.HasValue) invRot = Quaternion.Inverse(polygon.rotation);
+					pos = invRot.Value * new Vector3(p.Xf, p.Yf, z);
+				}
+				vertexList.Add(pos);
+			}
+		}
 
-                    var startNewTriangleIndex = vertexList.Count - 1;
-                    vertexList.Add(quadA);
-                    vertexList.Add(quadB);
-                    vertexList.Add(quadC);
-                    vertexList.Add(quadD);
+		List<int> indices = new List<int>();
+		indices.Capacity = (poly.Triangles.Count * 3);
+		foreach (DelaunayTriangle t in poly.Triangles)
+		{
+			indices.Add(codeToIndex[t.Points[0].VertexCode]);
+			indices.Add(codeToIndex[t.Points[1].VertexCode]);
+			indices.Add(codeToIndex[t.Points[2].VertexCode]);
+		}
 
-                    //TODO: add triangle indices
-                }
-            }
-        }
-
-        // Create the indices array
-        int[] indices = new int[poly.Triangles.Count * 3];
+        if (thickness > 0)
         {
-            int i = 0;
-            foreach (DelaunayTriangle t in poly.Triangles)
+            AddRim(polygon.outside, thickness, vertexList, indices);
+            foreach (var hole in polygon.holes)
             {
-                indices[i++] = codeToIndex[t.Points[0].VertexCode];
-                indices[i++] = codeToIndex[t.Points[1].VertexCode];
-                indices[i++] = codeToIndex[t.Points[2].VertexCode];
+                AddRim(hole, thickness, vertexList, indices);
             }
         }
-        // Create the UV list, by looking up the closest point for each in our poly
-        Vector2[] uv = null;
-        if (polygon.outsideUVs != null)
-        {
-            uv = new Vector2[vertexList.Count];
-            for (int i = 0; i < vertexList.Count; i++)
-            {
-                uv[i] = polygon.ClosestUV(vertexList[i]);
-            }
-        }
-        // Create the mesh
-        Mesh msh = new Mesh();
-        msh.vertices = vertexList.ToArray();
-        msh.triangles = indices;
-        msh.uv = uv;
-        /*msh.RecalculateNormals();
+
+
+		// Create the UV list, by looking up the closest point for each in our poly
+		/*Vector2[] uv = null;
+		if (polygon.outsideUVs != null)
+		{
+			uv = new Vector2[vertexList.Count];
+			for (int i = 0; i < vertexList.Count; i++)
+			{
+				uv[i] = polygon.ClosestUV(vertexList[i]);
+			}
+		}*/
+
+		// Create the mesh
+		Mesh msh = new Mesh();
+		msh.vertices = vertexList.ToArray();
+		msh.triangles = indices.ToArray();
+		//msh.uv = uv;
+		/*msh.RecalculateNormals();
         msh.RecalculateBounds();*/
-        //		Profiler.Exit(profileID);
-        return msh;
-    }
-    public static bool fullDebug = false;
+		//		Profiler.Exit(profileID);
+		return msh;
+	}
+
+	private static void AddRim(List<Vector3> contour, float thickness, List<Vector3> vertexList, List<int> indices)
+	{
+		//Add a rim
+		int rimVertCount = 0;
+		
+		//Add extra triangles for poly outside and insides
+		for (int i = 0; i < contour.Count; i++)
+		{
+            Vector3 topLeft;
+            Vector3 topRight;
+            Vector3 bottomLeft;
+            Vector3 bottomRight;
+
+            topLeft = new Vector3(contour[i].x, contour[i].y, contour[i].z);
+            bottomLeft = new Vector3(contour[i].x, contour[i].y - thickness, contour[i].z);
+            if (i == contour.Count-1)
+            {
+                //Close loop by ending with first
+                topRight = new Vector3(contour[0].x, contour[i].y, contour[0].z);
+                bottomRight = new Vector3(contour[0].x, contour[i].y - thickness, contour[0].z);
+            }
+            else
+            {
+                topRight = new Vector3(contour[i + 1].x, contour[i].y, contour[i + 1].z);
+                bottomRight = new Vector3(contour[i + 1].x, contour[i].y - thickness, contour[i + 1].z);
+            }
+            var startIndex = vertexList.Count;
+
+			vertexList.Add(topLeft);
+            vertexList.Add(topRight); 
+            vertexList.Add(bottomLeft); 
+            vertexList.Add(bottomRight); 
+
+            indices.Add(startIndex+2);
+            indices.Add(startIndex+1);
+            indices.Add(startIndex);
+
+            indices.Add(startIndex + 3);
+            indices.Add(startIndex + 1);
+            indices.Add(startIndex + 2);
+
+            rimVertCount += 6;
+		}	
+        //innerloops
+	}
+
+	public static bool fullDebug = false;
     /// <summary>
     /// Create a Mesh containing just the FIRST triangle in the given Polygon.
     /// (This is a much easier task since we can skip triangulation.)

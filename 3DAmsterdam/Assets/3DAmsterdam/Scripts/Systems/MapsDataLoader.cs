@@ -74,6 +74,7 @@ public class MapsDataLoader : MonoBehaviour
             {
                 double[] location = geoJSON.getGeometryPoint2DDouble();
                 var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
+
                 drawPointEvent.unityEvent?.Invoke(unityCoordinates);
             }
         }
