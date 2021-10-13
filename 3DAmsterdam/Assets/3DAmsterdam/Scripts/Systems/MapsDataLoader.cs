@@ -65,7 +65,6 @@ public class MapsDataLoader : MonoBehaviour
 
         if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(geoJsonDataRequest.downloadHandler.text);
             GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
             yield return null;
 
