@@ -3,8 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Netherlands3D.T3D.Uitbouw
 {
+    public enum WallSide
+    {
+        Left,
+        Right,
+        Top,
+        Bottom,
+        Front,
+        Back,
+    }
+
     public class UitbouwMuur : MonoBehaviour
     {
+        [SerializeField]
+        private WallSide side;
+        public WallSide Side => side;
+
         [SerializeField]
         bool isActive = false;
 
@@ -22,11 +36,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private Vector3 oldPosition;
         public Vector3 deltaPosition { get; private set; }
 
-        private Uitbouw uitbouw;
-
         private void Awake()
         {
-            uitbouw = GetComponentInParent<Uitbouw>();
             oldPosition = transform.position;
         }
 
@@ -40,50 +51,50 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
+            //if (Input.GetKeyDown(KeyCode.Alpha1))
+            //{
 
-                print("front;");
-                if (gameObject.name == "Front")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                if (gameObject.name == "Back")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                if (gameObject.name == "Top")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                if (gameObject.name == "Bottom")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                if (gameObject.name == "Left")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                if (gameObject.name == "Right")
-                    SetActive(true);
-                else
-                    SetActive(false);
-            }
+            //    print("front;");
+            //    if (gameObject.name == "Front")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha2))
+            //{
+            //    if (gameObject.name == "Back")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha3))
+            //{
+            //    if (gameObject.name == "Top")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha4))
+            //{
+            //    if (gameObject.name == "Bottom")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha5))
+            //{
+            //    if (gameObject.name == "Left")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Alpha6))
+            //{
+            //    if (gameObject.name == "Right")
+            //        SetActive(true);
+            //    else
+            //        SetActive(false);
+            //}
 
             if (isActive) //moving this face
             {

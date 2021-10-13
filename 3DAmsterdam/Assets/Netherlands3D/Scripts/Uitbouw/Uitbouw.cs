@@ -21,8 +21,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private BuildingMeshGenerator building;
         [SerializeField]
         private PerceelRenderer perceel;
-        [SerializeField]
-        float moveSpeed = 0.1f;
 
         public float Width { get; private set; }
         public float Depth { get; private set; }
@@ -35,19 +33,22 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject dragableAxisPrefab;
         private DragableAxis[] userMovementAxes;
 
-        [Header("Walls")]
+        //[Header("Walls")]
+        //[SerializeField]
+        private UitbouwMuur left => GetWall(WallSide.Left);
+        //[SerializeField]
+        private UitbouwMuur right => GetWall(WallSide.Right);
+        //[SerializeField]
+        private UitbouwMuur bottom => GetWall(WallSide.Bottom);
+        //[SerializeField]
+        private UitbouwMuur top => GetWall(WallSide.Top);
+        //[SerializeField]
+        private UitbouwMuur front => GetWall(WallSide.Front);
+        //[SerializeField]
+        private UitbouwMuur back => GetWall(WallSide.Back);
+
         [SerializeField]
-        private UitbouwMuur left;
-        [SerializeField]
-        private UitbouwMuur right;
-        [SerializeField]
-        private UitbouwMuur bottom;
-        [SerializeField]
-        private UitbouwMuur top;
-        [SerializeField]
-        private UitbouwMuur front;
-        [SerializeField]
-        private UitbouwMuur back;
+        private UitbouwMuur[] walls;
 
         public Vector3 LeftCorner
         {
@@ -126,7 +127,7 @@ namespace Netherlands3D.T3D.Uitbouw
             userMovementAxes[0] = gameObject.AddComponent<DragableAxis>();
             userMovementAxes[0].SetUitbouw(this);
 
-            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, CenterPoint- arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, CenterPoint - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
             userMovementAxes[2] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, CenterPoint + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
         }
 
@@ -191,13 +192,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessUserInput()
         {
-            //temp
-            //if (Input.GetKey(KeyCode.Alpha1))
-            //    transform.position -= transform.right * moveSpeed * Time.deltaTime;
-
-            //if (Input.GetKey(KeyCode.Alpha2))
-            //    transform.position += transform.right * moveSpeed * Time.deltaTime;
-
             foreach (var axis in userMovementAxes) //drag input
             {
                 transform.position += axis.DeltaPosition;
@@ -246,7 +240,6 @@ namespace Netherlands3D.T3D.Uitbouw
             return footprint.ToArray();
         }
 
-        Vector3 point;
         private void SnapToBuilding(BuildingMeshGenerator building)
         {
             var uitbouwAttachDirection = transform.forward; //which side of the uitbouw is attatched to the house?
@@ -258,7 +251,6 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 //print("Raycast hit");
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
-                //uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
 
                 //remove local x component
@@ -269,7 +261,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 var newPoint = projectedPoint + transform.position; // apply movevector
 
                 transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
-                point = hit.point;
                 //transform.Translate(0, 0, hit.distance - 0.1f, Space.Self); //dont set position directly since the impact point can be different than the current x position. subtract 0.1f due to origin displacement          
             }
             //if there is no building in the uitbouw's path, raycast to the building center to find a new surface to snap to
@@ -279,7 +270,6 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 print("Raycast failed, re-orienting to new wall");
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
-                //uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
 
                 //remove local x component
@@ -290,7 +280,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 var newPoint = projectedPoint + transform.position;
 
                 transform.position = newPoint; //hit.point - uitbouwAttachDirection * Depth / 2;
-                point = hit.point;
 
                 //recalculate mouse offset position, since the uitbouw (and its controls) changed orientation
                 foreach (var axis in userMovementAxes)
@@ -315,9 +304,23 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
         }
 
-        private void OnDrawGizmos()
+        public void MoveWall(WallSide side, float delta)
         {
-            Gizmos.DrawSphere(point, 0.1f);
+            //safety deactivation
+            foreach(var wall in walls)
+            {
+                wall.SetActive(false);
+            }
+
+            UitbouwMuur activeWall = GetWall(side);
+            activeWall.SetActive(true);
+            activeWall.transform.position += activeWall.transform.forward * -delta;
+            activeWall.SetActive(false);
+        }
+
+        private UitbouwMuur GetWall(WallSide side)
+        {
+            return walls.FirstOrDefault(x => x.Side == side);
         }
     }
 }
