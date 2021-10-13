@@ -120,15 +120,19 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            userMovementAxes = new DragableAxis[3];
+            userMovementAxes = new DragableAxis[2 + walls.Length];
 
-            var arrowOffsetX = transform.right * extents.x;
+            for (int i = 0; i < walls.Length; i++)
+            {
+                userMovementAxes[i] = walls[i].gameObject.AddComponent<DragableAxis>();
+                userMovementAxes[i].SetUitbouw(this);
+            }
+
+            //var arrowOffsetX = transform.right * extents.x;
             var arrowOffsetY = transform.up * (extents.y - 0.01f);
-            userMovementAxes[0] = gameObject.AddComponent<DragableAxis>();
-            userMovementAxes[0].SetUitbouw(this);
 
-            userMovementAxes[1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, CenterPoint - arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
-            userMovementAxes[2] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, CenterPoint + arrowOffsetX - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, left.transform.position - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            userMovementAxes[walls.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, right.transform.position - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
         }
 
         public void UpdateDimensions()
@@ -175,6 +179,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Update()
         {
             UpdateDimensions();
+            SetArrowPositions();
 
             if (perceel != null)
             {
@@ -189,6 +194,12 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        private void SetArrowPositions()
+        {
+            var arrowOffsetY = transform.up * (extents.y - 0.01f);
+            userMovementAxes[walls.Length].transform.position = left.transform.position - arrowOffsetY;
+            userMovementAxes[walls.Length + 1].transform.position = right.transform.position - arrowOffsetY;
+        }
 
         private void ProcessUserInput()
         {
@@ -307,7 +318,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void MoveWall(WallSide side, float delta)
         {
             //safety deactivation
-            foreach(var wall in walls)
+            foreach (var wall in walls)
             {
                 wall.SetActive(false);
             }

@@ -58,14 +58,8 @@ namespace Netherlands3D.T3D.Uitbouw
         // called by input field event in inspector
         public void ManualWidthOverride(string input)
         {
-            if (float.TryParse(input, out float amount))
+            if (IsValidInput(input, out float delta))
             {
-                if(amount <= 0)
-                {
-                    print("enter a positive number");
-                    return;
-                }
-                var delta = amount - value;
                 RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta/2);
                 RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta/2);
             }
@@ -74,14 +68,8 @@ namespace Netherlands3D.T3D.Uitbouw
         // called by input field event in inspector
         public void ManualHeightOverride(string input)
         {
-            if (float.TryParse(input, out float amount))
+            if (IsValidInput(input, out float delta))
             {
-                if (amount <= 0)
-                {
-                    print("enter a positive number");
-                    return;
-                }
-                var delta = amount - value;
                 RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta);
             }
         }
@@ -89,16 +77,26 @@ namespace Netherlands3D.T3D.Uitbouw
         // called by input field event in inspector
         public void ManualDepthOverride(string input)
         {
+            if (IsValidInput(input, out float delta))
+            {
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta);
+            }
+        }
+
+        private bool IsValidInput(string input, out float delta)
+        {
+            delta = 0;
             if (float.TryParse(input, out float amount))
             {
                 if (amount <= 0)
                 {
                     print("enter a positive number");
-                    return;
+                    return false;
                 }
-                var delta = amount - value;
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta);
+                delta = amount - value;
+                return true;
             }
+            return false;
         }
     }
 }
