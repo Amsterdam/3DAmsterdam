@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private WallSide side;
         public WallSide Side => side;
 
-        [SerializeField]
         bool isActive = false;
 
         [SerializeField]
@@ -30,8 +30,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private UitbouwMuur top;
         [SerializeField]
         private UitbouwMuur bottom;
-        [SerializeField]
-        private UitbouwMuur back;
 
         private Vector3 oldPosition;
         public Vector3 deltaPosition { get; private set; }
@@ -49,73 +47,24 @@ namespace Netherlands3D.T3D.Uitbouw
             return new Vector3(hDist, vDist, 1);
         }
 
-        private void Update()
+        public void RecalculateSides(Vector3 newPosition)
         {
-            //if (Input.GetKeyDown(KeyCode.Alpha1))
-            //{
+            deltaPosition = newPosition - oldPosition;
+            oldPosition = transform.position;
+            transform.position = newPosition;
 
-            //    print("front;");
-            //    if (gameObject.name == "Front")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha2))
-            //{
-            //    if (gameObject.name == "Back")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha3))
-            //{
-            //    if (gameObject.name == "Top")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha4))
-            //{
-            //    if (gameObject.name == "Bottom")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha5))
-            //{
-            //    if (gameObject.name == "Left")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
-            //if (Input.GetKeyDown(KeyCode.Alpha6))
-            //{
-            //    if (gameObject.name == "Right")
-            //        SetActive(true);
-            //    else
-            //        SetActive(false);
-            //}
+            //back.RecalculatePosition(deltaPosition/2);
+            //RecalculatePosition(deltaPosition/2);
 
-            if (isActive) //moving this face
-            {
-                deltaPosition = transform.position - oldPosition;
-                oldPosition = transform.position;
+            left.RecalculatePosition(deltaPosition / 2);
+            right.RecalculatePosition(deltaPosition / 2);
+            top.RecalculatePosition(deltaPosition / 2);
+            bottom.RecalculatePosition(deltaPosition / 2);
 
-                //back.RecalculatePosition(deltaPosition/2);
-                //RecalculatePosition(deltaPosition/2);
-
-                left.RecalculatePosition(deltaPosition/2);
-                right.RecalculatePosition(deltaPosition/2);
-                top.RecalculatePosition(deltaPosition/2);
-                bottom.RecalculatePosition(deltaPosition/2);
-
-                left.RecalculateScale();
-                right.RecalculateScale();
-                top.RecalculateScale();
-                bottom.RecalculateScale();
-
-                //uitbouw.UpdateDimensions();
-            }
+            left.RecalculateScale();
+            right.RecalculateScale();
+            top.RecalculateScale();
+            bottom.RecalculateScale();
         }
 
         public void RecalculatePosition(Vector3 delta)
@@ -133,6 +82,15 @@ namespace Netherlands3D.T3D.Uitbouw
             oldPosition = transform.position;
             deltaPosition = Vector3.zero;
             isActive = active;
+        }
+
+        internal void MoveWall(float delta)
+        {
+            SetActive(true);
+            var newPosition = transform.position + transform.forward * -delta;
+            //transform.position += transform.forward * -delta;
+            RecalculateSides(newPosition);
+            SetActive(false);
         }
     }
 }

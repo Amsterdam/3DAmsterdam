@@ -313,9 +313,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
 
             UitbouwMuur activeWall = GetWall(side);
-            activeWall.SetActive(true);
-            activeWall.transform.position += activeWall.transform.forward * -delta;
-            activeWall.SetActive(false);
+            activeWall.MoveWall(delta);
         }
 
         private UitbouwMuur GetWall(WallSide side)
