@@ -59,7 +59,6 @@ public class MapsDataLoader : MonoBehaviour
 
     private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
     {
-        Debug.Log($"Load {geoJsonURL}");
         var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
         yield return geoJsonDataRequest.SendWebRequest();
 
