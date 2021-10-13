@@ -53,7 +53,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             get
             {
-                return transform.position + transform.rotation * new Vector3(-extents.x, 0, 0);
+                return left.transform.position + transform.rotation * new Vector3(0, -extents.y, extents.z);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             get
             {
-                return transform.position + transform.rotation * new Vector3(extents.x, 0, 0);
+                return right.transform.position + transform.rotation * new Vector3(0, -extents.y, extents.z);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             get
             {
-                return (front.transform.position - back.transform.position) / 2;
+                return front.transform.position + (back.transform.position - front.transform.position) / 2;
             }
         }
         //public Vector3 CenterPosition { get; private set; }
@@ -143,6 +143,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             //var localOrigin = new Vector3(xComponent.x / 2, yComponent.y / 2, zComponent.z / 2);
 
+            //var widthVector = right.transform.position - left.transform.position;
             var widthVector = Vector3.Project(right.transform.position - left.transform.position, left.transform.forward);
             var heightVector = Vector3.Project(top.transform.position - bottom.transform.position, bottom.transform.forward);
             var depthVector = Vector3.Project(back.transform.position - front.transform.position, front.transform.forward);
@@ -245,7 +246,7 @@ namespace Netherlands3D.T3D.Uitbouw
             return footprint.ToArray();
         }
 
-
+        Vector3 point;
         private void SnapToBuilding(BuildingMeshGenerator building)
         {
             var uitbouwAttachDirection = transform.forward; //which side of the uitbouw is attatched to the house?
@@ -253,14 +254,22 @@ namespace Netherlands3D.T3D.Uitbouw
 
             //test if there is a building in the uitbouw's path, snap to this surface if there is.
             //if (Physics.BoxCast(transform.position - uitbouwAttachDirection * 0.1f, extents, uitbouwAttachDirection, out RaycastHit hit, transform.rotation, Mathf.Infinity, layerMask)) // offset origin slightly to the back
-
             if (Physics.Raycast(CenterPoint, uitbouwAttachDirection, out RaycastHit hit, Mathf.Infinity, layerMask))
             {
                 //print("Raycast hit");
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
                 //uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
-                transform.position = hit.point;// - uitbouwAttachDirection * Depth / 2;
+
+                //remove local x component
+                var diff = hit.point - transform.position; //moveVector
+                var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
+                rotatedPoint.x = 0; //remove horizontal component
+                var projectedPoint = transform.rotation * rotatedPoint; //rotate back
+                var newPoint = projectedPoint + transform.position; // apply movevector
+
+                transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
+                point = hit.point;
                 //transform.Translate(0, 0, hit.distance - 0.1f, Space.Self); //dont set position directly since the impact point can be different than the current x position. subtract 0.1f due to origin displacement          
             }
             //if there is no building in the uitbouw's path, raycast to the building center to find a new surface to snap to
@@ -272,7 +281,16 @@ namespace Netherlands3D.T3D.Uitbouw
                 var dir = new Vector3(hit.normal.x, 0, hit.normal.z).normalized;
                 //uitbouwAttachDirection = -dir;
                 transform.forward = -dir; //rotate towards correct direction
-                transform.position = hit.point;// - uitbouwAttachDirection * Depth / 2;
+
+                //remove local x component
+                var diff = hit.point - transform.position;
+                var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff;
+                rotatedPoint.x = 0;
+                var projectedPoint = transform.rotation * rotatedPoint;
+                var newPoint = projectedPoint + transform.position;
+
+                transform.position = newPoint; //hit.point - uitbouwAttachDirection * Depth / 2;
+                point = hit.point;
 
                 //recalculate mouse offset position, since the uitbouw (and its controls) changed orientation
                 foreach (var axis in userMovementAxes)
@@ -285,16 +303,21 @@ namespace Netherlands3D.T3D.Uitbouw
 
             SnapWall = new Plane(hit.normal, hit.point);
 
-            //Debug.DrawRay(transform.position + uitbouwAttachDirection * (depth / 2), building.BuildingCenter - transform.position, Color.magenta);
-            //if (Physics.Raycast(CenterAttatchPoint, building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
-            //{
-            //    Debug.DrawLine(CenterPoint, hit.point, Color.cyan);
-            //}
+            Debug.DrawRay(CenterAttatchPoint, building.BuildingCenter - transform.position, Color.magenta);
+            if (Physics.Raycast(CenterAttatchPoint, building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
+            {
+                Debug.DrawLine(CenterPoint, hit.point, Color.cyan);
+            }
         }
 
         void SnapToGround(BuildingMeshGenerator building)
         {
             transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawSphere(point, 0.1f);
         }
     }
 }
