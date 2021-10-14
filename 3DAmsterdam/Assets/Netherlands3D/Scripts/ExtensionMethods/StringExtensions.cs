@@ -73,7 +73,7 @@ public static class StringExtensions
 
     public static string GetUrlParamValue(this string url, string param)
     {
-        var groups = Regex.Match(url, $"[?&]{param}=([^&]*)").Groups;
+        var groups = Regex.Match(url, $"[?&]{param}=([^&#]*)").Groups;
         if (groups.Count < 2) return null;
         return groups[1].Value;
     }

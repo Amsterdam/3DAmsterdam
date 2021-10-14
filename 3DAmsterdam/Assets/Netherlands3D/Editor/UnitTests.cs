@@ -139,6 +139,15 @@ public class UnitTests
         var result5a = url5.GetUrlParamValue("id");
         Assert.AreEqual("138350.607_455582.274", result5);
         Assert.AreEqual("0344100000021804", result5a);
+
+        string hashtest = "http://t3d.nl/#/?param1=test&position=123_456#test1&param2=test2";
+        var hash_result1 = hashtest.GetUrlParamValue("param1");
+        Assert.AreEqual("test", hash_result1);
+        var hash_result2 = hashtest.GetUrlParamValue("position");
+        Assert.AreEqual("123_456", hash_result2);
+        var hash_result3 = hashtest.GetUrlParamValue("param2");
+        Assert.AreEqual("test2", hash_result3);
+
     }
 
 

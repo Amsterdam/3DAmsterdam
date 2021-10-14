@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Netherlands3D.Utilities;
+using System.Globalization;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -131,6 +132,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         void Awake()
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             Instance = this;
             AddressLoaded += OnAddressLoaded;
         }
