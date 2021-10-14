@@ -13,8 +13,8 @@ namespace Netherlands3D.T3D.Uitbouw
     public class Uitbouw : MonoBehaviour
     {
         private Vector2[] footprint;
-        private MeshRenderer meshRenderer;
-        private Mesh mesh;
+        //private MeshRenderer meshRenderer;
+        //private Mesh mesh;
         //private List<Vector2[]> perceel;
 
         [SerializeField]
@@ -34,17 +34,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private DragableAxis[] userMovementAxes;
 
         //[Header("Walls")]
-        //[SerializeField]
         private UitbouwMuur left => GetWall(WallSide.Left);
-        //[SerializeField]
         private UitbouwMuur right => GetWall(WallSide.Right);
-        //[SerializeField]
         private UitbouwMuur bottom => GetWall(WallSide.Bottom);
-        //[SerializeField]
         private UitbouwMuur top => GetWall(WallSide.Top);
-        //[SerializeField]
         private UitbouwMuur front => GetWall(WallSide.Front);
-        //[SerializeField]
         private UitbouwMuur back => GetWall(WallSide.Back);
 
         [SerializeField]
@@ -112,10 +106,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
-            meshRenderer = GetComponent<MeshRenderer>();
-            mesh = GetComponent<MeshFilter>().mesh;
-            SetDimensions(mesh.bounds.extents * 2);
+            //meshRenderer = GetComponent<MeshRenderer>();
+            //mesh = GetComponent<MeshFilter>().mesh;
+            //SetDimensions(mesh.bounds.extents * 2);
             //userMovementAxis = GetComponentInChildren<DragableAxis>();
+            UpdateDimensions();
         }
 
         private void Start()
@@ -181,10 +176,10 @@ namespace Netherlands3D.T3D.Uitbouw
             UpdateDimensions();
             SetArrowPositions();
 
-            if (perceel != null)
-            {
-                ProcessIfObjectIsInPerceelBounds();
-            }
+            //if (perceel != null)
+            //{
+            //    ProcessIfObjectIsInPerceelBounds();
+            //}
 
             ProcessUserInput();
 
@@ -214,19 +209,19 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        private void ProcessIfObjectIsInPerceelBounds()
-        {
-            footprint = GetFootprint();// GenerateFootprint(meshes, transform.rotation, transform.lossyScale);
+        //private void ProcessIfObjectIsInPerceelBounds()
+        //{
+        //    footprint = GetFootprint();// GenerateFootprint(meshes, transform.rotation, transform.lossyScale);
 
-            if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
-            {
-                meshRenderer.material.color = Color.green;
-            }
-            else
-            {
-                meshRenderer.material.color = Color.red;
-            }
-        }
+        //    if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
+        //    {
+        //        meshRenderer.material.color = Color.green;
+        //    }
+        //    else
+        //    {
+        //        meshRenderer.material.color = Color.red;
+        //    }
+        //}
 
         public Vector2[] GetFootprint()
         {
