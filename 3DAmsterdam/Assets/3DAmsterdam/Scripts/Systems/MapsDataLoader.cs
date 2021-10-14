@@ -34,16 +34,21 @@ public class MapsDataLoader : MonoBehaviour
     public struct MapsDataTable
     {
         public string name;
+        public GeoJsonURLS[] geoJsonURLs;
+    }
+    [System.Serializable]
+    public struct GeoJsonURLS
+    {
         public string geoJsonURL;
         public Vector3Event drawPointEvent;
     }
 
     void Awake()
     {
-        tableNameReceiveEvent.unityEvent.AddListener(LoadTable);
+        tableNameReceiveEvent.unityEvent.AddListener(LoadAllDataURLs);
     }
 
-    void LoadTable(string tableNames)
+    void LoadAllDataURLs(string tableNames)
     {
         string[] tableNameValues = tableNames.Split(',');
         foreach (var tableName in tableNameValues)
@@ -52,7 +57,10 @@ public class MapsDataLoader : MonoBehaviour
             if (targetDataTable.Any())
             {
                 var firstResult = targetDataTable.First();
-                StartCoroutine(LoadGeoJSON(firstResult.geoJsonURL, firstResult.drawPointEvent));
+                foreach (var geoJsonURL in firstResult.geoJsonURLs)
+                {
+                    StartCoroutine(LoadGeoJSON(geoJsonURL.geoJsonURL, geoJsonURL.drawPointEvent));
+                }
             }
         }
     }
