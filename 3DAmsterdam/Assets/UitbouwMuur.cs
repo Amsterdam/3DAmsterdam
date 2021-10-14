@@ -34,8 +34,12 @@ namespace Netherlands3D.T3D.Uitbouw
         private Vector3 oldPosition;
         public Vector3 deltaPosition { get; private set; }
 
+        private MeshFilter meshFilter;
+        public MeshFilter MeshFilter => meshFilter;
+
         private void Awake()
         {
+            meshFilter = GetComponent<MeshFilter>();
             oldPosition = transform.position;
         }
 

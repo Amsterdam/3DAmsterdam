@@ -427,7 +427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3646510373427269171
 Transform:
   m_ObjectHideFlags: 0
@@ -637,7 +637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8735831927972286367
 Transform:
   m_ObjectHideFlags: 0
@@ -728,7 +728,6 @@ GameObject:
   - component: {fileID: 3596639317931386522}
   - component: {fileID: 4666610331380868657}
   - component: {fileID: 6641196300282613232}
-  - component: {fileID: 1802362925267514199}
   m_Layer: 0
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -769,7 +768,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8007389617465903191}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -841,19 +840,6 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   building: {fileID: 0}
---- !u!65 &1802362925267514199
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8007389617465903191}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8903111269863768236
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,7 +857,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6518507942809936470
 Transform:
   m_ObjectHideFlags: 0

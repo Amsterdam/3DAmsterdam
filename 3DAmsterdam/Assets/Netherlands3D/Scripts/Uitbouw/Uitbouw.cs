@@ -216,7 +216,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessIfObjectIsInPerceelBounds()
         {
-            footprint = GenerateFootprint(mesh, transform.rotation, transform.lossyScale);
+            footprint = GetFootprint();// GenerateFootprint(meshes, transform.rotation, transform.lossyScale);
 
             if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
             {
@@ -230,23 +230,35 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public Vector2[] GetFootprint()
         {
-            return GenerateFootprint(mesh, transform.rotation, transform.lossyScale);
+            var meshFilters = new MeshFilter[] {
+                left.MeshFilter,
+                right.MeshFilter,
+                top.MeshFilter,
+                bottom.MeshFilter,
+                front.MeshFilter,
+                back.MeshFilter
+            };
+
+            return GenerateFootprint(meshFilters);//, transform.rotation, transform.lossyScale);
         }
 
-        public static Vector2[] GenerateFootprint(Mesh mesh, Quaternion rotation, Vector3 scale)
+        public static Vector2[] GenerateFootprint(MeshFilter[] meshFilters)//Mesh[] meshes, Quaternion rotation, Vector3 scale)
         {
-            var verts = mesh.vertices;
             var footprint = new List<Vector2>();
-
-            for (int i = 0; i < verts.Length; i++)
+            for (int i = 0; i < meshFilters.Length; i++)
             {
-                var transformedVert = verts[i];
-                transformedVert.Scale(scale);
-                transformedVert = rotation * transformedVert;
-                //var vert = Vector3.ProjectOnPlane(rotatedVert, Vector3.up);
-                var vert = new Vector2(transformedVert.x, transformedVert.z);
+                var verts = meshFilters[i].mesh.vertices;
 
-                footprint.Add(vert); //todo: optimize so that only the outline is in the footprint
+                for (int j = 0; j < verts.Length; j++)
+                {
+                    var transformedVert = verts[j];
+                    transformedVert.Scale(meshFilters[i].transform.lossyScale);
+                    transformedVert = meshFilters[i].transform.rotation * transformedVert;
+                    //var vert = Vector3.ProjectOnPlane(rotatedVert, Vector3.up);
+                    var vert = new Vector2(transformedVert.x, transformedVert.z);
+
+                    footprint.Add(vert); //todo: optimize so that only the outline is in the footprint
+                }
             }
             return footprint.ToArray();
         }
