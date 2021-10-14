@@ -20,8 +20,13 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class Vector3ValueUnityEvent : UnityEvent<Vector3> { }
+public class Vector3ListValueUnityEvent : UnityEvent<List<Vector3>> { }
 
-[CreateAssetMenu(fileName = "Vector3Event", menuName = "ScriptableObjects/Events/Vector3Event", order = 0)]
+[CreateAssetMenu(fileName = "Vector3ListEvent", menuName = "ScriptableObjects/Events/Vector3ListEvent", order = 0)]
 [System.Serializable]
-public class Vector3Event : ScriptableObjectEvent<Vector3ValueUnityEvent>{ }
+public class Vector3ListEvent : ScriptableObjectEvent<Vector3ListValueUnityEvent>
+{
+	#if UNITY_EDITOR
+	public List<Vector3> testData;
+	#endif
+}
