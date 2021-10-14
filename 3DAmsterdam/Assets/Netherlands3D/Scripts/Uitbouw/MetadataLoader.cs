@@ -94,7 +94,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public static MetadataLoader Instance;
 
         [SerializeField]
-        private GameObject uitbouwPrefab;
+        private GameObject shapableUitbouwPrefab;
+        [SerializeField]
+        private GameObject uploadedUitbouwPrefab;
 
         [SerializeField]
         private GameObject buildingsLayer;
@@ -129,8 +131,28 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector2RD perceelnummerPlaatscoordinaat;
         private Vector2RD buildingcenter;
 
+        [SerializeField]
+        private bool uploadedModel;
+
+        public static bool UploadedModel;
+
+        [SerializeField]
+        private BuildingMeshGenerator building;
+        [SerializeField]
+        private PerceelRenderer perceel;
+
+        //todo: separate?
+        public static Uitbouw Uitbouw { get; private set; }
+        public static BuildingMeshGenerator Building { get; private set; }
+        public static PerceelRenderer Perceel { get; private set; }
+
         void Awake()
         {
+            UploadedModel = uploadedModel;
+
+            Building = building;
+            Perceel = perceel;
+
             Instance = this;
             AddressLoaded += OnAddressLoaded;
         }
@@ -398,8 +420,18 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw()
         {
             var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            uitbouwPrefab.SetActive(true);
-            uitbouwPrefab.transform.position = pos;
+            if (UploadedModel)
+            {
+                var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
+                Uitbouw = obj.GetComponentInChildren<Uitbouw>();
+            }
+            else
+            {
+                var obj = Instantiate(shapableUitbouwPrefab, pos, Quaternion.identity);
+                Uitbouw = obj.GetComponentInChildren<Uitbouw>();
+            }
+            //uitbouwPrefab.SetActive(true);
+            //uitbouwPrefab.transform.position = pos;
         }
 
         private IEnumerator DownloadBuildingData(Vector3RD rd, string id, GameObject buildingGameObject)

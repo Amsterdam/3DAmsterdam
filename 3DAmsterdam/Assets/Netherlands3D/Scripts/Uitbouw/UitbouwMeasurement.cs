@@ -11,8 +11,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject measurementLine;
 
         private Uitbouw uitbouw;
-        [SerializeField]
-        private BuildingMeshGenerator building; //todo: quick and dirty reference
+        //[SerializeField]
+        //private BuildingMeshGenerator building; //todo: quick and dirty reference
 
         private List<BuildingMeasuring> lines = new List<BuildingMeasuring>();
 
@@ -61,12 +61,12 @@ namespace Netherlands3D.T3D.Uitbouw
         bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
         {
             coord = new Vector3();
-            if (building.AbsoluteBuildingCorners == null)
+            if (RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners == null)
             {
                 return false;
             }
 
-            var coPlanarCorners = GetCoplanarCorners(building.AbsoluteBuildingCorners, uitbouw.SnapWall, 0.1f);
+            var coPlanarCorners = GetCoplanarCorners(RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners, uitbouw.SnapWall, 0.1f);
 
             var smallestDst = Mathf.Infinity;
             var cornerIndex = -1;

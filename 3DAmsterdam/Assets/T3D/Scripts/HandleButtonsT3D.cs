@@ -30,9 +30,12 @@ public class HandleButtonsT3D : MonoBehaviour
 
     public DropUp MaandenDropup;
 
-    public GameObject Step1;
-    public GameObject Step2a;
-    public GameObject Step2b;
+    public GameObject Step1U;
+    public GameObject Step2aU;
+    public GameObject Step2bU;
+
+    public GameObject Step1D;
+    public GameObject Step2D;
 
     //Sun related
     public Text DagText;
@@ -100,7 +103,10 @@ public class HandleButtonsT3D : MonoBehaviour
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
     {
-        Step1.SetActive(true);
+        if (MetadataLoader.UploadedModel)
+            Step1U.SetActive(true);
+        else
+            Step1D.SetActive(true);
     }
 
     void SetMonth(int month)
@@ -157,13 +163,13 @@ public class HandleButtonsT3D : MonoBehaviour
 
         if (positieGoed == true)
         {
-            Step1.SetActive(false);
-            Step2b.SetActive(true);
+            Step1U.SetActive(false);
+            Step2bU.SetActive(true);
         }
         else
         {
-            Step1.SetActive(false);
-            Step2a.SetActive(true);
+            Step1U.SetActive(false);
+            Step2aU.SetActive(true);
         }
 
         var volgendeLabel = ButtonVolgende.GetComponentInChildren<Text>();

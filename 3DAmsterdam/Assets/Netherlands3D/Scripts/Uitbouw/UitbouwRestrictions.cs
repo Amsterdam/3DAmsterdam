@@ -112,9 +112,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public static class RestrictionChecker
     {
-        public static BuildingMeshGenerator ActiveBuilding => HandleMetaDataUpdates.Building;
-        public static PerceelRenderer ActivePerceel => HandleMetaDataUpdates.Perceel;
-        public static Uitbouw ActiveUitbouw => HandleMetaDataUpdates.Uitbouw;
+        public static BuildingMeshGenerator ActiveBuilding => MetadataLoader.Building;
+        public static PerceelRenderer ActivePerceel => MetadataLoader.Perceel;
+        public static Uitbouw ActiveUitbouw => MetadataLoader.Uitbouw;
 
         private static IDictionary<UitbouwRestrictionType, UitbouwRestriction> activeRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>
         {
