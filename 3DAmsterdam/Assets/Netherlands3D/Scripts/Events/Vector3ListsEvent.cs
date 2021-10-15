@@ -19,10 +19,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class Vector3ListsUnityEvent : UnityEvent<List<IList<Vector3>>> { }
+namespace Netherlands3D.Events
+{
+	[System.Serializable]
+	public class Vector3ListsUnityEvent : UnityEvent<List<IList<Vector3>>> { }
 
-[CreateAssetMenu(fileName = "Vector3ListsEvent", menuName = "ScriptableObjects/Events/Vector3ListsEvent", order = 0)]
-[System.Serializable]
-public class Vector3ListsEvent : ScriptableObjectEvent<Vector3ListsUnityEvent> { }
-
+	[CreateAssetMenu(fileName = "Vector3ListsEvent", menuName = "ScriptableObjects/Events/Vector3ListsEvent", order = 0)]
+	[System.Serializable]
+	public class Vector3ListsEvent : ScriptableObjectEvent<Vector3ListsUnityEvent> { }
+}

@@ -15,34 +15,38 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using Netherlands3D.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
 
-public class PolygonProBuilderVisualiser : MonoBehaviour
+namespace Netherlands3D.Visualisers
 {
-    [SerializeField]
-    private Vector3ListsEvent drawPolygonEvent;
-
-    [SerializeField]
-    private Material defaultMaterial;
-
-    [SerializeField]
-    private float extrusionHeight = 100.0f;
-
-    void Start()
+    public class PolygonProBuilderVisualiser : MonoBehaviour
     {
-       if(drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
-    }
+        [SerializeField]
+        private Vector3ListsEvent drawPolygonEvent;
 
-    //Treat first contour as outer contour, and extra contours as holes
-    public void CreatePolygon(List<IList<Vector3>> contours)
-    {
-        ProBuilderMesh probuilderObject = new GameObject().AddComponent<ProBuilderMesh>();
-        probuilderObject.CreateShapeFromPolygon(contours[0], extrusionHeight, false, contours.GetRange(1, contours.Count-1));
-        probuilderObject.GetComponent<MeshRenderer>().material = defaultMaterial;
-        probuilderObject.transform.SetParent(this.transform);
+        [SerializeField]
+        private Material defaultMaterial;
+
+        [SerializeField]
+        private float extrusionHeight = 100.0f;
+
+        void Start()
+        {
+            if (drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
+        }
+
+        //Treat first contour as outer contour, and extra contours as holes
+        public void CreatePolygon(List<IList<Vector3>> contours)
+        {
+            ProBuilderMesh probuilderObject = new GameObject().AddComponent<ProBuilderMesh>();
+            probuilderObject.CreateShapeFromPolygon(contours[0], extrusionHeight, false, contours.GetRange(1, contours.Count - 1));
+            probuilderObject.GetComponent<MeshRenderer>().material = defaultMaterial;
+            probuilderObject.transform.SetParent(this.transform);
+        }
     }
 }

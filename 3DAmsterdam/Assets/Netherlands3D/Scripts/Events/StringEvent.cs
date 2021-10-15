@@ -18,12 +18,15 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class StringUnityEvent : UnityEvent<string> { }
+namespace Netherlands3D.Events
+{
+	[System.Serializable]
+	public class StringUnityEvent : UnityEvent<string> { }
 
-[CreateAssetMenu(fileName = "StringEvent", menuName = "ScriptableObjects/Events/StringEvent", order = 0)]
-[System.Serializable]
-public class StringEvent : ScriptableObjectEvent<StringUnityEvent> {
-	public string testData = "";
+	[CreateAssetMenu(fileName = "StringEvent", menuName = "ScriptableObjects/Events/StringEvent", order = 0)]
+	[System.Serializable]
+	public class StringEvent : ScriptableObjectEvent<StringUnityEvent>
+	{
+		public string testData = "";
+	}
 }
-
