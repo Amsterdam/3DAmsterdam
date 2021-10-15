@@ -59,30 +59,21 @@ public class MapsDataLoader : MonoBehaviour
 
     private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
     {
-        Debug.Log($"Load {geoJsonURL}");
         var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
         yield return geoJsonDataRequest.SendWebRequest();
 
         if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
         {
-            
-            //Debug.Log(geoJsonDataRequest.downloadHandler.text);
             GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
             yield return null;
 
-            GeoJSON.GeoJSONGeometryType geometryType;
             //We already filtered the request, so we can draw all features
             while (geoJSON.GotoNextFeature())
             {
-                geometryType = geoJSON.getGeometryType();
-                if (geometryType==GeoJSON.GeoJSONGeometryType.Point)
-                {
                 double[] location = geoJSON.getGeometryPoint2DDouble();
                 var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
 
                 drawPointEvent.unityEvent?.Invoke(unityCoordinates);
-                }
-                
             }
         }
 	}
