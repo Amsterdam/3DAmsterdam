@@ -380,7 +380,7 @@ namespace Netherlands3D.Utilities
             int nextstartposition;
             point.x = StringManipulation.ParseNextDouble(geoJSONString, ',', startIndex, out nextstartposition);
             point.y = StringManipulation.ParseNextDouble(geoJSONString, ',', nextstartposition, out nextstartposition);
-            endposition = nextstartposition;
+            endposition = geoJSONString.IndexOf(']',startIndex);
             return point;
 
         }
@@ -390,34 +390,168 @@ namespace Netherlands3D.Utilities
             int nextStartPoint;
             return GetPointList(geometrystart, out nextStartPoint);
         }
-
-
-        private List<GeoJSONPoint> GetPointList(int startIndex, out int endposition)
+        public List<GeoJSONPoint> getLineString()
         {
-            List<GeoJSONPoint> points = new List<GeoJSONPoint>();
+            int geometrystart = geoJSONString.IndexOf(GeometryMultiPointLocatorString, featureStartIndex, featureLength) + GeometryMultiPointLocatorString.Length;
+            int nextStartPoint;
+            return GetPointList(geometrystart, out nextStartPoint);
+        }
+
+        public List<List<GeoJSONPoint>> getMultiLine()
+        {
+            int geometrystart = geoJSONString.IndexOf(GeometryMultiLineStringLocatorString, featureStartIndex, featureLength) + GeometryMultiLineStringLocatorString.Length;
+            int nextStartPoint;
+            return GetMultiLine(geometrystart, out nextStartPoint);
+        }
+        public List<List<GeoJSONPoint>> getPolygon()
+        {
+            int geometrystart = geoJSONString.IndexOf(GeometryPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryPolygonStringLocatorString.Length;
+            int nextStartPoint;
+            return GetMultiLine(geometrystart, out nextStartPoint);
+        }
+
+        public List<List<List<GeoJSONPoint>>> getMultiPolygon()
+        {
+            int geometrystart = geoJSONString.IndexOf(GeometryPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryPolygonStringLocatorString.Length;
+            int nextStartPoint;
+            return GetMultiPolygon(geometrystart, out nextStartPoint);
+        }
+
+        private List<List<List<GeoJSONPoint>>> GetMultiPolygon(int startIndex, out int endposition)
+        {
+            
+            List<List<List<GeoJSONPoint>>> polygons = new List<List<List<GeoJSONPoint>>>();
             bool keepGoing = true;
 
             int nextstartposition = startIndex;
-
+            int pointEndPosition;
             int commaPosition;
             int bracketPosition;
             while (keepGoing)
             {
-                points.Add(getPoint(nextstartposition, out nextstartposition));
+                polygons.Add(GetMultiLine(nextstartposition, out pointEndPosition));
+                //pointEndposition = position of ] at end of point
 
-                commaPosition = geoJSONString.IndexOf(',', nextstartposition);
-                if (commaPosition==-1)
+                //findthe position of the next comma
+                commaPosition = geoJSONString.IndexOf(',', pointEndPosition);
+                if (commaPosition < 1)
                 {
                     commaPosition = int.MaxValue;
                 }
-                bracketPosition = geoJSONString.IndexOf(']', nextstartposition);
-                if (bracketPosition<commaPosition)
+                // find the position of the next closing bracket
+                bracketPosition = geoJSONString.IndexOf(']', pointEndPosition + 1);
+                if (bracketPosition == -1)
                 {
-                    keepGoing = false;
+                    bracketPosition = int.MaxValue - 1;
                 }
 
+                if (bracketPosition < commaPosition)
+                {
+                    // if a closing-bracket appears before a comma, we have read all the points in the collection
+                    keepGoing = false;
+                    // the endposition will be the position of the endbracket after the endbracket of the point
+                    endposition = geoJSONString.IndexOf(']', pointEndPosition + 1);
+                    return polygons;
+                }
+
+                // there is another point, so we set the startpostion to the next opening-bracket
+                nextstartposition = geoJSONString.IndexOf('[', pointEndPosition);
             }
-            endposition = nextstartposition;
+
+            // the next two lines will never be reached, but have to be there just in case.
+            endposition = nextstartposition + 1;
+            return polygons;
+        }
+
+        private List<List<GeoJSONPoint>> GetMultiLine(int startIndex, out int endposition)
+        {
+            // reading [[[x,y],[x,y],[x,y]],[[x,y],[x,y],[x,y]]]
+            List<List<GeoJSONPoint>> lines = new List<List<GeoJSONPoint>>();
+            bool keepGoing = true;
+
+            int nextstartposition = startIndex;
+            int pointEndPosition;
+            int commaPosition;
+            int bracketPosition;
+            while (keepGoing)
+            {
+                lines.Add(GetPointList(nextstartposition, out pointEndPosition));
+                //pointEndposition = position of ] at end of point
+
+                //findthe position of the next comma
+                commaPosition = geoJSONString.IndexOf(',', pointEndPosition);
+                if (commaPosition < 1)
+                {
+                    commaPosition = int.MaxValue;
+                }
+                // find the position of the next closing bracket
+                bracketPosition = geoJSONString.IndexOf(']', pointEndPosition + 1);
+                if (bracketPosition == -1)
+                {
+                    bracketPosition = int.MaxValue - 1;
+                }
+
+                if (bracketPosition < commaPosition)
+                {
+                    // if a closing-bracket appears before a comma, we have read all the points in the collection
+                    keepGoing = false;
+                    // the endposition will be the position of the endbracket after the endbracket of the point
+                    endposition = geoJSONString.IndexOf(']', pointEndPosition + 1);
+                    return lines;
+                }
+
+                // there is another point, so we set the startpostion to the next opening-bracket
+                nextstartposition = geoJSONString.IndexOf('[', pointEndPosition);
+            }
+
+            // the next two lines will never be reached, but have to be there just in case.
+            endposition = nextstartposition + 1;
+            return lines;
+        }
+
+        private List<GeoJSONPoint> GetPointList(int startIndex, out int endposition)
+        {
+            // reading [[x,y],[x,y],[x,y]]
+            List<GeoJSONPoint> points = new List<GeoJSONPoint>();
+            bool keepGoing = true;
+
+            int nextstartposition = startIndex;
+            int pointEndPosition;
+            int commaPosition;
+            int bracketPosition;
+            while (keepGoing)
+            {
+                points.Add(getPoint(nextstartposition, out pointEndPosition));
+                    //pointEndposition = position of ] at end of point
+                
+                //findthe position of the next comma
+                commaPosition = geoJSONString.IndexOf(',', pointEndPosition);
+                if (commaPosition<1)
+                {
+                    commaPosition = int.MaxValue;
+                }
+                // find the position of the next closing bracket
+                bracketPosition = geoJSONString.IndexOf(']', pointEndPosition+1);
+                if (bracketPosition ==-1)
+                {
+                    bracketPosition = int.MaxValue-1;
+                }
+
+                if (bracketPosition<commaPosition)
+                {
+                    // if a closing-bracket appears before a comma, we have read all the points in the collection
+                    keepGoing = false;
+                    // the endposition will be the position of the endbracket after the endbracket of the point
+                    endposition = geoJSONString.IndexOf(']', pointEndPosition+1);
+                    return points;
+                }
+
+                // there is another point, so we set the startpostion to the next opening-bracket
+                nextstartposition = geoJSONString.IndexOf('[',pointEndPosition);
+            }
+
+            // the next two lines will never be reached, but have to be there just in case.
+            endposition = nextstartposition+1;
             return points;
 
         }
@@ -426,5 +560,12 @@ namespace Netherlands3D.Utilities
         {
         public double x;
         public double y;
+
+        public GeoJSONPoint(double X, double Y)
+        {
+            x = X;
+            y = Y;
+        }
+       
         }
 }
