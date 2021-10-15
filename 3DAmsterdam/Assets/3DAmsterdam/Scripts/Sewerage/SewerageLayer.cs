@@ -169,15 +169,15 @@ namespace Amsterdam3D.Sewerage
 					double diameter = customJsonHandler.getPropertyFloatValue(DiameterString);
 					double bobBeginPunt = customJsonHandler.getPropertyFloatValue(BobBeginPuntString);
 
-					List<double> coordinates = customJsonHandler.getGeometryLineString();
-					endpoint = GetUnityPoint(coordinates[0], coordinates[1], bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY);
+					List<GeoJSONPoint> coordinates = customJsonHandler.getGeometryLineString();
+					endpoint = GetUnityPoint(coordinates[0].x, coordinates[0].y, bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY);
 
-					for (int i = 2; i < coordinates.Count; i += 2)
+					for (int i = 1; i < coordinates.Count; i ++)
 					{
 						startpoint = endpoint;
 						double bobEindPunt = customJsonHandler.getPropertyFloatValue(BobEindPuntString);
 
-						endpoint = GetUnityPoint(coordinates[i], coordinates[(i + 1)], bobEindPunt + Config.activeConfiguration.zeroGroundLevelY);
+						endpoint = GetUnityPoint(coordinates[i].x, coordinates[i].y, bobEindPunt + Config.activeConfiguration.zeroGroundLevelY);
 						sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
 					}
 
