@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1707717668596274248}
   - component: {fileID: 3483533633690935426}
   m_Layer: 0
-  m_Name: ToiletMarker_SeasonAccess
+  m_Name: ToiletMarker_Parking
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,7 +39,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3122968243152191831}
-  m_Mesh: {fileID: 13562882237320842, guid: 7dc621b3ee6550a42ae80ccb7a784d9c, type: 3}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &3483533633690935426
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ee54ad0c044379e42ae0e3eeb32b5289, type: 2}
+  - {fileID: 2100000, guid: 3f6e4c85bca169f489e3009d3f01f5a6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

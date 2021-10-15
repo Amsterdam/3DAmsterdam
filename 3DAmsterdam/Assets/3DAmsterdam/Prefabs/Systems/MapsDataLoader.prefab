@@ -73,7 +73,7 @@ MonoBehaviour:
       drawPointEvent: {fileID: 11400000, guid: 7ff925d6ca675694f815506235c1306a, type: 2}
   - name: OPENBARE_TOILETTEN
     geoJsonURLs:
-    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|OPENBAAR
       drawPointEvent: {fileID: 11400000, guid: 99372fba2bd1d084f85f22fe5161dadd, type: 2}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|PARKEER
       drawPointEvent: {fileID: 11400000, guid: 59a223c50f5667749bd84465fb1d5249, type: 2}
