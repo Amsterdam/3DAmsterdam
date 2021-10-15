@@ -24,7 +24,7 @@ namespace Netherlands3D.Events
 	[System.Serializable]
 	public class Vector3ListValueUnityEvent : UnityEvent<List<Vector3>> { }
 
-	[CreateAssetMenu(fileName = "Vector3ListEvent", menuName = "ScriptableObjects/Events/Vector3ListEvent", order = 0)]
+	[CreateAssetMenu(fileName = "Vector3ListEvent", menuName = "EventContainers/Vector3ListEvent", order = 0)]
 	[System.Serializable]
 	public class Vector3ListEvent : ScriptableObjectEvent<Vector3ListValueUnityEvent>
 	{
