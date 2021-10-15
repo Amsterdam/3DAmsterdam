@@ -25,24 +25,8 @@ public class HandleMetaDataUpdates : MonoBehaviour
     private float perceelArea;
     private float builtArea;
 
-    [SerializeField]
-    private Uitbouw uitbouw;
-    [SerializeField]
-    private BuildingMeshGenerator building;
-    [SerializeField]
-    private PerceelRenderer perceel;
-
-    //todo: separate?
-    public static Uitbouw Uitbouw { get; private set; }
-    public static BuildingMeshGenerator Building { get; private set; }
-    public static PerceelRenderer Perceel { get; private set; }
-
     void Start()
     {
-        Uitbouw = uitbouw;
-        Building = building;
-        Perceel = perceel;
-
         MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
         MetadataLoader.Instance.AddressLoaded += AddressLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += PerceelDataLoaded;
