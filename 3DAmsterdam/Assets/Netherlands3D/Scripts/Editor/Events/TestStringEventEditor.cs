@@ -17,7 +17,7 @@ namespace Netherlands3D.Events
             {
                 if (GUILayout.Button("Trigger", GUILayout.Height(40)))
                 {
-                    script.unityEvent?.Invoke(script.testData);
+                    //script.unityEvent?.Invoke(script.testData);
                 }
             }
         }

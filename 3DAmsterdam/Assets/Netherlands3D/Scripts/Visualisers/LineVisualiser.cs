@@ -12,6 +12,9 @@ namespace Netherlands3D.Visualisers
 		private Vector3ListEvent lineCoordinatesEvent;
 
 		[SerializeField]
+		private TriggerEvent finishedDrawing;
+
+		[SerializeField]
 		private Material lineRendererMaterial;
 
 		[SerializeField]
@@ -24,7 +27,7 @@ namespace Netherlands3D.Visualisers
 		{
 			lineCoordinatesEvent.unityEvent.AddListener(DrawLine);
 		}
-
+		
 		private void DrawLine(List<Vector3> linePoints)
 		{
 			var lineRenderObject = new GameObject();

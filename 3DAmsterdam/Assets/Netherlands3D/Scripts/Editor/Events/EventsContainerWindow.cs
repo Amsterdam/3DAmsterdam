@@ -10,6 +10,9 @@ namespace Netherlands3D.Events
         static string[] vector3EventContainers;
 
         static string testData = "";
+        static string filterName = "";
+
+        static bool onlyShowEventsWithListeners = false;
 
         Vector2 scrollPosition;
         // Add menu named "My Window" to the Window menu
@@ -25,6 +28,9 @@ namespace Netherlands3D.Events
             GUILayout.Label("Event test data", EditorStyles.boldLabel);
             testData = EditorGUILayout.TextField("", testData);
 
+            GUILayout.Label("Filter", EditorStyles.boldLabel);
+            filterName = EditorGUILayout.TextField("", filterName);
+
             scrollPosition = GUILayout.BeginScrollView(
                 scrollPosition);
 
@@ -34,7 +40,13 @@ namespace Netherlands3D.Events
             foreach (var triggerEventContainer in triggerEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(triggerEventContainer);
+
+                if (filterName .Length > 0 && !assetPath.Contains(filterName)) continue;
+                
                 TriggerEvent asset = (TriggerEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(TriggerEvent));
+
+                //if(asset.unityEvent.Get)
+
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(TriggerEvent), false);
                 if (GUILayout.Button("Trigger", GUILayout.Height(20)))
@@ -50,6 +62,9 @@ namespace Netherlands3D.Events
             foreach (var stringEventContainer in stringEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(stringEventContainer);
+
+                if (filterName.Length > 0 && !assetPath.Contains(filterName)) continue;
+
                 StringEvent asset = (StringEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(StringEvent));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(StringEvent), false);
@@ -66,6 +81,9 @@ namespace Netherlands3D.Events
             foreach (var vector3EventContainer in vector3EventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(vector3EventContainer);
+
+                if (filterName.Length > 0 && !assetPath.Contains(filterName)) continue;
+
                 Vector3Event asset = (Vector3Event)AssetDatabase.LoadAssetAtPath(assetPath, typeof(Vector3Event));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(Vector3Event), false);
