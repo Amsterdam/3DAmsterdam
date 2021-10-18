@@ -23,6 +23,9 @@ namespace Netherlands3D.Visualisers
 		[SerializeField]
 		private float thickness = 1.0f;
 
+		[SerializeField]
+		private Vector3 offset = Vector3.zero;
+
 		void Start()
 		{
 			lineCoordinatesEvent.unityEvent.AddListener(DrawLine);
@@ -41,7 +44,7 @@ namespace Netherlands3D.Visualisers
 
 			for (int i = 0; i < linePoints.Count; i++)
 			{
-				newLineRenderer.SetPosition(i, linePoints[i]);
+				newLineRenderer.SetPosition(i, linePoints[i] + offset);
 			}
 		}
 	}
