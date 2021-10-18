@@ -12,15 +12,15 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class Uitbouw : MonoBehaviour
     {
-        private Vector2[] footprint;
+        //private Vector2[] footprint;
         //private MeshRenderer meshRenderer;
         //private Mesh mesh;
         //private List<Vector2[]> perceel;
 
-        [SerializeField]
+        //[SerializeField]
         private BuildingMeshGenerator building;
-        [SerializeField]
-        private PerceelRenderer perceel;
+        //[SerializeField]
+        //private PerceelRenderer perceel;
 
         public float Width { get; private set; }
         public float Depth { get; private set; }
@@ -110,6 +110,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //mesh = GetComponent<MeshFilter>().mesh;
             //SetDimensions(mesh.bounds.extents * 2);
             //userMovementAxis = GetComponentInChildren<DragableAxis>();
+            building = RestrictionChecker.ActiveBuilding;
             UpdateDimensions();
         }
 
