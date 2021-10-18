@@ -116,7 +116,7 @@ namespace Amsterdam3D.Maps
                                 Debug.Log($"Subcount: {polygon[i].Count}");
                             }
 
-							DrawPolygonRequest(geoJsonURLData, polygon);
+							//DrawPolygonRequest(geoJsonURLData, polygon);
 							yield return new WaitForEndOfFrame();
 
 							break;

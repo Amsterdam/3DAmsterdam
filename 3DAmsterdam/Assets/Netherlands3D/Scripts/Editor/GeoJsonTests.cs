@@ -668,43 +668,43 @@ public class GeoJsonTests
         GeoJSON customJsonHandler = new GeoJSON(jsontext);
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Point, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Point, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPoint, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPoint, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual( GeoJSON.GeoJSONGeometryType.LineString, customJsonHandler.getGeometryType());
+        Assert.AreEqual( GeoJSON.GeoJSONGeometryType.LineString, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiLineString, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiLineString, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Polygon, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Polygon, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPolygon, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPolygon, customJsonHandler.GetGeometryType());
 
 
 
         customJsonHandler = new GeoJSON(noSpacesText);
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Point, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Point, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPoint, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPoint, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.LineString, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.LineString, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiLineString, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiLineString, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Polygon, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.Polygon, customJsonHandler.GetGeometryType());
 
         customJsonHandler.GotoNextFeature();
-        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPolygon, customJsonHandler.getGeometryType());
+        Assert.AreEqual(GeoJSON.GeoJSONGeometryType.MultiPolygon, customJsonHandler.GetGeometryType());
     }
 }

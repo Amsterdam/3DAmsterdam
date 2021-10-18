@@ -266,7 +266,6 @@ namespace Netherlands3D.Utilities
                 int geometrystart = geoJSONString.IndexOf(GeometryLineStringLocatorString, featureStartIndex, featureLength) + GeometryLineStringLocatorString.Length;
                 int nextStartPoint;
                 return GetPointList(geometrystart, out nextStartPoint);
- 
         }
 
         public List<double> GetGeometryMultiPolygonString()
@@ -329,7 +328,7 @@ namespace Netherlands3D.Utilities
         /// get the geometryType of the current Feature
         /// </summary>
         /// <returns>GeoJSONGeometryType</returns>
-        public GeoJSONGeometryType getGeometryType()
+        public GeoJSONGeometryType GetGeometryType()
         {
 
             int geometrystart = geoJSONString.IndexOf(GeometryPointLocatorString, featureStartIndex, featureLength);
@@ -418,8 +417,7 @@ namespace Netherlands3D.Utilities
         }
 
         private List<List<List<GeoJSONPoint>>> GetMultiPolygon(int startIndex, out int endposition)
-        {
-            
+        {       
             List<List<List<GeoJSONPoint>>> polygons = new List<List<List<GeoJSONPoint>>>();
             bool keepGoing = true;
 

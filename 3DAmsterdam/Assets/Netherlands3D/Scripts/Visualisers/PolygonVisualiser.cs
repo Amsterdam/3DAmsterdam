@@ -33,6 +33,10 @@ namespace Netherlands3D.Events
         [SerializeField]
         private float extrusionHeight = 100.0f;
 
+        [SerializeField]
+        private int maxPolygons = 3;
+        private int polygonCount = 0;
+
         void Awake()
         {
             if (drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
@@ -41,6 +45,9 @@ namespace Netherlands3D.Events
         //Treat first contour as outer contour, and extra contours as holes
         public void CreatePolygon(List<IList<Vector3>> contours)
         {
+            if (polygonCount >= maxPolygons) return;
+            polygonCount++;
+
             var polygon = new Poly2Mesh.Polygon();
             polygon.outside = (List<Vector3>)contours[0];
             if (contours.Count > 1)
