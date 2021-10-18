@@ -423,12 +423,12 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw()
         {
             var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            if (UploadedModel)
+            if (UploadedModel && !Uitbouw)
             {
                 var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
                 Uitbouw = obj.GetComponentInChildren<Uitbouw>();
             }
-            else
+            else if (!Uitbouw)
             {
                 var obj = Instantiate(shapableUitbouwPrefab, pos, Quaternion.identity);
                 Uitbouw = obj.GetComponentInChildren<Uitbouw>();
