@@ -24,7 +24,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Netherlands3D.Visualisers
+namespace Amsterdam3D.Maps
 {
     public class MapsDataLoader : MonoBehaviour
     {
@@ -85,8 +85,6 @@ namespace Netherlands3D.Visualisers
                 while (geoJSON.GotoNextFeature())
                 {
                     var type = geoJSON.getGeometryType();
-                    Debug.Log($"Found type: {type}");
-
                     switch (type)
                     {
                         case GeoJSON.GeoJSONGeometryType.Point:
