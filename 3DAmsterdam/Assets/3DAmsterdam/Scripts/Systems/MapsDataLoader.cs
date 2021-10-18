@@ -45,6 +45,8 @@ namespace Netherlands3D.Visualisers
         {
             public string geoJsonURL;
             public Vector3Event drawPointEvent;
+            public Vector3Event drawLineEvent;
+            public Vector3Event drawGeometryEvent;
         }
 
         void Awake()
@@ -82,6 +84,30 @@ namespace Netherlands3D.Visualisers
                 //We already filtered the request, so we can draw all features
                 while (geoJSON.GotoNextFeature())
                 {
+                    var type = geoJSON.getGeometryType();
+
+                    switch (type)
+                    {
+                        case GeoJSON.GeoJSONGeometryType.Point:
+                        case GeoJSON.GeoJSONGeometryType.MultiPoint:
+
+                            break;
+                        case GeoJSON.GeoJSONGeometryType.LineString:
+                        case GeoJSON.GeoJSONGeometryType.MultiLineString:
+
+                            break;
+                        case GeoJSON.GeoJSONGeometryType.Polygon:
+                        case GeoJSON.GeoJSONGeometryType.MultiPolygon:
+
+                            break;
+                        case GeoJSON.GeoJSONGeometryType.GeometryCollection:
+                            break;
+                        case GeoJSON.GeoJSONGeometryType.Undefined:
+                            break;
+                        default:
+                            break;
+                    }
+
                     double[] location = geoJSON.getGeometryPoint2DDouble();
                     var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
 
