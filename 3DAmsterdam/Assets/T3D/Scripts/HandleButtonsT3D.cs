@@ -103,7 +103,7 @@ public class HandleButtonsT3D : MonoBehaviour
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
     {
-        if (MetadataLoader.UploadedModel)
+        if (MetadataLoader.Instance.UploadedModel)
             Step1U.SetActive(true);
         else
             Step1D.SetActive(true);

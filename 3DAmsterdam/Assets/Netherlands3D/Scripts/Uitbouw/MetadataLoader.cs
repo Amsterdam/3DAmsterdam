@@ -132,10 +132,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector2RD perceelnummerPlaatscoordinaat;
         private Vector2RD buildingcenter;
 
-        [SerializeField]
-        private bool uploadedModel;
-
-        public static bool UploadedModel;
+        public bool UploadedModel;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -151,7 +148,6 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            UploadedModel = uploadedModel;
 
             Building = building;
             Perceel = perceel;
