@@ -84,7 +84,7 @@ namespace Amsterdam3D.Maps
                 //We already filtered the request, so we can draw all features
                 while (geoJSON.GotoNextFeature())
                 {
-                    var type = geoJSON.getGeometryType();
+                    var type = geoJSON.GetGeometryType();
                     Debug.Log($"type: {type}");
                     switch (type)
                     {
@@ -110,10 +110,14 @@ namespace Amsterdam3D.Maps
 							if (!geoJsonURLData.drawGeometryEvent) continue;
 
 							List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
+                            Debug.Log($"count: {polygon.Count}");
+							for (int i = 0; i < polygon.Count; i++)
+							{
+                                Debug.Log($"Subcount: {polygon[i].Count}");
+                            }
+
 							DrawPolygonRequest(geoJsonURLData, polygon);
 							yield return new WaitForEndOfFrame();
-
-                            yield break;
 
 							break;
 						/*case GeoJSON.GeoJSONGeometryType.MultiPolygon:
