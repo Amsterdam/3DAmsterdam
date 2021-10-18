@@ -118,9 +118,9 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter1 = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt1 = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt1 = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+        double diameter1 = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt1 = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt1 = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
 
         Assert.AreEqual(297, diameter1);
         Assert.AreEqual(-1, bobBeginPunt1);
@@ -128,9 +128,9 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter2 = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt2 = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt2 = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+        double diameter2 = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt2 = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt2 = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
 
         Assert.AreEqual(234, diameter2);
         Assert.AreEqual(-1, bobBeginPunt2);
@@ -148,9 +148,9 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter1 = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt1 = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt1 = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+        double diameter1 = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt1 = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt1 = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
 
         Assert.AreEqual(6000, diameter1);
         Assert.AreEqual(0.85, bobBeginPunt1, 0.1);
@@ -158,9 +158,9 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter2 = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt2 = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt2 = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+        double diameter2 = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt2 = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt2 = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
 
         Assert.AreEqual(150, diameter2);
         Assert.AreEqual(-1.25, bobBeginPunt2);
@@ -178,7 +178,7 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        var geom1 = geojson.getGeometryLineString();
+        var geom1 = geojson.GetGeometryLineString();
         Assert.AreEqual(2, geom1.Count);
         Assert.AreEqual(geom1[0].x,4.90698478562009);
         Assert.AreEqual(geom1[0].y, 52.3429529014738);
@@ -187,7 +187,7 @@ public class GeoJsonTests
 
 
         geojson.GotoNextFeature();
-        var geom2 = geojson.getGeometryLineString();
+        var geom2 = geojson.GetGeometryLineString();
         //Assert.AreEqual(2, geom2.Count);
         //Assert.AreEqual(geom2[0], new GeoJSONPoint(4.90698478562009, 52.3429529014738));
         //Assert.AreEqual(geom2[1], new GeoJSONPoint(4.90665251262403, 52.3429023897671));
@@ -205,13 +205,13 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        var geom1 = geojson.getGeometryLineString();
+        var geom1 = geojson.GetGeometryLineString();
         Assert.AreEqual(2, geom1.Count);
         Assert.AreEqual(geom1[0], new GeoJSONPoint(132803.42, 457145.83));
         Assert.AreEqual(geom1[1], new GeoJSONPoint(132798.02, 457153.57));
 
         geojson.GotoNextFeature();
-        var geom2 = geojson.getGeometryLineString();        
+        var geom2 = geojson.GetGeometryLineString();        
         Assert.AreEqual(2, geom2.Count);
         Assert.AreEqual(geom2[0], new GeoJSONPoint(132652.29, 457103.23));
         Assert.AreEqual(geom2[1], new GeoJSONPoint(132655.03, 457110.39));
@@ -230,19 +230,19 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        var geom1 = geojson.getGeometryLineString();
+        var geom1 = geojson.GetGeometryLineString();
        // Assert.AreEqual(2, geom1.Count);
         Assert.AreEqual(geom1[0], new GeoJSONPoint(128714.08, 456715.91));
         Assert.AreEqual(geom1[1], new GeoJSONPoint(128726.92, 456784.05));
 
         geojson.GotoNextFeature();
-        var geom2 = geojson.getGeometryLineString();
+        var geom2 = geojson.GetGeometryLineString();
         //Assert.AreEqual(4, geom2.Count);
         Assert.AreEqual(geom2[0], new GeoJSONPoint(129029.42, 456653.39));
         Assert.AreEqual(geom2[1], new GeoJSONPoint(129029.21, 456654.99));
 
         geojson.GotoNextFeature();
-        var geom3 = geojson.getGeometryLineString();
+        var geom3 = geojson.GetGeometryLineString();
         //Assert.AreEqual(4, geom2.Count);
         Assert.AreEqual(geom3[0], new GeoJSONPoint(128995.88, 456709.91));
         Assert.AreEqual(geom3[1], new GeoJSONPoint(128980.46, 456704.58));
@@ -259,11 +259,11 @@ public class GeoJsonTests
         GeoJSON geojson = new GeoJSON(testStringAmsterdamCablesAndPipelineApi);
         geojson.GotoNextFeature();
 
-        var stringValue = geojson.getPropertyStringValue("id");
-        var floatValueWithNull = geojson.getPropertyFloatValue("diam_mm");
+        var stringValue = geojson.GetPropertyStringValue("id");
+        var floatValueWithNull = geojson.GetPropertyFloatValue("diam_mm");
 
-        var floatWrappedInQuotesAsFloat = geojson.getPropertyFloatValue("diepte");
-        var floatWrappedInQuotesAsString = geojson.getPropertyStringValue("diepte");
+        var floatWrappedInQuotesAsFloat = geojson.GetPropertyFloatValue("diepte");
+        var floatWrappedInQuotesAsString = geojson.GetPropertyStringValue("diepte");
 
         Assert.AreEqual("ligging_lijn_totaal.2302136", stringValue);
         Assert.AreEqual(0, floatValueWithNull);
@@ -280,7 +280,7 @@ public class GeoJsonTests
         GeoJSON geojson = new GeoJSON(testStringMultipleSegmentPdok);
         geojson.GotoNextFeature();
 
-        var stringValue = geojson.getPropertyStringValue("Dataset");
+        var stringValue = geojson.GetPropertyStringValue("Dataset");
         Assert.AreEqual("Utrecht", stringValue);
     }
 
@@ -324,8 +324,8 @@ public class GeoJsonTests
         GeoJSON geojson = new GeoJSON(testStringManholesAmsterdam);
         
         geojson.GotoNextFeature();
-        var putdekselhoogte1 =  geojson.getPropertyFloatValue(seweragelayer.PutdekselhoogteString);
-        var point1 = geojson.getGeometryPoint2DDouble();
+        var putdekselhoogte1 =  geojson.GetPropertyFloatValue(seweragelayer.PutdekselhoogteString);
+        var point1 = geojson.GetGeometryPoint2DDouble();
 
         Assert.AreEqual(0.20, putdekselhoogte1, 0.001);
         Assert.AreEqual(2, point1.Length);
@@ -333,8 +333,8 @@ public class GeoJsonTests
         Assert.AreEqual(52.342962335247, point1[1], 0.001);
 
         geojson.GotoNextFeature();
-        var putdekselhoogte2 = geojson.getPropertyFloatValue(seweragelayer.PutdekselhoogteString);
-        var point2 = geojson.getGeometryPoint2DDouble();
+        var putdekselhoogte2 = geojson.GetPropertyFloatValue(seweragelayer.PutdekselhoogteString);
+        var point2 = geojson.GetGeometryPoint2DDouble();
 
         Assert.AreEqual(0.68, putdekselhoogte2, 0.001);
         Assert.AreEqual(2, point2.Length);
@@ -354,16 +354,16 @@ public class GeoJsonTests
         GeoJSON geojson = new GeoJSON(testStringManholesPdok);
 
         geojson.GotoNextFeature();
-        var putdekselhoogte1 = geojson.getPropertyFloatValue(seweragelayer.PutdekselhoogteString);
-        var point1 = geojson.getGeometryPoint2DDouble();
+        var putdekselhoogte1 = geojson.GetPropertyFloatValue(seweragelayer.PutdekselhoogteString);
+        var point1 = geojson.GetGeometryPoint2DDouble();
         Assert.AreEqual(1.530, putdekselhoogte1, 0.001);
         Assert.AreEqual(2, point1.Length);
         Assert.AreEqual(132303.35, point1[0], 0.001);
         Assert.AreEqual(457990.35, point1[1], 0.001);
 
         geojson.GotoNextFeature();
-        var putdekselhoogte2 = geojson.getPropertyFloatValue(seweragelayer.PutdekselhoogteString);
-        var point2 = geojson.getGeometryPoint2DDouble();
+        var putdekselhoogte2 = geojson.GetPropertyFloatValue(seweragelayer.PutdekselhoogteString);
+        var point2 = geojson.GetGeometryPoint2DDouble();
         Assert.AreEqual(1.540, putdekselhoogte2, 0.001);
         Assert.AreEqual(2, point2.Length);
         Assert.AreEqual(132347.73, point2[0], 0.001);
@@ -407,10 +407,10 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
-        var geom = geojson.getGeometryLineString();
+        double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
+        var geom = geojson.GetGeometryLineString();
 
         Assert.AreEqual(800, diameter);
         Assert.AreEqual(0.06, bobBeginPunt, 0.1);
@@ -429,10 +429,10 @@ public class GeoJsonTests
 
         geojson.GotoNextFeature();
 
-        double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-        double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-        double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
-        var geom = geojson.getGeometryLineString();
+        double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+        double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+        double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
+        var geom = geojson.GetGeometryLineString();
 
         Assert.AreEqual(297, diameter);
         Assert.AreEqual(-1, bobBeginPunt);
@@ -451,10 +451,10 @@ public class GeoJsonTests
 
         while (geojson.GotoNextFeature())
         {
-            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
-            var geom = geojson.getGeometryLineString();
+            double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+            double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+            double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
+            var geom = geojson.GetGeometryLineString();
 
             Assert.AreEqual(297, diameter);
             Assert.AreEqual(-1, bobBeginPunt);
@@ -474,10 +474,10 @@ public class GeoJsonTests
 
         while (geojson.GotoNextFeature())
         {
-            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
-            var geom = geojson.getGeometryLineString();
+            double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+            double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+            double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
+            var geom = geojson.GetGeometryLineString();
 
             Assert.AreEqual(800, diameter);
             Assert.AreEqual(0.06, bobBeginPunt, 0.001);
@@ -498,7 +498,7 @@ public class GeoJsonTests
         GeoJSON customJsonHandler = new GeoJSON(testStringBuurtnamen);
 
         customJsonHandler.GotoNextFeature();
-        var coordinates = customJsonHandler.getMultiPolygon();
+        var coordinates = customJsonHandler.GetMultiPolygon();
 
         // count number of polygons
         Assert.AreEqual(1, coordinates.Count);
@@ -550,9 +550,9 @@ public class GeoJsonTests
                         GeoJSON geojson = new GeoJSON(sewerageRequest.downloadHandler.text);
                         while (geojson.GotoNextFeature())
                         {
-                            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-                            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-                            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+                            double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+                            double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+                            double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
                             //var coordinates = geojson.getGeometryLineString();
                             //Assert.AreEqual(4, coordinates.Count);
                         }
@@ -593,11 +593,11 @@ public class GeoJsonTests
 
         while (geojson.GotoNextFeature())
         {
-            double diameter = geojson.getPropertyFloatValue(seweragelayer.DiameterString);
-            double bobBeginPunt = geojson.getPropertyFloatValue(seweragelayer.BobBeginPuntString);
-            double bobEindPunt = geojson.getPropertyFloatValue(seweragelayer.BobEindPuntString);
+            double diameter = geojson.GetPropertyFloatValue(seweragelayer.DiameterString);
+            double bobBeginPunt = geojson.GetPropertyFloatValue(seweragelayer.BobBeginPuntString);
+            double bobEindPunt = geojson.GetPropertyFloatValue(seweragelayer.BobEindPuntString);
 
-            var geom = geojson.getGeometryLineString();
+            var geom = geojson.GetGeometryLineString();
 
             Assert.AreEqual(4, geom.Count);
 
@@ -623,7 +623,7 @@ public class GeoJsonTests
 
         GeoJSON customJsonHandler = new GeoJSON(jsontext);
         customJsonHandler.GotoNextFeature();
-        List<GeoJSONPoint> points = customJsonHandler.getMultiPoint();
+        List<GeoJSONPoint> points = customJsonHandler.GetMultiPoint();
         Assert.AreEqual(2, points.Count);
         Assert.AreEqual(4.9162941, points[0].x);
         Assert.AreEqual(52.3506473, points[0].y);
@@ -632,7 +632,7 @@ public class GeoJsonTests
     }
 
     [Test]
-    public void testGeometryType()
+    public void TestGeometryType()
     {
         var jsontext = @"{
 ""type"": ""FeatureCollection"",

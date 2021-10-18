@@ -85,30 +85,29 @@ namespace Netherlands3D.Visualisers
                 while (geoJSON.GotoNextFeature())
                 {
                     var type = geoJSON.getGeometryType();
+                    Debug.Log($"Found type: {type}");
 
                     switch (type)
                     {
                         case GeoJSON.GeoJSONGeometryType.Point:
-                        case GeoJSON.GeoJSONGeometryType.MultiPoint:
-                            double[] location = geoJSON.getGeometryPoint2DDouble();
+                        //case GeoJSON.GeoJSONGeometryType.MultiPoint:
+                            double[] location = geoJSON.GetGeometryPoint2DDouble();
                             var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
 
                             geoJsonURLData.drawPointEvent.unityEvent?.Invoke(unityCoordinates);
                             break;
                         case GeoJSON.GeoJSONGeometryType.LineString:
-                        case GeoJSON.GeoJSONGeometryType.MultiLineString:
-                            List<GeoJSONPoint> points = geoJSON.getLineString();
-                            List<Vector3> unityPoints = new List<Vector3>();
-							for (int i = 0; i < points.Count; i++)
-							{
-                                unityPoints.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(points[i].x, points[i].y));
+                            List<GeoJSONPoint> line = geoJSON.GetGeometryLineString();
+                            List<Vector3> unityLine = new List<Vector3>();
+                            for (int i = 0; i < line.Count; i++)
+                            {
+                                unityLine.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(line[i].x, line[i].y));
                             }
-
-                            geoJsonURLData.drawLineEvent.unityEvent?.Invoke(unityPoints);
+                            geoJsonURLData.drawLineEvent.unityEvent?.Invoke(unityLine);
                             break;
                         case GeoJSON.GeoJSONGeometryType.Polygon:
                         case GeoJSON.GeoJSONGeometryType.MultiPolygon:
-                            List<List<List<GeoJSONPoint>>> multiPolygons = geoJSON.getMultiPolygon();
+                            List<List<List<GeoJSONPoint>>> multiPolygons = geoJSON.GetMultiPolygon();
                             List<List<IList<Vector3>>> unityMultiPolygons = new List<List<IList<Vector3>>>();
                            
                             for (int i = 0; i < multiPolygons.Count; i++)

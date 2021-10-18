@@ -112,11 +112,11 @@ MonoBehaviour:
   - name: TRAMMETRO_PUNTEN_2021
     geoJsonURLs:
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_PUNTEN_2021&THEMA=trammetro&FILTER=Modaliteit|Tram
-      drawPointEvent: {fileID: 11400000, guid: 99372fba2bd1d084f85f22fe5161dadd, type: 2}
+      drawPointEvent: {fileID: 11400000, guid: 0bb669bb8cee2d64ba94a1f1969c48e2, type: 2}
       drawLineEvent: {fileID: 0}
       drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_PUNTEN_2021&THEMA=trammetro&FILTER=Modaliteit|Metro
-      drawPointEvent: {fileID: 11400000, guid: 59a223c50f5667749bd84465fb1d5249, type: 2}
+      drawPointEvent: {fileID: 11400000, guid: 38f381a40839b864bbe16b9859efed8c, type: 2}
       drawLineEvent: {fileID: 0}
       drawGeometryEvent: {fileID: 0}
   - name: TRAMMETRO_LIJNEN_2021
@@ -128,4 +128,22 @@ MonoBehaviour:
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_LIJNEN_2021&THEMA=trammetro&FILTER=Modaliteit|Metro
       drawPointEvent: {fileID: 0}
       drawLineEvent: {fileID: 11400000, guid: b39556d0035beba4fac0c911acae34f0, type: 2}
+      drawGeometryEvent: {fileID: 0}
+  - name: WONINGBOUWPLANNEN
+    geoJsonURLs:
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|2
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|3
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|4
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|5
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 0}
       drawGeometryEvent: {fileID: 0}

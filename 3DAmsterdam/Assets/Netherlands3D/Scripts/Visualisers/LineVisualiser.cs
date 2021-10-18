@@ -34,6 +34,8 @@ namespace Netherlands3D.Visualisers
 		private void DrawLine(List<Vector3> linePoints)
 		{
 			var lineRenderObject = new GameObject();
+			lineRenderObject.transform.SetParent(this.transform);
+
 			LineRenderer newLineRenderer = lineRenderObject.AddComponent<LineRenderer>();
 			newLineRenderer.positionCount = linePoints.Count;
 			newLineRenderer.material = lineRendererMaterial;
@@ -41,6 +43,7 @@ namespace Netherlands3D.Visualisers
 			newLineRenderer.endWidth = thickness;
 			newLineRenderer.startColor = lineColor;
 			newLineRenderer.endColor = lineColor;
+			newLineRenderer.useWorldSpace = false;
 
 			for (int i = 0; i < linePoints.Count; i++)
 			{

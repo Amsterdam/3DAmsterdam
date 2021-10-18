@@ -49,8 +49,9 @@ MonoBehaviour:
   finishedDrawing: {fileID: 0}
   lineRendererMaterial: {fileID: 2100000, guid: 143d1b601a82c22498d2c7cf9a42a833,
     type: 2}
-  lineColor: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
-  thickness: 0.5
+  lineColor: {r: 1, g: 0.71056247, b: 0, a: 1}
+  thickness: 15
+  offset: {x: 0, y: 2, z: 0}
 --- !u!114 &940050261994297083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,4 +67,4 @@ MonoBehaviour:
   receiveDrawPointEvent: {fileID: 11400000, guid: 38f381a40839b864bbe16b9859efed8c,
     type: 2}
   shape: {fileID: 4215919988600483874, guid: 6c1395f00b4d42e419a2e18c7a842e82, type: 3}
-  offset: {x: 0, y: 1, z: 0}
+  offset: {x: 0, y: 0, z: 0}

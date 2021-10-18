@@ -209,7 +209,7 @@ namespace Netherlands3D.LayerSystem
 					//string textPropertyValue = customJsonHandler.getPropertyStringValue(textProperty);
 					foreach(TextsAndSize textAndSize in textsAndSizes)
 					{
-						string textPropertyValue = customJsonHandler.getPropertyStringValue(textAndSize.textPropertyName);	
+						string textPropertyValue = customJsonHandler.GetPropertyStringValue(textAndSize.textPropertyName);	
 
 						if (textPropertyValue.Length > 1 && (!filterUniqueNames || !uniqueNames.Contains(textPropertyValue)))
 						{
@@ -226,7 +226,7 @@ namespace Netherlands3D.LayerSystem
 							switch (positionSourceType)
 							{
 								case PositionSourceType.Point:
-									double[] coordinate = customJsonHandler.getGeometryPoint2DDouble();
+									double[] coordinate = customJsonHandler.GetGeometryPoint2DDouble();
 									locationPoint = CoordConvert.RDtoUnity(new Vector2RD(coordinate[0], coordinate[1]));
 									locationPoint.y = textAndSize.offset;
 
@@ -235,7 +235,7 @@ namespace Netherlands3D.LayerSystem
 
 									break;
 								case PositionSourceType.MultiPolygonCentroid:
-									List<double> coordinates = customJsonHandler.getGeometryMultiPolygonString();
+									List<double> coordinates = customJsonHandler.GetGeometryMultiPolygonString();
 
 									if (drawGeometry)
 									{
@@ -279,7 +279,7 @@ namespace Netherlands3D.LayerSystem
 								case AutoOrientationMode.AutoFlip:
 									if (readAngleFromProperty)
 									{
-										float angle = customJsonHandler.getPropertyFloatValue(angleProperty);
+										float angle = customJsonHandler.GetPropertyFloatValue(angleProperty);
 										textObject.transform.Rotate(Vector3.up, angle, Space.World);
 									}
 									var flipToCameraText = textObject.AddComponent<FlipToCamera>();

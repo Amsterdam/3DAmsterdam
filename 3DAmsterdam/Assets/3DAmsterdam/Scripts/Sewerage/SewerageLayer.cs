@@ -166,16 +166,16 @@ namespace Amsterdam3D.Sewerage
 				{
 					parseCounter++;
 					if ((parseCounter % maxParsesPerFrame) == 0) yield return null;
-					double diameter = customJsonHandler.getPropertyFloatValue(DiameterString);
-					double bobBeginPunt = customJsonHandler.getPropertyFloatValue(BobBeginPuntString);
+					double diameter = customJsonHandler.GetPropertyFloatValue(DiameterString);
+					double bobBeginPunt = customJsonHandler.GetPropertyFloatValue(BobBeginPuntString);
 
-					List<GeoJSONPoint> coordinates = customJsonHandler.getGeometryLineString();
+					List<GeoJSONPoint> coordinates = customJsonHandler.GetGeometryLineString();
 					endpoint = GetUnityPoint(coordinates[0].x, coordinates[0].y, bobBeginPunt + Config.activeConfiguration.zeroGroundLevelY);
 
 					for (int i = 1; i < coordinates.Count; i ++)
 					{
 						startpoint = endpoint;
-						double bobEindPunt = customJsonHandler.getPropertyFloatValue(BobEindPuntString);
+						double bobEindPunt = customJsonHandler.GetPropertyFloatValue(BobEindPuntString);
 
 						endpoint = GetUnityPoint(coordinates[i].x, coordinates[i].y, bobEindPunt + Config.activeConfiguration.zeroGroundLevelY);
 						sewerPipeSpawner.CreateSewerLine(startpoint, endpoint, diameter, tile.gameObject);
@@ -238,9 +238,9 @@ namespace Amsterdam3D.Sewerage
                 
 				if (customJsonHandler.PropertyValueStringEquals("objectsoort", "Knikpunt") == false)
                 {
-					point2D = customJsonHandler.getGeometryPoint2DDouble();
+					point2D = customJsonHandler.GetGeometryPoint2DDouble();
 
-					double putdekselhoogte = customJsonHandler.getPropertyFloatValue(PutdekselhoogteString);
+					double putdekselhoogte = customJsonHandler.GetPropertyFloatValue(PutdekselhoogteString);
 					point = GetUnityPoint(point2D[0], point2D[1], putdekselhoogte + Config.activeConfiguration.zeroGroundLevelY);
 
 					sewerManholeSpawner.CreateManhole(point, 1.50f, tile.gameObject);
