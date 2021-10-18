@@ -77,18 +77,25 @@ namespace Netherlands3D.Sharing
 
         private void Start()
 		{
-            //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
-			CheckURLForSharedSceneID();
-            CheckURLForPositionAndId();
-            customMeshObjects = new List<GameObject>();
 
+#if !UNITY_EDITOR
+            //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
+            CheckURLForSharedSceneID();
+            CheckURLForPositionAndId();
+#endif
+            customMeshObjects = new List<GameObject>();
         }
 
 
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.P)){
+
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
+
                 var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
                 //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
                 //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
@@ -102,7 +109,7 @@ namespace Netherlands3D.Sharing
                 //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
                 //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
             }
-
+#endif
         }
 
         private void CheckURLForSharedSceneID()
@@ -122,7 +129,8 @@ namespace Netherlands3D.Sharing
             if (rd.Equals(new Vector3RD(0, 0, 0))) return;
 
             var id = Application.absoluteURL.GetUrlParamValue("id");
-            
+
+            MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
             GotoPosition(rd);
             MetadataLoader.Instance.RequestBuildingData(rd, id);
         }
@@ -145,7 +153,7 @@ namespace Netherlands3D.Sharing
         public void GetTestId(){
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
-        #endif
+#endif
 
         /// <summary>
         /// Download a shared scene JSON file from the objectstore using a unique ID.

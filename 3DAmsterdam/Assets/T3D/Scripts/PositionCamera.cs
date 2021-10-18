@@ -35,8 +35,8 @@ public class PositionCamera: MonoBehaviour
     {
         cameraIsSet = true;
 
-        Debug.Log($"buildingcenterx: {buildingcenter.Value.x} buildingcentery:{buildingcenter.Value.y}");
-        Debug.Log($"perceelcenterx: {perceelcenter.Value.x} perceelcentery:{perceelcenter.Value.y}");
+        //Debug.Log($"buildingcenterx: {buildingcenter.Value.x} buildingcentery:{buildingcenter.Value.y}");
+        //Debug.Log($"perceelcenterx: {perceelcenter.Value.x} perceelcentery:{perceelcenter.Value.y}");
 
         var buildingpos = CoordConvert.RDtoUnity(buildingcenter.Value);
         var perceelpos = CoordConvert.RDtoUnity(perceelcenter.Value);

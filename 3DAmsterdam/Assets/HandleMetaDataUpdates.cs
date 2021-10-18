@@ -57,7 +57,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     {
         perceelIsLoaded = true;
         perceelArea = args.Area;
-        print("perceel outline laoded");
+        print("perceel outline loaded");
         //PerceelGrootteText.text += "Totaal Perceeloppervlakte: " + args.Area.ToString("F2") + "m²";
     }
 
@@ -75,7 +75,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     {
         buildingOutlineIsLoaded = true;
         builtArea = args.TotalArea;
-        print("building outline laoded");
+        print("building outline loaded");
         //PerceelGrootteText.text += "Bebouwd Perceeloppervlakte: " + args.TotalArea.ToString("F2") + "m²";
     }
 

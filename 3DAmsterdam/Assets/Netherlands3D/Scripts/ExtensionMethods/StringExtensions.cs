@@ -78,6 +78,14 @@ public static class StringExtensions
         return groups[1].Value;
     }
 
+    public static bool GetUrlParamBool(this string url, string param)
+    {
+        var groups = Regex.Match(url, $"[?&]{param}=([^&#]*)").Groups;
+        if (groups.Count < 2) return false;
+
+        return groups[1].Value.ToLower() == "true"; ;
+    }
+
     public static Vector3RD GetRDCoordinateByUrl(this string url)
     {
         var coord = url.GetUrlParamValue("position");

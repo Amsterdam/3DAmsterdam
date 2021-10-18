@@ -182,9 +182,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         IEnumerator HighlightBuilding(Vector3RD position, string id)
         {
-            Debug.Log($"HighlightBuilding id: {id}");
-
-            Transform child = null;
+            Transform buildingTile = null;
             Vector3RD tegelRD = new Vector3RD();
 
             yield return new WaitUntil(
@@ -192,16 +190,24 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                     if (buildingsLayer.transform.childCount > 0)
                     {
-                        child = buildingsLayer.transform.GetChild(0);
-                        tegelRD = child.name.GetRDCoordinate();
-                        return position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000;
+                        foreach (Transform tile in buildingsLayer.transform)
+                        {
+                            tegelRD = tile.name.GetRDCoordinate();
 
+                            if (tegelRD.x == 0) return false;
+
+                            if (position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000)
+                            {
+                                buildingTile = tile;
+                                return true;
+                            }
+                        }
+                        return false;
                     }
                     return false;
                 }
             );
-
-            StartCoroutine(DownloadBuildingData(tegelRD, id, child.gameObject));
+            StartCoroutine(DownloadBuildingData(tegelRD, id, buildingTile.gameObject));
         }
 
         IEnumerator RequestBuildingOutlineData(string bagId)

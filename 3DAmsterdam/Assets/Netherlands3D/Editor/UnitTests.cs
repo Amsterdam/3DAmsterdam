@@ -112,6 +112,20 @@ public class UnitTests
     }
 
     [Test]
+    public void TestGetUrlParamBool()
+    {
+        var hasfile1 = "url?hasfile=true".GetUrlParamBool("hasfile");
+        Assert.AreEqual(true, hasfile1);
+
+        var hasfile2 = "url?hasfile=True".GetUrlParamBool("hasfile");
+        Assert.AreEqual(true, hasfile2);
+
+        var hasfile3 = "url".GetUrlParamBool("hasfile");
+        Assert.AreEqual(false, hasfile3);
+        
+    }
+
+        [Test]
     public void TestGetUrlParamValue()
     {
         string url = "website.nl?position=123_456";

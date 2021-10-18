@@ -104,8 +104,11 @@ namespace Netherlands3D.T3D.Uitbouw
         }
         //public Vector3 CenterPosition { get; private set; }
 
+        public static Uitbouw Instance;
+
         private void Awake()
         {
+            Instance = this;
             //meshRenderer = GetComponent<MeshRenderer>();
             //mesh = GetComponent<MeshFilter>().mesh;
             //SetDimensions(mesh.bounds.extents * 2);
@@ -183,11 +186,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //}
 
             ProcessUserInput();
-
-            if (building)
-            {
-                SnapToBuilding(building);
-            }
+            
+            SnapToBuilding(building);
+            
         }
 
         private void SetArrowPositions()
@@ -337,7 +338,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private UitbouwMuur GetWall(WallSide side)
         {
-            return walls.FirstOrDefault(x => x.Side == side);
+            var muur = walls.FirstOrDefault(x => x.Side == side);
+            return muur;
+            //return walls.FirstOrDefault(x => x.Side == side);
         }
     }
 }

@@ -1,4 +1,5 @@
 using ConvertCoordinates;
+using Netherlands3D.Cameras;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Sun;
 using Netherlands3D.T3D.Uitbouw;
@@ -47,6 +48,8 @@ public class HandleButtonsT3D : MonoBehaviour
     private double latitude;
 
     bool? positieGoed = null;
+
+    private float zoomSpeed = 150;
 
     List<string> months = new List<string>()
     {
@@ -146,15 +149,15 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateSun();
         Debug.Log(dateTimeNow);
     }
-    
+
     void ZoomIn()
     {
-        Debug.Log("zoomin");
+        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void ZoomOut()
     {
-        Debug.Log("zoomout");
+        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void Volgende()
