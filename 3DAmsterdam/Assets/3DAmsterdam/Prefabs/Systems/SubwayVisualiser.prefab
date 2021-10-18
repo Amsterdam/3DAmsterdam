@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4050105684232705403}
   - component: {fileID: 4050105684232705396}
+  - component: {fileID: 940050261994297083}
   m_Layer: 0
   m_Name: SubwayVisualiser
   m_TagString: Untagged
@@ -45,7 +46,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineCoordinatesEvent: {fileID: 11400000, guid: b39556d0035beba4fac0c911acae34f0,
     type: 2}
+  finishedDrawing: {fileID: 0}
   lineRendererMaterial: {fileID: 2100000, guid: 143d1b601a82c22498d2c7cf9a42a833,
     type: 2}
-  lineColor: {r: 0.12724805, g: 1, b: 0, a: 1}
-  thickness: 1
+  lineColor: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
+  thickness: 0.5
+--- !u!114 &940050261994297083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4050105684232705397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368d5e498276dc54a8b4fa166cefbf65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receiveDrawPointEvent: {fileID: 11400000, guid: 38f381a40839b864bbe16b9859efed8c,
+    type: 2}
+  shape: {fileID: 4215919988600483874, guid: 6c1395f00b4d42e419a2e18c7a842e82, type: 3}
+  offset: {x: 0, y: 1, z: 0}

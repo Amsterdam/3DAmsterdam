@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 299064120455470167}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -51,37 +51,81 @@ MonoBehaviour:
     - geoJsonURL: "https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>6</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
         Screen reader support enabled.      \t\t https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>6</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>"
       drawPointEvent: {fileID: 11400000, guid: 827cf2788be4fa54082ba961b1062ed0, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: GEOJSON_AFVAL_GLAS
     geoJsonURLs:
     - geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>2</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       drawPointEvent: {fileID: 11400000, guid: 2af481410228ed741820ec71e7ff8ee6, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: GEOJSON_AFVAL_PAPIER
     geoJsonURLs:
     - geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>3</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       drawPointEvent: {fileID: 11400000, guid: 5066b1c4ce523ba418affe617f0a0c22, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: GEOJSON_AFVAL_PLASTIC
     geoJsonURLs:
     - geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>4</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       drawPointEvent: {fileID: 11400000, guid: 7e07a40b83d50d54ab0dfc8cf33d95ba, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: GEOJSON_AFVAL_REST
     geoJsonURLs:
     - geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>1</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       drawPointEvent: {fileID: 11400000, guid: 1722d14795cf2544490249d304dd3d6f, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: GEOJSON_AFVAL_TEXTIEL
     geoJsonURLs:
     - geoJsonURL: https://api.data.amsterdam.nl/v1/wfs/huishoudelijkafval/?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=container&OUTPUTFORMAT=geojson&SRSNAME=urn:ogc:def:crs:EPSG::4326&Filter=<Filter><And><PropertyIsEqualTo><PropertyName>fractie_code</PropertyName><Literal>5</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>status</PropertyName><Literal>1</Literal></PropertyIsEqualTo></And></Filter>
       drawPointEvent: {fileID: 11400000, guid: 7ff925d6ca675694f815506235c1306a, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
   - name: OPENBARE_TOILETTEN
     geoJsonURLs:
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|OPENBAAR
       drawPointEvent: {fileID: 11400000, guid: 99372fba2bd1d084f85f22fe5161dadd, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|PARKEER
       drawPointEvent: {fileID: 11400000, guid: 59a223c50f5667749bd84465fb1d5249, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|TOEGANG
       drawPointEvent: {fileID: 11400000, guid: 3a5247b8e9e79364290bd74163a4f6bb, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|KRUL
       drawPointEvent: {fileID: 11400000, guid: a8707d4311e45d24a8793ee33ed4ef81, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|URILIFT
       drawPointEvent: {fileID: 11400000, guid: b1e8ad4ff1ebf8e45b547257c32541ff, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=OPENBARE_TOILETTEN&THEMA=openbare_toiletten&FILTER=SELECTIE|OVERIG
       drawPointEvent: {fileID: 11400000, guid: 38801a57831fa2f4384e8e33097193c3, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+  - name: TRAMMETRO_PUNTEN_2021
+    geoJsonURLs:
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_PUNTEN_2021&THEMA=trammetro&FILTER=Modaliteit|Tram
+      drawPointEvent: {fileID: 11400000, guid: 99372fba2bd1d084f85f22fe5161dadd, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_PUNTEN_2021&THEMA=trammetro&FILTER=Modaliteit|Metro
+      drawPointEvent: {fileID: 11400000, guid: 59a223c50f5667749bd84465fb1d5249, type: 2}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 0}
+  - name: TRAMMETRO_LIJNEN_2021
+    geoJsonURLs:
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_LIJNEN_2021&THEMA=trammetro&FILTER=Modaliteit|Tram
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 11400000, guid: 7c3f9bce33125dc44b12bbb2bd03e354, type: 2}
+      drawGeometryEvent: {fileID: 0}
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=TRAMMETRO_LIJNEN_2021&THEMA=trammetro&FILTER=Modaliteit|Metro
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 11400000, guid: b39556d0035beba4fac0c911acae34f0, type: 2}
+      drawGeometryEvent: {fileID: 0}

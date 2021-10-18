@@ -45,8 +45,8 @@ namespace Netherlands3D.Visualisers
         {
             public string geoJsonURL;
             public Vector3Event drawPointEvent;
-            public Vector3Event drawLineEvent;
-            public Vector3Event drawGeometryEvent;
+            public Vector3ListEvent drawLineEvent;
+            public Vector3ListsEvent drawGeometryEvent;
         }
 
         void Awake()
@@ -63,17 +63,17 @@ namespace Netherlands3D.Visualisers
                 if (targetDataTable.Any())
                 {
                     var firstResult = targetDataTable.First();
-                    foreach (var geoJsonURL in firstResult.geoJsonURLs)
+                    foreach (var geoJsonURLData in firstResult.geoJsonURLs)
                     {
-                        StartCoroutine(LoadGeoJSON(geoJsonURL.geoJsonURL, geoJsonURL.drawPointEvent));
+                        StartCoroutine(LoadGeoJSON(geoJsonURLData));
                     }
                 }
             }
         }
 
-        private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
+        private IEnumerator LoadGeoJSON(GeoJsonURLS geoJsonURLData)
         {
-            var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
+            var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURLData.geoJsonURL);
             yield return geoJsonDataRequest.SendWebRequest();
 
             if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
@@ -90,28 +90,35 @@ namespace Netherlands3D.Visualisers
                     {
                         case GeoJSON.GeoJSONGeometryType.Point:
                         case GeoJSON.GeoJSONGeometryType.MultiPoint:
+                            double[] location = geoJSON.getGeometryPoint2DDouble();
+                            var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
 
+                            geoJsonURLData.drawPointEvent.unityEvent?.Invoke(unityCoordinates);
                             break;
                         case GeoJSON.GeoJSONGeometryType.LineString:
                         case GeoJSON.GeoJSONGeometryType.MultiLineString:
+                            List<GeoJSONPoint> points = geoJSON.getLineString();
+                            List<Vector3> unityPoints = new List<Vector3>();
+							for (int i = 0; i < points.Count; i++)
+							{
+                                unityPoints.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(points[i].x, points[i].y));
+                            }
 
+                            geoJsonURLData.drawLineEvent.unityEvent?.Invoke(unityPoints);
                             break;
                         case GeoJSON.GeoJSONGeometryType.Polygon:
                         case GeoJSON.GeoJSONGeometryType.MultiPolygon:
+                            List<List<List<GeoJSONPoint>>> multiPolygons = geoJSON.getMultiPolygon();
+                            List<List<IList<Vector3>>> unityMultiPolygons = new List<List<IList<Vector3>>>();
+                           
+                            for (int i = 0; i < multiPolygons.Count; i++)
+                            {
+                                
+                            }
 
-                            break;
-                        case GeoJSON.GeoJSONGeometryType.GeometryCollection:
-                            break;
-                        case GeoJSON.GeoJSONGeometryType.Undefined:
-                            break;
-                        default:
+                            //geoJsonURLData.drawGeometryEvent.unityEvent?.Invoke(unityPoints);
                             break;
                     }
-
-                    double[] location = geoJSON.getGeometryPoint2DDouble();
-                    var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
-
-                    drawPointEvent.unityEvent?.Invoke(unityCoordinates);
                 }
             }
         }
