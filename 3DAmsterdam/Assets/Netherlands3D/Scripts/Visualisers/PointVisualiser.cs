@@ -15,29 +15,33 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using Netherlands3D.Events;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PointVisualiser : MonoBehaviour
+namespace Netherlands3D.Visualisers
 {
-    [SerializeField]
-    private Vector3Event receiveDrawPointEvent;
-
-    [SerializeField]
-    private GameObject shape;
-
-    [SerializeField]
-    private Vector3 offset = Vector3.up;
-
-    void Awake()
+    public class PointVisualiser : MonoBehaviour
     {
-        if (receiveDrawPointEvent) receiveDrawPointEvent.unityEvent.AddListener(DrawPointInWorld);
-    }
+        [SerializeField]
+        private Vector3Event receiveDrawPointEvent;
 
-    private void DrawPointInWorld(Vector3 position)
-    {
-        var newPoint = Instantiate(shape, this.transform);
-        newPoint.transform.position = position + offset;
+        [SerializeField]
+        private GameObject shape;
+
+        [SerializeField]
+        private Vector3 offset = Vector3.up;
+
+        void Awake()
+        {
+            if (receiveDrawPointEvent) receiveDrawPointEvent.unityEvent.AddListener(DrawPointInWorld);
+        }
+
+        private void DrawPointInWorld(Vector3 position)
+        {
+            var newPoint = Instantiate(shape, this.transform);
+            newPoint.transform.position = position + offset;
+        }
     }
 }

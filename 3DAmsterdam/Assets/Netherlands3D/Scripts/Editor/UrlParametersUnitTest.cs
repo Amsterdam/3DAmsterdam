@@ -4,6 +4,7 @@ using UnityEngine;
 using NUnit.Framework;
 using System.IO;
 using UnityEngine.TestTools;
+using Netherlands3D.WebGL;
 
 public class UrlParametersUnitTest 
 {

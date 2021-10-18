@@ -15,66 +15,79 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using Netherlands3D.Events;
 using Netherlands3D.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class MapsDataLoader : MonoBehaviour
+namespace Netherlands3D.Visualisers
 {
-    [SerializeField]
-    private StringEvent tableNameReceiveEvent;
-
-    [SerializeField]
-    private List<MapsDataTable> mapsDataTable;
-
-    [System.Serializable]
-    public struct MapsDataTable
+    public class MapsDataLoader : MonoBehaviour
     {
-        public string name;
-        public string geoJsonURL;
-        public Vector3Event drawPointEvent;
-    }
+        [SerializeField]
+        private StringEvent tableNameReceiveEvent;
 
-    void Awake()
-    {
-        tableNameReceiveEvent.unityEvent.AddListener(LoadTable);
-    }
+        [SerializeField]
+        private List<MapsDataTable> mapsDataTable;
 
-    void LoadTable(string tableNames)
-    {
-        string[] tableNameValues = tableNames.Split(',');
-        foreach (var tableName in tableNameValues)
+        [System.Serializable]
+        public struct MapsDataTable
         {
-            var targetDataTable = mapsDataTable.Where((item) => tableName == item.name);
-            if (targetDataTable.Any())
+            public string name;
+            public GeoJsonURLS[] geoJsonURLs;
+        }
+        [System.Serializable]
+        public struct GeoJsonURLS
+        {
+            public string geoJsonURL;
+            public Vector3Event drawPointEvent;
+        }
+
+        void Awake()
+        {
+            tableNameReceiveEvent.unityEvent.AddListener(LoadAllDataURLs);
+        }
+
+        void LoadAllDataURLs(string tableNames)
+        {
+            string[] tableNameValues = tableNames.Split(',');
+            foreach (var tableName in tableNameValues)
             {
-                var firstResult = targetDataTable.First();
-                StartCoroutine(LoadGeoJSON(firstResult.geoJsonURL, firstResult.drawPointEvent));
+                var targetDataTable = mapsDataTable.Where((item) => tableName == item.name);
+                if (targetDataTable.Any())
+                {
+                    var firstResult = targetDataTable.First();
+                    foreach (var geoJsonURL in firstResult.geoJsonURLs)
+                    {
+                        StartCoroutine(LoadGeoJSON(geoJsonURL.geoJsonURL, geoJsonURL.drawPointEvent));
+                    }
+                }
+            }
+        }
+
+        private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
+        {
+            var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
+            yield return geoJsonDataRequest.SendWebRequest();
+
+            if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
+            {
+                GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
+                yield return null;
+
+                //We already filtered the request, so we can draw all features
+                while (geoJSON.GotoNextFeature())
+                {
+                    double[] location = geoJSON.getGeometryPoint2DDouble();
+                    var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
+
+                    drawPointEvent.unityEvent?.Invoke(unityCoordinates);
+                }
             }
         }
     }
-
-    private IEnumerator LoadGeoJSON(string geoJsonURL, Vector3Event drawPointEvent)
-    {
-        var geoJsonDataRequest = UnityWebRequest.Get(geoJsonURL);
-        yield return geoJsonDataRequest.SendWebRequest();
-
-        if (geoJsonDataRequest.result == UnityWebRequest.Result.Success)
-        {
-            GeoJSON geoJSON = new GeoJSON(geoJsonDataRequest.downloadHandler.text);
-            yield return null;
-
-            //We already filtered the request, so we can draw all features
-            while (geoJSON.GotoNextFeature())
-            {
-                double[] location = geoJSON.getGeometryPoint2DDouble();
-                var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
-
-                drawPointEvent.unityEvent?.Invoke(unityCoordinates);
-            }
-        }
-	}
 }

@@ -15,6 +15,7 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,4 +29,3 @@ public class ScriptableObjectEvent<T> : ScriptableObject
     [HideInInspector]
     public T unityEvent;
 }
-
