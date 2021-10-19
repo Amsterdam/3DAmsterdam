@@ -23,8 +23,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public bool WallIsSelected { get; private set; }
         public Plane WallPlane { get; private set; }
         public Mesh WallMesh { get; private set; }
-        public Vector3 TopLeft { get; private set; }
-        public Vector3 BottomRight { get; private set; }
+        public Vector3 CenterPoint { get; private set; }
 
         private void Awake()
         {
@@ -104,6 +103,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
                 if (wall.triangles.Length > 0)
                 {
+                    CenterPoint = transform.position + wall.bounds.center;
+
                     return true;
                 }
             }

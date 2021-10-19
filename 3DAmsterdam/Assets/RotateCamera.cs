@@ -14,7 +14,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     [SerializeField]
     private bool dragging = false;
-    
+
     [SerializeField]
     private bool rotatingAroundPoint = false;
 
@@ -25,7 +25,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private IAction dragActionMouse;
     private IAction zoomScrollActionMouse;
-    
+
     List<InputActionMap> availableActionMaps;
 
     void Start()
@@ -37,7 +37,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             ActionHandler.actions.GodViewMouse,
             ActionHandler.actions.GodViewKeyboard
         };
-        
+
         AddActionListeners();
     }
 
@@ -45,18 +45,18 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (dragging && Input.GetMouseButton(0))
-        {            
+        {
             RotateAround(mouseDelta.x, mouseDelta.y);
-        }        
+        }
     }
 
     private void AddActionListeners()
     {
         //Mouse actions
         dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
-        
+
         zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
-        
+
         //Listeners
         dragActionMouse.SubscribePerformed(Drag);
         dragActionMouse.SubscribeCancelled(Drag);
@@ -72,7 +72,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             rotatingAroundPoint = false;
         }
         else if (action.Performed)
-        {            
+        {
             dragging = true;
         }
     }
@@ -92,8 +92,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             var newpos = mycam.transform.position + mycam.transform.forward.normalized * (scrollDelta * moveSpeed * ZoomSpeed);
 
             if (newpos.y < MinCameraHeight) return;
-            
-            mycam.transform.position = newpos;            
+
+            mycam.transform.position = newpos;
         }
     }
 
@@ -102,10 +102,15 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         var previousPosition = mycam.transform.position;
         var previousRotation = mycam.transform.rotation;
 
-        if (Uitbouw.Instance == null) return;
 
-        mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, Vector3.up, xaxis * RotationSpeed);
-      //  mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
+
+
+        if (Uitbouw.Instance != null)
+            mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, Vector3.up, xaxis * RotationSpeed);
+        else if (RestrictionChecker.ActiveBuilding)
+            mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);
+
+        //  mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
     }
 
     public float GetNormalizedCameraHeight()
@@ -120,12 +125,12 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void SetNormalizedCameraHeight(float height)
     {
-        
+
     }
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
     {
-        
+
     }
 
     public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
@@ -135,12 +140,12 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void EnableKeyboardActionMap(bool enabled)
     {
-        
+
     }
 
     public void EnableMouseActionMap(bool enabled)
     {
-        
+
     }
 
     public bool UsesActionMap(InputActionMap actionMap)
