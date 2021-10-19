@@ -41,13 +41,15 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (TryGetWall(out var wall))
                 {
                     WallMesh = wall;
-                    wallMeshFilter.mesh = wall;
+                    wallMeshFilter.mesh = WallMesh;
                     WallIsSelected = true;
                 }
                 else
                 {
-                    WallPlane = new Plane();
+                    WallMesh = new Mesh();
+                    wallMeshFilter.mesh = WallMesh;
                     WallIsSelected = false;
+                    WallPlane = new Plane();
                 }
             }
         }

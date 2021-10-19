@@ -14,6 +14,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private GameObject NextStep_D;
         [SerializeField]
         private Button nextButton;
+        [SerializeField]
+        private Text infoText;
+
+        private const string selectedText = "aangegeven gevel";
+        private const string unselectedText = "selecteer gevel";
 
         private void Start()
         {
@@ -28,6 +33,12 @@ namespace Netherlands3D.T3D.Uitbouw
             if (building.SelectedWall.WallIsSelected)
             {
                 nextButton.interactable = true;
+                infoText.text = selectedText;
+            }
+            else
+            {
+                nextButton.interactable = false;
+                infoText.text = unselectedText;
             }
         }
 

@@ -93,7 +93,6 @@ namespace Netherlands3D.T3D.Uitbouw
             var corners = new List<Vector3>();
             foreach (var corner in buildingCorners)
             {
-                print(corner + "\t" + snapWall.GetDistanceToPoint(corner));
                 if (Mathf.Abs(snapWall.GetDistanceToPoint(corner)) < tolerance)
                 {
                     corners.Add(corner);

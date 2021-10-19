@@ -99,6 +99,14 @@ namespace Netherlands3D.T3D.Uitbouw
         }
     }
 
+    public class AttachedToWallRestriction : UitbouwRestriction
+    {
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        {
+            return building.SelectedWall.WallIsSelected;
+        }
+    }
+
     public enum UitbouwRestrictionType
     {
         None,
@@ -108,6 +116,7 @@ namespace Netherlands3D.T3D.Uitbouw
         Depth,
         Area,
         PerceelBounds,
+        AttachedToWall,
     }
 
     public static class RestrictionChecker
@@ -123,7 +132,8 @@ namespace Netherlands3D.T3D.Uitbouw
             {UitbouwRestrictionType.Height, new HeightRestriction() },
             {UitbouwRestrictionType.Depth, new DepthRestriction() },
             {UitbouwRestrictionType.Area, new PerceelAreaRestriction() },
-            {UitbouwRestrictionType.PerceelBounds, new PerceelBoundsRestriction() }
+            {UitbouwRestrictionType.PerceelBounds, new PerceelBoundsRestriction() },
+            {UitbouwRestrictionType.AttachedToWall, new AttachedToWallRestriction() },
         };
         public static IDictionary<UitbouwRestrictionType, UitbouwRestriction> ActiveRestrictions => activeRestrictions;
 
