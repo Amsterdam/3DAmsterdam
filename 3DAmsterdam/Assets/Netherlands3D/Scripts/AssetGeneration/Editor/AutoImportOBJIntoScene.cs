@@ -20,7 +20,6 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
 
     private string removePrefix = "NL.IMBAG.Pand.";
 
-
     void OnPreprocessModel()
     {
         //Make sure if our preprocessor changes the asset, it is not imported again
