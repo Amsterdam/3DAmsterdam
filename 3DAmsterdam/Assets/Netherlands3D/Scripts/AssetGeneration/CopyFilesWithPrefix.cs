@@ -13,9 +13,9 @@ public class CopyFilesWithPrefix : MonoBehaviour
     private List<string> prefixes;
 
     [SerializeField]
-    private string folder = "C:/Users/Sam/Desktop/lod22/";
+    private string folder = "C:/Users/Sam/Desktop/lod12/";
     [SerializeField]
-    private string targetCopyFolder = "C:/Users/Sam/Desktop/lod22/utrecht/";
+    private string targetCopyFolder = "C:/Users/Sam/Desktop/lod12/utrecht/";
 
 
     void Start()
