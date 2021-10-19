@@ -66,7 +66,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 return false;
             }
 
-            var coPlanarCorners = GetCoplanarCorners(RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners, uitbouw.SnapWall, 0.1f);
+            var coPlanarCorners = GetCoplanarCorners(RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners, RestrictionChecker.ActiveBuilding.SelectedWall.WallPlane, 0.1f);
 
             var smallestDst = Mathf.Infinity;
             var cornerIndex = -1;
@@ -93,6 +93,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var corners = new List<Vector3>();
             foreach (var corner in buildingCorners)
             {
+                print(corner + "\t" + snapWall.GetDistanceToPoint(corner));
                 if (Mathf.Abs(snapWall.GetDistanceToPoint(corner)) < tolerance)
                 {
                     corners.Add(corner);
