@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using ConvertCoordinates;
 using Netherlands3D;
 using Netherlands3D.AssetGeneration;
+using System.Globalization;
 
 public class AutoImportOBJIntoScene : AssetPostprocessor
 {
@@ -74,6 +75,7 @@ public class AutoImportOBJIntoScene : AssetPostprocessor
                 );
                 Vector3 unityCoordinate = CoordConvert.RDtoUnity(doubleCoordinate);
 
+                CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
                 var replacedLine = $"v {-unityCoordinate.x} {unityCoordinate.y} {unityCoordinate.z}";
                 objLines[i] = replacedLine;
             }
