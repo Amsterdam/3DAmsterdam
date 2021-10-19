@@ -179,7 +179,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             ProcessUserInput();
             
-            SnapToBuilding(building);
+            //SnapToBuilding(building);
             
         }
 
@@ -202,10 +202,10 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (building.SelectedWall.WallIsSelected)
                 {
                     SnapToWall(building.SelectedWall);
+                    SnapToGround(building);
                 }
                 else
-                {
-                    print("er ");
+                { 
                     //SnapToBuilding(building);
                 }
             }

@@ -34,7 +34,6 @@ namespace Netherlands3D.T3D.Uitbouw
         // Update is called once per frame
         void Update()
         {
-            print(WallIsSelected);
             if (AllowSelection && Input.GetMouseButtonDown(0))
             {
                 if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
