@@ -116,7 +116,8 @@ namespace Amsterdam3D.Maps
                                 Debug.Log($"Subcount: {polygon[i].Count}");
                             }
 
-							//DrawPolygonRequest(geoJsonURLData, polygon);
+							yield return DrawPolygonRequest(geoJsonURLData, polygon);
+
 							yield return new WaitForEndOfFrame();
 
 							break;
@@ -133,7 +134,7 @@ namespace Amsterdam3D.Maps
             }
         }
 
-		private static void DrawPolygonRequest(GeoJsonURLS geoJsonURLData, List<List<GeoJSONPoint>> polygon)
+		private IEnumerator DrawPolygonRequest(GeoJsonURLS geoJsonURLData, List<List<GeoJSONPoint>> polygon)
 		{
             Debug.Log("Draw polygon");
             
@@ -143,14 +144,22 @@ namespace Amsterdam3D.Maps
 			for (int i = 0; i < polygon.Count; i++)
 			{
 				var contour = polygon[i];
-				IList<Vector3> polyList = new List<Vector3>();
-				for (int j = 0; j < contour.Count; i++)
+                Debug.Log($"Draw polygon>Contour {i}");
+                yield return new WaitForEndOfFrame();
+
+                IList<Vector3> polyList = new List<Vector3>();
+				for (int j = 0; j < contour.Count; j++)
 				{
-					polyList.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
+                    Debug.Log($"Draw polygon>Contour>Point-{j}");
+                    yield return new WaitForEndOfFrame();
+                    polyList.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
 				}
-				unityPolygon.Add(polyList);
+                if(polyList.Count>0)
+				    unityPolygon.Add(polyList);
 			}
-			geoJsonURLData.drawGeometryEvent.unityEvent?.Invoke(unityPolygon);
+
+            if (unityPolygon.Count > 0)
+                geoJsonURLData.drawGeometryEvent.unityEvent?.Invoke(unityPolygon);
 		}
 	}
 }
