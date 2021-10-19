@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -36,6 +37,9 @@ namespace Netherlands3D.T3D.Uitbouw
             print(WallIsSelected);
             if (AllowSelection && Input.GetMouseButtonDown(0))
             {
+                if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
+                    return;
+
                 if (TryGetWall(out var wall))
                 {
                     WallMesh = wall;
