@@ -38,6 +38,10 @@ namespace Netherlands3D.T3D.Uitbouw
                     WallMesh = wall;
                     wallMeshFilter.mesh = wall;
                 }
+                else
+                {
+                    WallPlane = new Plane();
+                }
             }
         }
 
@@ -90,7 +94,10 @@ namespace Netherlands3D.T3D.Uitbouw
                 wall.RecalculateNormals();
                 wall.RecalculateBounds();
 
-                return true;
+                if (wall.triangles.Length > 0)
+                {
+                    return true;
+                }
             }
             return false;
         }
