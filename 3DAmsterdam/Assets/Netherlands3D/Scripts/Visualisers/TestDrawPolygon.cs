@@ -30,21 +30,48 @@ namespace Netherlands3D.Visualisers
         private void DrawPolyWithHole()
         {
             var testPolygons = new List<IList<Vector3>>();
-            var outer = new List<Vector3>();
-            var inner = new List<Vector3>();
+            var outerCircle = new List<Vector3>();
+            var innerSquareHole = new List<Vector3>();
+            var innerRoundHole = new List<Vector3>();
 
-            outer.Add(new Vector3(-100, 0, -100));
-            outer.Add(new Vector3(-100, 0, 100));
-            outer.Add(new Vector3(100, 0, 100));
-            outer.Add(new Vector3(100, 0, -100));
+            //Outer circle
+            var numberOfOuterVerts = 100;
+            var radius = 100;
+            for (int i = 0; i < numberOfOuterVerts; i++)
+            {
+                var radians = 2 * Mathf.PI / numberOfOuterVerts * i;
+                var vertical = Mathf.Sin(radians);
+                var horizontal = Mathf.Cos(radians);
+                var spawnDir = new Vector3(horizontal, 0, vertical);
+                var spawnPos = spawnDir * radius;
 
-            inner.Add(new Vector3(50, 0, -50));
-            inner.Add(new Vector3(50, 0, 50));
-            inner.Add(new Vector3(-50, 0, 50));
-            inner.Add(new Vector3(-50, 0, -50));
+                outerCircle.Add(spawnPos);
+            }
+            outerCircle.Reverse();
 
-            testPolygons.Add(outer);
-            testPolygons.Add(inner);
+            //Inner round hole
+            radius = 10;
+            var offset = new Vector3(70, 0, 0);
+            for (int i = 0; i < numberOfOuterVerts; i++)
+            {
+                var radians = 2 * Mathf.PI / numberOfOuterVerts * i;
+                var vertical = Mathf.Sin(radians);
+                var horizontal = Mathf.Cos(radians);
+                var spawnDir = new Vector3(horizontal, 0, vertical);
+                var spawnPos = offset + (spawnDir * radius);
+
+                innerRoundHole.Add(spawnPos);
+            }
+
+
+            innerSquareHole.Add(new Vector3(50, 0, -50));
+            innerSquareHole.Add(new Vector3(50, 0, 50));
+            innerSquareHole.Add(new Vector3(-50, 0, 50));
+            innerSquareHole.Add(new Vector3(-50, 0, -50));
+
+            testPolygons.Add(outerCircle);
+            testPolygons.Add(innerSquareHole);
+            testPolygons.Add(innerRoundHole);
 
             testDrawPolyEventTrigger.unityEvent.Invoke(testPolygons);
         }
