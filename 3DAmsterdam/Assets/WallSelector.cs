@@ -18,6 +18,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private float normalTolerance = 0.01f; //tolerance in difference between normals to still count as the same direction
         private float coplanarTolerance = 0.01f; //tolerance in difference click point and vertex position to the plane at that point
 
+        public bool AllowSelection { get; set; }
+        public bool WallIsSelected { get; private set; }
         public Plane WallPlane { get; private set; }
         public Mesh WallMesh { get; private set; }
         public Vector3 TopLeft { get; private set; }
@@ -31,16 +33,19 @@ namespace Netherlands3D.T3D.Uitbouw
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            print(WallIsSelected);
+            if (AllowSelection && Input.GetMouseButtonDown(0))
             {
                 if (TryGetWall(out var wall))
                 {
                     WallMesh = wall;
                     wallMeshFilter.mesh = wall;
+                    WallIsSelected = true;
                 }
                 else
                 {
                     WallPlane = new Plane();
+                    WallIsSelected = false;
                 }
             }
         }

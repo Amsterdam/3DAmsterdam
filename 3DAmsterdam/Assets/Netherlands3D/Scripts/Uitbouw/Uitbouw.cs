@@ -199,13 +199,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (building)
             {
-                if (building.SelectedWall.WallPlane.normal != Vector3.zero)
+                if (building.SelectedWall.WallIsSelected)
                 {
                     SnapToWall(building.SelectedWall);
                 }
                 else
                 {
-                    SnapToBuilding(building);
+                    print("er ");
+                    //SnapToBuilding(building);
                 }
             }
         }
