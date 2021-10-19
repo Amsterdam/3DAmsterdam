@@ -139,12 +139,22 @@ MonoBehaviour:
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|3
       drawPointEvent: {fileID: 0}
       drawLineEvent: {fileID: 0}
-      drawGeometryEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 11400000, guid: bcecab7ec50bc694fbf29026a47228d4,
+        type: 2}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|4
       drawPointEvent: {fileID: 0}
       drawLineEvent: {fileID: 0}
-      drawGeometryEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 11400000, guid: abb07a613a3698a4c81fe0fa403ffa64,
+        type: 2}
     - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=WONINGBOUWPLANNEN&THEMA=woningbouwplannen&FILTER=Fase_ID|5
       drawPointEvent: {fileID: 0}
       drawLineEvent: {fileID: 0}
-      drawGeometryEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 11400000, guid: a0825839ab6246d489ce21b514060f79,
+        type: 2}
+  - name: STRATEGISCHE_RUIMTE
+    geoJsonURLs:
+    - geoJsonURL: https://maps.amsterdam.nl/open_geodata/geojson_lnglat.php?KAARTLAAG=STRATEGISCHERUIMTE&THEMA=woningbouwplannen&FILTER=Publiek|Ja
+      drawPointEvent: {fileID: 0}
+      drawLineEvent: {fileID: 0}
+      drawGeometryEvent: {fileID: 11400000, guid: 5229136fb5f61b54d99ec4f12b384cc5,
+        type: 2}

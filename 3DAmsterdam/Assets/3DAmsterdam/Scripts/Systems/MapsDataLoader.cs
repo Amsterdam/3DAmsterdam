@@ -85,7 +85,6 @@ namespace Amsterdam3D.Maps
                 while (geoJSON.GotoNextFeature())
                 {
                     var type = geoJSON.GetGeometryType();
-                    Debug.Log($"type: {type}");
                     switch (type)
                     {
                         case GeoJSON.GeoJSONGeometryType.Point:
@@ -108,56 +107,46 @@ namespace Amsterdam3D.Maps
                             break;
 						case GeoJSON.GeoJSONGeometryType.Polygon:
 							if (!geoJsonURLData.drawGeometryEvent) continue;
-
+                            
 							List<List<GeoJSONPoint>> polygon = geoJSON.GetPolygon();
-                            Debug.Log($"count: {polygon.Count}");
-							for (int i = 0; i < polygon.Count; i++)
-							{
-                                Debug.Log($"Subcount: {polygon[i].Count}");
-                            }
 
 							yield return DrawPolygonRequest(geoJsonURLData, polygon);
 
-							yield return new WaitForEndOfFrame();
-
 							break;
-						/*case GeoJSON.GeoJSONGeometryType.MultiPolygon:
+						case GeoJSON.GeoJSONGeometryType.MultiPolygon:
                             List<List<List<GeoJSONPoint>>> multiPolygons = geoJSON.GetMultiPolygon();
                             for (int i = 0; i < multiPolygons.Count; i++)
                             {
                                 var multiPolygon = multiPolygons[i];
                                 DrawPolygonRequest(geoJsonURLData, multiPolygon);
                             }
-                            break;*/
+                            break;
                     }
                 }
             }
         }
 
 		private IEnumerator DrawPolygonRequest(GeoJsonURLS geoJsonURLData, List<List<GeoJSONPoint>> polygon)
-		{
-            Debug.Log("Draw polygon");
-            
+		{            
 			List<IList<Vector3>> unityPolygon = new List<IList<Vector3>>();
 
 			//Grouped polys
 			for (int i = 0; i < polygon.Count; i++)
 			{
 				var contour = polygon[i];
-                Debug.Log($"Draw polygon>Contour {i}");
-                yield return new WaitForEndOfFrame();
 
                 IList<Vector3> polyList = new List<Vector3>();
 				for (int j = 0; j < contour.Count; j++)
 				{
                     polyList.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
 				}
-                if(polyList.Count>0)
-				    unityPolygon.Add(polyList);
+				unityPolygon.Add(polyList);
 			}
 
             if (unityPolygon.Count > 0)
                 geoJsonURLData.drawGeometryEvent.unityEvent?.Invoke(unityPolygon);
+
+            yield return null;
 		}
 	}
 }

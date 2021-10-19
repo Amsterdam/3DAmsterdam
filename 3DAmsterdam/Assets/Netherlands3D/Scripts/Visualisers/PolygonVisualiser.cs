@@ -33,8 +33,7 @@ namespace Netherlands3D.Events
         [SerializeField]
         private float extrusionHeight = 100.0f;
 
-        [SerializeField]
-        private int maxPolygons = 3;
+        private int maxPolygons = 10000;
         private int polygonCount = 0;
 
         void Awake()
@@ -58,13 +57,13 @@ namespace Netherlands3D.Events
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
-            newPolygonMesh.RecalculateNormals();
-
-            //Add rim
+            if(newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
             var newPolygonObject = new GameObject();
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
+            newPolygonObject.transform.SetParent(this.transform);
+            newPolygonObject.transform.Translate(0, extrusionHeight, 0);
         }
     }
 }
