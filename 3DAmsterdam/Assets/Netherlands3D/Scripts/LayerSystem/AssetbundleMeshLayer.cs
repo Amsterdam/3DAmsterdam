@@ -171,7 +171,7 @@ namespace Netherlands3D.LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
+			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
 			Debug.Log(dataURL);
 
 			ObjectMappingClass data;
@@ -308,7 +308,7 @@ namespace Netherlands3D.LayerSystem
 			string dataName = name.Replace(" Instance", "");
 			dataName = dataName.Replace("mesh", "building");
 			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = Config.activeConfiguration.buildingsMetaDataPath + dataName;
+			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
 
 			ObjectMappingClass data;
 			string id = "null";
@@ -422,9 +422,7 @@ namespace Netherlands3D.LayerSystem
 						objectData.highlightIDs.Clear();
 					}
 
-					yield return new WaitForEndOfFrame();
 					objectData.ApplyDataToIDsTexture();
-					yield return new WaitForEndOfFrame();
 				}
 			}
 			pauseLoading = false;

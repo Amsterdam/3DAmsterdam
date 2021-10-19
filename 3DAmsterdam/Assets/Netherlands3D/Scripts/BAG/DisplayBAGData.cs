@@ -80,7 +80,7 @@ namespace Netherlands3D.BAG
                         EstimateBuildingThumbnailFrame(bbox);
                     }
 
-                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId);
+                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
 
                     CheckAddDataField("Naam", buildingData.openbareruimte.naam);
                     CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);

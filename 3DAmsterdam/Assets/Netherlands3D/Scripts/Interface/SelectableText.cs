@@ -54,11 +54,11 @@ namespace Netherlands3D.Interface
 		private void OnEndEdit(string newString = "")
 		{
 			inputField.gameObject.SetActive(false);
-			changedTextEvent.Invoke(newString);
+			changedTextEvent?.Invoke(newString);
 		}
 		private void OnEdit(string newString = "")
 		{
-			changedTextEvent.Invoke(newString);
+			changedTextEvent?.Invoke(newString);
 		}
 
 		public void OnPointerEnter(PointerEventData eventData)

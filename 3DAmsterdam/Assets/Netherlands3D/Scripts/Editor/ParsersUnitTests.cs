@@ -24,30 +24,30 @@ f 2 1 3
 o NL.IMBAG.Pand.0363100012201726
 f 3 1 2";
 
-    [Test]
-    public void TestAmsterdamRDBasedObjImport()
-    {
-        //Amsterdam RD coordinates bounding box config
-        Config.activeConfiguration = new ConfigurationFile();
-        Config.activeConfiguration.RelativeCenterRD = new Vector2RD(121000, 487000);
-        Config.activeConfiguration.BottomLeftRD = new Vector2RD(109000, 474000);
-        Config.activeConfiguration.TopRightRD = new Vector2RD(141000, 501000);
+    //[Test]
+    //public void TestAmsterdamRDBasedObjImport()
+    //{
+    //    //Amsterdam RD coordinates bounding box config
+    //    Config.activeConfiguration = new ConfigurationFile();
+    //    Config.activeConfiguration.RelativeCenterRD = new Vector2RD(121000, 487000);
+    //    Config.activeConfiguration.BottomLeftRD = new Vector2RD(109000, 474000);
+    //    Config.activeConfiguration.TopRightRD = new Vector2RD(141000, 501000);
 
-        GameObject gameObject = new GameObject();
-        var objLoader = gameObject.AddComponent<ObjLoad>();
-        objLoader.BottomLeftBounds = Config.activeConfiguration.BottomLeftRD;
-        objLoader.TopRightBounds = Config.activeConfiguration.TopRightRD;
-        objLoader.IgnoreObjectsOutsideOfBounds = true;
-        objLoader.MaxSubMeshes = 1;
-        objLoader.SplitNestedObjects = true;
-        objLoader.WeldVertices = true;
-        objLoader.EnableMeshRenderer = false;
-        objLoader.SetGeometryData(ref rdInsideAmsterdamBasedOBJ);
-        objLoader.ParseNextObjLines(12);
+    //    GameObject gameObject = new GameObject();
+    //    var objLoader = gameObject.AddComponent<ObjLoad>();
+    //    objLoader.BottomLeftBounds = Config.activeConfiguration.BottomLeftRD;
+    //    objLoader.TopRightBounds = Config.activeConfiguration.TopRightRD;
+    //    objLoader.IgnoreObjectsOutsideOfBounds = true;
+    //    objLoader.MaxSubMeshes = 1;
+    //    objLoader.SplitNestedObjects = true;
+    //    objLoader.WeldVertices = true;
+    //    objLoader.EnableMeshRenderer = false;
+    //    objLoader.SetGeometryData(ref rdInsideAmsterdamBasedOBJ);
+    //    objLoader.ParseNextObjLines(12);
 
-        //Should be equal to 1 + amount of 'o ' object lines found in obj
-        Assert.AreEqual(5, objLoader.Buffer.NumberOfObjects);
-    }
+    //    //Should be equal to 1 + amount of 'o ' object lines found in obj
+    //    Assert.AreEqual(5, objLoader.Buffer.NumberOfObjects);
+    //}
 
     [Test]
     public void TileCombinerTest()
