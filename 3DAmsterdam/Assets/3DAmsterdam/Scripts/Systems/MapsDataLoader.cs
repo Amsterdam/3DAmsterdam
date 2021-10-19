@@ -150,8 +150,6 @@ namespace Amsterdam3D.Maps
                 IList<Vector3> polyList = new List<Vector3>();
 				for (int j = 0; j < contour.Count; j++)
 				{
-                    Debug.Log($"Draw polygon>Contour>Point-{j}");
-                    yield return new WaitForEndOfFrame();
                     polyList.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
 				}
                 if(polyList.Count>0)
