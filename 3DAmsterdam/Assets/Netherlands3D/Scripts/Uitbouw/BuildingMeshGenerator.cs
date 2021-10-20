@@ -15,6 +15,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public bool IsBeschermd { get; private set; }
         public float Area { get; private set; }
 
+        public WallSelector SelectedWall { get; private set; }
+
         //public Vector3[] RelativeBuildingCorners { get; private set; }
         public Vector3[] AbsoluteBuildingCorners { get; private set; }
 
@@ -22,6 +24,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
         public event BuildingDataProcessedEventHandler BuildingDataProcessed;
+
+        private void Awake()
+        {
+            SelectedWall = GetComponentInChildren<WallSelector>();
+        }
 
         private void Start()//in start to avoid race conditions
         {

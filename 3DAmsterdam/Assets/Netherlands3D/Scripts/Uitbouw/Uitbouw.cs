@@ -12,15 +12,7 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class Uitbouw : MonoBehaviour
     {
-        //private Vector2[] footprint;
-        //private MeshRenderer meshRenderer;
-        //private Mesh mesh;
-        //private List<Vector2[]> perceel;
-
-        //[SerializeField]
         private BuildingMeshGenerator building;
-        //[SerializeField]
-        //private PerceelRenderer perceel;
 
         public float Width { get; private set; }
         public float Depth { get; private set; }
@@ -187,7 +179,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             ProcessUserInput();
             
-            SnapToBuilding(building);
+            //SnapToBuilding(building);
             
         }
 
@@ -207,8 +199,31 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (building)
             {
-                SnapToBuilding(building);
+                if (building.SelectedWall.WallIsSelected)
+                {
+                    SnapToWall(building.SelectedWall);
+                    SnapToGround(building);
+                }
+                else
+                { 
+                    //SnapToBuilding(building);
+                }
             }
+        }
+
+        private void SnapToWall(WallSelector selectedWall)
+        {
+            var dir = selectedWall.WallPlane.normal;
+            transform.forward = -dir; //rotate towards correct direction
+
+            //remove local x component
+            var diff = selectedWall.WallPlane.ClosestPointOnPlane(transform.position) - transform.position; //moveVector
+            var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
+            rotatedPoint.x = 0; //remove horizontal component
+            var projectedPoint = transform.rotation * rotatedPoint; //rotate back
+            var newPoint = projectedPoint + transform.position; // apply movevector
+
+            transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
         }
 
         //private void ProcessIfObjectIsInPerceelBounds()

@@ -419,7 +419,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var perceelGrootte = float.Parse(jsonData["features"][0]["properties"]["kadastraleGrootteWaarde"]);
             PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list, perceelGrootte, perceelnummerPlaatscoordinaat));
 
-            PlaatsUitbouw();
+            //PlaatsUitbouw();
         }
 
         public void PlaatsUitbouw()
