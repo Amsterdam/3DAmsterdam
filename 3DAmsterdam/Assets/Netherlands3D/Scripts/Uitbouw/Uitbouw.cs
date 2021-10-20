@@ -12,15 +12,7 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class Uitbouw : MonoBehaviour
     {
-        //private Vector2[] footprint;
-        //private MeshRenderer meshRenderer;
-        //private Mesh mesh;
-        //private List<Vector2[]> perceel;
-
-        //[SerializeField]
         private BuildingMeshGenerator building;
-        //[SerializeField]
-        //private PerceelRenderer perceel;
 
         public float Width { get; private set; }
         public float Depth { get; private set; }
@@ -84,7 +76,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        public Plane SnapWall { get; private set; } = new Plane();
+        //public Plane SnapWall { get; private set; } = new Plane();
 
 
         public Vector3 CenterAttatchPoint
@@ -186,9 +178,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //}
 
             ProcessUserInput();
-            
-            SnapToBuilding(building);
-            
+
+            //SnapToBuilding(building);
+
         }
 
         private void SetArrowPositions()
@@ -207,8 +199,32 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (building)
             {
-                SnapToBuilding(building);
+                if (building.SelectedWall.WallIsSelected)
+                {
+                    SnapToWall(building.SelectedWall);
+                    SnapToGround(building);
+                }
+                else
+                {
+                    //SnapToBuilding(building);
+                }
             }
+        }
+
+        //todo: snap to wall now allows the uitbouw to end up outside of the wall bounds
+        private void SnapToWall(WallSelector selectedWall)
+        {
+            var dir = selectedWall.WallPlane.normal;
+            transform.forward = -dir; //rotate towards correct direction
+
+            //remove local x component
+            var diff = selectedWall.WallPlane.ClosestPointOnPlane(transform.position) - transform.position; //moveVector
+            var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
+            rotatedPoint.x = 0; //remove horizontal component
+            var projectedPoint = transform.rotation * rotatedPoint; //rotate back
+            var newPoint = projectedPoint + transform.position; // apply movevector
+
+            transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
         }
 
         //private void ProcessIfObjectIsInPerceelBounds()
@@ -310,7 +326,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             SnapToGround(this.building);
 
-            SnapWall = new Plane(hit.normal, hit.point);
+            //SnapWall = new Plane(hit.normal, hit.point);
 
             Debug.DrawRay(CenterAttatchPoint, building.BuildingCenter - transform.position, Color.magenta);
             if (Physics.Raycast(CenterAttatchPoint, building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))

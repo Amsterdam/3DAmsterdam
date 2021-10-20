@@ -7,8 +7,8 @@ using System.Linq;
 
 public class HandleMetaDataUpdates : MonoBehaviour
 {
-    public Text AdresText;
-    public Text PostcodePlaatsText;
+    public Text[] AdresText;
+    public Text[] PostcodePlaatsText;
     public Text PerceelGrootteText;
 
     public Text IsMonumentText;
@@ -63,8 +63,16 @@ public class HandleMetaDataUpdates : MonoBehaviour
 
     private void AddressLoaded(object source, AdressDataEventArgs args)
     {
-        AdresText.text = $"{args.Straat} {args.Huisnummer}";
-        PostcodePlaatsText.text = $"{args.Postcode} {args.Plaats}";
+        foreach(var adrestext in AdresText)
+        {
+            adrestext.text = $"{args.Straat} {args.Huisnummer}";
+        }
+
+        foreach (var postcodeplaats in PostcodePlaatsText)
+        {
+            postcodeplaats.text = $"{args.Postcode} {args.Plaats}";
+        }
+        
     }
 
     private void BuildingMetaDataLoaded(object source, Netherlands3D.T3D.Uitbouw.ObjectDataEventArgs args)

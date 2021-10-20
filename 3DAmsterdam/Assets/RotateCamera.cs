@@ -9,10 +9,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 {
     private Camera mycam;
     public float MinCameraHeight = 4;
-    public float RotationSpeed = 0.2f;
+    public float RotationSpeed = 0.5f;
     public float ZoomSpeed = 0.01f;
-    public float spinSpeed = 0.01f;
-    public float moveSpeed = 0.01f;
+    public float spinSpeed = 60;
+    public float moveSpeed = 5f;
+    public float firstPersonHeight = 3.23f;
 
     [SerializeField]
     private bool dragging = false;
@@ -32,6 +33,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     Vector3 lastRotatePosition;
     Quaternion lastRotateRotation;
+    Vector2 currentRotation;
 
     public static RotateCamera Instance;
     bool isFirstPersonMode = false;
@@ -68,19 +70,18 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void ToggleRotateFirstPersonMode()
     {
+        if (Uitbouw.Instance == null) return;
+
         isFirstPersonMode = !isFirstPersonMode;
 
         if (isFirstPersonMode)        
         {
-            
-
             lastRotatePosition = mycam.transform.position;
             lastRotateRotation = mycam.transform.rotation;
             var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
-            mycam.transform.position = new Vector3(perceelmidden.x, 3.23f, perceelmidden.z);
-            mycam.transform.LookAt(new Vector3(Uitbouw.Instance.CenterPoint.x, 3.23f, Uitbouw.Instance.CenterPoint.z));
+            mycam.transform.position = new Vector3(perceelmidden.x, firstPersonHeight, perceelmidden.z);
+            mycam.transform.LookAt(new Vector3(Uitbouw.Instance.CenterPoint.x, firstPersonHeight, Uitbouw.Instance.CenterPoint.z));
             currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
-
         }
         else
         {
@@ -89,9 +90,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
 
     }
-
-    Vector2 currentRotation;
-    
+   
 
     private void FirstPersonLook()
     {
@@ -168,10 +167,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         var previousPosition = mycam.transform.position;
         var previousRotation = mycam.transform.rotation;
 
-        if (Uitbouw.Instance == null) return;
-
-        mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, Vector3.up, xaxis * RotationSpeed);
-      //  mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
+        if (Uitbouw.Instance != null)
+            mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, Vector3.up, xaxis * RotationSpeed);
+        else if (RestrictionChecker.ActiveBuilding)
+            mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
     }
 
     public float GetNormalizedCameraHeight()

@@ -32,6 +32,8 @@ public class HandleButtonsT3D : MonoBehaviour
 
     public DropUp MaandenDropup;
 
+    public GameObject Step0; //selectWall
+
     public GameObject Step1U;
     public GameObject Step2aU;
     public GameObject Step2bU;
@@ -80,8 +82,8 @@ public class HandleButtonsT3D : MonoBehaviour
                 positieGoed = true;
             }
             else positieGoed = null;
-            
-            
+
+
         });
 
         TogglePositieIsNietGoed.onValueChanged.AddListener((value) =>
@@ -89,7 +91,7 @@ public class HandleButtonsT3D : MonoBehaviour
             if (value == true)
             {
                 TogglePositieIsGoed.isOn = false;
-                positieGoed = false;                
+                positieGoed = false;
             }
             else positieGoed = null;
         });
@@ -97,33 +99,33 @@ public class HandleButtonsT3D : MonoBehaviour
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
 
         //Sun related
-        dateTimeNow = DateTime.Now;        
+        dateTimeNow = DateTime.Now;
         var coordinates = CoordConvert.UnitytoWGS84(Vector3.zero);
         longitude = coordinates.lon;
         latitude = coordinates.lat;
 
         UpdateTijd();
 
-        MaandenDropup.SetItems(months, dateTimeNow.Month-1, SetMonth);
+        MaandenDropup.SetItems(months, dateTimeNow.Month - 1, SetMonth);
     }
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
     {
-        if (MetadataLoader.Instance.UploadedModel)
-            Step1U.SetActive(true);
-        else
-            Step1D.SetActive(true);
+        //if (MetadataLoader.Instance.UploadedModel)
+        Step0.SetActive(true);
+        //else
+        //    Step1D.SetActive(true);
     }
 
     void SetMonth(int month)
     {
-        dateTimeNow = new DateTime(dateTimeNow.Year, month+1, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, 0);
+        dateTimeNow = new DateTime(dateTimeNow.Year, month + 1, dateTimeNow.Day, dateTimeNow.Hour, dateTimeNow.Minute, 0);
         UpdateSun();
-        UpdateTijd();      
+        UpdateTijd();
     }
 
     void ToggleBuildings()
-    {        
+    {
         BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
         TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
     }
@@ -137,8 +139,8 @@ public class HandleButtonsT3D : MonoBehaviour
     void AddHour()
     {
         dateTimeNow = new DateTime(dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day, dateTimeNow.Hour, 0, 0);
-        dateTimeNow =  dateTimeNow.AddHours(1);
-        
+        dateTimeNow = dateTimeNow.AddHours(1);
+
         UpdateTijd();
         UpdateSun();
         Debug.Log(dateTimeNow);
@@ -192,7 +194,7 @@ public class HandleButtonsT3D : MonoBehaviour
     private void UpdateTijd()
     {
         DagText.text = $"{dateTimeNow.Day}";
-        MaandText.text = GetMonthString(dateTimeNow.Month-1);        
+        MaandText.text = GetMonthString(dateTimeNow.Month - 1);
         TijdText.text = $"{ dateTimeNow:HH:mm}";
     }
 

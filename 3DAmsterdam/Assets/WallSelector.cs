@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -18,6 +19,12 @@ namespace Netherlands3D.T3D.Uitbouw
         private float normalTolerance = 0.01f; //tolerance in difference between normals to still count as the same direction
         private float coplanarTolerance = 0.01f; //tolerance in difference click point and vertex position to the plane at that point
 
+        public bool AllowSelection { get; set; }
+        public bool WallIsSelected { get; private set; }
+        public Plane WallPlane { get; private set; }
+        public Mesh WallMesh { get; private set; }
+        public Vector3 CenterPoint { get; private set; }
+
         private void Awake()
         {
             wallMeshFilter = GetComponent<MeshFilter>();
@@ -26,11 +33,23 @@ namespace Netherlands3D.T3D.Uitbouw
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (AllowSelection && Input.GetMouseButtonDown(0))
             {
+                if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
+                    return;
+
                 if (TryGetWall(out var wall))
                 {
-                    wallMeshFilter.mesh = wall;
+                    WallMesh = wall;
+                    wallMeshFilter.mesh = WallMesh;
+                    WallIsSelected = true;
+                }
+                else
+                {
+                    WallMesh = new Mesh();
+                    wallMeshFilter.mesh = WallMesh;
+                    WallIsSelected = false;
+                    WallPlane = new Plane();
                 }
             }
         }
@@ -41,16 +60,17 @@ namespace Netherlands3D.T3D.Uitbouw
             var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit, LayerMask.GetMask("ActiveSelection")))
             {
-                Plane hitPlane = new Plane(hit.normal, hit.point);
+                WallPlane = new Plane(hit.normal, hit.point);
 
                 //copy mesh data to avoid getting a copy every iteration in the loop
                 var sourceVerts = buildingMeshFilter.mesh.vertices;
                 var sourceTriangles = buildingMeshFilter.mesh.triangles;
-                print(sourceTriangles.Length);
                 //var sourceUVs = buildingMeshFilter.mesh.uvs;
 
                 //List<Vector3> parallelVertices = new List<Vector3>();
                 List<int> parallelTris = new List<int>();
+                List<Vector3> parallelVertices = new List<Vector3>();
+                List<int> usedVertIndices = new List<int>();
 
                 for (int i = 0; i < sourceTriangles.Length; i += 3)
                 {
@@ -61,21 +81,34 @@ namespace Netherlands3D.T3D.Uitbouw
                         // parallel triangle, possibly part of the wall
                         // This tri is not part of the wall if it is not contiguous to other triangles
 
-                        if (IsCoplanar(hitPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
+                        if (IsCoplanar(WallPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
                         {
-                            parallelTris.Add(sourceTriangles[i]);
-                            parallelTris.Add(sourceTriangles[i + 1]);
-                            parallelTris.Add(sourceTriangles[i + 2]);
+                            for (int j = 0; j < 3; j++) //add the 3 verts as a triangle
+                            {
+                                var vertIndex = sourceTriangles[i + j]; //vertIndex in the old list of verts
+                                if (!usedVertIndices.Contains(vertIndex))
+                                {
+                                    usedVertIndices.Add(vertIndex);
+                                    parallelVertices.Add(sourceVerts[vertIndex]);
+                                }
+                                parallelTris.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
+                            }
                         }
                     }
                 }
-                wall.vertices = sourceVerts; //todo: this causes floating verts, but the tris need the verts at these indices, need to fix this
+
+                wall.vertices = parallelVertices.ToArray();
                 wall.triangles = parallelTris.ToArray();
+
                 wall.RecalculateNormals();
+                wall.RecalculateBounds();
 
-                print(wall.triangles.Length);
+                if (wall.triangles.Length > 0)
+                {
+                    CenterPoint = transform.position + wall.bounds.center;
 
-                return true;
+                    return true;
+                }
             }
             return false;
         }
@@ -83,7 +116,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private static Vector3 CalculateNormal(Vector3 trianglePointA, Vector3 trianglePointB, Vector3 trianglePointC)
         {
             var dir = Vector3.Cross(trianglePointB - trianglePointA, trianglePointC - trianglePointA);
-            //var norm = dir.normalized;
             return dir.normalized;
         }
 
