@@ -11,6 +11,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     public float MinCameraHeight = 4;
     public float RotationSpeed = 0.2f;
     public float ZoomSpeed = 0.01f;
+    public float spinSpeed = 0.01f;
+    public float moveSpeed = 0.01f;
 
     [SerializeField]
     private bool dragging = false;
@@ -28,6 +30,16 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     
     List<InputActionMap> availableActionMaps;
 
+    Vector3 lastRotatePosition;
+    Quaternion lastRotateRotation;
+
+    public static RotateCamera Instance;
+    bool isFirstPersonMode = false;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         mycam = CameraModeChanger.Instance.ActiveCamera;
@@ -44,10 +56,64 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void Update()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
-        if (dragging && Input.GetMouseButton(0))
+        if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
         {            
             RotateAround(mouseDelta.x, mouseDelta.y);
         }        
+        else if(isFirstPersonMode)
+        {
+            FirstPersonLook();
+        }
+    }
+
+    public void ToggleRotateFirstPersonMode()
+    {
+        isFirstPersonMode = !isFirstPersonMode;
+
+        if (isFirstPersonMode)        
+        {
+            
+
+            lastRotatePosition = mycam.transform.position;
+            lastRotateRotation = mycam.transform.rotation;
+            var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
+            mycam.transform.position = new Vector3(perceelmidden.x, 3.23f, perceelmidden.z);
+            mycam.transform.LookAt(new Vector3(Uitbouw.Instance.CenterPoint.x, 3.23f, Uitbouw.Instance.CenterPoint.z));
+            currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
+
+        }
+        else
+        {
+            mycam.transform.position = lastRotatePosition;
+            mycam.transform.rotation = lastRotateRotation;
+        }
+
+    }
+
+    Vector2 currentRotation;
+    
+
+    private void FirstPersonLook()
+    {
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            currentRotation.x += -1 * spinSpeed * Time.deltaTime;
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            currentRotation.x += 1 * spinSpeed * Time.deltaTime;
+        }
+        
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            mycam.transform.position += mycam.transform.forward * moveSpeed * Time.deltaTime;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            mycam.transform.position += -mycam.transform.forward * moveSpeed * Time.deltaTime;
+        }
+
+        mycam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);        
     }
 
     private void AddActionListeners()

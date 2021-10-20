@@ -20,6 +20,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomIn;
     public Button ButtonZoomOut;
     public Button ButtonVolgende;
+    public Button ButtonToggleRotateFirstperson;
 
     public Toggle TogglePositieIsGoed;
     public Toggle TogglePositieIsNietGoed;
@@ -27,7 +28,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Layer BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
-    public Texture2D RotateIcon;
+    
 
     public DropUp MaandenDropup;
 
@@ -68,6 +69,8 @@ public class HandleButtonsT3D : MonoBehaviour
         ButtonZoomIn.onClick.AddListener(ZoomIn);
         ButtonZoomOut.onClick.AddListener(ZoomOut);
         ButtonVolgende.onClick.AddListener(Volgende);
+        ButtonToggleRotateFirstperson.onClick.AddListener(ToggleRotateFirstperson);
+
 
         TogglePositieIsGoed.onValueChanged.AddListener((value) =>
         {
@@ -177,6 +180,13 @@ public class HandleButtonsT3D : MonoBehaviour
 
         var volgendeLabel = ButtonVolgende.GetComponentInChildren<Text>();
         volgendeLabel.text = "Opslaan";
+    }
+ 
+    void ToggleRotateFirstperson()
+    {
+        
+        RotateCamera.Instance.ToggleRotateFirstPersonMode();
+        
     }
 
     private void UpdateTijd()
