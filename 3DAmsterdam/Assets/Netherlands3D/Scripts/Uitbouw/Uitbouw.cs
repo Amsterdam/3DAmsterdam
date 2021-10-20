@@ -76,7 +76,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        public Plane SnapWall { get; private set; } = new Plane();
+        //public Plane SnapWall { get; private set; } = new Plane();
 
 
         public Vector3 CenterAttatchPoint
@@ -178,9 +178,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //}
 
             ProcessUserInput();
-            
+
             //SnapToBuilding(building);
-            
+
         }
 
         private void SetArrowPositions()
@@ -205,12 +205,13 @@ namespace Netherlands3D.T3D.Uitbouw
                     SnapToGround(building);
                 }
                 else
-                { 
+                {
                     //SnapToBuilding(building);
                 }
             }
         }
 
+        //todo: snap to wall now allows the uitbouw to end up outside of the wall bounds
         private void SnapToWall(WallSelector selectedWall)
         {
             var dir = selectedWall.WallPlane.normal;
@@ -325,7 +326,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             SnapToGround(this.building);
 
-            SnapWall = new Plane(hit.normal, hit.point);
+            //SnapWall = new Plane(hit.normal, hit.point);
 
             Debug.DrawRay(CenterAttatchPoint, building.BuildingCenter - transform.position, Color.magenta);
             if (Physics.Raycast(CenterAttatchPoint, building.BuildingCenter - transform.position, out hit, Mathf.Infinity, layerMask))
