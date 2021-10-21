@@ -39,8 +39,6 @@ namespace Netherlands3D
         private bool snapshotPreferenceUI = true;
         public Toggle snapshotNavigation;
         private bool snapshotPreferenceNavigation;
-        public Toggle snapshotLogo;
-        private bool snapshotPreferenceLogo = true;
         public Toggle snapshotMainMenu;
         private bool snapshotPreferenceMainMenu;
         public Toggle snapshotLoD;
@@ -117,7 +115,6 @@ namespace Netherlands3D
             // After taking a screenshot the toggles for UI that the user set get saved
             snapshotPreferenceUI = snapshotUI.isOn;
             snapshotPreferenceNavigation = snapshotNavigation.isOn;
-            snapshotPreferenceLogo = snapshotLogo.isOn;
             snapshotPreferenceMainMenu = snapshotMainMenu.isOn;
             snapshotPreferenceLoD = snapshotLoD.isOn;
 
@@ -267,7 +264,6 @@ namespace Netherlands3D
             snapshotCamera.targetTexture = null;
             RenderTexture.active = null;
             snapshotNavigation.isOn = true;
-            snapshotLogo.isOn = true;
             snapshotMainMenu.isOn = true;
             snapshotLoD.isOn = true;
 
@@ -292,7 +288,6 @@ namespace Netherlands3D
         {
             snapshotUI.isOn = snapshotPreferenceUI;
             snapshotNavigation.isOn = snapshotPreferenceNavigation;
-            snapshotLogo.isOn = snapshotPreferenceLogo;
             snapshotMainMenu.isOn = snapshotPreferenceMainMenu;
             snapshotLoD.isOn = snapshotPreferenceLoD;
         }
