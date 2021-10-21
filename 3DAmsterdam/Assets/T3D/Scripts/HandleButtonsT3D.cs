@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-
 public class HandleButtonsT3D : MonoBehaviour
 {
     public Button ButtonOmgeving;
@@ -18,28 +17,16 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
     public Button ButtonZoomIn;
-    public Button ButtonZoomOut;
-    public Button ButtonVolgende;
+    public Button ButtonZoomOut;    
     public Button ButtonToggleRotateFirstperson;
-
-    public Toggle TogglePositieIsGoed;
-    public Toggle TogglePositieIsNietGoed;
 
     public Layer BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
-    
 
     public DropUp MaandenDropup;
 
     public GameObject Step0; //selectWall
-
-    public GameObject Step1U;
-    public GameObject Step2aU;
-    public GameObject Step2bU;
-
-    public GameObject Step1D;
-    public GameObject Step2D;
 
     //Sun related
     public Text DagText;
@@ -49,8 +36,6 @@ public class HandleButtonsT3D : MonoBehaviour
     private DateTime dateTimeNow;
     private double longitude;
     private double latitude;
-
-    bool? positieGoed = null;
 
     private float zoomSpeed = 150;
 
@@ -69,32 +54,8 @@ public class HandleButtonsT3D : MonoBehaviour
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
         ButtonZoomIn.onClick.AddListener(ZoomIn);
-        ButtonZoomOut.onClick.AddListener(ZoomOut);
-        ButtonVolgende.onClick.AddListener(Volgende);
+        ButtonZoomOut.onClick.AddListener(ZoomOut);       
         ButtonToggleRotateFirstperson.onClick.AddListener(ToggleRotateFirstperson);
-
-
-        TogglePositieIsGoed.onValueChanged.AddListener((value) =>
-        {
-            if (value == true)
-            {
-                TogglePositieIsNietGoed.isOn = false;
-                positieGoed = true;
-            }
-            else positieGoed = null;
-
-
-        });
-
-        TogglePositieIsNietGoed.onValueChanged.AddListener((value) =>
-        {
-            if (value == true)
-            {
-                TogglePositieIsGoed.isOn = false;
-                positieGoed = false;
-            }
-            else positieGoed = null;
-        });
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
 
@@ -110,11 +71,8 @@ public class HandleButtonsT3D : MonoBehaviour
     }
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-    {
-        //if (MetadataLoader.Instance.UploadedModel)
-        Step0.SetActive(true);
-        //else
-        //    Step1D.SetActive(true);
+    {        
+        Step0.SetActive(true);     
     }
 
     void SetMonth(int month)
@@ -164,31 +122,10 @@ public class HandleButtonsT3D : MonoBehaviour
     {
         CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
-
-    void Volgende()
-    {
-        if (positieGoed == null) return;
-
-        if (positieGoed == true)
-        {
-            Step1U.SetActive(false);
-            Step2bU.SetActive(true);
-        }
-        else
-        {
-            Step1U.SetActive(false);
-            Step2aU.SetActive(true);
-        }
-
-        var volgendeLabel = ButtonVolgende.GetComponentInChildren<Text>();
-        volgendeLabel.text = "Opslaan";
-    }
  
     void ToggleRotateFirstperson()
-    {
-        
-        RotateCamera.Instance.ToggleRotateFirstPersonMode();
-        
+    {        
+        RotateCamera.Instance.ToggleRotateFirstPersonMode();        
     }
 
     private void UpdateTijd()
@@ -197,8 +134,6 @@ public class HandleButtonsT3D : MonoBehaviour
         MaandText.text = GetMonthString(dateTimeNow.Month - 1);
         TijdText.text = $"{ dateTimeNow:HH:mm}";
     }
-
-
 
     void UpdateSun()
     {

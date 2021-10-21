@@ -100,13 +100,16 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
-            Instance = this;
+            
             //meshRenderer = GetComponent<MeshRenderer>();
             //mesh = GetComponent<MeshFilter>().mesh;
             //SetDimensions(mesh.bounds.extents * 2);
             //userMovementAxis = GetComponentInChildren<DragableAxis>();
             building = RestrictionChecker.ActiveBuilding;
             UpdateDimensions();
+
+            Instance = this;
+
         }
 
         private void Start()
