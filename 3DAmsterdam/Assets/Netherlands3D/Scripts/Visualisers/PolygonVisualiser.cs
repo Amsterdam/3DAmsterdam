@@ -33,6 +33,9 @@ namespace Netherlands3D.Events
         [SerializeField]
         private float extrusionHeight = 100.0f;
 
+        private int maxPolygons = 10000;
+        private int polygonCount = 0;
+
         void Awake()
         {
             if (drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
@@ -41,6 +44,9 @@ namespace Netherlands3D.Events
         //Treat first contour as outer contour, and extra contours as holes
         public void CreatePolygon(List<IList<Vector3>> contours)
         {
+            if (polygonCount >= maxPolygons) return;
+            polygonCount++;
+
             var polygon = new Poly2Mesh.Polygon();
             polygon.outside = (List<Vector3>)contours[0];
             if (contours.Count > 1)
@@ -51,13 +57,13 @@ namespace Netherlands3D.Events
                 }
             }
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
-            newPolygonMesh.RecalculateNormals();
-
-            //Add rim
+            if(newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
             var newPolygonObject = new GameObject();
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
+            newPolygonObject.transform.SetParent(this.transform);
+            newPolygonObject.transform.Translate(0, extrusionHeight, 0);
         }
     }
 }

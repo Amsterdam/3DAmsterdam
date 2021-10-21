@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 157585561044462480}
   - component: {fileID: 157585561044462495}
+  - component: {fileID: 8636095788727618299}
   m_Layer: 0
   m_Name: TramVisualiser
   m_TagString: Untagged
@@ -45,7 +46,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineCoordinatesEvent: {fileID: 11400000, guid: 7c3f9bce33125dc44b12bbb2bd03e354,
     type: 2}
+  finishedDrawing: {fileID: 0}
   lineRendererMaterial: {fileID: 2100000, guid: 143d1b601a82c22498d2c7cf9a42a833,
     type: 2}
-  lineColor: {r: 0.12724805, g: 1, b: 0, a: 1}
-  thickness: 1
+  lineColor: {r: 1, g: 1, b: 1, a: 1}
+  thickness: 7.5
+  offset: {x: 0, y: 0, z: 0}
+--- !u!114 &8636095788727618299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157585561044462494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368d5e498276dc54a8b4fa166cefbf65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receiveDrawPointEvent: {fileID: 11400000, guid: 0bb669bb8cee2d64ba94a1f1969c48e2,
+    type: 2}
+  shape: {fileID: 4215919988600483874, guid: fd87b7f349f68974c92818791b2b5d02, type: 3}
+  offset: {x: 0, y: 0, z: 0}

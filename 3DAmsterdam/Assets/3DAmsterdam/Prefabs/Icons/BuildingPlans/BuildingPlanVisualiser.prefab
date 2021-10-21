@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7339188055952275944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1361411731584597013}
+  - component: {fileID: 2202417768345492651}
+  - component: {fileID: 4094580583302771741}
+  - component: {fileID: 8317596390502219715}
+  - component: {fileID: 4651196632134020636}
+  - component: {fileID: 36576947693258323}
+  m_Layer: 0
+  m_Name: BuildingPlanVisualiser
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1361411731584597013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2202417768345492651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: a362c930dc16cf04c8142cb2dac56328, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: dda37cc977f8b024b84864e88783c393, type: 2}
+  extrusionHeight: 100
+--- !u!114 &4094580583302771741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: bcecab7ec50bc694fbf29026a47228d4, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: f64583901b22afb41b41ffb65148577d, type: 2}
+  extrusionHeight: 100
+--- !u!114 &8317596390502219715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: abb07a613a3698a4c81fe0fa403ffa64, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 724b0118510a3f34da0fd1918760380a, type: 2}
+  extrusionHeight: 100
+--- !u!114 &4651196632134020636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: a0825839ab6246d489ce21b514060f79, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 98a3045672e53714c9ed9c4c31468da5, type: 2}
+  extrusionHeight: 100
+--- !u!114 &36576947693258323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339188055952275944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: 5229136fb5f61b54d99ec4f12b384cc5, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: c167ac86e95e0714d95c393fa41528e9, type: 2}
+  extrusionHeight: 100

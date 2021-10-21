@@ -250,26 +250,25 @@ namespace Netherlands3D.Utilities
             return false;
         }
 
-        public double[] getGeometryPoint2DDouble()
+        public double[] GetGeometryPoint2DDouble()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryPointLocatorString, featureStartIndex, featureLength) + GeometryPointLocatorString.Length;
             double[] output = new double[2];
             int nextstartposition;
-            GeoJSONPoint point = getPoint(geometrystart, out nextstartposition);
+            GeoJSONPoint point = GetPoint(geometrystart, out nextstartposition);
             output[0] = point.x;
             output[1] = point.y;
             return output;
         }
 
-        public List<GeoJSONPoint> getGeometryLineString()
+        public List<GeoJSONPoint> GetGeometryLineString()
         {
                 int geometrystart = geoJSONString.IndexOf(GeometryLineStringLocatorString, featureStartIndex, featureLength) + GeometryLineStringLocatorString.Length;
                 int nextStartPoint;
                 return GetPointList(geometrystart, out nextStartPoint);
- 
         }
 
-        public List<double> getGeometryMultiPolygonString()
+        public List<double> GetGeometryMultiPolygonString()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryMultiPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryMultiPolygonStringLocatorString.Length;
             int geometryEnd = geoJSONString.IndexOf(GeometryStringLocatorEndString, geometrystart) - 1;
@@ -303,7 +302,7 @@ namespace Netherlands3D.Utilities
             return doubleOutputList;
         }
 
-        public float getPropertyFloatValue(string propertyName)
+        public float GetPropertyFloatValue(string propertyName)
         {
             int propertyStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length + 1;
             if (propertyStartIndex == -1)
@@ -314,7 +313,7 @@ namespace Netherlands3D.Utilities
             return (float)StringManipulation.ParseNextDouble(geoJSONString, ',', propertyStartIndex, out nextstartposition);
         }
 
-        public string getPropertyStringValue(string propertyName)
+        public string GetPropertyStringValue(string propertyName)
         {
             int propertyValueStartIndex = geoJSONString.IndexOf(propertyName, featureStartIndex, featureLength) + propertyName.Length;
             if (propertyValueStartIndex == -1)
@@ -329,7 +328,7 @@ namespace Netherlands3D.Utilities
         /// get the geometryType of the current Feature
         /// </summary>
         /// <returns>GeoJSONGeometryType</returns>
-        public GeoJSONGeometryType getGeometryType()
+        public GeoJSONGeometryType GetGeometryType()
         {
 
             int geometrystart = geoJSONString.IndexOf(GeometryPointLocatorString, featureStartIndex, featureLength);
@@ -374,7 +373,7 @@ namespace Netherlands3D.Utilities
             return geoJSONString.Substring(featureStartIndex - 1, featureLength);
         }
 
-        private GeoJSONPoint getPoint(int startIndex, out int endposition)
+        private GeoJSONPoint GetPoint(int startIndex, out int endposition)
         {
             GeoJSONPoint point = new GeoJSONPoint();
             int nextstartposition;
@@ -384,33 +383,33 @@ namespace Netherlands3D.Utilities
             return point;
 
         }
-        public List<GeoJSONPoint> getMultiPoint()
+        public List<GeoJSONPoint> GetMultiPoint()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryMultiPointLocatorString, featureStartIndex, featureLength) + GeometryMultiPointLocatorString.Length;
             int nextStartPoint;
             return GetPointList(geometrystart, out nextStartPoint);
         }
-        public List<GeoJSONPoint> getLineString()
+        public List<GeoJSONPoint> GetLine()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryMultiPointLocatorString, featureStartIndex, featureLength) + GeometryMultiPointLocatorString.Length;
             int nextStartPoint;
             return GetPointList(geometrystart, out nextStartPoint);
         }
 
-        public List<List<GeoJSONPoint>> getMultiLine()
+        public List<List<GeoJSONPoint>> GetMultiLine()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryMultiLineStringLocatorString, featureStartIndex, featureLength) + GeometryMultiLineStringLocatorString.Length;
             int nextStartPoint;
             return GetMultiLine(geometrystart, out nextStartPoint);
         }
-        public List<List<GeoJSONPoint>> getPolygon()
+        public List<List<GeoJSONPoint>> GetPolygon()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryPolygonStringLocatorString.Length;
             int nextStartPoint;
             return GetMultiLine(geometrystart, out nextStartPoint);
         }
 
-        public List<List<List<GeoJSONPoint>>> getMultiPolygon()
+        public List<List<List<GeoJSONPoint>>> GetMultiPolygon()
         {
             int geometrystart = geoJSONString.IndexOf(GeometryPolygonStringLocatorString, featureStartIndex, featureLength) + GeometryPolygonStringLocatorString.Length;
             int nextStartPoint;
@@ -418,8 +417,7 @@ namespace Netherlands3D.Utilities
         }
 
         private List<List<List<GeoJSONPoint>>> GetMultiPolygon(int startIndex, out int endposition)
-        {
-            
+        {       
             List<List<List<GeoJSONPoint>>> polygons = new List<List<List<GeoJSONPoint>>>();
             bool keepGoing = true;
 
@@ -521,7 +519,7 @@ namespace Netherlands3D.Utilities
             int bracketPosition;
             while (keepGoing)
             {
-                points.Add(getPoint(nextstartposition, out pointEndPosition));
+                points.Add(GetPoint(nextstartposition, out pointEndPosition));
                     //pointEndposition = position of ] at end of point
                 
                 //findthe position of the next comma
@@ -557,7 +555,7 @@ namespace Netherlands3D.Utilities
         }
     }
     public struct GeoJSONPoint
-        {
+    {
         public double x;
         public double y;
 
@@ -566,6 +564,5 @@ namespace Netherlands3D.Utilities
             x = X;
             y = Y;
         }
-       
-        }
+    }
 }
