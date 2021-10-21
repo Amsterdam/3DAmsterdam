@@ -18,16 +18,16 @@ namespace Netherlands3D.T3D.Uitbouw
 
         [SerializeField]
         private UitbouwRestrictionType restrictionType;
-        private UitbouwRestriction restrction;
+        private UitbouwRestriction restriction;
 
         private void Awake()
         {
-            RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restrction);
+            RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restriction);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            bool conforms = restrction == null || restrction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
+            bool conforms = restriction == null || restriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
             CreatePopup(conforms);
         }
 
@@ -40,25 +40,28 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
 
+            string passedText = string.Empty;
+            string failedText = string.Empty;
+
             switch (restrictionType)
             {
                 case UitbouwRestrictionType.Height:
-                    conformsText = string.Format(conformsText, HeightRestriction.MaxHeight, RestrictionChecker.ActiveUitbouw.Height);
-                    exceedsText = string.Format(exceedsText, HeightRestriction.MaxHeight, (RestrictionChecker.ActiveUitbouw.Height - HeightRestriction.MaxHeight).ToString("F2"));
+                    passedText = string.Format(conformsText, HeightRestriction.MaxHeight, RestrictionChecker.ActiveUitbouw.Height.ToString("F2"));
+                    failedText = string.Format(exceedsText, HeightRestriction.MaxHeight, (RestrictionChecker.ActiveUitbouw.Height - HeightRestriction.MaxHeight).ToString("F2"));
                     break;
                 case UitbouwRestrictionType.Depth:
-                    conformsText = string.Format(conformsText,  DepthRestriction.MaxDepth, RestrictionChecker.ActiveUitbouw.Depth);
-                    exceedsText = string.Format(exceedsText, DepthRestriction.MaxDepth, (RestrictionChecker.ActiveUitbouw.Depth - DepthRestriction.MaxDepth).ToString("F2"));
+                    passedText = string.Format(conformsText,  DepthRestriction.MaxDepth, RestrictionChecker.ActiveUitbouw.Depth.ToString("F2"));
+                    failedText = string.Format(exceedsText, DepthRestriction.MaxDepth, (RestrictionChecker.ActiveUitbouw.Depth - DepthRestriction.MaxDepth).ToString("F2"));
                     break;
                 case UitbouwRestrictionType.Area:
                     var freeArea = RestrictionChecker.ActivePerceel.Area - RestrictionChecker.ActiveBuilding.Area;
-                    var maxAvailableArea = freeArea * PerceelAreaRestriction.MaxAreaFraction;
+                    var perc = (RestrictionChecker.ActiveUitbouw.Area / freeArea) * 100;
 
-                    conformsText = string.Format(conformsText, PerceelAreaRestriction.MaxAreaPercentage, freeArea.ToString("F2"), RestrictionChecker.ActiveUitbouw.Area.ToString("F2"));
-                    exceedsText = string.Format(exceedsText, PerceelAreaRestriction.MaxAreaPercentage, freeArea.ToString("F2"), (RestrictionChecker.ActiveUitbouw.Area - maxAvailableArea).ToString("F2"));
+                    passedText = string.Format(conformsText, PerceelAreaRestriction.MaxAreaPercentage, perc.ToString("F2"));
+                    failedText = string.Format(exceedsText, PerceelAreaRestriction.MaxAreaPercentage, perc.ToString("F2"));
                     break;
             }
-            popup.GetComponentInChildren<PopupInfo>().SetText(conformsToRestriction ? conformsText : exceedsText);
+            popup.GetComponentInChildren<PopupInfo>().SetText(conformsToRestriction ? passedText : failedText);
         }
     }
 }

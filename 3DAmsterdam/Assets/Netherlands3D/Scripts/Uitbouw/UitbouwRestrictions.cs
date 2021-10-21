@@ -37,7 +37,6 @@ namespace Netherlands3D.T3D.Uitbouw
             var roundedHeight = Mathf.RoundToInt(uitbouw.Height * 100);
             var roundedMaxHeight = Mathf.RoundToInt(MaxHeight * 100);
             return roundedHeight <= roundedMaxHeight;
-            //return uitbouw.Depth <= MaxDepth;
         }
     }
 
@@ -49,7 +48,6 @@ namespace Netherlands3D.T3D.Uitbouw
             var roundedDepth = Mathf.RoundToInt(uitbouw.Depth * 100);
             var roundedMaxDepth = Mathf.RoundToInt(MaxDepth * 100);
             return roundedDepth <= roundedMaxDepth;
-            //return uitbouw.Depth <= MaxDepth;
         }
     }
 
@@ -61,13 +59,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
         {
             var uitbouwArea = uitbouw.Width * uitbouw.Depth;
-            //var totalPerceelArea = perceel.Area;
-            //var builtArea = building.Area;
-
             var freeArea = perceel.Area - building.Area;
-
             var percentage = (uitbouwArea / freeArea) * 100;
-            //Debug.Log(uitbouwArea + "\t" + freeArea + "\t" + percentage + "%");
             return percentage <= MaxAreaPercentage;
         }
     }
