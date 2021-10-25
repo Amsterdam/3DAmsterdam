@@ -15,9 +15,15 @@ namespace Netherlands3D.T3D.Uitbouw
         private MeshFilter buildingMeshFilter;
         private MeshFilter wallMeshFilter;
 
+        private BuildingMeshGenerator building;
+
         [SerializeField]
-        private float normalTolerance = 0.01f; //tolerance in difference between normals to still count as the same direction
+        private float triangleNormalTolerance = 0.01f; //tolerance in difference between normals to still count as the same direction
         private float coplanarTolerance = 0.01f; //tolerance in difference click point and vertex position to the plane at that point
+        [SerializeField]
+        private float verticalComponentTolerance = 0.1f; //tolerance in the y component of the wall's normal before it is being seen as not vertical
+        [SerializeField]
+        private float groundLevelOffsetTolerance = 0.05f; //tolerance of how much the wall may be off the ground to still count as a ground touching wall
 
         public bool AllowSelection { get; set; }
         public bool WallIsSelected { get; private set; }
@@ -28,6 +34,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Awake()
         {
             wallMeshFilter = GetComponent<MeshFilter>();
+            building = GetComponentInParent<BuildingMeshGenerator>();
         }
 
         // Update is called once per frame
@@ -38,7 +45,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
                     return;
 
-                if (TryGetWall(out var wall))
+                if (TryGetValidWall(out var wall))
                 {
                     WallMesh = wall;
                     wallMeshFilter.mesh = WallMesh;
@@ -54,9 +61,15 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        private bool TryGetWall(out Mesh wall)
+        private bool TryGetValidWall(out Mesh face)
         {
-            wall = new Mesh();
+            //try to get a face, check if this face is grounded and if this face is vertical
+            return TryGetFace(out face) && CheckIfGrounded(face, building.GroundLevel, groundLevelOffsetTolerance) && CheckIfVertical(face, verticalComponentTolerance);
+        }
+
+        private bool TryGetFace(out Mesh face)
+        {
+            face = new Mesh();
             var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit, LayerMask.GetMask("ActiveSelection")))
             {
@@ -76,7 +89,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                     Vector3 triangleNormal = CalculateNormal(sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]);
 
-                    if ((triangleNormal - hit.normal).sqrMagnitude < normalTolerance)
+                    if ((triangleNormal - hit.normal).sqrMagnitude < triangleNormalTolerance)
                     {
                         // parallel triangle, possibly part of the wall
                         // This tri is not part of the wall if it is not contiguous to other triangles
@@ -97,15 +110,15 @@ namespace Netherlands3D.T3D.Uitbouw
                     }
                 }
 
-                wall.vertices = parallelVertices.ToArray();
-                wall.triangles = parallelTris.ToArray();
+                face.vertices = parallelVertices.ToArray();
+                face.triangles = parallelTris.ToArray();
 
-                wall.RecalculateNormals();
-                wall.RecalculateBounds();
+                face.RecalculateNormals();
+                face.RecalculateBounds();
 
-                if (wall.triangles.Length > 0)
+                if (face.triangles.Length > 0)
                 {
-                    CenterPoint = transform.position + wall.bounds.center;
+                    CenterPoint = transform.position + face.bounds.center;
 
                     return true;
                 }
@@ -122,6 +135,27 @@ namespace Netherlands3D.T3D.Uitbouw
         private static bool IsCoplanar(Plane wallPlane, Vector3 point, float tolerance)
         {
             return Mathf.Abs(wallPlane.GetDistanceToPoint(point)) < tolerance;
+        }
+
+
+        private static bool CheckIfVertical(Mesh face, float tolerance)
+        {
+            // this method assumes a coplanar set of triangles, so if one of them is vertical, they all should be.
+
+            if (face.triangles.Length >= 3)
+            {
+                var normal = CalculateNormal(face.vertices[face.triangles[0]],
+                                             face.vertices[face.triangles[1]],
+                                             face.vertices[face.triangles[2]]);
+
+                return normal.y < tolerance;
+            }
+            return false;
+        }
+
+        private static bool CheckIfGrounded(Mesh face, float groundLevel, float offsetTolerance)
+        {
+            return Mathf.Abs(face.bounds.min.y - groundLevel) < offsetTolerance;
         }
     }
 }
