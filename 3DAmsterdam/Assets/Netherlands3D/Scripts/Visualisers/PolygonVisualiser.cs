@@ -38,7 +38,7 @@ namespace Netherlands3D.Events
 
         void Awake()
         {
-            if (drawPolygonEvent) drawPolygonEvent.unityEvent.AddListener(CreatePolygon);
+            if (drawPolygonEvent) drawPolygonEvent.started.AddListener(CreatePolygon);
         }
 
         //Treat first contour as outer contour, and extra contours as holes

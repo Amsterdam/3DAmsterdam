@@ -25,7 +25,7 @@ namespace Netherlands3D.Events
 
 	[CreateAssetMenu(fileName = "FloatEvent", menuName = "EventContainers/FloatEvent", order = 0)]
 	[System.Serializable]
-	public class FloatEvent : ScriptableObjectEvent<FloatValueUnityEvent>
+	public class FloatEvent : EventContainer<FloatValueUnityEvent>
 	{
 	}
 }

@@ -15,17 +15,17 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class ScriptableObjectEvent<T> : ScriptableObject
+namespace Netherlands3D.Events
 {
-    public string eventName;
-    public string description;
+	[System.Serializable]
+	public class IntValueUnityEvent : UnityEvent<int> { }
 
-    [HideInInspector]
-    public T unityEvent;
+	[CreateAssetMenu(fileName = "IntEvent", menuName = "EventContainers/IntEvent", order = 0)]
+	[System.Serializable]
+	public class IntEvent : EventContainer<IntValueUnityEvent>
+	{
+	}
 }

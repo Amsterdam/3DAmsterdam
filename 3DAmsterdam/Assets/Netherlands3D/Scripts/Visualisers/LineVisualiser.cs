@@ -28,7 +28,7 @@ namespace Netherlands3D.Visualisers
 
 		void Start()
 		{
-			lineCoordinatesEvent.unityEvent.AddListener(DrawLine);
+			lineCoordinatesEvent.started.AddListener(DrawLine);
 		}
 		
 		private void DrawLine(List<Vector3> linePoints)

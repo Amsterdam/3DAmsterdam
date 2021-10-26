@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  Copyright (C) X Gemeente
 *                X Amsterdam
 *                X Economic Services Departments
@@ -15,33 +15,17 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
-using Netherlands3D.Events;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Netherlands3D.Visualisers
+[System.Serializable]
+public class EventContainer<T> : ScriptableObject
 {
-    public class PointVisualiser : MonoBehaviour
-    {
-        [SerializeField]
-        private Vector3Event receiveDrawPointEvent;
+    public string eventName;
+    public string description;
 
-        [SerializeField]
-        private GameObject shape;
-
-        [SerializeField]
-        private Vector3 offset = Vector3.up;
-
-        void Awake()
-        {
-            if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
-        }
-
-        private void DrawPointInWorld(Vector3 position)
-        {
-            var newPoint = Instantiate(shape, this.transform);
-            newPoint.transform.position = position + offset;
-        }
-    }
+    [HideInInspector]
+    public T started;
 }

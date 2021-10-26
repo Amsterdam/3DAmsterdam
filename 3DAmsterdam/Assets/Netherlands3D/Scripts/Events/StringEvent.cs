@@ -25,5 +25,5 @@ namespace Netherlands3D.Events
 
 	[CreateAssetMenu(fileName = "StringEvent", menuName = "EventContainers/StringEvent", order = 0)]
 	[System.Serializable]
-	public class StringEvent : ScriptableObjectEvent<StringUnityEvent> { }
+	public class StringEvent : EventContainer<StringUnityEvent> { }
 }

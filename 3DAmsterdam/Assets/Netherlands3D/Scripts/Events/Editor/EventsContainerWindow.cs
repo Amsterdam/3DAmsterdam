@@ -6,6 +6,8 @@ namespace Netherlands3D.Events
 {
     public class EventsContainerWindow : EditorWindow
     {
+        static string[] floatEventContainers;
+        static string[] intEventContainers;
         static string[] triggerEventContainers;
         static string[] stringEventContainers;
         static string[] vector3EventContainers;
@@ -19,12 +21,14 @@ namespace Netherlands3D.Events
 
         const string playerPrefsTestData = "EventsContainerTestData";
 
+        const float invokeButtonHeight = 20;
+
         Vector2 scrollPosition;
         // Add menu named "My Window" to the Window menu
         [MenuItem("Netherlands 3D/Event Containers Window")]
         static void Init()
         {
-            EventsContainerWindow window = (EventsContainerWindow)EditorWindow.GetWindow(typeof(EventsContainerWindow), true, "Events Container Window");
+            EventsContainerWindow window = (EventsContainerWindow)EditorWindow.GetWindow(typeof(EventsContainerWindow), false, "Events Container Window");
             window.Show();
         }
 
@@ -51,9 +55,51 @@ namespace Netherlands3D.Events
             scrollPosition = GUILayout.BeginScrollView(
                 scrollPosition);
 
+            //IntEvent
+            if (intEventContainers == null) intEventContainers = AssetDatabase.FindAssets("t:IntEvent");
+            if (intEventContainers.Length > 0) GUILayout.Label("IntEvent Containers", EditorStyles.boldLabel);
+            foreach (var intEventContainer in intEventContainers)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(intEventContainer);
+
+                if (filterName.Length > 0 && assetPath.IndexOf(filterName, StringComparison.OrdinalIgnoreCase) == -1) continue;
+
+                IntEvent asset = (IntEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(IntEvent));
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.ObjectField(asset, typeof(IntEvent), false);
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
+                {
+                    int floatInput = int.Parse(testData);
+                    asset.started?.Invoke(floatInput);
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            //FloatEvent
+            if (floatEventContainers == null) floatEventContainers = AssetDatabase.FindAssets("t:FloatEvent");
+            if (floatEventContainers.Length > 0) GUILayout.Label("FloatEvent Containers", EditorStyles.boldLabel);
+            foreach (var floatEventContainer in floatEventContainers)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(floatEventContainer);
+
+                if (filterName.Length > 0 && assetPath.IndexOf(filterName, StringComparison.OrdinalIgnoreCase) == -1) continue;
+
+                FloatEvent asset = (FloatEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(FloatEvent));
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.ObjectField(asset, typeof(FloatEvent), false);
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
+                {
+                    float floatInput = float.Parse(testData);
+                    asset.started?.Invoke(floatInput);
+                }
+                GUILayout.EndHorizontal();
+            }
+
             //TriggerEvent
-            GUILayout.Label("TriggerEvent Containers", EditorStyles.boldLabel);
             if (triggerEventContainers == null) triggerEventContainers = AssetDatabase.FindAssets("t:TriggerEvent");
+            if (triggerEventContainers.Length > 0) GUILayout.Label("TriggerEvent Containers", EditorStyles.boldLabel);
             foreach (var triggerEventContainer in triggerEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(triggerEventContainer);
@@ -62,20 +108,18 @@ namespace Netherlands3D.Events
                 
                 TriggerEvent asset = (TriggerEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(TriggerEvent));
 
-                //if(asset.unityEvent.Get)
-
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(TriggerEvent), false);
-                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
                 {
-                    asset.unityEvent?.Invoke();
+                    asset.started?.Invoke();
                 }
                 GUILayout.EndHorizontal();
             }
 
             //StringEvent
-            GUILayout.Label("StringEvent Containers", EditorStyles.boldLabel);
             if (stringEventContainers == null) stringEventContainers = AssetDatabase.FindAssets("t:StringEvent");
+            if (stringEventContainers.Length > 0) GUILayout.Label("StringEvent Containers", EditorStyles.boldLabel);
             foreach (var stringEventContainer in stringEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(stringEventContainer);
@@ -85,16 +129,16 @@ namespace Netherlands3D.Events
                 StringEvent asset = (StringEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(StringEvent));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(StringEvent), false);
-                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
                 {
-                    asset.unityEvent?.Invoke(testData);
+                    asset.started?.Invoke(testData);
                 }
                 GUILayout.EndHorizontal();
             }
 
             //Vector3Event
-            GUILayout.Label("Vector3Event Containers", EditorStyles.boldLabel);
             if (vector3EventContainers == null) vector3EventContainers = AssetDatabase.FindAssets("t:Vector3Event");
+            if (vector3EventContainers.Length > 0) GUILayout.Label("Vector3Event Containers", EditorStyles.boldLabel);
             foreach (var vector3EventContainer in vector3EventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(vector3EventContainer);
@@ -104,7 +148,7 @@ namespace Netherlands3D.Events
                 Vector3Event asset = (Vector3Event)AssetDatabase.LoadAssetAtPath(assetPath, typeof(Vector3Event));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(Vector3Event), false);
-                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
                 {
                     var vector3string = testData.Split(',');
                     Vector3 vector3 = new Vector3(
@@ -112,14 +156,14 @@ namespace Netherlands3D.Events
                         float.Parse(vector3string[1]),
                         float.Parse(vector3string[2])
                     );
-                    asset.unityEvent?.Invoke(vector3);
+                    asset.started?.Invoke(vector3);
                 }
                 GUILayout.EndHorizontal();
             }
 
             //Vector3ListEvent
-            GUILayout.Label("Vector3ListEvent Containers", EditorStyles.boldLabel);
             if (Vector3ListEventContainers == null) Vector3ListEventContainers = AssetDatabase.FindAssets("t:Vector3ListEvent");
+            if (Vector3ListEventContainers.Length > 0) GUILayout.Label("Vector3ListEvent Containers", EditorStyles.boldLabel);
             foreach (var Vector3ListEventContainer in Vector3ListEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(Vector3ListEventContainer);
@@ -129,7 +173,7 @@ namespace Netherlands3D.Events
                 Vector3ListEvent asset = (Vector3ListEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(Vector3ListEvent));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(Vector3ListEvent), false);
-                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
                 {
                     /*var vector3string = testData.Split(',');
                     Vector3 vector3 = new Vector3(
@@ -143,8 +187,8 @@ namespace Netherlands3D.Events
             }
 
             //Vector3ListsEvent
-            GUILayout.Label("Vector3ListsEvent Containers", EditorStyles.boldLabel);
             if (Vector3ListsEventContainers == null) Vector3ListsEventContainers = AssetDatabase.FindAssets("t:Vector3ListsEvent");
+            if(Vector3ListsEventContainers.Length>0) GUILayout.Label("Vector3ListsEvent Containers", EditorStyles.boldLabel);
             foreach (var Vector3ListsEventContainer in Vector3ListsEventContainers)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(Vector3ListsEventContainer);
@@ -154,7 +198,7 @@ namespace Netherlands3D.Events
                 Vector3ListsEvent asset = (Vector3ListsEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(Vector3ListsEvent));
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.ObjectField(asset, typeof(Vector3ListsEvent), false);
-                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
                 {
                     /*var vector3string = testData.Split(',');
                     Vector3 vector3 = new Vector3(
