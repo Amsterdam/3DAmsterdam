@@ -47,6 +47,8 @@ namespace Amsterdam3D.Maps
             public Vector3Event drawPointEvent;
             public Vector3ListEvent drawLineEvent;
             public Vector3ListsEvent drawGeometryEvent;
+            public string matchingPropertyName;
+            public string matchingPropertyValue;
         }
 
         void Awake()
@@ -85,6 +87,17 @@ namespace Amsterdam3D.Maps
                 while (geoJSON.GotoNextFeature())
                 {
                     var type = geoJSON.GetGeometryType();
+                    
+                    if(geoJsonURLData.matchingPropertyName != "")
+                    {
+                        var propertyName = geoJsonURLData.matchingPropertyName;
+                        var propertyValue = geoJsonURLData.matchingPropertyValue;
+
+                        if(propertyValue != geoJSON.GetPropertyStringValue(propertyName)){
+                            continue;
+						}
+                    }
+
                     switch (type)
                     {
                         case GeoJSON.GeoJSONGeometryType.Point:
