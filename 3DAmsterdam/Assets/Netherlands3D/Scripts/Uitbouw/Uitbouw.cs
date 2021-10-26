@@ -36,6 +36,8 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private UitbouwMuur[] walls;
 
+        public bool AllowDrag { get; private set; } = true;
+
         public Vector3 LeftCorner
         {
             get
@@ -76,9 +78,6 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        //public Plane SnapWall { get; private set; } = new Plane();
-
-
         public Vector3 CenterAttatchPoint
         {
             get
@@ -94,17 +93,11 @@ namespace Netherlands3D.T3D.Uitbouw
                 return front.transform.position + (back.transform.position - front.transform.position) / 2;
             }
         }
-        //public Vector3 CenterPosition { get; private set; }
 
         public static Uitbouw Instance;
 
         private void Awake()
         {
-            
-            //meshRenderer = GetComponent<MeshRenderer>();
-            //mesh = GetComponent<MeshFilter>().mesh;
-            //SetDimensions(mesh.bounds.extents * 2);
-            //userMovementAxis = GetComponentInChildren<DragableAxis>();
             building = RestrictionChecker.ActiveBuilding;
             UpdateDimensions();
 
@@ -122,7 +115,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 userMovementAxes[i].SetUitbouw(this);
             }
 
-            //var arrowOffsetX = transform.right * extents.x;
             var arrowOffsetY = transform.up * (extents.y - 0.01f);
 
             userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, left.transform.position - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
@@ -136,13 +128,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void SetDimensions(UitbouwMuur left, UitbouwMuur right, UitbouwMuur bottom, UitbouwMuur top, UitbouwMuur front, UitbouwMuur back)
         {
-            //var xComponent = right.transform.localPosition - left.transform.localPosition;
-            //var yComponent = top.transform.localPosition - bottom.transform.localPosition;
-            //var zComponent = back.transform.localPosition - front.transform.localPosition;
-
-            //var localOrigin = new Vector3(xComponent.x / 2, yComponent.y / 2, zComponent.z / 2);
-
-            //var widthVector = right.transform.position - left.transform.position;
             var widthVector = Vector3.Project(right.transform.position - left.transform.position, left.transform.forward);
             var heightVector = Vector3.Project(top.transform.position - bottom.transform.position, bottom.transform.forward);
             var depthVector = Vector3.Project(back.transform.position - front.transform.position, front.transform.forward);
@@ -166,8 +151,6 @@ namespace Netherlands3D.T3D.Uitbouw
             Height = dim.y * transform.lossyScale.y;
 
             extents = new Vector3(Width / 2, Height / 2, Depth / 2);
-
-            //print("Afmetingen uitbouw: breedte:" + Width + "\thoogte: " + Height + "\tdiepte:" + Depth);
         }
 
         private void Update()
@@ -175,15 +158,10 @@ namespace Netherlands3D.T3D.Uitbouw
             UpdateDimensions();
             SetArrowPositions();
 
-            //if (perceel != null)
-            //{
-            //    ProcessIfObjectIsInPerceelBounds();
-            //}
+            if(AllowDrag)
+                ProcessUserInput();
 
-            ProcessUserInput();
-
-            //SnapToBuilding(building);
-
+            ProcessSnapping();
         }
 
         private void SetArrowPositions()
@@ -199,17 +177,16 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 transform.position += axis.DeltaPosition;
             }
+        }
 
+        private void ProcessSnapping()
+        {
             if (building)
             {
                 if (building.SelectedWall.WallIsSelected)
                 {
                     SnapToWall(building.SelectedWall);
                     SnapToGround(building);
-                }
-                else
-                {
-                    //SnapToBuilding(building);
                 }
             }
         }
