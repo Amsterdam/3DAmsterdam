@@ -9,6 +9,7 @@ namespace Netherlands3D.Events
         static string[] triggerEventContainers;
         static string[] stringEventContainers;
         static string[] vector3EventContainers;
+        static string[] Vector3ListEventContainers;
         static string[] Vector3ListsEventContainers;
 
         static string testData = "";
@@ -112,6 +113,31 @@ namespace Netherlands3D.Events
                         float.Parse(vector3string[2])
                     );
                     asset.unityEvent?.Invoke(vector3);
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            //Vector3ListEvent
+            GUILayout.Label("Vector3ListEvent Containers", EditorStyles.boldLabel);
+            if (Vector3ListEventContainers == null) Vector3ListEventContainers = AssetDatabase.FindAssets("t:Vector3ListEvent");
+            foreach (var Vector3ListEventContainer in Vector3ListEventContainers)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(Vector3ListEventContainer);
+
+                if (filterName.Length > 0 && assetPath.IndexOf(filterName, StringComparison.OrdinalIgnoreCase) == -1) continue;
+
+                Vector3ListEvent asset = (Vector3ListEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(Vector3ListEvent));
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.ObjectField(asset, typeof(Vector3ListEvent), false);
+                if (GUILayout.Button("Trigger", GUILayout.Height(20)))
+                {
+                    /*var vector3string = testData.Split(',');
+                    Vector3 vector3 = new Vector3(
+                        float.Parse(vector3string[0]),
+                        float.Parse(vector3string[1]),
+                        float.Parse(vector3string[2])
+                    );
+                    asset.unityEvent?.Invoke(vector3);*/
                 }
                 GUILayout.EndHorizontal();
             }
