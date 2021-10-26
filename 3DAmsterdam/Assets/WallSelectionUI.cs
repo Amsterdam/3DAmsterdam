@@ -8,10 +8,10 @@ namespace Netherlands3D.T3D.Uitbouw
     public class WallSelectionUI : MonoBehaviour
     {
         private BuildingMeshGenerator building;
-        [SerializeField]
-        private GameObject nextStep_U;
-        [SerializeField]
-        private GameObject NextStep_D;
+        //[SerializeField]
+        //private GameObject nextStep_U;
+        //[SerializeField]
+        //private GameObject NextStep_D;
         [SerializeField]
         private Button nextButton;
         [SerializeField]
@@ -48,16 +48,16 @@ namespace Netherlands3D.T3D.Uitbouw
             building.SelectedWall.AllowSelection = false;
             MetadataLoader.Instance.PlaatsUitbouw();
 
-            if (MetadataLoader.Instance.UploadedModel)
-            {
-                nextStep_U.SetActive(true);
-            }
-            else
-            {
-                NextStep_D.SetActive(true);
-            }
+            //if (MetadataLoader.Instance.UploadedModel)
+            //{
+            //    nextStep_U.SetActive(true);
+            //}
+            //else
+            //{
+            //    NextStep_D.SetActive(true);
+            //}
 
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
         }
     }
 }
