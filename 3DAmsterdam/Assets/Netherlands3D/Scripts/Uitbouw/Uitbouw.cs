@@ -36,7 +36,7 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private UitbouwMuur[] walls;
 
-        public bool AllowDrag { get; private set; } = true;
+        public bool AllowDrag { get; set; } = true;
 
         public Vector3 LeftCorner
         {

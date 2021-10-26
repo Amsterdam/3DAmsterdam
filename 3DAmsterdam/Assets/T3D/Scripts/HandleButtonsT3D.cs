@@ -152,7 +152,10 @@ public class HandleButtonsT3D : MonoBehaviour
         return months[monthIndex];
     }
 
-
+    public void AllowUitbouwDrag(bool enable)
+    {
+        Uitbouw.Instance.AllowDrag = enable;
+    }
 
     #endregion
 
