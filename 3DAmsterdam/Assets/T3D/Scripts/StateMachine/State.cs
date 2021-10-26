@@ -7,8 +7,18 @@ public class State : MonoBehaviour
     [SerializeField]
     protected State[] possibleNextStates;
     protected State previousState;
+    [SerializeField]
+    private bool isFirstState;
     [SerializeField, ReadOnly]
     protected int desiredStateIndex;
+
+    public static State ActiveState { get; private set; } //allows only 1 state machine throughout the application, maybe change for a dictionary where collections can be defined
+
+    private void Start()
+    {
+        if (isFirstState)
+            ActiveState = this;
+    }
 
     private void OnValidate()
     {
@@ -32,7 +42,7 @@ public class State : MonoBehaviour
     // when the state is entered
     protected virtual void EnterState(State previousState)
     {
-        print("entering state " + gameObject.name);
+        ActiveState = this;
         gameObject.SetActive(true);
         this.previousState = previousState;
     }
@@ -50,5 +60,16 @@ public class State : MonoBehaviour
     public void EndState()
     {
         EndState(GetDesiredState());
+    }
+
+    public void GoToPreviousState()
+    {
+        print(previousState);
+
+        if (previousState != null)
+        {
+            previousState.EnterState(previousState.previousState);
+        }
+        gameObject.SetActive(false);
     }
 }
