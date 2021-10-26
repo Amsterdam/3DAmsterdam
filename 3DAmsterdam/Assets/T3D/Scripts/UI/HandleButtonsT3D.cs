@@ -154,7 +154,7 @@ public class HandleButtonsT3D : MonoBehaviour
 
     public void AllowUitbouwDrag(bool enable)
     {
-        Uitbouw.Instance.AllowDrag = enable;
+        RestrictionChecker.ActiveUitbouw.AllowDrag = enable;
     }
 
     #endregion

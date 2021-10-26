@@ -70,7 +70,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void ToggleRotateFirstPersonMode()
     {
-        if (Uitbouw.Instance == null) return;
+        if (RestrictionChecker.ActiveUitbouw == null) return;
 
         isFirstPersonMode = !isFirstPersonMode;
 
@@ -80,7 +80,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             lastRotateRotation = mycam.transform.rotation;
             var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
             mycam.transform.position = new Vector3(perceelmidden.x, firstPersonHeight, perceelmidden.z);
-            mycam.transform.LookAt(new Vector3(Uitbouw.Instance.CenterPoint.x, firstPersonHeight, Uitbouw.Instance.CenterPoint.z));
+            mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, firstPersonHeight, RestrictionChecker.ActiveUitbouw.CenterPoint.z));
             currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
         }
         else
@@ -167,8 +167,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         var previousPosition = mycam.transform.position;
         var previousRotation = mycam.transform.rotation;
 
-        if (Uitbouw.Instance != null)
-            mycam.transform.RotateAround(Uitbouw.Instance.CenterPoint, Vector3.up, xaxis * RotationSpeed);
+        if (RestrictionChecker.ActiveUitbouw != null)
+            mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);
         else if (RestrictionChecker.ActiveBuilding)
             mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
     }

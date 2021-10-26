@@ -94,15 +94,10 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        public static Uitbouw Instance;
-
         private void Awake()
         {
             building = RestrictionChecker.ActiveBuilding;
             UpdateDimensions();
-
-            Instance = this;
-
         }
 
         private void Start()
