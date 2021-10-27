@@ -64,8 +64,6 @@ public class State : MonoBehaviour
 
     public void GoToPreviousState()
     {
-        print(previousState);
-
         if (previousState != null)
         {
             previousState.EnterState(previousState.previousState);

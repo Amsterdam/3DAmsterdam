@@ -153,10 +153,29 @@ namespace Netherlands3D.T3D.Uitbouw
             UpdateDimensions();
             SetArrowPositions();
 
-            if(AllowDrag)
+            if (AllowDrag)
                 ProcessUserInput();
 
             ProcessSnapping();
+        }
+
+        private void LateUpdate()
+        {
+            LimitPositionOnWall();
+        }
+
+        private void LimitPositionOnWall()
+        {
+            var extents = building.SelectedWall.WallMesh.bounds.extents;
+            var projectedExtents = Vector3.ProjectOnPlane(extents, Vector3.up);
+
+            var projectedPosition = Vector3.ProjectOnPlane(transform.position, Vector3.up);
+            var projectedCenter = Vector3.ProjectOnPlane(building.SelectedWall.CenterPoint, Vector3.up);
+
+            if(Vector3.Distance(projectedPosition, projectedCenter) > projectedExtents.magnitude)
+            {
+                print("too far ");
+            }
         }
 
         private void SetArrowPositions()
