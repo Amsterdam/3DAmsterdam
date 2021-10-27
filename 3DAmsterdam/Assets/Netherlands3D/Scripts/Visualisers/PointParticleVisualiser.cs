@@ -46,6 +46,7 @@ namespace Netherlands3D.Visualisers
             mainModule.loop = false;
             mainModule.playOnAwake = false;
             mainModule.startSize = startSize;
+            mainModule.maxParticles = int.MaxValue;
 
             if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
         }
