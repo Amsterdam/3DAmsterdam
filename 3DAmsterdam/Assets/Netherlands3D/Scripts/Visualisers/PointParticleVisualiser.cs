@@ -50,7 +50,7 @@ namespace Netherlands3D.Visualisers
             if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
         }
 
-        private void DrawPointInWorld(Vector3 position)
+        public void DrawPointInWorld(Vector3 position)
         {
             var emitParams = new ParticleSystem.EmitParams
             {

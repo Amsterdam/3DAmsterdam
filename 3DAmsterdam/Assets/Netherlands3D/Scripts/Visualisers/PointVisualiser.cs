@@ -38,7 +38,7 @@ namespace Netherlands3D.Visualisers
             if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
         }
 
-        private void DrawPointInWorld(Vector3 position)
+        public void DrawPointInWorld(Vector3 position)
         {
             var newPoint = Instantiate(shape, this.transform);
             newPoint.transform.position = position + offset;
