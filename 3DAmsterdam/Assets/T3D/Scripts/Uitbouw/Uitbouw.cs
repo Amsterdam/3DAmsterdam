@@ -156,12 +156,8 @@ namespace Netherlands3D.T3D.Uitbouw
             if (AllowDrag)
                 ProcessUserInput();
 
-            ProcessSnapping();
-        }
-
-        private void LateUpdate()
-        {
             LimitPositionOnWall();
+            ProcessSnapping();
         }
 
         private void LimitPositionOnWall()
@@ -172,10 +168,25 @@ namespace Netherlands3D.T3D.Uitbouw
             var projectedPosition = Vector3.ProjectOnPlane(transform.position, Vector3.up);
             var projectedCenter = Vector3.ProjectOnPlane(building.SelectedWall.CenterPoint, Vector3.up);
 
-            if(Vector3.Distance(projectedPosition, projectedCenter) > projectedExtents.magnitude)
+            var maxOffset = projectedExtents.magnitude + Width / 2 - 0.1f; //subtract 0.1f to deal with rounding
+
+            if (Vector3.Distance(projectedPosition, projectedCenter) > maxOffset)
             {
-                print("too far ");
+                ClipDistance(maxOffset);
             }
+        }
+
+        private void ClipDistance(float maxOffset)
+        {
+            var maxPos = building.SelectedWall.CenterPoint + transform.right * maxOffset;
+            var minPos = building.SelectedWall.CenterPoint - transform.right * maxOffset;
+
+            if (Vector3.Distance(transform.position, minPos) > Vector3.Distance(transform.position, maxPos))
+                transform.position = maxPos;
+            else
+                transform.position = minPos;
+
+            SnapToGround(building);
         }
 
         private void SetArrowPositions()
