@@ -22,13 +22,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         bool isActive = false;
 
-        [SerializeField]
+        //[SerializeField]
         private UitbouwMuur left;
-        [SerializeField]
+        //[SerializeField]
         private UitbouwMuur right;
-        [SerializeField]
+        //[SerializeField]
         private UitbouwMuur top;
-        [SerializeField]
+        //[SerializeField]
         private UitbouwMuur bottom;
 
         private Vector3 oldPosition;
@@ -79,14 +79,6 @@ namespace Netherlands3D.T3D.Uitbouw
             bottom = bottomBound.GetComponent<UitbouwMuur>();
         }
 
-        private static Vector3 CalculateXYScale(Transform left, Transform right, Transform top, Transform bottom)
-        {
-            float hDist = Vector3.Distance(left.position, right.position);
-            float vDist = Vector3.Distance(top.position, bottom.position);
-
-            return new Vector3(hDist, vDist, 1);
-        }
-
         public void RecalculateSides(Vector3 newPosition)
         {
             deltaPosition = newPosition - oldPosition;
@@ -114,7 +106,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RecalculateScale()
         {
-            transform.localScale = CalculateXYScale(left.transform, right.transform, top.transform, bottom.transform);
+            transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
         }
 
         public void SetActive(bool active)

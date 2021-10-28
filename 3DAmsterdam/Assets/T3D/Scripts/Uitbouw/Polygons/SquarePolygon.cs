@@ -27,6 +27,19 @@ public class SquarePolygon : CityPolygon
         }
     }
 
+    public void RecalculateScale()
+    {
+        transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
+    }
+
+    protected static Vector3 CalculateXYScale(Transform left, Transform right, Transform top, Transform bottom)
+    {
+        float hDist = Vector3.Distance(left.position, right.position);
+        float vDist = Vector3.Distance(top.position, bottom.position);
+
+        return new Vector3(hDist, vDist, 1);
+    }
+
     protected Vector3 GetCorner(Transform hBound, Transform vBound)
     {
         var plane = new Plane(-transform.forward, transform.position);
@@ -37,6 +50,17 @@ public class SquarePolygon : CityPolygon
         float hDist = Vector3.Distance(transform.position, projectedHPoint);
         float vDist = Vector3.Distance(transform.position, projectedVPoint);
 
-        return transform.position - hBound.forward * hDist - vBound.forward * vDist;
+        var hDir = (projectedHPoint- transform.position).normalized;
+        var vDir = (projectedVPoint - transform.position).normalized;
+
+        return transform.position + hDir * hDist + vDir * vDist;
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    foreach (var corner in Polygon)
+    //    {
+    //        Gizmos.DrawSphere(corner, 0.1f);
+    //    }
+    //}
 }
