@@ -9,8 +9,7 @@ public class BinaryMeshConversion : MonoBehaviour
 	{
         SaveMeshAsBinaryFile(GetComponent<MeshFilter>().mesh,Application.persistentDataPath + "/mesh.bin");
 
-        ReadBinaryMesh(Application.persistentDataPath + "/mesh.bin");
-
+        this.GetComponent<MeshFilter>().mesh = ReadBinaryMesh(Application.persistentDataPath + "/mesh.bin");
     }
 
 	public void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
@@ -34,12 +33,28 @@ public class BinaryMeshConversion : MonoBehaviour
                 {
                     writer.Write(index);
                 }
+
+                //Normals
+                writer.Write(sourceMesh.normals.Length);
+                foreach (Vector3 normal in sourceMesh.normals)
+                {
+                    writer.Write(normal.x);
+                    writer.Write(normal.y);
+                    writer.Write(normal.z);
+                }
+
+                //UV
+                writer.Write(sourceMesh.uv.Length);
+                foreach (Vector2 uv in sourceMesh.uv)
+                {
+                    writer.Write(uv.x);
+                    writer.Write(uv.y);
+                }
             }
         }
     }
 
-    public void ReadBinaryMesh(string filePath){
-        var mesh = new Mesh();
+    public Mesh ReadBinaryMesh(string filePath){
         using (FileStream file = File.OpenRead(filePath))
         {
             using (BinaryReader reader = new BinaryReader(file))
@@ -54,7 +69,6 @@ public class BinaryMeshConversion : MonoBehaviour
                         reader.ReadSingle(),
                         reader.ReadSingle()
                      );
-                    Debug.Log(vertex);
                     vertices[i] = vertex;  
                 }
 
@@ -66,10 +80,38 @@ public class BinaryMeshConversion : MonoBehaviour
                     triangles[i] = reader.ReadInt32();
 				}
 
+                var normalsLength = reader.ReadInt32();
+                Debug.Log("Normals length:" + vertLength);
+                Vector3[] normals = new Vector3[normalsLength];
+                for (int i = 0; i < normalsLength; i++)
+                {
+                    Vector3 normal = new Vector3(
+                        reader.ReadSingle(),
+                        reader.ReadSingle(),
+                        reader.ReadSingle()
+                     );
+                    normals[i] = normal;
+                }
+
+                var uvLength = reader.ReadInt32();
+                Debug.Log("UVs length:" + uvLength);
+                Vector2[] uvs = new Vector2[uvLength];
+                for (int i = 0; i < normalsLength; i++)
+                {
+                    Vector2 uv = new Vector2(
+                        reader.ReadSingle(),
+                        reader.ReadSingle()
+                     );
+                    uvs[i] = uv;
+                }
+
+                var mesh = new Mesh();
                 mesh.vertices = vertices;
                 mesh.triangles = triangles;
+                mesh.normals = normals;
+                mesh.uv = uvs;
 
-                this.GetComponent<MeshFilter>().mesh = mesh;
+                return mesh;
             }
         }
     }
