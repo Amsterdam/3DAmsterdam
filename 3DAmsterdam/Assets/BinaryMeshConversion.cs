@@ -71,6 +71,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 Debug.Log("V: " + version);
 
                 var mesh = new Mesh();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
 
                 var vertLength = reader.ReadInt32();
                 Debug.Log("Vert length:" + vertLength);
@@ -120,7 +121,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 var uvLength = reader.ReadInt32();
                 Debug.Log("UVs length:" + uvLength);
                 Vector2[] uvs = new Vector2[uvLength];
-                for (int i = 0; i < normalsLength; i++)
+                for (int i = 0; i < uvLength; i++)
                 {
                     Vector2 uv = new Vector2(
                         reader.ReadSingle(),
