@@ -14,7 +14,7 @@ namespace Netherlands3D.T3D.Uitbouw
         Back,
     }
 
-    public class UitbouwMuur : MonoBehaviour
+    public class UitbouwMuur : SquarePolygon
     {
         [SerializeField]
         private WallSide side;
@@ -37,37 +37,46 @@ namespace Netherlands3D.T3D.Uitbouw
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
 
-        public Vector3[] Polygon
-        {
-            get
-            {
-                return new Vector3[]
-                {
-                    GetCorner(left, bottom),
-                    GetCorner(left, top),
-                    GetCorner(right, bottom),
-                    GetCorner(right, top),
-                };
-            }
-        }
+        //private void OnValidate()
+        //{
+        //    leftBound = left.transform;
+        //    rightBound = right.transform;
+        //    topBound = top.transform;
+        //    bottomBound = bottom.transform;
+        //}
 
-        private Vector3 GetCorner(UitbouwMuur h, UitbouwMuur v)
-        {
-            var plane = new Plane(-transform.forward, transform.position);
+        //private Vector3 GetCorner(UitbouwMuur h, UitbouwMuur v)
+        //{
+        //    var plane = new Plane(-transform.forward, transform.position);
 
-            var projectedHPoint = plane.ClosestPointOnPlane(h.transform.position);
-            var projectedVPoint = plane.ClosestPointOnPlane(v.transform.position);
+        //    var projectedHPoint = plane.ClosestPointOnPlane(h.transform.position);
+        //    var projectedVPoint = plane.ClosestPointOnPlane(v.transform.position);
 
-            float hDist = Vector3.Distance(transform.position, projectedHPoint);
-            float vDist = Vector3.Distance(transform.position, projectedVPoint);
+        //    float hDist = Vector3.Distance(transform.position, projectedHPoint);
+        //    float vDist = Vector3.Distance(transform.position, projectedVPoint);
 
-            return transform.position - h.transform.forward * hDist - v.transform.forward * vDist;
-        }
+        //    return transform.position - h.transform.forward * hDist - v.transform.forward * vDist;
+        //}
+
+        //private void Start()
+        //{
+        //    var poly = Polygon;
+        //    for (int i = 0; i < poly.Length; i++)
+        //    {
+        //        var a = new GameObject();
+        //        a.transform.position = poly[i];
+        //    }
+        //}
 
         private void Awake()
         {
             meshFilter = GetComponent<MeshFilter>();
             oldPosition = transform.position;
+
+            left = leftBound.GetComponent<UitbouwMuur>();
+            right = rightBound.GetComponent<UitbouwMuur>();
+            top = topBound.GetComponent<UitbouwMuur>();
+            bottom = bottomBound.GetComponent<UitbouwMuur>();
         }
 
         private static Vector3 CalculateXYScale(Transform left, Transform right, Transform top, Transform bottom)
@@ -115,7 +124,7 @@ namespace Netherlands3D.T3D.Uitbouw
             isActive = active;
         }
 
-        internal void MoveWall(float delta)
+        public void MoveWall(float delta)
         {
             SetActive(true);
             var newPosition = transform.position + transform.forward * -delta;
