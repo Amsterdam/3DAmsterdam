@@ -18,6 +18,9 @@ public class BinaryMeshConversion : MonoBehaviour
         {
             using (BinaryWriter writer = new BinaryWriter(file))
             {
+                //Version
+                writer.Write(1);
+
                 //Verts
                 writer.Write(sourceMesh.vertices.Length);
                 foreach (Vector3 vert in sourceMesh.vertices)
@@ -27,12 +30,17 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(vert.z);
                 }
 
-                //Triangles
-                writer.Write(sourceMesh.triangles.Length);
-                foreach (int index in sourceMesh.triangles)
-                {
-                    writer.Write(index);
-                }
+                //Every triangle list per submesh
+                writer.Write(sourceMesh.subMeshCount);
+				for (int i = 0; i < sourceMesh.subMeshCount; i++)
+				{
+                    int[] submeshTriangleList = sourceMesh.GetTriangles(i);
+                    writer.Write(submeshTriangleList.Length);
+                    foreach (int index in submeshTriangleList)
+                    {
+                        writer.Write(index);
+                    }
+                }            
 
                 //Normals
                 writer.Write(sourceMesh.normals.Length);
@@ -59,6 +67,11 @@ public class BinaryMeshConversion : MonoBehaviour
         {
             using (BinaryReader reader = new BinaryReader(file))
             {
+                var version = reader.ReadInt32();
+                Debug.Log("V: " + version);
+
+                var mesh = new Mesh();
+
                 var vertLength = reader.ReadInt32();
                 Debug.Log("Vert length:" + vertLength);
                 Vector3[] vertices = new Vector3[vertLength];
@@ -71,14 +84,24 @@ public class BinaryMeshConversion : MonoBehaviour
                      );
                     vertices[i] = vertex;  
                 }
+                mesh.vertices = vertices;
 
-                var trianglesLength = reader.ReadInt32();
-                int[] triangles = new int[trianglesLength];
-                Debug.Log("Triangle length:" + trianglesLength);
-				for (int i = 0; i < trianglesLength; i++)
-				{
-                    triangles[i] = reader.ReadInt32();
-				}
+                //Submeshes
+                var submeshes = reader.ReadInt32();
+                Debug.Log("Submeshes: " + submeshes);
+                for (int i = 0; i < submeshes; i++)
+                {
+                    Debug.Log("Submesh: " + i);
+                    var trianglesLength = reader.ReadInt32();
+                    int[] triangles = new int[trianglesLength];
+                    Debug.Log("Triangle length:" + trianglesLength);
+                    for (int j = 0; j < trianglesLength; j++)
+                    {
+                        triangles[j] = reader.ReadInt32();
+                    }
+                    mesh.SetIndices(triangles, MeshTopology.Triangles, i);
+                }                
+                
 
                 var normalsLength = reader.ReadInt32();
                 Debug.Log("Normals length:" + vertLength);
@@ -92,6 +115,7 @@ public class BinaryMeshConversion : MonoBehaviour
                      );
                     normals[i] = normal;
                 }
+                mesh.normals = normals;
 
                 var uvLength = reader.ReadInt32();
                 Debug.Log("UVs length:" + uvLength);
@@ -104,11 +128,6 @@ public class BinaryMeshConversion : MonoBehaviour
                      );
                     uvs[i] = uv;
                 }
-
-                var mesh = new Mesh();
-                mesh.vertices = vertices;
-                mesh.triangles = triangles;
-                mesh.normals = normals;
                 mesh.uv = uvs;
 
                 return mesh;
