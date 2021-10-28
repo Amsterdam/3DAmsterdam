@@ -104,10 +104,10 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.position += delta;
         }
 
-        public void RecalculateScale()
-        {
-            transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
-        }
+        //public void RecalculateScale()
+        //{
+        //    transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
+        //}
 
         public void SetActive(bool active)
         {
