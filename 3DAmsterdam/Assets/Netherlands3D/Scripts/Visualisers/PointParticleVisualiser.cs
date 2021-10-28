@@ -22,26 +22,44 @@ using UnityEngine;
 
 namespace Netherlands3D.Visualisers
 {
-    public class PointVisualiser : MonoBehaviour
+    [RequireComponent(typeof(ParticleSystem))]
+    public class PointParticleVisualiser : MonoBehaviour
     {
         [SerializeField]
         private Vector3Event receiveDrawPointEvent;
 
         [SerializeField]
-        private GameObject shape;
+        private Vector3 offset = Vector3.up;
+        private ParticleSystem particles;
 
         [SerializeField]
-        private Vector3 offset = Vector3.up;
+        private float startSize = 30;
+
+        [SerializeField]
+        private Color startColor;
 
         void Awake()
         {
+            particles = GetComponent<ParticleSystem>();
+            var mainModule = particles.main;
+            mainModule.startLifetime = float.PositiveInfinity;
+            mainModule.loop = false;
+            mainModule.playOnAwake = false;
+            mainModule.startSize = startSize;
+            mainModule.maxParticles = int.MaxValue;
+
             if (receiveDrawPointEvent) receiveDrawPointEvent.started.AddListener(DrawPointInWorld);
         }
 
         public void DrawPointInWorld(Vector3 position)
         {
-            var newPoint = Instantiate(shape, this.transform);
-            newPoint.transform.position = position + offset;
+            var emitParams = new ParticleSystem.EmitParams
+            {
+                position = position + offset,
+                velocity = Vector3.zero,
+                startColor = startColor
+            };
+            particles.Emit(emitParams, 1);
         }
     }
 }

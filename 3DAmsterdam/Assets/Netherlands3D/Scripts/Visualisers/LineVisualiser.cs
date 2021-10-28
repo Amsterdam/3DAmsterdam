@@ -31,7 +31,7 @@ namespace Netherlands3D.Visualisers
 			lineCoordinatesEvent.started.AddListener(DrawLine);
 		}
 		
-		private void DrawLine(List<Vector3> linePoints)
+		public void DrawLine(List<Vector3> linePoints)
 		{
 			var lineRenderObject = new GameObject();
 			lineRenderObject.transform.SetParent(this.transform);
