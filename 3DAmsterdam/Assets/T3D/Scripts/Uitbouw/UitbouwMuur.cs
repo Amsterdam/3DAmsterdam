@@ -37,6 +37,33 @@ namespace Netherlands3D.T3D.Uitbouw
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
 
+        public Vector3[] Polygon
+        {
+            get
+            {
+                return new Vector3[]
+                {
+                    GetCorner(left, bottom),
+                    GetCorner(left, top),
+                    GetCorner(right, bottom),
+                    GetCorner(right, top),
+                };
+            }
+        }
+
+        private Vector3 GetCorner(UitbouwMuur h, UitbouwMuur v)
+        {
+            var plane = new Plane(-transform.forward, transform.position);
+
+            var projectedHPoint = plane.ClosestPointOnPlane(h.transform.position);
+            var projectedVPoint = plane.ClosestPointOnPlane(v.transform.position);
+
+            float hDist = Vector3.Distance(transform.position, projectedHPoint);
+            float vDist = Vector3.Distance(transform.position, projectedVPoint);
+
+            return transform.position - h.transform.forward * hDist - v.transform.forward * vDist;
+        }
+
         private void Awake()
         {
             meshFilter = GetComponent<MeshFilter>();
