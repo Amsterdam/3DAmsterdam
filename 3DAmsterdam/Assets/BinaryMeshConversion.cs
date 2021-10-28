@@ -5,12 +5,33 @@ using UnityEngine;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
-	private void Start()
+    private System.Diagnostics.Stopwatch stopwatch;
+
+    [ContextMenu("Convert to binary")]
+	private void ConvertToBinary()
 	{
         SaveMeshAsBinaryFile(GetComponent<MeshFilter>().mesh,Application.persistentDataPath + "/mesh.bin");
-
-        this.GetComponent<MeshFilter>().mesh = ReadBinaryMesh(Application.persistentDataPath + "/mesh.bin");
     }
+
+    [ContextMenu("Load from binary")]
+    private void LoadFromBinary()
+    {
+        stopwatch = new System.Diagnostics.Stopwatch();
+
+        var meshFilter = GetComponent<MeshFilter>();
+        DestroyImmediate(meshFilter);
+
+        byte[] readBytes = File.ReadAllBytes(Application.persistentDataPath + "/mesh.bin");
+
+        //Time from the moment we have the bytes in memory, to finished displaying on screen
+        stopwatch.Start();
+        gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes);
+
+        Debug.Log(stopwatch.ElapsedMilliseconds);
+        stopwatch.Stop();
+        stopwatch.Reset();
+    }
+
 
 	public void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
@@ -30,18 +51,6 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(vert.z);
                 }
 
-                //Every triangle list per submesh
-                writer.Write(sourceMesh.subMeshCount);
-				for (int i = 0; i < sourceMesh.subMeshCount; i++)
-				{
-                    int[] submeshTriangleList = sourceMesh.GetTriangles(i);
-                    writer.Write(submeshTriangleList.Length);
-                    foreach (int index in submeshTriangleList)
-                    {
-                        writer.Write(index);
-                    }
-                }            
-
                 //Normals
                 writer.Write(sourceMesh.normals.Length);
                 foreach (Vector3 normal in sourceMesh.normals)
@@ -58,54 +67,50 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(uv.x);
                     writer.Write(uv.y);
                 }
+
+                //Every triangle list per submesh
+                writer.Write(sourceMesh.subMeshCount);
+				for (int i = 0; i < sourceMesh.subMeshCount; i++)
+				{
+                    int[] submeshTriangleList = sourceMesh.GetTriangles(i);
+                    writer.Write(submeshTriangleList.Length);
+                    foreach (int index in submeshTriangleList)
+                    {
+                        writer.Write(index);
+                    }
+                }            
             }
         }
     }
 
-    public Mesh ReadBinaryMesh(string filePath){
-        using (FileStream file = File.OpenRead(filePath))
+    public Mesh ReadBinaryMesh(byte[] fileBytes)
+    {
+        using (var stream = new MemoryStream(fileBytes))
         {
-            using (BinaryReader reader = new BinaryReader(file))
+            using (BinaryReader reader = new BinaryReader(stream))
             {
                 var version = reader.ReadInt32();
-                Debug.Log("V: " + version);
+                //Debug.Log("V: " + version);
 
                 var mesh = new Mesh();
-                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                 var vertLength = reader.ReadInt32();
-                Debug.Log("Vert length:" + vertLength);
+                //Debug.Log("Vert length:" + vertLength);
                 Vector3[] vertices = new Vector3[vertLength];
-				for (int i = 0; i < vertLength; i++)
-				{
+                for (int i = 0; i < vertLength; i++)
+                {
                     Vector3 vertex = new Vector3(
                         reader.ReadSingle(),
                         reader.ReadSingle(),
                         reader.ReadSingle()
                      );
-                    vertices[i] = vertex;  
+                    vertices[i] = vertex;
                 }
                 mesh.vertices = vertices;
 
-                //Submeshes
-                var submeshes = reader.ReadInt32();
-                Debug.Log("Submeshes: " + submeshes);
-                for (int i = 0; i < submeshes; i++)
-                {
-                    Debug.Log("Submesh: " + i);
-                    var trianglesLength = reader.ReadInt32();
-                    int[] triangles = new int[trianglesLength];
-                    Debug.Log("Triangle length:" + trianglesLength);
-                    for (int j = 0; j < trianglesLength; j++)
-                    {
-                        triangles[j] = reader.ReadInt32();
-                    }
-                    mesh.SetIndices(triangles, MeshTopology.Triangles, i);
-                }                
-                
-
                 var normalsLength = reader.ReadInt32();
-                Debug.Log("Normals length:" + vertLength);
+                //Debug.Log("Normals length:" + vertLength);
                 Vector3[] normals = new Vector3[normalsLength];
                 for (int i = 0; i < normalsLength; i++)
                 {
@@ -119,7 +124,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.normals = normals;
 
                 var uvLength = reader.ReadInt32();
-                Debug.Log("UVs length:" + uvLength);
+                //Debug.Log("UVs length:" + uvLength);
                 Vector2[] uvs = new Vector2[uvLength];
                 for (int i = 0; i < uvLength; i++)
                 {
@@ -130,6 +135,22 @@ public class BinaryMeshConversion : MonoBehaviour
                     uvs[i] = uv;
                 }
                 mesh.uv = uvs;
+
+                //Submeshes
+                var submeshes = reader.ReadInt32();
+                //Debug.Log("Submeshes: " + submeshes);
+                for (int i = 0; i < submeshes; i++)
+                {
+                    //Debug.Log("Submesh: " + i);
+                    var trianglesLength = reader.ReadInt32();
+                    int[] triangles = new int[trianglesLength];
+                    //Debug.Log("Triangle length:" + trianglesLength);
+                    for (int j = 0; j < trianglesLength; j++)
+                    {
+                        triangles[j] = reader.ReadInt32();
+                    }
+                    mesh.SetIndices(triangles, MeshTopology.Triangles, i);
+                }
 
                 return mesh;
             }
