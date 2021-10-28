@@ -230,6 +230,9 @@ namespace Netherlands3D.LayerSystem
 			
 			container.SetActive(isEnabled);
 			//Mesh[] meshesInAssetbundle = new Mesh[0];
+
+			var stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
 			try
 			{
 				meshesInAssetbundle = assetBundle.LoadAllAssets<Mesh>();
@@ -241,6 +244,11 @@ namespace Netherlands3D.LayerSystem
 				return null;
 			}
 			mesh = meshesInAssetbundle[0];
+            container.AddComponent<MeshFilter>().sharedMesh = mesh;
+
+			Debug.Log(stopwatch.ElapsedMilliseconds);
+			stopwatch.Stop();
+
 			mesh.RecalculateNormals();
 			int count = mesh.vertexCount;
 
@@ -256,7 +264,6 @@ namespace Netherlands3D.LayerSystem
 				mesh.uv2 = uvs;
 			}            
 
-            container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
 			meshRenderer = container.AddComponent<MeshRenderer>();
 			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
