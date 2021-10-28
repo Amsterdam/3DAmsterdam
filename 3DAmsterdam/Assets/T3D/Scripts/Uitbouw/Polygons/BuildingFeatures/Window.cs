@@ -7,9 +7,10 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         private UitbouwMuur wall;
 
-        void SetWall(UitbouwMuur wall)
+        public void SetWall(UitbouwMuur wall)
         {
             this.wall = wall;
+            transform.parent.position = wall.transform.position;
             transform.parent.forward = wall.transform.forward;
         }
 
@@ -21,14 +22,6 @@ namespace Netherlands3D.T3D.Uitbouw
             bottomBound.localPosition = new Vector3(0, -size.y / 2, 0);
 
             RecalculateScale();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                SetSize(new Vector2(3, 3));
-            }
         }
     }
 }

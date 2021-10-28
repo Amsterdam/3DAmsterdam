@@ -158,7 +158,15 @@ namespace Netherlands3D.T3D.Uitbouw
 
             LimitPositionOnWall();
             ProcessSnapping();
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                var obj = Instantiate(window_TEST);
+                obj.GetComponentInChildren<Window>().SetWall(front);
+            }
         }
+
+        public GameObject window_TEST;
 
         private void LimitPositionOnWall()
         {
