@@ -5,50 +5,28 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class UitbouwMeasurement : MonoBehaviour
+    public class UitbouwMeasurement : DistanceMeasurement
     {
-        [SerializeField]
-        private GameObject measurementLine;
-
         private Uitbouw uitbouw;
-        //[SerializeField]
-        //private BuildingMeshGenerator building; //todo: quick and dirty reference
-
-        private List<BuildingMeasuring> lines = new List<BuildingMeasuring>();
-
 
         private void Awake()
         {
             uitbouw = GetComponent<Uitbouw>();
         }
 
-        private void Start()
-        {
-            DrawNewMeasurement();
-            DrawNewMeasurement();
-        }
-
-        void DrawNewMeasurement()
-        {
-            var lineObject = Instantiate(measurementLine);
-            var measuring = lineObject.GetComponent<BuildingMeasuring>();
-            measuring.DistanceInputOverride += Measuring_DistanceInputOverride;
-            lines.Add(measuring);
-        }
-
-        private void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
+        protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
         {
             //var axis = (source.LinePoints[1].transform.position - source.LinePoints[0].transform.position).normalized;
             uitbouw.transform.position += direction * delta;
         }
 
-        private void Update()
+        protected override void DrawLines()
         {
             TryDrawLine(0, uitbouw.LeftCorner, uitbouw.LeftCornerPlane);
             TryDrawLine(1, uitbouw.RightCorner, uitbouw.RightCornerPlane);
         }
 
-        private void TryDrawLine(int lineIndex, Vector3 point, Plane pointPlane)
+        private bool TryDrawLine(int lineIndex, Vector3 point, Plane pointPlane)
         {
             bool cornerFound = GetMeasurementCorner(pointPlane, out Vector3 corner);
             lines[lineIndex].gameObject.SetActive(cornerFound);
@@ -56,9 +34,11 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 lines[lineIndex].SetLinePosition(point, corner);
             }
+
+            return cornerFound;
         }
 
-        bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
+        private bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
         {
             coord = new Vector3();
             if (RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners == null)
