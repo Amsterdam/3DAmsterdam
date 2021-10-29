@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 4199814910466376684}
   - component: {fileID: 4199814910466376685}
   - component: {fileID: 4199814910466376686}
+  - component: {fileID: 7290153892180319596}
   m_Layer: 18
   m_Name: WindowMesh
   m_TagString: Untagged
@@ -223,6 +224,20 @@ MonoBehaviour:
   rightBound: {fileID: 4199814909839026990}
   topBound: {fileID: 4199814909828853443}
   bottomBound: {fileID: 4199814910624292435}
+--- !u!114 &7290153892180319596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4199814910466376680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5b1a560133e34cde80684892b55c426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
 --- !u!1 &4199814910624292428
 GameObject:
   m_ObjectHideFlags: 0
