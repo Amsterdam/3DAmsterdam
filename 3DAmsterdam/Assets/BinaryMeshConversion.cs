@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
     private System.Diagnostics.Stopwatch stopwatch;
+
+    [SerializeField]
+    private string assetBundlePath = "C:/Users/Sam/Desktop/binaryconvert/buildings1.0/";
 
     [ContextMenu("Convert to binary")]
 	private void ConvertToBinary()
@@ -25,7 +30,11 @@ public class BinaryMeshConversion : MonoBehaviour
 
         //Time from the moment we have the bytes in memory, to finished displaying on screen
         stopwatch.Start();
+        Profiler.BeginSample("readbinarymesh",this);
+                
         gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes);
+        // Code to measure...
+        Profiler.EndSample();
 
         Debug.Log(stopwatch.ElapsedMilliseconds);
         stopwatch.Stop();
@@ -74,6 +83,8 @@ public class BinaryMeshConversion : MonoBehaviour
 				{
                     int[] submeshTriangleList = sourceMesh.GetTriangles(i);
                     writer.Write(submeshTriangleList.Length);
+                    writer.Write(sourceMesh.GetSubMesh(i).baseVertex);
+                    //var offset = sourceMesh.GetSubMesh(i).baseVertex;
                     foreach (int index in submeshTriangleList)
                     {
                         writer.Write(index);
@@ -83,20 +94,20 @@ public class BinaryMeshConversion : MonoBehaviour
         }
     }
 
-    public Mesh ReadBinaryMesh(byte[] fileBytes)
+    public static Mesh ReadBinaryMesh(byte[] fileBytes)
     {
         using (var stream = new MemoryStream(fileBytes))
         {
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 var version = reader.ReadInt32();
-                //Debug.Log("V: " + version);
+                Debug.Log("V: " + version);
 
                 var mesh = new Mesh();
                 mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                 var vertLength = reader.ReadInt32();
-                //Debug.Log("Vert length:" + vertLength);
+                Debug.Log("Vert length:" + vertLength);
                 Vector3[] vertices = new Vector3[vertLength];
                 for (int i = 0; i < vertLength; i++)
                 {
@@ -110,7 +121,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.vertices = vertices;
 
                 var normalsLength = reader.ReadInt32();
-                //Debug.Log("Normals length:" + vertLength);
+                Debug.Log("Normals length:" + vertLength);
                 Vector3[] normals = new Vector3[normalsLength];
                 for (int i = 0; i < normalsLength; i++)
                 {
@@ -124,7 +135,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.normals = normals;
 
                 var uvLength = reader.ReadInt32();
-                //Debug.Log("UVs length:" + uvLength);
+                Debug.Log("UVs length:" + uvLength);
                 Vector2[] uvs = new Vector2[uvLength];
                 for (int i = 0; i < uvLength; i++)
                 {
@@ -138,22 +149,58 @@ public class BinaryMeshConversion : MonoBehaviour
 
                 //Submeshes
                 var submeshes = reader.ReadInt32();
+                mesh.subMeshCount = submeshes;
                 //Debug.Log("Submeshes: " + submeshes);
                 for (int i = 0; i < submeshes; i++)
                 {
-                    //Debug.Log("Submesh: " + i);
+                    Debug.Log("Submesh: " + i);
+                    
                     var trianglesLength = reader.ReadInt32();
+                    var baseVertex = reader.ReadInt32();
                     int[] triangles = new int[trianglesLength];
-                    //Debug.Log("Triangle length:" + trianglesLength);
+                    Debug.Log("Triangle length:" + trianglesLength);
                     for (int j = 0; j < trianglesLength; j++)
                     {
                         triangles[j] = reader.ReadInt32();
                     }
-                    mesh.SetIndices(triangles, MeshTopology.Triangles, i);
+                    //mesh.SetIndices(triangles, MeshTopology.Triangles, i);
+                    mesh.SetIndices(triangles, MeshTopology.Triangles, i, false, baseVertex);
                 }
 
                 return mesh;
             }
         }
+    }
+
+    [ContextMenu("Convert AssetBundles to binary files")]
+    private void ConvertFromAssetBundleMeshesToBinary()
+    {
+        var files = Directory.GetFiles(assetBundlePath);
+
+		for (int i = 0; i < files.Length; i++)
+		{
+            var filename = files[i];
+            var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
+            if (myLoadedAssetBundle == null)
+            {
+                Debug.Log("Failed to load AssetBundle!");
+                return;
+            }
+            else if(!filename.Contains("-data"))
+            {
+                try
+                {
+                    var mesh = myLoadedAssetBundle.LoadAllAssets<Mesh>()[0];
+                    SaveMeshAsBinaryFile(mesh, filename + ".bin");
+                    myLoadedAssetBundle.Unload(true);
+                }
+                catch (Exception)
+                {
+                    Debug.Log("No mesh in AssetBundle");
+                    myLoadedAssetBundle.Unload(true);
+                }
+            }
+        }
+
     }
 }
