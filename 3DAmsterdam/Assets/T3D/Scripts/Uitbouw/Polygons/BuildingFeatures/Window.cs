@@ -6,12 +6,18 @@ namespace Netherlands3D.T3D.Uitbouw
     public class Window : SquarePolygon
     {
         private UitbouwMuur wall;
+        private Transform windowTransform;
+
+        private void Awake()
+        {
+            windowTransform = transform.parent;
+        }
 
         public void SetWall(UitbouwMuur wall)
         {
             this.wall = wall;
-            transform.parent.position = wall.transform.position;
-            transform.parent.forward = wall.transform.forward;
+            windowTransform.position = wall.transform.position;
+            windowTransform.forward = wall.transform.forward;
         }
 
         public void SetSize(Vector2 size)

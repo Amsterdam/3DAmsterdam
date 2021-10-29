@@ -161,7 +161,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (Input.GetKeyDown(KeyCode.K))
             {
-                var obj = Instantiate(window_TEST);
+                var obj = Instantiate(window_TEST, transform);
                 obj.GetComponentInChildren<Window>().SetWall(front);
             }
         }
