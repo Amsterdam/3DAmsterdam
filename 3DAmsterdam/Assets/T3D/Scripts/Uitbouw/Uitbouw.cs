@@ -164,10 +164,14 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 var obj = Instantiate(window_TEST, transform);
                 obj.GetComponentInChildren<BoundaryFeature>().SetWall(front);
+
+                obj = Instantiate(door_TEST, transform);
+                obj.GetComponentInChildren<BoundaryFeature>().SetWall(left);
             }
         }
 
         public GameObject window_TEST;
+        public GameObject door_TEST;
 
         private void LimitPositionOnWall()
         {

@@ -726,6 +726,7 @@ GameObject:
   - component: {fileID: 1222447126048177870}
   - component: {fileID: 4666610331380868657}
   - component: {fileID: 6641196300282613232}
+  - component: {fileID: 8726650654572026141}
   m_Layer: 17
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -772,7 +773,9 @@ MonoBehaviour:
   - {fileID: 8301051321633224353}
   - {fileID: 7968026755866066833}
   - {fileID: 8235698920438077218}
-  window_TEST: {fileID: 4199814909477865792, guid: 24ed2e60d556340c585f7ee9b45d9cc8,
+  window_TEST: {fileID: 4199814909477865792, guid: fcf5d991b807348ff8ef4a76cc65ff19,
+    type: 3}
+  door_TEST: {fileID: 4199814909477865792, guid: 24ed2e60d556340c585f7ee9b45d9cc8,
     type: 3}
 --- !u!114 &6641196300282613232
 MonoBehaviour:
@@ -789,6 +792,18 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
+--- !u!114 &8726650654572026141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00611bd71e05a4e27b500142d26b321e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8903111269863768236
 GameObject:
   m_ObjectHideFlags: 0
