@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SquarePolygonMeasuring : DistanceMeasurement
+namespace Netherlands3D.T3D.Uitbouw
 {
-    private SquarePolygon square;
-
-    private void Awake()
+    public class SquarePolygonMeasuring : DistanceMeasurement
     {
-        square = GetComponent<SquarePolygon>();
-    }
+        private SquarePolygon square;
 
-    protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
-    {
-        var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
-        var newSize = square.Size - (Vector2)deltaVector;
+        private void Awake()
+        {
+            square = GetComponent<SquarePolygon>();
+        }
 
-        square.SetSize(newSize);
-    }
+        protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
+        {
+            var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
+            var newSize = square.Size - (Vector2)deltaVector;
 
-    protected override void DrawLines()
-    {
-        var corners = square.Polygon;
+            square.SetSize(newSize);
+        }
 
-        DrawLine(0, corners[0], corners[1]); //direction matters for resize
-        DrawLine(1, corners[2], corners[1]); //direction matters for resize
+        protected override void DrawLines()
+        {
+            var corners = square.Polygon;
+
+            DrawLine(0, corners[0], corners[1]); //direction matters for resize
+            DrawLine(1, corners[2], corners[1]); //direction matters for resize
+        }
     }
 }

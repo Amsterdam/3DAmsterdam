@@ -5,6 +5,7 @@ using System.Linq;
 using ConvertCoordinates;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using Netherlands3D.Utilities;
 using UnityEngine;
 

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class CityPolygon : MonoBehaviour
+namespace Netherlands3D.T3D.Uitbouw
 {
-    public abstract Vector3[] Polygon { get; }
+    public abstract class CityPolygon : MonoBehaviour
+    {
+        public abstract Vector3[] Polygon { get; }
+    }
 }

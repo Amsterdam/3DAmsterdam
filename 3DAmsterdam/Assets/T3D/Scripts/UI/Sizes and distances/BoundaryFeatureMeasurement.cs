@@ -1,38 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
-using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 
-public class BoundaryFeatureMeasurement : DistanceMeasurement
+namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    private BoundaryFeature boundaryFeature;
-
-    private void Awake()
+    public class BoundaryFeatureMeasurement : DistanceMeasurement
     {
-        boundaryFeature = GetComponent<BoundaryFeature>();
-    }
+        private BoundaryFeature boundaryFeature;
 
-    protected override void DrawLines()
-    {
-        var leftWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.LeftBound - transform.position, transform.forward);
-        var rightWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.RightBound - transform.position, transform.forward);
-        var topWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.TopBound- transform.position, transform.forward);
-        var bottomWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.BottomBound- transform.position, transform.forward);
+        private void Awake()
+        {
+            boundaryFeature = GetComponent<BoundaryFeature>();
+        }
 
-        leftWallPoint = Vector3.Project(leftWallPoint, transform.right) + transform.position;
-        rightWallPoint = Vector3.Project(rightWallPoint, transform.right) + transform.position;
-        topWallPoint = Vector3.Project(topWallPoint, transform.up) + transform.position;
-        bottomWallPoint = Vector3.Project(bottomWallPoint, transform.up) + transform.position;
+        protected override void DrawLines()
+        {
+            var leftWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.LeftBound - transform.position, transform.forward);
+            var rightWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.RightBound - transform.position, transform.forward);
+            var topWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.TopBound - transform.position, transform.forward);
+            var bottomWallPoint = Vector3.ProjectOnPlane(boundaryFeature.Wall.BottomBound - transform.position, transform.forward);
 
-        DrawLine(0, boundaryFeature.LeftBound, leftWallPoint); //direction matters for resize
-        DrawLine(1, boundaryFeature.RightBound, rightWallPoint); //direction matters for resize
-        DrawLine(2, boundaryFeature.TopBound, topWallPoint); //direction matters for resize
-        DrawLine(3, boundaryFeature.BottomBound, bottomWallPoint); //direction matters for resize
-    }
+            leftWallPoint = Vector3.Project(leftWallPoint, transform.right) + transform.position;
+            rightWallPoint = Vector3.Project(rightWallPoint, transform.right) + transform.position;
+            topWallPoint = Vector3.Project(topWallPoint, transform.up) + transform.position;
+            bottomWallPoint = Vector3.Project(bottomWallPoint, transform.up) + transform.position;
 
-    protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
-    {
-        var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
-        boundaryFeature.featureTransform.localPosition += deltaVector;
+            DrawLine(0, boundaryFeature.LeftBound, leftWallPoint); //direction matters for resize
+            DrawLine(1, boundaryFeature.RightBound, rightWallPoint); //direction matters for resize
+            DrawLine(2, boundaryFeature.TopBound, topWallPoint); //direction matters for resize
+            DrawLine(3, boundaryFeature.BottomBound, bottomWallPoint); //direction matters for resize
+        }
+
+        protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
+        {
+            var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
+            boundaryFeature.featureTransform.localPosition += deltaVector;
+        }
     }
 }
