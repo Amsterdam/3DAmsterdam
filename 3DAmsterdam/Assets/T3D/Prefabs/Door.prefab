@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4199814909477865796}
   m_Layer: 18
-  m_Name: Window
+  m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814909828853500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -89,7 +89,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814909839026991}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 0}
+  m_LocalPosition: {x: 0.375, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -119,7 +119,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814910194102351}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0}
+  m_LocalPosition: {x: -0.375, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -136,11 +136,11 @@ GameObject:
   - component: {fileID: 4199814910466376687}
   - component: {fileID: 4199814910466376684}
   - component: {fileID: 4199814910466376685}
-  - component: {fileID: 8856174021389576951}
+  - component: {fileID: 6701824297557379080}
   - component: {fileID: 7290153892180319596}
   - component: {fileID: 4555448998142641332}
   m_Layer: 18
-  m_Name: WindowMesh
+  m_Name: DoorMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,7 +155,7 @@ Transform:
   m_GameObject: {fileID: 4199814910466376680}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 2.1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
   m_RootOrder: 0
@@ -209,7 +209,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8856174021389576951
+--- !u!114 &6701824297557379080
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4199814910466376680}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a731f69123fb6437984f4fd8a9a34fe4, type: 3}
+  m_Script: {fileID: 11500000, guid: e66943e6bc52e48a19b3e7cbff4d90e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   leftBound: {fileID: 4199814910194102350}
@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
-  numberOfLines: 4
+  numberOfLines: 2
 --- !u!1 &4199814910624292428
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,7 +279,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814910624292428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: -1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}

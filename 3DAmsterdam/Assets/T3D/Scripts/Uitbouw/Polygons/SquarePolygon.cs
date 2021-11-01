@@ -8,28 +8,27 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         [SerializeField]
         protected Transform leftBound;
-        public Vector3 LeftBound => leftBound.position;
+        public virtual Vector3 LeftBoundPosition => leftBound.position;
         [SerializeField]
         protected Transform rightBound;
-        public Vector3 RightBound => rightBound.position;
+        public virtual Vector3 RightBoundPosition => rightBound.position;
         [SerializeField]
         protected Transform topBound;
-        public Vector3 TopBound => topBound.position;
+        public virtual Vector3 TopBoundPosition => topBound.position;
         [SerializeField]
         protected Transform bottomBound;
-        public Vector3 BottomBound => bottomBound.position;
+        public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
         public override Vector3[] Polygon
         {
             get
             {
                 return new Vector3[] {
-
-                GetCorner(leftBound, topBound),
-                GetCorner(rightBound, topBound),
-                GetCorner(rightBound, bottomBound),
-                GetCorner(leftBound, bottomBound),
-            };
+                    GetCorner(leftBound, topBound),
+                    GetCorner(rightBound, topBound),
+                    GetCorner(rightBound, bottomBound),
+                    GetCorner(leftBound, bottomBound),
+                };
             }
         }
 

@@ -22,20 +22,23 @@ namespace Netherlands3D.T3D.Uitbouw
 
         bool isActive = false;
 
-        //[SerializeField]
         private UitbouwMuur left;
-        //[SerializeField]
         private UitbouwMuur right;
-        //[SerializeField]
         private UitbouwMuur top;
-        //[SerializeField]
         private UitbouwMuur bottom;
+
+        public override Vector3 LeftBoundPosition => WallPlane.ClosestPointOnPlane(leftBound.position);
+        public override Vector3 RightBoundPosition => WallPlane.ClosestPointOnPlane(rightBound.position);
+        public override Vector3 TopBoundPosition => WallPlane.ClosestPointOnPlane(topBound.position);
+        public override Vector3 BottomBoundPosition => WallPlane.ClosestPointOnPlane(bottomBound.position);
 
         private Vector3 oldPosition;
         public Vector3 deltaPosition { get; private set; }
 
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
+
+        public Plane WallPlane => new Plane(-transform.forward, transform.position);
 
         //private void OnValidate()
         //{
