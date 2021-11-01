@@ -5,6 +5,7 @@ using System.Linq;
 using ConvertCoordinates;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.LayerSystem;
+using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using Netherlands3D.Utilities;
 using UnityEngine;
 
@@ -158,7 +159,15 @@ namespace Netherlands3D.T3D.Uitbouw
 
             LimitPositionOnWall();
             ProcessSnapping();
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                var obj = Instantiate(window_TEST, transform);
+                obj.GetComponentInChildren<BoundaryFeature>().SetWall(front);
+            }
         }
+
+        public GameObject window_TEST;
 
         private void LimitPositionOnWall()
         {

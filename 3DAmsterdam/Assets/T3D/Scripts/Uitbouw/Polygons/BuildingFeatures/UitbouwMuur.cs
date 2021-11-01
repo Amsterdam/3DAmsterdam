@@ -14,7 +14,7 @@ namespace Netherlands3D.T3D.Uitbouw
         Back,
     }
 
-    public class UitbouwMuur : MonoBehaviour
+    public class UitbouwMuur : SquarePolygon
     {
         [SerializeField]
         private WallSide side;
@@ -22,14 +22,15 @@ namespace Netherlands3D.T3D.Uitbouw
 
         bool isActive = false;
 
-        [SerializeField]
         private UitbouwMuur left;
-        [SerializeField]
         private UitbouwMuur right;
-        [SerializeField]
         private UitbouwMuur top;
-        [SerializeField]
         private UitbouwMuur bottom;
+
+        public override Vector3 LeftBoundPosition => WallPlane.ClosestPointOnPlane(leftBound.position);
+        public override Vector3 RightBoundPosition => WallPlane.ClosestPointOnPlane(rightBound.position);
+        public override Vector3 TopBoundPosition => WallPlane.ClosestPointOnPlane(topBound.position);
+        public override Vector3 BottomBoundPosition => WallPlane.ClosestPointOnPlane(bottomBound.position);
 
         private Vector3 oldPosition;
         public Vector3 deltaPosition { get; private set; }
@@ -37,18 +38,48 @@ namespace Netherlands3D.T3D.Uitbouw
         private MeshFilter meshFilter;
         public MeshFilter MeshFilter => meshFilter;
 
+        public Plane WallPlane => new Plane(-transform.forward, transform.position);
+
+        //private void OnValidate()
+        //{
+        //    leftBound = left.transform;
+        //    rightBound = right.transform;
+        //    topBound = top.transform;
+        //    bottomBound = bottom.transform;
+        //}
+
+        //private Vector3 GetCorner(UitbouwMuur h, UitbouwMuur v)
+        //{
+        //    var plane = new Plane(-transform.forward, transform.position);
+
+        //    var projectedHPoint = plane.ClosestPointOnPlane(h.transform.position);
+        //    var projectedVPoint = plane.ClosestPointOnPlane(v.transform.position);
+
+        //    float hDist = Vector3.Distance(transform.position, projectedHPoint);
+        //    float vDist = Vector3.Distance(transform.position, projectedVPoint);
+
+        //    return transform.position - h.transform.forward * hDist - v.transform.forward * vDist;
+        //}
+
+        //private void Start()
+        //{
+        //    var poly = Polygon;
+        //    for (int i = 0; i < poly.Length; i++)
+        //    {
+        //        var a = new GameObject();
+        //        a.transform.position = poly[i];
+        //    }
+        //}
+
         private void Awake()
         {
             meshFilter = GetComponent<MeshFilter>();
             oldPosition = transform.position;
-        }
 
-        private static Vector3 CalculateXYScale(Transform left, Transform right, Transform top, Transform bottom)
-        {
-            float hDist = Vector3.Distance(left.position, right.position);
-            float vDist = Vector3.Distance(top.position, bottom.position);
-
-            return new Vector3(hDist, vDist, 1);
+            left = leftBound.GetComponent<UitbouwMuur>();
+            right = rightBound.GetComponent<UitbouwMuur>();
+            top = topBound.GetComponent<UitbouwMuur>();
+            bottom = bottomBound.GetComponent<UitbouwMuur>();
         }
 
         public void RecalculateSides(Vector3 newPosition)
@@ -76,10 +107,10 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.position += delta;
         }
 
-        public void RecalculateScale()
-        {
-            transform.localScale = CalculateXYScale(left.transform, right.transform, top.transform, bottom.transform);
-        }
+        //public void RecalculateScale()
+        //{
+        //    transform.localScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
+        //}
 
         public void SetActive(bool active)
         {
@@ -88,7 +119,7 @@ namespace Netherlands3D.T3D.Uitbouw
             isActive = active;
         }
 
-        internal void MoveWall(float delta)
+        public void MoveWall(float delta)
         {
             SetActive(true);
             var newPosition = transform.position + transform.forward * -delta;
