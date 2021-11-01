@@ -101,13 +101,13 @@ public class BinaryMeshConversion : MonoBehaviour
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 var version = reader.ReadInt32();
-                Debug.Log("V: " + version);
+                //Debug.Log("V: " + version);
 
                 var mesh = new Mesh();
                 mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                 var vertLength = reader.ReadInt32();
-                Debug.Log("Vert length:" + vertLength);
+                //Debug.Log("Vert length:" + vertLength);
                 Vector3[] vertices = new Vector3[vertLength];
                 for (int i = 0; i < vertLength; i++)
                 {
@@ -121,7 +121,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.vertices = vertices;
 
                 var normalsLength = reader.ReadInt32();
-                Debug.Log("Normals length:" + vertLength);
+                //Debug.Log("Normals length:" + vertLength);
                 Vector3[] normals = new Vector3[normalsLength];
                 for (int i = 0; i < normalsLength; i++)
                 {
@@ -135,7 +135,7 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.normals = normals;
 
                 var uvLength = reader.ReadInt32();
-                Debug.Log("UVs length:" + uvLength);
+                //Debug.Log("UVs length:" + uvLength);
                 Vector2[] uvs = new Vector2[uvLength];
                 for (int i = 0; i < uvLength; i++)
                 {
@@ -153,12 +153,12 @@ public class BinaryMeshConversion : MonoBehaviour
                 //Debug.Log("Submeshes: " + submeshes);
                 for (int i = 0; i < submeshes; i++)
                 {
-                    Debug.Log("Submesh: " + i);
+                    //Debug.Log("Submesh: " + i);
                     
                     var trianglesLength = reader.ReadInt32();
                     var baseVertex = reader.ReadInt32();
                     int[] triangles = new int[trianglesLength];
-                    Debug.Log("Triangle length:" + trianglesLength);
+                    //Debug.Log("Triangle length:" + trianglesLength);
                     for (int j = 0; j < trianglesLength; j++)
                     {
                         triangles[j] = reader.ReadInt32();
