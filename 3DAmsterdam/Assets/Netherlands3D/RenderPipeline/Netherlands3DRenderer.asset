@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: NewRenderObjects
+  m_Name: StencilMasking
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: NewRenderObjects
+    passTag: StencilMasking
     Event: 250
     filterSettings:
       RenderQueueType: 0
@@ -71,12 +71,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: OpeningMasking
+  m_Name: OpeningCutout
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: OpeningMasking
-    Event: 500
+    passTag: OpeningCutout
+    Event: 300
     filterSettings:
       RenderQueueType: 0
       LayerMask:

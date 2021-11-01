@@ -7,14 +7,21 @@ public abstract class DistanceMeasurement : MonoBehaviour
 {
     [SerializeField]
     private GameObject measurementLine;
-    protected BuildingMeasuring[] lines = new BuildingMeasuring[2];
+    [SerializeField]
+    protected int numberOfLines = 2;
+
+    protected BuildingMeasuring[] lines;
 
     public bool DrawDistanceActive { get; set; } = true;
 
     protected void Start()
     {
-        DrawNewMeasurement(0);
-        DrawNewMeasurement(1);
+        lines = new BuildingMeasuring[numberOfLines];
+
+        for (int i = 0; i < numberOfLines; i++)
+        {
+            DrawNewMeasurement(i);
+        }
     }
 
     protected void DrawNewMeasurement(int index)
@@ -34,8 +41,11 @@ public abstract class DistanceMeasurement : MonoBehaviour
 
     protected void UpdateMeasurementLines()
     {
-        lines[0].gameObject.SetActive(DrawDistanceActive);
-        lines[1].gameObject.SetActive(DrawDistanceActive);
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i].gameObject.SetActive(DrawDistanceActive);
+        }
+
         if (DrawDistanceActive)
         {
             DrawLines();

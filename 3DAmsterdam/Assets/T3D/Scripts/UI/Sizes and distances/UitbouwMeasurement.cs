@@ -38,7 +38,7 @@ namespace Netherlands3D.T3D.Uitbouw
             return cornerFound;
         }
 
-        private bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
+        private static bool GetMeasurementCorner(Plane uitbouwWall, out Vector3 coord)
         {
             coord = new Vector3();
             if (RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners == null)
@@ -68,7 +68,7 @@ namespace Netherlands3D.T3D.Uitbouw
             return false;
         }
 
-        private Vector3[] GetCoplanarCorners(Vector3[] buildingCorners, Plane snapWall, float tolerance)
+        private static Vector3[] GetCoplanarCorners(Vector3[] buildingCorners, Plane snapWall, float tolerance)
         {
             var corners = new List<Vector3>();
             foreach (var corner in buildingCorners)

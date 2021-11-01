@@ -6,12 +6,16 @@ public class SquarePolygon : CityPolygon
 {
     [SerializeField]
     protected Transform leftBound;
+    public Vector3 LeftBound => leftBound.position;
     [SerializeField]
     protected Transform rightBound;
+    public Vector3 RightBound => rightBound.position;
     [SerializeField]
     protected Transform topBound;
+    public Vector3 TopBound => topBound.position;
     [SerializeField]
     protected Transform bottomBound;
+    public Vector3 BottomBound => bottomBound.position;
 
     public override Vector3[] Polygon
     {
