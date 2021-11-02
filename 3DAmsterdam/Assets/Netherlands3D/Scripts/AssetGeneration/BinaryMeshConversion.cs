@@ -111,9 +111,13 @@ public class BinaryMeshConversion : MonoBehaviour
                 //Version int
                 writer.Write(version);
 
+                //Subobject count
+                writer.Write(ids.Count);
+
+                //All subobject id's, and their indices
 				for (int i = 0; i < ids.Count; i++)
 				{
-                    //ID string. string starts with a length
+                    //ID string. string starts with a length:
                     //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
                     writer.Write(ids[i]);
 

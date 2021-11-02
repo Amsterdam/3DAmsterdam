@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Metadata : MonoBehaviour
+public class MetaData : MonoBehaviour
 {
 	[System.Serializable]
 	public struct SubbjectIndices{
@@ -16,55 +16,88 @@ public class Metadata : MonoBehaviour
 	[SerializeField]
 	private List<SubbjectIndices> subObjectIndices;
 
+	private int currentLODIndices = 0;
+	private Mesh mesh;
+
 	private void Awake()
 	{
 		subObjectIndices = new List<SubbjectIndices>();
+		LoadObjectSeperation();
 	}
 
-	// Update is called once per frame
+	public void RegisterClick()
+	{
+		if(subObjectIndices.Count == 0)
+		{
+			LoadObjectSeperation();
+		}
+	}
+
+	
 	void LoadObjectSeperation()
 	{
-		var mesh = this.GetComponent<MeshFilter>().mesh;
-		var binaryMeshUrl = mesh.name;
+		mesh = this.GetComponent<MeshFilter>().sharedMesh;
 		StartCoroutine(LoadMetaData(mesh));
 	}
 
 	private IEnumerator LoadMetaData(Mesh mesh)
 	{
-		var metaDataName = mesh.name.Replace(".bin", "-data.bin");
-
+		var metaDataName = mesh.name.Replace(".br","").Replace(".bin","-data.bin");
 		var webRequest = UnityWebRequest.Get(metaDataName);
 		yield return webRequest.SendWebRequest();
 
 		if (webRequest.result != UnityWebRequest.Result.Success)
 		{
-			Debug.Log("No metadata for file " + mesh.name);
+			Debug.Log("No metadata on path: " + metaDataName);
 		}
 		else
 		{
 			byte[] results = webRequest.downloadHandler.data;
-			using (var stream = new MemoryStream(results))
+			ReadMetaDataFile(results);
+
+			AddRandomVertexColors();
+		}
+	}
+
+	private void AddRandomVertexColors()
+	{
+		Color[] colors = new Color[mesh.vertexCount];
+
+		//Find all subobject ranges, and color the verts at those indices
+		for (int i = 0; i < subObjectIndices.Count; i++)
+		{
+			var subObject = subObjectIndices[i];
+			Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
+			for (int j = subObject.startIndex; j < subObject.length; j++)
 			{
-				using (BinaryReader reader = new BinaryReader(stream))
+				colors[j] = randomColor;
+			}
+		}
+		mesh.colors = colors;
+	}
+
+	private void ReadMetaDataFile(byte[] results)
+	{
+		using (var stream = new MemoryStream(results))
+		{
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				var version = reader.ReadInt32();
+				var subObjects = reader.ReadInt32();
+				Debug.Log("Metadata subobject count: " + subObjects);
+				int currentMeshIndex = 0;
+				for (int i = 0; i < subObjects; i++)
 				{
-					var version = reader.ReadInt32();
-					var subObjects = reader.ReadInt32();
-
-					int currentMeshIndex = 0;
-					for (int i = 0; i < subObjects; i++)
+					var id = reader.ReadString();
+					var indicesLength = reader.ReadInt32();
+					subObjectIndices.Add(new SubbjectIndices()
 					{
-						var id = reader.ReadString();
-						var indicesLength = reader.ReadInt32();
+						objectID = id,
+						startIndex = currentMeshIndex,
+						length = indicesLength
+					});
 
-						subObjectIndices.Add(new SubbjectIndices()
-						{
-							objectID = id,
-							startIndex = currentMeshIndex,
-							length = indicesLength
-						});
-
-						currentMeshIndex += indicesLength;
-					}
+					currentMeshIndex += indicesLength;
 				}
 			}
 		}
