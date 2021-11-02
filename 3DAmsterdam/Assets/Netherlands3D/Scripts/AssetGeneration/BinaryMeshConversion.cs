@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
     private System.Diagnostics.Stopwatch stopwatch;
+
+    private const int version = 1;
 
     [SerializeField]
     private string assetBundlePath = "C:/Users/Sam/Desktop/binaryconvert/buildings1.0/";
@@ -48,8 +51,8 @@ public class BinaryMeshConversion : MonoBehaviour
         {
             using (BinaryWriter writer = new BinaryWriter(file))
             {
-                //Version
-                writer.Write(1);
+                //Version int
+                writer.Write(version);
 
                 //Verts
                 writer.Write(sourceMesh.vertices.Length);
@@ -90,6 +93,34 @@ public class BinaryMeshConversion : MonoBehaviour
                         writer.Write(index);
                     }
                 }            
+            }
+        }
+    }
+
+    public static void SaveMetadataAsBinaryFile(ObjectMappingClass sourceObjectMapping, string filePath)
+    {
+        Debug.Log(filePath);
+        using (FileStream file = File.Create(filePath))
+        {
+            var ids = sourceObjectMapping.ids;
+            //var uvs = sourceObjectMapping.uvs;
+            var vectorMap = sourceObjectMapping.vectorMap;
+
+            using (BinaryWriter writer = new BinaryWriter(file))
+            {
+                //Version int
+                writer.Write(version);
+
+				for (int i = 0; i < ids.Count; i++)
+				{
+                    //ID string. string starts with a length
+                    //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
+                    writer.Write(ids[i]);
+
+                    //Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
+                    int amountOfInts = vectorMap.Count((vector) => vector == i);
+                    writer.Write(amountOfInts);
+                }
             }
         }
     }
@@ -201,6 +232,36 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
             }
         }
+    }
 
+    [ContextMenu("Convert AssetBundles metadata to binary files")]
+    private void ConvertFromAssetBundleMetaDataToBinary()
+    {
+        var files = Directory.GetFiles(assetBundlePath);
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            var filename = files[i];
+            if (filename.Contains("-data")) //metadata file found
+            {
+                var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
+                if (myLoadedAssetBundle == null)
+                {
+                    Debug.Log("Failed to load AssetBundle!");
+                    continue;
+                }
+                try
+                {
+                    var data = myLoadedAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
+                    SaveMetadataAsBinaryFile(data, filename + ".bin");
+                    myLoadedAssetBundle.Unload(true);
+                }
+                catch (Exception)
+                {
+                    Debug.Log("No mesh in AssetBundle");
+                    myLoadedAssetBundle.Unload(true);
+                }
+            }
+        }
     }
 }

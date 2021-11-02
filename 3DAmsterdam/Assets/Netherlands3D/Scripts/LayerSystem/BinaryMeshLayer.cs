@@ -119,7 +119,7 @@ namespace Netherlands3D.LayerSystem
 				byte[] results = webRequest.downloadHandler.data;
 
 				yield return new WaitUntil(() => pauseLoading == false);
-				GameObject newGameobject = CreateNewGameObject(results, tileChange);
+				GameObject newGameobject = CreateNewGameObject(url,results, tileChange);
 				if (newGameobject != null)
 				{
 					if (TileHasHighlight(tileChange))
@@ -228,7 +228,7 @@ namespace Netherlands3D.LayerSystem
 		MeshRenderer meshRenderer;
 		Vector2[] uvs;
 		Vector2 defaultUV = new Vector2(0.33f, 0.6f);
-		private GameObject CreateNewGameObject(byte[] binaryMeshData, TileChange tileChange)
+		private GameObject CreateNewGameObject(string source,byte[] binaryMeshData, TileChange tileChange)
 		{
 			container = new GameObject();
 			
@@ -240,7 +240,8 @@ namespace Netherlands3D.LayerSystem
 			container.SetActive(isEnabled);
 
 			mesh = BinaryMeshConversion.ReadBinaryMesh(binaryMeshData);
-            container.AddComponent<MeshFilter>().sharedMesh = mesh;
+			mesh.name = source;
+			container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
 			meshRenderer = container.AddComponent<MeshRenderer>();
 			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
