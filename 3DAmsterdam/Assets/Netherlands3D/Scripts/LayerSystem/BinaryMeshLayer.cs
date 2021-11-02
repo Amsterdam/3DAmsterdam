@@ -95,7 +95,7 @@ namespace Netherlands3D.LayerSystem
 
 			//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
 #if !UNITY_EDITOR && UNITY_WEBGL
-			url += ".br";
+			url += Config.activeConfiguration.brotliCompressedAssetFileExtention;
 #endif
 			var webRequest = UnityWebRequest.Get(url);
 #if !UNITY_EDITOR && UNITY_WEBGL
