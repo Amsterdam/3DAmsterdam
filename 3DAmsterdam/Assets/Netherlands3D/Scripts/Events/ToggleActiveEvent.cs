@@ -7,6 +7,7 @@ namespace Netherlands3D.Events
     {
         public class Args : EventArgs
         {
+
         }
 
         private static event EventHandler<Args> OnEvent = delegate { };

@@ -52,8 +52,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RecalculateScale()
         {
-            Size = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
-            transform.localScale = Size;
+            var newScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
+            transform.localScale = newScale;
+            Size = newScale;
         }
 
         protected static Vector3 CalculateXYScale(Transform left, Transform right, Transform top, Transform bottom)

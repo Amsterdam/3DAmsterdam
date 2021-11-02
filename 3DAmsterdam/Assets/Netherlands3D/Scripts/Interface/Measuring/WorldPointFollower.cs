@@ -57,8 +57,8 @@ namespace Netherlands3D.Interface
 		public void AutoHideByCamera()
 		{
 			//Always hide outside viewport
-			var viewportPosition = CameraModeChanger.Instance.ActiveCamera.WorldToViewportPoint(WorldPosition);
-			if (viewportPosition.x > 1 || viewportPosition.x < -1 || viewportPosition.y > 1 || viewportPosition.y < -1 || viewportPosition.z < 0)
+			var screenPosition = CameraModeChanger.Instance.ActiveCamera.WorldToScreenPoint(WorldPosition);
+			if (screenPosition.x > Screen.width || screenPosition.x < 0 || screenPosition.y > Screen.height || screenPosition.y < 0 || screenPosition.z < 0)
 			{
 				DrawGraphics(false);
 				return;
@@ -74,10 +74,9 @@ namespace Netherlands3D.Interface
 					return;
 				}
 			}
-			
+
 			DrawGraphics(true);
-			rectTransform.anchorMin = viewportPosition;
-			rectTransform.anchorMax = viewportPosition;
+			rectTransform.position = screenPosition;
 		}
 
 	}
