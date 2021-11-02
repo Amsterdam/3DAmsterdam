@@ -45,6 +45,8 @@ namespace Netherlands3D
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
         public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
 
+        public string brotliCompressedAssetFileExtention = ".br";
+
         public string sharingUploadScenePath = "https://3d.amsterdam.nl/customUpload.php";
         public string sharingDownloadScenePath = "https://3d.amsterdam.nl/customScene.php?id={sceneId}_scene.json";
 
