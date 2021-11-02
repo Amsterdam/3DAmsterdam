@@ -11,9 +11,19 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
     public class BoundaryFeatureEditHandler : MonoBehaviour
     {
-        [SerializeField]
-        private BoundaryFeatureButton editbutton;
         public BoundaryFeature ActiveFeature { get; private set; }
+
+        [SerializeField]
+        private Sprite editSprite, deleteSprite;
+        
+        public static Sprite EditSprite;
+        public static Sprite DeleteSprite;
+
+        private void Awake()
+        {
+            EditSprite = editSprite;
+            DeleteSprite = deleteSprite;
+        }
 
         public void SelectFeature(BoundaryFeature feature)
         {

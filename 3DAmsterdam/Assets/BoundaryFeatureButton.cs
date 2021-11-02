@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 public class BoundaryFeatureButton : WorldPointFollower
 {
     public Button Button { get; private set; }
+    [SerializeField]
+    private Image buttonImage;
 
     public override void Awake()
     {
@@ -21,5 +24,10 @@ public class BoundaryFeatureButton : WorldPointFollower
     private void OnDestroy()
     {
         Button.onClick.RemoveAllListeners();
+    }
+
+    internal void SetSprite(Sprite sprite)
+    {
+        buttonImage.sprite = sprite;
     }
 }

@@ -2,6 +2,7 @@ using Netherlands3D.Interface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -44,9 +45,10 @@ namespace Netherlands3D.Interface
             return Instantiate(numberInputFieldPrefab, this.transform);
         }
 
-        public BoundaryFeatureButton CreateButton(UnityEngine.Events.UnityAction call)
+        public BoundaryFeatureButton CreateButton(Sprite sprite, UnityEngine.Events.UnityAction call)
         {
             var obj = Instantiate(buttonPrefab, this.transform);
+            obj.SetSprite(sprite);
             obj.SetClickFunction(call);
             return obj;
         }

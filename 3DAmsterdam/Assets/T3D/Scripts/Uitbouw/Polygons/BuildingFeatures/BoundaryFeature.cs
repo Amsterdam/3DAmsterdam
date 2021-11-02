@@ -29,8 +29,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             meshFilter = GetComponent<MeshFilter>();
 
-            deleteButton = CoordinateNumbers.Instance.CreateButton(DeleteFeature);
-            editButton = CoordinateNumbers.Instance.CreateButton(EditFeature);
+            deleteButton = CoordinateNumbers.Instance.CreateButton(BoundaryFeatureEditHandler.DeleteSprite, DeleteFeature);
+            editButton = CoordinateNumbers.Instance.CreateButton(BoundaryFeatureEditHandler.EditSprite, EditFeature);
 
             SetMode(EditMode.None);
         }
@@ -51,7 +51,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (deleteButton)
             {
-                var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents + featureTransform.right * buttonDistance; 
+                var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents + featureTransform.right * buttonDistance;
                 deleteButton.AlignWithWorldPosition(pos);
             }
             if (editButton)
@@ -76,9 +76,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void DeleteFeature()
         {
-            if(deleteButton)
+            if (deleteButton)
                 Destroy(deleteButton.gameObject);
-            if(editButton)
+            if (editButton)
                 Destroy(editButton.gameObject);
 
             Destroy(gameObject);
