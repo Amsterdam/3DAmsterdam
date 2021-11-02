@@ -42,7 +42,7 @@ public class BinaryMeshConversion : MonoBehaviour
     }
 
 
-	public void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
+	public static void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
         using (FileStream file = File.Create(filePath))
         {
