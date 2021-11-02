@@ -242,21 +242,6 @@ namespace Netherlands3D.LayerSystem
 			mesh = BinaryMeshConversion.ReadBinaryMesh(binaryMeshData);
             container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
-			int count = mesh.vertexCount;
-
-            // creating the UV-s runtime takes a lot of time and causes the garbage-collector to kick in.
-            // uv's should be built in in to the meshes in the assetbundles.
-            if (addHighlightuvs)
-            {
-				uvs = new Vector2[count];
-				for (int i = 0; i < count; i++)
-				{
-					uvs[i] = (defaultUV);
-				}
-				mesh.uv2 = uvs;
-			}            
-
-
 			meshRenderer = container.AddComponent<MeshRenderer>();
 			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
 			meshRenderer.shadowCastingMode = tileShadowCastingMode;
