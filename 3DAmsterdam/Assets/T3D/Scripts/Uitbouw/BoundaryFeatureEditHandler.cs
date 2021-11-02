@@ -1,35 +1,69 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
     public class BoundaryFeatureEditHandler : MonoBehaviour
     {
-        //private List<BoundaryFeature> features = new List<BoundaryFeature>();
+        [SerializeField]
+        private BoundaryFeatureButton editbutton;
         public BoundaryFeature ActiveFeature { get; private set; }
 
         public void SelectFeature(BoundaryFeature feature)
         {
-            if (ActiveFeature)
-                ActiveFeature.SetDistanceMeasurementsActive(EditMode.None);
-            feature.SetDistanceMeasurementsActive(EditMode.Reposition);
+            //DeselectFeature();
+
+            //editbutton.enabled = true;
+            //deleteButton.enabled = true;
+
+            feature.SetMode(EditMode.Reposition);
             ActiveFeature = feature;
+
+            //deleteButton = CoordinateNumbers.Instance.CreateButton();
+            //deleteButton.GetComponent<Button>().onClick.AddListener(DeleteFeature);
+        }
+
+        public void DeselectFeature()
+        {
+            if (ActiveFeature)
+                ActiveFeature.SetMode(EditMode.None);
+
+            //editbutton.GetComponent<Button>().onClick.RemoveAllListeners();
+            //deleteButton.GetComponent<Button>().onClick.RemoveAllListeners();
+
+            //editbutton.enabled = false;
+            //deleteButton.enabled = false;
+            ActiveFeature = null;
         }
 
         private void Update()
         {
+            ProcessUserInput();
+        }
+        private void ProcessUserInput()
+        {
             Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-            LayerMask mask = LayerMask.GetMask("StencilMask");
-            if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out var hit, Mathf.Infinity, mask))
+            LayerMask boundaryFeaturesMask = LayerMask.GetMask("StencilMask");
+            LayerMask uiMask = LayerMask.GetMask("UI");
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
-                print(hit.collider.gameObject.name);
-                var bf = hit.collider.GetComponent<BoundaryFeature>();
-                if (bf)
+                if (ActiveFeature)
                 {
-                    SelectFeature(bf);
+                    DeselectFeature();
+                }
+                else if (Physics.Raycast(ray, out var hit, Mathf.Infinity, boundaryFeaturesMask))
+                {
+                    var bf = hit.collider.GetComponent<BoundaryFeature>();
+                    if (bf)
+                    {
+                        SelectFeature(bf);
+                    }
                 }
             }
         }

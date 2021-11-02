@@ -60,5 +60,14 @@ namespace Netherlands3D.T3D
         {
             lines[lineIndex].SetLinePosition(start, end);
         }
+
+        private void OnDestroy()
+        {
+            foreach (var line in lines)
+            {
+                if (line)
+                    Destroy(line.gameObject);
+            }
+        }
     }
 }

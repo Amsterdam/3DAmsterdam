@@ -19,6 +19,9 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private NumberInputField numberInputFieldPrefab;
 
+        [SerializeField]
+        private BoundaryFeatureButton buttonPrefab;
+
         public static CoordinateNumbers Instance;
 
         void Awake()
@@ -39,6 +42,13 @@ namespace Netherlands3D.Interface
         public NumberInputField CreateNumberInputField()
         {
             return Instantiate(numberInputFieldPrefab, this.transform);
+        }
+
+        public BoundaryFeatureButton CreateButton(UnityEngine.Events.UnityAction call)
+        {
+            var obj = Instantiate(buttonPrefab, this.transform);
+            obj.SetClickFunction(call);
+            return obj;
         }
     }
 }
