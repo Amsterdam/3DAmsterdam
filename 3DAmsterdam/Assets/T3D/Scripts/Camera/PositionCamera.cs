@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PositionCamera: MonoBehaviour
 {
-    //public Camera Camera;
+    public float CameraHeight = 10;
 
     Vector2RD? perceelcenter = null;
     Vector2RD? buildingcenter = null;
@@ -45,7 +45,7 @@ public class PositionCamera: MonoBehaviour
 
         var camera = CameraModeChanger.Instance.ActiveCamera;
 
-        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, 7, perceelpos.z + cameraoffset.z);
+        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, CameraHeight, perceelpos.z + cameraoffset.z);
         camera.transform.LookAt(buildingpos);
     }
 }

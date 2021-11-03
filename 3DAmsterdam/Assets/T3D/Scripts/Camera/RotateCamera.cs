@@ -18,9 +18,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private bool dragging = false;
     
-    [SerializeField]
-    private bool rotatingAroundPoint = false;
-
     private float scrollDelta;
 #if UNITY_WEBGL && !UNITY_EDITOR
         float webGLScrollMultiplier = 100.0f;
@@ -133,8 +130,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     {
         if (action.Cancelled)
         {
-            dragging = false;
-            rotatingAroundPoint = false;
+            dragging = false;            
         }
         else if (action.Performed)
         {            
@@ -168,7 +164,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         var previousRotation = mycam.transform.rotation;
 
         if (RestrictionChecker.ActiveUitbouw != null)
-            mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);
+            mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);            
         else if (RestrictionChecker.ActiveBuilding)
             mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
     }
