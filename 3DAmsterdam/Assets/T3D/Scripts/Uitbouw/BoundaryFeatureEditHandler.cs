@@ -14,15 +14,17 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public BoundaryFeature ActiveFeature { get; private set; }
 
         [SerializeField]
-        private Sprite editSprite, deleteSprite;
+        private Sprite editSprite, deleteSprite, moveSprite;
         
         public static Sprite EditSprite;
         public static Sprite DeleteSprite;
+        public static Sprite MoveSprite;
 
         private void Awake()
         {
             EditSprite = editSprite;
             DeleteSprite = deleteSprite;
+            MoveSprite = moveSprite;
         }
 
         public void SelectFeature(BoundaryFeature feature)

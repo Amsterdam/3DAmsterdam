@@ -88,10 +88,12 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (ActiveMode == EditMode.Reposition)
             {
+                editButton.SetSprite(BoundaryFeatureEditHandler.MoveSprite);
                 SetMode(EditMode.Resize);
             }
             else
             {
+                editButton.SetSprite(BoundaryFeatureEditHandler.EditSprite);
                 SetMode(EditMode.Reposition);
             }
         }

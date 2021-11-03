@@ -26,7 +26,7 @@ public class BoundaryFeatureButton : WorldPointFollower
         Button.onClick.RemoveAllListeners();
     }
 
-    internal void SetSprite(Sprite sprite)
+    public void SetSprite(Sprite sprite)
     {
         buttonImage.sprite = sprite;
     }
