@@ -1,7 +1,9 @@
 using Netherlands3D.Interface;
+using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -18,6 +20,9 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private NumberInputField numberInputFieldPrefab;
+
+        [SerializeField]
+        private EditUI editUIPrefab;
 
         public static CoordinateNumbers Instance;
 
@@ -39,6 +44,13 @@ namespace Netherlands3D.Interface
         public NumberInputField CreateNumberInputField()
         {
             return Instantiate(numberInputFieldPrefab, this.transform);
+        }
+
+        public EditUI CreateEditUI(BoundaryFeature feature)
+        {
+            var ui = Instantiate(editUIPrefab, this.transform);
+            ui.SetFeature(feature);
+            return ui;
         }
     }
 }

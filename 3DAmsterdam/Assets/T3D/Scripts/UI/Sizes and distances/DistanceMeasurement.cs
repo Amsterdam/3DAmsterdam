@@ -14,7 +14,7 @@ namespace Netherlands3D.T3D
 
         protected BuildingMeasuring[] lines;
 
-        public bool DrawDistanceActive { get; set; } = true;
+        public bool DrawDistanceActive { get; set; } = false;
 
         protected void Start()
         {
@@ -59,6 +59,15 @@ namespace Netherlands3D.T3D
         protected void DrawLine(int lineIndex, Vector3 start, Vector3 end)
         {
             lines[lineIndex].SetLinePosition(start, end);
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var line in lines)
+            {
+                if (line)
+                    Destroy(line.gameObject);
+            }
         }
     }
 }

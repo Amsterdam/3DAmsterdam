@@ -6,8 +6,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
     public class Door : BoundaryFeature
     {
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             SnapToGround();
         }
 
