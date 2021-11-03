@@ -13,32 +13,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     {
         public BoundaryFeature ActiveFeature { get; private set; }
 
-        [SerializeField]
-        private Sprite editSprite, deleteSprite, moveSprite;
-        
-        public static Sprite EditSprite;
-        public static Sprite DeleteSprite;
-        public static Sprite MoveSprite;
-
-        private void Awake()
-        {
-            EditSprite = editSprite;
-            DeleteSprite = deleteSprite;
-            MoveSprite = moveSprite;
-        }
-
         public void SelectFeature(BoundaryFeature feature)
         {
-            //DeselectFeature();
-
-            //editbutton.enabled = true;
-            //deleteButton.enabled = true;
-
             feature.SetMode(EditMode.Reposition);
             ActiveFeature = feature;
-
-            //deleteButton = CoordinateNumbers.Instance.CreateButton();
-            //deleteButton.GetComponent<Button>().onClick.AddListener(DeleteFeature);
         }
 
         public void DeselectFeature()
@@ -46,11 +24,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (ActiveFeature)
                 ActiveFeature.SetMode(EditMode.None);
 
-            //editbutton.GetComponent<Button>().onClick.RemoveAllListeners();
-            //deleteButton.GetComponent<Button>().onClick.RemoveAllListeners();
-
-            //editbutton.enabled = false;
-            //deleteButton.enabled = false;
             ActiveFeature = null;
         }
 

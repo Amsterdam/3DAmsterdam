@@ -14,13 +14,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public EditMode ActiveMode { get; private set; }
 
         private DistanceMeasurement[] distanceMeasurements;
-        private BoundaryFeatureButton editButton;
-        private BoundaryFeatureButton deleteButton;
+
+        private EditUI editUI;
 
         private MeshFilter meshFilter;
-
-        //[SerializeField]
-        private float buttonDistance = 0.15f;
 
         private void Awake()
         {
@@ -29,8 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             meshFilter = GetComponent<MeshFilter>();
 
-            deleteButton = CoordinateNumbers.Instance.CreateButton(BoundaryFeatureEditHandler.DeleteSprite, DeleteFeature);
-            editButton = CoordinateNumbers.Instance.CreateButton(BoundaryFeatureEditHandler.EditSprite, EditFeature);
+            editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
             SetMode(EditMode.None);
         }
@@ -49,16 +45,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            if (deleteButton)
-            {
-                var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents + featureTransform.right * buttonDistance;
-                deleteButton.AlignWithWorldPosition(pos);
-            }
-            if (editButton)
-            {
-                var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents - featureTransform.right * buttonDistance;
-                editButton.AlignWithWorldPosition(pos);
-            }
+            var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents;
+            editUI.AlignWithWorldPosition(pos);
         }
 
         public void SetMode(EditMode newMode)
@@ -70,32 +58,23 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 distanceMeasurements[i].DrawDistanceActive = (int)newMode == i;
             }
 
-            deleteButton.gameObject.SetActive((int)newMode >= 0);
-            editButton.gameObject.SetActive((int)newMode >= 0);
+            editUI.gameObject.SetActive((int)newMode >= 0);
         }
 
-        private void DeleteFeature()
+        public void DeleteFeature()
         {
-            if (deleteButton)
-                Destroy(deleteButton.gameObject);
-            if (editButton)
-                Destroy(editButton.gameObject);
-
+            Destroy(editUI.gameObject);
             Destroy(gameObject);
         }
 
-        private void EditFeature()
+        public void EditFeature()
         {
             if (ActiveMode == EditMode.Reposition)
-            {
-                editButton.SetSprite(BoundaryFeatureEditHandler.MoveSprite);
                 SetMode(EditMode.Resize);
-            }
             else
-            {
-                editButton.SetSprite(BoundaryFeatureEditHandler.EditSprite);
                 SetMode(EditMode.Reposition);
-            }
+
+            editUI.UpdateSprites(ActiveMode);
         }
     }
 }

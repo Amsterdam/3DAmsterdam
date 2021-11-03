@@ -1,4 +1,5 @@
 using Netherlands3D.Interface;
+using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Netherlands3D.Interface
         private NumberInputField numberInputFieldPrefab;
 
         [SerializeField]
-        private BoundaryFeatureButton buttonPrefab;
+        private EditUI editUIPrefab;
 
         public static CoordinateNumbers Instance;
 
@@ -45,12 +46,11 @@ namespace Netherlands3D.Interface
             return Instantiate(numberInputFieldPrefab, this.transform);
         }
 
-        public BoundaryFeatureButton CreateButton(Sprite sprite, UnityEngine.Events.UnityAction call)
+        public EditUI CreateEditUI(BoundaryFeature feature)
         {
-            var obj = Instantiate(buttonPrefab, this.transform);
-            obj.SetSprite(sprite);
-            obj.SetClickFunction(call);
-            return obj;
+            var ui = Instantiate(editUIPrefab, this.transform);
+            ui.SetFeature(feature);
+            return ui;
         }
     }
 }
