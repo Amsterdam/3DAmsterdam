@@ -35,10 +35,14 @@ namespace Netherlands3D.LayerSystem
 
         [SerializeField]
         private Color selectionVertexColor;
+        [SerializeField]
+        private Material exclusiveSelectedShader;
 
         private void Awake()
         {
             contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
+
+            exclusiveSelectedShader.SetColor("_HighlightColor", selectionVertexColor);
 
             selectedIDs = new List<string>();
             hiddenIDs = new List<string>();
