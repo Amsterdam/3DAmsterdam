@@ -83,12 +83,17 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
                         ComponentImage.enabled = false;
                     }
+                    else if (placedBoundaryFeature != null)
+                    {
+                        Destroy(placedBoundaryFeature.gameObject);
+                        ComponentImage.enabled = true;
+                    }
                 }
+
             }
             else if (placedBoundaryFeature != null)
             {
-                Destroy(placedBoundaryFeature.gameObject);
-                //PlacedObject = null;
+                Destroy(placedBoundaryFeature.gameObject);                
                 ComponentImage.enabled = true;
             }
         }
