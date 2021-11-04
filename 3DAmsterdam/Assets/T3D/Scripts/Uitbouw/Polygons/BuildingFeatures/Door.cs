@@ -15,7 +15,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         private void SnapToGround()
         {
             var vPos = Size.y / 2;
-            featureTransform.localPosition = new Vector3(featureTransform.localPosition.x, vPos, featureTransform.localPosition.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, vPos, transform.localPosition.z);
         }
     }
 }

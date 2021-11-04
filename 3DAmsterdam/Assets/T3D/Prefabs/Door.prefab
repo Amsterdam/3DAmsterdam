@@ -9,6 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4199814909477865796}
+  - component: {fileID: 2472266482839578774}
+  - component: {fileID: 4414581552080234581}
+  - component: {fileID: 6256373947487919304}
   m_Layer: 18
   m_Name: Door
   m_TagString: Untagged
@@ -35,6 +38,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2472266482839578774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4199814909477865792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66943e6bc52e48a19b3e7cbff4d90e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshTransform: {fileID: 4199814910466376687}
+  leftBound: {fileID: 4199814910194102350}
+  rightBound: {fileID: 4199814909839026990}
+  topBound: {fileID: 4199814909828853443}
+  bottomBound: {fileID: 4199814910624292435}
+--- !u!114 &4414581552080234581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4199814909477865792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5b1a560133e34cde80684892b55c426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  numberOfLines: 2
+--- !u!114 &6256373947487919304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4199814909477865792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b8a95cf7aae4d588e08d4474d381bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
+    type: 3}
+  numberOfLines: 2
+  mode: 0
 --- !u!1 &4199814909828853500
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,9 +187,6 @@ GameObject:
   - component: {fileID: 4199814910466376687}
   - component: {fileID: 4199814910466376684}
   - component: {fileID: 4199814910466376685}
-  - component: {fileID: 6701824297557379080}
-  - component: {fileID: 7290153892180319596}
-  - component: {fileID: 4555448998142641332}
   - component: {fileID: 4260043807003318492}
   m_Layer: 18
   m_Name: DoorMesh
@@ -210,53 +258,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6701824297557379080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4199814910466376680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e66943e6bc52e48a19b3e7cbff4d90e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftBound: {fileID: 4199814910194102350}
-  rightBound: {fileID: 4199814909839026990}
-  topBound: {fileID: 4199814909828853443}
-  bottomBound: {fileID: 4199814910624292435}
---- !u!114 &7290153892180319596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4199814910466376680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5b1a560133e34cde80684892b55c426, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
-    type: 3}
-  numberOfLines: 2
---- !u!114 &4555448998142641332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4199814910466376680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49b8a95cf7aae4d588e08d4474d381bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
-    type: 3}
-  numberOfLines: 2
-  mode: 0
 --- !u!64 &4260043807003318492
 MeshCollider:
   m_ObjectHideFlags: 0

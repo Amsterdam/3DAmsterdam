@@ -7,6 +7,8 @@ namespace Netherlands3D.T3D.Uitbouw
     public class SquarePolygon : CityPolygon
     {
         [SerializeField]
+        protected Transform meshTransform;
+        [SerializeField]
         protected Transform leftBound;
         public virtual Vector3 LeftBoundPosition => leftBound.position;
         [SerializeField]
@@ -34,7 +36,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public Vector2 Size { get; private set; }
 
-        private void Start()
+        protected virtual void Awake()
+        {
+            if (!meshTransform)
+                meshTransform = transform;
+        }
+
+        protected virtual void Start()
         {
             RecalculateScale();
         }
@@ -53,7 +61,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void RecalculateScale()
         {
             var newScale = CalculateXYScale(leftBound, rightBound, topBound, bottomBound);
-            transform.localScale = newScale;
+            meshTransform.localScale = newScale;
             Size = newScale;
         }
 
@@ -67,18 +75,18 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected Vector3 GetCorner(Transform hBound, Transform vBound)
         {
-            var plane = new Plane(-transform.forward, transform.position);
+            var plane = new Plane(-meshTransform.forward, meshTransform.position);
 
             var projectedHPoint = plane.ClosestPointOnPlane(hBound.position);
             var projectedVPoint = plane.ClosestPointOnPlane(vBound.position);
 
-            float hDist = Vector3.Distance(transform.position, projectedHPoint);
-            float vDist = Vector3.Distance(transform.position, projectedVPoint);
+            float hDist = Vector3.Distance(meshTransform.position, projectedHPoint);
+            float vDist = Vector3.Distance(meshTransform.position, projectedVPoint);
 
-            var hDir = (projectedHPoint - transform.position).normalized;
-            var vDir = (projectedVPoint - transform.position).normalized;
+            var hDir = (projectedHPoint - meshTransform.position).normalized;
+            var vDir = (projectedVPoint - meshTransform.position).normalized;
 
-            return transform.position + hDir * hDist + vDir * vDist;
+            return meshTransform.position + hDir * hDist + vDir * vDist;
         }
 
         //private void OnDrawGizmos()

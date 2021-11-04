@@ -9,7 +9,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeature : SquarePolygon
     {
         public UitbouwMuur Wall { get; private set; }
-        public Transform featureTransform { get; private set; }
+        //public Transform featureTransform { get; private set; }
 
         public EditMode ActiveMode { get; private set; }
 
@@ -19,12 +19,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private MeshFilter meshFilter;
 
-        private void Awake()
+        protected override void Awake()
         {
-            featureTransform = transform.parent;
+            base.Awake();
+            //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
 
-            meshFilter = GetComponent<MeshFilter>();
+            meshFilter = meshTransform.GetComponent<MeshFilter>();
 
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
@@ -34,8 +35,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void SetWall(UitbouwMuur wall)
         {
             this.Wall = wall;
-            featureTransform.position = wall.transform.position;
-            featureTransform.forward = wall.transform.forward;
+            transform.position = wall.transform.position;
+            transform.forward = wall.transform.forward;
         }
 
         protected virtual void Update()
@@ -45,7 +46,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            var pos = featureTransform.position + transform.rotation * meshFilter.mesh.bounds.extents;
+            var pos = transform.position + transform.rotation * meshFilter.mesh.bounds.extents;
             editUI.AlignWithWorldPosition(pos);
         }
 
