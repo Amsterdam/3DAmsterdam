@@ -9,13 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4442509400221819077}
+  - component: {fileID: 7003807491715655830}
   m_Layer: 5
   m_Name: DragContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4442509400221819077
 RectTransform:
   m_ObjectHideFlags: 0
@@ -38,6 +39,22 @@ RectTransform:
   m_AnchoredPosition: {x: 57.76, y: 21.91}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7003807491715655830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29276704562410322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8910b21da6832443ab9014f0884cb64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ComponentObject: {fileID: 0}
+  ComponentImage: {fileID: 2540345732144139623}
+  MouseXOffset: 92
+  isTopComponent: 0
 --- !u!1 &5146510887351068015
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +73,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5146510887351068014
 RectTransform:
   m_ObjectHideFlags: 0
@@ -140,6 +157,7 @@ GameObject:
   - component: {fileID: 2540345732144139623}
   - component: {fileID: 8366925603113319376}
   - component: {fileID: 6613789653518267970}
+  - component: {fileID: 5516929280606979357}
   m_Layer: 5
   m_Name: Draggable Library object
   m_TagString: Untagged
@@ -163,8 +181,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -189.54993, y: -146.445}
-  m_SizeDelta: {x: 100.37736, y: 164.6}
+  m_AnchoredPosition: {x: -226.4, y: -140.9}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &9097327043097810118
 CanvasRenderer:
@@ -229,6 +247,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54266dfffa773af42a13b9e31e6cc195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5516929280606979357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6286560253616462056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4847de65100161641ae3f7962da902a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowOutsideOfScreen: 0
 --- !u!1 &8452566289917376348
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +273,7 @@ GameObject:
   - component: {fileID: 5538535789734672275}
   - component: {fileID: 6637849663502248569}
   - component: {fileID: 4862230405199547090}
+  - component: {fileID: 6999956084335864809}
   m_Layer: 5
   m_Name: Drag icon
   m_TagString: Untagged
@@ -331,3 +363,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54266dfffa773af42a13b9e31e6cc195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6999956084335864809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8452566289917376348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4847de65100161641ae3f7962da902a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allowOutsideOfScreen: 0
