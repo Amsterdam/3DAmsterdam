@@ -152,9 +152,10 @@ public class HandleButtonsT3D : MonoBehaviour
         return months[monthIndex];
     }
 
-    public void AllowUitbouwDrag(bool enable)
+    //called by the UI button events in the inspector
+    public void AllowUitbouwMovement(bool enable)
     {
-        RestrictionChecker.ActiveUitbouw.AllowDrag = enable;
+        RestrictionChecker.ActiveUitbouw.SetAllowMovement(enable);
     }
 
     #endregion
