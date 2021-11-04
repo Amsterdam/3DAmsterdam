@@ -82,8 +82,17 @@ public class SubObjects : MonoBehaviour
 
 	private IEnumerator LoadMetaData(Mesh mesh, int selectedVertAfterLoading, System.Action<string> callback)
 	{
-		var metaDataName = mesh.name.Replace(Config.activeConfiguration.brotliCompressedAssetFileExtention,"").Replace(".bin","-data.bin");
-		var webRequest = UnityWebRequest.Get(metaDataName);
+		var metaDataName = mesh.name.Replace(".bin","-data.bin");
+
+		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
+#if !UNITY_EDITOR && UNITY_WEBGL
+			metaDataName += Config.activeConfiguration.brotliCompressedAssetFileExtention;
+#endif
+			var webRequest = UnityWebRequest.Get(metaDataName);
+#if !UNITY_EDITOR && UNITY_WEBGL
+			webRequest.SetRequestHeader("Accept-Encoding", "br");
+#endif
+
 		yield return webRequest.SendWebRequest();
 
 		if (webRequest.result != UnityWebRequest.Result.Success)
