@@ -54,7 +54,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (Input.GetMouseButton(0) == false) return;
 
             RaycastHit hit;
-            var screenpoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y + MouseXOffset, 0);
+            var screenpoint = ComponentImage.rectTransform.position;
+            screenpoint.x += ComponentImage.rectTransform.rect.width / 2;
+            screenpoint.y -= ComponentImage.rectTransform.rect.height / 2;
+
             Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
 
             var mask = LayerMask.GetMask("Maskable");
