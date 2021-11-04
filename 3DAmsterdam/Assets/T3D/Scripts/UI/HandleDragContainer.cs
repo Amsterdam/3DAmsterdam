@@ -11,76 +11,83 @@ using UnityEngine.UI;
 /// - Update the selected icon
 /// - Do raycast to Uitbouw, when hit, place the component is real size on the selected Uitbouw wall
 /// </summary>
-public class HandleDragContainer : MonoBehaviour
+
+namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public GameObject ComponentObject;
-    public Image ComponentImage;    
-    public int MouseXOffset = 92;
-    
-    private GameObject PlacedObject;
-    public bool isTopComponent;
-
-    private SelectComponent selectComponent;
-
-    private void Awake()
+    public class HandleDragContainer : MonoBehaviour
     {
-        LibraryComponentSelectedEvent.Subscribe(OnSelect);
-    }
+        public BoundaryFeature ComponentObject;
+        public Image ComponentImage;
+        public int MouseXOffset = 92;
 
-    private void OnSelect(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
-    {        
-        ComponentImage.sprite = e.Image.sprite;
-        isTopComponent = e.IsTopComponent;
-        ComponentObject = e.ComponentObject;
-        selectComponent = e.SelectComponent;
+        private BoundaryFeature placedBoundaryFeature;
+        public bool isTopComponent;
 
-        ComponentObject.transform.localScale = new Vector3(e.ComponentWidth, e.ComponentHeight, 1);
-    }
+        private SelectComponent selectComponent;
 
-    private void Update()
-    {
-        if (Input.GetMouseButton(0) == false && PlacedObject != null)
+        private void Awake()
         {
-            PlacedObject = null;
-            selectComponent.SetToggle(false);
-            return;
+            LibraryComponentSelectedEvent.Subscribe(OnSelect);
         }
 
-        if (Input.GetMouseButton(0) == false) return;
-
-        RaycastHit hit;
-        var screenpoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y + MouseXOffset, 0);        
-        Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
-
-        bool casted = Physics.Raycast(ray, out hit);
-
-        if (hit.transform == null) return;
-
-        var hitname = hit.transform.name.ToLower();
-        bool allowed = isTopComponent && hitname == "top" || (!isTopComponent && ( hitname == "left" || hitname == "right" || hitname == "front" ));
-
-        if (casted && allowed )
+        private void OnSelect(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
         {
-            var wall = hit.transform.GetComponent<UitbouwMuur>();
+            ComponentImage.sprite = e.Image.sprite;
+            isTopComponent = e.IsTopComponent;
+            ComponentObject = e.ComponentObject;
+            selectComponent = e.SelectComponent;
 
-            if (PlacedObject == null)
-            {                             
-                PlacedObject = Instantiate(ComponentObject);                                
+            ComponentObject.SetSize(new Vector2(e.ComponentWidth, e.ComponentHeight));
+            //ComponentObject.transform.localScale = new Vector3(e.ComponentWidth, e.ComponentHeight, 1);
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButton(0) == false && placedBoundaryFeature != null)
+            {
+                //Destroy(placedBoundaryFeature.gameObject);
+                placedBoundaryFeature = null; //place object and set this one to null to 
+                selectComponent.SetToggle(false);
+                return;
             }
-            
-            PlacedObject.transform.position = hit.point;
-            PlacedObject.transform.rotation = hit.transform.rotation;
 
-            ComponentImage.enabled = false;       
-            
-        }
-        else if(PlacedObject != null)
-        {
-            Destroy(PlacedObject);
-            PlacedObject = null;
-            ComponentImage.enabled = true;
+            if (Input.GetMouseButton(0) == false) return;
+
+            RaycastHit hit;
+            var screenpoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y + MouseXOffset, 0);
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
+
+            var mask = LayerMask.GetMask("Maskable");
+            bool casted = Physics.Raycast(ray, out hit, Mathf.Infinity, mask);
+
+            if (casted)
+            {
+                var wall = hit.transform.GetComponent<UitbouwMuur>();
+                if (wall)
+                {
+                    bool allowed = (isTopComponent && wall.Side == WallSide.Top) || (!isTopComponent && (wall.Side == WallSide.Left || wall.Side == WallSide.Right || wall.Side == WallSide.Front));
+
+                    if (allowed)
+                    {
+                        if (placedBoundaryFeature == null)
+                        {
+                            placedBoundaryFeature = Instantiate(ComponentObject, wall.transform.parent);
+                            placedBoundaryFeature.SetWall(wall);
+                        }
+
+                        placedBoundaryFeature.transform.position = hit.point;
+                        placedBoundaryFeature.transform.rotation = hit.transform.rotation;
+
+                        ComponentImage.enabled = false;
+                    }
+                }
+            }
+            else if (placedBoundaryFeature != null)
+            {
+                Destroy(placedBoundaryFeature.gameObject);
+                //PlacedObject = null;
+                ComponentImage.enabled = true;
+            }
         }
     }
-
-
 }

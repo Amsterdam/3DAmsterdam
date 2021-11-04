@@ -44,7 +44,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 }
                 else if (Physics.Raycast(ray, out var hit, Mathf.Infinity, boundaryFeaturesMask))
                 {
-                    var bf = hit.collider.GetComponent<BoundaryFeature>();
+                    var bf = hit.collider.GetComponentInParent<BoundaryFeature>();
+                    print(bf);
                     if (bf)
                     {
                         SelectFeature(bf);

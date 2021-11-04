@@ -71,8 +71,10 @@ namespace Netherlands3D.T3D.Uitbouw
         //    }
         //}
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             meshFilter = GetComponent<MeshFilter>();
             oldPosition = transform.position;
 

@@ -37,7 +37,7 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private UitbouwMuur[] walls;
 
-        public bool AllowDrag { get; set; } = true;
+        public bool AllowDrag { get; private set; } = true;
 
         public Vector3 LeftCorner
         {
@@ -115,6 +115,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
             userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, left.transform.position - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
             userMovementAxes[walls.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, right.transform.position - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+
+            SetAllowMovement(true);
         }
 
         public void UpdateDimensions()
@@ -160,18 +162,18 @@ namespace Netherlands3D.T3D.Uitbouw
             LimitPositionOnWall();
             ProcessSnapping();
 
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                var obj = Instantiate(window_TEST, transform);
-                obj.GetComponentInChildren<BoundaryFeature>().SetWall(front);
+            //if (Input.GetKeyDown(KeyCode.K))
+            //{
+            //    var obj = Instantiate(window_TEST, transform);
+            //    obj.GetComponentInChildren<BoundaryFeature>().SetWall(front);
 
-                obj = Instantiate(door_TEST, transform);
-                obj.GetComponentInChildren<BoundaryFeature>().SetWall(left);
-            }
+            //    obj = Instantiate(door_TEST, transform);
+            //    obj.GetComponentInChildren<BoundaryFeature>().SetWall(left);
+            //}
         }
 
-        public GameObject window_TEST;
-        public GameObject door_TEST;
+        //public GameObject window_TEST;
+        //public GameObject door_TEST;
 
         private void LimitPositionOnWall()
         {
@@ -375,6 +377,15 @@ namespace Netherlands3D.T3D.Uitbouw
             var muur = walls.FirstOrDefault(x => x.Side == side);
             return muur;
             //return walls.FirstOrDefault(x => x.Side == side);
+        }
+
+        public void SetAllowMovement(bool allowed)
+        {
+            AllowDrag = allowed;
+            userMovementAxes[walls.Length].gameObject.SetActive(allowed);
+            userMovementAxes[walls.Length + 1].gameObject.SetActive(allowed);
+            var measuring = GetComponent<UitbouwMeasurement>();
+            measuring.DrawDistanceActive = allowed;
         }
     }
 }
