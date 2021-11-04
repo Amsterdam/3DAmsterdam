@@ -40,7 +40,9 @@ namespace Netherlands3D.T3D.Uitbouw
         // Update is called once per frame
         void Update()
         {
-            if (AllowSelection && Input.GetMouseButtonDown(0))
+            var mask = LayerMask.GetMask("ActiveSelection");
+
+            if (AllowSelection && ObjectClickHandler.GetClickOnObject(false, mask))
             {
                 if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
                     return;
@@ -71,7 +73,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             face = new Mesh();
             var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit, LayerMask.GetMask("ActiveSelection")))
+            if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMask.GetMask("ActiveSelection")))
             {
                 WallPlane = new Plane(hit.normal, hit.point);
 
