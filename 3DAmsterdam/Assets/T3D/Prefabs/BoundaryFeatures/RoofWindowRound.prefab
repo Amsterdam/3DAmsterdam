@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4199814909477865796}
-  - component: {fileID: 2472266482839578774}
-  - component: {fileID: 4414581552080234581}
-  - component: {fileID: 6256373947487919304}
+  - component: {fileID: 6292663301311169642}
+  - component: {fileID: 2919127442648860329}
+  - component: {fileID: 8518163450931433907}
   m_Layer: 18
-  m_Name: Door
+  m_Name: RoofWindowRound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,7 +38,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2472266482839578774
+--- !u!114 &6292663301311169642
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4199814909477865792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e66943e6bc52e48a19b3e7cbff4d90e5, type: 3}
+  m_Script: {fileID: 11500000, guid: a731f69123fb6437984f4fd8a9a34fe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   meshTransform: {fileID: 4199814910466376687}
@@ -55,7 +55,7 @@ MonoBehaviour:
   rightBound: {fileID: 4199814909839026990}
   topBound: {fileID: 4199814909828853443}
   bottomBound: {fileID: 4199814910624292435}
---- !u!114 &4414581552080234581
+--- !u!114 &2919127442648860329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,7 +70,7 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
---- !u!114 &6256373947487919304
+--- !u!114 &8518163450931433907
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -84,8 +84,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
-  numberOfLines: 2
-  mode: 0
+  numberOfLines: 4
 --- !u!1 &4199814909828853500
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +109,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814909828853500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.05, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -140,7 +139,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814909839026991}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.375, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -170,7 +169,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814910194102351}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.375, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
@@ -187,9 +186,9 @@ GameObject:
   - component: {fileID: 4199814910466376687}
   - component: {fileID: 4199814910466376684}
   - component: {fileID: 4199814910466376685}
-  - component: {fileID: 4260043807003318492}
+  - component: {fileID: 7224111240470275718}
   m_Layer: 18
-  m_Name: DoorMesh
+  m_Name: WindowMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204,7 +203,7 @@ Transform:
   m_GameObject: {fileID: 4199814910466376680}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 2.1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}
   m_RootOrder: 0
@@ -258,7 +257,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4260043807003318492
+--- !u!64 &7224111240470275718
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -296,7 +295,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4199814910624292428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.05, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4199814909477865796}

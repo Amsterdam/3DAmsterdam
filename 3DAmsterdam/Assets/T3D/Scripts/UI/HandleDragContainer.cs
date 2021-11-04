@@ -45,8 +45,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (Input.GetMouseButton(0) == false && placedBoundaryFeature != null)
             {
-                Destroy(placedBoundaryFeature.gameObject);
-                //placedBoundaryFeature = null;
+                //Destroy(placedBoundaryFeature.gameObject);
+                placedBoundaryFeature = null; //place object and set this one to null to 
                 selectComponent.SetToggle(false);
                 return;
             }
@@ -71,7 +71,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     {
                         if (placedBoundaryFeature == null)
                         {
-                            placedBoundaryFeature = Instantiate(ComponentObject);
+                            placedBoundaryFeature = Instantiate(ComponentObject, wall.transform.parent);
                             placedBoundaryFeature.SetWall(wall);
                         }
 
