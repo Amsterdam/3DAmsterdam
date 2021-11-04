@@ -31,25 +31,24 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             ProcessUserInput();
         }
+
         private void ProcessUserInput()
         {
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            //Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             LayerMask boundaryFeaturesMask = LayerMask.GetMask("StencilMask");
-            LayerMask uiMask = LayerMask.GetMask("UI");
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+
+            //print(ObjectClickHandler.GetClickOnObject(boundaryFeaturesMask));
+            var click = ObjectClickHandler.GetClickOnObject(true, out var collider, boundaryFeaturesMask);
+            if (click)// && !EventSystem.current.IsPointerOverGameObject())
             {
-                if (ActiveFeature)
+                var clickedBoundaryFeature = collider?.GetComponentInParent<BoundaryFeature>();
+                if (clickedBoundaryFeature)
+                {
+                    SelectFeature(clickedBoundaryFeature);
+                }
+                else if (ActiveFeature)
                 {
                     DeselectFeature();
-                }
-                else if (Physics.Raycast(ray, out var hit, Mathf.Infinity, boundaryFeaturesMask))
-                {
-                    var bf = hit.collider.GetComponentInParent<BoundaryFeature>();
-                    print(bf);
-                    if (bf)
-                    {
-                        SelectFeature(bf);
-                    }
                 }
             }
         }
