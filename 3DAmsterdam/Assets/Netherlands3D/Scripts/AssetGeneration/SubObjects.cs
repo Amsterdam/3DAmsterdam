@@ -1,48 +1,88 @@
+using Netherlands3D;
 using Netherlands3D.Cameras;
+using Netherlands3D.Events;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public class SubObjects : MonoBehaviour
 {
 	[System.Serializable]
-	public struct SubOjectIndices{
+	public class SubOjectData{
 		public string objectID;
 		public int startIndex;
 		public int length;
+		public Color color = Color.white;
+		public bool hidden = false;
 	}
 
 	[SerializeField]
-	private List<SubOjectIndices> subObjectIndices;
+	private List<SubOjectData> subObjectIndices;
 
-	private int currentLODIndices = 0;
 	private Mesh mesh;
+	private Color[] vertexColors;
+
+	private bool downloadingSubObjects = false;
 
 	private void Awake()
 	{
-		subObjectIndices = new List<SubOjectIndices>();
-		LoadObjectSeperation();
-	}
-
-	public void RegisterClick()
-	{
-		if(subObjectIndices.Count == 0)
+		subObjectIndices = new List<SubOjectData>();
+		mesh = this.GetComponent<MeshFilter>().sharedMesh;
+		vertexColors = new Color[mesh.vertexCount];
+		for (int i = 0; i < vertexColors.Length; i++)
 		{
-			LoadObjectSeperation();
+			vertexColors[i] = Color.white;
 		}
 	}
 	
-	void LoadObjectSeperation()
+	public void Select(int selectedVert, System.Action<string> callback)
 	{
-		mesh = this.GetComponent<MeshFilter>().sharedMesh;
-		StartCoroutine(LoadMetaData(mesh));
+		//Select using vertex index, or download metadata first
+		if (subObjectIndices.Count > 0 && !downloadingSubObjects)
+		{
+			callback(GetIDByVertexIndex(selectedVert));
+		}
+		else
+		{
+			downloadingSubObjects = false;
+			StartCoroutine(
+				LoadMetaData(mesh, selectedVert, callback)
+			);
+		}
 	}
 
-	private IEnumerator LoadMetaData(Mesh mesh)
+	private void ReadMetaDataFile(byte[] results)
 	{
-		var metaDataName = mesh.name.Replace(".br","").Replace(".bin","-data.bin");
+		using (var stream = new MemoryStream(results))
+		{
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				var version = reader.ReadInt32();
+				var subObjects = reader.ReadInt32();
+				Debug.Log("Metadata subobject count: " + subObjects);
+				int currentMeshIndex = 0;
+				for (int i = 0; i < subObjects; i++)
+				{
+					var id = reader.ReadString();
+					var indicesLength = reader.ReadInt32();
+					subObjectIndices.Add(new SubOjectData()
+					{
+						objectID = id,
+						startIndex = currentMeshIndex,
+						length = indicesLength
+					});
+					currentMeshIndex += indicesLength;
+				}
+			}
+		}
+	}
+
+	private IEnumerator LoadMetaData(Mesh mesh, int selectedVertAfterLoading, System.Action<string> callback)
+	{
+		var metaDataName = mesh.name.Replace(Config.activeConfiguration.brotliCompressedAssetFileExtention,"").Replace(".bin","-data.bin");
 		var webRequest = UnityWebRequest.Get(metaDataName);
 		yield return webRequest.SendWebRequest();
 
@@ -54,12 +94,18 @@ public class SubObjects : MonoBehaviour
 		{
 			byte[] results = webRequest.downloadHandler.data;
 			ReadMetaDataFile(results);
-			DrawRandomVertexColors();
+			if (selectedVertAfterLoading > -1) 
+			{
+				callback(GetIDByVertexIndex(selectedVertAfterLoading));
+			}
+
+			downloadingSubObjects = false;
 		}
 	}
 
-	public string SelectByVertexIndex(int vertexIndex)
+	private string GetIDByVertexIndex(int vertexIndex)
 	{
+		Debug.Log($"SelectByVertexIndex {vertexIndex}");
 		//Find all subobject ranges, and color the verts at those indices
 		for (int i = 0; i < subObjectIndices.Count; i++)
 		{
@@ -72,30 +118,81 @@ public class SubObjects : MonoBehaviour
 		return "";
 	}
 
-	public void HightlightBuildingWithID(string id, Color highlightColor)
+	public void ColorAll(Color highlightColor)
 	{
-		Color[] colors = new Color[mesh.vertexCount];
+		for (int i = 0; i < subObjectIndices.Count; i++)
+		{
+			var subObject = subObjectIndices[i];
+			subObject.color = highlightColor;
 
+			for (int j = 0; j < subObject.length; j++)
+			{
+				vertexColors[subObject.startIndex + j] = subObject.color;
+			}
+		}
+
+		mesh.colors = vertexColors;
+	}
+
+	public void ColorWithIDs(List<string> ids, Color highlightColor)
+	{
 		//Find all subobject ranges, and color the verts at those indices
 		for (int i = 0; i < subObjectIndices.Count; i++)
 		{
 			var subObject = subObjectIndices[i];
-			if (subObject.objectID == id)
+			if (ids.Contains(subObject.objectID))
 			{
-				//apply color to object range
-				for (int j = 0; j < subObject.length; j++)
-				{
-					colors[subObject.startIndex + j] = highlightColor;
-				}
+				subObject.color = highlightColor;
+			}
+			else if(!subObject.hidden){
+				subObject.color = Color.white;
+			}
+			for (int j = 0; j < subObject.length; j++)
+			{
+				vertexColors[subObject.startIndex + j] = subObject.color;
 			}
 		}
+		mesh.colors = vertexColors;
+	}
 
-		mesh.colors = colors;
+	public void HideWithIDs(List<string> ids){
+		for (int i = 0; i < subObjectIndices.Count; i++)
+		{
+			var subObject = subObjectIndices[i];
+			if (ids.Contains(subObject.objectID))
+			{
+				subObject.hidden = true;
+				subObject.color = new Color(subObject.color.r, subObject.color.g, subObject.color.b, 0.0f);
+			}
+			else{
+				subObject.hidden = false;
+				subObject.color = new Color(subObject.color.r, subObject.color.g, subObject.color.b, 1.0f);
+			}
+			for (int j = 0; j < subObject.length; j++)
+			{
+				vertexColors[subObject.startIndex + j] = subObject.color;
+			}
+		}
+		mesh.colors = vertexColors;
+	}
+
+	public void UnhideAll()
+	{
+		for (int i = 0; i < subObjectIndices.Count; i++)
+		{
+			var subObject = subObjectIndices[i];
+			subObject.color = new Color(subObject.color.r, subObject.color.g, subObject.color.b, 1.0f);
+			subObject.hidden = false;
+			for (int j = 0; j < subObject.length; j++)
+			{
+				vertexColors[subObject.startIndex + j] = subObject.color;
+			}
+		}
+		mesh.colors = vertexColors;
 	}
 
 	public void DrawVertexColorsAccordingToHeight(float max, Color minColor, Color maxColor)
 	{
-		Color[] colors = new Color[mesh.vertexCount];
 		Vector3[] vertices = mesh.vertices;
 
 		//Find all subobject ranges, and color the verts at those indices
@@ -115,55 +212,28 @@ public class SubObjects : MonoBehaviour
 			//apply color
 			for (int j = 0; j < subObject.length; j++)
 			{
-				colors[subObject.startIndex + j] = randomColor;
+				vertexColors[subObject.startIndex + j] = randomColor;
 			}
 		}
 
-		mesh.colors = colors;
+		mesh.colors = vertexColors;
 	}
 
 	public void DrawRandomVertexColors()
 	{
-		Color[] colors = new Color[mesh.vertexCount];
-
 		//Find all subobject ranges, and color the verts at those indices
 		for (int i = 0; i < subObjectIndices.Count; i++)
 		{
 			var subObject = subObjectIndices[i];
 			Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
+			subObject.color = randomColor;
+
 			for (int j = 0; j < subObject.length; j++)
 			{
-				colors[subObject.startIndex+j] = randomColor;
+				vertexColors[subObject.startIndex+j] = randomColor;
 			}
 		}
 
-		mesh.colors = colors;
-	}
-
-	private void ReadMetaDataFile(byte[] results)
-	{
-		using (var stream = new MemoryStream(results))
-		{
-			using (BinaryReader reader = new BinaryReader(stream))
-			{
-				var version = reader.ReadInt32();
-				var subObjects = reader.ReadInt32();
-				Debug.Log("Metadata subobject count: " + subObjects);
-				int currentMeshIndex = 0;
-				for (int i = 0; i < subObjects; i++)
-				{
-					var id = reader.ReadString();
-					var indicesLength = reader.ReadInt32();
-					subObjectIndices.Add(new SubOjectIndices()
-					{
-						objectID = id,
-						startIndex = currentMeshIndex,
-						length = indicesLength
-					});
-
-					currentMeshIndex += indicesLength;
-				}
-			}
-		}
+		mesh.colors = vertexColors;
 	}
 }

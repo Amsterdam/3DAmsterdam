@@ -11,12 +11,14 @@ namespace Netherlands3D.LayerSystem
 {
     public class BinaryMeshLayer : Layer
     {
-        //public Material DefaultMaterial;
 		public List<Material> DefaultMaterialList = new List<Material>();
 		public bool createMeshcollider = false;
 		public bool addHighlightuvs = false;
 		public ShadowCastingMode tileShadowCastingMode = ShadowCastingMode.On;
-
+		
+		private GameObject container;
+		private Mesh mesh;
+		private MeshRenderer meshRenderer;
 		public override void HandleTile(TileChange tileChange, System.Action<TileChange> callback = null)
 		{
 			TileAction action = tileChange.action;
@@ -62,7 +64,6 @@ namespace Netherlands3D.LayerSystem
 		{
 			if (tiles.ContainsKey(tileKey))
 			{
-
 				Tile tile = tiles[tileKey];
 				if (tile == null)
 				{
@@ -153,21 +154,7 @@ namespace Netherlands3D.LayerSystem
 
 		private bool TileHasHighlight(TileChange tileChange)
 		{
-			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
-			if (tile.gameObject == null)
-			{
-				return false;
-			}
-			if (tile.gameObject.GetComponent<ObjectData>() == null)
-			{
-				return false;
-			}
-			if (tile.gameObject.GetComponent<ObjectData>().highlightIDs.Count + tile.gameObject.GetComponent<ObjectData>().hideIDs.Count == 0)
-			{
-				return false;
-			}
-
-			return true;
+			return false;
 		}
 
 		private IEnumerator UpdateObjectIDMapping(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
@@ -222,12 +209,6 @@ namespace Netherlands3D.LayerSystem
 
 		}
 
-		Mesh[] meshesInAssetbundle = new Mesh[0];
-		GameObject container;
-		Mesh mesh;
-		MeshRenderer meshRenderer;
-		Vector2[] uvs;
-		Vector2 defaultUV = new Vector2(0.33f, 0.6f);
 		private GameObject CreateNewGameObject(string source,byte[] binaryMeshData, TileChange tileChange)
 		{
 			container = new GameObject();
@@ -253,94 +234,6 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			return container;
-		}
-
-		public void GetIDData(GameObject obj, int vertexIndex, System.Action<string> callback = null)
-		{
-			if (!obj) return;
-
-			ObjectData objectMapping = obj.GetComponent<ObjectData>();
-			if (!objectMapping || objectMapping.ids.Count == 0)
-			{
-				//No/empty object data? Download it and return the ID
-				StartCoroutine(DownloadObjectData(obj, vertexIndex, callback));
-			}
-			else
-			{
-				//Return the ID directly
-				int idIndex = objectMapping.vectorMap[vertexIndex];
-				var id = objectMapping.ids[idIndex];
-				callback?.Invoke(id);
-			}
-		}
-
-		public void GetAllVerts(List<string> selectedIDs)
-		{
-			
-		}
-
-		private IEnumerator DownloadObjectData(GameObject obj, int vertexIndex, System.Action<string> callback)
-		{
-			yield return new WaitUntil(() => pauseLoading == false); //wait for opportunity to start
-
-			pauseLoading = true;
-			var meshFilter = obj.GetComponent<MeshFilter>();
-			if (!meshFilter) yield break;
-
-			string name = meshFilter.mesh.name;
-			string dataName = name.Replace(" Instance", "");
-			dataName = dataName.Replace("mesh", "building");
-			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
-
-			ObjectMappingClass data;
-			string id = "null";
-
-			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
-			{
-				yield return uwr.SendWebRequest();		
-
-				if (uwr.isNetworkError || uwr.isHttpError)
-				{
-					//Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
-					//WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");
-				}
-				else if (obj != null)
-				{
-
-					ObjectData objectMapping = obj.AddComponent<ObjectData>();
-					AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-
-					yield return new WaitForEndOfFrame();
-
-					data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-					int idIndex = data.vectorMap[vertexIndex];
-					id = data.ids[idIndex];
-					objectMapping.ids = data.ids;
-					objectMapping.uvs = data.uvs;
-					objectMapping.vectorMap = data.vectorMap;
-
-					newAssetBundle.Unload(true);
-				}
-			}
-			callback?.Invoke(id);
-			yield return null;
-			pauseLoading = false;
-		}
-
-		public void Highlight(List<string> ids)
-		{
-			StartCoroutine(HighlightIDs(ids));
-		}
-
-		/// <summary>
-		/// Hide mesh parts with the matching object data ID's
-		/// </summary>
-		/// <param name="ids">List of unique (BAG) id's we want to hide</param>
-		public void Hide(List<string> ids)
-		{
-			
-			StartCoroutine(HideIDs(ids));
 		}
 
 		/// <summary>
@@ -381,66 +274,5 @@ namespace Netherlands3D.LayerSystem
 				}
 			}
 		}
-		private IEnumerator HighlightIDs(List<string> ids)
-		{
-			pauseLoading = true;
-			ObjectData objectData;
-
-			//Check all tiles that have metadata if they have matching ID's
-			foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
-			{
-				if (kvp.Value.gameObject == null)
-				{
-					continue;
-				}
-				objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
-				if (objectData != null)
-				{
-					if (ids.Count > 0)
-					{
-						objectData.highlightIDs = ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>();
-					}
-					else
-					{
-						objectData.highlightIDs.Clear();
-					}
-
-					objectData.ApplyDataToIDsTexture();
-				}
-			}
-			pauseLoading = false;
-			yield return null;
-		}
-
-		private IEnumerator HideIDs(List<string> ids)
-		{
-			pauseLoading = true;
-			ObjectData objectData;
-			foreach (KeyValuePair<Vector2Int, Tile> kvp in tiles)
-			{
-				if (kvp.Value.gameObject == null)
-				{
-					continue;
-				}
-				objectData = kvp.Value.gameObject.GetComponent<ObjectData>();
-				if (objectData != null)
-				{
-					if (ids.Count > 0)
-					{
-						objectData.hideIDs.AddRange(ids.Where(targetID => objectData.ids.Any(objectId => objectId == targetID)).ToList<string>());
-					}
-					else
-					{
-						objectData.hideIDs.Clear();
-					}
-					yield return new WaitForEndOfFrame();
-					objectData.ApplyDataToIDsTexture();
-					yield return new WaitForEndOfFrame();
-				}
-			}
-			pauseLoading = false;
-			yield return null;
-		}
-
 	}
 }

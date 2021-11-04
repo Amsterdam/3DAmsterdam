@@ -15,12 +15,11 @@ namespace Netherlands3D.LayerSystem
 {
     public class SelectSubObjects : Interactable
     {
-        public TileHandler tileHandler;
-
         private Ray ray;
         private string lastSelectedID = "";
 
-        public static List<string> selectedIDs;
+        public List<string> selectedIDs;
+        public List<string> hiddenIDs;
 
         [SerializeField]
         private LayerMask clickCheckLayerMask;
@@ -34,11 +33,16 @@ namespace Netherlands3D.LayerSystem
         [SerializeField]
         private int submeshIndex = 0;
 
+        [SerializeField]
+        private Color selectionVertexColor;
+
         private void Awake()
         {
             contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
 
             selectedIDs = new List<string>();
+            hiddenIDs = new List<string>();
+
             containerLayer = gameObject.GetComponent<BinaryMeshLayer>();
         }
 
@@ -49,6 +53,7 @@ namespace Netherlands3D.LayerSystem
             base.Select();
             FindSelectedID();
         }
+
         public override void SecondarySelect()
         {
             if (!enabled) return;
@@ -82,23 +87,7 @@ namespace Netherlands3D.LayerSystem
             if (!Selector.doingMultiselect) selectedIDs.Clear();
 
             //Try to find a selected mesh ID and highlight it
-            StartCoroutine(GetSelectedMeshIDData(Selector.mainSelectorRay, (value) => { HighlightSelectedID(value); }));
-        }
-
-        /// <summary>
-        /// Find selected ID's based on a area selection done by our selectiontools.
-        /// We find BAG id's within an area using a WebRequest and an API.
-        /// </summary>
-        public void FindSelectedIDsInArea()
-        {
-            if (!enabled) return;
-
-            SelectionTools selectionTools = FindObjectOfType<SelectionTools>();
-            var vertices = selectionTools.GetVertices();
-            var bounds = selectionTools.GetBounds();
-
-            //Polygon selection
-            StartCoroutine(GetAllIDsInPolygonRange(vertices.ToArray(), HighlightObjectsWithIDs));
+            StartCoroutine(FindSelectedSubObjectID(Selector.mainSelectorRay, (id) => { HighlightSelectedID(id); }));
         }
 
         /// <summary>
@@ -149,41 +138,77 @@ namespace Netherlands3D.LayerSystem
         /// </summary>
         /// <param name="ids">List of IDs to add to our selection</param>
         private void HighlightObjectsWithIDs(List<string> ids = null)
-        {
-            if (!enabled) return;
+		{
+			if (!enabled) return;
 
-            if (ids != null) selectedIDs.AddRange(ids);
-            selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
+			if (ids != null) selectedIDs.AddRange(ids);
+			selectedIDs = selectedIDs.Distinct().ToList(); //Filter out any possible duplicates
 
-            lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
+			lastSelectedID = (selectedIDs.Count > 0) ? selectedIDs.Last() : emptyID;
 
-            //Make the selected object blink/highlight
-            containerLayer.Highlight(selectedIDs);
+			HighlightSelectedWithColor(selectionVertexColor);
 
-            //Analytic
-            Analytics.SendEvent("SelectedBuilding", lastSelectedID);
+			//Analytic
+			Analytics.SendEvent("SelectedBuilding", lastSelectedID);
 
-            //Specific context menu /sidepanel items per selection count
-            if (selectedIDs.Count == 1)
-            {
-                ShowBAGDataForSelectedID(lastSelectedID);
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
-            }
-            else if (selectedIDs.Count > 1)
-            {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
+			//Specific context menu /sidepanel items per selection count
+			if (selectedIDs.Count == 1)
+			{
+				ShowBAGDataForSelectedID(lastSelectedID);
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.BUILDING_SELECTION);
+			}
+			else if (selectedIDs.Count > 1)
+			{
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.MULTI_BUILDING_SELECTION);
 				//Update sidepanel outliner
 				PropertiesPanel.Instance.OpenObjectInformation("Selectie", true);
 				PropertiesPanel.Instance.RenderThumbnail(PropertiesPanel.ThumbnailRenderMethod.HIGHLIGHTED_BUILDINGS);
 				PropertiesPanel.Instance.AddTitle("Geselecteerde panden");
-                foreach (var id in selectedIDs)
-                {
+				foreach (var id in selectedIDs)
+				{
 					PropertiesPanel.Instance.AddSelectionOutliner(this.gameObject, "Pand " + id, id);
-                }
-            }
-            else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+				}
+			}
+			else if (ContextPointerMenu.Instance.state != ContextPointerMenu.ContextState.CUSTOM_OBJECTS)
+			{
+				ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+			}
+		}
+
+		private void HighlightSelectedWithColor(Color highlightColor)
+		{
+			//Apply highlight to all selected objects
+			var subObjectContainers = GetComponentsInChildren<SubObjects>();
+			foreach (var subObjectContainer in subObjectContainers)
+			{
+				subObjectContainer.ColorWithIDs(selectedIDs, highlightColor);
+			}
+		}
+        private void HighlightAllWithColor(Color highlightColor)
+        {
+            //Apply highlight to all objects
+            var subObjectContainers = GetComponentsInChildren<SubObjects>();
+            foreach (var subObjectContainer in subObjectContainers)
             {
-                ContextPointerMenu.Instance.SwitchState(ContextPointerMenu.ContextState.DEFAULT);
+                subObjectContainer.ColorAll(highlightColor);
+            }
+        }
+        private void HideSelectedSubObjects()
+        {
+            //Apply highlight to all objects
+            var subObjectContainers = GetComponentsInChildren<SubObjects>();
+            foreach (var subObjectContainer in subObjectContainers)
+            {
+                subObjectContainer.HideWithIDs(hiddenIDs);
+            }
+        }
+        private void UnhideAllSubObjects()
+        {
+            //Apply highlight to all objects
+            var subObjectContainers = GetComponentsInChildren<SubObjects>();
+            foreach (var subObjectContainer in subObjectContainers)
+            {
+                subObjectContainer.UnhideAll();
             }
         }
 
@@ -206,7 +231,6 @@ namespace Netherlands3D.LayerSystem
             }
 
             //Remove highlights by highlighting our empty list
-            containerLayer.Highlight(selectedIDs);
         }
 
         /// <summary>
@@ -219,7 +243,9 @@ namespace Netherlands3D.LayerSystem
             if (selectedIDs.Count > 0)
             {
                 //Adds selected ID's to our hidding objects of our layer
-                containerLayer.Hide(selectedIDs);
+                hiddenIDs.AddRange(selectedIDs);
+
+                HideSelectedSubObjects();
                 selectedIDs.Clear();
             }
 
@@ -235,8 +261,9 @@ namespace Netherlands3D.LayerSystem
             if (!enabled) return;
 
             lastSelectedID = emptyID;
+            hiddenIDs.Clear();
             selectedIDs.Clear();
-            containerLayer.Hide(selectedIDs);
+            UnhideAllSubObjects();
         }
 
         /// <summary>
@@ -266,12 +293,7 @@ namespace Netherlands3D.LayerSystem
             }
         }
 
-        private void GetAllVertsInSelection(string id)
-        {
-            containerLayer.GetAllVerts(selectedIDs);
-        }
-
-        IEnumerator GetSelectedMeshIDData(Ray ray, System.Action<string> callback)
+        IEnumerator FindSelectedSubObjectID(Ray ray, System.Action<string> callback)
         {
             //Check area that we clicked, and add the (heavy) mesh collider there
             Vector3 planeHit = CameraModeChanger.Instance.CurrentCameraControls.GetPointerPositionInWorld();
@@ -279,30 +301,25 @@ namespace Netherlands3D.LayerSystem
 
             yield return new WaitForEndOfFrame();
 
-            //No fire a raycast towards our meshcolliders to see what face we hit 
+            //Now fire a raycast towards our meshcolliders to see what face we hit 
             if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value) == false)
             {
-                
                 callback(emptyID);
                 yield break;
             }
 
-            //Get the mesh we selected and check if it has an ID stored in the UV2 slot
-            Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+            //Get the mesh we selected and find the triangle vert index we hit
+            Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().sharedMesh;
             int triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
             var vertexIndex = mesh.GetIndices(submeshIndex)[triangleVertexIndex];
-            
-            var hitUvCoordinate = mesh.uv2[vertexIndex];
-            var gameObjectToHighlight = lastRaycastHit.collider.gameObject;
+            var tileContainer = lastRaycastHit.collider.gameObject;
 
             //Fetch this tile's subject data (if we didnt already)
-            SubObjects subObjects = gameObjectToHighlight.GetComponent<SubObjects>();
-            if(!subObjects) gameObjectToHighlight.AddComponent<SubObjects>();
+            SubObjects subObjects = tileContainer.GetComponent<SubObjects>();
+            if(!subObjects) subObjects = tileContainer.AddComponent<SubObjects>();
 
             //Pass down the ray we used to click to get the ID we clicked
-            string id = subObjects.SelectByVertexIndex(vertexIndex);
-
-            subObjects.HightlightBuildingWithID(id, Color.white);
+            subObjects.Select(vertexIndex, callback);
         }
     }
 }
