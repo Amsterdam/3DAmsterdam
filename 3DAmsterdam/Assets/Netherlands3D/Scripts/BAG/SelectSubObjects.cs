@@ -231,6 +231,7 @@ namespace Netherlands3D.LayerSystem
             }
 
             //Remove highlights by highlighting our empty list
+            HighlightObjectsWithIDs();
         }
 
         /// <summary>
