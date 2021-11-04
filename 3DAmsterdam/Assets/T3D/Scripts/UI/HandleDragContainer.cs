@@ -72,11 +72,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                         if (placedBoundaryFeature == null)
                         {
                             placedBoundaryFeature = Instantiate(ComponentObject, wall.transform.parent);
-                            placedBoundaryFeature.SetWall(wall);
                         }
 
+                        placedBoundaryFeature.SetWall(wall);
                         placedBoundaryFeature.transform.position = hit.point;
-                        placedBoundaryFeature.transform.rotation = hit.transform.rotation;
+                        //placedBoundaryFeature.transform.rotation = hit.transform.rotation;
 
                         ComponentImage.enabled = false;
                     }
