@@ -41,7 +41,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         protected virtual void Update()
         {
+            SnapToWall();
             SetButtonPositions();
+        }
+
+        private void SnapToWall()
+        {
+            transform.position = Wall.WallPlane.ClosestPointOnPlane(transform.position);
         }
 
         private void SetButtonPositions()
