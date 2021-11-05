@@ -185,7 +185,7 @@ public class SubObjects : MonoBehaviour
 		for (int i = 0; i < subObjectIndices.Count; i++)
 		{
 			var subObject = subObjectIndices[i];
-			subObject.color = new Color(subObject.color.r, subObject.color.g, subObject.color.b, 1.0f);
+			subObject.color = Color.white;
 			subObject.hidden = false;
 			for (int j = 0; j < subObject.length; j++)
 			{
