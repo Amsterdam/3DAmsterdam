@@ -26,7 +26,8 @@ namespace Netherlands3D.LayerSystem
         private BinaryMeshLayer containerLayer;
 
         private const string emptyID = "null";
-        private const int maximumRayPiercingLoops = 20;
+        private const int maxRayPiercing = 10;
+        private const int renderFrameEvery = 5;
 
         private RaycastHit lastRaycastHit;
 
@@ -34,6 +35,7 @@ namespace Netherlands3D.LayerSystem
         private int submeshIndex = 0;
 
         [SerializeField]
+        [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
         private Color selectionVertexColor;
         [SerializeField]
         private Material exclusiveSelectedShader;
@@ -319,6 +321,31 @@ namespace Netherlands3D.LayerSystem
             var vertexIndex = mesh.GetIndices(submeshIndex)[triangleVertexIndex];
             var tileContainer = lastRaycastHit.collider.gameObject;
 
+            if (mesh.colors.Length > 0)
+            {
+                var hitAlpha = mesh.colors[vertexIndex].a;
+                int pierces = maxRayPiercing;
+                //If this vert has a transparant color, pierce through to find visible faces
+                while (hitAlpha == 0 && pierces > 0)
+                {
+                    pierces--;
+                    if(pierces % renderFrameEvery == 0)
+                        yield return new WaitForEndOfFrame();
+
+                    Vector3 deeperHitPoint = lastRaycastHit.point + (ray.direction * 0.01f);
+                    ray = new Ray(deeperHitPoint, ray.direction);
+                    if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
+                    {
+                        triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
+                        vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
+                        hitAlpha = mesh.colors[vertexIndex].a;
+                    }
+                }
+
+                //No visible geometry found under click? Then stop and break out.
+                if(hitAlpha == 0)
+                    yield break;
+            }
             //Fetch this tile's subject data (if we didnt already)
             SubObjects subObjects = tileContainer.GetComponent<SubObjects>();
             if(!subObjects) subObjects = tileContainer.AddComponent<SubObjects>();
