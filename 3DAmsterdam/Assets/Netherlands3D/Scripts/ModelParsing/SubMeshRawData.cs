@@ -9,14 +9,19 @@ namespace Netherlands3D.ModelParsing
         BinaryWriter writer;
         FileStream fs;
         BinaryReader bReader;
+        
         string filepath;
         string filename;
         public void SetupWriting(string name)
         {
             filename = name.Replace('/', '-');
+            filename = filename.Replace(".", "");
+            filename = filename.Replace("$", "");
             filepath = Application.persistentDataPath + "/" + filename + ".dat";
-            
-            writer = new BinaryWriter(File.Open(filepath, FileMode.OpenOrCreate));
+            // create the file if it doesnt already exist
+            var datafile = File.Exists(filepath) ? File.Open(filepath, FileMode.Append) : File.Open(filepath, FileMode.CreateNew);
+            datafile.Close();
+            writer = new BinaryWriter(File.Open(filepath, FileMode.Append));
         }
         public void Add(int vertexIndex, int normalIndex, int textureIndex)
         {
@@ -28,12 +33,15 @@ namespace Netherlands3D.ModelParsing
         {
             writer.Flush();
             writer.Close();
+            
         }
         public void SetupReading(string name = "")
         {
             if (name != "")
             {
                 filename = name.Replace('/', '-');
+                filename = filename.Replace(".", "");
+                filename = filename.Replace("$", "");
                 filepath = Application.persistentDataPath + "/" + filename + ".dat";
             }
             fs = File.OpenRead(filepath);
