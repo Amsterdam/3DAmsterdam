@@ -17,7 +17,7 @@ namespace Netherlands3D.Utilities
 
         private const string branchBuildsFolder = "BranchBuilds";
 
-        private const string consistentBuildFolderName = "3D Amsterdam WebGL";
+        private const string consistentBuildFolderName = "3DAmsterdamWebGL";
 
         [MenuItem("Netherlands 3D/Set data target/Production")]
         public static void SwitchBranchMaster()
@@ -71,11 +71,13 @@ namespace Netherlands3D.Utilities
             var gitHeadName = ReadGitHead();
             var headNameWithoutControlCharacters = new string(gitHeadName.Where(c => !char.IsControl(c)).ToArray());
 
+            var buildMainName = $"{headNameWithoutControlCharacters}_{DateTime.Now.Ticks}";
+
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = $"../../{branchBuildsFolder}/{headNameWithoutControlCharacters}/{consistentBuildFolderName}/"
+                locationPathName = $"../../{branchBuildsFolder}/{buildMainName}/{consistentBuildFolderName}/"
             };
 
             Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
@@ -85,7 +87,7 @@ namespace Netherlands3D.Utilities
             if (buildSummary.result == BuildResult.Succeeded)
 			{
 				Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-				ZipAndDeploy(headNameWithoutControlCharacters,buildSummary);
+				ZipAndDeploy(buildMainName, buildSummary);
 			}
 
 			if (buildSummary.result == BuildResult.Failed)
