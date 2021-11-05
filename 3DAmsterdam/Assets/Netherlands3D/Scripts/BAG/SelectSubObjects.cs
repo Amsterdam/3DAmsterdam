@@ -35,7 +35,7 @@ namespace Netherlands3D.LayerSystem
         private int submeshIndex = 0;
 
         [SerializeField]
-        [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+        [ColorUsage(true, true, 0f, 8f, 0.125f, 3f)]
         private Color selectionVertexColor;
         [SerializeField]
         private Material exclusiveSelectedShader;
