@@ -48,8 +48,8 @@ namespace Netherlands3D.ModelParsing
 		private Vector2RD bottomLeftBounds;
 		private Vector2RD topRightBounds;
 		private bool RDCoordinates = false;
-		private bool flipFaceDirection = false;
-		private bool flipYZ = false;
+		private bool flipFaceDirection = false; // set to true if windingOrder in obj-file is not the standard CounterClockWise
+		private bool flipYZ = false; // set to true if Y and Z axes in the obj have been flipped
 		private bool weldVertices = false;
 		private int maxSubMeshes = 0;
 
@@ -188,7 +188,7 @@ namespace Netherlands3D.ModelParsing
 
 			isFinished = true;
 			
-			Debug.Log(lineCount);
+			Debug.Log(totalLinesCount);
 		}
 		private void ReadLine()
 		{
@@ -579,23 +579,46 @@ namespace Netherlands3D.ModelParsing
 			/// process faces
 			if (faces.Count == 3)
 			{
-				//Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[2].vertexIndex]);
+                //Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[2].vertexIndex]);
+                if (!FlipFaceDirection)
+                {
+					SaveVertexToSubmesh(faces[0]);
+					SaveVertexToSubmesh(faces[2]);
+					SaveVertexToSubmesh(faces[1]);
+				}
+                else
+                {
 				SaveVertexToSubmesh(faces[0]);
-				SaveVertexToSubmesh(faces[2]);
 				SaveVertexToSubmesh(faces[1]);
+				SaveVertexToSubmesh(faces[2]);
+                }
+				
 				
 
 				
 			}
 			else if (faces.Count == 4)
 			{
-				//Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[3].vertexIndex]);
-				SaveVertexToSubmesh(faces[0]);
-				SaveVertexToSubmesh(faces[2]);
-				SaveVertexToSubmesh(faces[1]);
-				SaveVertexToSubmesh(faces[0]);
-				SaveVertexToSubmesh(faces[3]);
-				SaveVertexToSubmesh(faces[2]);
+                //Vector3 triangleNormal = CalculateNormal(vertices[faces[0].vertexIndex], vertices[faces[1].vertexIndex], vertices[faces[3].vertexIndex]);
+                if (!FlipFaceDirection)
+                {
+					SaveVertexToSubmesh(faces[0]);
+					SaveVertexToSubmesh(faces[1]);
+					SaveVertexToSubmesh(faces[3]);
+					SaveVertexToSubmesh(faces[3]);
+					SaveVertexToSubmesh(faces[1]);
+					SaveVertexToSubmesh(faces[2]);
+				}
+                else
+                {
+					SaveVertexToSubmesh(faces[0]);
+					SaveVertexToSubmesh(faces[1]);
+					SaveVertexToSubmesh(faces[2]);
+					SaveVertexToSubmesh(faces[0]);
+					SaveVertexToSubmesh(faces[2]);
+					SaveVertexToSubmesh(faces[3]);
+				}
+				
 			}
 			else
 			{
@@ -698,6 +721,12 @@ namespace Netherlands3D.ModelParsing
 			float x = ReadFloat();
 			float y = ReadFloat();
 			float z = ReadFloat();
+            if (flipFaceDirection)
+            {
+				x = -x;
+				y = -y;
+				z = -z;
+            }
 			if (x != float.NaN && y != float.NaN & z != float.NaN)
 			{
 				if (FlipYZ)
@@ -1069,7 +1098,11 @@ namespace Netherlands3D.ModelParsing
 			{
 				mesh.RecalculateNormals();
 			}
-			createdGameObject = new GameObject();
+            //else
+            //{
+            //    mesh.RecalculateNormals();
+            //}
+            createdGameObject = new GameObject();
             MeshFilter mf = createdGameObject.AddComponent<MeshFilter>();
             MeshRenderer mr = createdGameObject.AddComponent<MeshRenderer>();
             mr.materials = materials;
