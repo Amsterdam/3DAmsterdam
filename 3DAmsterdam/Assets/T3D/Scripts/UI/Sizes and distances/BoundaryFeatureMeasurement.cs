@@ -59,8 +59,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
         {
-            var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
-            boundaryFeature.transform.localPosition += deltaVector;
+            //var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
+            //boundaryFeature.transform.localPosition += deltaVector;
+            boundaryFeature.transform.position += direction * delta;
         }
     }
 }
