@@ -78,89 +78,6 @@ MonoBehaviour:
   angleProperty: 
   filterUniqueNames: 1
   textMinDrawDistance: 0
---- !u!114 &1484382064384571549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8341a7d046a9da34494525e0653a3675, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectPool: {fileID: 1620230286426900701}
---- !u!114 &1663672272712614261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d014604257af7e747b2eae38a8d3c70b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  backdropObject: {fileID: 4797514454882316407}
---- !u!114 &5050187975766108088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7ecdfc0c43e25e46a93411100947d13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sewerHeightCheckLayerMask:
-    serializedVersion: 2
-    m_Bits: 4096
-  terrainHeightCheckLayerMask:
-    serializedVersion: 2
-    m_Bits: 512
-  terrainLayer: {fileID: 1144097373}
-  manHoleObjectPool: {fileID: 7130575673976826797}
-  manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
-    type: 3}
---- !u!114 &7005504237309713869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003904154926515589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abf5409747fb6ab4b803c85b09d0fdb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isenabled: 0
-  tileSize: 1000
-  layerPriority: 4
-  Datasets:
-  - Description: LOD0
-    lod: 0
-    path: hardcoded
-    maximumDistance: 2000
-    maximumDistanceSquared: 0
-    enabled: 1
-  pauseLoading: 0
-  onLayerEnabled:
-    m_PersistentCalls:
-      m_Calls: []
-  onLayerDisabled:
-    m_PersistentCalls:
-      m_Calls: []
-  sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
-  sewerPipeSpawner: {fileID: 1484382064384571549}
-  sewerManholeSpawner: {fileID: 5050187975766108088}
-  maxSimultaneous: 1
-  SewerLineObjectPool: {fileID: 1620230286426900701}
-  manHoleObjectPool: {fileID: 7130575673976826797}
 --- !u!1 &2352775316738161639
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,8 +164,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4498901013071965063}
-  - component: {fileID: 2619376247858438739}
-  - component: {fileID: 7566330805877739126}
+  - component: {fileID: 7744030954971786450}
+  - component: {fileID: 2167128574750061570}
   m_Layer: 8
   m_Name: Buildings
   m_TagString: Untagged
@@ -270,7 +187,7 @@ Transform:
   m_Father: {fileID: 4498901013433943612}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2619376247858438739
+--- !u!114 &7744030954971786450
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,31 +196,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4498901013071965061}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86debdba8bf50dd49aa7bd3e12df1df1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contextMenuState: 1
-  blockMouseSelectionInteractions: 0
-  blockMouseNavigationInteractions: 1
-  blockKeyboardNavigationInteractions: 0
-  tileHandler: {fileID: 6377280993247164478}
-  clickCheckLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  bagDataSelection:
-    object_list: []
-    object_count: 0
-    page_count: 0
---- !u!114 &7566330805877739126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4498901013071965061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb70087fbf1079548852def3e6f500ac, type: 3}
+  m_Script: {fileID: 11500000, guid: f56e8526a6fa4154ab343f890f9340b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isenabled: 1
@@ -312,13 +205,13 @@ MonoBehaviour:
   Datasets:
   - Description: LOD1.2
     lod: 0
-    path: buildings1.0/buildings_{x}_{y}.1.2
+    path: buildings1.0/buildings_{x}_{y}.1.2.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: LOD2.2
     lod: 1
-    path: buildings1.0/buildings_{x}_{y}.2.2
+    path: buildings1.0/buildings_{x}_{y}.2.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -332,8 +225,33 @@ MonoBehaviour:
   DefaultMaterialList:
   - {fileID: 2100000, guid: 1c01a836d7381b040a3927a969a2fabf, type: 2}
   createMeshcollider: 0
-  addHighlightuvs: 1
+  addHighlightuvs: 0
   tileShadowCastingMode: 1
+--- !u!114 &2167128574750061570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498901013071965061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a36ec2281451429489ac7d4554862642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contextMenuState: 1
+  blockMouseSelectionInteractions: 0
+  blockMouseNavigationInteractions: 1
+  blockKeyboardNavigationInteractions: 0
+  selectedIDs: []
+  hiddenIDs: []
+  clickCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  submeshIndex: 0
+  selectionVertexColor: {r: 0, g: 1.0870034, b: 2.1185474, a: 1}
+  exclusiveSelectedShader: {fileID: 2100000, guid: 3e01e22160827d743a18b16cdf5aa3f7,
+    type: 2}
 --- !u!1 &4498901013433943613
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,7 +307,7 @@ MonoBehaviour:
   maximumConcurrentDownloads: 6
   filterByCameraFrustum: 1
   layers:
-  - {fileID: 7566330805877739126}
+  - {fileID: 0}
   - {fileID: 4453755010848541782}
   - {fileID: 7005504237309713869}
   - {fileID: 1144097373}
@@ -725,6 +643,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25cc053d85d8e9648ae70ade3628dc63, type: 3}
+--- !u!4 &6030816391891915778 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2003904154926515589 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5256260691515697930, guid: 25cc053d85d8e9648ae70ade3628dc63,
+    type: 3}
+  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7130575673976826797 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3587774327578772770, guid: 25cc053d85d8e9648ae70ade3628dc63,
@@ -749,18 +679,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f28f85e12183ff4a99de1f09ccc3b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &6030816391891915778 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 40377333204744845, guid: 25cc053d85d8e9648ae70ade3628dc63,
-    type: 3}
-  m_PrefabInstance: {fileID: 5998426874923413135}
+--- !u!114 &1484382064384571549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2003904154926515589 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5256260691515697930, guid: 25cc053d85d8e9648ae70ade3628dc63,
-    type: 3}
-  m_PrefabInstance: {fileID: 5998426874923413135}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8341a7d046a9da34494525e0653a3675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectPool: {fileID: 1620230286426900701}
+--- !u!114 &1663672272712614261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d014604257af7e747b2eae38a8d3c70b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backdropObject: {fileID: 4797514454882316407}
+--- !u!114 &5050187975766108088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ecdfc0c43e25e46a93411100947d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sewerHeightCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  terrainHeightCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  terrainLayer: {fileID: 1144097373}
+  manHoleObjectPool: {fileID: 7130575673976826797}
+  manholePrefab: {fileID: 7975064379683715480, guid: 766d8c1a089faa146bfe94d948d6e106,
+    type: 3}
+--- !u!114 &7005504237309713869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003904154926515589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf5409747fb6ab4b803c85b09d0fdb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isenabled: 0
+  tileSize: 1000
+  layerPriority: 4
+  Datasets:
+  - Description: LOD0
+    lod: 0
+    path: hardcoded
+    maximumDistance: 2000
+    maximumDistanceSquared: 0
+    enabled: 1
+  pauseLoading: 0
+  onLayerEnabled:
+    m_PersistentCalls:
+      m_Calls: []
+  onLayerDisabled:
+    m_PersistentCalls:
+      m_Calls: []
+  sharedMaterial: {fileID: 2100000, guid: 1902bbabc49c61b4da97cc56bdafab30, type: 2}
+  sewerPipeSpawner: {fileID: 1484382064384571549}
+  sewerManholeSpawner: {fileID: 5050187975766108088}
+  maxSimultaneous: 1
+  SewerLineObjectPool: {fileID: 1620230286426900701}
+  manHoleObjectPool: {fileID: 7130575673976826797}
 --- !u!1001 &6043584490264672086
 PrefabInstance:
   m_ObjectHideFlags: 0
