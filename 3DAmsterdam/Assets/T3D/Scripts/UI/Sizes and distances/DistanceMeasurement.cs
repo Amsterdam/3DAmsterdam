@@ -5,8 +5,19 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D
 {
+    public enum EditMode
+    {
+        None = -1,
+        Resize = 0,
+        Reposition = 1,
+    }
+
     public abstract class DistanceMeasurement : MonoBehaviour
     {
+        [SerializeField]
+        protected EditMode mode = EditMode.Reposition;
+        public EditMode Mode => mode;
+
         [SerializeField]
         private GameObject measurementLine;
         [SerializeField]

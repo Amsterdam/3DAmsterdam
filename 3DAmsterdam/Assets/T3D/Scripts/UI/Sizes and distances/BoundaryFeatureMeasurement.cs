@@ -4,18 +4,8 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public enum EditMode
-    {
-        None = -1,
-        Resize = 0,
-        Reposition = 1,
-    }
-
     public class BoundaryFeatureMeasurement : DistanceMeasurement
     {
-        //[SerializeField]
-        //private EditMode mode = EditMode.None;
-        //public EditMode Mode => mode;
         private BoundaryFeature boundaryFeature;
 
         private void Awake()
