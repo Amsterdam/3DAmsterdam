@@ -39,16 +39,16 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             //print(ObjectClickHandler.GetClickOnObject(boundaryFeaturesMask));
             var click = ObjectClickHandler.GetClickOnObject(true, out var collider, boundaryFeaturesMask);
-            if (click)// && !EventSystem.current.IsPointerOverGameObject())
+            if (click && !EventSystem.current.IsPointerOverGameObject())
             {
                 var clickedBoundaryFeature = collider?.GetComponentInParent<BoundaryFeature>();
+                if (ActiveFeature)
+                {
+                    DeselectFeature();
+                }
                 if (clickedBoundaryFeature)
                 {
                     SelectFeature(clickedBoundaryFeature);
-                }
-                else if (ActiveFeature)
-                {
-                    DeselectFeature();
                 }
             }
         }

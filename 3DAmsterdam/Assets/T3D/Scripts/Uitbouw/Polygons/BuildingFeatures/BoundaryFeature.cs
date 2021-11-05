@@ -41,6 +41,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         protected virtual void Update()
         {
+            print(ActiveMode);
             SnapToWall();
             SetButtonPositions();
         }
@@ -59,13 +60,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void SetMode(EditMode newMode)
         {
             ActiveMode = newMode;
-            var distanceMeasurements = this.distanceMeasurements;
+            //var distanceMeasurements = this.distanceMeasurements;
             for (int i = 0; i < distanceMeasurements.Length; i++)
             {
-                distanceMeasurements[i].DrawDistanceActive = (int)newMode == i;
+                distanceMeasurements[i].DrawDistanceActive = distanceMeasurements[i].Mode == newMode;
             }
 
-            editUI.gameObject.SetActive((int)newMode >= 0);
+            editUI.gameObject.SetActive(newMode != EditMode.None);
         }
 
         public void DeleteFeature()
