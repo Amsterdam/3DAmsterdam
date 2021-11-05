@@ -78,8 +78,7 @@ namespace Netherlands3D.LayerSystem
 				{
 					DestroyImmediate(tile.gameObject.GetComponent<MeshFilter>().sharedMesh, true);
 				}
-				Destroy(tiles[tileKey].gameObject);
-				
+				Destroy(tiles[tileKey].gameObject);		
 			}
 		}
 		private IEnumerator DownloadBinaryMesh(TileChange tileChange, System.Action<TileChange> callback = null)
@@ -123,9 +122,9 @@ namespace Netherlands3D.LayerSystem
 				GameObject newGameobject = CreateNewGameObject(url,results, tileChange);
 				if (newGameobject != null)
 				{
-					if (TileHasHighlight(tileChange))
+					if (TileHasSubObjectAltered(tileChange))
 					{
-						yield return UpdateObjectIDMapping(tileChange, newGameobject,callback);
+						yield return SyncSubObjects(tileChange, newGameobject,callback);
 					}
 					else
 					{
@@ -136,7 +135,6 @@ namespace Netherlands3D.LayerSystem
 				}
 				else
 				{
-
 					callback(tileChange);
 				}
 			}
@@ -152,61 +150,41 @@ namespace Netherlands3D.LayerSystem
 			}
 		}
 
-		private bool TileHasHighlight(TileChange tileChange)
-		{
-			return false;
-		}
-
-		private IEnumerator UpdateObjectIDMapping(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
+		private bool TileHasSubObjectAltered(TileChange tileChange)
 		{
 			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
-			ObjectData oldObjectMapping = tile.gameObject.GetComponent<ObjectData>();
-			GameObject newTile = newGameobject;
-			string name = newTile.GetComponent<MeshFilter>().mesh.name;
-			Debug.Log(name);
-			string dataName = name.Replace(" Instance", "");
-			dataName = dataName.Replace("mesh", "building");
-			dataName = dataName.Replace("-", "_") + "-data";
-			string dataURL = $"{Config.activeConfiguration.webserverRootPath}{Config.activeConfiguration.buildingsMetaDataPath}{dataName}";
-			Debug.Log(dataURL);
-
-			ObjectMappingClass data;
-			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
+			if (tile.gameObject == null)
 			{
-				yield return uwr.SendWebRequest();
-
-				if (uwr.isNetworkError || uwr.isHttpError)
-				{
-					callback(tileChange);
-				}
-				else
-				{
-					ObjectData objectMapping = newTile.AddComponent<ObjectData>();
-					AssetBundle newAssetBundle = DownloadHandlerAssetBundle.GetContent(uwr);
-
-					yield return new WaitForEndOfFrame();
-					data = newAssetBundle.LoadAllAssets<ObjectMappingClass>()[0];
-					yield return new WaitForEndOfFrame();
-
-					objectMapping.highlightIDs = oldObjectMapping.highlightIDs;
-					objectMapping.hideIDs = oldObjectMapping.hideIDs;
-					objectMapping.ids = data.ids;
-					objectMapping.uvs = data.uvs;
-					objectMapping.vectorMap = data.vectorMap;
-					objectMapping.mesh = newTile.GetComponent<MeshFilter>().sharedMesh;
-					objectMapping.ApplyDataToIDsTexture();
-					newAssetBundle.Unload(true);
-
-					yield return new WaitForEndOfFrame();
-				}
+				return false;
 			}
+
+			var subObjects = tile.gameObject.GetComponent<SubObjects>();
+			if (subObjects == null)
+			{
+				return false;
+			}
+			if (subObjects.Altered == false)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		private IEnumerator SyncSubObjects(TileChange tileChange, GameObject newGameobject, System.Action<TileChange> callback = null)
+		{
+			Tile tile = tiles[new Vector2Int(tileChange.X, tileChange.Y)];
+			SubObjects oldObjectMapping = tile.gameObject.GetComponent<SubObjects>();
+			SubObjects newObjectMapping = newGameobject.AddComponent<SubObjects>();
+
+			yield return newObjectMapping.LoadMetaDataAndApply(oldObjectMapping.SubObjectDatas);
+
 			yield return new WaitUntil(() => pauseLoading == false);
 			RemoveGameObjectFromTile(tile.tileKey);
 			tiles[tile.tileKey].gameObject = newGameobject;
 
 			yield return null;
 			callback(tileChange);
-
 		}
 
 		private GameObject CreateNewGameObject(string source,byte[] binaryMeshData, TileChange tileChange)
