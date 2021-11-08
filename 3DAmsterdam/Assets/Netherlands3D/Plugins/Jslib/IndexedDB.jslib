@@ -54,17 +54,17 @@ mergeInto(LibraryManager.library, {
 
         window.ConnectToDatabase = function ConnectToDatabase(SelectedFiles) {
             //Connect to database
-            window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB,
-            IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction,
+            window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
+            IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
             dbVersion = 21;
-            let request = indexedDB.open("/idbfs", dbVersion);
+            var dbRequest = window.indexedDB.open("/idbfs", dbVersion);
             request.onsuccess = function () {
                 console.log("connected to database");
-                window.database = request.result;
+                window.database = dbRequest.result;
                 for (var i = 0; i < SelectedFiles.length; i++) {
                     window.ReadFile(SelectedFiles[i])
                 };
-                request.onerror = function () {
+                dbRequest.onerror = function () {
                     alert("kan geen verbinding maken met de indexedDatabase");
                 }
             }
@@ -90,14 +90,14 @@ mergeInto(LibraryManager.library, {
             data.contents = new TextEncoder("utf-8").encode(datastring);
             var transaction = window.database.transaction(["FILE_DATA"], "readwrite");
 
-            let request = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
+            var dbRequest = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
             console.log("saving file");
-            request.onsuccess = function () {
+            dbRequest.onsuccess = function () {
                 unityInstance.SendMessage('FileUploads', 'LoadFile', filename);
                 console.log("file saved");
                 window.FileSaved();
             };
-            request.onerror = function () {
+            dbRequest.onerror = function () {
                 unityInstance.SendMessage('FileUploads', 'LoadFileError', filename);
                 alert("kan " + filename + " niet opslaan");
                 window.FileSaved();
