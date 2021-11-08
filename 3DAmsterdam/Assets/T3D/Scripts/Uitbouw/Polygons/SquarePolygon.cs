@@ -21,7 +21,7 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        public override Vector3[] Polygon
+        public override Vector3[] Boundaries
         {
             get
             {
