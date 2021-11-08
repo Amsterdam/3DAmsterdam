@@ -318,7 +318,7 @@ public class ColladaFile
 	{
 		Color materialColor = material.GetColor("_BaseColor");
 		writer.WriteStartElement("effect");
-		writer.WriteAttributeString("id", material.name + "-effect");
+		writer.WriteAttributeString("id", material.name.Split(' ')[0] + "-effect");
 		writer.WriteStartElement("profile_COMMON");
 		writer.WriteStartElement("technique");
 		writer.WriteAttributeString("sid", "common");
@@ -389,7 +389,9 @@ public class ColladaFile
 	{
 #if UNITY_EDITOR
 		var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-		File.WriteAllText(Path.Combine(mydocs, (filename != "") ? filename : "ColladaExport.dae"), stringWriter.ToString());
+		var filePath = Path.Combine(mydocs, (filename != "") ? filename : "ColladaExport.dae");
+		Debug.Log(filePath);
+		File.WriteAllText(filePath, stringWriter.ToString());
 		stringWriter = null;
 		writer = null;
 		return;
