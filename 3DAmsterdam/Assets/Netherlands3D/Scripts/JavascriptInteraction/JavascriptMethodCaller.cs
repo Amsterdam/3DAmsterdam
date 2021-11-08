@@ -9,15 +9,6 @@ namespace Netherlands3D.JavascriptConnection
 		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0);
 
 		[DllImport("__Internal")]
-		private static extern string FetchOBJData();
-
-		[DllImport("__Internal")]
-		private static extern string FetchVissimData();
-
-		[DllImport("__Internal")]
-		private static extern string FetchMTLData();
-
-		[DllImport("__Internal")]
 		private static extern string SetUniqueShareURL(string token);
 
 		[DllImport("__Internal")]
@@ -47,7 +38,6 @@ namespace Netherlands3D.JavascriptConnection
 
 		[DllImport("__Internal")]
 		private static extern void LockCursorInternal();
-
 
 		public static void DownloadByteArrayAsFile(byte[] array, int byteLength, string fileName)
 		{
@@ -81,20 +71,6 @@ namespace Netherlands3D.JavascriptConnection
 			return IsMobile();
 #endif
 			return false;
-		}
-
-		public static string FetchVissimDataAsString()
-		{
-			return FetchVissimData();
-		}
-
-		public static string FetchOBJDataAsString()
-		{
-			return FetchOBJData();
-		}
-		public static string FetchMTLDataAsString()
-		{
-			return FetchMTLData();
 		}
 
 		public static void SetInterfaceScale(float scale)
