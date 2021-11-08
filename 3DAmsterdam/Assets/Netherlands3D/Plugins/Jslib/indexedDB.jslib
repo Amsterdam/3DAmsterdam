@@ -28,12 +28,19 @@ mergeInto(LibraryManager.library, {
 		});
 
 		document.addEventListener("drop", function (event) {
-			console.log("file dropped");
+			console.log("File dropped");
 			event.stopPropagation();
 			event.preventDefault();
 			// tell Unity how many files to expect
-			ReadFiles(event.dataTransfer.files);
+			window.ReadFiles(event.dataTransfer.files);
 		});
+		
+		window.ClearInputs = function ClearInputs(){
+			var inputs = document.getElementsByTagName('input');
+			for (i = 0; i < inputs.length; ++i) {
+				inputs[i].value = '';
+			}
+		};
 		
 		window.ReadFiles = function ReadFiles(SelectedFiles) {
 			if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -65,7 +72,7 @@ mergeInto(LibraryManager.library, {
 		window.ReadFile = function ReadFile(file) {
 			window.filereader = new FileReader();
 			window.filereader.onload = function (e) {
-				datastring = e.target.result;
+				var datastring = e.target.result;
 				window.SaveData(datastring, file.name);
 				window.counter = counter + 1;
 			};
@@ -108,9 +115,6 @@ mergeInto(LibraryManager.library, {
         FS.syncfs(false, function (err) {});
     },
     ClearFileInputFields: function () {
-        inputs = document.getElementsByTagName('input');
-		for (i = 0; i < inputs.length; ++i) {
-			inputs[i].value = '';
-		}
+        window.ClearInputs();
     }
 });
