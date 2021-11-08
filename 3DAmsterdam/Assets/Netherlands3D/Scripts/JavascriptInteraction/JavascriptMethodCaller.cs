@@ -102,14 +102,5 @@ namespace Netherlands3D.JavascriptConnection
 			OpenURLInNewWindow(url);
 #endif
 		}
-		/*
-		public static void LockCursor() 
-		{
-#if UNITY_EDITOR
-			Cursor.lockState = CursorLockMode.Locked;
-#elif UNITY_WEBGL && !UNITY_EDITOR
-			LockCursorInternal();
-#endif
-		}*/
 	}
 }
