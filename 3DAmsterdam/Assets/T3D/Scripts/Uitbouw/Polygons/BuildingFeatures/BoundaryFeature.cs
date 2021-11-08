@@ -17,7 +17,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private EditUI editUI;
 
-        private MeshFilter meshFilter;
+        private MeshCollider meshCollider;
 
         protected override void Awake()
         {
@@ -25,7 +25,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
 
-            meshFilter = meshTransform.GetComponent<MeshFilter>();
+            meshCollider = meshTransform.GetComponent<MeshCollider>();
+
 
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
@@ -53,7 +54,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            var pos = transform.position + transform.rotation * meshFilter.mesh.bounds.extents;
+            var pos = transform.position + transform.rotation * meshCollider.bounds.extents;
             editUI.AlignWithWorldPosition(pos);
         }
 
