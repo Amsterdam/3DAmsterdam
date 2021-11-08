@@ -18,8 +18,8 @@ namespace Netherlands3D.LayerSystem
         private Ray ray;
         private string lastSelectedID = "";
 
-        public List<string> selectedIDs;
-        public List<string> hiddenIDs;
+
+        [Header("Sub object selection:")]
 
         [SerializeField]
         private LayerMask clickCheckLayerMask;
@@ -39,6 +39,9 @@ namespace Netherlands3D.LayerSystem
         private Color selectionVertexColor;
         [SerializeField]
         private Material exclusiveSelectedShader;
+
+        public List<string> selectedIDs;
+        public List<string> hiddenIDs;
 
         private void Awake()
         {

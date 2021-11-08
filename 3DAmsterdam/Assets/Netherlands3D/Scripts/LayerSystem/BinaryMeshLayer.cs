@@ -177,7 +177,7 @@ namespace Netherlands3D.LayerSystem
 			SubObjects oldObjectMapping = tile.gameObject.GetComponent<SubObjects>();
 			SubObjects newObjectMapping = newGameobject.AddComponent<SubObjects>();
 
-			yield return newObjectMapping.LoadMetaDataAndApply(oldObjectMapping.SubObjectDatas);
+			yield return newObjectMapping.LoadMetaDataAndApply(oldObjectMapping.SubObjectsData);
 
 			yield return new WaitUntil(() => pauseLoading == false);
 			RemoveGameObjectFromTile(tile.tileKey);

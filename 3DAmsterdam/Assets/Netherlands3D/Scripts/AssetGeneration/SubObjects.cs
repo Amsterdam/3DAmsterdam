@@ -21,8 +21,8 @@ public class SubObjects : MonoBehaviour
 	}
 
 	[SerializeField]
-	private List<SubOjectData> subObjectDatas;
-	public List<SubOjectData> SubObjectDatas { get => subObjectDatas; private set => subObjectDatas = value; }
+	private List<SubOjectData> subObjectsData;
+	public List<SubOjectData> SubObjectsData { get => subObjectsData; private set => subObjectsData = value; }
 	public bool Altered { get; private set; }
 
 	private Mesh mesh;
@@ -32,7 +32,7 @@ public class SubObjects : MonoBehaviour
 
 	private void Awake()
 	{
-		SubObjectDatas = new List<SubOjectData>();
+		SubObjectsData = new List<SubOjectData>();
 		mesh = this.GetComponent<MeshFilter>().sharedMesh;
 		vertexColors = new Color[mesh.vertexCount];
 		for (int i = 0; i < vertexColors.Length; i++)
@@ -44,7 +44,7 @@ public class SubObjects : MonoBehaviour
 	public void Select(int selectedVert, System.Action<string> callback)
 	{
 		//Select using vertex index, or download metadata first
-		if (SubObjectDatas.Count > 0 && !downloadingSubObjects)
+		if (SubObjectsData.Count > 0 && !downloadingSubObjects)
 		{
 			callback(GetIDByVertexIndex(selectedVert));
 		}
@@ -71,7 +71,7 @@ public class SubObjects : MonoBehaviour
 				{
 					var id = reader.ReadString();
 					var indicesLength = reader.ReadInt32();
-					SubObjectDatas.Add(new SubOjectData()
+					SubObjectsData.Add(new SubOjectData()
 					{
 						objectID = id,
 						startIndex = currentMeshIndex,
@@ -96,7 +96,7 @@ public class SubObjects : MonoBehaviour
 		yield return LoadMetaData(mesh);
 		
 		//Sync parts of the data with our new objectdata 
-		foreach(var subObject in SubObjectDatas)
+		foreach(var subObject in SubObjectsData)
 		{
 			foreach (var previousSubObject in prevousObjectDatas)
 			{
@@ -108,9 +108,9 @@ public class SubObjects : MonoBehaviour
 		}
 
 		//Apply colors/hidden etc back to new geometry+data
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			for (int j = 0; j < subObject.length; j++)
 			{
 				vertexColors[subObject.startIndex + j] = subObject.color;
@@ -147,9 +147,9 @@ public class SubObjects : MonoBehaviour
 	private string GetIDByVertexIndex(int vertexIndex)
 	{
 		//Find all subobject ranges, and color the verts at those indices
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			if (vertexIndex >= subObject.startIndex && vertexIndex < subObject.startIndex+ subObject.length)
 			{
 				return subObject.objectID;
@@ -162,9 +162,9 @@ public class SubObjects : MonoBehaviour
 	{
 		Altered = true;
 
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			subObject.color = highlightColor;
 			for (int j = 0; j < subObject.length; j++)
 			{
@@ -180,9 +180,9 @@ public class SubObjects : MonoBehaviour
 		Altered = true;
 
 		//Find all subobject ranges, and color the verts at those indices
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			if (ids.Contains(subObject.objectID))
 			{
 				subObject.color = highlightColor;
@@ -201,9 +201,9 @@ public class SubObjects : MonoBehaviour
 	public void HideWithIDs(List<string> ids){
 		Altered = true;
 
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			if (ids.Contains(subObject.objectID))
 			{
 				subObject.hidden = true;
@@ -225,9 +225,9 @@ public class SubObjects : MonoBehaviour
 	{
 		Altered = false;
 
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			subObject.color = Color.white;
 			subObject.hidden = false;
 			for (int j = 0; j < subObject.length; j++)
@@ -245,9 +245,9 @@ public class SubObjects : MonoBehaviour
 		Vector3[] vertices = mesh.vertices;
 
 		//Find all subobject ranges, and color the verts at those indices
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			Color randomColor;
 
 			//determine height of vertex
@@ -273,9 +273,9 @@ public class SubObjects : MonoBehaviour
 		Altered = true;
 
 		//Find all subobject ranges, and color the verts at those indices
-		for (int i = 0; i < SubObjectDatas.Count; i++)
+		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
-			var subObject = SubObjectDatas[i];
+			var subObject = SubObjectsData[i];
 			Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
 			subObject.color = randomColor;
 
