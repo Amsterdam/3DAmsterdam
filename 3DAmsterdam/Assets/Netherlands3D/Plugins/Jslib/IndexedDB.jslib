@@ -81,7 +81,7 @@ mergeInto(LibraryManager.library, {
         };
 
         window.SaveData = function SaveData(datastring, filename) {
-            const data = {
+            var data = {
                 timestamp: "timestamp",
                 mode: 33206,
                 contents: "contents"
