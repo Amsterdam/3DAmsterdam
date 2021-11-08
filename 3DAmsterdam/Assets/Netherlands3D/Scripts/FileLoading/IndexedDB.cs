@@ -26,11 +26,11 @@ using Netherlands3D.Interface;
 public class IndexedDB : MonoBehaviour
 {
     [DllImport("__Internal")]
+    private static extern void Initialize(string dataPath);
+    [DllImport("__Internal")]
     private static extern void SyncFilesFromIndexedDB();
     [DllImport("__Internal")]
     private static extern void SyncFilesToIndexedDB();
-    [DllImport("__Internal")]
-    private static extern void SendPersistentDataPath(string str);
     [DllImport("__Internal")]
     private static extern void ClearFileInputFields();
 
@@ -42,9 +42,9 @@ public class IndexedDB : MonoBehaviour
 
     public void Start()
     {
-        #if !UNITY_EDITOR && UNITY_WEBGL
-        SendPersistentDataPath(Application.persistentDataPath);
-        #endif
+#if !UNITY_EDITOR && UNITY_WEBGL
+        Initialize(Application.persistentDataPath);
+#endif
     }
 
     // Called from javascript, the total number of files that are being loaded.
@@ -95,8 +95,6 @@ public class IndexedDB : MonoBehaviour
 
     public void IndexedDBUpdated() // called from SyncFilesFromIndexedDB
     {
-       // GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames);
-       // filenames.Clear();
         ProcessAllFiles();
     }
 
