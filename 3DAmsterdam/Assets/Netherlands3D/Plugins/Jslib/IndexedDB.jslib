@@ -45,7 +45,7 @@ mergeInto(LibraryManager.library, {
 
         window.ReadFiles = function ReadFiles(SelectedFiles) {
             if (window.File && window.FileReader && window.FileList && window.Blob) {
-                ConnectToDatabase(SelectedFiles);
+                window.ConnectToDatabase(SelectedFiles);
                 unityInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
             } else {
                 alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
