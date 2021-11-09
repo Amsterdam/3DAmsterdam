@@ -719,7 +719,7 @@ public class GeoJsonTests
     }
 
     [Test]
-    public void TestGebouwenFunenpark()
+    public void TestGebouwenFunenparkProperty()
     {
         GeoJSON geojson = new GeoJSON(testGebouwenFunenpark);
         geojson.GotoNextFeature();
@@ -741,4 +741,43 @@ public class GeoJsonTests
         Assert.AreEqual(52.368934929307486, first.y);
 
     }
-}
+
+    [Test]
+    public void TestGebouwenFunenparkProperties()
+    {
+        GeoJSON geojson = new GeoJSON(testGebouwenFunenpark);
+        geojson.GotoNextFeature();
+
+        Dictionary<string, object> properties = geojson.GetProperties();
+        Assert.AreEqual(25, properties.Count);
+        Assert.AreEqual("100", properties["#Opacity"]);
+        Assert.AreEqual("1", properties["#ComponentCount"]);
+        Assert.AreEqual("20210930 MV 3D Model Marineterrein_buildings", properties["#LayerName"]);
+        Assert.AreEqual("-2147483648", properties["#Id"]);
+        Assert.AreEqual("<Pad>", properties["#Name"]);
+        Assert.AreEqual("1", properties["#AreaDirection"]);
+        Assert.AreEqual("4", properties["#VertexCount"]);
+        Assert.AreEqual("Mixed", properties["#Style"]);
+        Assert.AreEqual("1.0", properties["#StrokeWeight"]);
+        Assert.AreEqual("0.0013356553159387958", properties["#Perimeter"]);
+        Assert.AreEqual("true", properties["#PathClosed"]);
+        Assert.AreEqual("1.0", properties["#ArtScale"]);
+        Assert.AreEqual("7.4637007561959966e-08", properties["#Area"]);
+        Assert.AreEqual("12.0", properties["Building_Height"]);
+        Assert.AreEqual("565.47", properties["Built_Area"]);
+        Assert.AreEqual("2261.88", properties["Bruto_VloerOppervlakte"]);
+        Assert.AreEqual("Building", properties["Naam"]);
+        Assert.AreEqual("4", properties["Number_of_Storeys"]);
+        Assert.AreEqual("2.73", properties["Ground_to_Sea_Elevation"]);
+        Assert.AreEqual("14.73", properties["Eave_to_Sea_Elevation"]);
+        Assert.AreEqual("Residential", properties["Landgebruik"]);
+        Assert.AreEqual("3.0", properties["Eerste_verdiepingshoo_"]);
+        Assert.AreEqual("3.0", properties["Overige_verdiepingsh_"]);
+        Assert.AreEqual("1004304", properties["GIS_uuid"]);
+        Assert.AreEqual("1004304", properties["Modelur_uid"]);
+
+
+
+    }
+
+    }
