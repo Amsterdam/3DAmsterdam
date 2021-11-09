@@ -86,8 +86,6 @@ namespace Netherlands3D.Interface.Sharing
 			}
 			else
 			{
-				print(sceneSaveRequest.downloadHandler.text);
-
 				//Check if we got some tokens for model upload, and download them 1 at a time.
 				ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
 				sceneSerializer.sharedSceneId = serverReturn.sceneId;
@@ -102,29 +100,20 @@ namespace Netherlands3D.Interface.Sharing
 					while (currentModel < serverReturn.modelUploadTokens.Length)
 					{
 						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-						var serializedCustomObject = sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token);
-						totalVerts += serializedCustomObject.verts.Length / 3;
-						var jsonCustomObject = JsonUtility.ToJson(serializedCustomObject, false);
-
+						var pathToLocalBinaryFile = sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token);
 						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", serverReturn.sceneId).Replace("{modelToken}", serverReturn.modelUploadTokens[currentModel].token);
 						Debug.Log("Model upload: " + putPath);
-						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(putPath, jsonCustomObject);
-						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
-						yield return modelSaveRequest.SendWebRequest();
+						
+						//Use IndexedDB plugin method to upload the mesh from JS side to save the duplication of the mesh in the Unity heap
+						// 1. Stage every model upload (maybe chunks later)
+						// 2. Start JS upload cycle of all staged files
+						// 3. Update, and eventualy hide progress bar screen to do the rest of this code
 
-						if (sceneSaveRequest.result != UnityWebRequest.Result.Success)
-						{
-							ChangeState(SharingState.SERVER_PROBLEM);
-							yield break;
-						}
-						else
-						{
-							Debug.Log("Model return " + currentModel);
-							currentModel++;
-							var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
-							progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
-							yield return new WaitForSeconds(0.2f);
-						}
+						Debug.Log("Model return " + currentModel);
+						currentModel++;
+						var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
+						progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
+						yield return new WaitForSeconds(0.2f);
 					}
 				}
 
