@@ -1,8 +1,8 @@
 mergeInto(LibraryManager.library, {
-    Initialize: function (str) {
+    InitializeIndexedDB: function (str) {
         window.databaseName = Pointer_stringify(str);
         window.selectedFiles = [];
-        window.filesToSave = [];
+        window.filesToSave = 0;
         window.counter = 0;
         window.databaseConnection = null;
 
@@ -35,6 +35,13 @@ mergeInto(LibraryManager.library, {
             // tell Unity how many files to expect
             window.ReadFiles(event.dataTransfer.files);
         });
+		
+		window.FileSaved = function FileSaved() {
+			filesToSave = filesToSave - 1;
+			if (filesToSave == 0) {
+				window.databaseConnection.close();
+			}
+		};
 
         window.ClearInputs = function ClearInputs() {
             var inputs = document.getElementsByTagName('input');
@@ -57,6 +64,8 @@ mergeInto(LibraryManager.library, {
             window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
             IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
             dbVersion = 21;
+			window.filesToSave = SelectedFiles.length;
+			
             var dbRequest = window.indexedDB.open("/idbfs", dbVersion);
             dbRequest.onsuccess = function () {
                 console.log("connected to database");

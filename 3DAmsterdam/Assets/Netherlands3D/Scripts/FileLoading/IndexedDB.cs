@@ -26,7 +26,7 @@ using Netherlands3D.Interface;
 public class IndexedDB : MonoBehaviour
 {
     [DllImport("__Internal")]
-    private static extern void Initialize(string dataPath);
+    private static extern void InitializeIndexedDB(string dataPath);
     [DllImport("__Internal")]
     private static extern void SyncFilesFromIndexedDB();
     [DllImport("__Internal")]
@@ -43,7 +43,7 @@ public class IndexedDB : MonoBehaviour
     public void Start()
     {
 #if !UNITY_EDITOR && UNITY_WEBGL
-        Initialize(Application.persistentDataPath);
+        InitializeIndexedDB(Application.persistentDataPath);
 #endif
     }
 
