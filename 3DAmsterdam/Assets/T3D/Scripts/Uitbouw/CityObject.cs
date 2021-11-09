@@ -43,8 +43,7 @@ public class CityObject : MonoBehaviour
     //        parents = value;
     //    }
     //}
-    public CityPolygon[] Geometry;
-
+    public CityGeometry[] Geometry;
 
     public static bool IsValidParent(CityObject child, CityObject parent)
     {
@@ -59,10 +58,8 @@ public class CityObject : MonoBehaviour
         return false;
     }
 
-    public JSONObject GetJsonNode(out string name)
+    public JSONObject GetJsonNode()
     {
-        name = Name;
-
         var obj = new JSONObject();
         obj["type"] = Type.ToString();
         if (Parents.Length > 0)
@@ -75,7 +72,7 @@ public class CityObject : MonoBehaviour
             }
             obj["parents"] = parents;
         }
-        obj["geometry"] = Geometry.ToString();
+        obj["geometry"] = Geometry.ToString(); //todo: replace with json node that represents a CityJson geometry object
 
         return obj;
     }
@@ -83,13 +80,20 @@ public class CityObject : MonoBehaviour
     protected virtual void Start()
     {
         Name = gameObject.name;
+        Geometry = GetComponentsInChildren<CityGeometry>();
+        CityJSONFormatter.AddCityObejct(this);
     }
 
     protected virtual void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
-            print(GetJsonNode(out var test).ToString());
+            print(Name + " CityObject node json: " + GetJsonNode().ToString());
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            print(CityJSONFormatter.GetJSON());
         }
     }
 }

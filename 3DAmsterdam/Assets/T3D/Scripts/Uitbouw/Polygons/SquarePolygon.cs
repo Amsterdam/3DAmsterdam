@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class SquarePolygon : CityPolygon
+    public class SquarePolygon : CityGeometry
     {
         [SerializeField]
         protected Transform meshTransform;
@@ -21,7 +21,7 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        public override Vector3[] Boundaries
+        public override Vector3[] Vertices
         {
             get
             {
@@ -30,6 +30,21 @@ namespace Netherlands3D.T3D.Uitbouw
                     GetCorner(rightBound, topBound),
                     GetCorner(rightBound, bottomBound),
                     GetCorner(leftBound, bottomBound),
+                };
+            }
+        }
+
+        public override int[] Boundaries
+        {
+            get
+            {
+                return new int[]
+                {
+                    0,
+                    1,
+                    2,
+                    3,
+                    0,//needed?
                 };
             }
         }

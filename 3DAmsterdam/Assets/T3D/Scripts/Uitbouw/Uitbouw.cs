@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class Uitbouw : MonoBehaviour
+    public class Uitbouw : CityObject
     {
         private BuildingMeshGenerator building;
 
@@ -101,8 +101,10 @@ namespace Netherlands3D.T3D.Uitbouw
             UpdateDimensions();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
             userMovementAxes = new DragableAxis[2 + walls.Length];
 
             for (int i = 0; i < walls.Length; i++)
@@ -151,8 +153,10 @@ namespace Netherlands3D.T3D.Uitbouw
             extents = new Vector3(Width / 2, Height / 2, Depth / 2);
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+
             UpdateDimensions();
             SetArrowPositions();
 
@@ -161,19 +165,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             LimitPositionOnWall();
             ProcessSnapping();
-
-            //if (Input.GetKeyDown(KeyCode.K))
-            //{
-            //    var obj = Instantiate(window_TEST, transform);
-            //    obj.GetComponentInChildren<BoundaryFeature>().SetWall(front);
-
-            //    obj = Instantiate(door_TEST, transform);
-            //    obj.GetComponentInChildren<BoundaryFeature>().SetWall(left);
-            //}
         }
-
-        //public GameObject window_TEST;
-        //public GameObject door_TEST;
 
         private void LimitPositionOnWall()
         {
