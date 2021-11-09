@@ -22,7 +22,14 @@ using System.Runtime.InteropServices;
 using Netherlands3D.ModelParsing;
 using Netherlands3D.Traffic.VISSIM;
 using Netherlands3D.Interface;
+using Netherlands3D.Events;
 
+
+/// <summary>
+/// This system handles the user file uploads.
+/// They are moved into the IndexedDB so they can be streamread from Unity.
+/// This avoids having to load the (large) amount of data in the Unity heap memory
+/// </summary>
 public class IndexedDB : MonoBehaviour
 {
     [DllImport("__Internal")]
@@ -36,9 +43,19 @@ public class IndexedDB : MonoBehaviour
 
     public CsvFilePanel csvLoader;
 
-    public List<string> filenames = new List<string>();
-    public int numberOfFilesToLoad = 0;
+    private List<string> filenames = new List<string>();
+    private int numberOfFilesToLoad = 0;
     private int fileCount = 0;
+
+    [System.Serializable]
+    public class UserFileUpload
+    {
+        public string fileExtentions;
+        public StringEvent userFileUploadPathEvent;
+	}
+
+    [SerializeField]
+    private UserFileUpload[] userFileUploadEvents;
 
     public void Start()
     {
@@ -112,6 +129,10 @@ public class IndexedDB : MonoBehaviour
             csvLoader.LoadCsvFromFile(filenames[0], ClearDatabase);
         }
         else if (extention == ".fzp")
+        {
+            GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
+        }
+        else if (extention == ".geojson")
         {
             GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
         }
