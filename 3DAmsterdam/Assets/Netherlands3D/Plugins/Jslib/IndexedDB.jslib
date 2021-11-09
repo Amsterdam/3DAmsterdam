@@ -13,11 +13,11 @@ mergeInto(LibraryManager.library, {
             newInput.type = 'file';
             newInput.accept = acceptedExtentions;
             newInput.onchange = function () {
-                window.ReadFiles(this.files)
+                window.ReadFiles(this.files);
             };
             newInput.style.cssText = 'display:none; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
             document.body.appendChild(newInput);
-        }
+        };
         window.InjectHiddenFileInput('obj', '.obj,.mtl');
         window.InjectHiddenFileInput('csv', '.csv,.tsv');
         window.InjectHiddenFileInput('fzp', '.fzp');
