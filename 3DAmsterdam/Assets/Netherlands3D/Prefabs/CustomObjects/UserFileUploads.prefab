@@ -115,19 +115,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   csvLoader: {fileID: 0}
   userFileUploadEvents:
-  - fileExtentions:
-    - obj
-    - mtl
+  - fileExtentions: .obj,.mtl
     userFileUploadPathEvent: {fileID: 11400000, guid: 0c0c2f7a158fd16468da89833ed47177,
       type: 2}
-  - fileExtentions:
-    - csv
-    - tsv
+  - fileExtentions: .csv,.tsv
     userFileUploadPathEvent: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb,
       type: 2}
-  - fileExtentions: []
+  - fileExtentions: .json,.geojson
     userFileUploadPathEvent: {fileID: 11400000, guid: 0b63864df79979740a6c64d5e8c1e46a,
       type: 2}
-  - fileExtentions: []
+  - fileExtentions: .fzp
     userFileUploadPathEvent: {fileID: 11400000, guid: 6c0e763212d33694aaa4f0e42baef5b2,
       type: 2}

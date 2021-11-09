@@ -30,7 +30,7 @@ using Netherlands3D.Events;
 /// They are moved into the IndexedDB so they can be streamread from Unity.
 /// This avoids having to load the (large) amount of data in the Unity heap memory
 /// </summary>
-public class IndexedDB : MonoBehaviour
+public class FileInputIndexedDB : MonoBehaviour
 {
     [DllImport("__Internal")]
     private static extern void InitializeIndexedDB(string dataPath);
@@ -47,6 +47,7 @@ public class IndexedDB : MonoBehaviour
     private int numberOfFilesToLoad = 0;
     private int fileCount = 0;
 
+    /*
     [System.Serializable]
     public class UserFileUpload
     {
@@ -55,7 +56,7 @@ public class IndexedDB : MonoBehaviour
 	}
 
     [SerializeField]
-    private UserFileUpload[] userFileUploadEvents;
+    private UserFileUpload[] userFileUploadEvents;*/
 
     public void Start()
     {
@@ -119,7 +120,8 @@ public class IndexedDB : MonoBehaviour
     {
         //Figure out the filetypes so we know which function to start
         string extention = Path.GetExtension(filenames[0]);
-        Debug.Log("first file-extention = " +extention);
+        Debug.Log("first file-extention = " + extention);
+
         if (extention == ".obj" || extention == ".mtl")
         {
             GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames, ClearDatabase);
