@@ -4,7 +4,7 @@ mergeInto(LibraryManager.library, {
         window.selectedFiles = [];
         window.filesToSave = [];
         window.counter = 0;
-        window.database = null;
+        window.databaseConnection = null;
 
         //Inject our required html input fields
         window.InjectHiddenFileInput = function InjectHiddenFileInput(type, acceptedExtentions) {
@@ -58,9 +58,9 @@ mergeInto(LibraryManager.library, {
             IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
             dbVersion = 21;
             var dbRequest = window.indexedDB.open("/idbfs", dbVersion);
-            request.onsuccess = function () {
+            dbRequest.onsuccess = function () {
                 console.log("connected to database");
-                window.database = dbRequest.result;
+                window.databaseConnection = dbRequest.result;
                 for (var i = 0; i < SelectedFiles.length; i++) {
                     window.ReadFile(SelectedFiles[i])
                 };
@@ -88,7 +88,7 @@ mergeInto(LibraryManager.library, {
             };
             data.timestamp = new Date();
             data.contents = new TextEncoder("utf-8").encode(datastring);
-            var transaction = window.database.transaction(["FILE_DATA"], "readwrite");
+            var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readwrite");
 
             var dbRequest = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
             console.log("saving file");
