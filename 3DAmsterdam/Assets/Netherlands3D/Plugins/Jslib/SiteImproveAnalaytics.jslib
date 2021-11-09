@@ -1,4 +1,22 @@
 mergeInto(LibraryManager.library, {
+	AutoPauseLogging: function () {
+		/*
+		Detect if browser tab/window is active (background tabs are usually throttled down)
+		 */
+        window.CheckVisibilityState = function CheckVisibilityState() {
+			if (document.visibilityState == "hidden") {
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 0);
+			} 
+			else {
+				unityInstance.SendMessage("FpsCounter", "ActiveApplication", 1);
+			}
+		}
+		
+		window.CheckVisibilityState();
+		document.addEventListener('visibilitychange', function () {
+			window.CheckVisibilityState();
+		});
+    },
     /*
     Send an event to SiteImprove Analytics
      */
@@ -7,9 +25,10 @@ mergeInto(LibraryManager.library, {
         var actionString = Pointer_stringify(action);
         var labelString = Pointer_stringify(label);
 
-        if (labelString != "") {
+        if (labelString != "" && _sz) {
             _sz.push(['event', categoryString, actionString, labelString]);
-        } else {
+        } 
+		else if(_sz){
             _sz.push(['event', categoryString, actionString]);
         }
     }
