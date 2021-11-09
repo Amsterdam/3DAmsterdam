@@ -2,7 +2,7 @@ mergeInto(LibraryManager.library, {
 	AutoCursorLock: function () {	
         window.OnCursorStateChanged = function OnCursorStateChanged()
 		{
-			var unityCanvas = document.getElementById("#canvas");
+			var unityCanvas = document.getElementById("unity-canvas");
 			if (document.pointerLockElement != unityCanvas && document.mozPointerLockElement != unityCanvas) {
 				unityInstance.SendMessage("FirstPersonCamera", "EnableMenus");
 			}
@@ -21,6 +21,6 @@ mergeInto(LibraryManager.library, {
     This method locks the cursor for you, since sometimes doing it through Unity just doesn't work
      */
     LockCursorInternal: function () {
-        document.getElementById("#canvas").requestPointerLock();
+        document.getElementById("unity-canvas").requestPointerLock();
     }
 });
