@@ -139,7 +139,7 @@ namespace Netherlands3D.ModelParsing
         {
 			// Read the obj-file
 			SetOBJFileName(objFilePath);
-			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
+			var objstreamReader = new GameObject().AddComponent<StreamreadOBJ>();
 			objstreamReader.loadingObjScreen = loadingObjScreen;
 			objstreamReader.ReadOBJ(objFilePath);
 			bool isBusy = true;
@@ -178,7 +178,11 @@ namespace Netherlands3D.ModelParsing
 
 			GameObject createdGO = objstreamReader.createdGameObject;
 			createdGO.name = objModelName;
-			createdGO.AddComponent<MeshCollider>().sharedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			var loadedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			//Do not bother adding a collider if we do not have enough geometry ( avoiding PhysX errors )
+			if(loadedMesh.triangles.Length > 2)
+				createdGO.AddComponent<MeshCollider>().sharedMesh = loadedMesh;
+
 			createdGO.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 			transformable = createdGO.AddComponent<Transformable>();
 			transformable.madeWithExternalTool = true;
