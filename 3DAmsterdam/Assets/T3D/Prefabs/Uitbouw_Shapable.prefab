@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8732242567780884117}
   - component: {fileID: 5222713421071816549}
   - component: {fileID: 8235698920438077218}
+  - component: {fileID: 2921504411642477176}
   m_Layer: 17
   m_Name: Back
   m_TagString: Untagged
@@ -109,11 +110,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 582766559607684997}
   rightBound: {fileID: 4169091786449063867}
   topBound: {fileID: 2611005350992168332}
   bottomBound: {fileID: 6689584881678223785}
   side: 5
+--- !u!114 &2921504411642477176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555545413686853186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []
 --- !u!1 &1604081640823115902
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,6 +209,7 @@ GameObject:
   - component: {fileID: 6652706038212571847}
   - component: {fileID: 3256084697992890832}
   - component: {fileID: 4837593819125006555}
+  - component: {fileID: 2638956506446679316}
   m_Layer: 17
   m_Name: Top
   m_TagString: Untagged
@@ -290,11 +306,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 7741727396387764560}
   bottomBound: {fileID: 5254467626937948178}
   side: 2
+--- !u!114 &2638956506446679316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3249308710377432510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []
 --- !u!1 &3971875090573295053
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,6 +338,7 @@ GameObject:
   - component: {fileID: 1232528085006214778}
   - component: {fileID: 8350829793037063616}
   - component: {fileID: 7968026755866066833}
+  - component: {fileID: 8558220012866738531}
   m_Layer: 17
   m_Name: Front
   m_TagString: Untagged
@@ -404,11 +435,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 2611005350992168332}
   bottomBound: {fileID: 6689584881678223785}
   side: 4
+--- !u!114 &8558220012866738531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3971875090573295053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []
 --- !u!1 &7234089916035297624
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +467,7 @@ GameObject:
   - component: {fileID: 8222175497097209506}
   - component: {fileID: 45740289326626461}
   - component: {fileID: 3154073171412169850}
+  - component: {fileID: 6065966611706758137}
   m_Layer: 17
   m_Name: Left
   m_TagString: Untagged
@@ -518,11 +564,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 7741727396387764560}
   rightBound: {fileID: 5254467626937948178}
   topBound: {fileID: 2611005350992168332}
   bottomBound: {fileID: 6689584881678223785}
   side: 0
+--- !u!114 &6065966611706758137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7234089916035297624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []
 --- !u!1 &8007389617465903191
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,6 +628,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b9aaa24c5344d9083a25a3f7eacdb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: 
+  Type: 1000
+  Surfaces: []
+  Parents: []
   dragableAxisPrefab: {fileID: 3932690295695391041, guid: 2b40b1ed001dd402d9feaf7a850db1d7,
     type: 3}
   walls:
@@ -577,10 +641,6 @@ MonoBehaviour:
   - {fileID: 8301051321633224353}
   - {fileID: 7968026755866066833}
   - {fileID: 8235698920438077218}
-  window_TEST: {fileID: 4199814909477865792, guid: fcf5d991b807348ff8ef4a76cc65ff19,
-    type: 3}
-  door_TEST: {fileID: 4199814909477865792, guid: 24ed2e60d556340c585f7ee9b45d9cc8,
-    type: 3}
 --- !u!114 &6641196300282613232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,6 +653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 299e1686549e34b6d9b0f4e76ed75304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 1
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
@@ -609,6 +670,7 @@ GameObject:
   - component: {fileID: 5705789583383908178}
   - component: {fileID: 4289448495417366316}
   - component: {fileID: 3241695757148375439}
+  - component: {fileID: 403363352643054953}
   m_Layer: 17
   m_Name: Right
   m_TagString: Untagged
@@ -705,11 +767,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 5254467626937948178}
   rightBound: {fileID: 7741727396387764560}
   topBound: {fileID: 2611005350992168332}
   bottomBound: {fileID: 6689584881678223785}
   side: 1
+--- !u!114 &403363352643054953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8924733966033319186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []
 --- !u!1 &9026957183761294651
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,6 +799,7 @@ GameObject:
   - component: {fileID: 4014164419267688027}
   - component: {fileID: 4796910769141876172}
   - component: {fileID: 8301051321633224353}
+  - component: {fileID: 3848235101702002383}
   m_Layer: 17
   m_Name: Bottom
   m_TagString: Untagged
@@ -819,8 +896,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 5254467626937948178}
   bottomBound: {fileID: 7741727396387764560}
   side: 3
+--- !u!114 &3848235101702002383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026957183761294651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6a0e6b08318453788883c218ce0be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Polygons: []

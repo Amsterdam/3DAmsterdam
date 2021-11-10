@@ -34,14 +34,27 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void SetWall(UitbouwMuur wall)
         {
-            this.Wall = wall;
+            //if a new wall is being set
+            if (Wall != wall)
+            {
+                //remove the hole from the current wall, if the current wall exists
+                if (Wall != null)
+                    Wall.GetComponent<CitySurface>().TryRemoveHole(this); 
+
+                //set the new wall
+                Wall = wall;
+
+                //add the hole to the new wall, if the new wall exists
+                if (Wall != null)
+                    Wall.GetComponent<CitySurface>().TryAddHole(this); //add the hole to the new wall
+
+            }
             transform.position = wall.transform.position;
             transform.forward = wall.transform.forward;
         }
 
         protected virtual void Update()
         {
-            print(ActiveMode);
             SnapToWall();
             SetButtonPositions();
         }

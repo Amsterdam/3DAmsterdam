@@ -8,37 +8,101 @@ using UnityEngine;
 
 public static class CityJSONFormatter
 {
-    public static JSONObject RootObject { get; private set; }
-    public static JSONObject Metadata { get; private set; }
-    public static JSONObject CityObjects { get; private set; }
-    public static JSONArray Vertices { get; private set; }
-
+    private static JSONObject RootObject;
+    private static JSONObject Metadata;
+    private static JSONObject cityObjects;
+    private static JSONArray Vertices;
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
-    public static Dictionary<CityPolygon, int[]> AbsoluteBoundaries = new Dictionary<CityPolygon, int[]>();
-    private static List<int> vertIndexOffsets = new List<int>();
-    private static List<Vector3[]> vertList = new List<Vector3[]>();
-    private static JSONArray geographicalExtent = new JSONArray();
+    private static List<int> vertIndexOffsets;
+    private static List<Vector3[]> vertList;
+    private static JSONArray geographicalExtent;
 
-    static CityJSONFormatter()
+    public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
+
+    //these boundaries only exits when adding all the data to the json, but it's needed for the CityPolygon
+    public static Dictionary<CityPolygon, int[]> AbsoluteBoundaries { get; private set; }
+
+    public static string GetJSON()
     {
         RootObject = new JSONObject();
-        CityObjects = new JSONObject();
+        cityObjects = new JSONObject();
         Vertices = new JSONArray();
         Metadata = new JSONObject();
 
         RootObject["type"] = "CityJSON";
         RootObject["version"] = "1.0";
         RootObject["metadata"] = Metadata;
-        RootObject["CityObjects"] = CityObjects;
+        RootObject["CityObjects"] = cityObjects;
         RootObject["vertices"] = Vertices;
 
+        vertList = new List<Vector3[]>();
+        vertIndexOffsets = new List<int>();
         vertIndexOffsets.Add(0); //first element has no offsets
+
+        AbsoluteBoundaries = new Dictionary<CityPolygon, int[]>();
+
+        foreach (var obj in CityObjects)
+        {
+            AddCityObejctToJSONData(obj);
+        }
+
+        return RootObject.ToString();
+    }
+
+    //register city object to be added to the JSON when requested
+    public static void AddCityObejct(CityObject obj)
+    {
+        CityObjects.Add(obj);
+    }
+
+    // Called when a CityObject is created todo: remove when cityObject is destroyed
+    private static void AddCityObejctToJSONData(CityObject obj)
+    {
+        foreach (var geometry in obj.Surfaces)
+        {
+            AddCityGeometry(obj, geometry);
+        }
+        RecalculateGeographicalExtents();
+        cityObjects[obj.Name] = obj.GetJsonObject();
+    }
+
+    // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
+    private static void AddCityGeometry(CityObject parent, CitySurface surface)
+    {
+        Debug.Log("adding verts for: " + surface.name + " of " + parent.Name);
+        for (int i = 0; i < surface.Polygons.Count; i++)
+        {
+            var polygon = surface.Polygons[i];
+            var verts = polygon.Vertices;
+
+            vertList.Add(verts);
+            var vertOffset = vertList.Count - 1;
+            vertIndexOffsets.Add(vertIndexOffsets[vertOffset] + verts.Length);
+            Debug.Log(surface);
+
+            AbsoluteBoundaries.Add(polygon, ConvertBoundaryIndices(polygon.LocalBoundaries, vertOffset));
+
+            foreach (var vert in polygon.Vertices)
+            {
+                Vertices.Add(vert);
+            }
+        }
+    }
+
+    private static int[] ConvertBoundaryIndices(int[] boundaries, int offsetIndex)
+    {
+        var offsetBoundaries = new int[boundaries.Length];
+        for (int i = 0; i < boundaries.Length; i++)
+        {
+            offsetBoundaries[i] = boundaries[i] + vertIndexOffsets[offsetIndex];
+        }
+        return offsetBoundaries;
     }
 
     private static void RecalculateGeographicalExtents()
     {
-        float minx = Mathf.Infinity; 
+        float minx = Mathf.Infinity;
         float miny = Mathf.Infinity;
         float minz = Mathf.Infinity;
         float maxx = Mathf.NegativeInfinity;
@@ -77,48 +141,5 @@ public static class CityJSONFormatter
 
         Debug.Log(geographicalExtent.Count);
         Metadata["geographicalExtent"] = geographicalExtent;
-    }
-
-    public static string GetJSON()
-    {
-        return RootObject.ToString();
-    }
-
-    // Called when a CityObject is created todo: remove when cityObject is destroyed
-    public static void AddCityObejct(CityObject obj)
-    {
-        foreach (var geometry in obj.Polygons)
-        {
-            AddCityGeometry(obj, geometry);
-        }
-        RecalculateGeographicalExtents();
-        CityObjects[obj.Name] = obj.GetJsonObject();
-    }
-
-    // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
-    private static void AddCityGeometry(CityObject parent, CityPolygon geometry)
-    {
-        //Debug.Log("adding verts for: " + geometry.name + " of " + parent.Name);
-
-        var verts = geometry.Vertices;
-
-        vertList.Add(verts);
-        vertIndexOffsets.Add(vertIndexOffsets[vertList.Count - 1] + verts.Length);
-        AbsoluteBoundaries.Add(geometry, ConvertBoundaryIndices(geometry.LocalBoundaries, vertList.Count - 1));
-
-        foreach (var vert in geometry.Vertices)
-        {
-            Vertices.Add(vert);
-        }
-    }
-
-    public static int[] ConvertBoundaryIndices(int[] boundaries, int offsetIndex)
-    {
-        var offsetBoundaries = new int[boundaries.Length];
-        for (int i = 0; i < boundaries.Length; i++)
-        {
-            offsetBoundaries[i] = boundaries[i] + vertIndexOffsets[offsetIndex];
-        }
-        return offsetBoundaries;
     }
 }

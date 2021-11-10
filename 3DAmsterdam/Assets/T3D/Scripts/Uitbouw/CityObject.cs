@@ -30,6 +30,9 @@ public class CityObject : MonoBehaviour
 {
     public string Name;
     public CityObjectType Type;
+
+    public int Lod { get; protected set; } = 1;
+    public CitySurface[] Surfaces;
     public CityObject[] Parents;
 
     //public CityObject Parents
@@ -44,9 +47,6 @@ public class CityObject : MonoBehaviour
     //        parents = value;
     //    }
     //}
-
-    public int Lod { get; protected set; } = 1;
-    public CityPolygon[] Polygons;
 
     public static bool IsValidParent(CityObject child, CityObject parent)
     {
@@ -77,7 +77,7 @@ public class CityObject : MonoBehaviour
         }
 
         obj["geometry"] = new JSONArray();
-        obj["geometry"].Add(GetGeometryNode()); //todo: replace with json node that represents a CityJson geometry object
+        obj["geometry"].Add(GetGeometryNode());
         return obj;
     }
 
@@ -87,16 +87,9 @@ public class CityObject : MonoBehaviour
         node["type"] = "MultiSurface"; //todo support other types?
         node["lod"] = Lod;
         var boundaries = new JSONArray();
-        for (int i = 0; i < Polygons.Length; i++)
+        for (int i = 0; i < Surfaces.Length; i++)
         {
-            var surfaceArray = new JSONArray(); //defines the entire surface with holes
-            var boundaryArray = new JSONArray(); // defines a polygon (1st is surface, 2+ is holes in first surface)
-            var offsetArray = CityJSONFormatter.AbsoluteBoundaries[Polygons[i]];
-            for (int j = 0; j < offsetArray.Length; j++)
-            {
-                boundaryArray.Add(offsetArray[j]);
-            }
-            surfaceArray.Add(boundaryArray);
+            var surfaceArray = Surfaces[i].GetJSONPolygons();
             boundaries.Add(surfaceArray);
         }
         node["boundaries"] = boundaries;
@@ -107,7 +100,7 @@ public class CityObject : MonoBehaviour
     protected virtual void Start()
     {
         Name = gameObject.name;
-        Polygons = GetComponentsInChildren<CityPolygon>();
+        Surfaces = GetComponentsInChildren<CitySurface>();
         CityJSONFormatter.AddCityObejct(this);
     }
 
