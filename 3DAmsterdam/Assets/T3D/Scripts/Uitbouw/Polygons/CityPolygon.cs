@@ -5,11 +5,21 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public abstract class CityGeometry : MonoBehaviour
+    public abstract class CityPolygon : MonoBehaviour
     {
-        public int Lod { get; protected set; }
-        public abstract int[] Boundaries { get; }
-        public abstract Vector3[] Vertices { get; }
+        public abstract int[] LocalBoundaries { get; }
+        public abstract Vector3[] Vertices { get; } // used by the CityJSONFormatter to add to the total vertices object
+
+        public int[] AbsoluteBoundaries => CityJSONFormatter.AbsoluteBoundaries[this];
+        //public JSONNode GetJsonNode()
+        //{
+        //    var node = new JSONObject();
+
+        //    node["lod"] = Lod;
+        //    node["boundaries"] = Boundaries.ToString();
+
+        //    return node;
+        //}
 
         //void WriteMetadata()
         //{

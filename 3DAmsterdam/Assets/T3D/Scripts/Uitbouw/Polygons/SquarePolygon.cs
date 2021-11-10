@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class SquarePolygon : CityGeometry
+    public class SquarePolygon : CityPolygon
     {
         [SerializeField]
         protected Transform meshTransform;
@@ -34,7 +34,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        public override int[] Boundaries
+        public override int[] LocalBoundaries
         {
             get
             {
@@ -44,7 +44,6 @@ namespace Netherlands3D.T3D.Uitbouw
                     1,
                     2,
                     3,
-                    0,//needed?
                 };
             }
         }

@@ -31,6 +31,7 @@ public class CityObject : MonoBehaviour
     public string Name;
     public CityObjectType Type;
     public CityObject[] Parents;
+
     //public CityObject Parents
     //{
     //    get
@@ -43,7 +44,9 @@ public class CityObject : MonoBehaviour
     //        parents = value;
     //    }
     //}
-    public CityGeometry[] Geometry;
+
+    public int Lod { get; protected set; } = 1;
+    public CityPolygon[] Polygons;
 
     public static bool IsValidParent(CityObject child, CityObject parent)
     {
@@ -58,7 +61,7 @@ public class CityObject : MonoBehaviour
         return false;
     }
 
-    public JSONObject GetJsonNode()
+    public JSONObject GetJsonObject()
     {
         var obj = new JSONObject();
         obj["type"] = Type.ToString();
@@ -72,25 +75,44 @@ public class CityObject : MonoBehaviour
             }
             obj["parents"] = parents;
         }
-        obj["geometry"] = Geometry.ToString(); //todo: replace with json node that represents a CityJson geometry object
 
+        obj["geometry"] = new JSONArray();
+        obj["geometry"].Add(GetGeometryNode()); //todo: replace with json node that represents a CityJson geometry object
         return obj;
+    }
+
+    public JSONNode GetGeometryNode()
+    {
+        var node = new JSONObject();
+        node["type"] = "MultiSurface"; //todo support other types?
+        node["lod"] = Lod;
+        var boundaries = new JSONArray();
+        for (int i = 0; i < Polygons.Length; i++)
+        {
+            var surfaceArray = new JSONArray(); //defines the entire surface with holes
+            var boundaryArray = new JSONArray(); // defines a polygon (1st is surface, 2+ is holes in first surface)
+            var offsetArray = CityJSONFormatter.AbsoluteBoundaries[Polygons[i]];
+            for (int j = 0; j < offsetArray.Length; j++)
+            {
+                boundaryArray.Add(offsetArray[j]);
+            }
+            surfaceArray.Add(boundaryArray);
+            boundaries.Add(surfaceArray);
+        }
+        node["boundaries"] = boundaries;
+
+        return node;
     }
 
     protected virtual void Start()
     {
         Name = gameObject.name;
-        Geometry = GetComponentsInChildren<CityGeometry>();
+        Polygons = GetComponentsInChildren<CityPolygon>();
         CityJSONFormatter.AddCityObejct(this);
     }
 
     protected virtual void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            print(Name + " CityObject node json: " + GetJsonNode().ToString());
-        }
-
         if (Input.GetKeyDown(KeyCode.K))
         {
             print(CityJSONFormatter.GetJSON());
