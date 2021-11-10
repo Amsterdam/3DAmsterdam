@@ -15,7 +15,7 @@ public class CitySurface : MonoBehaviour
 
     private void Awake()
     {
-        Polygons.Add(GetComponent<CityPolygon>());
+        Polygons.Add(GetComponent<CityPolygon>()); //solid part of the surface
     }
 
     public void TryAddHole(CityPolygon hole)

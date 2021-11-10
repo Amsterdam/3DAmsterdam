@@ -13,8 +13,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public JSONNode GetJSONPolygon()
         {
-            //these absoluteboundaries are only valid when the JSON object is being created
-            //int[] absoluteBoundaries = CityJSONFormatter.AbsoluteBoundaries[this];
             int[] absoluteBoundaries = CityJSONFormatter.ConvertBoundaryIndices(LocalBoundaries, VertOffset);
 
             var boundaryArray = new JSONArray(); // defines a polygon (1st is surface, 2+ is holes in first surface)

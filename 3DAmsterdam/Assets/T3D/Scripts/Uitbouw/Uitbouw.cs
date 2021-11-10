@@ -379,5 +379,10 @@ namespace Netherlands3D.T3D.Uitbouw
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed;
         }
+
+        public override CitySurface[] GetSurfaces()
+        {
+            return GetComponentsInChildren<CitySurface>();
+        }
     }
 }

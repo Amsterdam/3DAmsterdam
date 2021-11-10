@@ -11,9 +11,17 @@ public enum CityObjectType
     Building = 1000,
     Bridge = 1010,
     CityObjectGroup = 1020,
-
-
-    Tunnel = 1130,
+    CityFurniture = 1030,
+    GenericCityObject = 1040,
+    LandUse = 1050,
+    PlantCover = 1060,
+    Railway = 1070,
+    Road = 1080,
+    SolitaryVegetationObject = 1090,
+    TINRelief = 1100,
+    TransportSquare = 1110,
+    Tunnel = 1120,
+    WaterBody = 1030,
 
     //2000-3000: 2nd level city objects. the middle numbers indicates the required parent. e.g 200x has to be a parent of 1000, 201x of 1010 etc.
     BuildingPart = 2000,
@@ -22,11 +30,11 @@ public enum CityObjectType
     BridgeInstallation = 2011,
     BridgeConstructionElement = 2012,
 
-    TunnelPart = 2130,
-    TunnelInstallation = 2131
+    TunnelPart = 2120,
+    TunnelInstallation = 2121
 }
 
-public class CityObject : MonoBehaviour
+public abstract class CityObject : MonoBehaviour
 {
     public string Name;
     public CityObjectType Type;
@@ -47,6 +55,8 @@ public class CityObject : MonoBehaviour
     //        parents = value;
     //    }
     //}
+
+    public abstract CitySurface[] GetSurfaces();
 
     public static bool IsValidParent(CityObject child, CityObject parent)
     {
@@ -100,7 +110,7 @@ public class CityObject : MonoBehaviour
     protected virtual void Start()
     {
         Name = gameObject.name;
-        Surfaces = GetComponentsInChildren<CitySurface>();
+        Surfaces = GetSurfaces();
         CityJSONFormatter.AddCityObejct(this);
     }
 
