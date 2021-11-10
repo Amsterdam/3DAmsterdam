@@ -20,9 +20,6 @@ public static class CityJSONFormatter
 
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
 
-    //these boundaries only exits when adding all the data to the json, but it's needed for the CityPolygon
-    public static Dictionary<CityPolygon, int[]> AbsoluteBoundaries { get; private set; }
-
     public static string GetJSON()
     {
         RootObject = new JSONObject();
@@ -39,8 +36,6 @@ public static class CityJSONFormatter
         vertList = new List<Vector3[]>();
         vertIndexOffsets = new List<int>();
         vertIndexOffsets.Add(0); //first element has no offsets
-
-        AbsoluteBoundaries = new Dictionary<CityPolygon, int[]>();
 
         foreach (var obj in CityObjects)
         {
@@ -70,18 +65,17 @@ public static class CityJSONFormatter
     // geometry needs a parent, so it is called when adding a CityObject. todo: remove when cityGeometry is destroyed
     private static void AddCityGeometry(CityObject parent, CitySurface surface)
     {
-        Debug.Log("adding verts for: " + surface.name + " of " + parent.Name);
+        //Debug.Log("adding verts for: " + surface.name + " of " + parent.Name);
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
             var verts = polygon.Vertices;
 
             vertList.Add(verts);
-            var vertOffset = vertList.Count - 1;
-            vertIndexOffsets.Add(vertIndexOffsets[vertOffset] + verts.Length);
-            Debug.Log(surface);
-
-            AbsoluteBoundaries.Add(polygon, ConvertBoundaryIndices(polygon.LocalBoundaries, vertOffset));
+            var vertOffsetIndex = vertList.Count - 1;
+            polygon.VertOffset = vertIndexOffsets[vertOffsetIndex]; // set the offset for this polygon
+            var nextVertOffset = vertIndexOffsets[vertOffsetIndex] + verts.Length; //save the offset for the next polygon
+            vertIndexOffsets.Add(nextVertOffset); //needed for next iteration
 
             foreach (var vert in polygon.Vertices)
             {
@@ -90,12 +84,12 @@ public static class CityJSONFormatter
         }
     }
 
-    private static int[] ConvertBoundaryIndices(int[] boundaries, int offsetIndex)
+    public static int[] ConvertBoundaryIndices(int[] boundaries, int vertOffset)
     {
         var offsetBoundaries = new int[boundaries.Length];
         for (int i = 0; i < boundaries.Length; i++)
         {
-            offsetBoundaries[i] = boundaries[i] + vertIndexOffsets[offsetIndex];
+            offsetBoundaries[i] = boundaries[i] + vertOffset;
         }
         return offsetBoundaries;
     }
@@ -139,7 +133,7 @@ public static class CityJSONFormatter
         geographicalExtent.Add(maxy);
         geographicalExtent.Add(maxz);
 
-        Debug.Log(geographicalExtent.Count);
+        //Debug.Log(geographicalExtent.Count);
         Metadata["geographicalExtent"] = geographicalExtent;
     }
 }
