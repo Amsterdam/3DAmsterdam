@@ -9,6 +9,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeature : SquarePolygon
     {
         public UitbouwMuur Wall { get; private set; }
+        public CitySurface Surface { get; private set; }
         //public Transform featureTransform { get; private set; }
 
         public EditMode ActiveMode { get; private set; }
@@ -39,15 +40,19 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 //remove the hole from the current wall, if the current wall exists
                 if (Wall != null)
-                    Wall.GetComponent<CitySurface>().TryRemoveHole(this); 
-
+                {
+                    Surface = Wall.GetComponent<CitySurface>();
+                    Surface.TryRemoveHole(this);
+                }
                 //set the new wall
                 Wall = wall;
 
                 //add the hole to the new wall, if the new wall exists
                 if (Wall != null)
-                    Wall.GetComponent<CitySurface>().TryAddHole(this); //add the hole to the new wall
-
+                {
+                    Surface = Wall.GetComponent<CitySurface>();
+                    Surface.TryAddHole(this); //add the hole to the new wall
+                }
             }
             transform.position = wall.transform.position;
             transform.forward = wall.transform.forward;
@@ -85,7 +90,16 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void DeleteFeature()
         {
             Destroy(editUI.gameObject);
+            Surface.TryRemoveHole(this);
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (editUI)
+                Destroy(editUI.gameObject);
+            //Destroy(gameObject);
+            Surface.TryRemoveHole(this);
         }
 
         public void EditFeature()
