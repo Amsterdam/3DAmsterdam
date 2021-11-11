@@ -22,14 +22,14 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        public override CityPolygon SolidSurfacePolygon
-        {
-            get
-            {
-                base.SolidSurfacePolygon.UpdateVertices(GetVertices());
-                return base.SolidSurfacePolygon;
-            }
-        }
+        //public override CityPolygon SolidSurfacePolygon
+        //{
+        //    get
+        //    {
+        //        base.SolidSurfacePolygon.UpdateVertices(GetVertices());
+        //        return base.SolidSurfacePolygon;
+        //    }
+        //}
 
         ////private Vector3[] vertices;
         //public Vector3[] Vertices => Polygon.Vertices;

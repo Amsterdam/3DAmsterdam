@@ -10,14 +10,7 @@ public abstract class CitySurface : MonoBehaviour
 {
     public List<CityPolygon> Polygons = new List<CityPolygon>();
 
-    public virtual CityPolygon SolidSurfacePolygon
-    {
-        get
-        {
-            //Polygons[0].UpdateVertices(GetVertices());
-            return Polygons[0];
-        }
-    }
+    public virtual CityPolygon SolidSurfacePolygon => Polygons[0];
     public virtual CityPolygon[] HolePolygons => Polygons.Skip(1).ToArray();
     //{
     //    get

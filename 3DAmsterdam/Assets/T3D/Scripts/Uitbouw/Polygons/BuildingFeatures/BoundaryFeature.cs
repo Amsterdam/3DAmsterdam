@@ -53,8 +53,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             }
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             SnapToWall();
             SetButtonPositions();
         }
