@@ -27,9 +27,9 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 return new Vector3[] {
                     GetCorner(leftBound, topBound),
-                    GetCorner(rightBound, topBound),
-                    GetCorner(rightBound, bottomBound),
                     GetCorner(leftBound, bottomBound),
+                    GetCorner(rightBound, bottomBound),
+                    GetCorner(rightBound, topBound),
                 };
             }
         }

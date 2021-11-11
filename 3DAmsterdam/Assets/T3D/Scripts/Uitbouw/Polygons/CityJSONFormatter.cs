@@ -20,6 +20,8 @@ public static class CityJSONFormatter
 
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
 
+    private static bool swapYZ = true; //swap y and z coordinates of vertices?
+
     public static string GetJSON()
     {
         RootObject = new JSONObject();
@@ -79,7 +81,10 @@ public static class CityJSONFormatter
 
             foreach (var vert in polygon.Vertices)
             {
-                Vertices.Add(vert);
+                if (swapYZ)
+                    Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
+                else
+                    Vertices.Add(vert);
             }
         }
     }
