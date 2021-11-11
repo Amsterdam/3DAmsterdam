@@ -78,8 +78,12 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                         }
 
                         placedBoundaryFeature.SetWall(wall);
+
                         placedBoundaryFeature.transform.position = hit.point;
-                        placedBoundaryFeature.transform.rotation = hit.transform.rotation;
+                        placedBoundaryFeature.transform.forward = wall.transform.forward;
+
+                        //placedBoundaryFeature.transform.position = hit.point;
+                        //placedBoundaryFeature.transform.rotation = hit.transform.rotation;
 
                         ComponentImage.enabled = false;
                     }

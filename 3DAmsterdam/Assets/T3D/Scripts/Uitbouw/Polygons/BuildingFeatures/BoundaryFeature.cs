@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public class BoundaryFeature : SquarePolygon
+    public class BoundaryFeature : SquareSurface
     {
         public UitbouwMuur Wall { get; private set; }
-        public CitySurface Surface { get; private set; }
+        //public CitySurface Surface { get; private set; }
         //public Transform featureTransform { get; private set; }
 
         public EditMode ActiveMode { get; private set; }
@@ -35,27 +35,22 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void SetWall(UitbouwMuur wall)
         {
-            //if a new wall is being set
-            if (Wall != wall)
+            SolidSurfacePolygon.UpdateVertices(GetVertices());
+            
+            //remove the hole from the current wall, if the current wall exists
+            if (Wall != null)
             {
-                //remove the hole from the current wall, if the current wall exists
-                if (Wall != null)
-                {
-                    Surface = Wall.GetComponent<CitySurface>();
-                    Surface.TryRemoveHole(this);
-                }
-                //set the new wall
-                Wall = wall;
-
-                //add the hole to the new wall, if the new wall exists
-                if (Wall != null)
-                {
-                    Surface = Wall.GetComponent<CitySurface>();
-                    Surface.TryAddHole(this); //add the hole to the new wall
-                }
+                //Surface = Wall.GetComponent<CitySurface>();
+                Wall.TryRemoveHole(SolidSurfacePolygon);
             }
-            transform.position = wall.transform.position;
-            transform.forward = wall.transform.forward;
+            //set the new wall
+            Wall = wall;
+
+            //add the hole to the new wall, if the new wall exists
+            if (Wall != null)
+            {
+                Wall.TryAddHole(SolidSurfacePolygon); //add the hole to the new wall
+            }
         }
 
         protected virtual void Update()
@@ -90,7 +85,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void DeleteFeature()
         {
             Destroy(editUI.gameObject);
-            Surface.TryRemoveHole(this);
+            if (Wall)
+                Wall.TryRemoveHole(SolidSurfacePolygon);
             Destroy(gameObject);
         }
 
@@ -99,7 +95,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (editUI)
                 Destroy(editUI.gameObject);
             //Destroy(gameObject);
-            Surface.TryRemoveHole(this);
+            if (Wall)
+                Wall.TryRemoveHole(SolidSurfacePolygon);
         }
 
         public void EditFeature()

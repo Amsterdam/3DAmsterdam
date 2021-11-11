@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class SquarePolygon : CityPolygon
+    public class SquareSurface : CitySurface
     {
         [SerializeField]
         protected Transform meshTransform;
@@ -21,39 +22,53 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        public override Vector3[] Vertices
+        public override CityPolygon SolidSurfacePolygon
         {
             get
             {
-                return new Vector3[] {
+                base.SolidSurfacePolygon.UpdateVertices(GetVertices());
+                return base.SolidSurfacePolygon;
+            }
+        }
+
+        ////private Vector3[] vertices;
+        //public Vector3[] Vertices => Polygon.Vertices;
+        //public override int[] LocalBoundaries
+
+        public Vector2 Size { get; private set; }
+
+        protected override void Awake()
+        {
+            if (!meshTransform)
+                meshTransform = transform;
+            //assign the meshTransform before calling awake, because the meshTransform is needed to calculate the main surface polygon
+            base.Awake();
+        }
+
+        protected override CityPolygon InitializeMainSurface()
+        {
+            return new CityPolygon(GetVertices(), GetBoundaries());
+        }
+
+        public override int[] GetBoundaries()
+        {
+            return new int[]
+            {
+                    0,
+                    1,
+                    2,
+                    3,
+            };
+        }
+
+        public override Vector3[] GetVertices()
+        {
+            return new Vector3[] {
                     GetCorner(leftBound, topBound),
                     GetCorner(leftBound, bottomBound),
                     GetCorner(rightBound, bottomBound),
                     GetCorner(rightBound, topBound),
                 };
-            }
-        }
-
-        public override int[] LocalBoundaries
-        {
-            get
-            {
-                return new int[]
-                {
-                    0,
-                    1,
-                    2,
-                    3,
-                };
-            }
-        }
-
-        public Vector2 Size { get; private set; }
-
-        protected virtual void Awake()
-        {
-            if (!meshTransform)
-                meshTransform = transform;
         }
 
         protected virtual void Start()
@@ -101,6 +116,11 @@ namespace Netherlands3D.T3D.Uitbouw
             var vDir = (projectedVPoint - meshTransform.position).normalized;
 
             return meshTransform.position + hDir * hDist + vDir * vDist;
+        }
+
+        protected virtual void Update()
+        {
+            SolidSurfacePolygon.UpdateVertices(GetVertices());
         }
 
         //private void OnDrawGizmos()

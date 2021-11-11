@@ -14,8 +14,8 @@ namespace Netherlands3D.T3D.Uitbouw
         Back,
     }
 
-    [RequireComponent(typeof(CitySurface))]
-    public class UitbouwMuur : SquarePolygon
+    //[RequireComponent(typeof(CitySurface))]
+    public class UitbouwMuur : SquareSurface
     {
         [SerializeField]
         private WallSide side;

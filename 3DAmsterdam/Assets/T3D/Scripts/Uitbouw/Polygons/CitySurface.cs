@@ -5,22 +5,44 @@ using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using SimpleJSON;
 
-[RequireComponent(typeof(CityPolygon))]
-public class CitySurface : MonoBehaviour
+//[RequireComponent(typeof(CityPolygon))]
+public abstract class CitySurface : MonoBehaviour
 {
     public List<CityPolygon> Polygons = new List<CityPolygon>();
 
-    public CityPolygon SolidSurfacePolygon => Polygons[0];
-    public CityPolygon[] HolePolygons => Polygons.Skip(1).ToArray(); //skip the first element (the solid part)
-
-    private void Awake()
+    public virtual CityPolygon SolidSurfacePolygon
     {
-        Polygons.Add(GetComponent<CityPolygon>()); //solid part of the surface
+        get
+        {
+            //Polygons[0].UpdateVertices(GetVertices());
+            return Polygons[0];
+        }
+    }
+    public virtual CityPolygon[] HolePolygons => Polygons.Skip(1).ToArray();
+    //{
+    //    get
+    //    {
+    //        var holes = Polygons.Skip(1);//skip the first element (the solid part)
+    //        foreach (var hole in holes)
+    //        {
+    //            hole.UpdateVertices(GetVertices());
+    //        }
+    //        return holes.ToArray();
+    //    }
+    //}
+
+    protected abstract CityPolygon InitializeMainSurface();
+    public abstract Vector3[] GetVertices();
+    public abstract int[] GetBoundaries();
+
+    protected virtual void Awake()
+    {
+        Polygons.Add(InitializeMainSurface());
     }
 
     public void TryAddHole(CityPolygon hole)
     {
-        if(!Polygons.Contains(hole))
+        if (!Polygons.Contains(hole))
             Polygons.Add(hole);
     }
 
