@@ -136,7 +136,7 @@ public class FileInputIndexedDB : MonoBehaviour
         }
         else if (extention == ".geojson")
         {
-            GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
+            //Parse geojson
         }
     }
 
