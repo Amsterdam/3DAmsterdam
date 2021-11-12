@@ -53,7 +53,7 @@ mergeInto(LibraryManager.library, {
         window.ReadFiles = function ReadFiles(SelectedFiles) {
             if (window.File && window.FileReader && window.FileList && window.Blob) {
                 window.ConnectToDatabase(SelectedFiles);
-                unityInstance.SendMessage('FileUploads', 'FileCount', SelectedFiles.length);
+                unityInstance.SendMessage('UserFileUploads', 'FileCount', SelectedFiles.length);
             } else {
                 alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
             };
@@ -98,31 +98,42 @@ mergeInto(LibraryManager.library, {
             data.timestamp = new Date();
             data.contents = new TextEncoder("utf-8").encode(datastring);
             var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readwrite");
-
-            var dbRequest = transaction.objectStore("FILE_DATA").put(data, databaseName + "/" + filename);
-            console.log("saving file");
+			var newIndexedFilePath = databaseName + "/" + filename;
+            var dbRequest = transaction.objectStore("FILE_DATA").put(data, newIndexedFilePath);
+            console.log("Saving file: " + newIndexedFilePath);
             dbRequest.onsuccess = function () {
-                unityInstance.SendMessage('FileUploads', 'LoadFile', filename);
-                console.log("file saved");
+                unityInstance.SendMessage('UserFileUploads', 'LoadFile', filename);
+                console.log("File saved: " + newIndexedFilePath);
                 window.FileSaved();
             };
             dbRequest.onerror = function () {
-                unityInstance.SendMessage('FileUploads', 'LoadFileError', filename);
-                alert("kan " + filename + " niet opslaan");
+                unityInstance.SendMessage('UserFileUploads', 'LoadFileError', filename);
+                alert("Could not save: " + newIndexedFilePath);
                 window.FileSaved();
             };
         };
     },
-    StageIndexedDBUpload: function (filename, targetURL) {
-        //stage a file for uploading
-    },
-    UploadFromIndexedDB: function () {
-        //start uploading stages files
-
+    UploadFromIndexedDB: function (filePath, targetURL) {
+		FS.syncfs(false, function (err) {});
+        var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readonly");
+        var indexedFilePath = databaseName + "/" + filename;
+        var dbRequest = transaction.objectStore("FILE_DATA").get(indexedFilePath);
+        console.log("Reading IndexedDB file: " + newIndexedFilePath);
+        dbRequest.onsuccess = function (e) {
+            let record = e.target.result;
+            var xhr = new XMLHttpRequest;
+            xhr.open("PUT", stagedUpload.targetURL, false);
+            xhr.send(record.data);
+            unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadCompleted');	
+        };
+        dbRequest.onerror = function () {
+            unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadFailed', filename);
+        };
+		
     },
     SyncFilesFromIndexedDB: function () {
         FS.syncfs(true, function (err) {
-            SendMessage('FileUploads', 'IndexedDBUpdated');
+            SendMessage('UserFileUploads', 'IndexedDBUpdated');
         });
     },
     SyncFilesToIndexedDB: function () {
