@@ -114,7 +114,8 @@ mergeInto(LibraryManager.library, {
         };
     },
     UploadFromIndexedDB: function (filePath, targetURL) {
-		FS.syncfs(false, function (err) {});
+        FS.syncfs(false, function (err) { });
+
         var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readonly");
         var indexedFilePath = databaseName + "/" + filename;
         var dbRequest = transaction.objectStore("FILE_DATA").get(indexedFilePath);
