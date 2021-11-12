@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class SquareSurface : CitySurface
+    public class SquareSurface : MonoBehaviour
     {
+        public CitySurface Surface;
+
         [SerializeField]
         protected Transform meshTransform;
         [SerializeField]
@@ -37,21 +39,22 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public Vector2 Size { get; private set; }
 
-        protected override void Awake()
+        protected virtual void Awake()
         {
             if (!meshTransform)
                 meshTransform = transform;
             //assign the meshTransform before calling awake, because the meshTransform is needed to calculate the main surface polygon
-            base.Awake();
+            Surface = new CitySurface(new CityPolygon(GetVertices(), GetBoundaries()));
         }
 
-        protected override CityPolygon InitializeMainSurface()
-        {
-            return new CityPolygon(GetVertices(), GetBoundaries());
-        }
+        //protected override CityPolygon InitializeMainSurface()
+        //{
+        //    return new CityPolygon(GetVertices(), GetBoundaries(0));
+        //}
 
-        public override int[] GetBoundaries()
+        public int[] GetBoundaries()
         {
+            //polygonIndex = 0; since this is the only polygon for this surface
             return new int[]
             {
                     0,
@@ -61,7 +64,7 @@ namespace Netherlands3D.T3D.Uitbouw
             };
         }
 
-        public override Vector3[] GetVertices()
+        public Vector3[] GetVertices()
         {
             return new Vector3[] {
                     GetCorner(leftBound, topBound),
@@ -120,7 +123,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Update()
         {
-            SolidSurfacePolygon.UpdateVertices(GetVertices());
+            Surface.SolidSurfacePolygon.UpdateVertices(GetVertices()); //needed when requesting the verts for JSONExport
         }
 
         //private void OnDrawGizmos()

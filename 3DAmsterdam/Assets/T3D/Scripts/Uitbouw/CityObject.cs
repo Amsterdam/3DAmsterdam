@@ -40,7 +40,7 @@ public abstract class CityObject : MonoBehaviour
     public CityObjectType Type;
 
     public int Lod { get; protected set; } = 1;
-    public CitySurface[] Surfaces;
+    public CitySurface[] Surfaces { get; private set; }
     public CityObject[] Parents;
 
     //public CityObject Parents
@@ -91,7 +91,7 @@ public abstract class CityObject : MonoBehaviour
         return obj;
     }
 
-    public JSONNode GetGeometryNode()
+    public virtual JSONObject GetGeometryNode()
     {
         var node = new JSONObject();
         node["type"] = "MultiSurface"; //todo support other types?
@@ -107,10 +107,15 @@ public abstract class CityObject : MonoBehaviour
         return node;
     }
 
+    public void UpdateSurfaces()
+    {
+        Surfaces = GetSurfaces();
+    }
+
     protected virtual void Start()
     {
         Name = gameObject.name;
-        Surfaces = GetSurfaces();
+        UpdateSurfaces();
         CityJSONFormatter.AddCityObejct(this);
     }
 

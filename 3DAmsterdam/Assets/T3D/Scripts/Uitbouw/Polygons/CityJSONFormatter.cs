@@ -22,6 +22,8 @@ public static class CityJSONFormatter
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
 
+    public static Dictionary<CityPolygon, int[]> AbsoluteBoundaries = new Dictionary<CityPolygon, int[]>();
+
     public static string GetJSON()
     {
         RootObject = new JSONObject();
@@ -44,6 +46,9 @@ public static class CityJSONFormatter
             AddCityObejctToJSONData(obj);
         }
 
+        Debug.Log(Vertices.Count);
+        //Debug.Log();
+
         return RootObject.ToString();
     }
 
@@ -56,9 +61,12 @@ public static class CityJSONFormatter
     // Called when a CityObject is created todo: remove when cityObject is destroyed
     private static void AddCityObejctToJSONData(CityObject obj)
     {
-        foreach (var geometry in obj.Surfaces)
+        obj.UpdateSurfaces(); // update latest changes
+        Debug.Log(obj.Name + obj.Surfaces[0].SolidSurfacePolygon.Vertices.Length);
+
+        foreach (var surface in obj.Surfaces)
         {
-            AddCityGeometry(obj, geometry);
+            AddCityGeometry(obj, surface);
         }
         RecalculateGeographicalExtents();
         cityObjects[obj.Name] = obj.GetJsonObject();
@@ -71,20 +79,24 @@ public static class CityJSONFormatter
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
-            var verts = polygon.Vertices;
+            polygon.LocalToAbsoluteBoundaryConverter = new Dictionary<int, int>();
+            //var verts = polygon.Vertices;
 
-            vertList.Add(verts);
-            var vertOffsetIndex = vertList.Count - 1;
-            polygon.VertOffset = vertIndexOffsets[vertOffsetIndex]; // set the offset for this polygon
-            var nextVertOffset = vertIndexOffsets[vertOffsetIndex] + verts.Length; //save the offset for the next polygon
-            vertIndexOffsets.Add(nextVertOffset); //needed for next iteration
+            //vertList.Add(verts);
+            //var vertOffsetIndex = vertList.Count - 1;
+            //polygon.VertOffset = vertIndexOffsets[vertOffsetIndex]; // set the offset for this polygon
+            //var nextVertOffset = vertIndexOffsets[vertOffsetIndex] + verts.Length; //save the offset for the next polygon
+            //vertIndexOffsets.Add(nextVertOffset); //needed for next iteration
 
-            foreach (var vert in polygon.Vertices)
+            for (int j = 0; j < polygon.Vertices.Length; j++)
             {
+                Vector3 vert = polygon.Vertices[j];
                 if (swapYZ)
                     Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
                 else
                     Vertices.Add(vert);
+
+                polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
             }
         }
     }

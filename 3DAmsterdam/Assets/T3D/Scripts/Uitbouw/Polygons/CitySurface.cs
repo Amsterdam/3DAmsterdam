@@ -6,12 +6,18 @@ using UnityEngine;
 using SimpleJSON;
 
 //[RequireComponent(typeof(CityPolygon))]
-public abstract class CitySurface : MonoBehaviour
+public class CitySurface
 {
     public List<CityPolygon> Polygons = new List<CityPolygon>();
 
     public virtual CityPolygon SolidSurfacePolygon => Polygons[0];
     public virtual CityPolygon[] HolePolygons => Polygons.Skip(1).ToArray();
+
+    public CitySurface(CityPolygon solidSurfacePolygon)
+    {
+        Polygons.Add(solidSurfacePolygon);
+    }
+
     //{
     //    get
     //    {
@@ -24,14 +30,14 @@ public abstract class CitySurface : MonoBehaviour
     //    }
     //}
 
-    protected abstract CityPolygon InitializeMainSurface();
-    public abstract Vector3[] GetVertices();
-    public abstract int[] GetBoundaries();
+    //protected abstract CityPolygon InitializeMainSurface();
+    //public abstract Vector3[] GetVertices();
+    //public abstract int[] GetBoundaries(int polygonIndex);
 
-    protected virtual void Awake()
-    {
-        Polygons.Add(InitializeMainSurface());
-    }
+    //protected virtual void Awake()
+    //{
+    //    Polygons.Add(InitializeMainSurface());
+    //}
 
     public void TryAddHole(CityPolygon hole)
     {

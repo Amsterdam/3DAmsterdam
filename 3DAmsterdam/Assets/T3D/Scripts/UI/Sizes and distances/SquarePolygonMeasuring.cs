@@ -23,7 +23,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected override void DrawLines()
         {
-            var corners = square.SolidSurfacePolygon.Vertices;
+            var corners = square.Surface.SolidSurfacePolygon.Vertices;
 
             DrawLine(0, corners[0], corners[3]); //direction matters for resize
             DrawLine(1, corners[2], corners[3]); //direction matters for resize

@@ -35,13 +35,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void SetWall(UitbouwMuur wall)
         {
-            SolidSurfacePolygon.UpdateVertices(GetVertices());
+            Surface.SolidSurfacePolygon.UpdateVertices(GetVertices());
             
             //remove the hole from the current wall, if the current wall exists
             if (Wall != null)
             {
                 //Surface = Wall.GetComponent<CitySurface>();
-                Wall.TryRemoveHole(SolidSurfacePolygon);
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             }
             //set the new wall
             Wall = wall;
@@ -49,7 +49,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //add the hole to the new wall, if the new wall exists
             if (Wall != null)
             {
-                Wall.TryAddHole(SolidSurfacePolygon); //add the hole to the new wall
+                Wall.Surface.TryAddHole(Surface.SolidSurfacePolygon); //add the hole to the new wall
             }
         }
 
@@ -87,7 +87,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             Destroy(editUI.gameObject);
             if (Wall)
-                Wall.TryRemoveHole(SolidSurfacePolygon);
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             Destroy(gameObject);
         }
 
@@ -97,7 +97,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 Destroy(editUI.gameObject);
             //Destroy(gameObject);
             if (Wall)
-                Wall.TryRemoveHole(SolidSurfacePolygon);
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
         }
 
         public void EditFeature()

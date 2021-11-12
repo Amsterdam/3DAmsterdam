@@ -382,7 +382,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override CitySurface[] GetSurfaces()
         {
-            return GetComponentsInChildren<CitySurface>();
+            List<CitySurface> citySurfaces = new List<CitySurface>();
+            var squares = GetComponentsInChildren<SquareSurface>();
+            foreach(var square in squares)
+            {
+                citySurfaces.Add(square.Surface);
+            }
+
+            return citySurfaces.ToArray();
         }
     }
 }
