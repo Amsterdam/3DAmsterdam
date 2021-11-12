@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -21,6 +22,12 @@ namespace Netherlands3D.Interface.Sharing
 			SHOW_URL,
 			SERVER_PROBLEM
 		}
+
+		/// <summary>
+		/// JS plugins are the *.jslib files found in the project.
+		/// </summary>
+		[DllImport("__Internal")]
+		private static extern void IndexedDBUpload(string fileName,string targetURL);
 
 		[SerializeField]
 		private RectTransform shareOptions;
@@ -40,6 +47,10 @@ namespace Netherlands3D.Interface.Sharing
 		private SceneSerializer sceneSerializer;
 
 		private SharingState state = SharingState.SHARING_OPTIONS;
+
+		private ServerReturn currentSceneServerReturn;
+		private int modelUploadsRemaining = 0;
+		private bool waitingForIndexedDBUpload = false;
 
 		void OnEnable()
 		{
@@ -87,58 +98,91 @@ namespace Netherlands3D.Interface.Sharing
 			else
 			{
 				//Check if we got some tokens for model upload, and download them 1 at a time.
-				ServerReturn serverReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
-				sceneSerializer.sharedSceneId = serverReturn.sceneId;
+				currentSceneServerReturn = JsonUtility.FromJson<ServerReturn>(sceneSaveRequest.downloadHandler.text);
+				sceneSerializer.sharedSceneId = currentSceneServerReturn.sceneId;
 				Debug.Log("Scene return: " + sceneSaveRequest.downloadHandler.text);
 
 				var totalVerts = 0;
-				if (serverReturn.modelUploadTokens.Length > 0)
+
+				if (currentSceneServerReturn.modelUploadTokens.Length > 0)
 				{
+					modelUploadsRemaining = currentSceneServerReturn.modelUploadTokens.Length;
 					progressBar.SetMessage("Objecten opslaan..");
 					progressBar.Percentage(0.3f);
-					var currentModel = 0;
-					while (currentModel < serverReturn.modelUploadTokens.Length)
+					while (modelUploadsRemaining >= currentSceneServerReturn.modelUploadTokens.Length)
 					{
-						progressBar.SetMessage("Objecten opslaan.. " + (currentModel + 1) + "/" + serverReturn.modelUploadTokens.Length);
-						var pathToLocalBinaryFile = sceneSerializer.SerializeCustomObject(currentModel, serverReturn.sceneId, serverReturn.modelUploadTokens[currentModel].token);
-						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", serverReturn.sceneId).Replace("{modelToken}", serverReturn.modelUploadTokens[currentModel].token);
-						Debug.Log("Model upload: " + putPath);
-						
-						//Use IndexedDB plugin method to upload the mesh from JS side to save the duplication of the mesh in the Unity heap
-						// 1. Stage every model upload (maybe chunks later)
-						// 2. Start JS upload cycle of all staged files
-						// 3. Update, and eventualy hide progress bar screen to do the rest of this code
+						int currentModelIndex = modelUploadsRemaining - currentSceneServerReturn.modelUploadTokens.Length;
+						progressBar.SetMessage("Objecten opslaan.. " + (currentModelIndex + 1) + "/" + currentSceneServerReturn.modelUploadTokens.Length);
+						var pathToLocalBinaryFile = sceneSerializer.SerializeCustomObject(currentModelIndex, currentSceneServerReturn.sceneId, currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
+						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", currentSceneServerReturn.sceneId).Replace("{modelToken}", currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
 
-						Debug.Log("Model return " + currentModel);
-						currentModel++;
-						var currentModelLoadPercentage = (float)currentModel / ((float)serverReturn.modelUploadTokens.Length);
-						progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
+#if UNITY_WEBGL && !UNITY_EDITOR
+						Debug.Log("Preparing IndexedDB: " + putPath);
+						waitingForIndexedDBUpload = true;
+						UploadFromIndexedDB(pathToLocalBinaryFile, putPath);
+						yield return new WaitWhile(() => waitingForIndexedDBUpload); 
+						NextModelUpload();
 						yield return new WaitForSeconds(0.2f);
+#else
+						UnityWebRequest modelSaveRequest = UnityWebRequest.Put(putPath, File.ReadAllBytes(pathToLocalBinaryFile));
+						yield return modelSaveRequest.SendWebRequest();
+						if (modelSaveRequest.result != UnityWebRequest.Result.Success)
+						{
+							ChangeState(SharingState.SERVER_PROBLEM);
+							yield break;
+						}
+						else
+						{	
+							NextModelUpload();
+							yield return new WaitForSeconds(0.2f);
+						}
+#endif
 					}
 				}
-
-				//Let analytics know we saved a scene, with the amount of objects and vertex count
-				Analytics.SendEvent("ShareScene", "Shared", $"Objects:{serverReturn.modelUploadTokens.Length}, Verts:{totalVerts}");
-
-				//Make sure the progressbar shows 100% before jumping to the next state
-				progressBar.Percentage(1.0f);
-				yield return new WaitForSeconds(0.1f);
-
-				ChangeState(SharingState.SHOW_URL);
-
-				var sharedSceneURL = Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}",serverReturn.sceneId);
-				if (!sharedSceneURL.Contains("https://") && !sharedSceneURL.Contains("http://"))
-				{
-					//Use relative path
-					sharedSceneURL = Application.absoluteURL + Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}", serverReturn.sceneId);
-				}
-
-				sharedURL.ShowURL(sharedSceneURL);
-
-				JavascriptMethodCaller.SetUniqueShareURLToken(serverReturn.sceneId);
-
-				yield return null;
+				yield return CompleteSharing();
 			}
+		}
+
+		public void NextModelUpload()
+		{
+			modelUploadsRemaining--;
+			var currentModelLoadPercentage = 1-(currentSceneServerReturn.modelUploadTokens.Length / (float)modelUploadsRemaining);
+			progressBar.Percentage(0.3f + (0.7f * currentModelLoadPercentage));
+		}
+
+		public void IndexedDBUploadCompleted()
+		{
+			modelUploadsRemaining--;
+			waitingForIndexedDBUpload = false;
+		}
+		public void IndexedDBUploadFailed()
+		{
+			ChangeState(SharingState.SERVER_PROBLEM);
+		}
+
+		private IEnumerator CompleteSharing()
+		{
+			//Let analytics know we saved a scene, with the amount of objects and vertex count
+			Analytics.SendEvent("ShareScene", "Shared", $"Objects:{currentSceneServerReturn.modelUploadTokens.Length}");
+
+			//Make sure the progressbar shows 100% before jumping to the next state
+			progressBar.Percentage(1.0f);
+			yield return new WaitForSeconds(0.1f);
+
+			ChangeState(SharingState.SHOW_URL);
+
+			var sharedSceneURL = Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}", currentSceneServerReturn.sceneId);
+			if (!sharedSceneURL.Contains("https://") && !sharedSceneURL.Contains("http://"))
+			{
+				//Use relative path
+				sharedSceneURL = Application.absoluteURL + Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}", currentSceneServerReturn.sceneId);
+			}
+
+			sharedURL.ShowURL(sharedSceneURL);
+
+			JavascriptMethodCaller.SetUniqueShareURLToken(currentSceneServerReturn.sceneId);
+
+			yield return null;
 		}
 
 		/// <summary>
