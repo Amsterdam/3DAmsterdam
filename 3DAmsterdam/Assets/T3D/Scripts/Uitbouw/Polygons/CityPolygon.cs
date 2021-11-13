@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -9,7 +10,20 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public int[] LocalBoundaries { get; set; }
         public Vector3[] Vertices { get; set; } // used by the CityJSONFormatter to add to the total vertices object
-        public int VertOffset { get; set; } //offset to convert LocalBoundaries to AbsoluteBoundaries in the CityJSON object. Must be set while generating JSON since vertices are dynamically collapsed to a single array at that time
+        private bool b;
+        public bool BoundaryConverterIsSet
+        {
+            get
+            {
+                Debug.Log("getting :" + b);
+                return b;
+            }
+            set
+            {
+                Debug.Log("setting :" + value);
+                b = value;
+            }
+        }
         public Dictionary<int, int> LocalToAbsoluteBoundaryConverter { get; set; }  //note: this is only valid when generating the json
 
         public CityPolygon(Vector3[] vertices, int[] localBoundaries)
@@ -25,12 +39,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public JSONNode GetJSONPolygon()
         {
-            //AbsoluteBoundaries = new Dictionary<int, int>();
-            //int[] absoluteBoundaries = CityJSONFormatter.ConvertBoundaryIndices(LocalBoundaries, VertOffset);
+            Debug.Log(LocalToAbsoluteBoundaryConverter.Count);
+            Assert.IsTrue(BoundaryConverterIsSet);
+
             int[] absoluteBoundaries = new int[LocalBoundaries.Length];
             for (int i = 0; i < LocalBoundaries.Length; i++)
             {
-                absoluteBoundaries[i] = LocalToAbsoluteBoundaryConverter[i];
+                absoluteBoundaries[i] = LocalToAbsoluteBoundaryConverter[i]; //this relies on the CityJSONFormatter to set the absolute boundaries of this object before calling this function. This is not possible locally, since all vetices are stored in 1 big array in the CityJsonObject
             }
 
             var boundaryArray = new JSONArray(); // defines a polygon (1st is surface, 2+ is holes in first surface)
@@ -38,6 +53,9 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 boundaryArray.Add(absoluteBoundaries[i]);
             }
+
+            BoundaryConverterIsSet = false; //the boundary converter cannot be assumed to be reliable after returning the array.
+
             return boundaryArray;
         }
     }

@@ -14,15 +14,10 @@ public static class CityJSONFormatter
     private static JSONArray Vertices;
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
-    private static List<int> vertIndexOffsets;
-    private static List<Vector3[]> vertList;
     private static JSONArray geographicalExtent;
-
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
-
-    public static Dictionary<CityPolygon, int[]> AbsoluteBoundaries = new Dictionary<CityPolygon, int[]>();
 
     public static string GetJSON()
     {
@@ -37,17 +32,10 @@ public static class CityJSONFormatter
         RootObject["CityObjects"] = cityObjects;
         RootObject["vertices"] = Vertices;
 
-        vertList = new List<Vector3[]>();
-        vertIndexOffsets = new List<int>();
-        vertIndexOffsets.Add(0); //first element has no offsets
-
         foreach (var obj in CityObjects)
         {
             AddCityObejctToJSONData(obj);
         }
-
-        Debug.Log(Vertices.Count);
-        //Debug.Log();
 
         return RootObject.ToString();
     }
@@ -62,11 +50,10 @@ public static class CityJSONFormatter
     private static void AddCityObejctToJSONData(CityObject obj)
     {
         obj.UpdateSurfaces(); // update latest changes
-        Debug.Log(obj.Name + obj.Surfaces[0].SolidSurfacePolygon.Vertices.Length);
 
         foreach (var surface in obj.Surfaces)
         {
-            AddCityGeometry(obj, surface);
+            AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
         }
         RecalculateGeographicalExtents();
         cityObjects[obj.Name] = obj.GetJsonObject();
@@ -79,14 +66,7 @@ public static class CityJSONFormatter
         for (int i = 0; i < surface.Polygons.Count; i++)
         {
             var polygon = surface.Polygons[i];
-            polygon.LocalToAbsoluteBoundaryConverter = new Dictionary<int, int>();
-            //var verts = polygon.Vertices;
-
-            //vertList.Add(verts);
-            //var vertOffsetIndex = vertList.Count - 1;
-            //polygon.VertOffset = vertIndexOffsets[vertOffsetIndex]; // set the offset for this polygon
-            //var nextVertOffset = vertIndexOffsets[vertOffsetIndex] + verts.Length; //save the offset for the next polygon
-            //vertIndexOffsets.Add(nextVertOffset); //needed for next iteration
+            polygon.LocalToAbsoluteBoundaryConverter = new Dictionary<int, int>(); //reset the dictionary if a previous export occurred
 
             for (int j = 0; j < polygon.Vertices.Length; j++)
             {
@@ -97,18 +77,9 @@ public static class CityJSONFormatter
                     Vertices.Add(vert);
 
                 polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
+                polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
             }
         }
-    }
-
-    public static int[] ConvertBoundaryIndices(int[] boundaries, int vertOffset)
-    {
-        var offsetBoundaries = new int[boundaries.Length];
-        for (int i = 0; i < boundaries.Length; i++)
-        {
-            offsetBoundaries[i] = boundaries[i] + vertOffset;
-        }
-        return offsetBoundaries;
     }
 
     private static void RecalculateGeographicalExtents()
