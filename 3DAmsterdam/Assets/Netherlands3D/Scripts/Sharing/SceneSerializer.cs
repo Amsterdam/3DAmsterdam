@@ -310,7 +310,7 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         public string SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
-            var localBinaryMeshFile = meshToken + ".bin";
+            var localBinaryMeshFile = Application.persistentDataPath + "/" + meshToken + ".bin";
             BinaryMeshConversion.SaveMeshAsBinaryFile(targetMesh, localBinaryMeshFile);
             return localBinaryMeshFile;
         }
