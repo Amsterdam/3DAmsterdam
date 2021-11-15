@@ -129,8 +129,7 @@ mergeInto(LibraryManager.library, {
         };
         dbRequest.onerror = function () {
             unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadFailed', filename);
-        };
-		
+        };	
     },
     SyncFilesFromIndexedDB: function () {
         FS.syncfs(true, function (err) {

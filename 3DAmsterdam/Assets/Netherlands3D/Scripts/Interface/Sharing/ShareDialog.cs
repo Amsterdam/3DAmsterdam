@@ -27,7 +27,7 @@ namespace Netherlands3D.Interface.Sharing
 		/// JS plugins are the *.jslib files found in the project.
 		/// </summary>
 		[DllImport("__Internal")]
-		private static extern void IndexedDBUpload(string fileName,string targetURL);
+		private static extern void UploadFromIndexedDB(string fileName, string targetURL);
 
 		[SerializeField]
 		private RectTransform shareOptions;
