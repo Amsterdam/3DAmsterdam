@@ -10,20 +10,8 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public int[] LocalBoundaries { get; set; }
         public Vector3[] Vertices { get; set; } // used by the CityJSONFormatter to add to the total vertices object
-        private bool b;
-        public bool BoundaryConverterIsSet
-        {
-            get
-            {
-                Debug.Log("getting :" + b);
-                return b;
-            }
-            set
-            {
-                Debug.Log("setting :" + value);
-                b = value;
-            }
-        }
+        public bool BoundaryConverterIsSet { get; set; }
+
         public Dictionary<int, int> LocalToAbsoluteBoundaryConverter { get; set; }  //note: this is only valid when generating the json
 
         public CityPolygon(Vector3[] vertices, int[] localBoundaries)
@@ -39,7 +27,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public JSONNode GetJSONPolygon()
         {
-            Debug.Log(LocalToAbsoluteBoundaryConverter.Count);
             Assert.IsTrue(BoundaryConverterIsSet);
 
             int[] absoluteBoundaries = new int[LocalBoundaries.Length];

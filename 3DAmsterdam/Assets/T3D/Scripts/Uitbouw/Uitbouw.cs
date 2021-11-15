@@ -382,13 +382,20 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override CitySurface[] GetSurfaces()
         {
-            List<CitySurface> citySurfaces = new List<CitySurface>();
-            var squares = GetComponentsInChildren<SquareSurface>();
-            foreach(var square in squares)
-            {
-                citySurfaces.Add(square.Surface);
-            }
+            //List<CitySurface> citySurfaces = new List<CitySurface>();
+            //var squares = GetComponentsInChildren<SquareSurface>();
+            //foreach(var square in squares)
+            //{
+            //    citySurfaces.Add(square.Surface);
+            //}
+            //return citySurfaces.ToArray();
 
+            List<CitySurface> citySurfaces = new List<CitySurface>();
+            var walls = GetComponentsInChildren<UitbouwMuur>();
+            foreach (var wall in walls)
+            {
+                citySurfaces.Add(wall.Surface);
+            }
             return citySurfaces.ToArray();
         }
     }
