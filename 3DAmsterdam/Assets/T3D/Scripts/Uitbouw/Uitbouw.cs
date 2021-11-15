@@ -158,10 +158,8 @@ namespace Netherlands3D.T3D.Uitbouw
             extents = new Vector3(Width / 2, Height / 2, Depth / 2);
         }
 
-        protected override void Update()
+        protected void Update()
         {
-            base.Update();
-
             UpdateDimensions();
             SetArrowPositions();
 

@@ -118,12 +118,4 @@ public abstract class CityObject : MonoBehaviour
         UpdateSurfaces();
         CityJSONFormatter.AddCityObejct(this);
     }
-
-    protected virtual void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            print(CityJSONFormatter.GetJSON());
-        }
-    }
 }
