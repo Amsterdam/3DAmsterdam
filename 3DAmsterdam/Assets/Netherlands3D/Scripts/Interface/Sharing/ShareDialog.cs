@@ -162,7 +162,6 @@ namespace Netherlands3D.Interface.Sharing
 
 		public void IndexedDBUploadCompleted()
 		{
-			modelUploadsRemaining--;
 			waitingForIndexedDBUpload = false;
 		}
 		public void IndexedDBSyncCompleted()
