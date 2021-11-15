@@ -6,6 +6,10 @@ mergeInto(LibraryManager.library, {
         window.counter = 0;
         window.databaseConnection = null;
 
+        window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
+        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
+        window.dbVersion = 21;
+
         //Inject our required html input fields
         window.InjectHiddenFileInput = function InjectHiddenFileInput(type, acceptedExtentions) {
             var newInput = document.createElement("input");
@@ -52,30 +56,27 @@ mergeInto(LibraryManager.library, {
 
         window.ReadFiles = function ReadFiles(SelectedFiles) {
             if (window.File && window.FileReader && window.FileList && window.Blob) {
-                window.ConnectToDatabase(SelectedFiles);
+                window.ConnectToDatabaseAndReadFiles(SelectedFiles);
                 unityInstance.SendMessage('UserFileUploads', 'FileCount', SelectedFiles.length);
             } else {
                 alert("Bestanden inladen wordt helaas niet ondersteund door deze browser.");
             };
         };
 
-        window.ConnectToDatabase = function ConnectToDatabase(SelectedFiles) {
+        window.ConnectToDatabaseAndReadFiles = function ConnectToDatabase(SelectedFiles) {
             //Connect to database
-            window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
-            IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
-            dbVersion = 21;
 			window.filesToSave = SelectedFiles.length;
 			
-            var dbRequest = window.indexedDB.open("/idbfs", dbVersion);
-            dbRequest.onsuccess = function () {
+            var dbConnectionRequest = window.indexedDB.open("/idbfs", window.dbVersion);
+            dbConnectionRequest.onsuccess = function () {
                 console.log("connected to database");
-                window.databaseConnection = dbRequest.result;
+                window.databaseConnection = dbConnectionRequest.result;
                 for (var i = 0; i < SelectedFiles.length; i++) {
                     window.ReadFile(SelectedFiles[i])
                 };
-                dbRequest.onerror = function () {
-                    alert("kan geen verbinding maken met de indexedDatabase");
-                }
+            }
+            dbConnectionRequest.onerror = function () {
+                alert("Kan geen verbinding maken met de indexedDatabase");
             }
         };
 
@@ -98,7 +99,7 @@ mergeInto(LibraryManager.library, {
             data.timestamp = new Date();
             data.contents = new TextEncoder("utf-8").encode(datastring);
             var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readwrite");
-			var newIndexedFilePath = databaseName + "/" + filename;
+            var newIndexedFilePath = window.databaseName + "/" + filename;
             var dbRequest = transaction.objectStore("FILE_DATA").put(data, newIndexedFilePath);
             console.log("Saving file: " + newIndexedFilePath);
             dbRequest.onsuccess = function () {
@@ -115,21 +116,35 @@ mergeInto(LibraryManager.library, {
     },
     UploadFromIndexedDB: function (filePath, targetURL) {
         FS.syncfs(false, function (err) { });
+        var fileName = Pointer_stringify(filePath);
+        var url = Pointer_stringify(targetURL);
 
-        var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readonly");
-        var indexedFilePath = databaseName + "/" + filename;
-        var dbRequest = transaction.objectStore("FILE_DATA").get(indexedFilePath);
-        console.log("Reading IndexedDB file: " + newIndexedFilePath);
-        dbRequest.onsuccess = function (e) {
-            var record = e.target.result;
-            var xhr = new XMLHttpRequest;
-            xhr.open("PUT", stagedUpload.targetURL, false);
-            xhr.send(record.data);
-            unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadCompleted');	
-        };
-        dbRequest.onerror = function () {
-            unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadFailed', filename);
-        };	
+        var dbConnectionRequest = window.indexedDB.open("/idbfs", window.dbVersion);
+        dbConnectionRequest.onsuccess = function () {
+            console.log("Connected to database");
+            window.databaseConnection = dbConnectionRequest.result;
+
+            var transaction = window.databaseConnection.transaction(["FILE_DATA"], "readonly");
+            var indexedFilePath = window.databaseName + "/" + fileName;
+            console.log("Uploading from IndexedDB file: " + indexedFilePath);
+
+            var dbRequest = transaction.objectStore("FILE_DATA").get(indexedFilePath);
+            dbRequest.onsuccess = function (e) {
+                var record = e.target.result;
+                var xhr = new XMLHttpRequest;
+                xhr.open("PUT", url, false);
+                xhr.send(record.data);
+                window.databaseConnection.close();
+                unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadCompleted');
+            };
+            dbRequest.onerror = function () {
+                window.databaseConnection.close();
+                unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadFailed', filename);
+            };
+        }
+        dbConnectionRequest.onerror = function () {
+            alert("Kan geen verbinding maken met de indexedDatabase");
+        }
     },
     SyncFilesFromIndexedDB: function () {
         FS.syncfs(true, function (err) {
