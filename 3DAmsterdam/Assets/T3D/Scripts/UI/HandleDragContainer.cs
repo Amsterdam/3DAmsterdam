@@ -32,7 +32,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void OnSelect(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
         {
-            ComponentImage.sprite = e.Image.sprite;
+            ComponentImage.sprite = e.Sprite;
             isTopComponent = e.IsTopComponent;
             ComponentObject = e.ComponentObject;
             selectComponent = e.SelectComponent;

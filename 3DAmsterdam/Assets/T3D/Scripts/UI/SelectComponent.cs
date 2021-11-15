@@ -9,6 +9,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class SelectComponent : MonoBehaviour
     {
         public GameObject DragContainer;
+        public Sprite DragContainerImage;
         public Color SelectedColor;
         public bool IsTopComponent;
         public float ComponentWidth;
@@ -55,7 +56,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 DragContainer.SetActive(false);
             }
 
-            LibraryComponentSelectedEvent.Raise(this, image, IsTopComponent, ComponentWidth, ComponentHeight, ComponentObject, this);
+            LibraryComponentSelectedEvent.Raise(this, DragContainerImage, IsTopComponent, ComponentWidth, ComponentHeight, ComponentObject, this);
         }
     }
 }
