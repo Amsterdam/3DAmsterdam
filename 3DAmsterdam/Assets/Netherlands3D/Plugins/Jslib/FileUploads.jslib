@@ -121,7 +121,7 @@ mergeInto(LibraryManager.library, {
         var dbRequest = transaction.objectStore("FILE_DATA").get(indexedFilePath);
         console.log("Reading IndexedDB file: " + newIndexedFilePath);
         dbRequest.onsuccess = function (e) {
-            let record = e.target.result;
+            var record = e.target.result;
             var xhr = new XMLHttpRequest;
             xhr.open("PUT", stagedUpload.targetURL, false);
             xhr.send(record.data);
