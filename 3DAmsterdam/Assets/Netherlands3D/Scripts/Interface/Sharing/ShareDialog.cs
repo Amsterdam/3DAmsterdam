@@ -128,7 +128,7 @@ namespace Netherlands3D.Interface.Sharing
 						yield return new WaitWhile(() => waitingForIndexedDBSync); 
 
 						waitingForIndexedDBUpload = true;
-						UploadFromIndexedDB(pathToLocalBinaryFile, putPath);
+						UploadFromIndexedDB(Path.GetFileName(pathToLocalBinaryFile), putPath);
 						yield return new WaitWhile(() => waitingForIndexedDBUpload);
 						
 						NextModelUpload();
