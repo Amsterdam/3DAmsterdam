@@ -118,7 +118,7 @@ namespace Netherlands3D.Interface.Sharing
 						progressBar.SetMessage("Objecten opslaan.. " + (currentModelIndex + 1) + "/" + currentSceneServerReturn.modelUploadTokens.Length);
 						var pathToLocalBinaryFile = sceneSerializer.SerializeCustomObject(currentModelIndex, currentSceneServerReturn.sceneId, currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
 						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", currentSceneServerReturn.sceneId).Replace("{modelToken}", currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
-
+						
 #if UNITY_WEBGL && !UNITY_EDITOR
 						Debug.Log("Preparing IndexedDB upload of " + pathToLocalBinaryFile);
 						Debug.Log("to url: " + putPath);

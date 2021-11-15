@@ -137,11 +137,11 @@ mergeInto(LibraryManager.library, {
                 xhr.open("PUT", url, false);
                 xhr.send(record.data);
                 window.databaseConnection.close();
-                unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadCompleted');
+                unityInstance.SendMessage('Share', 'IndexedDBUploadCompleted');
             };
             dbRequest.onerror = function () {
                 window.databaseConnection.close();
-                unityInstance.SendMessage('ShareDialog', 'IndexedDBUploadFailed', filename);
+                unityInstance.SendMessage('Share', 'IndexedDBUploadFailed', filename);
             };
         }
         dbConnectionRequest.onerror = function () {
