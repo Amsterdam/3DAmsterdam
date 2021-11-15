@@ -98,6 +98,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Awake()
         {
             building = RestrictionChecker.ActiveBuilding;
+            print(building.gameObject.name);
+            print(building.GetComponent<MeshToCityJSONConverter>());
+            CityParents = new CityObject[] {
+                building.GetComponent<MeshToCityJSONConverter>()
+            };
             UpdateDimensions();
         }
 

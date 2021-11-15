@@ -41,7 +41,7 @@ public abstract class CityObject : MonoBehaviour
 
     public int Lod { get; protected set; } = 1;
     public CitySurface[] Surfaces { get; private set; }
-    public CityObject[] Parents;
+    public CityObject[] CityParents { get; protected set; } = new CityObject[0];
 
     //public CityObject Parents
     //{
@@ -75,13 +75,13 @@ public abstract class CityObject : MonoBehaviour
     {
         var obj = new JSONObject();
         obj["type"] = Type.ToString();
-        if (Parents.Length > 0)
+        if (CityParents.Length > 0)
         {
             var parents = new JSONArray();
-            for (int i = 0; i < Parents.Length; i++)
+            for (int i = 0; i < CityParents.Length; i++)
             {
-                Assert.IsTrue(IsValidParent(this, Parents[i]));
-                parents[i] = Parents[i].Name;
+                Assert.IsTrue(IsValidParent(this, CityParents[i]));
+                parents[i] = CityParents[i].Name;
             }
             obj["parents"] = parents;
         }
