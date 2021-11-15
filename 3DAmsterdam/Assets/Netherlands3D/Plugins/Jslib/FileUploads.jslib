@@ -1,6 +1,9 @@
 mergeInto(LibraryManager.library, {
     InitializeIndexedDB: function (str) {
         window.databaseName = Pointer_stringify(str);
+
+        console.log("Database name: " + window.databaseName);
+
         window.selectedFiles = [];
         window.filesToSave = 0;
         window.counter = 0;
