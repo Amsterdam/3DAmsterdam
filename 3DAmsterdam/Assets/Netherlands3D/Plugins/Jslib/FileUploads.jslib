@@ -157,7 +157,7 @@ mergeInto(LibraryManager.library, {
     SyncFilesToIndexedDB: function () {
         FS.syncfs(false, function (err) {
             console.log(err);
-            SendMessage('ShareDialog', 'IndexedDBSyncCompleted');
+            SendMessage('Share', 'IndexedDBSyncCompleted');
         });
     },
     ClearFileInputFields: function () {
