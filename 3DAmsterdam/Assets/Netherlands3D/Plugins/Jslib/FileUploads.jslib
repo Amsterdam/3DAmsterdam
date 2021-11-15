@@ -118,7 +118,6 @@ mergeInto(LibraryManager.library, {
         };
     },
     UploadFromIndexedDB: function (filePath, targetURL) {
-        FS.syncfs(false, function (err) { });
         var fileName = Pointer_stringify(filePath);
         var url = Pointer_stringify(targetURL);
 
@@ -151,11 +150,15 @@ mergeInto(LibraryManager.library, {
     },
     SyncFilesFromIndexedDB: function () {
         FS.syncfs(true, function (err) {
+            console.log(err);
             SendMessage('UserFileUploads', 'IndexedDBUpdated');
         });
     },
     SyncFilesToIndexedDB: function () {
-        FS.syncfs(false, function (err) {});
+        FS.syncfs(false, function (err) {
+            console.log(err);
+            SendMessage('ShareDialog', 'IndexedDBSyncCompleted');
+        });
     },
     ClearFileInputFields: function () {
         window.ClearInputs();

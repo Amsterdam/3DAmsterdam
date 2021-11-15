@@ -29,6 +29,9 @@ namespace Netherlands3D.Interface.Sharing
 		[DllImport("__Internal")]
 		private static extern void UploadFromIndexedDB(string fileName, string targetURL);
 
+		[DllImport("__Internal")]
+		private static extern void SyncFilesToIndexedDB();
+
 		[SerializeField]
 		private RectTransform shareOptions;
 
@@ -51,7 +54,7 @@ namespace Netherlands3D.Interface.Sharing
 		private ServerReturn currentSceneServerReturn;
 		private int modelUploadsRemaining = 0;
 		private bool waitingForIndexedDBUpload = false;
-
+		private bool waitingForIndexedDBSync = false;
 		void OnEnable()
 		{
 			ChangeState(SharingState.SHARING_OPTIONS);
@@ -117,10 +120,17 @@ namespace Netherlands3D.Interface.Sharing
 						var putPath = Config.activeConfiguration.sharingUploadModelPath.Replace("{sceneId}", currentSceneServerReturn.sceneId).Replace("{modelToken}", currentSceneServerReturn.modelUploadTokens[currentModelIndex].token);
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-						Debug.Log("Preparing IndexedDB: " + putPath);
+						Debug.Log("Preparing IndexedDB upload of " + pathToLocalBinaryFile);
+						Debug.Log("to url: " + putPath);
+
+						waitingForIndexedDBSync = true;
+						SyncFilesToIndexedDB();
+						yield return new WaitWhile(() => waitingForIndexedDBSync); 
+
 						waitingForIndexedDBUpload = true;
 						UploadFromIndexedDB(pathToLocalBinaryFile, putPath);
-						yield return new WaitWhile(() => waitingForIndexedDBUpload); 
+						yield return new WaitWhile(() => waitingForIndexedDBUpload);
+						
 						NextModelUpload();
 						yield return new WaitForSeconds(0.2f);
 #else
@@ -154,6 +164,10 @@ namespace Netherlands3D.Interface.Sharing
 		{
 			modelUploadsRemaining--;
 			waitingForIndexedDBUpload = false;
+		}
+		public void IndexedDBSyncCompleted()
+		{
+			waitingForIndexedDBSync = false;
 		}
 		public void IndexedDBUploadFailed()
 		{
