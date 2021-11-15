@@ -4,6 +4,7 @@ using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.Assertions;
 using SimpleJSON;
+using System.Linq;
 
 public enum CityObjectType
 {
@@ -41,22 +42,41 @@ public abstract class CityObject : MonoBehaviour
 
     public int Lod { get; protected set; } = 1;
     public CitySurface[] Surfaces { get; private set; }
-    public CityObject[] CityParents { get; protected set; } = new CityObject[0];
-
-    //public CityObject Parents
-    //{
-    //    get
-    //    {
-    //        return parents;
-    //    }
-    //    private set
-    //    {
-    //        Assert.IsTrue(IsValidParent(this, value));
-    //        parents = value;
-    //    }
-    //}
+    private List<CityObject> cityChildren = new List<CityObject>();
+    public CityObject[] CityChildren => cityChildren.ToArray();
+    public CityObject[] CityParents { get; private set; } = new CityObject[0];
 
     public abstract CitySurface[] GetSurfaces();
+
+    protected virtual void Start()
+    {
+        Name = gameObject.name;
+        UpdateSurfaces();
+        CityJSONFormatter.AddCityObejct(this);
+    }
+
+    public void UpdateSurfaces()
+    {
+        Surfaces = GetSurfaces();
+    }
+
+    public void SetParents(CityObject[] newParents)
+    {
+        // remove this as the child of old parents
+        foreach (var parent in CityParents)
+        {
+            parent.cityChildren.Remove(this);
+        }
+
+        // add this as child of new parents
+        foreach (var parent in newParents)
+        {
+            Assert.IsTrue(IsValidParent(this, parent));
+            parent.cityChildren.Add(this);
+        }
+        // set newparents for this
+        CityParents = newParents;
+    }
 
     public static bool IsValidParent(CityObject child, CityObject parent)
     {
@@ -85,6 +105,16 @@ public abstract class CityObject : MonoBehaviour
             }
             obj["parents"] = parents;
         }
+        if (CityChildren.Length > 0)
+        {
+            var children = new JSONArray();
+            for (int i = 0; i < CityChildren.Length; i++)
+            {
+                children[i] = CityChildren[i].Name;
+            }
+            obj["children"] = children;
+        }
+
 
         obj["geometry"] = new JSONArray();
         obj["geometry"].Add(GetGeometryNode());
@@ -107,15 +137,5 @@ public abstract class CityObject : MonoBehaviour
         return node;
     }
 
-    public void UpdateSurfaces()
-    {
-        Surfaces = GetSurfaces();
-    }
 
-    protected virtual void Start()
-    {
-        Name = gameObject.name;
-        UpdateSurfaces();
-        CityJSONFormatter.AddCityObejct(this);
-    }
 }
