@@ -6,13 +6,14 @@ mergeInto(LibraryManager.library, {
         if (!window.copySharedURLButton) {
             window.copySharedURLButton = document.createElement("input");
             window.copySharedURLButton.type = 'text';
-            window.copySharedURLButton.style.cssText = 'display:none; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
-            window.copySharedURLButton.id = 'copySharedURLButton';
+            window.copySharedURLButton.style.cssText = 'opacity:0; pointer:cursor; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
+            window.copySharedURLButton.id = 'copy-input';
             window.copySharedURLButton.onclick = function () {
                 window.copySharedURLButton.focus();
                 window.copySharedURLButton.select();
-                preventNativeCopyEvents = false;
+                window.preventNativeCopyEvents = false;
                 document.execCommand('copy');
+				window.preventNativeCopyEvents = true;
                 //feedback animation in unity
                 unityInstance.SendMessage("SharedURL", "CopiedText");
 

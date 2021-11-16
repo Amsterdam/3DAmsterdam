@@ -34,6 +34,8 @@ mergeInto(LibraryManager.library, {
         // for some reason only on Safari does Unity call
         // preventDefault so let's prevent preventDefault
         // so the browser will generate copy and paste events
+		window.preventNativeCopyEvents = true;
+		
         window.addEventListener = function (origFn) {
             function noop() {}
 
