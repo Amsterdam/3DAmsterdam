@@ -8,14 +8,19 @@ mergeInto(LibraryManager.library, {
     DisplayDOMObjectWithID: function (id, display, x, y, width, height, offsetX, offsetY) {
         var idString = Pointer_stringify(id);
         var targetDomObject = document.getElementById(idString);
+		var viewCanvas = document.getElementsByTagName("canvas")[0];
+		
+		var heightScreenPercentage = viewCanvas.clientHeight / window.innerHeight * 100;
+		var widthScreenPercentage = viewCanvas.clientWidth / window.innerWidth * 100;
+
 		var roundedOffsetX = Math.round(offsetX);
 		var roundedOffsetY = Math.round(offsetY);
 		
         if (targetDomObject) {
             targetDomObject.style.display = Pointer_stringify(display);
-            targetDomObject.style.margin = "0px 0px calc(" + ((y + height) * 100) + "vh + " + roundedOffsetY + "px) calc(" + (x * 100) + "vw + " + roundedOffsetX + "px)";
-            targetDomObject.style.width = (width * 100) + "vw";
-            targetDomObject.style.height = (height * 100) + "vh";
+            targetDomObject.style.margin = "0px 0px calc(" + ((y + height) * heightScreenPercentage) + "vh - " + roundedOffsetY + "px) calc(" + (x * widthScreenPercentage) + "vw + " + roundedOffsetX + "px)";
+            targetDomObject.style.width = (width * widthScreenPercentage) + "vw";
+            targetDomObject.style.height = (height * heightScreenPercentage) + "vh";
         } else {
             console.log("Interface.jslib->DisplayDOMObjectWithID: Cant find DOM object with id: " + idString + ".");
         }
