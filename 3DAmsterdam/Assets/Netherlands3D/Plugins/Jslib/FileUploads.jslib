@@ -22,7 +22,7 @@ mergeInto(LibraryManager.library, {
             newInput.onchange = function () {
                 window.ReadFiles(this.files);
             };
-            newInput.style.cssText = 'display:none; opacity: 0; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
+            newInput.style.cssText = 'display:none; cursor:pointer; opacity: 0; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
             document.body.appendChild(newInput);
         };
         window.InjectHiddenFileInput('obj', '.obj,.mtl');
