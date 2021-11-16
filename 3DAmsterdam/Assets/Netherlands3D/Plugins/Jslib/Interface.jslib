@@ -5,12 +5,12 @@ mergeInto(LibraryManager.library, {
     Other indirect ways are blocked because of browser security.
     Canvas clicks caught by Unity are 'too late' for the browser to detect as a legitimate user action.
      */
-    DisplayDOMObjectWithID: function (id, display, x, y, width, height) {
+    DisplayDOMObjectWithID: function (id, display, x, y, width, height, offsetX, offsetY) {
         var idString = Pointer_stringify(id);
         var targetDomObject = document.getElementById(idString);
         if (targetDomObject) {
-            targetDomObject.style.display = Pointer_stringify(display);
-            targetDomObject.style.margin = "0px 0px " + ((y + height) * 100) + "vh " + (x * 100) + "vw";
+            targetDomObject.style.display = Pointer_stringify(display); calc(100vh - 100px) !important;
+            targetDomObject.style.margin = "0px 0px calc(" + ((y + height) * 100) + "vh - " + offsetY + "px) " + (x * 100) + "vw";
             targetDomObject.style.width = (width * 100) + "vw";
             targetDomObject.style.height = (height * 100) + "vh";
         } else {
