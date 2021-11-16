@@ -81,10 +81,10 @@ mergeInto(LibraryManager.library, {
                 });
                 window.addEventListener('copy', function (e) {
                     //We can optionaly disable this so we can do a copy from a button
-                    if (preventNativeCopyEvents == true) {
+                    if (window.preventNativeCopyEvents == true) {
                         e.preventDefault();
                     }
-                    preventNativeCopyEvents = true;
+                    window.preventNativeCopyEvents = true;
                     SendMessage(g.objectName, g.cutCopyFuncName, 'c');
                     event.clipboardData.setData('text/plain', g.clipboardStr);
                 });
