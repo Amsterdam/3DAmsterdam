@@ -13,7 +13,7 @@ mergeInto(LibraryManager.library, {
 		
         if (targetDomObject) {
             targetDomObject.style.display = Pointer_stringify(display);
-            targetDomObject.style.margin = "0px 0px calc(" + ((y + height) * 100) + "vh - " + roundedOffsetY + "px) " + (x * 100) + "vw";
+            targetDomObject.style.margin = "0px 0px calc(" + ((y + height) * 100) + "vh + " + roundedOffsetY + "px) calc(" + (x * 100) + "vw + " + roundedOffsetX + "px)";
             targetDomObject.style.width = (width * 100) + "vw";
             targetDomObject.style.height = (height * 100) + "vh";
         } else {
