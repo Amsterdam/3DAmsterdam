@@ -19,6 +19,12 @@ namespace Netherlands3D.JavascriptConnection
 
 		private Rect screenSpaceRectangle;
 
+		[Header("Padding (px) to add extra alignment if your WebGL canvas is not fullscreen")]
+		[SerializeField]
+		private float paddingX = 0;
+		[SerializeField]
+		private float paddingY = 60.0f;
+
 		private void Awake()
 		{
 			image = GetComponent<Image>();
@@ -40,7 +46,9 @@ namespace Netherlands3D.JavascriptConnection
 				screenSpaceRectangle.x / Screen.width,
 				screenSpaceRectangle.y / Screen.height,
 				screenSpaceRectangle.width / Screen.width,
-				screenSpaceRectangle.height / Screen.height
+				screenSpaceRectangle.height / Screen.height,
+				paddingX,
+				paddingY
 			);
 		}
 
