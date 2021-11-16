@@ -135,7 +135,7 @@ mergeInto(LibraryManager.library, {
                 var record = e.target.result;
                 var xhr = new XMLHttpRequest;
                 xhr.open("PUT", url, false);
-                xhr.send(record.data);
+                xhr.send(record.contents);
                 window.databaseConnection.close();
                 unityInstance.SendMessage('Share', 'IndexedDBUploadCompleted');
             };
