@@ -6,7 +6,7 @@ namespace Netherlands3D.JavascriptConnection
 	public class JavascriptMethodCaller
 	{
 		[DllImport("__Internal")]
-		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0);
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0, float offsetX = 0, float offsetY = 0);
 
 		[DllImport("__Internal")]
 		private static extern string SetUniqueShareURL(string token);
@@ -51,10 +51,10 @@ namespace Netherlands3D.JavascriptConnection
 		/// Faking a click through JavaScript is not allowed.
 		/// </summary>
 		/// <param name="display">Sets the hitarea CSS of the input HTML node to inline, or none</param>
-		public static void DisplayWithID(string id, bool display, float x = 0, float y = 0, float width = 0, float height = 0 )
+		public static void DisplayWithID(string id, bool display, float x = 0, float y = 0, float width = 0, float height = 0, float offsetX = 0, float offsetY = 0)
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
+			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height,offsetX,offsetY);
 #endif
 		}
 
