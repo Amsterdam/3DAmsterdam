@@ -10,18 +10,21 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeature : SquareSurface
     {
         public UitbouwMuur Wall { get; private set; }
+
         public EditMode ActiveMode { get; private set; }
 
         private DistanceMeasurement[] distanceMeasurements;
 
         private EditUI editUI;
         [SerializeField]
-        float editUIOffset = 0.2f;
+        private float editUIOffset = 0.2f;
 
+        private Vector3 deltaPos;
 
         protected override void Awake()
         {
             base.Awake();
+            //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
@@ -30,9 +33,22 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void SetWall(UitbouwMuur wall)
         {
-            this.Wall = wall;
-            transform.position = wall.transform.position;
-            transform.forward = wall.transform.forward;
+            Surface.SolidSurfacePolygon.UpdateVertices(GetVertices());
+
+            //remove the hole from the current wall, if the current wall exists
+            if (Wall != null)
+            {
+                //Surface = Wall.GetComponent<CitySurface>();
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
+            }
+            //set the new wall
+            Wall = wall;
+
+            //add the hole to the new wall, if the new wall exists
+            if (Wall != null)
+            {
+                Wall.Surface.TryAddHole(Surface.SolidSurfacePolygon); //add the hole to the new wall
+            }
         }
 
         protected override void Update()
@@ -43,7 +59,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             ProcessDrag();
         }
 
-        Vector3 deltaPos;
+        private void SnapToWall()
+        {
+            transform.position = Wall.WallPlane.ClosestPointOnPlane(transform.position);
+        }
+
         private void ProcessDrag()
         {
             Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
@@ -60,11 +80,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 transform.position = hit.point - deltaPos;
             }
-        }
-
-        private void SnapToWall()
-        {
-            transform.position = Wall.WallPlane.ClosestPointOnPlane(transform.position);
         }
 
         private void SetButtonPositions()
@@ -90,7 +105,18 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void DeleteFeature()
         {
             Destroy(editUI.gameObject);
+            if (Wall)
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (editUI)
+                Destroy(editUI.gameObject);
+            //Destroy(gameObject);
+            if (Wall)
+                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
         }
 
         public void EditFeature()
