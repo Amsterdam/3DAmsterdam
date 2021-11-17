@@ -159,12 +159,4 @@ public class HandleButtonsT3D : MonoBehaviour
     }
 
     #endregion
-
-    protected virtual void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            print(CityJSONFormatter.GetJSON());
-        }
-    }
 }
