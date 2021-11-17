@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using UnityEngine;
 
@@ -9,25 +10,19 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeature : SquarePolygon
     {
         public UitbouwMuur Wall { get; private set; }
-        //public Transform featureTransform { get; private set; }
-
         public EditMode ActiveMode { get; private set; }
 
         private DistanceMeasurement[] distanceMeasurements;
 
         private EditUI editUI;
+        [SerializeField]
+        float editUIOffset = 0.2f;
 
-        private MeshCollider meshCollider;
 
         protected override void Awake()
         {
             base.Awake();
-            //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
-
-            meshCollider = meshTransform.GetComponent<MeshCollider>();
-
-
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
             SetMode(EditMode.None);
@@ -42,9 +37,28 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         protected virtual void Update()
         {
-            print(ActiveMode);
             SnapToWall();
             SetButtonPositions();
+            ProcessDrag();
+        }
+
+        Vector3 deltaPos;
+        private void ProcessDrag()
+        {
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            var mask = LayerMask.GetMask("Maskable");
+            bool casted = Physics.Raycast(ray, out var hit, Mathf.Infinity, mask);
+
+            if (casted && Input.GetMouseButtonDown(0))
+            {
+                deltaPos = hit.point - transform.position;
+            }
+
+            ObjectClickHandler.GetDrag(out var wallCollider, mask);
+            if (ObjectClickHandler.GetDragOnObject(GetComponentInChildren<Collider>(), true) && casted && Wall.GetComponent<Collider>() == wallCollider)
+            {
+                transform.position = hit.point - deltaPos;
+            }
         }
 
         private void SnapToWall()
@@ -54,8 +68,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            var pos = transform.position + transform.rotation * meshCollider.bounds.extents;
-            editUI.AlignWithWorldPosition(pos);
+            //var pos = meshTransform.position + meshTransform.rotation * meshTransform.GetComponent<SpriteRenderer>().bounds.extents;
+            var trCorner = GetCorner(rightBound, topBound);
+            var dir = (trCorner - transform.position).normalized;
+            editUI.AlignWithWorldPosition(trCorner + dir * editUIOffset);
         }
 
         public void SetMode(EditMode newMode)
