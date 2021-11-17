@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 582766559607684997}
   rightBound: {fileID: 4169091786449063867}
   topBound: {fileID: 2611005350992168332}
@@ -290,6 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 7741727396387764560}
@@ -404,6 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 2611005350992168332}
@@ -518,6 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 7741727396387764560}
   rightBound: {fileID: 5254467626937948178}
   topBound: {fileID: 2611005350992168332}
@@ -568,6 +572,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b9aaa24c5344d9083a25a3f7eacdb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: 
+  Type: 2000
   dragableAxisPrefab: {fileID: 3932690295695391041, guid: 2b40b1ed001dd402d9feaf7a850db1d7,
     type: 3}
   walls:
@@ -577,10 +583,6 @@ MonoBehaviour:
   - {fileID: 8301051321633224353}
   - {fileID: 7968026755866066833}
   - {fileID: 8235698920438077218}
-  window_TEST: {fileID: 4199814909477865792, guid: fcf5d991b807348ff8ef4a76cc65ff19,
-    type: 3}
-  door_TEST: {fileID: 4199814909477865792, guid: 24ed2e60d556340c585f7ee9b45d9cc8,
-    type: 3}
 --- !u!114 &6641196300282613232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,6 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 299e1686549e34b6d9b0f4e76ed75304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 1
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
@@ -705,6 +708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 5254467626937948178}
   rightBound: {fileID: 7741727396387764560}
   topBound: {fileID: 2611005350992168332}
@@ -819,6 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aad74c71fc7540869cd3e00f99492ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshTransform: {fileID: 0}
   leftBound: {fileID: 4169091786449063867}
   rightBound: {fileID: 582766559607684997}
   topBound: {fileID: 5254467626937948178}

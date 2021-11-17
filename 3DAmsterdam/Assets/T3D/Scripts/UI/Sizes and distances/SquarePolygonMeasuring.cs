@@ -6,11 +6,11 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class SquarePolygonMeasuring : DistanceMeasurement
     {
-        private SquarePolygon square;
+        private SquareSurface square;
 
         private void Awake()
         {
-            square = GetComponent<SquarePolygon>();
+            square = GetComponent<SquareSurface>();
         }
 
         protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
@@ -23,10 +23,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected override void DrawLines()
         {
-            var corners = square.Polygon;
+            var corners = square.Surface.SolidSurfacePolygon.Vertices;
 
-            DrawLine(0, corners[0], corners[1]); //direction matters for resize
-            DrawLine(1, corners[2], corners[1]); //direction matters for resize
+            DrawLine(0, corners[0], corners[3]); //direction matters for resize
+            DrawLine(1, corners[2], corners[3]); //direction matters for resize
         }
     }
 }

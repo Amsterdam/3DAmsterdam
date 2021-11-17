@@ -30,8 +30,9 @@ namespace Netherlands3D.T3D.Uitbouw
             SelectedWall = GetComponentInChildren<WallSelector>();
         }
 
-        private void Start()//in start to avoid race conditions
+        protected void Start()//in start to avoid race conditions
         {
+            //base.Start();
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
             MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
             MetadataLoader.Instance.IsBeschermdEvent += Instance_IsBeschermdEvent;
@@ -142,5 +143,9 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.RecalculateNormals();
             return mesh;
         }
+
+        //public override CitySurface[] GetSurfaces()
+        //{
+        //}
     }
 }

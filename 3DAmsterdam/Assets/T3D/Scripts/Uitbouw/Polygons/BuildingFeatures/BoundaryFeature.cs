@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public class BoundaryFeature : SquarePolygon
+    public class BoundaryFeature : SquareSurface
     {
         public UitbouwMuur Wall { get; private set; }
         public EditMode ActiveMode { get; private set; }
@@ -35,8 +35,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             transform.forward = wall.transform.forward;
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             SnapToWall();
             SetButtonPositions();
             ProcessDrag();

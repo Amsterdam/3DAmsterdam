@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    public class SquarePolygon : CityPolygon
+    public class SquareSurface : MonoBehaviour
     {
+        public CitySurface Surface;
+
         [SerializeField]
         protected Transform meshTransform;
         [SerializeField]
@@ -21,18 +24,18 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        public override Vector3[] Polygon
-        {
-            get
-            {
-                return new Vector3[] {
-                    GetCorner(leftBound, topBound),
-                    GetCorner(rightBound, topBound),
-                    GetCorner(rightBound, bottomBound),
-                    GetCorner(leftBound, bottomBound),
-                };
-            }
-        }
+        //public override CityPolygon SolidSurfacePolygon
+        //{
+        //    get
+        //    {
+        //        base.SolidSurfacePolygon.UpdateVertices(GetVertices());
+        //        return base.SolidSurfacePolygon;
+        //    }
+        //}
+
+        ////private Vector3[] vertices;
+        //public Vector3[] Vertices => Polygon.Vertices;
+        //public override int[] LocalBoundaries
 
         public Vector2 Size { get; private set; }
 
@@ -40,6 +43,35 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (!meshTransform)
                 meshTransform = transform;
+            //assign the meshTransform before calling awake, because the meshTransform is needed to calculate the main surface polygon
+            Surface = new CitySurface(new CityPolygon(GetVertices(), GetBoundaries()));
+        }
+
+        //protected override CityPolygon InitializeMainSurface()
+        //{
+        //    return new CityPolygon(GetVertices(), GetBoundaries(0));
+        //}
+
+        public int[] GetBoundaries()
+        {
+            //polygonIndex = 0; since this is the only polygon for this surface
+            return new int[]
+            {
+                    0,
+                    1,
+                    2,
+                    3,
+            };
+        }
+
+        public Vector3[] GetVertices()
+        {
+            return new Vector3[] {
+                    GetCorner(leftBound, topBound),
+                    GetCorner(leftBound, bottomBound),
+                    GetCorner(rightBound, bottomBound),
+                    GetCorner(rightBound, topBound),
+                };
         }
 
         protected virtual void Start()
@@ -87,6 +119,11 @@ namespace Netherlands3D.T3D.Uitbouw
             var vDir = (projectedVPoint - meshTransform.position).normalized;
 
             return meshTransform.position + hDir * hDist + vDir * vDist;
+        }
+
+        protected virtual void Update()
+        {
+            Surface.SolidSurfacePolygon.UpdateVertices(GetVertices()); //needed when requesting the verts for JSONExport
         }
 
         //private void OnDrawGizmos()
