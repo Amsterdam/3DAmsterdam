@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using UnityEngine;
 
@@ -9,25 +10,19 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeature : SquareSurface
     {
         public UitbouwMuur Wall { get; private set; }
-        //public CitySurface Surface { get; private set; }
-        //public Transform featureTransform { get; private set; }
-
         public EditMode ActiveMode { get; private set; }
 
         private DistanceMeasurement[] distanceMeasurements;
 
         private EditUI editUI;
+        [SerializeField]
+        float editUIOffset = 0.2f;
 
-        private MeshFilter meshFilter;
 
         protected override void Awake()
         {
             base.Awake();
-            //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
-
-            meshFilter = meshTransform.GetComponent<MeshFilter>();
-
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
 
             SetMode(EditMode.None);
@@ -35,22 +30,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void SetWall(UitbouwMuur wall)
         {
-            Surface.SolidSurfacePolygon.UpdateVertices(GetVertices());
-            
-            //remove the hole from the current wall, if the current wall exists
-            if (Wall != null)
-            {
-                //Surface = Wall.GetComponent<CitySurface>();
-                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
-            }
-            //set the new wall
-            Wall = wall;
-
-            //add the hole to the new wall, if the new wall exists
-            if (Wall != null)
-            {
-                Wall.Surface.TryAddHole(Surface.SolidSurfacePolygon); //add the hole to the new wall
-            }
+            this.Wall = wall;
+            transform.position = wall.transform.position;
+            transform.forward = wall.transform.forward;
         }
 
         protected override void Update()
@@ -58,6 +40,26 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             base.Update();
             SnapToWall();
             SetButtonPositions();
+            ProcessDrag();
+        }
+
+        Vector3 deltaPos;
+        private void ProcessDrag()
+        {
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            var mask = LayerMask.GetMask("Maskable");
+            bool casted = Physics.Raycast(ray, out var hit, Mathf.Infinity, mask);
+
+            if (casted && Input.GetMouseButtonDown(0))
+            {
+                deltaPos = hit.point - transform.position;
+            }
+
+            ObjectClickHandler.GetDrag(out var wallCollider, mask);
+            if (ObjectClickHandler.GetDragOnObject(GetComponentInChildren<Collider>(), true) && casted && Wall.GetComponent<Collider>() == wallCollider)
+            {
+                transform.position = hit.point - deltaPos;
+            }
         }
 
         private void SnapToWall()
@@ -67,8 +69,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            var pos = transform.position + transform.rotation * meshFilter.mesh.bounds.extents;
-            editUI.AlignWithWorldPosition(pos);
+            //var pos = meshTransform.position + meshTransform.rotation * meshTransform.GetComponent<SpriteRenderer>().bounds.extents;
+            var trCorner = GetCorner(rightBound, topBound);
+            var dir = (trCorner - transform.position).normalized;
+            editUI.AlignWithWorldPosition(trCorner + dir * editUIOffset);
         }
 
         public void SetMode(EditMode newMode)
@@ -86,18 +90,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public void DeleteFeature()
         {
             Destroy(editUI.gameObject);
-            if (Wall)
-                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             Destroy(gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            if (editUI)
-                Destroy(editUI.gameObject);
-            //Destroy(gameObject);
-            if (Wall)
-                Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
         }
 
         public void EditFeature()

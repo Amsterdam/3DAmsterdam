@@ -75,6 +75,9 @@ namespace Netherlands3D.Interface
         }
 
         public void ShowMessage(string message = "Tooltip", RectTransform hoverTarget = null){
+
+            Debug.Log($"ShowMessage:{message}");
+
             //Restart our animator
             gameObject.transform.SetAsLastSibling(); //Make sure we are in front of all the UI
 

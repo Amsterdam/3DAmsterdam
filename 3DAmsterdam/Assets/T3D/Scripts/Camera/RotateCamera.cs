@@ -53,7 +53,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     }
 
     private void Update()
-    {
+    {        
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
         {            
@@ -61,13 +61,18 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }        
         else if(isFirstPersonMode)
         {
+            if (dragging && Input.GetMouseButton(0))
+            {
+                mycam.transform.RotateAround(mycam.transform.position, mycam.transform.right, -mouseDelta.y * RotationSpeed);
+                mycam.transform.RotateAround(mycam.transform.position, Vector3.up, mouseDelta.x * RotationSpeed);
+            }
             FirstPersonLook();
         }
     }
 
-    public void ToggleRotateFirstPersonMode()
+    public bool ToggleRotateFirstPersonMode()
     {
-        if (RestrictionChecker.ActiveUitbouw == null) return;
+        if (RestrictionChecker.ActiveUitbouw == null) return false;
 
         isFirstPersonMode = !isFirstPersonMode;
 
@@ -86,30 +91,36 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             mycam.transform.rotation = lastRotateRotation;
         }
 
+        return isFirstPersonMode;
     }
    
 
     private void FirstPersonLook()
     {
+        var lastY = mycam.transform.position.y;
+
         if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            currentRotation.x += -1 * spinSpeed * Time.deltaTime;
+        {            
+            mycam.transform.position += -mycam.transform.right * moveSpeed/5 * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            currentRotation.x += 1 * spinSpeed * Time.deltaTime;
+        {         
+            mycam.transform.position += mycam.transform.right * moveSpeed/5 * Time.deltaTime;
         }
         
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            mycam.transform.position += mycam.transform.forward * moveSpeed * Time.deltaTime;
+            var newpos = mycam.transform.position += mycam.transform.forward * moveSpeed * Time.deltaTime;
+            newpos.y = lastY;
+            mycam.transform.position = newpos;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            mycam.transform.position += -mycam.transform.forward * moveSpeed * Time.deltaTime;
+            var newpos = mycam.transform.position += -mycam.transform.forward * moveSpeed * Time.deltaTime;
+            newpos.y = lastY;
+            mycam.transform.position = newpos;
         }
-
-        mycam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);        
+       
     }
 
     private void AddActionListeners()
@@ -140,6 +151,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void Zoom(IAction action)
     {
+
         scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
 
         //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
@@ -149,22 +161,28 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
         if (scrollDelta != 0)
         {
+            var lastY = mycam.transform.position.y;
+
             var moveSpeed = Mathf.Sqrt(mycam.transform.position.y) * 1.3f;
             var newpos = mycam.transform.position + mycam.transform.forward.normalized * (scrollDelta * moveSpeed * ZoomSpeed);
 
-            if (newpos.y < MinCameraHeight) return;
-            
+            if (isFirstPersonMode)
+            {
+                newpos.y = lastY;
+            }
+            else if (newpos.y < MinCameraHeight) return;
+
             mycam.transform.position = newpos;            
         }
     }
 
     void RotateAround(float xaxis, float yaxis)
     {
-        var previousPosition = mycam.transform.position;
-        var previousRotation = mycam.transform.rotation;
-
         if (RestrictionChecker.ActiveUitbouw != null)
-            mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);            
+        {
+            //mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
+            mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);
+        } 
         else if (RestrictionChecker.ActiveBuilding)
             mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
     }

@@ -5,10 +5,23 @@ using UnityEngine;
 
 public class ObjectClickHandler : MonoBehaviour
 {
+    public static Vector3 MouseDelta
+    {
+        get
+        {
+            if (Input.GetMouseButton(0))
+                return Input.mousePosition - clickStartPosition;
+            return Vector3.zero;
+        }
+    }
+
     private static float maxDistanceTraveledWithMouse = 10f;
     private static Vector3 clickStartPosition;
     private static List<Collider> clickColliders = new List<Collider>();
     //private static bool clickStarted;
+
+    private static bool dragStarted = false;
+    public static Collider DraggingCollider { get; private set; }
 
     private void Update()
     {
@@ -23,6 +36,13 @@ public class ObjectClickHandler : MonoBehaviour
             {
                 clickColliders.Add(hits[i].collider);
             }
+            dragStarted = false;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            dragStarted = false;
+            DraggingCollider = null;
         }
     }
 
@@ -63,5 +83,50 @@ public class ObjectClickHandler : MonoBehaviour
     public static bool GetClickOnObject(bool allowClickOnNothing, int layerMask = Physics.DefaultRaycastLayers)
     {
         return GetClickOnObject(allowClickOnNothing, out var hitCol, layerMask);
+    }
+
+    public static bool GetDrag(out Collider draggedCollider, int layerMask = Physics.DefaultRaycastLayers)
+    {
+        draggedCollider = null;
+        if (Input.GetMouseButton(0))
+        {
+            var dist = Input.mousePosition - clickStartPosition;
+            if (dragStarted || dist.magnitude > maxDistanceTraveledWithMouse)
+            {
+                dragStarted = true;
+
+                draggedCollider = GetColliderUnderMouse(layerMask);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Collider GetColliderUnderMouse(int layerMask)
+    {
+        Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
+        {
+            return hit.collider;
+        }
+
+        return null;
+    }
+
+    public static bool GetDragOnObject(Collider col, bool allowDragOverOtherCollidersWhenStarted)
+    {
+        var drag = GetDrag(out var draggedcol);
+
+        if(DraggingCollider == null)
+        {
+            DraggingCollider = draggedcol;
+        }
+
+        if (allowDragOverOtherCollidersWhenStarted)
+        {
+            return drag && DraggingCollider == col;
+        }
+
+        return drag && col == draggedcol;
     }
 }
