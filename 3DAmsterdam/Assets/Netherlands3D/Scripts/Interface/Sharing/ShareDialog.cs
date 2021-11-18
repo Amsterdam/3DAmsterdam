@@ -188,7 +188,11 @@ namespace Netherlands3D.Interface.Sharing
 			if (!sharedSceneURL.Contains("https://") && !sharedSceneURL.Contains("http://"))
 			{
 				//Use relative path
-				sharedSceneURL = Application.absoluteURL + Config.activeConfiguration.sharingViewScenePath.Replace("{sceneId}", currentSceneServerReturn.sceneId);
+				var absoluteURL = Application.absoluteURL;
+				var appendVariable = Config.activeConfiguration.sharingViewScenePath;
+				if (absoluteURL.Contains("?")) appendVariable.Replace("?", "&");
+
+				sharedSceneURL = absoluteURL + appendVariable.Replace("{sceneId}", currentSceneServerReturn.sceneId);
 			}
 
 			sharedURL.ShowURL(sharedSceneURL);
