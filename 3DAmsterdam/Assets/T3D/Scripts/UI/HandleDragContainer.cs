@@ -37,7 +37,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             ComponentObject = e.ComponentObject;
             selectComponent = e.SelectComponent;
 
-            ComponentObject.SetSize(new Vector2(e.ComponentWidth, e.ComponentHeight));
+            ComponentObject.SetSize(new Vector2(e.ComponentWidth - 0.0001f, e.ComponentHeight - 0.0001f));
             //ComponentObject.transform.localScale = new Vector3(e.ComponentWidth, e.ComponentHeight, 1);
         }
 

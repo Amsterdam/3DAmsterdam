@@ -13,6 +13,7 @@ public class JsonDownloader : MonoBehaviour
         JavascriptMethodCaller.DownloadByteArrayAsFile(bytes, bytes.Length, "gebouw_met_uitbouw.json");
 #else
         Debug.Log("downloading file only works in a WebGL build");
+        Debug.Log(CityJSONFormatter.GetJSON());
 #endif
     }
 }
