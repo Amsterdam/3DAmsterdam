@@ -21,7 +21,6 @@ using UnityEngine.Events;
 
 namespace Netherlands3D.Traffic.VISSIM 
 { 
-
     public class VissimStringLoader : MonoBehaviour
     {
 
@@ -51,10 +50,6 @@ namespace Netherlands3D.Traffic.VISSIM
         }
 #endif
 
-        public void LoadVissimFromJavascript()
-        {
-            StartCoroutine(LoadingProgress(JavascriptMethodCaller.FetchVissimDataAsString()));
-        }
         public void LoadVissimFromFile(string filepath, System.Action<bool> callback)
         {
             string contents = File.ReadAllText(Application.persistentDataPath + "/" + filepath);

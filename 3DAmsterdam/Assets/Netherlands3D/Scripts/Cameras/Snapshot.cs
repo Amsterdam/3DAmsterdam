@@ -54,6 +54,9 @@ namespace Netherlands3D
         private bool takeScreenshotOnNextFrame;
         private IEnumerator screenshotCoroutine;
 
+        /// <summary>
+        /// JS plugins are the *.jslib files found in the project.
+        /// </summary>
         [DllImport("__Internal")]
         private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
 

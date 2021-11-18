@@ -1,6 +1,7 @@
 ﻿using ConvertCoordinates;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 
@@ -8,6 +9,9 @@ namespace Netherlands3D.Cameras
 {
     public class CameraModeChanger : MonoBehaviour
     {
+        [DllImport("__Internal")]
+        private static extern void AutoCursorLock();
+
         public ICameraExtents CurrentCameraExtends { get; private set; }
 
         private GameObject currentCamera;
@@ -47,6 +51,9 @@ namespace Netherlands3D.Cameras
 
         private void Awake()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            AutoCursorLock();
+#endif
             streetView = FindObjectOfType<StreetViewMoveToPoint>();
             currentCamera = godViewCam;
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
