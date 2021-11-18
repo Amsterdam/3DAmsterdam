@@ -10,7 +10,7 @@ namespace Netherlands3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
-        public static void DataTarget(){}
+        public static void DataTarget() { }
 
         private const string webGlBuildPrefix = "BuildWebGL_";
         private const string desktopBuildPrefix = "BuildDesktop_";
@@ -23,7 +23,7 @@ namespace Netherlands3D.Utilities
         public static void SwitchBranchMaster()
         {
             PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
         [MenuItem("Netherlands 3D/Set data target/Development")]
@@ -85,30 +85,30 @@ namespace Netherlands3D.Utilities
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
             if (buildSummary.result == BuildResult.Succeeded)
-			{
-				Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-				ZipAndDeploy(buildMainName, buildSummary);
-			}
+            {
+                Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
+                ZipAndDeploy(buildMainName, buildSummary);
+            }
 
-			if (buildSummary.result == BuildResult.Failed)
+            if (buildSummary.result == BuildResult.Failed)
             {
                 Debug.Log("Build failed");
             }
         }
 
-		private static void ZipAndDeploy(string mainName, BuildSummary buildSummary)
-		{
-            var zipFilePath = $"{buildSummary.outputPath}../{mainName.Replace("feature-","")}.zip";
+        private static void ZipAndDeploy(string mainName, BuildSummary buildSummary)
+        {
+            var zipFilePath = $"{buildSummary.outputPath}../{mainName.Replace("feature-", "")}.zip";
 
-            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);            
+            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
             Debug.Log("Zipped build in: " + zipFilePath);
 
             DeployZipFile(zipFilePath);
         }
 
-		private static void DeployZipFile(string zipFilePath)
-		{
+        private static void DeployZipFile(string zipFilePath)
+        {
             var autodeployBatchFile = Path.GetDirectoryName(zipFilePath) + "/../../deploy.bat";
             Debug.Log($"Checking if we have an autodeploy file at: {autodeployBatchFile}");
 
@@ -124,5 +124,5 @@ namespace Netherlands3D.Utilities
                 process.Start();
             }
         }
-	}
+    }
 }

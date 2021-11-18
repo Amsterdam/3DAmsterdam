@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5943081213541711405}
   - component: {fileID: 895690607689887116}
   m_Layer: 0
-  m_Name: FileUploads
+  m_Name: UserFileUploads
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,6 +114,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   csvLoader: {fileID: 0}
-  urlstring: {fileID: 0}
-  filenames: []
-  numberOfFIlesToLoad: 0
+  userFileUploadEvents:
+  - fileExtentions: .obj,.mtl
+    userFileUploadPathEvent: {fileID: 11400000, guid: 0c0c2f7a158fd16468da89833ed47177,
+      type: 2}
+  - fileExtentions: .csv,.tsv
+    userFileUploadPathEvent: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb,
+      type: 2}
+  - fileExtentions: .json,.geojson
+    userFileUploadPathEvent: {fileID: 11400000, guid: 0b63864df79979740a6c64d5e8c1e46a,
+      type: 2}
+  - fileExtentions: .fzp
+    userFileUploadPathEvent: {fileID: 11400000, guid: 6c0e763212d33694aaa4f0e42baef5b2,
+      type: 2}

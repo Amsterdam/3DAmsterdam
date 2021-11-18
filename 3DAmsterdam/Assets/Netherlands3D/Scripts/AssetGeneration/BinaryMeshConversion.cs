@@ -55,7 +55,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 writer.Write(version);
 
                 //Verts
-                writer.Write(sourceMesh.vertices.Length);
+                var vertices = sourceMesh.vertices;
+                writer.Write(vertices.Length);
                 foreach (Vector3 vert in sourceMesh.vertices)
                 {
                     writer.Write(vert.x);
@@ -63,9 +64,10 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(vert.z);
                 }
 
+                var normals = sourceMesh.normals;
                 //Normals
-                writer.Write(sourceMesh.normals.Length);
-                foreach (Vector3 normal in sourceMesh.normals)
+                writer.Write(normals.Length);
+                foreach (Vector3 normal in normals)
                 {
                     writer.Write(normal.x);
                     writer.Write(normal.y);
@@ -73,8 +75,9 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
 
                 //UV
-                writer.Write(sourceMesh.uv.Length);
-                foreach (Vector2 uv in sourceMesh.uv)
+                var uvs = sourceMesh.uv;
+                writer.Write(uvs.Length);
+                foreach (Vector2 uv in uvs)
                 {
                     writer.Write(uv.x);
                     writer.Write(uv.y);

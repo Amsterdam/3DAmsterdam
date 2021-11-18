@@ -77,27 +77,18 @@ namespace Netherlands3D.ModelParsing
 				File.Copy(pathMtl, Application.persistentDataPath + "/" + newmtlstring, true);
 			}
 
-
 			string newobjstring = Path.GetFileName(pathObj);
-
 			if (File.Exists(pathObj))
 			{
 				File.Copy(pathObj, Application.persistentDataPath + "/" + newobjstring,true);
 				Debug.Log(Application.persistentDataPath + "/" + newobjstring);
 			}
 
-			//LoadOBJFromIndexedDB(new List<string>() { pathObj, pathMtl }, finished);
-			StartCoroutine(ParseOBJfromStream(newobjstring, newmtlstring, finished));
-
-			//StartCoroutine(ParseOBJFromString(
-			//		File.ReadAllText(pathObj),
-			//		File.ReadAllText(pathMtl)
-					
-			//));
+			StartCoroutine(ParseOBJfromStream(newobjstring, newmtlstring, Finished));
 		}
-		public void finished(bool value)
+		public void Finished(bool value)
         {
-
+			print("Finished stream reading OBJ");
         }
 
 #endif
@@ -112,15 +103,6 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.ProgressBar.Percentage(0);
 			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 		}
-
-		/// <summary>
-		/// Start the parsing of the OBJ, fetching the obj and mtl strings from Javascript
-		/// </summary>
-		public void LoadOBJFromJavascript()
-		{
-			//StartCoroutine(ParseOBJFromString(JavascriptMethodCaller.FetchOBJDataAsString(), JavascriptMethodCaller.FetchMTLDataAsString()));
-		}
-
 
 		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
         {
@@ -157,7 +139,7 @@ namespace Netherlands3D.ModelParsing
         {
 			// Read the obj-file
 			SetOBJFileName(objFilePath);
-			var objstreamReader =new GameObject().AddComponent<StreamreadOBJ>();
+			var objstreamReader = new GameObject().AddComponent<StreamreadOBJ>();
 			objstreamReader.loadingObjScreen = loadingObjScreen;
 			objstreamReader.ReadOBJ(objFilePath);
 			bool isBusy = true;
@@ -196,7 +178,11 @@ namespace Netherlands3D.ModelParsing
 
 			GameObject createdGO = objstreamReader.createdGameObject;
 			createdGO.name = objModelName;
-			createdGO.AddComponent<MeshCollider>().sharedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			var loadedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+			//Do not bother adding a collider if we do not have enough geometry ( avoiding PhysX errors )
+			if(loadedMesh.triangles.Length > 2)
+				createdGO.AddComponent<MeshCollider>().sharedMesh = loadedMesh;
+
 			createdGO.AddComponent<ClearMeshAndMaterialsOnDestroy>();
 			transformable = createdGO.AddComponent<Transformable>();
 			transformable.madeWithExternalTool = true;
@@ -212,114 +198,12 @@ namespace Netherlands3D.ModelParsing
 			{
 				transformable.stickToMouse = false;
 			}
-			Destroy(objstreamReader);
 			loadingObjScreen.Hide();
 			
 			callback(objstreamReader.succes);
+			Destroy(objstreamReader);
+
 			yield return null;
         }
-		
-		
-
-		/// <summary>
-		/// Start the parsing of OBJ and MTL strings
-		/// </summary>
-		/// <param name="objText">The OBJ string data</param>
-		/// <param name="mtlText">The MTL string data</param>
-		/// <returns></returns>
-		//private IEnumerator ParseOBJFromString(string objText, string mtlText = "")
-		//{
-		//	//Too small or empty to be OBJ content? Abort, and give some explanation to the user.
-		//	Debug.Log("OBJ length: " + objText.Length);
-		//	if (objText.Length < 5)
-		//	{
-		//		AbortImport();
-		//		yield break;
-		//	}
-
-		//	//Create a new gameobject that parses OBJ lines one by one
-		//	var newOBJLoader = new GameObject().AddComponent<ObjLoad>();
-		//	float remainingLinesToParse;
-		//	float totalLines;
-		//	float percentage;
-
-		//	//Parse the mtl file, filling our material library
-		//	if (mtlText != "")
-		//	{
-		//		newOBJLoader.SetMaterialData(ref mtlText);
-		//		remainingLinesToParse = newOBJLoader.ParseNextMtlLines(1);
-		//		totalLines = remainingLinesToParse;
-
-		//		loadingObjScreen.ShowMessage("Materialen worden geladen...");
-		//		while (remainingLinesToParse > 0)
-		//		{
-		//			remainingLinesToParse = newOBJLoader.ParseNextMtlLines(maxLinesPerFrame);
-		//			percentage = 1.0f - (remainingLinesToParse / totalLines);
-		//			loadingObjScreen.ProgressBar.Percentage(percentage/100.0f); //Show first percent
-		//			yield return null;
-		//		}
-		//	}
-
-		//	//Parse the obj line by line
-		//	newOBJLoader.SetGeometryData(ref objText);
-		//	loadingObjScreen.ShowMessage("Objecten worden geladen...");
-
-		//	var parsingSucceeded = true;
-		//	remainingLinesToParse = newOBJLoader.ParseNextObjLines(1);
-		//	totalLines = remainingLinesToParse;
-		//	while (remainingLinesToParse > 0)
-		//	{
-		//		remainingLinesToParse = newOBJLoader.ParseNextObjLines(maxLinesPerFrame);
-		//		if (remainingLinesToParse == -1)
-		//		{
-		//			//Failed to parse the line. Probably not a triangulated OBJ
-		//			parsingSucceeded = false;
-		//			JavascriptMethodCaller.Alert("Het is niet gelukt dit model te importeren.\nZorg dat de OBJ is opgeslagen met 'Triangulated' als instelling.");
-		//		}
-		//		else
-		//		{
-		//			percentage = 1.0f - (remainingLinesToParse / totalLines);
-		//			loadingObjScreen.ProgressBar.SetMessage(Mathf.Round(percentage * 100.0f) + "%");
-		//			loadingObjScreen.ProgressBar.Percentage(percentage);
-		//		}
-		//		yield return null;
-		//	}
-		//	if (parsingSucceeded)
-		//	{
-		//		newOBJLoader.Build(defaultLoadedObjectsMaterial);
-
-		//		//Make interactable
-		//		newOBJLoader.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-		//		newOBJLoader.name = objModelName;
-				
-		//		newOBJLoader.gameObject.AddComponent<MeshCollider>().sharedMesh = newOBJLoader.GetComponent<MeshFilter>().sharedMesh;
-		//		newOBJLoader.gameObject.AddComponent<ClearMeshAndMaterialsOnDestroy>();
-		//		transformable = newOBJLoader.gameObject.AddComponent<Transformable>();
-		//		transformable.madeWithExternalTool = true;
-		//		transformable.mask = mask;
-
-		//		if (newOBJLoader.ObjectUsesRDCoordinates==false)
-  //              {
-		//			if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
-		//			//transformable.placedTransformable.AddListener(RemapMaterials);
-		//			customObjectPlacer.PlaceExistingObjectAtPointer(newOBJLoader.gameObject);
-		//		}
-		//		else
-  //              {
-		//			transformable.stickToMouse = false;
-  //              }
-				
-		//	}
-		//	//placementSettings();
-		//	//hide panel and loading screen after loading
-		//	loadingObjScreen.Hide();
-
-		//	//Invoke done event
-		//	doneLoadingModel.Invoke();
-			
-
-		//	//Remove this loader from finished object
-		//	Destroy(newOBJLoader);
-		//}
 	}
 }

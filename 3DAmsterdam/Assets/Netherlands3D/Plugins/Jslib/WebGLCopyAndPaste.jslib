@@ -34,6 +34,8 @@ mergeInto(LibraryManager.library, {
         // for some reason only on Safari does Unity call
         // preventDefault so let's prevent preventDefault
         // so the browser will generate copy and paste events
+		window.preventNativeCopyEvents = true;
+		
         window.addEventListener = function (origFn) {
             function noop() {}
 
@@ -80,11 +82,11 @@ mergeInto(LibraryManager.library, {
                     event.clipboardData.setData('text/plain', g.clipboardStr);
                 });
                 window.addEventListener('copy', function (e) {
-					//We can optionaly disable this so we can do a copy from a button
-					if(preventNativeCopyEvents==true){
-						e.preventDefault();
-					}
-					preventNativeCopyEvents = true;
+                    //We can optionaly disable this so we can do a copy from a button
+                    if (window.preventNativeCopyEvents == true) {
+                        e.preventDefault();
+                    }
+                    window.preventNativeCopyEvents = true;
                     SendMessage(g.objectName, g.cutCopyFuncName, 'c');
                     event.clipboardData.setData('text/plain', g.clipboardStr);
                 });

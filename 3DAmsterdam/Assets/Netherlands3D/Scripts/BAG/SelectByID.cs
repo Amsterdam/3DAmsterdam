@@ -286,7 +286,7 @@ namespace Netherlands3D.LayerSystem
             }
 
             //Get the mesh we selected and check if it has an ID stored in the UV2 slot
-            Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().mesh;
+            Mesh mesh = lastRaycastHit.collider.gameObject.GetComponent<MeshFilter>().sharedMesh;
             int triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
             var vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
             if (vertexIndex > mesh.uv2.Length)
