@@ -41,6 +41,7 @@ namespace Netherlands3D.Interface
                 //        break;
                 //}
                 print("input: " + distance + "m");
+                distance /= 100;
                 DistanceInputOverride?.Invoke(this, distance);
             }
         }
@@ -48,7 +49,7 @@ namespace Netherlands3D.Interface
         private bool TryParseUserString(string inputString, out float distance, out string units)
         {
             distance = 0f;
-            units = "m";
+            units = "cm";
             return float.TryParse(inputString, out distance);
         }
 
