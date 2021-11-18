@@ -18,7 +18,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var deltaVector = Quaternion.Inverse(transform.rotation) * direction * delta;
             var newSize = square.Size - (Vector2)deltaVector;
 
-            square.SetSize(newSize);
+            square.SetSize(newSize - new Vector2(0.0001f, 0.0001f));
         }
 
         protected override void DrawLines()
