@@ -130,8 +130,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private Vector3 ClipDistance(Vector3 direction, float maxOffset)
         {
-            var maxPos = direction * maxOffset;
-            var minPos = -direction * maxOffset;
+            var maxPos = direction * maxOffset - (direction * 0.0001f);
+            var minPos = -direction * maxOffset + (direction * 0.0001f);
 
             if (Vector3.Distance(transform.position, Wall.transform.position + minPos) > Vector3.Distance(transform.position, Wall.transform.position + maxPos))
                 return maxPos;
