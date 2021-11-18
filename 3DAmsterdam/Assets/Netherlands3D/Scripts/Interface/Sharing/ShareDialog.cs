@@ -190,7 +190,7 @@ namespace Netherlands3D.Interface.Sharing
 				//Use relative path
 				var absoluteURL = Application.absoluteURL;
 				var appendVariable = Config.activeConfiguration.sharingViewScenePath;
-				if (absoluteURL.Contains("?")) appendVariable.Replace("?", "&");
+				if (absoluteURL.Contains("?")) appendVariable = appendVariable.Replace("?", "&");
 
 				sharedSceneURL = absoluteURL + appendVariable.Replace("{sceneId}", currentSceneServerReturn.sceneId);
 			}
