@@ -34,12 +34,12 @@ namespace TileBakeLibrary
 		public void Convert()
 		{
 			var someDoubleVector3 = new Vector3Double(
-				new Random().NextDouble(), 
-				new Random().NextDouble(), 
-				new Random().NextDouble()
+				1,
+				2,
+				3
 			);
 
-			File.WriteAllText($"{sourcePath}/dummy.txt", "dummy file " + someDoubleVector3);
+			File.WriteAllText($"{targetPath}/dummy.txt", "dummy file " + someDoubleVector3);
 		}
 
 		/// <summary>

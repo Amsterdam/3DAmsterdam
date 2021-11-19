@@ -39,6 +39,6 @@ public class TileGenerationWizard : ScriptableWizard
     void OnWizardOtherButton()
     {
         helpString = "Canceled";
-        converter.Cancel();
+        if(converter != null) converter.Cancel();
     }
 }
