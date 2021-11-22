@@ -48,14 +48,80 @@ namespace TileBakeTool
 			StartConverting(sourcePath, sourcePath);
 		}
 
+		private static void ParseArguments(string[] args)
+		{
+			//Read the arguments and apply corresponding settings
+			for (int i = 0; i < args.Length; i++)
+			{
+				var argument = args[i];
+				if (argument.Contains("--")){
+					var value = (i + 1 < args.Length) ? args[i + 1] : "";
+					ApplySetting(argument,value);
+				}
+			}
+
+			if(sourcePath != "" && outputPath != "")
+				StartConverting(sourcePath, outputPath);
+		}
+
+		private static void ApplySetting(string argument, string value)
+		{
+			switch (argument)
+			{
+				case "--source":
+					sourcePath = value;
+					Console.WriteLine($"Source: {value}");
+					break;
+				case "--output":
+					outputPath = value;
+					Console.WriteLine($"Output directory: {value}");
+					break;
+				case "--filter-lod":
+					lodIndex = int.Parse(value);
+					Console.WriteLine($"LOD index: {lodIndex}");
+					break;
+				case "--id":
+					identifier = value;
+					Console.WriteLine($"Object identifier: {identifier}");
+					break;
+				case "--id-remove":
+					removeFromIdentifier = value;
+					Console.WriteLine($"Remove from identifier: {removeFromIdentifier}");
+					break;
+				default:
+					
+					break;
+			}
+		}
+
+		private static void StartConverting(string sourcePath, string targetPath)
+		{
+			Console.WriteLine("Starting...");
+
+			//Here we use the .dll. This usage is the same as in Unity3D.
+			var tileBaker = new CityJSONToTileConverter();
+			tileBaker.SetSourcePath(sourcePath);
+			tileBaker.SetTargetPath(targetPath);
+			tileBaker.SetLODSlot(lodIndex);
+			tileBaker.SetID(identifier, removeFromIdentifier);
+			tileBaker.Convert();
+		}
+
 		private static void ShowHelp()
 		{
 			Console.Write(@"
-This tool converts CityJSON files into Netherlands3D binary tile files.
+
+           // Netherlands3D Binary Tiles Generator 0.1 //
+
+
+This tool parses CityJSON files and bakes them into single-mesh binary tile files.
+Seperate metadata files contain the seperation of sub-objects.
 Check out http:/3d.amsterdam.nl/netherlands3d for help.
-Required options
---source <pathToSourceFolder>
---output <pathToTileOutputFolder>
+
+Required options:
+
+--source <path to CityJSON files>
+--output <path to tile output folder>
 
 Extra options:
 
@@ -68,60 +134,8 @@ Extra options:
 
 Pipeline example:
 
-TileBakeTool.exe --source ""C:/MyProject/CityJsonFiles/*.json"" --output ""C:/MyProject/BinaryTiles/"" --filter-lod ""2"" --filter-type ""gebouw"" --id ""GebouwNummer""
-
+TileBakeTool.exe --source ""C:/MyProject/CityJsonFiles/*.json"" --output ""C:/MyProject/BinaryTiles/"" --filter-lod ""2"" --filter-type ""gebouw"" --id ""GebouwNummer"" 
 TileBakeTool.exe --source ""C:/MyProject/CustomMadeBuildings/*.json""--output ""C:/MyProject/BinaryTiles/"" --id ""BAGID"" --add --replace");
-		}
-
-		private static void ParseArguments(string[] args)
-		{
-			//Read the arguments and apply corresponding settings
-			for (int i = 0; i < args.Length; i++)
-			{
-				var argument = args[i];
-				if (argument.Contains("--")){
-					var value = (i + 1 < args.Length) ? "" : args[i + 1];
-					ApplySetting(argument,value);
-				}
-			}
-
-			if(sourcePath != "" && outputPath != "")
-				StartConverting(sourcePath, outputPath);
-		}
-
-		private static void StartConverting(string sourcePath, string targetPath)
-		{
-			var tileBaker = new CityJSONToTileConverter();
-			tileBaker.SetSourcePath(sourcePath);
-			tileBaker.SetTargetPath(targetPath);
-			tileBaker.SetLODSlot(lodIndex);
-			tileBaker.SetID(identifier, removeFromIdentifier);
-			tileBaker.Convert();
-		}
-
-		private static void ApplySetting(string argument, string value)
-		{
-			Console.WriteLine($"Setting {argument} = {value}");
-			switch (argument)
-			{
-				case "--source":
-					sourcePath = value;
-					break;
-				case "--output":
-					outputPath = value;
-					break;
-				case "--filter-lod":
-					lodIndex = int.Parse(value);
-					break;
-				case "--id":
-					identifier = value;
-					break;
-				case "--id-remove":
-					removeFromIdentifier = value;
-					break;
-				default:
-					break;
-			}
 		}
 	}
 }

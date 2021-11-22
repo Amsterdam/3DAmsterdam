@@ -21,7 +21,7 @@ namespace TileBakeLibrary
 
         private List<CityObject> allCityObjects = new List<CityObject>();
         private List<Tile> tiles = new List<Tile>();
-        private Task<List<CityObject>>[] conversionTasks;
+        private Task<List<CityObject>>[] parseTasks;
 
         /// <summary>
         /// The LOD index we want to parse. 
@@ -78,21 +78,24 @@ namespace TileBakeLibrary
             }
 
             //Create a threadable task for every file, that returns a list of parsed cityobjects
-			conversionTasks = new Task<List<CityObject>>[sourceFiles.Length];
+            Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
+
+            parseTasks = new Task<List<CityObject>>[sourceFiles.Length];
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
-				conversionTasks[i] = Task.Run(() => ConvertProcess(sourceFiles[i]));
+                var index = i;
+                Task<List<CityObject>> newParseTask = Task.Run(() => ConvertProcess(sourceFiles[index]));
+                parseTasks[i] = newParseTask;
 			}
 
             //Wait for all the files to be parsed, and combine the results
-			Task.WaitAll(conversionTasks);
-            foreach (var task in conversionTasks)
+			Task.WaitAll(parseTasks);
+            foreach (var task in parseTasks)
             {
                 allCityObjects.AddRange(task.Result);
             }
 
             BakeTiles();
-			Console.ReadLine();
 		}
 
         /// <summary>
@@ -100,7 +103,9 @@ namespace TileBakeLibrary
         /// </summary>
         private void BakeTiles()
         {
-            File.WriteAllLines(outputPath, allCityObjects.Select(cityObject => cityObject.id).ToArray());
+            Console.WriteLine($"Baking...");
+            Directory.CreateDirectory(outputPath);
+            File.WriteAllLines(outputPath + "test.txt", allCityObjects.Select(cityObject => cityObject.id).ToArray());
 		}
 
 		private async Task<List<CityObject>> ConvertProcess(string sourceFile)
@@ -108,8 +113,8 @@ namespace TileBakeLibrary
             List<CityObject> foundCityObjects = new List<CityObject>();
 
             //Parse the file
+            Console.WriteLine($"Parsing CityJSON: {sourceFile}");
             var jsonstring = File.ReadAllText(sourceFile);
-            Console.WriteLine($"Parsing CityJSON: {jsonstring}");
             await Task.Delay(10);
 
             var cityjsonNode = JSON.Parse(jsonstring);
@@ -151,11 +156,17 @@ namespace TileBakeLibrary
             foreach (JSONNode buildingNode in cityjsonNode["CityObjects"])
             {
                 //Object ID
-                var objectID = buildingNode["attributes"][identifier].Value.Replace(removeFromID, "");
-                                
+                var objectID = "";
+                if (buildingNode["attributes"][identifier] != null) {
+                    objectID = buildingNode["attributes"][identifier].Value;
+                    if(objectID.Length > 0 && removeFromID.Length > 0)
+                    {
+                        objectID = objectID.Replace(removeFromID, "");
+                    }
+                }
+
                 //The building verts/triangles
                 var boundaries = buildingNode["geometry"][lodIndex]["boundaries"][0];
-
                 var newCityObject = new CityObject()
                 {
                     id = objectID

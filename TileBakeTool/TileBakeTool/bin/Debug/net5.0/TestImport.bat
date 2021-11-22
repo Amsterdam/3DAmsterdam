@@ -1,1 +1,2 @@
-TileBakeTool.exe --source "C:\Projects\GemeenteAmsterdam\Docs\CityJSON\Source\" --target "C:\Projects\GemeenteAmsterdam\Docs\CityJSON\Output\" --id "identificatie"
+TileBakeTool.exe --source "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Source/" --output "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Output/" --id "identificatie"
+@pause
