@@ -4,7 +4,7 @@ using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
 using TileBakeLibrary.Coordinates;
-using SimpleJSON;
+using Bunny83.SimpleJSON;
 using System.Linq;
 
 namespace TileBakeLibrary
