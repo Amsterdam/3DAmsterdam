@@ -10,52 +10,53 @@ namespace TileBakeLibrary
 {
 	class BinaryMeshWriter
 	{
-        public static void SaveAsBinaryFile(int version, Tile tile, string filePath)
+        private static int writerVersion = 1;        
+
+        public static void SaveAsBinaryFile(Tile tile, string filePath)
         {
             using (FileStream file = File.Create(filePath))
             {
                 using (BinaryWriter writer = new BinaryWriter(file))
                 {
                     //Version int
-                    writer.Write(version);
+                    writer.Write(writerVersion);
 
                     //Verts
                     var vertices = tile.vertices;
-                    writer.Write(vertices.Length);
+                    writer.Write(vertices.Count);
                     foreach (Vector3 vert in tile.vertices)
                     {
-                        writer.Write(vert.x);
-                        writer.Write(vert.y);
-                        writer.Write(vert.z);
+                        writer.Write(vert.X);
+                        writer.Write(vert.Y);
+                        writer.Write(vert.Z);
                     }
 
                     var normals = tile.normals;
                     //Normals
-                    writer.Write(normals.Length);
+                    writer.Write(normals.Count);
                     foreach (Vector3 normal in normals)
                     {
-                        writer.Write(normal.x);
-                        writer.Write(normal.y);
-                        writer.Write(normal.z);
+                        writer.Write(normal.X);
+                        writer.Write(normal.Y);
+                        writer.Write(normal.Z);
                     }
 
                     //UV
-                    var uvs = tile.uv;
-                    writer.Write(uvs.Length);
+                    var uvs = tile.uvs;
+                    writer.Write(uvs.Count);
                     foreach (Vector2 uv in uvs)
                     {
-                        writer.Write(uv.x);
-                        writer.Write(uv.y);
+                        writer.Write(uv.X);
+                        writer.Write(uv.Y);
                     }
 
                     //Every triangle list per submesh
-                    writer.Write(tile.subMeshCount);
-                    for (int i = 0; i < tile.subMeshCount; i++)
+                    writer.Write(tile.submeshes.Count);
+                    for (int i = 0; i < tile.submeshes.Count; i++)
                     {
-                        int[] submeshTriangleList = tile.GetTriangles(i);
-                        writer.Write(submeshTriangleList.Length);
-                        writer.Write(tile.GetSubMesh(i).baseVertex);
-                        //var offset = sourceMesh.GetSubMesh(i).baseVertex;
+                        List<int> submeshTriangleList = tile.submeshes[i].triangleIndices;
+                        writer.Write(submeshTriangleList.Count);
+                        writer.Write(tile.submeshes[i].baseVertex);
                         foreach (int index in submeshTriangleList)
                         {
                             writer.Write(index);

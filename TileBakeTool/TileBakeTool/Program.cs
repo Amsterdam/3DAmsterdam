@@ -15,7 +15,7 @@ namespace TileBakeTool
 		private static string removeFromIdentifier = "";
 
 
-		private static int lodIndex = 0;
+		private static float lod = 0;
 
 		static void Main(string[] args)
 		{
@@ -77,8 +77,8 @@ namespace TileBakeTool
 					Console.WriteLine($"Output directory: {value}");
 					break;
 				case "--filter-lod":
-					lodIndex = int.Parse(value);
-					Console.WriteLine($"LOD index: {lodIndex}");
+					lod = float.Parse(value);
+					Console.WriteLine($"LOD index: {lod}");
 					break;
 				case "--id":
 					identifier = value;
@@ -102,7 +102,7 @@ namespace TileBakeTool
 			var tileBaker = new CityJSONToTileConverter();
 			tileBaker.SetSourcePath(sourcePath);
 			tileBaker.SetTargetPath(targetPath);
-			tileBaker.SetLODSlot(lodIndex);
+			tileBaker.SetLOD(lod);
 			tileBaker.SetID(identifier, removeFromIdentifier);
 			tileBaker.Convert();
 		}

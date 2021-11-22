@@ -319,7 +319,15 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     building.name = name;
 
                     //The building verts/triangles
-                    var boundaries = buildingNode["geometry"][lodSlot]["boundaries"][0];
+                    var geometries = buildingNode["geometry"].AsArray;
+                    foreach(JSONNode geometry in geometries)
+                    {
+                        if(geometry["lod"].AsFloat == lodLevel)
+                        {
+                            //we need this
+						}
+					}
+
                     meshTriangles = new List<int>();
                     List<Vector3> thisMeshVerts = new List<Vector3>();
                     foreach (JSONNode boundary in boundaries)

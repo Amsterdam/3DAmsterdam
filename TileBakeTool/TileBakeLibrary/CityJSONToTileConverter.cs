@@ -17,19 +17,20 @@ namespace TileBakeLibrary
         private string identifier = "";
         private string removeFromID = "";
 
-        private int lodIndex = 0;
+        private float lod = 0;
+        private int tileSize = 1000;
 
         private List<CityObject> allCityObjects = new List<CityObject>();
         private List<Tile> tiles = new List<Tile>();
         private Task<List<CityObject>>[] parseTasks;
 
         /// <summary>
-        /// The LOD index we want to parse. 
+        /// The LOD we want to parse. 
         /// </summary>
-        /// <param name="targetLodIndex">Defaults to 0</param>
-        public void SetLODSlot(int targetLodIndex)
+        /// <param name="targetLOD">Defaults to 0</param>
+        public void SetLOD(float targetLOD)
         {
-            lodIndex = targetLodIndex;
+            lod = targetLOD;
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace TileBakeLibrary
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                Task<List<CityObject>> newParseTask = Task.Run(() => ConvertProcess(sourceFiles[index]));
+                Task<List<CityObject>> newParseTask = Task.Run(() => AsyncParseProcess(sourceFiles[index]));
                 parseTasks[i] = newParseTask;
 			}
 
@@ -103,12 +104,55 @@ namespace TileBakeLibrary
         /// </summary>
         private void BakeTiles()
         {
-            Console.WriteLine($"Baking...");
-            Directory.CreateDirectory(outputPath);
-            File.WriteAllLines(outputPath + "test.txt", allCityObjects.Select(cityObject => cityObject.id).ToArray());
-		}
+            //Determine what tiles we will need using our parsed cityobject centroids
+            var minX = double.MaxValue;
+            var maxX = double.MinValue;
 
-		private async Task<List<CityObject>> ConvertProcess(string sourceFile)
+            var minY = double.MaxValue;
+            var maxY = double.MinValue;
+            foreach (CityObject cityObject in allCityObjects)
+            {
+                if (cityObject.centroid.X < minX) minX = cityObject.centroid.X;
+                else if (cityObject.centroid.X >= maxX) maxX = cityObject.centroid.X;
+
+                if (cityObject.centroid.Y < minY) minY = cityObject.centroid.Y;
+                else if (cityObject.centroid.Y >= maxY) minY = cityObject.centroid.Y;
+            }
+
+            //Create our grid of tiles
+            var XTiles = Math.Ceiling((maxX - minX) / tileSize);
+            var YTiles = Math.Ceiling((maxY - minY) / tileSize);
+
+            var startXRD = Math.Floor(minX / tileSize);
+            var startYRD = Math.Floor(minY / tileSize);
+
+            for (int x = 0; x < XTiles; x++)
+			{
+                var tileX = startXRD + (x * tileSize);
+                for (int y = 0; y < YTiles; y++)
+                {
+                    var tileY = startYRD + (y * tileSize);
+                    tiles.Add(new Tile()
+                    {
+                        position = new Vector2Double(tileX, tileY),
+                    });
+                }
+            }
+
+            Console.WriteLine($"Baking {XTiles}x{YTiles}={XTiles*YTiles} tiles");
+
+            //Add the CityObjects that fall within the bounds
+            //TODO<----
+
+            //Create binary files
+            Directory.CreateDirectory(outputPath);
+            foreach (Tile tile in tiles) {
+                //Create binary files
+                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{tile.position.x}_{tile.position.y}.bin");
+            }
+        }
+
+		private async Task<List<CityObject>> AsyncParseProcess(string sourceFile)
 		{
             List<CityObject> foundCityObjects = new List<CityObject>();
 
@@ -152,7 +196,7 @@ namespace TileBakeLibrary
                 allVerts.Add(vert);
             }
 
-            //Now build the meshes and create the city objects
+            //Build the meshes and create the city objects
             foreach (JSONNode buildingNode in cityjsonNode["CityObjects"])
             {
                 //Object ID
@@ -165,38 +209,34 @@ namespace TileBakeLibrary
                     }
                 }
 
-                //The building verts/triangles
-                var boundaries = buildingNode["geometry"][lodIndex]["boundaries"][0];
-                var newCityObject = new CityObject()
+                var geometries = buildingNode["geometry"].AsArray;
+                foreach (JSONNode geometry in geometries)
                 {
-                    id = objectID
-				};
+                    if (geometry["lod"].AsFloat == lod && geometry["type"] == "Solid")
+                    {
+                        var indices = geometry["boundaries"][0][0][0].Children.Select(n => n.AsInt).ToArray();
 
-                foundCityObjects.Add(newCityObject);
+                        //For testing just interpret first ones as triangle
+                        Vector3[] triangle = new Vector3[3];
+                        
+                        //TODO: Repalace this 
+
+                        List <Vector3Double> thisMeshVerts = new List<Vector3Double>();
+                        var newCityObject = new CityObject()
+                        {
+                            id = objectID,
+
+                        };
+                        foundCityObjects.Add(newCityObject);
+                    }
+                }
             }
             return foundCityObjects;
         }
 
-        /// <summary>
-        /// Add our parsed city object
-        /// </summary>
-        /// <param name="id"></param>
-        private void AddCityObject(string id)
-        {
-            allCityObjects.Add(
-                new CityObject()
-                {
-                    id = id
-                }
-            );
-		}
-
-		/// <summary>
-		/// Cancels the running concersion progress
-		/// </summary>
 		public void Cancel()
 		{
-            
-        }
+			throw new NotImplementedException();
+		}
 	}
 }
