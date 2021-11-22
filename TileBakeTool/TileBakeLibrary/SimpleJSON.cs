@@ -90,6 +90,8 @@
  * - Added static setting "JSONNode.longAsString" which controls the default type that is used by the
  *   LazyCreator when using AsLong
  * 
+ * [2022-11-22]
+ *  - 3DAmsterdam - Moved into Bunny83 namespace to avoid conflicts
  * 
  * The MIT License (MIT)
  * 
@@ -121,7 +123,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace SimpleJSON
+namespace Bunny83.SimpleJSON
 {
     public enum JSONNodeType
     {
