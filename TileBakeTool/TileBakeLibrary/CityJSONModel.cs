@@ -49,9 +49,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			foreach (JSONNode node in cityjsonNode["vertices"])
 			{
 				var vertCoordinates = new Vector3Double(
-						node[0].AsDouble * transformScale.x + transformOffset.x,
-						node[1].AsDouble * transformScale.y + transformOffset.y,
-						node[2].AsDouble * transformScale.z + transformOffset.z
+						node[0].AsDouble * transformScale.X + transformOffset.X,
+						node[1].AsDouble * transformScale.Y + transformOffset.Y,
+						node[2].AsDouble * transformScale.Z + transformOffset.Z
 				);
 
 				vertices.Add(vertCoordinates);
@@ -80,7 +80,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				Building building = ReadBuilding(node);
 				if (building != null)
 
-				{
+				{	
 					buildings.Add(building);
 				}
 			}

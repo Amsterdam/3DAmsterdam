@@ -4,18 +4,18 @@ namespace TileBakeLibrary.Coordinates
 {
     public struct Vector3Double
     {
-        public double x;
-        public double y;
-        public double z;
+        public double X;
+        public double Y;
+        public double Z;
         public Vector3Double(double X, double Y, double Z)
         {
-            x = X;
-            y = Y;
-            z = Z;
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
         }
         public override string ToString()
         {
-            return $"x:{x} y:{y} z:{z}";
+            return $"x:{X} y:{Y} z:{Z}";
         }
     }
 }

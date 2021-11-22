@@ -4,14 +4,14 @@ using TileBakeLibrary.Coordinates;
 
 namespace TileBakeLibrary
 {
-	class CityObject
+	class SubObject
 	{
 		public List<Vector3Double> verticesRD; 
 		public List<Vector3> normals; 
 		public List<Vector3> uvs; 
 		public List<int> triangleIndices;
 
-		public Vector2 centroid;
+		public Vector3Double centroid;
 
 		public string id = "";
 		public int indicesLengthInTile;

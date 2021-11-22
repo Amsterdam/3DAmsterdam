@@ -20,9 +20,9 @@ namespace TileBakeLibrary
         private float lod = 0;
         private int tileSize = 1000;
 
-        private List<CityObject> allCityObjects = new List<CityObject>();
+        private List<SubObject> allCityObjects = new List<SubObject>();
         private List<Tile> tiles = new List<Tile>();
-        private Task<List<CityObject>>[] parseTasks;
+        private Task<List<SubObject>>[] parseTasks;
 
         /// <summary>
         /// The LOD we want to parse. 
@@ -81,11 +81,11 @@ namespace TileBakeLibrary
             //Create a threadable task for every file, that returns a list of parsed cityobjects
             Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
 
-            parseTasks = new Task<List<CityObject>>[sourceFiles.Length];
+            parseTasks = new Task<List<SubObject>>[sourceFiles.Length];
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                Task<List<CityObject>> newParseTask = Task.Run(() => AsyncParseProcess(sourceFiles[index]));
+                Task<List<SubObject>> newParseTask = Task.Run(() => AsyncParseProcess(sourceFiles[index]));
                 parseTasks[i] = newParseTask;
 			}
 
@@ -110,7 +110,7 @@ namespace TileBakeLibrary
 
             var minY = double.MaxValue;
             var maxY = double.MinValue;
-            foreach (CityObject cityObject in allCityObjects)
+            foreach (SubObject cityObject in allCityObjects)
             {
                 if (cityObject.centroid.X < minX) minX = cityObject.centroid.X;
                 else if (cityObject.centroid.X >= maxX) maxX = cityObject.centroid.X;
@@ -148,13 +148,13 @@ namespace TileBakeLibrary
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
                 //Create binary files
-                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{tile.position.x}_{tile.position.y}.bin");
+                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{tile.position.X}_{tile.position.y}.bin");
             }
         }
 
-		private async Task<List<CityObject>> AsyncParseProcess(string sourceFile)
+		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
 		{
-            List<CityObject> foundCityObjects = new List<CityObject>();
+            List<SubObject> foundCityObjects = new List<SubObject>();
 
             //Parse the file
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
@@ -188,9 +188,9 @@ namespace TileBakeLibrary
             foreach (JSONNode node in cityjsonNode["vertices"])
             {
                 var vert = new Vector3Double(
-                       node[0].AsDouble * transformScale.x + transformOffset.x,
-                       node[1].AsDouble * transformScale.y + transformOffset.y,
-                       node[2].AsDouble * transformScale.z + transformOffset.z
+                       node[0].AsDouble * transformScale.X + transformOffset.X,
+                       node[1].AsDouble * transformScale.Y + transformOffset.Y,
+                       node[2].AsDouble * transformScale.Z + transformOffset.Z
                 );
 
                 allVerts.Add(vert);
@@ -214,18 +214,20 @@ namespace TileBakeLibrary
                 {
                     if (geometry["lod"].AsFloat == lod && geometry["type"] == "Solid")
                     {
-                        var indices = geometry["boundaries"][0][0][0].Children.Select(n => n.AsInt).ToArray();
+                        int[] indices = geometry["boundaries"][0][0][0].Children.Select(n => n.AsInt).ToArray();
 
                         //For testing just interpret first ones as triangle
-                        Vector3[] triangle = new Vector3[3];
-                        
-                        //TODO: Repalace this 
+                        List<Vector3Double> triangle = new List<Vector3Double>();
+                        triangle.Add(allVerts[indices[0]]);
+                        triangle.Add(allVerts[indices[1]]);
+                        triangle.Add(allVerts[indices[2]]);
 
                         List <Vector3Double> thisMeshVerts = new List<Vector3Double>();
-                        var newCityObject = new CityObject()
+                        var newCityObject = new SubObject()
                         {
                             id = objectID,
-
+                            verticesRD = triangle,
+                            centroid = triangle[0]
                         };
                         foundCityObjects.Add(newCityObject);
                     }

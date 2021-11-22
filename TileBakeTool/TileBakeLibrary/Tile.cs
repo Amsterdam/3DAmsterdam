@@ -13,7 +13,7 @@ namespace TileBakeLibrary
 		public Vector2Double position = new Vector2Double(); //Bottom left (RD coordinates)
 		public Vector2 size = new Vector2(); //Width and height (RD coordinates)
 
-		public List<CityObject> cityObjects = new List<CityObject>();
+		public List<SubObject> subObjects = new List<SubObject>();
 
 		public List<Vector3> vertices = new List<Vector3>();
 		public List<Vector3> normals = new List<Vector3>();

@@ -4,17 +4,17 @@ namespace TileBakeLibrary.Coordinates
 {
     public struct Vector2Double
     {
-        public double x;
-        public double y;
+        public double X;
+        public double Y;
 
         public Vector2Double(double X, double Y)
         {
-            x = X;
-            y = Y;
+            this.X = X;
+            this.Y = Y;
         }
         public override string ToString()
         {
-            return $"x:{x} y:{y}";
+            return $"x:{X} y:{Y}";
         }
     }
 }
