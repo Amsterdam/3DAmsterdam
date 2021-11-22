@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using SimpleJSON;
+﻿using System.Collections.Generic;
 using System.IO;
-using ConvertCoordinates;
 using Bunny83.SimpleJSON;
 using TileBakeLibrary.Coordinates;
 using System.Numerics;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {
-	public class CityModel
+	public class CityJSONModel
 	{
 		public JSONNode cityjsonNode;
 		public List<Vector3Double> vertices;
@@ -25,7 +21,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 		public Vector3Double TransformOffset { get => transformOffset; }
 
-		public CityModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
+		public CityJSONModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
 			string jsonstring;
 			jsonstring = File.ReadAllText(filepath + filename);
