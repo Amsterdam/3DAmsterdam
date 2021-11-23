@@ -19,6 +19,7 @@
 // 11-10-2021 - Added namespace to guard from conflicts in Unity3D by 3D Amsterdam
 
 using Poly2Tri;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -82,7 +83,7 @@ namespace JoeStrout
             {
                 planeNormal = Vector3.Cross(outside[1] - outside[0], outside[2] - outside[0]);
                 planeNormal = Vector3.Normalize(planeNormal);
-                if (Vector3.Angle(planeNormal, hint) > Vector3.Angle(-planeNormal, hint))
+                if (GetAngleBetween(planeNormal, hint) > GetAngleBetween(-planeNormal, hint))
                 {
                     planeNormal = -planeNormal;
                 }
@@ -101,7 +102,8 @@ namespace JoeStrout
                 }
                 else
                 {
-                    rotation = Quaternion.FromToRotation(planeNormal, Vector3.forward);
+                    //TODO, add alternative for FromToRotation
+                    //rotation = Quaternion.FromToRotation(planeNormal, Vector3.forward);
                 }
             }
 
@@ -136,6 +138,40 @@ namespace JoeStrout
             }
         }
 
+        public static double GetAngleBetween(Vector3 a, Vector3 b)
+        {
+            var dot = Vector3.Dot(a, b);
+            // Divide the dot by the product of the magnitudes of the vectors
+            dot /= (a.Length() * b.Length());
+            //Get the arc cosin of the angle, you now have your angle in radians 
+            var acos = Math.Acos(dot);
+            //Multiply by 180/Mathf.PI to convert to degrees
+            var angle = acos * 180 / Math.PI;
+
+            return angle;
+        }
+
+        public static Vector3 MultiplyQuaternionByVector(Quaternion quat, Vector3 vec)
+        {
+            float num = quat.X * 2f;
+            float num2 = quat.Y * 2f;
+            float num3 = quat.Z * 2f;
+            float num4 = quat.X * num;
+            float num5 = quat.Y * num2;
+            float num6 = quat.Z * num3;
+            float num7 = quat.X * num2;
+            float num8 = quat.X * num3;
+            float num9 = quat.Y * num3;
+            float num10 = quat.W * num;
+            float num11 = quat.W * num2;
+            float num12 = quat.W * num3;
+            Vector3 result;
+            result.X = (1f - (num5 + num6)) * vec.X + (num7 - num12) * vec.Y + (num8 + num11) * vec.Z;
+            result.Y = (num7 + num12) * vec.X + (1f - (num4 + num6)) * vec.Y + (num9 - num10) * vec.Z;
+            result.Z = (num8 - num11) * vec.X + (num9 + num10) * vec.Y + (1f - (num4 + num5)) * vec.Z;
+            return result;
+        }
+
         /// <summary>
         /// Helper method to convert a set of 3D points into the 2D polygon points
         /// needed by the Poly2Tri code.
@@ -144,15 +180,15 @@ namespace JoeStrout
         /// <param name="points">3D points.</param>
         /// <param name="rotation">Rotation needed to convert 3D points into the XY plane.</param>
         /// <param name="name="codeToPosition">Map (which we'll update) of PolygonPoint vertex codes to original 3D position.</param> 
-        static List<PolygonPoint> ConvertPoints(List<Vector3> points, Quaternion rotation, Dictionary<uint, Vector3> codeToPosition)
+        public static List<PolygonPoint> ConvertPoints(List<Vector3> points, Quaternion rotation, Dictionary<uint, Vector3> codeToPosition)
         {
             int count = points.Count;
             List<PolygonPoint> result = new List<PolygonPoint>(count);
             for (int i = 0; i < count; i++)
             {
                 Vector3 originalPos = points[i];
-                Vector3 p = rotation * originalPos;
-                PolygonPoint pp = new PolygonPoint(p.x, p.y);
+                Vector3 p = MultiplyQuaternionByVector(rotation,originalPos);
+                PolygonPoint pp = new PolygonPoint(p.X, p.Y);
                 //			Debug.Log("Rotated " + originalPos.ToString("F4") + " to " + p.ToString("F4"));
                 codeToPosition[pp.VertexCode] = originalPos;
                 result.Add(pp);
@@ -164,20 +200,25 @@ namespace JoeStrout
         /// </summary>
         /// <returns>The freshly minted mesh.</returns>
         /// <param name="polygon">Polygon you want to triangulate.</param>
-        public static Mesh CreateMesh(Polygon polygon, float thickness = 0)
+        public static void CreateMeshData(Polygon polygon, out Vector3[] vertices, out int[] triangles, Vector2[] uvs, float thickness = 0)
         {
-            //		long profileID = Profiler.Enter("Poly2Mesh.CreateMesh");
             // Check for the easy case (a triangle)
-            if (polygon.holes.Count == 0 && (polygon.outside.Count == 3
-                   || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
+            if (polygon.holes.Count == 0 && (polygon.outside.Count == 3 || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
             {
-                return CreateTriangle(polygon);
+                CreateTriangle(polygon, out vertices, out triangles, out uvs);
+                return;
             }
+
+            //make sure we out something in case of failure
+            vertices = new Vector3[0];
+            triangles = new int[0];
+            uvs = new Vector2[0];
+
             // Ensure we have the rotation properly calculated, and have a valid normal
             if (polygon.rotation == Quaternion.Identity) polygon.CalcRotation();
-            if (polygon.planeNormal == Vector3.Zero) return null;       // bad data
+            if (polygon.planeNormal == Vector3.Zero) return;       // bad data
                                                                         // Rotate 1 point and note where it ends up in Z
-            float z = (polygon.rotation * polygon.outside[0]).z;
+            float z = MultiplyQuaternionByVector(polygon.rotation,polygon.outside[0]).Z;
             // Prepare a map from vertex codes to 3D positions.
             Dictionary<uint, Vector3> codeToPosition = new Dictionary<uint, Vector3>();
             // Convert the outside points (throwing out Z at this point)
@@ -197,8 +238,8 @@ namespace JoeStrout
             }
             catch (System.Exception e)
             {
-                //			Profiler.Exit(profileID);
-                return null;
+                Console.WriteLine(e.Message);
+                return;
             }
             // Now, to get back to our original positions, use our code-to-position map.  We do
             // this instead of un-rotating to be a little more robust about noncoplanar polygons.
@@ -220,7 +261,7 @@ namespace JoeStrout
                         // Rather than fail, let's just do the inverse rotation.
                         //					Output.PrintWarning("Vertex code lookup failed; using inverse rotation.");
                         if (!invRot.HasValue) invRot = Quaternion.Inverse(polygon.rotation);
-                        pos = invRot.Value * new Vector3(p.Xf, p.Yf, z);
+                        pos = MultiplyQuaternionByVector(invRot.Value,new Vector3(p.Xf, p.Yf, z));
                     }
                     vertexList.Add(pos);
                 }
@@ -246,25 +287,18 @@ namespace JoeStrout
 
 
             // Create the UV list, by looking up the closest point for each in our poly
-            /*Vector2[] uv = null;
+            uvs = null;
             if (polygon.outsideUVs != null)
             {
-                uv = new Vector2[vertexList.Count];
+                uvs = new Vector2[vertexList.Count];
                 for (int i = 0; i < vertexList.Count; i++)
                 {
-                    uv[i] = polygon.ClosestUV(vertexList[i]);
+                    uvs[i] = polygon.ClosestUV(vertexList[i]);
                 }
-            }*/
+            }
 
-            // Create the mesh
-            Mesh msh = new Mesh();
-            msh.vertices = vertexList.ToArray();
-            msh.triangles = indices.ToArray();
-            //msh.uv = uv;
-            /*msh.RecalculateNormals();
-            msh.RecalculateBounds();*/
-            //		Profiler.Exit(profileID);
-            return msh;
+            vertices = vertexList.ToArray();
+            triangles = indices.ToArray();
         }
 
         private static void AddRim(List<Vector3> contour, float thickness, List<Vector3> vertexList, List<int> indices)
@@ -280,18 +314,18 @@ namespace JoeStrout
                 Vector3 bottomLeft;
                 Vector3 bottomRight;
 
-                topLeft = new Vector3(contour[i].x, contour[i].y, contour[i].z);
-                bottomLeft = new Vector3(contour[i].x, contour[i].y - thickness, contour[i].z);
+                topLeft = new Vector3(contour[i].X, contour[i].Y, contour[i].Z);
+                bottomLeft = new Vector3(contour[i].X, contour[i].Y - thickness, contour[i].Z);
                 if (i == contour.Count - 1)
                 {
                     //Close loop by ending with first
-                    topRight = new Vector3(contour[0].x, contour[i].y, contour[0].z);
-                    bottomRight = new Vector3(contour[0].x, contour[i].y - thickness, contour[0].z);
+                    topRight = new Vector3(contour[0].X, contour[i].Y, contour[0].Z);
+                    bottomRight = new Vector3(contour[0].Y, contour[i].Y - thickness, contour[0].Z);
                 }
                 else
                 {
-                    topRight = new Vector3(contour[i + 1].x, contour[i].y, contour[i + 1].z);
-                    bottomRight = new Vector3(contour[i + 1].x, contour[i].y - thickness, contour[i + 1].z);
+                    topRight = new Vector3(contour[i + 1].X, contour[i].Y, contour[i + 1].Z);
+                    bottomRight = new Vector3(contour[i + 1].Z, contour[i].Y - thickness, contour[i + 1].Z);
                 }
                 var startIndex = vertexList.Count;
 
@@ -313,27 +347,23 @@ namespace JoeStrout
             //innerloops
         }
 
-        public static bool fullDebug = false;
         /// <summary>
         /// Create a Mesh containing just the FIRST triangle in the given Polygon.
         /// (This is a much easier task since we can skip triangulation.)
         /// </summary>
         /// <returns>The freshly minted mesh.</returns>
         /// <param name="polygon">Polygon you want to make a triangle of.</param>
-        public static Mesh CreateTriangle(Polygon polygon)
+        public static void CreateTriangle(Polygon polygon, out Vector3[] vertices, out int[] indices, out Vector2[] uv)
         {
-            //		long profileID = Profiler.Enter("Poly2Mesh.CreateTriangle");
-            if (fullDebug) Debug.Log("Poly2Mesh.CreateTriangle 1");
             // Create the vertex array
-            Vector3[] vertices = new Vector3[3];
+            vertices = new Vector3[3];
             vertices[0] = polygon.outside[0];
             vertices[1] = polygon.outside[1];
             vertices[2] = polygon.outside[2];
             // Create the indices array
-            int[] indices = new int[3] { 0, 1, 2 };
-            if (fullDebug) Debug.Log("Poly2Mesh.CreateTriangle 2");
+            indices = new int[3] { 0, 1, 2 };
             // Create the UV list, by looking up the closest point for each in our poly
-            Vector2[] uv = null;
+            uv = null;
             if (polygon.outsideUVs != null)
             {
                 uv = new Vector2[3];
@@ -342,35 +372,6 @@ namespace JoeStrout
                     uv[i] = polygon.ClosestUV(vertices[i]);
                 }
             }
-            if (fullDebug) Debug.Log("Poly2Mesh.CreateTriangle 3");
-            // Create the mesh
-            Mesh msh = new Mesh();
-            if (fullDebug) Debug.Log("Poly2Mesh.CreateTriangle 4");
-            msh.vertices = vertices;
-            msh.triangles = indices;
-            msh.uv = uv;
-            msh.RecalculateNormals();
-            msh.RecalculateBounds();
-            if (fullDebug) Debug.Log("Poly2Mesh.CreateTriangle 5");
-            //		Profiler.Exit(profileID);
-            return msh;
-        }
-        /// <summary>
-        /// Create a GameObject from the given polygon.  The resulting object will
-        /// have a Mesh, a MeshFilter, and a MeshRenderer.  It will be all ready
-        /// to display (though you may want to add your own material).
-        /// </summary>
-        /// <returns>The newly created game object.</returns>
-        /// <param name="polygon">Polygon you want to triangulate.</param>
-        /// <param name="name">Name to assign to the new GameObject.</param>
-        public static GameObject CreateGameObject(Polygon polygon, string name = "Polygon")
-        {
-            GameObject gob = new GameObject();
-            gob.name = name;
-            gob.AddComponent(typeof(MeshRenderer));
-            MeshFilter filter = gob.AddComponent(typeof(MeshFilter)) as MeshFilter;
-            filter.mesh = CreateMesh(polygon);
-            return gob;
         }
     }
 }
