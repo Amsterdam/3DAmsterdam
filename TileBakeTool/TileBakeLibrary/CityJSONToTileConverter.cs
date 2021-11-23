@@ -8,6 +8,7 @@ using Bunny83.SimpleJSON;
 using System.Linq;
 using Netherlands3D.CityJSON;
 using JoeStrout;
+using System.Threading;
 
 namespace TileBakeLibrary
 {
@@ -80,6 +81,8 @@ namespace TileBakeLibrary
 		/// </summary>
 		public void Convert()
 		{
+            //Make sure 
+
             //If no specific filename or wildcard was supplied, default to .json files
 			var filter = Path.GetFileName(sourcePath);
 			if(filter == "") filter = "*.json";
@@ -180,6 +183,8 @@ namespace TileBakeLibrary
 
 		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
 		{
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             List<SubObject> filteredObjects = new List<SubObject>();
 
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
@@ -187,33 +192,48 @@ namespace TileBakeLibrary
 
             var cityJson = new CityJSON(sourceFile, true, true);
             List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
-			for (int i = 0; i < cityObjects.Count; i++)
+            Console.WriteLine($"CityObjects found: {cityObjects.Count}");
+            for (int i = 0; i < cityObjects.Count; i++)
 			{
                 var cityObject = cityObjects[i];
-                filteredObjects.Add(ConvertToSubObject(cityObject));
+                filteredObjects.Add(ToSubObject(cityObject));
             }
 
             return filteredObjects;
         }
 
-		private SubObject ConvertToSubObject(CityObject cityObject)
+		private SubObject ToSubObject(CityObject cityObject)
 		{
             var subObject = new SubObject();
             subObject.id = cityObject.semantics.First((field) => field.name == identifier).value;
 
             //For every surface return a triangulated mesh 
             List<Vector3Double> vertices = new List<Vector3Double>();
+            List<Vector2> uvs = new List<Vector2>();
             List<int> indices = new List<int>();
             foreach(var surface in cityObject.surfaces)
             {
-                List<Vector3Double> surfaceVertices = new List<Vector3Double>();
-                List<int> surfaceIndices = new List<int>();
+                //Our mesh output data per surface
+                Vector3[] surfaceVertices;
+                Vector2[] surfaceUvs;
+                int[] surfaceIndices;
 
+                //TODO make poly2mesh have double precision so we only loose precision at bake time
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
-                //poly.outside = surface.outerRing;
-                //poly.holes = surface.innerRings;
-                
-                //surface.outerRing,surface.innerRings
+                poly.outside = surface.outerRing.Cast<Vector3>().ToList();
+                poly.holes = surface.outerRing.Cast<List<Vector3>>().ToList();
+                Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
+
+
+				for (int i = 0; i < surfaceVertices.Length; i++)
+				{
+                    vertices.Add((Vector3Double)surfaceVertices[i]);
+                    uvs.Add(surfaceUvs[i]);
+                }
+				for (int i = 0; i < surfaceIndices.Length; i++)
+				{
+                    indices.Add(surfaceIndices[i]);
+                }
             }
 
             return subObject;

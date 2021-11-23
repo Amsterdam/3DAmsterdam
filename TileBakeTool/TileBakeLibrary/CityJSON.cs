@@ -24,9 +24,8 @@ namespace Netherlands3D.CityJSON
 
 		public CityJSON(string filepath, bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
-			string jsonstring;
-			jsonstring = File.ReadAllText(filepath);
-			cityJsonNode = JSON.Parse(jsonstring);
+			string jsonString = File.ReadAllText(filepath);
+			cityJsonNode = JSON.Parse(jsonString);
 
 			if (cityJsonNode == null || cityJsonNode["CityObjects"] == null)
 			{
@@ -83,7 +82,6 @@ namespace Netherlands3D.CityJSON
 			LOD = lod;
 			foreach (JSONNode node in cityJsonNode["CityObjects"])
 			{
-
 				CityObject cityObject = ReadCityObject(node);
 				if (cityObject != null)
 				{	
@@ -146,7 +144,6 @@ namespace Netherlands3D.CityJSON
 						{
 							surfaces.Add(ReadSurfaceVectors(surfacenode));
 						}
-
 					}
 
 					//read textureValues
@@ -173,7 +170,7 @@ namespace Netherlands3D.CityJSON
 								}
 							}
 						}
-						if (geometrynode["type"] == "MultiSurface")
+						else if (geometrynode["type"] == "MultiSurface")
 						{
 							foreach (JSONNode surfacenode in valuesNode)
 							{
@@ -232,6 +229,7 @@ namespace Netherlands3D.CityJSON
 				}
 				cityObject.children = children;
 			}
+
 			return cityObject;
 		}
 

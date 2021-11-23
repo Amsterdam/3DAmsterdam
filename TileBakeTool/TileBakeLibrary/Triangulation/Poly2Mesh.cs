@@ -200,7 +200,7 @@ namespace JoeStrout
         /// </summary>
         /// <returns>The freshly minted mesh.</returns>
         /// <param name="polygon">Polygon you want to triangulate.</param>
-        public static void CreateMeshData(Polygon polygon, out Vector3[] vertices, out int[] triangles, Vector2[] uvs, float thickness = 0)
+        public static void CreateMeshData(Polygon polygon, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs, float thickness = 0)
         {
             // Check for the easy case (a triangle)
             if (polygon.holes.Count == 0 && (polygon.outside.Count == 3 || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
