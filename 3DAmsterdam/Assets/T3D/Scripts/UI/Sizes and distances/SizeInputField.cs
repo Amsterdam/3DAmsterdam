@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private InputField inputField;
         [SerializeField]
         private SizeType size;
-        private float value = 0f;
+        private SaveableFloat value;
         //[SerializeField]
         //private string unitText = "m";
 
@@ -32,9 +33,36 @@ namespace Netherlands3D.T3D.Uitbouw
             inputField = GetComponent<InputField>();
         }
 
+        private void Start()
+        {
+            value = new SaveableFloat(size.ToString(), SessionSaver.LoadPreviousSession);
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            float delta = 0;
+            switch (size)
+            {
+                case SizeType.Width:
+                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Width;
+                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta / 2);
+                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta / 2);
+                    break;
+                case SizeType.Height:
+                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Height;
+                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta);
+                    break;
+                case SizeType.Depth:
+                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Depth;
+                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta);
+                    break;
+            }
+        }
+
         private void Update()
         {
-            if (hasUpdatedText == false && UpdateOnce && RestrictionChecker.ActiveUitbouw != null )
+            if (hasUpdatedText == false && UpdateOnce && RestrictionChecker.ActiveUitbouw != null)
             {
                 SetText();
                 hasUpdatedText = true;
@@ -49,29 +77,32 @@ namespace Netherlands3D.T3D.Uitbouw
             switch (size)
             {
                 case SizeType.Width:
-                    value = RestrictionChecker.ActiveUitbouw.Width;
+                    value.SetValue(RestrictionChecker.ActiveUitbouw.Width * 100);
                     break;
                 case SizeType.Height:
-                    value = RestrictionChecker.ActiveUitbouw.Height;
+                    value.SetValue(RestrictionChecker.ActiveUitbouw.Height * 100);
                     break;
                 case SizeType.Depth:
-                    value = RestrictionChecker.ActiveUitbouw.Depth;
+                    value.SetValue(RestrictionChecker.ActiveUitbouw.Depth * 100);
                     break;
                 case SizeType.Area:
-                    value = RestrictionChecker.ActiveUitbouw.Area;
+                    value.SetValue(RestrictionChecker.ActiveUitbouw.Area);
                     break;
             }
 
             if (inputField != null)
             {
-                inputField.text = value.ToString("F2");
+                if(size == SizeType.Area)
+                    inputField.text = value.Value.ToString("F2");
+                else
+                    inputField.text = value.Value.ToString("F0");
             }
             else
             {
-                foreach(var textObject in GetComponentsInChildren<Text>())
+                foreach (var textObject in GetComponentsInChildren<Text>())
                 {
-                    textObject.text = value.ToString("F2");
-                }                
+                    textObject.text = value.Value.ToString("F0");
+                }
             }
         }
 
@@ -80,8 +111,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta/2);
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta/2);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta / 2 / 100);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta / 2 / 100);
             }
         }
 
@@ -90,7 +121,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta/100);
             }
         }
 
@@ -99,7 +130,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta/100);
             }
         }
 
@@ -113,7 +144,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     print("enter a positive number");
                     return false;
                 }
-                delta = amount - value;
+                delta = amount - value.Value;
                 return true;
             }
             return false;
