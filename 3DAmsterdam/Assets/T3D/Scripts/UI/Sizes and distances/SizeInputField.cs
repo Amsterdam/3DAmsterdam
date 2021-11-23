@@ -25,17 +25,19 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private SizeType size;
         private SaveableFloat value;
+        private string key;
         //[SerializeField]
         //private string unitText = "m";
 
         private void Awake()
         {
             inputField = GetComponent<InputField>();
+            key = GetType().Namespace + GetType().ToString() + "." + size.ToString();
         }
 
         private void Start()
         {
-            value = new SaveableFloat(size.ToString(), SessionSaver.LoadPreviousSession);
+            value = new SaveableFloat(key, SessionSaver.LoadPreviousSession);
             LoadData();
         }
 
@@ -92,7 +94,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             if (inputField != null)
             {
-                if(size == SizeType.Area)
+                if (size == SizeType.Area)
                     inputField.text = value.Value.ToString("F2");
                 else
                     inputField.text = value.Value.ToString("F0");
@@ -121,7 +123,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta/100);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta / 100);
             }
         }
 
@@ -130,7 +132,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta/100);
+                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta / 100);
             }
         }
 
