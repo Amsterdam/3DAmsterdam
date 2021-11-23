@@ -4,15 +4,15 @@ using Bunny83.SimpleJSON;
 using TileBakeLibrary.Coordinates;
 using System.Numerics;
 
-namespace Netherlands3D.AssetGeneration.CityJSON
+namespace Netherlands3D.CityJSON
 {
-	public class CityJSONModel
+	public class CityJSON
 	{
-		public JSONNode cityjsonNode;
+		public JSONNode cityJsonNode;
 		public List<Vector3Double> vertices;
 		private List<Vector2> textureVertices;
 		private List<Surfacetexture> Textures;
-		private List<material> Materials;
+		private List<Material> Materials;
 
 		private double LOD;
 
@@ -21,11 +21,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 		public Vector3Double TransformOffset { get => transformOffset; }
 
-		public CityJSONModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
+		public CityJSON(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
 			string jsonstring;
 			jsonstring = File.ReadAllText(filepath + filename);
-			cityjsonNode = JSON.Parse(jsonstring);
+			cityJsonNode = JSON.Parse(jsonstring);
 
 			//Get vertices
 			vertices = new List<Vector3Double>();
@@ -33,20 +33,20 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			Textures = new List<Surfacetexture>();
 
 			//Optionaly parse transform scale and offset
-			transformScale = (applyTransformScale && cityjsonNode["transform"] != null && cityjsonNode["transform"]["scale"] != null) ? new Vector3Double(
-				cityjsonNode["transform"]["scale"][0].AsDouble,
-				cityjsonNode["transform"]["scale"][1].AsDouble,
-				cityjsonNode["transform"]["scale"][2].AsDouble
+			transformScale = (applyTransformScale && cityJsonNode["transform"] != null && cityJsonNode["transform"]["scale"] != null) ? new Vector3Double(
+				cityJsonNode["transform"]["scale"][0].AsDouble,
+				cityJsonNode["transform"]["scale"][1].AsDouble,
+				cityJsonNode["transform"]["scale"][2].AsDouble
 			) : new Vector3Double(1, 1, 1);
 
-			transformOffset = (applyTransformOffset && cityjsonNode["transform"] != null && cityjsonNode["transform"]["translate"] != null) ? new Vector3Double(
-				   cityjsonNode["transform"]["translate"][0].AsDouble,
-				   cityjsonNode["transform"]["translate"][1].AsDouble,
-				   cityjsonNode["transform"]["translate"][2].AsDouble
+			transformOffset = (applyTransformOffset && cityJsonNode["transform"] != null && cityJsonNode["transform"]["translate"] != null) ? new Vector3Double(
+				   cityJsonNode["transform"]["translate"][0].AsDouble,
+				   cityJsonNode["transform"]["translate"][1].AsDouble,
+				   cityJsonNode["transform"]["translate"][2].AsDouble
 			) : new Vector3Double(0, 0, 0);
 
 			//now load all the vertices with the scaler and offset applied
-			foreach (JSONNode node in cityjsonNode["vertices"])
+			foreach (JSONNode node in cityJsonNode["vertices"])
 			{
 				var vertCoordinates = new Vector3Double(
 						node[0].AsDouble * transformScale.X + transformOffset.X,
@@ -57,11 +57,11 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				vertices.Add(vertCoordinates);
 			}
 			//get textureVertices
-			foreach (JSONNode node in cityjsonNode["appearance"]["vertices-texture"])
+			foreach (JSONNode node in cityJsonNode["appearance"]["vertices-texture"])
 			{
 				textureVertices.Add(new Vector2(node[0].AsFloat, node[1].AsFloat));
 			}
-			foreach (JSONNode node in cityjsonNode["appearance"]["textures"])
+			foreach (JSONNode node in cityJsonNode["appearance"]["textures"])
 			{
 				Surfacetexture texture = new Surfacetexture();
 				texture.path = filepath + node["image"];
@@ -70,26 +70,25 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			}
 		}
 
-		public List<Building> LoadBuildings(double lod)
+		public List<CityObject> LoadCityObjects(double lod)
 		{
-			List<Building> buildings = new List<Building>();
+			List<CityObject> cityObjects = new List<CityObject>();
 			LOD = lod;
-			foreach (JSONNode node in cityjsonNode["CityObjects"])
+			foreach (JSONNode node in cityJsonNode["CityObjects"])
 			{
 
-				Building building = ReadBuilding(node);
-				if (building != null)
-
+				CityObject cityObject = ReadCityObject(node);
+				if (cityObject != null)
 				{	
-					buildings.Add(building);
+					cityObjects.Add(cityObject);
 				}
 			}
-			return buildings;
+			return cityObjects;
 		}
 
-		private Building ReadBuilding(JSONNode node)
+		private CityObject ReadCityObject(JSONNode node)
 		{
-			Building building = new Building();
+			CityObject cityObject = new CityObject();
 			bool LODcorrect = false;
 			foreach (JSONNode geometrynode in node["geometry"])
 			{
@@ -106,10 +105,10 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			{
 				return null;
 			}
+
 			//read attributes
 			List<Semantics> semantics = ReadSemantics(node["attributes"]);
-
-			building.semantics = semantics;
+			cityObject.semantics = semantics;
 
 			//readSurfaceGeometry
 			List<Surface> surfaces = new List<Surface>();
@@ -119,7 +118,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 				{
 					if (geometrynode["type"] == "Solid")
 					{
-
 						JSONNode exteriorshell = geometrynode["boundaries"][0];
 						foreach (JSONNode surfacenode in exteriorshell)
 						{
@@ -204,32 +202,30 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 					// read MaterialValues
 					JSONNode materialnode = geometrynode["material"];
-
 				}
 			}
 
-			building.surfaces = surfaces;
-
+			cityObject.surfaces = surfaces;
 
 			//process children
 			JSONNode childrenNode = node["children"];
 			if (childrenNode != null)
 			{
-				List<Building> children = new List<Building>();
+				List<CityObject> children = new List<CityObject>();
 				for (int i = 0; i < childrenNode.Count; i++)
 				{
 					string childname = childrenNode[i];
-					JSONNode childnode = cityjsonNode["CityObjects"][childname];
+					JSONNode childnode = cityJsonNode["CityObjects"][childname];
 
-					Building child = ReadBuilding(childnode);
+					CityObject child = ReadCityObject(childnode);
 					if (child != null)
 					{
 						children.Add(child);
 					}
 				}
-				building.children = children;
+				cityObject.children = children;
 			}
-			return building;
+			return cityObject;
 		}
 
 		private List<Surface> ReadSolid(JSONNode geometrynode)
@@ -386,7 +382,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 		private List<Semantics> ReadSemantics(JSONNode semanticsNode)
 		{
 			List<Semantics> result = new List<Semantics>();
-
 			foreach (KeyValuePair<string, JSONNode> kvp in semanticsNode)
 			{
 				result.Add(new Semantics(kvp.Key, kvp.Value));
@@ -394,20 +389,18 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 			return result;
 		}
-
-
 	}
 
-	public class Building
+	public class CityObject
 	{
 		public List<Semantics> semantics;
 		public List<Surface> surfaces;
-		public List<Building> children;
-		public Building()
+		public List<CityObject> children;
+		public CityObject()
 		{
 			semantics = new List<Semantics>();
 			surfaces = new List<Surface>();
-			children = new List<Building>();
+			children = new List<CityObject>();
 		}
 	}
 
@@ -451,7 +444,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 		}
 	}
 
-	public class material
+	public class Material
 	{
 		public string name;
 		public float r;

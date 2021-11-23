@@ -14,6 +14,7 @@ namespace TileBakeTool
 		private static string identifier = "id";
 		private static string removeFromIdentifier = "";
 
+		private static bool addToExistingTiles = false;
 
 		private static float lod = 0;
 
@@ -76,9 +77,13 @@ namespace TileBakeTool
 					outputPath = value;
 					Console.WriteLine($"Output directory: {value}");
 					break;
-				case "--filter-lod":
+				case "--add":
+					addToExistingTiles = true;
+					Console.WriteLine($"Output directory: {value}");
+					break;
+				case "--lod":
 					lod = float.Parse(value);
-					Console.WriteLine($"LOD index: {lod}");
+					Console.WriteLine($"LOD filter: {lod}");
 					break;
 				case "--id":
 					identifier = value;
@@ -104,6 +109,7 @@ namespace TileBakeTool
 			tileBaker.SetTargetPath(targetPath);
 			tileBaker.SetLOD(lod);
 			tileBaker.SetID(identifier, removeFromIdentifier);
+			tileBaker.SetAdd(addToExistingTiles);
 			tileBaker.Convert();
 		}
 
@@ -125,17 +131,27 @@ Required options:
 
 Extra options:
 
---add						Add objects to existing binary tile files
---replace					Replace objects with the same ID
---id <property name>		Unique ID property name
---id-remove <string>		Remove this substring from the ID's
---filter-type <type>		Filter object on type
---filter-lod <lod>			Target LOD index
+--add						 Add objects to existing binary tile files
+--replace					 Replace objects with the same ID
+--id <property name>		 Unique ID property name
+--type <type filter>		 Filter this type
+--id-remove <string>		 Remove this substring from the ID's
+--filter-type <type>		 Filter object on type
+--lod <lod filter>			 Target LOD. For example 2.2
+--config <config file path>	 Apply settings above via config file
 
 Pipeline example:
-
 TileBakeTool.exe --source ""C:/MyProject/CityJsonFiles/*.json"" --output ""C:/MyProject/BinaryTiles/"" --filter-lod ""2"" --filter-type ""gebouw"" --id ""GebouwNummer"" 
-TileBakeTool.exe --source ""C:/MyProject/CustomMadeBuildings/*.json""--output ""C:/MyProject/BinaryTiles/"" --id ""BAGID"" --add --replace");
+TileBakeTool.exe --source ""C:/MyProject/CustomMadeBuildings/*.json""--output ""C:/MyProject/BinaryTiles/"" --id ""BAGID"" --add --replace
+
+Config file example:
+#Some comment
+lod=2.2
+id=building
+type=Gebouw
+
+");
+
 		}
 	}
 }

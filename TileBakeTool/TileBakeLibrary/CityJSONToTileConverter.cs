@@ -17,6 +17,8 @@ namespace TileBakeLibrary
         private string identifier = "";
         private string removeFromID = "";
 
+        private bool addToExistingTiles = false;
+
         private float lod = 0;
         private int tileSize = 1000;
 
@@ -62,6 +64,15 @@ namespace TileBakeLibrary
 			outputPath = target;
 		}
 
+        /// <summary>
+        /// Parse exisiting binary tile files and add the parsed objects to them
+        /// </summary>
+        /// <param name="add">Add to existing tiles</param>
+		public void SetAdd(bool add)
+		{
+            this.addToExistingTiles = add;
+        }
+
 		/// <summary>
 		/// Start converting the cityjson files into binary tile files
 		/// </summary>
@@ -95,8 +106,19 @@ namespace TileBakeLibrary
             {
                 allCityObjects.AddRange(task.Result);
             }
+            
+            if(addToExistingTiles)
+            {
+                ParseExisistingTiles();
+			}
 
             BakeTiles();
+		}
+
+
+		private void ParseExisistingTiles()
+        {
+            
 		}
 
         /// <summary>
@@ -112,19 +134,21 @@ namespace TileBakeLibrary
             var maxY = double.MinValue;
             foreach (SubObject cityObject in allCityObjects)
             {
+                Console.WriteLine($"CityObject: {cityObject.id}");
+
                 if (cityObject.centroid.X < minX) minX = cityObject.centroid.X;
                 else if (cityObject.centroid.X >= maxX) maxX = cityObject.centroid.X;
 
                 if (cityObject.centroid.Y < minY) minY = cityObject.centroid.Y;
-                else if (cityObject.centroid.Y >= maxY) minY = cityObject.centroid.Y;
+                else if (cityObject.centroid.Y >= maxY) maxY = cityObject.centroid.Y;
             }
 
             //Create our grid of tiles
             var XTiles = Math.Ceiling((maxX - minX) / tileSize);
             var YTiles = Math.Ceiling((maxY - minY) / tileSize);
 
-            var startXRD = Math.Floor(minX / tileSize);
-            var startYRD = Math.Floor(minY / tileSize);
+            var startXRD = Math.Floor(minX / tileSize) * tileSize;
+            var startYRD = Math.Floor(minY / tileSize) * tileSize;
 
             for (int x = 0; x < XTiles; x++)
 			{
@@ -139,7 +163,7 @@ namespace TileBakeLibrary
                 }
             }
 
-            Console.WriteLine($"Baking {XTiles}x{YTiles}={XTiles*YTiles} tiles");
+            Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
 
             //Add the CityObjects that fall within the bounds
             //TODO<----
@@ -148,7 +172,7 @@ namespace TileBakeLibrary
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
                 //Create binary files
-                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{tile.position.X}_{tile.position.y}.bin");
+                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{outputPath}{tile.position.X}_{tile.position.Y}.bin");
             }
         }
 
