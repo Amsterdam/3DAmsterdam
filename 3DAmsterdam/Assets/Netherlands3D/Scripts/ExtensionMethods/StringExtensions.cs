@@ -9,9 +9,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 public static class StringExtensions
-{
-       
-    
+{    
     /// <summary>
     /// Replace the template string and fill in the x and y values
     /// </summary>
@@ -70,6 +68,18 @@ public static class StringExtensions
 		}
 	}
 
+    /// <summary>
+    /// Retrieves a specific parameter value from an url with a query string
+    /// </summary>
+    /// <param name="url">An url like "https://mypage.nl?param=value&param2=value2#hashvalue"</param>
+    /// <param name="param">The parameter name</param>
+    /// <returns>The value of the parameter</returns>
+    public static string GetUrlParamValue(this string url, string param)
+    {
+        var groups = Regex.Match(url, $"[?&]{param}=([^&#]*)").Groups;
+        if (groups.Count < 2) return null;
+        return groups[1].Value;
+    }
 
     public static string ToInvariant(this double d)
     {

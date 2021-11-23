@@ -1,5 +1,7 @@
 ﻿using ConvertCoordinates;
+using Netherlands3D.Events;
 using Netherlands3D.Interface;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 
@@ -7,9 +9,15 @@ namespace Netherlands3D.Cameras
 {
     public class CameraModeChanger : MonoBehaviour
     {
+        [DllImport("__Internal")]
+        private static extern void AutoCursorLock();
+
         public ICameraExtents CurrentCameraExtends { get; private set; }
 
         private GameObject currentCamera;
+
+        [SerializeField]
+        private StringEvent latLongStringEvent;
 
         public ICameraControls CurrentCameraControls { get; private set; }
         public Camera ActiveCamera { get; private set; }
@@ -43,12 +51,17 @@ namespace Netherlands3D.Cameras
 
         private void Awake()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            AutoCursorLock();
+#endif
             streetView = FindObjectOfType<StreetViewMoveToPoint>();
             currentCamera = godViewCam;
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
             Instance = this;
+
+            if (latLongStringEvent) latLongStringEvent.started.AddListener(ChangedPointFromUrl);
         }
 
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
@@ -113,12 +126,13 @@ namespace Netherlands3D.Cameras
         /// <param name="latitudeLongitude">Comma seperated lat,long string</param>
         public void ChangedPointFromUrl(string latitudeLongitude)
         {
+            Debug.Log($"Received lat long string: {latitudeLongitude}");
             string[] coordinates = latitudeLongitude.Split(',');
             var latitude = double.Parse(coordinates[0]);
             var longitude = double.Parse(coordinates[1]);
 
             var convertedCoordinate = CoordConvert.WGS84toUnity(longitude, latitude);
-            currentCamera.transform.position = new Vector3(convertedCoordinate.x, this.transform.position.y, convertedCoordinate.z);
+            currentCamera.transform.position = new Vector3(convertedCoordinate.x, Mathf.Max(this.transform.position.y,300), convertedCoordinate.z);
         }
 
         public void GodViewMode()

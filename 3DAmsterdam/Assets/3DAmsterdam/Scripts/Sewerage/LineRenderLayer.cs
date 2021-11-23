@@ -112,19 +112,19 @@ namespace Amsterdam3D.Sewerage
 					while (customJsonHandler.GotoNextFeature())
 					{
 						//Get the parameters that make up our feature line
-						var theme = customJsonHandler.getPropertyStringValue("thema");
+						var theme = customJsonHandler.GetPropertyStringValue("thema");
 						var lineColor = GetLineColor(theme);
-						float height = EstimateHeight(customJsonHandler.getPropertyFloatValue("diepte"));
-						List<double> coordinates = customJsonHandler.getGeometryLineString();
+						float height = EstimateHeight(customJsonHandler.GetPropertyFloatValue("diepte"));
+						List<GeoJSONPoint> coordinates = customJsonHandler.GetGeometryLineString();
 
 						//Min. of two points? This is a line we can draw!
 						if (coordinates.Count > 1)
 						{
 							//For every two coordinates
-							for (int i = 0; i < coordinates.Count; i+=2)
+							for (int i = 0; i < coordinates.Count; i++)
 							{
 								//Add coordinate with vertex color
-								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i], (float)coordinates[i + 1], 0));
+								var point = CoordConvert.RDtoUnity(new Vector3((float)coordinates[i].x, (float)coordinates[i].y, 0));
 								point.y = height;
 								vertices.Add(point);
 								colors.Add(lineColor);

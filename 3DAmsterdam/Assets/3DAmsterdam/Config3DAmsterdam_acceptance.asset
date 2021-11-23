@@ -23,10 +23,12 @@ MonoBehaviour:
     y: 501000
   zeroGroundLevelY: 0
   webserverRootPath: https://acc.3d.amsterdam.nl/web/data/develop/RD/
-  buildingsMetaDataPath: https://acc.3d.amsterdam.nl/web/data/develop/RD/Buildings_AHN4/
-  sharingBaseURL: https://acc.3d.amsterdam.nl/
-  sharingSceneSubdirectory: customScene.php?id=
-  sharingViewUrl: https://acc.3d.amsterdam.nl/web/app/index.html?view=
+  buildingsMetaDataPath: Buildings_AHN4/
+  sharingUploadScenePath: https://acc.3d.amsterdam.nl/customUpload.php
+  sharingDownloadScenePath: https://acc.3d.amsterdam.nl/customScene.php?id={sceneId}_scene.json
+  sharingUploadModelPath: https://acc.3d.amsterdam.nl/customUpload.php?sceneId={sceneId}&meshToken={modelToken}
+  sharingDownloadModelPath: https://acc.3d.amsterdam.nl/customScene.php?id={modelToken}.dat
+  sharingViewScenePath: ?view={sceneId}
   LocationSuggestionUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5
   LookupUrl: https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}
   sewerageApiType: 0

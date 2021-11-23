@@ -6,16 +6,7 @@ namespace Netherlands3D.JavascriptConnection
 	public class JavascriptMethodCaller
 	{
 		[DllImport("__Internal")]
-		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0);
-
-		[DllImport("__Internal")]
-		private static extern string FetchOBJData();
-
-		[DllImport("__Internal")]
-		private static extern string FetchVissimData();
-
-		[DllImport("__Internal")]
-		private static extern string FetchMTLData();
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0, float offsetX = 0, float offsetY = 0);
 
 		[DllImport("__Internal")]
 		private static extern string SetUniqueShareURL(string token);
@@ -48,7 +39,6 @@ namespace Netherlands3D.JavascriptConnection
 		[DllImport("__Internal")]
 		private static extern void LockCursorInternal();
 
-
 		public static void DownloadByteArrayAsFile(byte[] array, int byteLength, string fileName)
 		{
 			DownloadFile(array, byteLength, fileName);
@@ -61,10 +51,10 @@ namespace Netherlands3D.JavascriptConnection
 		/// Faking a click through JavaScript is not allowed.
 		/// </summary>
 		/// <param name="display">Sets the hitarea CSS of the input HTML node to inline, or none</param>
-		public static void DisplayWithID(string id, bool display, float x = 0, float y = 0, float width = 0, float height = 0 )
+		public static void DisplayWithID(string id, bool display, float x = 0, float y = 0, float width = 0, float height = 0, float offsetX = 0, float offsetY = 0)
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height);
+			 DisplayDOMObjectWithID(id,(display) ? "inline" : "none", x, y, width, height,offsetX,offsetY);
 #endif
 		}
 
@@ -81,20 +71,6 @@ namespace Netherlands3D.JavascriptConnection
 			return IsMobile();
 #endif
 			return false;
-		}
-
-		public static string FetchVissimDataAsString()
-		{
-			return FetchVissimData();
-		}
-
-		public static string FetchOBJDataAsString()
-		{
-			return FetchOBJData();
-		}
-		public static string FetchMTLDataAsString()
-		{
-			return FetchMTLData();
 		}
 
 		public static void SetInterfaceScale(float scale)
@@ -126,14 +102,5 @@ namespace Netherlands3D.JavascriptConnection
 			OpenURLInNewWindow(url);
 #endif
 		}
-		/*
-		public static void LockCursor() 
-		{
-#if UNITY_EDITOR
-			Cursor.lockState = CursorLockMode.Locked;
-#elif UNITY_WEBGL && !UNITY_EDITOR
-			LockCursorInternal();
-#endif
-		}*/
 	}
 }

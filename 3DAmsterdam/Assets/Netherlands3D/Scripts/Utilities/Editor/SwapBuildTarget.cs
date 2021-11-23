@@ -10,16 +10,20 @@ namespace Netherlands3D.Utilities
 {
     public class SwapBuildTarget : MonoBehaviour
     {
-        public static void DataTarget(){}
+        public static void DataTarget() { }
 
         private const string webGlBuildPrefix = "BuildWebGL_";
         private const string desktopBuildPrefix = "BuildDesktop_";
+
+        private const string branchBuildsFolder = "BranchBuilds";
+
+        private const string consistentBuildFolderName = "3DAmsterdamWebGL";
 
         [MenuItem("Netherlands 3D/Set data target/Production")]
         public static void SwitchBranchMaster()
         {
             PlayerSettings.bundleVersion = "production"; //The place to assign release versioning
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL,"PRODUCTION");
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "PRODUCTION");
             Debug.Log("Set scripting define symbols to PRODUCTION");
         }
         [MenuItem("Netherlands 3D/Set data target/Development")]
@@ -67,11 +71,13 @@ namespace Netherlands3D.Utilities
             var gitHeadName = ReadGitHead();
             var headNameWithoutControlCharacters = new string(gitHeadName.Where(c => !char.IsControl(c)).ToArray());
 
+            var buildMainName = $"{headNameWithoutControlCharacters}_{DateTime.Now.Ticks}";
+
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
             {
                 scenes = EditorBuildSettings.scenes.Select(scene => scene.path).ToArray(),
                 target = buildTarget,
-                locationPathName = "../../" + ((buildTarget==BuildTarget.WebGL) ? webGlBuildPrefix :desktopBuildPrefix) + headNameWithoutControlCharacters
+                locationPathName = $"../../{branchBuildsFolder}/{buildMainName}/{consistentBuildFolderName}/"
             };
 
             Debug.Log("Building to: " + buildPlayerOptions.locationPathName);
@@ -79,40 +85,44 @@ namespace Netherlands3D.Utilities
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary buildSummary = report.summary;
             if (buildSummary.result == BuildResult.Succeeded)
-			{
-				Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
-				ZipAndDeploy(buildSummary);
-			}
+            {
+                Debug.Log("Build " + buildSummary.outputPath + " succeeded: " + buildSummary.totalSize + " bytes");
+                ZipAndDeploy(buildMainName, buildSummary);
+            }
 
-			if (buildSummary.result == BuildResult.Failed)
+            if (buildSummary.result == BuildResult.Failed)
             {
                 Debug.Log("Build failed");
             }
         }
 
-		private static void ZipAndDeploy(BuildSummary buildSummary)
-		{
-            var zipFilePath = buildSummary.outputPath.Replace(webGlBuildPrefix, "").Replace(desktopBuildPrefix, "").Replace("feature-","") + ".zip";
-            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);            
+        private static void ZipAndDeploy(string mainName, BuildSummary buildSummary)
+        {
+            var zipFilePath = $"{buildSummary.outputPath}../{mainName.Replace("feature-", "")}.zip";
+
+            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
             Debug.Log("Zipped build in: " + zipFilePath);
 
             DeployZipFile(zipFilePath);
         }
 
-		private static void DeployZipFile(string zipFilePath)
-		{
-            if (File.Exists(Path.GetDirectoryName(zipFilePath) + "/deploy.bat"))
+        private static void DeployZipFile(string zipFilePath)
+        {
+            var autodeployBatchFile = Path.GetDirectoryName(zipFilePath) + "/../../deploy.bat";
+            Debug.Log($"Checking if we have an autodeploy file at: {autodeployBatchFile}");
+
+            if (File.Exists(autodeployBatchFile))
             {
                 Debug.Log("Autodeploying");
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
-                startInfo.FileName = Path.GetDirectoryName(zipFilePath) + "/deploy.bat";
+                startInfo.FileName = autodeployBatchFile;
                 startInfo.Arguments = Path.GetFileNameWithoutExtension(zipFilePath);
                 process.StartInfo = startInfo;
                 process.Start();
             }
         }
-	}
+    }
 }

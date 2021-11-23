@@ -103,12 +103,11 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         IEnumerator GetSharedScene(string sceneId)
         {
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
-
-            UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
+            var getSceneURL = Config.activeConfiguration.sharingDownloadScenePath.Replace("{sceneId}",sceneId);
+            UnityWebRequest getSceneRequest = UnityWebRequest.Get(getSceneURL);
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
+            if (getSceneRequest.result != UnityWebRequest.Result.Success || !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
                 WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }
@@ -257,15 +256,13 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale, bool transformable = false)
         {
-            
-            Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
-            UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
-            getModelRequest.SetRequestHeader("Content-Type", "application/json");
+            var getModelURL = Config.activeConfiguration.sharingDownloadModelPath.Replace("{sceneId}",sceneId).Replace("{modelToken}",token);
+            UnityWebRequest getModelRequest = UnityWebRequest.Get(getModelURL);
             yield return getModelRequest.SendWebRequest();
             
             if (getModelRequest.result == UnityWebRequest.Result.Success)
             {
-                Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
+                Mesh parsedMesh = BinaryMeshConversion.ReadBinaryMesh(getModelRequest.downloadHandler.data);
                 gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
                 if (transformable)
                 {
@@ -283,27 +280,6 @@ namespace Netherlands3D.Sharing
             }
 
             yield return null;
-        }
-
-        /// <summary>
-        /// Parse a mesh object we downloaded
-        /// </summary>
-        /// <param name="serializableMesh">The data object we use to construct our mesh</param>
-        /// <returns></returns>
-        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
-            Mesh parsedMesh = new Mesh();
-            parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
-            var subMeshCount = serializableMesh.subMeshes.Length;
-            parsedMesh.subMeshCount = subMeshCount;
-            parsedMesh.SetVertices(MeshSerializer.SeperateVector3Array(serializableMesh.verts));
-            parsedMesh.SetUVs(0, MeshSerializer.SeperateVector2Array(serializableMesh.uvs));
-            parsedMesh.SetNormals(MeshSerializer.SeperateVector3Array(serializableMesh.normals));
-            for (int i = 0; i < subMeshCount; i++)
-            {
-                var subMesh = serializableMesh.subMeshes[i];
-                parsedMesh.SetTriangles(subMesh.triangles,i);
-            }
-            return parsedMesh;
         }
 
         /// <summary>
@@ -332,21 +308,11 @@ namespace Netherlands3D.Sharing
         /// <param name="sceneId">The unique ID of our scene</param>
         /// <param name="meshToken">The unique token we received from the server for our custom mesh object</param>
         /// <returns></returns>
-        public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
+        public string SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
-            
-            var newSerializableMesh = new SerializableMesh
-            {
-                sceneId = sceneId,
-                meshToken = meshToken,
-                version = Application.version,
-                meshBitType = (targetMesh.indexFormat == IndexFormat.UInt32) ? 1 : 0,
-                verts = MeshSerializer.FlattenVector3Array(targetMesh.vertices),
-                //uvs = MeshSerializer.FlattenVector2Array(targetMesh.uv), //No texture support yet. So we dont need these yet.
-                normals = MeshSerializer.FlattenVector3Array(targetMesh.normals),
-                subMeshes = SerializeSubMeshes(targetMesh)
-            };
-            return newSerializableMesh;
+            var localBinaryMeshFile = Application.persistentDataPath + "/" + meshToken + ".bin";
+            BinaryMeshConversion.SaveMeshAsBinaryFile(targetMesh, localBinaryMeshFile);
+            return localBinaryMeshFile;
         }
 
         public SerializableSubMesh[] SerializeSubMeshes(Mesh mesh){
