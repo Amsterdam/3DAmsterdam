@@ -7,6 +7,7 @@ using TileBakeLibrary.Coordinates;
 using Bunny83.SimpleJSON;
 using System.Linq;
 using Netherlands3D.CityJSON;
+using JoeStrout;
 
 namespace TileBakeLibrary
 {
@@ -207,6 +208,12 @@ namespace TileBakeLibrary
             {
                 List<Vector3Double> surfaceVertices = new List<Vector3Double>();
                 List<int> surfaceIndices = new List<int>();
+
+                Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
+                //poly.outside = surface.outerRing;
+                //poly.holes = surface.innerRings;
+                
+                //surface.outerRing,surface.innerRings
             }
 
             return subObject;
