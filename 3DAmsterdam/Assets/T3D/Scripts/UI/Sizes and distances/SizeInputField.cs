@@ -25,19 +25,19 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private SizeType size;
         private SaveableFloat value;
-        private string key;
+        private string valueKey;
         //[SerializeField]
         //private string unitText = "m";
 
         private void Awake()
         {
             inputField = GetComponent<InputField>();
-            key = GetType().Namespace + GetType().ToString() + "." + size.ToString();
+            valueKey = GetType().Namespace + GetType().ToString() + "." + size.ToString();
         }
 
         private void Start()
         {
-            value = new SaveableFloat(key, SessionSaver.LoadPreviousSession);
+            value = new SaveableFloat(valueKey, SessionSaver.LoadPreviousSession);
             LoadData();
         }
 
