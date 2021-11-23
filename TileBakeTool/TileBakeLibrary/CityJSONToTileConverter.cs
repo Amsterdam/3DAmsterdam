@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TileBakeLibrary.Coordinates;
 using Bunny83.SimpleJSON;
 using System.Linq;
+using Netherlands3D.CityJSON;
 
 namespace TileBakeLibrary
 {
@@ -178,86 +179,37 @@ namespace TileBakeLibrary
 
 		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
 		{
-            List<SubObject> foundCityObjects = new List<SubObject>();
+            List<SubObject> filteredObjects = new List<SubObject>();
 
-            //Parse the file
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
-            var jsonstring = File.ReadAllText(sourceFile);
             await Task.Delay(10);
 
-            var cityjsonNode = JSON.Parse(jsonstring);
-            if (cityjsonNode == null || cityjsonNode["CityObjects"] == null)
-            {
-                Console.WriteLine($"Failed to parse CityJSON file {sourceFile}");
-                return null;
+            var cityJson = new CityJSON(sourceFile, true, true);
+            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
+			for (int i = 0; i < cityObjects.Count; i++)
+			{
+                var cityObject = cityObjects[i];
+                filteredObjects.Add(ConvertToSubObject(cityObject));
             }
 
-            //Get vertices
-            var allVerts = new List<Vector3Double>();
+            return filteredObjects;
+        }
 
-            //Optionaly parse transform scale and offset
-            var transformScale = (cityjsonNode["transform"] != null && cityjsonNode["transform"]["scale"] != null) ? new Vector3Double(
-                cityjsonNode["transform"]["scale"][0].AsDouble,
-                cityjsonNode["transform"]["scale"][1].AsDouble,
-                cityjsonNode["transform"]["scale"][2].AsDouble
-            ) : new Vector3Double(1, 1, 1);
+		private SubObject ConvertToSubObject(CityObject cityObject)
+		{
+            var subObject = new SubObject();
+            subObject.id = cityObject.semantics.First((field) => field.name == identifier).value;
 
-            var transformOffset = (cityjsonNode["transform"] != null && cityjsonNode["transform"]["translate"] != null) ? new Vector3Double(
-                   cityjsonNode["transform"]["translate"][0].AsDouble,
-                   cityjsonNode["transform"]["translate"][1].AsDouble,
-                   cityjsonNode["transform"]["translate"][2].AsDouble
-            ) : new Vector3Double(0, 0, 0);
-
-            //Now load all the vertices with the scaler and offset applied
-            foreach (JSONNode node in cityjsonNode["vertices"])
+            //For every surface return a triangulated mesh 
+            List<Vector3Double> vertices = new List<Vector3Double>();
+            List<int> indices = new List<int>();
+            foreach(var surface in cityObject.surfaces)
             {
-                var vert = new Vector3Double(
-                       node[0].AsDouble * transformScale.X + transformOffset.X,
-                       node[1].AsDouble * transformScale.Y + transformOffset.Y,
-                       node[2].AsDouble * transformScale.Z + transformOffset.Z
-                );
-
-                allVerts.Add(vert);
+                List<Vector3Double> surfaceVertices = new List<Vector3Double>();
+                List<int> surfaceIndices = new List<int>();
             }
 
-            //Build the meshes and create the city objects
-            foreach (JSONNode buildingNode in cityjsonNode["CityObjects"])
-            {
-                //Object ID
-                var objectID = "";
-                if (buildingNode["attributes"][identifier] != null) {
-                    objectID = buildingNode["attributes"][identifier].Value;
-                    if(objectID.Length > 0 && removeFromID.Length > 0)
-                    {
-                        objectID = objectID.Replace(removeFromID, "");
-                    }
-                }
-
-                var geometries = buildingNode["geometry"].AsArray;
-                foreach (JSONNode geometry in geometries)
-                {
-                    if (geometry["lod"].AsFloat == lod && geometry["type"] == "Solid")
-                    {
-                        int[] indices = geometry["boundaries"][0][0][0].Children.Select(n => n.AsInt).ToArray();
-
-                        //For testing just interpret first ones as triangle
-                        List<Vector3Double> triangle = new List<Vector3Double>();
-                        triangle.Add(allVerts[indices[0]]);
-                        triangle.Add(allVerts[indices[1]]);
-                        triangle.Add(allVerts[indices[2]]);
-
-                        List <Vector3Double> thisMeshVerts = new List<Vector3Double>();
-                        var newCityObject = new SubObject()
-                        {
-                            id = objectID,
-                            verticesRD = triangle,
-                            centroid = triangle[0]
-                        };
-                        foundCityObjects.Add(newCityObject);
-                    }
-                }
-            }
-            return foundCityObjects;
+            return subObject;
         }
 
 		public void Cancel()

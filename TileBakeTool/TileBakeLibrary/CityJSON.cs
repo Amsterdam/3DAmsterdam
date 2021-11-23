@@ -3,6 +3,7 @@ using System.IO;
 using Bunny83.SimpleJSON;
 using TileBakeLibrary.Coordinates;
 using System.Numerics;
+using System;
 
 namespace Netherlands3D.CityJSON
 {
@@ -21,11 +22,17 @@ namespace Netherlands3D.CityJSON
 
 		public Vector3Double TransformOffset { get => transformOffset; }
 
-		public CityJSON(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
+		public CityJSON(string filepath, bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
 			string jsonstring;
-			jsonstring = File.ReadAllText(filepath + filename);
+			jsonstring = File.ReadAllText(filepath);
 			cityJsonNode = JSON.Parse(jsonstring);
+
+			if (cityJsonNode == null || cityJsonNode["CityObjects"] == null)
+			{
+				Console.WriteLine($"Failed to parse CityJSON file {filepath}");
+				return;
+			}
 
 			//Get vertices
 			vertices = new List<Vector3Double>();
@@ -317,7 +324,6 @@ namespace Netherlands3D.CityJSON
 			return result;
 		}
 
-
 		private Surface AddSurfaceUVs(JSONNode UVValueNode, Surface surf)
 		{
 			List<Vector2> UVs = new List<Vector2>();
@@ -355,7 +361,6 @@ namespace Netherlands3D.CityJSON
 			}
 			return surf;
 		}
-
 		private Surface ReadSurfaceVectors(JSONNode surfacenode)
 		{
 			Surface surf = new Surface();
@@ -390,7 +395,6 @@ namespace Netherlands3D.CityJSON
 			return result;
 		}
 	}
-
 	public class CityObject
 	{
 		public List<Semantics> semantics;
