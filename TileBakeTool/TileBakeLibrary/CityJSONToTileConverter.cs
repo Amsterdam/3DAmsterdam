@@ -196,7 +196,9 @@ namespace TileBakeLibrary
             for (int i = 0; i < cityObjects.Count; i++)
 			{
                 var cityObject = cityObjects[i];
-                filteredObjects.Add(ToSubObject(cityObject));
+                var subObject = ToSubObject(cityObject);
+                if (subObject != null)
+                    filteredObjects.Add(subObject);
             }
 
             return filteredObjects;
@@ -205,7 +207,21 @@ namespace TileBakeLibrary
 		private SubObject ToSubObject(CityObject cityObject)
 		{
             var subObject = new SubObject();
-            subObject.id = cityObject.semantics.First((field) => field.name == identifier).value;
+
+            //Make sure we can map an identifier to this object. Otherwise, dont bother adding it.
+            if(cityObject.semantics == null) return null;
+            var id = "";
+            foreach (var semantic in cityObject.semantics)
+            {
+                Console.WriteLine($"{semantic.name}={semantic.value}");
+                if (semantic.value == identifier)
+                {
+                    id = semantic.value;
+                    Console.WriteLine(id);
+                    break;
+                }
+            }
+            if (id == "") return null;
 
             //For every surface return a triangulated mesh 
             List<Vector3Double> vertices = new List<Vector3Double>();

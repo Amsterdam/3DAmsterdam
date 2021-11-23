@@ -15,7 +15,7 @@ namespace Netherlands3D.CityJSON
 		private List<Surfacetexture> Textures;
 		private List<Material> Materials;
 
-		private double LOD;
+		private float LOD;
 
 		private Vector3Double transformScale;
 		private Vector3Double transformOffset;
@@ -76,7 +76,7 @@ namespace Netherlands3D.CityJSON
 			}
 		}
 
-		public List<CityObject> LoadCityObjects(double lod)
+		public List<CityObject> LoadCityObjects(float lod)
 		{
 			List<CityObject> cityObjects = new List<CityObject>();
 			LOD = lod;
@@ -96,17 +96,13 @@ namespace Netherlands3D.CityJSON
 			CityObject cityObject = new CityObject();
 			bool LODcorrect = false;
 			foreach (JSONNode geometrynode in node["geometry"])
-			{
-				if (geometrynode["lod"].AsDouble == LOD)
+			{ 
+				if (geometrynode["lod"].AsFloat == LOD)
 				{
 					LODcorrect = true;
 				}
 			}
 			if (LODcorrect == false)
-			{
-				return null;
-			}
-			if (node["parents"] != null)
 			{
 				return null;
 			}
@@ -119,7 +115,7 @@ namespace Netherlands3D.CityJSON
 			List<Surface> surfaces = new List<Surface>();
 			foreach (JSONNode geometrynode in node["geometry"])
 			{
-				if (geometrynode["lod"].AsDouble == LOD)
+				if (geometrynode["lod"].AsFloat == LOD)
 				{
 					if (geometrynode["type"] == "Solid")
 					{
