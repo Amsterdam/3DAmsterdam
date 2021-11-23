@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerPrefsSessionLoader : IDataLoader
+{
+    public float LoadFloat(string key)
+    {
+        return PlayerPrefs.GetFloat(key);
+    }
+
+    public int LoadInt(string key)
+    {
+        return PlayerPrefs.GetInt(key);
+    }
+
+    public string LoadString(string key)
+    {
+        return PlayerPrefs.GetString(key);
+    }
+
+    public void ReadSaveData()
+    {
+    }
+}
