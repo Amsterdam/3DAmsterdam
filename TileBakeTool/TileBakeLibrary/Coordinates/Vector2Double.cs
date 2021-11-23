@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace TileBakeLibrary.Coordinates
 {
@@ -15,6 +16,16 @@ namespace TileBakeLibrary.Coordinates
         public override string ToString()
         {
             return $"x:{X} y:{Y}";
+        }
+
+        public static explicit operator Vector2Double(Vector2 v)
+        {
+            return new Vector2Double(v.X, v.Y);
+        }
+
+        public static explicit operator Vector2(Vector2Double v)
+        {
+            return new Vector2((float)v.X, (float)v.Y);
         }
     }
 }
