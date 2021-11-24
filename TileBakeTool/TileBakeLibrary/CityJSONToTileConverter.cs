@@ -20,6 +20,8 @@ namespace TileBakeLibrary
         private string identifier = "";
         private string removeFromID = "";
 
+        private bool parseExistingTiles = false;
+
         private float mergeVerticesBelowNormalAngle = 0.0f; 
 
         private bool addToExistingTiles = false;
@@ -30,7 +32,7 @@ namespace TileBakeLibrary
         private List<SubObject> allSubObjects = new List<SubObject>();
         private List<Tile> tiles = new List<Tile>();
         private Task<List<SubObject>>[] parseTasks;
-		private bool parseExistingTiles;
+		
 
 		/// <summary>
 		/// The LOD we want to parse. 
@@ -171,7 +173,7 @@ namespace TileBakeLibrary
                     tiles.Add(newTile);
 
                     //Parse exisiting file
-                    if(File.Exists(newTile.filePath))
+                    if(parseExistingTiles && File.Exists(newTile.filePath))
                     {
                         ParseExistingBinaryTile(newTile);
                     }
@@ -200,6 +202,8 @@ namespace TileBakeLibrary
             //Create binary files
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
+                Console.WriteLine($"Saving {tile.filePath} containing {tile.subObjects.Count} SubObjects");
+
                 //Create binary files
                 BinaryMeshWriter.SaveAsBinaryFile(tile);
             }
@@ -208,9 +212,9 @@ namespace TileBakeLibrary
         /// <summary>
         /// Read SubObjects from existing binary tile file
         /// </summary>
-		private void ParseExistingBinaryTile(Tile tileData)
+		private void ParseExistingBinaryTile(Tile tile)
 		{
-			//BinaryMeshReader.
+            BinaryMeshReader.ReadBinaryFile(tile);
 		}
 
 		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
@@ -232,7 +236,10 @@ namespace TileBakeLibrary
                 var cityObject = cityObjects[i];
                 var subObject = ToSubObjectMeshData(cityObject);
                 if (subObject != null)
+                {
                     filteredObjects.Add(subObject);
+                }
+
             }
 
             return filteredObjects;
@@ -251,16 +258,18 @@ namespace TileBakeLibrary
             var id = "";
             foreach (var semantic in cityObject.semantics)
             {
-                if (semantic.value == identifier)
+                Console.WriteLine(semantic.name);
+                if (semantic.name == identifier)
                 {
                     id = semantic.value;
                     break;
                 }
             }
-            if (id == "") return null;
+
+            AppendCityObjectGeometry(cityObject, subObject);
 
             //Append all child geometry
-			for (int i = 0; i < cityObject.children.Count; i++)
+            for (int i = 0; i < cityObject.children.Count; i++)
 			{
 				var childObject = cityObject.children[i];
 				//Add child geometry to our subobject. (Recursive disabled, so only one child level is allowed)
@@ -276,7 +285,7 @@ namespace TileBakeLibrary
             for (int i = 0; i < subObject.vertices.Count; i++)
 			{
                 centroid.X += subObject.vertices[i].X;
-                centroid.Y += subObject.vertices[i].Z;
+                centroid.Y += subObject.vertices[i].Y;
             }
             subObject.centroid = new Vector2Double(centroid.X / subObject.vertices.Count, centroid.Y / subObject.vertices.Count);
 
@@ -292,15 +301,33 @@ namespace TileBakeLibrary
 				Vector2[] surfaceUvs;
 				int[] surfaceIndices;
 
-				//TODO make poly2mesh have double precision so we only loose precision at bake time
-				Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
-				poly.outside = surface.outerRing.Cast<Vector3>().ToList();
-				poly.holes = surface.outerRing.Cast<List<Vector3>>().ToList();
+                //TODO make poly2mesh have double precision so we only loose precision at bake time, and not having to convert these lists
+                List<Vector3> outside = new();
+                for (int i = 0; i < surface.outerRing.Count; i++)
+                {
+                    outside.Add((Vector3)surface.outerRing[i]);
+                }
+                List<List<Vector3>> holes = new();
+                for (int i = 0; i < surface.innerRings.Count; i++){
+                    List<Vector3> inner = new();
+					for (int j = 0; j < surface.innerRings[i].Count; j++)
+					{
+                        inner.Add((Vector3)surface.innerRings[i][j]);
+                    }
+                    holes.Add(inner);
+				}
+
+                //Turn poly into triangulated geometry data
+                Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
+				poly.outside = outside;
+				poly.holes = holes;
 				Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
-				for (int j = 0; j < surfaceVertices.Length; j++)
+                for (int j = 0; j < surfaceVertices.Length; j++)
 				{
 					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
-					subObject.uvs.Add(surfaceUvs[j]);
+
+                    if(surfaceUvs != null)
+					    subObject.uvs.Add(surfaceUvs[j]);
 				}
 				for (int j = 0; j < surfaceIndices.Length; j++)
 				{
