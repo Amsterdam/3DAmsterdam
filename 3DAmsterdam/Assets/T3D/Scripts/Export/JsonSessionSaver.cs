@@ -28,4 +28,8 @@ public class JsonSessionSaver : IDataSaver
         Debug.Log(rootObject.ToString());
     }
 
+    public void ClearAllData()
+    {
+        rootObject = new JSONObject();
+    }
 }

@@ -661,6 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 0
   ComponentWidth: 0.7
@@ -858,6 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 0
   ComponentWidth: 0.9
@@ -1046,7 +1048,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2125403429}
         m_TargetAssemblyTypeName: State, Assembly-CSharp
-        m_MethodName: EndState
+        m_MethodName: StepEndedByUser
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1563,6 +1565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 0
   ComponentWidth: 1.5
@@ -2055,6 +2058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 1
   ComponentWidth: 1
@@ -2252,6 +2256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 1
   ComponentWidth: 3
@@ -3252,6 +3257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragContainer: {fileID: 0}
+  DragContainerImage: {fileID: 0}
   SelectedColor: {r: 0.64705884, g: 0.9254902, b: 1, a: 1}
   IsTopComponent: 0
   ComponentWidth: 3

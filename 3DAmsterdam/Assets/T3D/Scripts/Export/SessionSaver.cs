@@ -14,6 +14,9 @@ public static class SessionSaver
 
     static SessionSaver()
     {
+        if (!LoadPreviousSession)
+            saver.ClearAllData();
+
         ReadSaveData();
     }
 

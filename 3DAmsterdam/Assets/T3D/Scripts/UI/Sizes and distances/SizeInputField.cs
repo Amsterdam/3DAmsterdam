@@ -38,7 +38,10 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Start()
         {
             value = new SaveableFloat(valueKey, SessionSaver.LoadPreviousSession);
-            LoadData();
+            if (SessionSaver.LoadPreviousSession)
+            {
+                LoadData();
+            }
         }
 
         private void LoadData()

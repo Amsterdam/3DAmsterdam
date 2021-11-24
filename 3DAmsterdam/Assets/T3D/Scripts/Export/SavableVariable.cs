@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 using UnityEngine;
 
-public abstract class SavableVariable<T>
+public abstract class SaveableVariable<T>
 {
     //public KeyValuePair<string, T> KeyValuePair { get; private set; }
 
@@ -14,7 +16,7 @@ public abstract class SavableVariable<T>
     public abstract void Save();
     public abstract void Load();
 
-    public SavableVariable(string key, bool loadSavedData)
+    public SaveableVariable(string key, bool loadSavedData)
     {
         Key = key;
         if (loadSavedData)
@@ -28,7 +30,7 @@ public abstract class SavableVariable<T>
     }
 }
 
-public class SaveableFloat : SavableVariable<float>
+public class SaveableFloat : SaveableVariable<float>
 {
     public SaveableFloat(string key, bool loadSavedData) : base(key, loadSavedData)
     {
@@ -45,7 +47,7 @@ public class SaveableFloat : SavableVariable<float>
     }
 }
 
-public class SaveableInt : SavableVariable<int>
+public class SaveableInt : SaveableVariable<int>
 {
     public SaveableInt(string key, bool loadSavedData) : base(key, loadSavedData)
     {
@@ -62,7 +64,7 @@ public class SaveableInt : SavableVariable<int>
     }
 }
 
-public class SaveableString : SavableVariable<string>
+public class SaveableString : SaveableVariable<string>
 {
     public SaveableString(string key, bool loadSavedData) : base(key, loadSavedData)
     {
@@ -79,7 +81,7 @@ public class SaveableString : SavableVariable<string>
     }
 }
 
-public class SaveableVector3 : SavableVariable<Vector3>
+public class SaveableVector3 : SaveableVariable<Vector3>
 {
     public SaveableVector3(string key, bool loadSavedData) : base(key, loadSavedData)
     {
@@ -99,5 +101,22 @@ public class SaveableVector3 : SavableVariable<Vector3>
         SessionSaver.SaveFloat(Key + ".x", Value.x);
         SessionSaver.SaveFloat(Key + ".y", Value.y);
         SessionSaver.SaveFloat(Key + ".z", Value.z);
+    }
+}
+
+public class SaveableBool : SaveableVariable<bool>
+{
+    public SaveableBool(string key, bool loadSavedData) : base(key, loadSavedData)
+    {
+    }
+
+    public override void Load()
+    {
+        Value = SessionSaver.LoadInt(Key) > 0 ? true : false;
+    }
+
+    public override void Save()
+    {
+        SessionSaver.SaveInt(Key, Value ? 1 : 0);
     }
 }

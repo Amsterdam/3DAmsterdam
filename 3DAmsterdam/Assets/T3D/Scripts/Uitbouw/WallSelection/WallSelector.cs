@@ -31,13 +31,51 @@ namespace Netherlands3D.T3D.Uitbouw
         public Mesh WallMesh { get; private set; }
         public Vector3 CenterPoint { get; private set; }
 
+        private string rayOriginKey;
+        private SaveableVector3 rayOrigin;
+        private string rayDirectionKey;
+        private SaveableVector3 rayDirection;
+
         private void Awake()
         {
+            rayOriginKey = GetType().Namespace + GetType().ToString() + ".rayOrigin";
+            rayDirectionKey = GetType().Namespace + GetType().ToString() + ".rayDirection";
+
+            rayOrigin = new SaveableVector3(rayOriginKey, SessionSaver.LoadPreviousSession);
+            rayDirection = new SaveableVector3(rayDirectionKey, SessionSaver.LoadPreviousSession);
+
             wallMeshFilter = GetComponent<MeshFilter>();
             building = GetComponentInParent<BuildingMeshGenerator>();
         }
 
-        // Update is called once per frame
+        private void OnEnable()
+        {
+            building.BuildingDataProcessed += Building_BuildingDataProcessed;
+        }
+
+        private void OnDisable()
+        {
+            building.BuildingDataProcessed -= Building_BuildingDataProcessed;
+        }
+
+        private void Building_BuildingDataProcessed(BuildingMeshGenerator building)
+        {
+            if (SessionSaver.LoadPreviousSession)
+            {
+                var ray = new Ray(rayOrigin.Value, rayDirection.Value);
+                if (TryGetValidWall(ray, out var wall))
+                {
+                    WallMesh = wall;
+                    wallMeshFilter.mesh = WallMesh;
+                    WallIsSelected = true;
+
+                    //complete step after loading wall
+                    //AllowSelection = false;
+                    //MetadataLoader.Instance.PlaatsUitbouw();
+                }
+            }
+        }
+
         void Update()
         {
             var mask = LayerMask.GetMask("ActiveSelection");
@@ -47,7 +85,8 @@ namespace Netherlands3D.T3D.Uitbouw
                 if (EventSystem.current.IsPointerOverGameObject()) //clicked on ui elements
                     return;
 
-                if (TryGetValidWall(out var wall))
+                var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+                if (TryGetValidWall(ray, out var wall))
                 {
                     WallMesh = wall;
                     wallMeshFilter.mesh = WallMesh;
@@ -63,16 +102,19 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        private bool TryGetValidWall(out Mesh face)
+        private bool TryGetValidWall(Ray ray, out Mesh face)
         {
             //try to get a face, check if this face is grounded and if this face is vertical
-            return TryGetFace(out face) && CheckIfGrounded(face, building.GroundLevel, groundLevelOffsetTolerance) && CheckIfVertical(face, verticalComponentTolerance);
+            return TryGetFace(ray, out face) && CheckIfGrounded(face, building.GroundLevel, groundLevelOffsetTolerance) && CheckIfVertical(face, verticalComponentTolerance);
         }
 
-        private bool TryGetFace(out Mesh face)
+        private bool TryGetFace(Ray ray, out Mesh face)
         {
             face = new Mesh();
-            var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+
+            rayOrigin.SetValue(ray.origin);
+            rayDirection.SetValue(ray.direction);
+
             if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMask.GetMask("ActiveSelection")))
             {
                 WallPlane = new Plane(hit.normal, hit.point);

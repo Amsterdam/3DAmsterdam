@@ -23,4 +23,9 @@ public class PlayerPrefsSessionSaver : IDataSaver
     {
         PlayerPrefs.SetString(key, value);
     }
+
+    public void ClearAllData()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 }

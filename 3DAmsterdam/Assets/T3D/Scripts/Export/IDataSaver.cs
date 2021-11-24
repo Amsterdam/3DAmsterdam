@@ -8,4 +8,5 @@ public interface IDataSaver
     public void SaveInt(string key, int value);
     public void SaveString(string key, string value);
     public void ExportSaveData();
+    public void ClearAllData();
 }
