@@ -297,6 +297,7 @@ namespace TileBakeLibrary
 			{
 				//Our mesh output data per surface
 				Vector3[] surfaceVertices;
+				Vector3[] surfaceNormals;
 				Vector2[] surfaceUvs;
 				int[] surfaceIndices;
 
@@ -320,7 +321,7 @@ namespace TileBakeLibrary
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 				poly.outside = outside;
 				poly.holes = holes;
-				Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
+				Poly2Mesh.CreateMeshData(poly, out surfaceVertices,out surfaceNormals, out surfaceIndices, out surfaceUvs);
                 for (int j = 0; j < surfaceVertices.Length; j++)
 				{
 					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
