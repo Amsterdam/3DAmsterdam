@@ -10,20 +10,20 @@ namespace TileBakeLibrary
 {
 	class Tile
 	{
-		public Vector2Double position = new Vector2Double(); //Bottom left (RD coordinates)
-		public Vector2 size = new Vector2(); //Width and height (RD coordinates)
+		public Vector2Double position = new(); //Bottom left (RD coordinates)
+		public Vector2 size = new(); //Width and height (RD coordinates)
 
-		public List<Vector3> vertices = new List<Vector3>();
-		public List<Vector3> normals = new List<Vector3>();
-		public List<Vector2> uvs = new List<Vector2>();
+		public List<Vector3> vertices = new();
+		public List<Vector3> normals = new();
+		public List<Vector2> uvs = new();
 
 		public List<Submesh> submeshes = new List<Submesh>();
 
 		public string filePath = "";
 		public class Submesh
 		{
-			public List<int> triangleIndices;
-			public int baseVertex;
+			public List<int> triangleIndices = new();
+			public int baseVertex = 0;
 		}
 
 		private List<SubObject> subObjects = new List<SubObject>();
