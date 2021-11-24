@@ -132,7 +132,6 @@ namespace Netherlands3D.CityJSON
 								surfaces.Add(ReadSurfaceVectors(surfacenode));
 							}
 						}
-
 					}
 					if (geometrynode["type"] == "MultiSurface")
 					{
@@ -381,9 +380,13 @@ namespace Netherlands3D.CityJSON
 		private List<Semantics> ReadSemantics(JSONNode semanticsNode)
 		{
 			List<Semantics> result = new List<Semantics>();
-			foreach (KeyValuePair<string, JSONNode> kvp in semanticsNode)
+
+			if (semanticsNode)
 			{
-				result.Add(new Semantics(kvp.Key, kvp.Value));
+				foreach (KeyValuePair<string, JSONNode> kvp in semanticsNode)
+				{
+					result.Add(new Semantics(kvp.Key, kvp.Value));
+				}
 			}
 
 			return result;
