@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace TileBakeLibrary
 {
-	public class CityJSONToTileConverter : IConverter
+	public class CityJSONToTileConverter
 	{
 		private string sourcePath = "";
 		private string outputPath = "";
@@ -207,53 +207,59 @@ namespace TileBakeLibrary
 		private SubObject ToSubObject(CityObject cityObject)
 		{
             var subObject = new SubObject();
+            subObject.verticesRD = new List<Vector3Double>();
+            subObject.normals = new List<Vector3>();
+            subObject.uvs = new List<Vector2>();
+            subObject.triangleIndices = new List<int>();
 
-            //Make sure we can map an identifier to this object. Otherwise, dont bother adding it.
-            if(cityObject.semantics == null) return null;
+            //Find the identifier in attributes semantic or parent attributes
+            //If there is no ID, it might be a child. And we can skip it.
             var id = "";
             foreach (var semantic in cityObject.semantics)
             {
-                Console.WriteLine($"{semantic.name}={semantic.value}");
                 if (semantic.value == identifier)
                 {
                     id = semantic.value;
-                    Console.WriteLine(id);
                     break;
                 }
             }
             if (id == "") return null;
 
-            //For every surface return a triangulated mesh 
-            List<Vector3Double> vertices = new List<Vector3Double>();
-            List<Vector2> uvs = new List<Vector2>();
-            List<int> indices = new List<int>();
-            foreach(var surface in cityObject.surfaces)
-            {
-                //Our mesh output data per surface
-                Vector3[] surfaceVertices;
-                Vector2[] surfaceUvs;
-                int[] surfaceIndices;
+			for (int i = 0; i < cityObject.children.Count; i++)
+			{
+				var childObject = cityObject.children[i];
+				//Add child geometry to our subobject
+				AppendCityObjectGeometry(childObject, subObject);
+			}
 
-                //TODO make poly2mesh have double precision so we only loose precision at bake time
-                Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
-                poly.outside = surface.outerRing.Cast<Vector3>().ToList();
-                poly.holes = surface.outerRing.Cast<List<Vector3>>().ToList();
-                Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
-
-
-				for (int i = 0; i < surfaceVertices.Length; i++)
-				{
-                    vertices.Add((Vector3Double)surfaceVertices[i]);
-                    uvs.Add(surfaceUvs[i]);
-                }
-				for (int i = 0; i < surfaceIndices.Length; i++)
-				{
-                    indices.Add(surfaceIndices[i]);
-                }
-            }
-
-            return subObject;
+			return subObject;
         }
+
+		private static void AppendCityObjectGeometry(CityObject childObject, SubObject subObject)
+		{
+			foreach (var surface in childObject.surfaces)
+			{
+				//Our mesh output data per surface
+				Vector3[] surfaceVertices;
+				Vector2[] surfaceUvs;
+				int[] surfaceIndices;
+
+				//TODO make poly2mesh have double precision so we only loose precision at bake time
+				Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
+				poly.outside = surface.outerRing.Cast<Vector3>().ToList();
+				poly.holes = surface.outerRing.Cast<List<Vector3>>().ToList();
+				Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
+				for (int j = 0; j < surfaceVertices.Length; j++)
+				{
+					subObject.verticesRD.Add((Vector3Double)surfaceVertices[j]);
+					subObject.uvs.Add(surfaceUvs[j]);
+				}
+				for (int j = 0; j < surfaceIndices.Length; j++)
+				{
+					subObject.triangleIndices.Add(subObject.verticesRD.Count + surfaceIndices[j]);
+				}
+			}
+		}
 
 		public void Cancel()
 		{
