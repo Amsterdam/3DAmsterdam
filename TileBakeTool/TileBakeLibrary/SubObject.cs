@@ -8,7 +8,7 @@ namespace TileBakeLibrary
 	{
 		public List<Vector3Double> verticesRD; 
 		public List<Vector3> normals; 
-		public List<Vector3> uvs; 
+		public List<Vector2> uvs; 
 		public List<int> triangleIndices;
 
 		public Vector3Double centroid;
