@@ -185,16 +185,16 @@ namespace TileBakeLibrary
 			//Move the CityObjects into to the proper tile based on their centroid
 			for (int i = allSubObjects.Count - 1; i >= 0; i--)
 			{
-                var cityObject = allSubObjects[i];
+                var subObject = allSubObjects[i];
                 foreach(var tile in tiles)
                 {
-                    if (cityObject.centroid.X > tile.position.X
-                    && cityObject.centroid.X <= tile.position.X + tileSize
-                    && cityObject.centroid.Y > tile.position.Y
-                    && cityObject.centroid.Y <= tile.position.Y + tileSize)
+                    if (subObject.centroid.X > tile.position.X
+                    && subObject.centroid.X <= tile.position.X + tileSize
+                    && subObject.centroid.Y > tile.position.Y
+                    && subObject.centroid.Y <= tile.position.Y + tileSize)
                     {
-                        tile.SubObjects.Add(cityObject);
-                        allSubObjects.Remove(cityObject);
+                        tile.AddSubObject(subObject);
+                        allSubObjects.Remove(subObject);
                     };
 				}
             }
@@ -239,7 +239,6 @@ namespace TileBakeLibrary
                 {
                     filteredObjects.Add(subObject);
                 }
-
             }
 
             return filteredObjects;

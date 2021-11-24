@@ -30,14 +30,37 @@ namespace TileBakeLibrary
 		public List<SubObject> SubObjects { get => subObjects; }
 
 
-		public void Add(SubObject subObject)
+		public void AddSubObject(SubObject subObject, int targetSubMeshIndex = 0)
 		{
+			//Make sure a submesh with the target index actualy exists
+			CreateSubMesh(targetSubMeshIndex);
+
 			subObjects.Add(subObject);
-			AppendMeshData(subObject);
+			AppendMeshData(subObject, targetSubMeshIndex);
 		}
 
-		private void AppendMeshData(SubObject subObject)
+		private void CreateSubMesh(int targetSubMeshIndex)
 		{
+			Submesh subMesh;
+			if (submeshes.Count == 0)
+			{
+				subMesh = new Submesh();
+				submeshes.Add(subMesh);
+			}
+			else if (targetSubMeshIndex > submeshes.Count - 1)
+			{
+				var addSubMeshes = targetSubMeshIndex - (submeshes.Count - 1);
+				for (int i = 0; i < addSubMeshes; i++)
+				{
+					subMesh = new Submesh();
+					submeshes.Add(subMesh);
+				}
+			}
+		}
+
+		private void AppendMeshData(SubObject subObject, int targetSubMeshIndex = 0)
+		{
+			var indexOffset = vertices.Count;
 			for (int i = 0; i < subObject.vertices.Count; i++)
 			{
 				var doubleVertex = subObject.vertices[i];
@@ -47,7 +70,13 @@ namespace TileBakeLibrary
 
 				vertices.Add(vertex);
 				normals.Add(normal);
-			}		
+			}
+
+			var targetSubMesh = submeshes[targetSubMeshIndex];
+			for (int i = 0; i < subObject.triangleIndices.Count; i++)
+			{
+				targetSubMesh.triangleIndices.Add(indexOffset + subObject.triangleIndices[i]);
+			}
 		}
 	}
 }
