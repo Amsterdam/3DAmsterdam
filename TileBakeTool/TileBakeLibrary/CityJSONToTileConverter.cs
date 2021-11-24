@@ -193,7 +193,7 @@ namespace TileBakeLibrary
                     && cityObject.centroid.Y > tile.position.Y
                     && cityObject.centroid.Y <= tile.position.Y + tileSize)
                     {
-                        tile.subObjects.Add(cityObject);
+                        tile.SubObjects.Add(cityObject);
                         allSubObjects.Remove(cityObject);
                     };
 				}
@@ -202,7 +202,7 @@ namespace TileBakeLibrary
             //Create binary files
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
-                Console.WriteLine($"Saving {tile.filePath} containing {tile.subObjects.Count} SubObjects");
+                Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
 
                 //Create binary files
                 BinaryMeshWriter.SaveAsBinaryFile(tile);
