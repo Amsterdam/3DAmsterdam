@@ -195,29 +195,33 @@ namespace JoeStrout
             }
             return result;
         }
+
         /// <summary>
         /// Create a Mesh from a given Polygon.
         /// </summary>
         /// <returns>The freshly minted mesh.</returns>
         /// <param name="polygon">Polygon you want to triangulate.</param>
-        public static void CreateMeshData(Polygon polygon, out Vector3[] vertices, out int[] triangles, out Vector2[] uvs, float thickness = 0)
+        public static void CreateMeshData(Polygon polygon, out Vector3[] vertices, out Vector3[] normals, out int[] triangles, out Vector2[] uvs, float thickness = 0)
         {
-            // Check for the easy case (a triangle)
-            if (polygon.holes.Count == 0 && (polygon.outside.Count == 3 || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
-            {
-                CreateTriangle(polygon, out vertices, out triangles, out uvs);
-                return;
-            }
-
             //make sure we out something in case of failure
             vertices = new Vector3[0];
+            normals = new Vector3[0];
             triangles = new int[0];
             uvs = new Vector2[0];
 
             // Ensure we have the rotation properly calculated, and have a valid normal
             if (polygon.rotation == Quaternion.Identity) polygon.CalcRotation();
             if (polygon.planeNormal == Vector3.Zero) return;       // bad data
-                                                                        // Rotate 1 point and note where it ends up in Z
+
+            // Check for the easy case (a triangle)
+            if (polygon.holes.Count == 0 && (polygon.outside.Count == 3 || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
+            {
+                
+                CreateTriangle(polygon, out vertices, out normals, out triangles, out uvs);
+                return;
+            }
+                                    
+            // Rotate 1 point and note where it ends up in Z
             float z = MultiplyQuaternionByVector(polygon.rotation,polygon.outside[0]).Z;
             // Prepare a map from vertex codes to 3D positions.
             Dictionary<uint, Vector3> codeToPosition = new Dictionary<uint, Vector3>();
@@ -298,6 +302,11 @@ namespace JoeStrout
             }
 
             vertices = vertexList.ToArray();
+            normals = new Vector3[vertices.Length];
+			for (int i = 0; i < normals.Length; i++)
+			{
+                normals[i] = polygon.planeNormal;
+            }
             triangles = indices.ToArray();
         }
 
@@ -353,7 +362,7 @@ namespace JoeStrout
         /// </summary>
         /// <returns>The freshly minted mesh.</returns>
         /// <param name="polygon">Polygon you want to make a triangle of.</param>
-        public static void CreateTriangle(Polygon polygon, out Vector3[] vertices, out int[] indices, out Vector2[] uv)
+        public static void CreateTriangle(Polygon polygon, out Vector3[] vertices, out Vector3[] normals, out int[] indices, out Vector2[] uv)
         {
             // Create the vertex array
             vertices = new Vector3[3];
@@ -371,6 +380,12 @@ namespace JoeStrout
                 {
                     uv[i] = polygon.ClosestUV(vertices[i]);
                 }
+            }
+
+            normals = new Vector3[vertices.Length];
+            for (int i = 0; i < normals.Length; i++)
+            {
+                normals[i] = polygon.planeNormal;
             }
         }
     }

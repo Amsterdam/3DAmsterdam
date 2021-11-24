@@ -325,8 +325,8 @@ namespace TileBakeLibrary
                 for (int j = 0; j < surfaceVertices.Length; j++)
 				{
 					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
-
-                    if(surfaceUvs != null)
+                    subObject.normals.Add(surfaceNormals[j]);
+                    if (surfaceUvs != null)
 					    subObject.uvs.Add(surfaceUvs[j]);
 				}
 				for (int j = 0; j < surfaceIndices.Length; j++)
