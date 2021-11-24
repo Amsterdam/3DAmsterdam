@@ -20,6 +20,9 @@ namespace TileBakeLibrary
 		public List<Vector2> uvs = new List<Vector2>();
 
 		public List<Submesh> submeshes = new List<Submesh>();
+
+		public string filePath = "";
+
 		public class Submesh
 		{
 			public List<int> triangleIndices;

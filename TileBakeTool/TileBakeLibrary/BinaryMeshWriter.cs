@@ -12,9 +12,9 @@ namespace TileBakeLibrary
 	{
         private static int writerVersion = 1;        
 
-        public static void SaveAsBinaryFile(Tile tile, string filePath, bool addGltfWrapper = true)
+        public static void SaveAsBinaryFile(Tile tile, bool addGltfWrapper = true)
         {
-            using (FileStream file = File.Create(filePath))
+            using (FileStream file = File.Create(tile.filePath))
             {
                 using (BinaryWriter writer = new BinaryWriter(file))
                 {

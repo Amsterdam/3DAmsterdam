@@ -20,20 +20,23 @@ namespace TileBakeLibrary
         private string identifier = "";
         private string removeFromID = "";
 
+        private float mergeVerticesBelowNormalAngle = 0.0f; 
+
         private bool addToExistingTiles = false;
 
         private float lod = 0;
         private int tileSize = 1000;
 
-        private List<SubObject> allCityObjects = new List<SubObject>();
+        private List<SubObject> allSubObjects = new List<SubObject>();
         private List<Tile> tiles = new List<Tile>();
         private Task<List<SubObject>>[] parseTasks;
+		private bool parseExistingTiles;
 
-        /// <summary>
-        /// The LOD we want to parse. 
-        /// </summary>
-        /// <param name="targetLOD">Defaults to 0</param>
-        public void SetLOD(float targetLOD)
+		/// <summary>
+		/// The LOD we want to parse. 
+		/// </summary>
+		/// <param name="targetLOD">Defaults to 0</param>
+		public void SetLOD(float targetLOD)
         {
             lod = targetLOD;
         }
@@ -109,7 +112,7 @@ namespace TileBakeLibrary
 			Task.WaitAll(parseTasks);
             foreach (var task in parseTasks)
             {
-                allCityObjects.AddRange(task.Result);
+                allSubObjects.AddRange(task.Result);
             }
             
             if(addToExistingTiles)
@@ -120,16 +123,15 @@ namespace TileBakeLibrary
             BakeTiles();
 		}
 
-
 		private void ParseExisistingTiles()
-        {
-            
+		{
+			throw new NotImplementedException();
 		}
 
-        /// <summary>
-        /// Bake the city objects into binary tiles
-        /// </summary>
-        private void BakeTiles()
+		/// <summary>
+		/// Bake the city objects into binary tiles
+		/// </summary>
+		private void BakeTiles()
         {
             //Determine what tiles we will need using our parsed cityobject centroids
             var minX = double.MaxValue;
@@ -137,7 +139,7 @@ namespace TileBakeLibrary
 
             var minY = double.MaxValue;
             var maxY = double.MinValue;
-            foreach (SubObject cityObject in allCityObjects)
+            foreach (SubObject cityObject in allSubObjects)
             {
                 Console.WriteLine($"CityObject: {cityObject.id}");
 
@@ -161,25 +163,55 @@ namespace TileBakeLibrary
                 for (int y = 0; y < YTiles; y++)
                 {
                     var tileY = startYRD + (y * tileSize);
-                    tiles.Add(new Tile()
+                    var newTile = new Tile()
                     {
                         position = new Vector2Double(tileX, tileY),
-                    });
+                        filePath = $"{outputPath}{tileX}_{tileY}.bin"
+                    };
+                    tiles.Add(newTile);
+
+                    //Parse exisiting file
+                    if(File.Exists(newTile.filePath))
+                    {
+                        ParseExistingBinaryTile(newTile);
+                    }
                 }
             }
-
+            
             Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
 
-            //Add the CityObjects that fall within the bounds
-            //TODO<----
+			//Move the CityObjects into to the proper tile based on their centroid
+			for (int i = allSubObjects.Count - 1; i >= 0; i--)
+			{
+                var cityObject = allSubObjects[i];
+                foreach(var tile in tiles)
+                {
+                    if (cityObject.centroid.X > tile.position.X
+                    && cityObject.centroid.X <= tile.position.X + tileSize
+                    && cityObject.centroid.Y > tile.position.Y
+                    && cityObject.centroid.Y <= tile.position.Y + tileSize)
+                    {
+                        tile.subObjects.Add(cityObject);
+                        allSubObjects.Remove(cityObject);
+                    };
+				}
+            }
 
             //Create binary files
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
                 //Create binary files
-                BinaryMeshWriter.SaveAsBinaryFile(tile, $"{outputPath}{tile.position.X}_{tile.position.Y}.bin");
+                BinaryMeshWriter.SaveAsBinaryFile(tile);
             }
         }
+
+        /// <summary>
+        /// Read SubObjects from existing binary tile file
+        /// </summary>
+		private void ParseExistingBinaryTile(Tile tileData)
+		{
+			//BinaryMeshReader.
+		}
 
 		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
 		{
@@ -193,10 +225,12 @@ namespace TileBakeLibrary
             var cityJson = new CityJSON(sourceFile, true, true);
             List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
             Console.WriteLine($"CityObjects found: {cityObjects.Count}");
+
+            //Turn cityobjects (and their children) into SubObject mesh data
             for (int i = 0; i < cityObjects.Count; i++)
-			{
+            {
                 var cityObject = cityObjects[i];
-                var subObject = ToSubObject(cityObject);
+                var subObject = ToSubObjectMeshData(cityObject);
                 if (subObject != null)
                     filteredObjects.Add(subObject);
             }
@@ -204,10 +238,10 @@ namespace TileBakeLibrary
             return filteredObjects;
         }
 
-		private SubObject ToSubObject(CityObject cityObject)
+		private SubObject ToSubObjectMeshData(CityObject cityObject)
 		{
             var subObject = new SubObject();
-            subObject.verticesRD = new List<Vector3Double>();
+            subObject.vertices = new List<Vector3Double>();
             subObject.normals = new List<Vector3>();
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
@@ -225,17 +259,31 @@ namespace TileBakeLibrary
             }
             if (id == "") return null;
 
+            //Append all child geometry
 			for (int i = 0; i < cityObject.children.Count; i++)
 			{
 				var childObject = cityObject.children[i];
-				//Add child geometry to our subobject
-				AppendCityObjectGeometry(childObject, subObject);
+				//Add child geometry to our subobject. (Recursive disabled, so only one child level is allowed)
+				AppendCityObjectGeometry(childObject, subObject, false);
 			}
+            if (mergeVerticesBelowNormalAngle != 0)
+            {
+                subObject.MergeSimilarVertices(mergeVerticesBelowNormalAngle);
+            }
 
-			return subObject;
+            //Calculate centroid using the city object vertices
+            Vector3Double centroid = new Vector3Double();
+            for (int i = 0; i < subObject.vertices.Count; i++)
+			{
+                centroid.X += subObject.vertices[i].X;
+                centroid.Y += subObject.vertices[i].Z;
+            }
+            subObject.centroid = new Vector2Double(centroid.X / subObject.vertices.Count, centroid.Y / subObject.vertices.Count);
+
+            return subObject;
         }
 
-		private static void AppendCityObjectGeometry(CityObject childObject, SubObject subObject)
+		private static void AppendCityObjectGeometry(CityObject childObject, SubObject subObject, bool recursive = false)
 		{
 			foreach (var surface in childObject.surfaces)
 			{
@@ -251,15 +299,24 @@ namespace TileBakeLibrary
 				Poly2Mesh.CreateMeshData(poly, out surfaceVertices, out surfaceIndices, out surfaceUvs);
 				for (int j = 0; j < surfaceVertices.Length; j++)
 				{
-					subObject.verticesRD.Add((Vector3Double)surfaceVertices[j]);
+					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
 					subObject.uvs.Add(surfaceUvs[j]);
 				}
 				for (int j = 0; j < surfaceIndices.Length; j++)
 				{
-					subObject.triangleIndices.Add(subObject.verticesRD.Count + surfaceIndices[j]);
+					subObject.triangleIndices.Add(subObject.vertices.Count + surfaceIndices[j]);
 				}
 			}
-		}
+
+            if (recursive)
+            {
+                for (int i = 0; i < childObject.children.Count; i++)
+                {
+                    var revursiveChildObject = childObject.children[i];
+                    AppendCityObjectGeometry(revursiveChildObject, subObject, recursive);
+                }
+            }
+        }
 
 		public void Cancel()
 		{

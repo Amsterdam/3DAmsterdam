@@ -15,6 +15,7 @@ namespace TileBakeTool
 		private static string removeFromIdentifier = "";
 
 		private static bool addToExistingTiles = false;
+		private static bool createBrotliCompressedFiles = false;
 
 		private static float lod = 0;
 
@@ -92,6 +93,9 @@ namespace TileBakeTool
 				case "--id-remove":
 					removeFromIdentifier = value;
 					Console.WriteLine($"Remove from identifier: {removeFromIdentifier}");
+					break;
+				case "--brotli-compress":
+					Console.WriteLine($"No implemented yet");
 					break;
 				default:
 					
