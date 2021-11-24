@@ -8,37 +8,27 @@ using System.Threading.Tasks;
 
 namespace TileBakeLibrary
 {
-	class BinaryMeshWriter
+	class OBJWriter
 	{
-        private static int writerVersion = 1;        
-
         public static void Save(Tile tile, bool addGltfWrapper = true)
         {
-            using (FileStream file = File.Create(tile.filePath))
+            using (FileStream file = File.Create(tile.filePath + ".obj"))
             {
-                using (BinaryWriter writer = new BinaryWriter(file))
+                using (StreamWriter writer = new StreamWriter(file))
                 {
-                    //Version int
-                    writer.Write(writerVersion);
-
+                    writer.WriteLine($"#NL3D Simple OBJ");
                     //Verts
                     var vertices = tile.vertices;
-                    writer.Write(vertices.Count);
                     foreach (Vector3 vert in tile.vertices)
                     {
-                        writer.Write(vert.X);
-                        writer.Write(vert.Y);
-                        writer.Write(vert.Z);
+                        writer.WriteLine($"v {vert.X} {vert.Y} {vert.Z}");
                     }
 
                     var normals = tile.normals;
                     //Normals
-                    writer.Write(normals.Count);
                     foreach (Vector3 normal in normals)
                     {
-                        writer.Write(normal.X);
-                        writer.Write(normal.Y);
-                        writer.Write(normal.Z);
+                        writer.WriteLine($"vn {normal.X} {normal.Y} {normal.Z}");
                     }
 
                     //UV
@@ -46,20 +36,20 @@ namespace TileBakeLibrary
                     writer.Write(uvs.Count);
                     foreach (Vector2 uv in uvs)
                     {
-                        writer.Write(uv.X);
-                        writer.Write(uv.Y);
+                        writer.WriteLine($"vt {uv.X} {uv.Y}");
                     }
 
                     //Every triangle list per submesh
-                    writer.Write(tile.submeshes.Count);
+                    writer.WriteLine("o SubMesh");
                     for (int i = 0; i < tile.submeshes.Count; i++)
                     {
                         List<int> submeshTriangleList = tile.submeshes[i].triangleIndices;
-                        writer.Write(submeshTriangleList.Count);
-                        writer.Write(tile.submeshes[i].baseVertex);
-                        foreach (int index in submeshTriangleList)
-                        {
-                            writer.Write(index);
+						for (int j = 0; j < submeshTriangleList.Count; j+=3)
+						{
+                            var index1 = submeshTriangleList[j];
+                            var index2 = submeshTriangleList[j+1];
+                            var index3 = submeshTriangleList[j+2];
+                            writer.WriteLine($"f {index1}/{index1}/{index1} {index2}/{index2}/{index2} {index3}/{index3}/{index3}");
                         }
                     }
                 }

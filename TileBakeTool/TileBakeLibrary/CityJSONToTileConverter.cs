@@ -205,7 +205,8 @@ namespace TileBakeLibrary
                 Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
 
                 //Create binary files
-                BinaryMeshWriter.SaveAsBinaryFile(tile);
+                BinaryMeshWriter.Save(tile);
+                OBJWriter.Save(tile);
             }
         }
 
