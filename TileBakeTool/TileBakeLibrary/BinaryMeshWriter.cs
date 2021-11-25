@@ -12,7 +12,7 @@ namespace TileBakeLibrary
 	{
         private static int writerVersion = 1;        
 
-        public static void Save(Tile tile, bool addGltfWrapper = true)
+        public static void Save(Tile tile, bool writeMetaData = true, bool addGltfWrapper = true)
         {
             using (FileStream file = File.Create(tile.filePath))
             {
@@ -60,6 +60,34 @@ namespace TileBakeLibrary
                         foreach (int index in submeshTriangleList)
                         {
                             writer.Write(index);
+                        }
+                    }
+                }
+            }
+
+            //The metadata containing subobject id's and their index ranges
+            if (writeMetaData)
+            {
+                using (FileStream file = File.Create(tile.filePath.Replace(".bin", "-data.bin")))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(file))
+                    {
+                        //Version int
+                        writer.Write(writerVersion);
+
+                        //Subobject count
+                        writer.Write(tile.SubObjects.Count);
+
+                        //All subobject id's, and their indices
+                        for (int i = 0; i < tile.SubObjects.Count; i++)
+                        {
+                            //ID string. string starts with a length:
+                            //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
+                            writer.Write(tile.SubObjects[i].id);
+
+                            //Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
+                            int amountOfInts = tile.SubObjects[i].triangleIndices.Count;
+                            writer.Write(amountOfInts);
                         }
                     }
                 }
