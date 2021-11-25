@@ -20,6 +20,8 @@ namespace TileBakeLibrary
         private string identifier = "";
         private string removeFromID = "";
 
+        private bool createOBJFiles = false;
+
         private bool parseExistingTiles = false;
 
         private float mergeVerticesBelowNormalAngle = 0.0f; 
@@ -124,6 +126,11 @@ namespace TileBakeLibrary
             BakeTiles();
 		}
 
+		public void CreateOBJ(bool createObjFiles)
+		{
+            this.createOBJFiles = createObjFiles;
+        }
+
 		private void ParseExisistingTiles()
 		{
 			throw new NotImplementedException();
@@ -164,6 +171,7 @@ namespace TileBakeLibrary
                     var tileY = startYRD + (y * tileSize);
                     var newTile = new Tile()
                     {
+                        size = new Vector2(tileSize, tileSize),
                         position = new Vector2Double(tileX, tileY),
                         filePath = $"{outputPath}{tileX}_{tileY}.bin"
                     };
@@ -201,9 +209,17 @@ namespace TileBakeLibrary
             foreach (Tile tile in tiles) {
                 Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
 
+                //Determine winding order
+                foreach(var submesh in tile.submeshes)
+                {
+                    submesh.triangleIndices.Reverse();
+                }
+
                 //Create binary files
                 BinaryMeshWriter.Save(tile);
-                OBJWriter.Save(tile);
+                
+                //Optionaly write other format(s) for previewing purposes
+                if(createOBJFiles) OBJWriter.Save(tile);
             }
         }
 
