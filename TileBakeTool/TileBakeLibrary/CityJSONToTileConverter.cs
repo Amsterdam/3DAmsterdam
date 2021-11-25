@@ -32,7 +32,6 @@ namespace TileBakeLibrary
         private List<SubObject> allSubObjects = new List<SubObject>();
         private List<Tile> tiles = new List<Tile>();
         private Task<List<SubObject>>[] parseTasks;
-		
 
 		/// <summary>
 		/// The LOD we want to parse. 
@@ -143,8 +142,6 @@ namespace TileBakeLibrary
             var maxY = double.MinValue;
             foreach (SubObject cityObject in allSubObjects)
             {
-                Console.WriteLine($"CityObject: {cityObject.id}");
-
                 if (cityObject.centroid.X < minX) minX = cityObject.centroid.X;
                 else if (cityObject.centroid.X >= maxX) maxX = cityObject.centroid.X;
 
@@ -252,17 +249,19 @@ namespace TileBakeLibrary
             subObject.normals = new List<Vector3>();
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
+            subObject.id = cityObject.keyName;
 
-            //Find the identifier in attributes semantic or parent attributes
-            //If there is no ID, it might be a child. And we can skip it.
-            var id = "";
-            foreach (var semantic in cityObject.semantics)
+            //If we supplied a specific identifier field, use it as ID instead of object key index
+            if (identifier != "")
             {
-                Console.WriteLine(semantic.name);
-                if (semantic.name == identifier)
+                foreach (var semantic in cityObject.semantics)
                 {
-                    id = semantic.value;
-                    break;
+                    Console.WriteLine(semantic.name);
+                    if (semantic.name == identifier)
+                    {
+                        subObject.id = semantic.value;
+                        break;
+                    }
                 }
             }
 
@@ -280,6 +279,12 @@ namespace TileBakeLibrary
                 subObject.MergeSimilarVertices(mergeVerticesBelowNormalAngle);
             }
 
+            //Check if the list if triangles is complete (divisible by 3)
+            if (subObject.triangleIndices.Count % 3 != 0)
+            {
+                Console.WriteLine($"{subObject.id} triangle list is not divisible by 3. This is not correct.");
+            }
+
             //Calculate centroid using the city object vertices
             Vector3Double centroid = new Vector3Double();
             for (int i = 0; i < subObject.vertices.Count; i++)
@@ -292,12 +297,12 @@ namespace TileBakeLibrary
             return subObject;
         }
 
-		private static void AppendCityObjectGeometry(CityObject childObject, SubObject subObject, bool recursive = false)
+		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject, bool recursive = false)
 		{
-			foreach (var surface in childObject.surfaces)
+            foreach (var surface in cityObject.surfaces)
 			{
-				//Our mesh output data per surface
-				Vector3[] surfaceVertices;
+                //Our mesh output data per surface
+                Vector3[] surfaceVertices;
 				Vector3[] surfaceNormals;
 				Vector2[] surfaceUvs;
 				int[] surfaceIndices;
@@ -308,6 +313,7 @@ namespace TileBakeLibrary
                 {
                     outside.Add((Vector3)surface.outerRing[i]);
                 }
+
                 List<List<Vector3>> holes = new();
                 for (int i = 0; i < surface.innerRings.Count; i++){
                     List<Vector3> inner = new();
@@ -323,24 +329,31 @@ namespace TileBakeLibrary
 				poly.outside = outside;
 				poly.holes = holes;
 				Poly2Mesh.CreateMeshData(poly, out surfaceVertices,out surfaceNormals, out surfaceIndices, out surfaceUvs);
+
+                var offset = subObject.vertices.Count;
+
+                //Append verts, normals and uvs
                 for (int j = 0; j < surfaceVertices.Length; j++)
 				{
 					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
                     subObject.normals.Add(surfaceNormals[j]);
-                    if (surfaceUvs != null)
+
+                    if(surfaceUvs!= null)
 					    subObject.uvs.Add(surfaceUvs[j]);
 				}
+
+                //Append indices ( corrected to offset )
 				for (int j = 0; j < surfaceIndices.Length; j++)
 				{
-					subObject.triangleIndices.Add(subObject.vertices.Count + surfaceIndices[j]);
+					subObject.triangleIndices.Add(offset + surfaceIndices[j]);
 				}
 			}
 
             if (recursive)
             {
-                for (int i = 0; i < childObject.children.Count; i++)
+                for (int i = 0; i < cityObject.children.Count; i++)
                 {
-                    var revursiveChildObject = childObject.children[i];
+                    var revursiveChildObject = cityObject.children[i];
                     AppendCityObjectGeometry(revursiveChildObject, subObject, recursive);
                 }
             }
