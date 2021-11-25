@@ -26,6 +26,7 @@ public class JsonSessionSaver : IDataSaver
     public void ExportSaveData()
     {
         Debug.Log(rootObject.ToString());
+        //PlayerPrefs.SetString(rootObject.ToString());
     }
 
     public void ClearAllData()

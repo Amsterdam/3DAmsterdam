@@ -12,30 +12,28 @@ public class StateSaver : MonoBehaviour
 
     private void Awake()
     {
-        activeStateIndexKey = GetType().Namespace + GetType().ToString() + ".activeStateIndex";
-        ActiveStateIndex = new SaveableInt(activeStateIndexKey, SessionSaver.LoadPreviousSession);
+        activeStateIndexKey = GetType().ToString() + ".activeStateIndex";
+        ActiveStateIndex = new SaveableInt(activeStateIndexKey);
     }
 
     private void OnEnable()
     {
-        State.ActiveStateChanged += State_ActiveStateChanged;
+        State.ActiveStateChangedByUser += State_ActiveStateChanged;
     }
 
     private void OnDisable()
     {
-        State.ActiveStateChanged -= State_ActiveStateChanged;
+        State.ActiveStateChangedByUser -= State_ActiveStateChanged;
     }
 
     private void State_ActiveStateChanged(State newState)
     {
-        print("saving new state: " + GetStateIndex(newState));
         ActiveStateIndex.SetValue(GetStateIndex(newState));
     }
 
     private void Start()
     {
         states = GetComponentsInChildren<State>(true);
-        print(states.Length);
     }
 
     public int GetStateIndex(State state)
@@ -46,5 +44,14 @@ public class StateSaver : MonoBehaviour
     public State GetState(int index)
     {
         return states[index];
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            SessionSaver.ClearAllSaveData();
+            SessionSaver.LoadPreviousSession = false;
+        }
     }
 }

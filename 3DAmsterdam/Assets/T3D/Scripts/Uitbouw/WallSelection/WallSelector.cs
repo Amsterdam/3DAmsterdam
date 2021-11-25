@@ -38,11 +38,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
-            rayOriginKey = GetType().Namespace + GetType().ToString() + ".rayOrigin";
-            rayDirectionKey = GetType().Namespace + GetType().ToString() + ".rayDirection";
+            rayOriginKey = GetType().ToString() + ".rayOrigin";
+            rayDirectionKey = GetType().ToString() + ".rayDirection";
 
-            rayOrigin = new SaveableVector3(rayOriginKey, SessionSaver.LoadPreviousSession);
-            rayDirection = new SaveableVector3(rayDirectionKey, SessionSaver.LoadPreviousSession);
+            rayOrigin = new SaveableVector3(rayOriginKey);
+            rayDirection = new SaveableVector3(rayDirectionKey);
 
             wallMeshFilter = GetComponent<MeshFilter>();
             building = GetComponentInParent<BuildingMeshGenerator>();

@@ -14,9 +14,9 @@ public class State : MonoBehaviour
 
     public static State ActiveState { get; private set; } //allows only 1 state machine throughout the application, maybe change for a dictionary where collections can be defined
     public delegate void ActiveStateChangedEventHandler(State newState);
-    public static event ActiveStateChangedEventHandler ActiveStateChanged;
+    public static event ActiveStateChangedEventHandler ActiveStateChangedByUser;
 
-    private void Start()
+    protected virtual void Start()
     {
         if (isFirstState)
         {
@@ -24,16 +24,18 @@ public class State : MonoBehaviour
         }
 
         if (SessionSaver.LoadPreviousSession)
-        {
-            var stateSaver = GetComponentInParent<StateSaver>();
-            var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex.Value);
-            print("saved state : " + stateSaver.ActiveStateIndex.Value);
+            LoadSavedState();
+    }
 
-            if (ActiveState != savedState)
-            { 
-                print("ending" + stateSaver.GetStateIndex(ActiveState));
-                EndState();
-            }
+    protected virtual void LoadSavedState()
+    {
+        StateLoadedAction();
+        var stateSaver = GetComponentInParent<StateSaver>();
+        var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex.Value);
+
+        if (ActiveState != savedState)
+        {
+            EndState();
         }
     }
 
@@ -86,8 +88,12 @@ public class State : MonoBehaviour
         if (previousState != null)
         {
             previousState.EnterState(previousState.previousState);
-            ActiveStateChanged?.Invoke(ActiveState);
+            ActiveStateChangedByUser?.Invoke(ActiveState);
         }
+    }
+
+    public virtual void StateLoadedAction()
+    {
     }
 
     public virtual void StateCompletedAction()
@@ -97,6 +103,6 @@ public class State : MonoBehaviour
     public void StepEndedByUser()
     {
         EndState();
-        ActiveStateChanged?.Invoke(ActiveState);
+        ActiveStateChangedByUser?.Invoke(ActiveState);
     }
 }

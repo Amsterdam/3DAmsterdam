@@ -75,9 +75,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                         if (placedBoundaryFeature == null)
                         {
                             placedBoundaryFeature = Instantiate(ComponentObject, wall.transform.parent);
+                            //placedBoundaryFeature.SetWall(wall); //set wall immediately because it is needed for the save data
+                            AddBoundaryFeatureToSaveData(ComponentObject.name, placedBoundaryFeature);
                         }
 
-                        placedBoundaryFeature.SetWall(wall);
+                        placedBoundaryFeature.SetWall(wall); //set wall again to update it if the wall changes
 
                         placedBoundaryFeature.transform.position = hit.point;
                         //placedBoundaryFeature.transform.forward = wall.transform.forward;
@@ -90,16 +92,34 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     }
                     else if (placedBoundaryFeature != null)
                     {
+                        RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
                         Destroy(placedBoundaryFeature.gameObject);
                         ComponentImage.enabled = true;
                     }
                 }
-
             }
             else if (placedBoundaryFeature != null)
             {
-                Destroy(placedBoundaryFeature.gameObject);                
+                Destroy(placedBoundaryFeature.gameObject);
                 ComponentImage.enabled = true;
+            }
+        }
+
+        private void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
+        {
+            var state = State.ActiveState as PlaceBoundaryFeaturesState;
+            if (state)
+            {
+                state.AddBoundaryFeatureToSaveData(prefabName, feature);
+            }
+        }
+
+        private void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
+        {
+            var state = State.ActiveState as PlaceBoundaryFeaturesState;
+            if (state)
+            {
+                state.RemoveBoundaryFeatureFromSaveData(feature);
             }
         }
     }

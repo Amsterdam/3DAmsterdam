@@ -20,7 +20,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public bool UpdateOnce;
         private bool hasUpdatedText;
 
-
         private InputField inputField;
         [SerializeField]
         private SizeType size;
@@ -32,12 +31,12 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Awake()
         {
             inputField = GetComponent<InputField>();
-            valueKey = GetType().Namespace + GetType().ToString() + "." + size.ToString();
+            valueKey = GetType().ToString() + "." + size.ToString();
         }
 
         private void Start()
         {
-            value = new SaveableFloat(valueKey, SessionSaver.LoadPreviousSession);
+            value = new SaveableFloat(valueKey);
             if (SessionSaver.LoadPreviousSession)
             {
                 LoadData();

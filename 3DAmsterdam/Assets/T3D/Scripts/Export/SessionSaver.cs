@@ -20,6 +20,11 @@ public static class SessionSaver
         ReadSaveData();
     }
 
+    public static void ClearAllSaveData()
+    {
+        saver.ClearAllData();
+    }
+
     public static void SaveFloat(string key, float value)
     {   
         saver.SaveFloat(key, value);
