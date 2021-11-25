@@ -12,7 +12,7 @@ namespace TileBakeLibrary
 	{
         private static int writerVersion = 1;        
 
-        public static void Save(Tile tile, bool writeMetaData = true, bool addGltfWrapper = true)
+        public static void Save(Tile tile, bool writeMetaData = true, bool writeGltfWrapper = true)
         {
             using (FileStream file = File.Create(tile.filePath))
             {
@@ -91,6 +91,11 @@ namespace TileBakeLibrary
                         }
                     }
                 }
+            }
+
+            if(writeGltfWrapper)
+            {
+                GltfWrapper.Save(tile);
             }
         }
     }
