@@ -103,8 +103,26 @@ namespace JoeStrout
                 else
                 {
                     //TODO, add alternative for FromToRotation
-                    //rotation = Quaternion.FromToRotation(planeNormal, Vector3.forward);
+                    rotation = FromToRotation(planeNormal, Vector3.UnitZ);
                 }
+            }
+
+            static public Quaternion FromToRotation(Vector3 dir1, Vector3 dir2)
+            {
+                float r = 1f + Vector3.Dot(dir1, dir2);
+                Vector3 w;
+                if (r < 1E-6f)
+                {
+                    r = 0f;
+                    w = Math.Abs(dir1.X) > Math.Abs(dir1.Z) ? new Vector3(-dir1.Y, dir1.Z, 0f) :
+                                                               new Vector3(0f, -dir1.Z, dir1.Y);
+                }
+                else
+                {
+                    w = Vector3.Cross(dir1, dir2);
+                }
+
+                return Quaternion.Normalize(new Quaternion(w.X, w.Y, w.Z, r));
             }
 
             public Vector2 ClosestUV(Vector3 pos)
@@ -207,7 +225,7 @@ namespace JoeStrout
             vertices = new Vector3[0];
             normals = new Vector3[0];
             triangles = new int[0];
-            uvs = new Vector2[0];
+            uvs = null;
 
             // Ensure we have the rotation properly calculated, and have a valid normal
             if (polygon.rotation == Quaternion.Identity) polygon.CalcRotation();
@@ -216,7 +234,6 @@ namespace JoeStrout
             // Check for the easy case (a triangle)
             if (polygon.holes.Count == 0 && (polygon.outside.Count == 3 || (polygon.outside.Count == 4 && polygon.outside[3] == polygon.outside[0])))
             {
-                
                 CreateTriangle(polygon, out vertices, out normals, out triangles, out uvs);
                 return;
             }
