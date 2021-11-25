@@ -67,9 +67,11 @@ namespace TileBakeLibrary
 				//Here we convert to single precision, and switch the tile coordinate system
 				var vertex = new Vector3((float)(doubleVertex.X - position.X), (float)doubleVertex.Z, (float)(doubleVertex.Y - position.Y));
 				var normal = subObject.normals[i];
+				//var uv = subObject.uvs[i];
 
 				vertices.Add(vertex);
 				normals.Add(normal);
+				//uvs.Add(uv); //Uv's need to be properly generated from Poly2Mesh first
 			}
 
 			var targetSubMesh = submeshes[targetSubMeshIndex];
