@@ -30,12 +30,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             Size = new SaveableVector3(baseKey + ".Size");
         }
 
-        public void UpdateMetadata(int id, string prefabName)
-        {
-            Id.SetValue(id);
-            PrefabName.SetValue(prefabName);
-        }
-
         public void UpdateData(int id, string prefabName, WallSide wallSide, Vector3 position, Quaternion rotation, Vector3 size)
         {
             Id.SetValue(id);
@@ -100,7 +94,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 Id = id;
                 SaveData = new BoundaryFeatureSaveData(id);
-                print("loaded: " + SaveData.Position.Value);
             }
         }
 
@@ -109,7 +102,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             Id = id;
             PrefabName = prefabName;
 
-            SaveData.UpdateMetadata(Id, PrefabName);
+            var wallSide = (WallSide)SaveData.WallSide.Value;
+            SaveData = new BoundaryFeatureSaveData(Id); // reset the key used to save data
+            SaveData.UpdateData(Id, PrefabName, wallSide, transform.position, transform.rotation, Size);
         }
 
         public void LoadData(int id)
@@ -123,7 +118,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             transform.rotation = SaveData.Rotation.Value;
             transform.position = SaveData.Position.Value;
 
-            print(wall.transform.parent.rotation);
             SetWall(wall);
 
             SetSize(SaveData.Size.Value);
@@ -264,6 +258,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             Destroy(editUI.gameObject);
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
+
+            var state = State.ActiveState as PlaceBoundaryFeaturesState;
+            if (state)
+            {
+                state.RemoveBoundaryFeatureFromSaveData(this);
+            }
+
             Destroy(gameObject);
         }
 

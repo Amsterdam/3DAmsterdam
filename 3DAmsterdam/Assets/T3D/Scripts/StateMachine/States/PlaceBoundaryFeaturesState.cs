@@ -73,7 +73,7 @@ public class PlaceBoundaryFeaturesState : State
         var lastBf = savedBoundaryFeatures[savedBoundaryFeatures.Count - 1];
         lastBf.UpdateMetadata(feature.Id, lastBf.PrefabName);
         //sort list so that this function will not result in duplicate ids the next time it is called
-        savedBoundaryFeatures.OrderBy(bf => bf.Id);
+        savedBoundaryFeatures = savedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
 
         //decrement amount
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
