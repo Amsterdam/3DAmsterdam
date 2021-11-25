@@ -15,7 +15,9 @@ namespace TileBakeTool
 		private static string removeFromIdentifier = "";
 
 		private static bool addToExistingTiles = false;
+		
 		private static bool createBrotliCompressedFiles = false;
+		private static bool createObjFiles = false;
 
 		private static float lod = 0;
 
@@ -97,6 +99,9 @@ namespace TileBakeTool
 				case "--brotli-compress":
 					Console.WriteLine($"No implemented yet");
 					break;
+				case "--obj":
+					createObjFiles = true;
+					break;
 				default:
 					
 					break;
@@ -114,6 +119,7 @@ namespace TileBakeTool
 			tileBaker.SetLOD(lod);
 			tileBaker.SetID(identifier, removeFromIdentifier);
 			tileBaker.SetAdd(addToExistingTiles);
+			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.Convert();
 		}
 
@@ -143,6 +149,7 @@ Extra options:
 --filter-type <type>		 Filter object on type
 --lod <lod filter>			 Target LOD. For example 2.2
 --config <config file path>	 Apply settings above via config file
+--obj						 Write .OBJ files as well (for previewing outputs)
 
 Pipeline example:
 TileBakeTool.exe --source ""C:/MyProject/CityJsonFiles/*.json"" --output ""C:/MyProject/BinaryTiles/"" --filter-lod ""2"" --filter-type ""gebouw"" --id ""GebouwNummer"" 
