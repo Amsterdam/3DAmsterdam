@@ -15,7 +15,7 @@ namespace Netherlands3D.CityJSON
 		private List<Surfacetexture> Textures;
 		private List<Material> Materials;
 
-		private float LOD;
+		private float LOD = -1;
 
 		private Vector3Double transformScale;
 		private Vector3Double transformOffset;
@@ -80,42 +80,34 @@ namespace Netherlands3D.CityJSON
 		{
 			List<CityObject> cityObjects = new List<CityObject>();
 			LOD = lod;
-			foreach (JSONNode node in cityJsonNode["CityObjects"])
+
+			//Traverse the cityobjects as a key value pair, so we can read the unique key name and use it as a default identifier
+			foreach (KeyValuePair<string, JSONNode> kvp in (JSONObject)cityJsonNode["CityObjects"])
 			{
-				CityObject cityObject = ReadCityObject(node);
+				CityObject cityObject = ReadCityObject(kvp.Value);
+				cityObject.keyName = kvp.Key;
 				if (cityObject != null)
-				{	
+				{
 					cityObjects.Add(cityObject);
 				}
 			}
+
 			return cityObjects;
 		}
 
 		private CityObject ReadCityObject(JSONNode node)
 		{
 			CityObject cityObject = new CityObject();
-			bool LODcorrect = false;
-			foreach (JSONNode geometrynode in node["geometry"])
-			{ 
-				if (geometrynode["lod"].AsFloat == LOD)
-				{
-					LODcorrect = true;
-				}
-			}
-			if (LODcorrect == false)
-			{
-				return null;
-			}
 
 			//read attributes
 			List<Semantics> semantics = ReadSemantics(node["attributes"]);
 			cityObject.semantics = semantics;
 
-			//readSurfaceGeometry
+			//read surface geometry ( if we did not filter LOD, or the LOD matches )
 			List<Surface> surfaces = new List<Surface>();
 			foreach (JSONNode geometrynode in node["geometry"])
 			{
-				if (geometrynode["lod"].AsFloat == LOD)
+				if (LOD == -1 || geometrynode["lod"].AsFloat == LOD)
 				{
 					if (geometrynode["type"] == "Solid")
 					{
@@ -215,8 +207,9 @@ namespace Netherlands3D.CityJSON
 				{
 					string childname = childrenNode[i];
 					JSONNode childnode = cityJsonNode["CityObjects"][childname];
-
 					CityObject child = ReadCityObject(childnode);
+					child.keyName = childname;
+
 					if (child != null)
 					{
 						children.Add(child);
@@ -397,11 +390,13 @@ namespace Netherlands3D.CityJSON
 		public List<Semantics> semantics;
 		public List<Surface> surfaces;
 		public List<CityObject> children;
+		public string keyName = "";
+
 		public CityObject()
 		{
-			semantics = new List<Semantics>();
-			surfaces = new List<Surface>();
-			children = new List<CityObject>();
+			semantics = new();
+			surfaces = new();
+			children = new();
 		}
 	}
 
