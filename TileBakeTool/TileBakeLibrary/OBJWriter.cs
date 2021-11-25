@@ -45,9 +45,9 @@ namespace TileBakeLibrary
                         List<int> submeshTriangleList = tile.submeshes[i].triangleIndices;
 						for (int j = 0; j < submeshTriangleList.Count; j+=3)
 						{
-                            var index1 = submeshTriangleList[j + 2] + 1;
-                            var index2 = submeshTriangleList[j+1] + 1;
-                            var index3 = submeshTriangleList[j] + 1;
+                            var index1 = submeshTriangleList[j] + 1;
+                            var index2 = submeshTriangleList[j + 1] + 1;
+                            var index3 = submeshTriangleList[j + 2] + 1;
                             writer.WriteLine($"f {index1}/{((uvs.Count>0) ? index1 : "")}/{index1} {index2}/{((uvs.Count > 0) ? index2 : "")}/{index2} {index3}/{((uvs.Count > 0) ? index3 : "")}/{index3}");
                         }
                     }
