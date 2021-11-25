@@ -68,7 +68,7 @@ namespace TileBakeLibrary
             //The metadata containing subobject id's and their index ranges
             if (writeMetaData)
             {
-                using (FileStream file = File.Create(tile.filePath.Replace(".bin", "-data.bin")))
+                using (FileStream file = File.Create(tile.filePath.Replace(".bin","") + "-data.bin"))
                 {
                     using (BinaryWriter writer = new BinaryWriter(file))
                     {
