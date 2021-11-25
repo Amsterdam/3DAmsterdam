@@ -65,7 +65,7 @@ namespace TileBakeLibrary
 			{
 				var doubleVertex = subObject.vertices[i];
 				//Here we convert to single precision, and switch the tile coordinate system
-				var vertex = new Vector3((float)(doubleVertex.X - position.X), (float)doubleVertex.Z, (float)(doubleVertex.Y - position.Y));
+				var vertex = new Vector3((float)(doubleVertex.X - position.X - (size.X/2)), (float)doubleVertex.Z, (float)(doubleVertex.Y - position.Y - (size.Y / 2)));
 				var normal = subObject.normals[i];
 				//var uv = subObject.uvs[i];
 
