@@ -53,8 +53,8 @@
 		public int bufferView { get; set; }
 		public int componentType { get; set; }
 		public int count { get; set; }
-		public int[] max { get; set; }
-		public int[] min { get; set; }
+		public float[] max { get; set; }
+		public float[] min { get; set; }
 		public string type { get; set; }
 	}
 
@@ -67,7 +67,7 @@
 
 	public class Buffer
 	{
-		public int byteLength { get; set; }
+		public long byteLength { get; set; }
 		public string uri { get; set; }
 	}
 }
