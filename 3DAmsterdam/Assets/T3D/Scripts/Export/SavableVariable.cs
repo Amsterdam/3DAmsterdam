@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using UnityEngine;
 
@@ -104,6 +105,29 @@ public class SaveableVector3 : SaveableVariable<Vector3>
     }
 }
 
+public class SaveableVector3RD : SaveableVariable<Vector3RD>
+{
+    public SaveableVector3RD(string key) : base(key)
+    {
+    }
+
+    public override void Load()
+    {
+        var x = SessionSaver.LoadFloat(Key + ".x");
+        var y = SessionSaver.LoadFloat(Key + ".y");
+        var z = SessionSaver.LoadFloat(Key + ".z");
+
+        Value = new Vector3RD(x, y, z);
+    }
+
+    public override void Save()
+    {
+        SessionSaver.SaveFloat(Key + ".x", (float)Value.x);
+        SessionSaver.SaveFloat(Key + ".y", (float)Value.y);
+        SessionSaver.SaveFloat(Key + ".z", (float)Value.z);
+    }
+}
+
 public class SaveableBool : SaveableVariable<bool>
 {
     public SaveableBool(string key) : base(key)
@@ -121,32 +145,32 @@ public class SaveableBool : SaveableVariable<bool>
     }
 }
 
-public class SaveableIntArray : SaveableVariable<int[]>
-{
-    public SaveableIntArray(string key) : base(key)
-    {
-    }
+//public class SaveableIntArray : SaveableVariable<int[]>
+//{
+//    public SaveableIntArray(string key) : base(key)
+//    {
+//    }
 
-    public override void Load()
-    {
-        var length = SessionSaver.LoadInt(Key + ".Length");
-        Value = new int[length];
+//    public override void Load()
+//    {
+//        var length = SessionSaver.LoadInt(Key + ".Length");
+//        Value = new int[length];
 
-        for (int i = 0; i < Value.Length; i++)
-        {
-            SessionSaver.LoadInt(Key + i);
-        }
-    }
+//        for (int i = 0; i < Value.Length; i++)
+//        {
+//            SessionSaver.LoadInt(Key + i);
+//        }
+//    }
 
-    public override void Save()
-    {
-        SessionSaver.SaveInt(Key + ".Length", Value.Length);
-        for (int i = 0; i < Value.Length; i++)
-        {
-            SessionSaver.SaveInt(Key + "." + i, Value[i]);
-        }
-    }
-}
+//    public override void Save()
+//    {
+//        SessionSaver.SaveInt(Key + ".Length", Value.Length);
+//        for (int i = 0; i < Value.Length; i++)
+//        {
+//            SessionSaver.SaveInt(Key + "." + i, Value[i]);
+//        }
+//    }
+//}
 
 public class SaveableQuaternion : SaveableVariable<Quaternion>
 {

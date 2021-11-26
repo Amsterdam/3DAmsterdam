@@ -45,13 +45,4 @@ public class StateSaver : MonoBehaviour
     {
         return states[index];
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            SessionSaver.ClearAllSaveData();
-            SessionSaver.LoadPreviousSession = false;
-        }
-    }
 }

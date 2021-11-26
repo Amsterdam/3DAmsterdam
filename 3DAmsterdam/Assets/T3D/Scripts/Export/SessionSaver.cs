@@ -5,17 +5,17 @@ using UnityEngine;
 
 public static class SessionSaver
 {
-    public static bool LoadPreviousSession = true;
+    public static bool LoadPreviousSession = false;
 
-    private static IDataLoader loader = new PlayerPrefsSessionLoader();
-    private static IDataSaver saver = new PlayerPrefsSessionSaver();// = new JsonSessionSaver();
+    private static IDataLoader loader = new JSONSessionLoader();
+    private static IDataSaver saver = new JSONSessionSaver();
 
     //public static Dictionary<string, object> KeyOwners = new Dictionary<string, object>();
 
     static SessionSaver()
     {
-        if (!LoadPreviousSession)
-            saver.ClearAllData();
+        //if (!LoadPreviousSession)
+        //    saver.ClearAllData();
 
         ReadSaveData();
     }
