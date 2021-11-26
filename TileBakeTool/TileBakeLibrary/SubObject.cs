@@ -15,6 +15,7 @@ namespace TileBakeLibrary
 		public Vector2Double centroid = new();
 
 		public string id = "";
+		private double distanceMergeThreshold = 0.01;
 
 		public void MergeSimilarVertices(float mergeVerticesBelowNormalAngle)
 		{
@@ -32,8 +33,8 @@ namespace TileBakeLibrary
 				triangleIndices[i] = GetOrAddVertexIndex(vertexIndex ,cleanedVertices,cleanedNormals,cleanedUvs, cosAngleThreshold);
 			}
 
-			var merged = vertices.Count - cleanedVertices.Count;
-			Console.WriteLine($"{id} has {merged} verts merged.");
+			Console.WriteLine($"Before : {vertices.Count} and after merge: {cleanedVertices.Count}");
+
 			//Now use our new cleaned geometry
 			vertices = cleanedVertices;
 			normals = cleanedNormals;
@@ -46,30 +47,26 @@ namespace TileBakeLibrary
 			Vector3 inputNormal = normals[vertexIndex];
 			//Vector2 inputUv = uvs[index]; //When we support uv's, a vertex with a unique UV should not be merged and be added as a unique one
 
-		    //Add vertex with unique positions
-			if(!cleanedVertices.Contains(inputVertex))
+			//Find vertex on a similar threshold position, and then normal
+			for (int i = 0; i < cleanedVertices.Count; i++)
 			{
-				cleanedVertices.Add(inputVertex);
-				cleanedNormals.Add(inputNormal);
-				return cleanedVertices.Count - 1;
-			}
-			else 
-			{
-				//Compare the normal using a threshold
-				var cleanedVertexIndex = cleanedVertices.IndexOf(inputVertex);
-				var cleanedVertNormal = cleanedNormals[cleanedVertexIndex];
-				if (Vector3.Dot(inputNormal, cleanedVertNormal) >= angleThreshold)
+				var cleanedVertex = cleanedVertices[i];
+				var distance = Vector3Double.Distance(inputVertex, cleanedVertex);
+				if(distance < distanceMergeThreshold)
 				{
-					//Similar enough normal reuse existing vert
-					return cleanedVertexIndex;
-				}
-				else{
-					//This vert normal is different, lets add this as a new one.
-					cleanedVertices.Add(inputVertex);
-					cleanedNormals.Add(inputNormal);
-					return cleanedVertices.Count - 1;
+					//Compare the normal using a threshold
+					var cleanedVertNormal = cleanedNormals[i];
+					if (Vector3.Dot(inputNormal, cleanedVertNormal) >= angleThreshold)
+					{
+						//Similar enough normal reuse existing vert
+						return i;
+					}
 				}
 			}
+
+			cleanedVertices.Add(inputVertex);
+			cleanedNormals.Add(inputNormal);
+			return cleanedVertices.Count - 1;
 		}
 	}
 }
