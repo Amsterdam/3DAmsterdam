@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace TileBakeLibrary.Coordinates
 {
-    public struct Vector3Double
+    public struct Vector3Double : IEquatable<Vector3Double>
     {
         public double X;
         public double Y;
@@ -28,5 +28,10 @@ namespace TileBakeLibrary.Coordinates
 		{
             return new Vector3((float)v.X, (float)v.Y, (float)v.Z);
         }
+
+		public bool Equals(Vector3Double other)
+		{
+			return (other.X == X && other.Y == Y && other.Z == Z);
+		}
 	}
 }
