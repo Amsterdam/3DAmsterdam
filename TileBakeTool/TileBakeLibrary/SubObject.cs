@@ -28,8 +28,8 @@ namespace TileBakeLibrary
 			//Traverse the triangles, and if we encounter verts+normals that are similar, dispose them
 			for (int i = 0; i < triangleIndices.Count; i++)
 			{
-				var index = triangleIndices[i];
-				triangleIndices[i] = GetOrAddVertexIndex(index ,cleanedVertices,cleanedNormals,cleanedUvs, cosAngleThreshold);
+				var vertexIndex = triangleIndices[i];
+				triangleIndices[i] = GetOrAddVertexIndex(vertexIndex ,cleanedVertices,cleanedNormals,cleanedUvs, cosAngleThreshold);
 			}
 
 			var merged = vertices.Count - cleanedVertices.Count;
@@ -40,10 +40,10 @@ namespace TileBakeLibrary
 			uvs = cleanedUvs;
 		}
 
-		private int GetOrAddVertexIndex(int index, List<Vector3Double> cleanedVertices, List<Vector3> cleanedNormals, List<Vector2> cleanedUvs, float angleThreshold)
+		private int GetOrAddVertexIndex(int vertexIndex, List<Vector3Double> cleanedVertices, List<Vector3> cleanedNormals, List<Vector2> cleanedUvs, float angleThreshold)
 		{
-			Vector3Double inputVertex = vertices[index];
-			Vector3 inputNormal = normals[index];
+			Vector3Double inputVertex = vertices[vertexIndex];
+			Vector3 inputNormal = normals[vertexIndex];
 			//Vector2 inputUv = uvs[index]; //When we support uv's, a vertex with a unique UV should not be merged and be added as a unique one
 
 		    //Add vertex with unique positions
@@ -56,14 +56,15 @@ namespace TileBakeLibrary
 			else 
 			{
 				//Compare the normal using a threshold
-				var vertexIndex = cleanedVertices.IndexOf(inputVertex);
-				var existingVertNormal = cleanedNormals[vertexIndex];
-				if (Vector3.Dot(inputNormal, existingVertNormal) >= angleThreshold)
+				var cleanedVertexIndex = cleanedVertices.IndexOf(inputVertex);
+				var cleanedVertNormal = cleanedNormals[cleanedVertexIndex];
+				if (Vector3.Dot(inputNormal, cleanedVertNormal) >= angleThreshold)
 				{
 					//Similar enough normal reuse existing vert
-					return vertexIndex;
+					return cleanedVertexIndex;
 				}
 				else{
+					//This vert normal is different, lets add this as a new one.
 					cleanedVertices.Add(inputVertex);
 					cleanedNormals.Add(inputNormal);
 					return cleanedVertices.Count - 1;
