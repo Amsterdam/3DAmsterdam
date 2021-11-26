@@ -304,8 +304,8 @@ namespace TileBakeLibrary
             for (int i = 0; i < cityObject.children.Count; i++)
 			{
 				var childObject = cityObject.children[i];
-				//Add child geometry to our subobject. (Recursive disabled, so only one child level is allowed)
-				AppendCityObjectGeometry(childObject, subObject, false);
+				//Add child geometry to our subobject. (Recursive children are not allowed in CityJson)
+				AppendCityObjectGeometry(childObject, subObject);
 			}
             if (maxNormalAngle != 0)
             {
@@ -330,7 +330,7 @@ namespace TileBakeLibrary
             return subObject;
         }
 
-		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject, bool recursive = false)
+		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject)
 		{
             foreach (var surface in cityObject.surfaces)
 			{
@@ -340,11 +340,12 @@ namespace TileBakeLibrary
 				Vector2[] surfaceUvs;
 				int[] surfaceIndices;
 
-                //TODO make poly2mesh have double precision so we only loose precision at bake time, and not having to convert these lists
+                //offset using first outerRing vertex position
+                Vector3Double offsetPolygons = surface.outerRing[0];
                 List<Vector3> outside = new();
                 for (int i = 0; i < surface.outerRing.Count; i++)
                 {
-                    outside.Add((Vector3)surface.outerRing[i]);
+                    outside.Add((Vector3)(surface.outerRing[i] - offsetPolygons));
                 }
 
                 List<List<Vector3>> holes = new();
@@ -352,7 +353,7 @@ namespace TileBakeLibrary
                     List<Vector3> inner = new();
 					for (int j = 0; j < surface.innerRings[i].Count; j++)
 					{
-                        inner.Add((Vector3)surface.innerRings[i][j]);
+                        inner.Add((Vector3)(surface.innerRings[i][j] - offsetPolygons));
                     }
                     holes.Add(inner);
 				}
@@ -368,7 +369,7 @@ namespace TileBakeLibrary
                 //Append verts, normals and uvs
                 for (int j = 0; j < surfaceVertices.Length; j++)
 				{
-					subObject.vertices.Add((Vector3Double)surfaceVertices[j]);
+					subObject.vertices.Add(((Vector3Double)surfaceVertices[j]) + offsetPolygons);
                     subObject.normals.Add(surfaceNormals[j]);
 
                     if(surfaceUvs!= null)
@@ -381,15 +382,6 @@ namespace TileBakeLibrary
 					subObject.triangleIndices.Add(offset + surfaceIndices[j]);
 				}
 			}
-
-            if (recursive)
-            {
-                for (int i = 0; i < cityObject.children.Count; i++)
-                {
-                    var revursiveChildObject = cityObject.children[i];
-                    AppendCityObjectGeometry(revursiveChildObject, subObject, recursive);
-                }
-            }
         }
 
 		public void Cancel()
