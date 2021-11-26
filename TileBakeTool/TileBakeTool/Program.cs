@@ -96,8 +96,8 @@ namespace TileBakeTool
 					removeFromIdentifier = value;
 					Console.WriteLine($"Remove from identifier: {removeFromIdentifier}");
 					break;
-				case "--brotli-compress":
-					Console.WriteLine($"No implemented yet");
+				case "--brotli":
+					createBrotliCompressedFiles = true;
 					break;
 				case "--obj":
 					createObjFiles = true;
@@ -120,49 +120,13 @@ namespace TileBakeTool
 			tileBaker.SetID(identifier, removeFromIdentifier);
 			tileBaker.SetAdd(addToExistingTiles);
 			tileBaker.CreateOBJ(createObjFiles);
+			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
 			tileBaker.Convert();
 		}
 
 		private static void ShowHelp()
 		{
-			Console.Write(@"
-
-           // Netherlands3D Binary Tiles Generator 0.1 //
-
-
-This tool parses CityJSON files and bakes them into single-mesh binary tile files.
-Seperate metadata files contain the seperation of sub-objects.
-Check out http:/3d.amsterdam.nl/netherlands3d for help.
-
-Required options:
-
---source <path to CityJSON files>
---output <path to tile output folder>
-
-Extra options:
-
---add						 Add objects to existing binary tile files
---replace					 Replace objects with the same ID
---id <property name>		 Unique ID property name
---type <type filter>		 Filter this type
---id-remove <string>		 Remove this substring from the ID's
---filter-type <type>		 Filter object on type
---lod <lod filter>			 Target LOD. For example 2.2
---config <config file path>	 Apply settings above via config file
---obj						 Write .OBJ files as well (for previewing outputs)
-
-Pipeline example:
-TileBakeTool.exe --source ""C:/MyProject/CityJsonFiles/*.json"" --output ""C:/MyProject/BinaryTiles/"" --filter-lod ""2"" --filter-type ""gebouw"" --id ""GebouwNummer"" 
-TileBakeTool.exe --source ""C:/MyProject/CustomMadeBuildings/*.json""--output ""C:/MyProject/BinaryTiles/"" --id ""BAGID"" --add --replace
-
-Config file example:
-#Some comment
-lod=2.2
-id=building
-type=Gebouw
-
-");
-
+			Console.Write(Constants.helpText);
 		}
 	}
 }
