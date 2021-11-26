@@ -21,10 +21,11 @@ namespace TileBakeLibrary
         private string removeFromID = "";
 
         private bool createOBJFiles = false;
+        private bool brotliCompress = false;
 
         private bool parseExistingTiles = false;
 
-        private float mergeVerticesBelowNormalAngle = 0.0f; 
+        private float maxNormalAngle = 5.0f; 
 
         private bool addToExistingTiles = false;
 
@@ -82,6 +83,22 @@ namespace TileBakeLibrary
             this.addToExistingTiles = add;
         }
 
+        /// <summary>
+        /// Create an OBJ model file next to the binary file
+        /// </summary>
+		public void CreateOBJ(bool createObjFiles)
+		{
+            this.createOBJFiles = createObjFiles;
+        }
+        
+        /// <summary>
+        /// Create a brotli compressed version of the binary tiles
+        /// </summary>
+        public void AddBrotliCompressedFile(bool brotliCompress)
+		{
+            this.brotliCompress = brotliCompress;
+        }
+
 		/// <summary>
 		/// Start converting the cityjson files into binary tile files
 		/// </summary>
@@ -125,11 +142,6 @@ namespace TileBakeLibrary
 
             BakeTiles();
 		}
-
-		public void CreateOBJ(bool createObjFiles)
-		{
-            this.createOBJFiles = createObjFiles;
-        }
 
 		private void ParseExisistingTiles()
 		{
@@ -217,10 +229,15 @@ namespace TileBakeLibrary
 
                 //Create binary files
                 BinaryMeshWriter.Save(tile);
-                
+
+                //Compressed variant
+                if (brotliCompress) BrotliCompress.Compress(tile.filePath);
+
                 //Optionaly write other format(s) for previewing purposes
-                if(createOBJFiles) OBJWriter.Save(tile);
+                if (createOBJFiles) OBJWriter.Save(tile);
             }
+
+            Console.WriteLine("Done.");
         }
 
         /// <summary>
@@ -290,9 +307,9 @@ namespace TileBakeLibrary
 				//Add child geometry to our subobject. (Recursive disabled, so only one child level is allowed)
 				AppendCityObjectGeometry(childObject, subObject, false);
 			}
-            if (mergeVerticesBelowNormalAngle != 0)
+            if (maxNormalAngle != 0)
             {
-                subObject.MergeSimilarVertices(mergeVerticesBelowNormalAngle);
+                subObject.MergeSimilarVertices(maxNormalAngle);
             }
 
             //Check if the list if triangles is complete (divisible by 3)
