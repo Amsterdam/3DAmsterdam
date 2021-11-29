@@ -30,6 +30,8 @@ namespace TileBakeLibrary
         private bool addToExistingTiles = false;
 
         private float lod = 0;
+        private string filterType = "";
+
         private int tileSize = 1000;
 
         private List<SubObject> allSubObjects = new List<SubObject>();
@@ -43,6 +45,14 @@ namespace TileBakeLibrary
 		public void SetLOD(float targetLOD)
         {
             lod = targetLOD;
+        }
+
+        /// <summary>
+        /// Define what kind of cityobject type you want to parse
+        /// </summary>
+        public void SetFilterType(string type)
+        {
+            filterType = type;
         }
 
         /// <summary>
@@ -273,7 +283,7 @@ namespace TileBakeLibrary
             await Task.Delay(10);
 
             var cityJson = new CityJSON(sourceFile, true, true);
-            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
+            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
             Console.WriteLine($"CityObjects found: {cityObjects.Count}");
 
             //Turn cityobjects (and their children) into SubObject mesh data

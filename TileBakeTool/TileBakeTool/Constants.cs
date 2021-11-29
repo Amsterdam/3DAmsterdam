@@ -29,7 +29,6 @@ Extra options:
 --id <property name>		 Unique ID property name
 --type <type filter>		 Filter this type
 --id-remove <string>		 Remove this substring from the ID's
---filter-type <type>		 Filter object on type
 --lod <lod filter>			 Target LOD. For example 2.2
 --config <config file path>	 Apply settings above via config file
 --obj						 Write .OBJ files as well (for previewing outputs)

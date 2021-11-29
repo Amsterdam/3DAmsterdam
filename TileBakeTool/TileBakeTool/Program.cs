@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEBUG
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -21,6 +23,7 @@ namespace TileBakeTool
 		private static bool createObjFiles = false;
 
 		private static float lod = 0;
+		private static string filterType = "";
 
 		static void Main(string[] args)
 		{
@@ -91,6 +94,10 @@ namespace TileBakeTool
 					lod = float.Parse(value,System.Globalization.CultureInfo.InvariantCulture);
 					Console.WriteLine($"LOD filter: {lod}");
 					break;
+				case "--type":
+					filterType = value;
+					Console.WriteLine($"Type filter: {filterType}");
+					break;
 				case "--id":
 					identifier = value;
 					Console.WriteLine($"Object identifier: {identifier}");
@@ -120,6 +127,7 @@ namespace TileBakeTool
 			tileBaker.SetSourcePath(sourcePath);
 			tileBaker.SetTargetPath(targetPath);
 			tileBaker.SetLOD(lod);
+			tileBaker.SetFilterType(filterType);
 			tileBaker.SetID(identifier, removeFromIdentifier);
 			tileBaker.SetAdd(addToExistingTiles);
 			tileBaker.CreateOBJ(createObjFiles);

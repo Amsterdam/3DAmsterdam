@@ -33,7 +33,9 @@ namespace TileBakeLibrary
 				triangleIndices[i] = GetOrAddVertexIndex(vertexIndex ,cleanedVertices,cleanedNormals,cleanedUvs, cosAngleThreshold);
 			}
 
+			#if DEBUG
 			Console.WriteLine($"Before : {vertices.Count} and after merge: {cleanedVertices.Count}");
+			#endif
 
 			//Now use our new cleaned geometry
 			vertices = cleanedVertices;

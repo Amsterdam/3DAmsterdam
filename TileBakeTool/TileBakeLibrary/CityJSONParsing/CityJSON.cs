@@ -16,6 +16,7 @@ namespace Netherlands3D.CityJSON
 		private List<Material> Materials;
 
 		private float LOD = -1;
+		private string filterType = "";
 
 		private Vector3Double transformScale;
 		private Vector3Double transformOffset;
@@ -76,18 +77,19 @@ namespace Netherlands3D.CityJSON
 			}
 		}
 
-		public List<CityObject> LoadCityObjects(float lod)
+		public List<CityObject> LoadCityObjects(float lod, string filterType = "")
 		{
 			List<CityObject> cityObjects = new List<CityObject>();
-			LOD = lod;
+			this.LOD = lod;
+			this.filterType = filterType;
 
 			//Traverse the cityobjects as a key value pair, so we can read the unique key name and use it as a default identifier
 			foreach (KeyValuePair<string, JSONNode> kvp in (JSONObject)cityJsonNode["CityObjects"])
 			{
-				CityObject cityObject = ReadCityObject(kvp.Value);
-				cityObject.keyName = kvp.Key;
+				CityObject cityObject = ReadCityObject(kvp.Value, filterType);
 				if (cityObject != null)
 				{
+					cityObject.keyName = kvp.Key;
 					cityObjects.Add(cityObject);
 				}
 			}
@@ -95,9 +97,16 @@ namespace Netherlands3D.CityJSON
 			return cityObjects;
 		}
 
-		private CityObject ReadCityObject(JSONNode node)
+		private CityObject ReadCityObject(JSONNode node, string filter = "")
 		{
 			CityObject cityObject = new CityObject();
+
+			//Read filer object type
+			var type = node["type"];
+			if (filter != "" && (type == null || type != filter))
+			{
+				return null;
+			}
 
 			//read attributes
 			List<Semantics> semantics = ReadSemantics(node["attributes"]);
@@ -390,6 +399,7 @@ namespace Netherlands3D.CityJSON
 		public List<Semantics> semantics;
 		public List<Surface> surfaces;
 		public List<CityObject> children;
+
 		public string keyName = "";
 
 		public CityObject()
