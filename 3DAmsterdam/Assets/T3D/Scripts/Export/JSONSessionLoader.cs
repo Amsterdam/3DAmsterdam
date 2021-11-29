@@ -6,6 +6,7 @@ using SimpleJSON;
 public class JSONSessionLoader : IDataLoader
 {
     private JSONNode rootObject;
+    const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
 
     public float LoadFloat(string key)
     {
