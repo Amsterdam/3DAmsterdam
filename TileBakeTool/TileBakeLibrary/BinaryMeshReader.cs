@@ -139,6 +139,8 @@ namespace TileBakeLibrary
                             triangleIndices = subObjectIndices.ToList()
                         },0);
 
+                        //And clear the tile data again so we can rebuild it at bake time.
+
                         objectOffset += objectIndexRange;
                     }
                 }

@@ -48,9 +48,6 @@ namespace TileBakeLibrary
 			{
 				if (SubObjects[i].id == subObject.id)
 				{
-#if DEBUG
-					Console.WriteLine($"Replacing existing subobject {subObject.id}");
-#endif
 					SubObjects[i] = subObject;
 				}
 			}

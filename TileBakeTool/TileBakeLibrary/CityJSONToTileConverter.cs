@@ -207,14 +207,17 @@ namespace TileBakeLibrary
                     }
                 }
             }
-            if(parseExistingTiles)
+            Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
+            if (parseExistingTiles)
             {
                 Console.WriteLine($"Parsed {existingTilesFound} existing tile files.");
             }
-            Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
 
-			//Move the CityObjects into to the proper tile based on their centroid
-			for (int i = allSubObjects.Count - 1; i >= 0; i--)
+            //Create binary files (if we added subobjects to it)
+            Directory.CreateDirectory(outputPath);
+
+            //Move the CityObjects into to the proper tile based on their centroid
+            for (int i = allSubObjects.Count - 1; i >= 0; i--)
 			{
                 var subObject = allSubObjects[i];
                 if (removeFromID != "")
@@ -222,7 +225,7 @@ namespace TileBakeLibrary
                     subObject.id = subObject.id.Replace(removeFromID, "");
                 }
 
-                foreach (var tile in tiles)
+                Parallel.ForEach(tiles, tile =>
                 {
                     if (subObject.centroid.X > tile.position.X
                     && subObject.centroid.X <= tile.position.X + tileSize
@@ -230,30 +233,31 @@ namespace TileBakeLibrary
                     && subObject.centroid.Y <= tile.position.Y + tileSize)
                     {
                         tile.AppendSubObject(subObject);
-                        allSubObjects.Remove(subObject);
                     };
-				}
+                });
             }
 
-            //Create binary files (if we added subobjects to it)
-            Directory.CreateDirectory(outputPath);
-            foreach (Tile tile in tiles) {
-                if (tile.SubObjects.Count==0)
+            //Threaded writing of binary meshes + compression
+            Parallel.ForEach(tiles, tile =>
+            {
+                if (tile.SubObjects.Count == 0)
                 {
                     Console.WriteLine($"Skipping {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
-                    continue;
                 }
-                Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
+                else
+                {
+                    Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
 
-                //Create binary files
-                BinaryMeshWriter.Save(tile);
+                    //Create binary files
+                    BinaryMeshWriter.Save(tile);
 
-                //Compressed variant
-                if (brotliCompress) BrotliCompress.Compress(tile.filePath);
+                    //Compressed variant
+                    if (brotliCompress) BrotliCompress.Compress(tile.filePath);
 
-                //Optionaly write other format(s) for previewing purposes
-                if (createOBJFiles) OBJWriter.Save(tile);
-            }
+                    //Optionaly write other format(s) for previewing purposes
+                    if (createOBJFiles) OBJWriter.Save(tile);
+                }
+            });
 
             Console.WriteLine("Done.");
         }
