@@ -208,7 +208,12 @@ namespace TileBakeLibrary
 			for (int i = allSubObjects.Count - 1; i >= 0; i--)
 			{
                 var subObject = allSubObjects[i];
-                foreach(var tile in tiles)
+                if (removeFromID != "")
+                {
+                    subObject.id = subObject.id.Replace(removeFromID, "");
+                }
+
+                foreach (var tile in tiles)
                 {
                     if (subObject.centroid.X > tile.position.X
                     && subObject.centroid.X <= tile.position.X + tileSize
