@@ -148,19 +148,10 @@ namespace TileBakeLibrary
             {
                 allSubObjects.AddRange(task.Result);
             }
-            
-            if(addToExistingTiles)
-            {
-                ParseExisistingTiles();
-			}
 
             BakeTiles();
 		}
 
-		private void ParseExisistingTiles()
-		{
-			throw new NotImplementedException();
-		}
 
 		/// <summary>
 		/// Bake the city objects into binary tiles
