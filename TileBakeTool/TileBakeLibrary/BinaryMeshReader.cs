@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TileBakeLibrary.Coordinates;
 
 namespace TileBakeLibrary
 {
@@ -87,6 +88,7 @@ namespace TileBakeLibrary
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
+                    //Version
                     var version = reader.ReadInt32();
 
                     //Subobject count
@@ -96,20 +98,45 @@ namespace TileBakeLibrary
                     //All subobject id's, and their indices
                     for (int i = 0; i < subObjects; i++)
                     {
-                        //ID string. string starts with a length:
-                        //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
-                        var id = reader.ReadString();
+                        var objectId = reader.ReadString();
                         var objectIndexRange = reader.ReadInt32();
 
-                        var indices = tile.vertices.GetRange(objectOffset, objectIndexRange);
+                        var subMeshTriangleIndices = tile.submeshes[0].triangleIndices.GetRange(objectOffset,objectIndexRange);
+                        var subObjectIndices = new int[objectIndexRange];
 
-                        var objectVertices = tile.vertices.GetRange(objectOffset, objectIndexRange);
-                        var normals =
-                        var uvs =
+                        var subObjectVertices = new List<Vector3Double>();
+                        var subObjectNormals = new List<Vector3>();
+                        var subObjectUvs = new List<Vector2>();
+                        for (int j = 0; j < subMeshTriangleIndices.Count; j++)
+						{
+                            var indexInSubMesh = subMeshTriangleIndices[j];
+                            var indexInSubObject = subMeshTriangleIndices[j] - objectOffset;
+                            subObjectIndices[j] = indexInSubObject;
 
+                            if(indexInSubObject > subObjectVertices.Count)
+                            {
+                                //Add the subobject data (if we didnt already for this vert)
+                                var vertex = (Vector3Double)tile.vertices[indexInSubMesh];
+                                var normal = tile.normals[indexInSubMesh];
+                                var uv = tile.uvs[indexInSubMesh];
+
+                                subObjectVertices.Add(vertex);
+                                subObjectNormals.Add(normal);
+                                //subObjectUvs.Add(uv);
+                            }
+                        }
+
+                        //We reverse per-object winding order when we write too, so here we reverse it back.
+                        subObjectIndices.Reverse();
+
+                        //Restore our subobject data
                         tile.AddSubObject(new SubObject()
                         {
-                            triangleIndices = 
+                            id = objectId,
+                            vertices = subObjectVertices,
+                            normals = subObjectNormals,
+                            uvs = subObjectUvs,
+                            triangleIndices = subObjectIndices.ToList()
                         },0);
 
                         objectOffset += objectIndexRange;
@@ -117,5 +144,10 @@ namespace TileBakeLibrary
                 }
             }
         }
-    }
+
+		private static void Dictionary<T1, T2>()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
