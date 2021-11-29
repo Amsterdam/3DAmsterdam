@@ -169,11 +169,16 @@ namespace TileBakeLibrary
             }
 
             //Create our grid of tiles
-            var XTiles = Math.Ceiling((maxX - minX) / tileSize);
-            var YTiles = Math.Ceiling((maxY - minY) / tileSize);
+            
 
             var startXRD = Math.Floor(minX / tileSize) * tileSize;
             var startYRD = Math.Floor(minY / tileSize) * tileSize;
+
+            var endXRD = Math.Ceiling(maxX / tileSize) * tileSize;
+            var endYRD = Math.Ceiling(maxY / tileSize) * tileSize;
+
+            var XTiles = (endXRD-startXRD) / tileSize;
+            var YTiles = (endYRD-startYRD) / tileSize;
 
             for (int x = 0; x < XTiles; x++)
 			{
@@ -185,7 +190,7 @@ namespace TileBakeLibrary
                     {
                         size = new Vector2(tileSize, tileSize),
                         position = new Vector2Double(tileX, tileY),
-                        filePath = $"{outputPath}{tileX}_{tileY}.bin"
+                        filePath = $"{outputPath}buildings-{tileX}_{tileY}-22.bin"
                     };
                     tiles.Add(newTile);
 
@@ -219,6 +224,11 @@ namespace TileBakeLibrary
             //Create binary files
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
+                if (tile.SubObjects.Count==0)
+                {
+                    Console.WriteLine($"Skipping {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
+                    continue;
+                }
                 Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
 
                 //Determine winding order
