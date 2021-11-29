@@ -136,8 +136,9 @@ namespace TileBakeLibrary
                             vertices = subObjectVertices,
                             normals = subObjectNormals,
                             uvs = subObjectUvs,
-                            triangleIndices = subObjectIndices.ToList()
-                        },0);
+                            triangleIndices = subObjectIndices.ToList(),
+                            parentSubmeshIndex = 0
+                        },false);
 
                         //And clear the tile data again so we can rebuild it at bake time.
 
@@ -145,6 +146,11 @@ namespace TileBakeLibrary
                     }
                 }
             }
+
+            //Clear tile mesh data.
+            tile.vertices.Clear();
+            tile.normals.Clear();
+            tile.uvs.Clear();
         }
 
 		private static void Dictionary<T1, T2>()
