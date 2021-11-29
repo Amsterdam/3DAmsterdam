@@ -85,7 +85,7 @@ namespace TileBakeTool
 					Console.WriteLine($"Output directory: {value}");
 					break;
 				case "--lod":
-					lod = float.Parse(value);
+					lod = float.Parse(value,System.Globalization.CultureInfo.InvariantCulture);
 					Console.WriteLine($"LOD filter: {lod}");
 					break;
 				case "--id":
