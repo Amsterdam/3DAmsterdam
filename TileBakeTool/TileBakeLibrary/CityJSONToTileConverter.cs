@@ -134,7 +134,7 @@ namespace TileBakeLibrary
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                Task<List<SubObject>> newParseTask = Task.Run(() => AsyncParseProcess(sourceFiles[index]));
+                Task<List<SubObject>> newParseTask = Task.Run(() => AsyncCityJSONParseProcess(sourceFiles[index]));
                 parseTasks[i] = newParseTask;
 			}
 
@@ -179,8 +179,6 @@ namespace TileBakeLibrary
             }
 
             //Create our grid of tiles
-            
-
             var startXRD = Math.Floor(minX / tileSize) * tileSize;
             var startYRD = Math.Floor(minY / tileSize) * tileSize;
 
@@ -189,6 +187,8 @@ namespace TileBakeLibrary
 
             var XTiles = (endXRD-startXRD) / tileSize;
             var YTiles = (endYRD-startYRD) / tileSize;
+
+            int existingTilesFound = 0;
 
             for (int x = 0; x < XTiles; x++)
 			{
@@ -200,18 +200,22 @@ namespace TileBakeLibrary
                     {
                         size = new Vector2(tileSize, tileSize),
                         position = new Vector2Double(tileX, tileY),
-                        filePath = $"{outputPath}buildings-{tileX}_{tileY}-22.bin"
+                        filePath = $"{outputPath}buildings-{tileX}_{tileY}.{lod}.bin"
                     };
                     tiles.Add(newTile);
 
                     //Parse exisiting file
                     if(parseExistingTiles && File.Exists(newTile.filePath))
                     {
+                        existingTilesFound++;
                         ParseExistingBinaryTile(newTile);
                     }
                 }
             }
-            
+            if(parseExistingTiles)
+            {
+                Console.WriteLine($"Parsed {existingTilesFound} existing tile files.");
+            }
             Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
 
 			//Move the CityObjects into to the proper tile based on their centroid
@@ -273,7 +277,7 @@ namespace TileBakeLibrary
             BinaryMeshReader.ReadBinaryFile(tile);
 		}
 
-		private async Task<List<SubObject>> AsyncParseProcess(string sourceFile)
+		private async Task<List<SubObject>> AsyncCityJSONParseProcess(string sourceFile)
 		{
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
@@ -367,15 +371,15 @@ namespace TileBakeLibrary
 
                 //offset using first outerRing vertex position
                 Vector3Double offsetPolygons = surface.outerRing[0];
-                List<Vector3> outside = new();
+                List<Vector3> outside = new List<Vector3>();
                 for (int i = 0; i < surface.outerRing.Count; i++)
                 {
                     outside.Add((Vector3)(surface.outerRing[i] - offsetPolygons));
                 }
 
-                List<List<Vector3>> holes = new();
+                List<List<Vector3>> holes = new List<List<Vector3>>();
                 for (int i = 0; i < surface.innerRings.Count; i++){
-                    List<Vector3> inner = new();
+                    List<Vector3> inner = new List<Vector3>();
 					for (int j = 0; j < surface.innerRings[i].Count; j++)
 					{
                         inner.Add((Vector3)(surface.innerRings[i][j] - offsetPolygons));

@@ -7,12 +7,12 @@ namespace TileBakeLibrary
 {
 	class SubObject
 	{
-		public List<Vector3Double> vertices = new(); 
-		public List<Vector3> normals = new();
-		public List<Vector2> uvs = new();
-		public List<int> triangleIndices = new();
+		public List<Vector3Double> vertices = new List<Vector3Double>(); 
+		public List<Vector3> normals = new List<Vector3>();
+		public List<Vector2> uvs = new List<Vector2>();
+		public List<int> triangleIndices = new List<int>();
 
-		public Vector2Double centroid = new();
+		public Vector2Double centroid = new Vector2Double();
 
 		public string id = "";
 		private double distanceMergeThreshold = 0.01;
@@ -22,9 +22,9 @@ namespace TileBakeLibrary
 			var radians = (Math.PI / 180) * mergeVerticesBelowNormalAngle;
 			float cosAngleThreshold = (float)Math.Cos(radians);
 
-			List<Vector3Double> cleanedVertices = new();
-			List<Vector3> cleanedNormals = new();
-			List<Vector2> cleanedUvs = new();
+			List<Vector3Double> cleanedVertices = new List<Vector3Double>();
+			List<Vector3> cleanedNormals = new List<Vector3>();
+			List<Vector2> cleanedUvs = new List<Vector2>();
 
 			//Traverse the triangles, and if we encounter verts+normals that are similar, dispose them
 			for (int i = 0; i < triangleIndices.Count; i++)
