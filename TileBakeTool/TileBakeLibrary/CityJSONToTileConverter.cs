@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEBUG
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
@@ -23,7 +25,7 @@ namespace TileBakeLibrary
         private bool createOBJFiles = false;
         private bool brotliCompress = false;
 
-        private bool parseExistingTiles = false;
+        private bool parseExistingTiles = true;
 
         private float maxNormalAngle = 5.0f; 
 
@@ -114,10 +116,12 @@ namespace TileBakeLibrary
 		/// </summary>
 		public void Convert()
 		{
-            //Make sure 
+#if DEBUG
+            Console.WriteLine($"Converting with Debug mode ON");
+#endif
 
             //If no specific filename or wildcard was supplied, default to .json files
-			var filter = Path.GetFileName(sourcePath);
+            var filter = Path.GetFileName(sourcePath);
 			if(filter == "") filter = "*.json";
 
             //List the files that we are going to parse
@@ -234,13 +238,13 @@ namespace TileBakeLibrary
                     && subObject.centroid.Y > tile.position.Y
                     && subObject.centroid.Y <= tile.position.Y + tileSize)
                     {
-                        tile.AddSubObject(subObject);
+                        tile.AppendSubObject(subObject);
                         allSubObjects.Remove(subObject);
                     };
 				}
             }
 
-            //Create binary files
+            //Create binary files (if we added subobjects to it)
             Directory.CreateDirectory(outputPath);
             foreach (Tile tile in tiles) {
                 if (tile.SubObjects.Count==0)
@@ -249,12 +253,6 @@ namespace TileBakeLibrary
                     continue;
                 }
                 Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
-
-                //Determine winding order
-                foreach(var submesh in tile.submeshes)
-                {
-                    submesh.triangleIndices.Reverse();
-                }
 
                 //Create binary files
                 BinaryMeshWriter.Save(tile);
@@ -275,7 +273,8 @@ namespace TileBakeLibrary
 		private void ParseExistingBinaryTile(Tile tile)
 		{
             BinaryMeshReader.ReadBinaryFile(tile);
-		}
+            Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
+        }
 
 		private async Task<List<SubObject>> AsyncCityJSONParseProcess(string sourceFile)
 		{
@@ -328,8 +327,7 @@ namespace TileBakeLibrary
             }
 
             AppendCityObjectGeometry(cityObject, subObject);
-
-            //Append all child geometry
+            //Append all child geometry too
             for (int i = 0; i < cityObject.children.Count; i++)
 			{
 				var childObject = cityObject.children[i];
@@ -340,6 +338,9 @@ namespace TileBakeLibrary
             {
                 subObject.MergeSimilarVertices(maxNormalAngle);
             }
+
+            //Winding order of triangles should be reversed
+            subObject.triangleIndices.Reverse();
 
             //Check if the list if triangles is complete (divisible by 3)
             if (subObject.triangleIndices.Count % 3 != 0)
