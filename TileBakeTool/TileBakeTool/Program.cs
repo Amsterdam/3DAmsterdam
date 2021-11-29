@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using TileBakeLibrary;
 
 namespace TileBakeTool
@@ -23,6 +24,8 @@ namespace TileBakeTool
 
 		static void Main(string[] args)
 		{
+			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
 			if (args.Length == 0 || (args.Length == 1 && args[0].ToLower().Contains("help")))
 			{
 				//No parameters or an attempt to call for help? Show help in console.
