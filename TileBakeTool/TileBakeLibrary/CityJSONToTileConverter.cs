@@ -25,7 +25,7 @@ namespace TileBakeLibrary
         private bool createOBJFiles = false;
         private bool brotliCompress = false;
 
-        private bool parseExistingTiles = true;
+        private bool replaceExistingIDs = true;
 
         private float maxNormalAngle = 5.0f; 
 
@@ -90,9 +90,9 @@ namespace TileBakeLibrary
         /// Parse exisiting binary tile files and add the parsed objects to them
         /// </summary>
         /// <param name="add">Add to existing tiles</param>
-		public void SetAdd(bool add)
+		public void SetReplace(bool replace)
 		{
-            this.addToExistingTiles = add;
+            this.replaceExistingIDs = replace;
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace TileBakeLibrary
                     tiles.Add(newTile);
 
                     //Parse exisiting file
-                    if(parseExistingTiles && File.Exists(newTile.filePath))
+                    if(File.Exists(newTile.filePath))
                     {
                         existingTilesFound++;
                         ParseExistingBinaryTile(newTile);
@@ -208,7 +208,7 @@ namespace TileBakeLibrary
                 }
             }
             Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
-            if (parseExistingTiles)
+            if (existingTilesFound > 0)
             {
                 Console.WriteLine($"Parsed {existingTilesFound} existing tile files.");
             }
@@ -232,7 +232,7 @@ namespace TileBakeLibrary
                     && subObject.centroid.Y > tile.position.Y
                     && subObject.centroid.Y <= tile.position.Y + tileSize)
                     {
-                        tile.AppendSubObject(subObject);
+                        tile.AddSubObject(subObject, replaceExistingIDs);
                     };
                 });
             }
@@ -246,8 +246,10 @@ namespace TileBakeLibrary
                 }
                 else
                 {
+                    //Bake the tile, and lets save it!
+                    tile.Bake();
                     Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
-
+                    
                     //Create binary files
                     BinaryMeshWriter.Save(tile);
 
@@ -387,6 +389,12 @@ namespace TileBakeLibrary
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 				poly.outside = outside;
 				poly.holes = holes;
+
+                if (poly.outside.Count < 3)
+                {
+                    Console.WriteLine("Polygon seems to be a line");
+                    continue;
+                }
 				Poly2Mesh.CreateMeshData(poly, out surfaceVertices,out surfaceNormals, out surfaceIndices, out surfaceUvs);
 
                 var offset = subObject.vertices.Count;

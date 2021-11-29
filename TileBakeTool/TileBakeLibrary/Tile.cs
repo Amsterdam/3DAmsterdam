@@ -31,34 +31,38 @@ namespace TileBakeLibrary
 		private List<SubObject> subObjects = new List<SubObject>();
 		public List<SubObject> SubObjects { get => subObjects; }
 
-		/// <summary>
-		/// Add a subobject to this tile and append its geometry to the tile geometry data
-		/// </summary>
-		public void AppendSubObject(SubObject subObject, int targetSubMeshIndex = 0)
+		public void Bake()
 		{
-			SwapSubObjectWithSameID(subObject);
-
-			AddSubObject(subObject, targetSubMeshIndex);
-			AppendMeshData(subObject, targetSubMeshIndex, true);
+			for (int i = 0; i < SubObjects.Count; i++)
+			{
+				AppendMeshData(SubObjects[i]);
+			}
 		}
 
-		private void SwapSubObjectWithSameID(SubObject subObject)
+		private bool SwapSubObjectWithSameID(SubObject subObject)
 		{
 			for (int i = 0; i < SubObjects.Count; i++)
 			{
 				if (SubObjects[i].id == subObject.id)
 				{
+					Console.WriteLine($"Replaced {subObject.id}");
 					SubObjects[i] = subObject;
+					return true;
 				}
 			}
+			return false;
 		}
 
 		/// <summary>
-		/// Add a subobject to this tile
+		/// Add a subobject to this tile without appending the geometry to the tile geometry
 		/// </summary>
-		public void AddSubObject(SubObject subObject, int targetSubMeshIndex = 0)
+		public void AddSubObject(SubObject subObject, bool replaceSameID)
 		{
-			CreateSubMesh(targetSubMeshIndex);
+			if (replaceSameID && SwapSubObjectWithSameID(subObject))
+			{
+				return;
+			}
+
 			subObjects.Add(subObject);
 		}
 
@@ -87,7 +91,7 @@ namespace TileBakeLibrary
 		/// <param name="subObject">Target SubObject data</param>
 		/// <param name="targetSubMeshIndex">Submesh index</param>
 		/// <param name="purgeDataAfterAppending">Clears the big arrays of data from subobject after copying to tile</param>
-		private void AppendMeshData(SubObject subObject, int targetSubMeshIndex = 0 , bool purgeDataAfterAppending = true)
+		private void AppendMeshData(SubObject subObject, bool purgeDataAfterAppending = true)
 		{
 			var indexOffset = vertices.Count;
 			for (int i = 0; i < subObject.vertices.Count; i++)
@@ -103,7 +107,8 @@ namespace TileBakeLibrary
 				//uvs.Add(uv); //Uv's need to be properly generated from Poly2Mesh first
 			}
 
-			var targetSubMesh = submeshes[targetSubMeshIndex];
+			CreateSubMesh(subObject.parentSubmeshIndex);
+			var targetSubMesh = submeshes[subObject.parentSubmeshIndex];
 			for (int i = 0; i < subObject.triangleIndices.Count; i++)
 			{
 				targetSubMesh.triangleIndices.Add(indexOffset + subObject.triangleIndices[i]);

@@ -15,7 +15,7 @@ namespace TileBakeTool
 		private static string identifier = "id";
 		private static string removeFromIdentifier = "";
 
-		private static bool addToExistingTiles = false;
+		private static bool replaceExistingIDs = false;
 		
 		private static bool createBrotliCompressedFiles = false;
 		private static bool createObjFiles = false;
@@ -84,9 +84,9 @@ namespace TileBakeTool
 					outputPath = value;
 					Console.WriteLine($"Output directory: {value}");
 					break;
-				case "--add":
-					addToExistingTiles = true;
-					Console.WriteLine($"Output directory: {value}");
+				case "--replace":
+					replaceExistingIDs = true;
+					Console.WriteLine($"Replacing existing IDs");
 					break;
 				case "--lod":
 					lod = float.Parse(value,System.Globalization.CultureInfo.InvariantCulture);
@@ -127,7 +127,7 @@ namespace TileBakeTool
 			tileBaker.SetLOD(lod);
 			tileBaker.SetFilterType(filterType);
 			tileBaker.SetID(identifier, removeFromIdentifier);
-			tileBaker.SetAdd(addToExistingTiles);
+			tileBaker.SetReplace(replaceExistingIDs);
 			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
 			tileBaker.Convert();

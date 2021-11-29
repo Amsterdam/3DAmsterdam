@@ -14,6 +14,8 @@ namespace TileBakeLibrary
 
 		public Vector2Double centroid = new Vector2Double();
 
+		public int parentSubmeshIndex = 0;
+
 		public string id = "";
 		private double distanceMergeThreshold = 0.01;
 

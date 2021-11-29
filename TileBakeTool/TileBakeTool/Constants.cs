@@ -24,7 +24,6 @@ Required options:
 
 Extra options:
 
---add						 Add objects to existing binary tile files
 --replace					 Replace objects with the same ID
 --id <property name>		 Unique ID property name
 --type <type filter>		 Filter this type
