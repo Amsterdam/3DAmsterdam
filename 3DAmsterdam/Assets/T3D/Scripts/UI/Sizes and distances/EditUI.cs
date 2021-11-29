@@ -15,6 +15,14 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private BoundaryFeature activeFeature;
 
+        //private RectTransform rectTransform;
+
+        //public override void Awake()
+        //{
+        //    base.Awake();
+        //    rectTransform = GetComponent<RectTransform>();
+        //}
+
         public void UpdateSprites(EditMode newMode)
         {
             if (newMode == EditMode.Resize)
@@ -34,6 +42,23 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             editButton.onClick.AddListener(activeFeature.EditFeature);
             deleteButton.onClick.AddListener(activeFeature.DeleteFeature);
+        }
+
+        void LateUpdate()
+        {
+            var labels = CoordinateNumbers.Instance.GetComponentsInChildren<NumberInputField>();
+            foreach (var label in labels)
+            {
+                var otherRect = label.GetComponent<RectTransform>();
+                
+                if (rectTransform.Overlaps(otherRect))
+                {
+                    var diff = rectTransform.rect.height + otherRect.rect.height;
+                    rectTransform.position += Vector3.up * diff;
+                    rectTransform.ForceUpdateRectTransforms();
+                }
+            }
+
         }
     }
 }

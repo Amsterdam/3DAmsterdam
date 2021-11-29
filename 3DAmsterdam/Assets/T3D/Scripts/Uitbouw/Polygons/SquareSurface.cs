@@ -79,7 +79,7 @@ namespace Netherlands3D.T3D.Uitbouw
             RecalculateScale();
         }
 
-        public void SetSize(Vector2 size)
+        public virtual void SetSize(Vector2 size)
         {
             Size = size;
             leftBound.localPosition = new Vector3(-size.x / 2, 0, 0);

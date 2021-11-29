@@ -65,6 +65,15 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //SetSize(Size - new Vector2(0.0001f, 0.0001f)); //ugly hack to remove 0.1mm, but it's to ensure the CityJson hole polygon does not glitch out when the height is exactly on the boundary line
         }
 
+        public override void SetSize(Vector2 size)
+        {
+            base.SetSize(size);
+            if (Wall)
+            {
+                ClipSizeToWallSize();
+            }
+        }
+
         protected override void Update()
         {
             base.Update();

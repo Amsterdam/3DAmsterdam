@@ -8,7 +8,7 @@ namespace Netherlands3D.Interface
 {
 	public class WorldPointFollower : MonoBehaviour
 	{
-		private RectTransform rectTransform;
+		protected RectTransform rectTransform;
 
 		private Vector3 worldPosition = Vector3.zero;
 		public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
@@ -31,7 +31,7 @@ namespace Netherlands3D.Interface
 			WorldPosition = newWorldPosition;
 		}
 
-		private void Update()
+		protected virtual void Update()
 		{
 			AutoHideByCamera();
 		}
