@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEBUG
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -29,14 +31,38 @@ namespace TileBakeLibrary
 		private List<SubObject> subObjects = new List<SubObject>();
 		public List<SubObject> SubObjects { get => subObjects; }
 
+		/// <summary>
+		/// Add a subobject to this tile and append its geometry to the tile geometry data
+		/// </summary>
+		public void AppendSubObject(SubObject subObject, int targetSubMeshIndex = 0)
+		{
+			SwapSubObjectWithSameID(subObject);
 
+			AddSubObject(subObject, targetSubMeshIndex);
+			AppendMeshData(subObject, targetSubMeshIndex, true);
+		}
+
+		private void SwapSubObjectWithSameID(SubObject subObject)
+		{
+			for (int i = 0; i < SubObjects.Count; i++)
+			{
+				if (SubObjects[i].id == subObject.id)
+				{
+#if DEBUG
+					Console.WriteLine($"Replacing existing subobject {subObject.id}");
+#endif
+					SubObjects[i] = subObject;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Add a subobject to this tile
+		/// </summary>
 		public void AddSubObject(SubObject subObject, int targetSubMeshIndex = 0)
 		{
-			//Make sure a submesh with the target index actualy exists
 			CreateSubMesh(targetSubMeshIndex);
-
 			subObjects.Add(subObject);
-			AppendMeshData(subObject, targetSubMeshIndex);
 		}
 
 		private void CreateSubMesh(int targetSubMeshIndex)
@@ -58,7 +84,13 @@ namespace TileBakeLibrary
 			}
 		}
 
-		private void AppendMeshData(SubObject subObject, int targetSubMeshIndex = 0)
+		/// <summary>
+		/// Append the subobject data to the tile geometry
+		/// </summary>
+		/// <param name="subObject">Target SubObject data</param>
+		/// <param name="targetSubMeshIndex">Submesh index</param>
+		/// <param name="purgeDataAfterAppending">Clears the big arrays of data from subobject after copying to tile</param>
+		private void AppendMeshData(SubObject subObject, int targetSubMeshIndex = 0 , bool purgeDataAfterAppending = true)
 		{
 			var indexOffset = vertices.Count;
 			for (int i = 0; i < subObject.vertices.Count; i++)
@@ -78,6 +110,15 @@ namespace TileBakeLibrary
 			for (int i = 0; i < subObject.triangleIndices.Count; i++)
 			{
 				targetSubMesh.triangleIndices.Add(indexOffset + subObject.triangleIndices[i]);
+			}
+
+			//To reduce the memory footprint, we can choose to remove the SubObject data after it has been baked into the tile
+			if(purgeDataAfterAppending)
+			{
+				subObject.triangleIndices.Clear();
+				subObject.vertices.Clear();
+				subObject.normals.Clear();
+				subObject.uvs.Clear();
 			}
 		}
 	}
