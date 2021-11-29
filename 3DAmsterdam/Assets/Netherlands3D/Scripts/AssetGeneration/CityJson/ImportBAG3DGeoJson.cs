@@ -71,32 +71,32 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         private List<GameObject> overrideChildObjects;
 
-		public void Start()
-		{
+        public void Start()
+        {
             //Check if bounding box uses coordinates that are in thousands
-            if(!Config.activeConfiguration.BottomLeftRD.IsInThousands || !Config.activeConfiguration.TopRightRD.IsInThousands)
+            if (!Config.activeConfiguration.BottomLeftRD.IsInThousands || !Config.activeConfiguration.TopRightRD.IsInThousands)
             {
                 print($"<color=#ff0000>Bounding box should be in thousands</color>");
                 return;
             }
 
             vertexWelder = this.gameObject.AddComponent<WeldMeshVertices>();
-			FindCustomOverrideObjects();
-			StartCoroutine(CreateTilesAndReadInGeoJSON());
-		}
+            FindCustomOverrideObjects();
+            StartCoroutine(CreateTilesAndReadInGeoJSON());
+        }
 
         /// <summary>
         /// Get override objects added to this object (these will be skipped by the parser, and use the manualy added replacement building).
         /// This is a perfect way to replace specific key buildings with higher detail models.
         /// </summary>
 		private void FindCustomOverrideObjects()
-		{
-			overrideChildObjects = new List<GameObject>();
-			foreach (Transform child in transform)
-				overrideChildObjects.Add(child.gameObject);
-		}
+        {
+            overrideChildObjects = new List<GameObject>();
+            foreach (Transform child in transform)
+                overrideChildObjects.Add(child.gameObject);
+        }
 
-		private void Update()
+        private void Update()
         {
             if (Input.GetKeyUp(KeyCode.X))
             {
@@ -122,9 +122,9 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             yield return ProgressPreviewMap.Instance.Initialize(xTiles, yTiles);
 
             //Walk the tilegrid
-            var tileRD = new Vector2Int(0,0);
+            var tileRD = new Vector2Int(0, 0);
             for (int x = 0; x < xTiles; x++)
-			{
+            {
                 tileRD.x = (int)Config.activeConfiguration.BottomLeftRD.x + (x * tileSize);
                 for (int y = 0; y < yTiles; y++)
                 {
@@ -135,7 +135,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     string tileName = "buildings_" + tileRD.x + "_" + tileRD.y + "." + lodLevel;
 
                     //If we supplied a filter we check if this tile contains this substring in order to be (re)generated
-                    if(exclusivelyGenerateTilesWithSubstring != "" && !tileName.Contains(exclusivelyGenerateTilesWithSubstring))
+                    if (exclusivelyGenerateTilesWithSubstring != "" && !tileName.Contains(exclusivelyGenerateTilesWithSubstring))
                     {
                         print("Skipping tile because we supplied a specific name we want to replace.");
                         if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
@@ -144,12 +144,12 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
                     //Skip files if we enabled that option and it exists
                     string assetFileName = TileCombineUtility.unityMeshAssetFolder + tileName + ".asset";
-                    if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName)) 
+                    if (skipExistingFiles && File.Exists(Application.dataPath + "/../" + assetFileName))
                     {
                         print("Skipping existing tile: " + Application.dataPath + "/../" + assetFileName);
                         ProgressPreviewMap.Instance.ColorTile(x, y, TilePreviewState.SKIPPED);
 
-                        if(!Application.isBatchMode) yield return new WaitForEndOfFrame();
+                        if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
                         continue;
                     }
 
@@ -176,7 +176,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     //Now bake the tile into an asset file
                     if (generateAssetFiles)
                     {
-                        TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position,renderInViewport,defaultMaterial, generateAssetFiles);
+                        TileCombineUtility.CombineSource(newTileContainer, newTileContainer.transform.position, renderInViewport, defaultMaterial, generateAssetFiles);
                         print("Created tile " + currentTile + "/" + totalTiles + " with " + buildingsAdded + " buildings -> " + newTileContainer.name);
                     }
                     if (!Application.isBatchMode) yield return new WaitForEndOfFrame();
@@ -204,7 +204,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>(true);
             for (int i = renderers.Length - 1; i >= 0; i--)
-			{
+            {
                 var building = renderers[i];
                 childRDCenter = CoordConvert.UnitytoRD(building.bounds.center);
                 childGroupedTile = new Vector2Int(
@@ -218,7 +218,8 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     buildingsAdded++;
                     building.transform.SetParent(targetParentTile.transform, true);
                 }
-                else if(removeOutside && !overrideChildObjects.Contains(building.gameObject)){
+                else if (removeOutside && !overrideChildObjects.Contains(building.gameObject))
+                {
                     //This child is not in our tile. destroy it. Leave it there if it is an override object
                     Destroy(building.GetComponent<MeshFilter>().sharedMesh);
                     Destroy(building.gameObject);
@@ -308,26 +309,18 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                     var name = buildingNode["attributes"]["identificatie"].Value.Replace("NL.IMBAG.Pand.", "");
 
                     //Check if this name/ID exists in our list of manualy added child objects. If it is there, skip it.
-                    if(overrideChildObjects.Where(overrideGameObject => overrideGameObject!= null && overrideGameObject.name == name).SingleOrDefault())
+                    if (overrideChildObjects.Where(overrideGameObject => overrideGameObject != null && overrideGameObject.name == name).SingleOrDefault())
                     {
                         print("Skipped parsing " + name + " because we have added a custom object for that");
                         continue;
-					}
+                    }
 
                     GameObject building = new GameObject();
                     building.transform.SetParent(this.transform, false);
                     building.name = name;
 
                     //The building verts/triangles
-                    var geometries = buildingNode["geometry"].AsArray;
-                    foreach(JSONNode geometry in geometries)
-                    {
-                        if(geometry["lod"].AsFloat == lodLevel)
-                        {
-                            //we need this
-						}
-					}
-
+                    var boundaries = buildingNode["geometry"][lodSlot]["boundaries"][0];
                     meshTriangles = new List<int>();
                     List<Vector3> thisMeshVerts = new List<Vector3>();
                     foreach (JSONNode boundary in boundaries)
