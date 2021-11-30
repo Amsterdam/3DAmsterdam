@@ -328,6 +328,7 @@ namespace TileBakeLibrary
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
             subObject.id = cityObject.keyName;
+            
 
             //If we supplied a specific identifier field, use it as ID instead of object key index
             if (identifier != "")
@@ -354,6 +355,11 @@ namespace TileBakeLibrary
             if (maxNormalAngle != 0)
             {
                 subObject.MergeSimilarVertices(maxNormalAngle);
+            }
+
+            if (filterType == "LandUse")
+            {
+                subObject.SimplifyMesh();
             }
 
             //Winding order of triangles should be reversed

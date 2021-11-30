@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 using TileBakeLibrary.Coordinates;
+using g3;
+using System.Linq;
 
 namespace TileBakeLibrary
 {
@@ -68,5 +70,40 @@ namespace TileBakeLibrary
 			cleanedNormals.Add(inputNormal);
 			return cleanedVertices.Count - 1;
 		}
+
+		public void SimplifyMesh()
+        {
+
+			DMesh3 mesh = new DMesh3(false,false,false,false);
+			List<Vector3d> DMeshVertices = new List<Vector3d>();
+            for (int i = 0; i < vertices.Count; i++)
+            {
+				mesh.AppendVertex(new Vector3d(vertices[i].X, vertices[i].Y, vertices[i].Z));
+
+			}
+            for (int i = 0; i < triangleIndices.Count; i+=3)
+            {
+				mesh.AppendTriangle(triangleIndices[i], triangleIndices[i + 1], triangleIndices[i + 2]);
+
+			}
+			
+			Reducer r = new Reducer(mesh);
+			r.ReduceToTriangleCount(500);
+			
+			DMesh3 resultingMesh = r.Mesh;
+			vertices.Clear();
+            foreach (var vertex in resultingMesh.Vertices())
+            {
+				vertices.Add(new Vector3Double(vertex.x, vertex.y, vertex.z));
+            }
+			triangleIndices.Clear();
+			
+            foreach (var item in resultingMesh.TriangleIndices())
+            {
+				triangleIndices.Add(item);
+            }
+
+
+        }
 	}
 }
