@@ -141,21 +141,10 @@ namespace TileBakeLibrary
                 var index = i;
                 var cityobjects = CityJSONParseProcess(sourceFiles[index]);
                 
-                
                 allSubObjects.AddRange(cityobjects);
                 BakeTiles();
                 allSubObjects.Clear();
-
             }
-
-            //Wait for all the files to be parsed, and combine the results
-			
-            //foreach (var task in parseTasks)
-            //{
-            //    allSubObjects.AddRange(task.Result);
-            //}
-
-            //BakeTiles();
 		}
 
 
@@ -260,10 +249,10 @@ namespace TileBakeLibrary
                     BinaryMeshWriter.Save(tile);
 
                     //Compressed variant
-                    // if (brotliCompress) BrotliCompress.Compress(tile.filePath);
+                    if (brotliCompress) BrotliCompress.Compress(tile.filePath);
 
                     //Optionaly write other format(s) for previewing purposes
-                   //  if (createOBJFiles) OBJWriter.Save(tile);
+                    if (createOBJFiles) OBJWriter.Save(tile);
                 }
             });
 
