@@ -34,7 +34,7 @@ public class JSONSessionLoader : IDataLoader
 
     public void ReadSaveData()
     {
-        var jsonString = PlayerPrefs.GetString(JSONSessionSaver.JSON_SESSION_SAVE_DATA_KEY);
+        var jsonString = PlayerPrefs.GetString(JsonSessionSaver.JSON_SESSION_SAVE_DATA_KEY);
         rootObject = JSONNode.Parse(jsonString);
 
         if (rootObject == null)

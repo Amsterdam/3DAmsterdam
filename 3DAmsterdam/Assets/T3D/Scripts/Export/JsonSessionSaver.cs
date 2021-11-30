@@ -6,13 +6,13 @@ using System;
 using UnityEngine.Networking;
 using Netherlands3D.Sharing;
 
-public class JSONSessionSaver : MonoBehaviour, IDataSaver
+public class JsonSessionSaver : MonoBehaviour, IDataSaver
 {
     public const string JSON_SESSION_SAVE_DATA_KEY = "SessionJson";
     private JSONObject rootObject = new JSONObject();
     const string uploadURL = "https://t3dapi.azurewebsites.net/api/upload/";
 
-    public static JSONSessionSaver Instance;
+    public static JsonSessionSaver Instance;
     Guid sessionId;
 
     private void Awake()
