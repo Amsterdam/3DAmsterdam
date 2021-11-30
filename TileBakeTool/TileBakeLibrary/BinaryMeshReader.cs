@@ -95,6 +95,7 @@ namespace TileBakeLibrary
                     var subObjects = reader.ReadInt32();
 
                     int objectOffset = 0;
+                    int objectVertexOffset = 0;
                     //All subobject id's, and their indices
                     for (int i = 0; i < subObjects; i++)
                     {
@@ -112,18 +113,19 @@ namespace TileBakeLibrary
                         for (int j = 0; j < subObjectIndicesWithOffset.Count; j++)
 						{
                             var indexInSubMesh = subObjectIndicesWithOffset[j];
-                            var indexInSubObject = subObjectIndicesWithOffset[j] - objectOffset;
+                            var indexInSubObject = subObjectIndicesWithOffset[j] - objectVertexOffset;
                             subObjectIndices[j] = indexInSubObject;
 
                             //Fill our geometry to the max. indices
-                            while (subObjectVertices.Count-1 < indexInSubObject)
+                            var currentLength = subObjectVertices.Count - 1;
+                            while (currentLength < indexInSubObject)
                             { 
                                 subObjectVertices.Add(new Vector3Double(0,0,0));
                                 subObjectNormals.Add(new Vector3(0,0,0));
                                 subObjectUvs.Add(new Vector2(0,0));
-                            }
 
-                            Console.WriteLine($"subObjectVertices.Count {subObjectVertices.Count} while trying to add index : {indexInSubObject}");
+                                currentLength = subObjectVertices.Count - 1;
+                            }
 
                             var subMeshVertex = tile.vertices[indexInSubMesh];
                             var subMeshNormal = tile.normals[indexInSubMesh];
@@ -137,8 +139,11 @@ namespace TileBakeLibrary
                             subObjectVertices[indexInSubObject] = vertex;
                             subObjectNormals[indexInSubObject] = normal;
                             //subObjectUvs.Add(uv);
-
                         }
+
+                        //And change our offset for the next object
+                        objectOffset += objectIndexRange;
+                        objectVertexOffset += subObjectVertices.Count;
 
                         //Restore our subobject data
                         tile.AddSubObject(new SubObject()
@@ -150,10 +155,6 @@ namespace TileBakeLibrary
                             triangleIndices = subObjectIndices.ToList(),
                             parentSubmeshIndex = 0
                         },false);
-
-                        //And clear the tile data again so we can rebuild it at bake time.
-
-                        objectOffset += objectIndexRange;
                     }
                 }
             }

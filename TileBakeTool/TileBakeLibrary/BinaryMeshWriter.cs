@@ -85,7 +85,6 @@ namespace TileBakeLibrary
                             //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
                             writer.Write(tile.SubObjects[i].id);
 
-                            //Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
                             int amountOfInts = tile.SubObjects[i].triangleIndices.Count;
                             writer.Write(amountOfInts);
                         }

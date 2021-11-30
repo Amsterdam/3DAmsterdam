@@ -95,7 +95,7 @@ namespace TileBakeLibrary
 		/// <param name="subObject">Target SubObject data</param>
 		/// <param name="targetSubMeshIndex">Submesh index</param>
 		/// <param name="purgeDataAfterAppending">Clears the big arrays of data from subobject after copying to tile</param>
-		private void AppendMeshData(SubObject subObject, bool purgeDataAfterAppending = true)
+		private void AppendMeshData(SubObject subObject)
 		{
 			var indexOffset = vertices.Count;
 			for (int i = 0; i < subObject.vertices.Count; i++)
@@ -116,15 +116,6 @@ namespace TileBakeLibrary
 			for (int i = 0; i < subObject.triangleIndices.Count; i++)
 			{
 				targetSubMesh.triangleIndices.Add(indexOffset + subObject.triangleIndices[i]);
-			}
-
-			//To reduce the memory footprint, we can choose to remove the SubObject data after it has been baked into the tile
-			if(purgeDataAfterAppending)
-			{
-				subObject.triangleIndices.Clear();
-				subObject.vertices.Clear();
-				subObject.normals.Clear();
-				subObject.uvs.Clear();
 			}
 		}
 	}
