@@ -1,2 +1,2 @@
-TileBakeTool.exe --source "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Source/" --output "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Output/" --id "identificatie" --lod 2.2 --type Building --brotli
+TileBakeTool.exe --source "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Source/" --output "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Output/" --id "identificatie" --lod 2.2 --type Building --replace --brotli --id-remove "NL.IMBAG.Pand."
 @pause
