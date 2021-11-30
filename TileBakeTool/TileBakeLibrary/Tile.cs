@@ -31,6 +31,9 @@ namespace TileBakeLibrary
 		private List<SubObject> subObjects = new List<SubObject>();
 		public List<SubObject> SubObjects { get => subObjects; }
 
+		/// <summary>
+		/// Bakes all the subobject their geometry into this tile geometry data
+		/// </summary>
 		public void Bake()
 		{
 			for (int i = 0; i < SubObjects.Count; i++)
@@ -56,6 +59,7 @@ namespace TileBakeLibrary
 		/// <summary>
 		/// Add a subobject to this tile without appending the geometry to the tile geometry
 		/// </summary>
+		/// <param name="replaceSameID">Replace existing subobjects that share the same ID</param>
 		public void AddSubObject(SubObject subObject, bool replaceSameID)
 		{
 			if (replaceSameID && SwapSubObjectWithSameID(subObject))
