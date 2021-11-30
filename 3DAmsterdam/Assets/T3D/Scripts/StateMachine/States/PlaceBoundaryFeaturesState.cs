@@ -67,14 +67,17 @@ public class PlaceBoundaryFeaturesState : State
 
     public void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
     {
+        if (savedBoundaryFeatures.Count > 0)
+        {
+            var lastBf = savedBoundaryFeatures[savedBoundaryFeatures.Count - 1];
+            lastBf.UpdateMetadata(feature.Id, lastBf.PrefabName);
+            //sort list so that this function will not result in duplicate ids the next time it is called
+        }
+
         // delete the bf from the list, and set the last saved id to the removed id this way the ids remain incremented by 1.
         savedBoundaryFeatures.Remove(feature);
-        //savedBoundaryFeatures[savedBoundaryFeatures.Count - 1].InitializeSaveData(feature.Id);
-        var lastBf = savedBoundaryFeatures[savedBoundaryFeatures.Count - 1];
-        lastBf.UpdateMetadata(feature.Id, lastBf.PrefabName);
-        //sort list so that this function will not result in duplicate ids the next time it is called
-        savedBoundaryFeatures = savedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
 
+        savedBoundaryFeatures = savedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
         //decrement amount
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
     }
