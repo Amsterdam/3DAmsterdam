@@ -11,6 +11,7 @@ using System.Linq;
 using Netherlands3D.CityJSON;
 using JoeStrout;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace TileBakeLibrary
 {
@@ -134,22 +135,27 @@ namespace TileBakeLibrary
             //Create a threadable task for every file, that returns a list of parsed cityobjects
             Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
 
-            parseTasks = new Task<List<SubObject>>[sourceFiles.Length];
+            parseTasks = new Task<List<SubObject>>[1];
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                Task<List<SubObject>> newParseTask = Task.Run(() => AsyncCityJSONParseProcess(sourceFiles[index]));
-                parseTasks[i] = newParseTask;
-			}
+                var cityobjects = CityJSONParseProcess(sourceFiles[index]);
+                
+                
+                allSubObjects.AddRange(cityobjects);
+                BakeTiles();
+                allSubObjects.Clear();
 
-            //Wait for all the files to be parsed, and combine the results
-			Task.WaitAll(parseTasks);
-            foreach (var task in parseTasks)
-            {
-                allSubObjects.AddRange(task.Result);
             }
 
-            BakeTiles();
+            //Wait for all the files to be parsed, and combine the results
+			
+            //foreach (var task in parseTasks)
+            //{
+            //    allSubObjects.AddRange(task.Result);
+            //}
+
+            //BakeTiles();
 		}
 
 
@@ -184,7 +190,7 @@ namespace TileBakeLibrary
             var YTiles = (endYRD-startYRD) / tileSize;
 
             int existingTilesFound = 0;
-
+            tiles.Clear();
             for (int x = 0; x < XTiles; x++)
 			{
                 var tileX = startXRD + (x * tileSize);
@@ -254,10 +260,10 @@ namespace TileBakeLibrary
                     BinaryMeshWriter.Save(tile);
 
                     //Compressed variant
-                    if (brotliCompress) BrotliCompress.Compress(tile.filePath);
+                    // if (brotliCompress) BrotliCompress.Compress(tile.filePath);
 
                     //Optionaly write other format(s) for previewing purposes
-                    if (createOBJFiles) OBJWriter.Save(tile);
+                   //  if (createOBJFiles) OBJWriter.Save(tile);
                 }
             });
 
@@ -269,8 +275,35 @@ namespace TileBakeLibrary
         /// </summary>
 		private void ParseExistingBinaryTile(Tile tile)
 		{
-            BinaryMeshReader.ReadBinaryFile(tile);
-            Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
+             BinaryMeshReader.ReadBinaryFile(tile);
+             Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
+        }
+
+
+        private List<SubObject>CityJSONParseProcess(string sourceFile)
+        {
+            List<SubObject> filteredObjects = new List<SubObject>();
+
+            Console.WriteLine($"Parsing CityJSON: {sourceFile}");
+            
+
+            var cityJson = new CityJSON(sourceFile, true, true);
+            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
+            Console.WriteLine($"CityObjects found: {cityObjects.Count}");
+
+            var filterobjectsBucket = new ConcurrentBag<SubObject>();
+            //Turn cityobjects (and their children) into SubObject mesh data
+            Parallel.ForEach(cityObjects, cityObject =>
+             {
+                 var subObject = ToSubObjectMeshData(cityObject);
+                 if (subObject != null)
+                 {
+                     filterobjectsBucket.Add(subObject);
+                 }
+             }
+            );
+            return filterobjectsBucket.ToList();
+
         }
 
 		private async Task<List<SubObject>> AsyncCityJSONParseProcess(string sourceFile)
