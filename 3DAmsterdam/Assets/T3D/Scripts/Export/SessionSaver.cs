@@ -8,7 +8,7 @@ public static class SessionSaver
     public static bool LoadPreviousSession = false;
 
     private static IDataLoader loader = new JSONSessionLoader();
-    private static IDataSaver saver = JsonSessionSaver.Instance; //= new JSONSessionSaver();
+    private static IDataSaver saver { get { return JsonSessionSaver.Instance; } } //= new JSONSessionSaver();
 
     //public static Dictionary<string, object> KeyOwners = new Dictionary<string, object>();
 
@@ -16,7 +16,6 @@ public static class SessionSaver
     {
         //if (!LoadPreviousSession)
         //    saver.ClearAllData();
-
         ReadSaveData();
     }
 
