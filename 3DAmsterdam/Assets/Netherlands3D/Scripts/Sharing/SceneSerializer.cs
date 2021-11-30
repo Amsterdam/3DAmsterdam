@@ -73,10 +73,28 @@ namespace Netherlands3D.Sharing
         [SerializeField]
         private GameObject[] objectsRemovedInViewMode;
 
+        private string cameraPositionKey;
+        private SaveableVector3RD cameraPosition;
+        private string bagIdKey;
+        private SaveableString bagId;
 
+        public static SceneSerializer Instance;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
-		{
+        {
+            cameraPositionKey = GetType().ToString() + ".cameraPosition";// + nameof(cameraPosition);
+            cameraPosition = new SaveableVector3RD(cameraPositionKey);
+            print("loaded pos:" + cameraPosition.Value);
+
+            bagIdKey = GetType().ToString() + ".bagId";// + nameof(bagId);
+            bagId = new SaveableString(bagIdKey);
+            print("loaded id : " + bagId.Value);
+
 
 #if !UNITY_EDITOR
             //Optionaly load an existing scene if we supplied a 'view=' id in the url parameters.
@@ -86,8 +104,6 @@ namespace Netherlands3D.Sharing
             customMeshObjects = new List<GameObject>();
         }
 
-
-
         private void Update()
         {
 
@@ -95,51 +111,67 @@ namespace Netherlands3D.Sharing
             if (Input.GetKeyDown(KeyCode.P))
             {
                 MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
-
-                var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
-                //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
-                //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
-                //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
-                GotoPosition(pos);
-
-                MetadataLoader.Instance.RequestBuildingData(pos, "0344100000021804");
-                //MetadataLoader.Instance.RequestBuildingData(pos, "0344100000068320");
-                //MetadataLoader.Instance.RequestBuildingData(pos, "0344100000052214");
-                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
-                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
-                //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
+                GoToTestBuilding();
             }
 #endif
         }
 
+        public void LoadBuilding()
+        {
+            var pos = cameraPosition.Value;
+            GotoPosition(pos);
+            print(pos + "_" + bagId.Value);
+            MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
+        }
+
+        private void GoToTestBuilding()
+        {
+            var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
+                                                                //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
+                                                                //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
+                                                                //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
+            cameraPosition.SetValue(pos);
+            GotoPosition(pos);
+
+            bagId.SetValue("0344100000021804");
+            //bagId.SetValue("0344100000021804");
+            //bagId.SetValue("0344100000052214");
+
+            MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
+
+            //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
+            //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
+            //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
+        }
+
         private void CheckURLForSharedSceneID()
-		{
+        {
             //HttpUtility not embedded in Unity's .net integration, so lets just filter out the ID ourselves
             if (Application.absoluteURL.Contains("?" + urlViewIDVariable) || Application.absoluteURL.Contains("&" + urlViewIDVariable))
-			{
+            {
                 var uniqueSceneID = Application.absoluteURL.Split(new string[] { urlViewIDVariable }, StringSplitOptions.None)[1].Split('&')[0].Split('#')[0];
-				StartCoroutine(GetSharedScene(uniqueSceneID));
-			}
-		}
+                StartCoroutine(GetSharedScene(uniqueSceneID));
+            }
+        }
 
         private void CheckURLForPositionAndId()
         {
-            
             var rd = Application.absoluteURL.GetRDCoordinateByUrl();
             if (rd.Equals(new Vector3RD(0, 0, 0))) return;
 
-            var id = Application.absoluteURL.GetUrlParamValue("id");
+            cameraPosition.SetValue(rd);
+            bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
             MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
             GotoPosition(rd);
-            MetadataLoader.Instance.RequestBuildingData(rd, id);
+            MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
         }
 
         void GotoPosition(Vector3RD position)
-        {      
+        {
             Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
             CameraModeChanger.Instance.ActiveCamera.transform.position = CoordConvert.RDtoUnity(position) + cameraOffsetForTargetLocation;
-            CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);            
+            CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);
         }
 
 
@@ -149,8 +181,9 @@ namespace Netherlands3D.Sharing
         /// This test method allows you to right click this MonoBehaviour in the editor.
         /// And test the downloading of a specific sharedSceneId.
         /// </summary>
-        [ContextMenu("Load last saved ID")] 
-        public void GetTestId(){
+        [ContextMenu("Load last saved ID")]
+        public void GetTestId()
+        {
             if (sharedSceneId != "") StartCoroutine(GetSharedScene(sharedSceneId));
         }
 #endif
@@ -245,7 +278,7 @@ namespace Netherlands3D.Sharing
             }
 
             //Create all custom camera points
-            for (int i = 0; i < scene.cameraPoints.Length; i++) 
+            for (int i = 0; i < scene.cameraPoints.Length; i++)
             {
                 SerializableScene.CameraPoint cameraPoint = scene.cameraPoints[i];
                 GameObject cameraObject = Instantiate(cameraPrefab);
@@ -316,12 +349,12 @@ namespace Netherlands3D.Sharing
         /// <returns></returns>
         private IEnumerator GetCustomMeshObject(GameObject gameObjectTarget, string sceneId, string token, SerializableScene.Vector3 position, SerializableScene.Quaternion rotation, SerializableScene.Vector3 scale, bool transformable = false)
         {
-            
+
             Debug.Log(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
             UnityWebRequest getModelRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + token + ".dat");
             getModelRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getModelRequest.SendWebRequest();
-            
+
             if (getModelRequest.result == UnityWebRequest.Result.Success)
             {
                 Mesh parsedMesh = ParseSerializableMesh(JsonUtility.FromJson<SerializableMesh>(getModelRequest.downloadHandler.text));
@@ -349,7 +382,8 @@ namespace Netherlands3D.Sharing
         /// </summary>
         /// <param name="serializableMesh">The data object we use to construct our mesh</param>
         /// <returns></returns>
-        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh){
+        private Mesh ParseSerializableMesh(SerializableMesh serializableMesh)
+        {
             Mesh parsedMesh = new Mesh();
             parsedMesh.indexFormat = (serializableMesh.meshBitType == 0) ? IndexFormat.UInt16 : IndexFormat.UInt32;
             var subMeshCount = serializableMesh.subMeshes.Length;
@@ -360,7 +394,7 @@ namespace Netherlands3D.Sharing
             for (int i = 0; i < subMeshCount; i++)
             {
                 var subMesh = serializableMesh.subMeshes[i];
-                parsedMesh.SetTriangles(subMesh.triangles,i);
+                parsedMesh.SetTriangles(subMesh.triangles, i);
             }
             return parsedMesh;
         }
@@ -378,7 +412,7 @@ namespace Netherlands3D.Sharing
                 var materialProperties = fixedLayerProperties.materials[i];
 
                 Material materialInSlot = targetLayer.GetMaterialFromSlot(materialProperties.slotId);
-                materialInSlot.SetColor("_BaseColor",new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
+                materialInSlot.SetColor("_BaseColor", new Color(materialProperties.r, materialProperties.g, materialProperties.b, materialProperties.a));
             }
 
             targetLayer.UpdateLayerPrimaryColor();
@@ -391,9 +425,10 @@ namespace Netherlands3D.Sharing
         /// <param name="sceneId">The unique ID of our scene</param>
         /// <param name="meshToken">The unique token we received from the server for our custom mesh object</param>
         /// <returns></returns>
-        public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken){
+        public SerializableMesh SerializeCustomObject(int customMeshIndex, string sceneId, string meshToken)
+        {
             var targetMesh = customMeshObjects[customMeshIndex].GetComponent<MeshFilter>().mesh;
-            
+
             var newSerializableMesh = new SerializableMesh
             {
                 sceneId = sceneId,
@@ -408,7 +443,8 @@ namespace Netherlands3D.Sharing
             return newSerializableMesh;
         }
 
-        public SerializableSubMesh[] SerializeSubMeshes(Mesh mesh){
+        public SerializableSubMesh[] SerializeSubMeshes(Mesh mesh)
+        {
             var subMeshes = new SerializableSubMesh[mesh.subMeshCount];
             for (int i = 0; i < subMeshes.Length; i++)
             {
@@ -436,18 +472,20 @@ namespace Netherlands3D.Sharing
                 timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), //Should be overwritten/determined at serverside when possible
                 buildType = Application.version,
                 sunTimeStamp = sunSettings.GetDateTimeAsString(), //Will be our virtual world time, linked to the Sun
-                allowSceneEdit = allowSceneEditAfterSharing,                
+                allowSceneEdit = allowSceneEditAfterSharing,
                 postProcessing = new SerializableScene.PostProcessing { },
                 camera = new SerializableScene.Camera
                 {
                     position = new SerializableScene.Vector3 { x = cameraPosition.x, y = cameraPosition.y, z = cameraPosition.z },
                     rotation = new SerializableScene.Quaternion { x = cameraRotation.x, y = cameraRotation.y, z = cameraRotation.z, w = cameraRotation.w },
                 },
-                annotations  = GetAnnotations(),
+                annotations = GetAnnotations(),
                 customLayers = GetCustomMeshLayers(),
                 cameraPoints = GetCameras(),
-                fixedLayers = new SerializableScene.FixedLayers {
-                    buildings = new SerializableScene.FixedLayer {
+                fixedLayers = new SerializableScene.FixedLayers
+                {
+                    buildings = new SerializableScene.FixedLayer
+                    {
                         active = buildingsLayer.Active,
                         materials = GetMaterialsAsData(buildingsLayer.UniqueLinkedObjectMaterials)
                     },
@@ -474,17 +512,17 @@ namespace Netherlands3D.Sharing
         {
             var annotations = annotationsContainer.GetComponentsInChildren<Annotation>(true);
             var annotationsData = new List<SerializableScene.Annotation>();
-            
+
             foreach (var annotation in annotations)
             {
                 annotationsData.Add(new SerializableScene.Annotation
                 {
                     active = annotation.interfaceLayer.Active,
-                    position = new SerializableScene.Vector3 
-                    { 
-                        x = annotation.WorldPointerFollower.WorldPosition.x, 
-                        y = annotation.WorldPointerFollower.WorldPosition.y, 
-                        z = annotation.WorldPointerFollower.WorldPosition.z 
+                    position = new SerializableScene.Vector3
+                    {
+                        x = annotation.WorldPointerFollower.WorldPosition.x,
+                        y = annotation.WorldPointerFollower.WorldPosition.y,
+                        z = annotation.WorldPointerFollower.WorldPosition.z
                     },
                     bodyText = annotation.BodyText
                 });
@@ -496,24 +534,24 @@ namespace Netherlands3D.Sharing
 
         private SerializableScene.CameraPoint[] GetCameras()
         {
-              var customLayerChildren = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
-              var cameraPointsData = new List<SerializableScene.CameraPoint>();
-              
-              foreach (var child in customLayerChildren)
-              {
-                    var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
-                    if (!firstPersonObject) continue;
+            var customLayerChildren = cameraLayersGroup.GetComponentsInChildren<CustomLayer>(true);
+            var cameraPointsData = new List<SerializableScene.CameraPoint>();
 
-                    var follower = child.LinkedObject.GetComponent<WorldPointFollower>();
-                    cameraPointsData.Add(new SerializableScene.CameraPoint
-                    {
-                        position = follower.WorldPosition,
-                        rotation = firstPersonObject.savedRotation,
-                        name = child.LinkedObject.name
-                    });
-              }
+            foreach (var child in customLayerChildren)
+            {
+                var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
+                if (!firstPersonObject) continue;
 
-              return cameraPointsData.ToArray(); 
+                var follower = child.LinkedObject.GetComponent<WorldPointFollower>();
+                cameraPointsData.Add(new SerializableScene.CameraPoint
+                {
+                    position = follower.WorldPosition,
+                    rotation = firstPersonObject.savedRotation,
+                    name = child.LinkedObject.name
+                });
+            }
+
+            return cameraPointsData.ToArray();
         }
 
         /// <summary>
@@ -529,7 +567,8 @@ namespace Netherlands3D.Sharing
             var customModelId = 0;
             foreach (var layer in customLayers)
             {
-                switch (layer.LayerType){
+                switch (layer.LayerType)
+                {
                     case LayerType.OBJMODEL:
                     case LayerType.BASICSHAPE:
                         customMeshObjects.Add(layer.LinkedObject);
@@ -544,7 +583,7 @@ namespace Netherlands3D.Sharing
                             parsedType = "obj", //The parser that was used to parse this model into our platform
                             position = new SerializableScene.Vector3 { x = layer.LinkedObject.transform.position.x, y = layer.LinkedObject.transform.position.y, z = layer.LinkedObject.transform.position.z },
                             rotation = new SerializableScene.Quaternion { x = layer.LinkedObject.transform.rotation.x, y = layer.LinkedObject.transform.rotation.y, z = layer.LinkedObject.transform.rotation.z, w = layer.LinkedObject.transform.rotation.w },
-                            scale = new SerializableScene.Vector3 { x=layer.LinkedObject.transform.localScale.x, y = layer.LinkedObject.transform.localScale.y , z = layer.LinkedObject.transform.localScale.z },
+                            scale = new SerializableScene.Vector3 { x = layer.LinkedObject.transform.localScale.x, y = layer.LinkedObject.transform.localScale.y, z = layer.LinkedObject.transform.localScale.z },
                             materials = GetMaterialsAsData(layer.UniqueLinkedObjectMaterials)
                         });
                         break;

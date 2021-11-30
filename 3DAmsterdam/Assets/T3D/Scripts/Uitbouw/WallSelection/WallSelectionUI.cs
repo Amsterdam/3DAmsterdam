@@ -20,7 +20,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private const string selectedText = "aangegeven gevel";
         private const string unselectedText = "selecteer gevel";
 
-        private void Start()
+        private void Awake()
         {
             building = RestrictionChecker.ActiveBuilding;
             building.SelectedWall.AllowSelection = true;

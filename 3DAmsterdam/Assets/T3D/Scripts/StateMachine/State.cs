@@ -10,25 +10,44 @@ public class State : MonoBehaviour
     [SerializeField]
     private bool isFirstState;
     [SerializeField, ReadOnly]
-    protected int desiredStateIndex;
+    protected int desiredNextStateIndex;
 
     public static State ActiveState { get; private set; } //allows only 1 state machine throughout the application, maybe change for a dictionary where collections can be defined
+    public delegate void ActiveStateChangedEventHandler(State newState);
+    public static event ActiveStateChangedEventHandler ActiveStateChangedByUser;
 
-    private void Start()
+    protected virtual void Start()
     {
         if (isFirstState)
+        {
             ActiveState = this;
+        }
+
+        if (SessionSaver.LoadPreviousSession)
+            LoadSavedState();
+    }
+
+    protected virtual void LoadSavedState()
+    {
+        StateLoadedAction();
+        var stateSaver = GetComponentInParent<StateSaver>();
+        var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex.Value);
+
+        if (ActiveState != savedState)
+        {
+            EndState();
+        }
     }
 
     private void OnValidate()
     {
-        desiredStateIndex = GetDesiredStateIndex();
+        desiredNextStateIndex = GetDesiredStateIndex();
     }
 
     //define which state to chose from the defined possible states
     public virtual int GetDesiredStateIndex()
     {
-        return desiredStateIndex;
+        return desiredNextStateIndex;
     }
 
     public State GetDesiredState()
@@ -50,11 +69,12 @@ public class State : MonoBehaviour
     //call to exit the state, optional parameter is to enter a next state
     public virtual void EndState(State nextState)
     {
+        gameObject.SetActive(false);
+        StateCompletedAction();
         if (nextState != null)
         {
             nextState.EnterState(this);
         }
-        gameObject.SetActive(false);
     }
 
     public void EndState()
@@ -64,10 +84,25 @@ public class State : MonoBehaviour
 
     public void GoToPreviousState()
     {
+        gameObject.SetActive(false);
         if (previousState != null)
         {
             previousState.EnterState(previousState.previousState);
+            ActiveStateChangedByUser?.Invoke(ActiveState);
         }
-        gameObject.SetActive(false);
+    }
+
+    public virtual void StateLoadedAction()
+    {
+    }
+
+    public virtual void StateCompletedAction()
+    {
+    }
+
+    public void StepEndedByUser()
+    {
+        EndState();
+        ActiveStateChangedByUser?.Invoke(ActiveState);
     }
 }

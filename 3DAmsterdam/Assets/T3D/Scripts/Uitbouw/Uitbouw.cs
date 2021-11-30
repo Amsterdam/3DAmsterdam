@@ -39,6 +39,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public bool AllowDrag { get; private set; } = true;
 
+        private string positionKey;
+        private SaveableVector3 savedPosition;
+
         public Vector3 LeftCorner
         {
             get
@@ -97,6 +100,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
+            positionKey = GetType().ToString() + ".uitbouwPosition";
+            savedPosition = new SaveableVector3(positionKey);
+
             building = RestrictionChecker.ActiveBuilding;
             SetParents(new CityObject[] {
                 building.GetComponent<MeshToCityJSONConverter>()
@@ -107,6 +113,9 @@ namespace Netherlands3D.T3D.Uitbouw
         protected override void Start()
         {
             base.Start();
+
+            if (SessionSaver.LoadPreviousSession)
+                transform.position = savedPosition.Value;
 
             userMovementAxes = new DragableAxis[2 + walls.Length];
 
@@ -166,6 +175,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
             LimitPositionOnWall();
             ProcessSnapping();
+
+            savedPosition.SetValue(transform.position);
         }
 
         private void LimitPositionOnWall()
@@ -365,7 +376,7 @@ namespace Netherlands3D.T3D.Uitbouw
             activeWall.MoveWall(delta);
         }
 
-        private UitbouwMuur GetWall(WallSide side)
+        public UitbouwMuur GetWall(WallSide side)
         {
             var muur = walls.FirstOrDefault(x => x.Side == side);
             return muur;
