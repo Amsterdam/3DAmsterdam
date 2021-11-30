@@ -115,8 +115,10 @@ namespace TileBakeLibrary
 
                             if(indexInSubObject > subObjectVertices.Count)
                             {
+                                var subMeshVertex = tile.vertices[indexInSubMesh];
+
                                 //Add the subobject data (if we didnt already for this vert)
-                                var vertex = (Vector3Double)tile.vertices[indexInSubMesh];
+                                var vertex = new Vector3Double(subMeshVertex.X + tile.position.X + (tile.size.X / 2), subMeshVertex.Z + tile.position.Y + (tile.size.Y / 2), subMeshVertex.Y );
                                 var normal = tile.normals[indexInSubMesh];
                                 var uv = tile.uvs[indexInSubMesh];
 
