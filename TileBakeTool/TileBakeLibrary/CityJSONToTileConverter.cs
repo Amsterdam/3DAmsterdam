@@ -137,9 +137,9 @@ namespace TileBakeLibrary
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                var cityobjects = CityJSONParseProcess(sourceFiles[index]);
+                var cityObjects = CityJSONParseProcess(sourceFiles[index]);
                 
-                allSubObjects.AddRange(cityobjects);
+                allSubObjects.AddRange(cityObjects);
                 BakeTiles();
                 allSubObjects.Clear();
             }
@@ -273,7 +273,6 @@ namespace TileBakeLibrary
 
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
             
-
             var cityJson = new CityJSON(sourceFile, true, true);
             List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
             Console.WriteLine($"CityObjects found: {cityObjects.Count}");

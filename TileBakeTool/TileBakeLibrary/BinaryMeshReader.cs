@@ -101,35 +101,44 @@ namespace TileBakeLibrary
                         var objectId = reader.ReadString();
                         var objectIndexRange = reader.ReadInt32();
 
-                        var subMeshTriangleIndices = tile.submeshes[0].triangleIndices.GetRange(objectOffset,objectIndexRange);
+                        var subObjectIndicesWithOffset = tile.submeshes[0].triangleIndices.GetRange(objectOffset,objectIndexRange);
                         var subObjectIndices = new int[objectIndexRange];
 
                         var subObjectVertices = new List<Vector3Double>();
                         var subObjectNormals = new List<Vector3>();
                         var subObjectUvs = new List<Vector2>();
-                        for (int j = 0; j < subMeshTriangleIndices.Count; j++)
+
+                        //Lets restore the cityobject geometry
+                        for (int j = 0; j < subObjectIndicesWithOffset.Count; j++)
 						{
-                            var indexInSubMesh = subMeshTriangleIndices[j];
-                            var indexInSubObject = subMeshTriangleIndices[j] - objectOffset;
+                            var indexInSubMesh = subObjectIndicesWithOffset[j];
+                            var indexInSubObject = subObjectIndicesWithOffset[j] - objectOffset;
                             subObjectIndices[j] = indexInSubObject;
 
-                            if(indexInSubObject > subObjectVertices.Count)
-                            {
-                                var subMeshVertex = tile.vertices[indexInSubMesh];
-
-                                //Add the subobject data (if we didnt already for this vert)
-                                var vertex = new Vector3Double(subMeshVertex.X + tile.position.X + (tile.size.X / 2), subMeshVertex.Z + tile.position.Y + (tile.size.Y / 2), subMeshVertex.Y );
-                                var normal = tile.normals[indexInSubMesh];
-                                var uv = tile.uvs[indexInSubMesh];
-
-                                subObjectVertices.Add(vertex);
-                                subObjectNormals.Add(normal);
-                                //subObjectUvs.Add(uv);
+                            //Fill our geometry to the max. indices
+                            while (subObjectVertices.Count-1 < indexInSubObject)
+                            { 
+                                subObjectVertices.Add(new Vector3Double(0,0,0));
+                                subObjectNormals.Add(new Vector3(0,0,0));
+                                subObjectUvs.Add(new Vector2(0,0));
                             }
-                        }
 
-                        //We reverse per-object winding order when we write too, so here we reverse it back.
-                        subObjectIndices.Reverse();
+                            Console.WriteLine($"subObjectVertices.Count {subObjectVertices.Count} while trying to add index : {indexInSubObject}");
+
+                            var subMeshVertex = tile.vertices[indexInSubMesh];
+                            var subMeshNormal = tile.normals[indexInSubMesh];
+                            //var subMeshUv = tile.uvs[indexInSubMesh];
+
+                            //Add the subobject data (if we didnt already for this vert)
+                            var vertex = new Vector3Double(subMeshVertex.X + tile.position.X + (tile.size.X / 2), subMeshVertex.Z + tile.position.Y + (tile.size.Y / 2), subMeshVertex.Y );
+                            var normal = subMeshNormal;
+                            //var uv = subMeshUv;
+
+                            subObjectVertices[indexInSubObject] = vertex;
+                            subObjectNormals[indexInSubObject] = normal;
+                            //subObjectUvs.Add(uv);
+
+                        }
 
                         //Restore our subobject data
                         tile.AddSubObject(new SubObject()
@@ -149,10 +158,14 @@ namespace TileBakeLibrary
                 }
             }
 
-            //Clear tile mesh data.
+            //Clear tile mesh data (we rebuild it after adding other subobjects after parsing)
             tile.vertices.Clear();
             tile.normals.Clear();
             tile.uvs.Clear();
+            foreach(var submesh in tile.submeshes)
+            {
+                submesh.triangleIndices.Clear();
+			}
         }
 
 		private static void Dictionary<T1, T2>()
