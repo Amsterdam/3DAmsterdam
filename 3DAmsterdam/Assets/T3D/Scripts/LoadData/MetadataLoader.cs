@@ -414,8 +414,8 @@ namespace Netherlands3D.T3D.Uitbouw
             else
             {
                 var json = JSON.Parse(req.downloadHandler.text);
-                var status = json["conversions"]["ifc"];
-                Debug.Log( $"Status IFC:{status}");
+                var status = json["conversions"]["cityjson"];
+                Debug.Log( $"Status CityJSON:{status}");
 
                 BimStatus?.Invoke(status, modelId, versionId);
 
