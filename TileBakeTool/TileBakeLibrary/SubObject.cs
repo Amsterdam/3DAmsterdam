@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using TileBakeLibrary.Coordinates;
 using g3;
+using gs;
 using System.Linq;
 
 namespace TileBakeLibrary
@@ -45,8 +46,14 @@ namespace TileBakeLibrary
 
 		private int GetOrAddVertexIndex(int vertexIndex, List<Vector3Double> cleanedVertices, List<Vector3> cleanedNormals, List<Vector2> cleanedUvs, float angleThreshold)
 		{
+			bool hasnormals = true;
+            if (cleanedNormals.Count==0)
+            {
+				hasnormals = false;
+            }
 			Vector3Double inputVertex = vertices[vertexIndex];
 			Vector3 inputNormal = normals[vertexIndex];
+			
 			//Vector2 inputUv = uvs[index]; //When we support uv's, a vertex with a unique UV should not be merged and be added as a unique one
 
 			//Find vertex on a similar threshold position, and then normal
@@ -56,6 +63,10 @@ namespace TileBakeLibrary
 				var distance = Vector3Double.Distance(inputVertex, cleanedVertex);
 				if(distance < distanceMergeThreshold)
 				{
+                    if (!hasnormals)
+                    {
+						return i;
+                    }
 					//Compare the normal using a threshold
 					var cleanedVertNormal = cleanedNormals[i];
 					if (Vector3.Dot(inputNormal, cleanedVertNormal) >= angleThreshold)
@@ -73,8 +84,9 @@ namespace TileBakeLibrary
 
 		public void SimplifyMesh()
         {
-
+			//MergeSimilarVertices(50);
 			DMesh3 mesh = new DMesh3(false,false,false,false);
+			
 			List<Vector3d> DMeshVertices = new List<Vector3d>();
             for (int i = 0; i < vertices.Count; i++)
             {
@@ -86,24 +98,78 @@ namespace TileBakeLibrary
 				mesh.AppendTriangle(triangleIndices[i], triangleIndices[i + 1], triangleIndices[i + 2]);
 
 			}
-			
-			Reducer r = new Reducer(mesh);
-			r.ReduceToTriangleCount(500);
-			
-			DMesh3 resultingMesh = r.Mesh;
-			vertices.Clear();
-            foreach (var vertex in resultingMesh.Vertices())
+			MeshNormals.QuickCompute(mesh);
+            MergeCoincidentEdges merg = new MergeCoincidentEdges(mesh);
+            merg.Apply();
+            if (!mesh.CheckValidity(true, FailMode.ReturnOnly))
             {
-				vertices.Add(new Vector3Double(vertex.x, vertex.y, vertex.z));
+                return;
             }
+
+            // setup up the reducer
+            Reducer r = new Reducer(mesh);
+            // set reducer to preserve bounds
+
+            r.SetExternalConstraints(new MeshConstraints());
+            MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
+
+            // figure out desired triangleCount
+            int maxSurfaceCount = (int)(0.05 * mesh.VertexCount);
+            if (mesh.VertexCount > maxSurfaceCount)
+            {
+                r.ReduceToVertexCount(maxSurfaceCount);
+
+            }
+
+           mesh = r.Mesh;
+
+            vertices.Clear();
+			WriteMesh outputMesh = new WriteMesh(mesh);
+			int vertCount = outputMesh.Mesh.VertexCount;
+			Vector3d vector;
+			int[] mapV = new int[mesh.MaxVertexID];
+			int nAccumCountV = 0;
+			foreach (int vi in mesh.VertexIndices())
+            {
+				mapV[vi] = nAccumCountV++;
+				Vector3d v = mesh.GetVertex(vi);
+				vertices.Add(new Vector3Double(v.x, v.y, v.z));
+			}
+
 			triangleIndices.Clear();
+			foreach (int ti in mesh.TriangleIndices())
+			{
+				Index3i t = mesh.GetTriangle(ti);
+				triangleIndices.Add( mapV[t[0]]);
+				triangleIndices.Add(mapV[t[1]]);
+				triangleIndices.Add(mapV[t[2]]);
+			}
+				//for (int i = 0; i < vertCount; i++)
+    //        {
+				//vector = outputMesh.Mesh.GetVertex(i);
+				//vertices.Add(new Vector3Double(vector.x, vector.y, vector.z));
+    //        }
+
 			
-            foreach (var item in resultingMesh.TriangleIndices())
-            {
-				triangleIndices.Add(item);
-            }
+			//int triangleCount = outputMesh.Mesh.TriangleCount;
+			//Index3i index;
+   //         for (int i = 0; i < triangleCount; i++)
+   //         {
+			//	index = outputMesh.Mesh.GetTriangle(i);
+			//	triangleIndices.Add(index.a);
+			//	triangleIndices.Add(index.b);
+			//	triangleIndices.Add(index.c);
+			//}
+			
+			
+			
+           
+			//List<WriteMesh> meshes = new List<WriteMesh>();
+			//meshes.Add(outputMesh);
+			
+			//var writeResult = StandardMeshWriter.WriteFile("E:/brondata/terreintest/output/"+id+".obj",
+			//	meshes, new WriteOptions());
 
-
-        }
+		}
 	}
 }
