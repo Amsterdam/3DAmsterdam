@@ -7,21 +7,26 @@ public static class SessionSaver
 {
     public static bool LoadPreviousSession = false;
 
-    private static IDataLoader loader = new JSONSessionLoader();
+    private static IDataLoader loader { get { return JSONSessionLoader.Instance; } }
     private static IDataSaver saver { get { return JsonSessionSaver.Instance; } } //= new JSONSessionSaver();
 
-    //public static Dictionary<string, object> KeyOwners = new Dictionary<string, object>();
+    //public const string JSON_SESSION_SAVE_DATA_BASE_KEY = "SessionJson";
+    public static string SessionId { get; private set; }
+    //public static string SessionIdSaveKey { get { return JSON_SESSION_SAVE_DATA_BASE_KEY + SessionId; } }
 
     static SessionSaver()
     {
         //if (!LoadPreviousSession)
         //    saver.ClearAllData();
-        ReadSaveData();
+        SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
+        Debug.Log("session id: " + SessionId);
+
+        //ReadSaveData();
     }
 
     public static void ClearAllSaveData()
     {
-        saver.ClearAllData();
+        saver.ClearAllData(SessionId);
     }
 
     public static void SaveFloat(string key, float value)
@@ -56,11 +61,11 @@ public static class SessionSaver
 
     public static void ExportSavedData()
     {
-         saver.ExportSaveData();
+         saver.ExportSaveData(SessionId);
     }
 
     public static void ReadSaveData()
     {
-        loader.ReadSaveData();
+        loader.ReadSaveData(SessionId);
     }
 }

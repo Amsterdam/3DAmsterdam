@@ -2,11 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
+using UnityEngine.Networking;
+using System;
 
-public class JSONSessionLoader : IDataLoader
+public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
     private JSONNode rootObject;
     const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
+
+    public static JSONSessionLoader Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public float LoadFloat(string key)
     {
@@ -32,12 +41,41 @@ public class JSONSessionLoader : IDataLoader
         return default;
     }
 
-    public void ReadSaveData()
+    public void ReadSaveData(string sessionId)
     {
-        var jsonString = PlayerPrefs.GetString(JsonSessionSaver.JSON_SESSION_SAVE_DATA_KEY);
-        rootObject = JSONNode.Parse(jsonString);
+        StartCoroutine(DownloadData(sessionId, ResponseCallback));
+    }
+
+    private IEnumerator DownloadData(string name, Action<string> callback = null)
+    {
+        var uwr = UnityWebRequest.Get(downloadURL + name);
+        print(downloadURL + name);
+
+        using (uwr)
+        {
+            yield return uwr.SendWebRequest();
+            if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(uwr.error);
+            }
+            else
+            {
+                print("loading succeeded");
+                callback?.Invoke(uwr.downloadHandler.text);
+            }
+        }
+    }
+
+    // Callback to act on our response data
+    private void ResponseCallback(string data)
+    {
+        //var jsonString = PlayerPrefs.GetString(sessionId);
+        rootObject = JSONNode.Parse(data);
 
         if (rootObject == null)
+        {
+            Debug.LogError("parsing session data unsuccesful. Data: " + data);
             rootObject = new JSONObject();
+        }
     }
 }

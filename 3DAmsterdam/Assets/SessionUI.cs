@@ -20,7 +20,7 @@ public class SessionUI : MonoBehaviour
         SceneSerializer.Instance.LoadBuilding();
     }
 
-    public void SaveSession()
+    public void SaveSession(string sessionId)
     {
         SessionSaver.ExportSavedData();
     }

@@ -19,7 +19,7 @@ public class PlayerPrefsSessionLoader : IDataLoader
         return PlayerPrefs.GetString(key);
     }
 
-    public void ReadSaveData()
+    public void ReadSaveData(string sessionId)
     {
     }
 }
