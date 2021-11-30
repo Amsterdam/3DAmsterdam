@@ -134,8 +134,6 @@ namespace TileBakeLibrary
 
             //Create a threadable task for every file, that returns a list of parsed cityobjects
             Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
-
-            parseTasks = new Task<List<SubObject>>[1];
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
