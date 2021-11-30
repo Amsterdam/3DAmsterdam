@@ -33,12 +33,13 @@ namespace TileBakeLibrary
             gltfFile.nodes = new Node[1]{
                 new Node(){
                     mesh=0,
-                    name="Tile"
+                    name="Tile-"+tile.position.X+"_"+tile.position.Y,
+                    scale = new float[3]{ 1.0f, 1.0f, -1.0f } //Gltf uses Z in the opposite direction
                 }
             };
             gltfFile.meshes = new Mesh[1]{
                 new Mesh(){
-                    name="Tile",
+                    name="Tile-"+tile.position.X+"_"+tile.position.Y,
                     primitives= new Primitive[1]{
                         new Primitive()
                         {
