@@ -166,7 +166,8 @@ namespace TileBakeTool
 			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
 
-			tileBaker.SetObjectFilters(configFile.cityObjectFilters);
+			if(configFile != null)
+				tileBaker.SetObjectFilters(configFile.cityObjectFilters);
 
 			tileBaker.Convert();
 		}
