@@ -58,33 +58,44 @@ public class TileBakeToolEditor : EditorWindow
     void OnGUI()
     {
         EditorGUI.BeginChangeCheck();
-        GUILayout.Label("Input/Output", EditorStyles.boldLabel);
 
         scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-        sourcePath = EditorGUILayout.TextField("Source CityJSONs input path", sourcePath);
-        if (GUILayout.Button("Select source folder"))
+        GUILayout.Label("Input folder with CityJSON files", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        sourcePath = EditorGUILayout.TextField(sourcePath);
+        if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
             sourcePath = EditorUtility.OpenFolderPanel("Select the folder containing the main CityJSON (.json) files", "", "") + "/";
             if (outputPath == "") outputPath = sourcePath + "/BinaryTiles/";
         }
+        GUILayout.EndHorizontal();
+ 
         EditorGUILayout.Space();
 
-        outputPath = EditorGUILayout.TextField("Output path", outputPath);
-        if (GUILayout.Button("Select output folder"))
+        GUILayout.Label("Output folder for generated binary tile files", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        outputPath = EditorGUILayout.TextField(outputPath);
+        if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
-            outputPath = EditorUtility.OpenFolderPanel("Select the folder where the binary tile (.bin) files should be written", "", "") + "/";
+            outputPath = EditorUtility.OpenFolderPanel("Select the folder where you want to store the binary tile output files", "", "") + "/";
         }
+        GUILayout.EndHorizontal();
+
         EditorGUILayout.Space();
 
-        overridesPath = EditorGUILayout.TextField("(Optional) Overrides path", overridesPath);
-        if (GUILayout.Button("Select optional overrides folder"))
+        GUILayout.Label("(Optional) folder with CityJSON override files", EditorStyles.boldLabel);
+        GUILayout.BeginHorizontal();
+        overridesPath = EditorGUILayout.TextField(overridesPath);
+        if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
             overridesPath = EditorUtility.OpenFolderPanel("Select a folder containing CityJSON override files", "", "") + "/";
         }
+        GUILayout.EndHorizontal();
+
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
