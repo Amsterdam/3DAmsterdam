@@ -281,19 +281,25 @@ namespace TileBakeLibrary
             //Turn cityobjects (and their children) into SubObject mesh data
             Parallel.ForEach(cityObjects, cityObject =>
              {
-                 var subObject = ToSubObjectMeshData(cityObject);
-                 if (subObject != null)
+                 var subObjects = ToSubObjectMeshData(cityObject);
+
+                 foreach (var subObject in subObjects)
                  {
-                     filterobjectsBucket.Add(subObject);
+                     if (subObject != null)
+                     {
+                         filterobjectsBucket.Add(subObject);
+                     }
                  }
+                 
              }
             );
 
             return filterobjectsBucket.ToList();
         }
 
-		private SubObject ToSubObjectMeshData(CityObject cityObject)
+		private List<SubObject> ToSubObjectMeshData(CityObject cityObject)
 		{
+            List<SubObject> subObjects = new List<SubObject>();
             var subObject = new SubObject();
             subObject.vertices = new List<Vector3Double>();
             subObject.normals = new List<Vector3>();
@@ -329,10 +335,7 @@ namespace TileBakeLibrary
                 subObject.MergeSimilarVertices(maxNormalAngle);
             }
 
-            if (filterType == "LandUse")
-            {
-                subObject.SimplifyMesh();
-            }
+            
 
             //Winding order of triangles should be reversed
             subObject.triangleIndices.Reverse();
@@ -352,7 +355,23 @@ namespace TileBakeLibrary
             }
             subObject.centroid = new Vector2Double(centroid.X / subObject.vertices.Count, centroid.Y / subObject.vertices.Count);
 
-            return subObject;
+            if (filterType == "LandUse")
+            {
+                subObject.SimplifyMesh();
+                var newSubobjects = subObject.clipSubobject();
+                if (newSubobjects.Count ==0)
+                {
+                    subObjects.Add(subObject);
+                }
+                subObjects = newSubobjects;
+            }
+            else
+            {
+                subObjects.Add(subObject);
+            }
+
+
+            return subObjects;
         }
 
 		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject)

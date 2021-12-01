@@ -21,7 +21,7 @@ namespace TileBakeLibrary
 
 		public string id = "";
 		private double distanceMergeThreshold = 0.01;
-
+		private DMesh3 mesh;
 		public void MergeSimilarVertices(float mergeVerticesBelowNormalAngle)
 		{
 			var radians = (Math.PI / 180) * mergeVerticesBelowNormalAngle;
@@ -82,22 +82,62 @@ namespace TileBakeLibrary
 			return cleanedVertices.Count - 1;
 		}
 
-		public void SimplifyMesh()
+
+		private void createMesh()
         {
-			//MergeSimilarVertices(50);
-			DMesh3 mesh = new DMesh3(false,false,false,false);
-			
+			mesh = new DMesh3(false, false, false, false);
+
 			List<Vector3d> DMeshVertices = new List<Vector3d>();
-            for (int i = 0; i < vertices.Count; i++)
-            {
+			for (int i = 0; i < vertices.Count; i++)
+			{
 				mesh.AppendVertex(new Vector3d(vertices[i].X, vertices[i].Y, vertices[i].Z));
 
 			}
-            for (int i = 0; i < triangleIndices.Count; i+=3)
-            {
+			for (int i = 0; i < triangleIndices.Count; i += 3)
+			{
 				mesh.AppendTriangle(triangleIndices[i], triangleIndices[i + 1], triangleIndices[i + 2]);
-
 			}
+			MeshNormals.QuickCompute(mesh);
+		}
+
+		private void saveMesh()
+        {
+			vertices.Clear();
+			WriteMesh outputMesh = new WriteMesh(mesh);
+			int vertCount = outputMesh.Mesh.VertexCount;
+			Vector3d vector;
+			Vector3d normal;
+			int[] mapV = new int[mesh.MaxVertexID];
+			int nAccumCountV = 0;
+			foreach (int vi in mesh.VertexIndices())
+			{
+				mapV[vi] = nAccumCountV++;
+				Vector3d v = mesh.GetVertex(vi);
+				vertices.Add(new Vector3Double(v.x, v.y, v.z));
+				normal = mesh.GetVertexNormal(vi);
+				normals.Add(new Vector3((float)normal.x, (float)normal.y, (float)normal.z));
+			}
+
+			triangleIndices.Clear();
+			foreach (int ti in mesh.TriangleIndices())
+			{
+				Index3i t = mesh.GetTriangle(ti);
+				triangleIndices.Add(mapV[t[0]]);
+				triangleIndices.Add(mapV[t[1]]);
+				triangleIndices.Add(mapV[t[2]]);
+			}
+			mesh = null;
+		}
+
+		public void SimplifyMesh()
+        {
+            if (mesh == null)
+            {
+				createMesh();
+            }
+
+			//MergeSimilarVertices(50);
+			
 			MeshNormals.QuickCompute(mesh);
             MergeCoincidentEdges merg = new MergeCoincidentEdges(mesh);
             merg.Apply();
@@ -113,8 +153,10 @@ namespace TileBakeLibrary
             r.SetExternalConstraints(new MeshConstraints());
             MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
 
-            // figure out desired triangleCount
-            int maxSurfaceCount = (int)(0.05 * mesh.VertexCount);
+			int edgecount = mesh.BoundaryEdgeIndices().Count(p=>p>-1);
+			double area = MeshMeasurements.AreaT(mesh, mesh.TriangleIndices());
+			int squareMetersPerVertex = 100;
+            int maxSurfaceCount = (int)(area/squareMetersPerVertex)+edgecount;
             if (mesh.VertexCount > maxSurfaceCount)
             {
                 r.ReduceToVertexCount(maxSurfaceCount);
@@ -123,53 +165,78 @@ namespace TileBakeLibrary
 
            mesh = r.Mesh;
 
-            vertices.Clear();
-			WriteMesh outputMesh = new WriteMesh(mesh);
-			int vertCount = outputMesh.Mesh.VertexCount;
-			Vector3d vector;
-			int[] mapV = new int[mesh.MaxVertexID];
-			int nAccumCountV = 0;
-			foreach (int vi in mesh.VertexIndices())
-            {
-				mapV[vi] = nAccumCountV++;
-				Vector3d v = mesh.GetVertex(vi);
-				vertices.Add(new Vector3Double(v.x, v.y, v.z));
-			}
+			saveMesh();
 
-			triangleIndices.Clear();
-			foreach (int ti in mesh.TriangleIndices())
-			{
-				Index3i t = mesh.GetTriangle(ti);
-				triangleIndices.Add( mapV[t[0]]);
-				triangleIndices.Add(mapV[t[1]]);
-				triangleIndices.Add(mapV[t[2]]);
-			}
-				//for (int i = 0; i < vertCount; i++)
-    //        {
-				//vector = outputMesh.Mesh.GetVertex(i);
-				//vertices.Add(new Vector3Double(vector.x, vector.y, vector.z));
-    //        }
-
-			
-			//int triangleCount = outputMesh.Mesh.TriangleCount;
-			//Index3i index;
-   //         for (int i = 0; i < triangleCount; i++)
-   //         {
-			//	index = outputMesh.Mesh.GetTriangle(i);
-			//	triangleIndices.Add(index.a);
-			//	triangleIndices.Add(index.b);
-			//	triangleIndices.Add(index.c);
-			//}
-			
-			
-			
-           
-			//List<WriteMesh> meshes = new List<WriteMesh>();
-			//meshes.Add(outputMesh);
-			
-			//var writeResult = StandardMeshWriter.WriteFile("E:/brondata/terreintest/output/"+id+".obj",
-			//	meshes, new WriteOptions());
 
 		}
+
+		public List<SubObject> clipSubobject()
+        {
+			List<SubObject> subObjects = new List<SubObject>();
+			createMesh();
+			var bounds = MeshMeasurements.Bounds(mesh, null);
+			int rdXmin = (int)Math.Floor(bounds.Min.x/1000)*1000;
+			int rdYmin = (int)Math.Floor(bounds.Min.y / 1000) * 1000;
+			int rdXmax = (int)Math.Ceiling(bounds.Max.x / 1000) * 1000;
+			int rdYmax = (int)Math.Ceiling(bounds.Max.y / 1000) * 1000;
+
+            if (rdXmax-rdXmin==1000 && rdYmax-rdYmin==10000)
+            {
+				return subObjects;
+            }
+
+            for (int x = rdXmin; x < rdXmax; x += 1000)
+            {
+                for (int y = rdYmin; y < rdYmax; y += 1000)
+                {
+                    SubObject newSubobject = clipMesh(x, y);
+                    if (newSubobject != null)
+                    {
+                        subObjects.Add(newSubobject);
+                    }
+                }
+            }
+
+
+            return subObjects;
+		}
+
+		private SubObject clipMesh(double X, double Y)
+        {
+			SubObject subObject; 
+			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
+			clippedMesh.Copy(mesh);
+            //cut off the left side
+            MeshPlaneCut mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X, Y, 0), new Vector3d(-1, 0, 0));
+            mpc.Cut();
+            clippedMesh = mpc.Mesh;
+            //cut off the right side
+            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(1, 0, 0));
+            mpc.Cut();
+            clippedMesh = mpc.Mesh;
+            //cut off the top
+            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(0, 1, 0));
+            mpc.Cut();
+            clippedMesh = mpc.Mesh;
+            //cut off the bottom
+            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X, Y, 0), new Vector3d(0, -1, 0));
+            mpc.Cut();
+            clippedMesh = mpc.Mesh;
+            if (clippedMesh.VertexCount>0)
+            {
+				//create new subobject
+				subObject = new SubObject();
+				var center = MeshMeasurements.Centroid(clippedMesh);
+				subObject.centroid = new Vector2Double(center.x, center.y);
+				subObject.id = id;
+				subObject.parentSubmeshIndex = parentSubmeshIndex;
+				subObject.mesh = clippedMesh;
+				subObject.saveMesh();
+
+				return subObject;
+            }
+
+			return null;
+        }
 	}
 }
