@@ -9,8 +9,11 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
     private JSONNode rootObject;
     const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
+    private bool hasLoaded = false;
 
     public static JSONSessionLoader Instance;
+
+    public bool HasLoaded => hasLoaded;
 
     private void Awake()
     {
@@ -71,6 +74,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     {
         //var jsonString = PlayerPrefs.GetString(sessionId);
         rootObject = JSONNode.Parse(data);
+        hasLoaded = true;
 
         if (rootObject == null)
         {

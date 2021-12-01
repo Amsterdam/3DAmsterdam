@@ -12,6 +12,7 @@ public static class SessionSaver
 
     //public const string JSON_SESSION_SAVE_DATA_BASE_KEY = "SessionJson";
     public static string SessionId { get; private set; }
+    public static bool HasLoaded => loader.HasLoaded;
     //public static string SessionIdSaveKey { get { return JSON_SESSION_SAVE_DATA_BASE_KEY + SessionId; } }
 
     static SessionSaver()
