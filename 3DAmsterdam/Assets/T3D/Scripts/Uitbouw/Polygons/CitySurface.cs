@@ -5,6 +5,27 @@ using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using SimpleJSON;
 
+public enum SemanticType
+{
+    Null = 0,
+
+    RoofSurface = 1000,
+    GroundSurface = 1001,
+    WallSurface = 1002,
+    ClosureSurface = 1003,
+    OuterCeilingSurface = 1004,
+    OuterFloorSurface = 1005,
+    Window = 1006,
+    Door = 1007,
+
+    WaterSurface = 1030,
+    WaterGroundSurface = 1031,
+    WaterClosureSurface = 1032,
+
+    TrafficArea = 1080,
+    AuxiliaryTrafficArea = 1081,
+}
+
 //[RequireComponent(typeof(CityPolygon))]
 public class CitySurface
 {
@@ -13,31 +34,13 @@ public class CitySurface
     public virtual CityPolygon SolidSurfacePolygon => Polygons[0];
     public virtual CityPolygon[] HolePolygons => Polygons.Skip(1).ToArray();
 
-    public CitySurface(CityPolygon solidSurfacePolygon)
+    public SemanticType SurfaceType { get; set; }
+
+    public CitySurface(CityPolygon solidSurfacePolygon, SemanticType type = SemanticType.Null)
     {
+        SurfaceType = type;
         Polygons.Add(solidSurfacePolygon);
     }
-
-    //{
-    //    get
-    //    {
-    //        var holes = Polygons.Skip(1);//skip the first element (the solid part)
-    //        foreach (var hole in holes)
-    //        {
-    //            hole.UpdateVertices(GetVertices());
-    //        }
-    //        return holes.ToArray();
-    //    }
-    //}
-
-    //protected abstract CityPolygon InitializeMainSurface();
-    //public abstract Vector3[] GetVertices();
-    //public abstract int[] GetBoundaries(int polygonIndex);
-
-    //protected virtual void Awake()
-    //{
-    //    Polygons.Add(InitializeMainSurface());
-    //}
 
     public void TryAddHole(CityPolygon hole)
     {

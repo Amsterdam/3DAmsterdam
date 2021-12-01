@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using SimpleJSON;
 using System.Linq;
+using System;
 
 public enum CityObjectType
 {
@@ -133,9 +134,49 @@ public abstract class CityObject : MonoBehaviour
             boundaries.Add(surfaceArray);
         }
         node["boundaries"] = boundaries;
+        node["semantics"] = GetSemantics(Surfaces);
 
         return node;
     }
 
+    private JSONNode GetSemantics(CitySurface[] surfaces)
+    {
+        var node = new JSONObject();
 
+        List<SemanticType> usedTypes = new List<SemanticType>();
+
+        var indices = new JSONArray();
+        for (int i = 0; i < Surfaces.Length; i++)
+        {
+            //for each surface check if it is a new type, and add it to the temp list
+            var type = Surfaces[i].SurfaceType;
+            if (type != SemanticType.Null && !usedTypes.Contains(type))
+            {
+                usedTypes.Add(type);
+            }
+            int index = usedTypes.IndexOf(type);
+            if (index == -1)
+            {
+                indices.Add(null);
+            }
+            else
+            {
+                indices.Add(index);
+            }
+        }
+
+        // add array of surfaces to the node
+        var surfaceTypes = new JSONArray();
+        for (int i = 0; i < usedTypes.Count; i++)
+        {
+            var obj = new JSONObject(); //each surface type is in its own object
+            obj.Add("type", usedTypes[i].ToString());
+            surfaceTypes.Add(obj);
+        }
+        node["surfaces"] = surfaceTypes;
+
+        //mark each surface with the index from the array, after the type array
+        node["values"] = indices;
+        return node;
+    }
 }
