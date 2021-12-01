@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Sharing;
 using SimpleJSON;
 using UnityEngine;
 
@@ -7,66 +9,75 @@ public static class SessionSaver
 {
     public static bool LoadPreviousSession = false;
 
-    private static IDataLoader loader { get { return JSONSessionLoader.Instance; } }
-    private static IDataSaver saver { get { return JsonSessionSaver.Instance; } } //= new JSONSessionSaver();
+    public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
+    private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } } 
 
-    //public const string JSON_SESSION_SAVE_DATA_BASE_KEY = "SessionJson";
     public static string SessionId { get; private set; }
-    public static bool HasLoaded => loader.HasLoaded;
-    //public static string SessionIdSaveKey { get { return JSON_SESSION_SAVE_DATA_BASE_KEY + SessionId; } }
+    public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
     {
-        //if (!LoadPreviousSession)
-        //    saver.ClearAllData();
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
-        Debug.Log("session id: " + SessionId);
+        Debug.Log(SessionId);
+        if (SessionId == null)
+        {
+            Debug.Log("Session id not found, using testID");
+            //Guid g = Guid.NewGuid();
+            SessionId = "TestSession0";
+        }
 
-        //ReadSaveData();
+        Debug.Log("session id: " + SessionId);
     }
 
     public static void ClearAllSaveData()
     {
-        saver.ClearAllData(SessionId);
+        Saver.ClearAllData(SessionId);
     }
 
     public static void SaveFloat(string key, float value)
     {   
-        saver.SaveFloat(key, value);
+        Saver.SaveFloat(key, value);
     }
 
     public static void SaveInt(string key, int value)
     {
-        saver.SaveInt(key, value);
+        Saver.SaveInt(key, value);
     }
 
     public static void SaveString(string key, string value)
     {
-        saver.SaveString(key, value);
+        Saver.SaveString(key, value);
     }
 
     public static float LoadFloat(string key)
     {
-        return loader.LoadFloat(key);
+        return Loader.LoadFloat(key);
     }
 
     public static int LoadInt(string key)
     {
-        return loader.LoadInt(key);
+        return Loader.LoadInt(key);
     }
 
     public static string LoadString(string key)
     {
-        return loader.LoadString(key);
+        return Loader.LoadString(key);
     }
 
     public static void ExportSavedData()
     {
-         saver.ExportSaveData(SessionId);
+         Saver.ExportSaveData(SessionId);
     }
 
-    public static void ReadSaveData()
+    public static void LoadSaveData()
     {
-        loader.ReadSaveData(SessionId);
+        Loader.ReadSaveData(SessionId);
+        Loader.LoadingCompleted += Loader_LoadingCompleted;
+    }
+
+    private static void Loader_LoadingCompleted(bool loadSucceeded)
+    {
+        SceneSerializer.Instance.LoadBuilding();
+        Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 }

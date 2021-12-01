@@ -7,12 +7,13 @@ using System;
 
 public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
-    private JSONNode rootObject;
+    private JSONNode rootObject;// = new JSONObject();
     const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
     private bool hasLoaded = false;
 
     public static JSONSessionLoader Instance;
 
+    public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
     public bool HasLoaded => hasLoaded;
 
     private void Awake()
@@ -46,6 +47,8 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
     public void ReadSaveData(string sessionId)
     {
+        Debug.Log("loading data for session: " + sessionId);
+
         StartCoroutine(DownloadData(sessionId, ResponseCallback));
     }
 
@@ -63,7 +66,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             }
             else
             {
-                print("loading succeeded");
+                print("loading succeeded: " + uwr.downloadHandler.text);
                 callback?.Invoke(uwr.downloadHandler.text);
             }
         }
@@ -74,12 +77,14 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     {
         //var jsonString = PlayerPrefs.GetString(sessionId);
         rootObject = JSONNode.Parse(data);
-        hasLoaded = true;
 
         if (rootObject == null)
         {
             Debug.LogError("parsing session data unsuccesful. Data: " + data);
             rootObject = new JSONObject();
         }
+
+        hasLoaded = rootObject != null;
+        LoadingCompleted?.Invoke(hasLoaded);
     }
 }

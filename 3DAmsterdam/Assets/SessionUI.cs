@@ -17,10 +17,11 @@ public class SessionUI : MonoBehaviour
     public void LoadSavedSession()
     {
         SessionSaver.LoadPreviousSession = true;
-        SceneSerializer.Instance.LoadBuilding();
+        SessionSaver.LoadSaveData();
+        //SceneSerializer.Instance.LoadBuilding();
     }
 
-    public void SaveSession(string sessionId)
+    public void SaveSession()
     {
         SessionSaver.ExportSavedData();
     }

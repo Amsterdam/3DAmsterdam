@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerPrefsSessionLoader : IDataLoader
 {
     public bool HasLoaded => true;
+    public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
 
     public float LoadFloat(string key)
     {
