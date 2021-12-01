@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerPrefsSessionSaver : IDataSaver
 {
-    public void ExportSaveData()
+    public void ExportSaveData(string sessionId)
     {
         PlayerPrefs.Save();
     }
@@ -24,7 +24,7 @@ public class PlayerPrefsSessionSaver : IDataSaver
         PlayerPrefs.SetString(key, value);
     }
 
-    public void ClearAllData()
+    public void ClearAllData(string sessionId)
     {
         PlayerPrefs.DeleteAll();
     }

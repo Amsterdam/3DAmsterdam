@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerPrefsSessionLoader : IDataLoader
 {
+    public bool HasLoaded => true;
+    public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
+
     public float LoadFloat(string key)
     {
         return PlayerPrefs.GetFloat(key);
@@ -19,7 +22,7 @@ public class PlayerPrefsSessionLoader : IDataLoader
         return PlayerPrefs.GetString(key);
     }
 
-    public void ReadSaveData()
+    public void ReadSaveData(string sessionId)
     {
     }
 }
