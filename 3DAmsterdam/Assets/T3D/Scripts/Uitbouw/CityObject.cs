@@ -83,7 +83,7 @@ public abstract class CityObject : MonoBehaviour
         if (parent == null && ((int)child.Type < 2000))
             return true;
 
-        if ((int)((int)child.Type / 10 - 200) == (int)((int)parent.Type / 10 - 100))
+        if ((int)((int)child.Type / 10 - 200) == (int)((int)parent.Type / 10 - 100) || ((int)child.Type / 10) == ((int)parent.Type / 10))
             return true;
 
 
