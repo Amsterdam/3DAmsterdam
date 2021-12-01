@@ -5,7 +5,8 @@ using System.Text;
 
 public class TileBakeToolEditor : EditorWindow
 {
-    private static string sourcePath = "C:/CityJSONS/";
+	private Vector2 scrollPosition;
+	private static string sourcePath = "C:/CityJSONS/";
     private static string outputPath = "C:/CityJSONS/BinaryOutput/";
 
     private static string overridesPath = "";
@@ -59,6 +60,8 @@ public class TileBakeToolEditor : EditorWindow
         EditorGUI.BeginChangeCheck();
         GUILayout.Label("Input/Output", EditorStyles.boldLabel);
 
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
         sourcePath = EditorGUILayout.TextField("Source CityJSONs input path", sourcePath);
         if (GUILayout.Button("Select source folder"))
         {
@@ -104,6 +107,8 @@ public class TileBakeToolEditor : EditorWindow
         }
 
         EditorGUILayout.Space();
+
+        GUILayout.EndScrollView();
 
         GUILayout.FlexibleSpace();
         GUILayout.Label(Path.GetFullPath(Application.dataPath + relativeToolPath), EditorStyles.boldLabel);
