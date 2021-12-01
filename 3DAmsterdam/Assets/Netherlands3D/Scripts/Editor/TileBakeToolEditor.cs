@@ -6,8 +6,10 @@ using System.Text;
 public class TileBakeToolEditor : EditorWindow
 {
 	private Vector2 scrollPosition;
-	private static string sourcePath = "C:/CityJSONS/";
+	private static string mainSourcePath = "C:/CityJSONS/";
     private static string outputPath = "C:/CityJSONS/BinaryOutput/";
+
+	private static string sourcePath = "";
 
     private static string overridesPath = "";
 
@@ -30,7 +32,7 @@ public class TileBakeToolEditor : EditorWindow
     {
         TileBakeToolEditor window = (TileBakeToolEditor)EditorWindow.GetWindow(typeof(TileBakeToolEditor), false, windowTitle);
 
-        sourcePath = PlayerPrefs.GetString($"{windowTitle}sourcePath");
+        mainSourcePath = PlayerPrefs.GetString($"{windowTitle}sourcePath");
         outputPath = PlayerPrefs.GetString($"{windowTitle}outputPath");
         overridesPath = PlayerPrefs.GetString($"{windowTitle}overridesPath");
         identifier = PlayerPrefs.GetString($"{windowTitle}identifier");
@@ -41,11 +43,13 @@ public class TileBakeToolEditor : EditorWindow
         replace = PlayerPrefs.GetInt($"{windowTitle}replace") != 0;
         brotli = PlayerPrefs.GetInt($"{windowTitle}brotli") != 0;
 
+        baking = false;
+
         window.Show();
     }
 
     private void SavePreferences(){
-        PlayerPrefs.SetString($"{windowTitle}sourcePath", sourcePath);
+        PlayerPrefs.SetString($"{windowTitle}sourcePath", mainSourcePath);
         PlayerPrefs.SetString($"{windowTitle}outputPath", outputPath);
         PlayerPrefs.SetString($"{windowTitle}overridesPath", overridesPath);
         PlayerPrefs.SetString($"{windowTitle}identifier", identifier);
@@ -63,18 +67,18 @@ public class TileBakeToolEditor : EditorWindow
 
         scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-        if (!sourcePath.EndsWith("/") || sourcePath.EndsWith("\\")) sourcePath += "/";
+        if (!mainSourcePath.EndsWith("/") || mainSourcePath.EndsWith("\\")) mainSourcePath += "/";
         if (!outputPath.EndsWith("/") || outputPath.EndsWith("\\")) outputPath += "/";
         if (!overridesPath.EndsWith("/") || overridesPath.EndsWith("\\")) overridesPath += "/";
 
         GUILayout.Label("Input folder with CityJSON files", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        sourcePath = EditorGUILayout.TextField(sourcePath);
+        mainSourcePath = EditorGUILayout.TextField(mainSourcePath);
         if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
-            sourcePath = EditorUtility.OpenFolderPanel("Select the folder containing the main CityJSON (.json) files", sourcePath, "");
-            if (outputPath == "") outputPath = sourcePath + "/BinaryTiles/";
+            mainSourcePath = EditorUtility.OpenFolderPanel("Select the folder containing the main CityJSON (.json) files", mainSourcePath, "");
+            if (outputPath == "") outputPath = mainSourcePath + "/BinaryTiles/";
         }
         GUILayout.EndHorizontal();
  
@@ -141,14 +145,15 @@ public class TileBakeToolEditor : EditorWindow
             {
                 Debug.Log("Bake!");
                 baking = true;
-                StartBakeTool();
+                bool overrides = (overridesPath.Length > 3);
+                StartBakeTool(mainSourcePath, overrides);
             }
         }
     }
 
-    private void StartBakeTool()
+    private void StartBakeTool(string source, bool checkOverrides = false)
     {
-        Application.OpenURL("file://" + outputPath); //Open explorer with output path
+        sourcePath = source;
 
         Debug.Log("<color=#00FF00>Starting bake tool with the following parameters:</color>");
         Debug.Log("<color=#00FF00>" + Path.GetFullPath(Application.dataPath + relativeToolPath) + "</color><color=#00FFFF> " + DrawArguments() + "</color>");
@@ -159,14 +164,26 @@ public class TileBakeToolEditor : EditorWindow
         startInfo.Arguments = DrawArguments();
         process.StartInfo = startInfo;
         process.EnableRaisingEvents = true;
-        process.Exited += (sender, e) => { EndedBaking(); };
         process.Start();
+        baking = true;
+        process.WaitForExit();
+
+        EndedBaking(checkOverrides);
     }
 
-    private void EndedBaking()
+    private void EndedBaking(bool checkOverrides = false)
     {
-        Debug.Log("Bake Tool has ended.");
-        baking = false;
+        if (checkOverrides)
+        {
+            Debug.Log("Baking override files..");     
+            StartBakeTool(overridesPath);
+        }
+        else
+        {
+            Debug.Log("Bake Tool has ended.");
+            baking = false;
+            Application.OpenURL("file://" + outputPath); //Open explorer with output path
+        }
     }
 
     private string DrawArguments()
