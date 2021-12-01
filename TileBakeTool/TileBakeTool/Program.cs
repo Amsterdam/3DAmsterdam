@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using TileBakeLibrary;
 
@@ -8,6 +9,9 @@ namespace TileBakeTool
 {
 	class Program
 	{
+		private static string configFilePath = "";
+		private static ConfigFile configFile;
+
 		private static string sourcePath = "";
 		private static string outputPath = "";
 		private static string newline = "\n";
@@ -23,6 +27,8 @@ namespace TileBakeTool
 		private static float lod = 0;
 		private static string filterType = "";
 
+		private static bool sliceGeometry = false;
+
 		static void Main(string[] args)
 		{
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -34,14 +40,18 @@ namespace TileBakeTool
 			}
 			else if (args.Length == 1)
 			{
-				//One parameter? Assume its a source path.
-				DefaultArgument(args[0]);
+				//One parameter? Assume its a config file path
+				ApplyConfigFileSettings(args[0]);
 			}
 			else
 			{
 				//More parameters? Parse them
 				ParseArguments(args);
 			}
+
+			//If we received the minimal settings to start, start converting!
+			if (sourcePath != "" && outputPath != "")
+				StartConverting(sourcePath, outputPath);
 		}
 
 		private static void DefaultArgument(string sourcePath)
@@ -67,15 +77,40 @@ namespace TileBakeTool
 					ApplySetting(argument,value);
 				}
 			}
+		}
 
-			if(sourcePath != "" && outputPath != "")
-				StartConverting(sourcePath, outputPath);
+		private static void ApplyConfigFileSettings(string configFilePath){
+			if(File.Exists(configFilePath))
+			{
+				var configJsonText = File.ReadAllText(configFilePath);
+				configFile = JsonSerializer.Deserialize<ConfigFile>(configJsonText
+				, new JsonSerializerOptions()
+				{ 
+					AllowTrailingCommas = true }
+				);
+
+				sourcePath = configFile.sourceFolder;
+				outputPath = configFile.outputFolder;
+
+				replaceExistingIDs = configFile.replaceExistingObjects;
+				identifier = configFile.identifier;
+				removeFromIdentifier = configFile.removePartOfIdentifier;
+				if(configFile.lod != 0.0f) lod = configFile.lod;
+				createBrotliCompressedFiles = configFile.brotliCompression;
+
+				sliceGeometry = (configFile.tilingMethod == "SLICED"); //TILED or SLICED
+
+				Console.WriteLine($"Loaded config file with settings");
+			}
 		}
 
 		private static void ApplySetting(string argument, string value)
 		{
 			switch (argument)
 			{
+				case "--config":
+					ApplyConfigFileSettings(value);
+					break;
 				case "--source":
 					sourcePath = value;
 					Console.WriteLine($"Source: {value}");
@@ -130,6 +165,10 @@ namespace TileBakeTool
 			tileBaker.SetReplace(replaceExistingIDs);
 			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
+
+			if(configFile != null)
+				tileBaker.SetObjectFilters(configFile.cityObjectFilters);
+
 			tileBaker.Convert();
 		}
 
