@@ -39,7 +39,8 @@ namespace TileBakeLibrary
 
         private List<SubObject> allSubObjects = new List<SubObject>();
         private List<Tile> tiles = new List<Tile>();
-        private Task<List<SubObject>>[] parseTasks;
+
+		private CityObjectFilter[] cityObjectFilters;
 
 		/// <summary>
 		/// The LOD we want to parse. 
@@ -257,9 +258,14 @@ namespace TileBakeLibrary
             Console.WriteLine("Done.");
         }
 
-        /// <summary>
-        /// Read SubObjects from existing binary tile file
-        /// </summary>
+		public void SetObjectFilters(CityObjectFilter[] cityObjectFilters)
+		{
+			this.cityObjectFilters = cityObjectFilters;
+        }
+
+		/// <summary>
+		/// Read SubObjects from existing binary tile file
+		/// </summary>
 		private void ParseExistingBinaryTile(Tile tile)
 		{
              BinaryMeshReader.ReadBinaryFile(tile);

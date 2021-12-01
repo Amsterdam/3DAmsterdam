@@ -40,14 +40,18 @@ namespace TileBakeTool
 			}
 			else if (args.Length == 1)
 			{
-				//One parameter? Assume its a source path.
-				DefaultArgument(args[0]);
+				//One parameter? Assume its a config file path
+				ApplyConfigFileSettings(args[0]);
 			}
 			else
 			{
 				//More parameters? Parse them
 				ParseArguments(args);
 			}
+
+			//If we received the minimal settings to start, start converting!
+			if (sourcePath != "" && outputPath != "")
+				StartConverting(sourcePath, outputPath);
 		}
 
 		private static void DefaultArgument(string sourcePath)
@@ -73,16 +77,17 @@ namespace TileBakeTool
 					ApplySetting(argument,value);
 				}
 			}
-
-			if(sourcePath != "" && outputPath != "")
-				StartConverting(sourcePath, outputPath);
 		}
 
 		private static void ApplyConfigFileSettings(string configFilePath){
 			if(File.Exists(configFilePath))
 			{
 				var configJsonText = File.ReadAllText(configFilePath);
-				configFile = JsonSerializer.Deserialize<ConfigFile>(configJsonText);
+				configFile = JsonSerializer.Deserialize<ConfigFile>(configJsonText
+				, new JsonSerializerOptions()
+				{ 
+					AllowTrailingCommas = true }
+				);
 
 				sourcePath = configFile.sourceFolder;
 				outputPath = configFile.outputFolder;
@@ -90,10 +95,12 @@ namespace TileBakeTool
 				replaceExistingIDs = configFile.replaceExistingObjects;
 				identifier = configFile.identifier;
 				removeFromIdentifier = configFile.removePartOfIdentifier;
-				lod = configFile.lod;
+				if(configFile.lod != 0.0f) lod = configFile.lod;
 				createBrotliCompressedFiles = configFile.brotliCompression;
 
 				sliceGeometry = (configFile.tilingMethod == "SLICED"); //TILED or SLICED
+
+				Console.WriteLine($"Loaded config file with settings");
 			}
 		}
 
@@ -103,7 +110,6 @@ namespace TileBakeTool
 			{
 				case "--config":
 					ApplyConfigFileSettings(value);
-					Console.WriteLine($"Loading config file settings: {value}");
 					break;
 				case "--source":
 					sourcePath = value;
@@ -159,6 +165,9 @@ namespace TileBakeTool
 			tileBaker.SetReplace(replaceExistingIDs);
 			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
+
+			tileBaker.SetObjectFilters(configFile.cityObjectFilters);
+
 			tileBaker.Convert();
 		}
 
