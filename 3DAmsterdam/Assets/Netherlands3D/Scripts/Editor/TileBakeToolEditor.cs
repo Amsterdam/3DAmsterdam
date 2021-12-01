@@ -21,6 +21,8 @@ public class TileBakeToolEditor : EditorWindow
 
     private static string relativeToolPath = "/../../TileBakeTool/TileBakeTool/bin/Release/net5.0/TileBakeTool.exe";
 
+    private static bool baking = false;
+
     private static string windowTitle = "Tile Bake Tool";
 
     [MenuItem("Netherlands 3D/Tile Bake Tool")]
@@ -61,13 +63,17 @@ public class TileBakeToolEditor : EditorWindow
 
         scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
+        if (!sourcePath.EndsWith("/") || sourcePath.EndsWith("\\")) sourcePath += "/";
+        if (!outputPath.EndsWith("/") || outputPath.EndsWith("\\")) outputPath += "/";
+        if (!overridesPath.EndsWith("/") || overridesPath.EndsWith("\\")) overridesPath += "/";
+
         GUILayout.Label("Input folder with CityJSON files", EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
         sourcePath = EditorGUILayout.TextField(sourcePath);
         if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
-            sourcePath = EditorUtility.OpenFolderPanel("Select the folder containing the main CityJSON (.json) files", "", "") + "/";
+            sourcePath = EditorUtility.OpenFolderPanel("Select the folder containing the main CityJSON (.json) files", sourcePath, "");
             if (outputPath == "") outputPath = sourcePath + "/BinaryTiles/";
         }
         GUILayout.EndHorizontal();
@@ -80,7 +86,7 @@ public class TileBakeToolEditor : EditorWindow
         if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
-            outputPath = EditorUtility.OpenFolderPanel("Select the folder where you want to store the binary tile output files", "", "") + "/";
+            outputPath = EditorUtility.OpenFolderPanel("Select the folder where you want to store the binary tile output files", outputPath, "");
         }
         GUILayout.EndHorizontal();
 
@@ -92,7 +98,7 @@ public class TileBakeToolEditor : EditorWindow
         if (GUILayout.Button("Browse", GUILayout.Width(100)))
         {
             GUI.FocusControl(null);
-            overridesPath = EditorUtility.OpenFolderPanel("Select a folder containing CityJSON override files", "", "") + "/";
+            overridesPath = EditorUtility.OpenFolderPanel("Select a folder containing CityJSON override files", overridesPath, "");
         }
         GUILayout.EndHorizontal();
 
@@ -123,24 +129,44 @@ public class TileBakeToolEditor : EditorWindow
 
         GUILayout.FlexibleSpace();
         GUILayout.Label(Path.GetFullPath(Application.dataPath + relativeToolPath), EditorStyles.boldLabel);
-        if (GUILayout.Button("Bake",GUILayout.Height(100)))
-		{
-            Debug.Log("Bake!");
-            StartBakeTool();
+        if (baking)
+        {
+            GUI.enabled = false;
+            GUILayout.Button("Baking...", GUILayout.Height(100));            
+            GUI.enabled = true;
+        }
+        else
+        {
+            if (GUILayout.Button("Bake", GUILayout.Height(100)))
+            {
+                Debug.Log("Bake!");
+                baking = true;
+                StartBakeTool();
+            }
         }
     }
 
     private void StartBakeTool()
     {
+        Application.OpenURL("file://" + outputPath); //Open explorer with output path
+
         Debug.Log("<color=#00FF00>Starting bake tool with the following parameters:</color>");
         Debug.Log("<color=#00FF00>" + Path.GetFullPath(Application.dataPath + relativeToolPath) + "</color><color=#00FFFF> " + DrawArguments() + "</color>");
         System.Diagnostics.Process process = new System.Diagnostics.Process();
         System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
         startInfo.FileName = Path.GetFullPath(Application.dataPath + relativeToolPath);
         startInfo.Arguments = DrawArguments();
         process.StartInfo = startInfo;
+        process.EnableRaisingEvents = true;
+        process.Exited += (sender, e) => { EndedBaking(); };
         process.Start();
+    }
+
+    private void EndedBaking()
+    {
+        Debug.Log("Bake Tool has ended.");
+        baking = false;
     }
 
     private string DrawArguments()
