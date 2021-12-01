@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using TileBakeLibrary;
 
@@ -8,6 +9,9 @@ namespace TileBakeTool
 {
 	class Program
 	{
+		private static string configFilePath = "";
+		private static ConfigFile configFile;
+
 		private static string sourcePath = "";
 		private static string outputPath = "";
 		private static string newline = "\n";
@@ -22,6 +26,8 @@ namespace TileBakeTool
 
 		private static float lod = 0;
 		private static string filterType = "";
+
+		private static bool sliceGeometry = false;
 
 		static void Main(string[] args)
 		{
@@ -72,10 +78,33 @@ namespace TileBakeTool
 				StartConverting(sourcePath, outputPath);
 		}
 
+		private static void ApplyConfigFileSettings(string configFilePath){
+			if(File.Exists(configFilePath))
+			{
+				var configJsonText = File.ReadAllText(configFilePath);
+				configFile = JsonSerializer.Deserialize<ConfigFile>(configJsonText);
+
+				sourcePath = configFile.sourceFolder;
+				outputPath = configFile.outputFolder;
+
+				replaceExistingIDs = configFile.replaceExistingObjects;
+				identifier = configFile.identifier;
+				removeFromIdentifier = configFile.removePartOfIdentifier;
+				lod = configFile.lod;
+				createBrotliCompressedFiles = configFile.brotliCompression;
+
+				sliceGeometry = (configFile.tilingMethod == "SLICED"); //TILED or SLICED
+			}
+		}
+
 		private static void ApplySetting(string argument, string value)
 		{
 			switch (argument)
 			{
+				case "--config":
+					ApplyConfigFileSettings(value);
+					Console.WriteLine($"Loading config file settings: {value}");
+					break;
 				case "--source":
 					sourcePath = value;
 					Console.WriteLine($"Source: {value}");
