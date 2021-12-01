@@ -23,7 +23,7 @@ public enum CityObjectType
     TINRelief = 1100,
     TransportSquare = 1110,
     Tunnel = 1120,
-    WaterBody = 1030,
+    WaterBody = 1130,
 
     //2000-3000: 2nd level city objects. the middle numbers indicates the required parent. e.g 200x has to be a parent of 1000, 201x of 1010 etc.
     BuildingPart = 2000,
@@ -88,7 +88,7 @@ public abstract class CityObject : MonoBehaviour
             return true;
 
 
-        Debug.Log(child.Type + "\t" + parent, child.gameObject);
+        //Debug.Log(child.Type + "\t" + parent, child.gameObject);
         return false;
     }
 
@@ -149,12 +149,13 @@ public abstract class CityObject : MonoBehaviour
         for (int i = 0; i < Surfaces.Length; i++)
         {
             //for each surface check if it is a new type, and add it to the temp list
-            var type = Surfaces[i].SurfaceType;
-            if (type != SemanticType.Null && !usedTypes.Contains(type))
+            var surfaceType = Surfaces[i].SurfaceType;
+            Assert.IsTrue (CitySurface.IsValidSemanticType(Type, surfaceType));
+            if (surfaceType != SemanticType.Null && !usedTypes.Contains(surfaceType))
             {
-                usedTypes.Add(type);
+                usedTypes.Add(surfaceType);
             }
-            int index = usedTypes.IndexOf(type);
+            int index = usedTypes.IndexOf(surfaceType);
             if (index == -1)
             {
                 indices.Add(null);

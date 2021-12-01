@@ -4,6 +4,7 @@ using System.Linq;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using SimpleJSON;
+using UnityEngine.Assertions;
 
 public enum SemanticType
 {
@@ -18,9 +19,9 @@ public enum SemanticType
     Window = 1006,
     Door = 1007,
 
-    WaterSurface = 1030,
-    WaterGroundSurface = 1031,
-    WaterClosureSurface = 1032,
+    WaterSurface = 1130,
+    WaterGroundSurface = 1131,
+    WaterClosureSurface = 1132,
 
     TrafficArea = 1080,
     AuxiliaryTrafficArea = 1081,
@@ -40,6 +41,30 @@ public class CitySurface
     {
         SurfaceType = type;
         Polygons.Add(solidSurfacePolygon);
+    }
+
+    public static bool IsValidSemanticType(CityObjectType parent, SemanticType type)
+    {
+        if (type == SemanticType.Null) //no semantic type is always allowed
+            return true;
+
+        var testInt = (int)type / 10;
+        var parentInt = (int)parent / 10;
+
+        if (testInt == parentInt) //default test
+        {
+            return true;
+        }
+        if (testInt == parentInt - 100) // child test
+        {
+            return true;
+        }
+
+        if (testInt == 108 && (parent == CityObjectType.Road || parent == CityObjectType.Railway || parent == CityObjectType.TransportSquare)) //custom test
+        {
+            return true;
+        }
+        return false;
     }
 
     public void TryAddHole(CityPolygon hole)
