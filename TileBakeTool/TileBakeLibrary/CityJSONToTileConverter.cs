@@ -137,9 +137,9 @@ namespace TileBakeLibrary
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
                 var index = i;
-                var cityobjects = CityJSONParseProcess(sourceFiles[index]);
+                var cityObjects = CityJSONParseProcess(sourceFiles[index]);
                 
-                allSubObjects.AddRange(cityobjects);
+                allSubObjects.AddRange(cityObjects);
                 BakeTiles();
                 allSubObjects.Clear();
             }
@@ -188,7 +188,7 @@ namespace TileBakeLibrary
                     {
                         size = new Vector2(tileSize, tileSize),
                         position = new Vector2Double(tileX, tileY),
-                        filePath = $"{outputPath}buildings-{tileX}_{tileY}.{lod}.bin"
+                        filePath = $"{outputPath}{tileX}_{tileY}.{lod}.bin"
                     };
                     tiles.Add(newTile);
 
@@ -207,7 +207,7 @@ namespace TileBakeLibrary
             }
 
             //Create binary files (if we added subobjects to it)
-            Directory.CreateDirectory(outputPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 
             //Move the CityObjects into to the proper tile based on their centroid
             for (int i = allSubObjects.Count - 1; i >= 0; i--)
@@ -267,13 +267,12 @@ namespace TileBakeLibrary
         }
 
 
-        private List<SubObject>CityJSONParseProcess(string sourceFile)
+        private List<SubObject> CityJSONParseProcess(string sourceFile)
         {
             List<SubObject> filteredObjects = new List<SubObject>();
 
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
             
-
             var cityJson = new CityJSON(sourceFile, true, true);
             List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
             Console.WriteLine($"CityObjects found: {cityObjects.Count}");
@@ -289,35 +288,8 @@ namespace TileBakeLibrary
                  }
              }
             );
+
             return filterobjectsBucket.ToList();
-
-        }
-
-		private async Task<List<SubObject>> AsyncCityJSONParseProcess(string sourceFile)
-		{
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-            List<SubObject> filteredObjects = new List<SubObject>();
-
-            Console.WriteLine($"Parsing CityJSON: {sourceFile}");
-            await Task.Delay(10);
-
-            var cityJson = new CityJSON(sourceFile, true, true);
-            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
-            Console.WriteLine($"CityObjects found: {cityObjects.Count}");
-
-            //Turn cityobjects (and their children) into SubObject mesh data
-            for (int i = 0; i < cityObjects.Count; i++)
-            {
-                var cityObject = cityObjects[i];
-                var subObject = ToSubObjectMeshData(cityObject);
-                if (subObject != null)
-                {
-                    filteredObjects.Add(subObject);
-                }
-            }
-
-            return filteredObjects;
         }
 
 		private SubObject ToSubObjectMeshData(CityObject cityObject)

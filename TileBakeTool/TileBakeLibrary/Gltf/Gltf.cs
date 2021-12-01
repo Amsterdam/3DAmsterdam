@@ -28,6 +28,7 @@
 	{
 		public int mesh { get; set; }
 		public string name { get; set; }
+		public float[] scale { get; set; }
 	}
 
 	public class Mesh
