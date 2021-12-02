@@ -97,6 +97,11 @@ namespace Netherlands3D.CityJSON
 			return cityObject;
 		}
 
+		public void ClearCityObject(string key)
+        {
+			cityJsonNode["CityObjects"][key] = null;
+        }
+
 		public CityObject LoadCityObjectByKey(string key)
         {
 			CityObject cityObject = ReadCityObject(cityJsonNode["CityObjects"][key], filterType);

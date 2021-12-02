@@ -308,6 +308,7 @@ namespace TileBakeLibrary
                  CityObject cityObject = cityJson.LoadCityObjectByID(i, lod);
                  Console.Write("\r"+ done + " done; "+ parsing + " parsing; "+ simplifying + " simplifying; "+ tiling +" tiling                    ");
                  var subObject = ToSubObjectMeshData(cityObject);
+                 cityJson.ClearCityObject(cityObject.keyName);
                  cityObject = null;
                  Interlocked.Decrement(ref parsing);
                  Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
