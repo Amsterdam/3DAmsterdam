@@ -1,1 +1,1 @@
-tilebaketool.exe --source "E:/brondata/terreintest/" --output "E:/brondata/terreintest/output/" --config "D:/github/TileBakeTool/config/3DBasisvoorziening.json"
+tilebaketool.exe --source "E:/brondata/terreintest/" --output "E:/brondata/terreintest/output/" --config "D:/github/TileBakeTool/config/3DBasisvoorziening.json" --obj
