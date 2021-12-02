@@ -10,12 +10,12 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public interface UitbouwRestriction
     {
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw);
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw);
     }
 
     public class MonumentRestriction : UitbouwRestriction
     {
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             return !building.IsMonument;
         }
@@ -23,7 +23,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public class BeschermdRestriction : UitbouwRestriction
     {
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             return !building.IsBeschermd;
         }
@@ -32,7 +32,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class HeightRestriction : UitbouwRestriction
     {
         public static float MaxHeight = 3f;
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             var roundedHeight = Mathf.RoundToInt(uitbouw.Height * 100);
             var roundedMaxHeight = Mathf.RoundToInt(MaxHeight * 100);
@@ -43,7 +43,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class DepthRestriction : UitbouwRestriction
     {
         public static float MaxDepth = 3f;
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             var roundedDepth = Mathf.RoundToInt(uitbouw.Depth * 100);
             var roundedMaxDepth = Mathf.RoundToInt(MaxDepth * 100);
@@ -56,7 +56,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public static float MaxAreaPercentage { get { return 33f; } }
         public static float MaxAreaFraction { get { return MaxAreaPercentage / 100f; } }
 
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             var uitbouwArea = uitbouw.Width * uitbouw.Depth;
             var freeArea = perceel.Area - building.Area;
@@ -67,7 +67,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public class PerceelBoundsRestriction : UitbouwRestriction
     {
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             return IsInPerceel(uitbouw.GetFootprint(), perceel.Perceel, uitbouw.transform.position);
         }
@@ -94,7 +94,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public class AttachedToWallRestriction : UitbouwRestriction
     {
-        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             return building.SelectedWall.WallIsSelected;
         }
@@ -116,7 +116,7 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public static BuildingMeshGenerator ActiveBuilding => MetadataLoader.Building;
         public static PerceelRenderer ActivePerceel => MetadataLoader.Perceel;
-        public static Uitbouw ActiveUitbouw => MetadataLoader.Uitbouw;
+        public static UitbouwBase ActiveUitbouw => MetadataLoader.Uitbouw;
 
         private static IDictionary<UitbouwRestrictionType, UitbouwRestriction> activeRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>
         {
@@ -130,7 +130,7 @@ namespace Netherlands3D.T3D.Uitbouw
         };
         public static IDictionary<UitbouwRestrictionType, UitbouwRestriction> ActiveRestrictions => activeRestrictions;
 
-        public static bool ConformsToAllRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, Uitbouw uitbouw)
+        public static bool ConformsToAllRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             foreach (var restriction in ActiveRestrictions)
             {

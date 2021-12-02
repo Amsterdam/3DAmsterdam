@@ -25,6 +25,9 @@ namespace Netherlands3D.T3D.Uitbouw
         private SizeType size;
         private SaveableFloat value;
         private string valueKey;
+
+        private ShapeableUitbouw shapeableUitbouw;
+
         //[SerializeField]
         //private string unitText = "m";
 
@@ -37,7 +40,10 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Start()
         {
             value = new SaveableFloat(valueKey);
-            if (SessionSaver.LoadPreviousSession)
+
+            shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;
+
+            if (SessionSaver.LoadPreviousSession && shapeableUitbouw)
             {
                 LoadData();
             }
@@ -46,20 +52,21 @@ namespace Netherlands3D.T3D.Uitbouw
         private void LoadData()
         {
             float delta = 0;
+
             switch (size)
             {
                 case SizeType.Width:
                     delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Width;
-                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta / 2);
-                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta / 2);
+                    shapeableUitbouw.MoveWall(WallSide.Left, delta / 2);
+                    shapeableUitbouw.MoveWall(WallSide.Right, delta / 2);
                     break;
                 case SizeType.Height:
                     delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Height;
-                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta);
+                    shapeableUitbouw.MoveWall(WallSide.Top, delta);
                     break;
                 case SizeType.Depth:
                     delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Depth;
-                    RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta);
+                    shapeableUitbouw.MoveWall(WallSide.Front, delta);
                     break;
             }
         }
@@ -115,8 +122,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Left, delta / 2 / 100);
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Right, delta / 2 / 100);
+                shapeableUitbouw.MoveWall(WallSide.Left, delta / 2 / 100);
+                shapeableUitbouw.MoveWall(WallSide.Right, delta / 2 / 100);
             }
         }
 
@@ -125,7 +132,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Top, delta / 100);
+                shapeableUitbouw.MoveWall(WallSide.Top, delta / 100);
             }
         }
 
@@ -134,7 +141,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (IsValidInput(input, out float delta))
             {
-                RestrictionChecker.ActiveUitbouw.MoveWall(WallSide.Front, delta / 100);
+                shapeableUitbouw.MoveWall(WallSide.Front, delta / 100);
             }
         }
 

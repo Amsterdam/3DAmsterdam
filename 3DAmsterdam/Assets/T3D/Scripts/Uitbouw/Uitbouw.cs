@@ -122,13 +122,13 @@ namespace Netherlands3D.T3D.Uitbouw
             for (int i = 0; i < walls.Length; i++)
             {
                 userMovementAxes[i] = walls[i].gameObject.AddComponent<DragableAxis>();
-                userMovementAxes[i].SetUitbouw(this);
+                //userMovementAxes[i].SetUitbouw(this);
             }
 
             var arrowOffsetY = transform.up * (extents.y - 0.01f);
 
-            userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, left.transform.position - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
-            userMovementAxes[walls.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, right.transform.position - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            //userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, left.transform.position - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
+            //userMovementAxes[walls.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, right.transform.position - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, this);
 
             SetAllowMovement(true);
         }
@@ -250,20 +250,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
             transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
         }
-
-        //private void ProcessIfObjectIsInPerceelBounds()
-        //{
-        //    footprint = GetFootprint();// GenerateFootprint(meshes, transform.rotation, transform.lossyScale);
-
-        //    if (PerceelBoundsRestriction.IsInPerceel(footprint, perceel.Perceel, transform.position))
-        //    {
-        //        meshRenderer.material.color = Color.green;
-        //    }
-        //    else
-        //    {
-        //        meshRenderer.material.color = Color.red;
-        //    }
-        //}
 
         public Vector2[] GetFootprint()
         {
