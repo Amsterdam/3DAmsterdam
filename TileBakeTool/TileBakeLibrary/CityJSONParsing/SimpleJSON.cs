@@ -756,6 +756,7 @@ namespace Bunny83.SimpleJSON
                 Stack<JSONNode> stack = new Stack<JSONNode>();
                 JSONNode ctx = null;
                 int i = 0;
+                long bytelength = streamReader.BaseStream.Length;
                 StringBuilder Token = new StringBuilder();
                 string TokenName = "";
                 bool QuoteMode = false;
@@ -764,6 +765,13 @@ namespace Bunny83.SimpleJSON
                 while (!streamReader.EndOfStream)
                 {
                     str = (char)streamReader.Read();
+                    i++;
+                    if (i>100000000)
+                    {
+                        i = 0;
+                        string percentage = ((int)(100 * streamReader.BaseStream.Position / bytelength)).ToString();
+                        Console.Write($"\rreading file ... { percentage}%");
+                    }
                     switch (str)
                     {
                         case '{':
