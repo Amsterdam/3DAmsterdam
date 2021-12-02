@@ -77,7 +77,7 @@ public static class SessionSaver
 
     private static void Loader_LoadingCompleted(bool loadSucceeded)
     {
-        SceneSerializer.Instance.LoadBuilding();
+        T3DInit.Instance.LoadBuilding();
         Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 }

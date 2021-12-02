@@ -10,6 +10,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     public Text[] AdresText;
     public Text[] PostcodePlaatsText;
     public Text PerceelGrootteText;
+    public Text BimModelStatus;
 
     public Text IsMonumentText;
     private const string isMonumentString = "Dit gebouw is een rijksmonument.";
@@ -33,8 +34,14 @@ public class HandleMetaDataUpdates : MonoBehaviour
         MetadataLoader.Instance.IsMonumentEvent += IsMonumentEvent;
         MetadataLoader.Instance.IsBeschermdEvent += IsBeschermdEvent;
         MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
+        MetadataLoader.Instance.BimStatus += On_BimStatus;
 
         //StartCoroutine(SetSidebarAreaText());
+    }
+
+    private void On_BimStatus(string status, string modelId, string versionId)
+    {
+        BimModelStatus.text = $"Status upload conversie : {status}";
     }
 
     private void IsMonumentEvent(bool isMonument)

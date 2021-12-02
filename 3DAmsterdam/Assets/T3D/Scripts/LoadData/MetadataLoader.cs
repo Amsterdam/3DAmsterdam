@@ -125,6 +125,10 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
+        public delegate void BimStatusEventHandler(string status, string modelId, string versionId);
+        public event BimStatusEventHandler BimStatus;
+
+
         //public List<Vector2[]> PerceelData;
         private string postcode;
         private string huisnummer;
@@ -133,6 +137,10 @@ namespace Netherlands3D.T3D.Uitbouw
         private Vector2RD buildingcenter;
 
         public bool UploadedModel;
+
+        public string BimAuthToken;
+        public string BimModelId;
+        public string BimModelVersionId;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -164,6 +172,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
+            if (UploadedModel)
+            {
+                StartCoroutine(GetBimStatus(BimModelId, BimModelVersionId));
+            }
+
             StartCoroutine(UpdateSidePanelAddress(id));
 
             //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
@@ -381,6 +394,35 @@ namespace Netherlands3D.T3D.Uitbouw
                 var isBeschermd = json["features"].Linq.Any();
 
                 IsBeschermdEvent?.Invoke(isBeschermd);
+            }
+        }
+
+        IEnumerator GetBimStatus(string modelId, string versionId)
+        {
+            var organisationId = "6194fc20c0da463026d4d8fe";
+            var projectId = "6194fc2ac0da463026d4d90e";
+
+            yield return null;
+
+            var url = $"https://bim.clearly.app/api/organisations/{organisationId}/projects/{projectId}/models/{modelId}/versions/{versionId}";
+
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            req.SetRequestHeader("Authorization", $"Bearer {BimAuthToken}");
+            req.SetRequestHeader("Content-Type", "application/json");
+
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+            {
+                WarningDialogs.Instance.ShowNewDialog(req.error);
+            }
+            else
+            {
+                var json = JSON.Parse(req.downloadHandler.text);
+                var status = json["conversions"]["cityjson"];
+                Debug.Log($"Status CityJSON:{status}");
+
+                BimStatus?.Invoke(status, modelId, versionId);
+
             }
         }
 
