@@ -258,7 +258,11 @@ namespace Bunny83.SimpleJSON
         public virtual string Value { get { return ""; } set { } }
 
         public virtual int Count { get { return 0; } }
-
+        public virtual string getKeyAtIndex(int index)
+        {
+            return "";
+        }
+        
         public virtual bool IsNumber { get { return false; } }
         public virtual bool IsString { get { return false; } }
         public virtual bool IsBoolean { get { return false; } }
@@ -1079,6 +1083,10 @@ namespace Bunny83.SimpleJSON
         public override int Count
         {
             get { return m_Dict.Count; }
+        }
+        public override string getKeyAtIndex(int index)
+        {
+            return m_Dict.ElementAt(index).Key;
         }
 
         public override void Add(string aKey, JSONNode aItem)

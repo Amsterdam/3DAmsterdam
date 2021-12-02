@@ -115,9 +115,14 @@ namespace TileBakeLibrary
             this.brotliCompress = brotliCompress;
         }
 
+
+        private CityJSON cityJson;
+
 		/// <summary>
 		/// Start converting the cityjson files into binary tile files
 		/// </summary>
+        /// 
+
 		public void Convert()
 		{
 #if DEBUG
@@ -283,21 +288,24 @@ namespace TileBakeLibrary
 
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
             Console.Write("loading file...");
-            var cityJson = new CityJSON(sourceFile, true, true);
+            cityJson = new CityJSON(sourceFile, true, true);
             Console.Write("\r reading cityobjects");
-            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
-            Console.WriteLine($"\r CityObjects found: {cityObjects.Count}");
+            //List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
+            int cityObjectCount = cityJson.CityObjectCount();
+            Console.WriteLine($"\r CityObjects found: {cityObjectCount}");
             Console.Write("---");
             int done = 0;
             int parsing = 0;
             int simplifying = 0;
             int tiling = 0;
             var filterobjectsBucket = new ConcurrentBag<SubObject>();
+            int[] indices = Enumerable.Range(0, cityObjectCount).ToArray(); ;
             //Turn cityobjects (and their children) into SubObject mesh data
-            var partitioner = Partitioner.Create(cityObjects, EnumerablePartitionerOptions.NoBuffering);
-            Parallel.ForEach(partitioner, cityObject =>
+            var partitioner = Partitioner.Create(indices, EnumerablePartitionerOptions.NoBuffering);
+            Parallel.ForEach(partitioner, i =>
              {
                  Interlocked.Increment(ref parsing);
+                 CityObject cityObject = cityJson.LoadCityObjectByID(i, lod);
                  Console.Write("\r"+ done + " done; "+ parsing + " parsing; "+ simplifying + " simplifying; "+ tiling +" tiling                    ");
                  var subObject = ToSubObjectMeshData(cityObject);
                  cityObject = null;

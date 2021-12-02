@@ -78,6 +78,32 @@ namespace Netherlands3D.CityJSON
 			}
 		}
 
+		public int CityObjectCount()
+        {
+			return cityJsonNode["CityObjects"].Count;
+        }
+
+		public CityObject LoadCityObjectByID(int id, float lod)
+        {
+			this.LOD = lod;
+			this.filterType = "";
+			string key = cityJsonNode["CityObjects"].getKeyAtIndex(id);
+			
+			CityObject cityObject = ReadCityObject(cityJsonNode["CityObjects"][id], filterType);
+			if (cityObject != null)
+			{
+				cityObject.keyName = key;
+			}
+			return cityObject;
+		}
+
+		public CityObject LoadCityObjectByKey(string key)
+        {
+			CityObject cityObject = ReadCityObject(cityJsonNode["CityObjects"][key], filterType);
+			cityObject.keyName = key;
+			return cityObject;
+		}
+
 		public List<CityObject> LoadCityObjects(float lod, string filterType = "")
 		{
 			List<CityObject> cityObjects = new List<CityObject>();
@@ -86,6 +112,7 @@ namespace Netherlands3D.CityJSON
 			
 			//Traverse the cityobjects as a key value pair, so we can read the unique key name and use it as a default identifier
 			int counter = 0;
+			
 			foreach (KeyValuePair<string, JSONNode> kvp in (JSONObject)cityJsonNode["CityObjects"])
 			{
 				Console.Write("\r" + counter++);
