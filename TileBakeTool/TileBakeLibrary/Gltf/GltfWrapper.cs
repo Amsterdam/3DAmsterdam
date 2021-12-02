@@ -156,7 +156,7 @@ namespace TileBakeLibrary
 			for (int i = 0; i < subMeshes; i++)
 			{
 				var node = new Node() {
-					mesh = 0,
+					mesh = i,
 					name = $"Node-{i}_{tile.position.X}_{tile.position.Y}",
 					scale = new float[3] { 1.0f, 1.0f, -1.0f } //Gltf uses Z in the opposite direction
 				};
