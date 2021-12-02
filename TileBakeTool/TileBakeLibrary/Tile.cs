@@ -66,25 +66,23 @@ namespace TileBakeLibrary
 			{
 				return;
 			}
-
 			subObjects.Add(subObject);
+			
 		}
+
+
 
 		private void CreateSubMesh(int targetSubMeshIndex)
 		{
 			Submesh subMesh;
-			if (submeshes.Count == 0)
-			{
-				subMesh = new Submesh();
-				submeshes.Add(subMesh);
-			}
-			else if (targetSubMeshIndex > submeshes.Count - 1)
+			
+			if (targetSubMeshIndex > submeshes.Count - 1)
 			{
 				var addSubMeshes = targetSubMeshIndex - (submeshes.Count - 1);
 				for (int i = 0; i < addSubMeshes; i++)
 				{
-					subMesh = new Submesh();
-					submeshes.Add(subMesh);
+					
+					submeshes.Add(new Submesh());
 				}
 			}
 		}

@@ -1,0 +1,1 @@
+tilebaketool.exe --source "E:/brondata/terreintest/" --output "E:/brondata/terreintest/output/" --config "E:/brondata/terreintest/settings/test.json"

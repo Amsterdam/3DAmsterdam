@@ -54,6 +54,10 @@ namespace TileBakeLibrary
                     writer.Write(tile.submeshes.Count);
                     for (int i = 0; i < tile.submeshes.Count; i++)
                     {
+                        if (tile.submeshes[i].triangleIndices==null)
+                        {
+                            tile.submeshes[i].triangleIndices = new List<int>();
+                        }
                         List<int> submeshTriangleList = tile.submeshes[i].triangleIndices;
                         writer.Write(submeshTriangleList.Count);
                         writer.Write(tile.submeshes[i].baseVertex);
