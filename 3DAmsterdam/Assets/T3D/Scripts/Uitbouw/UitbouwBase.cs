@@ -119,7 +119,10 @@ namespace Netherlands3D.T3D.Uitbouw
             Extents = new Vector3(Width / 2, Height / 2, Depth / 2);
         }
 
-
+        protected void SetDimensions(Vector3 size)
+        {
+            SetDimensions(size.x, size.z, size.y);
+        }
 
         private void ProcessSnapping()
         {

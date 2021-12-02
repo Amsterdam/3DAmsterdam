@@ -28,18 +28,18 @@ namespace Netherlands3D.T3D.Uitbouw
         void InitializeUserMovementAxes()
         {
 
-            var walls = GetComponentsInChildren<UitbouwMuur>();
-            userMovementAxes = new DragableAxis[walls.Length + 2];
-            for (int i = 0; i < walls.Length; i++)
+            var colliders = GetComponentsInChildren<Collider>();
+            userMovementAxes = new DragableAxis[colliders.Length + 2];
+            for (int i = 0; i < colliders.Length; i++)
             {
-                userMovementAxes[i] = walls[i].gameObject.AddComponent<DragableAxis>();
+                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
                 userMovementAxes[i].SetUitbouw(uitbouw);
             }
 
             var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 
-            userMovementAxes[walls.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
-            userMovementAxes[walls.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
 
         }
 
