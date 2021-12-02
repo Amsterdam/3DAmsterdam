@@ -24,18 +24,8 @@ namespace Netherlands3D.T3D.Uitbouw
         protected Transform bottomBound;
         public virtual Vector3 BottomBoundPosition => bottomBound.position;
 
-        //public override CityPolygon SolidSurfacePolygon
-        //{
-        //    get
-        //    {
-        //        base.SolidSurfacePolygon.UpdateVertices(GetVertices());
-        //        return base.SolidSurfacePolygon;
-        //    }
-        //}
-
-        ////private Vector3[] vertices;
-        //public Vector3[] Vertices => Polygon.Vertices;
-        //public override int[] LocalBoundaries
+        [SerializeField]
+        private SemanticType surfaceType;
 
         public Vector2 Size { get; private set; }
 
@@ -44,13 +34,8 @@ namespace Netherlands3D.T3D.Uitbouw
             if (!meshTransform)
                 meshTransform = transform;
             //assign the meshTransform before calling awake, because the meshTransform is needed to calculate the main surface polygon
-            Surface = new CitySurface(new CityPolygon(GetVertices(), GetBoundaries()));
+            Surface = new CitySurface(new CityPolygon(GetVertices(), GetBoundaries()), surfaceType);
         }
-
-        //protected override CityPolygon InitializeMainSurface()
-        //{
-        //    return new CityPolygon(GetVertices(), GetBoundaries(0));
-        //}
 
         public int[] GetBoundaries()
         {

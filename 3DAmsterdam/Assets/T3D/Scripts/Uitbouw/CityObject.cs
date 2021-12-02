@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using SimpleJSON;
 using System.Linq;
+using System;
 
 public enum CityObjectType
 {
@@ -22,7 +23,7 @@ public enum CityObjectType
     TINRelief = 1100,
     TransportSquare = 1110,
     Tunnel = 1120,
-    WaterBody = 1030,
+    WaterBody = 1130,
 
     //2000-3000: 2nd level city objects. the middle numbers indicates the required parent. e.g 200x has to be a parent of 1000, 201x of 1010 etc.
     BuildingPart = 2000,
@@ -83,11 +84,11 @@ public abstract class CityObject : MonoBehaviour
         if (parent == null && ((int)child.Type < 2000))
             return true;
 
-        if ((int)((int)child.Type / 10 - 200) == (int)((int)parent.Type / 10 - 100))
+        if ((int)((int)child.Type / 10 - 200) == (int)((int)parent.Type / 10 - 100) || ((int)child.Type / 10) == ((int)parent.Type / 10))
             return true;
 
 
-        Debug.Log(child.Type + "\t" + parent, child.gameObject);
+        //Debug.Log(child.Type + "\t" + parent, child.gameObject);
         return false;
     }
 
@@ -133,9 +134,50 @@ public abstract class CityObject : MonoBehaviour
             boundaries.Add(surfaceArray);
         }
         node["boundaries"] = boundaries;
+        node["semantics"] = GetSemantics(Surfaces);
 
         return node;
     }
 
+    private JSONNode GetSemantics(CitySurface[] surfaces)
+    {
+        var node = new JSONObject();
 
+        List<SemanticType> usedTypes = new List<SemanticType>();
+
+        var indices = new JSONArray();
+        for (int i = 0; i < Surfaces.Length; i++)
+        {
+            //for each surface check if it is a new type, and add it to the temp list
+            var surfaceType = Surfaces[i].SurfaceType;
+            Assert.IsTrue (CitySurface.IsValidSemanticType(Type, surfaceType));
+            if (surfaceType != SemanticType.Null && !usedTypes.Contains(surfaceType))
+            {
+                usedTypes.Add(surfaceType);
+            }
+            int index = usedTypes.IndexOf(surfaceType);
+            if (index == -1)
+            {
+                indices.Add(null);
+            }
+            else
+            {
+                indices.Add(index);
+            }
+        }
+
+        // add array of surfaces to the node
+        var surfaceTypes = new JSONArray();
+        for (int i = 0; i < usedTypes.Count; i++)
+        {
+            var obj = new JSONObject(); //each surface type is in its own object
+            obj.Add("type", usedTypes[i].ToString());
+            surfaceTypes.Add(obj);
+        }
+        node["surfaces"] = surfaceTypes;
+
+        //mark each surface with the index from the array, after the type array
+        node["values"] = indices;
+        return node;
+    }
 }
