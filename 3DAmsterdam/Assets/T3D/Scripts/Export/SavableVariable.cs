@@ -34,7 +34,6 @@ public abstract class SaveableVariable<T>
 
     ~SaveableVariable()
     {
-        Debug.Log("destroygin");
         SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 
