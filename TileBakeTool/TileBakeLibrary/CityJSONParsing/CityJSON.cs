@@ -25,8 +25,8 @@ namespace Netherlands3D.CityJSON
 
 		public CityJSON(string filepath, bool applyTransformScale = true, bool applyTransformOffset = true)
 		{
-			string jsonString = File.ReadAllText(filepath);
-			cityJsonNode = JSON.Parse(jsonString);
+			//string jsonString = File.ReadAllText(filepath);
+			cityJsonNode = JSON.StreamParse(filepath);
 
 			if (cityJsonNode == null || cityJsonNode["CityObjects"] == null)
 			{
@@ -35,6 +35,7 @@ namespace Netherlands3D.CityJSON
 			}
 
 			//Get vertices
+			Console.Write("\r reading vertices");
 			vertices = new List<Vector3Double>();
 			textureVertices = new List<Vector2>();
 			Textures = new List<Surfacetexture>();
@@ -82,10 +83,12 @@ namespace Netherlands3D.CityJSON
 			List<CityObject> cityObjects = new List<CityObject>();
 			this.LOD = lod;
 			this.filterType = filterType;
-
+			
 			//Traverse the cityobjects as a key value pair, so we can read the unique key name and use it as a default identifier
+			int counter = 0;
 			foreach (KeyValuePair<string, JSONNode> kvp in (JSONObject)cityJsonNode["CityObjects"])
 			{
+				Console.Write("\r" + counter++);
 				CityObject cityObject = ReadCityObject(kvp.Value, filterType);
 				if (cityObject != null)
 				{
@@ -103,6 +106,7 @@ namespace Netherlands3D.CityJSON
 
 			//Read filer object type
 			var type = node["type"];
+			cityObject.cityObjectType = type.Value;
 			if (filter != "" && (type == null || type != filter))
 			{
 				return null;
@@ -383,7 +387,7 @@ namespace Netherlands3D.CityJSON
 		{
 			List<Semantics> result = new List<Semantics>();
 
-			if (semanticsNode)
+			if (semanticsNode!=null)
 			{
 				foreach (KeyValuePair<string, JSONNode> kvp in semanticsNode)
 				{
@@ -399,7 +403,7 @@ namespace Netherlands3D.CityJSON
 		public List<Semantics> semantics;
 		public List<Surface> surfaces;
 		public List<CityObject> children;
-
+		public string cityObjectType;
 		public string keyName = "";
 
 		public CityObject()

@@ -120,6 +120,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -742,6 +743,173 @@ namespace Bunny83.SimpleJSON
                 throw new Exception("JSON Parse: Quotation marks seems to be messed up.");
             }
             return ctx;
+        }
+
+        public static JSONNode StreamParse(string fileName)
+        {
+            using (StreamReader streamReader = File.OpenText(fileName))
+            {
+                Stack<JSONNode> stack = new Stack<JSONNode>();
+                JSONNode ctx = null;
+                int i = 0;
+                StringBuilder Token = new StringBuilder();
+                string TokenName = "";
+                bool QuoteMode = false;
+                bool TokenIsQuoted = false;
+                char str;
+                while (!streamReader.EndOfStream)
+                {
+                    str = (char)streamReader.Read();
+                    switch (str)
+                    {
+                        case '{':
+                            if (QuoteMode)
+                            {
+                                Token.Append(str);
+                                break;
+                            }
+                            stack.Push(new JSONObject());
+                            if (ctx != null)
+                            {
+                                ctx.Add(TokenName, stack.Peek());
+                            }
+                            TokenName = "";
+                            Token.Length = 0;
+                            ctx = stack.Peek();
+                            break;
+
+                        case '[':
+                            if (QuoteMode)
+                            {
+                                Token.Append(str);
+                                break;
+                            }
+
+                            stack.Push(new JSONArray());
+                            if (ctx != null)
+                            {
+                                ctx.Add(TokenName, stack.Peek());
+                            }
+                            TokenName = "";
+                            Token.Length = 0;
+                            ctx = stack.Peek();
+                            break;
+
+                        case '}':
+                        case ']':
+                            if (QuoteMode)
+                            {
+
+                                Token.Append(str);
+                                break;
+                            }
+                            if (stack.Count == 0)
+                                throw new Exception("JSON Parse: Too many closing brackets");
+
+                            stack.Pop();
+                            if (Token.Length > 0 || TokenIsQuoted)
+                            {
+                                ParseElement(ctx, Token.ToString(), TokenName, TokenIsQuoted);
+                                TokenIsQuoted = false;
+                            }
+                            TokenName = "";
+                            Token.Length = 0;
+                            if (stack.Count > 0)
+                                ctx = stack.Peek();
+                            break;
+
+                        case ':':
+                            if (QuoteMode)
+                            {
+                                Token.Append(str);
+                                break;
+                            }
+                            TokenName = Token.ToString();
+                            Token.Length = 0;
+                            TokenIsQuoted = false;
+                            break;
+
+                        case '"':
+                            QuoteMode ^= true;
+                            TokenIsQuoted |= QuoteMode;
+                            break;
+
+                        case ',':
+                            if (QuoteMode)
+                            {
+                                Token.Append(str);
+                                break;
+                            }
+                            if (Token.Length > 0 || TokenIsQuoted)
+                            {
+                                ParseElement(ctx, Token.ToString(), TokenName, TokenIsQuoted);
+                                TokenIsQuoted = false;
+                            }
+                            TokenName = "";
+                            Token.Length = 0;
+                            TokenIsQuoted = false;
+                            break;
+
+                        case '\r':
+                        case '\n':
+                            break;
+
+                        case ' ':
+                        case '\t':
+                            if (QuoteMode)
+                                Token.Append(str);
+                            break;
+
+                        case '\\':
+                            ++i;
+                            if (QuoteMode)
+                            {
+                                char C = str;
+                                switch (C)
+                                {
+                                    case 't':
+                                        Token.Append('\t');
+                                        break;
+                                    case 'r':
+                                        Token.Append('\r');
+                                        break;
+                                    case 'n':
+                                        Token.Append('\n');
+                                        break;
+                                    case 'b':
+                                        Token.Append('\b');
+                                        break;
+                                    case 'f':
+                                        Token.Append('\f');
+                                        break;
+                                    case 'u':
+                                        { //(char)streamReader.Read()
+                                            string s = $"{(char)streamReader.Read()}{(char)streamReader.Read()}{(char)streamReader.Read()}{(char)streamReader.Read()}" ;//aJSON.Substring(i + 1, 4);
+                                            Token.Append((char)int.Parse(
+                                                s,
+                                                System.Globalization.NumberStyles.AllowHexSpecifier));
+                                            
+                                            break;
+                                        }
+                                    default:
+                                        Token.Append(C);
+                                        break;
+                                }
+                            }
+                            break;
+
+                        default:
+                            Token.Append(str);
+                            break;
+                    }
+                    ++i;
+                }
+                if (QuoteMode)
+                {
+                    throw new Exception("JSON Parse: Quotation marks seems to be messed up.");
+                }
+                return ctx;
+            }
         }
 
     }
@@ -1423,6 +1591,10 @@ namespace Bunny83.SimpleJSON
 
     public static class JSON
     {
+        public static JSONNode StreamParse(string filename)
+        {
+            return JSONNode.StreamParse(filename);
+        }
         public static JSONNode Parse(string aJSON)
         {
             return JSONNode.Parse(aJSON);
