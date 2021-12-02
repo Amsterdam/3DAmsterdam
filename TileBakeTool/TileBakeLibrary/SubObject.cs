@@ -22,6 +22,7 @@ namespace TileBakeLibrary
 		public string id = "";
 		private double distanceMergeThreshold = 0.01;
 		private DMesh3 mesh;
+		public float maxVerticesPerSquareMeter;
 		public void MergeSimilarVertices(float mergeVerticesBelowNormalAngle)
 		{
 			var radians = (Math.PI / 180) * mergeVerticesBelowNormalAngle;
@@ -87,7 +88,7 @@ namespace TileBakeLibrary
         {
 			mesh = new DMesh3(false, false, false, false);
 
-			List<Vector3d> DMeshVertices = new List<Vector3d>();
+			
 			for (int i = 0; i < vertices.Count; i++)
 			{
 				mesh.AppendVertex(new Vector3d(vertices[i].X, vertices[i].Y, vertices[i].Z));
@@ -153,10 +154,11 @@ namespace TileBakeLibrary
             r.SetExternalConstraints(new MeshConstraints());
             MeshConstraintUtil.FixAllBoundaryEdges(r.Constraints, mesh);
 
+
 			int edgecount = mesh.BoundaryEdgeIndices().Count(p=>p>-1);
 			double area = MeshMeasurements.AreaT(mesh, mesh.TriangleIndices());
 			int squareMetersPerVertex = 100;
-            int maxSurfaceCount = (int)(area/squareMetersPerVertex)+edgecount;
+            int maxSurfaceCount = (int)(area*maxVerticesPerSquareMeter)+edgecount;
             if (mesh.VertexCount > maxSurfaceCount)
             {
                 r.ReduceToVertexCount(maxSurfaceCount);
@@ -187,11 +189,13 @@ namespace TileBakeLibrary
 
             for (int x = rdXmin; x < rdXmax; x += 1000)
             {
+				DMesh3 columnMesh = CutColumnMesh(x);
                 for (int y = rdYmin; y < rdYmax; y += 1000)
                 {
-                    SubObject newSubobject = clipMesh(x, y);
+                    SubObject newSubobject = clipMesh(columnMesh, x, y);
                     if (newSubobject != null)
                     {
+
                         subObjects.Add(newSubobject);
                     }
                 }
@@ -201,21 +205,29 @@ namespace TileBakeLibrary
             return subObjects;
 		}
 
-		private SubObject clipMesh(double X, double Y)
+		private DMesh3 CutColumnMesh(double X)
+        {
+			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
+			MeshPlaneCut mpc = new MeshPlaneCut(mesh, new Vector3d(X, 0, 0), new Vector3d(-1, 0, 0));
+			mpc.Cut();
+			clippedMesh = mpc.Mesh;
+			//cut off the right side
+			mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000,0, 0), new Vector3d(1, 0, 0));
+			mpc.Cut();
+			clippedMesh = mpc.Mesh;
+			return clippedMesh;
+			//cut off the top
+		}
+
+		private SubObject clipMesh(DMesh3 columnMesh, double X, double Y)
         {
 			SubObject subObject; 
 			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
-			clippedMesh.Copy(mesh);
-            //cut off the left side
-            MeshPlaneCut mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X, Y, 0), new Vector3d(-1, 0, 0));
-            mpc.Cut();
-            clippedMesh = mpc.Mesh;
-            //cut off the right side
-            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(1, 0, 0));
-            mpc.Cut();
-            clippedMesh = mpc.Mesh;
-            //cut off the top
-            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(0, 1, 0));
+			clippedMesh.Copy(columnMesh);
+
+
+			//cut off the top
+			MeshPlaneCut mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(0, 1, 0));
             mpc.Cut();
             clippedMesh = mpc.Mesh;
             //cut off the bottom
