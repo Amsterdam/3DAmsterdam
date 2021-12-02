@@ -312,14 +312,52 @@ namespace TileBakeLibrary
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
             subObject.id = cityObject.keyName;
+
+
+
             
+            int submeshindex = -1;
+
+            // figure out the intended submesh and required meshDensity
+            for (int i = 0; i < cityObjectFilters.Length; i++)
+            {
+                if (cityObjectFilters[i].objectType == cityObject.cityObjectType)
+                {
+                    submeshindex = cityObjectFilters[i].defaultSubmeshIndex;
+                    subObject.maxVerticesPerSquareMeter = cityObjectFilters[i].maxVerticesPerSquareMeter;
+                    for (int j = 0; j < cityObjectFilters[i].attributeFilters.Length; j++)
+                    {
+                        string attributename = cityObjectFilters[i].attributeFilters[j].attributeName;
+                        for (int k = 0; k < cityObjectFilters[i].attributeFilters[j].valueToSubMesh.Length; k++)
+                        {
+                            string value = cityObjectFilters[i].attributeFilters[j].valueToSubMesh[k].value;
+                            for (int l = 0; l < cityObject.semantics.Count; l++)
+                            {
+                                if (cityObject.semantics[l].name== attributename)
+                                {
+                                    if (cityObject.semantics[l].value == value)
+                                    {
+                                        submeshindex = cityObjectFilters[i].attributeFilters[j].valueToSubMesh[k].submeshIndex;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            subObject.parentSubmeshIndex= submeshindex;
+            if (submeshindex==-1)
+            {
+                return new SubObject();
+            }
+
 
             //If we supplied a specific identifier field, use it as ID instead of object key index
             if (identifier != "")
             {
                 foreach (var semantic in cityObject.semantics)
                 {
-                    Console.WriteLine(semantic.name);
+                    //Console.WriteLine(semantic.name);
                     if (semantic.name == identifier)
                     {
                         subObject.id = semantic.value;
