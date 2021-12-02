@@ -35,6 +35,8 @@ namespace TileBakeLibrary
         private float lod = 0;
         private string filterType = "";
 
+        public string TilingMethod = "Overlap";
+
         private int tileSize = 1000;
 
         private List<SubObject> allSubObjects = new List<SubObject>();
@@ -141,6 +143,7 @@ namespace TileBakeLibrary
                 var cityObjects = CityJSONParseProcess(sourceFiles[index]);
                 
                 allSubObjects.AddRange(cityObjects);
+
                 BakeTiles();
                 allSubObjects.Clear();
             }
@@ -241,6 +244,7 @@ namespace TileBakeLibrary
                 else
                 {
                     //Bake the tile, and lets save it!
+                    
                     tile.Bake();
                     Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
                     
@@ -278,32 +282,72 @@ namespace TileBakeLibrary
             List<SubObject> filteredObjects = new List<SubObject>();
 
             Console.WriteLine($"Parsing CityJSON: {sourceFile}");
-            
+            Console.Write("loading file...");
             var cityJson = new CityJSON(sourceFile, true, true);
-            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod, filterType);
-            Console.WriteLine($"CityObjects found: {cityObjects.Count}");
-
+            Console.Write("\r reading cityobjects");
+            List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
+            Console.WriteLine($"\r CityObjects found: {cityObjects.Count}");
+            Console.Write("---");
+            int done = 0;
+            int parsing = 0;
+            int simplifying = 0;
+            int tiling = 0;
             var filterobjectsBucket = new ConcurrentBag<SubObject>();
             //Turn cityobjects (and their children) into SubObject mesh data
-            Parallel.ForEach(cityObjects, cityObject =>
+            var partitioner = Partitioner.Create(cityObjects, EnumerablePartitionerOptions.NoBuffering);
+            Parallel.ForEach(partitioner, cityObject =>
              {
-                 var subObjects = ToSubObjectMeshData(cityObject);
-
-                 foreach (var subObject in subObjects)
+                 Interlocked.Increment(ref parsing);
+                 Console.Write("\r"+ done + " done; "+ parsing + " parsing; "+ simplifying + " simplifying; "+ tiling +" tiling                    ");
+                 var subObject = ToSubObjectMeshData(cityObject);
+                 cityObject = null;
+                 Interlocked.Decrement(ref parsing);
+                 Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                 cityObject = null;
+                 
+                 if (subObject.maxVerticesPerSquareMeter > 0)
                  {
-                     if (subObject != null)
+                     Interlocked.Increment(ref simplifying);
+                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     subObject.SimplifyMesh();
+                     Interlocked.Decrement(ref simplifying);
+                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                 }
+
+                 if (TilingMethod == "TILED")
+                 {
+                     Interlocked.Increment(ref tiling);
+                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     var newSubobjects = subObject.clipSubobject();
+                     if (newSubobjects.Count == 0)
                      {
                          filterobjectsBucket.Add(subObject);
                      }
+                     else
+                     {
+                         foreach (var newsubObject in newSubobjects)
+                         {
+                             if (newsubObject != null)
+                             {
+                                 filterobjectsBucket.Add(newsubObject);
+                             }
+                         }
+                     }
+                     Interlocked.Decrement(ref tiling);
+                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
                  }
                  
+                 Interlocked.Increment(ref done);
+                 Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                 Console.Write("\r" + done);
+
              }
             );
-
+            Console.WriteLine("file parsed");
             return filterobjectsBucket.ToList();
         }
 
-		private List<SubObject> ToSubObjectMeshData(CityObject cityObject)
+		private SubObject ToSubObjectMeshData(CityObject cityObject)
 		{
             List<SubObject> subObjects = new List<SubObject>();
             var subObject = new SubObject();
@@ -450,6 +494,8 @@ namespace TileBakeLibrary
                     }
                     holes.Add(inner);
 				}
+
+                
 
                 //Turn poly into triangulated geometry data
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
