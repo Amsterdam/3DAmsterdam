@@ -399,29 +399,34 @@ namespace TileBakeLibrary
             }
             subObject.centroid = new Vector2Double(centroid.X / subObject.vertices.Count, centroid.Y / subObject.vertices.Count);
 
-            if (filterType == "LandUse")
-            {
-                subObject.SimplifyMesh();
-                var newSubobjects = subObject.clipSubobject();
-                if (newSubobjects.Count ==0)
-                {
-                    subObjects.Add(subObject);
-                }
-                subObjects = newSubobjects;
-            }
-            else
-            {
-                subObjects.Add(subObject);
-            }
+
+           
 
 
-            return subObjects;
+            return subObject;
         }
 
 		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject)
 		{
+            List<Vector3Double> vertexlist = new List<Vector3Double>();
+            Vector3 defaultNormal = new Vector3(0, 1, 0);
+            List<Vector3> defaultnormalList = new List<Vector3> { defaultNormal, defaultNormal, defaultNormal };
+            List<Vector3> normallist = new List<Vector3>();
+            List<int> indexlist = new List<int>();
+            int count = subObject.vertices.Count;
             foreach (var surface in cityObject.surfaces)
-			{
+			{             
+                //findout if ity is already a triangle
+                if (surface.outerRing.Count == 3 && surface.innerRings.Count == 0)
+                {
+                    List<int> newindices = new List<int> { count, count + 1, count + 2 };
+                    count += 3;
+                    indexlist.AddRange(newindices);
+                    vertexlist.AddRange(surface.outerRing);
+                    normallist.AddRange(defaultnormalList);
+                     continue;
+                }
+
                 //Our mesh output data per surface
                 Vector3[] surfaceVertices;
 				Vector3[] surfaceNormals;
@@ -476,6 +481,13 @@ namespace TileBakeLibrary
 					subObject.triangleIndices.Add(offset + surfaceIndices[j]);
 				}
 			}
+
+            if (vertexlist.Count>0)
+            {
+                subObject.vertices.AddRange(vertexlist);
+                subObject.triangleIndices.AddRange(indexlist);
+                subObject.normals.AddRange(normallist);
+            }
         }
 
 		public void Cancel()
