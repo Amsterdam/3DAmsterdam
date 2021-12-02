@@ -18,7 +18,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private float maxClickDragDistance = 50f;
 
         //[SerializeField]
-        private Uitbouw uitbouw;
+        private UitbouwBase uitbouw;
         private Vector3 offset;
 
         public Vector3 DeltaPosition { get; private set; }
@@ -27,7 +27,7 @@ namespace Netherlands3D.T3D.Uitbouw
         [SerializeField]
         private ColorPalette interactionColors;
 
-        public static DragableAxis CreateDragableAxis(GameObject prefab, Vector3 position, Quaternion rotation, Uitbouw linkedUitbouw)
+        public static DragableAxis CreateDragableAxis(GameObject prefab, Vector3 position, Quaternion rotation, UitbouwBase linkedUitbouw)
         {
             var axisObject = Instantiate(prefab, position, rotation, linkedUitbouw.transform);
             var axis = axisObject.GetComponent<DragableAxis>();
@@ -35,7 +35,7 @@ namespace Netherlands3D.T3D.Uitbouw
             return axis;
         }
 
-        public void SetUitbouw(Uitbouw linkedUitbouw)
+        public void SetUitbouw(UitbouwBase linkedUitbouw)
         {
             uitbouw = linkedUitbouw;
         }

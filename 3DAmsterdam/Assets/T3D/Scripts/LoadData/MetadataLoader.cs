@@ -148,7 +148,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private PerceelRenderer perceel;
 
         //todo: separate?
-        public static Uitbouw Uitbouw { get; private set; }
+        public static UitbouwBase Uitbouw { get; private set; }
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
 
@@ -470,12 +470,12 @@ namespace Netherlands3D.T3D.Uitbouw
             if (UploadedModel && !Uitbouw)
             {
                 var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
-                Uitbouw = obj.GetComponentInChildren<Uitbouw>();
+                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             else if (!Uitbouw)
             {
                 var obj = Instantiate(shapableUitbouwPrefab, pos, Quaternion.identity);
-                Uitbouw = obj.GetComponentInChildren<Uitbouw>();
+                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             //uitbouwPrefab.SetActive(true);
             //uitbouwPrefab.transform.position = pos;

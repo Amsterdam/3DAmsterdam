@@ -8,6 +8,6 @@ public class PlaceUitbouwState : State
     public override void StateCompletedAction()
     {
         base.StateCompletedAction();
-        RestrictionChecker.ActiveUitbouw.SetAllowMovement(false);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false);
     }
 }

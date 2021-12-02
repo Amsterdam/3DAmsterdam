@@ -7,11 +7,11 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class UitbouwMeasurement : DistanceMeasurement
     {
-        private Uitbouw uitbouw;
+        private UitbouwBase uitbouw;
 
         private void Awake()
         {
-            uitbouw = GetComponent<Uitbouw>();
+            uitbouw = GetComponent<UitbouwBase>();
         }
 
         protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)

@@ -113,12 +113,16 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             PrefabName = SaveData.PrefabName.Value;
             var side = (WallSide)SaveData.WallSide.Value;
-            var wall = RestrictionChecker.ActiveUitbouw.GetWall(side);
 
             transform.rotation = SaveData.Rotation.Value;
             transform.position = SaveData.Position.Value;
 
-            SetWall(wall);
+            var shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;
+            if (shapeableUitbouw)
+            {
+                var wall = shapeableUitbouw.GetWall(side);
+                SetWall(wall);
+            }
 
             SetSize(SaveData.Size.Value);
 
@@ -177,7 +181,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             ProcessDrag();
             LimitPositionOnWall();
 
-            if(transform.parent != Wall.transform.parent)
+            if (transform.parent != Wall.transform.parent)
             {
                 transform.SetParent(Wall.transform.parent, true); //for some reason doing this in LoadData() breaks the positioning, so it is done here
             }
