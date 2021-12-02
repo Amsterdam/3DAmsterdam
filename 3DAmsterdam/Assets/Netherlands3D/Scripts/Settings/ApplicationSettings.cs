@@ -8,12 +8,16 @@ using Netherlands3D.JavascriptConnection;
 using Netherlands3D.LayerSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Netherlands3D.Settings {
     public class ApplicationSettings : MonoBehaviour
     {
+		[DllImport("__Internal")]
+		private static extern bool IsMobile();
+
 		[SerializeField]
 		private bool forceMobileDevice = false;
 		private bool isMobileDevice = false;
@@ -58,7 +62,11 @@ namespace Netherlands3D.Settings {
 		private void Awake()
 		{
 			Instance = this;
-			IsMobileDevice = (forceMobileDevice || JavascriptMethodCaller.IsMobileBrowser());
+			IsMobileDevice = forceMobileDevice;
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+			IsMobileDevice = IsMobile();
+#endif
 		}
 
 		void Start()
