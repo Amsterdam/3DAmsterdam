@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace TileBakeLibrary
 {
-    class GltfWrapper
-    {
+	class GltfWrapper
+	{
 		private const int dataSlots = 2; //POSITION and NORMAL for now. TEXCOORD_0 would add 1 more if we add UV's
-
+		private const int skipBelowVertices = 3;
 
 		public static void Save(Tile tile)
 		{
@@ -72,11 +72,12 @@ namespace TileBakeLibrary
 			var uvsByteOffset = normalsByteOffset + 4 + normalsLength;
 			var uvsLength = tile.uvs.Count * 2 * 4; //3 (xy) * 4 float bytes
 
-			var indicesByteOffset = 0;
+			var indicesByteOffset = uvsByteOffset + 4 + uvsLength;
 			var indicesLength = 0;
 
 			//Complete view for vertices and normals. Unique view per submesh for its indices.
-			gltfFile.bufferViews = new Bufferview[2 + tile.submeshes.Count];
+			List<Bufferview> bufferViews = new List<Bufferview>();
+
 			var verticesView = new Bufferview()
 			{
 				buffer = 0,
@@ -89,30 +90,35 @@ namespace TileBakeLibrary
 				byteLength = normalsLength,
 				byteOffset = normalsByteOffset
 			};
-			gltfFile.bufferViews[0] = verticesView;
-			gltfFile.bufferViews[1] = normalsView;
+			bufferViews.Add(verticesView);
+			bufferViews.Add(normalsView);
 
 			//Now a unique indices view per submesh
 			for (int i = 0; i < tile.submeshes.Count; i++)
 			{
 				var subMesh = tile.submeshes[i];
 
-				indicesByteOffset = uvsByteOffset + 12 + uvsLength; //Skip submesh, trianglecount and basevertex
+				indicesByteOffset = indicesByteOffset + 8 + indicesLength; //skip triangles length and base vertex
 				indicesLength = subMesh.triangleIndices.Count * 4; //4 bytes per Uint32
 
-				gltfFile.bufferViews[i + 2] = new Bufferview()
+				if (subMesh.triangleIndices.Count > skipBelowVertices)
 				{
-					buffer = 0,
-					byteLength = indicesLength,
-					byteOffset = indicesByteOffset
-				};
+					bufferViews.Add(new Bufferview()
+					{
+						buffer = 0,
+						byteLength = indicesLength,
+						byteOffset = indicesByteOffset
+					});
+				}
 			}
+
+			gltfFile.bufferViews = bufferViews.ToArray();
 		}
 
 		private static void AddAccessorsForBinaryMeshData(Tile tile, GltfRoot gltfFile)
 		{
 			//We always have two accessors for our big list of vertices and normals
-			gltfFile.accessors = new Accessor[tile.submeshes.Count + 2];
+			List<Accessor> accessors = new List<Accessor>();
 			var vertices = new Accessor()
 			{
 				bufferView = 0,
@@ -122,66 +128,86 @@ namespace TileBakeLibrary
 				min = new float[3] { (float)-tile.size.X, (float)-tile.size.Y, (float)-tile.size.Y },
 				type = "VEC3"
 			};
-			var normals = gltfFile.accessors[1] = new Accessor()
+			var normals = new Accessor()
 			{
 				bufferView = 1,
 				componentType = 5126,
 				count = tile.normals.Count,
 				type = "VEC3"
 			};
-			gltfFile.accessors[0] = vertices;
-			gltfFile.accessors[1] = normals;
+			accessors.Add(vertices);
+			accessors.Add(normals);
 
-			//And add a unique accessor per submesh for their indices 
+			//And add a unique accessor per submesh (if they have triangles)
+			var subMeshWithDataIndex = 0;
 			for (int i = 0; i < tile.submeshes.Count; i++)
 			{
-				var indices = new Accessor()
+				if (tile.submeshes[i].triangleIndices.Count > skipBelowVertices)
 				{
-					bufferView = 2,
-					componentType = 5125,
-					count = tile.submeshes[i].triangleIndices.Count,
-					type = "SCALAR"
-				};
-				gltfFile.accessors[i+2] = indices;
+					var submesh = tile.submeshes[i];
+					var indices = new Accessor()
+					{
+						bufferView = 2 + subMeshWithDataIndex,
+						componentType = 5125,
+						count = submesh.triangleIndices.Count,
+						type = "SCALAR"
+					};
+					accessors.Add(indices);
+					subMeshWithDataIndex++;
+				}
 			}
+			gltfFile.accessors = accessors.ToArray();
 		}
 
 		private static void AddNodesAndSubmeshes(Tile tile, GltfRoot gltfFile)
 		{
 			var subMeshes = tile.submeshes.Count;
-			gltfFile.nodes = new Node[subMeshes];
-			gltfFile.meshes = new Mesh[subMeshes];
-			gltfFile.scenes[0].nodes = new int[tile.submeshes.Count];
 
+			List<Node> nodes = new List<Node>();
+			List<Mesh> meshes = new List<Mesh>();
+
+			int nodeMeshIndex = 0;
 			for (int i = 0; i < subMeshes; i++)
 			{
-				var node = new Node() {
-					mesh = 0,
-					name = $"Node-{i}_{tile.position.X}_{tile.position.Y}",
-					scale = new float[3] { 1.0f, 1.0f, -1.0f } //Gltf uses Z in the opposite direction
-				};
-				var subMesh = new Mesh()
+				var submesh = tile.submeshes[i];
+				if (submesh.triangleIndices.Count > skipBelowVertices)
 				{
-					name = $"Submesh-{i}_{tile.position.X}_{tile.position.Y}",
-					primitives = new Primitive[1]
+					var node = new Node()
 					{
-							new Primitive()
-							{
-								attributes = new Attributes(){
-									POSITION=0,
-									NORMAL=1
-								},
-								indices=i+dataSlots
-							}
-					}
-				};
+						mesh = nodes.Count,
+						name = $"Node-{nodeMeshIndex}_{tile.position.X}_{tile.position.Y}",
+						scale = new float[3] { 1.0f, 1.0f, -1.0f } //Gltf uses Z in the opposite direction
+					};
+					var subMesh = new Mesh()
+					{
+						name = $"Submesh-{nodeMeshIndex}_{tile.position.X}_{tile.position.Y}",
+						primitives = new Primitive[1]
+						{
+								new Primitive()
+								{
+									attributes = new Attributes(){
+										POSITION=0,
+										NORMAL=1
+									},
+									indices=nodeMeshIndex+dataSlots
+								}
+						}
+					};
 
-				gltfFile.nodes[i] = node;
-				gltfFile.meshes[i] = subMesh;
+					nodes.Add(node);
+					meshes.Add(subMesh);
 
-				gltfFile.scenes[0].nodes[i] = i; //Just add all these nodes directly to our single scene
+					nodeMeshIndex++;
+				}
 			}
-			
+
+			gltfFile.nodes = nodes.ToArray();
+			gltfFile.meshes = meshes.ToArray();
+
+			//Add incremental list of index nodes
+			gltfFile.scenes[0].nodes = new int[gltfFile.nodes.Length];
+			for (int i = 0; i < gltfFile.scenes[0].nodes.Length; i++)
+				gltfFile.scenes[0].nodes[i] = i;
 		}
 	}
 }
