@@ -189,7 +189,7 @@ namespace TileBakeLibrary
 
             for (int x = rdXmin; x < rdXmax; x += 1000)
             {
-				DMesh3 columnMesh = CutColumnMesh(x);
+				DMesh3 columnMesh = CutColumnMesh(x,rdYmin);
                 for (int y = rdYmin; y < rdYmax; y += 1000)
                 {
                     SubObject newSubobject = clipMesh(columnMesh, x, y);
@@ -205,16 +205,26 @@ namespace TileBakeLibrary
             return subObjects;
 		}
 
-		private DMesh3 CutColumnMesh(double X)
+		private DMesh3 CutColumnMesh(double X, double Y)
         {
 			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
-			MeshPlaneCut mpc = new MeshPlaneCut(mesh, new Vector3d(X, 0, 0), new Vector3d(-1, 0, 0));
-			mpc.Cut();
-			clippedMesh = mpc.Mesh;
-			//cut off the right side
-			mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000,0, 0), new Vector3d(1, 0, 0));
-			mpc.Cut();
-			clippedMesh = mpc.Mesh;
+			clippedMesh.Copy(mesh);
+			MeshPlaneCut mpc;
+			var bounds = MeshMeasurements.Bounds(clippedMesh, null);
+            if (bounds.Min.x<X)
+            {
+				//cut of the left side
+				mpc = new MeshPlaneCut(mesh, new Vector3d(X, Y, 0), new Vector3d(-1, 0, 0));
+				mpc.Cut();
+				clippedMesh = mpc.Mesh;
+			}
+            if (bounds.Max.x>X+1000)
+            {
+				//cut off the right side
+				mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(1, 0, 0));
+				mpc.Cut();
+				clippedMesh = mpc.Mesh;
+			}
 			return clippedMesh;
 			//cut off the top
 		}
@@ -225,21 +235,30 @@ namespace TileBakeLibrary
 			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
 			clippedMesh.Copy(columnMesh);
 
-
+			var bounds = MeshMeasurements.Bounds(clippedMesh, null);
 			//cut off the top
-			MeshPlaneCut mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(0, 1, 0));
-            mpc.Cut();
-            clippedMesh = mpc.Mesh;
-            //cut off the bottom
-            mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X, Y, 0), new Vector3d(0, -1, 0));
-            mpc.Cut();
-            clippedMesh = mpc.Mesh;
+			MeshPlaneCut mpc;
+            if (bounds.Max.y>Y+1000)
+            {
+				//cut off the top
+				mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X + 1000, Y + 1000, 0), new Vector3d(0, 1, 0));
+				mpc.Cut();
+				clippedMesh = mpc.Mesh;
+			}
+            if (bounds.Min.y<Y)
+            {
+				//cut off the bottom
+				mpc = new MeshPlaneCut(clippedMesh, new Vector3d(X, Y, 0), new Vector3d(0, -1, 0));
+				mpc.Cut();
+				clippedMesh = mpc.Mesh;
+			}
+           
             if (clippedMesh.VertexCount>0)
             {
 				//create new subobject
 				subObject = new SubObject();
-				var center = MeshMeasurements.Centroid(clippedMesh);
-				subObject.centroid = new Vector2Double(center.x, center.y);
+				//var center = MeshMeasurements.Centroid(clippedMesh);
+				subObject.centroid = new Vector2Double(X+500, Y+500);
 				subObject.id = id;
 				subObject.parentSubmeshIndex = parentSubmeshIndex;
 				subObject.mesh = clippedMesh;
