@@ -12,7 +12,7 @@ public class BoundaryFeatureCityObject : CityObject
         var bf = GetComponent<BoundaryFeature>();
 
         SetParents(new CityObject[] {
-            RestrictionChecker.ActiveUitbouw
+            RestrictionChecker.ActiveUitbouw.GetComponent<CityObject>()
             });
 
         return new CitySurface[] { bf.Surface };
