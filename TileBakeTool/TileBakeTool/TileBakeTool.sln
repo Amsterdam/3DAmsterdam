@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileBakeTool", "TileBakeTool.csproj", "{0BAF596B-2C1D-48D5-A699-19ED690AAC4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA} = {7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileBakeLibrary", "..\TileBakeLibrary\TileBakeLibrary.csproj", "{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BAF596B-2C1D-48D5-A699-19ED690AAC4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BAF596B-2C1D-48D5-A699-19ED690AAC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BAF596B-2C1D-48D5-A699-19ED690AAC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BAF596B-2C1D-48D5-A699-19ED690AAC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7B2E84-D073-46CB-8FA7-1BE28C8595AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2DDFF1B-B2DA-4A74-B3E8-C9108B31F82F}
+	EndGlobalSection
+EndGlobal
