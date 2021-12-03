@@ -33,6 +33,11 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         rootObject[key] = value;
     }
 
+    public void DeleteKey(string key)
+    {
+        rootObject.Remove(key);
+    }
+
     public void ExportSaveData(string sessionId)
     {
         Debug.Log("Saving data: " + rootObject.ToString());

@@ -51,6 +51,16 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             Rotation.SetValue(rotation);
             Size.SetValue(size);
         }
+
+        public void DeleteKeys()
+        {
+            Id.Delete();
+            PrefabName.Delete();
+            WallSide.Delete();
+            Position.Delete();
+            Rotation.Delete();
+            Size.Delete();
+        }
     }
 
     public class BoundaryFeature : SquareSurface

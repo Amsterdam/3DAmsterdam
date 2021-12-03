@@ -134,22 +134,25 @@ public abstract class CityObject : MonoBehaviour
             boundaries.Add(surfaceArray);
         }
         node["boundaries"] = boundaries;
-        node["semantics"] = GetSemantics(Surfaces);
+
+        var semantics = GetSemantics(Surfaces, out var allAreNull);
+        if (!allAreNull)
+            node["semantics"] = semantics;
 
         return node;
     }
 
-    private JSONNode GetSemantics(CitySurface[] surfaces)
+    private JSONNode GetSemantics(CitySurface[] surfaces, out bool allAreNull)
     {
         var node = new JSONObject();
 
         List<SemanticType> usedTypes = new List<SemanticType>();
 
         var indices = new JSONArray();
-        for (int i = 0; i < Surfaces.Length; i++)
+        for (int i = 0; i < surfaces.Length; i++)
         {
             //for each surface check if it is a new type, and add it to the temp list
-            var surfaceType = Surfaces[i].SurfaceType;
+            var surfaceType = surfaces[i].SurfaceType;
             Assert.IsTrue (CitySurface.IsValidSemanticType(Type, surfaceType));
             if (surfaceType != SemanticType.Null && !usedTypes.Contains(surfaceType))
             {
@@ -174,10 +177,13 @@ public abstract class CityObject : MonoBehaviour
             obj.Add("type", usedTypes[i].ToString());
             surfaceTypes.Add(obj);
         }
+
         node["surfaces"] = surfaceTypes;
 
         //mark each surface with the index from the array, after the type array
         node["values"] = indices;
+
+        allAreNull = usedTypes.Count == 0;
         return node;
     }
 }

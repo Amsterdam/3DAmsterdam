@@ -24,6 +24,11 @@ public class PlayerPrefsSessionSaver : IDataSaver
         PlayerPrefs.SetString(key, value);
     }
 
+    public void DeleteKey(string key)
+    {
+        PlayerPrefs.DeleteKey(key);
+    }
+
     public void ClearAllData(string sessionId)
     {
         PlayerPrefs.DeleteAll();

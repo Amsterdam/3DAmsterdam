@@ -1,3 +1,4 @@
+using System;
 using ConvertCoordinates;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public abstract class SaveableVariable<T>
     public T Value { get; protected set; }
     public abstract void Save();
     public abstract void Load();
+    public abstract void Delete();
 
     public SaveableVariable(string key)
     {
@@ -34,7 +36,7 @@ public abstract class SaveableVariable<T>
 
     ~SaveableVariable()
     {
-        Debug.Log("destroygin");
+        Debug.Log("finalizing: " + Key);
         SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 
@@ -69,6 +71,11 @@ public class SaveableFloat : SaveableVariable<float>
     {
         SessionSaver.SaveFloat(Key, Value);
     }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key);
+    }
 }
 
 public class SaveableInt : SaveableVariable<int>
@@ -90,6 +97,11 @@ public class SaveableInt : SaveableVariable<int>
     {
         SessionSaver.SaveInt(Key, Value);
     }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key);
+    }
 }
 
 public class SaveableString : SaveableVariable<string>
@@ -106,6 +118,11 @@ public class SaveableString : SaveableVariable<string>
     public override void Save()
     {
         SessionSaver.SaveString(Key, Value);
+    }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key);
     }
 }
 
@@ -130,6 +147,13 @@ public class SaveableVector3 : SaveableVariable<Vector3>
         SessionSaver.SaveFloat(Key + ".y", Value.y);
         SessionSaver.SaveFloat(Key + ".z", Value.z);
     }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key + ".x");
+        SessionSaver.DeleteKey(Key + ".y");
+        SessionSaver.DeleteKey(Key + ".z");
+    }
 }
 
 public class SaveableVector3RD : SaveableVariable<Vector3RD>
@@ -153,6 +177,13 @@ public class SaveableVector3RD : SaveableVariable<Vector3RD>
         SessionSaver.SaveFloat(Key + ".y", (float)Value.y);
         SessionSaver.SaveFloat(Key + ".z", (float)Value.z);
     }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key + ".x");
+        SessionSaver.DeleteKey(Key + ".y");
+        SessionSaver.DeleteKey(Key + ".z");
+    }
 }
 
 public class SaveableBool : SaveableVariable<bool>
@@ -169,6 +200,11 @@ public class SaveableBool : SaveableVariable<bool>
     public override void Save()
     {
         SessionSaver.SaveInt(Key, Value ? 1 : 0);
+    }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key);
     }
 }
 
@@ -221,5 +257,13 @@ public class SaveableQuaternion : SaveableVariable<Quaternion>
         SessionSaver.SaveFloat(Key + ".y", Value.y);
         SessionSaver.SaveFloat(Key + ".z", Value.z);
         SessionSaver.SaveFloat(Key + ".w", Value.w);
+    }
+
+    public override void Delete()
+    {
+        SessionSaver.DeleteKey(Key + ".x");
+        SessionSaver.DeleteKey(Key + ".y");
+        SessionSaver.DeleteKey(Key + ".z");
+        SessionSaver.DeleteKey(Key + ".w");
     }
 }
