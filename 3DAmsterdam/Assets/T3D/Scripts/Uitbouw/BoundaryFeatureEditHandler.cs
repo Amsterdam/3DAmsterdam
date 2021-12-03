@@ -12,6 +12,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     public class BoundaryFeatureEditHandler : MonoBehaviour
     {
         public BoundaryFeature ActiveFeature { get; private set; }
+        public bool AllowBoundaryFeatureEditing { get; private set; } = true;
+
+        private Vector3 featureDeltaPos;
 
         public void SelectFeature(BoundaryFeature feature)
         {
@@ -29,7 +32,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void Update()
         {
-            ProcessUserInput();
+            if (AllowBoundaryFeatureEditing)
+            {
+                ProcessUserInput();
+
+                if (ActiveFeature)
+                    ProcessDrag(ActiveFeature);
+            }
         }
 
         private void ProcessUserInput()
@@ -51,6 +60,34 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 {
                     SelectFeature(clickedBoundaryFeature);
                 }
+            }
+        }
+
+        private void ProcessDrag(BoundaryFeature feature)
+        {
+            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+            var mask = LayerMask.GetMask("Maskable");
+            bool casted = Physics.Raycast(ray, out var hit, Mathf.Infinity, mask);
+
+
+            if (casted && Input.GetMouseButtonDown(0))
+            {
+                featureDeltaPos = hit.point - feature.transform.position;
+            }
+
+            ObjectClickHandler.GetDrag(out var wallCollider, mask);
+            if (ObjectClickHandler.GetDragOnObject(feature.GetComponentInChildren<Collider>(), true) && casted && feature.Wall.GetComponent<Collider>() == wallCollider)
+            {
+                feature.transform.position = hit.point - featureDeltaPos;
+            }
+        }
+
+        public void SetAllowBoundaryFeatureEditing(bool allow)
+        {
+            AllowBoundaryFeatureEditing = allow;
+            if (!allow && ActiveFeature)
+            {
+                DeselectFeature();
             }
         }
     }

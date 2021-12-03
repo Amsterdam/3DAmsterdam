@@ -36,7 +36,6 @@ public abstract class SaveableVariable<T>
 
     ~SaveableVariable()
     {
-        Debug.Log("finalizing: " + Key);
         SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 
