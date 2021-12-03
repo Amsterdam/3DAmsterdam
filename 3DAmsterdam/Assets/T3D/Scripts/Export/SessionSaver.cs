@@ -64,6 +64,11 @@ public static class SessionSaver
         return Loader.LoadString(key);
     }
 
+    public static void DeleteKey(string key)
+    {
+        Saver.DeleteKey(key);
+    }
+
     public static void ExportSavedData()
     {
          Saver.ExportSaveData(SessionId);
