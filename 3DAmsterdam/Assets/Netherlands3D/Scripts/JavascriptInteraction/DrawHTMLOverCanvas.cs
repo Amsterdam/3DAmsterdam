@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,10 @@ namespace Netherlands3D.JavascriptConnection
 {
 	public class DrawHTMLOverCanvas : MonoBehaviour
 	{
+		[DllImport("__Internal")]
+		private static extern void DisplayDOMObjectWithID(string id = "htmlID", string display = "none", float x = 0, float y = 0, float width = 0, float height = 0, float offsetX = 0, float offsetY = 0);
+
+
 		[SerializeField]
 		private string htmlObjectID = "";
 
@@ -24,11 +29,22 @@ namespace Netherlands3D.JavascriptConnection
 			image = GetComponent<Image>();
 		}
 
+
+#if !UNITY_EDITOR && UNITY_WEBGL
 		private void Update()
 		{
 			if (alignEveryUpdate)
 				AlignHTMLOverlay();
 		}
+		private void OnEnable()
+        {
+            AlignHTMLOverlay();
+        }
+        private void OnDisable()
+        {
+            DisplayDOMObjectWithID(htmlObjectID,"none");
+        }
+#endif
 
 		/// <summary>
 		/// Tell JavaScript to make a DOM object with htmlObjectID to align with the Image component
@@ -36,7 +52,8 @@ namespace Netherlands3D.JavascriptConnection
 		private void AlignHTMLOverlay()
 		{
 			var screenSpaceRectangle = GetScreenSpaceRectangle();
-			JavascriptMethodCaller.DisplayWithID(htmlObjectID, true,
+
+			DisplayDOMObjectWithID(htmlObjectID, "inline",
 				screenSpaceRectangle.x / Screen.width,
 				screenSpaceRectangle.y / Screen.height,
 				screenSpaceRectangle.width / Screen.width,
@@ -56,17 +73,5 @@ namespace Netherlands3D.JavascriptConnection
 			screenSpaceRectangle.y -= ((1.0f - image.rectTransform.pivot.y) * size.y);
 			return screenSpaceRectangle;
 		}
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        private void OnEnable()
-        {
-            AlignHTMLOverlay();
-        }
-
-        private void OnDisable()
-        {
-            JavascriptMethodCaller.DisplayWithID(htmlObjectID,false);
-        }
-#endif
 	}
 }

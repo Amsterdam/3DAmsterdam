@@ -32,6 +32,9 @@ namespace Netherlands3D.Interface.Sharing
 		[DllImport("__Internal")]
 		private static extern void SyncFilesToIndexedDB();
 
+		[DllImport("__Internal")]
+		private static extern string SetUniqueShareURL(string token);
+
 		[SerializeField]
 		private RectTransform shareOptions;
 
@@ -197,8 +200,9 @@ namespace Netherlands3D.Interface.Sharing
 
 			sharedURL.ShowURL(sharedSceneURL);
 
-			JavascriptMethodCaller.SetUniqueShareURLToken(currentSceneServerReturn.sceneId);
-
+			#if !UNITY_EDITOR && UNITY_WEBGL
+			SetUniqueShareURL(currentSceneServerReturn.sceneId);
+			#endif
 			yield return null;
 		}
 

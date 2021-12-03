@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Netherlands3D.JavascriptConnection {
     public class ChangePointerStyleHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [DllImport("__Internal")]
+        private static extern string SetCSSCursor(string cursorName = "pointer");
+
         public enum Style{
             AUTO,    
             POINTER,
@@ -53,7 +57,9 @@ namespace Netherlands3D.JavascriptConnection {
                     cursorString = "progress";
                     break;
             }
-            JavascriptMethodCaller.ChangeCursor(cursorString);
+            #if !UNITY_EDITOR && UNITY_WEBGL
+            SetCSSCursor(cursorString);
+            #endif
         }
 
         public void OnPointerEnter(PointerEventData eventData)
