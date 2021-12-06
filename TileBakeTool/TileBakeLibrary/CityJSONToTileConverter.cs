@@ -402,7 +402,7 @@ namespace TileBakeLibrary
             subObject.normals = new List<Vector3>();
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
-            subObject.id = cityObject.keyName;
+            subObject.id = cityObject.keyName.Replace(removeFromID,"");
             
             int submeshindex = -1;
 

@@ -67,7 +67,6 @@ public class SubObjects : MonoBehaviour
 				var version = reader.ReadInt32();
 				var subObjects = reader.ReadInt32();
 				Debug.Log("Metadata subobject count: " + subObjects);
-				int currentMeshIndex = 0;
 				for (int i = 0; i < subObjects; i++)
 				{
 					var id = reader.ReadString();
@@ -79,11 +78,10 @@ public class SubObjects : MonoBehaviour
 					SubObjectsData.Add(new SubOjectData()
 					{
 						objectID = id,
-						startIndex = currentMeshIndex,
+						startIndex = firstIndex,
 						length = indicesLength,
 						subMeshID = subMeshID
 					});
-					currentMeshIndex += indicesLength;
 				}
 			}
 		}
