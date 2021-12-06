@@ -70,7 +70,10 @@ public class SubObjects : MonoBehaviour
 				for (int i = 0; i < subObjects; i++)
 				{
 					var id = reader.ReadString();
+					var firstIndex = reader.ReadInt32();
 					var indicesLength = reader.ReadInt32();
+					var firstVertex = reader.ReadInt32();
+					var vertexCount = reader.ReadInt32();
 					SubObjectsData.Add(new SubOjectData()
 					{
 						objectID = id,

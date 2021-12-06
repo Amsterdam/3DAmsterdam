@@ -287,9 +287,8 @@ namespace TileBakeLibrary
 		{
             BinaryMeshData bmd = new BinaryMeshData();
             bmd.ImportData(tile);
-            bmd = null;
             
-            // Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
+            Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
         }
 
         private List<SubObject> CityJSONParseProcess(string sourceFile)

@@ -139,15 +139,17 @@ public class BinaryMeshConversion : MonoBehaviour
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 var version = reader.ReadInt32();
-                //Debug.Log("V: " + version);
+                var vertexCount = reader.ReadInt32();
+                var normalsCount = reader.ReadInt32();
+                var uvsCount = reader.ReadInt32();
+                var indicesCount = reader.ReadInt32();
+                var submeshCount = reader.ReadInt32();
 
                 var mesh = new Mesh();
                 mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-                var vertLength = reader.ReadInt32();
-                //Debug.Log("Vert length:" + vertLength);
-                Vector3[] vertices = new Vector3[vertLength];
-                for (int i = 0; i < vertLength; i++)
+                Vector3[] vertices = new Vector3[vertexCount];
+                for (int i = 0; i < vertexCount; i++)
                 {
                     Vector3 vertex = new Vector3(
                         reader.ReadSingle(),
@@ -158,10 +160,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.vertices = vertices;
 
-                var normalsLength = reader.ReadInt32();
-                //Debug.Log("Normals length:" + vertLength);
-                Vector3[] normals = new Vector3[normalsLength];
-                for (int i = 0; i < normalsLength; i++)
+                Vector3[] normals = new Vector3[normalsCount];
+                for (int i = 0; i < normalsCount; i++)
                 {
                     Vector3 normal = new Vector3(
                         reader.ReadSingle(),
@@ -172,10 +172,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.normals = normals;
 
-                var uvLength = reader.ReadInt32();
-                //Debug.Log("UVs length:" + uvLength);
-                Vector2[] uvs = new Vector2[uvLength];
-                for (int i = 0; i < uvLength; i++)
+                Vector2[] uvs = new Vector2[uvsCount];
+                for (int i = 0; i < uvsCount; i++)
                 {
                     Vector2 uv = new Vector2(
                         reader.ReadSingle(),
@@ -185,24 +183,22 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.uv = uvs;
 
-                //Submeshes
-                var submeshes = reader.ReadInt32();
-                mesh.subMeshCount = submeshes;
-                //Debug.Log("Submeshes: " + submeshes);
-                for (int i = 0; i < submeshes; i++)
+                mesh.subMeshCount = submeshCount;
+
+                for (int i = 0; i < submeshCount; i++)
                 {
-                    //Debug.Log("Submesh: " + i);
-                    
-                    var trianglesLength = reader.ReadInt32();
+                    var subMeshID = reader.ReadInt32();
+                    var firstIndex = reader.ReadInt32();
+                    var indexCount = reader.ReadInt32();
                     var baseVertex = reader.ReadInt32();
-                    int[] triangles = new int[trianglesLength];
+                    int[] triangles = new int[indexCount];
                     //Debug.Log("Triangle length:" + trianglesLength);
-                    for (int j = 0; j < trianglesLength; j++)
+                    for (int j = 0; j < indexCount; j++)
                     {
                         triangles[j] = reader.ReadInt32();
                     }
                     //mesh.SetIndices(triangles, MeshTopology.Triangles, i);
-                    mesh.SetIndices(triangles, MeshTopology.Triangles, i, false, baseVertex);
+                    mesh.SetIndices(triangles, MeshTopology.Triangles, i, false, 0);
                 }
 
                 return mesh;

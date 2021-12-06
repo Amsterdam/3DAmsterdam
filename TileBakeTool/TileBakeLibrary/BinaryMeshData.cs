@@ -150,14 +150,14 @@ namespace TileBakeLibrary.BinaryMesh
             }
         }
 
-        private  void ExpandSubmeshList(int submeshindex)
+        private void ExpandSubmeshList(int submeshIndex)
         {
-            int addamount = submeshindex+1 - submeshes.Count;
-            for (int i = 0; i < addamount; i++)
+            int addAmount = submeshIndex+1 - submeshes.Count;
+            for (int i = 0; i < addAmount; i++)
             {
-                Submesh newsubmesh = new Submesh();
-                newsubmesh.index = submeshes.Count;
-                submeshes.Add(newsubmesh);
+                Submesh newSubmesh = new Submesh();
+                newSubmesh.index = submeshes.Count;
+                submeshes.Add(newSubmesh);
             }
         }
     }
