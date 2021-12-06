@@ -23,16 +23,18 @@ namespace TileBakeLibrary
                 {
                     var version = reader.ReadInt32();
                     mesh.version = version;
-                    var vertexcount = reader.ReadInt32();
-                    mesh.vertexCount = vertexcount;
-                    var normalscount = reader.ReadInt32();
-                    mesh.normalsCount = normalscount;
+                    var vertexCount = reader.ReadInt32();
+                    mesh.vertexCount = vertexCount;
+                    var normalsCount = reader.ReadInt32();
+                    mesh.normalsCount = normalsCount;
+                    var uvCount = reader.ReadInt32();
+                    mesh.uvCount = normalsCount;
                     var indicescount = reader.ReadInt32();
                     mesh.indexCount = indicescount;
                     var submeshcount = reader.ReadInt32();
                     mesh.submeshCount = submeshcount;
                     
-                    for (int i = 0; i < vertexcount; i++)
+                    for (int i = 0; i < vertexCount; i++)
                     {
                         mesh.vertices.Add(new Vector3(
                             reader.ReadSingle(),
@@ -40,10 +42,17 @@ namespace TileBakeLibrary
                             reader.ReadSingle()
                          ));
                     }
-                    for (int i = 0; i < normalscount; i++)
+                    for (int i = 0; i < normalsCount; i++)
                     {
                         mesh.normals.Add(new Vector3(
                             reader.ReadSingle(),
+                            reader.ReadSingle(),
+                            reader.ReadSingle()
+                         ));
+                    }
+                    for (int i = 0; i < uvCount; i++)
+                    {
+                        mesh.uvs.Add(new Vector2(
                             reader.ReadSingle(),
                             reader.ReadSingle()
                          ));

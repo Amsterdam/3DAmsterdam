@@ -165,12 +165,14 @@ namespace TileBakeLibrary.BinaryMesh
     public class MeshData
     {
         public int version;
+
         public int vertexCount;
         public List<Vector3> vertices = new List<Vector3>();
         public int normalsCount;
         public List<Vector3> normals = new List<Vector3>();
-        public int uvLength;
-        public List<Vector2> uvs;
+        public int uvCount;
+        public List<Vector2> uvs = new List<Vector2>();
+
         public List<int> indices = new List<int>();
         public int indexCount;
         public int submeshCount;

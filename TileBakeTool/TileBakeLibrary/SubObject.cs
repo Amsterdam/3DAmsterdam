@@ -31,14 +31,14 @@ namespace TileBakeLibrary
 			Vector3 normal;
 			int oldIndex =0;
 			int newIndex = 0;
-			Dictionary< vertexNormalCombination,int> verts = new Dictionary<vertexNormalCombination,int>();
+			Dictionary< VertexNormalCombination,int> verts = new Dictionary<VertexNormalCombination,int>();
 			Dictionary<int, int> indexmap = new Dictionary<int, int>(); // old index --> new index
             for (int i = 0; i < triangleIndices.Count; i++)
             {
 				oldIndex = triangleIndices[i];
 				vertex = vertices[oldIndex];
 				normal = normals[oldIndex];
-				vertexNormalCombination vnc = new vertexNormalCombination(vertex, normal);
+				VertexNormalCombination vnc = new VertexNormalCombination(vertex, normal);
                 if (!verts.ContainsKey(vnc))
                 {
 					newIndex = cleanedVertices.Count();
@@ -99,7 +99,7 @@ namespace TileBakeLibrary
 		}
 
 
-		private void createMesh()
+		private void CreateMesh()
         {
 			mesh = new DMesh3(false, false, false, false);
 
@@ -116,7 +116,7 @@ namespace TileBakeLibrary
 			MeshNormals.QuickCompute(mesh);
 		}
 
-		private void saveMesh()
+		private void SaveMesh()
         {
 			vertices.Clear();
 			WriteMesh outputMesh = new WriteMesh(mesh);
@@ -150,7 +150,7 @@ namespace TileBakeLibrary
         {
             if (mesh == null)
             {
-				createMesh();
+				CreateMesh();
             }
 
 			//MergeSimilarVertices(50);
@@ -183,11 +183,10 @@ namespace TileBakeLibrary
 
            mesh = r.Mesh;
 
-			saveMesh();
+			SaveMesh();
 
 
 		}
-
 		public void ClipSpikes(float floor, float ceiling)
         {
 			List<Vector3Double> correctverts = vertices.Where(o => o.Z < ceiling && o.Z > floor).ToList();
@@ -214,12 +213,10 @@ namespace TileBakeLibrary
                 }
             }
 		}
-
-
 		public List<SubObject> clipSubobject(Vector2 size)
         {
 			List<SubObject> subObjects = new List<SubObject>();
-			createMesh();
+			CreateMesh();
 			var bounds = MeshMeasurements.Bounds(mesh, null);
 			// find the coordinates of the tile-borders around the object
 			int rdXmin = (int)Math.Floor(bounds.Min.x/size.X)*(int)size.X;
@@ -238,7 +235,7 @@ namespace TileBakeLibrary
 				DMesh3 columnMesh = CutColumnMesh(x,rdYmin);
                 for (int y = rdYmin; y < rdYmax; y += (int)size.Y)
                 {
-                    SubObject newSubobject = clipMesh(columnMesh, x, y);
+                    SubObject newSubobject = ClipMesh(columnMesh, x, y);
                     if (newSubobject != null)
                     {
 
@@ -246,7 +243,6 @@ namespace TileBakeLibrary
                     }
                 }
             }
-
 
             return subObjects;
 		}
@@ -275,7 +271,7 @@ namespace TileBakeLibrary
 			//cut off the top
 		}
 
-		private SubObject clipMesh(DMesh3 columnMesh, double X, double Y)
+		private SubObject ClipMesh(DMesh3 columnMesh, double X, double Y)
         {
 			SubObject subObject; 
 			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
@@ -308,7 +304,7 @@ namespace TileBakeLibrary
 				subObject.id = id;
 				subObject.parentSubmeshIndex = parentSubmeshIndex;
 				subObject.mesh = clippedMesh;
-				subObject.saveMesh();
+				subObject.SaveMesh();
 
 				return subObject;
             }
@@ -316,18 +312,19 @@ namespace TileBakeLibrary
 			return null;
         }
 	}
-	 struct vertexNormalCombination : IEquatable<vertexNormalCombination>
+	struct VertexNormalCombination : IEquatable<VertexNormalCombination>
 	{
 		public Vector3 normal;
 		public Vector3Double vertex;
 
-		public vertexNormalCombination(Vector3Double vertex, Vector3 normal)
+		public VertexNormalCombination(Vector3Double vertex, Vector3 normal)
 		{
 			this.vertex = vertex;
 			this.normal = normal;
 
 		}
-		public bool Equals(vertexNormalCombination other)
+
+		public bool Equals(VertexNormalCombination other)
         {
 			float deltaX = Math.Abs(other.normal.X - normal.X);
 			float deltaY = Math.Abs(other.normal.Y - normal.Y);
@@ -342,8 +339,8 @@ namespace TileBakeLibrary
             {
 				return true;
             }
+
 			return false;
-            
         }
     }
 }

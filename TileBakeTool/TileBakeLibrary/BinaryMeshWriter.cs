@@ -26,6 +26,7 @@ namespace TileBakeLibrary
                     // vertexcount
                     writer.Write(meshdata.vertexCount);
                     writer.Write(meshdata.normalsCount);
+                    writer.Write(meshdata.uvCount);
                     writer.Write(meshdata.indexCount);
                     writer.Write(meshdata.submeshCount);
 
@@ -44,11 +45,11 @@ namespace TileBakeLibrary
                         writer.Write(normal.Z);
                     }
                     //write uv's
-                    /*foreach (Vector2 uv in meshdata.uvs)
+                    foreach (Vector2 uv in meshdata.uvs)
                     {
                         writer.Write(uv.X);
                         writer.Write(uv.Y);
-                    }*/
+                    }
                     // write indices
                     foreach (int index in meshdata.indices)
                     {
