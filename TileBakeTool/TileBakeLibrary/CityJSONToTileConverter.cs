@@ -317,21 +317,22 @@ namespace TileBakeLibrary
 			{
 				Interlocked.Increment(ref parsing);
 				CityObject cityObject = cityJson.LoadCityObjectByIndex(i, lod);
-
                 LogStates(skipped, done, parsing, simplifying, tiling);
 
                 var subObject = ToSubObjectMeshData(cityObject);
-				//cityJson.ClearCityObject(cityObject.keyName);
-				cityObject = null;
+                if (subObject == null)
+                {
+                    Interlocked.Increment(ref done);
+                    Interlocked.Increment(ref skipped);
+                    return;
+                }
+                subObject.id = subObject.id.Replace(removeFromID, "");
+
+                cityObject = null;
 				Interlocked.Decrement(ref parsing);
 				cityObject = null;
 
-				if (subObject == null)
-				{
-					Interlocked.Increment(ref done);
-					Interlocked.Increment(ref skipped);
-					return;
-				}
+				
 				LogStates(skipped, done, parsing, simplifying, tiling);
 
 				if (subObject.maxVerticesPerSquareMeter > 0)
@@ -402,7 +403,7 @@ namespace TileBakeLibrary
             subObject.normals = new List<Vector3>();
             subObject.uvs = new List<Vector2>();
             subObject.triangleIndices = new List<int>();
-            subObject.id = cityObject.keyName.Replace(removeFromID,"");
+            subObject.id = cityObject.keyName;
             
             int submeshindex = -1;
 
