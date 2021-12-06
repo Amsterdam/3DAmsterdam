@@ -87,9 +87,9 @@ namespace Netherlands3D.Interface.Layers
 			//If we set a linkedObject manualy, get the color.
 			if (LinkedObject)
 			{
-				var assetBundleMeshLayer = LinkedObject.GetComponent<AssetbundleMeshLayer>();
-				if (assetBundleMeshLayer && UniqueLinkedObjectMaterials.Count == 0) 
-					UniqueLinkedObjectMaterials = assetBundleMeshLayer.DefaultMaterialList;
+				var binaryMeshLayer = LinkedObject.GetComponent<BinaryMeshLayer>();
+				if (binaryMeshLayer && UniqueLinkedObjectMaterials.Count == 0) 
+					UniqueLinkedObjectMaterials = binaryMeshLayer.DefaultMaterialList;
 
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();

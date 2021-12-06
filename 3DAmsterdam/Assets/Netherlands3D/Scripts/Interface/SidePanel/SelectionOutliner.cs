@@ -51,10 +51,10 @@ namespace Netherlands3D.Interface.SidePanel
 		public void Close()
 		{
 			//Did we close a SelectByID selection?
-			var selectByID = linkedGameObject.GetComponent<SelectByID>();
-			if (selectByID)
+			var selectSubObjects = linkedGameObject.GetComponent<SelectSubObjects>();
+			if (selectSubObjects)
 			{
-				selectByID.DeselectSpecificID(Id);
+				selectSubObjects.DeselectSpecificID(Id);
 				return;
 			}
 
