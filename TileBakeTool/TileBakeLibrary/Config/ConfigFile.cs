@@ -9,6 +9,9 @@ public class ConfigFile
 	public float lod { get; set; }
 	public string tilingMethod { get; set; }
 	public bool brotliCompression { get; set; }
+	public bool removeSpikes { get; set; }
+	public float removeSpikesAbove { get; set; }
+	public float removeSpikesBelow { get; set; }
 	public CityObjectFilter[] cityObjectFilters { get; set; }
 }
 

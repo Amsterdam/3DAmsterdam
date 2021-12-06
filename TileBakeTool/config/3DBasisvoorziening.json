@@ -1,11 +1,14 @@
 {
-	"sourceFolder":"E:/brondata/terreintest/",
-	"outputFolder": "E:/brondata/terreintest/output/",
+	"sourceFolder":"E:/brondata/TerreinModel Kadaster/nieuwe versie/gereed/",
+	"outputFolder": "E:/brondata/terreintest/output/Terrain-",
 	"replaceExistingObjects":false,
-	"identifier":"identificatie",
-	"removePartOfIdentifier":"NL.IMBAG.Pand.",
+	"identifier":"objectid",
+	"removePartOfIdentifier":"",
 	"lod":1,
 	"tilingMethod":"TILED",
+	"removeSpikes":true,
+	"removeSpikesAbove": 25,
+	"removeSpikesBelow": -10,
 	"brotliCompression":true,
 	"cityObjectFilters":[
 		{

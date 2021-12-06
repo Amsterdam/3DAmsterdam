@@ -12,6 +12,8 @@ using Netherlands3D.CityJSON;
 using JoeStrout;
 using System.Threading;
 using System.Collections.Concurrent;
+using TileBakeLibrary.BinaryMesh;
+using System.Diagnostics;
 
 namespace TileBakeLibrary
 {
@@ -43,6 +45,17 @@ namespace TileBakeLibrary
         private List<Tile> tiles = new List<Tile>();
 
 		private CityObjectFilter[] cityObjectFilters;
+
+        private bool clipSpikes = false;
+        private float spikeCeiling = 0;
+        private float spikeFloor = 0;
+
+        public void setClipSpikes(bool setFunction,float ceiling,float floor)
+        {
+            clipSpikes = setFunction;
+            spikeCeiling = ceiling;
+            spikeFloor = floor;
+        }
 
 		/// <summary>
 		/// The LOD we want to parse. 
@@ -123,6 +136,8 @@ namespace TileBakeLibrary
 		/// </summary>
         /// 
 
+        private int filecounter = 0;
+        private int totalFiles = 0;
 		public void Convert()
 		{
 #if DEBUG
@@ -141,131 +156,136 @@ namespace TileBakeLibrary
             }
 
             //Create a threadable task for every file, that returns a list of parsed cityobjects
+            
             Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
+            totalFiles = sourceFiles.Length;
 			for (int i = 0; i < sourceFiles.Length; i++)
 			{
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                tiles = new List<Tile>();
                 var index = i;
+                filecounter++;
                 var cityObjects = CityJSONParseProcess(sourceFiles[index]);
-                
-                allSubObjects.AddRange(cityObjects);
-
-                BakeTiles();
                 allSubObjects.Clear();
+                allSubObjects=cityObjects;
+                Console.WriteLine($"\r{allSubObjects.Count} CityObjects imported                                                                                    ");
+                PrepareTiles();
+                WriteTileData();
+                allSubObjects.Clear();
+                cityJson = null;
+                GC.Collect();
+                watch.Stop();
+                var result = watch.Elapsed;
+                string elapsedTimeString = string.Format("{0}:{1} minutes",
+                                          result.Minutes.ToString("00"),
+                                          result.Seconds.ToString("00"));
+                Console.WriteLine($"duration: {elapsedTimeString}");
             }
 		}
 
-
-		/// <summary>
-		/// Bake the city objects into binary tiles
-		/// </summary>
-		private void BakeTiles()
+        private void PrepareTiles()
         {
-            //Determine what tiles we will need using our parsed cityobject centroids
-            var minX = double.MaxValue;
-            var maxX = double.MinValue;
+            TileSubobjects();
+            AddObjectsFromBinaryTile();
+            
 
-            var minY = double.MaxValue;
-            var maxY = double.MinValue;
+        }
+
+        private void TileSubobjects()
+        {
+            tiles.Clear();
             foreach (SubObject cityObject in allSubObjects)
             {
-                if (cityObject.centroid.X < minX) minX = cityObject.centroid.X;
-                else if (cityObject.centroid.X >= maxX) maxX = cityObject.centroid.X;
-
-                if (cityObject.centroid.Y < minY) minY = cityObject.centroid.Y;
-                else if (cityObject.centroid.Y >= maxY) maxY = cityObject.centroid.Y;
-            }
-
-            //Create our grid of tiles
-            var startXRD = Math.Floor(minX / tileSize) * tileSize;
-            var startYRD = Math.Floor(minY / tileSize) * tileSize;
-
-            var endXRD = Math.Ceiling(maxX / tileSize) * tileSize;
-            var endYRD = Math.Ceiling(maxY / tileSize) * tileSize;
-
-            var XTiles = (endXRD-startXRD) / tileSize;
-            var YTiles = (endYRD-startYRD) / tileSize;
-
-            int existingTilesFound = 0;
-            tiles.Clear();
-            for (int x = 0; x < XTiles; x++)
-			{
-                var tileX = startXRD + (x * tileSize);
-                for (int y = 0; y < YTiles; y++)
+                double tileX = Math.Floor(cityObject.centroid.X / tileSize) * (int)tileSize;
+                double tileY = Math.Floor(cityObject.centroid.Y / tileSize) * (int)tileSize;
+                if (tileX==0 || tileY==0)
                 {
-                    var tileY = startYRD + (y * tileSize);
-                    var newTile = new Tile()
+                    Console.WriteLine("found cityObject with no geometry");
+                }
+                Vector2Double tileposition;
+                bool found = false;
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    tileposition = tiles[i].position;
+                    if (tileposition.X ==tileX)
                     {
-                        size = new Vector2(tileSize, tileSize),
-                        position = new Vector2Double(tileX, tileY),
-                        filePath = $"{outputPath}{tileX}_{tileY}.{lod}.bin"
-                    };
-                    tiles.Add(newTile);
+                        if (tileposition.Y==tileY)
+                        {
+                            tiles[i].SubObjects.Add(cityObject);
+                            found = true;
+                            break;
+                        }
 
-                    //Parse exisiting file
-                    if(File.Exists(newTile.filePath))
-                    {
-                        existingTilesFound++;
-                        ParseExistingBinaryTile(newTile);
                     }
                 }
+                if (!found)
+                {
+                    Tile newtile = new Tile();
+                    newtile.size = new Vector2(tileSize, tileSize);
+                    newtile.position = new Vector2Double(tileX, tileY);
+                    newtile.filePath = $"{outputPath}{tileX}_{tileY}.{lod}.bin";
+                    newtile.SubObjects.Add(cityObject);
+                    tiles.Add(newtile);
+                }
             }
-            Console.WriteLine($"Baking {XTiles}x{YTiles} = {XTiles*YTiles} tiles");
-            if (existingTilesFound > 0)
-            {
-                Console.WriteLine($"Parsed {existingTilesFound} existing tile files.");
-            }
+        }
 
+        private void AddObjectsFromBinaryTile()
+        {
+            foreach (Tile tile in tiles)
+            {
+                //Parse exisiting file
+                if (File.Exists(tile.filePath))
+                { 
+                    ParseExistingBinaryTile(tile);
+                }
+            }
+        }
+
+        private void WriteTileData()
+        {
             //Create binary files (if we added subobjects to it)
             Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-
-            //Move the CityObjects into to the proper tile based on their centroid
-            for (int i = allSubObjects.Count - 1; i >= 0; i--)
-			{
-                var subObject = allSubObjects[i];
-                if (removeFromID != "")
-                {
-                    subObject.id = subObject.id.Replace(removeFromID, "");
-                }
-
-                Parallel.ForEach(tiles, tile =>
-                {
-                    if (subObject.centroid.X > tile.position.X
-                    && subObject.centroid.X <= tile.position.X + tileSize
-                    && subObject.centroid.Y > tile.position.Y
-                    && subObject.centroid.Y <= tile.position.Y + tileSize)
-                    {
-                        tile.AddSubObject(subObject, replaceExistingIDs);
-                    };
-                });
-            }
-
+            Console.Write($"\rBaking {tiles.Count} tiles");
             //Threaded writing of binary meshes + compression
+            Console.Write("\rsaving files...          ");
+            int counter = 0;
+
             Parallel.ForEach(tiles, tile =>
             {
                 if (tile.SubObjects.Count == 0)
                 {
-                    Console.WriteLine($"Skipping {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
+                    //Console.WriteLine($"Skipping {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
                 }
                 else
                 {
                     //Bake the tile, and lets save it!
-                    
-                    tile.Bake();
-                    Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
+
+                    //tile.Bake();
+
+                    //Console.WriteLine($"Saving {tile.filePath} containing {tile.SubObjects.Count} SubObjects");
                     
                     //Create binary files
-                    BinaryMeshWriter.Save(tile);
+                    //BinaryMeshWriter.Save(tile);
+                    BinaryMeshData bmd = new BinaryMeshData();
+                    bmd.ExportData(tile);
 
                     //Compressed variant
                     if (brotliCompress) BrotliCompress.Compress(tile.filePath);
 
                     //Optionaly write other format(s) for previewing purposes
                     if (createOBJFiles) OBJWriter.Save(tile);
+                    Interlocked.Increment(ref counter);
+                    Console.Write($"\rsaving files...{counter}");
                 }
             });
 
-            Console.WriteLine("Done.");
+            Console.WriteLine($"\r{counter} files saved                                                                                             ");
         }
+
+
+
 
 		public void SetObjectFilters(CityObjectFilter[] cityObjectFilters)
 		{
@@ -277,23 +297,28 @@ namespace TileBakeLibrary
 		/// </summary>
 		private void ParseExistingBinaryTile(Tile tile)
 		{
-             BinaryMeshReader.ReadBinaryFile(tile);
-             Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
+            BinaryMeshData bmd = new BinaryMeshData();
+            bmd.importData(tile);
+            bmd = null;
+            
+            // Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
         }
 
 
         private List<SubObject> CityJSONParseProcess(string sourceFile)
         {
             List<SubObject> filteredObjects = new List<SubObject>();
-
-            Console.WriteLine($"Parsing CityJSON: {sourceFile}");
+            Console.WriteLine("");
+            Console.WriteLine($"Parsing CityJSON {filecounter} of {totalFiles}: {sourceFile}");
             Console.Write("loading file...");
+            cityJson = null;
             cityJson = new CityJSON(sourceFile, true, true);
             Console.Write("\r reading cityobjects");
             //List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
             int cityObjectCount = cityJson.CityObjectCount();
             Console.WriteLine($"\r CityObjects found: {cityObjectCount}");
             Console.Write("---");
+            int skipped = 0;
             int done = 0;
             int parsing = 0;
             int simplifying = 0;
@@ -306,28 +331,46 @@ namespace TileBakeLibrary
              {
                  Interlocked.Increment(ref parsing);
                  CityObject cityObject = cityJson.LoadCityObjectByID(i, lod);
-                 Console.Write("\r"+ done + " done; "+ parsing + " parsing; "+ simplifying + " simplifying; "+ tiling +" tiling                    ");
+                 Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
                  var subObject = ToSubObjectMeshData(cityObject);
                  cityJson.ClearCityObject(cityObject.keyName);
                  cityObject = null;
                  Interlocked.Decrement(ref parsing);
-                 Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
-                 cityObject = null;
                  
+                 cityObject = null;
+                 if (subObject == null)
+                 {
+                     Interlocked.Increment(ref done);
+                     Interlocked.Increment(ref skipped);
+                     return;
+                 }
+                 Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+
                  if (subObject.maxVerticesPerSquareMeter > 0)
                  {
                      Interlocked.Increment(ref simplifying);
-                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
                      subObject.SimplifyMesh();
                      Interlocked.Decrement(ref simplifying);
-                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                 }
+                 else
+                 {
+                     if (maxNormalAngle != 0)
+                     {
+                         subObject.MergeSimilarVertices(maxNormalAngle);
+                     }
+                 }
+                 if (clipSpikes)
+                 {
+                     subObject.ClipSpikes(spikeCeiling,spikeFloor);
                  }
 
                  if (TilingMethod == "TILED")
                  {
                      Interlocked.Increment(ref tiling);
-                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
-                     var newSubobjects = subObject.clipSubobject();
+                     Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     var newSubobjects = subObject.clipSubobject(new Vector2(tileSize, tileSize));
                      if (newSubobjects.Count == 0)
                      {
                          filterobjectsBucket.Add(subObject);
@@ -343,16 +386,20 @@ namespace TileBakeLibrary
                          }
                      }
                      Interlocked.Decrement(ref tiling);
-                     Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+                     Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
                  }
-                 
+                 else
+                 {
+                     filterobjectsBucket.Add(subObject);
+                 }
+
                  Interlocked.Increment(ref done);
-                 Console.Write("\r" + done + " done; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
-                 Console.Write("\r" + done);
+                 Console.Write("\r" + done + " done; " + skipped + " skipped ; " + parsing + " parsing; " + simplifying + " simplifying; " + tiling + " tiling                    ");
+
 
              }
             );
-            Console.WriteLine("file parsed");
+
             return filterobjectsBucket.ToList();
         }
 
@@ -401,7 +448,7 @@ namespace TileBakeLibrary
             subObject.parentSubmeshIndex= submeshindex;
             if (submeshindex==-1)
             {
-                return new SubObject();
+                return null;
             }
 
 
@@ -427,12 +474,6 @@ namespace TileBakeLibrary
 				//Add child geometry to our subobject. (Recursive children are not allowed in CityJson)
 				AppendCityObjectGeometry(childObject, subObject);
 			}
-            if (maxNormalAngle != 0)
-            {
-                subObject.MergeSimilarVertices(maxNormalAngle);
-            }
-
-            
 
             //Winding order of triangles should be reversed
             subObject.triangleIndices.Reverse();
@@ -441,6 +482,7 @@ namespace TileBakeLibrary
             if (subObject.triangleIndices.Count % 3 != 0)
             {
                 Console.WriteLine($"{subObject.id} triangle list is not divisible by 3. This is not correct.");
+                return null;
             }
 
             //Calculate centroid using the city object vertices
@@ -451,10 +493,6 @@ namespace TileBakeLibrary
                 centroid.Y += subObject.vertices[i].Y;
             }
             subObject.centroid = new Vector2Double(centroid.X / subObject.vertices.Count, centroid.Y / subObject.vertices.Count);
-
-
-           
-
 
             return subObject;
         }

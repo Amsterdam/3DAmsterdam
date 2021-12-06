@@ -1,0 +1,20 @@
+{
+	"sourceFolder":"E:/brondata/pandenTUDelft/downloaded_tiles_amsterdam/",
+	"outputFolder": "E:/brondata/terreintest/output-buildings/Buildings-",
+	"replaceExistingObjects":false,
+	"identifier":"identificatie",
+	"removePartOfIdentifier":"NL.IMBAG.Pand.",
+	"lod":1.2,
+	"tilingMethod":"OVERLAP",
+	"removeSpikes":false,
+	"removeSpikesAbove": 25,
+	"removeSpikesBelow": -10,
+	"brotliCompression":true,
+	"cityObjectFilters":[
+		{
+			"objectType":"Building",
+			"defaultSubmeshIndex":0,
+			"attributeFilters":[]
+		}
+	]
+}

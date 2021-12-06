@@ -5,101 +5,86 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TileBakeLibrary.BinaryMesh;
 
 namespace TileBakeLibrary
 {
-	class BinaryMeshWriter
-	{
-        private static int writerVersion = 1;        
+    class BinaryMeshWriter
+    {
+        private static int writerVersion = 1;
 
-        public static void Save(Tile tile, bool writeMetaData = true, bool writeGltfWrapper = true)
+        public static void WriteMesh(MeshData meshdata, string filename)
         {
-            using (FileStream file = File.Create(tile.filePath))
+            using (FileStream file = File.Create(filename))
             {
-                using (BinaryWriter writer = new BinaryWriter(file))
+                using (BinaryWriter writer = new BinaryWriter(file, Encoding.UTF8))
                 {
-                    //Version int
+                    //// write the header
+
+                    // write versionnumber
                     writer.Write(writerVersion);
+                    // vertexcount
+                    writer.Write(meshdata.vertexCount);
+                    writer.Write(meshdata.normalsCount);
+                    writer.Write(meshdata.indexCount);
+                    writer.Write(meshdata.submeshCount);
 
-                    //Verts
-                    var vertices = tile.vertices;
-                    writer.Write(vertices.Count);
-                    foreach (Vector3 vert in tile.vertices)
+                    // write vertices
+                    foreach (Vector3 vertex in meshdata.vertices)
                     {
-                        writer.Write(vert.X);
-                        writer.Write(vert.Y);
-                        writer.Write(vert.Z);
+                        writer.Write(vertex.X);
+                        writer.Write(vertex.Y);
+                        writer.Write(vertex.Z);
                     }
-
-                    var normals = tile.normals;
-                    //Normals
-                    writer.Write(normals.Count);
-                    foreach (Vector3 normal in normals)
+                    // write vertices
+                    foreach (Vector3 normal in meshdata.normals)
                     {
                         writer.Write(normal.X);
                         writer.Write(normal.Y);
                         writer.Write(normal.Z);
                     }
-
-                    //UV
-                    var uvs = tile.uvs;
-                    writer.Write(uvs.Count);
-                    foreach (Vector2 uv in uvs)
+                    // write indices
+                    foreach (int index in meshdata.indices)
                     {
-                        writer.Write(uv.X);
-                        writer.Write(uv.Y);
+                        writer.Write(index);
                     }
-
-                    //Every triangle list per submesh
-                    writer.Write(tile.submeshes.Count);
-                    for (int i = 0; i < tile.submeshes.Count; i++)
+                    // write submeshes
+                    foreach (SubmeshData subMesh in meshdata.submeshes)
                     {
-                        if (tile.submeshes[i].triangleIndices==null)
-                        {
-                            tile.submeshes[i].triangleIndices = new List<int>();
-                        }
-                        List<int> submeshTriangleList = tile.submeshes[i].triangleIndices;
-                        writer.Write(submeshTriangleList.Count);
-                        writer.Write(tile.submeshes[i].baseVertex);
-                        foreach (int index in submeshTriangleList)
-                        {
-                            writer.Write(index);
-                        }
+                        writer.Write(subMesh.submeshindex);
+                        writer.Write(subMesh.startIndex);
+                        writer.Write(subMesh.indexcount);
+                        writer.Write(subMesh.startVertex);
+                        writer.Write(subMesh.vertexcount);
                     }
                 }
-            }
-
-            //The metadata containing subobject id's and their index ranges
-            if (writeMetaData)
-            {
-                using (FileStream file = File.Create(tile.filePath.Replace(".bin","") + "-data.bin"))
-                {
-                    using (BinaryWriter writer = new BinaryWriter(file))
-                    {
-                        //Version int
-                        writer.Write(writerVersion);
-
-                        //Subobject count
-                        writer.Write(tile.SubObjects.Count);
-
-                        //All subobject id's, and their indices
-                        for (int i = 0; i < tile.SubObjects.Count; i++)
-                        {
-                            //ID string. string starts with a length:
-                            //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
-                            writer.Write(tile.SubObjects[i].id);
-
-                            int amountOfInts = tile.SubObjects[i].triangleIndices.Count;
-                            writer.Write(amountOfInts);
-                        }
-                    }
-                }
-            }
-
-            if(writeGltfWrapper)
-            {
-                GltfWrapper.Save(tile);
             }
         }
+
+        public static void WriteIdentifiers(IdentifierData identifierdata, string filename)
+        {
+            using (FileStream file = File.Create(filename))
+            {
+                using (BinaryWriter writer = new BinaryWriter(file, Encoding.UTF8))
+                {
+                    // write versionnumber
+                    writer.Write(writerVersion);
+                    // identifiercount
+                    writer.Write(identifierdata.identifiers.Count);
+                    foreach (Identifier identifier in identifierdata.identifiers)
+                    {
+                        writer.Write(identifier.objectID);
+                        writer.Write(identifier.startIndex);
+                        writer.Write(identifier.indicesLength);
+                        writer.Write(identifier.startVertex);
+                        writer.Write(identifier.vertexLength);
+                        writer.Write(identifier.submeshIndex);
+                    }
+                }
+            }
+        }
+
+
     }
+        
 }

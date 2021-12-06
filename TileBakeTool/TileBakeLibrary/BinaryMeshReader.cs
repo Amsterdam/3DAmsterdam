@@ -6,168 +6,87 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TileBakeLibrary.Coordinates;
+using TileBakeLibrary.BinaryMesh;
 
 namespace TileBakeLibrary
 {
 	class BinaryMeshReader
 	{
-        public static void ReadBinaryFile(Tile tile)
+        public static MeshData ReadBinaryMesh(string filename)
         {
-            var binaryMeshFile = File.ReadAllBytes(tile.filePath);
-            var binaryMetaFile = File.ReadAllBytes(tile.filePath.Replace(".bin", "-data.bin"));
+            MeshData mesh = new MeshData();
 
-            //Read the mesh data into our tile
+            var binaryMeshFile = File.ReadAllBytes(filename);
             using (var stream = new MemoryStream(binaryMeshFile))
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     var version = reader.ReadInt32();
-                    var vertLength = reader.ReadInt32();
-                    Vector3[] vertices = new Vector3[vertLength];
-                    for (int i = 0; i < vertLength; i++)
+                    mesh.version = version;
+                    var vertexcount = reader.ReadInt32();
+                    mesh.vertexCount = vertexcount;
+                    var normalscount = reader.ReadInt32();
+                    mesh.normalsCount = normalscount;
+                    var indicescount = reader.ReadInt32();
+                    mesh.indexCount = indicescount;
+                    var submeshcount = reader.ReadInt32();
+                    mesh.submeshCount = submeshcount;
+                    
+                    for (int i = 0; i < vertexcount; i++)
                     {
-                        Vector3 vertex = new Vector3(
+                        mesh.vertices.Add(new Vector3(
                             reader.ReadSingle(),
                             reader.ReadSingle(),
                             reader.ReadSingle()
-                         );
-                        vertices[i] = vertex;
+                         ));
                     }
-                    tile.vertices = vertices.ToList();
-
-                    var normalsLength = reader.ReadInt32();
-                    Vector3[] normals = new Vector3[normalsLength];
-                    for (int i = 0; i < normalsLength; i++)
+                    for (int i = 0; i < normalscount; i++)
                     {
-                        Vector3 normal = new Vector3(
+                        mesh.normals.Add(new Vector3(
                             reader.ReadSingle(),
                             reader.ReadSingle(),
                             reader.ReadSingle()
-                         );
-                        normals[i] = normal;
+                         ));
                     }
-                    tile.normals = normals.ToList();
-
-                    var uvLength = reader.ReadInt32();
-                    Vector2[] uvs = new Vector2[uvLength];
-                    for (int i = 0; i < uvLength; i++)
+                    for (int i = 0; i < indicescount; i++)
                     {
-                        Vector2 uv = new Vector2(
-                            reader.ReadSingle(),
-                            reader.ReadSingle()
-                         );
-                        uvs[i] = uv;
-                    }
-                    tile.uvs = uvs.ToList();
-
-                    //Submeshes
-                    var submeshes = reader.ReadInt32();
-                    tile.submeshes = new List<Tile.Submesh>(submeshes);
-
-                    //Debug.Log("Submeshes: " + submeshes);
-                    for (int i = 0; i < submeshes; i++)
-                    {
-                        var trianglesLength = reader.ReadInt32();
-                        var baseVertex = reader.ReadInt32();
-                        var indices = new List<int>();
-                        for (int j = 0; j < trianglesLength; j++)
-                        {
-                            var index = reader.ReadInt32();
-                            indices.Add(index);
-                        }
-                        tile.submeshes.Add(new Tile.Submesh()
-                        {
-                            baseVertex = baseVertex,
-                            triangleIndices = indices
-                        });
+                        mesh.indices.Add(reader.ReadInt32());
                     }
                 }
             }
-
-            using (var stream = new MemoryStream(binaryMetaFile))
-            {
-                using (BinaryReader reader = new BinaryReader(stream))
-                {
-                    //Version
-                    var version = reader.ReadInt32();
-
-                    //Subobject count
-                    var subObjects = reader.ReadInt32();
-
-                    int objectOffset = 0;
-                    int objectVertexOffset = 0;
-                    //All subobject id's, and their indices
-                    for (int i = 0; i < subObjects; i++)
-                    {
-                        var objectId = reader.ReadString();
-                        var objectIndexRange = reader.ReadInt32();
-
-                        var subObjectIndicesWithOffset = tile.submeshes[0].triangleIndices.GetRange(objectOffset,objectIndexRange);
-                        var subObjectIndices = new int[objectIndexRange];
-
-                        var subObjectVertices = new List<Vector3Double>();
-                        var subObjectNormals = new List<Vector3>();
-                        var subObjectUvs = new List<Vector2>();
-
-                        //Lets restore the cityobject geometry
-                        for (int j = 0; j < subObjectIndicesWithOffset.Count; j++)
-						{
-                            var indexInSubMesh = subObjectIndicesWithOffset[j];
-                            var indexInSubObject = subObjectIndicesWithOffset[j] - objectVertexOffset;
-                            subObjectIndices[j] = indexInSubObject;
-
-                            //Fill our geometry to the max. indices
-                            var currentLength = subObjectVertices.Count - 1;
-                            while (currentLength < indexInSubObject)
-                            { 
-                                subObjectVertices.Add(new Vector3Double(0,0,0));
-                                subObjectNormals.Add(new Vector3(0,0,0));
-                                subObjectUvs.Add(new Vector2(0,0));
-
-                                currentLength = subObjectVertices.Count - 1;
-                            }
-
-                            var subMeshVertex = tile.vertices[indexInSubMesh];
-                            var subMeshNormal = tile.normals[indexInSubMesh];
-                            //var subMeshUv = tile.uvs[indexInSubMesh];
-
-                            //Add the subobject data (if we didnt already for this vert)
-                            var vertex = new Vector3Double(subMeshVertex.X + tile.position.X + (tile.size.X / 2), subMeshVertex.Z + tile.position.Y + (tile.size.Y / 2), subMeshVertex.Y );
-                            var normal = subMeshNormal;
-                            //var uv = subMeshUv;
-
-                            subObjectVertices[indexInSubObject] = vertex;
-                            subObjectNormals[indexInSubObject] = normal;
-                            //subObjectUvs.Add(uv);
-                        }
-
-                        //And change our offset for the next object
-                        objectOffset += objectIndexRange;
-                        objectVertexOffset += subObjectVertices.Count;
-
-                        //Restore our subobject data
-                        tile.AddSubObject(new SubObject()
-                        {
-                            id = objectId,
-                            vertices = subObjectVertices,
-                            normals = subObjectNormals,
-                            uvs = subObjectUvs,
-                            triangleIndices = subObjectIndices.ToList(),
-                            parentSubmeshIndex = 0
-                        },false);
-                    }
-                }
-            }
-
-            //Clear tile mesh data (we rebuild it after adding other subobjects after parsing)
-            tile.vertices.Clear();
-            tile.normals.Clear();
-            tile.uvs.Clear();
-            foreach(var submesh in tile.submeshes)
-            {
-                submesh.triangleIndices.Clear();
-			}
+            return mesh;
         }
+
+        public static IdentifierData ReadBinaryIdentifiers(string filename)
+        {
+            IdentifierData identifierdata = new IdentifierData();
+            var binarydataFile = File.ReadAllBytes(filename);
+            using (var stream = new MemoryStream(binarydataFile))
+            {
+                using (BinaryReader reader = new BinaryReader(stream,Encoding.UTF8))
+                {
+                    var version = reader.ReadInt32();
+                    identifierdata.version = version;
+                    var identifiercount = reader.ReadInt32();
+                    identifierdata.identifierCount = identifiercount;
+                    for (int i = 0; i < identifiercount; i++)
+                    {
+                        Identifier identifier = new Identifier();
+                        identifier.objectID = reader.ReadString();
+                        identifier.startIndex = reader.ReadInt32();
+                        identifier.indicesLength = reader.ReadInt32(); 
+                        identifier.startVertex = reader.ReadInt32();
+                        identifier.vertexLength = reader.ReadInt32();
+                        identifier.submeshIndex = reader.ReadInt32();
+                        identifierdata.identifiers.Add(identifier);
+                    }
+
+                }
+            }
+            return identifierdata;
+        }
+
+       
 
 		private static void Dictionary<T1, T2>()
 		{

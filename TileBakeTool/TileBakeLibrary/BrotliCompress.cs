@@ -37,7 +37,7 @@ namespace TileBakeLibrary
 				byte[] compressedBytes = outputStream.ToArray();
 				long compressedSize = compressedBytes.Length;
 				float percentage = ((float)compressedSize / (float)originalSize) * 100.0f;
-				Console.WriteLine($"Brotli compressed: {BytesToString(originalSize)} -> {BytesToString(compressedSize)} = ({percentage:F2}%)");
+				//Console.WriteLine($"Brotli compressed: {BytesToString(originalSize)} -> {BytesToString(compressedSize)} = ({percentage:F2}%)");
 
 				File.WriteAllBytes(output, compressedBytes);
 			}

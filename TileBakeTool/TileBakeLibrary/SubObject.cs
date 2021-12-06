@@ -8,42 +8,57 @@ using System.Linq;
 
 namespace TileBakeLibrary
 {
-	class SubObject
+	public class SubObject
 	{
 		public List<Vector3Double> vertices = new List<Vector3Double>(); 
 		public List<Vector3> normals = new List<Vector3>();
 		public List<Vector2> uvs = new List<Vector2>();
 		public List<int> triangleIndices = new List<int>();
-
 		public Vector2Double centroid = new Vector2Double();
-
 		public int parentSubmeshIndex = 0;
-
 		public string id = "";
+
 		private double distanceMergeThreshold = 0.01;
 		private DMesh3 mesh;
 		public float maxVerticesPerSquareMeter;
 		public void MergeSimilarVertices(float mergeVerticesBelowNormalAngle)
 		{
-			var radians = (Math.PI / 180) * mergeVerticesBelowNormalAngle;
-			float cosAngleThreshold = (float)Math.Cos(radians);
-
 			List<Vector3Double> cleanedVertices = new List<Vector3Double>();
 			List<Vector3> cleanedNormals = new List<Vector3>();
 			List<Vector2> cleanedUvs = new List<Vector2>();
-
-			//Traverse the triangles, and if we encounter verts+normals that are similar, dispose them
-			for (int i = 0; i < triangleIndices.Count; i++)
-			{
-				var vertexIndex = triangleIndices[i];
-				triangleIndices[i] = GetOrAddVertexIndex(vertexIndex ,cleanedVertices,cleanedNormals,cleanedUvs, cosAngleThreshold);
-			}
-
-			//Now use our new cleaned geometry
+			
+			Vector3Double vertex;
+			Vector3 normal;
+			int oldIndex =0;
+			int newIndex = 0;
+			Dictionary< vertexNormalCombination,int> verts = new Dictionary<vertexNormalCombination,int>();
+			Dictionary<int, int> indexmap = new Dictionary<int, int>(); // old index --> new index
+            for (int i = 0; i < triangleIndices.Count; i++)
+            {
+				oldIndex = triangleIndices[i];
+				vertex = vertices[oldIndex];
+				normal = normals[oldIndex];
+				vertexNormalCombination vnc = new vertexNormalCombination(vertex, normal);
+                if (!verts.ContainsKey(vnc))
+                {
+					newIndex = cleanedVertices.Count();
+					cleanedNormals.Add(normal);
+					cleanedVertices.Add(vertex);
+					verts.Add(vnc, newIndex);
+					indexmap.Add(i, newIndex);
+                }
+                else
+                {
+					newIndex = verts[vnc];
+					indexmap.Add(i, newIndex);
+				}
+				triangleIndices[i] = newIndex;
+            }
 			vertices = cleanedVertices;
 			normals = cleanedNormals;
-			uvs = cleanedUvs;
-		}
+
+
+        }
 
 		private int GetOrAddVertexIndex(int vertexIndex, List<Vector3Double> cleanedVertices, List<Vector3> cleanedNormals, List<Vector2> cleanedUvs, float angleThreshold)
 		{
@@ -128,6 +143,7 @@ namespace TileBakeLibrary
 				triangleIndices.Add(mapV[t[2]]);
 			}
 			mesh = null;
+			MergeSimilarVertices(2);
 		}
 
 		public void SimplifyMesh()
@@ -142,10 +158,10 @@ namespace TileBakeLibrary
 			MeshNormals.QuickCompute(mesh);
             MergeCoincidentEdges merg = new MergeCoincidentEdges(mesh);
             merg.Apply();
-            if (!mesh.CheckValidity(true, FailMode.ReturnOnly))
-            {
-                return;
-            }
+            //if (!mesh.CheckValidity(true, FailMode.ReturnOnly))
+            //{
+            //    return;
+            //}
 
             // setup up the reducer
             Reducer r = new Reducer(mesh);
@@ -157,8 +173,8 @@ namespace TileBakeLibrary
 
 			int edgecount = mesh.BoundaryEdgeIndices().Count(p=>p>-1);
 			double area = MeshMeasurements.AreaT(mesh, mesh.TriangleIndices());
-			int squareMetersPerVertex = 100;
-            int maxSurfaceCount = (int)(area*maxVerticesPerSquareMeter)+edgecount;
+			int squareMetersPerVertex = 1000;
+            int maxSurfaceCount = (int)(area* maxVerticesPerSquareMeter) +edgecount;
             if (mesh.VertexCount > maxSurfaceCount)
             {
                 r.ReduceToVertexCount(maxSurfaceCount);
@@ -172,25 +188,55 @@ namespace TileBakeLibrary
 
 		}
 
-		public List<SubObject> clipSubobject()
+		public void ClipSpikes(float floor, float ceiling)
+        {
+			List<Vector3Double> correctverts = vertices.Where(o => o.Z < ceiling && o.Z > floor).ToList();
+            if (correctverts.Count == vertices.Count)
+            {
+				// no spikes detected
+				return;
+			}
+			double averageHeight = (ceiling + floor) / 2;
+            if (correctverts.Count>0)
+            {
+				averageHeight = correctverts.Average(o => o.Z);
+			}
+			double height;
+			Vector3Double vertex;
+            for (int i = 0; i < vertices.Count; i++)
+            {
+				height = vertices[i].Z;
+                if (height>ceiling || height<floor)
+                {
+					vertex = vertices[i];
+					vertex.Z = averageHeight;
+					vertices[i] = vertex;
+                }
+            }
+		}
+
+
+		public List<SubObject> clipSubobject(Vector2 size)
         {
 			List<SubObject> subObjects = new List<SubObject>();
 			createMesh();
 			var bounds = MeshMeasurements.Bounds(mesh, null);
-			int rdXmin = (int)Math.Floor(bounds.Min.x/1000)*1000;
-			int rdYmin = (int)Math.Floor(bounds.Min.y / 1000) * 1000;
-			int rdXmax = (int)Math.Ceiling(bounds.Max.x / 1000) * 1000;
-			int rdYmax = (int)Math.Ceiling(bounds.Max.y / 1000) * 1000;
+			// find the coordinates of the tile-borders around the object
+			int rdXmin = (int)Math.Floor(bounds.Min.x/size.X)*(int)size.X;
+			int rdYmin = (int)Math.Floor(bounds.Min.y / size.Y) * (int)size.Y;
+			int rdXmax = (int)Math.Ceiling(bounds.Max.x / size.X) * (int)size.X;
+			int rdYmax = (int)Math.Ceiling(bounds.Max.y / size.Y) * (int)size.Y;
 
-            if (rdXmax-rdXmin==1000 && rdYmax-rdYmin==10000)
+			// if the object is contained in 1 tile, no need to clip it.
+            if (rdXmax-rdXmin==(int)size.X && rdYmax-rdYmin==(int)size.Y)
             {
 				return subObjects;
             }
 
-            for (int x = rdXmin; x < rdXmax; x += 1000)
+            for (int x = rdXmin; x < rdXmax; x += (int)size.X)
             {
 				DMesh3 columnMesh = CutColumnMesh(x,rdYmin);
-                for (int y = rdYmin; y < rdYmax; y += 1000)
+                for (int y = rdYmin; y < rdYmax; y += (int)size.Y)
                 {
                     SubObject newSubobject = clipMesh(columnMesh, x, y);
                     if (newSubobject != null)
@@ -270,4 +316,34 @@ namespace TileBakeLibrary
 			return null;
         }
 	}
+	 struct vertexNormalCombination : IEquatable<vertexNormalCombination>
+	{
+		public Vector3 normal;
+		public Vector3Double vertex;
+
+		public vertexNormalCombination(Vector3Double vertex, Vector3 normal)
+		{
+			this.vertex = vertex;
+			this.normal = normal;
+
+		}
+		public bool Equals(vertexNormalCombination other)
+        {
+			float deltaX = Math.Abs(other.normal.X - normal.X);
+			float deltaY = Math.Abs(other.normal.Y - normal.Y);
+			float deltaZ = Math.Abs(other.normal.Z - normal.Z);
+			bool normalIsAlmostTheSame = false;
+			if (deltaX<0.01&&deltaY<0.001&deltaZ<0.001)
+			{
+				normalIsAlmostTheSame = true;
+			}
+
+			if (normalIsAlmostTheSame && other.vertex == vertex)
+            {
+				return true;
+            }
+			return false;
+            
+        }
+    }
 }

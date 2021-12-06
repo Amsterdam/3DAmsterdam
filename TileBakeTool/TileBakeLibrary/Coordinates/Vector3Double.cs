@@ -43,6 +43,23 @@ namespace TileBakeLibrary.Coordinates
 		{
 			return (other.X == X && other.Y == Y && other.Z == Z);
 		}
+        public static bool operator == (Vector3Double left, Vector3Double right)
+        {
+            if (left.X==right.X && left.Y==right.Y&&left.Z==right.Z)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        public static bool operator !=(Vector3Double left, Vector3Double right)
+        {
+            if (left==right)
+            {
+                return false;
+            }
+            return true;
+        }
 
         public static Vector3Double operator -(Vector3Double left, Vector3Double right)
         {

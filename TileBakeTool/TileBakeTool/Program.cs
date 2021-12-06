@@ -27,34 +27,43 @@ namespace TileBakeTool
 		private static float lod = 0;
 		private static string filterType = "";
 
+		private static bool removeSpikes = false;
+		private static float spikeCeiling = 0;
+		private static float spikeFloor = 0;
+
 		private static bool sliceGeometry = false;
 
 		static void Main(string[] args)
 		{
-			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            //var test = new test();
+            //test.readtest();
 
-			if (args.Length == 0 || (args.Length == 1 && args[0].ToLower().Contains("help")))
-			{
-				//No parameters or an attempt to call for help? Show help in console.
-				ShowHelp();
-			}
-			else if (args.Length == 1)
-			{
-				//One parameter? Assume its a config file path
-				ApplyConfigFileSettings(args[0]);
-			}
-			else
-			{
-				//More parameters? Parse them
-				ParseArguments(args);
-			}
 
-			//If we received the minimal settings to start, start converting!
-			if (sourcePath != "" && outputPath != "")
-				StartConverting(sourcePath, outputPath);
-		}
 
-		private static void DefaultArgument(string sourcePath)
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+            if (args.Length == 0 || (args.Length == 1 && args[0].ToLower().Contains("help")))
+            {
+                //No parameters or an attempt to call for help? Show help in console.
+                ShowHelp();
+            }
+            else if (args.Length == 1)
+            {
+                //One parameter? Assume its a config file path
+                ApplyConfigFileSettings(args[0]);
+            }
+            else
+            {
+                //More parameters? Parse them
+                ParseArguments(args);
+            }
+
+            //If we received the minimal settings to start, start converting!
+            if (sourcePath != "" && outputPath != "")
+                StartConverting(sourcePath, outputPath);
+        }
+
+        private static void DefaultArgument(string sourcePath)
 		{
 			if(!Path.IsPathFullyQualified(sourcePath)){
 				Console.WriteLine($"Not a valid path: {sourcePath}");
@@ -92,6 +101,9 @@ namespace TileBakeTool
 				sourcePath = configFile.sourceFolder;
 				outputPath = configFile.outputFolder;
 
+				removeSpikes = configFile.removeSpikes;
+				spikeCeiling = configFile.removeSpikesAbove;
+				spikeFloor = configFile.removeSpikesBelow;
 				replaceExistingIDs = configFile.replaceExistingObjects;
 				identifier = configFile.identifier;
 				removeFromIdentifier = configFile.removePartOfIdentifier;
@@ -166,8 +178,11 @@ namespace TileBakeTool
 			tileBaker.CreateOBJ(createObjFiles);
 			tileBaker.AddBrotliCompressedFile(createBrotliCompressedFiles);
 			
-			if(configFile != null)
+			if (configFile != null)
+			{
+				tileBaker.setClipSpikes(removeSpikes, spikeCeiling, spikeFloor);
 				tileBaker.SetObjectFilters(configFile.cityObjectFilters);
+			}
 			tileBaker.TilingMethod = configFile.tilingMethod;
 
 			tileBaker.Convert();

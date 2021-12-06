@@ -10,7 +10,7 @@ namespace Netherlands3D.CityJSON
 	public class CityJSON
 	{
 		public JSONNode cityJsonNode;
-		public List<Vector3Double> vertices;
+		public Vector3Double[] vertices;
 		private List<Vector2> textureVertices;
 		private List<Surfacetexture> Textures;
 		private List<Material> Materials;
@@ -36,7 +36,7 @@ namespace Netherlands3D.CityJSON
 
 			//Get vertices
 			Console.Write("\r reading vertices");
-			vertices = new List<Vector3Double>();
+			//vertices = new Vector3Double[];
 			textureVertices = new List<Vector2>();
 			Textures = new List<Surfacetexture>();
 
@@ -54,6 +54,9 @@ namespace Netherlands3D.CityJSON
 			) : new Vector3Double(0, 0, 0);
 
 			//now load all the vertices with the scaler and offset applied
+			
+			vertices = new Vector3Double[cityJsonNode["vertices"].Count];
+			int counter = 0;
 			foreach (JSONNode node in cityJsonNode["vertices"])
 			{
 				var vertCoordinates = new Vector3Double(
@@ -61,8 +64,7 @@ namespace Netherlands3D.CityJSON
 						node[1].AsDouble * transformScale.Y + transformOffset.Y,
 						node[2].AsDouble * transformScale.Z + transformOffset.Z
 				);
-
-				vertices.Add(vertCoordinates);
+				vertices[counter++] = vertCoordinates;
 			}
 			//get textureVertices
 			foreach (JSONNode node in cityJsonNode["appearance"]["vertices-texture"])

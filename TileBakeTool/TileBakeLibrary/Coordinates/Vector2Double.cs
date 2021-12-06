@@ -29,6 +29,11 @@ namespace TileBakeLibrary.Coordinates
             return new Vector2((float)v.X, (float)v.Y);
         }
 
+        public bool Equals(Vector2Double other)
+        {
+            return (other.X == X && other.Y == Y);
+        }
+
         public bool Equals(Vector3Double other)
         {
             return (other.X == X && other.Y == Y);
