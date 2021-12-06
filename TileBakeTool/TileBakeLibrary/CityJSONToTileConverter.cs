@@ -50,7 +50,7 @@ namespace TileBakeLibrary
         private float spikeCeiling = 0;
         private float spikeFloor = 0;
 
-        public void setClipSpikes(bool setFunction,float ceiling,float floor)
+        public void SetClipSpikes(bool setFunction,float ceiling,float floor)
         {
             clipSpikes = setFunction;
             spikeCeiling = ceiling;
@@ -298,7 +298,7 @@ namespace TileBakeLibrary
 		private void ParseExistingBinaryTile(Tile tile)
 		{
             BinaryMeshData bmd = new BinaryMeshData();
-            bmd.importData(tile);
+            bmd.ImportData(tile);
             bmd = null;
             
             // Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");

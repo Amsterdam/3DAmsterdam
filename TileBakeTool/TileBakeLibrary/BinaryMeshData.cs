@@ -14,8 +14,8 @@ namespace TileBakeLibrary.BinaryMesh
         public  IdentifierData semantics = new IdentifierData();
 
         private Vector2Double origin;
-        private  Vector2 tileSize;
-        private List<submesh> submeshes = new List<submesh>();
+        private Vector2 tileSize;
+        private List<Submesh> submeshes = new List<Submesh>();
         /// <summary>
         /// export data from a tile to a binaryMesh an a binary data mesh
         /// </summary>
@@ -36,7 +36,7 @@ namespace TileBakeLibrary.BinaryMesh
 
             int startindex = 0;
             int startvertex = 0;
-            foreach (submesh subMesh in submeshes)
+            foreach (Submesh subMesh in submeshes)
             {
                 //skip the submesh if there are no subobjects in it
                 if (subMesh.subobjects.Count==0)
@@ -61,8 +61,8 @@ namespace TileBakeLibrary.BinaryMesh
                     // add vertices and normals to the mesh
                     for (int i = 0; i < subobject.vertices.Count; i++)
                     {
-                        mesh.vertices.Add(convertVertex(subobject.vertices[i]));
-                        mesh.normals.Add(convertNormaltoBinary(subobject.normals[i]));
+                        mesh.vertices.Add(ConvertVertex(subobject.vertices[i]));
+                        mesh.normals.Add(ConvertNormaltoBinary(subobject.normals[i]));
                     }
                     
                     // offset the indices with the value of startvertex and add to the mesh
@@ -98,16 +98,16 @@ namespace TileBakeLibrary.BinaryMesh
             GltfWrapper.Save(mesh, gltfFilename, tile.filePath);
 
         }
-        private Vector3 convertNormaltoBinary(Vector3 normal)
+        private Vector3 ConvertNormaltoBinary(Vector3 normal)
         {
             return new Vector3(normal.X, normal.Z, normal.Y);
         }
-        private Vector3 convertNormalFormBinary(Vector3 normal)
+        private Vector3 ConvertNormalFormBinary(Vector3 normal)
         {
             return new Vector3(normal.X, normal.Z, normal.Y);
         }
 
-        private Vector3 convertVertex(Vector3Double vertex)
+        private Vector3 ConvertVertex(Vector3Double vertex)
         {
             double X = vertex.X - origin.X - (tileSize.X/2);
             double Y = vertex.Z;
@@ -115,7 +115,7 @@ namespace TileBakeLibrary.BinaryMesh
             return new Vector3((float)X, (float)Y, (float)Z);
         }
 
-        private Vector3Double convertVertex(Vector3 vertex)
+        private Vector3Double ConvertVertex(Vector3 vertex)
         {
             double X = vertex.X + origin.X + (tileSize.X/2);
             double Y = vertex.Z + origin.Y + (tileSize.Y/2);
@@ -123,7 +123,7 @@ namespace TileBakeLibrary.BinaryMesh
             return new Vector3Double(X, Y, Z);
         }
 
-        public void importData(Tile tile)
+        public void ImportData(Tile tile)
         {
             origin = tile.position;
             tileSize = tile.size;
@@ -138,8 +138,8 @@ namespace TileBakeLibrary.BinaryMesh
                 // get normals and vertices
                 for (int i = 0; i < identifier.vertexLength; i++)
                 {
-                    subobject.vertices.Add(convertVertex(mesh.vertices[i + identifier.startVertex]));
-                    subobject.normals.Add(convertNormalFormBinary(mesh.normals[i + identifier.startVertex]));
+                    subobject.vertices.Add(ConvertVertex(mesh.vertices[i + identifier.startVertex]));
+                    subobject.normals.Add(ConvertNormalFormBinary(mesh.normals[i + identifier.startVertex]));
                 }
                 // get indices
                 for (int i = 0; i < identifier.indicesLength; i++)
@@ -147,10 +147,7 @@ namespace TileBakeLibrary.BinaryMesh
                     subobject.triangleIndices.Add(mesh.indices[i + identifier.startIndex]-identifier.startVertex);
                 }
                 tile.AddSubObject(subobject, false);
-                
             }
-
-
         }
 
         private  void ExpandSubmeshList(int submeshindex)
@@ -158,12 +155,13 @@ namespace TileBakeLibrary.BinaryMesh
             int addamount = submeshindex+1 - submeshes.Count;
             for (int i = 0; i < addamount; i++)
             {
-                submesh newsubmesh = new submesh();
+                Submesh newsubmesh = new Submesh();
                 newsubmesh.index = submeshes.Count;
                 submeshes.Add(newsubmesh);
             }
         }
     }
+
     public class MeshData
     {
         public int version;
@@ -192,16 +190,14 @@ namespace TileBakeLibrary.BinaryMesh
         public int version;
         public int identifierCount;
         public List<Identifier> identifiers = new List<Identifier>();
-        
-
     }
 
-
-    public class submesh
+    public class Submesh
     {
         public int index;
         public List<SubObject> subobjects = new List<SubObject>();
     }
+
     public class Identifier
     {
         public string objectID;

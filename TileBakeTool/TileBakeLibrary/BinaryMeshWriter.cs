@@ -36,13 +36,19 @@ namespace TileBakeLibrary
                         writer.Write(vertex.Y);
                         writer.Write(vertex.Z);
                     }
-                    // write vertices
+                    // write normals
                     foreach (Vector3 normal in meshdata.normals)
                     {
                         writer.Write(normal.X);
                         writer.Write(normal.Y);
                         writer.Write(normal.Z);
                     }
+                    //write uv's
+                    /*foreach (Vector2 uv in meshdata.uvs)
+                    {
+                        writer.Write(uv.X);
+                        writer.Write(uv.Y);
+                    }*/
                     // write indices
                     foreach (int index in meshdata.indices)
                     {

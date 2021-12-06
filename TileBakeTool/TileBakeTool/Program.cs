@@ -180,7 +180,7 @@ namespace TileBakeTool
 			
 			if (configFile != null)
 			{
-				tileBaker.setClipSpikes(removeSpikes, spikeCeiling, spikeFloor);
+				tileBaker.SetClipSpikes(removeSpikes, spikeCeiling, spikeFloor);
 				tileBaker.SetObjectFilters(configFile.cityObjectFilters);
 			}
 			tileBaker.TilingMethod = configFile.tilingMethod;
