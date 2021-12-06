@@ -42,10 +42,7 @@ public class T3DInit : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P))
         {
-            MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
-
-            //do not store auth tokens in GIT
-            MetadataLoader.Instance.BimAuthToken = "";
+            MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);                        
             MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
             MetadataLoader.Instance.BimModelVersionId = "1";
 
@@ -89,9 +86,7 @@ public class T3DInit : MonoBehaviour
         cameraPosition.SetValue(rd);
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
-        MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
-        
-        MetadataLoader.Instance.BimAuthToken = Application.absoluteURL.GetUrlParamValue("auth");
+        MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");                
         MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
         MetadataLoader.Instance.BimModelVersionId = Application.absoluteURL.GetUrlParamValue("versionId");
 

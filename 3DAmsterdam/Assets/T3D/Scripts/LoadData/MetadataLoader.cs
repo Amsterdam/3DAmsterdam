@@ -138,7 +138,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public bool UploadedModel;
 
-        public string BimAuthToken;
         public string BimModelId;
         public string BimModelVersionId;
 
@@ -403,11 +402,10 @@ namespace Netherlands3D.T3D.Uitbouw
             var projectId = "6194fc2ac0da463026d4d90e";
 
             yield return null;
+            
+            var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
 
-            var url = $"https://bim.clearly.app/api/organisations/{organisationId}/projects/{projectId}/models/{modelId}/versions/{versionId}";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            req.SetRequestHeader("Authorization", $"Bearer {BimAuthToken}");
+            UnityWebRequest req = UnityWebRequest.Get(url);            
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();
