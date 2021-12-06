@@ -75,7 +75,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         [SerializeField]
         private float editUIOffset = 0.2f;
 
-        private Vector3 deltaPos;
+        //private Vector3 deltaPos;
 
         //private string idKey;
         //private SaveableInt id;
@@ -188,7 +188,8 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             base.Update();
             SnapToWall();
             SetButtonPositions();
-            ProcessDrag();
+            //if()
+                //ProcessDrag();
             LimitPositionOnWall();
 
             if (transform.parent != Wall.transform.parent)
@@ -210,24 +211,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             var trCorner = GetCorner(rightBound, topBound);
             var dir = (trCorner - transform.position).normalized;
             editUI.AlignWithWorldPosition(trCorner + dir * editUIOffset);
-        }
-
-        private void ProcessDrag()
-        {
-            Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-            var mask = LayerMask.GetMask("Maskable");
-            bool casted = Physics.Raycast(ray, out var hit, Mathf.Infinity, mask);
-
-            if (casted && Input.GetMouseButtonDown(0))
-            {
-                deltaPos = hit.point - transform.position;
-            }
-
-            ObjectClickHandler.GetDrag(out var wallCollider, mask);
-            if (ObjectClickHandler.GetDragOnObject(GetComponentInChildren<Collider>(), true) && casted && Wall.GetComponent<Collider>() == wallCollider)
-            {
-                transform.position = hit.point - deltaPos;
-            }
         }
 
         private void LimitPositionOnWall()
