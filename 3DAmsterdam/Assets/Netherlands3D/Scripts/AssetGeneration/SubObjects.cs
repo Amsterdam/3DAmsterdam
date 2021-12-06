@@ -18,6 +18,7 @@ public class SubObjects : MonoBehaviour
 		public int length;
 		public Color color = Color.white;
 		public bool hidden = false;
+		public int subMeshID = 0;
 	}
 
 	[SerializeField]
@@ -74,11 +75,13 @@ public class SubObjects : MonoBehaviour
 					var indicesLength = reader.ReadInt32();
 					var firstVertex = reader.ReadInt32();
 					var vertexCount = reader.ReadInt32();
+					var subMeshID = reader.ReadInt32();
 					SubObjectsData.Add(new SubOjectData()
 					{
 						objectID = id,
 						startIndex = currentMeshIndex,
-						length = indicesLength
+						length = indicesLength,
+						subMeshID = subMeshID
 					});
 					currentMeshIndex += indicesLength;
 				}

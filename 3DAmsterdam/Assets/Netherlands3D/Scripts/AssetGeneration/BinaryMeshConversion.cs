@@ -145,6 +145,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 var indicesCount = reader.ReadInt32();
                 var submeshCount = reader.ReadInt32();
 
+                Debug.Log($"version{version} vertexCount{vertexCount} normalsCount{normalsCount} uvsCount{uvsCount} indicesCount{indicesCount} submeshCount{submeshCount}");
+
                 var mesh = new Mesh();
                 mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
@@ -183,6 +185,14 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.uv = uvs;
 
+                int[] indices = new int[indicesCount];
+                for (int i = 0; i < indicesCount; i++)
+                {
+                    var index = reader.ReadInt32();
+                    indices[i] = index;
+                }
+
+                mesh.triangles = indices;
                 mesh.subMeshCount = submeshCount;
 
                 for (int i = 0; i < submeshCount; i++)
@@ -190,15 +200,14 @@ public class BinaryMeshConversion : MonoBehaviour
                     var subMeshID = reader.ReadInt32();
                     var firstIndex = reader.ReadInt32();
                     var indexCount = reader.ReadInt32();
-                    var baseVertex = reader.ReadInt32();
-                    int[] triangles = new int[indexCount];
-                    //Debug.Log("Triangle length:" + trianglesLength);
-                    for (int j = 0; j < indexCount; j++)
-                    {
-                        triangles[j] = reader.ReadInt32();
-                    }
+
                     //mesh.SetIndices(triangles, MeshTopology.Triangles, i);
-                    mesh.SetIndices(triangles, MeshTopology.Triangles, i, false, 0);
+                    mesh.SetSubMesh(subMeshID, new UnityEngine.Rendering.SubMeshDescriptor()
+                    {
+                        baseVertex=0,
+                        firstVertex=firstIndex,
+                        indexCount= indexCount
+                    });
                 }
 
                 return mesh;
