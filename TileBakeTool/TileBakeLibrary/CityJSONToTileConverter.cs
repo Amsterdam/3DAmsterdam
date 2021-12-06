@@ -292,7 +292,6 @@ namespace TileBakeLibrary
             // Console.WriteLine($"Parsed existing tile {tile.filePath} with {tile.SubObjects.Count} subobjects");
         }
 
-
         private List<SubObject> CityJSONParseProcess(string sourceFile)
         {
             List<SubObject> filteredObjects = new List<SubObject>();
@@ -312,7 +311,7 @@ namespace TileBakeLibrary
             int simplifying = 0;
             int tiling = 0;
             var filterobjectsBucket = new ConcurrentBag<SubObject>();
-            int[] indices = Enumerable.Range(0, cityObjectCount).ToArray(); ;
+            int[] indices = Enumerable.Range(0, cityObjectCount).ToArray();
             //Turn cityobjects (and their children) into SubObject mesh data
             var partitioner = Partitioner.Create(indices, EnumerablePartitionerOptions.NoBuffering);
 			Parallel.ForEach(partitioner, i =>
@@ -323,11 +322,11 @@ namespace TileBakeLibrary
                 LogStates(skipped, done, parsing, simplifying, tiling);
 
                 var subObject = ToSubObjectMeshData(cityObject);
-				cityJson.ClearCityObject(cityObject.keyName);
+				//cityJson.ClearCityObject(cityObject.keyName);
 				cityObject = null;
 				Interlocked.Decrement(ref parsing);
-
 				cityObject = null;
+
 				if (subObject == null)
 				{
 					Interlocked.Increment(ref done);
@@ -469,6 +468,10 @@ namespace TileBakeLibrary
             subObject.triangleIndices.Reverse();
 
             //Check if the list if triangles is complete (divisible by 3)
+            if (subObject.vertices.Count == 0)
+            {
+                return null;
+            }
             if (subObject.triangleIndices.Count % 3 != 0)
             {
                 Console.WriteLine($"{subObject.id} triangle list is not divisible by 3. This is not correct.");
