@@ -261,7 +261,7 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			assetBundle.Unload(false);
-
+			container.AddComponent<T3D.Uitbouw.TerrainFlattener>(); //todo: remove this when merging back to core branch
 			return container;
 		}
 

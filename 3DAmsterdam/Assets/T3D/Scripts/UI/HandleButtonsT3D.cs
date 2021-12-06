@@ -87,6 +87,7 @@ public class HandleButtonsT3D : MonoBehaviour
     {
         BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
         TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
+        RestrictionChecker.ActivePerceel.SetPerceelActive(!TerrainLayer.isEnabled);
     }
 
     #region Sun related

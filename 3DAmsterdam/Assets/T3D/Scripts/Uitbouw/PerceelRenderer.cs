@@ -40,10 +40,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
-            Perceel = args.Perceel;                        
+            Perceel = args.Perceel;
             //RenderPerceelOutline(args.Perceel);           
             GenerateMeshFromPerceel(args.Perceel);
-
+            SetPerceelActive(false);
             Area = args.Area;
         }
 
@@ -78,7 +78,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             //set normals
             Vector3[] normals = new Vector3[vertices.Count];
-            for(int i=0; i< normals.Length; i++)
+            for (int i = 0; i < normals.Length; i++)
             {
                 normals[i] = Vector3.up;
             }
@@ -131,6 +131,13 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.vertices = verts;
             mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
             filter.sharedMesh = mesh;
+        }
+
+        public void SetPerceelActive(bool active)
+        {
+            perceelMeshGameObject.SetActive(active);
+            perceelOutlineGameObject.SetActive(active);
+
         }
     }
 }
