@@ -1,0 +1,20 @@
+{
+	"sourceFolder":"C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Source/",
+	"outputFolder": "C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Output/",
+	"replaceExistingObjects":false,
+	"identifier":"identificatie",
+	"removePartOfIdentifier":"NL.IMBAG.Pand.",
+	"lod":2.2,
+	"tilingMethod":"OVERLAP",
+	"removeSpikes":false,
+	"removeSpikesAbove": 25,
+	"removeSpikesBelow": -10,
+	"brotliCompression":true,
+	"cityObjectFilters":[
+		{
+			"objectType":"Building",
+			"defaultSubmeshIndex":0,
+			"attributeFilters":[]
+		}
+	]
+}
