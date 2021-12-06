@@ -85,13 +85,13 @@ namespace Netherlands3D.CityJSON
 			return cityJsonNode["CityObjects"].Count;
         }
 
-		public CityObject LoadCityObjectByID(int id, float lod)
+		public CityObject LoadCityObjectByIndex(int index, float lod)
         {
 			this.LOD = lod;
 			this.filterType = "";
-			string key = cityJsonNode["CityObjects"].getKeyAtIndex(id);
-			
-			CityObject cityObject = ReadCityObject(cityJsonNode["CityObjects"][id], filterType);
+			string key = cityJsonNode["CityObjects"].getKeyAtIndex(index);
+			var node = cityJsonNode["CityObjects"][index];
+			CityObject cityObject = ReadCityObject(node, filterType);
 			if (cityObject != null)
 			{
 				cityObject.keyName = key;

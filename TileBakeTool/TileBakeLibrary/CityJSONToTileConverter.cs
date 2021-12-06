@@ -318,8 +318,10 @@ namespace TileBakeLibrary
 			Parallel.ForEach(partitioner, i =>
 			{
 				Interlocked.Increment(ref parsing);
-				CityObject cityObject = cityJson.LoadCityObjectByID(i, lod);
+				CityObject cityObject = cityJson.LoadCityObjectByIndex(i, lod);
+
                 LogStates(skipped, done, parsing, simplifying, tiling);
+
                 var subObject = ToSubObjectMeshData(cityObject);
 				cityJson.ClearCityObject(cityObject.keyName);
 				cityObject = null;
