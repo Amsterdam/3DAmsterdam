@@ -13,8 +13,7 @@ public class StateSaver : MonoBehaviour
     private void Awake()
     {
         activeStateIndexKey = GetType().ToString() + ".activeStateIndex";
-        ActiveStateIndex = new SaveableInt(activeStateIndexKey, 0);
-        //ActiveStateIndex.SetValue(0); //set value to save default state
+        ActiveStateIndex = new SaveableInt(activeStateIndexKey);
     }
 
     private void OnEnable()
