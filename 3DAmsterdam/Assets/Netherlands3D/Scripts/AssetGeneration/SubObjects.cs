@@ -9,21 +9,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
-public class SubObjects : MonoBehaviour
+public partial class SubObjects : MonoBehaviour
 {
-	[System.Serializable]
-	public class SubOjectData{
-		public string objectID;
-		public int firstIndex;
-		public int indicesLength;
-		public int indicesCount;
-		public int firstVertex;
-		public int verticesLength;
-		public Color color = Color.white;
-		public bool hidden = false;
-		public int subMeshID = 0;
-	}
-
 	[SerializeField]
 	private List<SubOjectData> subObjectsData;
 	public List<SubOjectData> SubObjectsData { get => subObjectsData; private set => subObjectsData = value; }
