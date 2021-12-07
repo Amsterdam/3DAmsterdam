@@ -43,6 +43,9 @@ namespace Netherlands3D
 
         [Header("Tile layers external assets paths")]
         public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
+
+        //Legacy metadatapath for AssetBundleMeshLayer
+        [HideInInspector]
         public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
 
         public string brotliCompressedAssetFileExtention = ".br";
