@@ -41,7 +41,6 @@ public abstract class SaveableVariable<T>
 
     private void Loader_LoadingCompleted(bool loadSucceeded)
     {
-        Debug.Log("load event:" + loadSucceeded);
         if (loadSucceeded)
         {
             Load();
