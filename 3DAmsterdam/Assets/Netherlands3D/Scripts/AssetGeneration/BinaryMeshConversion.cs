@@ -8,8 +8,6 @@ using UnityEngine.Profiling;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
-    private System.Diagnostics.Stopwatch stopwatch;
-
     private const int version = 1;
 
     [SerializeField]
@@ -24,25 +22,14 @@ public class BinaryMeshConversion : MonoBehaviour
     [ContextMenu("Load from binary")]
     private void LoadFromBinary()
     {
-        stopwatch = new System.Diagnostics.Stopwatch();
-
         var meshFilter = GetComponent<MeshFilter>();
         DestroyImmediate(meshFilter);
 
         byte[] readBytes = File.ReadAllBytes(Application.persistentDataPath + "/mesh.bin");
-
-        //Time from the moment we have the bytes in memory, to finished displaying on screen
-        stopwatch.Start();
         Profiler.BeginSample("readbinarymesh",this);
-                
-        gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes);
-        // Code to measure...
-        Profiler.EndSample();
 
-        Debug.Log(stopwatch.ElapsedMilliseconds);
-        stopwatch.Stop();
-        stopwatch.Reset();
-    }
+		gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes, out int[] materialIndices);
+	}
 
 	public static void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
@@ -155,7 +142,7 @@ public class BinaryMeshConversion : MonoBehaviour
         }
     }
 
-    public static Mesh ReadBinaryMesh(byte[] fileBytes)
+    public static Mesh ReadBinaryMesh(byte[] fileBytes, out int[] submeshMaterialIndices)
     {
         using (var stream = new MemoryStream(fileBytes))
         {
@@ -216,12 +203,15 @@ public class BinaryMeshConversion : MonoBehaviour
                 mesh.SetIndexBufferData(indices, 0, 0, indicesCount);
 
                 mesh.subMeshCount = submeshCount;
+                int[] materialIndices = new int[submeshCount];
 
                 for (int i = 0; i < submeshCount; i++)
                 {
+                    materialIndices[i] = reader.ReadInt32();
+
                     var subMeshID = reader.ReadInt32();
-                    var firstIndex = reader.ReadInt32();
-                    var indexCount = reader.ReadInt32();
+                    var subMeshFirstIndex = reader.ReadInt32();
+                    var subMeshIndexCount = reader.ReadInt32();
                     var submeshFirstVertex = reader.ReadInt32();
                     var submeshVertexCount = reader.ReadInt32();
 
@@ -230,12 +220,13 @@ public class BinaryMeshConversion : MonoBehaviour
                     subMeshDescriptor.firstVertex = submeshFirstVertex;
                     subMeshDescriptor.vertexCount = submeshVertexCount;
 
-                    subMeshDescriptor.indexStart = firstIndex;
-                    subMeshDescriptor.indexCount = indexCount;
+                    subMeshDescriptor.indexStart = subMeshFirstIndex;
+                    subMeshDescriptor.indexCount = subMeshIndexCount;
 
                     mesh.SetSubMesh(subMeshID, subMeshDescriptor);
                 }
-                
+                submeshMaterialIndices = materialIndices;
+
                 return mesh;
             }
         }

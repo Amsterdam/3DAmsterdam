@@ -198,12 +198,17 @@ namespace Netherlands3D.LayerSystem
 			
 			container.SetActive(isEnabled);
 
-			mesh = BinaryMeshConversion.ReadBinaryMesh(binaryMeshData);
+			mesh = BinaryMeshConversion.ReadBinaryMesh(binaryMeshData, out int[] submeshIndices);
 			mesh.name = source;
 			container.AddComponent<MeshFilter>().sharedMesh = mesh;
 
 			meshRenderer = container.AddComponent<MeshRenderer>();
-			meshRenderer.sharedMaterials = DefaultMaterialList.ToArray();
+			List<Material> materialList = new List<Material>();
+			for (int i = 0; i < submeshIndices.Length; i++)
+			{
+				materialList.Add(DefaultMaterialList[submeshIndices[i]]);
+			}
+			meshRenderer.sharedMaterials = materialList.ToArray();
 			meshRenderer.shadowCastingMode = tileShadowCastingMode;
 
 			if (createMeshcollider)
