@@ -145,8 +145,6 @@ public class BinaryMeshConversion : MonoBehaviour
                 var indicesCount = reader.ReadInt32();
                 var submeshCount = reader.ReadInt32();
 
-                Debug.Log($"version{version} vertexCount{vertexCount} normalsCount{normalsCount} uvsCount{uvsCount} indicesCount{indicesCount} submeshCount{submeshCount}");
-
                 var mesh = new Mesh();
 
                 Vector3[] vertices = new Vector3[vertexCount];

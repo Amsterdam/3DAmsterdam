@@ -152,14 +152,13 @@ public class SubObjects : MonoBehaviour
 		yield return null;
 	}
 
-
 	private string GetIDByVertexIndex(int vertexIndex)
 	{
 		//Find all subobject ranges, and color the verts at those indices
 		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
 			var subObject = SubObjectsData[i];
-			if (vertexIndex >= subObject.firstIndex && vertexIndex < subObject.firstIndex+ subObject.indicesLength)
+			if (vertexIndex >= subObject.firstVertex && vertexIndex < subObject.firstVertex+ subObject.verticesLength)
 			{
 				return subObject.objectID;
 			}

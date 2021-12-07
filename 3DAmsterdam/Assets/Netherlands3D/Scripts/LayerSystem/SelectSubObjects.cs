@@ -340,7 +340,7 @@ namespace Netherlands3D.LayerSystem
                     if (Physics.Raycast(ray, out lastRaycastHit, 10000, clickCheckLayerMask.value))
                     {
                         triangleVertexIndex = lastRaycastHit.triangleIndex * 3;
-                        vertexIndex = mesh.GetIndices(0)[triangleVertexIndex];
+                        vertexIndex = mesh.GetIndices(submeshIndex)[triangleVertexIndex];
                         hitAlpha = mesh.colors[vertexIndex].a;
                     }
                 }
