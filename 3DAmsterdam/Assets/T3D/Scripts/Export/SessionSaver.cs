@@ -8,10 +8,11 @@ using UnityEngine.SceneManagement;
 
 public static class SessionSaver
 {
-    public static bool LoadPreviousSession {
-        get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
-        set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
-    }
+    public static bool LoadPreviousSession { get; set; } = false;
+    //{
+    //    get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
+    //    set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
+    //}
 
     public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
     private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
