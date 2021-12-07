@@ -207,9 +207,10 @@ public class BinaryMeshConversion : MonoBehaviour
 
                 for (int i = 0; i < submeshCount; i++)
                 {
-                    materialIndices[i] = reader.ReadInt32();
 
                     var subMeshID = reader.ReadInt32();
+                    materialIndices[i] = subMeshID;
+
                     var subMeshFirstIndex = reader.ReadInt32();
                     var subMeshIndexCount = reader.ReadInt32();
                     var submeshFirstVertex = reader.ReadInt32();
