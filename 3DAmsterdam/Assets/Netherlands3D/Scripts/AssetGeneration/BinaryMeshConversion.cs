@@ -13,7 +13,7 @@ public class BinaryMeshConversion : MonoBehaviour
     private const int version = 1;
 
     [SerializeField]
-    private string assetBundlePath = "C:/Users/Sam/Desktop/binaryconvert/buildings1.0/";
+    private string assetBundlePath = "C:/Users/Sam/Desktop/data/buildings1.0/";
 
     [ContextMenu("Convert to binary")]
 	private void ConvertToBinary()
@@ -44,9 +44,6 @@ public class BinaryMeshConversion : MonoBehaviour
         stopwatch.Reset();
     }
 
-    /// <summary>
-    /// Depracated. Needs update to new mesh order.
-    /// </summary>
 	public static void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
         using (FileStream file = File.Create(filePath))
@@ -55,10 +52,14 @@ public class BinaryMeshConversion : MonoBehaviour
             {
                 //Version int
                 writer.Write(version);
+                writer.Write(sourceMesh.vertices.Length);
+                writer.Write(sourceMesh.normals.Length);
+                writer.Write(sourceMesh.uv.Length);
+                writer.Write(sourceMesh.triangles.Length);
+                writer.Write(sourceMesh.subMeshCount);
 
                 //Verts
                 var vertices = sourceMesh.vertices;
-                writer.Write(vertices.Length);
                 foreach (Vector3 vert in sourceMesh.vertices)
                 {
                     writer.Write(vert.x);
@@ -66,9 +67,8 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(vert.z);
                 }
 
-                var normals = sourceMesh.normals;
                 //Normals
-                writer.Write(normals.Length);
+                var normals = sourceMesh.normals;
                 foreach (Vector3 normal in normals)
                 {
                     writer.Write(normal.x);
@@ -78,33 +78,32 @@ public class BinaryMeshConversion : MonoBehaviour
 
                 //UV
                 var uvs = sourceMesh.uv;
-                writer.Write(uvs.Length);
                 foreach (Vector2 uv in uvs)
                 {
                     writer.Write(uv.x);
                     writer.Write(uv.y);
                 }
 
+                //Indices
+                var indices = sourceMesh.triangles;
+                foreach(var index in indices)
+                {
+                    writer.Write(index);
+                }
+
                 //Every triangle list per submesh
-                writer.Write(sourceMesh.subMeshCount);
 				for (int i = 0; i < sourceMesh.subMeshCount; i++)
 				{
-                    int[] submeshTriangleList = sourceMesh.GetTriangles(i);
-                    writer.Write(submeshTriangleList.Length);
-                    writer.Write(sourceMesh.GetSubMesh(i).baseVertex);
-                    //var offset = sourceMesh.GetSubMesh(i).baseVertex;
-                    foreach (int index in submeshTriangleList)
-                    {
-                        writer.Write(index);
-                    }
+                    writer.Write(i); //submesh/material index
+                    writer.Write(sourceMesh.GetSubMesh(i).indexStart);
+                    writer.Write(sourceMesh.GetSubMesh(i).indexCount);
+                    writer.Write(sourceMesh.GetSubMesh(i).firstVertex);
+                    writer.Write(sourceMesh.GetSubMesh(i).vertexCount);
                 }            
             }
         }
     }
 
-    /// <summary>
-    /// Depracated. Needs update to new mesh order.
-    /// </summary>
     public static void SaveMetadataAsBinaryFile(ObjectMappingClass sourceObjectMapping, string filePath)
     {
         Debug.Log(filePath);
@@ -129,9 +128,28 @@ public class BinaryMeshConversion : MonoBehaviour
                     //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
                     writer.Write(ids[i]);
 
-                    //Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
-                    int amountOfInts = vectorMap.Count((vector) => vector == i);
-                    writer.Write(amountOfInts);
+                    int firstIndex = 0; //We do not need these in Unity atm.
+                    writer.Write(firstIndex);
+                    int indexCount = 0; //We do not need these in Unity atm.
+                    writer.Write(indexCount);
+
+                    int firstVertex = 0;
+					//Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
+                    int vertexCount = vectorMap.Count((vector) => vector == i);
+					for (int j = 0; j < vectorMap.Count; j++)
+					{
+                        //get the first vert position we encounter in the vectormap
+                        if (vectorMap[j] == i)
+                        {
+                            firstVertex = j;
+                            break;
+                        }
+                    }
+                                        
+                    writer.Write(firstVertex);
+                    writer.Write(vertexCount);
+
+                    writer.Write(0);
                 }
             }
         }
@@ -231,14 +249,14 @@ public class BinaryMeshConversion : MonoBehaviour
 		for (int i = 0; i < files.Length; i++)
 		{
             var filename = files[i];
-            var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
-            if (myLoadedAssetBundle == null)
+            if (!filename.Contains("-data") && !filename.Contains(".bin"))
             {
-                Debug.Log("Failed to load AssetBundle!");
-                return;
-            }
-            else if(!filename.Contains("-data"))
-            {
+                var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
+                if (myLoadedAssetBundle == null)
+                {
+                    Debug.Log("Failed to load AssetBundle!");
+                    continue;
+                }
                 try
                 {
                     var mesh = myLoadedAssetBundle.LoadAllAssets<Mesh>()[0];
@@ -258,11 +276,10 @@ public class BinaryMeshConversion : MonoBehaviour
     private void ConvertFromAssetBundleMetaDataToBinary()
     {
         var files = Directory.GetFiles(assetBundlePath);
-
         for (int i = 0; i < files.Length; i++)
         {
             var filename = files[i];
-            if (filename.Contains("-data")) //metadata file found
+            if (filename.Contains("-data") && !filename.Contains(".bin")) //metadata file found
             {
                 var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
                 if (myLoadedAssetBundle == null)
