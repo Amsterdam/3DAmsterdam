@@ -44,7 +44,9 @@ public class BinaryMeshConversion : MonoBehaviour
         stopwatch.Reset();
     }
 
-
+    /// <summary>
+    /// Depracated. Needs update to new mesh order.
+    /// </summary>
 	public static void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
         using (FileStream file = File.Create(filePath))
@@ -100,6 +102,9 @@ public class BinaryMeshConversion : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Depracated. Needs update to new mesh order.
+    /// </summary>
     public static void SaveMetadataAsBinaryFile(ObjectMappingClass sourceObjectMapping, string filePath)
     {
         Debug.Log(filePath);
