@@ -14,8 +14,11 @@ public class SubObjects : MonoBehaviour
 	[System.Serializable]
 	public class SubOjectData{
 		public string objectID;
-		public int startIndex;
-		public int length;
+		public int firstIndex;
+		public int indicesLength;
+		public int indicesCount;
+		public int firstVertex;
+		public int verticesLength;
 		public Color color = Color.white;
 		public bool hidden = false;
 		public int subMeshID = 0;
@@ -71,15 +74,17 @@ public class SubObjects : MonoBehaviour
 				{
 					var id = reader.ReadString();
 					var firstIndex = reader.ReadInt32();
-					var indicesLength = reader.ReadInt32();
+					var indicesCount = reader.ReadInt32();
 					var firstVertex = reader.ReadInt32();
 					var vertexCount = reader.ReadInt32();
 					var subMeshID = reader.ReadInt32();
 					SubObjectsData.Add(new SubOjectData()
 					{
 						objectID = id,
-						startIndex = firstIndex,
-						length = indicesLength,
+						firstIndex = firstIndex,
+						indicesCount = indicesCount,
+						firstVertex = firstVertex,
+						verticesLength = vertexCount,
 						subMeshID = subMeshID
 					});
 				}
@@ -115,9 +120,9 @@ public class SubObjects : MonoBehaviour
 		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
 			var subObject = SubObjectsData[i];
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = subObject.color;
+				vertexColors[subObject.firstVertex + j] = subObject.color;
 			}
 		}
 		mesh.colors = vertexColors;
@@ -154,7 +159,7 @@ public class SubObjects : MonoBehaviour
 		for (int i = 0; i < SubObjectsData.Count; i++)
 		{
 			var subObject = SubObjectsData[i];
-			if (vertexIndex >= subObject.startIndex && vertexIndex < subObject.startIndex+ subObject.length)
+			if (vertexIndex >= subObject.firstIndex && vertexIndex < subObject.firstIndex+ subObject.indicesLength)
 			{
 				return subObject.objectID;
 			}
@@ -170,9 +175,9 @@ public class SubObjects : MonoBehaviour
 		{
 			var subObject = SubObjectsData[i];
 			subObject.color = highlightColor;
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = subObject.color;
+				vertexColors[subObject.firstVertex + j] = subObject.color;
 			}
 		}
 
@@ -194,9 +199,9 @@ public class SubObjects : MonoBehaviour
 			else if(!subObject.hidden){
 				subObject.color = Color.white;
 			}
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = subObject.color;
+				vertexColors[subObject.firstVertex + j] = subObject.color;
 			}
 		}
 		mesh.colors = vertexColors;
@@ -217,9 +222,9 @@ public class SubObjects : MonoBehaviour
 				subObject.hidden = false;
 				subObject.color = new Color(subObject.color.r, subObject.color.g, subObject.color.b, 1.0f);
 			}
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = subObject.color;
+				vertexColors[subObject.firstVertex + j] = subObject.color;
 			}
 		}
 		mesh.colors = vertexColors;
@@ -234,9 +239,9 @@ public class SubObjects : MonoBehaviour
 			var subObject = SubObjectsData[i];
 			subObject.color = Color.white;
 			subObject.hidden = false;
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = subObject.color;
+				vertexColors[subObject.firstVertex + j] = subObject.color;
 			}
 		}
 		mesh.colors = vertexColors;
@@ -256,22 +261,23 @@ public class SubObjects : MonoBehaviour
 
 			//determine height of vertex
 			float height = 0.0f;
-			for (int h = 0; h < subObject.length; h++)
+			for (int h = 0; h < subObject.indicesLength; h++)
 			{
 				if (vertices[h].y > height) height = vertices[h].y;
 			}
 			randomColor = Color.Lerp(minColor, maxColor, height / max);
 
 			//apply color
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex + j] = randomColor;
+				vertexColors[subObject.firstVertex + j] = randomColor;
 			}
 		}
 
 		mesh.colors = vertexColors;
 	}
 
+	[ContextMenu("Generate random vertex colors")]
 	public void DrawRandomVertexColors()
 	{
 		Altered = true;
@@ -283,9 +289,9 @@ public class SubObjects : MonoBehaviour
 			Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
 			subObject.color = randomColor;
 
-			for (int j = 0; j < subObject.length; j++)
+			for (int j = 0; j < subObject.verticesLength; j++)
 			{
-				vertexColors[subObject.startIndex+j] = randomColor;
+				vertexColors[subObject.firstVertex + j] = randomColor;
 			}
 		}
 
