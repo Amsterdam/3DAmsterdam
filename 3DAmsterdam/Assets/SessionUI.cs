@@ -17,7 +17,8 @@ public class SessionUI : MonoBehaviour
     public void LoadSavedSession()
     {
         SessionSaver.LoadPreviousSession = true;
-        SessionSaver.LoadSaveData();
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
         //SceneSerializer.Instance.LoadBuilding();
     }
 

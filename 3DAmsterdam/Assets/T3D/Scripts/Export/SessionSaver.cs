@@ -4,19 +4,24 @@ using System.Collections.Generic;
 using Netherlands3D.Sharing;
 using SimpleJSON;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class SessionSaver
 {
-    public static bool LoadPreviousSession = false;
+    public static bool LoadPreviousSession {
+        get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
+        set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
+    }
 
     public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
-    private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } } 
+    private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
     {
+        LoadPreviousSession = false;
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         Debug.Log(SessionId);
         if (SessionId == null)
@@ -27,6 +32,17 @@ public static class SessionSaver
         }
 
         Debug.Log("session id: " + SessionId);
+
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+    }
+
+    private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (LoadPreviousSession)
+        {
+            LoadSaveData();
+        }
+        //LoadPreviousSession = false;
     }
 
     public static void ClearAllSaveData()
@@ -35,7 +51,7 @@ public static class SessionSaver
     }
 
     public static void SaveFloat(string key, float value)
-    {   
+    {
         Saver.SaveFloat(key, value);
     }
 
@@ -71,7 +87,7 @@ public static class SessionSaver
 
     public static void ExportSavedData()
     {
-         Saver.ExportSaveData(SessionId);
+        Saver.ExportSaveData(SessionId);
     }
 
     public static void LoadSaveData()

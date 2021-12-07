@@ -17,10 +17,11 @@ public class T3DInit : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        InitializeSaveableVariables();
     }
 
-
-    void Start()
+    private void InitializeSaveableVariables()
     {
         cameraPositionKey = GetType().ToString() + ".cameraPosition";// + nameof(cameraPosition);
         cameraPosition = new SaveableVector3RD(cameraPositionKey);
@@ -29,8 +30,12 @@ public class T3DInit : MonoBehaviour
         bagIdKey = GetType().ToString() + ".bagId";// + nameof(bagId);
         bagId = new SaveableString(bagIdKey);
         print("loaded id : " + bagId.Value);
+    }
 
-#if !UNITY_EDITOR            
+    void Start()
+    {
+#if !UNITY_EDITOR
+        if(!SessionSaver.LoadPreviousSession)
             CheckURLForPositionAndId();
 #endif
     }
@@ -55,7 +60,7 @@ public class T3DInit : MonoBehaviour
     {
         var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
                                                             //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
-                                                            //var pos = new Vector3RD(137837.926, 452307.472, 0); //Catalonië 5 Utrecht
+                                                            //var pos = new Vector3RD(137837.926, 452307.472, 0); //Cataloni? 5 Utrecht
                                                             //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
         cameraPosition.SetValue(pos);
         GotoPosition(pos);
@@ -68,7 +73,7 @@ public class T3DInit : MonoBehaviour
 
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
-        //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Catalonië 5 Utrecht utrecht 3524KX
+        //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000052214")); //Cataloni? 5 Utrecht utrecht 3524KX
     }
 
     void GotoPosition(Vector3RD position)
@@ -96,7 +101,14 @@ public class T3DInit : MonoBehaviour
 
     public void LoadBuilding()
     {
+        //InitializeSaveableVariables();
+        //cameraPosition.Load();
+        //bagId.Load();
+
+        print(cameraPosition.Value);
+
         var pos = cameraPosition.Value;
+        cameraPosition.SetValue(pos);
         GotoPosition(pos);
         print(pos + "_" + bagId.Value);
         MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);

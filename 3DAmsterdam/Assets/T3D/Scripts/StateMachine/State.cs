@@ -16,13 +16,16 @@ public class State : MonoBehaviour
     public delegate void ActiveStateChangedEventHandler(State newState);
     public static event ActiveStateChangedEventHandler ActiveStateChangedByUser;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         if (isFirstState)
         {
             ActiveState = this;
         }
+    }
 
+    protected virtual void Start()
+    {
         if (SessionSaver.LoadPreviousSession)
             LoadSavedState();
     }

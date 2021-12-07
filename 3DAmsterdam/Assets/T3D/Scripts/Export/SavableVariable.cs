@@ -19,20 +19,20 @@ public abstract class SaveableVariable<T>
 
         SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
 
-        //Save();
+        Save();
     }
 
-    public SaveableVariable(string key, T defaultValue)
-    {
-        Key = key;
+    //public SaveableVariable(string key, T defaultValue)
+    //{
+    //    Key = key;
 
-        if (SessionSaver.HasLoaded)
-            Load();
+    //    if (SessionSaver.HasLoaded)
+    //        Load();
 
-        SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
-        SetValue(defaultValue);
-        //Save();
-    }
+    //    SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
+    //    SetValue(defaultValue);
+    //    //Save();
+    //}
 
     ~SaveableVariable()
     {
@@ -43,7 +43,10 @@ public abstract class SaveableVariable<T>
     {
         Debug.Log("load event:" + loadSucceeded);
         if (loadSucceeded)
+        {
             Load();
+            Save();
+        }
 
         //SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
@@ -80,10 +83,6 @@ public class SaveableFloat : SaveableVariable<float>
 public class SaveableInt : SaveableVariable<int>
 {
     public SaveableInt(string key) : base(key)
-    {
-    }
-
-    public SaveableInt(string key, int defaultValue) : base(key, defaultValue)
     {
     }
 

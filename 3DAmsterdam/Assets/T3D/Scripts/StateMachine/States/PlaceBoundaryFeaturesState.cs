@@ -14,8 +14,9 @@ public class PlaceBoundaryFeaturesState : State
     //SaveableIntArray ids; //save the actual placed ids, the id increments every time a new bf is placed, but does not decrement when a bf is deleted to avoid having to change all ids to account for the missing id
     List<BoundaryFeature> savedBoundaryFeatures = new List<BoundaryFeature>();
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         amountOfPlacedFeatuesKey = GetType().ToString() + ".amountOfPlacedFeatues";
         amountOfPlacedFeatues = new SaveableInt(amountOfPlacedFeatuesKey);
     }
