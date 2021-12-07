@@ -148,7 +148,6 @@ public class BinaryMeshConversion : MonoBehaviour
                 Debug.Log($"version{version} vertexCount{vertexCount} normalsCount{normalsCount} uvsCount{uvsCount} indicesCount{indicesCount} submeshCount{submeshCount}");
 
                 var mesh = new Mesh();
-                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                 Vector3[] vertices = new Vector3[vertexCount];
                 for (int i = 0; i < vertexCount; i++)
@@ -192,7 +191,9 @@ public class BinaryMeshConversion : MonoBehaviour
                     indices[i] = index;
                 }
 
-                mesh.triangles = indices;
+                mesh.SetIndexBufferParams(indicesCount, UnityEngine.Rendering.IndexFormat.UInt32);
+                mesh.SetIndexBufferData(indices, 0, 0, indicesCount);
+
                 mesh.subMeshCount = submeshCount;
 
                 for (int i = 0; i < submeshCount; i++)
@@ -200,16 +201,20 @@ public class BinaryMeshConversion : MonoBehaviour
                     var subMeshID = reader.ReadInt32();
                     var firstIndex = reader.ReadInt32();
                     var indexCount = reader.ReadInt32();
+                    var submeshFirstVertex = reader.ReadInt32();
+                    var submeshVertexCount = reader.ReadInt32();
 
-                    //mesh.SetIndices(triangles, MeshTopology.Triangles, i);
-                    mesh.SetSubMesh(subMeshID, new UnityEngine.Rendering.SubMeshDescriptor()
-                    {
-                        baseVertex=0,
-                        firstVertex=firstIndex,
-                        indexCount= indexCount
-                    });
+                    var subMeshDescriptor = new UnityEngine.Rendering.SubMeshDescriptor();
+                    subMeshDescriptor.baseVertex = 0;
+                    subMeshDescriptor.firstVertex = submeshFirstVertex;
+                    subMeshDescriptor.vertexCount = submeshVertexCount;
+
+                    subMeshDescriptor.indexStart = firstIndex;
+                    subMeshDescriptor.indexCount = indexCount;
+
+                    mesh.SetSubMesh(subMeshID, subMeshDescriptor);
                 }
-
+                
                 return mesh;
             }
         }
