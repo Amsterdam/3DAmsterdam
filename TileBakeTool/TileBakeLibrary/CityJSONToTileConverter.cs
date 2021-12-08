@@ -199,7 +199,8 @@ namespace TileBakeLibrary
                                           result.Seconds.ToString("00"));
                 Console.WriteLine($"duration: {elapsedTimeString}");
             }
-		}
+            if (brotliCompress) CompressFiles();
+        }
 
         private void PrepareTiles()
         {
@@ -289,7 +290,7 @@ namespace TileBakeLibrary
                     bmd.ExportData(tile);
 
                     //Compressed variant
-                    if (brotliCompress) BrotliCompress.Compress(tile.filePath);
+                    //if (brotliCompress) BrotliCompress.Compress(tile.filePath);
 
                     //Optionaly write other format(s) for previewing purposes
                     if (createOBJFiles) OBJWriter.Save(tile);
@@ -301,10 +302,36 @@ namespace TileBakeLibrary
             Console.WriteLine($"\r{counter} files saved                                                                                             ");
         }
 
+        public void CompressFiles()
+        {
+           
+            var filter = $"*{lod}.bin";
+
+            //List the files that we are going to parse
+            string[] binFiles = Directory.GetFiles(Path.GetDirectoryName(outputPath), filter);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            int counter = 0;
+            int totalcount = binFiles.Length;
+            Console.Write("\rcompressing files");
+            Parallel.ForEach(binFiles, filename =>
+            {
+                if (brotliCompress) BrotliCompress.Compress(filename);
+                Interlocked.Increment(ref counter);
+                Console.Write($"\r compressing files {counter} of {totalcount}");
+
+            });
+            watch.Stop();
+            var result = watch.Elapsed;
+            string elapsedTimeString = string.Format("{0}:{1} minutes",
+                                      result.Minutes.ToString("00"),
+                                      result.Seconds.ToString("00"));
+            Console.WriteLine($"duration: {elapsedTimeString}");
+        }
+        
 
 
-
-		public void SetObjectFilters(CityObjectFilter[] cityObjectFilters)
+        public void SetObjectFilters(CityObjectFilter[] cityObjectFilters)
 		{
 			this.cityObjectFilters = cityObjectFilters;
         }
@@ -430,9 +457,6 @@ namespace TileBakeLibrary
             subObject.triangleIndices = new List<int>();
             subObject.id = cityObject.keyName;
 
-
-
-            
             int submeshindex = -1;
 
             // figure out the intended submesh and required meshDensity
@@ -482,14 +506,18 @@ namespace TileBakeLibrary
                     }
                 }
             }
-
-            AppendCityObjectGeometry(cityObject, subObject);
+            bool calculateNormals = false;
+            if (subObject.maxVerticesPerSquareMeter==0)
+            {
+                calculateNormals = true;
+            }
+            AppendCityObjectGeometry(cityObject, subObject,calculateNormals);
             //Append all child geometry too
             for (int i = 0; i < cityObject.children.Count; i++)
 			{
 				var childObject = cityObject.children[i];
 				//Add child geometry to our subobject. (Recursive children are not allowed in CityJson)
-				AppendCityObjectGeometry(childObject, subObject);
+				AppendCityObjectGeometry(childObject, subObject, calculateNormals);
 			}
 
             //Winding order of triangles should be reversed
@@ -514,7 +542,7 @@ namespace TileBakeLibrary
             return subObject;
         }
 
-		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject)
+		private static void AppendCityObjectGeometry(CityObject cityObject, SubObject subObject, bool calculateNormals)
 		{
             List<Vector3Double> vertexlist = new List<Vector3Double>();
             Vector3 defaultNormal = new Vector3(0, 1, 0);
@@ -525,13 +553,25 @@ namespace TileBakeLibrary
             foreach (var surface in cityObject.surfaces)
 			{             
                 //findout if ity is already a triangle
+                
                 if (surface.outerRing.Count == 3 && surface.innerRings.Count == 0)
                 {
                     List<int> newindices = new List<int> { count, count + 1, count + 2 };
                     count += 3;
                     indexlist.AddRange(newindices);
                     vertexlist.AddRange(surface.outerRing);
-                    normallist.AddRange(defaultnormalList);
+                    if (calculateNormals)
+                    {
+                        Vector3 normal = calculateNormal(surface.outerRing[0], surface.outerRing[1], surface.outerRing[2]);
+                        normallist.Add(normal);
+                        normallist.Add(normal);
+                        normallist.Add(normal);
+                    }
+                    else
+                    {
+                        normallist.AddRange(defaultnormalList);
+                    }
+                    
                      continue;
                 }
 
@@ -559,8 +599,6 @@ namespace TileBakeLibrary
                     holes.Add(inner);
 				}
 
-                
-
                 //Turn poly into triangulated geometry data
                 Poly2Mesh.Polygon poly = new Poly2Mesh.Polygon();
 				poly.outside = outside;
@@ -571,6 +609,7 @@ namespace TileBakeLibrary
                     Console.WriteLine("Polygon seems to be a line");
                     continue;
                 }
+                //Poly2Mesh takes care of calculating normals, using a right-handed coordinate system
 				Poly2Mesh.CreateMeshData(poly, out surfaceVertices,out surfaceNormals, out surfaceIndices, out surfaceUvs);
 
                 var offset = subObject.vertices.Count;
@@ -599,7 +638,24 @@ namespace TileBakeLibrary
                 subObject.normals.AddRange(normallist);
             }
         }
+        private static Vector3 calculateNormal(Vector3Double v1, Vector3Double v2, Vector3Double v3)
+        {
+            Vector3 normal = new Vector3();
+            Vector3Double U = v2 - v1;
+            Vector3Double V = v3 - v1;
 
+            double X = ((U.Y * V.Z) - (U.Z * V.Y));
+            double Y = ((U.Z * V.X) - (U.X * V.Z));
+            double Z = ((U.X * V.Y) - (U.Y * V.X));
+
+            // normalize it
+            double scalefactor = Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
+            normal.X = (float)(X / scalefactor);
+            normal.Y = (float)(Y / scalefactor);
+            normal.Z = (float)(Z / scalefactor);
+            return normal;
+
+        }
 		public void Cancel()
 		{
 			throw new NotImplementedException();
