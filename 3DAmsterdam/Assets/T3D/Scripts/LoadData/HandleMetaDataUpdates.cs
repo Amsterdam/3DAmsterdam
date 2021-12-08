@@ -39,7 +39,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
         //StartCoroutine(SetSidebarAreaText());
     }
 
-    private void On_BimStatus(string status, string modelId, string versionId)
+    private void On_BimStatus(string status, string modelId)
     {
         BimModelStatus.text = $"Status upload conversie : {status}";
     }

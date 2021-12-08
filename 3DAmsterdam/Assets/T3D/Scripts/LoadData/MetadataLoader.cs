@@ -13,6 +13,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Netherlands3D.Utilities;
 using System.Globalization;
+using System.IO;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -125,8 +126,11 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
-        public delegate void BimStatusEventHandler(string status, string modelId, string versionId);
+        public delegate void BimStatusEventHandler(string status, string modelId);
         public event BimStatusEventHandler BimStatus;
+
+        public delegate void BimCityJsonEventHandler(string cityJson);
+        public event BimCityJsonEventHandler BimCityJsonReceived;
 
 
         //public List<Vector2[]> PerceelData;
@@ -173,7 +177,9 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (UploadedModel)
             {
-                StartCoroutine(GetBimStatus(BimModelId, BimModelVersionId));
+                StartCoroutine(GetBimStatus(BimModelId));
+                //StartCoroutine(GetBimCityJson(BimModelId));
+                StartCoroutine(GetBimCityJsonFile());
             }
 
             StartCoroutine(UpdateSidePanelAddress(id));
@@ -396,11 +402,8 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        IEnumerator GetBimStatus(string modelId, string versionId)
+        IEnumerator GetBimStatus(string modelId)
         {
-            var organisationId = "6194fc20c0da463026d4d8fe";
-            var projectId = "6194fc2ac0da463026d4d90e";
-
             yield return null;
             
             var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
@@ -419,8 +422,41 @@ namespace Netherlands3D.T3D.Uitbouw
                 var status = json["conversions"]["cityjson"];
                 Debug.Log($"Status CityJSON:{status}");
 
-                BimStatus?.Invoke(status, modelId, versionId);
+                BimStatus?.Invoke(status, modelId);
 
+            }
+        }
+
+
+        
+
+        IEnumerator GetBimCityJsonFile()
+        {
+            yield return null;
+
+            var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
+            string cityjson = File.ReadAllText(filepath);
+
+            BimCityJsonReceived?.Invoke(cityjson);
+        }
+
+            IEnumerator GetBimCityJson(string modelId)
+        {
+            yield return null;
+
+            var url = $"https://t3dapi.azurewebsites.net/api/getbimcityjson/{modelId}";
+
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            req.SetRequestHeader("Content-Type", "application/json");
+
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+            {
+                WarningDialogs.Instance.ShowNewDialog(req.error);
+            }
+            else
+            {
+                BimCityJsonReceived?.Invoke(req.downloadHandler.text);
             }
         }
 
