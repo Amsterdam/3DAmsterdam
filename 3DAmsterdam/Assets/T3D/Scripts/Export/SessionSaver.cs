@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using Netherlands3D.Sharing;
 using SimpleJSON;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public static class SessionSaver
 {
-    public static bool LoadPreviousSession { get; set; } = false;
+    public static bool LoadPreviousSession { get; set; } = true;
     //{
     //    get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
     //    set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
@@ -20,11 +21,12 @@ public static class SessionSaver
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
 
+    //private static Timer autoSaveTimer;
+
     static SessionSaver()
     {
-        LoadPreviousSession = false;
+        //LoadPreviousSession = false;
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
-        Debug.Log(SessionId);
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
@@ -34,8 +36,24 @@ public static class SessionSaver
 
         Debug.Log("session id: " + SessionId);
 
+        //SetAutoSaveTimer();
+
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
+
+    //private static void SetAutoSaveTimer()
+    //{
+    //    autoSaveTimer = new Timer(5000);
+    //    autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
+    //    autoSaveTimer.AutoReset = true;
+    //    autoSaveTimer.Enabled = true;
+    //}
+
+    //private static void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
+    //{
+    //    Debug.Log("Autosaving");
+    //    ExportSavedData();
+    //}
 
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -93,12 +111,14 @@ public static class SessionSaver
 
     public static void LoadSaveData()
     {
+        Debug.Log("Loading save data for session: " + SessionId);
         Loader.ReadSaveData(SessionId);
         Loader.LoadingCompleted += Loader_LoadingCompleted;
     }
 
     private static void Loader_LoadingCompleted(bool loadSucceeded)
     {
+        Debug.Log("loaded session: " + SessionId);
         T3DInit.Instance.LoadBuilding();
         Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
