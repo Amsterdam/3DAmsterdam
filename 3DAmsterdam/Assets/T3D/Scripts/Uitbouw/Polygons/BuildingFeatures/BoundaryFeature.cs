@@ -257,6 +257,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             }
 
             editUI.gameObject.SetActive(newMode != EditMode.None);
+            editUI.UpdateSprites(newMode);
         }
 
         public void DeleteFeature()
@@ -289,8 +290,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 SetMode(EditMode.Resize);
             else
                 SetMode(EditMode.Reposition);
-
-            editUI.UpdateSprites(ActiveMode);
         }
     }
 }
