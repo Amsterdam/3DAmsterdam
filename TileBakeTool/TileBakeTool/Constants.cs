@@ -48,7 +48,6 @@ Extra options:
 --lod <lod filter>			 Target LOD. For example 2.2
 --config <config file path>	 Apply settings above via config file
 --clip          		     Write a brotli compressed .br variant of the .bin
---obj						 Write .OBJ files as well (for previewing outputs)
 --brotli					 Write a brotli compressed .br variant of the .bin
 
 Pipeline example:

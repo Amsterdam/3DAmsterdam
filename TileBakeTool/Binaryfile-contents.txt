@@ -5,6 +5,7 @@ int32 datatype =101 #not yet
 int32 version = 1
 int32 vertexCount
 int32 normalsCount
+int32 uvsCount
 int32 indicesCount
 int32 submeshCount
 
@@ -19,6 +20,11 @@ int32 submeshCount
 	single x
 	single y
 	single z
+	
+------uvs
+	///foreach uv
+	single x
+	single y
 
 ------indices
 	///foreach index

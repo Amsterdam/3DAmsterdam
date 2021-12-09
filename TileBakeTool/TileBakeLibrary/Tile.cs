@@ -81,14 +81,6 @@ namespace TileBakeLibrary
             {
 				subObjects.Add(subObject);
 			}
-			
-			
-		}
-
-
-
-		
-
-		
+		}		
 	}
 }

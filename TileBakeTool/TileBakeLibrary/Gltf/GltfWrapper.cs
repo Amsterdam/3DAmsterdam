@@ -101,7 +101,7 @@ namespace TileBakeLibrary
 
 		private static void CreateBufferViews(MeshData mesh, GltfRoot gltfFile)
 		{
-			var byteOffset = 20; //Skip the header (4 bytes per int32
+			var byteOffset = 24; //Skip the header (6 * 4 bytes per int32) 
 			var verticesByteLength = mesh.vertexCount * 3 * 4; //3 (xyz) * 4 float bytes
 
 			var normalsByteOffset = byteOffset +  verticesByteLength;

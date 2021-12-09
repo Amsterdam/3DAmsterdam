@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using UnityEngine;
@@ -17,6 +18,9 @@ using UnityEngine;
 /// </summary>
 public class ColladaFile
 {
+	[DllImport("__Internal")]
+	private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
+
 	private XmlTextWriter writer;
 	private StringWriter stringWriter;
 	private List<Material> materials;
@@ -402,7 +406,7 @@ public class ColladaFile
 			byte[] byteArray = Encoding.UTF8.GetBytes(stringWriter.ToString());
 			stringWriter = null;
 			writer = null;
-			JavascriptMethodCaller.DownloadByteArrayAsFile(byteArray, byteArray.Length, (filename!="") ? filename : "ColladaExport.dae");
+			DownloadFile(byteArray, byteArray.Length, (filename!="") ? filename : "ColladaExport.dae");
 		}
 		else
 		{
