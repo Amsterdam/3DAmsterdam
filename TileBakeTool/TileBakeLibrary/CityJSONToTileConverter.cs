@@ -176,14 +176,38 @@ namespace TileBakeLibrary
             
             Console.WriteLine($"Parsing {sourceFiles.Length} CityJSON files...");
             totalFiles = sourceFiles.Length;
-			for (int i = 0; i < sourceFiles.Length; i++)
+            if (sourceFiles.Length>0)
+            {
+                cityJson = new CityJSON(sourceFiles[0], true, true);
+            }
+            
+
+            for (int i = 0; i < sourceFiles.Length; i++)
 			{
+                CityJSON nextCityJSON=null;
+                int nextJsonID = i + 1;
+                if (i+1==sourceFiles.Length)
+                {
+                    nextJsonID = i;
+                }
+                
+                Thread thread;
+                thread = new Thread(
+                       () => {
+                           nextCityJSON = new CityJSON(sourceFiles[nextJsonID], true, true);
+                       }
+                       );
+
+
+                    thread.Start();
+
+
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 tiles = new List<Tile>();
                 var index = i;
                 filecounter++;
-                var cityObjects = CityJSONParseProcess(sourceFiles[index]);
+                var cityObjects = CityJSONParseProcess(cityJson);
                 allSubObjects.Clear();
                 allSubObjects=cityObjects;
                 Console.WriteLine($"\r{allSubObjects.Count} CityObjects imported                                                                                    ");
@@ -198,9 +222,15 @@ namespace TileBakeLibrary
                                           result.Minutes.ToString("00"),
                                           result.Seconds.ToString("00"));
                 Console.WriteLine($"duration: {elapsedTimeString}");
-            }
+
+                    thread.Join();
+                    cityJson = nextCityJSON;
+
+                }
             if (brotliCompress) CompressFiles();
         }
+
+
 
         private void PrepareTiles()
         {
@@ -349,14 +379,14 @@ namespace TileBakeLibrary
         }
 
 
-        private List<SubObject> CityJSONParseProcess(string sourceFile)
+        private List<SubObject> CityJSONParseProcess(CityJSON cityJson)
         {
             List<SubObject> filteredObjects = new List<SubObject>();
             Console.WriteLine("");
-            Console.WriteLine($"Parsing CityJSON {filecounter} of {totalFiles}: {sourceFile}");
-            Console.Write("loading file...");
-            cityJson = null;
-            cityJson = new CityJSON(sourceFile, true, true);
+           // Console.WriteLine($"Parsing CityJSON {filecounter} of {totalFiles}: {sourceFile}");
+           // Console.Write("loading file...");
+            
+            
             Console.Write("\r reading cityobjects");
             //List<CityObject> cityObjects = cityJson.LoadCityObjects(lod);
             int cityObjectCount = cityJson.CityObjectCount();
