@@ -205,7 +205,7 @@ namespace TileBakeLibrary
 
 		}
 
-		public void ClipSpikes(float floor, float ceiling)
+		public void ClipSpikes(float ceiling, float floor)
         {
 			List<Vector3Double> correctverts = vertices.Where(o => o.Z < ceiling && o.Z > floor).ToList();
             if (correctverts.Count == vertices.Count)
@@ -213,7 +213,10 @@ namespace TileBakeLibrary
 				// no spikes detected
 				return;
 			}
+
+
 			double averageHeight = (ceiling + floor) / 2;
+			
             if (correctverts.Count>0)
             {
 				averageHeight = correctverts.Average(o => o.Z);
