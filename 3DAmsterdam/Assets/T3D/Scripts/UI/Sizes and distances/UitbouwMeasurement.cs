@@ -48,14 +48,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
             var coPlanarCorners = GetCoplanarCorners(RestrictionChecker.ActiveBuilding.AbsoluteBuildingCorners, RestrictionChecker.ActiveBuilding.SelectedWall.WallPlane, 0.1f);
 
-            var smallestDst = Mathf.Infinity;
+            var maxDist = 0f;
             var cornerIndex = -1;
             for (int i = 0; i < coPlanarCorners.Length; i++)
             {
                 var dst = uitbouwWall.GetDistanceToPoint(coPlanarCorners[i]);
-                if (dst > 0 && dst < smallestDst)
+                if (dst > 0 && dst > maxDist)
                 {
-                    smallestDst = dst;
+                    maxDist = dst;
                     cornerIndex = i;
                 }
             }
