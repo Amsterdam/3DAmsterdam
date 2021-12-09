@@ -47,7 +47,7 @@ public class T3DInit : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P))
         {
-            MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);                        
+            MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
             MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
             MetadataLoader.Instance.BimModelVersionId = "1";
 
@@ -59,15 +59,19 @@ public class T3DInit : MonoBehaviour
     private void GoToTestBuilding()
     {
         var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
-                                                            //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
-                                                            //var pos = new Vector3RD(137837.926, 452307.472, 0); //Cataloni? 5 Utrecht
-                                                            //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
+        //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
+        //var pos = new Vector3RD(137837.926, 452307.472, 0); //Cataloni? 5 Utrecht
+        //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
+
+        //var pos = new Vector3RD(136932.03, 454272.937, 0); // measurement error building: 3523AA, 10
         cameraPosition.SetValue(pos);
         GotoPosition(pos);
 
         bagId.SetValue("0344100000021804");
-        //bagId.SetValue("0344100000021804");
+        //bagId.SetValue("0344100000068320");
         //bagId.SetValue("0344100000052214");
+
+        //bagId.SetValue("0344100000035416");// measurement error building : 3523AA, 10
 
         MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
 
@@ -91,7 +95,7 @@ public class T3DInit : MonoBehaviour
         cameraPosition.SetValue(rd);
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
-        MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");                
+        MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
         MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
         MetadataLoader.Instance.BimModelVersionId = Application.absoluteURL.GetUrlParamValue("versionId");
 

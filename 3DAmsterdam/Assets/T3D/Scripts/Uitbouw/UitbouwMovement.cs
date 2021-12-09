@@ -101,6 +101,8 @@ namespace Netherlands3D.T3D.Uitbouw
             AllowDrag = allowed;
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed;
+            userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
+            userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
         }
     }
 }
