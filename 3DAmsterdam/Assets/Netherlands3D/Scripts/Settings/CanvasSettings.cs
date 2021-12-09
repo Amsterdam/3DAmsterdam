@@ -5,11 +5,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Netherlands3D.Cameras;
+using System.Runtime.InteropServices;
 
 namespace Netherlands3D.Interface
 {
     public class CanvasSettings : MonoBehaviour
     {
+        [DllImport("__Internal")]
+        private static extern string ChangeInterfaceScale(float scale);
+
+
         [SerializeField]
         private CanvasScaler canvasScaler;
         private string canvasScaleFactorKey = "canvasScaleFactor";
@@ -35,7 +40,9 @@ namespace Netherlands3D.Interface
         {
             canvasScale = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, maxAutoWidth);
             canvasScaler.scaleFactor = canvasScale;
-            JavascriptMethodCaller.SetInterfaceScale(canvasScale);
+            #if !UNITY_EDITOR && UNITY_WEBGL
+            ChangeInterfaceScale(canvasScale);
+            #endif
             return canvasScale;
         }
 
@@ -48,7 +55,9 @@ namespace Netherlands3D.Interface
             canvasScale = scaleFactor;
             canvasScaler.scaleFactor = canvasScale;
             PlayerPrefs.SetFloat(canvasScaleFactorKey, canvasScale);
-            JavascriptMethodCaller.SetInterfaceScale(canvasScale);
+            #if !UNITY_EDITOR && UNITY_WEBGL
+            ChangeInterfaceScale(canvasScale);
+            #endif
         }
     }
 }

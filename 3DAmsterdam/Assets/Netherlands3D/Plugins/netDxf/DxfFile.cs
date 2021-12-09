@@ -15,6 +15,9 @@ public class DxfFile
     private DxfDocument dxfDocument;
     private Layer dxfLayer;
 
+    [DllImport("__Internal")]
+    private static extern void DownloadFile(byte[] array, int byteLength, string fileName);
+
     public void SetupDXF()
     {
         dxfDocument = new DxfDocument();
@@ -46,7 +49,7 @@ public class DxfFile
         {
             if (dxfDocument.Save(stream))
             {
-                JavascriptMethodCaller.DownloadByteArrayAsFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
+                DownloadFile(stream.ToArray(), stream.ToArray().Length, "testfile.dxf");
             }
             else
             {
