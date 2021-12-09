@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
 using UnityEngine;
@@ -12,25 +13,31 @@ public static class CityJSONFormatter
     private static JSONObject Metadata;
     private static JSONObject cityObjects;
     private static JSONArray Vertices;
+    private static JSONArray RDVertices;
     // In CityJSON verts are stored in 1 big array, while boundaries are stored per geometry.
     // In Unity Verts and boundaries are stored per geometry. These helper variables are used to convert one to the other
     private static JSONArray geographicalExtent;
     public static List<CityObject> CityObjects { get; private set; } = new List<CityObject>();
 
     private static bool swapYZ = true; //swap y and z coordinates of vertices?
+    private static bool convertToRD = true; //convert Unity space to RD space?
 
     public static string GetJSON()
     {
         RootObject = new JSONObject();
         cityObjects = new JSONObject();
         Vertices = new JSONArray();
+        RDVertices = new JSONArray();
         Metadata = new JSONObject();
 
         RootObject["type"] = "CityJSON";
         RootObject["version"] = "1.0";
         RootObject["metadata"] = Metadata;
         RootObject["CityObjects"] = cityObjects;
-        RootObject["vertices"] = Vertices;
+        if (convertToRD)
+            RootObject["vertices"] = RDVertices;
+        else
+            RootObject["vertices"] = Vertices;
 
         foreach (var obj in CityObjects)
         {
@@ -55,7 +62,10 @@ public static class CityJSONFormatter
         {
             AddCityGeometry(obj, surface); //adds the verts to 1 array and sets the mapping of the local boundaries of each CityPolygon to this new big array
         }
-        RecalculateGeographicalExtents();
+        if (convertToRD)
+            RecalculateGeographicalExtents(RDVertices);
+        else
+            RecalculateGeographicalExtents(Vertices);
         cityObjects[obj.Name] = obj.GetJsonObject();
     }
 
@@ -71,18 +81,33 @@ public static class CityJSONFormatter
             for (int j = 0; j < polygon.Vertices.Length; j++)
             {
                 Vector3 vert = polygon.Vertices[j];
-                if (swapYZ)
-                    Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
-                else
-                    Vertices.Add(vert);
+                Vector3RD vertRD = CoordConvert.UnitytoRD(vert);
 
+                if (swapYZ)
+                {
+                    Vertices.Add(new Vector3(vert.x, vert.z, vert.y));
+                    var rdArray = new JSONArray();
+                    rdArray.Add(vertRD.x); //rd swaps y and z already, so don't do it again
+                    rdArray.Add(vertRD.y);
+                    rdArray.Add(vertRD.z);
+                    RDVertices.Add(rdArray);
+                }
+                else
+                {
+                    Vertices.Add(vert);
+                    var rdArray = new JSONArray();
+                    rdArray.Add(vertRD.x);
+                    rdArray.Add(vertRD.z);
+                    rdArray.Add(vertRD.y);
+                    RDVertices.Add(rdArray);
+                }
                 polygon.LocalToAbsoluteBoundaryConverter.Add(j, Vertices.Count - 1);
             }
             polygon.BoundaryConverterIsSet = true; // mark the converter as set to later in the export function it can reliably be used
         }
     }
 
-    private static void RecalculateGeographicalExtents()
+    private static void RecalculateGeographicalExtents(JSONArray vertices)
     {
         float minx = Mathf.Infinity;
         float miny = Mathf.Infinity;
@@ -91,9 +116,9 @@ public static class CityJSONFormatter
         float maxy = Mathf.NegativeInfinity;
         float maxz = Mathf.NegativeInfinity;
 
-        for (int i = 0; i < Vertices.Count; i++)
+        for (int i = 0; i < vertices.Count; i++)
         {
-            Vector3 vert = Vertices[i];
+            Vector3 vert = vertices[i];
             if (vert.x < minx)
                 minx = vert.x;
             else if (vert.x > maxx)
