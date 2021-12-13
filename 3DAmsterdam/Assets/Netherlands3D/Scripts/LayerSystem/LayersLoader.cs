@@ -14,12 +14,10 @@ public class LayersLoader : MonoBehaviour
 	[SerializeField]
 	private TileHandlerConfig configuration;
 	private TileHandler tileHandler;
-
-	[Header("Materials")]
-	[SerializeField]
-	private Material[] materialLibrary;
-
+	
 	[Header("Visuals")]
+	[SerializeField]
+	private Material[] materialSlots;
 	[SerializeField]
 	private GameObject textIntersectPrefab;
 	[SerializeField]
@@ -40,6 +38,7 @@ public class LayersLoader : MonoBehaviour
 		{
 			var newLayer = new GameObject().AddComponent<BinaryMeshLayer>();
 			newLayer.transform.SetParent(this.transform);
+			newLayer.layerPriority = binaryMeshLayer.priority;
 			newLayer.name = binaryMeshLayer.layerName;
 			if (binaryMeshLayer.selectableSubobjects)
 			{
@@ -48,18 +47,20 @@ public class LayersLoader : MonoBehaviour
 
 			foreach(var materialIndex in binaryMeshLayer.materialLibraryIndices)
 			{
-				newLayer.DefaultMaterialList.Add(materialLibrary[materialIndex]);
+				newLayer.DefaultMaterialList.Add(materialSlots[materialIndex]);
 			}
 
-			foreach (var lod in binaryMeshLayer.lods)
+			for(int i = 0; i< binaryMeshLayer.lods.Length; i++)
 			{
+				var lod = binaryMeshLayer.lods[i];
 				newLayer.Datasets.Add(
 					new DataSet()
 					{
+						lod = i,
 						maximumDistance = lod.drawDistance,
 						path = lod.sourcePath
 					}
-				);
+				); 
 			}
 			tileHandler.layers.Add(newLayer);
 		}
@@ -74,7 +75,7 @@ public class LayersLoader : MonoBehaviour
 
 			ColorUtility.TryParseHtmlString(geoJsonLayer.lineColor, out Color lineColor);
 			newLayer.lineColor = lineColor;
-
+			newLayer.layerPriority = geoJsonLayer.priority;
 			newLayer.geoJsonUrl = geoJsonLayer.sourcePath;
 			newLayer.drawGeometry = geoJsonLayer.drawOutlines;
 			newLayer.filterUniqueNames = geoJsonLayer.filterUniqueNames;

@@ -25,6 +25,7 @@ namespace Netherlands3D.LayerSystem
 		public class Binarymeshlayer
 		{
 			public string layerName = "Binary meshes layer";
+			public int priority = 1;
 			public bool selectableSubobjects;
 			public Lod[] lods;
 			public int[] materialLibraryIndices;
@@ -34,6 +35,7 @@ namespace Netherlands3D.LayerSystem
 		public class Geojsonlayer
 		{
 			public string layerName = "GeoJson layer";
+			public int priority = 1;
 			public string sourcePath = "";
 			public bool drawOutlines = true;
 			public bool overlay = true;
