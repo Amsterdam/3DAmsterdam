@@ -8,44 +8,82 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
+[HelpURL("https://3d.amsterdam.nl/netherlands3d/help#LayersLoader")]
 public class LayersLoader : MonoBehaviour
 {
-    [SerializeField]
-    private string externalConfigPath = "layersConfig.json";
+	[SerializeField]
+	private TileHandlerConfig configuration;
+	private TileHandler tileHandler;
 
-    [SerializeField]
-    private TileHandlerConfig configuration;
+	[SerializeField]
+	private Material[] materialLibrary;
 
-    void Start()
-    {
-       configuration.dataChanged.AddListener(ConstructLayers);
-       StartCoroutine(LoadExternalConfig());
-    }
+	void Start()
+	{
+		configuration.dataChanged.AddListener(ConstructLayers);
+		StartCoroutine(LoadExternalConfig());
+	}
 
-    private void ConstructLayers()
-    {
-        var tileHandler = gameObject.AddComponent<TileHandler>();
-        foreach (var binaryMeshLayer in configuration.binaryMeshLayers)
-        {
-            var newLayer = new GameObject().AddComponent<BinaryMeshLayer>();
-        }
-        foreach(var geoJsonLayer in configuration.geoJsonLayers)
-        {
-            
+	private void ConstructLayers()
+	{
+		tileHandler = gameObject.AddComponent<TileHandler>();
+
+		foreach (var binaryMeshLayer in configuration.binaryMeshLayers)
+		{
+			var newLayer = new GameObject().AddComponent<BinaryMeshLayer>();
+			newLayer.transform.SetParent(this.transform);
+			newLayer.name = binaryMeshLayer.layerName;
+			if (binaryMeshLayer.selectableSubobjects)
+			{
+				newLayer.gameObject.AddComponent<SelectSubObjects>();
+			}
+
+			foreach (var lod in binaryMeshLayer.lods)
+			{
+				newLayer.Datasets.Add(
+					new DataSet()
+					{
+						maximumDistance = lod.drawDistance,
+						path = lod.sourcePath
+					}
+				);
+			}
+			tileHandler.layers.Add(newLayer);
+		}
+
+		foreach (var geoJsonLayer in configuration.geoJsonLayers)
+		{
+			var newLayer = new GameObject().AddComponent<GeoJSONTextLayer>();
+			newLayer.transform.SetParent(this.transform);
+			newLayer.name = geoJsonLayer.layerName;
+			newLayer.geoJsonUrl = geoJsonLayer.sourcePath;
+			newLayer.drawGeometry = geoJsonLayer.drawOutlines;
+			newLayer.filterUniqueNames = geoJsonLayer.filterUniqueNames;
+			newLayer.SetAutoOrientationMode(geoJsonLayer.autoOrientationMode);
+			newLayer.SetPositionSourceType(geoJsonLayer.positionSourceType);
+			foreach (var text in geoJsonLayer.texts)
+			{
+				newLayer.textsAndSizes.Add(new GeoJSONTextLayer.TextsAndSize()
+				{
+					textPropertyName = text.propertyName,
+					drawWithSize = text.size,
+					offset = text.offset[1]
+				});
+			}
+			tileHandler.layers.Add(newLayer);
 		}
 	}
 
-
-    public void LoadConfig(string jsonConfig)
-    {
-        JsonUtility.FromJsonOverwrite(jsonConfig, configuration);
-        configuration.dataChanged.Invoke();
-    }
+	public void LoadConfig(string jsonConfig)
+	{
+		JsonUtility.FromJsonOverwrite(jsonConfig, configuration);
+		configuration.dataChanged.Invoke();
+	}
 
 	IEnumerator LoadExternalConfig()
 	{
-        var streamingAssetsConfigPath = Application.streamingAssetsPath + "/" + externalConfigPath;
-
+		var streamingAssetsConfigPath = Application.streamingAssetsPath + "/" + configuration.configFile;
+		Debug.Log($"Loading layers config file: {streamingAssetsConfigPath}");
 #if UNITY_WEBGL && !UNITY_EDITOR
         UnityWebRequest webRequest = UnityWebRequest.Get(streamingAssetsConfigPath);
         
@@ -56,17 +94,17 @@ public class LayersLoader : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Could not load {externalConfigPath}");
+            Debug.Log($"Could not load {configuration.configFilePath}");
         }
         yield return null;
 #else
-        if (!File.Exists(streamingAssetsConfigPath))
-        { 
-            Debug.Log($"Could not load {externalConfigPath}");
-            yield break;
-        }
-        LoadConfig(File.ReadAllText(streamingAssetsConfigPath));
-        yield return null;
-#endif      
-    }
+		if (!File.Exists(streamingAssetsConfigPath))
+		{
+			Debug.Log($"Could not load {configuration.configFile}");
+			yield break;
+		}
+		LoadConfig(File.ReadAllText(streamingAssetsConfigPath));
+		yield return null;
+#endif
+	}
 }

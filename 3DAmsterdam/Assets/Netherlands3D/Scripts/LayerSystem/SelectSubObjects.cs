@@ -47,7 +47,8 @@ namespace Netherlands3D.LayerSystem
         {
             contextMenuState = ContextPointerMenu.ContextState.BUILDING_SELECTION;
 
-            exclusiveSelectedShader.SetColor("_HighlightColor", selectionVertexColor);
+            if(exclusiveSelectedShader)
+                exclusiveSelectedShader.SetColor("_HighlightColor", selectionVertexColor);
 
             selectedIDs = new List<string>();
             hiddenIDs = new List<string>();

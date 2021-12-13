@@ -32,39 +32,68 @@ namespace Netherlands3D.LayerSystem
 	{
 		public GameObject TextObject;
 
-		[SerializeField]
-		private string geoJsonUrl = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";	
+		public string geoJsonUrl = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";	
 
 		[SerializeField]
 		private int maxSpawnsPerFrame = 100;
 
-		[SerializeField]
-		private TextsAndSize[] textsAndSizes;
+		public List<TextsAndSize> textsAndSizes = new List<TextsAndSize>();
 
-		[SerializeField]
-		private PositionSourceType positionSourceType = PositionSourceType.Point;
-
-		[SerializeField]
-		private AutoOrientationMode autoOrientationMode = AutoOrientationMode.AutoFlip;
+		public PositionSourceType positionSourceType = PositionSourceType.Point;
+		public AutoOrientationMode autoOrientationMode = AutoOrientationMode.AutoFlip;
 
 		private List<string> uniqueNames;
 
-		[SerializeField]
-		private bool drawGeometry = false;
+		public void SetAutoOrientationMode(string autoOrientationMode)
+		{
+			switch(autoOrientationMode)	{
+				case "FaceCamera":
+					this.autoOrientationMode = AutoOrientationMode.FaceCamera;
+					break;
+				case "AutoFlip":
+					this.autoOrientationMode = AutoOrientationMode.AutoFlip;
+					break;
+				default:
+					this.autoOrientationMode = AutoOrientationMode.None;
+					break;
+			}
+		}
+		public void SetAutoOrientationMode(AutoOrientationMode mode)
+		{
+			this.autoOrientationMode = mode;
+		}
+		public void SetPositionSourceType(string positionSourceType)
+		{
+			switch (positionSourceType)
+			{
+				case "Point":
+					this.positionSourceType = PositionSourceType.Point;
+					break;
+				case "MultiPolygonCentroid":
+					this.positionSourceType = PositionSourceType.MultiPolygonCentroid;
+					break;
+				default:
+					this.positionSourceType = PositionSourceType.Point;
+					break;
+			}
+		}
+		public void SetPositionSourceType(PositionSourceType type)
+		{
+			this.positionSourceType = type;
+		}
+
+		public bool drawGeometry = false;
 		[SerializeField]
 		private Material lineRenderMaterial;
-		[SerializeField]
-		private Color lineColor;
-		[SerializeField]
-		private float lineWidth = 5.0f;
+		public Color lineColor;
+		public float lineWidth = 5.0f;
 
 		[Header("Optional:")]
 		[SerializeField]
 		private bool readAngleFromProperty = false;
 		[SerializeField]
 		private string angleProperty = "hoek";
-		[SerializeField]
-		private bool filterUniqueNames = true;
+		public bool filterUniqueNames = true;
 		[SerializeField]
 		private float textMinDrawDistance = 0;
 
@@ -73,21 +102,21 @@ namespace Netherlands3D.LayerSystem
 			uniqueNames = new List<string>();
 		}
 
-		private enum AutoOrientationMode
+		public enum AutoOrientationMode
 		{
 			None,
-			FaceToCamera,
+			FaceCamera,
 			AutoFlip
 		}
 
-		private enum PositionSourceType
+		public enum PositionSourceType
 		{
 			Point,
 			MultiPolygonCentroid
 		}
 
 		[System.Serializable]
-		private class TextsAndSize
+		public class TextsAndSize
 		{
 			public string textPropertyName = "";
 			public float drawWithSize = 1.0f;
@@ -271,7 +300,7 @@ namespace Netherlands3D.LayerSystem
 							//Determine how the spawned texts auto orientate
 							switch (autoOrientationMode)
 							{
-								case AutoOrientationMode.FaceToCamera:
+								case AutoOrientationMode.FaceCamera:
 									var faceToCameraText = textObject.AddComponent<FaceToCamera>();
 									faceToCameraText.HideDistance = textMinDrawDistance;
 									faceToCameraText.UniqueNamesList = uniqueNames;

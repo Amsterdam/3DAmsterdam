@@ -7,6 +7,8 @@ namespace Netherlands3D.LayerSystem
 	[System.Serializable]
 	public class TileHandlerConfig : ScriptableObject
 	{
+		public string configFile = "TileHandlerConfig.json";
+
 		[HideInInspector]
 		public UnityEvent dataChanged = new UnityEvent();
 
@@ -15,7 +17,8 @@ namespace Netherlands3D.LayerSystem
 
 		public void OnValidate()
 		{
-			dataChanged.Invoke();
+			if(Application.isPlaying)
+				dataChanged.Invoke();
 		}
 
 		[System.Serializable]
@@ -37,8 +40,8 @@ namespace Netherlands3D.LayerSystem
 			public string lineColor;
 			public float lineWidth;
 			public bool filterUniqueNames;
-			public bool faceCamera;
 			public string positionSourceType;
+			public string autoOrientationMode;
 			public Text[] texts;
 			public bool visible;
 		}
@@ -55,7 +58,7 @@ namespace Netherlands3D.LayerSystem
 		{
 			public string propertyName;
 			public float size;
-			public int[] offset;
+			public float[] offset;
 		}
 	}
 }
