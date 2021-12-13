@@ -15,9 +15,17 @@ public class LayersLoader : MonoBehaviour
 	private TileHandlerConfig configuration;
 	private TileHandler tileHandler;
 
+	[Header("Materials")]
 	[SerializeField]
 	private Material[] materialLibrary;
 
+	[Header("Visuals")]
+	[SerializeField]
+	private GameObject textIntersectPrefab;
+	[SerializeField]
+	private GameObject textOverlayPrefab;
+	[SerializeField]
+	private Material lineShader;
 	void Start()
 	{
 		configuration.dataChanged.AddListener(ConstructLayers);
@@ -38,6 +46,11 @@ public class LayersLoader : MonoBehaviour
 				newLayer.gameObject.AddComponent<SelectSubObjects>();
 			}
 
+			foreach(var materialIndex in binaryMeshLayer.materialLibraryIndices)
+			{
+				newLayer.DefaultMaterialList.Add(materialLibrary[materialIndex]);
+			}
+
 			foreach (var lod in binaryMeshLayer.lods)
 			{
 				newLayer.Datasets.Add(
@@ -56,11 +69,23 @@ public class LayersLoader : MonoBehaviour
 			var newLayer = new GameObject().AddComponent<GeoJSONTextLayer>();
 			newLayer.transform.SetParent(this.transform);
 			newLayer.name = geoJsonLayer.layerName;
+			newLayer.textPrefab = (geoJsonLayer.overlay) ? textOverlayPrefab : textIntersectPrefab;
+			newLayer.lineRenderMaterial = lineShader;
+
+			ColorUtility.TryParseHtmlString(geoJsonLayer.lineColor, out Color lineColor);
+			newLayer.lineColor = lineColor;
+
 			newLayer.geoJsonUrl = geoJsonLayer.sourcePath;
 			newLayer.drawGeometry = geoJsonLayer.drawOutlines;
 			newLayer.filterUniqueNames = geoJsonLayer.filterUniqueNames;
+			if (geoJsonLayer.angleProperty != "")
+			{
+				newLayer.readAngleFromProperty = true;
+				newLayer.angleProperty = geoJsonLayer.angleProperty;
+			}
 			newLayer.SetAutoOrientationMode(geoJsonLayer.autoOrientationMode);
 			newLayer.SetPositionSourceType(geoJsonLayer.positionSourceType);
+			newLayer.Datasets.Add(new DataSet() { maximumDistance = geoJsonLayer.drawDistance });
 			foreach (var text in geoJsonLayer.texts)
 			{
 				newLayer.textsAndSizes.Add(new GeoJSONTextLayer.TextsAndSize()
@@ -70,6 +95,7 @@ public class LayersLoader : MonoBehaviour
 					offset = text.offset[1]
 				});
 			}
+
 			tileHandler.layers.Add(newLayer);
 		}
 	}

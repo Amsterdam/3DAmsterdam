@@ -92,7 +92,7 @@ namespace Netherlands3D.LayerSystem
 			}
 
 			url = url.ReplaceXY(tileChange.X, tileChange.Y);
-
+			Debug.Log(url);
 			//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
 #if !UNITY_EDITOR && UNITY_WEBGL
 			url += Config.activeConfiguration.brotliCompressedAssetFileExtention;

@@ -30,8 +30,7 @@ namespace Netherlands3D.LayerSystem
 {
 	public class GeoJSONTextLayer : Layer
 	{
-		public GameObject TextObject;
-
+		public GameObject textPrefab;
 		public string geoJsonUrl = "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=";//121000,488000,122000,489000";	
 
 		[SerializeField]
@@ -44,6 +43,28 @@ namespace Netherlands3D.LayerSystem
 
 		private List<string> uniqueNames;
 
+		public bool drawGeometry = false;
+		public Material lineRenderMaterial;
+		public Color lineColor;
+		public float lineWidth = 5.0f;
+
+		[Header("Optional:")]
+		public bool readAngleFromProperty = false;
+		public string angleProperty = "hoek";
+		public bool filterUniqueNames = true;
+		public float textMinDrawDistance = 0;
+
+		private void Awake()
+		{
+			uniqueNames = new List<string>();
+		}
+
+		public enum AutoOrientationMode
+		{
+			None,
+			FaceCamera,
+			AutoFlip
+		}
 		public void SetAutoOrientationMode(string autoOrientationMode)
 		{
 			switch(autoOrientationMode)	{
@@ -80,33 +101,6 @@ namespace Netherlands3D.LayerSystem
 		public void SetPositionSourceType(PositionSourceType type)
 		{
 			this.positionSourceType = type;
-		}
-
-		public bool drawGeometry = false;
-		[SerializeField]
-		private Material lineRenderMaterial;
-		public Color lineColor;
-		public float lineWidth = 5.0f;
-
-		[Header("Optional:")]
-		[SerializeField]
-		private bool readAngleFromProperty = false;
-		[SerializeField]
-		private string angleProperty = "hoek";
-		public bool filterUniqueNames = true;
-		[SerializeField]
-		private float textMinDrawDistance = 0;
-
-		private void Awake()
-		{
-			uniqueNames = new List<string>();
-		}
-
-		public enum AutoOrientationMode
-		{
-			None,
-			FaceCamera,
-			AutoFlip
 		}
 
 		public enum PositionSourceType
@@ -170,7 +164,6 @@ namespace Netherlands3D.LayerSystem
 		{
 			if (tiles.ContainsKey(tileKey))
 			{
-
 				Tile tile = tiles[tileKey];
 				if (tile == null)
 				{
@@ -243,7 +236,7 @@ namespace Netherlands3D.LayerSystem
 						if (textPropertyValue.Length > 1 && (!filterUniqueNames || !uniqueNames.Contains(textPropertyValue)))
 						{
 							//Instantiate a new text object
-							var textObject = Instantiate(TextObject);
+							var textObject = Instantiate(textPrefab);
 							textObject.name = textPropertyValue;
 							textObject.transform.SetParent(tile.gameObject.transform, true);
 							textObject.GetComponent<TextMeshPro>().text = textPropertyValue;

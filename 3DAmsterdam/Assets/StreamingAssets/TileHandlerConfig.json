@@ -1,45 +1,42 @@
 {
 	"binaryMeshLayers": [{
 			"layerName": "Buildings",
-			"selectableSubobjects": true,
+			"selectableSubobjects": false,
 			"lods": [{
-					"sourcePath": "data/develop/binary2/buildings1.0/buildings_{x}_{y}.1.2",
+					"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/buildings1.0/buildings_{x}_{y}.1.2.bin",
 					"drawDistance": 6000
 				},
 				{
-					"sourcePath": "data/develop/binary2/buildings1.0/buildings_{x}_{y}.2.2",
+					"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/buildings1.0/buildings_{x}_{y}.2.2.bin",
 					"drawDistance": 3000
 				}
 			],
-			"materialLibraryIndices": [12],
-			"maskable": true,
+			"materialLibraryIndices": [13],
 			"visible": true
 		},
 		{
 			"layerName": "Terrain",
 			"selectableSubobjects": false,
 			"lods": [{
-					"sourcePath": "data/develop/binary2/terrain_1.0/terrain_{x}-{y}-lod0",
+					"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/terrain_1.0/terrain_{x}-{y}-lod0.bin",
 					"drawDistance": 6000
 				},
 				{
-					"sourcePath": "data/develop/binary2/terrain_1.0/terrain_{x}-{y}-lod1",
+					"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/terrain_1.0/terrain_{x}-{y}-lod1.bin",
 					"drawDistance": 3000
 				}
 			],
-			"materialLibraryIndices": [0,1,2,3,4,5,6,7,8,9,10,11,12],
-			"maskable": true,
+			"materialLibraryIndices": [0,1,2,3,4,5,6,7,8,9,10,11],
 			"visible": true
 		},
 		{
 			"layerName": "Trees",
 			"selectableSubobjects": false,
 			"lods": [{
-				"sourcePath": "data/develop/binary2/trees1.0/trees_{x}-{y}-lod1.bin",
+				"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/trees1.0/trees_{x}-{y}-lod1.bin",
 				"drawDistance": 3000
 			}],
 			"materialLibraryIndices": [12],
-			"maskable": true,
 			"visible": true
 		}
 	],
@@ -48,6 +45,7 @@
 			"layerName": "Buurtnamen",
 			"sourcePath": "https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_buurten_2020&propertyName=buurtnaam,geom&bbox=",
 			"drawOutlines": true,
+			"overlay":false,
 			"lineColor": "#D26432",
 			"lineWidth": 5.0,
 			"filterUniqueNames": true,
@@ -58,12 +56,14 @@
 				"size": 0.5,
 				"offset": [0, 15, 0]
 			}],
+			"drawDistance": 2000,
 			"visible": true
 		},
 		{
 			"layerName": "Wijknamen",
 			"sourcePath": "https://geodata.nationaalgeoregister.nl/wijkenbuurten2020/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&typeName=wijkenbuurten2020:cbs_wijken_2020&propertyName=wijknaam,geom&bbox=",
 			"drawOutlines": true,
+			"overlay":true,
 			"lineColor": "#D26432",
 			"lineWidth": 5.0,
 			"filterUniqueNames": true,
@@ -79,15 +79,17 @@
 		{
 			"layerName": "StreetNames",
 			"sourcePath": "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=",
-			"drawOutlines": true,
+			"drawOutlines": false,
+			"overlay":true,
 			"lineColor": "#D26432",
 			"lineWidth": 5.0,
 			"filterUniqueNames": true,
 			"positionSourceType": "Point",
 			"autoOrientationMode": "AutoFlip",
+			"angleProperty": "hoek",
 			"texts": [{
-				"propertyName": "buurtnaam",
-				"size": 1.0,
+				"propertyName": "tekst",
+				"size": 0.5,
 				"offset": [0, 10, 0]
 			}],
 			"visible": true

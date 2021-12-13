@@ -24,26 +24,28 @@ namespace Netherlands3D.LayerSystem
 		[System.Serializable]
 		public class Binarymeshlayer
 		{
-			public string layerName;
+			public string layerName = "Binary meshes layer";
 			public bool selectableSubobjects;
 			public Lod[] lods;
 			public int[] materialLibraryIndices;
-			public bool maskable;
-			public bool visible;
+			public bool visible = true;
 		}
 		[System.Serializable]
 		public class Geojsonlayer
 		{
-			public string layerName;
-			public string sourcePath;
-			public bool drawOutlines;
-			public string lineColor;
-			public float lineWidth;
-			public bool filterUniqueNames;
-			public string positionSourceType;
-			public string autoOrientationMode;
+			public string layerName = "GeoJson layer";
+			public string sourcePath = "";
+			public bool drawOutlines = true;
+			public bool overlay = true;
+			public string lineColor = "#D26432";
+			public float lineWidth = 5.0f;
+			public bool filterUniqueNames = true;
+			public string positionSourceType = "Point";
+			public string autoOrientationMode = "FaceCamera";
+			public string angleProperty = "";
+			public int drawDistance = 1000;
 			public Text[] texts;
-			public bool visible;
+			public bool visible = true;
 		}
 		[System.Serializable]
 		public class Lod
