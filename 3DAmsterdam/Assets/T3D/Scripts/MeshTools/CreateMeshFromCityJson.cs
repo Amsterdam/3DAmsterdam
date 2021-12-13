@@ -8,14 +8,12 @@ using System.Linq;
 using T3D.LoadData;
 using UnityEngine;
 
-public class CreateMeshFromCityJson
+public class CreateMeshFromCityJson2
 {
 
 
     public Mesh CreateMesh(CityJsonModel cityModel)
     {
-
-
         List<Vector3> verts;
         Dictionary<string, List<int>> triangleLists;
 
@@ -23,39 +21,24 @@ public class CreateMeshFromCityJson
         List<Vector3> newVerts = new List<Vector3>();
         triangleLists = GetTriangleLists(cityModel);
 
-        Vector2Int textureSize = ObjectIDMapping.GetTextureSize(triangleLists.Count);
-        Debug.Log(textureSize);
-
         Mesh mesh = new Mesh();
-
         List<int> triangles = new List<int>();
-        List<string> objectIDs = new List<string>();
-        List<Vector2> uvs = new List<Vector2>();
-        List<int> vectorIDs = new List<int>();
-        List<int> triangleCount = new List<int>();
-        int objectIDNumber = 0;
-        int vertexCounter = 0;
+        
         foreach (var item in triangleLists)
-        {
-            vertexCounter = 0;
-            Vector2 uv = ObjectIDMapping.GetUV(objectIDNumber, textureSize);
+        {               
             foreach (int vertexIndex in item.Value)
             {
                 newVerts.Add(verts[vertexIndex]);
-                uvs.Add(uv);
-                vectorIDs.Add(objectIDNumber);
-                triangles.Add(newVerts.Count - 1);
-                vertexCounter++;
-            }
-            triangleCount.Add(vertexCounter);
-            objectIDs.Add(item.Key);
-            objectIDNumber++;
+                triangles.Add(newVerts.Count - 1);            
+            }            
         }
 
+        //TODO make this optional?
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
         mesh.vertices = newVerts.ToArray();
         mesh.triangles = triangles.ToArray();
-        mesh.uv = uvs.ToArray();
+        mesh.RecalculateNormals();
         
         return mesh;
     }
@@ -68,29 +51,10 @@ public class CreateMeshFromCityJson
     private Dictionary<string, List<int>> GetTriangleLists(CityJsonModel cityModel)
     {
         Dictionary<string, List<int>> triangleList = new Dictionary<string, List<int>>();
-        // string = objectID
-        // List<int> = triangles
-        string cityObjectType = "";
-
-        foreach (JSONNode cityObject in cityModel.cityjsonNode["CityObjects"])
+        foreach (KeyValuePair<string, JSONNode> cityObject in cityModel.cityjsonNode["CityObjects"])
         {
-            cityObjectType = cityObject["type"];
-
-            // Skip non-Buildings
-            string objectID = GetObjectID("identificatie", cityObject);
-            if (objectID == "")
-            {
-                objectID = GetObjectID("name", cityObject);
-            }
-
-            if (triangleList.ContainsKey(objectID) == true)
-            {
-                triangleList[objectID].AddRange(ReadTriangles(cityObject));
-            }
-            else
-            {
-                triangleList.Add(objectID, ReadTriangles(cityObject));
-            }
+            var key = cityObject.Key;
+            triangleList.Add(key, ReadTriangles(cityObject.Value));            
         }
 
         return triangleList;
@@ -112,12 +76,33 @@ public class CreateMeshFromCityJson
         {
             return triangles;
         }
+
         foreach (JSONNode boundary in boundariesNode)
         {
             JSONNode outerRing = boundary[0];
-            triangles.Add(outerRing[2].AsInt);
-            triangles.Add(outerRing[1].AsInt);
-            triangles.Add(outerRing[0].AsInt);
+            
+            if (outerRing.Count == 3)
+            {
+                triangles.Add(outerRing[2].AsInt);
+                triangles.Add(outerRing[1].AsInt);
+                triangles.Add(outerRing[0].AsInt);
+            }
+            else if (outerRing.Count == 4) //it's a aquare, make two triangles
+            {
+                triangles.Add(outerRing[3].AsInt);
+                triangles.Add(outerRing[1].AsInt);
+                triangles.Add(outerRing[0].AsInt);
+
+                triangles.Add(outerRing[3].AsInt);
+                triangles.Add(outerRing[2].AsInt);
+                triangles.Add(outerRing[1].AsInt);
+            }
+            else if(outerRing.Count > 4)
+            {
+                Debug.LogError("polygon detected, however this is not implemented yet..");
+            }
+
+            //TODO support polygons using triangulating
         }
 
         return triangles;

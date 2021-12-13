@@ -1,8 +1,12 @@
 
+using Netherlands3D.CityJSON;
+using SimpleJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using T3D.LoadData;
+using CityJsonLibrary.Coordinates;
+//using T3D.LoadData;
 using UnityEngine;
 
 public class CityJsonVisualiser : MonoBehaviour
@@ -29,44 +33,63 @@ public class CityJsonVisualiser : MonoBehaviour
 
     private void OnBimCityJsonReceived(string cityJson)
     {
-        Debug.Log(cityJson);
+        UnitySystemConsoleRedirector.Redirect();
 
-        var cityJsonModel = new CityJsonModel(cityJson);
+       // var cityJsonModel = new CityJsonModel(cityJson);
+        var cityJsonModel = new CityJSON(cityJson);
 
+
+        var meshmaker = new CreateMeshFromCityJson2();
         
-        var meshmaker = new CreateMeshFromCityJson();
-        
-        var mesh = meshmaker.CreateMesh(cityJsonModel);
-
-        //var verts = mesh.vertices;
-        var verts = cityJsonModel.vertices;
-
-        minx = verts.Min(o => o.x);
-        miny = verts.Min(o => o.y);
-        minz = verts.Min(o => o.z);
-
-        maxx = verts.Max(o => o.x);
-        maxy = verts.Max(o => o.y);
-        maxz = verts.Max(o => o.z);
-
-        centerx = minx + ((maxx - minx) / 2);
-        centery = miny + ((maxy - miny) / 2);
-        centerz = minz + ((maxz - minz) / 2);
-
-        //for (int i = 0; i < verts.Length; i++)
-        //{
-        //    verts[i].x -= centerx;
-        //    verts[i].z -= centerz;
-        //}
-
-        //mesh.vertices = verts;
+      // var mesh = meshmaker.CreateMesh(cityJsonModel);
 
 
-        var meshfilter = gameObject.AddComponent<MeshFilter>();
-        meshfilter.sharedMesh = mesh;
+        foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityJsonNode["CityObjects"])
+        {
+            var key = co.Key;
 
-        var meshrenderer = gameObject.AddComponent<MeshRenderer>();
-        meshrenderer.material = MeshMaterial;
+
+            CityObject cityObject = cityJsonModel.LoadCityObjectByKey(key);
+
+            
+            //var subObject = ToSubObjectMeshData(cityObject);
+
+
+            //var co = cityObject.Value;
+            //triangleList.Add(key, ReadTriangles(cityObject.Value));
+        }
+
+
+
+        ////var verts = mesh.vertices;
+        //var verts = cityJsonModel.vertices;
+
+        //minx = verts.Min(o => o.x);
+        //miny = verts.Min(o => o.y);
+        //minz = verts.Min(o => o.z);
+
+        //maxx = verts.Max(o => o.x);
+        //maxy = verts.Max(o => o.y);
+        //maxz = verts.Max(o => o.z);
+
+        //centerx = minx + ((maxx - minx) / 2);
+        //centery = miny + ((maxy - miny) / 2);
+        //centerz = minz + ((maxz - minz) / 2);
+
+        ////for (int i = 0; i < verts.Length; i++)
+        ////{
+        ////    verts[i].x -= centerx;
+        ////    verts[i].z -= centerz;
+        ////}
+
+        ////mesh.vertices = verts;
+
+
+        //var meshfilter = gameObject.AddComponent<MeshFilter>();
+        //meshfilter.sharedMesh = mesh;
+
+        //var meshrenderer = gameObject.AddComponent<MeshRenderer>();
+        //meshrenderer.material = MeshMaterial;
 
 
     }
