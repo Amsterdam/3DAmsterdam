@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+*  Copyright (C) X Gemeente
+*              	 X Amsterdam
+*				 X Economic Services Departments
+*
+*  Licensed under the EUPL, Version 1.2 or later (the "License");
+*  You may not use this work except in compliance with the License.
+*  You may obtain a copy of the License at:
+*
+*    https://joinup.ec.europa.eu/software/page/eupl
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" basis,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+*  implied. See the License for the specific language governing
+*  permissions and limitations under the License.
+*/
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using TileBakeLibrary.Coordinates;
@@ -31,14 +48,14 @@ namespace TileBakeLibrary
 			Vector3 normal;
 			int oldIndex =0;
 			int newIndex = 0;
-			Dictionary< VertexNormalCombination,int> verts = new Dictionary<VertexNormalCombination,int>();
+			Dictionary< vertexNormalCombination,int> verts = new Dictionary<vertexNormalCombination,int>();
 			Dictionary<int, int> indexmap = new Dictionary<int, int>(); // old index --> new index
             for (int i = 0; i < triangleIndices.Count; i++)
             {
 				oldIndex = triangleIndices[i];
 				vertex = vertices[oldIndex];
 				normal = normals[oldIndex];
-				VertexNormalCombination vnc = new VertexNormalCombination(vertex, normal);
+				vertexNormalCombination vnc = new vertexNormalCombination(vertex, normal);
                 if (!verts.ContainsKey(vnc))
                 {
 					newIndex = cleanedVertices.Count();
@@ -99,7 +116,7 @@ namespace TileBakeLibrary
 		}
 
 
-		private void CreateMesh()
+		private void createMesh()
         {
 			mesh = new DMesh3(false, false, false, false);
 
@@ -116,7 +133,7 @@ namespace TileBakeLibrary
 			MeshNormals.QuickCompute(mesh);
 		}
 
-		private void SaveMesh()
+		private void saveMesh()
         {
 			vertices.Clear();
 			WriteMesh outputMesh = new WriteMesh(mesh);
@@ -150,7 +167,7 @@ namespace TileBakeLibrary
         {
             if (mesh == null)
             {
-				CreateMesh();
+				createMesh();
             }
 
 			//MergeSimilarVertices(50);
@@ -183,11 +200,12 @@ namespace TileBakeLibrary
 
            mesh = r.Mesh;
 
-			SaveMesh();
+			saveMesh();
 
 
 		}
-		public void ClipSpikes(float floor, float ceiling)
+
+		public void ClipSpikes(float ceiling, float floor)
         {
 			List<Vector3Double> correctverts = vertices.Where(o => o.Z < ceiling && o.Z > floor).ToList();
             if (correctverts.Count == vertices.Count)
@@ -195,7 +213,10 @@ namespace TileBakeLibrary
 				// no spikes detected
 				return;
 			}
+
+
 			double averageHeight = (ceiling + floor) / 2;
+			
             if (correctverts.Count>0)
             {
 				averageHeight = correctverts.Average(o => o.Z);
@@ -213,10 +234,12 @@ namespace TileBakeLibrary
                 }
             }
 		}
+
+
 		public List<SubObject> clipSubobject(Vector2 size)
         {
 			List<SubObject> subObjects = new List<SubObject>();
-			CreateMesh();
+			createMesh();
 			var bounds = MeshMeasurements.Bounds(mesh, null);
 			// find the coordinates of the tile-borders around the object
 			int rdXmin = (int)Math.Floor(bounds.Min.x/size.X)*(int)size.X;
@@ -235,7 +258,7 @@ namespace TileBakeLibrary
 				DMesh3 columnMesh = CutColumnMesh(x,rdYmin);
                 for (int y = rdYmin; y < rdYmax; y += (int)size.Y)
                 {
-                    SubObject newSubobject = ClipMesh(columnMesh, x, y);
+                    SubObject newSubobject = clipMesh(columnMesh, x, y);
                     if (newSubobject != null)
                     {
 
@@ -243,6 +266,7 @@ namespace TileBakeLibrary
                     }
                 }
             }
+
 
             return subObjects;
 		}
@@ -271,7 +295,7 @@ namespace TileBakeLibrary
 			//cut off the top
 		}
 
-		private SubObject ClipMesh(DMesh3 columnMesh, double X, double Y)
+		private SubObject clipMesh(DMesh3 columnMesh, double X, double Y)
         {
 			SubObject subObject; 
 			DMesh3 clippedMesh = new DMesh3(false, false, false, false);
@@ -304,7 +328,7 @@ namespace TileBakeLibrary
 				subObject.id = id;
 				subObject.parentSubmeshIndex = parentSubmeshIndex;
 				subObject.mesh = clippedMesh;
-				subObject.SaveMesh();
+				subObject.saveMesh();
 
 				return subObject;
             }
@@ -312,19 +336,18 @@ namespace TileBakeLibrary
 			return null;
         }
 	}
-	struct VertexNormalCombination : IEquatable<VertexNormalCombination>
+	 struct vertexNormalCombination : IEquatable<vertexNormalCombination>
 	{
 		public Vector3 normal;
 		public Vector3Double vertex;
 
-		public VertexNormalCombination(Vector3Double vertex, Vector3 normal)
+		public vertexNormalCombination(Vector3Double vertex, Vector3 normal)
 		{
 			this.vertex = vertex;
 			this.normal = normal;
 
 		}
-
-		public bool Equals(VertexNormalCombination other)
+		public bool Equals(vertexNormalCombination other)
         {
 			float deltaX = Math.Abs(other.normal.X - normal.X);
 			float deltaY = Math.Abs(other.normal.Y - normal.Y);
@@ -339,8 +362,8 @@ namespace TileBakeLibrary
             {
 				return true;
             }
-
 			return false;
+            
         }
     }
 }
