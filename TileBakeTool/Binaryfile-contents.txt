@@ -1,0 +1,94 @@
+Mesh binary-bestand
+
+------header
+int32 datatype =101 #not yet
+int32 version = 1
+int32 vertexCount
+int32 normalsCount
+int32 uvsCount
+int32 indicesCount
+int32 submeshCount
+
+------vertices
+	///foreach vertex
+	single x
+	single y
+	single z
+
+------normals
+	///foreach normal
+	single x
+	single y
+	single z
+	
+------uvs
+	///foreach uv
+	single x
+	single y
+
+------indices
+	///foreach index
+	int32 index
+	
+------submeshes
+	///foreach submesh	(for unity setSubmesh with submeshDescriptor, baseVertex=0)
+	int32 submeshid		(to be able to skip empty submeshes)
+	int32 firstIndex			
+	int32 indexCount
+	int32 firstvertex
+	int32 vertexcount
+	
+-------------------------------------------------------------
+
+data binary-bestand
+
+------header
+int32 datatype =102 #not yet
+int32 version = 1
+int32 identifierCount
+
+------indentifiers
+	///foreach object
+	string identifying-code (UTF-8)
+	int32 firstIndex			
+	int32 indexCount
+	int32 firstvertex
+	int32 vertexcount
+	int32 submeshid
+	
+	
+-------------------------------------------------------------
+
+
+opslaan:
+list met submeshes aanmaken
+	subobjecten toewijzen aan submeshes
+	
+voor elk submesh:
+	firstindex = allindices.count
+	firstVertex = allvertices.count
+	voor elk subobject:
+		firstvertex = allvertices.count
+		firstinidex = allindices.count
+		vertices toevoegen aan allvertices
+		indices toevogen aan allindices
+		normals toevoegenaan allnormals
+		set indexCount
+		set vertexcount
+	set indexCount
+	set vertexcount
+	
+inlezen:
+lees allvertices
+lees allindices
+voor elk subobject:
+	lees firstindex
+	lees indexcount
+	lees firstvertex
+	lees vertexcount
+	creer vector[vertexcount]
+	creer indices[indexcount]
+	voor i = 0 to i = indexcount
+		sourceindex = allindices[i+firstindex]
+		indices[i]=sourceindex-firstvertex
+		vector[indices[i]]=allvertices[sourceindex]

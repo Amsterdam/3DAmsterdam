@@ -1,0 +1,37 @@
+{
+	"sourceFolder":"C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Source/",
+	"outputFolder":"C:/Projects/GemeenteAmsterdam/Docs/CityJSON/Output/",
+	"replaceExistingObjects":true,
+	"identifier":"identificatie",
+	"removePartOfIdentifier":"NL.IMBAG.Pand.",
+	"lod":2.2,
+	"tilingMethod":"TILED",
+	"brotliCompression":true,
+	"cityObjectFilters":[
+		{
+			"objectType":"Buildings",
+			"defaultSubmeshIndex":1,
+			"attributeFilters":[]
+		},
+		{
+			"objectType":"Roads",
+			"defaultSubmeshIndex":3,
+			"maxVerticesPerSquareMeter": 0.01,
+			"attributeFilters":[
+				{
+					"attributeName":"bft_functie",
+					"valueToSubMesh":[
+						{
+							"value":"voetpad",
+							"submeshIndex":3,
+						},
+						{
+							"value":"fietspad",
+							"submeshIndex":1,
+						}
+					]
+				}
+			]
+		}
+	]
+}

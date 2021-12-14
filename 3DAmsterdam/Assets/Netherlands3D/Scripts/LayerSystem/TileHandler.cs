@@ -25,7 +25,7 @@ namespace Netherlands3D.LayerSystem
                 }
             }
 		}
-		public int maximumConcurrentDownloads = 5;
+		public int maximumConcurrentDownloads = 6;
 
 		[SerializeField]
 		private bool filterByCameraFrustum = true;

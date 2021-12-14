@@ -1,0 +1,111 @@
+{
+	"sourceFolder":"E:/brondata/TerreinModel Kadaster/nieuwe versie/gereed/",
+	"outputFolder": "E:/brondata/terreintest/output/Terrain-",
+	"replaceExistingObjects":false,
+	"identifier":"objectid",
+	"removePartOfIdentifier":"",
+	"lod":1,
+	"tilingMethod":"TILED",
+	"removeSpikes":true,
+	"removeSpikesAbove": 25,
+	"removeSpikesBelow": -10,
+	"brotliCompression":true,
+	"cityObjectFilters":[
+		{
+			"objectType":"WaterBody",
+			"defaultSubmeshIndex":11,
+			"attributeFilters":[]
+		},
+		{
+			"objectType":"PlantCover",
+			"defaultSubmeshIndex":4,
+			"maxVerticesPerSquareMeter": 0.01,
+			"attributeFilters":[]
+		},
+		{
+			"objectType":"GenericCityObject",
+			"defaultSubmeshIndex":9,
+			"attributeFilters":[]
+		},
+		{
+			"objectType":"Bridge",
+			"defaultSubmeshIndex":10,
+			"attributeFilters":[]
+		},
+		{
+			"objectType":"Road",
+			"defaultSubmeshIndex":3,
+			"attributeFilters":[
+				{
+					"attributeName":"bgt_functie",
+					"valueToSubMesh":[
+						{
+							"value":"voetpad",
+							"submeshIndex":0
+						},
+						{
+							"value":"voetgangersgebied",
+							"submeshIndex":0
+						},
+						{
+							"value":"ruiterpad",
+							"submeshIndex":0
+						},
+						{
+							"value":"voetpad op trap",
+							"submeshIndex":0
+						},
+						{
+							"value":"fietspad",
+							"submeshIndex":1
+						},
+						{
+							"value":"parkeervlak",
+							"submeshIndex":2
+						},
+						{
+							"value":"spoorbaan",
+							"submeshIndex":7
+						},
+						{
+							"value":"transitie",
+							"submeshIndex":8
+						},
+						{
+							"value":"woonerf",
+							"submeshIndex":8
+						}
+					]
+				}
+			]
+		},
+		{
+			"objectType":"LandUse",
+			"defaultSubmeshIndex":6,
+			"maxVerticesPerSquareMeter": 0.01,
+			"attributeFilters":[
+				{
+					"attributeName":"bgt_fysiekvoorkomen",
+					"valueToSubMesh":[
+						{
+							"value":"open verharding",
+							"submeshIndex":0
+						},
+						{
+							"value":"gesloten verharding",
+							"submeshIndex":3
+						},
+						{
+							"value":"groenvoorziening",
+							"submeshIndex":4
+						},
+						{
+							"value":"erf",
+							"submeshIndex":5
+						}
+					]
+				}
+			]
+		}
+	]
+}

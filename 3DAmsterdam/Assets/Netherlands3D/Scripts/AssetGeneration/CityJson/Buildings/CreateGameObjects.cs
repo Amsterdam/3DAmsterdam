@@ -323,7 +323,6 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 			}
 
 			Mesh submesh = Poly2Mesh.CreateMesh(poly);
-
 			if (parentGameobject != null)
 			{
 				GameObject go = new GameObject();

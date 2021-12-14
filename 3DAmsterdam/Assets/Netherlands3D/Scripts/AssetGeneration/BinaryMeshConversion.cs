@@ -8,12 +8,10 @@ using UnityEngine.Profiling;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
-    private System.Diagnostics.Stopwatch stopwatch;
-
     private const int version = 1;
 
     [SerializeField]
-    private string assetBundlePath = "C:/Users/Sam/Desktop/binaryconvert/buildings1.0/";
+    private string assetBundlePath = "C:/Users/Sam/Desktop/data/buildings1.0/";
 
     [ContextMenu("Convert to binary")]
 	private void ConvertToBinary()
@@ -24,26 +22,14 @@ public class BinaryMeshConversion : MonoBehaviour
     [ContextMenu("Load from binary")]
     private void LoadFromBinary()
     {
-        stopwatch = new System.Diagnostics.Stopwatch();
-
         var meshFilter = GetComponent<MeshFilter>();
         DestroyImmediate(meshFilter);
 
         byte[] readBytes = File.ReadAllBytes(Application.persistentDataPath + "/mesh.bin");
-
-        //Time from the moment we have the bytes in memory, to finished displaying on screen
-        stopwatch.Start();
         Profiler.BeginSample("readbinarymesh",this);
-                
-        gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes);
-        // Code to measure...
-        Profiler.EndSample();
 
-        Debug.Log(stopwatch.ElapsedMilliseconds);
-        stopwatch.Stop();
-        stopwatch.Reset();
-    }
-
+		gameObject.AddComponent<MeshFilter>().mesh = ReadBinaryMesh(readBytes, out int[] materialIndices);
+	}
 
 	public static void SaveMeshAsBinaryFile(Mesh sourceMesh, string filePath){
         Debug.Log(filePath);
@@ -53,10 +39,14 @@ public class BinaryMeshConversion : MonoBehaviour
             {
                 //Version int
                 writer.Write(version);
+                writer.Write(sourceMesh.vertices.Length);
+                writer.Write(sourceMesh.normals.Length);
+                writer.Write(sourceMesh.uv.Length);
+                writer.Write(sourceMesh.triangles.Length);
+                writer.Write(sourceMesh.subMeshCount);
 
                 //Verts
                 var vertices = sourceMesh.vertices;
-                writer.Write(vertices.Length);
                 foreach (Vector3 vert in sourceMesh.vertices)
                 {
                     writer.Write(vert.x);
@@ -64,9 +54,8 @@ public class BinaryMeshConversion : MonoBehaviour
                     writer.Write(vert.z);
                 }
 
-                var normals = sourceMesh.normals;
                 //Normals
-                writer.Write(normals.Length);
+                var normals = sourceMesh.normals;
                 foreach (Vector3 normal in normals)
                 {
                     writer.Write(normal.x);
@@ -76,25 +65,27 @@ public class BinaryMeshConversion : MonoBehaviour
 
                 //UV
                 var uvs = sourceMesh.uv;
-                writer.Write(uvs.Length);
                 foreach (Vector2 uv in uvs)
                 {
                     writer.Write(uv.x);
                     writer.Write(uv.y);
                 }
 
+                //Indices
+                var indices = sourceMesh.triangles;
+                foreach(var index in indices)
+                {
+                    writer.Write(index);
+                }
+
                 //Every triangle list per submesh
-                writer.Write(sourceMesh.subMeshCount);
 				for (int i = 0; i < sourceMesh.subMeshCount; i++)
 				{
-                    int[] submeshTriangleList = sourceMesh.GetTriangles(i);
-                    writer.Write(submeshTriangleList.Length);
-                    writer.Write(sourceMesh.GetSubMesh(i).baseVertex);
-                    //var offset = sourceMesh.GetSubMesh(i).baseVertex;
-                    foreach (int index in submeshTriangleList)
-                    {
-                        writer.Write(index);
-                    }
+                    writer.Write(i); //submesh/material index
+                    writer.Write(sourceMesh.GetSubMesh(i).indexStart);
+                    writer.Write(sourceMesh.GetSubMesh(i).indexCount);
+                    writer.Write(sourceMesh.GetSubMesh(i).firstVertex);
+                    writer.Write(sourceMesh.GetSubMesh(i).vertexCount);
                 }            
             }
         }
@@ -124,30 +115,50 @@ public class BinaryMeshConversion : MonoBehaviour
                     //https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=net-5.0#System_IO_BinaryWriter_Write_System_String_
                     writer.Write(ids[i]);
 
-                    //Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
-                    int amountOfInts = vectorMap.Count((vector) => vector == i);
-                    writer.Write(amountOfInts);
+                    int firstIndex = 0; //We do not need these in Unity atm.
+                    writer.Write(firstIndex);
+                    int indexCount = 0; //We do not need these in Unity atm.
+                    writer.Write(indexCount);
+
+                    int firstVertex = 0;
+					//Check how often this ID index appears in the vectormap (that is the vert indices count of the object)
+                    int vertexCount = vectorMap.Count((vector) => vector == i);
+					for (int j = 0; j < vectorMap.Count; j++)
+					{
+                        //get the first vert position we encounter in the vectormap
+                        if (vectorMap[j] == i)
+                        {
+                            firstVertex = j;
+                            break;
+                        }
+                    }
+                                        
+                    writer.Write(firstVertex);
+                    writer.Write(vertexCount);
+
+                    writer.Write(0);
                 }
             }
         }
     }
 
-    public static Mesh ReadBinaryMesh(byte[] fileBytes)
+    public static Mesh ReadBinaryMesh(byte[] fileBytes, out int[] submeshMaterialIndices)
     {
         using (var stream = new MemoryStream(fileBytes))
         {
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 var version = reader.ReadInt32();
-                //Debug.Log("V: " + version);
+                var vertexCount = reader.ReadInt32();
+                var normalsCount = reader.ReadInt32();
+                var uvsCount = reader.ReadInt32();
+                var indicesCount = reader.ReadInt32();
+                var submeshCount = reader.ReadInt32();
 
                 var mesh = new Mesh();
-                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-                var vertLength = reader.ReadInt32();
-                //Debug.Log("Vert length:" + vertLength);
-                Vector3[] vertices = new Vector3[vertLength];
-                for (int i = 0; i < vertLength; i++)
+                Vector3[] vertices = new Vector3[vertexCount];
+                for (int i = 0; i < vertexCount; i++)
                 {
                     Vector3 vertex = new Vector3(
                         reader.ReadSingle(),
@@ -158,10 +169,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.vertices = vertices;
 
-                var normalsLength = reader.ReadInt32();
-                //Debug.Log("Normals length:" + vertLength);
-                Vector3[] normals = new Vector3[normalsLength];
-                for (int i = 0; i < normalsLength; i++)
+                Vector3[] normals = new Vector3[normalsCount];
+                for (int i = 0; i < normalsCount; i++)
                 {
                     Vector3 normal = new Vector3(
                         reader.ReadSingle(),
@@ -172,10 +181,8 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.normals = normals;
 
-                var uvLength = reader.ReadInt32();
-                //Debug.Log("UVs length:" + uvLength);
-                Vector2[] uvs = new Vector2[uvLength];
-                for (int i = 0; i < uvLength; i++)
+                Vector2[] uvs = new Vector2[uvsCount];
+                for (int i = 0; i < uvsCount; i++)
                 {
                     Vector2 uv = new Vector2(
                         reader.ReadSingle(),
@@ -185,25 +192,40 @@ public class BinaryMeshConversion : MonoBehaviour
                 }
                 mesh.uv = uvs;
 
-                //Submeshes
-                var submeshes = reader.ReadInt32();
-                mesh.subMeshCount = submeshes;
-                //Debug.Log("Submeshes: " + submeshes);
-                for (int i = 0; i < submeshes; i++)
+                int[] indices = new int[indicesCount];
+                for (int i = 0; i < indicesCount; i++)
                 {
-                    //Debug.Log("Submesh: " + i);
-                    
-                    var trianglesLength = reader.ReadInt32();
-                    var baseVertex = reader.ReadInt32();
-                    int[] triangles = new int[trianglesLength];
-                    //Debug.Log("Triangle length:" + trianglesLength);
-                    for (int j = 0; j < trianglesLength; j++)
-                    {
-                        triangles[j] = reader.ReadInt32();
-                    }
-                    //mesh.SetIndices(triangles, MeshTopology.Triangles, i);
-                    mesh.SetIndices(triangles, MeshTopology.Triangles, i, false, baseVertex);
+                    var index = reader.ReadInt32();
+                    indices[i] = index;
                 }
+
+                mesh.SetIndexBufferParams(indicesCount, UnityEngine.Rendering.IndexFormat.UInt32);
+                mesh.SetIndexBufferData(indices, 0, 0, indicesCount);
+
+                mesh.subMeshCount = submeshCount;
+                int[] materialIndices = new int[submeshCount];
+
+                for (int i = 0; i < submeshCount; i++)
+                {
+                    var subMeshID = reader.ReadInt32();
+                    materialIndices[i] = subMeshID;
+
+                    var subMeshFirstIndex = reader.ReadInt32();
+                    var subMeshIndexCount = reader.ReadInt32();
+                    var submeshFirstVertex = reader.ReadInt32();
+                    var submeshVertexCount = reader.ReadInt32();
+
+                    var subMeshDescriptor = new UnityEngine.Rendering.SubMeshDescriptor();
+                    subMeshDescriptor.baseVertex = 0;
+                    subMeshDescriptor.firstVertex = submeshFirstVertex;
+                    subMeshDescriptor.vertexCount = submeshVertexCount;
+
+                    subMeshDescriptor.indexStart = subMeshFirstIndex;
+                    subMeshDescriptor.indexCount = subMeshIndexCount;
+
+                    mesh.SetSubMesh(subMeshID, subMeshDescriptor);
+                }
+                submeshMaterialIndices = materialIndices;
 
                 return mesh;
             }
@@ -218,14 +240,14 @@ public class BinaryMeshConversion : MonoBehaviour
 		for (int i = 0; i < files.Length; i++)
 		{
             var filename = files[i];
-            var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
-            if (myLoadedAssetBundle == null)
+            if (!filename.Contains("-data") && !filename.Contains(".bin"))
             {
-                Debug.Log("Failed to load AssetBundle!");
-                return;
-            }
-            else if(!filename.Contains("-data"))
-            {
+                var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
+                if (myLoadedAssetBundle == null)
+                {
+                    Debug.Log("Failed to load AssetBundle!");
+                    continue;
+                }
                 try
                 {
                     var mesh = myLoadedAssetBundle.LoadAllAssets<Mesh>()[0];
@@ -245,11 +267,10 @@ public class BinaryMeshConversion : MonoBehaviour
     private void ConvertFromAssetBundleMetaDataToBinary()
     {
         var files = Directory.GetFiles(assetBundlePath);
-
         for (int i = 0; i < files.Length; i++)
         {
             var filename = files[i];
-            if (filename.Contains("-data")) //metadata file found
+            if (filename.Contains("-data") && !filename.Contains(".bin")) //metadata file found
             {
                 var myLoadedAssetBundle = AssetBundle.LoadFromFile(filename);
                 if (myLoadedAssetBundle == null)

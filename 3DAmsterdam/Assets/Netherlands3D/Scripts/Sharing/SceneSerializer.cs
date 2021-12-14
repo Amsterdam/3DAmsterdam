@@ -262,7 +262,7 @@ namespace Netherlands3D.Sharing
             
             if (getModelRequest.result == UnityWebRequest.Result.Success)
             {
-                Mesh parsedMesh = BinaryMeshConversion.ReadBinaryMesh(getModelRequest.downloadHandler.data);
+                Mesh parsedMesh = BinaryMeshConversion.ReadBinaryMesh(getModelRequest.downloadHandler.data, out int[] materialIndices);
                 gameObjectTarget.AddComponent<MeshFilter>().mesh = parsedMesh;
                 if (transformable)
                 {
