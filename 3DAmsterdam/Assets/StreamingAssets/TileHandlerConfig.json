@@ -2,7 +2,7 @@
 	"binaryMeshLayers": [{
 			"layerName": "Buildings",
 			"priority":2,
-			"selectableSubobjects": false,
+			"selectableSubobjects": true,
 			"lods": [{
 					"sourcePath": "https://acc.3d.amsterdam.nl/web/data/develop/binary2/buildings1.0/buildings_{x}_{y}.1.2.bin",
 					"drawDistance": 6000
@@ -83,7 +83,7 @@
 			"visible": true
 		},
 		{
-			"layerName": "StreetNames",
+			"layerName": "Straatnamen",
 			"priority":2,
 			"sourcePath": "https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?service=WFS&version=2.0.0&request=GetFeature&TypeNames=kadastralekaartv4:openbareruimtenaam&&propertyName=plaatsingspunt,tekst,hoek,relatieveHoogteligging,openbareRuimteType&outputformat=geojson&srs=EPSG:28992&bbox=",
 			"drawOutlines": false,
