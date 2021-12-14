@@ -25,8 +25,5 @@ namespace Netherlands3D.Events
 
 	[CreateAssetMenu(fileName = "ObjectEvent", menuName = "EventContainers/ObjectEvent", order = 0)]
 	[System.Serializable]
-	public class ObjectEvent : EventContainer<ObjectValueUnityEvent>
-	{
-		
-	}
+	public class ObjectEvent : EventContainer<ObjectValueUnityEvent> {	}
 }
