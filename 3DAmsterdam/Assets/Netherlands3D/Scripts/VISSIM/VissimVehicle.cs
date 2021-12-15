@@ -21,7 +21,7 @@ namespace Netherlands3D.Traffic.VISSIM
         protected float timeSinceCommand = 0.0f;
         protected float cleanUpTime = 5;
 
-        protected AssetbundleMeshLayer meshLayer;
+        protected BinaryMeshLayer meshLayer;
         protected VehicleProperties vehicleProperties;
 
         protected virtual void Awake()
@@ -127,7 +127,7 @@ namespace Netherlands3D.Traffic.VISSIM
             this.gameObject.SetActive(false);
         }
 
-        public virtual void SetMeshLayer(AssetbundleMeshLayer layer)
+        public virtual void SetMeshLayer(BinaryMeshLayer layer)
         {
             meshLayer = layer;
         }

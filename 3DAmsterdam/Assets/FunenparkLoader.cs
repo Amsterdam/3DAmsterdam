@@ -77,7 +77,6 @@ public class FunenparkLoader : MonoBehaviour
 
     void Start()
     {
-
         GeoJSON geojson = new GeoJSON(testdata);
         float count = 0;
         while (geojson.GotoNextFeature())
@@ -101,11 +100,8 @@ public class FunenparkLoader : MonoBehaviour
                 polyList.Add(list);
                 drawGeometryEvent.started?.Invoke(polyList);
             }
-
         }
-
-
-        }
+    }
 
 
     void Update()
@@ -122,7 +118,6 @@ public class FunenparkLoader : MonoBehaviour
 
                 if (name.StartsWith("polygonindex_"))
                 {
-
                     PropertiesPanel.Instance.OpenObjectInformation("Object informatie", clearOldfields:true);
 
                     var id = int.Parse(name.Split('_')[1]);
@@ -132,13 +127,7 @@ public class FunenparkLoader : MonoBehaviour
                     {
                         PropertiesPanel.Instance.AddDataField(kv.Key, kv.Value.ToString());                        
                     }
-                    
                 }
-
-
-
-
-
             }
         }
         
