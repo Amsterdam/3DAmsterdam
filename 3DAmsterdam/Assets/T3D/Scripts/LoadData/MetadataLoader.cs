@@ -125,8 +125,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
-        public delegate void BimStatusEventHandler(string status, string modelId, string versionId);
-        public event BimStatusEventHandler BimStatus;
+        //public delegate void BimStatusEventHandler(string status, string modelId, string versionId);
+        //public event BimStatusEventHandler BimStatus;
 
 
         //public List<Vector2[]> PerceelData;
@@ -140,6 +140,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public string BimModelId;
         public string BimModelVersionId;
+        public string BimBlobId;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -171,10 +172,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
-            if (UploadedModel)
-            {
-                StartCoroutine(GetBimStatus(BimModelId, BimModelVersionId));
-            }
+            //if (UploadedModel)
+            //{
+            //    StartCoroutine(GetBimStatus(BimModelId, BimModelVersionId));
+            //}
 
             StartCoroutine(UpdateSidePanelAddress(id));
 
@@ -396,37 +397,44 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        IEnumerator GetBimStatus(string modelId, string versionId)
-        {
-            var organisationId = "6194fc20c0da463026d4d8fe";
-            var projectId = "6194fc2ac0da463026d4d90e";
+        //IEnumerator GetBimStatus(string modelId, string versionId)
+        //{
+        //    var organisationId = "6194fc20c0da463026d4d8fe";
+        //    var projectId = "6194fc2ac0da463026d4d90e";
 
-            yield return null;
+        //    yield return null;
             
-            var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
+        //    var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
 
-            UnityWebRequest req = UnityWebRequest.Get(url);            
-            req.SetRequestHeader("Content-Type", "application/json");
+        //    UnityWebRequest req = UnityWebRequest.Get(url);            
+        //    req.SetRequestHeader("Content-Type", "application/json");
 
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog(req.error);
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var status = json["conversions"]["cityjson"];
-                Debug.Log($"Status CityJSON:{status}");
+        //    yield return req.SendWebRequest();
+        //    if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
+        //    {
+        //        WarningDialogs.Instance.ShowNewDialog(req.error);
+        //    }
+        //    else
+        //    {
+        //        var json = JSON.Parse(req.downloadHandler.text);
+        //        var status = json["conversions"]["cityjson"];
+        //        Debug.Log($"Status CityJSON:{status}");
 
-                BimStatus?.Invoke(status, modelId, versionId);
+        //        BimStatus?.Invoke(status, modelId, versionId);
 
-            }
-        }
+        //    }
+        //}
 
         void ProcessPerceelData(JSONNode jsonData)
         {
+            if(jsonData["features"].Count == 0)
+            {
+                Debug.Log("ProcessPerceelData: jsonData has no features");
+                return;
+            }
+
             JSONNode feature1 = jsonData["features"][0];
+
             //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
 
             perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);

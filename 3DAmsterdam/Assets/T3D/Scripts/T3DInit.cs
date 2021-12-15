@@ -35,7 +35,7 @@ public class T3DInit : MonoBehaviour
     void Start()
     {
 #if !UNITY_EDITOR
-        if(!SessionSaver.LoadPreviousSession)
+        //if(!SessionSaver.LoadPreviousSession)
             CheckURLForPositionAndId();
 #endif
     }
@@ -48,8 +48,9 @@ public class T3DInit : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
-            MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
-            MetadataLoader.Instance.BimModelVersionId = "1";
+            //MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
+            //MetadataLoader.Instance.BimModelVersionId = "1";
+            MetadataLoader.Instance.BimBlobId = "15ad2866-8d14-44e1-8b2e-2a18275134b6";
 
             GoToTestBuilding();
         }
@@ -98,6 +99,7 @@ public class T3DInit : MonoBehaviour
         MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
         MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
         MetadataLoader.Instance.BimModelVersionId = Application.absoluteURL.GetUrlParamValue("versionId");
+        MetadataLoader.Instance.BimBlobId = Application.absoluteURL.GetUrlParamValue("blobId");
 
         GotoPosition(rd);
         MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
@@ -108,6 +110,8 @@ public class T3DInit : MonoBehaviour
         //InitializeSaveableVariables();
         //cameraPosition.Load();
         //bagId.Load();
+
+        if (cameraPosition.Value.x == 0 && cameraPosition.Value.y == 0 && cameraPosition.Value.z == 0) return;
 
         print(cameraPosition.Value);
 

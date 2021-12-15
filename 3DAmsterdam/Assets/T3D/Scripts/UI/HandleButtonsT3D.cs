@@ -1,12 +1,14 @@
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
+using Netherlands3D.JavascriptConnection;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.Sun;
 using Netherlands3D.T3D.Uitbouw;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +22,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomIn;
     public Button ButtonZoomOut;    
     public Button ButtonToggleRotateFirstperson;
-
+    public Button ButtonDownloadConvertedCityJson;
     public Layer BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
@@ -57,6 +59,7 @@ public class HandleButtonsT3D : MonoBehaviour
         ButtonZoomIn.onClick.AddListener(ZoomIn);
         ButtonZoomOut.onClick.AddListener(ZoomOut);       
         ButtonToggleRotateFirstperson.onClick.AddListener(ToggleRotateFirstperson);
+        ButtonDownloadConvertedCityJson.onClick.AddListener(DownloadConvertedCityJson);
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
 
@@ -69,6 +72,28 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();
 
         MaandenDropup.SetItems(months, dateTimeNow.Month - 1, SetMonth);
+    }
+
+    private void DownloadConvertedCityJson()
+    {
+        bool isBlob = !string.IsNullOrEmpty(MetadataLoader.Instance.BimBlobId);
+
+        var urlBlob = $"https://t3dapi.azurewebsites.net/api/downloadcityjson/{MetadataLoader.Instance.BimBlobId}.json";
+        var urlModel = $"https://t3dapi.azurewebsites.net/api/getbimcityjson/{MetadataLoader.Instance.BimModelId}.json";
+        var url = isBlob ? urlBlob : urlModel;
+        //var id = isBlob ? MetadataLoader.Instance.BimBlobId : MetadataLoader.Instance.BimModelId;
+
+        //WebClient wc = new WebClient();
+        //var jsontext = wc.DownloadString(url);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        JavascriptMethodCaller.OpenURL(url);
+        //var bytes = System.Text.Encoding.UTF8.GetBytes(jsontext);
+        //JavascriptMethodCaller.DownloadByteArrayAsFile(bytes, bytes.Length, $"{id}.json");
+#else
+        Debug.Log($"CityJson download url:{url}");   
+#endif
+
     }
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
