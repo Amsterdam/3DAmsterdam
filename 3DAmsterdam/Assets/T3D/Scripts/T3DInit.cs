@@ -12,6 +12,8 @@ public class T3DInit : MonoBehaviour
     private SaveableString bagId;
     private string bagIdKey;
 
+    public string BagId => bagId.Value;
+
     public static T3DInit Instance;
 
     private void Awake()
