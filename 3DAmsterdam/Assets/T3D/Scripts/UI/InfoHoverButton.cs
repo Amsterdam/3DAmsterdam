@@ -13,15 +13,6 @@ public class InfoHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     protected GameObject popupPrefab;
     protected GameObject popup;
 
-    //[SerializeField]
-    //private UitbouwRestrictionType restrictionType;
-    //private UitbouwRestriction restriction;
-
-    //private void Awake()
-    //{
-        //RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restriction);
-    //}
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         CreatePopup();

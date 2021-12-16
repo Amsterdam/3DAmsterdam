@@ -7,10 +7,10 @@ public class WallSelectionState : State
 {
     public override int GetDesiredStateIndex()
     {
-        if (MetadataLoader.Instance == null)
+        if (T3DInit.Instance == null)
             desiredNextStateIndex = 0;
         else
-            desiredNextStateIndex = MetadataLoader.Instance.UploadedModel ? 0 : 1;
+            desiredNextStateIndex = T3DInit.Instance.UploadedModel ? 0 : 1;
         return desiredNextStateIndex;
     }
 

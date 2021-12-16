@@ -136,10 +136,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector2RD perceelnummerPlaatscoordinaat;
         private Vector2RD buildingcenter;
 
-        public bool UploadedModel;
-
-        public string BimModelId;
-        public string BimModelVersionId;
+        //public string BimModelId;
+        //public string BimModelVersionId;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -171,9 +169,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
-            if (UploadedModel)
+            if (T3DInit.Instance.UploadedModel)
             {
-                StartCoroutine(GetBimStatus(BimModelId, BimModelVersionId));
+                StartCoroutine(GetBimStatus(T3DInit.Instance.BimModelId, T3DInit.Instance.BimModelVersionId));
             }
 
             StartCoroutine(UpdateSidePanelAddress(id));
@@ -402,10 +400,10 @@ namespace Netherlands3D.T3D.Uitbouw
             var projectId = "6194fc2ac0da463026d4d90e";
 
             yield return null;
-            
+
             var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
 
-            UnityWebRequest req = UnityWebRequest.Get(url);            
+            UnityWebRequest req = UnityWebRequest.Get(url);
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();
@@ -465,7 +463,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw()
         {
             var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            if (UploadedModel && !Uitbouw)
+            if (T3DInit.Instance.UploadedModel && !Uitbouw)
             {
                 var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
