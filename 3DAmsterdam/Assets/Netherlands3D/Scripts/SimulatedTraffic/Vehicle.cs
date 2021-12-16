@@ -29,7 +29,7 @@ namespace Netherlands3D.Traffic
         private float lastRecordedHeight = 0.0f;
         private RaycastHit hit;
 
-        private AssetbundleMeshLayer terrainLayer;
+        private BinaryMeshLayer terrainLayer;
 
         public bool needToStop = false;
 
@@ -277,7 +277,7 @@ namespace Netherlands3D.Traffic
             }
         }
 
-        public void SetTerrainLayer(AssetbundleMeshLayer layer)
+        public void SetTerrainLayer(BinaryMeshLayer layer)
         {
             terrainLayer = layer;
         }

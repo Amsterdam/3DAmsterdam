@@ -47,7 +47,7 @@ namespace Netherlands3D.Settings {
         private Rendering.RenderSettings renderSettings;
 
 		[SerializeField]
-		private AssetbundleMeshLayer terrainLayer;
+		private BinaryMeshLayer terrainLayer;
 
         [SerializeField]
         private GameObject stats;
