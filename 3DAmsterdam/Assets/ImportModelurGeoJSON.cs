@@ -42,14 +42,20 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 	public void ParseGeoJSON(string file)
 	{
-		if(!File.Exists(file))
+		var filePath = file;
+		if (!file.Contains("/"))
 		{
-			Debug.Log($"{file} not found");
+			filePath = Application.persistentDataPath + "/" + file;
+		}
+
+		if(!File.Exists(filePath))
+		{
+			Debug.Log($"{filePath} not found");
 			return;
 		}
 
-		Debug.Log($"Parsing {file}");
-		var json = File.ReadAllText(file);
+		Debug.Log($"Parsing {filePath}");
+		var json = File.ReadAllText(filePath);
 		GeoJSON geojson = new GeoJSON(json);
 		float count = 0;
 
