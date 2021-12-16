@@ -26,17 +26,15 @@ public class CreateMeshFromCityJson
 
     public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject)
     {
-
         var meshes = CreateMeshes(cityModel, cityObject);
 
-        CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];
-        
+        //combine the meshes
+        CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];        
         for(int i=0; i < meshes.Length; i++)
         {
             combineInstanceArray[i].mesh = meshes[i];
             combineInstanceArray[i].transform = transform.localToWorldMatrix;
         }
-
         Mesh mesh = new Mesh();
         mesh.CombineMeshes(combineInstanceArray);
         mesh.RecalculateNormals();
