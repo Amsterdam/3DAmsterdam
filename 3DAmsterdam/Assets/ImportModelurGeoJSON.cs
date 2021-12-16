@@ -16,14 +16,25 @@ public class ImportModelurGeoJSON : MonoBehaviour
 	[SerializeField]
     private BoolEvent onDoneParsing;
 	[SerializeField]
-	private Vector3ListsEvent OnPolygonsParsed;
+	private FloatEvent OnStoreyHeightDetermined;
+	[SerializeField]
+	private FloatEvent OnStoreyDividerHeightDetermined;
+	[SerializeField]
+	private Vector3ListsEvent OnPolygonParsed;
+	[SerializeField]
+	private Vector3ListsEvent OnStoreyDividerParsed;
 	[SerializeField]
 	private Vector3Event onCentroidCalculated;
 
 	private List<Dictionary<string, object>> propertyList = new List<Dictionary<string, object>>();
 
+	[SerializeField]
+	private float storeyDividerHeight = 0.2f;
+
 	private void Awake()
 	{
+		OnStoreyDividerHeightDetermined.started.Invoke(storeyDividerHeight);
+
 		filesImportedEvent.started.AddListener(FileImported);
 	}
 
@@ -43,8 +54,9 @@ public class ImportModelurGeoJSON : MonoBehaviour
 	public void ParseGeoJSON(string file)
 	{
 		var filePath = file;
-		if (!file.Contains("/"))
+		if (!Path.IsPathRooted(filePath))
 		{
+			Debug.Log($"{filePath} is relative. Appended persistentDataPath.");
 			filePath = Application.persistentDataPath + "/" + file;
 		}
 
@@ -57,37 +69,34 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		Debug.Log($"Parsing {filePath}");
 		var json = File.ReadAllText(filePath);
 		GeoJSON geojson = new GeoJSON(json);
-		float count = 0;
+		float objectIndex = 0;
 
 		Vector3 centroid = Vector3.zero;
 		int amountOfPoints = 0;
 		while (geojson.GotoNextFeature())
 		{
-			count++;
+			objectIndex++;
 
 			var polygons = geojson.GetPolygon();
 			var properties = geojson.GetProperties();
 			propertyList.Add(properties);
 
-			foreach (var polygon in polygons)
+			//Determine our storeys + height
+			var buildingHeight = geojson.GetPropertyFloatValue("Building_Height");
+			var numberOfStoreys = geojson.GetPropertyFloatValue("Number_of_Storeys");
+			var groundOffset  = geojson.GetPropertyFloatValue("Ground_to_Sea_Elevation"); 
+			var storeyHeight = (buildingHeight / numberOfStoreys) - storeyDividerHeight;
+		
+			OnStoreyHeightDetermined.started?.Invoke(storeyHeight);
+
+			//Draw all polygons as building storeys
+			for (int i = 0; i < numberOfStoreys; i++)
 			{
-				List<IList<Vector3>> polyList = new List<IList<Vector3>>();
-				List<Vector3> list = new List<Vector3>();
-				foreach (var point in polygon)
+				foreach (var polygon in polygons)
 				{
-					var p = ConvertCoordinates.CoordConvert.WGS84toUnity(point.x, point.y);
-					p.y = count; //Use y as object index
-					list.Add(p);
-
-					centroid += p;
-					amountOfPoints++;
+					DrawStorey(ref centroid, ref amountOfPoints, groundOffset, storeyHeight, i, polygon);
 				}
-
-				polyList.Add(list);
-
-
-				OnPolygonsParsed.started?.Invoke(polyList);
-			}
+			}	
 		}
 
 		centroid /= amountOfPoints;
@@ -95,5 +104,32 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		onCentroidCalculated.started.Invoke(centroid);
 
 		onDoneParsing.started.Invoke(true);
+	}
+
+	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
+	{
+		List<IList<Vector3>> polyList = new List<IList<Vector3>>();
+		List<Vector3> outerContour = new List<Vector3>();
+
+		foreach (var point in polygon)
+		{
+			var unityPoint = ConvertCoordinates.CoordConvert.WGS84toUnity(point.x, point.y);
+			unityPoint.y = groundOffset + (i * storeyHeight) + (i * storeyDividerHeight);
+			outerContour.Add(unityPoint);
+
+			centroid += unityPoint;
+			amountOfPoints++;
+		}
+		polyList.Add(outerContour);
+
+		OnPolygonParsed.started?.Invoke(polyList);
+
+		//Draw the same polygon shape as a storey dividing line
+		for (int j = 0; j < outerContour.Count; j++)
+		{
+			outerContour[j] = new Vector3(outerContour[j].x, outerContour[j].y - storeyDividerHeight, outerContour[j].z);
+		}
+
+		OnStoreyDividerParsed.started.Invoke(polyList);
 	}
 }

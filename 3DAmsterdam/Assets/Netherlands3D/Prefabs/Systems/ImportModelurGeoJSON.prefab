@@ -45,6 +45,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   filesImportedEvent: {fileID: 11400000, guid: 250b8459ca457934780ddc269877e9eb, type: 2}
   onDoneParsing: {fileID: 11400000, guid: 9575250af824c5c4892b2a382746c005, type: 2}
-  OnPolygonsParsed: {fileID: 11400000, guid: 85bb9ffcb84ee104c9023c4f13f647b7, type: 2}
+  OnStoreyHeightDetermined: {fileID: 11400000, guid: 276050865e1dda7468a00f21fdd801f1,
+    type: 2}
+  OnStoreyDividerHeightDetermined: {fileID: 11400000, guid: 6a6c4ce4f23d4f34eadbc07ad4d63141,
+    type: 2}
+  OnPolygonParsed: {fileID: 11400000, guid: 85bb9ffcb84ee104c9023c4f13f647b7, type: 2}
+  OnStoreyDividerParsed: {fileID: 11400000, guid: 0450592ecbc867543b2652ed7bb4cfef,
+    type: 2}
   onCentroidCalculated: {fileID: 11400000, guid: 012826fbb9ea3294880a213f65b2ac89,
     type: 2}
+  storeyDividerHeight: 0.2

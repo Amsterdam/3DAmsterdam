@@ -24,8 +24,11 @@ namespace Netherlands3D.Events
 {
     public class PolygonVisualiser : MonoBehaviour
     {
+        [Header("Listen to events:")]
         [SerializeField]
         private Vector3ListsEvent drawPolygonEvent;
+        [SerializeField]
+        private FloatEvent setExtrusionHeightEvent;
 
         [SerializeField]
         private Material defaultMaterial;
@@ -39,10 +42,16 @@ namespace Netherlands3D.Events
         void Awake()
         {
             if (drawPolygonEvent) drawPolygonEvent.started.AddListener(CreatePolygon);
+            if (setExtrusionHeightEvent) setExtrusionHeightEvent.started.AddListener(SetExtrusionHeight);
         }
 
-        //Treat first contour as outer contour, and extra contours as holes
-        public void CreatePolygon(List<IList<Vector3>> contours)
+		public void SetExtrusionHeight(float extrusionHeight)
+		{
+            this.extrusionHeight = extrusionHeight;
+        }
+
+		//Treat first contour as outer contour, and extra contours as holes
+		public void CreatePolygon(List<IList<Vector3>> contours)
         {
             if (polygonCount >= maxPolygons) return;
             polygonCount++;
@@ -50,13 +59,10 @@ namespace Netherlands3D.Events
             var polygon = new Poly2Mesh.Polygon();
             polygon.outside = (List<Vector3>)contours[0];
 
-            var name = $"polygonindex_{polygon.outside[0].y}";
-
             for (int i=0; i< polygon.outside.Count; i++)
             {
-                polygon.outside[i] = new Vector3(polygon.outside[i].x, Config.activeConfiguration.zeroGroundLevelY, polygon.outside[i].z);
+                polygon.outside[i] = new Vector3(polygon.outside[i].x, polygon.outside[i].y, polygon.outside[i].z);
             }
-
 
             if (contours.Count > 1)
             {

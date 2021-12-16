@@ -115,6 +115,8 @@ public class FileInputIndexedDB : MonoBehaviour
 
     void ProcessAllFiles()
     {
+        LoadingScreen.Instance.Hide();
+
         var files = string.Join(",", filenames);
         filesImportedEvent.started.Invoke(files);
     }
