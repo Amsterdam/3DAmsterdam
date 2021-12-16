@@ -177,7 +177,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (UploadedModel)
             {
-                StartCoroutine(GetBimStatus(BimModelId));
+                //StartCoroutine(GetBimStatus(BimModelId));
                 //StartCoroutine(GetBimCityJson(BimModelId));
                 StartCoroutine(GetBimCityJsonFile());
             }
@@ -434,8 +434,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             yield return null;
 
-            var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
-            //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
+            //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
+            var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
             string cityjson = File.ReadAllText(filepath);
 
             BimCityJsonReceived?.Invoke(cityjson);

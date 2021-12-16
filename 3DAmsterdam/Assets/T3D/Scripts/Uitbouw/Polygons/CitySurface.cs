@@ -5,6 +5,7 @@ using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using SimpleJSON;
 using UnityEngine.Assertions;
+using T3D.Uitbouw;
 
 public enum SemanticType
 {
@@ -43,7 +44,7 @@ public class CitySurface
         Polygons.Add(solidSurfacePolygon);
     }
 
-    public static bool IsValidSemanticType(CityObjectType parent, SemanticType type)
+    public static bool IsValidSemanticType(T3D.Uitbouw.CityObjectType parent, SemanticType type)
     {
         if (type == SemanticType.Null) //no semantic type is always allowed
             return true;
