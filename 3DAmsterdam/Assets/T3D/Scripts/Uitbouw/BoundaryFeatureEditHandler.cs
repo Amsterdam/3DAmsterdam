@@ -45,7 +45,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             //Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             //LayerMask boundaryFeaturesMask = LayerMask.GetMask("StencilMask");
-            LayerMask boundaryFeaturesMask = LayerMask.GetMask("Default");
+            LayerMask boundaryFeaturesMask = LayerMask.GetMask("BoundaryFeatures");
 
             //print(ObjectClickHandler.GetClickOnObject(boundaryFeaturesMask));
             var click = ObjectClickHandler.GetClickOnObject(true, out var collider, boundaryFeaturesMask);
