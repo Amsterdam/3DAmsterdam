@@ -11,7 +11,7 @@ namespace Netherlands3D.Cameras
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
 		[SerializeField]
-		private AssetbundleMeshLayer terrainContainerLayer;
+		private BinaryMeshLayer terrainContainerLayer;
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
 

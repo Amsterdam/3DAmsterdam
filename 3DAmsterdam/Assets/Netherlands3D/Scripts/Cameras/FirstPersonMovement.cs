@@ -9,7 +9,7 @@ namespace Netherlands3D.Cameras
     public class FirstPersonMovement : MonoBehaviour
     {
         [SerializeField]
-        private AssetbundleMeshLayer terrainContainerLayer;
+        private BinaryMeshLayer terrainContainerLayer;
         [SerializeField]
         private float groundOffset;
 

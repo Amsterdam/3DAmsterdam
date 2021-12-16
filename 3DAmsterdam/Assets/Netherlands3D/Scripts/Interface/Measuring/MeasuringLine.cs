@@ -26,7 +26,7 @@ public class MeasuringLine : Interactable
 	private int placementStepIndex = -1;
 
 	[SerializeField]
-	private AssetbundleMeshLayer[] targetLayers;
+	private BinaryMeshLayer[] targetLayers;
 
 	[SerializeField]
 	private List<MeasurePoint> linePoints;
