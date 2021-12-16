@@ -36,7 +36,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 ProcessUserInput();
 
-                if (ActiveFeature)
+                if (ActiveFeature && ActiveFeature.ActiveMode == EditMode.Reposition)
                     ProcessDrag(ActiveFeature);
             }
         }
