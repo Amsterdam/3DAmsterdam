@@ -3,9 +3,10 @@ using Netherlands3D.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
-public class ImportGeoJSON : MonoBehaviour
+public class ImportModelurGeoJSON : MonoBehaviour
 {
 	[Header("Listen to events:")]
     [SerializeField]
@@ -13,9 +14,11 @@ public class ImportGeoJSON : MonoBehaviour
 
 	[Header("Trigger events:")]
 	[SerializeField]
-    private BoolEvent clearDataBaseEvent;
+    private BoolEvent onDoneParsing;
 	[SerializeField]
-	private Vector3ListsEvent drawGeometryEvent;
+	private Vector3ListsEvent OnPolygonsParsed;
+	[SerializeField]
+	private Vector3Event onCentroidCalculated;
 
 	private List<Dictionary<string, object>> propertyList = new List<Dictionary<string, object>>();
 
@@ -45,9 +48,13 @@ public class ImportGeoJSON : MonoBehaviour
 			return;
 		}
 
+		Debug.Log($"Parsing {file}");
 		var json = File.ReadAllText(file);
 		GeoJSON geojson = new GeoJSON(json);
 		float count = 0;
+
+		Vector3 centroid = Vector3.zero;
+		int amountOfPoints = 0;
 		while (geojson.GotoNextFeature())
 		{
 			count++;
@@ -63,15 +70,24 @@ public class ImportGeoJSON : MonoBehaviour
 				foreach (var point in polygon)
 				{
 					var p = ConvertCoordinates.CoordConvert.WGS84toUnity(point.x, point.y);
-					p.y = count;
+					p.y = count; //Use y as object index
 					list.Add(p);
+
+					centroid += p;
+					amountOfPoints++;
 				}
 
 				polyList.Add(list);
 
-				drawGeometryEvent.started?.Invoke(polyList);
+
+				OnPolygonsParsed.started?.Invoke(polyList);
 			}
 		}
-		clearDataBaseEvent.started.Invoke(true);
+
+		centroid /= amountOfPoints;
+		centroid.y = 0;
+		onCentroidCalculated.started.Invoke(centroid);
+
+		onDoneParsing.started.Invoke(true);
 	}
 }

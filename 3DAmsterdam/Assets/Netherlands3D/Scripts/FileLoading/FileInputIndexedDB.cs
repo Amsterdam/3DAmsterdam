@@ -121,12 +121,13 @@ public class FileInputIndexedDB : MonoBehaviour
 
     public void ClearDatabase(bool succes)
     {
+    #if !UNITY_EDITOR && UNITY_WEBGL
         ClearFileInputFields();
         filenames.Clear();
         if (succes)
         {
             SyncFilesToIndexedDB();
         }
+    #endif
     }
-
 }
