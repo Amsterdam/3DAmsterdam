@@ -33,8 +33,6 @@ public class ImportModelurGeoJSON : MonoBehaviour
 
 	private void Awake()
 	{
-		OnStoreyDividerHeightDetermined.started.Invoke(storeyDividerHeight);
-
 		filesImportedEvent.started.AddListener(FileImported);
 	}
 
@@ -86,8 +84,9 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			var numberOfStoreys = geojson.GetPropertyFloatValue("Number_of_Storeys");
 			var groundOffset  = geojson.GetPropertyFloatValue("Ground_to_Sea_Elevation"); 
 			var storeyHeight = (buildingHeight / numberOfStoreys) - storeyDividerHeight;
-		
+
 			OnStoreyHeightDetermined.started?.Invoke(storeyHeight);
+			OnStoreyDividerHeightDetermined.started.Invoke(storeyDividerHeight);
 
 			//Draw all polygons as building storeys
 			for (int i = 0; i < numberOfStoreys; i++)
