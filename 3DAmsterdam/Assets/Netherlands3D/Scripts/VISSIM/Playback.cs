@@ -10,7 +10,7 @@ namespace Netherlands3D.Traffic.VISSIM
     {
         public Dictionary<int, VissimVehicle> vehicles = new Dictionary<int, VissimVehicle>();
         [SerializeField] private ConvertFZP fileConverter = default;
-        [SerializeField] private AssetbundleMeshLayer meshLayer;
+        [SerializeField] private BinaryMeshLayer meshLayer;
 
         private Vector3 cameraStartPosition;
         public float timeCounter;

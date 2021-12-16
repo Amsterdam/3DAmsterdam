@@ -23,7 +23,7 @@ namespace Netherlands3D.Traffic
         public int maximumVehicleRenderDistance = 1500;
 
         [SerializeField]
-        private AssetbundleMeshLayer terrainLayer;
+        private BinaryMeshLayer terrainLayer;
 
         [Serializable]
         public struct VehicleType
