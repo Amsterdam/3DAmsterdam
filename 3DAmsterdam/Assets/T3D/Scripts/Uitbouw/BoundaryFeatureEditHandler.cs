@@ -16,6 +16,24 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private Vector3 featureDeltaPos;
 
+        private void OnEnable()
+        {
+            LibraryComponentSelectedEvent.Subscribe(LibraryComponentSelected);
+        }
+
+        private void OnDisable()
+        {
+            LibraryComponentSelectedEvent.Unsubscribe(LibraryComponentSelected);
+        }
+
+        private void LibraryComponentSelected(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
+        {
+            if (ActiveFeature)
+            {
+                DeselectFeature();
+            }
+        }
+
         public void SelectFeature(BoundaryFeature feature)
         {
             feature.SetMode(EditMode.Reposition);
