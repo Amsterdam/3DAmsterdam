@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class EnableOnUploadedModel : MonoBehaviour
 {
-    
     void Start()
-    {       
-            gameObject.SetActive(MetadataLoader.Instance.UploadedModel);        
+    {
+        gameObject.SetActive(T3DInit.Instance.UploadedModel);
     }
-
-    
 }

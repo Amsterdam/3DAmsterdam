@@ -9,10 +9,21 @@ public class T3DInit : MonoBehaviour
 {
     private string cameraPositionKey;
     private SaveableVector3RD cameraPosition;
-    private SaveableString bagId;
     private string bagIdKey;
+    private SaveableString bagId;
+    private string uploadedModelKey;
+    private SaveableBool uploadedModel;
 
     public string BagId => bagId.Value;
+    public bool UploadedModel => uploadedModel.Value;
+
+    private string bimModelIdKey;
+    public SaveableString bimModelId;
+    public string BimModelId => bimModelId.Value;
+
+    private string bimModelVersionIdKey;
+    public SaveableString bimModelVersionId;
+    public string BimModelVersionId => bimModelVersionId.Value;
 
     public static T3DInit Instance;
 
@@ -25,13 +36,22 @@ public class T3DInit : MonoBehaviour
 
     private void InitializeSaveableVariables()
     {
+        uploadedModelKey = GetType().ToString() + ".uploadedModel";
+        uploadedModel = new SaveableBool(uploadedModelKey);
+
         cameraPositionKey = GetType().ToString() + ".cameraPosition";// + nameof(cameraPosition);
         cameraPosition = new SaveableVector3RD(cameraPositionKey);
-        print("loaded pos:" + cameraPosition.Value);
+        //print("loaded pos:" + cameraPosition.Value);
 
         bagIdKey = GetType().ToString() + ".bagId";// + nameof(bagId);
         bagId = new SaveableString(bagIdKey);
-        print("loaded id : " + bagId.Value);
+        //print("loaded id : " + bagId.Value);
+
+        bimModelIdKey = GetType().ToString() + ".bimModelId";// + nameof(bagId);
+        bimModelId = new SaveableString(bimModelIdKey);
+
+        bimModelVersionIdKey = GetType().ToString() + ".bimModelVersionId";// + nameof(bagId);
+        bimModelVersionId = new SaveableString(bimModelVersionIdKey);
     }
 
     void Start()
@@ -49,9 +69,9 @@ public class T3DInit : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P))
         {
-            MetadataLoader.Instance.UploadedModel = Input.GetKey(KeyCode.LeftShift);
-            MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
-            MetadataLoader.Instance.BimModelVersionId = "1";
+            uploadedModel.SetValue( Input.GetKey(KeyCode.LeftShift));
+            bimModelId.SetValue("61a57eba0a6448f8eaacf9e9");
+            bimModelVersionId.SetValue("1");
 
             GoToTestBuilding();
         }
@@ -97,9 +117,9 @@ public class T3DInit : MonoBehaviour
         cameraPosition.SetValue(rd);
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
-        MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");
-        MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
-        MetadataLoader.Instance.BimModelVersionId = Application.absoluteURL.GetUrlParamValue("versionId");
+        uploadedModel.SetValue(Application.absoluteURL.GetUrlParamBool("hasfile"));
+        bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelId"));
+        bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionId"));
 
         GotoPosition(rd);
         MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
@@ -111,12 +131,20 @@ public class T3DInit : MonoBehaviour
         //cameraPosition.Load();
         //bagId.Load();
 
-        print(cameraPosition.Value);
+        //print(cameraPosition.Value);
+
+        //wait until the end of the frame and then load the building. this is needed to ensure all SaveableVariables are correctly loaded before using them.
+        StartCoroutine( GoToBuildingAtEndOfFrame());
+    }
+
+    private IEnumerator GoToBuildingAtEndOfFrame()
+    {
+        yield return null; //wait a frame
 
         var pos = cameraPosition.Value;
         cameraPosition.SetValue(pos);
         GotoPosition(pos);
-        print(pos + "_" + bagId.Value);
+        //print(pos + "_" + bagId.Value);
         MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
     }
 }
