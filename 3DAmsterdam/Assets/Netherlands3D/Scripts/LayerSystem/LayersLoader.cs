@@ -121,7 +121,7 @@ public class LayersLoader : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Could not load {configuration.configFilePath}");
+            Debug.Log($"Could not load {configuration.configFile}");
         }
         yield return null;
 #else
