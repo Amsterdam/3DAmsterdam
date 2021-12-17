@@ -16,6 +16,24 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private Vector3 featureDeltaPos;
 
+        private void OnEnable()
+        {
+            LibraryComponentSelectedEvent.Subscribe(LibraryComponentSelected);
+        }
+
+        private void OnDisable()
+        {
+            LibraryComponentSelectedEvent.Unsubscribe(LibraryComponentSelected);
+        }
+
+        private void LibraryComponentSelected(object sender, LibraryComponentSelectedEvent.LibraryComponentSelectedEventArgs e)
+        {
+            if (ActiveFeature)
+            {
+                DeselectFeature();
+            }
+        }
+
         public void SelectFeature(BoundaryFeature feature)
         {
             feature.SetMode(EditMode.Reposition);
@@ -36,7 +54,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 ProcessUserInput();
 
-                if (ActiveFeature)
+                if (ActiveFeature && ActiveFeature.ActiveMode == EditMode.Reposition)
                     ProcessDrag(ActiveFeature);
             }
         }
@@ -45,7 +63,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             //Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
             //LayerMask boundaryFeaturesMask = LayerMask.GetMask("StencilMask");
-            LayerMask boundaryFeaturesMask = LayerMask.GetMask("Default");
+            LayerMask boundaryFeaturesMask = LayerMask.GetMask("BoundaryFeatures");
 
             //print(ObjectClickHandler.GetClickOnObject(boundaryFeaturesMask));
             var click = ObjectClickHandler.GetClickOnObject(true, out var collider, boundaryFeaturesMask);

@@ -74,7 +74,20 @@ public class ObjectClickHandler : MonoBehaviour
                     return true;
                 }
             }
-            return allowClickOnNothing && clickColliders.Count == 0;//return true if clicked on nothing
+
+            bool a = true; // assume there are no clicked colliders
+            foreach (var col in clickColliders)
+            {
+                var isInMask = layerMask == (layerMask | (1 << col.gameObject.layer));
+                if (isInMask)
+                {
+                    //if the collider is in the mask, return false
+                    a = false;
+                    break;
+                }
+            }
+
+            return allowClickOnNothing && a;//allowClickOnNothing && clickColliders.Count == 0; //return true if clicked on nothing
         }
         //print("failed all paths");
         return false;
@@ -117,7 +130,7 @@ public class ObjectClickHandler : MonoBehaviour
     {
         var drag = GetDrag(out var draggedcol);
 
-        if(DraggingCollider == null)
+        if (DraggingCollider == null)
         {
             DraggingCollider = draggedcol;
         }
