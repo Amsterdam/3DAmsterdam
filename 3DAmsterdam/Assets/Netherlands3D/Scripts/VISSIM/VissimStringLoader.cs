@@ -18,18 +18,40 @@ using System.Text;
 using UnityEngine;
 using Netherlands3D.JavascriptConnection;
 using UnityEngine.Events;
+using Netherlands3D.Events;
 
 namespace Netherlands3D.Traffic.VISSIM 
 { 
     public class VissimStringLoader : MonoBehaviour
     {
+        [SerializeField]
+        private StringEvent filesImportedEvent;
 
         [SerializeField]
-        private UnityEvent doneLoadingModel;
+        private BoolEvent clearDataBaseEvent;
+
+        private string fileExtention = ".fzp";
+
         [SerializeField] private LoadingScreen loadingObjScreen = default;
         [SerializeField] private Playback playback = default;
         [SerializeField] private ConvertFZP converter = default;
-        [SerializeField] private Transform vissimScriptObject = default;
+
+		private void Awake()
+		{
+            filesImportedEvent.started.AddListener(FileImported);
+        }
+
+        private void FileImported(string files)
+        {
+            string[] importedFiles = files.Split(',');
+            foreach(var file in importedFiles)
+            { 
+                if(file.EndsWith(fileExtention)){
+                    LoadVissimFromFile(file);
+                    return;
+                }    
+            }
+        }
 
 #if UNITY_EDITOR
         /// <summary>
@@ -50,11 +72,10 @@ namespace Netherlands3D.Traffic.VISSIM
         }
 #endif
 
-        public void LoadVissimFromFile(string filepath, System.Action<bool> callback)
+        private void LoadVissimFromFile(string filepath)
         {
             string contents = File.ReadAllText(Application.persistentDataPath + "/" + filepath);
             File.Delete(filepath);
-            callback(true);
             StartCoroutine(LoadingProgress(contents));
         }
 
@@ -74,8 +95,9 @@ namespace Netherlands3D.Traffic.VISSIM
             loadingObjScreen.ProgressBar.SetMessage("100%");
             loadingObjScreen.ProgressBar.Percentage(1f);
             yield return new WaitForSeconds(0.5f);
+
+            clearDataBaseEvent.started.Invoke(true);
             loadingObjScreen.Hide();
-            doneLoadingModel.Invoke();
         }
 
         public void DestroyVissim()
@@ -83,7 +105,7 @@ namespace Netherlands3D.Traffic.VISSIM
             converter.allVissimData.Clear(); // cleans all old files
             converter.finishedLoadingData = false;
             playback.vehicles.Clear(); //  clears all old data
-            foreach (Transform child in vissimScriptObject.transform)
+            foreach (Transform child in transform)
             {
                 // disables all old cars
                 child.gameObject.SetActive(false);

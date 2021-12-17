@@ -553,6 +553,38 @@ namespace Netherlands3D.Utilities
             return points;
 
         }
+
+        public Dictionary<string, object> GetProperties()
+        {
+            Dictionary<string, object> properties = new Dictionary<string, object>();
+
+            string searchString = @"""properties"": {";
+            int startread = geoJSONString.IndexOf(searchString, featureStartIndex) + searchString.Length ;
+            int lastStartRead = 0;
+            while (startread > lastStartRead)
+            {
+                lastStartRead = startread;
+
+                int endprop = geoJSONString.IndexOf(",", startread);
+                int endproperties = geoJSONString.IndexOf("}", startread);
+                var sub = geoJSONString.Substring(startread, endprop - startread);
+
+                var kv = sub.Split(':');
+                var key = kv[0].Replace("\"", "").Trim();
+                var val = kv[1].Replace("\"", "").Replace("}", "").Trim();
+                
+                properties.Add(key, val);
+
+                if (endprop > endproperties)
+                {
+                    break;
+                }
+
+                startread = endprop+1;
+            }
+
+            return properties;
+        }
     }
     public struct GeoJSONPoint
     {

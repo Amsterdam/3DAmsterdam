@@ -13,9 +13,9 @@ namespace Netherlands3D.Traffic.VISSIM
         [SerializeField] private BinaryMeshLayer meshLayer;
 
         private Vector3 cameraStartPosition;
-        public float timeCounter;
-        public int loopCounter = 0;
-        public int loopCounterFuture = 0;
+        private float timeCounter;
+        private int loopCounter = 0;
+        private int loopCounterFuture = 0;
 
         // Start is called before the first frame update
         void Start()
@@ -42,7 +42,6 @@ namespace Netherlands3D.Traffic.VISSIM
         /// <param name="dataList"></param>
         public void SendCommand(List<VissimData> dataList)
         {
-
             if (Time.time > timeCounter)
             {
                 timeCounter = Time.time + fileConverter.timeBetweenFrames; // runs the simulation at the imported simspeed

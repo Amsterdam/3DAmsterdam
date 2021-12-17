@@ -139,6 +139,7 @@ namespace Netherlands3D.LayerSystem
 				}
 			}
 		}
+
 		public void EnableShadows(bool enabled)
 		{
 			tileShadowCastingMode = (enabled) ? ShadowCastingMode.On : ShadowCastingMode.Off;
