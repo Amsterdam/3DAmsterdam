@@ -24,6 +24,8 @@ public class SendFeedback : MonoBehaviour
     [SerializeField]
     private GameObject successPopup;
     [SerializeField]
+    private GameObject failurePopup;
+    [SerializeField]
     private GameObject submitFeedbackForm;
     [SerializeField]
     private Button sendButton;
@@ -88,6 +90,7 @@ public class SendFeedback : MonoBehaviour
             yield return uwr.SendWebRequest();
             if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
+                failurePopup.SetActive(true);
                 Debug.LogError(uwr.error);
             }
             else
