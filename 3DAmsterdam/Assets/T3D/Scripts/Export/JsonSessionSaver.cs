@@ -66,6 +66,11 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
     }
 
+    public string GetJsonSaveData()
+    {
+        return rootObject.ToString();
+    }
+
     public void ExportSaveData(string sessionId)
     {
         //todo: why does rootObject.ToString() not work before building is loaded? Find the issue and remove try/catch
@@ -79,13 +84,14 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             return;
         }
 
-        Debug.Log("Saving data: " + rootObject.ToString());
-        PlayerPrefs.SetString(sessionId, rootObject.ToString());
+        string saveData = GetJsonSaveData();
+        Debug.Log("Saving data: " + saveData);
+        PlayerPrefs.SetString(sessionId, saveData);
 
         if (uploadCoroutine == null)
         {
             print("making new coroutine");
-            uploadCoroutine = StartCoroutine(UploadData(sessionId.ToString(), rootObject.ToString()));
+            uploadCoroutine = StartCoroutine(UploadData(sessionId, saveData));
         }
         else
         {
