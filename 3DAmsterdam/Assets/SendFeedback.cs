@@ -81,7 +81,6 @@ public class SendFeedback : MonoBehaviour
     private IEnumerator UploadData(string name, string data)
     {
         var uwr = UnityWebRequest.Put(uploadURL + name, data);
-        uwr.method = "POST";
         uwr.SetRequestHeader("Content-Type", "application/json");
 
         print(uploadURL + name);
