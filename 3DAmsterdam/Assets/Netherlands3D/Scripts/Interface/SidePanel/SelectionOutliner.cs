@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Netherlands3D.LayerSystem;
+using Netherlands3D.TileSystem;
 using Netherlands3D.ObjectInteraction;
 
 namespace Netherlands3D.Interface.SidePanel
@@ -40,12 +40,7 @@ namespace Netherlands3D.Interface.SidePanel
 
 		public void Select()
 		{
-			var selectByID = linkedGameObject.GetComponent<SelectByID>();
-			if (selectByID)
-			{
-				selectByID.ShowBAGDataForSelectedID(Id);
-				return;
-			}
+			//Todo. Send select event with ID
 		}
 
 		public void Close()

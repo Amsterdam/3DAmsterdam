@@ -50,13 +50,13 @@ MonoBehaviour:
   Datasets:
   - Description: LOD1.2
     lod: 0
-    path: buildings1.0/buildings_{x}_{y}.1.2.bin
+    path: https://acc.3d.amsterdam.nl/web/data/develop/binary2/buildings1.0/buildings_{x}_{y}.1.2.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: LOD2.2
     lod: 1
-    path: buildings1.0/buildings_{x}_{y}.2.2.bin
+    path: https://acc.3d.amsterdam.nl/web/data/develop/binary2/buildings1.0/buildings_{x}_{y}.2.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -84,10 +84,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a36ec2281451429489ac7d4554862642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contextMenuState: 1
-  blockMouseSelectionInteractions: 0
-  blockMouseNavigationInteractions: 1
-  blockKeyboardNavigationInteractions: 0
   clickCheckLayerMask:
     serializedVersion: 2
     m_Bits: 256

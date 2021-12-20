@@ -39,7 +39,7 @@ namespace Netherlands3D.Interface.Minimap
 		private void DrawCameraFrustumOnMap()
 		{
 			//Get corners
-			var cameraCorners = CameraModeChanger.Instance.CurrentCameraExtends.GetWorldSpaceCorners();
+			var cameraCorners = Camera.main.GetWorldSpaceCorners();
 
 			if (cameraCorners != null)
 			{

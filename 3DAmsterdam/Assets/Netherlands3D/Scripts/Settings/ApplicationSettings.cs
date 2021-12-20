@@ -5,7 +5,7 @@ using Netherlands3D.Interface.Layers;
 using Netherlands3D.Interface.Minimap;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.JavascriptConnection;
-using Netherlands3D.LayerSystem;
+using Netherlands3D.TileSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;

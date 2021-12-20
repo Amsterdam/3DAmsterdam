@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
 		private string selectedExportFormat = "";
 
 		[SerializeField]
-		List<LayerSystem.Layer> selectableLayers;
+		List<TileSystem.Layer> selectableLayers;
 
 		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
 
@@ -99,7 +99,7 @@ namespace Netherlands3D.Interface
 
 			PropertiesPanel.Instance.AddActionButtonBig("Downloaden", (action) =>
 			{
-				List<LayerSystem.Layer> selectedLayers = new List<LayerSystem.Layer>();
+				List<TileSystem.Layer> selectedLayers = new List<TileSystem.Layer>();
 				for (int i = 0; i < selectableLayers.Count; i++)
 				{
 					if (exportLayerToggles[i])
