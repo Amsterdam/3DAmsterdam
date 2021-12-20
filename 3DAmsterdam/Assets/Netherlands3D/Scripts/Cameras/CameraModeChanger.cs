@@ -1,9 +1,8 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using System.Runtime.InteropServices;
 using UnityEngine;
-
 
 namespace Netherlands3D.Cameras
 {

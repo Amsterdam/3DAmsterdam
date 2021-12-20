@@ -10,6 +10,7 @@ using Netherlands3D.Interface.Selection;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Logging;
+using Netherlands3D.Core;
 
 namespace Netherlands3D.LayerSystem
 {
@@ -329,8 +330,8 @@ namespace Netherlands3D.LayerSystem
 
         IEnumerator GetAllIDsInBoundingBoxRange(Vector3 min, Vector3 max, System.Action<List<string>> callback = null)
         {
-            var wgsMin = ConvertCoordinates.CoordConvert.UnitytoRD(min);
-            var wgsMax = ConvertCoordinates.CoordConvert.UnitytoRD(max);
+            var wgsMin = CoordConvert.UnitytoRD(min);
+            var wgsMax = CoordConvert.UnitytoRD(max);
 
             List<string> ids = new List<string>();
             string url = Config.activeConfiguration.bagIdRequestServiceBoundingBoxUrl;
@@ -377,7 +378,7 @@ namespace Netherlands3D.LayerSystem
             for (int i = 0; i < points.Length; i++)
             {
                 //convert Unity to WGS84
-                var coordinate = ConvertCoordinates.CoordConvert.UnitytoRD(points[i]);
+                var coordinate = CoordConvert.UnitytoRD(points[i]);
                 if (i != 0) coordinates += ",";
                 coordinates += coordinate.x.ToString(CultureInfo.InvariantCulture) + " " + coordinate.y.ToString(CultureInfo.InvariantCulture);
             }

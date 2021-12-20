@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
 using UnityEngine.Networking;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 public class ObjLoad : MonoBehaviour
 {

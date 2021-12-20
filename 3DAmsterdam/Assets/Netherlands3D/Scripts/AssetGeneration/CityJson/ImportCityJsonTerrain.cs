@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using SimpleJSON;
 using System.Threading;
 using System.Linq;

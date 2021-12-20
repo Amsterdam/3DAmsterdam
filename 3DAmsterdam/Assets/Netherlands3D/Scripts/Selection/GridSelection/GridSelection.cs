@@ -10,7 +10,7 @@ using Netherlands3D.Interface.SidePanel;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 namespace Netherlands3D.Interface
 {

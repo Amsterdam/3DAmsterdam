@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using System.IO;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 namespace Netherlands3D.AssetGeneration.CityJSON
 {

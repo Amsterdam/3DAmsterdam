@@ -15,6 +15,7 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
+using Netherlands3D.Core;
 using Netherlands3D.Events;
 using Netherlands3D.Utilities;
 using System;
@@ -103,7 +104,7 @@ namespace Amsterdam3D.Maps
                         case GeoJSON.GeoJSONGeometryType.Point:
                             if (!geoJsonURLData.drawPointEvent) continue;
                             double[] location = geoJSON.GetGeometryPoint2DDouble();
-                            var unityCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(location[0], location[1]);
+                            var unityCoordinates = CoordConvert.WGS84toUnity(location[0], location[1]);
 
                             geoJsonURLData.drawPointEvent.started?.Invoke(unityCoordinates);
                             break;
@@ -114,7 +115,7 @@ namespace Amsterdam3D.Maps
                             List<Vector3> unityLine = new List<Vector3>();
                             for (int i = 0; i < line.Count; i++)
                             {
-                                unityLine.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(line[i].x, line[i].y));
+                                unityLine.Add(CoordConvert.WGS84toUnity(line[i].x, line[i].y));
                             }
                             geoJsonURLData.drawLineEvent.started?.Invoke(unityLine);
                             break;
@@ -151,7 +152,7 @@ namespace Amsterdam3D.Maps
                 IList<Vector3> polyList = new List<Vector3>();
 				for (int j = 0; j < contour.Count; j++)
 				{
-                    polyList.Add(ConvertCoordinates.CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
+                    polyList.Add(CoordConvert.WGS84toUnity(contour[j].x, contour[j].y));
 				}
 				unityPolygon.Add(polyList);
 			}

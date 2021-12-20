@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Netherlands3D.LayerSystem;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 public class TestMeshClipper : MonoBehaviour
 {

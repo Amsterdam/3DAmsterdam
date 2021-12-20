@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 //using Terrain.Tiles;
 using System.IO;
 using System;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 using UnityEditor;
 

@@ -16,7 +16,7 @@
 *  permissions and limitations under the License.
 */
 using Amsterdam3D.Sewerage;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.BAG;
 using System.Collections;
 using System.Collections.Generic;

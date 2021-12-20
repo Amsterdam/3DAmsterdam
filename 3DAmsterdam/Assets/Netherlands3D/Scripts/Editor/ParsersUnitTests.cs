@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
 using UnityEngine.TestTools;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System;
 using System.Linq;
 using Netherlands3D;

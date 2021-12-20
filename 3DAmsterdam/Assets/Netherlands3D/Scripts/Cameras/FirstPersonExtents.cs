@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 
 namespace Netherlands3D.Cameras
 {

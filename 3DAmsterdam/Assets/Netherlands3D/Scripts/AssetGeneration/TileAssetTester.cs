@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 using System.Linq;
 using UnityEditor;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System;
 using Netherlands3D;
 
