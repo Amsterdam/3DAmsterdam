@@ -23,7 +23,6 @@ public class HardwareInfo : MonoBehaviour
     string GetHardwareInfo()
     {
         return SystemInfo.operatingSystem
-            + "\n" + browserInfo
-            + "\n" + DateTime.Now.ToString();
+            + "\n" + browserInfo.Value;
     }
 }

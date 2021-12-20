@@ -63,7 +63,6 @@ public class SendFeedback : MonoBehaviour
     public void ExportSaveData(string fileName)
     {
         string saveData = JsonSessionSaver.Instance.GetJsonSaveData();
-
         Debug.Log("Saving data: " + saveData);
 
         if (uploadCoroutine == null)
@@ -79,7 +78,10 @@ public class SendFeedback : MonoBehaviour
 
     private IEnumerator UploadData(string name, string data)
     {
-        var uwr = UnityWebRequest.Post(uploadURL + name, data);
+        var uwr = UnityWebRequest.Put(uploadURL + name, data);
+        uwr.method = "POST";
+        uwr.SetRequestHeader("Content-Type", "application/json");
+
         print(uploadURL + name);
         using (uwr)
         {
