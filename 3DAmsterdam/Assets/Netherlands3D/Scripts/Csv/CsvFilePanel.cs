@@ -49,6 +49,9 @@ public class CsvFilePanel : MonoBehaviour
     }
     public void LoadCsvFromFile(string filename)
     {
+        if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
+            return;
+
         var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
         File.Delete(filename);
         ParseCsv(csv);
