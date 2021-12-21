@@ -1,4 +1,6 @@
-﻿using Netherlands3D.Interface.Layers;
+﻿using Netherlands3D.Events;
+using Netherlands3D.Interface.Layers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +9,9 @@ namespace Netherlands3D.Interface
 {
     public class PlaceCustomObject : MonoBehaviour
     {
+        [SerializeField]
+        private ObjectEvent placeObjectEvent;
+
         [SerializeField]
         private GameObject customObject;
 
@@ -27,15 +32,25 @@ namespace Netherlands3D.Interface
 
 		private void Start()
         {
+            if (placeObjectEvent)
+                placeObjectEvent.started.AddListener(ObjectPlaced);
+
             pointer = FindObjectOfType<Pointer>();
             layers = FindObjectOfType<InterfaceLayers>();
         }
 
-        /// <summary>
-        /// Move existing GameObject to the pointer and create a linked interface layer
-        /// </summary>
-        /// <param name="existingGameobject">Reference to existing GameObject</param>
-        public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
+		public void ObjectPlaced(UnityEngine.Object placedObject)
+		{
+            GameObject placedObjectForLayer = (GameObject)placedObject;
+            pointer.WorldPosition = placedObjectForLayer.transform.position;
+            PlaceExistingObjectAtPointer(placedObjectForLayer);
+        }
+
+		/// <summary>
+		/// Move existing GameObject to the pointer and create a linked interface layer
+		/// </summary>
+		/// <param name="existingGameobject">Reference to existing GameObject</param>
+		public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
             existingGameobject.transform.position = pointer.WorldPosition;
             layers.AddNewCustomObjectLayer(existingGameobject, layerType);
         }
