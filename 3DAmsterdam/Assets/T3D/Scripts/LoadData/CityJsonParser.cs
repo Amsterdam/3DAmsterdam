@@ -4,6 +4,8 @@ using UnityEngine;
 using SimpleJSON;
 using System.IO;
 using ConvertCoordinates;
+using Netherlands3D.T3D.Uitbouw;
+using System.Linq;
 
 namespace T3D.LoadData
 {
@@ -35,21 +37,11 @@ namespace T3D.LoadData
 		private Vector3Double transformOffset;
 
 		public Vector3Double TransformOffset { get => transformOffset; }
-
-		public CityJsonModel(string filepath, string filename = "", bool applyTransformScale = true, bool applyTransformOffset = true)
-		{
-			string jsonstring = File.ReadAllText(filepath + filename);
-			GetCityModel(jsonstring, filepath);
-		}
-
+		/// <summary>
+		/// The constructor loads the vertices and applies the scale and translate parameters and converts from RD/WGS84 to Unity
+		/// </summary>
+		/// <param name="jsonstring">The cityjson string</param>
 		public CityJsonModel(string jsonstring)
-		{
-
-			GetCityModel(jsonstring, "");
-		}
-
-
-		public void GetCityModel(string jsonstring, string filepath)
 		{
 
 			cityjsonNode = JSON.Parse(jsonstring);
@@ -71,6 +63,32 @@ namespace T3D.LoadData
 				   cityjsonNode["transform"]["translate"][2].AsDouble
 			) : new Vector3Double(0, 0, 0);
 
+
+			var vertarray = cityjsonNode["vertices"].Linq;
+
+			//var maxx = vertarray.Where(o=> o.Value[0].AsDouble > 0).Max(o => o.Value[0].AsDouble);
+			//var maxy = vertarray.Where(o => o.Value[1].AsDouble > 0).Max(o => o.Value[1].AsDouble);
+			//var maxz = vertarray.Where(o => o.Value[2].AsDouble > 0).Max(o => o.Value[2].AsDouble);
+
+			//var minx = vertarray.Where(o => o.Value[0].AsDouble > 0).Min(o => o.Value[0].AsDouble);
+			//var miny = vertarray.Where(o => o.Value[1].AsDouble > 0).Min(o => o.Value[1].AsDouble);
+			//var minz = vertarray.Where(o => o.Value[2].AsDouble > 0).Min(o => o.Value[2].AsDouble);
+
+			var negativeX = vertarray.Where(o => o.Value[0].AsDouble < 0).Count();
+			var positiveX = vertarray.Where(o => o.Value[0].AsDouble > 0).Count();
+
+			var negativeY = vertarray.Where(o => o.Value[1].AsDouble < 0).Count();
+			var positiveY = vertarray.Where(o => o.Value[1].AsDouble > 0).Count();
+
+			//Debug.Log($"x: {minx} - {maxx}");
+			//Debug.Log($"y: {miny} - {maxy}");
+			//Debug.Log($"z: {minz} - {maxz}");
+
+			Debug.Log($"negX: {negativeX} posX {positiveX}");
+			Debug.Log($"negY: {negativeY} posY {positiveY}");
+
+
+
 			//now load all the vertices with the scaler and offset applied
 			foreach (JSONNode node in cityjsonNode["vertices"])
 			{
@@ -80,7 +98,7 @@ namespace T3D.LoadData
 						node[2].AsDouble * transformScale.z + transformOffset.z
 				);
 
-				if (CoordConvert.RDIsValid(rd))
+				if (IsValidRD(rd))
 				{
 					var unityCoordinates = CoordConvert.RDtoUnity(rd);
 					var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
@@ -90,7 +108,7 @@ namespace T3D.LoadData
                 {
 					Vector3WGS wgs = new Vector3WGS(rd.x, rd.y, rd.z);
 
-                    if (CoordConvert.WGS84IsValid(wgs))
+                    if (IsValidWGS84(wgs))
                     {
 						var unityCoordinates = CoordConvert.WGS84toUnity(wgs);
 						var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.z, unityCoordinates.y);
@@ -98,7 +116,11 @@ namespace T3D.LoadData
 					}
                     else
                     {
-						var vertCoordinates = new Vector3Double(rd.x, rd.z, rd.y);
+						var pos = MetadataLoader.Instance.PositionRD;
+						var posRd = new Vector3RD(pos.x + rd.x, pos.y + rd.y, pos.z + rd.z);
+
+						var unityCoordinates = CoordConvert.RDtoUnity(posRd);
+						var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.y, unityCoordinates.z);
 						vertices.Add(vertCoordinates);
 					}
 
@@ -115,7 +137,7 @@ namespace T3D.LoadData
 			foreach (JSONNode node in cityjsonNode["appearance"]["textures"])
 			{
 				Surfacetexture texture = new Surfacetexture();
-				texture.path = filepath + node["image"];
+				texture.path = node["image"];
 				texture.wrapmode = node["wrapMode"];
 				Textures.Add(texture);
 			}
@@ -490,6 +512,30 @@ namespace T3D.LoadData
 			}
 
 			return result;
+		}
+
+		public static bool IsValidRD(Vector3RD coordinaat)
+		{
+			if (coordinaat.x > 7000 && coordinaat.x < 300000)
+			{
+				if (coordinaat.y > 289000 && coordinaat.y < 629000)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public static bool IsValidWGS84(Vector3WGS coordinaat)
+		{
+			if (coordinaat.lon > 3.29804 && coordinaat.lon < 7.57893)				
+			{
+				if (coordinaat.lat > 50.57222 && coordinaat.lat < 53.62702)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 

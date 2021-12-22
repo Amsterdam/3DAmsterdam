@@ -14,19 +14,6 @@ public class CityJsonVisualiser : MonoBehaviour
 {
     public Material MeshMaterial;
 
-    public double minx;
-    public double miny;
-    public double minz;
-
-    public double maxx;
-    public double maxy;
-    public double maxz;
-
-
-    public double centerx;
-    public double centery;
-    public double centerz;
-
     void Start()
     {
         Netherlands3D.T3D.Uitbouw.MetadataLoader.Instance.BimCityJsonReceived += OnBimCityJsonReceived;
@@ -37,7 +24,7 @@ public class CityJsonVisualiser : MonoBehaviour
         UnitySystemConsoleRedirector.Redirect();
 
         var cityJsonModel = new CityJsonModel(cityJson);
-        var meshmaker = new CreateMeshFromCityJson();
+        var meshmaker = new CityJsonMeshUtility();
         
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {

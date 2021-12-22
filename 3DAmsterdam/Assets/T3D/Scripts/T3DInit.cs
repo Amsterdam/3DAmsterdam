@@ -64,6 +64,7 @@ public class T3DInit : MonoBehaviour
         //bagId.SetValue("0344100000021804");
         //bagId.SetValue("0344100000052214");
 
+        MetadataLoader.Instance.PositionRD = pos;
         MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
 
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
@@ -85,6 +86,8 @@ public class T3DInit : MonoBehaviour
 
         cameraPosition.SetValue(rd);
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
+
+        MetadataLoader.Instance.PositionRD = rd;
 
         MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");                
         MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
