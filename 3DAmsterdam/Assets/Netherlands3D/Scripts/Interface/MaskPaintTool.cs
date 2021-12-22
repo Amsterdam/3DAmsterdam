@@ -26,6 +26,7 @@ namespace Netherlands3D.Interface.Tools
         {
             HelpMessage.Instance.Show(helpMessage);
 
+            gridSelection.onGridSelected.RemoveAllListeners();
             gridSelection.StartSelection(maskBlockMaterial);
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
             gridSelection.onToolDisabled.AddListener(ToolWasDisabled);
@@ -41,8 +42,6 @@ namespace Netherlands3D.Interface.Tools
 		{
             gridSelection.onGridSelected.RemoveListener(SelectedMaskBounds);
             gridSelection.onToolDisabled.RemoveListener(ToolWasDisabled);
-
-            gridSelection.gameObject.SetActive(false);
         }
 
 		private void SelectedMaskBounds(Bounds bounds)
@@ -52,8 +51,6 @@ namespace Netherlands3D.Interface.Tools
 
             maskLayer.ToggleLinkedObject(true);
             maskLayer.ExpandLayerOptions(true);
-
-            gridSelection.gameObject.SetActive(false);
         }
     }
 }
