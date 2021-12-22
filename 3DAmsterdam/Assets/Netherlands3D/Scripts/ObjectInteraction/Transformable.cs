@@ -46,6 +46,10 @@ namespace Netherlands3D.ObjectInteraction
 
 		private void Awake()
 		{
+			//Make sure this object has a collider
+			if (!gameObject.GetComponent<MeshCollider>())
+				gameObject.AddComponent<MeshCollider>();
+
 			//Make sure our transformable still allows moving around, but blocks clicks/selects untill we place it
 			blockMouseSelectionInteractions = true;
 			blockKeyboardNavigationInteractions = false;

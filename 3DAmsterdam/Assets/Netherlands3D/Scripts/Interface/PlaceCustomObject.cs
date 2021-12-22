@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Events;
 using Netherlands3D.Interface.Layers;
+using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,9 +10,6 @@ namespace Netherlands3D.Interface
 {
     public class PlaceCustomObject : MonoBehaviour
     {
-        [SerializeField]
-        private ObjectEvent placeObjectEvent;
-
         [SerializeField]
         private GameObject customObject;
 
@@ -28,13 +26,15 @@ namespace Netherlands3D.Interface
         [Tooltip("Leave empty to place object in root")]
         private Transform targetParent;
 
-		public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
+        [SerializeField]
+        private bool makeTransformable = false;
+        [SerializeField]
+        private bool startStuckToMouse = false;
+
+        public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
 
 		private void Start()
         {
-            if (placeObjectEvent)
-                placeObjectEvent.started.AddListener(ObjectPlaced);
-
             pointer = FindObjectOfType<Pointer>();
             layers = FindObjectOfType<InterfaceLayers>();
         }
@@ -44,6 +44,11 @@ namespace Netherlands3D.Interface
             GameObject placedObjectForLayer = (GameObject)placedObject;
             pointer.WorldPosition = placedObjectForLayer.transform.position;
             PlaceExistingObjectAtPointer(placedObjectForLayer);
+
+            if (!makeTransformable) return;
+
+            var transformable = placedObjectForLayer.AddComponent<Transformable>();
+            transformable.stickToMouse = startStuckToMouse;
         }
 
 		/// <summary>
