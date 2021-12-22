@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 
 public class BinaryMeshConversion : MonoBehaviour
 {
@@ -223,7 +224,12 @@ public class BinaryMeshConversion : MonoBehaviour
                     subMeshDescriptor.indexStart = subMeshFirstIndex;
                     subMeshDescriptor.indexCount = subMeshIndexCount;
 
-                    mesh.SetSubMesh(subMeshID, subMeshDescriptor);
+                    MeshUpdateFlags flags = MeshUpdateFlags.DontNotifyMeshUsers
+                                          | MeshUpdateFlags.DontRecalculateBounds
+                                          | MeshUpdateFlags.DontResetBoneBounds
+                                          | MeshUpdateFlags.DontValidateIndices;
+
+                    mesh.SetSubMesh(subMeshID, subMeshDescriptor, flags);
                 }
                 submeshMaterialIndices = materialIndices;
 
