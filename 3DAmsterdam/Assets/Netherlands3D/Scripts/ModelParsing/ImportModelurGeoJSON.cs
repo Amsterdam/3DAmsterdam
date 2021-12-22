@@ -26,10 +26,16 @@ public class ImportModelurGeoJSON : MonoBehaviour
 	[SerializeField]
 	private Vector3Event onCentroidCalculated;
 
+	[SerializeField]
+	private ObjectEvent onObjectReady;
+
 	private List<Dictionary<string, object>> propertyList = new List<Dictionary<string, object>>();
 
 	[SerializeField]
 	private float storeyDividerHeight = 0.2f;
+
+	[SerializeField]
+	private bool combineIntoOneMesh = true;
 
 	private void Awake()
 	{
@@ -69,6 +75,8 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		GeoJSON geojson = new GeoJSON(json);
 		float objectIndex = 0;
 
+		var newParent = new GameObject();
+		newParent.name = "";
 		Vector3 centroid = Vector3.zero;
 		int amountOfPoints = 0;
 		while (geojson.GotoNextFeature())
@@ -80,6 +88,11 @@ public class ImportModelurGeoJSON : MonoBehaviour
 			propertyList.Add(properties);
 
 			//Determine our storeys + height
+			if(newParent.name == ""){
+				var projectName = geojson.GetPropertyStringValue("#LayerName");
+				newParent.name = projectName;
+			}
+
 			var buildingHeight = geojson.GetPropertyFloatValue("Building_Height");
 			var numberOfStoreys = geojson.GetPropertyFloatValue("Number_of_Storeys");
 			var groundOffset  = geojson.GetPropertyFloatValue("Ground_to_Sea_Elevation"); 
@@ -95,14 +108,29 @@ public class ImportModelurGeoJSON : MonoBehaviour
 				{
 					DrawStorey(ref centroid, ref amountOfPoints, groundOffset, storeyHeight, i, polygon);
 				}
-			}	
+			}
 		}
 
 		centroid /= amountOfPoints;
 		centroid.y = 0;
 		onCentroidCalculated.started.Invoke(centroid);
 
+		//Collect this building
+		newParent.transform.position = centroid;
+		var children = GetComponentsInChildren<Transform>();
+		foreach (Transform child in children)
+		{
+			if (child != this.transform)
+				child.SetParent(newParent.transform);
+		}
+
+		if(combineIntoOneMesh)
+		{
+			CombineIntoOne(newParent);
+		}
+
 		onDoneParsing.started.Invoke(true);
+		onObjectReady.started.Invoke(newParent);
 	}
 
 	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
@@ -130,5 +158,39 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		}
 
 		OnStoreyDividerParsed.started.Invoke(polyList);
+	}
+
+	private void CombineIntoOne(GameObject target){
+		MeshFilter[] meshFilters = target.GetComponentsInChildren<MeshFilter>();
+		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+		List<Material> childMaterials = new List<Material>();
+
+		int i = 0;
+		while (i < meshFilters.Length)
+		{
+			combine[i].mesh = meshFilters[i].sharedMesh;
+			combine[i].transform = target.transform.worldToLocalMatrix * meshFilters[i].transform.localToWorldMatrix;
+
+			childMaterials.AddRange(meshFilters[i].gameObject.GetComponent<MeshRenderer>().sharedMaterials);
+
+			i++;
+		}
+
+		List<Material> uniqueMaterials = childMaterials.Distinct().ToList();
+
+		var meshFilter = target.AddComponent<MeshFilter>();
+		var meshRenderer = target.AddComponent<MeshRenderer>();
+		meshRenderer.materials = uniqueMaterials.ToArray();
+		var newMesh = new Mesh();
+		newMesh.CombineMeshes(combine,false,false,false);
+		meshFilter.mesh = newMesh;
+
+		//Cleanup
+		for (int j = meshFilters.Length - 1; j >= 0; j--)
+		{
+			Destroy(meshFilters[j].sharedMesh);
+			Destroy(meshFilters[j].gameObject);
+		}
 	}
 }
