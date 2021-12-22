@@ -1,4 +1,5 @@
 using Netherlands3D.Events;
+using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -128,9 +129,27 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		{
 			CombineIntoOne(newParent);
 		}
+		else{
+			MaterialsToRoot(newParent);
+		}
 
 		onDoneParsing.started.Invoke(true);
 		onObjectReady.started.Invoke(newParent);
+	}
+
+	private void MaterialsToRoot(GameObject target)
+	{
+		MeshRenderer[] renderers = target.GetComponentsInChildren<MeshRenderer>();
+		List<Material> uniqueMaterials = new List<Material>();
+
+		foreach (var renderer in renderers)
+		{
+			uniqueMaterials.AddRange(renderer.sharedMaterials);
+		}
+
+		uniqueMaterials  = uniqueMaterials.Distinct().ToList();
+
+		target.AddComponent<MeshRenderer>().materials = uniqueMaterials.ToArray();
 	}
 
 	private void DrawStorey(ref Vector3 centroid, ref int amountOfPoints, float groundOffset, float storeyHeight, int i, List<GeoJSONPoint> polygon)
@@ -183,7 +202,7 @@ public class ImportModelurGeoJSON : MonoBehaviour
 		var meshRenderer = target.AddComponent<MeshRenderer>();
 		meshRenderer.materials = uniqueMaterials.ToArray();
 		var newMesh = new Mesh();
-		newMesh.CombineMeshes(combine,false,false,false);
+		newMesh.CombineMeshes(combine);
 		meshFilter.mesh = newMesh;
 
 		//Cleanup
