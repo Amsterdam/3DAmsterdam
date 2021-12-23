@@ -9,12 +9,13 @@ public class T3DInit : MonoBehaviour
 {
     private string cameraPositionKey;
     private SaveableVector3RD cameraPosition;
+
     private string bagIdKey;
     private SaveableString bagId;
+    public string BagId => bagId.Value;
+
     private string uploadedModelKey;
     private SaveableBool uploadedModel;
-
-    public string BagId => bagId.Value;
     public bool UploadedModel => uploadedModel.Value;
 
     private string bimModelIdKey;
@@ -24,6 +25,10 @@ public class T3DInit : MonoBehaviour
     private string bimModelVersionIdKey;
     public SaveableString bimModelVersionId;
     public string BimModelVersionId => bimModelVersionId.Value;
+
+    private string isUserFeedbackKey;
+    private SaveableBool isUserFeedback;
+    public bool IsUserFeedback => isUserFeedback.Value;
 
     public static T3DInit Instance;
 
@@ -52,6 +57,9 @@ public class T3DInit : MonoBehaviour
 
         bimModelVersionIdKey = GetType().ToString() + ".bimModelVersionId";// + nameof(bagId);
         bimModelVersionId = new SaveableString(bimModelVersionIdKey);
+
+        isUserFeedbackKey = GetType().ToString() + ".isUserFeedback";// + nameof(bagId);
+        isUserFeedback = new SaveableBool(isUserFeedbackKey);
     }
 
     void Start()
@@ -120,6 +128,7 @@ public class T3DInit : MonoBehaviour
         uploadedModel.SetValue(Application.absoluteURL.GetUrlParamBool("hasfile"));
         bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelId"));
         bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionId"));
+        isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isUserFeedback"));
 
         GotoPosition(rd);
         MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);

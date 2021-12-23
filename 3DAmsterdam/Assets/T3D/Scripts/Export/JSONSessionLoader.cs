@@ -7,7 +7,7 @@ using System;
 
 public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
-    private bool getUserFeedback = false;
+    //private bool getUserFeedback = T3DInit.;
 
     private JSONNode rootObject;// = new JSONObject();
     const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
@@ -57,7 +57,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
-        string url = getUserFeedback ? feedbackURL : downloadURL;
+        string url = T3DInit.Instance.IsUserFeedback ? feedbackURL : downloadURL;
         var uwr = UnityWebRequest.Get(url + name);
         print(url + name);
 
