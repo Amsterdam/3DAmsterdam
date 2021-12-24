@@ -6,6 +6,7 @@ using System.IO;
 using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using System.Linq;
+using System;
 
 namespace T3D.LoadData
 {
@@ -66,28 +67,24 @@ namespace T3D.LoadData
 
 			var vertarray = cityjsonNode["vertices"].Linq;
 
-			//var maxx = vertarray.Where(o=> o.Value[0].AsDouble > 0).Max(o => o.Value[0].AsDouble);
-			//var maxy = vertarray.Where(o => o.Value[1].AsDouble > 0).Max(o => o.Value[1].AsDouble);
-			//var maxz = vertarray.Where(o => o.Value[2].AsDouble > 0).Max(o => o.Value[2].AsDouble);
+			var minx = vertarray.Min(o => o.Value[0].AsDouble);
+			var miny = vertarray.Min(o => o.Value[1].AsDouble);
+			var minz = vertarray.Min(o => o.Value[2].AsDouble);
 
-			//var minx = vertarray.Where(o => o.Value[0].AsDouble > 0).Min(o => o.Value[0].AsDouble);
-			//var miny = vertarray.Where(o => o.Value[1].AsDouble > 0).Min(o => o.Value[1].AsDouble);
-			//var minz = vertarray.Where(o => o.Value[2].AsDouble > 0).Min(o => o.Value[2].AsDouble);
+			var maxx = vertarray.Max(o => o.Value[0].AsDouble);
+			var maxy = vertarray.Max(o => o.Value[1].AsDouble);
+			var maxz = vertarray.Max(o => o.Value[2].AsDouble);
 
-			var negativeX = vertarray.Where(o => o.Value[0].AsDouble < 0).Count();
-			var positiveX = vertarray.Where(o => o.Value[0].AsDouble > 0).Count();
+			if ((maxx - minx > 500) || (maxy - miny > 500)) throw new Exception("Distance between vertices too large.. ");
 
-			var negativeY = vertarray.Where(o => o.Value[1].AsDouble < 0).Count();
-			var positiveY = vertarray.Where(o => o.Value[1].AsDouble > 0).Count();
+			var centerx = minx + ((maxx - minx) / 2);
+			var centery = miny + ((maxy - miny) / 2);
+
+
 
 			//Debug.Log($"x: {minx} - {maxx}");
 			//Debug.Log($"y: {miny} - {maxy}");
 			//Debug.Log($"z: {minz} - {maxz}");
-
-			Debug.Log($"negX: {negativeX} posX {positiveX}");
-			Debug.Log($"negY: {negativeY} posY {positiveY}");
-
-
 
 			//now load all the vertices with the scaler and offset applied
 			foreach (JSONNode node in cityjsonNode["vertices"])
@@ -117,7 +114,7 @@ namespace T3D.LoadData
                     else
                     {
 						var pos = MetadataLoader.Instance.PositionRD;
-						var posRd = new Vector3RD(pos.x + rd.x, pos.y + rd.y, pos.z + rd.z);
+						var posRd = new Vector3RD(pos.x + rd.x - centerx, pos.y + rd.y - centery, pos.z + rd.z);
 
 						var unityCoordinates = CoordConvert.RDtoUnity(posRd);
 						var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.y, unityCoordinates.z);

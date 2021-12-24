@@ -437,8 +437,8 @@ namespace Netherlands3D.T3D.Uitbouw
             yield return null;
 
             //var filepath = @"F:\T3D\CityJson stuff\data\15ad2866-8d14-44e1-8b2e-2a18275134b6.json";
-            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
-            var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Bestaand - Nieuw.json";
+            var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
+            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Bestaand - Nieuw.json";
 
             //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
             //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";

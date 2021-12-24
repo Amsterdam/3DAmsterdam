@@ -36,6 +36,7 @@ public class CityJsonMeshUtility
             combineInstanceArray[i].transform = transform.localToWorldMatrix;
         }
         Mesh mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.CombineMeshes(combineInstanceArray);
         mesh.RecalculateNormals();
         return mesh;
