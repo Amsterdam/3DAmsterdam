@@ -30,7 +30,7 @@ public class T3DInit : MonoBehaviour
     private SaveableBool isUserFeedback;
     public bool IsUserFeedback => isUserFeedback.Value;
 
-    public bool IsEditMode { get { return false; } }
+    public bool IsEditMode { get; private set; } = true;
 
     public static T3DInit Instance;
 
@@ -130,6 +130,7 @@ public class T3DInit : MonoBehaviour
         bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelId"));
         bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionId"));
         isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isUserFeedback"));
+        IsEditMode = Application.absoluteURL.GetUrlParamBool("IsEditMode");
 
         GotoPosition(rd);
         MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
