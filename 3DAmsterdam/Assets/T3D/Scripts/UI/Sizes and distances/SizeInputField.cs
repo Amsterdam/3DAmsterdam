@@ -39,7 +39,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
-            inputField.interactable = T3DInit.Instance.IsEditMode;
+            // inputfields are disabled in upload mode, so put this in an if statement
+            if (inputField)
+            {
+                inputField.interactable = T3DInit.Instance.IsEditMode;
+            }
 
             value = new SaveableFloat(valueKey);
 
