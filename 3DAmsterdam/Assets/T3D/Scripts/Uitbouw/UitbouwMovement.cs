@@ -21,8 +21,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
+            AllowDrag = AllowDrag && T3DInit.Instance.IsEditMode;
+
             InitializeUserMovementAxes();
-            SetAllowMovement(true);
+            SetAllowMovement(AllowDrag);
         }
 
         void InitializeUserMovementAxes()
@@ -98,7 +100,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public virtual void SetAllowMovement(bool allowed)
         {
-            AllowDrag = allowed;
+            AllowDrag = allowed && T3DInit.Instance.IsEditMode;
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed;
             userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);

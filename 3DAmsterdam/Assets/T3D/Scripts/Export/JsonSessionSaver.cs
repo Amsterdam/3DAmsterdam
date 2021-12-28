@@ -28,7 +28,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
 
     public void EnableAutoSave(bool enable)
     {
-        autoSaveEnabled = enable;
+        autoSaveEnabled = enable && T3DInit.Instance.IsEditMode;
         if (enable)
             StartCoroutine(AutoSaveTimer());
     }

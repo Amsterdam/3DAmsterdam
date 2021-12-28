@@ -30,12 +30,13 @@ public class T3DInit : MonoBehaviour
     private SaveableBool isUserFeedback;
     public bool IsUserFeedback => isUserFeedback.Value;
 
+    public bool IsEditMode { get { return false; } }
+
     public static T3DInit Instance;
 
     private void Awake()
     {
         Instance = this;
-
         InitializeSaveableVariables();
     }
 

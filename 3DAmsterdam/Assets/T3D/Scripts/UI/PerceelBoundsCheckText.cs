@@ -17,7 +17,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var perceelBoundsRestriction = RestrictionChecker.ActiveRestrictions[UitbouwRestrictionType.PerceelBounds];
             var inPerceelBounds = perceelBoundsRestriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
 
-            Volgende.interactable = inPerceelBounds;
+            Volgende.interactable = inPerceelBounds && T3DInit.Instance.IsEditMode;
 
             SetUitbouwText(inPerceelBounds);
         }
