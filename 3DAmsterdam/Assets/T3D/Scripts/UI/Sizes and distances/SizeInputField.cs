@@ -39,6 +39,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Start()
         {
+            inputField.interactable = T3DInit.Instance.IsEditMode;
+
             value = new SaveableFloat(valueKey);
 
             shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;

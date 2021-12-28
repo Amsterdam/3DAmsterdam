@@ -12,6 +12,12 @@ public class SaveFeedback : MonoBehaviour
     [SerializeField]
     private Image busyImage;
 
+    private void Start()
+    {
+        if (!T3DInit.Instance.IsEditMode)
+            gameObject.SetActive(false);
+    }
+
     public void SetSaveStatus(SaveStatus status)
     {
         switch (status)
