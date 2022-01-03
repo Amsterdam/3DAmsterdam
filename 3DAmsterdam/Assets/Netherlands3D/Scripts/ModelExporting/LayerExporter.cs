@@ -34,13 +34,14 @@ namespace Netherlands3D.Interface
 			HelpMessage.Instance.Show(helpMessage);
 			//Make sure you only subscribe once
 			gridSelection.StartSelection(downloadBlockMaterial);
+
+			gridSelection.onGridSelected.RemoveAllListeners();
 			gridSelection.onGridSelected.AddListener(SetBounds);
 		}
 
 		private void OnDisable()
 		{
 			gridSelection.onGridSelected.RemoveListener(SetBounds);
-			gridSelection.gameObject.SetActive(false);
 		}
 
 		public void SetBounds(Bounds gridBounds)

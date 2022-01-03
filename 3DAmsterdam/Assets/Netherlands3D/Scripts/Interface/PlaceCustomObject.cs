@@ -1,4 +1,7 @@
-﻿using Netherlands3D.Interface.Layers;
+﻿using Netherlands3D.Events;
+using Netherlands3D.Interface.Layers;
+using Netherlands3D.ObjectInteraction;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +26,12 @@ namespace Netherlands3D.Interface
         [Tooltip("Leave empty to place object in root")]
         private Transform targetParent;
 
-		public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
+        [SerializeField]
+        private bool makeTransformable = false;
+        [SerializeField]
+        private bool startStuckToMouse = false;
+
+        public GameObject SpawnedObject { get => spawnedObject; private set => spawnedObject = value; }
 
 		private void Start()
         {
@@ -31,11 +39,23 @@ namespace Netherlands3D.Interface
             layers = FindObjectOfType<InterfaceLayers>();
         }
 
-        /// <summary>
-        /// Move existing GameObject to the pointer and create a linked interface layer
-        /// </summary>
-        /// <param name="existingGameobject">Reference to existing GameObject</param>
-        public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
+		public void ObjectPlaced(UnityEngine.Object placedObject)
+		{
+            GameObject placedObjectForLayer = (GameObject)placedObject;
+            pointer.WorldPosition = placedObjectForLayer.transform.position;
+            PlaceExistingObjectAtPointer(placedObjectForLayer);
+
+            if (!makeTransformable) return;
+
+            var transformable = placedObjectForLayer.AddComponent<Transformable>();
+            transformable.stickToMouse = startStuckToMouse;
+        }
+
+		/// <summary>
+		/// Move existing GameObject to the pointer and create a linked interface layer
+		/// </summary>
+		/// <param name="existingGameobject">Reference to existing GameObject</param>
+		public void PlaceExistingObjectAtPointer(GameObject existingGameobject) {
             existingGameobject.transform.position = pointer.WorldPosition;
             layers.AddNewCustomObjectLayer(existingGameobject, layerType);
         }

@@ -38,9 +38,24 @@ public class CsvFilePanel : MonoBehaviour
 
     private ActionDropDown currentFilterDropdown;
 
+    [SerializeField]
+    private StringEvent filesImportedEvent;
+
     private void Awake()
     {
         ToggleActiveEvent.Subscribe(OnToggleActive);
+
+		filesImportedEvent.started.AddListener(LoadCsvFromFile);
+    }
+    public void LoadCsvFromFile(string filename)
+    {
+        if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
+            return;
+
+        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
+        File.Delete(filename);
+        ParseCsv(csv);
+        loadingObjScreen.Hide();
     }
 
     private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
@@ -62,7 +77,6 @@ public class CsvFilePanel : MonoBehaviour
         }
 
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
         csvGeoLocation = new CsvGeoLocation(csv);
@@ -247,16 +261,6 @@ public class CsvFilePanel : MonoBehaviour
                 PropertiesPanel.Instance.AddSeperatorLine();
             }
         }
-    }
-
-
-    public void LoadCsvFromFile(string filename, System.Action<bool> callback)
-    {
-        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
-        File.Delete(filename);
-        callback(true);
-        ParseCsv(csv);
-        loadingObjScreen.Hide();
     }
 
 #if UNITY_EDITOR

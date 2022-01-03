@@ -36,8 +36,9 @@ namespace Netherlands3D.Interface.Tools
 		}
 
 		private void MoveMenuHighlightToTool()
-		{
-			highlightImage.transform.SetParent(activeMenuTool.transform, false);
+		{	
+			if(highlightImage)
+				highlightImage.transform.SetParent(activeMenuTool.transform, false);
 		}
 
 		public void DisabledTool(Tool disabledTool)

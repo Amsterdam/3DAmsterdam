@@ -18,6 +18,7 @@
 using Netherlands3D.Events;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Netherlands3D.Events
@@ -38,6 +39,11 @@ namespace Netherlands3D.Events
 
         private int maxPolygons = 10000;
         private int polygonCount = 0;
+
+        [SerializeField]
+        private bool setUVCoordinates = false;
+        [SerializeField]
+        private Vector2 uvCoordinate = Vector2.zero;
 
         void Awake()
         {
@@ -74,7 +80,12 @@ namespace Netherlands3D.Events
             var newPolygonMesh = Poly2Mesh.CreateMesh(polygon, extrusionHeight);
             if(newPolygonMesh) newPolygonMesh.RecalculateNormals();
 
-            var newPolygonObject = new GameObject();
+            if(setUVCoordinates)
+			{
+				SetUVCoordinates(newPolygonMesh);
+			}
+
+			var newPolygonObject = new GameObject();
             newPolygonObject.name = name;
             newPolygonObject.AddComponent<MeshFilter>().sharedMesh = newPolygonMesh;
             newPolygonObject.AddComponent<MeshRenderer>().material = defaultMaterial;
@@ -82,5 +93,15 @@ namespace Netherlands3D.Events
             newPolygonObject.transform.SetParent(this.transform);
             newPolygonObject.transform.Translate(0, extrusionHeight, 0);
         }
-    }
+
+		private void SetUVCoordinates(Mesh newPolygonMesh)
+		{
+			var uvs = new Vector2[newPolygonMesh.vertexCount];
+			for (int i = 0; i < uvs.Length; i++)
+			{
+				uvs[i] = uvCoordinate;
+			}
+			newPolygonMesh.uv = uvs;
+		}
+	}
 }
