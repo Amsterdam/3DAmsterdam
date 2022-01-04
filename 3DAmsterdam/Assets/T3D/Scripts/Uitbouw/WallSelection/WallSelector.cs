@@ -9,6 +9,44 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     //todo: in case there are 2 coplanar walls, this script will treat them as one, need to add a check to ensure the returned wall is contiguous
 
+    public struct Edge
+    {
+        public int IndexA;
+        public int IndexB;
+
+        public Edge(int indexA, int indexB)
+        {
+            IndexA = indexA;
+            IndexB = indexB;
+        }
+
+        public static bool operator ==(Edge edgeA, Edge edgeB)
+        {
+            bool sameDirection = (edgeA.IndexA == edgeB.IndexA) && (edgeA.IndexB == edgeB.IndexB);
+            bool reverseDirection = (edgeA.IndexA == edgeB.IndexB) && (edgeA.IndexB == edgeB.IndexA);
+
+            return sameDirection || reverseDirection;
+        }
+
+        public static bool operator !=(Edge edgeA, Edge edgeB)
+        {
+            bool sameDirection = (edgeA.IndexA == edgeB.IndexA) && (edgeA.IndexB == edgeB.IndexB);
+            bool reverseDirection = (edgeA.IndexA == edgeB.IndexB) && (edgeA.IndexB == edgeB.IndexA);
+
+            return !sameDirection && !reverseDirection;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Edge && (Edge)obj == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
+
     public class WallSelector : MonoBehaviour
     {
         [SerializeField]
@@ -125,15 +163,16 @@ namespace Netherlands3D.T3D.Uitbouw
                 //var sourceUVs = buildingMeshFilter.mesh.uvs;
 
                 //List<Vector3> parallelVertices = new List<Vector3>();
-                List<int> parallelTris = new List<int>();
-                List<Vector3> parallelVertices = new List<Vector3>();
+                List<int> coplanarTriangles = new List<int>();
+                List<Vector3> coplanarVertices = new List<Vector3>();
                 List<int> usedVertIndices = new List<int>();
 
-                int[] clickedTriangle = new int[3];
-                bool foundClickedTriangle = false;
+                List<Edge> edges = new List<Edge>();
 
-                var test = new GameObject();
-                test.transform.position = hit.point;
+                //int[] clickedTriangle = new int[3];
+                List<Edge> contiguousTriEdges = new List<Edge>();
+                bool foundClickedTriangle = false;
+                List<int> contiguousTris = new List<int>();
 
                 for (int i = 0; i < sourceTriangles.Length; i += 3)
                 {
@@ -147,25 +186,20 @@ namespace Netherlands3D.T3D.Uitbouw
                         if (IsCoplanar(WallPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
                         {
                             // check if this is the clicked triangle to determine contiguous triangles later
-
                             var relativeHitPoint = hit.point - building.transform.position;
-                                IsInsideTriangle(relativeHitPoint, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]);
-                            //if (!foundClickedTriangle && IsInsideTriangle(hit.point, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]))
-                            //{
+                            if (!foundClickedTriangle && IsInsideTriangle(relativeHitPoint, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]))
+                            {
+                                contiguousTriEdges.Add(new Edge(sourceTriangles[i], sourceTriangles[i + 1]));
+                                contiguousTriEdges.Add(new Edge(sourceTriangles[i + 1], sourceTriangles[i + 2]));
+                                contiguousTriEdges.Add(new Edge(sourceTriangles[i + 2], sourceTriangles[i]));
 
-                            //    var a = new GameObject();
-                            //    a.transform.position = sourceVerts[sourceTriangles[i]];
-                            //    var b = new GameObject();
-                            //    b.transform.position = sourceVerts[sourceTriangles[i + 1]];
-                            //    var c = new GameObject();
-                            //    c.transform.position = sourceVerts[sourceTriangles[i + 2]];
+                                //todo: this adds the source indices, what is needed is the used indices
+                                contiguousTris.Add(sourceTriangles[i]);
+                                contiguousTris.Add(sourceTriangles[i + 1]);
+                                contiguousTris.Add(sourceTriangles[i + 2]);
 
-                            //    clickedTriangle[0] = sourceTriangles[i];
-                            //    clickedTriangle[1] = sourceTriangles[i + 1];
-                            //    clickedTriangle[2] = sourceTriangles[i + 2];
-
-                            //    foundClickedTriangle = true;
-                            //}
+                                foundClickedTriangle = true;
+                            }
 
                             for (int j = 0; j < 3; j++) //add the 3 verts as a triangle
                             {
@@ -173,23 +207,61 @@ namespace Netherlands3D.T3D.Uitbouw
                                 if (!usedVertIndices.Contains(vertIndex))
                                 {
                                     usedVertIndices.Add(vertIndex);
-                                    parallelVertices.Add(sourceVerts[vertIndex]);
+                                    coplanarVertices.Add(sourceVerts[vertIndex]);
+
+                                    edges.Add(new Edge(vertIndex, sourceTriangles[i + (j + 1) % 3])); // add the edges to find shared edges later.
                                 }
-                                parallelTris.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
+                                coplanarTriangles.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
+
                             }
                         }
                     }
                 }
 
-                // we have gotten all coplanar and parrallel triangles, but they don't have to be contiguous to the clicked triangle.
-                // 1. check if this is the clicked triangle
-                // a. rotate triangle to have the normal face the z axis
-                // b. check if hit point is in triangle
+                // we have gotten all coplanar and parrallel triangles, but they don't have to be contiguous to the clicked triangle. We also have the clicked triangle
+                // get all contiguous triangles to the clicked triangle
 
-                // 2. get all contiguous triangles to the clicked triangle
+                //for each coplanar triangle
+                int trisRemaining = coplanarTriangles.Count;
+                for (int i = 0; i < trisRemaining; i += 3)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        //if this edge is already in the list, add the edges of this triangle
+                        if (contiguousTriEdges.Contains(edges[i + j]))
+                        {
+                            contiguousTriEdges.Add(edges[i]);
+                            contiguousTriEdges.Add(edges[i + 1]);
+                            contiguousTriEdges.Add(edges[i + 2]);
 
-                face.vertices = parallelVertices.ToArray();
-                face.triangles = parallelTris.ToArray();
+                            // save these indices
+                            contiguousTris.Add(coplanarTriangles[i]);
+                            contiguousTris.Add(coplanarTriangles[i + 1]);
+                            contiguousTris.Add(coplanarTriangles[i + 2]);
+
+                            //if one edge matches, the triangle is added, it could be that a previously skipped triangle is contiguous to the newly added triangle, so the outer loop should reset.                             
+                            //remove the found triangle so it is not tested again, and an infinite loop is avoided.
+                            coplanarTriangles.RemoveAt(i + 2); //order matters to avoid indexing problems
+                            coplanarTriangles.RemoveAt(i + 1);
+                            coplanarTriangles.RemoveAt(i);
+
+                            //reset outer loop
+                            trisRemaining -= 3;
+                            i = 0;
+                            //if one edge matches, the remaining 1 or 2 don't need to be tested
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < contiguousTris.Count; i++)
+                {
+                    print(contiguousTris[i]);
+                }
+                print(contiguousTris.Count);
+
+                face.vertices = coplanarVertices.ToArray();
+                face.triangles = contiguousTris.ToArray();
 
                 face.RecalculateNormals();
                 face.RecalculateBounds();
@@ -204,8 +276,6 @@ namespace Netherlands3D.T3D.Uitbouw
             return false;
         }
 
-        //public GameObject planeObj;
-        //int iteration = 0;
         private bool IsInsideTriangle(Vector3 point, Vector3 ta, Vector3 tb, Vector3 tc)
         {
             var normal = CalculateNormal(ta, tb, tc);
@@ -217,25 +287,8 @@ namespace Netherlands3D.T3D.Uitbouw
             bool b = pb.GetSide(point);
             bool c = pc.GetSide(point);
 
-            //var testa = Instantiate(planeObj);
-            //testa.transform.position = ta + building.transform.position;
-            //testa.transform.up = pa.normal;
-            //testa.name = iteration.ToString();
-
-            //var testb = Instantiate(planeObj);
-            //testb.transform.position = tb + building.transform.position;
-            //testb.transform.up = pb.normal;
-            //testb.name = iteration.ToString();
-
-            //var testc = Instantiate(planeObj);
-            //testc.transform.position = tc + building.transform.position;
-            //testc.transform.up = pc.normal;
-            //testc.name = iteration.ToString();
-
-            //iteration++;
-            //print(a + "\t" + b + "\t" + c);
-
             // point is inside the triangle if all three sides are negative (the normal is the positive side and thus outside)
+            print(a + "\t" + b + "\t" + c);
             return !a && !b && !c;
         }
 
