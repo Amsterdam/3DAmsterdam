@@ -129,6 +129,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 List<Vector3> parallelVertices = new List<Vector3>();
                 List<int> usedVertIndices = new List<int>();
 
+                int[] clickedTriangle = new int[3];
+                bool foundClickedTriangle = false;
+
+                var test = new GameObject();
+                test.transform.position = hit.point;
+
                 for (int i = 0; i < sourceTriangles.Length; i += 3)
                 {
                     Vector3 triangleNormal = CalculateNormal(sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]);
@@ -140,6 +146,27 @@ namespace Netherlands3D.T3D.Uitbouw
 
                         if (IsCoplanar(WallPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
                         {
+                            // check if this is the clicked triangle to determine contiguous triangles later
+
+                            var relativeHitPoint = hit.point - building.transform.position;
+                                IsInsideTriangle(relativeHitPoint, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]);
+                            //if (!foundClickedTriangle && IsInsideTriangle(hit.point, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]))
+                            //{
+
+                            //    var a = new GameObject();
+                            //    a.transform.position = sourceVerts[sourceTriangles[i]];
+                            //    var b = new GameObject();
+                            //    b.transform.position = sourceVerts[sourceTriangles[i + 1]];
+                            //    var c = new GameObject();
+                            //    c.transform.position = sourceVerts[sourceTriangles[i + 2]];
+
+                            //    clickedTriangle[0] = sourceTriangles[i];
+                            //    clickedTriangle[1] = sourceTriangles[i + 1];
+                            //    clickedTriangle[2] = sourceTriangles[i + 2];
+
+                            //    foundClickedTriangle = true;
+                            //}
+
                             for (int j = 0; j < 3; j++) //add the 3 verts as a triangle
                             {
                                 var vertIndex = sourceTriangles[i + j]; //vertIndex in the old list of verts
@@ -153,6 +180,13 @@ namespace Netherlands3D.T3D.Uitbouw
                         }
                     }
                 }
+
+                // we have gotten all coplanar and parrallel triangles, but they don't have to be contiguous to the clicked triangle.
+                // 1. check if this is the clicked triangle
+                // a. rotate triangle to have the normal face the z axis
+                // b. check if hit point is in triangle
+
+                // 2. get all contiguous triangles to the clicked triangle
 
                 face.vertices = parallelVertices.ToArray();
                 face.triangles = parallelTris.ToArray();
@@ -168,6 +202,41 @@ namespace Netherlands3D.T3D.Uitbouw
                 }
             }
             return false;
+        }
+
+        //public GameObject planeObj;
+        //int iteration = 0;
+        private bool IsInsideTriangle(Vector3 point, Vector3 ta, Vector3 tb, Vector3 tc)
+        {
+            var normal = CalculateNormal(ta, tb, tc);
+            Plane pa = new Plane(ta, tb, ta + normal);
+            Plane pb = new Plane(tb, tc, tb + normal);
+            Plane pc = new Plane(tc, ta, tc + normal);
+
+            bool a = pa.GetSide(point); //positive means it's on the normal's side, and thus out of the triangle
+            bool b = pb.GetSide(point);
+            bool c = pc.GetSide(point);
+
+            //var testa = Instantiate(planeObj);
+            //testa.transform.position = ta + building.transform.position;
+            //testa.transform.up = pa.normal;
+            //testa.name = iteration.ToString();
+
+            //var testb = Instantiate(planeObj);
+            //testb.transform.position = tb + building.transform.position;
+            //testb.transform.up = pb.normal;
+            //testb.name = iteration.ToString();
+
+            //var testc = Instantiate(planeObj);
+            //testc.transform.position = tc + building.transform.position;
+            //testc.transform.up = pc.normal;
+            //testc.name = iteration.ToString();
+
+            //iteration++;
+            //print(a + "\t" + b + "\t" + c);
+
+            // point is inside the triangle if all three sides are negative (the normal is the positive side and thus outside)
+            return !a && !b && !c;
         }
 
         private static Vector3 CalculateNormal(Vector3 trianglePointA, Vector3 trianglePointB, Vector3 trianglePointC)
