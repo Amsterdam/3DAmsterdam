@@ -181,8 +181,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     if ((triangleNormal - hit.normal).sqrMagnitude < triangleNormalTolerance)
                     {
                         // parallel triangle, possibly part of the wall
-                        // This tri is not part of the wall if it is not contiguous to other triangles
-
+                        // This tri is not part of the wall if it is not contiguous to other triangles, in ordet to check that we save the edges as well as the verts for later use
                         if (IsCoplanar(WallPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
                         {
                             for (int j = 0; j < 3; j++) //add the 3 verts as a triangle
@@ -194,23 +193,20 @@ namespace Netherlands3D.T3D.Uitbouw
                                     coplanarVertices.Add(sourceVerts[vertIndex]);
 
                                 }
-                                //print("adding coplanar triangle index: " + usedVertIndices.IndexOf(vertIndex));
                                 coplanarTriangles.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
 
                                 edges.Add(new Edge(vertIndex, sourceTriangles[i + (j + 1) % 3])); // add the edges to find shared edges later. These edges use the original indexing, so this needs to be converted
-                                //print("added edge index: " + (edges.Count - 1));
                             }
 
                             //re-index the edges of this triangle this is a separate loop because the new indexes of j=1 and/or j=2 do not exist yet in the previous loop
-                            int triangleIndex = edges.Count - 3;
+                            int triangleStartIndex = edges.Count - 3;
                             for (int j = 0; j < 3; j++)
                             {
-                                var edge = edges[triangleIndex + j];
+                                var edge = edges[triangleStartIndex + j];
                                 var newIndexA = usedVertIndices.IndexOf(edge.IndexA);
                                 var newIndexB = usedVertIndices.IndexOf(edge.IndexB);
 
-                                edges[triangleIndex + j] = new Edge(newIndexA, newIndexB);
-                                //print("new indices: " + newIndexA + "\t" + newIndexB);
+                                edges[triangleStartIndex + j] = new Edge(newIndexA, newIndexB);
                             }
 
                             // check if this is the clicked triangle to determine contiguous triangles later
@@ -222,19 +218,13 @@ namespace Netherlands3D.T3D.Uitbouw
                                 var b = coplanarTriangles[coplanarTriangles.Count - 2];
                                 var c = coplanarTriangles[coplanarTriangles.Count - 1];
 
-                                print("clicked triangle indices: " + a + "\t" + b + "\t" + c);
-
                                 contiguousTriEdges.Add(new Edge(a, b));
                                 contiguousTriEdges.Add(new Edge(b, c));
                                 contiguousTriEdges.Add(new Edge(c, a));
 
-                                //todo: this adds the source indices, what is needed is the used indices
                                 contiguousTris.Add(a);
                                 contiguousTris.Add(b);
                                 contiguousTris.Add(c);
-                                //contiguousTris.Add(sourceTriangles[i]);
-                                //contiguousTris.Add(sourceTriangles[i + 1]);
-                                //contiguousTris.Add(sourceTriangles[i + 2]);
 
                                 foundClickedTriangle = true;
                             }
@@ -246,20 +236,13 @@ namespace Netherlands3D.T3D.Uitbouw
                 // get all contiguous triangles to the clicked triangle
 
                 //for each coplanar triangle
-                //int i = 0;
-                //int edgesRemaining = edges.Count;
                 for (int i = edges.Count - 1; i >= 0; i -= 3) // go backwards so the end condition can stay the same
-                //do //do while instead of for loop because the condition of a for loop is checked before
                 {
-                    print("edges remaining: " + i);
                     for (int j = 2; j >= 0; j--)
                     {
                         //if this edge is already in the list, add the edges of this triangle
-                        print("checking: " + edges[i - j].IndexA + "." + edges[i - j].IndexB);
                         if (contiguousTriEdges.Contains(edges[i - j]))
                         {
-                            print("contains " + edges[i - j].IndexA + "." + edges[i - j].IndexB);
-                            print("adding tri " + coplanarTriangles[i - 2] + "\t" + coplanarTriangles[i - 1] + "\t" + coplanarTriangles[i]);
                             contiguousTriEdges.Add(edges[i - 2]);
                             contiguousTriEdges.Add(edges[i - 1]);
                             contiguousTriEdges.Add(edges[i]);
@@ -279,28 +262,14 @@ namespace Netherlands3D.T3D.Uitbouw
                             coplanarTriangles.RemoveAt(i - 2);
 
                             //reset outer loop
-                            i = edges.Count - 1 + 3; //add 3 because the for loop will subtract 3
-                            print("new outer loop iterators:" + i + "\t" + 0);
+                            i = edges.Count - 1 + 3; //add 3 because the for loop will subtract 3 after restarting
                             //if one edge matches, the remaining 1 or 2 don't need to be tested
                             break;
                         }
-                        else
-                        {
-                            print("does not contain" + edges[i - j].IndexA + "." + edges[i - j].IndexB);
-                        }
                     }
-                    //i += 3;
                 }
-                //while (i < edgesRemaining);
 
-                print("finishe loop");
-
-                //for (int i = 0; i < contiguousTris.Count; i++)
-                //{
-                //    print(contiguousTris[i]);
-                //}
-                //print(contiguousTris.Count);
-
+                //todo: currently all verts are used, unused vertices could be filtered as an optimisation.
                 face.vertices = coplanarVertices.ToArray();
                 face.triangles = contiguousTris.ToArray();
 
@@ -329,7 +298,6 @@ namespace Netherlands3D.T3D.Uitbouw
             bool c = pc.GetSide(point);
 
             // point is inside the triangle if all three sides are negative (the normal is the positive side and thus outside)
-            print(a + "\t" + b + "\t" + c);
             return !a && !b && !c;
         }
 
