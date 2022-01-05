@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Netherlands3D.Core;
+using System;
 
 namespace Netherlands3D
 {
@@ -26,6 +28,14 @@ namespace Netherlands3D
             Config.activeConfiguration = configurationFile;
 #endif
             Debug.Log("Loaded config: " + Config.activeConfiguration.name);
+
+            ApplySettings();
         }
-    }
+
+		private void ApplySettings()
+		{
+            CoordConvert.zeroGroundLevelY = Config.activeConfiguration.zeroGroundLevelY;
+            CoordConvert.relativeCenterRD = Config.activeConfiguration.RelativeCenterRD;
+        }
+	}
 }

@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,8 +122,8 @@ namespace Netherlands3D.BAG
 		{
             //Create our building area using bbox coming from the building data
             List<Vector3> points = new List<Vector3>();
-			var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0.0));
-			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0.0));
+			var rdA = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0.0));
+			var rdB = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0.0));
            
             //Estimate height using a raycast shot from above at the center of the bounding box
             float estimatedHeight = 100.0f;
@@ -133,8 +134,8 @@ namespace Netherlands3D.BAG
             }
 
             //Add extra points giving our points shape a height
-            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0));
-			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0));
+            var rdC = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0));
+			var rdD = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0));
             rdC.y = estimatedHeight;
             rdD.y = estimatedHeight;
 

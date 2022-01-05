@@ -15,7 +15,7 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Cameras;
 using System.Collections;
 using System.Collections.Generic;

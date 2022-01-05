@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Globalization;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System;
 using UnityEngine.EventSystems;
 using System.Text.RegularExpressions;

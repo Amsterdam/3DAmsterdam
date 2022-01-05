@@ -1,4 +1,4 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Netherlands3D.Traffic
         /// <param name="tempRoad"></param>
         public void CreateRoad(JSONNode tempRoad)
         {
-            Vector3 tempCoordinates = ConvertCoordinates.CoordConvert.WGS84toUnity(tempRoad["geometry"]["lon"], tempRoad["geometry"]["lat"]);
+            Vector3 tempCoordinates = CoordConvert.WGS84toUnity(tempRoad["geometry"]["lon"], tempRoad["geometry"]["lat"]);
             tempCoordinates.y = 45f; // raycast naar de grond om te kijken of hij er is
             name = tempRoad["tags"]["name"];
             transform.position = tempCoordinates;

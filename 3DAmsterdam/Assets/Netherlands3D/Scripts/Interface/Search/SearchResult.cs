@@ -1,6 +1,6 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.JavascriptConnection;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System.Collections;
 using System.Globalization;
 using UnityEngine;

@@ -5,10 +5,9 @@ using netDxf;
 using netDxf.Entities;
 using netDxf.Blocks;
 using netDxf.Tables;
-using ConvertCoordinates;
 using System.IO;
 using System.Runtime.InteropServices;
-using Netherlands3D.JavascriptConnection;
+using Netherlands3D.Core;
 
 public class DxfFile 
 {

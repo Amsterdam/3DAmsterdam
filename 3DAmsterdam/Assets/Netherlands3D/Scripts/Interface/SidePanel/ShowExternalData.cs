@@ -19,8 +19,8 @@ namespace Netherlands3D.Interface.SidePanel
 
         private IEnumerator GetText(string metaDataPath)
         {
-            print("Load external data: " + Config.activeConfiguration.webserverRootPath + metaDataPath);
-            UnityWebRequest www = UnityWebRequest.Get(Config.activeConfiguration.webserverRootPath + metaDataPath);
+            print("Load external data: " + metaDataPath);
+            UnityWebRequest www = UnityWebRequest.Get(metaDataPath);
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)

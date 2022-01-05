@@ -1,9 +1,8 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
 using System.Runtime.InteropServices;
 using UnityEngine;
-
 
 namespace Netherlands3D.Cameras
 {
@@ -11,8 +10,6 @@ namespace Netherlands3D.Cameras
     {
         [DllImport("__Internal")]
         private static extern void AutoCursorLock();
-
-        public ICameraExtents CurrentCameraExtends { get; private set; }
 
         private GameObject currentCamera;
 
@@ -57,7 +54,6 @@ namespace Netherlands3D.Cameras
             streetView = FindObjectOfType<StreetViewMoveToPoint>();
             currentCamera = godViewCam;
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
-            CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
             Instance = this;
 
@@ -84,7 +80,6 @@ namespace Netherlands3D.Cameras
             currentCamera.transform.rotation = oldRotation;
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
-            CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             OnFirstPersonModeEvent?.Invoke();
             TransitionCamera(currentCamera.transform, position, rotation);
         }
@@ -147,7 +142,6 @@ namespace Netherlands3D.Cameras
             currentCamera.transform.position = currentPosition;
             currentCamera.transform.rotation = rot;
             currentCamera.SetActive(true);
-            CurrentCameraExtends = currentCamera.GetComponent<ICameraExtents>();
             CurrentCameraControls = currentCamera.GetComponent<ICameraControls>();
             ActiveCamera = currentCamera.GetComponent<Camera>();
             OnGodViewModeEvent?.Invoke();

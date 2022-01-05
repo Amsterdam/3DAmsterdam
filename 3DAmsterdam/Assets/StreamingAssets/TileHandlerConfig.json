@@ -1,4 +1,7 @@
 {
+	"rdCenterX":121000,
+	"rdCenterY":487000,
+	"groundYZero":0,
 	"binaryMeshLayers": [{
 			"layerName": "Buildings",
 			"priority":2,
@@ -61,7 +64,7 @@
 				"offset": [0, 15, 0]
 			}],
 			"drawDistance": 10000,
-			"visible": true
+			"visible": false
 		},
 		{
 			"layerName": "Wijknamen",
@@ -80,7 +83,7 @@
 				"offset": [0, 60, 0]
 			}],
 			"drawDistance": 10000,
-			"visible": true
+			"visible": false
 		},
 		{
 			"layerName": "Straatnamen",
@@ -100,7 +103,7 @@
 				"offset": [0, 10, 0]
 			}],
 			"drawDistance": 1000,
-			"visible": true
+			"visible": false
 		}
 	]
 }

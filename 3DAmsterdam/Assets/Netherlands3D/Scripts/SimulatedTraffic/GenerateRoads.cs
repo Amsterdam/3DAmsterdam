@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using System.Linq.Expressions;
 using System.IO;
 using UnityEditor;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 

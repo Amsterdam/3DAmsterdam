@@ -1,4 +1,4 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using Netherlands3D;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
@@ -182,11 +182,11 @@ public class CsvFilePanel : MonoBehaviour
 
             if (isRd)
             {
-                pos = ConvertCoordinates.CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
+                pos = CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
             }
             else
             {
-                pos = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
+                pos = CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
             }
 
             locationMarker.transform.position = pos;

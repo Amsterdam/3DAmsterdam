@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ConvertCoordinates;
 using UnityEngine.Networking;
 using System.Globalization;
 using System;
-using Netherlands3D.LayerSystem;
+using Netherlands3D.TileSystem;
 using Netherlands3D.Utilities;
+using Netherlands3D.Core;
 using Netherlands3D;
 using System.Linq;
 
