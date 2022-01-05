@@ -146,6 +146,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public string BimModelId;
         public string BimModelVersionId;
+        public string BlobId;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -180,8 +181,8 @@ namespace Netherlands3D.T3D.Uitbouw
             if (UploadedModel)
             {
                 //StartCoroutine(GetBimStatus(BimModelId));
-                //StartCoroutine(GetBimCityJson(BimModelId));
-                StartCoroutine(GetBimCityJsonFile());
+                StartCoroutine(GetBimCityJson());
+                //StartCoroutine(GetBimCityJsonFile());
             }
 
             StartCoroutine(UpdateSidePanelAddress(id));
@@ -429,16 +430,13 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-
-        
-
         IEnumerator GetBimCityJsonFile()
         {
             yield return null;
 
             //var filepath = @"F:\T3D\CityJson stuff\data\15ad2866-8d14-44e1-8b2e-2a18275134b6.json";
-            var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
-            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Bestaand - Nieuw.json";
+            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
+            var filepath = @"F:\T3D\Data\Sketchup\cityjson\v3\01_2018_layers.skp.json";
 
             //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
             //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
@@ -447,13 +445,14 @@ namespace Netherlands3D.T3D.Uitbouw
             BimCityJsonReceived?.Invoke(cityjson);
         }
 
-            IEnumerator GetBimCityJson(string modelId)
+        IEnumerator GetBimCityJson()
         {
             yield return null;
 
-            var url = $"https://t3dapi.azurewebsites.net/api/getbimcityjson/{modelId}";
+            var urlIfc = $"https://t3dapi.azurewebsites.net/api/getbimcityjson/{BimModelId}";
+            var urlSketchup = $"https://t3dapi.azurewebsites.net/api/downloadcityjson/{BlobId}.json";
 
-            UnityWebRequest req = UnityWebRequest.Get(url);
+            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(BimModelId) == false ? urlIfc : urlSketchup);
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();

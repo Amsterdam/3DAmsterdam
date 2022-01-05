@@ -46,6 +46,8 @@ public class T3DInit : MonoBehaviour
             MetadataLoader.Instance.BimModelId = "61a57eba0a6448f8eaacf9e9";
             MetadataLoader.Instance.BimModelVersionId = "1";
 
+            //TODO add usecase with blobId (Sketchup)
+
             GoToTestBuilding();
         }
 #endif
@@ -92,6 +94,7 @@ public class T3DInit : MonoBehaviour
         MetadataLoader.Instance.UploadedModel = Application.absoluteURL.GetUrlParamBool("hasfile");                
         MetadataLoader.Instance.BimModelId = Application.absoluteURL.GetUrlParamValue("modelId");
         MetadataLoader.Instance.BimModelVersionId = Application.absoluteURL.GetUrlParamValue("versionId");
+        MetadataLoader.Instance.BlobId = Application.absoluteURL.GetUrlParamValue("blobId");
 
         GotoPosition(rd);
         MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
