@@ -13,6 +13,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Netherlands3D.Utilities;
 using System.Globalization;
+using System.IO;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -125,8 +126,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
-        public delegate void BimStatusEventHandler(string status, string modelId, string versionId);
-        public event BimStatusEventHandler BimStatus;
+        public delegate void BimCityJsonEventHandler(string cityJson);
+        public event BimCityJsonEventHandler BimCityJsonReceived;
+
 
 
         //public List<Vector2[]> PerceelData;
@@ -171,7 +173,11 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (T3DInit.Instance.UploadedModel)
             {
-                StartCoroutine(GetBimStatus(T3DInit.Instance.BimModelId, T3DInit.Instance.BimModelVersionId));
+                #if UNITY_EDITOR
+                    StartCoroutine(GetBimCityJsonFile());
+                #else
+                    StartCoroutine(GetBimCityJson());
+                #endif
             }
 
             StartCoroutine(UpdateSidePanelAddress(id));
@@ -394,16 +400,14 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        IEnumerator GetBimStatus(string modelId, string versionId)
+        IEnumerator GetBimCityJson()
         {
-            var organisationId = "6194fc20c0da463026d4d8fe";
-            var projectId = "6194fc2ac0da463026d4d90e";
-
             yield return null;
 
-            var url = $"https://t3dapi.azurewebsites.net/api/getbimversionstatus/{modelId}";
+            var urlIfc = $"https://t3dapi.azurewebsites.net/api/getbimcityjson/{T3DInit.Instance.BimModelId}";
+            var urlSketchup = $"https://t3dapi.azurewebsites.net/api/downloadcityjson/{T3DInit.Instance.BlobId}.json";
 
-            UnityWebRequest req = UnityWebRequest.Get(url);
+            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(T3DInit.Instance.BimModelId) == false ? urlIfc : urlSketchup);
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();
@@ -413,13 +417,23 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             else
             {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var status = json["conversions"]["cityjson"];
-                Debug.Log($"Status CityJSON:{status}");
-
-                BimStatus?.Invoke(status, modelId, versionId);
-
+                BimCityJsonReceived?.Invoke(req.downloadHandler.text);
             }
+        }
+
+        IEnumerator GetBimCityJsonFile()
+        {
+            yield return null;
+
+            //var filepath = @"F:\T3D\CityJson stuff\data\15ad2866-8d14-44e1-8b2e-2a18275134b6.json";
+            //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
+            var filepath = @"F:\T3D\Data\Sketchup\cityjson\v1\01_2018_layers.skp.json";
+
+            //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
+            //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
+            string cityjson = File.ReadAllText(filepath);
+
+            BimCityJsonReceived?.Invoke(cityjson);
         }
 
         void ProcessPerceelData(JSONNode jsonData)

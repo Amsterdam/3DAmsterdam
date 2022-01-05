@@ -28,6 +28,13 @@ public class T3DInit : MonoBehaviour
 
     private string isUserFeedbackKey;
     private SaveableBool isUserFeedback;
+
+    private string blobIdKey;
+    private SaveableString blobId; 
+    public string BlobId => blobId.Value;
+
+    public Vector3RD PositionRD;
+
     public bool IsUserFeedback => isUserFeedback.Value;
 
     public bool IsEditMode { get; private set; } = true;
@@ -61,6 +68,9 @@ public class T3DInit : MonoBehaviour
 
         isUserFeedbackKey = GetType().ToString() + ".isUserFeedback";// + nameof(bagId);
         isUserFeedback = new SaveableBool(isUserFeedbackKey);
+
+        blobIdKey = GetType().ToString() + ".blobId";// + nameof(bagId);
+        blobId = new SaveableString(blobIdKey);
     }
 
     void Start()
@@ -89,14 +99,15 @@ public class T3DInit : MonoBehaviour
 
     private void GoToTestBuilding()
     {
-        var pos = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
+
+        PositionRD = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
         //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
         //var pos = new Vector3RD(137837.926, 452307.472, 0); //Cataloni? 5 Utrecht
         //var pos = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
 
         //var pos = new Vector3RD(136932.03, 454272.937, 0); // measurement error building: 3523AA, 10
-        cameraPosition.SetValue(pos);
-        GotoPosition(pos);
+        cameraPosition.SetValue(PositionRD);
+        GotoPosition(PositionRD);
 
         bagId.SetValue("0344100000021804");
         //bagId.SetValue("0344100000068320");
@@ -104,7 +115,7 @@ public class T3DInit : MonoBehaviour
 
         //bagId.SetValue("0344100000035416");// measurement error building : 3523AA, 10
 
-        MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
+        MetadataLoader.Instance.RequestBuildingData(PositionRD, bagId.Value);
 
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000068320")); //Hertestraat 15 utrecht 3582EP
@@ -120,10 +131,10 @@ public class T3DInit : MonoBehaviour
 
     private void CheckURLForPositionAndId()
     {
-        var rd = Application.absoluteURL.GetRDCoordinateByUrl();
-        if (rd.Equals(new Vector3RD(0, 0, 0))) return;
+        PositionRD = Application.absoluteURL.GetRDCoordinateByUrl();
+        if (PositionRD.Equals(new Vector3RD(0, 0, 0))) return;
 
-        cameraPosition.SetValue(rd);
+        cameraPosition.SetValue(PositionRD);
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
         uploadedModel.SetValue(Application.absoluteURL.GetUrlParamBool("hasfile"));
@@ -131,9 +142,10 @@ public class T3DInit : MonoBehaviour
         bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionId"));
         isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isUserFeedback"));
         IsEditMode = Application.absoluteURL.GetUrlParamBool("IsEditMode");
+        blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobId"));
 
-        GotoPosition(rd);
-        MetadataLoader.Instance.RequestBuildingData(rd, bagId.Value);
+        GotoPosition(PositionRD);
+        MetadataLoader.Instance.RequestBuildingData(PositionRD, bagId.Value);
     }
 
     public void LoadBuilding()

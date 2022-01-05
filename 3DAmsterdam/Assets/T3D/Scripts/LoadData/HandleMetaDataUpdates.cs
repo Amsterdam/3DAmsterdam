@@ -33,15 +33,9 @@ public class HandleMetaDataUpdates : MonoBehaviour
         MetadataLoader.Instance.PerceelDataLoaded += PerceelDataLoaded;
         MetadataLoader.Instance.IsMonumentEvent += IsMonumentEvent;
         MetadataLoader.Instance.IsBeschermdEvent += IsBeschermdEvent;
-        MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
-        MetadataLoader.Instance.BimStatus += On_BimStatus;
+        MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;        
 
         //StartCoroutine(SetSidebarAreaText());
-    }
-
-    private void On_BimStatus(string status, string modelId, string versionId)
-    {
-        BimModelStatus.text = $"Status upload conversie : {status}";
     }
 
     private void IsMonumentEvent(bool isMonument)

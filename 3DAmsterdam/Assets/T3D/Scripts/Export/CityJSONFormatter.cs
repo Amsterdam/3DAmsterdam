@@ -5,6 +5,7 @@ using System.Text;
 using ConvertCoordinates;
 using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
+using T3D.Uitbouw;
 using UnityEngine;
 
 public static class CityJSONFormatter
