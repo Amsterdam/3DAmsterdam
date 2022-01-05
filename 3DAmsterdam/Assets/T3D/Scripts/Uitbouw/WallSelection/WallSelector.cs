@@ -185,22 +185,6 @@ namespace Netherlands3D.T3D.Uitbouw
 
                         if (IsCoplanar(WallPlane, sourceVerts[sourceTriangles[i]] + transform.position, coplanarTolerance)) //only checks 1 vert, but due to the normal check we already filtered out unwanted tris that might have only 1 point in the zone of tolerance
                         {
-                            // check if this is the clicked triangle to determine contiguous triangles later
-                            var relativeHitPoint = hit.point - building.transform.position;
-                            if (!foundClickedTriangle && IsInsideTriangle(relativeHitPoint, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]))
-                            {
-                                contiguousTriEdges.Add(new Edge(sourceTriangles[i], sourceTriangles[i + 1]));
-                                contiguousTriEdges.Add(new Edge(sourceTriangles[i + 1], sourceTriangles[i + 2]));
-                                contiguousTriEdges.Add(new Edge(sourceTriangles[i + 2], sourceTriangles[i]));
-
-                                //todo: this adds the source indices, what is needed is the used indices
-                                contiguousTris.Add(sourceTriangles[i]);
-                                contiguousTris.Add(sourceTriangles[i + 1]);
-                                contiguousTris.Add(sourceTriangles[i + 2]);
-
-                                foundClickedTriangle = true;
-                            }
-
                             for (int j = 0; j < 3; j++) //add the 3 verts as a triangle
                             {
                                 var vertIndex = sourceTriangles[i + j]; //vertIndex in the old list of verts
@@ -209,10 +193,50 @@ namespace Netherlands3D.T3D.Uitbouw
                                     usedVertIndices.Add(vertIndex);
                                     coplanarVertices.Add(sourceVerts[vertIndex]);
 
-                                    edges.Add(new Edge(vertIndex, sourceTriangles[i + (j + 1) % 3])); // add the edges to find shared edges later.
                                 }
+                                //print("adding coplanar triangle index: " + usedVertIndices.IndexOf(vertIndex));
                                 coplanarTriangles.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
 
+                                edges.Add(new Edge(vertIndex, sourceTriangles[i + (j + 1) % 3])); // add the edges to find shared edges later. These edges use the original indexing, so this needs to be converted
+                                //print("added edge index: " + (edges.Count - 1));
+                            }
+
+                            //re-index the edges of this triangle this is a separate loop because the new indexes of j=1 and/or j=2 do not exist yet in the previous loop
+                            int triangleIndex = edges.Count - 3;
+                            for (int j = 0; j < 3; j++)
+                            {
+                                var edge = edges[triangleIndex + j];
+                                var newIndexA = usedVertIndices.IndexOf(edge.IndexA);
+                                var newIndexB = usedVertIndices.IndexOf(edge.IndexB);
+
+                                edges[triangleIndex + j] = new Edge(newIndexA, newIndexB);
+                                //print("new indices: " + newIndexA + "\t" + newIndexB);
+                            }
+
+                            // check if this is the clicked triangle to determine contiguous triangles later
+                            var relativeHitPoint = hit.point - building.transform.position;
+                            if (!foundClickedTriangle && IsInsideTriangle(relativeHitPoint, sourceVerts[sourceTriangles[i]], sourceVerts[sourceTriangles[i + 1]], sourceVerts[sourceTriangles[i + 2]]))
+                            {
+                                //if this is the clicked triangle, the last triangle added to the coplanar triangle list is the one that should be used as start to find the contiguous triangles.
+                                var a = coplanarTriangles[coplanarTriangles.Count - 3];
+                                var b = coplanarTriangles[coplanarTriangles.Count - 2];
+                                var c = coplanarTriangles[coplanarTriangles.Count - 1];
+
+                                print("clicked triangle indices: " + a + "\t" + b + "\t" + c);
+
+                                contiguousTriEdges.Add(new Edge(a, b));
+                                contiguousTriEdges.Add(new Edge(b, c));
+                                contiguousTriEdges.Add(new Edge(c, a));
+
+                                //todo: this adds the source indices, what is needed is the used indices
+                                contiguousTris.Add(a);
+                                contiguousTris.Add(b);
+                                contiguousTris.Add(c);
+                                //contiguousTris.Add(sourceTriangles[i]);
+                                //contiguousTris.Add(sourceTriangles[i + 1]);
+                                //contiguousTris.Add(sourceTriangles[i + 2]);
+
+                                foundClickedTriangle = true;
                             }
                         }
                     }
@@ -222,43 +246,60 @@ namespace Netherlands3D.T3D.Uitbouw
                 // get all contiguous triangles to the clicked triangle
 
                 //for each coplanar triangle
-                int trisRemaining = coplanarTriangles.Count;
-                for (int i = 0; i < trisRemaining; i += 3)
+                //int i = 0;
+                //int edgesRemaining = edges.Count;
+                for (int i = edges.Count - 1; i >= 0; i -= 3) // go backwards so the end condition can stay the same
+                //do //do while instead of for loop because the condition of a for loop is checked before
                 {
-                    for (int j = 0; j < 3; j++)
+                    print("edges remaining: " + i);
+                    for (int j = 2; j >= 0; j--)
                     {
                         //if this edge is already in the list, add the edges of this triangle
-                        if (contiguousTriEdges.Contains(edges[i + j]))
+                        print("checking: " + edges[i - j].IndexA + "." + edges[i - j].IndexB);
+                        if (contiguousTriEdges.Contains(edges[i - j]))
                         {
+                            print("contains " + edges[i - j].IndexA + "." + edges[i - j].IndexB);
+                            print("adding tri " + coplanarTriangles[i - 2] + "\t" + coplanarTriangles[i - 1] + "\t" + coplanarTriangles[i]);
+                            contiguousTriEdges.Add(edges[i - 2]);
+                            contiguousTriEdges.Add(edges[i - 1]);
                             contiguousTriEdges.Add(edges[i]);
-                            contiguousTriEdges.Add(edges[i + 1]);
-                            contiguousTriEdges.Add(edges[i + 2]);
 
                             // save these indices
+                            contiguousTris.Add(coplanarTriangles[i - 2]);
+                            contiguousTris.Add(coplanarTriangles[i - 1]);
                             contiguousTris.Add(coplanarTriangles[i]);
-                            contiguousTris.Add(coplanarTriangles[i + 1]);
-                            contiguousTris.Add(coplanarTriangles[i + 2]);
 
                             //if one edge matches, the triangle is added, it could be that a previously skipped triangle is contiguous to the newly added triangle, so the outer loop should reset.                             
-                            //remove the found triangle so it is not tested again, and an infinite loop is avoided.
-                            coplanarTriangles.RemoveAt(i + 2); //order matters to avoid indexing problems
-                            coplanarTriangles.RemoveAt(i + 1);
+                            //remove the found triangle edges so it is not tested again, and an infinite loop is avoided.
+                            edges.RemoveAt(i); //order matters to avoid indexing problems
+                            edges.RemoveAt(i - 1);
+                            edges.RemoveAt(i - 2);
                             coplanarTriangles.RemoveAt(i);
+                            coplanarTriangles.RemoveAt(i - 1);
+                            coplanarTriangles.RemoveAt(i - 2);
 
                             //reset outer loop
-                            trisRemaining -= 3;
-                            i = 0;
+                            i = edges.Count - 1 + 3; //add 3 because the for loop will subtract 3
+                            print("new outer loop iterators:" + i + "\t" + 0);
                             //if one edge matches, the remaining 1 or 2 don't need to be tested
                             break;
                         }
+                        else
+                        {
+                            print("does not contain" + edges[i - j].IndexA + "." + edges[i - j].IndexB);
+                        }
                     }
+                    //i += 3;
                 }
+                //while (i < edgesRemaining);
 
-                for (int i = 0; i < contiguousTris.Count; i++)
-                {
-                    print(contiguousTris[i]);
-                }
-                print(contiguousTris.Count);
+                print("finishe loop");
+
+                //for (int i = 0; i < contiguousTris.Count; i++)
+                //{
+                //    print(contiguousTris[i]);
+                //}
+                //print(contiguousTris.Count);
 
                 face.vertices = coplanarVertices.ToArray();
                 face.triangles = contiguousTris.ToArray();
