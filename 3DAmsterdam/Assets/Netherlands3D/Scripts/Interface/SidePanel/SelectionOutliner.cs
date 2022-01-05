@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using Netherlands3D.TileSystem;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.Events;
+using System.Collections.Generic;
 
 namespace Netherlands3D.Interface.SidePanel
 {
@@ -14,6 +16,9 @@ namespace Netherlands3D.Interface.SidePanel
 		private Text titleText;
 
 		private GameObject linkedGameObject;
+
+		[SerializeField]
+		private StringListEvent onSelect;
 
 		public GameObject LinkedGameObject { get => linkedGameObject; set => linkedGameObject = value; }
 		public string Id { get => id; set => id = value; }
@@ -39,8 +44,8 @@ namespace Netherlands3D.Interface.SidePanel
 		}
 
 		public void Select()
-		{
-			//Todo. Send select event with ID
+		{	
+			onSelect.started.Invoke(new List<string> { Id });
 		}
 
 		public void Close()
