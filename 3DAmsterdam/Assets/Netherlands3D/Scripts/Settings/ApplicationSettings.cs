@@ -115,7 +115,7 @@ namespace Netherlands3D.Settings {
 			
 			lodSlider.value = lodSlider.minValue;
 
-			Selector.Instance.AllowDelayedInteractables = false;
+			Selector.Instance.AllowDelayedSubObjectSelections = false;
 		}
 
 		private void CreateSettingsProfile(ApplicationSettingsProfile templateProfile)
