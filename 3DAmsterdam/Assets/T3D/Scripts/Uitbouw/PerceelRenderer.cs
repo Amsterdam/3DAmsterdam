@@ -99,7 +99,8 @@ namespace Netherlands3D.T3D.Uitbouw
             obj.name = "Perceelmesh";
             obj.transform.SetParent(transform);
             obj.AddComponent<MeshFilter>();
-            obj.AddComponent<MeshRenderer>();
+            var renderer = obj.AddComponent<MeshRenderer>();
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; //avoid weird shadow issues caused by render order change of maskable layer
 
             return obj;
         }
