@@ -269,7 +269,27 @@ namespace Netherlands3D.T3D.Uitbouw
                     }
                 }
 
-                //todo: currently all verts are used, unused vertices could be filtered as an optimisation.
+                //remove unused vertices.
+                //This algorithm doesn't scale well because it contains 2 loops through the tri list each iteration (with the Contains() function and the j loop), but it should not be a problem for our purposes
+                for (int i = 0; i < coplanarVertices.Count; i++)
+                {
+                    if (contiguousTris.Contains(i))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        coplanarVertices.RemoveAt(i);
+                        for (int j = 0; j < contiguousTris.Count; j++)
+                        {
+                            if(contiguousTris[j] > i)
+                            {
+                                contiguousTris[j]--;
+                            }
+                        }
+                    }
+                }
+
                 face.vertices = coplanarVertices.ToArray();
                 face.triangles = contiguousTris.ToArray();
 
