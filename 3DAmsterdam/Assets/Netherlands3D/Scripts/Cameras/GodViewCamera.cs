@@ -50,9 +50,6 @@ namespace Netherlands3D.Cameras
         private Vector3 cameraOffsetForTargetLocation = new Vector3(100,100,200);
 
         private float scrollDelta;
-#if UNITY_WEBGL && !UNITY_EDITOR
-        float webGLScrollMultiplier = 100.0f;
-#endif
 
         private float moveSpeed;
 
@@ -206,12 +203,7 @@ namespace Netherlands3D.Cameras
 
         private void Zoom(IAction action)
         {
-                scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
-
-            //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
-#if UNITY_WEBGL && !UNITY_EDITOR
-                scrollDelta *= webGLScrollMultiplier;
-#endif
+            scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
 
             if (scrollDelta != 0)
             {

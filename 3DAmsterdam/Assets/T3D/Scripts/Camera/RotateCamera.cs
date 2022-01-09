@@ -19,9 +19,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private bool dragging = false;
     
     private float scrollDelta;
-#if UNITY_WEBGL && !UNITY_EDITOR
-        float webGLScrollMultiplier = 100.0f;
-#endif
 
     private IAction dragActionMouse;
     private IAction zoomScrollActionMouse;
@@ -151,13 +148,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void Zoom(IAction action)
     {
-
         scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
-
-        //A bug with the new inputsystem only fixed in Unity 2021 causes scroll input to be very low on WebGL builds
-#if UNITY_WEBGL && !UNITY_EDITOR
-                scrollDelta *= webGLScrollMultiplier;
-#endif
 
         if (scrollDelta != 0)
         {
