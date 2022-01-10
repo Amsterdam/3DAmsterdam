@@ -30,7 +30,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (!meshFilter)
             {
-                meshFilter = GetComponent<MeshFilter>();
+                meshFilter = GetComponentInChildren<MeshFilter>();
             }
 
             mesh = meshFilter.mesh;
