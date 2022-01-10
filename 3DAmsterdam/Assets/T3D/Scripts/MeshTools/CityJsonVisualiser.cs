@@ -1,6 +1,5 @@
-
-
 using ConvertCoordinates;
+using Netherlands3D.T3D.Uitbouw;
 using SimpleJSON;
 using System;
 using System.Collections;
@@ -17,41 +16,51 @@ public class CityJsonVisualiser : MonoBehaviour
     private Vector3RD? centerPerceel;
     private string cityJson;
 
-    void Start()
+    public static CityJsonVisualiser Instance;
+
+    private void Awake()
     {
-        Netherlands3D.T3D.Uitbouw.MetadataLoader.Instance.BimCityJsonReceived += OnBimCityJsonReceived;
-        Netherlands3D.T3D.Uitbouw.MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
-
-
-
+        Instance = this;
     }
 
-    private void OnPerceelDataLoaded(object source, Netherlands3D.T3D.Uitbouw.PerceelDataEventArgs args)
+    void OnEnable()
     {
-        centerPerceel = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0) ;
+        MetadataLoader.Instance.BimCityJsonReceived += OnBimCityJsonReceived;
+        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+    }
 
-        if( !string.IsNullOrEmpty(this.cityJson))
+    void OnDisable()
+    {
+        MetadataLoader.Instance.BimCityJsonReceived -= OnBimCityJsonReceived;
+        MetadataLoader.Instance.PerceelDataLoaded -= OnPerceelDataLoaded;
+    }
+
+    private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
+    {
+        centerPerceel = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
+
+        if (!string.IsNullOrEmpty(this.cityJson))
         {
             VisualizeCityJson();
+            EnableUploadedModel(false);
         }
-
     }
 
     private void OnBimCityJsonReceived(string cityJson)
     {
         this.cityJson = cityJson;
 
-        if(centerPerceel != null)
+        if (centerPerceel != null)
         {
             VisualizeCityJson();
+            EnableUploadedModel(false);
         }
-
-
     }
 
     void VisualizeCityJson()
     {
-        var cityJsonModel = new CityJsonModel(this.cityJson, this.centerPerceel.Value);
+        print(centerPerceel.Value);
+        var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
@@ -62,7 +71,6 @@ public class CityJsonVisualiser : MonoBehaviour
         }
     }
 
-
     void AddMeshGameObject(string name, Mesh mesh)
     {
         GameObject gam = new GameObject(name);
@@ -72,5 +80,17 @@ public class CityJsonVisualiser : MonoBehaviour
         meshrenderer.material = MeshMaterial;
         gam.transform.parent = transform;
     }
-    
+
+    public void EnableUploadedModel(bool enable)
+    {
+        foreach (Transform t in transform)
+        {
+            t.gameObject.SetActive(enable);
+        }
+
+        if (enable)
+        {
+            gameObject.AddComponent<UploadedUitbouw>();
+        }
+    }
 }

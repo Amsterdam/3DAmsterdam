@@ -80,8 +80,6 @@ namespace T3D.LoadData
 			var centerx = minx + ((maxx - minx) / 2);
 			var centery = miny + ((maxy - miny) / 2);
 
-
-
 			//Debug.Log($"x: {minx} - {maxx}");
 			//Debug.Log($"y: {miny} - {maxy}");
 			//Debug.Log($"z: {minz} - {maxz}");
@@ -112,18 +110,12 @@ namespace T3D.LoadData
 						vertices.Add(vertCoordinates);
 					}
                     else
-                    {						
-						var posRd = new Vector3RD(centerWorld.x + rd.x - centerx, centerWorld.y + rd.y - centery, centerWorld.z + rd.z);
-
-						var unityCoordinates = CoordConvert.RDtoUnity(posRd);
-						var vertCoordinates = new Vector3Double(unityCoordinates.x, unityCoordinates.y, unityCoordinates.z);
+                    {
+						//var posRd = new Vector3RD(centerWorld.x + rd.x - centerx, centerWorld.y + rd.y - centery, centerWorld.z + rd.z);
+						var vertCoordinates = new Vector3Double(rd.x - centerx, centerWorld.z + rd.z, rd.y - centery);
 						vertices.Add(vertCoordinates);
 					}
-
-					
 				}
-
-
 			}
 			//get textureVertices
 			foreach (JSONNode node in cityjsonNode["appearance"]["vertices-texture"])
