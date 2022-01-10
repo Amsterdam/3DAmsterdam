@@ -15,12 +15,14 @@ public class CityJsonVisualiser : MonoBehaviour
     public Material MeshMaterial;
     private Vector3RD? centerPerceel;
     private string cityJson;
+    private UploadedUitbouw uitbouw;
 
     public static CityJsonVisualiser Instance;
 
     private void Awake()
     {
         Instance = this;
+        uitbouw = GetComponentInChildren<UploadedUitbouw>(true);
     }
 
     void OnEnable()
@@ -59,7 +61,6 @@ public class CityJsonVisualiser : MonoBehaviour
 
     void VisualizeCityJson()
     {
-        print(centerPerceel.Value);
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
@@ -78,20 +79,20 @@ public class CityJsonVisualiser : MonoBehaviour
         meshfilter.sharedMesh = mesh;
         var meshrenderer = gam.AddComponent<MeshRenderer>();
         meshrenderer.material = MeshMaterial;
-        gam.transform.parent = transform;
+        gam.transform.SetParent(uitbouw.transform);
+        gam.AddComponent<BoxCollider>();
+
+        uitbouw.SetMeshFilter(meshfilter);
+
+        gam.transform.localPosition = -transform.forward * uitbouw.Depth / 2;
     }
 
     public void EnableUploadedModel(bool enable)
     {
-        foreach (Transform t in transform)
-        {
-            t.gameObject.SetActive(enable);
-        }
+        uitbouw.gameObject.SetActive(enable);
 
-        if (enable)
-        {
-            var uitbouw = gameObject.AddComponent<UploadedUitbouw>();
-            transform.GetChild(0).transform.localPosition = -transform.forward * uitbouw.Depth / 2;
-        }
+        uitbouw.transform.position = CoordConvert.RDtoUnity(centerPerceel.Value); //set position to ensure snapping to wall is somewhat accurate
+        uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
+        uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
     }
 }

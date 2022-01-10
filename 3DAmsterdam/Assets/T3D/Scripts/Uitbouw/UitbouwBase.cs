@@ -90,14 +90,13 @@ namespace Netherlands3D.T3D.Uitbouw
             positionKey = GetType().ToString() + ".uitbouwPosition";
             savedPosition = new SaveableVector3(positionKey);
 
-            building = RestrictionChecker.ActiveBuilding;
-            UpdateDimensions();
         }
 
         public abstract void UpdateDimensions();
 
         protected virtual void Start()
         {
+            building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
                 transform.position = savedPosition.Value;
         }
@@ -126,13 +125,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessSnapping()
         {
-            if (building)
+            if (building && building.SelectedWall.WallIsSelected)
             {
-                if (building.SelectedWall.WallIsSelected)
-                {
-                    SnapToWall(building.SelectedWall);
-                    SnapToGround(building);
-                }
+                SnapToWall(building.SelectedWall);
+                SnapToGround(building);
             }
         }
 

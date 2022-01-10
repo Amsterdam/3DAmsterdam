@@ -482,7 +482,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 //var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
                 var obj = CityJsonVisualiser.Instance;
                 obj.EnableUploadedModel(true);
-                Uitbouw = obj.GetComponent<UitbouwBase>();
+                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             else if (!Uitbouw)
             {
