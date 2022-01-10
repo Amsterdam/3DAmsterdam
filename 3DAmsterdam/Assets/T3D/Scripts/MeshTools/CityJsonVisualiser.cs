@@ -90,7 +90,8 @@ public class CityJsonVisualiser : MonoBehaviour
 
         if (enable)
         {
-            gameObject.AddComponent<UploadedUitbouw>();
+            var uitbouw = gameObject.AddComponent<UploadedUitbouw>();
+            transform.GetChild(0).transform.localPosition = -transform.forward * uitbouw.Depth / 2;
         }
     }
 }
