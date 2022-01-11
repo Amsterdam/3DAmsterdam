@@ -74,10 +74,13 @@ namespace Netherlands3D.T3D
 
         private void OnDestroy()
         {
-            foreach (var line in lines)
+            if (lines != null) //sometimes a nullreference is thrown without this for some reason
             {
-                if (line)
-                    Destroy(line.gameObject);
+                foreach (var line in lines)
+                {
+                    if (line)
+                        Destroy(line.gameObject);
+                }
             }
         }
     }

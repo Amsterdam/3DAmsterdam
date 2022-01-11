@@ -72,7 +72,6 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             var muur = walls.FirstOrDefault(x => x.Side == side);
             return muur;
-            //return walls.FirstOrDefault(x => x.Side == side);
         }
     }
 }
