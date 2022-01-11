@@ -41,6 +41,8 @@ public class T3DInit : MonoBehaviour
 
     public static T3DInit Instance;
 
+    public TileVisualizer TileVisualizer;
+
     private void Awake()
     {
         Instance = this;
@@ -99,6 +101,7 @@ public class T3DInit : MonoBehaviour
 
     private void GoToTestBuilding()
     {
+        Debug.Log("GoToTestBuilding");
 
         PositionRD = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
         //var pos = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
@@ -108,6 +111,8 @@ public class T3DInit : MonoBehaviour
         //var pos = new Vector3RD(136932.03, 454272.937, 0); // measurement error building: 3523AA, 10
         cameraPosition.SetValue(PositionRD);
         GotoPosition(PositionRD);
+
+        TileVisualizer.LoadTile(PositionRD.x, PositionRD.y);
 
         bagId.SetValue("0344100000021804");
         //bagId.SetValue("0344100000068320");
@@ -131,6 +136,7 @@ public class T3DInit : MonoBehaviour
 
     private void CheckURLForPositionAndId()
     {
+        Debug.Log("CheckURLForPositionAndId");
         PositionRD = Application.absoluteURL.GetRDCoordinateByUrl();
         if (PositionRD.Equals(new Vector3RD(0, 0, 0))) return;
 
@@ -162,9 +168,14 @@ public class T3DInit : MonoBehaviour
 
     private IEnumerator GoToBuildingAtEndOfFrame()
     {
+        Debug.Log("GoToBuildingAtEndOfFrame");
+
         yield return null; //wait a frame
 
         var pos = cameraPosition.Value;
+
+        if (pos.x == 0 && pos.y == 0 && pos.z == 0) yield break;
+
         cameraPosition.SetValue(pos);
         GotoPosition(pos);
         //print(pos + "_" + bagId.Value);
