@@ -427,7 +427,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             //var filepath = @"F:\T3D\CityJson stuff\data\15ad2866-8d14-44e1-8b2e-2a18275134b6.json";
             //var filepath = @"F:\T3D\CityJson stuff\data\ASP9 - Nieuw.json";
-            var filepath = @"F:\T3D\Data\Sketchup\cityjson\v1\01_2018_layers.skp.json";
+            var filepath = @"/Users/Tom/Documents/TSCD/T3D/sketchup cityjson files/02_2018_uitbouw_components.skp.json";
 
             //var filepath = @"F:\T3D\CityJson stuff\data\61ae0794bca82a123496d257.json";
             //var filepath = @"F:\T3D\CityJson stuff\data\gebouw_met_uitbouw.json";
@@ -479,7 +479,9 @@ namespace Netherlands3D.T3D.Uitbouw
             var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             if (T3DInit.Instance.UploadedModel && !Uitbouw)
             {
-                var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
+                //var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
+                var obj = CityJsonVisualiser.Instance;
+                obj.EnableUploadedModel(true);
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             else if (!Uitbouw)

@@ -85,12 +85,12 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         string saveData = GetJsonSaveData();
-        Debug.Log("Saving data: " + saveData);
+        //Debug.Log("Saving data: " + saveData);
         PlayerPrefs.SetString(sessionId, saveData);
 
         if (uploadCoroutine == null)
         {
-            print("making new coroutine");
+            //print("making new coroutine");
             uploadCoroutine = StartCoroutine(UploadData(sessionId, saveData));
         }
         else
@@ -103,7 +103,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     private IEnumerator UploadData(string name, string data)
     {
         var uwr = UnityWebRequest.Put(uploadURL + name, data);
-        print(uploadURL + name);
+        //print(uploadURL + name);
         using (uwr)
         {
             saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.Saving);
@@ -115,7 +115,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             else
             {
                 saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
-                print("saving succeeded");
+                //print("saving succeeded");
                 uploadCoroutine = null;
             }
         }

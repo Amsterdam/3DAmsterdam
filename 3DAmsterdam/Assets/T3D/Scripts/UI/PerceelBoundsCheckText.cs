@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
-    
-
     public class PerceelBoundsCheckText : MonoBehaviour
     {
         public Text text;
