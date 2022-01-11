@@ -88,6 +88,7 @@ public class State : MonoBehaviour
     public void GoToPreviousState()
     {
         gameObject.SetActive(false);
+        StateCompletedAction();
         if (previousState != null)
         {
             previousState.EnterState(previousState.previousState);
