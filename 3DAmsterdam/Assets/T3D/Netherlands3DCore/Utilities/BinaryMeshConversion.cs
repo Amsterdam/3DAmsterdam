@@ -237,8 +237,10 @@ namespace Netherlands3D.Core
 
         public static ObjectMappingClass ReadBinaryMetaData(byte[] fileBytes)
         {
-            ObjectMappingClass omc = new ObjectMappingClass();
+            ObjectMappingClass omc = ScriptableObject.CreateInstance<ObjectMappingClass>();
+
             omc.ids = new List<string>();
+            omc.vectorMap = new List<int>();
 
             using (var stream = new MemoryStream(fileBytes))
             {
@@ -258,15 +260,10 @@ namespace Netherlands3D.Core
 
                         omc.ids.Add(id);
 
-                        //SubObjectsData.Add(new SubOjectData()
-                        //{
-                        //    objectID = id,
-                        //    firstIndex = firstIndex,
-                        //    indicesCount = indicesCount,
-                        //    firstVertex = firstVertex,
-                        //    verticesLength = vertexCount,
-                        //    subMeshID = subMeshID
-                        //});
+                        omc.vectorMap.Add(firstVertex);
+                        omc.vectorMap.Add(vertexCount);
+                        omc.vectorMap.Add(0);
+
                     }
                 }
             }
