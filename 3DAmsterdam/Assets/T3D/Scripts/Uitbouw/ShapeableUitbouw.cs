@@ -44,6 +44,12 @@ namespace Netherlands3D.T3D.Uitbouw
             SetDimensions(widthVector.magnitude, depthVector.magnitude, heightVector.magnitude);
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            UpdateDimensions(); //set the dimensions before these are used to calculate the wall offsets of the saved data
+        }
+
         protected override void Update()
         {
             UpdateDimensions();
