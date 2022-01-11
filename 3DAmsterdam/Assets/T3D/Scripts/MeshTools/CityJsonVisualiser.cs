@@ -84,7 +84,9 @@ public class CityJsonVisualiser : MonoBehaviour
 
         uitbouw.SetMeshFilter(meshfilter);
 
-        gam.transform.localPosition = -transform.forward * uitbouw.Depth / 2;
+        var depthOffset = -transform.forward * uitbouw.Depth / 2;
+        var heightOffset = transform.up * ((uitbouw.Height / 2) - Vector3.Distance(uitbouw.CenterPoint, transform.position));
+        gam.transform.localPosition = depthOffset + heightOffset;
     }
 
     public void EnableUploadedModel(bool enable)
