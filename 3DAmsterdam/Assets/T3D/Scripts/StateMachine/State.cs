@@ -66,6 +66,7 @@ public class State : MonoBehaviour
         ActiveState = this;
         gameObject.SetActive(true);
         this.previousState = previousState;
+        StateEnteredAction();
     }
 
     //call to exit the state, optional parameter is to enter a next state
@@ -95,6 +96,10 @@ public class State : MonoBehaviour
     }
 
     public virtual void StateLoadedAction()
+    {
+    }
+
+    public virtual void StateEnteredAction()
     {
     }
 
