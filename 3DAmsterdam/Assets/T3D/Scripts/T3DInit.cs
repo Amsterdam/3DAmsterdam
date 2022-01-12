@@ -164,10 +164,14 @@ public class T3DInit : MonoBehaviour
     {
         yield return null; //wait a frame
 
+#if !UNITY_EDITOR
+            CheckURLForPositionAndId();
+#else
         var pos = cameraPosition.Value;
         cameraPosition.SetValue(pos);
         GotoPosition(pos);
-        //print(pos + "_" + bagId.Value);
+        print(pos + "_" + bagId.Value);
         MetadataLoader.Instance.RequestBuildingData(pos, bagId.Value);
+#endif
     }
 }
