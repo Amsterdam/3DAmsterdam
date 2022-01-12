@@ -1,5 +1,7 @@
 using ConvertCoordinates;
 using Netherlands3D.Core;
+using Netherlands3D.LayerSystem;
+using Netherlands3D.T3D.Uitbouw;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using UnityEngine.Networking;
 public class TileVisualizer : MonoBehaviour
 {
 	public string DataPath;
+	public string MetaDataPath;
 	public Material TileMaterial;
 	public float TileSize = 1000;
 	public UnityEngine.Rendering.ShadowCastingMode ShadowCastingMode;
@@ -28,12 +31,9 @@ public class TileVisualizer : MonoBehaviour
 
 	private IEnumerator DownloadBinaryMesh(double x, double y)
 	{
-		
-
 		string url = DataPath.ReplaceXY(x, y);
 
 		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
-
 #if !UNITY_EDITOR && UNITY_WEBGL
 			if(brotliCompressedExtention.Length>0)
 				url += brotliCompressedExtention;
@@ -43,11 +43,8 @@ public class TileVisualizer : MonoBehaviour
 					webRequest.SetRequestHeader("Accept-Encoding", "br");
 					//Not allowed for this unity version (but seems to be legacy)
 		#endif*/
-
 		
 		yield return webRequest.SendWebRequest();
-
-
 
 		if (webRequest.result != UnityWebRequest.Result.Success)
 		{
@@ -92,6 +89,46 @@ public class TileVisualizer : MonoBehaviour
 		}
 
 		container.transform.parent = transform;
+
+		ObjectData objectdata = container.AddComponent<ObjectData>();
+
+		StartCoroutine(DownloadBinaryMeshData(objectdata, position));
+
 	}
 
+	private IEnumerator DownloadBinaryMeshData(ObjectData objectdata, Vector2 position)
+	{
+		string url = MetaDataPath.ReplaceXY(position.x, position.y);
+		var webRequest = UnityWebRequest.Get(url);
+
+		yield return webRequest.SendWebRequest();
+
+		if (webRequest.result != UnityWebRequest.Result.Success)
+		{
+			Debug.Log($"Could not download tile: {url}");
+		}
+		else
+		{
+			byte[] results = webRequest.downloadHandler.data;
+			var objectmapping = BinaryMeshConversion.ReadBinaryMetaData(results);
+			objectdata.ids = objectmapping.ids;
+			objectdata.vectorMap = objectmapping.vectorMap;
+
+			objectdata.highlightIDs = new List<string>()
+			{
+				T3DInit.Instance.BagId
+			};
+
+			objectdata.ApplyDataToIDsTexture();
+
+			var rd = new Vector3RD(position.x, position.y, 0);
+
+			var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+
+			MetadataLoader.Instance.RaiseBuildingMetaDataLoaded(objectdata, tileOffset);
+
+		}
+	}
+
+    
 }

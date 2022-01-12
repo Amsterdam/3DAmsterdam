@@ -108,6 +108,11 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingMetaDataLoadedEventHandler(object source, ObjectDataEventArgs args);
         public event BuildingMetaDataLoadedEventHandler BuildingMetaDataLoaded;
 
+        public void RaiseBuildingMetaDataLoaded(ObjectData objectdata, Vector3 offset)
+        {
+            BuildingMetaDataLoaded?.Invoke(this, new ObjectDataEventArgs(true, objectdata, offset));
+        }
+
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;
 
@@ -186,7 +191,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             StartCoroutine(GetPerceelData(position));
 
-            StartCoroutine(HighlightBuilding(position, id));
+           // StartCoroutine(HighlightBuilding(position, id));
 
             StartCoroutine(GetMonumentStatus(position));
 
