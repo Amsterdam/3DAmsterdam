@@ -138,11 +138,11 @@ public class T3DInit : MonoBehaviour
         bagId.SetValue(Application.absoluteURL.GetUrlParamValue("id"));
 
         uploadedModel.SetValue(Application.absoluteURL.GetUrlParamBool("hasfile"));
-        bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelId"));
-        bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionId"));
-        isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isUserFeedback"));
-        IsEditMode = Application.absoluteURL.GetUrlParamBool("IsEditMode");
-        blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobId"));
+        bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelid"));
+        bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionid"));
+        isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isuserfeedback"));
+        IsEditMode = Application.absoluteURL.GetUrlParamBool("iseditmode");
+        blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobid"));
 
         GotoPosition(PositionRD);
         MetadataLoader.Instance.RequestBuildingData(PositionRD, bagId.Value);
