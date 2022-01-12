@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 
 public class T3DUnitTests : MonoBehaviour
 {
@@ -12,11 +13,20 @@ public class T3DUnitTests : MonoBehaviour
     public void TestReadBinaryMetadata()
     {
 
-        var bytes = File.ReadAllBytes(@"E:\T3D\Buildings-138000_455000.2.2-data.bin");
+        //var bytes = File.ReadAllBytes(@"E:\T3D\Buildings-138000_455000.2.2-data.bin");
+
+        var bytes = File.ReadAllBytes(@"F:\Data\all\tiles\compressed\Buildings-138000_455000.2.2-data.bin");
+
         var result = BinaryMeshConversion.ReadBinaryMetaData(bytes);
 
+        var id = "NL.IMBAG.Pand.0344100000001301"; 
+        var ids = result.ids;
+        var vmap = result.vectorMap;
 
-        Assert.That(true);
+        var objectIndex = ids.IndexOf(id);
+        var count = vmap.Count(o => o == objectIndex);
+        Debug.Log(count);
+        Assert.That(count > 0);
 
     }
 

@@ -86,7 +86,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
         {
-            var idIndex = objectData.ids.IndexOf(id);
+            var idIndex = objectData.ids.FindIndex(o => o.Contains(id));
 
             List<int> vertIndices = new List<int>();
             for (int i = 0; i < objectData.vectorMap.Count; i++)
@@ -121,7 +121,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         if (existingVertIndex == -1) //vert not found, add this vert
                         {
                             vertices.Add(sourceVerts[sourceTriangles[i + j]]);
-                            uvs.Add(sourceUVs[sourceTriangles[i + j]]);
+                            uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
                             newTriIndex = vertices.Count - 1;
                             usedVerts.Add(sourceTriangles[i + j]);
                         }
