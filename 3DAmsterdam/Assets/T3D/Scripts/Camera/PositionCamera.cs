@@ -28,7 +28,7 @@ public class PositionCamera: MonoBehaviour
     private void OnAdresUitgebreidLoaded(object source, AdresUitgebreidDataEventArgs args)
     {
         buildingcenter = args.Coordinate;
-        if (cameraIsSet == false && perceelcenter != null) SetCameraposition();
+        SetCameraposition();
     }
 
     void SetCameraposition()

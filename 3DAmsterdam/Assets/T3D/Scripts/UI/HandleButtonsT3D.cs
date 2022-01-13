@@ -21,7 +21,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonZoomOut;    
     public Button ButtonToggleRotateFirstperson;
 
-    public Layer BuildingsLayer;
+    public GameObject BuildingsLayer;
     public Layer TerrainLayer;
     public GameObject Zonnepaneel;
 
@@ -85,7 +85,8 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void ToggleBuildings()
     {
-        BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
+        //BuildingsLayer.isEnabled = !BuildingsLayer.isEnabled;
+        BuildingsLayer.SetActive(!BuildingsLayer.activeSelf);
         TerrainLayer.isEnabled = !TerrainLayer.isEnabled;
         RestrictionChecker.ActivePerceel.SetPerceelActive(!TerrainLayer.isEnabled);
     }
