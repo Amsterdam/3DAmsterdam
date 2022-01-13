@@ -124,6 +124,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     public void ClearAllData(string sessionId)
     {
         rootObject = new JSONObject();
+        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+
         PlayerPrefs.DeleteKey(sessionId);
     }
 

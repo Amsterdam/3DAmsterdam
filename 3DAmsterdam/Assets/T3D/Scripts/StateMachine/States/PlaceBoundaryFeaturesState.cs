@@ -31,7 +31,10 @@ public class PlaceBoundaryFeaturesState : State
         {
             LoadBoundaryFeature(i);
         }
+    }
 
+    public override void StateEnteredAction()
+    {
         GetComponent<BoundaryFeatureEditHandler>().SetAllowBoundaryFeatureEditing(true);
     }
 
