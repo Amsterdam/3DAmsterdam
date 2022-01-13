@@ -42,6 +42,8 @@ public class T3DInit : MonoBehaviour
 
     public static T3DInit Instance;
 
+    public TileVisualizer TileVisualizer;
+
     private void Awake()
     {
         Instance = this;
@@ -163,6 +165,8 @@ public class T3DInit : MonoBehaviour
 
         bagId.SetValue(urlBagId); //overwrite the saved id with the url id
         GotoPosition(cameraPosition.Value);
+
+        yield return StartCoroutine(TileVisualizer.LoadTile(PositionRD.x, PositionRD.y, BagId));
         MetadataLoader.Instance.RequestBuildingData(cameraPosition.Value, bagId.Value);
     }
 }

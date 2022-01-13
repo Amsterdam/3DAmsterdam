@@ -86,21 +86,23 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public static Mesh ExtractBuildingMesh(ObjectData objectData, string id)
         {
-            var idIndex = objectData.ids.IndexOf(id);
-
-            List<int> vertIndices = new List<int>();
-            for (int i = 0; i < objectData.vectorMap.Count; i++)
-            {
-                if (objectData.vectorMap[i] == idIndex)
-                {
-                    vertIndices.Add(i);
-                }
-            }
+            var idIndex = objectData.ids.FindIndex(o => o.Contains(id));
 
             //copy mesh data to avoid getting a copy every iteration in the loop
             var sourceVerts = objectData.mesh.vertices;
             var sourceTriangles = objectData.mesh.triangles;
             var sourceUVs = objectData.uvs;
+
+            List<int> vertIndices = new List<int>();
+            for (int i = 0; i < objectData.vectorMap.Count; i++)
+            {
+                //var vertcount = objectData
+
+                if (objectData.vectorMap[i] == idIndex)
+                {
+                    vertIndices.Add(i);
+                }
+            }
 
             var vertices = new List<Vector3>();
             var triangles = new List<int>();
@@ -121,7 +123,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         if (existingVertIndex == -1) //vert not found, add this vert
                         {
                             vertices.Add(sourceVerts[sourceTriangles[i + j]]);
-                            uvs.Add(sourceUVs[sourceTriangles[i + j]]);
+                           // uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
                             newTriIndex = vertices.Count - 1;
                             usedVerts.Add(sourceTriangles[i + j]);
                         }
@@ -139,7 +141,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Mesh mesh = new Mesh();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
-            mesh.uv = uvs.ToArray();
+          //  mesh.uv = uvs.ToArray();
             mesh.RecalculateNormals();
             return mesh;
         }
