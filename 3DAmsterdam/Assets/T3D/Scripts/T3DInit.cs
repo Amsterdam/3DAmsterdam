@@ -80,16 +80,16 @@ public class T3DInit : MonoBehaviour
             LoadBuilding();
     }
 
+#if UNITY_EDITOR
     private void Update()
     {
 
-#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.P))
         {
             LoadBuilding();
         }
-#endif
     }
+#endif
 
     void GotoPosition(Vector3RD position)
     {
