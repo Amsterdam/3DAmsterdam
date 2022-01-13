@@ -94,12 +94,12 @@ public class T3DInit : MonoBehaviour
             bimModelId.SetValue("61a57eba0a6448f8eaacf9e9");
             bimModelVersionId.SetValue("1");
 
-            GoToTestBuilding();
+            StartCoroutine(GoToTestBuilding());
         }
 #endif
     }
 
-    private void GoToTestBuilding()
+    private IEnumerator GoToTestBuilding()
     {
         Debug.Log("GoToTestBuilding");
 
@@ -118,7 +118,7 @@ public class T3DInit : MonoBehaviour
 
         //bagId.SetValue("0344100000035416");// measurement error building : 3523AA, 10
 
-         StartCoroutine( TileVisualizer.LoadTile(PositionRD.x, PositionRD.y, BagId));
+        yield return StartCoroutine( TileVisualizer.LoadTile(PositionRD.x, PositionRD.y, BagId));
         MetadataLoader.Instance.RequestBuildingData(PositionRD, bagId.Value);
 
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE
