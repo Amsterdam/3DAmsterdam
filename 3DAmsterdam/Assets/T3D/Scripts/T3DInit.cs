@@ -154,7 +154,7 @@ public class T3DInit : MonoBehaviour
         SetPositionAndIdForEditor();
 #endif
 
-        print(urlBagId == bagId.Value);
+        //print(urlBagId == bagId.Value);
         if (bagId.Value != urlBagId) //if the loaded id is not the same as the url id, a new session should be started.
         {
             SessionSaver.ClearAllSaveData();
