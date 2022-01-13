@@ -112,14 +112,13 @@ public class T3DInit : MonoBehaviour
         cameraPosition.SetValue(PositionRD);
         GotoPosition(PositionRD);
 
-        TileVisualizer.LoadTile(PositionRD.x, PositionRD.y);
-
         bagId.SetValue("0344100000021804");
         //bagId.SetValue("0344100000068320");
         //bagId.SetValue("0344100000052214");
 
         //bagId.SetValue("0344100000035416");// measurement error building : 3523AA, 10
 
+         StartCoroutine( TileVisualizer.LoadTile(PositionRD.x, PositionRD.y, BagId));
         MetadataLoader.Instance.RequestBuildingData(PositionRD, bagId.Value);
 
         //StartCoroutine(PerceelRenderer.Instance.RequestBuildingData(pos, "0344100000021804")); //Stadhouderslaan 79 Utrecht, 3583JE

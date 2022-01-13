@@ -123,7 +123,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         if (existingVertIndex == -1) //vert not found, add this vert
                         {
                             vertices.Add(sourceVerts[sourceTriangles[i + j]]);
-                            uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
+                           // uvs.Add(sourceUVs[sourceTriangles[i + j]]); 
                             newTriIndex = vertices.Count - 1;
                             usedVerts.Add(sourceTriangles[i + j]);
                         }
@@ -141,7 +141,7 @@ namespace Netherlands3D.T3D.Uitbouw
             Mesh mesh = new Mesh();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
-            mesh.uv = uvs.ToArray();
+          //  mesh.uv = uvs.ToArray();
             mesh.RecalculateNormals();
             return mesh;
         }

@@ -21,11 +21,11 @@ public class T3DUnitTests : MonoBehaviour
 
         var id = "0344100000021804";
         var ids = result.ids;
-        var vmap = result.vectorMap;
-
-
         var objectIndex = ids.FindIndex(o => o.Contains(id));
-        var count = vmap.Count(o => o == objectIndex);
+
+        var vectormap = result.ToOldVectorMap();
+
+        var count = vectormap.Count(o => o == objectIndex);
         Debug.Log(count);
         Assert.That(count > 0);
 

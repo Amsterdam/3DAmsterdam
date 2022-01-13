@@ -9,4 +9,23 @@ public class ObjectMappingClass : ScriptableObject
     public List<int> vectorMap; //List of all uv/verts belonging to what bag ID in ids
     public List<int> objectVertIndexCount; //List of all uv/verts belonging to what bag ID in ids
 
+    public List<int> ToOldVectorMap()
+    {
+        var oldVectorMap = new List<int>();
+        var newVmapCount = 0;
+
+        for (var i = 0; i < vectorMap.Count; i++)
+        {
+            var firstIndex = vectorMap[i];
+            var vicount = objectVertIndexCount[i];
+
+            for (int v = 0; v < vicount; v++)
+            {
+                oldVectorMap.Add(i);
+                newVmapCount++;
+            }
+        }
+        return oldVectorMap;
+    }
+
 }

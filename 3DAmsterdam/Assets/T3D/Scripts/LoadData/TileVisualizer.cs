@@ -16,22 +16,38 @@ public class TileVisualizer : MonoBehaviour
 	public float TileSize = 1000;
 	public UnityEngine.Rendering.ShadowCastingMode ShadowCastingMode;
 
-    private void Start()
+	byte[] meshbytes;
+	ObjectData objectdata;
+
+	private void Start()
     {
 	}
 
-    internal void LoadTile(double x, double y)
-    {
 
+	internal IEnumerator LoadTile(double x, double y, string bagId)
+    {
 		x =  Math.Floor(x/ TileSize) * TileSize;
 		y = Math.Floor(y/ TileSize) * TileSize;
 
-		StartCoroutine(DownloadBinaryMesh(x,y));
-    }
+		Vector2 position = new Vector2((float)x, (float)y);
 
-	private IEnumerator DownloadBinaryMesh(double x, double y)
+		yield return StartCoroutine(DownloadBinaryMesh(position));
+		
+		CreateTileGameObject(meshbytes, position, false);
+
+		yield return StartCoroutine(DownloadBinaryMeshData(position, bagId));
+
+		//raise event to generate a mesh from the meshdata
+		var rd = new Vector3RD(position.x, position.y, 0);
+		var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
+		MetadataLoader.Instance.RaiseBuildingMetaDataLoaded(objectdata, tileOffset);
+
+
+	}
+
+	private IEnumerator DownloadBinaryMesh(Vector2 position)
 	{
-		string url = DataPath.ReplaceXY(x, y);
+		string url = DataPath.ReplaceXY(position.x, position.y);
 
 		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
 #if !UNITY_EDITOR && UNITY_WEBGL
@@ -52,9 +68,37 @@ public class TileVisualizer : MonoBehaviour
 		}
 		else
 		{
-			byte[] results = webRequest.downloadHandler.data;
+			meshbytes = webRequest.downloadHandler.data;
+		}
 
-			CreateTileGameObject(results, new Vector2((float)x,(float)y) , false);
+	}
+
+	private IEnumerator DownloadBinaryMeshData(Vector2 position, string bagId )
+	{
+		string url = MetaDataPath.ReplaceXY(position.x, position.y);
+		var webRequest = UnityWebRequest.Get(url);
+
+		yield return webRequest.SendWebRequest();
+
+		if (webRequest.result != UnityWebRequest.Result.Success)
+		{
+			Debug.Log($"Could not download tile: {url}");
+		}
+		else
+		{
+			byte[] results = webRequest.downloadHandler.data;
+			var objectmapping = BinaryMeshConversion.ReadBinaryMetaData(results);
+
+			objectdata.ids = objectmapping.ids;
+			objectdata.vectorMap = objectmapping.ToOldVectorMap();
+
+			objectdata.highlightIDs = new List<string>()
+			{
+				bagId
+			};
+
+			objectdata.ApplyDataToIDsTexture();
+
 		}
 	}
 
@@ -89,56 +133,7 @@ public class TileVisualizer : MonoBehaviour
 		}
 
 		container.transform.parent = transform;
-
-		ObjectData objectdata = container.AddComponent<ObjectData>();
-
-		StartCoroutine(DownloadBinaryMeshData(objectdata, position));
+		objectdata = container.AddComponent<ObjectData>();
 
 	}
-
-	private IEnumerator DownloadBinaryMeshData(ObjectData objectdata, Vector2 position)
-	{
-		string url = MetaDataPath.ReplaceXY(position.x, position.y);
-		var webRequest = UnityWebRequest.Get(url);
-
-		yield return webRequest.SendWebRequest();
-
-		if (webRequest.result != UnityWebRequest.Result.Success)
-		{
-			Debug.Log($"Could not download tile: {url}");
-		}
-		else
-		{
-			byte[] results = webRequest.downloadHandler.data;
-			var objectmapping = BinaryMeshConversion.ReadBinaryMetaData(results);
-
-			objectdata.ids = objectmapping.ids;
-
-			//construct vectormap from compressed vectormap 
-			var newVectorMapping = new List<int>();
-			foreach(var vm in objectmapping.vectorMap)
-            {
-
-            }
-
-
-			objectdata.vectorMap = objectmapping.vectorMap;
-
-			objectdata.highlightIDs = new List<string>()
-			{
-				T3DInit.Instance.BagId
-			};
-
-			objectdata.ApplyDataToIDsTexture();
-
-			var rd = new Vector3RD(position.x, position.y, 0);
-
-			var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
-
-			MetadataLoader.Instance.RaiseBuildingMetaDataLoaded(objectdata, tileOffset);
-
-		}
-	}
-
-    
 }
