@@ -50,10 +50,10 @@ public class TileVisualizer : MonoBehaviour
 		string url = DataPath.ReplaceXY(position.x, position.y);
 
 		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
-#if !UNITY_EDITOR && UNITY_WEBGL
-			if(brotliCompressedExtention.Length>0)
-				url += brotliCompressedExtention;
-#endif
+//#if !UNITY_EDITOR && UNITY_WEBGL
+//			if(brotliCompressedExtention.Length>0)
+//				url += brotliCompressedExtention;
+//#endif
 		var webRequest = UnityWebRequest.Get(url);
 		/*#if !UNITY_EDITOR && UNITY_WEBGL
 					webRequest.SetRequestHeader("Accept-Encoding", "br");
