@@ -88,19 +88,21 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             var idIndex = objectData.ids.FindIndex(o => o.Contains(id));
 
+            //copy mesh data to avoid getting a copy every iteration in the loop
+            var sourceVerts = objectData.mesh.vertices;
+            var sourceTriangles = objectData.mesh.triangles;
+            var sourceUVs = objectData.uvs;
+
             List<int> vertIndices = new List<int>();
             for (int i = 0; i < objectData.vectorMap.Count; i++)
             {
+                //var vertcount = objectData
+
                 if (objectData.vectorMap[i] == idIndex)
                 {
                     vertIndices.Add(i);
                 }
             }
-
-            //copy mesh data to avoid getting a copy every iteration in the loop
-            var sourceVerts = objectData.mesh.vertices;
-            var sourceTriangles = objectData.mesh.triangles;
-            var sourceUVs = objectData.uvs;
 
             var vertices = new List<Vector3>();
             var triangles = new List<int>();

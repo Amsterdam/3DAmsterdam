@@ -23,14 +23,6 @@ public class T3DUnitTests : MonoBehaviour
         var ids = result.ids;
         var vmap = result.vectorMap;
 
-        for (int i=0; i<ids.Count; i++)
-        {
-            if (ids[i].Contains(id))
-            {
-                Debug.Log(i);
-                break;
-            }
-        }
 
         var objectIndex = ids.FindIndex(o => o.Contains(id));
         var count = vmap.Count(o => o == objectIndex);
