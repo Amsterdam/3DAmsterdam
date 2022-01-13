@@ -13,17 +13,26 @@ public class T3DUnitTests : MonoBehaviour
     public void TestReadBinaryMetadata()
     {
 
-        //var bytes = File.ReadAllBytes(@"E:\T3D\Buildings-138000_455000.2.2-data.bin");
-
-        var bytes = File.ReadAllBytes(@"F:\Data\all\tiles\compressed\Buildings-138000_455000.2.2-data.bin");
-
+        var bytes = File.ReadAllBytes(@"E:\T3D\Buildings-138000_455000.2.2-data.bin");
+        //var bytes = File.ReadAllBytes(@"F:\Data\all\tiles\compressed\Buildings-138000_455000.2.2-data.bin");
         var result = BinaryMeshConversion.ReadBinaryMetaData(bytes);
 
-        var id = "NL.IMBAG.Pand.0344100000001301"; 
+        //var id = "NL.IMBAG.Pand.0344100000021804";
+
+        var id = "0344100000021804";
         var ids = result.ids;
         var vmap = result.vectorMap;
 
-        var objectIndex = ids.IndexOf(id);
+        for (int i=0; i<ids.Count; i++)
+        {
+            if (ids[i].Contains(id))
+            {
+                Debug.Log(i);
+                break;
+            }
+        }
+
+        var objectIndex = ids.FindIndex(o => o.Contains(id));
         var count = vmap.Count(o => o == objectIndex);
         Debug.Log(count);
         Assert.That(count > 0);

@@ -111,7 +111,17 @@ public class TileVisualizer : MonoBehaviour
 		{
 			byte[] results = webRequest.downloadHandler.data;
 			var objectmapping = BinaryMeshConversion.ReadBinaryMetaData(results);
+
 			objectdata.ids = objectmapping.ids;
+
+			//construct vectormap from compressed vectormap 
+			var newVectorMapping = new List<int>();
+			foreach(var vm in objectmapping.vectorMap)
+            {
+
+            }
+
+
 			objectdata.vectorMap = objectmapping.vectorMap;
 
 			objectdata.highlightIDs = new List<string>()

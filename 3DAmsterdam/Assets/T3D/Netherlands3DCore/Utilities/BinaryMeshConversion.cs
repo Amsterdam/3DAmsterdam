@@ -241,6 +241,7 @@ namespace Netherlands3D.Core
 
             omc.ids = new List<string>();
             omc.vectorMap = new List<int>();
+            omc.objectVertIndexCount = new List<int>();
 
             using (var stream = new MemoryStream(fileBytes))
             {
@@ -261,8 +262,7 @@ namespace Netherlands3D.Core
                         omc.ids.Add(id);
 
                         omc.vectorMap.Add(firstVertex);
-                        omc.vectorMap.Add(vertexCount);
-                        omc.vectorMap.Add(0);
+                        omc.objectVertIndexCount.Add(vertexCount);
 
                     }
                 }
