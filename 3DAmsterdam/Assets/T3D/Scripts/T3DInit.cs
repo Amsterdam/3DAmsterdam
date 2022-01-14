@@ -102,7 +102,8 @@ public class T3DInit : MonoBehaviour
 
     private void SetPositionAndIdForEditor()
     {
-        PositionRD = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
+        PositionRD = DebugSettings.PositionRD;
+        //PositionRD = new Vector3RD(138350.607, 455582.274, 0); //Stadhouderslaan 79 Utrecht
         //PositionRD = new Vector3RD(137383.174, 454037.042, 0); //Hertestraat 15 utrecht
         //PositionRD = new Vector3RD(137837.926, 452307.472, 0); //Cataloni? 5 Utrecht
         //PositionRD = new Vector3RD(136795.424, 455821.827, 0); //Domplein 24 Utrecht
@@ -111,16 +112,17 @@ public class T3DInit : MonoBehaviour
         if (PositionRD.Equals(new Vector3RD(0, 0, 0))) return;
         cameraPosition.SetValue(PositionRD);
 
-        urlBagId = "0344100000021804"; //Stadhouderslaan 79 Utrecht
+        urlBagId = DebugSettings.BagId;
+        //urlBagId = "0344100000021804"; //Stadhouderslaan 79 Utrecht
         //urlBagId = "0344100000068320";//Hertestraat 15 utrecht
         //urlBagId = "0344100000052214";//Cataloni? 5 Utrecht
         //urlBagId = "0344100000035416";// measurement error building : 3523AA, 10
 
-        uploadedModel.SetValue(Input.GetKey(KeyCode.LeftShift));
-        bimModelId.SetValue("61a57eba0a6448f8eaacf9e9");
-        bimModelVersionId.SetValue("1");
-        isUserFeedback.SetValue(false);
-        IsEditMode = true;
+        uploadedModel.SetValue(DebugSettings.UploadedModel);
+        bimModelId.SetValue(DebugSettings.BimModelId);
+        bimModelVersionId.SetValue(DebugSettings.BimModelVersionId);
+        isUserFeedback.SetValue(DebugSettings.IsUserFeedback);
+        IsEditMode = DebugSettings.IsEditMode;
         //blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobid"));
     }
 
