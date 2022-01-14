@@ -35,6 +35,7 @@ public class ToggleStyle : MonoBehaviour
     private void Awake()
     {
         toggle = GetComponent<Toggle>();
+        ChangeToggleStyle(toggle.isOn);
     }
 
     private void OnEnable()
