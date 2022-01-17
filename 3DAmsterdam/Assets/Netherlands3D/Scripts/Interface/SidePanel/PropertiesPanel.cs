@@ -236,7 +236,9 @@ namespace Netherlands3D.Interface.SidePanel
             open = true;
 
             if (panelAnimation != null) StopCoroutine(panelAnimation);
-            panelAnimation = StartCoroutine(Animate());
+
+            if(this.gameObject.activeInHierarchy)
+                panelAnimation = StartCoroutine(Animate());
 		}
 
         public void ClosePanel()
