@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +75,22 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public static bool IsInPerceel(Vector2[] uitbouwFootprint, List<Vector2[]> perceel, Vector3 uitbouwPositionOffset)
         {
+            if(uitbouwFootprint == null)
+            {
+                Debug.Log("UitbouwRestriction.cs > IsInPerceel > uitbouwFootprint is null");
+                return false;
+            }
+            else if (perceel == null)
+            {
+                Debug.Log("UitbouwRestriction.cs > IsInPerceel > perceel is null");
+                return false;
+            }
+            else if (uitbouwPositionOffset == null)
+            {
+                Debug.Log("UitbouwRestriction.cs > IsInPerceel > uitbouwPositionOffset is null");
+                return false;
+            }
+            
             var q = from i in perceel
                     from p in i
                     select CoordConvert.RDtoUnity(p) into v3

@@ -1,5 +1,6 @@
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
+using Netherlands3D.Settings;
 using Netherlands3D.T3D.Uitbouw;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,6 +45,8 @@ public class T3DInit : MonoBehaviour
 
     public TileVisualizer TileVisualizer;
 
+    public Netherlands3D.Rendering.RenderSettings RenderSettings;
+
     private void Awake()
     {
         Instance = this;
@@ -80,7 +83,12 @@ public class T3DInit : MonoBehaviour
     {
         if (!SessionSaver.LoadPreviousSession)
             LoadBuilding();
+
+        ToggleQuality(true);
+
     }
+
+    private bool qualityToggle = false;
 
 #if UNITY_EDITOR
     private void Update()
@@ -89,6 +97,22 @@ public class T3DInit : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             LoadBuilding();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            qualityToggle = !qualityToggle;
+
+            //realtimeReflections
+            RenderSettings.ToggleReflections(qualityToggle);
+
+            //postProcessingEffects
+            RenderSettings.TogglePostEffects(qualityToggle);
+
+            //antiAliasing
+            RenderSettings.ToggleAA(qualityToggle);
+
+            //ambientOcclusion
+            RenderSettings.ToggleAO(qualityToggle);
         }
     }
 #endif
@@ -170,5 +194,20 @@ public class T3DInit : MonoBehaviour
 
         yield return StartCoroutine(TileVisualizer.LoadTile(PositionRD.x, PositionRD.y, BagId));
         MetadataLoader.Instance.RequestBuildingData(cameraPosition.Value, bagId.Value);
+    }
+
+    private void ToggleQuality(bool ishigh)
+    {
+        //realtimeReflections
+        RenderSettings.ToggleReflections(ishigh);
+
+        //postProcessingEffects
+        RenderSettings.TogglePostEffects(ishigh);
+
+        //antiAliasing
+        RenderSettings.ToggleAA(ishigh);
+
+        //ambientOcclusion
+        RenderSettings.ToggleAO(ishigh);
     }
 }
