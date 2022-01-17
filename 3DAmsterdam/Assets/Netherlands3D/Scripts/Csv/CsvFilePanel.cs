@@ -1,4 +1,4 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using Netherlands3D;
 using Netherlands3D.Events;
 using Netherlands3D.Interface;
@@ -38,9 +38,24 @@ public class CsvFilePanel : MonoBehaviour
 
     private ActionDropDown currentFilterDropdown;
 
+    [SerializeField]
+    private StringEvent filesImportedEvent;
+
     private void Awake()
     {
         ToggleActiveEvent.Subscribe(OnToggleActive);
+
+		filesImportedEvent.started.AddListener(LoadCsvFromFile);
+    }
+    public void LoadCsvFromFile(string filename)
+    {
+        if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
+            return;
+
+        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
+        File.Delete(filename);
+        ParseCsv(csv);
+        loadingObjScreen.Hide();
     }
 
     private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
@@ -62,7 +77,6 @@ public class CsvFilePanel : MonoBehaviour
         }
 
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
         csvGeoLocation = new CsvGeoLocation(csv);
@@ -168,11 +182,11 @@ public class CsvFilePanel : MonoBehaviour
 
             if (isRd)
             {
-                pos = ConvertCoordinates.CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
+                pos = CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
             }
             else
             {
-                pos = ConvertCoordinates.CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
+                pos = CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
             }
 
             locationMarker.transform.position = pos;
@@ -247,16 +261,6 @@ public class CsvFilePanel : MonoBehaviour
                 PropertiesPanel.Instance.AddSeperatorLine();
             }
         }
-    }
-
-
-    public void LoadCsvFromFile(string filename, System.Action<bool> callback)
-    {
-        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
-        File.Delete(filename);
-        callback(true);
-        ParseCsv(csv);
-        loadingObjScreen.Hide();
     }
 
 #if UNITY_EDITOR

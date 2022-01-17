@@ -21,12 +21,18 @@ using UnityEngine.Events;
 using Netherlands3D.ObjectInteraction;
 using Netherlands3D.Interface.SidePanel;
 using static Netherlands3D.ObjectInteraction.Transformable;
-
+using Netherlands3D.Events;
 
 namespace Netherlands3D.ModelParsing
 {
 	public class ObjStringLoader : MonoBehaviour
 	{
+		[SerializeField]
+		private StringEvent filesImportedEvent;
+
+		[SerializeField]
+		private BoolEvent clearDataBaseEvent;
+
 		[SerializeField]
 		private Material defaultLoadedObjectsMaterial;
 
@@ -48,6 +54,25 @@ namespace Netherlands3D.ModelParsing
 		private int maxLinesPerFrame = 200000; //20000 obj lines are close to a 4mb obj file
 
 		private Transformable transformable;
+		private string fileExtention = ".obj";
+
+		private void Awake()
+		{
+			filesImportedEvent.started.AddListener(FileImported);
+		}
+
+		private void FileImported(string files)
+		{
+			string[] importedFiles = files.Split(',');
+			foreach (var file in importedFiles)
+			{
+				if (file.ToLower().EndsWith(".obj") || file.ToLower().EndsWith(".mtl"))
+				{
+					LoadOBJFromIndexedDB(importedFiles);
+					return;
+				}
+			}
+		}
 
 		private void Start()
 		{
@@ -72,8 +97,7 @@ namespace Netherlands3D.ModelParsing
 				newmtlstring = "";
 			}
 			else
-            {
-				
+            {		
 				File.Copy(pathMtl, Application.persistentDataPath + "/" + newmtlstring, true);
 			}
 
@@ -84,7 +108,7 @@ namespace Netherlands3D.ModelParsing
 				Debug.Log(Application.persistentDataPath + "/" + newobjstring);
 			}
 
-			StartCoroutine(ParseOBJfromStream(newobjstring, newmtlstring, Finished));
+			StartCoroutine(ParseOBJfromStream(newobjstring, newmtlstring));
 		}
 		public void Finished(bool value)
         {
@@ -104,16 +128,16 @@ namespace Netherlands3D.ModelParsing
 			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
 		}
 
-		public void LoadOBJFromIndexedDB(List<string> filenames, System.Action<bool> callback)
+		public void LoadOBJFromIndexedDB(string[] filenames)
         {
-			Debug.Log(filenames.Count + " files received");
+			Debug.Log(filenames.Length + " files received");
 			string objstring = "";
 			string mtlstring = "";
-            for (int i = 0; i < filenames.Count; i++)
+            for (int i = 0; i < filenames.Length; i++)
             {
 				Debug.Log(filenames[i]);
 				string extention = filenames[i].Substring(filenames[i].Length - 4);
-                if (extention.IndexOf("obj")>-1)
+                if (extention.IndexOf("obj") > -1)
                 {
 					objstring = filenames[i];
                 }
@@ -123,7 +147,7 @@ namespace Netherlands3D.ModelParsing
 				}
 			}
 
-			StartCoroutine(ParseOBJfromStream(objstring, mtlstring, callback));
+			StartCoroutine(ParseOBJfromStream(objstring, mtlstring));
         }
 
 		/// <summary>
@@ -135,7 +159,7 @@ namespace Netherlands3D.ModelParsing
 			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
 
-		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath, System.Action<bool> callback)
+		private IEnumerator ParseOBJfromStream(string objFilePath, string mtlFilePath)
         {
 			// Read the obj-file
 			SetOBJFileName(objFilePath);
@@ -179,6 +203,7 @@ namespace Netherlands3D.ModelParsing
 			GameObject createdGO = objstreamReader.createdGameObject;
 			createdGO.name = objModelName;
 			var loadedMesh = createdGO.GetComponent<MeshFilter>().sharedMesh;
+
 			//Do not bother adding a collider if we do not have enough geometry ( avoiding PhysX errors )
 			if(loadedMesh.triangles.Length > 2)
 				createdGO.AddComponent<MeshCollider>().sharedMesh = loadedMesh;
@@ -191,7 +216,6 @@ namespace Netherlands3D.ModelParsing
 			if (objstreamReader.ObjectUsesRDCoordinates == false)
 			{
 				if (transformable.placedTransformable == null) transformable.placedTransformable = new ObjectPlacedEvent();
-				//transformable.placedTransformable.AddListener(RemapMaterials);
 				customObjectPlacer.PlaceExistingObjectAtPointer(createdGO);
 			}
 			else
@@ -200,9 +224,9 @@ namespace Netherlands3D.ModelParsing
 			}
 			loadingObjScreen.Hide();
 			
-			callback(objstreamReader.succes);
 			Destroy(objstreamReader);
 
+			clearDataBaseEvent.started.Invoke(true);
 			yield return null;
         }
 	}

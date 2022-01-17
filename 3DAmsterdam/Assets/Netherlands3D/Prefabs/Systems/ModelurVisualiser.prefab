@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4622711075740190374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3970370969913459547}
+  - component: {fileID: 4282268861713933285}
+  - component: {fileID: 1278223868881689312}
+  m_Layer: 0
+  m_Name: ModelurVisualiser
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3970370969913459547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622711075740190374}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4282268861713933285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622711075740190374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: 85bb9ffcb84ee104c9023c4f13f647b7, type: 2}
+  setExtrusionHeightEvent: {fileID: 11400000, guid: 276050865e1dda7468a00f21fdd801f1,
+    type: 2}
+  defaultMaterial: {fileID: 2100000, guid: c997fad188944254e99e0f40eeb76de8, type: 2}
+  extrusionHeight: 50
+--- !u!114 &1278223868881689312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622711075740190374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77efb079e1aa98d4d86fd593071db95d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawPolygonEvent: {fileID: 11400000, guid: 0450592ecbc867543b2652ed7bb4cfef, type: 2}
+  setExtrusionHeightEvent: {fileID: 11400000, guid: 6a6c4ce4f23d4f34eadbc07ad4d63141,
+    type: 2}
+  defaultMaterial: {fileID: 2100000, guid: e5a1bd98f1de5784d9a129c52445c3b2, type: 2}
+  extrusionHeight: 50

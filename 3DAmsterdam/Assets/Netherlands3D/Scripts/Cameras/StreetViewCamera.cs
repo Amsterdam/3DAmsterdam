@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using Netherlands3D.LayerSystem;
+using Netherlands3D.TileSystem;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.Help;
 using Netherlands3D.Settings;
@@ -11,7 +11,7 @@ namespace Netherlands3D.Cameras
 	public class StreetViewCamera : MonoBehaviour, ICameraControls
 	{
 		[SerializeField]
-		private AssetbundleMeshLayer terrainContainerLayer;
+		private BinaryMeshLayer terrainContainerLayer;
 		private Vector2 rotation = new Vector2(0, 0);
 		public float speed = 3;
 

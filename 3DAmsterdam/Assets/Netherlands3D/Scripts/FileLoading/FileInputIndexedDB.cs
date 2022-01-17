@@ -8,9 +8,6 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 implied. See the License for the specific language governing permissions and limitations under the License.
 */
-
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,24 +38,22 @@ public class FileInputIndexedDB : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void ClearFileInputFields();
 
-    public CsvFilePanel csvLoader;
-
     private List<string> filenames = new List<string>();
     private int numberOfFilesToLoad = 0;
     private int fileCount = 0;
 
-    /*
-    [System.Serializable]
-    public class UserFileUpload
-    {
-        public string fileExtentions;
-        public StringEvent userFileUploadPathEvent;
-	}
+    [SerializeField]
+    private StringEvent filesImportedEvent;
 
     [SerializeField]
-    private UserFileUpload[] userFileUploadEvents;*/
+    private BoolEvent clearDataBaseEvent;
 
-    public void Start()
+	private void Awake()
+	{
+        clearDataBaseEvent.started.AddListener(ClearDatabase);
+    }
+
+	public void Start()
     {
 #if !UNITY_EDITOR && UNITY_WEBGL
         InitializeIndexedDB(Application.persistentDataPath);
@@ -92,7 +87,6 @@ public class FileInputIndexedDB : MonoBehaviour
         Debug.Log("unable to load " + name);
     }
 
-
     // runs while javascript is busy saving files to indexedDB.
     IEnumerator WaitForFilesToBeLoaded()
     {
@@ -118,36 +112,21 @@ public class FileInputIndexedDB : MonoBehaviour
 
     void ProcessAllFiles()
     {
-        //Figure out the filetypes so we know which function to start
-        string extention = Path.GetExtension(filenames[0]);
-        Debug.Log("first file-extention = " + extention);
+        LoadingScreen.Instance.Hide();
 
-        if (extention == ".obj" || extention == ".mtl")
-        {
-            GetComponent<ObjStringLoader>().LoadOBJFromIndexedDB(filenames, ClearDatabase);
-        }
-        else if (extention == ".csv")
-        {
-            csvLoader.LoadCsvFromFile(filenames[0], ClearDatabase);
-        }
-        else if (extention == ".fzp")
-        {
-            GetComponent<VissimStringLoader>().LoadVissimFromFile(filenames[0], ClearDatabase);
-        }
-        else if (extention == ".geojson")
-        {
-            //Parse geojson
-        }
+        var files = string.Join(",", filenames);
+        filesImportedEvent.started.Invoke(files);
     }
 
     public void ClearDatabase(bool succes)
     {
+    #if !UNITY_EDITOR && UNITY_WEBGL
         ClearFileInputFields();
         filenames.Clear();
         if (succes)
         {
             SyncFilesToIndexedDB();
         }
+    #endif
     }
-
 }

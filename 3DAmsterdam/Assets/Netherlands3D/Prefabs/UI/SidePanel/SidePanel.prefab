@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6543721933795909082}
   - component: {fileID: 3414459779218427146}
   - component: {fileID: 6341768978952035609}
-  - component: {fileID: 2175464635440783879}
   m_Layer: 5
   m_Name: SidePanel
   m_TagString: Untagged
@@ -155,21 +154,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &2175464635440783879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441812061200002702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2e273560ef0db7469fbbd7f5736aa4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parsedJson:
-    title: 
-    fields: []
 --- !u!1 &1696206935778776190
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,28 +193,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &5818915432287232920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4816712341734067914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f7bd053eada1064e9e58e50aa8dac2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customObjectLayerPrefab: {fileID: 8778083341583675047, guid: fd7df71b1bd01b845b53c37b437e6184,
-    type: 3}
-  annotationLayerPrefab: {fileID: 8778083341583675047, guid: 555102e47541b1f4180db2c9b3cffe9c,
-    type: 3}
-  camerasLayerPrefab: {fileID: 8778083341583675047, guid: 569f4ba7ba4b61b4ebf54b6b18c2a080,
-    type: 3}
-  customLayersContainer: {fileID: 4110384795647470943}
-  annotationsContainer: {fileID: 2534885638861334160}
-  cameraContainer: {fileID: 4110384795647470943}
-  layerVisualsDialog: {fileID: 7222801889008690497}
 --- !u!1001 &3807174440184651615
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1428,7 +1390,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2175464635440783879}
+      objectReference: {fileID: 0}
     - target: {fileID: 3841866107942977896, guid: 02ad944e407562d40ae7234a9622449a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -1961,11 +1923,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7819235214994094115, guid: 02ad944e407562d40ae7234a9622449a,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 2175464635440783879}
-    - target: {fileID: 7819235214994094115, guid: 02ad944e407562d40ae7234a9622449a,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1041440114965095839}
@@ -2385,6 +2342,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5818915432287232920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4816712341734067914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7bd053eada1064e9e58e50aa8dac2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customObjectLayerPrefab: {fileID: 8778083341583675047, guid: fd7df71b1bd01b845b53c37b437e6184,
+    type: 3}
+  annotationLayerPrefab: {fileID: 8778083341583675047, guid: 555102e47541b1f4180db2c9b3cffe9c,
+    type: 3}
+  camerasLayerPrefab: {fileID: 8778083341583675047, guid: 569f4ba7ba4b61b4ebf54b6b18c2a080,
+    type: 3}
+  customLayersContainer: {fileID: 4110384795647470943}
+  annotationsContainer: {fileID: 2534885638861334160}
+  cameraContainer: {fileID: 4110384795647470943}
+  layerVisualsDialog: {fileID: 7222801889008690497}
 --- !u!1001 &7293728218823840961
 PrefabInstance:
   m_ObjectHideFlags: 0

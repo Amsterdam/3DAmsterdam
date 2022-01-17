@@ -1,5 +1,5 @@
 ﻿using Netherlands3D.Sun;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System;
 using UnityEngine;
 using UnityEngine.UI;

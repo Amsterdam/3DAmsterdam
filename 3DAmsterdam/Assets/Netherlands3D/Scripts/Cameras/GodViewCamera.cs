@@ -1,5 +1,5 @@
 ﻿using Netherlands3D.JavascriptConnection;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -74,7 +74,7 @@ namespace Netherlands3D.Cameras
 
         private Plane worldPlane;
 
-        private IAction mousePosition;
+        private IAction pointerPosition;
         private IAction rotateActionMouse;
         private IAction dragActionMouse;
         private IAction zoomScrollActionMouse;
@@ -128,7 +128,8 @@ namespace Netherlands3D.Cameras
         private void AddActionListeners()
         {
             //Mouse actions
-            mousePosition = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Position);
+            pointerPosition = ActionHandler.instance.GetAction(ActionHandler.actions.Selector.Position);
+
             dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
             rotateActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.SpinDrag);
             zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
@@ -469,12 +470,12 @@ namespace Netherlands3D.Cameras
         }
         public Ray GetMainPointerRay()
         {
-            var pointerPosition = mousePosition.ReadValue<Vector2>();
+            var pointerPosition = this.pointerPosition.ReadValue<Vector2>();
             return cameraComponent.ScreenPointToRay(pointerPosition);
         }
         public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
         {
-            var pointerPosition = mousePosition.ReadValue<Vector2>();
+            var pointerPosition = this.pointerPosition.ReadValue<Vector2>();
             if (optionalPositionOverride != default) pointerPosition = optionalPositionOverride;
 
             var screenRay = cameraComponent.ScreenPointToRay(pointerPosition);

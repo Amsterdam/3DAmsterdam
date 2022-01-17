@@ -1,6 +1,7 @@
 ﻿using Netherlands3D.Cameras;
 using Netherlands3D.InputHandler;
 using Netherlands3D.ObjectInteraction;
+using Netherlands3D.TileSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,8 +57,7 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private Interactable hoveringInteractable;
 
-		[SerializeField]
-		private Interactable[] delayedInteractables;
+		private SelectSubObjects[] delayedSubOjectSelections;
 
 		private string priority3DInterfaceHitLayerName = "Interface3D";
 		private int priority3DInterfaceHitLayer;
@@ -70,7 +70,7 @@ namespace Netherlands3D.Interface
 		public UnityEvent registeredSecondaryClickInput;
 
 		private bool allowDelayedInteractables = true;
-		public bool AllowDelayedInteractables { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
+		public bool AllowDelayedSubObjectSelections { get => allowDelayedInteractables; set => allowDelayedInteractables = value; }
 
 		private void Awake()
 		{
@@ -82,6 +82,7 @@ namespace Netherlands3D.Interface
 
 		void Start()
 		{
+			delayedSubOjectSelections = FindObjectsOfType<SelectSubObjects>();
 			priority3DInterfaceHitLayer = LayerMask.NameToLayer(priority3DInterfaceHitLayerName);
 			selectedObjects = new List<OutlineObject>();
 			InitializeActions();
@@ -251,22 +252,22 @@ namespace Netherlands3D.Interface
 			{
 				hoveringInteractable.Select();
 
-				if (AllowDelayedInteractables)
+				if (AllowDelayedSubObjectSelections)
 				{
-					foreach (var interactable in delayedInteractables)
+					foreach (var subObject in delayedSubOjectSelections)
 					{
-						if (interactable != hoveringInteractable)
-							interactable.Deselect();
+						if (subObject != hoveringInteractable)
+							subObject.Deselect();
 					}
 				}
 			}
 			else
 			{
-				if (AllowDelayedInteractables)
+				if (AllowDelayedSubObjectSelections)
 				{
-					foreach (var interactable in delayedInteractables)
+					foreach (var interactable in delayedSubOjectSelections)
 					{
-						interactable.Select();
+						interactable.SelectWithInputs(mainSelectorRay, doingMultiselect);
 					}
 				}
 				DeselectAll();
@@ -285,9 +286,9 @@ namespace Netherlands3D.Interface
 				ContextPointerMenu.Instance.Appear();
 				hoveringInteractable.SecondarySelect();
 
-				if (AllowDelayedInteractables)
+				if (AllowDelayedSubObjectSelections)
 				{
-					foreach (var interactable in delayedInteractables)
+					foreach (var interactable in delayedSubOjectSelections)
 					{
 						if (interactable != hoveringInteractable)
 							interactable.Deselect();
@@ -299,11 +300,11 @@ namespace Netherlands3D.Interface
 				ContextPointerMenu.Instance.SetTargetInteractable(null);
 				ContextPointerMenu.Instance.Appear();
 
-				if (AllowDelayedInteractables)
+				if (AllowDelayedSubObjectSelections)
 				{
-					foreach (var interactable in delayedInteractables)
+					foreach (var interactable in delayedSubOjectSelections)
 					{
-						interactable.SecondarySelect();
+						interactable.SelectWithInputs(mainSelectorRay,doingMultiselect,true);
 					}
 				}
 			}

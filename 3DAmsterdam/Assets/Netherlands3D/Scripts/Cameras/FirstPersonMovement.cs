@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using Netherlands3D.InputHandler;
-using Netherlands3D.LayerSystem;
+using Netherlands3D.TileSystem;
 using Netherlands3D.Interface;
 
 namespace Netherlands3D.Cameras
@@ -9,7 +9,7 @@ namespace Netherlands3D.Cameras
     public class FirstPersonMovement : MonoBehaviour
     {
         [SerializeField]
-        private AssetbundleMeshLayer terrainContainerLayer;
+        private BinaryMeshLayer terrainContainerLayer;
         [SerializeField]
         private float groundOffset;
 

@@ -1,4 +1,4 @@
-﻿using ConvertCoordinates;
+﻿using Netherlands3D.Core;
 using Netherlands3D.JavascriptConnection;
 using System;
 using System.Collections;

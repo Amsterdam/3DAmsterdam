@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using System.Linq;
 
 namespace Netherlands3D.AssetGeneration

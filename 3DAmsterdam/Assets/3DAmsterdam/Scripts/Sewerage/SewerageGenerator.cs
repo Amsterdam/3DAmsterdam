@@ -1,5 +1,4 @@
 ﻿using Netherlands3D.Cameras;
-using ConvertCoordinates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using Netherlands3D;
+using Netherlands3D.Core;
 
 namespace Amsterdam3D.Sewerage
 {

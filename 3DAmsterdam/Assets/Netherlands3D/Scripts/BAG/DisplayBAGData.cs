@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
+using Netherlands3D.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,94 +20,97 @@ namespace Netherlands3D.BAG
             if (bagId.Length < 5) return;
 
             StopAllCoroutines(); //Make sure all delayed Api coroutines are stopped before running this one again
-
-			if( Config.activeConfiguration.BagApiType == BagApyType.Amsterdam)
+            if (this.gameObject.activeInHierarchy)
             {
-                StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
+                if (Config.activeConfiguration.BagApiType == BagApyType.Amsterdam)
                 {
-                    EstimateBuildingThumbnailFrame(buildingData.bbox);
-                    PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
-                    CheckAddDataField("BAG ID", buildingData._display);
-                    CheckAddDataField("Stadsdeel", buildingData._stadsdeel.naam);
-                    CheckAddDataField("Wijk", buildingData._buurtcombinatie.naam);
-                    CheckAddDataField("Buurt", buildingData._buurt.naam);
-                    CheckAddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
-                    CheckAddDataField("Bouwlagen", buildingData.bouwlagen);
-                    CheckAddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count);
-                    PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
 
-                    PropertiesPanel.Instance.AddSeperatorLine();
+                    StartCoroutine(ImportBAG.GetBuildingData(bagId, (buildingData) =>
+                    {
+                        EstimateBuildingThumbnailFrame(buildingData.bbox);
+                        PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
+                        CheckAddDataField("BAG ID", buildingData._display);
+                        CheckAddDataField("Stadsdeel", buildingData._stadsdeel.naam);
+                        CheckAddDataField("Wijk", buildingData._buurtcombinatie.naam);
+                        CheckAddDataField("Buurt", buildingData._buurt.naam);
+                        CheckAddDataField("Bouwjaar", buildingData.oorspronkelijk_bouwjaar);
+                        CheckAddDataField("Bouwlagen", buildingData.bouwlagen);
+                        CheckAddDataField("Verblijfsobjecten", buildingData.verblijfsobjecten.count);
+                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.Replace("{bagid}", buildingData._display));
+
+                        PropertiesPanel.Instance.AddSeperatorLine();
 
                     //Load up the list of addresses tied to this building (in a Seperate API call)
                     PropertiesPanel.Instance.AddTitle("Adressen");
-                    StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
-                    {
-                        foreach (var address in addressList.results)
+                        StartCoroutine(ImportBAG.GetBuildingAdresses(bagId, (addressList) =>
                         {
+                            foreach (var address in addressList.results)
+                            {
                             //We create a field and make it clickable, so addresses cant contain more data
                             var dataKeyAndValue = PropertiesPanel.Instance.AddDataField(address._display, "");
-                            var button = dataKeyAndValue.GetComponent<Button>();
-                            button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
-                        }
-                        PropertiesPanel.Instance.AddSpacer(20);
+                                var button = dataKeyAndValue.GetComponent<Button>();
+                                button.onClick.AddListener((() => ShowAddressData(address.landelijk_id, button)));
+                            }
+                            PropertiesPanel.Instance.AddSpacer(20);
+                        }));
                     }));
-                }));
-            }
-			else if (Config.activeConfiguration.BagApiType == BagApyType.KadasterBagViewer)
-            {
-                StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
+                }
+                else if (Config.activeConfiguration.BagApiType == BagApyType.KadasterBagViewer)
                 {
-                    if (buildingData == null) return;
-                    Debug.Log($"buildingData.adresseerbaarobject.geometry.type: {buildingData.adresseerbaarobject.geometry.type}");
-
-                    var geometry = buildingData.adresseerbaarobject.geometry;
-
-                    var firstpand = buildingData.panden.First();
-
-                    if (geometry.type == null && firstpand != null)
+                    StartCoroutine(ImportBAG.GetBuildingDataKadasterViewer(bagId, (buildingData) =>
                     {
-                        geometry = firstpand.geometry;
-                    }
+                        if (buildingData == null) return;
+                        Debug.Log($"buildingData.adresseerbaarobject.geometry.type: {buildingData.adresseerbaarobject.geometry.type}");
 
-                    if (geometry.type == "Point")
-                    {
+                        var geometry = buildingData.adresseerbaarobject.geometry;
+
+                        var firstpand = buildingData.panden.First();
+
+                        if (geometry.type == null && firstpand != null)
+                        {
+                            geometry = firstpand.geometry;
+                        }
+
+                        if (geometry.type == "Point")
+                        {
                         //create bounding box 50x50 meter
                         float[] bbox = new float[4];
-                        var point = geometry.coordinates;
-                        bbox[0] = point[0] - 25;
-                        bbox[1] = point[1] - 25;
-                        bbox[2] = point[0] + 25;
-                        bbox[3] = point[1] + 25;
-                        EstimateBuildingThumbnailFrame(bbox);
-                    }
+                            var point = geometry.coordinates;
+                            bbox[0] = point[0] - 25;
+                            bbox[1] = point[1] - 25;
+                            bbox[2] = point[0] + 25;
+                            bbox[3] = point[1] + 25;
+                            EstimateBuildingThumbnailFrame(bbox);
+                        }
 
-                    Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
+                        Interface.SidePanel.PropertiesPanel.Instance.AddTitle("Pand " + bagId, true);
 
-                    CheckAddDataField("Naam", buildingData.openbareruimte.naam);
-                    CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);
-                    CheckAddDataField("Postcode", buildingData.nummeraanduiding.postcode);
-                    CheckAddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
-                    CheckAddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
-                    CheckAddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
+                        CheckAddDataField("Naam", buildingData.openbareruimte.naam);
+                        CheckAddDataField("Adres", buildingData.adresseerbaarobject.displayString);
+                        CheckAddDataField("Postcode", buildingData.nummeraanduiding.postcode);
+                        CheckAddDataField("Gebruiksdoel", buildingData.adresseerbaarobject.gebruiksdoel);
+                        CheckAddDataField("Oppervlakte", buildingData.adresseerbaarobject.oppervlakte);
+                        CheckAddDataField("Documentnummer", buildingData.openbareruimte.documentnummer);
 
-                    if (firstpand != null)
-                    {
-                        CheckAddDataField("Status", firstpand.status);
-                        CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
-                    }
+                        if (firstpand != null)
+                        {
+                            CheckAddDataField("Status", firstpand.status);
+                            CheckAddDataField("Bouwjaar", firstpand.bouwjaar);
+                        }
 
-                    PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
-                    {
-                        x = geometry.coordinates[0],
-                        y = geometry.coordinates[1],
-                        id = bagId
+                        PropertiesPanel.Instance.AddLink("Meer pand informatie", Config.activeConfiguration.moreBuildingInfoUrl.ReplacePlaceholders(new
+                        {
+                            x = geometry.coordinates[0],
+                            y = geometry.coordinates[1],
+                            id = bagId
+                        }));
+                        PropertiesPanel.Instance.AddSpacer(20);
                     }));
-                    PropertiesPanel.Instance.AddSpacer(20);
-                }));
-            }
-            else
-            {
-                PropertiesPanel.Instance.AddLabel($"ApiType {Config.activeConfiguration.BagApiType} is niet geimplementeerd..");
+                }
+                else
+                {
+                    PropertiesPanel.Instance.AddLabel($"ApiType {Config.activeConfiguration.BagApiType} is niet geimplementeerd..");
+                }
             }
         }
 
@@ -121,8 +125,8 @@ namespace Netherlands3D.BAG
 		{
             //Create our building area using bbox coming from the building data
             List<Vector3> points = new List<Vector3>();
-			var rdA = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0.0));
-			var rdB = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0.0));
+			var rdA = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0.0));
+			var rdB = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0.0));
            
             //Estimate height using a raycast shot from above at the center of the bounding box
             float estimatedHeight = 100.0f;
@@ -133,8 +137,8 @@ namespace Netherlands3D.BAG
             }
 
             //Add extra points giving our points shape a height
-            var rdC = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[0], bbox[1], 0));
-			var rdD = ConvertCoordinates.CoordConvert.RDtoUnity(new ConvertCoordinates.Vector3RD(bbox[2], bbox[3], 0));
+            var rdC = CoordConvert.RDtoUnity(new Vector3RD(bbox[0], bbox[1], 0));
+			var rdD = CoordConvert.RDtoUnity(new Vector3RD(bbox[2], bbox[3], 0));
             rdC.y = estimatedHeight;
             rdD.y = estimatedHeight;
 

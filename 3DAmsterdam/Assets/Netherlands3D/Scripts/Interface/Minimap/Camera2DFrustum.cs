@@ -15,7 +15,7 @@
 *  implied. See the License for the specific language governing
 *  permissions and limitations under the License.
 */
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Cameras;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ namespace Netherlands3D.Interface.Minimap
 		private void DrawCameraFrustumOnMap()
 		{
 			//Get corners
-			var cameraCorners = CameraModeChanger.Instance.CurrentCameraExtends.GetWorldSpaceCorners();
+			var cameraCorners = Camera.main.GetWorldSpaceCorners();
 
 			if (cameraCorners != null)
 			{

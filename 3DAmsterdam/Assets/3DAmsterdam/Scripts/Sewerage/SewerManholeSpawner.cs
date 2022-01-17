@@ -1,4 +1,4 @@
-﻿using Netherlands3D.LayerSystem;
+﻿using Netherlands3D.TileSystem;
 using UnityEngine;
 
 namespace Amsterdam3D.Sewerage
@@ -11,7 +11,7 @@ namespace Amsterdam3D.Sewerage
 		[SerializeField]
 		private LayerMask terrainHeightCheckLayerMask;
 		[SerializeField]
-		private AssetbundleMeshLayer terrainLayer;
+		private BinaryMeshLayer terrainLayer;
 		[SerializeField]
 		private SewerageObjectPool manHoleObjectPool;
 		public GameObject manholePrefab;

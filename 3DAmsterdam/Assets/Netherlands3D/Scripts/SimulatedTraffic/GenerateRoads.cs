@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using System.Linq.Expressions;
 using System.IO;
 using UnityEditor;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.Interface;
 using Netherlands3D.Interface.SidePanel;
 
@@ -41,7 +41,7 @@ namespace Netherlands3D.Traffic
         public void WaitForGridBounds()
         {
             //Make sure you only subscribe once
-            grid.onGridSelected.RemoveListener(ShowTraffic);
+            grid.onGridSelected.RemoveAllListeners();
             grid.onGridSelected.AddListener(ShowTraffic);
         }
 
@@ -54,6 +54,7 @@ namespace Netherlands3D.Traffic
         {
             bottomLeftWGS = CoordConvert.UnitytoWGS84(bounds.min);
             topRightWGS = CoordConvert.UnitytoWGS84(bounds.max);
+            StopWaitingForGridBounds();
             StartSimulation();
         }
 

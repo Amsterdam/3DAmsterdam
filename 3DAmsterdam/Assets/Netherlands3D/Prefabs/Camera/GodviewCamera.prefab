@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7164494881010118412}
   - component: {fileID: 7164494881010118413}
-  - component: {fileID: 7164494881010118415}
   - component: {fileID: 7164494881010118418}
   - component: {fileID: 8089436527420917118}
   - component: {fileID: 6874005418290581582}
   - component: {fileID: 4905035341649260907}
   - component: {fileID: 8354288608701459187}
+  - component: {fileID: 4164029231790784657}
   m_Layer: 0
   m_Name: GodviewCamera
   m_TagString: MainCamera
@@ -80,20 +80,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &7164494881010118415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7164494881010118419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e675ca81884e00e438a4f9493167b693, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maximumViewDistance: 5000
-  drawDebugLines: 0
 --- !u!114 &7164494881010118418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +123,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
   m_Antialiasing: 1
   m_AntialiasingQuality: 2
@@ -203,7 +190,6 @@ MonoBehaviour:
   fileName: 
   snapshotUI: {fileID: 0}
   snapshotNavigation: {fileID: 0}
-  snapshotLogo: {fileID: 0}
   snapshotMainMenu: {fileID: 0}
   snapshotLoD: {fileID: 0}
   snapshotResolution: {fileID: 0}
@@ -211,3 +197,17 @@ MonoBehaviour:
   snapshotName: {fileID: 0}
   responsiveCanvas: {fileID: 0}
   panelGraphics: []
+--- !u!114 &4164029231790784657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7164494881010118419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca8ec57c1fc4b5244bc82d98a42fc735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lookAtPosition: {fileID: 0}
+  offset: {x: 0, y: -1, z: 0}

@@ -16,7 +16,7 @@
 *  permissions and limitations under the License.
 */
 using Amsterdam3D.Sewerage;
-using ConvertCoordinates;
+using Netherlands3D.Core;
 using Netherlands3D.BAG;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,10 +41,7 @@ namespace Netherlands3D
 
         public float zeroGroundLevelY = 43.0f;
 
-        [Header("Tile layers external assets paths")]
-        public string webserverRootPath = "https://3d.amsterdam.nl/web/data/";
-        public string buildingsMetaDataPath = "https://3d.amsterdam.nl/web/data/buildings/objectdata/";
-
+        [Header("User scene sharing URLs")]
         public string sharingUploadScenePath = "https://3d.amsterdam.nl/customUpload.php";
         public string sharingDownloadScenePath = "https://3d.amsterdam.nl/customScene.php?id={sceneId}_scene.json";
 

@@ -196,6 +196,7 @@ public static class Poly2Mesh
 		}
 		catch (System.Exception e)
 		{
+            Debug.LogError($"Poly2Mesh.cs CreateMesh: exception: {e.Message}");
 			//			Profiler.Exit(profileID);
 			return null;
 		}

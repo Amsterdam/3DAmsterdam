@@ -20,6 +20,7 @@ namespace Netherlands3D.Interface.Tools
 
 		public void ActivateToolGameObject()
 		{
+			toolGameObject.SetActive(false); //Force enable/disable
 			toolGameObject.SetActive(true);
 		}
 	}
