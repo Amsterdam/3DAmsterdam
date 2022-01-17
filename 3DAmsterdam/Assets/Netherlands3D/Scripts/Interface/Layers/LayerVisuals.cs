@@ -157,8 +157,8 @@ namespace Netherlands3D.Interface.Layers
 		/// <summary>
 		/// Reset all the colors while holding shift, or just the material(s) we selected
 		/// </summary>
-		public void ResetColorsInSelectedMaterials(){
-			var resetAll = Selector.doingMultiselect;
+		public void ResetColorsInSelectedMaterials(bool forceAll = false){
+			var resetAll = (Selector.doingMultiselect || forceAll);
 			if (resetAll)
 			{
 				//Simple reset all material slots, instead of our selected list

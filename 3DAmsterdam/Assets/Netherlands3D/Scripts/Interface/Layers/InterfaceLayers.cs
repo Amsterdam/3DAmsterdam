@@ -56,6 +56,8 @@ namespace Netherlands3D.Interface.Layers
 			{
 				layer.ResetAllColors();
 			}
+
+			layerVisualsDialog.ResetColorsInSelectedMaterials(true);
 		}
 
 		/// <summary>
