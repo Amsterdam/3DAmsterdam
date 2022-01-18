@@ -150,21 +150,26 @@ public class T3DInit : MonoBehaviour
         //blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobid"));
     }
 
-    private void CheckURLForPositionAndId()
+    private void CheckURLForPositionAndId(string url)
     {
-        PositionRD = Application.absoluteURL.GetRDCoordinateByUrl();
+        if (string.IsNullOrEmpty(url))
+        {
+            url = Application.absoluteURL;
+        }
+
+        PositionRD = url.GetRDCoordinateByUrl();
         if (PositionRD.Equals(new Vector3RD(0, 0, 0))) return;
 
         cameraPosition.SetValue(PositionRD);
-        urlBagId = Application.absoluteURL.GetUrlParamValue("id");
+        urlBagId = url.GetUrlParamValue("id");
         //bagId.SetValue(urlBagId);
 
-        uploadedModel.SetValue(Application.absoluteURL.GetUrlParamBool("hasfile"));
-        bimModelId.SetValue(Application.absoluteURL.GetUrlParamValue("modelid"));
-        bimModelVersionId.SetValue(Application.absoluteURL.GetUrlParamValue("versionid"));
-        isUserFeedback.SetValue(Application.absoluteURL.GetUrlParamBool("isuserfeedback"));
-        IsEditMode = Application.absoluteURL.GetUrlParamBool("iseditmode");
-        blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobid"));
+        uploadedModel.SetValue(url.GetUrlParamBool("hasfile"));
+        bimModelId.SetValue(url.GetUrlParamValue("modelid"));
+        bimModelVersionId.SetValue(url.GetUrlParamValue("versionid"));
+        isUserFeedback.SetValue(url.GetUrlParamBool("isuserfeedback"));
+        IsEditMode = url.GetUrlParamBool("iseditmode");
+        blobId.SetValue(url.GetUrlParamValue("blobid"));
     }
 
     public void LoadBuilding()
@@ -176,8 +181,13 @@ public class T3DInit : MonoBehaviour
     private IEnumerator GoToBuildingAtEndOfFrame()
     {
         yield return null; //wait a frame
+
+        //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?sessionId=2d9e94f0-58c2-11ec-99a1-4b7435bae68a_637780107091771994.json&isuserfeedback=true&iseditmode=false");
+        //CheckURLForPositionAndId("http://localhost:8080/?sessionId=048c5390-5133-11ec-b24c-53d3efea3919&position=138350.607_455582.274&id=0344100000021804&hasfile=false&iseditmode=true");
+
+
 #if !UNITY_EDITOR
-        CheckURLForPositionAndId();
+        CheckURLForPositionAndId(Application.absoluteURL);
 #else
         SetPositionAndIdForEditor();
 #endif

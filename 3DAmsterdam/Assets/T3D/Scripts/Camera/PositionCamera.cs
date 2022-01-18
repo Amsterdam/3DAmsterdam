@@ -28,15 +28,12 @@ public class PositionCamera: MonoBehaviour
     private void OnAdresUitgebreidLoaded(object source, AdresUitgebreidDataEventArgs args)
     {
         buildingcenter = args.Coordinate;
-        SetCameraposition();
+        if (cameraIsSet == false && perceelcenter != null) SetCameraposition();        
     }
 
     void SetCameraposition()
     {
         cameraIsSet = true;
-
-        //Debug.Log($"buildingcenterx: {buildingcenter.Value.x} buildingcentery:{buildingcenter.Value.y}");
-        //Debug.Log($"perceelcenterx: {perceelcenter.Value.x} perceelcentery:{perceelcenter.Value.y}");
 
         var buildingpos = CoordConvert.RDtoUnity(buildingcenter.Value);
         var perceelpos = CoordConvert.RDtoUnity(perceelcenter.Value);

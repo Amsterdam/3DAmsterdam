@@ -58,6 +58,8 @@ public class PlaceBoundaryFeaturesState : State
             }
         }
 
+        if (componentObject == null) return;
+
         //var wall = RestrictionChecker.ActiveUitbouw.GetWall();
         var placedBoundaryFeature = Instantiate(componentObject, saveData.Position.Value, saveData.Rotation.Value);
         placedBoundaryFeature.LoadData(id);

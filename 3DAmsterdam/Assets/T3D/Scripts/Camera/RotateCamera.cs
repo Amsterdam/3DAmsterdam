@@ -14,6 +14,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     public float spinSpeed = 60;
     public float moveSpeed = 5f;
     public float firstPersonHeight = 3.23f;
+    public float MaxCameraDistance = 200;
 
     [SerializeField]
     private bool dragging = false;
@@ -50,7 +51,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     }
 
     private void Update()
-    {        
+    {
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
         {            
@@ -153,8 +154,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         if (scrollDelta != 0)
         {
             var lastY = mycam.transform.position.y;
-
             var moveSpeed = Mathf.Sqrt(mycam.transform.position.y) * 1.3f;
+
             var newpos = mycam.transform.position + mycam.transform.forward.normalized * (scrollDelta * moveSpeed * ZoomSpeed);
 
             if (isFirstPersonMode)
@@ -162,6 +163,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
                 newpos.y = lastY;
             }
             else if (newpos.y < MinCameraHeight) return;
+            else if (CameraInRange(newpos) == false) return;
 
             mycam.transform.position = newpos;            
         }
@@ -176,6 +178,19 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         } 
         else if (RestrictionChecker.ActiveBuilding)
             mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
+    }
+
+    bool CameraInRange(Vector3 newCameraPosition)
+    {
+        if (RestrictionChecker.ActiveUitbouw != null)
+        {
+            return Vector3.Distance(RestrictionChecker.ActiveUitbouw.CenterPoint, newCameraPosition) < MaxCameraDistance;
+        }
+        else if (RestrictionChecker.ActiveBuilding)
+        {
+            return Vector3.Distance(RestrictionChecker.ActiveBuilding.BuildingCenter, newCameraPosition) < MaxCameraDistance;
+        }
+        return false;
     }
 
     public float GetNormalizedCameraHeight()
