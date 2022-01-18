@@ -88,31 +88,13 @@ public class T3DInit : MonoBehaviour
 
     }
 
-    private bool qualityToggle = false;
 
 #if UNITY_EDITOR
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.P))
         {
             LoadBuilding();
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            qualityToggle = !qualityToggle;
-
-            //realtimeReflections
-            RenderSettings.ToggleReflections(qualityToggle);
-
-            //postProcessingEffects
-            RenderSettings.TogglePostEffects(qualityToggle);
-
-            //antiAliasing
-            RenderSettings.ToggleAA(qualityToggle);
-
-            //ambientOcclusion
-            RenderSettings.ToggleAO(qualityToggle);
         }
     }
 #endif
@@ -157,6 +139,8 @@ public class T3DInit : MonoBehaviour
             url = Application.absoluteURL;
         }
 
+        url = url.ToLower();
+
         PositionRD = url.GetRDCoordinateByUrl();
         if (PositionRD.Equals(new Vector3RD(0, 0, 0))) return;
 
@@ -184,6 +168,9 @@ public class T3DInit : MonoBehaviour
 
         //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?sessionId=2d9e94f0-58c2-11ec-99a1-4b7435bae68a_637780107091771994.json&isuserfeedback=true&iseditmode=false");
         //CheckURLForPositionAndId("http://localhost:8080/?sessionId=048c5390-5133-11ec-b24c-53d3efea3919&position=138350.607_455582.274&id=0344100000021804&hasfile=false&iseditmode=true");
+
+        //IFC upload
+        //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?position=138350.607_455582.274&id=0344100000021804&hasfile=true&modelId=61e6dd19b3622280344bb05d&versionId=1&iseditmode=true");
 
 
 #if !UNITY_EDITOR

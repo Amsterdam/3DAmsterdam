@@ -176,14 +176,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
-            if (T3DInit.Instance.UploadedModel)
-            {
-                #if UNITY_EDITOR
-                    StartCoroutine(GetBimCityJsonFile());
-                #else
-                    StartCoroutine(GetBimCityJson());
-                #endif
-            }
+            StartCoroutine(GetBimCityJson());
 
             StartCoroutine(UpdateSidePanelAddress(id));
 
