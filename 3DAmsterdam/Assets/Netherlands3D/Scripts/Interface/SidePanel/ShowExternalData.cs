@@ -26,7 +26,7 @@ namespace Netherlands3D.Interface.SidePanel
             if (www.result != UnityWebRequest.Result.Success)
             {
                 PropertiesPanel.Instance.ClearGeneratedFields();
-                PropertiesPanel.Instance.AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");
+                PropertiesPanel.Instance.AddLabel("Sorry, de bron informatie van deze laag kan tijdelijk niet worden geladen.");
             }
             else
 			{
