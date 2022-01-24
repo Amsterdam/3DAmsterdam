@@ -184,8 +184,6 @@ public class HeatMonitorLayer : MonoBehaviour
     {
         layerInformation.Clear();
 
-
-       // string data = File.ReadAllText(@"C:\Applications\Webserver\httpd-2.4.48-o111k-x64-vc15\Apache24\htdocs\hitte-monitor-tiles\tiles.json");
         var layerInfo = JsonUtility.FromJson<HeatMonitor.HeatMonitorJSON>(data);
         if (layerInfo != null)
         {
