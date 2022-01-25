@@ -32,8 +32,16 @@ namespace Netherlands3D.Interface.Layers
 
 		private void Awake()
 		{
-			colorPicker.selectedNewColor += ChangeMaterialColor;
-			hexColorField.selectedNewColor += ChangeMaterialColor;
+			if (colorPicker != null)
+			{
+				colorPicker.selectedNewColor += ChangeMaterialColor;
+			}
+
+			if (hexColorField != null)
+			{
+				hexColorField.selectedNewColor += ChangeMaterialColor;
+			}
+
 			containerRectTransform = GetComponent<RectTransform>();
 		}
 

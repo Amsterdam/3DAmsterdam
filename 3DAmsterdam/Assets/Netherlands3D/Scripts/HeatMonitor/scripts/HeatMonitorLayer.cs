@@ -162,7 +162,7 @@ public class HeatMonitorLayer : MonoBehaviour
 
         Debug.Log("Fetching layer info from base URL: " + BaseURL);
 
-        UnityWebRequest www = UnityWebRequest.Get(BaseURL + @"/tiles.json");
+        UnityWebRequest www = UnityWebRequest.Get(BaseURL + @"tiles.json");
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
