@@ -191,13 +191,11 @@ namespace Netherlands3D.T3D.Uitbouw
                                 {
                                     usedVertIndices.Add(vertIndex);
                                     coplanarVertices.Add(sourceVerts[vertIndex]);
-
                                 }
                                 coplanarTriangles.Add(usedVertIndices.IndexOf(vertIndex)); //add the index of the vert as it is in the new vertex list
 
                                 edges.Add(new Edge(vertIndex, sourceTriangles[i + (j + 1) % 3])); // add the edges to find shared edges later. These edges use the original indexing, so this needs to be converted
                             }
-
                             //re-index the edges of this triangle this is a separate loop because the new indexes of j=1 and/or j=2 do not exist yet in the previous loop
                             int triangleStartIndex = edges.Count - 3;
                             for (int j = 0; j < 3; j++)
@@ -235,11 +233,26 @@ namespace Netherlands3D.T3D.Uitbouw
                 // we have gotten all coplanar and parrallel triangles, but they don't have to be contiguous to the clicked triangle. We also have the clicked triangle
                 // get all contiguous triangles to the clicked triangle
 
+                for (int i = 0; i < coplanarVertices.Count; i++)
+                {
+                    Vector3 v = coplanarVertices[i];
+                    var testa = new GameObject();
+                    testa.transform.position = v + building.transform.position;
+                    testa.name = i.ToString();
+                    //var testb = new GameObject();
+                    //testb.transform.position = sourceVerts[sourceTriangles[i + 1]] + building.transform.position;
+                    //var testc = new GameObject();
+                    //testc.transform.position = sourceVerts[sourceTriangles[i + 2]] + building.transform.position;
+                }
+
                 //for each coplanar triangle
                 for (int i = edges.Count - 1; i >= 0; i -= 3) // go backwards so the end condition can stay the same
                 {
+
                     for (int j = 2; j >= 0; j--)
                     {
+                        print(edges[i - j].IndexA + "\t" + edges[i - j].IndexB);
+
                         //if this edge is already in the list, add the edges of this triangle
                         if (contiguousTriEdges.Contains(edges[i - j]))
                         {
@@ -271,6 +284,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
                 //remove unused vertices.
                 //This algorithm doesn't scale well because it contains 2 loops through the tri list each iteration (with the Contains() function and the j loop), but it should not be a problem for our purposes
+
                 for (int i = 0; i < coplanarVertices.Count; i++)
                 {
                     if (contiguousTris.Contains(i))
@@ -282,7 +296,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         coplanarVertices.RemoveAt(i);
                         for (int j = 0; j < contiguousTris.Count; j++)
                         {
-                            if(contiguousTris[j] > i)
+                            if (contiguousTris[j] > i)
                             {
                                 contiguousTris[j]--;
                             }
