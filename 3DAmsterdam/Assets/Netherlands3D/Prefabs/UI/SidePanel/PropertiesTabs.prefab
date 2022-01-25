@@ -4327,6 +4327,7 @@ MonoBehaviour:
   GeneratedFieldsContainer: {fileID: 0}
   UIClearIgnoreObject: {fileID: 0}
   loadingObjScreen: {fileID: 0}
+  filesImportedEvent: {fileID: 0}
 --- !u!1001 &1013463074655585164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5051,6 +5052,8 @@ MonoBehaviour:
     type: 3}
   layerType: 3
   targetParent: {fileID: 8063313273068924143}
+  makeTransformable: 0
+  startStuckToMouse: 0
 --- !u!1001 &2066902967379410113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6915,6 +6918,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083887252068496641, guid: 3dc7d6565028ae74d8b838a385f795d1,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1470425302238904585, guid: 3dc7d6565028ae74d8b838a385f795d1,
         type: 3}
