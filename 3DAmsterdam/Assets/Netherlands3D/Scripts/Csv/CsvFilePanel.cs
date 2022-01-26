@@ -29,7 +29,6 @@ public class CsvFilePanel : MonoBehaviour
     [SerializeField]
     private LoadingScreen loadingObjScreen;
 
-
     private Dictionary<string,bool> selectedColumnsToDisplay = new System.Collections.Generic.Dictionary<string,bool>();
 
     private CsvGeoLocation csvGeoLocation;
@@ -39,29 +38,39 @@ public class CsvFilePanel : MonoBehaviour
     private ActionDropDown currentFilterDropdown;
 
     [SerializeField]
+    private BoolEvent enableBetaFeature;
+
+    [SerializeField]
     private StringEvent filesImportedEvent;
 
     private void Awake()
     {
-        ToggleActiveEvent.Subscribe(OnToggleActive);
-
-		filesImportedEvent.started.AddListener(LoadCsvFromFile);
+        enableBetaFeature.started.AddListener(Show);
+        filesImportedEvent.started.AddListener(LoadCsvFromFile);
     }
     public void LoadCsvFromFile(string filename)
     {
         if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
             return;
 
-        var csv = File.ReadAllText(Application.persistentDataPath + "/" + filename);
-        File.Delete(filename);
+        string filePath;
+        if (Path.IsPathRooted(filename))
+        {
+            filePath = filename;
+        }
+        else{
+            filePath = Application.persistentDataPath + "/" + filename;
+        }
+
+        var csv = File.ReadAllText(filePath);
+        File.Delete(filePath);
         ParseCsv(csv);
         loadingObjScreen.Hide();
     }
 
-    private void OnToggleActive(object sender, ToggleActiveEvent.Args e)
+    private void Show(bool active)
     {
-        var toggle = (bool)sender;
-        gameObject.SetActive(toggle);
+        gameObject.SetActive(active);
     }
 
     public void ParseCsv(string csv)
