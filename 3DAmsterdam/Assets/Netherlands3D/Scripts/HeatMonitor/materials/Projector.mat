@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Projector
   m_Shader: {fileID: 4800000, guid: 1007810c485f19f4294e0517d500bec9, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _SupportOrthographicCamera
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -122,7 +122,7 @@ Material:
     - _SrcBlend: 2
     - _StencilComp: 3
     - _StencilRef: 1
-    - _SupportOrthographicCamera: 0
+    - _SupportOrthographicCamera: 1
     - _Surface: 0
     - _UnityFogEnable: 0
     - _WorkflowMode: 1
