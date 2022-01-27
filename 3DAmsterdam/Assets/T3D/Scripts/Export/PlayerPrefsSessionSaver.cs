@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class PlayerPrefsSessionSaver : IDataSaver
 {
+    public event IDataSaver.DataSavedEventHandler SavingCompleted;
+
     public void ExportSaveData(string sessionId)
     {
         PlayerPrefs.Save();
+        SavingCompleted?.Invoke(true);
     }
 
     public void SaveFloat(string key, float value)

@@ -16,52 +16,29 @@ public static class SessionSaver
     //}
 
     public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
-    private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
+    public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
 
-    //private static Timer autoSaveTimer;
-
     static SessionSaver()
     {
-        //LoadPreviousSession = false;
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
-            //Guid g = Guid.NewGuid();
-            SessionId = "TestSession0";
+            SessionId = "882ca7f0-7f72-11ec-b5de-7785f87f0fce";
+            SessionId += "_html";
+            //SessionId = "TestSession0";
         }
 
         Debug.Log("session id: " + SessionId);
-
-        //SetAutoSaveTimer();
-
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
 
-    //private static void SetAutoSaveTimer()
-    //{
-    //    autoSaveTimer = new Timer(5000);
-    //    autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
-    //    autoSaveTimer.AutoReset = true;
-    //    autoSaveTimer.Enabled = true;
-    //}
-
-    //private static void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
-    //{
-    //    Debug.Log("Autosaving");
-    //    ExportSavedData();
-    //}
-
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (LoadPreviousSession)
-        {
-            LoadSaveData();
-        }
-        //LoadPreviousSession = false;
+        LoadSaveData(); //This data also includes essential information like bagId, so always load the data
     }
 
     public static void ClearAllSaveData()

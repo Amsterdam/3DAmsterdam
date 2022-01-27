@@ -84,8 +84,34 @@ public class DebugSettings : MonoBehaviour
 
     public void Reload()
     {
-        SessionSaver.ClearAllSaveData();
         SessionSaver.LoadPreviousSession = false;
+        SessionSaver.ClearAllSaveData();
+        RestartScene();
+    }
+
+    //public void SaveSessionAndReloadAfterSuccess()
+    //{
+    //    SessionSaver.ExportSavedData();
+    //    SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;
+    //}
+
+    //private void Saver_SavingCompleted(bool saveSucceeded)
+    //{
+    //    SessionSaver.Saver.SavingCompleted -= Saver_SavingCompleted;
+
+    //    if (saveSucceeded)
+    //    {
+    //        RestartScene();
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("saving failed, trying again");
+    //        SaveSessionAndReloadAfterSuccess();
+    //    }
+    //}
+
+    private void RestartScene()
+    {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
