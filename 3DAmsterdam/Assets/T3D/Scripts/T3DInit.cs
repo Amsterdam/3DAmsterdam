@@ -24,7 +24,6 @@ public static class HTMLKeys
     public const string MODEL_ID_KEY = "$_model_id";
     public const string MODEL_VERSION_ID_KEY = "$_model_version_id";
     public const string IS_USER_FEEDBACK_KEY = "$_is_user_feedback";
-    //public const string LOAD_PREVIOUS_SESSION_KEY = "$_load_previous_session";
 }
 
 public class T3DInit : MonoBehaviour
@@ -55,10 +54,6 @@ public class T3DInit : MonoBehaviour
     private SaveableString blobId;
     public string BlobId => blobId.Value;
 
-    //private string loadPreviousSessionKey = HTMLKeys.LOAD_PREVIOUS_SESSION_KEY;
-    //private SaveableBool loadPreviousSession;
-    //public bool LoadPreviousSession => loadPreviousSession.Value;
-
     public bool IsUserFeedback => isUserFeedback.Value;
     public bool IsEditMode { get; private set; } = true;
 
@@ -83,7 +78,6 @@ public class T3DInit : MonoBehaviour
         bimModelVersionId = new SaveableString(bimModelVersionIdKey);
         isUserFeedback = new SaveableBool(isUserFeedbackKey);
         blobId = new SaveableString(blobIdKey);
-        //loadPreviousSession = new SaveableBool(loadPreviousSessionKey);
     }
 
     void Start()
@@ -144,16 +138,6 @@ public class T3DInit : MonoBehaviour
         //IFC upload
         //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?position=138350.607_455582.274&id=0344100000021804&hasfile=true&modelId=61e6dd19b3622280344bb05d&versionId=1&iseditmode=true");
 
-
-#if !UNITY_EDITOR
-        //LoadHTMLData(Application.absoluteURL);
-        //CheckURLForPositionAndId(Application.absoluteURL);
-#else
-        //SetPositionAndIdForEditor();
-#endif
-
-        //print("load prev sess: " + LoadPreviousSession);
-        //bagId.SetValue(urlBagId); //overwrite the saved id with the url id
         var posRD = cameraPosition.Value;
         GotoPosition(posRD);
         StartCoroutine(TileVisualizer.LoadTile(posRD.x, posRD.y, BagId));
@@ -175,9 +159,4 @@ public class T3DInit : MonoBehaviour
         //ambientOcclusion
         RenderSettings.ToggleAO(ishigh);
     }
-
-    //public void SetLoadPreviousSession(bool value)
-    //{
-    //    loadPreviousSession.SetValue(value);
-    //}
 }

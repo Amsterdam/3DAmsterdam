@@ -10,10 +10,6 @@ using UnityEngine.SceneManagement;
 public static class SessionSaver
 {
     public static bool LoadPreviousSession { get; set; } = true;
-    //{
-    //    get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
-    //    set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
-    //}
 
     public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
     public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }

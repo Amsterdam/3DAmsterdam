@@ -13,13 +13,11 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     public static JsonSessionSaver Instance;
 
     public Coroutine uploadCoroutine;
-    //private Coroutine autoSaveCoroutine;
     private bool autoSaveEnabled = true;
     [SerializeField]
     private SaveFeedback saveFeedback;
 
     public event IDataSaver.DataSavedEventHandler SavingCompleted;
-    public bool saveInPorgress => uploadCoroutine != null;
 
     private void Awake()
     {
@@ -90,12 +88,10 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         string saveData = GetJsonSaveData();
-        //Debug.Log("Saving data: " + saveData);
         PlayerPrefs.SetString(sessionId, saveData);
 
         if (uploadCoroutine == null)
         {
-            //print("making new coroutine");
             uploadCoroutine = StartCoroutine(UploadData(sessionId, saveData));
         }
         else
@@ -103,13 +99,12 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             print("Still waiting for coroutine to return, not saving data");
             SavingCompleted?.Invoke(false);
         }
-        //PlayerPrefs.SetString(rootObject.ToString());
     }
 
     private IEnumerator UploadData(string name, string data)
     {
         var uwr = UnityWebRequest.Put(uploadURL + name, data);
-        //print(uploadURL + name);
+
         using (uwr)
         {
             saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.Saving);
@@ -122,7 +117,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             else
             {
                 saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
-                //print("saving succeeded");
                 SavingCompleted?.Invoke(true);
                 uploadCoroutine = null;
             }
