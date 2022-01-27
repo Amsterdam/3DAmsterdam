@@ -7,19 +7,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-
-
-public class CsvGeoLocation
+public class CsvGeoLocation : CsvContentFinder
 {
-    public enum CsvGeoLocationStatus
-    {
-        Success, FailedNoColumns, FailedNoCoordinates, SuccessWithErrors
-    }
-
-    public string[] Columns;
     public string[] ColumnsExceptCoordinates;
-
-    public List<string[]> Rows;
     
     public string[] CoordinateColumns;
 
@@ -32,51 +22,31 @@ public class CsvGeoLocation
     public string LabelColumnName;
     public int LabelColumnIndex;
 
-    public CsvGeoLocationStatus Status = CsvGeoLocationStatus.Success;
+    public CsvContentFinderStatus Status = CsvContentFinderStatus.Success;
     public List<string> StatusMessageLines = new List<string>();
 
-    public CsvGeoLocation(string csv)
+    public CsvGeoLocation(string[] Columns, List<string[]> Rows)
     {
-        var lines = CsvParser.ReadLines(csv, 0);
-        Columns = lines.First();
-        Rows = new List<string[]>();
-
-        int columnscount = Columns.Length;
-
-        for (int i=1; i< lines.Count; i++)
-        {
-            if(lines[i].Length == columnscount)
-            {
-                Rows.Add(lines[i]);
-            }
-            //TODO store errors in StatusMessageLines
-        }
-
         GetCoordinateColumns();       
-
         ColumnsExceptCoordinates = Columns.Where(o => CoordinateColumns.Contains(o) == false).ToArray();
 
         if (Columns.Length == 1 )
         {
-            Status = CsvGeoLocationStatus.FailedNoColumns;
+            Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
             return;
         }
-
         if (CoordinateColumns.Length < 2)
         {
-            Status = CsvGeoLocationStatus.FailedNoCoordinates;
+            Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen coördinaten gedetecteerd, controleer het CSV bestand");
             return;
         }
-
-        
     }
 
     void GetCoordinateColumns()
     {
         //finding the coordinate columns
-
         var list = new List<string>();
         var row1 = Rows.First();
 

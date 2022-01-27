@@ -31,23 +31,33 @@ public class CsvFilePanel : MonoBehaviour
 
     private Dictionary<string,bool> selectedColumnsToDisplay = new System.Collections.Generic.Dictionary<string,bool>();
 
+    private CsvColorID csvColorIds;
     private CsvGeoLocation csvGeoLocation;
 
     private GameObject LocationMarkersParent;
 
     private ActionDropDown currentFilterDropdown;
 
+    [Header("Listeners")]
     [SerializeField]
-    private BoolEvent enableBetaFeature;
+    private BoolEvent onToggleBetaFeatures;
 
     [SerializeField]
-    private StringEvent filesImportedEvent;
+    private StringEvent onFilesImported;
+
+    [Header("Triggers")]
+    [SerializeField]
+    private ObjectEvent showColorsBasedOnIds;
+
+    public string[] Columns;
+    public List<string[]> Rows;
 
     private void Awake()
     {
-        enableBetaFeature.started.AddListener(Show);
-        filesImportedEvent.started.AddListener(LoadCsvFromFile);
+        onToggleBetaFeatures.started.AddListener(Show);
+        onFilesImported.started.AddListener(LoadCsvFromFile);
     }
+
     public void LoadCsvFromFile(string filename)
     {
         if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
@@ -63,7 +73,13 @@ public class CsvFilePanel : MonoBehaviour
         }
 
         var csv = File.ReadAllText(filePath);
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+        //Clear uploaded csv from IndexedDB after loading
         File.Delete(filePath);
+#endif
+
+        CleanUp();
         ParseCsv(csv);
         loadingObjScreen.Hide();
     }
@@ -74,65 +90,109 @@ public class CsvFilePanel : MonoBehaviour
     }
 
     public void ParseCsv(string csv)
-    {
-        if (LocationMarkersParent == null)
-        {
-            LocationMarkersParent = new GameObject("LocationMarkers");
-        }
-        else
-        {
-            ClearLocationMarkers();
-            Reset();
-        }
+	{
+		ReadColumnsAndRows(csv);
 
-        PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+		PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
+		PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
-        csvGeoLocation = new CsvGeoLocation(csv);
-
-        if (csvGeoLocation.Status != CsvGeoLocation.CsvGeoLocationStatus.Success)
-        {
+		//First check for geolocation based content
+		csvGeoLocation = new CsvGeoLocation(Columns, Rows);
+		if (csvGeoLocation.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+		{
+            ShowLocationBasedOptions();
+		}
+        else{
             PropertiesPanel.Instance.AddSpacer(20);
-
             foreach (var line in csvGeoLocation.StatusMessageLines)
             {
                 PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
             }
-
-            return;
         }
-               
-        PropertiesPanel.Instance.AddLabel("Label");
-        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
-        {            
-            csvGeoLocation.LabelColumnName = action;
-            csvGeoLocation.SetlabelIndex(action);
 
-        }, "");
-
-        PropertiesPanel.Instance.AddSpacer(10);
-        PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
-        PropertiesPanel.Instance.AddSpacer(10);
-
-        foreach (var column in csvGeoLocation.Columns)
-        {
-            if (csvGeoLocation.CoordinateColumns.Contains(column)) continue;
-
-            selectedColumnsToDisplay.Add(column, true);
-            PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
+		//Second, check for colors
+		csvColorIds = new CsvColorID(Columns, Rows);
+		if (csvColorIds.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+		{
+            ShowColorToIDMappingOptions();
+		}
+		else
+		{
+            PropertiesPanel.Instance.AddSpacer(20);
+            foreach (var line in csvGeoLocation.StatusMessageLines)
             {
-                selectedColumnsToDisplay[column] = action;
-            });
-        }
+                PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+            }
+		}
+	}
 
-        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
-        {
-            MapAndShow();               
-        });
+    private void ShowColorToIDMappingOptions()
+    {
+        
+	}
 
-    }
 
-    void MapAndShow()
+    private void ShowLocationBasedOptions()
+	{
+		PropertiesPanel.Instance.AddLabel("Label");
+		PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
+		{
+			csvGeoLocation.LabelColumnName = action;
+			csvGeoLocation.SetlabelIndex(action);
+
+		}, "");
+
+		PropertiesPanel.Instance.AddSpacer(10);
+		PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
+		PropertiesPanel.Instance.AddSpacer(10);
+
+		foreach (var column in csvGeoLocation.Columns)
+		{
+			if (csvGeoLocation.CoordinateColumns.Contains(column)) continue;
+
+			selectedColumnsToDisplay.Add(column, true);
+			PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
+			{
+				selectedColumnsToDisplay[column] = action;
+			});
+		}
+
+		PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+		{
+			MapAndShow();
+		});
+	}
+
+	private void CleanUp()
+	{
+		if (LocationMarkersParent == null)
+		{
+			LocationMarkersParent = new GameObject("LocationMarkers");
+		}
+		else
+		{
+			ClearLocationMarkers();
+			Reset();
+		}
+	}
+
+	private void ReadColumnsAndRows(string csv)
+	{
+        //TODO: StreamRead this to support bigger files
+		var lines = CsvParser.ReadLines(csv, 0);
+		Columns = lines.First();
+		Rows = new List<string[]>();
+		int columnscount = Columns.Length;
+		for (int i = 1; i < lines.Count; i++)
+		{
+			if (lines[i].Length == columnscount)
+			{
+				Rows.Add(lines[i]);
+			}
+		}
+	}
+
+	void MapAndShow()
     {
         ShowAll();
 
