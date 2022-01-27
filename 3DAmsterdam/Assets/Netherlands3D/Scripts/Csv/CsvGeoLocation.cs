@@ -27,6 +27,9 @@ public class CsvGeoLocation : CsvContentFinder
 
     public CsvGeoLocation(string[] Columns, List<string[]> Rows)
     {
+        this.Columns = Columns;
+        this.Rows = Rows;
+
         GetCoordinateColumns();       
         ColumnsExceptCoordinates = Columns.Where(o => CoordinateColumns.Contains(o) == false).ToArray();
 
@@ -36,6 +39,7 @@ public class CsvGeoLocation : CsvContentFinder
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
             return;
         }
+
         if (CoordinateColumns.Length < 2)
         {
             Status = CsvContentFinderStatus.Failed;

@@ -9,17 +9,23 @@ using UnityEngine;
 
 public class CsvColorID : CsvContentFinder
 {
-    public string[] ColumnsExceptCoordinates;
 	public string IDColumnName;
     public List<int> ColorColumnIndices = new List<int>();
+
+
     public List<string> StatusMessageLines = new List<string>();
 
     public CsvColorID(string[] Columns, List<string[]> Rows)
     {
+        this.Columns = Columns;
+        this.Rows = Rows;
+
         FindColors();
     }
 
-    void FindColors()
+	public string ColorColumnName { get; internal set; }
+
+	void FindColors()
     {
         //finding colors
         var row1 = Rows.First();

@@ -128,9 +128,20 @@ public class CsvFilePanel : MonoBehaviour
 
     private void ShowColorToIDMappingOptions()
     {
-        
-	}
+        PropertiesPanel.Instance.AddLabel("Label");
 
+        List<string> columnsWithColors = new List<string>();
+		for (int i = 0; i < csvColorIds.ColorColumnIndices.Count; i++)
+		{
+            var index = csvColorIds.ColorColumnIndices[i];
+            columnsWithColors.Add(Columns[index]);
+        }
+
+        PropertiesPanel.Instance.AddActionDropdown(columnsWithColors.ToArray(), (action) =>
+        {
+            csvColorIds.ColorColumnName = action;
+        }, columnsWithColors[0]);
+    }
 
     private void ShowLocationBasedOptions()
 	{
@@ -139,7 +150,6 @@ public class CsvFilePanel : MonoBehaviour
 		{
 			csvGeoLocation.LabelColumnName = action;
 			csvGeoLocation.SetlabelIndex(action);
-
 		}, "");
 
 		PropertiesPanel.Instance.AddSpacer(10);
