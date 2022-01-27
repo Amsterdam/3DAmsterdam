@@ -8,22 +8,20 @@ public class SessionUI : MonoBehaviour
 {
     public void StartNewSession()
     {
-        SessionSaver.ClearAllSaveData();
         SessionSaver.LoadPreviousSession = false;
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        SessionSaver.ClearAllSaveData();
+        RestartScene();
     }
 
     public void LoadSavedSession()
     {
         SessionSaver.LoadPreviousSession = true;
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
-        //SceneSerializer.Instance.LoadBuilding();
+        RestartScene(); 
     }
 
-    public void SaveSession()
+    private void RestartScene()
     {
-        SessionSaver.ExportSavedData();
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }

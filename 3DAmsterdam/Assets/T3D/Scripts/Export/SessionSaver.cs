@@ -10,58 +10,31 @@ using UnityEngine.SceneManagement;
 public static class SessionSaver
 {
     public static bool LoadPreviousSession { get; set; } = true;
-    //{
-    //    get { return PlayerPrefs.GetInt("LoadPreviousSession") > 0; }
-    //    set { PlayerPrefs.SetInt("LoadPreviousSession", value ? 1 : 0); }
-    //}
 
     public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
-    private static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
+    public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
 
-    //private static Timer autoSaveTimer;
-
     static SessionSaver()
     {
-        //LoadPreviousSession = false;
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
-            //Guid g = Guid.NewGuid();
-            SessionId = "TestSession0";
+            SessionId = "048c5390-5133-11ec-b24c-53d3efea3919";
+            SessionId += "_html";
+            //SessionId = "TestSession0";
         }
 
         Debug.Log("session id: " + SessionId);
-
-        //SetAutoSaveTimer();
-
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
 
-    //private static void SetAutoSaveTimer()
-    //{
-    //    autoSaveTimer = new Timer(5000);
-    //    autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
-    //    autoSaveTimer.AutoReset = true;
-    //    autoSaveTimer.Enabled = true;
-    //}
-
-    //private static void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
-    //{
-    //    Debug.Log("Autosaving");
-    //    ExportSavedData();
-    //}
-
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (LoadPreviousSession)
-        {
-            LoadSaveData();
-        }
-        //LoadPreviousSession = false;
+        LoadSaveData(); //This data also includes essential information like bagId, so always load the data
     }
 
     public static void ClearAllSaveData()

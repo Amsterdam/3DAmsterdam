@@ -5,16 +5,19 @@ using UnityEngine.Networking;
 
 public class JsonSessionSaver : MonoBehaviour, IDataSaver
 {
-    private JSONObject rootObject = new JSONObject();
+    const string readOnlyMarker = "$";
+
+    private JSONNode rootObject = new JSONObject();
     const string uploadURL = "https://t3dapi.azurewebsites.net/api/upload/";
 
     public static JsonSessionSaver Instance;
 
     public Coroutine uploadCoroutine;
-    //private Coroutine autoSaveCoroutine;
     private bool autoSaveEnabled = true;
     [SerializeField]
     private SaveFeedback saveFeedback;
+
+    public event IDataSaver.DataSavedEventHandler SavingCompleted;
 
     private void Awake()
     {
@@ -85,25 +88,23 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         string saveData = GetJsonSaveData();
-        //Debug.Log("Saving data: " + saveData);
         PlayerPrefs.SetString(sessionId, saveData);
 
         if (uploadCoroutine == null)
         {
-            //print("making new coroutine");
             uploadCoroutine = StartCoroutine(UploadData(sessionId, saveData));
         }
         else
         {
             print("Still waiting for coroutine to return, not saving data");
+            SavingCompleted?.Invoke(false);
         }
-        //PlayerPrefs.SetString(rootObject.ToString());
     }
 
     private IEnumerator UploadData(string name, string data)
     {
         var uwr = UnityWebRequest.Put(uploadURL + name, data);
-        //print(uploadURL + name);
+
         using (uwr)
         {
             saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.Saving);
@@ -111,20 +112,40 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError(uwr.error);
+                SavingCompleted?.Invoke(false);
             }
             else
             {
                 saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
-                //print("saving succeeded");
+                SavingCompleted?.Invoke(true);
                 uploadCoroutine = null;
             }
         }
     }
 
+    public void InitializeRootObject(JSONNode loadedObject)
+    {
+        rootObject = loadedObject;
+    }
+
     public void ClearAllData(string sessionId)
     {
-        rootObject = new JSONObject();
+        var newObject = new JSONObject();
+
+        //save readOnly keys
+        foreach(var key in rootObject.Keys)
+        {
+            if (key.Value.StartsWith(readOnlyMarker))
+            {
+                newObject.Add(key.Value, rootObject[key.Value]);
+                print("read only: " + key.Value);
+            }
+        }
+
+        rootObject = newObject;
         saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+
+        ExportSaveData(sessionId);
 
         PlayerPrefs.DeleteKey(sessionId);
     }

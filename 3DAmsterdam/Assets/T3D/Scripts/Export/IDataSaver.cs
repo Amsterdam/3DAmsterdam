@@ -4,6 +4,9 @@ using UnityEngine;
 
 public interface IDataSaver
 {
+    public delegate void DataSavedEventHandler(bool saveSucceeded);
+    public event DataSavedEventHandler SavingCompleted;
+
     public void SaveFloat(string key, float value);
     public void SaveInt(string key, int value);
     public void SaveString(string key, string value);

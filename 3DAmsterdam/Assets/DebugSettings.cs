@@ -84,8 +84,13 @@ public class DebugSettings : MonoBehaviour
 
     public void Reload()
     {
-        SessionSaver.ClearAllSaveData();
         SessionSaver.LoadPreviousSession = false;
+        SessionSaver.ClearAllSaveData();
+        RestartScene();
+    }
+
+    private void RestartScene()
+    {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
