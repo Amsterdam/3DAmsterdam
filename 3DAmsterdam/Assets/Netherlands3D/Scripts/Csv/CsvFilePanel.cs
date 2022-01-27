@@ -127,18 +127,31 @@ public class CsvFilePanel : MonoBehaviour
 
     private void ShowColorToIDMappingOptions()
     {
-        PropertiesPanel.Instance.AddLabel("Select color column:");
+        PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
+        List<string> columnsWithIDs = new List<string>();
+        for (int i = 0; i < csvColorIds.IDColumnIndices.Count; i++)
+        {
+            var index = csvColorIds.IDColumnIndices[i];
+            columnsWithIDs.Add(Columns[index]);
+        }
+        csvColorIds.SetIDColumn(columnsWithIDs[0]);
+        PropertiesPanel.Instance.AddActionDropdown(columnsWithIDs.ToArray(), (action) =>
+        {
+            csvColorIds.SetIDColumn(columnsWithIDs[0]);
+        }, columnsWithIDs[0]);
+
+        PropertiesPanel.Instance.AddLabel("Kleuren kolom:");
         List<string> columnsWithColors = new List<string>();
 		for (int i = 0; i < csvColorIds.ColorColumnIndices.Count; i++)
 		{
             var index = csvColorIds.ColorColumnIndices[i];
             columnsWithColors.Add(Columns[index]);
         }
+        csvColorIds.SetColorColumn(columnsWithColors[0]);
         PropertiesPanel.Instance.AddActionDropdown(columnsWithColors.ToArray(), (action) =>
         {
-            csvColorIds.SetColorColumnIndex(action);
+            csvColorIds.SetColorColumn(action);
         }, columnsWithColors[0]);
-
 
         PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
         {

@@ -14,9 +14,21 @@ public class CsvColorID : CsvContentFinder
     public int IDColumnIndex = 0;
     public int ColorColumnIndex = 0;
 
+    public List<int> IDColumnIndices = new List<int>();
     public List<int> ColorColumnIndices = new List<int>();
 
-	public void SetColorColumnIndex(string columnName)
+    public void SetIDColumn(string columnName)
+    {
+        for (int i = 0; i < Columns.Length; i++)
+        {
+            if (columnName == Columns[i])
+            {
+                IDColumnIndex = i;
+            }
+        }
+    }
+
+    public void SetColorColumn(string columnName)
     {
         for (int i = 0; i < Columns.Length; i++)
         {
@@ -47,9 +59,13 @@ public class CsvColorID : CsvContentFinder
             {
                 ColorColumnIndices.Add(i);
             }
-            else if(IDColumnName == ""){
-                IDColumnName = col;
-                IDColumnIndex = i;
+            else{
+                IDColumnIndices.Add(i);
+                if (IDColumnName == "")
+                {
+                    IDColumnName = col;
+                    IDColumnIndex = i;
+                }
             }
         }
     }
