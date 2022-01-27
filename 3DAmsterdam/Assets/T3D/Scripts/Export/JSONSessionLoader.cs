@@ -90,5 +90,10 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
         hasLoaded = rootObject != null;
         LoadingCompleted?.Invoke(hasLoaded);
+
+        if (hasLoaded)
+        {
+            JsonSessionSaver.Instance.InitializeRootObject(rootObject); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
+        }
     }
 }
