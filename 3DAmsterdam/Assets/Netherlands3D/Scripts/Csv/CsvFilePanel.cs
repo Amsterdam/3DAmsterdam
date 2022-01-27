@@ -29,7 +29,7 @@ public class CsvFilePanel : MonoBehaviour
     [SerializeField]
     private LoadingScreen loadingObjScreen;
 
-    private Dictionary<string,bool> selectedColumnsToDisplay = new System.Collections.Generic.Dictionary<string,bool>();
+    private Dictionary<string,bool> selectedColumnsToDisplay = new Dictionary<string,bool>();
 
     private CsvColorID csvColorIds;
     private CsvGeoLocation csvGeoLocation;
@@ -101,30 +101,29 @@ public class CsvFilePanel : MonoBehaviour
 		if (csvGeoLocation.Status == CsvContentFinder.CsvContentFinderStatus.Success)
 		{
             ShowLocationBasedOptions();
+            return;
 		}
-        else{
-            PropertiesPanel.Instance.AddSpacer(20);
-            foreach (var line in csvGeoLocation.StatusMessageLines)
-            {
-                PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-            }
-        }
 
 		//Second, check for colors
 		csvColorIds = new CsvColorID(Columns, Rows);
 		if (csvColorIds.Status == CsvContentFinder.CsvContentFinderStatus.Success)
 		{
             ShowColorToIDMappingOptions();
+            return;
 		}
-		else
-		{
-            PropertiesPanel.Instance.AddSpacer(20);
-            foreach (var line in csvGeoLocation.StatusMessageLines)
-            {
-                PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-            }
-		}
-	}
+
+        //In case of failure, show all messages
+        PropertiesPanel.Instance.AddSpacer(20);
+        foreach (var line in csvGeoLocation.StatusMessageLines)
+        {
+            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+        }
+        PropertiesPanel.Instance.AddSpacer(20);
+        foreach (var line in csvColorIds.StatusMessageLines)
+        {
+            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+        }
+    }
 
     private void ShowColorToIDMappingOptions()
     {

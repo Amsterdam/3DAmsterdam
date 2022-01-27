@@ -22,9 +22,6 @@ public class CsvGeoLocation : CsvContentFinder
     public string LabelColumnName;
     public int LabelColumnIndex;
 
-    public CsvContentFinderStatus Status = CsvContentFinderStatus.Success;
-    public List<string> StatusMessageLines = new List<string>();
-
     public CsvGeoLocation(string[] Columns, List<string[]> Rows)
     {
         this.Columns = Columns;
@@ -39,7 +36,6 @@ public class CsvGeoLocation : CsvContentFinder
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
             return;
         }
-
         if (CoordinateColumns.Length < 2)
         {
             Status = CsvContentFinderStatus.Failed;

@@ -13,4 +13,6 @@ public class CsvContentFinder
 
     public string[] Columns;
 	public List<string[]> Rows;
+
+    public List<string> StatusMessageLines = new List<string>();
 }

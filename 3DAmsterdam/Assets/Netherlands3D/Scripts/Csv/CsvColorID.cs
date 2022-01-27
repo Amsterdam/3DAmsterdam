@@ -11,9 +11,7 @@ public class CsvColorID : CsvContentFinder
 {
 	public string IDColumnName;
     public List<int> ColorColumnIndices = new List<int>();
-
-
-    public List<string> StatusMessageLines = new List<string>();
+	public string ColorColumnName { get; internal set; }
 
     public CsvColorID(string[] Columns, List<string[]> Rows)
     {
@@ -22,8 +20,6 @@ public class CsvColorID : CsvContentFinder
 
         FindColors();
     }
-
-	public string ColorColumnName { get; internal set; }
 
 	void FindColors()
     {
