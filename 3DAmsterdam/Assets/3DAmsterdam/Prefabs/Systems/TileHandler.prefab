@@ -723,6 +723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5eacbc7ab9af56f40af9a3b50159ed5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableOnStart: 1
   onReceiveIdsAndColors: {fileID: 11400000, guid: 4866859441f5efc41902fbeaee6a78ed,
     type: 2}
   dataSource: file:///somecsv.csv
@@ -760,7 +761,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  defaultColor: {r: 0, g: 0, b: 0, a: 0}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &7139907241435937829
 GameObject:
   m_ObjectHideFlags: 0
