@@ -18,15 +18,15 @@ public static class SessionSaver
     public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
-    {
+    {        
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
-            SessionId = "048c5390-5133-11ec-b24c-53d3efea3919";
-            SessionId += "_html";
-            //SessionId = "TestSession0";
+            //SessionId = "048c5390-5133-11ec-b24c-53d3efea3919";
+            SessionId = "da37c930-7f90-11ec-a6d4-09f8665ad168";
         }
+        SessionId += "_html";
 
         Debug.Log("session id: " + SessionId);
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
