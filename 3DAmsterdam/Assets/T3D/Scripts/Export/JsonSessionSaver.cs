@@ -24,11 +24,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         Instance = this;
     }
 
-    private void Start()
-    {
-        EnableAutoSave(true);
-    }
-
     public void EnableAutoSave(bool enable)
     {
         autoSaveEnabled = enable && T3DInit.Instance.IsEditMode;
@@ -126,6 +121,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     public void InitializeRootObject(JSONNode loadedObject)
     {
         rootObject = loadedObject;
+        print("new save data: " + rootObject.ToString());
+        EnableAutoSave(true);
     }
 
     public void ClearAllData(string sessionId)
