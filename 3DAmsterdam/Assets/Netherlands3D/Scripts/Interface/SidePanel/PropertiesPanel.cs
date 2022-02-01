@@ -60,6 +60,8 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private GameObject titlePrefab;
         [SerializeField]
+        private GameObject numberInputPrefab;
+        [SerializeField]
         private GameObject textfieldPrefab;
         [SerializeField]
         private GameObject textfieldPrefabColor;
@@ -204,7 +206,9 @@ namespace Netherlands3D.Interface.SidePanel
 
             OpenPanel();
         }
-        public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
+
+
+		public void OpenTransformPanel(Transformable transformable, int gizmoTransformType = -1)
         {
             transformPanel.SetTarget(transformable);
             switch (gizmoTransformType)
@@ -422,12 +426,25 @@ namespace Netherlands3D.Interface.SidePanel
 			}
 		}
 
-		private void MakeTextItemSelectable(GameObject textGameObject)
+        private void MakeTextItemSelectable(GameObject textGameObject)
 		{
             textGameObject.AddComponent<SelectableText>().SetFieldPrefab(selectableText);
 		}
 
-		public void AddTextfield(string content, bool selectable = false)
+        public InputField AddNumberInput(string label, double defaultValue)
+        {
+            var newNumberInputField = Instantiate(numberInputPrefab, targetFieldsContainer);
+            InputField inputField = newNumberInputField.GetComponent<InputField>();
+            inputField.SetTextWithoutNotify(defaultValue.ToString());
+
+            var allTexts = inputField.GetComponentsInChildren<Text>();
+            foreach(var text in allTexts)
+                if (text != inputField.textComponent) text.text = label;
+
+            return inputField;
+        }
+
+        public void AddTextfield(string content, bool selectable = false)
         {
             var newTextField = Instantiate(textfieldPrefab, targetFieldsContainer);
             newTextField.GetComponent<Text>().text = content;

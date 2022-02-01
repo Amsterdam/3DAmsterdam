@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class CsvGeoLocation : CsvContentFinder
+public class CsvGeoLocationFinder : CsvContentFinder
 {
     public string[] ColumnsExceptCoordinates;
     
@@ -22,7 +22,7 @@ public class CsvGeoLocation : CsvContentFinder
     public string LabelColumnName;
     public int LabelColumnIndex;
 
-    public CsvGeoLocation(string[] Columns, List<string[]> Rows)
+    public CsvGeoLocationFinder(string[] Columns, List<string[]> Rows)
     {
         this.Columns = Columns;
         this.Rows = Rows;

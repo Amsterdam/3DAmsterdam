@@ -31,8 +31,9 @@ public class CsvFilePanel : MonoBehaviour
 
     private Dictionary<string,bool> selectedColumnsToDisplay = new Dictionary<string,bool>();
 
-    private CsvColorID csvColorIds;
-    private CsvGeoLocation csvGeoLocation;
+    private CsvColorsFinder csvColorsFinder;
+    private CsvNumbersFinder csvNumbersFinder;
+    private CsvGeoLocationFinder csvGeoLocation;
 
     private GameObject LocationMarkersParent;
 
@@ -48,6 +49,12 @@ public class CsvFilePanel : MonoBehaviour
     [Header("Triggers")]
     [SerializeField]
     private ObjectEvent showColorsBasedOnIds;
+    [SerializeField]
+    private ObjectEvent showColorGradientBasedOnIds;
+    [SerializeField]
+    private FloatEvent setGradientValueMin;
+    [SerializeField]
+    private FloatEvent setGradientValueMax;
 
     public string[] Columns;
     public List<string[]> Rows;
@@ -97,60 +104,73 @@ public class CsvFilePanel : MonoBehaviour
 		PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
 		//First check for geolocation based content
-		csvGeoLocation = new CsvGeoLocation(Columns, Rows);
+		csvGeoLocation = new CsvGeoLocationFinder(Columns, Rows);
 		if (csvGeoLocation.Status == CsvContentFinder.CsvContentFinderStatus.Success)
 		{
-            ShowLocationBasedOptions();
-            return;
+			ShowLocationBasedOptions();
+			return;
 		}
 
-		//Second, check for colors
-		csvColorIds = new CsvColorID(Columns, Rows);
-		if (csvColorIds.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+		//Second, check for data with explicity defined hex colors
+		csvColorsFinder = new CsvColorsFinder(Columns, Rows);
+		if (csvColorsFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
 		{
-            ShowColorToIDMappingOptions();
-            return;
+			ShowColorToIDMappingOptions();
+			return;
 		}
 
-        //In case of failure, show all messages
-        PropertiesPanel.Instance.AddSpacer(20);
-        foreach (var line in csvGeoLocation.StatusMessageLines)
-        {
-            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-        }
-        PropertiesPanel.Instance.AddSpacer(20);
-        foreach (var line in csvColorIds.StatusMessageLines)
-        {
-            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-        }
-    }
+		//Last, check for numbers we might be able to map to a gradient
+		csvNumbersFinder = new CsvNumbersFinder(Columns, Rows);
+		if (csvNumbersFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+		{
+			ShowGradientToIDMappingOptions();
+			return;
+		}
 
-    private void ShowColorToIDMappingOptions()
+		//In case of failure, show all messages
+		DrawStatusMessages();
+	}
+
+	private void DrawStatusMessages()
+	{
+		PropertiesPanel.Instance.AddSpacer(20);
+		foreach (var line in csvGeoLocation.StatusMessageLines)
+		{
+			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+		}
+		PropertiesPanel.Instance.AddSpacer(20);
+		foreach (var line in csvColorsFinder.StatusMessageLines)
+		{
+			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+		}
+	}
+
+	private void ShowColorToIDMappingOptions()
     {
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
-        for (int i = 0; i < csvColorIds.IDColumnIndices.Count; i++)
+        for (int i = 0; i < csvColorsFinder.IDColumnIndices.Count; i++)
         {
-            var index = csvColorIds.IDColumnIndices[i];
+            var index = csvColorsFinder.IDColumnIndices[i];
             columnsWithIDs.Add(Columns[index]);
         }
-        csvColorIds.SetIDColumn(columnsWithIDs[0]);
+        csvColorsFinder.SetIDColumn(columnsWithIDs[0]);
         PropertiesPanel.Instance.AddActionDropdown(columnsWithIDs.ToArray(), (action) =>
         {
-            csvColorIds.SetIDColumn(columnsWithIDs[0]);
+            csvColorsFinder.SetIDColumn(columnsWithIDs[0]);
         }, columnsWithIDs[0]);
 
         PropertiesPanel.Instance.AddLabel("Kleuren kolom:");
         List<string> columnsWithColors = new List<string>();
-		for (int i = 0; i < csvColorIds.ColorColumnIndices.Count; i++)
+		for (int i = 0; i < csvColorsFinder.ColorColumnIndices.Count; i++)
 		{
-            var index = csvColorIds.ColorColumnIndices[i];
+            var index = csvColorsFinder.ColorColumnIndices[i];
             columnsWithColors.Add(Columns[index]);
         }
-        csvColorIds.SetColorColumn(columnsWithColors[0]);
+        csvColorsFinder.SetColorColumn(columnsWithColors[0]);
         PropertiesPanel.Instance.AddActionDropdown(columnsWithColors.ToArray(), (action) =>
         {
-            csvColorIds.SetColorColumn(action);
+            csvColorsFinder.SetColorColumn(action);
         }, columnsWithColors[0]);
 
         PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
@@ -159,10 +179,63 @@ public class CsvFilePanel : MonoBehaviour
         });
     }
 
+    private void ShowGradientToIDMappingOptions()
+    {
+        PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
+        List<string> columnsWithIDs = new List<string>();
+        for (int i = 0; i < csvNumbersFinder.IDColumnIndices.Count; i++)
+        {
+            var index = csvNumbersFinder.IDColumnIndices[i];
+            columnsWithIDs.Add(Columns[index]);
+        }
+        csvNumbersFinder.SetIDColumn(columnsWithIDs[0]);
+
+        PropertiesPanel.Instance.AddActionDropdown(columnsWithIDs.ToArray(), (action) =>
+        {
+            csvNumbersFinder.SetIDColumn(columnsWithIDs[0]);
+        }, columnsWithIDs[0]);
+
+        PropertiesPanel.Instance.AddLabel("Kleurbepalende waarde:");
+        List<string> columnsWithNumbers = new List<string>();
+        for (int i = 0; i < csvNumbersFinder.NumberColumnIndices.Count; i++)
+        {
+            var index = csvNumbersFinder.NumberColumnIndices[i];
+            columnsWithNumbers.Add(Columns[index]);
+        }
+        csvNumbersFinder.SetNumberColumn(columnsWithNumbers[0]);
+
+        PropertiesPanel.Instance.AddActionDropdown(columnsWithNumbers.ToArray(), (action) =>
+        {
+            csvNumbersFinder.SetNumberColumn(action);
+        }, columnsWithNumbers[0]);
+
+        //Choose ranges
+        PropertiesPanel.Instance.AddLabel("Bereik:");
+        var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", 0);
+        var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", 10);
+
+        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+        {
+            double.TryParse(inputFieldMin.text, out double min);
+            double.TryParse(inputFieldMax.text, out double max);
+            ShowGradientColors(min, max);
+        });
+    }
+
     private void ShowColors()
     {
-        var colorsAndIDs = csvColorIds.GetColorsAndIDs();
+        var colorsAndIDs = csvColorsFinder.GetColorsAndIDs();
         showColorsBasedOnIds.started.Invoke(colorsAndIDs);
+    }
+
+    private void ShowGradientColors(double min, double max)
+    {
+        var colorsAndNumbers = csvNumbersFinder.GetNumbersAndIDs();
+
+        setGradientValueMin.started.Invoke((float)min);
+        setGradientValueMax.started.Invoke((float)max);
+
+        showColorGradientBasedOnIds.started.Invoke(colorsAndNumbers);
     }
 
     private void ShowLocationBasedOptions()

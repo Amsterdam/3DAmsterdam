@@ -28,7 +28,7 @@ Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects /
             }
         }
 
-        var csvgeoloc = new CsvGeoLocation(Columns, Rows);
+        var csvgeoloc = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
         Assert.AreEqual(2, csvgeoloc.CoordinateColumns.Length );       
     }
@@ -49,7 +49,7 @@ Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects /
         }
 
 
-        var csvgeoloc = new CsvGeoLocation(Columns, Rows);
+        var csvgeoloc = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
 
         var omschrijving1 = csvgeoloc.Rows[0][0];
@@ -80,7 +80,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
             }
         }
 
-        var projects = new CsvGeoLocation(Columns, Rows);
+        var projects = new CsvGeoLocationFinder(Columns, Rows);
 
         Assert.AreEqual(15, projects.Columns.Length);
         Assert.AreEqual(2, projects.Rows.Count);
@@ -114,7 +114,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
             }
         }
 
-        var bagligplaatsen = new CsvGeoLocation(Columns, Rows);
+        var bagligplaatsen = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(bagligplaatsen.Status, CsvContentFinder.CsvContentFinderStatus.Failed);
     }
 
@@ -142,7 +142,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
             }
         }
 
-        var panoramas = new CsvGeoLocation(Columns, Rows);
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(2, panoramas.CoordinateColumns.Length);
 
     }
@@ -168,7 +168,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
             }
         }
 
-        var panoramas = new CsvGeoLocation(Columns, Rows);
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(CsvContentFinder.CsvContentFinderStatus.Failed, panoramas.Status);
     }
 
@@ -193,7 +193,7 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
             }
         }
 
-        var panoramas = new CsvGeoLocation(Columns, Rows);
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(CsvContentFinder.CsvContentFinderStatus.Success, panoramas.Status);
         Assert.AreEqual(panoramas.CoordinateColumns.Length, 2);
 
@@ -214,34 +214,34 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
         //range lat 50.57222 - 53.62702
         //range lon 3.29804 - 7.57893
 
-        bool iscoordinate1 = CsvGeoLocation.IsCoordinate("title");
+        bool iscoordinate1 = CsvGeoLocationFinder.IsCoordinate("title");
         Assert.AreEqual(false, iscoordinate1, "IsCoordinate title");
 
-        bool iscoordinate2 = CsvGeoLocation.IsCoordinate("2343");
+        bool iscoordinate2 = CsvGeoLocationFinder.IsCoordinate("2343");
         Assert.AreEqual(false, iscoordinate2, "IsCoordinate 2343");
 
-        bool iscoordinate3 = CsvGeoLocation.IsCoordinate("7500");
+        bool iscoordinate3 = CsvGeoLocationFinder.IsCoordinate("7500");
         Assert.AreEqual(true, iscoordinate3, "IsCoordinate 7500");
 
-        bool iscoordinate4 = CsvGeoLocation.IsCoordinate("4");
+        bool iscoordinate4 = CsvGeoLocationFinder.IsCoordinate("4");
         Assert.AreEqual(true, iscoordinate4, "IsCoordinate 4");
 
-        bool iscoordinate5 = CsvGeoLocation.IsCoordinate("9");
+        bool iscoordinate5 = CsvGeoLocationFinder.IsCoordinate("9");
         Assert.AreEqual(false, iscoordinate5, "IsCoordinate 9");
 
-        bool iscoordinate6 = CsvGeoLocation.IsCoordinate("284000");
+        bool iscoordinate6 = CsvGeoLocationFinder.IsCoordinate("284000");
         Assert.AreEqual(false, iscoordinate6, "IsCoordinate 284000");
 
-        bool iscoordinate7 = CsvGeoLocation.IsCoordinate("650000");
+        bool iscoordinate7 = CsvGeoLocationFinder.IsCoordinate("650000");
         Assert.AreEqual(false, iscoordinate7, "IsCoordinate 650000");
 
-        bool iscoordinate8 = CsvGeoLocation.IsCoordinate("450000");
+        bool iscoordinate8 = CsvGeoLocationFinder.IsCoordinate("450000");
         Assert.AreEqual(true, iscoordinate8, "IsCoordinate 450000");
 
-        bool iscoordinate9 = CsvGeoLocation.IsCoordinate("450000,12342134");
+        bool iscoordinate9 = CsvGeoLocationFinder.IsCoordinate("450000,12342134");
         Assert.AreEqual(true, iscoordinate9, "IsCoordinate 450000,12342134");
 
-        bool iscoordinate10 = CsvGeoLocation.IsCoordinate("450000.12342134");
+        bool iscoordinate10 = CsvGeoLocationFinder.IsCoordinate("450000.12342134");
         Assert.AreEqual(true, iscoordinate10, "IsCoordinate 450000.12342134");
     }
 

@@ -726,6 +726,10 @@ MonoBehaviour:
   disableOnStart: 1
   onReceiveIdsAndColors: {fileID: 11400000, guid: 4866859441f5efc41902fbeaee6a78ed,
     type: 2}
+  onReceiveIdsAndFloats: {fileID: 11400000, guid: fb2cf9652db7b5543805d7d32c265542,
+    type: 2}
+  onReceiveMinRange: {fileID: 11400000, guid: 84ac3174f13dc9e44960250748b72a2e, type: 2}
+  onReceiveMaxRange: {fileID: 11400000, guid: 102194ef148d69c40af1842e74c88a3f, type: 2}
   dataSource: file:///somecsv.csv
   idColumn: 0
   colorColumn: 2
@@ -734,19 +738,19 @@ MonoBehaviour:
   maximumValue: 0
   gradient:
     serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 0, g: 0, b: 1, a: 1}
+    key1: {r: 0, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 1, b: 0, a: 0}
+    key3: {r: 1, g: 1, b: 0, a: 0}
+    key4: {r: 1, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
+    ctime1: 16384
+    ctime2: 33924
+    ctime3: 49151
+    ctime4: 65535
     ctime5: 0
     ctime6: 0
     ctime7: 0
@@ -759,7 +763,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 2
+    m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &7139907241435937829

@@ -9,7 +9,7 @@ public class CsvContentFinder
         Failed
     }
 
-    public CsvContentFinderStatus Status = CsvContentFinderStatus.Success;
+    public CsvContentFinderStatus Status = CsvContentFinderStatus.Failed;
 
     public string[] Columns;
 	public List<string[]> Rows;

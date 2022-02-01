@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class CsvColorID : CsvContentFinder
+public class CsvColorsFinder : CsvContentFinder
 {
 	public string IDColumnName = "";
 
@@ -39,7 +39,7 @@ public class CsvColorID : CsvContentFinder
         }
     }
 
-    public CsvColorID(string[] Columns, List<string[]> Rows)
+    public CsvColorsFinder(string[] Columns, List<string[]> Rows)
     {
         this.Columns = Columns;
         this.Rows = Rows;
@@ -68,6 +68,8 @@ public class CsvColorID : CsvContentFinder
                 }
             }
         }
+
+        Status = (ColorColumnIndices.Count > 0 && IDColumnIndices.Count > 0) ? CsvContentFinderStatus.Success : CsvContentFinderStatus.Failed;
     }
 
     public Dictionary<string,Color> GetColorsAndIDs()
@@ -87,7 +89,6 @@ public class CsvColorID : CsvContentFinder
 
         return idsAndColors;
     }
-
 
     private bool IsColor(string content, out Color color)
     {
