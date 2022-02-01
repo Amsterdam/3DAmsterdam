@@ -30,6 +30,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     Quaternion lastRotateRotation;
     Vector2 currentRotation;
 
+    float groundLevel;
+
     public static RotateCamera Instance;
     bool isFirstPersonMode = false;
     private void Awake()
@@ -39,6 +41,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void Start()
     {
+        BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
+
         mycam = CameraModeChanger.Instance.ActiveCamera;
 
         availableActionMaps = new List<InputActionMap>()
@@ -54,7 +58,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
-        {            
+        {
+           // LookAt();
             RotateAround(mouseDelta.x, mouseDelta.y);
         }        
         else if(isFirstPersonMode)
@@ -66,6 +71,13 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             }
             FirstPersonLook();
         }
+
+
+    }
+
+    private void OnBuildingDataProcessed(BuildingMeshGenerator building)
+    {
+        groundLevel = building.GroundLevel;
     }
 
     public bool ToggleRotateFirstPersonMode()
@@ -79,8 +91,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             lastRotatePosition = mycam.transform.position;
             lastRotateRotation = mycam.transform.rotation;
             var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
-            mycam.transform.position = new Vector3(perceelmidden.x, firstPersonHeight, perceelmidden.z);
-            mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, firstPersonHeight, RestrictionChecker.ActiveUitbouw.CenterPoint.z));
+            mycam.transform.position = new Vector3(perceelmidden.x, groundLevel + firstPersonHeight, perceelmidden.z);
+            mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, RestrictionChecker.ActiveUitbouw.CenterPoint.y , RestrictionChecker.ActiveUitbouw.CenterPoint.z));
             currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
         }
         else

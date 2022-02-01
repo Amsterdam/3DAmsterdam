@@ -25,8 +25,11 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
         public event BuildingDataProcessedEventHandler BuildingDataProcessed;
 
+        public static BuildingMeshGenerator Instance;
+
         private void Awake()
         {
+            Instance = this;
             SelectedWall = GetComponentInChildren<WallSelector>();
         }
 
