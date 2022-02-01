@@ -23,8 +23,7 @@ public static class SessionSaver
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
-            //SessionId = "048c5390-5133-11ec-b24c-53d3efea3919";
-            SessionId = "da37c930-7f90-11ec-a6d4-09f8665ad168";
+            SessionId = "29f0f430-7206-11ec-9808-3117a2780adf";
         }
         SessionId += "_html";
 
