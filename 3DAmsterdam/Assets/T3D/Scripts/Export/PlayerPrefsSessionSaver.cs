@@ -27,6 +27,11 @@ public class PlayerPrefsSessionSaver : IDataSaver
         PlayerPrefs.SetString(key, value);
     }
 
+    public void SaveBool(string key, bool value)
+    {
+        PlayerPrefs.SetInt(key, value ? 1 : 0);
+    }
+
     public void DeleteKey(string key)
     {
         PlayerPrefs.DeleteKey(key);

@@ -48,6 +48,14 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
         return default;
     }
 
+    public bool LoadBool(string key)
+    {
+        var val = rootObject[key];
+        if (val)
+            return val;
+        return default;
+    }
+
     public void ReadSaveData(string sessionId)
     {
         Debug.Log("loading data for session: " + sessionId);

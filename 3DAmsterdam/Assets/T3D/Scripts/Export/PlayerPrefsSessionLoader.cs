@@ -22,6 +22,11 @@ public class PlayerPrefsSessionLoader : IDataLoader
         return PlayerPrefs.GetString(key);
     }
 
+    public bool LoadBool(string key)
+    {
+        return PlayerPrefs.GetInt(key) > 0 ? true : false;
+    }
+
     public void ReadSaveData(string sessionId)
     {
     }

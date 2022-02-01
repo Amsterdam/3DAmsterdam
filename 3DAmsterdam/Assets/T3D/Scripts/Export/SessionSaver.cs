@@ -56,6 +56,11 @@ public static class SessionSaver
         Saver.SaveString(key, value);
     }
 
+    public static void SaveBool(string key, bool value)
+    {
+        Saver.SaveBool(key, value);
+    }
+
     public static float LoadFloat(string key)
     {
         return Loader.LoadFloat(key);
@@ -69,6 +74,11 @@ public static class SessionSaver
     public static string LoadString(string key)
     {
         return Loader.LoadString(key);
+    }
+
+    public static bool LoadBool(string key)
+    {
+        return Loader.LoadBool(key);
     }
 
     public static void DeleteKey(string key)
