@@ -50,8 +50,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-        {
-            print("constructing mesh");
+        {            
             var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
             transform.position = args.TileOffset;
             var mf = GetComponent<MeshFilter>();
@@ -66,8 +65,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
-        {
-            print("getting corners");
+        {            
             Area = args.TotalArea;
             StartCoroutine(ProcessCorners(args.Outline));
         }

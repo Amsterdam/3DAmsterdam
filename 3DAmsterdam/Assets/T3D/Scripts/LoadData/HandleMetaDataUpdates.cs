@@ -57,9 +57,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     private void PerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
         perceelIsLoaded = true;
-        perceelArea = args.Area;
-        print("perceel outline loaded");
-        //PerceelGrootteText.text += "Totaal Perceeloppervlakte: " + args.Area.ToString("F2") + "m²";
+        perceelArea = args.Area;        
     }
 
     private void AddressLoaded(object source, AdressDataEventArgs args)
@@ -83,9 +81,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     private void Instance_BuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
     {
         buildingOutlineIsLoaded = true;
-        builtArea = args.TotalArea;
-        print("building outline loaded");
-        //PerceelGrootteText.text += "Bebouwd Perceeloppervlakte: " + args.TotalArea.ToString("F2") + "m²";
+        builtArea = args.TotalArea;                
     }
 
     private IEnumerator SetSidebarAreaText()

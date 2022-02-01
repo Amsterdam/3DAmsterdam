@@ -169,8 +169,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void OnAddressLoaded(object source, AdressDataEventArgs args)
-        {
-            Debug.Log($"adres geladen: {args.Straat} {args.Huisnummer} {args.Postcode} {args.Plaats}");
+        {            
             StartCoroutine(GetAdressenUitgebreid(args.Postcode, args.Huisnummer));
         }
 
@@ -335,8 +334,6 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             //yield return null;
 
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
-
             var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
             var url = $"https://geodata.nationaalgeoregister.nl/kadastralekaart/wfs/v4_0?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=kadastralekaartv4:perceel&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::28992&BBOX={bbox},urn:ogc:def:crs:EPSG::28992&outputFormat=json";
 
@@ -356,8 +353,6 @@ namespace Netherlands3D.T3D.Uitbouw
         IEnumerator GetMonumentStatus(Vector3RD position)
         {
             yield return null;
-
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
 
             var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
             var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:NationalListedMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
@@ -380,8 +375,6 @@ namespace Netherlands3D.T3D.Uitbouw
         IEnumerator GetBeschermdStatus(Vector3RD position)
         {
             yield return null;
-
-            Debug.Log($"GetAndRenderPerceel x:{position.x} y:{position.y}");
 
             var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
             var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
