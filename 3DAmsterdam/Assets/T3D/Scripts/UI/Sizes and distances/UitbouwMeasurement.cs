@@ -9,8 +9,9 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         private UitbouwBase uitbouw;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             uitbouw = GetComponent<UitbouwBase>();
         }
 
