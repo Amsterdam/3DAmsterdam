@@ -8,8 +8,9 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         private SquareSurface square;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             square = GetComponent<SquareSurface>();
         }
 
