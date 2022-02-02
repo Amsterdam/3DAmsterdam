@@ -480,9 +480,8 @@ namespace Netherlands3D.T3D.Uitbouw
             var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             if (T3DInit.Instance.UploadedModel && !Uitbouw)
             {
-                //var obj = Instantiate(uploadedUitbouwPrefab, pos, Quaternion.identity);
                 var obj = CityJsonVisualiser.Instance;
-                obj.EnableUploadedModel(true);
+                obj.VisualizeCityJson();
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             else if (!Uitbouw)

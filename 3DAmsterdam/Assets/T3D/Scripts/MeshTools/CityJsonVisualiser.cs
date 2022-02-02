@@ -4,6 +4,7 @@ using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using T3D.LoadData;
 //using T3D.LoadData;
@@ -13,7 +14,7 @@ using UnityEngine;
 public class CityJsonVisualiser : MonoBehaviour
 {
     public Material MeshMaterial;
-    private Vector3RD? centerPerceel;
+    private Vector3RD? perceelCenter;
     private string cityJson;
     private UploadedUitbouw uitbouw;
 
@@ -23,6 +24,7 @@ public class CityJsonVisualiser : MonoBehaviour
     {
         Instance = this;
         uitbouw = GetComponentInChildren<UploadedUitbouw>(true);
+        uitbouw.gameObject.SetActive(false);
     }
 
     void OnEnable()
@@ -39,29 +41,45 @@ public class CityJsonVisualiser : MonoBehaviour
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        centerPerceel = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
+        perceelCenter = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
 
-        if (!string.IsNullOrEmpty(this.cityJson))
-        {
-            VisualizeCityJson();
-            EnableUploadedModel(false);
-        }
+        //if (!string.IsNullOrEmpty(this.cityJson))
+        //{
+        //    VisualizeCityJson();
+        //    EnableUploadedModel(false);
+        //}
     }
 
     private void OnBimCityJsonReceived(string cityJson)
     {
         this.cityJson = cityJson;
 
-        if (centerPerceel != null)
-        {
-            VisualizeCityJson();
-            EnableUploadedModel(false);
-        }
+        //if (centerPerceel != null)
+        //{
+        //    VisualizeCityJson();
+        //    EnableUploadedModel(false);
+        //}
     }
 
-    void VisualizeCityJson()
+    public void VisualizeCityJson()
     {
+        EnableUploadedModel(true);
+
+        //var test = File.OpenText("/Users/Tom/Documents/TSCD/Repos/3DAmsterdam/3DAmsterdam/Assets/testcube.json");
+        //var testJson = test.ReadToEnd();
+        //var cityJsonModel = new CityJsonModel(testJson, new Vector3RD());
+        //print("c1: " + cityJsonModel.vertices.Count);
+
+        //for (int i = 0; i < 8; i++)
+        //{
+        //    var a = cityJsonModel.vertices[i];
+        //    print("vert: " + a.x + "," + a.y + "," + a.z);
+        //}
+
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
+
+        File.WriteAllText("/Users/Tom/Documents/TSCD/TEST2.json", this.cityJson);
+
         var meshmaker = new CityJsonMeshUtility();
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
@@ -69,6 +87,8 @@ public class CityJsonVisualiser : MonoBehaviour
             var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
             AddMeshGameObject(key, mesh);
+            print("extents: " + mesh.bounds.extents);
+            print("center: " + mesh.bounds.center);
         }
     }
 
@@ -93,7 +113,9 @@ public class CityJsonVisualiser : MonoBehaviour
     {
         uitbouw.gameObject.SetActive(enable);
 
-        uitbouw.transform.position = CoordConvert.RDtoUnity(centerPerceel.Value); //set position to ensure snapping to wall is somewhat accurate
+        if (perceelCenter != null)
+            uitbouw.transform.position = CoordConvert.RDtoUnity(perceelCenter.Value); //set position to ensure snapping to wall is somewhat accurate
+
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
     }
