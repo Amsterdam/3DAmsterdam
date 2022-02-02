@@ -61,6 +61,10 @@ public class CityJsonVisualiser : MonoBehaviour
         //}
     }
 
+    public static List<bool> usedVerts;
+    public static int uniqueVertsUsed = 0;
+    public static int doubleCounter = 0;
+
     public void VisualizeCityJson()
     {
         EnableUploadedModel(true);
@@ -77,10 +81,13 @@ public class CityJsonVisualiser : MonoBehaviour
         //}
 
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
-
-        File.WriteAllText("/Users/Tom/Documents/TSCD/TEST2.json", this.cityJson);
-
         var meshmaker = new CityJsonMeshUtility();
+
+        usedVerts = new List<bool>();
+        for (int i = 0; i < cityJsonModel.vertices.Count; i++)
+        {
+            usedVerts.Add(false);
+        }
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
@@ -89,6 +96,41 @@ public class CityJsonVisualiser : MonoBehaviour
             AddMeshGameObject(key, mesh);
             print("extents: " + mesh.bounds.extents);
             print("center: " + mesh.bounds.center);
+
+            //var boundaries = co.Value["geometry"][0]["boundaries"];
+            //print(boundaries.ToString());
+            //for (int i = 0; i < usedVerts.Count; i++)
+            //{
+            //    foreach (JSONNode boundary in boundaries)
+            //    {
+            //        foreach (var vertIndex in boundary)
+            //        {
+            //            var index = vertIndex.Value.AsInt;
+            //            print(index);
+            //            if (!usedVerts[index])
+            //            {
+            //                uniqueVertsUsed++;
+            //            }
+            //            else
+            //            {
+            //                doubleCounter++;
+            //            }
+            //            usedVerts[index] = true;
+            //        }
+            //    }
+            //}
+        }
+
+        print(uniqueVertsUsed + " unique verts used");
+        print(cityJsonModel.vertices.Count + "verts in model");
+        print(doubleCounter + " doubleCount");
+        for (int i = 0; i < usedVerts.Count; i++)
+        {
+            bool used = usedVerts[i];
+            if (!used)
+            {
+                print("vertex with index " + i + " is not used");
+            }
         }
     }
 
