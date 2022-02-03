@@ -11,5 +11,6 @@ public interface IDataLoader
     public float LoadFloat(string key);
     public int LoadInt(string key);
     public string LoadString(string key);
+    public bool LoadBool(string key);
     public void ReadSaveData(string sessionId);
 }

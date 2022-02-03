@@ -10,6 +10,7 @@ public interface IDataSaver
     public void SaveFloat(string key, float value);
     public void SaveInt(string key, int value);
     public void SaveString(string key, string value);
+    public void SaveBool(string key, bool value);
     public void DeleteKey(string key);
     public void ExportSaveData(string sessionId);
     public void ClearAllData(string sessionId);

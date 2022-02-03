@@ -4,6 +4,7 @@ using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using T3D.LoadData;
 //using T3D.LoadData;
@@ -13,7 +14,7 @@ using UnityEngine;
 public class CityJsonVisualiser : MonoBehaviour
 {
     public Material MeshMaterial;
-    private Vector3RD? centerPerceel;
+    private Vector3RD? perceelCenter;
     private string cityJson;
     private UploadedUitbouw uitbouw;
 
@@ -23,6 +24,7 @@ public class CityJsonVisualiser : MonoBehaviour
     {
         Instance = this;
         uitbouw = GetComponentInChildren<UploadedUitbouw>(true);
+        uitbouw.gameObject.SetActive(false);
     }
 
     void OnEnable()
@@ -39,28 +41,18 @@ public class CityJsonVisualiser : MonoBehaviour
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        centerPerceel = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
-
-        if (!string.IsNullOrEmpty(this.cityJson))
-        {
-            VisualizeCityJson();
-            EnableUploadedModel(false);
-        }
+        perceelCenter = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
     }
 
     private void OnBimCityJsonReceived(string cityJson)
     {
         this.cityJson = cityJson;
-
-        if (centerPerceel != null)
-        {
-            VisualizeCityJson();
-            EnableUploadedModel(false);
-        }
     }
 
-    void VisualizeCityJson()
+    public void VisualizeCityJson()
     {
+        EnableUploadedModel(true);
+
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
@@ -93,7 +85,9 @@ public class CityJsonVisualiser : MonoBehaviour
     {
         uitbouw.gameObject.SetActive(enable);
 
-        uitbouw.transform.position = CoordConvert.RDtoUnity(centerPerceel.Value); //set position to ensure snapping to wall is somewhat accurate
+        if (perceelCenter != null)
+            uitbouw.transform.position = CoordConvert.RDtoUnity(perceelCenter.Value); //set position to ensure snapping to wall is somewhat accurate
+
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
     }

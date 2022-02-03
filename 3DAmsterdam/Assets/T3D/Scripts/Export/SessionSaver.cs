@@ -18,19 +18,21 @@ public static class SessionSaver
     public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
-    {        
+    {
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
             SessionId = "29f0f430-7206-11ec-9808-3117a2780adf";
+            SessionId = "2ffaf370-576d-11ec-8a04-35c209595469";
+            //SessionId = "46f1d820-84e3-11ec-a1ad-358954774512";
         }
         SessionId += "_html";
 
         Debug.Log("session id: " + SessionId);
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
-
+     
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
         LoadSaveData(); //This data also includes essential information like bagId, so always load the data
@@ -56,6 +58,11 @@ public static class SessionSaver
         Saver.SaveString(key, value);
     }
 
+    public static void SaveBool(string key, bool value)
+    {
+        Saver.SaveBool(key, value);
+    }
+
     public static float LoadFloat(string key)
     {
         return Loader.LoadFloat(key);
@@ -69,6 +76,11 @@ public static class SessionSaver
     public static string LoadString(string key)
     {
         return Loader.LoadString(key);
+    }
+
+    public static bool LoadBool(string key)
+    {
+        return Loader.LoadBool(key);
     }
 
     public static void DeleteKey(string key)

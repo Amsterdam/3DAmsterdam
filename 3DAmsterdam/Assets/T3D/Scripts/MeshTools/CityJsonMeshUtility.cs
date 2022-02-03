@@ -18,10 +18,10 @@ public class CityJsonMeshUtility
     }
 
     public Mesh[] CreateMeshes(CityJsonModel cityModel, JSONNode cityObject)
-    {        
+    {
         List<Vector3> verts = GetVerts(cityModel);
         return GetMeshes(verts, cityObject).ToArray();
-        
+
     }
 
     public Mesh CreateMesh(Transform transform, CityJsonModel cityModel, JSONNode cityObject)
@@ -29,8 +29,8 @@ public class CityJsonMeshUtility
         var meshes = CreateMeshes(cityModel, cityObject);
 
         //combine the meshes
-        CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];        
-        for(int i=0; i < meshes.Length; i++)
+        CombineInstance[] combineInstanceArray = new CombineInstance[meshes.Length];
+        for (int i = 0; i < meshes.Length; i++)
         {
             combineInstanceArray[i].mesh = meshes[i];
             combineInstanceArray[i].transform = transform.localToWorldMatrix;
@@ -38,23 +38,37 @@ public class CityJsonMeshUtility
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.CombineMeshes(combineInstanceArray);
+        mesh.vertices = TransformVertices(mesh, -mesh.bounds.center, Quaternion.identity, Vector3.one); //offset the vertices so that the center of the mesh bounding box of the selected mesh LOD is at (0,0,0)
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         return mesh;
     }
 
+    public static Vector3[] TransformVertices(Mesh mesh, Vector3 translaton, Quaternion rotation, Vector3 scale)
+    {
+
+        Vector3[] vertices = mesh.vertices;
+        Matrix4x4 matrix = Matrix4x4.TRS(translaton, rotation, scale);
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] = matrix.MultiplyPoint(vertices[i]);
+        }
+        return vertices;
+    }
+
     private List<Vector3> GetVerts(CityJsonModel cityModel)
     {
-        return cityModel.vertices.Select(o=> new Vector3((float)o.x, (float)o.y, (float)o.z )).ToList();        
+        return cityModel.vertices.Select(o => new Vector3((float)o.x, (float)o.y, (float)o.z)).ToList();
     }
 
     private List<Mesh> GetMeshes(List<Vector3> verts, JSONNode cityObject)
     {
         var geometries = cityObject["geometry"].AsArray;
         int highestLodIndex = 0;
-        for(int i = 0; i<geometries.Count; i++)
+        for (int i = 0; i < geometries.Count; i++)
         {
             var lod = geometries[i]["lod"].AsInt;
-            if (lod > highestLodIndex) highestLodIndex = i;                            
+            if (lod > highestLodIndex) highestLodIndex = i;
         }
 
         List<Mesh> meshes = new List<Mesh>();
@@ -78,11 +92,11 @@ public class CityJsonMeshUtility
 
             List<List<Vector3>> holes = new List<List<Vector3>>();
 
-            if(boundary.Count > 1)
+            if (boundary.Count > 1)
             {
-                for(int i = 1; i<boundary.Count; i++)
+                for (int i = 1; i < boundary.Count; i++)
                 {
-                    var innerRing = boundary[i];                    
+                    var innerRing = boundary[i];
                     holes.Add(GetBounderyVertices(verts, innerRing));
                 }
             }
@@ -116,5 +130,4 @@ public class CityJsonMeshUtility
         vertices.Reverse();
         return vertices;
     }
-    
 }

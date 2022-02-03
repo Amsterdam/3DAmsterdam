@@ -191,12 +191,12 @@ public class SaveableBool : SaveableVariable<bool>
 
     public override void Load()
     {
-        Value = SessionSaver.LoadInt(Key) > 0 ? true : false;
+        Value = SessionSaver.LoadBool(Key);
     }
 
     public override void Save()
     {
-        SessionSaver.SaveInt(Key, Value ? 1 : 0);
+        SessionSaver.SaveBool(Key, Value);
     }
 
     public override void Delete()

@@ -58,6 +58,15 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
     }
 
+    public void SaveBool(string key, bool value)
+    {
+        if (rootObject[key] != value)
+        {
+            rootObject[key] = value;
+            saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+        }
+    }
+
     public void DeleteKey(string key)
     {
         rootObject.Remove(key);
