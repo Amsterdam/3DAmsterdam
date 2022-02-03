@@ -94,8 +94,10 @@ public class CsvFilePanel : MonoBehaviour
 
     private IEnumerator ReadColumnsAndRows(string filePath)
     {
+        yield return new WaitForEndOfFrame();
+
         var lines = 0;
-        int maxLinesPerFrame = 2000;
+        int maxLinesPerFrame = 10000;
         yield return CsvParser.StreamReadLines(
             filePath, 0, maxLinesPerFrame,
             (totalLines) => { lines = totalLines; },
@@ -115,8 +117,8 @@ public class CsvFilePanel : MonoBehaviour
 
     private void ReportProgress(int lineNr, int ofTotal)
     {
-        setProgressBarPercentage.started.Invoke((float)lineNr / (float)ofTotal);
-        setProgressBarMessage.started.Invoke($"CSV regels gelezen: {lineNr}/{ofTotal}");
+        setProgressBarPercentage.started.Invoke(((float)lineNr / (float)ofTotal) * 100.0f);
+        setProgressBarDetailedMessage.started.Invoke($"Regels gelezen: {lineNr}/{ofTotal}");
     }
 
     private void Show(bool active)

@@ -68,6 +68,7 @@ public class FileInputIndexedDB : MonoBehaviour
         filenames = new List<string>();
         Debug.Log("expecting " + count + " files");
         LoadingScreen.Instance.ShowMessage($"{numberOfFilesToLoad} {((numberOfFilesToLoad>1) ? "bestanden worden" : "bestand wordt")} ingeladen..");
+        LoadingScreen.Instance.ProgressBar.SetMessage($"");
         StartCoroutine(WaitForFilesToBeLoaded());
     }
     
