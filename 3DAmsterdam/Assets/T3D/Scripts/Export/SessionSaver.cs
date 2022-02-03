@@ -18,12 +18,14 @@ public static class SessionSaver
     public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
-    {        
+    {
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
             SessionId = "29f0f430-7206-11ec-9808-3117a2780adf";
+            SessionId = "2ffaf370-576d-11ec-8a04-35c209595469";
+            //SessionId = "46f1d820-84e3-11ec-a1ad-358954774512";
         }
         SessionId += "_html";
 

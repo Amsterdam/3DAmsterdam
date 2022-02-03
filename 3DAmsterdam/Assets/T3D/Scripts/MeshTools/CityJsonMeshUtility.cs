@@ -38,8 +38,22 @@ public class CityJsonMeshUtility
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         mesh.CombineMeshes(combineInstanceArray);
+        mesh.vertices = TransformVertices(mesh, -mesh.bounds.center, Quaternion.identity, Vector3.one); //offset the vertices so that the center of the mesh bounding box of the selected mesh LOD is at (0,0,0)
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         return mesh;
+    }
+
+    public static Vector3[] TransformVertices(Mesh mesh, Vector3 translaton, Quaternion rotation, Vector3 scale)
+    {
+
+        Vector3[] vertices = mesh.vertices;
+        Matrix4x4 matrix = Matrix4x4.TRS(translaton, rotation, scale);
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] = matrix.MultiplyPoint(vertices[i]);
+        }
+        return vertices;
     }
 
     private List<Vector3> GetVerts(CityJsonModel cityModel)

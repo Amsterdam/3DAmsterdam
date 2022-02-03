@@ -83,6 +83,8 @@ public class CityJsonVisualiser : MonoBehaviour
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
+        //File.WriteAllText("/Users/Tom/Documents/TSCD/T3D/convertedIFC.json", cityJsonModel.cityjsonNode.ToString());
+
         usedVerts = new List<bool>();
         for (int i = 0; i < cityJsonModel.vertices.Count; i++)
         {
@@ -121,17 +123,17 @@ public class CityJsonVisualiser : MonoBehaviour
             //}
         }
 
-        print(uniqueVertsUsed + " unique verts used");
-        print(cityJsonModel.vertices.Count + "verts in model");
-        print(doubleCounter + " doubleCount");
-        for (int i = 0; i < usedVerts.Count; i++)
-        {
-            bool used = usedVerts[i];
-            if (!used)
-            {
-                print("vertex with index " + i + " is not used");
-            }
-        }
+        //print(uniqueVertsUsed + " unique verts used");
+        //print(cityJsonModel.vertices.Count + "verts in model");
+        //print(doubleCounter + " doubleCount");
+        //for (int i = 0; i < usedVerts.Count; i++)
+        //{
+        //    bool used = usedVerts[i];
+        //    if (!used)
+        //    {
+        //        print("vertex with index " + i + " is not used");
+        //    }
+        //}
     }
 
     void AddMeshGameObject(string name, Mesh mesh)
