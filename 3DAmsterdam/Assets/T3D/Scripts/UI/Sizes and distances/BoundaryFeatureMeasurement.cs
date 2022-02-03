@@ -8,8 +8,9 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
     {
         private BoundaryFeature boundaryFeature;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             boundaryFeature = GetComponent<BoundaryFeature>();
         }
 

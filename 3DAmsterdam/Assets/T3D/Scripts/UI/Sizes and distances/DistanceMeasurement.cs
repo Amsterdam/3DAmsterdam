@@ -25,9 +25,21 @@ namespace Netherlands3D.T3D
 
         protected BuildingMeasuring[] lines;
 
-        public bool DrawDistanceActive { get; set; } = false;
+        private bool drawDistanceActive;
+        public bool DrawDistanceActive
+        {
+            get
+            {
+                return drawDistanceActive;
+            }
+            set
+            {
+                drawDistanceActive = value;
+                UpdateMeasurementLines();
+            }
+        }
 
-        protected void Start()
+        protected virtual void Awake()
         {
             lines = new BuildingMeasuring[numberOfLines];
 

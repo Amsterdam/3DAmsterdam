@@ -11,39 +11,66 @@ public class PositionCamera: MonoBehaviour
 
     Vector2RD? perceelcenter = null;
     Vector2RD? buildingcenter = null;
+    float? groundLevel;
     bool cameraIsSet = false;
+
+    Vector3 buildingpos;
 
     void Start()
     {
         MetadataLoader.Instance.AdresUitgebreidLoaded += OnAdresUitgebreidLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+        BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
+    }
+
+    private void OnBuildingDataProcessed(BuildingMeshGenerator building)
+    {
+        groundLevel = building.GroundLevel;
+        CheckSetCameraposition();
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
         perceelcenter = args.PerceelnummerPlaatscoordinaat;
-        if (cameraIsSet == false && buildingcenter != null) SetCameraposition();
+        CheckSetCameraposition();
+        // if (cameraIsSet == false && buildingcenter != null) SetCameraposition();
     }
 
     private void OnAdresUitgebreidLoaded(object source, AdresUitgebreidDataEventArgs args)
     {
         buildingcenter = args.Coordinate;
-        if (cameraIsSet == false && perceelcenter != null) SetCameraposition();        
+        CheckSetCameraposition();
+        //if (cameraIsSet == false && perceelcenter != null) SetCameraposition();        
     }
 
-    void SetCameraposition()
+    void CheckSetCameraposition()
     {
+        if (cameraIsSet) return;
+        if (perceelcenter == null) return;
+        if (buildingcenter == null) return;
+        if (groundLevel == null) return;
+
         cameraIsSet = true;
 
-        var buildingpos = CoordConvert.RDtoUnity(buildingcenter.Value);
+        buildingpos = CoordConvert.RDtoUnity(buildingcenter.Value);
         var perceelpos = CoordConvert.RDtoUnity(perceelcenter.Value);
 
         var cameraoffset = (perceelpos - buildingpos).normalized * 10;
 
         var camera = CameraModeChanger.Instance.ActiveCamera;
 
-        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, CameraHeight, perceelpos.z + cameraoffset.z);
-        camera.transform.LookAt(buildingpos);
+        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, groundLevel.Value + CameraHeight, perceelpos.z + cameraoffset.z);
+
+        if (RestrictionChecker.ActiveUitbouw != null)
+        {
+            camera.transform.LookAt(RestrictionChecker.ActiveUitbouw.CenterPoint);
+        }
+        else if (RestrictionChecker.ActiveBuilding)
+        {
+            camera.transform.LookAt(RestrictionChecker.ActiveBuilding.BuildingCenter);
+        }
+
+        //camera.transform.LookAt(buildingpos);
     }
 }
 

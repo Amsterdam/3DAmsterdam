@@ -32,8 +32,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void BuildingMeshGenerator_BuildingDataProcessed(BuildingMeshGenerator building)
-        {
-            Debug.Log("BuildingMeshGenerator_BuildingDataProcessed");
+        {            
             perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
             perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
         }

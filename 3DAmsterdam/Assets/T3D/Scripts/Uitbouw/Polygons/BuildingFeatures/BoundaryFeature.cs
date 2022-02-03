@@ -94,7 +94,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
+        }
 
+        protected override void Start()
+        {
+            base.Start();
             SetMode(EditMode.None);
         }
 
@@ -188,8 +192,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             base.Update();
             SnapToWall();
             SetButtonPositions();
-            //if()
-                //ProcessDrag();
             LimitPositionOnWall();
 
             if (transform.parent != Wall.transform.parent)

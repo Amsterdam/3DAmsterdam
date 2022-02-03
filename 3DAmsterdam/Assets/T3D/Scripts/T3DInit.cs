@@ -71,6 +71,7 @@ public class T3DInit : MonoBehaviour
 
     private void InitializeSaveableVariables()
     {
+        
         uploadedModel = new SaveableBool(uploadedModelKey);
         cameraPosition = new SaveableVector3RD(cameraPositionKey);
         bagId = new SaveableString(bagIdKey);
@@ -85,17 +86,6 @@ public class T3DInit : MonoBehaviour
         ToggleQuality(true);
     }
 
-
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            LoadBuilding();
-        }
-    }
-#endif
-
     void GotoPosition(Vector3RD position)
     {
         Vector3 cameraOffsetForTargetLocation = new Vector3(0, 38, 0);
@@ -103,27 +93,8 @@ public class T3DInit : MonoBehaviour
         CameraModeChanger.Instance.ActiveCamera.transform.LookAt(CoordConvert.RDtoUnity(position), Vector3.up);
     }
 
-    private void SetPositionAndIdForEditor()
-    {
-        var positionRD = DebugSettings.PositionRD;
-
-        if (positionRD.Equals(new Vector3RD(0, 0, 0))) return;
-        cameraPosition.SetValue(positionRD);
-
-        bagId.SetValue(DebugSettings.BagId);
-
-        uploadedModel.SetValue(DebugSettings.UploadedModel);
-        bimModelId.SetValue(DebugSettings.BimModelId);
-        bimModelVersionId.SetValue(DebugSettings.BimModelVersionId);
-        isUserFeedback.SetValue(DebugSettings.IsUserFeedback);
-        IsEditMode = DebugSettings.IsEditMode;
-        //blobId.SetValue(Application.absoluteURL.GetUrlParamValue("blobid"));
-    }
-
     public void LoadBuilding()
     {
-        print("loading bag id: " + BagId);
-
         //wait until the end of the frame and then load the building. this is needed to ensure all SaveableVariables are correctly loaded before using them.
         StartCoroutine(GoToBuildingAtEndOfFrame());
     }
@@ -131,12 +102,6 @@ public class T3DInit : MonoBehaviour
     private IEnumerator GoToBuildingAtEndOfFrame()
     {
         yield return null; //wait a frame
-
-        //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?sessionId=2d9e94f0-58c2-11ec-99a1-4b7435bae68a_637780107091771994.json&isuserfeedback=true&iseditmode=false");
-        //CheckURLForPositionAndId("http://localhost:8080/?sessionId=048c5390-5133-11ec-b24c-53d3efea3919&position=138350.607_455582.274&id=0344100000021804&hasfile=false&iseditmode=true");
-
-        //IFC upload
-        //CheckURLForPositionAndId("https://opslagt3d.z6.web.core.windows.net/3d/?position=138350.607_455582.274&id=0344100000021804&hasfile=true&modelId=61e6dd19b3622280344bb05d&versionId=1&iseditmode=true");
 
         var posRD = cameraPosition.Value;
         GotoPosition(posRD);
