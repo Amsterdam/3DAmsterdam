@@ -42,98 +42,26 @@ public class CityJsonVisualiser : MonoBehaviour
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
         perceelCenter = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
-
-        //if (!string.IsNullOrEmpty(this.cityJson))
-        //{
-        //    VisualizeCityJson();
-        //    EnableUploadedModel(false);
-        //}
     }
 
     private void OnBimCityJsonReceived(string cityJson)
     {
         this.cityJson = cityJson;
-
-        //if (centerPerceel != null)
-        //{
-        //    VisualizeCityJson();
-        //    EnableUploadedModel(false);
-        //}
     }
-
-    public static List<bool> usedVerts;
-    public static int uniqueVertsUsed = 0;
-    public static int doubleCounter = 0;
 
     public void VisualizeCityJson()
     {
         EnableUploadedModel(true);
 
-        //var test = File.OpenText("/Users/Tom/Documents/TSCD/Repos/3DAmsterdam/3DAmsterdam/Assets/testcube.json");
-        //var testJson = test.ReadToEnd();
-        //var cityJsonModel = new CityJsonModel(testJson, new Vector3RD());
-        //print("c1: " + cityJsonModel.vertices.Count);
-
-        //for (int i = 0; i < 8; i++)
-        //{
-        //    var a = cityJsonModel.vertices[i];
-        //    print("vert: " + a.x + "," + a.y + "," + a.z);
-        //}
-
         var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
-
-        //File.WriteAllText("/Users/Tom/Documents/TSCD/T3D/convertedIFC.json", cityJsonModel.cityjsonNode.ToString());
-
-        usedVerts = new List<bool>();
-        for (int i = 0; i < cityJsonModel.vertices.Count; i++)
-        {
-            usedVerts.Add(false);
-        }
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])
         {
             var key = co.Key;
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
             AddMeshGameObject(key, mesh);
-            print("extents: " + mesh.bounds.extents);
-            print("center: " + mesh.bounds.center);
-
-            //var boundaries = co.Value["geometry"][0]["boundaries"];
-            //print(boundaries.ToString());
-            //for (int i = 0; i < usedVerts.Count; i++)
-            //{
-            //    foreach (JSONNode boundary in boundaries)
-            //    {
-            //        foreach (var vertIndex in boundary)
-            //        {
-            //            var index = vertIndex.Value.AsInt;
-            //            print(index);
-            //            if (!usedVerts[index])
-            //            {
-            //                uniqueVertsUsed++;
-            //            }
-            //            else
-            //            {
-            //                doubleCounter++;
-            //            }
-            //            usedVerts[index] = true;
-            //        }
-            //    }
-            //}
         }
-
-        //print(uniqueVertsUsed + " unique verts used");
-        //print(cityJsonModel.vertices.Count + "verts in model");
-        //print(doubleCounter + " doubleCount");
-        //for (int i = 0; i < usedVerts.Count; i++)
-        //{
-        //    bool used = usedVerts[i];
-        //    if (!used)
-        //    {
-        //        print("vertex with index " + i + " is not used");
-        //    }
-        //}
     }
 
     void AddMeshGameObject(string name, Mesh mesh)

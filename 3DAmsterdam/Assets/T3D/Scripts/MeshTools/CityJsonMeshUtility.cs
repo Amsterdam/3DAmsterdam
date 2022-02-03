@@ -126,20 +126,8 @@ public class CityJsonMeshUtility
         {
             var index = vertIndex.Value.AsInt;
             vertices.Add(verts[index]);
-
-            if (!CityJsonVisualiser.usedVerts[index])
-            {
-                CityJsonVisualiser.uniqueVertsUsed++;
-            }
-            else
-            {
-                CityJsonVisualiser.doubleCounter++;
-            }
-
-            CityJsonVisualiser.usedVerts[index] = true;
         }
         vertices.Reverse();
         return vertices;
     }
-
 }

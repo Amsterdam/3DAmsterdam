@@ -32,7 +32,7 @@ public static class SessionSaver
         Debug.Log("session id: " + SessionId);
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
-
+     
     private static void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
     {
         LoadSaveData(); //This data also includes essential information like bagId, so always load the data
