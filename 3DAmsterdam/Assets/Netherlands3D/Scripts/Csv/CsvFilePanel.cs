@@ -26,9 +26,6 @@ public class CsvFilePanel : MonoBehaviour
     [SerializeField]
     private GameObject UIClearIgnoreObject;
 
-    [SerializeField]
-    private LoadingScreen loadingObjScreen;
-
     private Dictionary<string,bool> selectedColumnsToDisplay = new Dictionary<string,bool>();
 
     private CsvColorsFinder csvColorsFinder;
@@ -56,6 +53,13 @@ public class CsvFilePanel : MonoBehaviour
     [SerializeField]
     private FloatEvent setGradientValueMax;
 
+    [SerializeField]
+    private FloatEvent setProgressBarPercentage;
+    [SerializeField]
+    private StringEvent setProgressBarMessage;
+    [SerializeField]
+    private StringEvent setProgressBarDetailedMessage;
+
     public string[] Columns;
     public List<string[]> Rows;
 
@@ -79,16 +83,40 @@ public class CsvFilePanel : MonoBehaviour
             filePath = Application.persistentDataPath + "/" + filename;
         }
 
-        var csv = File.ReadAllText(filePath);
-
-#if !UNITY_EDITOR && UNITY_WEBGL
-        //Clear uploaded csv from IndexedDB after loading
-        File.Delete(filePath);
-#endif
-
         CleanUp();
-        ParseCsv(csv);
-        loadingObjScreen.Hide();
+
+        setProgressBarPercentage.started.Invoke(0);
+        setProgressBarMessage.started.Invoke("CSV wordt uitgelezen..");
+        setProgressBarDetailedMessage.started.Invoke("");
+
+        StartCoroutine(ReadColumnsAndRows(filePath));
+    }
+
+    private IEnumerator ReadColumnsAndRows(string filePath)
+    {
+        var lines = 0;
+        int maxLinesPerFrame = 2000;
+        yield return CsvParser.StreamReadLines(
+            filePath, 0, maxLinesPerFrame,
+            (totalLines) => { lines = totalLines; },
+            (currentLine) => { ReportProgress(currentLine, lines); },
+            (rows) => { Rows = rows; }
+        );
+
+        setProgressBarPercentage.started.Invoke(100);
+
+        // Seperate first line containing columns
+        Columns = Rows[0];
+        Rows.RemoveAt(0);
+
+        //Not determine what kind of content we are dealing with
+        DetermineCSVContent();
+    }
+
+    private void ReportProgress(int lineNr, int ofTotal)
+    {
+        setProgressBarPercentage.started.Invoke((float)lineNr / (float)ofTotal);
+        setProgressBarMessage.started.Invoke($"CSV regels gelezen: {lineNr}/{ofTotal}");
     }
 
     private void Show(bool active)
@@ -96,10 +124,8 @@ public class CsvFilePanel : MonoBehaviour
         gameObject.SetActive(active);
     }
 
-    public void ParseCsv(string csv)
+    public void DetermineCSVContent()
 	{
-		ReadColumnsAndRows(csv);
-
 		PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
 		PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
 
@@ -281,22 +307,6 @@ public class CsvFilePanel : MonoBehaviour
 		}
 	}
 
-	private void ReadColumnsAndRows(string csv)
-	{
-        //TODO: StreamRead this to support bigger files
-		var lines = CsvParser.ReadLines(csv, 0);
-		Columns = lines.First();
-		Rows = new List<string[]>();
-		int columnscount = Columns.Length;
-		for (int i = 1; i < lines.Count; i++)
-		{
-			if (lines[i].Length == columnscount)
-			{
-				Rows.Add(lines[i]);
-			}
-		}
-	}
-
 	void MapAndShow()
     {
         ShowAll();
@@ -450,8 +460,7 @@ public class CsvFilePanel : MonoBehaviour
         string path = EditorUtility.OpenFilePanel("Selecteer .csv", "", "csv");
         if (path.Length != 0)
         {
-            var csv = File.ReadAllText(path);
-            ParseCsv(csv);
+            StartCoroutine(ReadColumnsAndRows(path));
         }
     }
 
