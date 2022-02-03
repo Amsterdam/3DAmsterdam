@@ -37,9 +37,6 @@ namespace Netherlands3D.ModelParsing
 		private Material defaultLoadedObjectsMaterial;
 
 		[SerializeField]
-		private LoadingScreen loadingObjScreen;
-
-		[SerializeField]
 		private UnityEvent doneLoadingModel;
 
 		[SerializeField]
@@ -76,7 +73,7 @@ namespace Netherlands3D.ModelParsing
 
 		private void Start()
 		{
-			loadingObjScreen.Hide();
+			LoadingScreen.Instance.Hide();
 		}
 
 #if UNITY_EDITOR
@@ -123,9 +120,9 @@ namespace Netherlands3D.ModelParsing
 		public void SetOBJFileName(string fileName)
 		{
 			objModelName = Path.GetFileNameWithoutExtension(fileName);
-			loadingObjScreen.ProgressBar.SetMessage("0%");
-			loadingObjScreen.ProgressBar.Percentage(0);
-			loadingObjScreen.ShowMessage("Model wordt geladen: " + objModelName);
+			LoadingScreen.Instance.ProgressBar.SetMessage("0%");
+			LoadingScreen.Instance.ProgressBar.Percentage(0);
+			LoadingScreen.Instance.ShowMessage("Model wordt geladen: " + objModelName);
 		}
 
 		public void LoadOBJFromIndexedDB(string[] filenames)
@@ -155,7 +152,7 @@ namespace Netherlands3D.ModelParsing
 		/// </summary>
 		public void AbortImport()
 		{
-			loadingObjScreen.Hide();
+			LoadingScreen.Instance.Hide();
 			WarningDialogs.Instance.ShowNewDialog("U kunt maximaal één .obj tegelijk importeren met optioneel daarnaast een bijbehorend .mtl bestand.");
 		}
 
@@ -164,10 +161,10 @@ namespace Netherlands3D.ModelParsing
 			// Read the obj-file
 			SetOBJFileName(objFilePath);
 			var objstreamReader = new GameObject().AddComponent<StreamreadOBJ>();
-			objstreamReader.loadingObjScreen = loadingObjScreen;
+			objstreamReader.loadingObjScreen = LoadingScreen.Instance;
 			objstreamReader.ReadOBJ(objFilePath);
 			bool isBusy = true;
-			loadingObjScreen.ShowMessage("Objecten worden geladen...");
+			LoadingScreen.Instance.ShowMessage("Objecten worden geladen...");
 			while (isBusy)
             {
 				isBusy = !objstreamReader.isFinished;
@@ -222,8 +219,8 @@ namespace Netherlands3D.ModelParsing
 			{
 				transformable.stickToMouse = false;
 			}
-			loadingObjScreen.Hide();
-			
+			LoadingScreen.Instance.Hide();
+		
 			Destroy(objstreamReader);
 
 			clearDataBaseEvent.started.Invoke(true);
