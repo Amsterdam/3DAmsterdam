@@ -29,5 +29,7 @@ public class PlayerPrefsSessionLoader : IDataLoader
 
     public void ReadSaveData(string sessionId)
     {
+        //Playerprefs does not need to load separately, so call the event immediately for potential listeners
+        LoadingCompleted?.Invoke(true);
     }
 }

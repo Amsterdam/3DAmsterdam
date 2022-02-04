@@ -38,7 +38,7 @@ public class DropUp : MonoBehaviour
             dropupTemplateItems.Add(item);
 
             item.name = items[i];
-            item.transform.parent = ItemsContainer.transform;
+            item.transform.SetParent(ItemsContainer.transform, false);
             item.transform.localScale = Vector3.one;
             item.Initialize(items[i]);
 

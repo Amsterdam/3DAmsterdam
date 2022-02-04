@@ -162,7 +162,7 @@ namespace Amsterdam3D.Sewerage
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
-            if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+            if (sewerageRequest.result != UnityWebRequest.Result.ConnectionError && sewerageRequest.result != UnityWebRequest.Result.ProtocolError)
             {
                 string dataString = sewerageRequest.downloadHandler.text;
                 sewerManholes = JsonUtility.FromJson<SewerManholes>(dataString);
@@ -180,7 +180,7 @@ namespace Amsterdam3D.Sewerage
             var sewerageRequest = UnityWebRequest.Get(escapedUrl);
 
             yield return sewerageRequest.SendWebRequest();
-            if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+            if (sewerageRequest.result != UnityWebRequest.Result.ConnectionError && sewerageRequest.result != UnityWebRequest.Result.ProtocolError)
             {
                 //Replace multidimensional arrays with strings. JsonUtility doesnt support it (yet)   
                 string dataString = sewerageRequest.downloadHandler.text.Replace("[[", "\"").Replace("]]", "\"");

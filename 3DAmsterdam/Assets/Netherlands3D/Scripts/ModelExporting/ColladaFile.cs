@@ -392,8 +392,7 @@ public class ColladaFile
 		File.WriteAllText(Path.Combine(mydocs, (filename != "") ? filename : "ColladaExport.dae"), stringWriter.ToString());
 		stringWriter = null;
 		writer = null;
-		return;
-#endif
+#else
 
 		if (stringWriter != null)
 		{
@@ -406,6 +405,7 @@ public class ColladaFile
 		{
 			Debug.Log("cant write file");
 		}
+#endif
 
 	}
 }

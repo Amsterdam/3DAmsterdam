@@ -21,14 +21,14 @@ public class ClipQmTiles : MonoBehaviour
     public int zoomLevel = 18;
     public float tileSize = 500;
     public int concurrentTiles = 10;
-    private int activeTiles = 0;
+    //private int activeTiles = 0;
 
     public Vector2 bottomLeft = new Vector2(121000, 487000);
-    private Mesh newMesh;
+    //private Mesh newMesh;
     List<Mesh> submeshes;
 
     Vector4 extentRD = new Vector4();
-    Vector4 extentWGS = new Vector4();
+    //Vector4 extentWGS = new Vector4();
     // Start is called before the first frame update
 
     public bool areaLoadingFinished = true;

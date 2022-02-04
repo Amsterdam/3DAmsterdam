@@ -94,7 +94,7 @@ public class HandleButtonsT3D : MonoBehaviour
     #region Sun related
     void ToggleZonnepaneel()
     {
-        Zonnepaneel.SetActive(!Zonnepaneel.active);
+        Zonnepaneel.SetActive(!Zonnepaneel.activeInHierarchy);
     }
 
     void AddHour()

@@ -37,7 +37,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
             string jsonfilename = originX.ToString() + "-" + originY.ToString() + ".json";
 
-            float tileSize = 1000;
+            //float tileSize = 1000;
             string filepath = basefilepath;
             Debug.Log(filepath);
            

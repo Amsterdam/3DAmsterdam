@@ -75,7 +75,7 @@ namespace Netherlands3D.Interface.Sharing
 			sceneSaveRequest.SetRequestHeader("Content-Type", "application/json");
 			yield return sceneSaveRequest.SendWebRequest();
 
-			if (sceneSaveRequest.isNetworkError || sceneSaveRequest.isHttpError || !sceneSaveRequest.downloadHandler.text.StartsWith("{"))
+			if (sceneSaveRequest.result == UnityWebRequest.Result.ConnectionError || sceneSaveRequest.result == UnityWebRequest.Result.ConnectionError || !sceneSaveRequest.downloadHandler.text.StartsWith("{"))
 			{
 				ChangeState(SharingState.SERVER_PROBLEM);
 				yield break;
@@ -104,7 +104,7 @@ namespace Netherlands3D.Interface.Sharing
 						modelSaveRequest.SetRequestHeader("Content-Type", "application/json");
 						yield return modelSaveRequest.SendWebRequest();
 
-						if (modelSaveRequest.isNetworkError || modelSaveRequest.isHttpError)
+						if (modelSaveRequest.result == UnityWebRequest.Result.ConnectionError || modelSaveRequest.result == UnityWebRequest.Result.ProtocolError)
 						{
 							ChangeState(SharingState.SERVER_PROBLEM);
 							yield break;

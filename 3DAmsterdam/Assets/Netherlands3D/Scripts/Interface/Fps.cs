@@ -40,7 +40,7 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private float updateInterval = 0.5f;
 
-		private bool applicationIsActive = true;
+		//private bool applicationIsActive = true;
 
 		private void Awake()
 		{

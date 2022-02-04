@@ -146,7 +146,7 @@ namespace Netherlands3D.Interface
 			VisualGrid.Instance.Show();
 			TakeInteractionPriority();
 		}
-		private void OnDisable()
+		protected override void OnDisable()
 		{
 			VisualGrid.Instance.Hide();
 			StopInteraction();

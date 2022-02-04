@@ -49,16 +49,16 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
         [SerializeField]
         private bool generateAssetFiles = false;
-        [SerializeField]
-        private bool allowEmptyTileGeneration = false;
+        //[SerializeField]
+        //private bool allowEmptyTileGeneration = false;
 
         [Header("Optional. Leave blank to create all tiles")]
         [SerializeField]
         private string exclusivelyGenerateTilesWithSubstring = "";
 
-        [Tooltip("Remove children not inside a tile, to start with a clean slate for the next tile.")]
-        [SerializeField]
-        private bool removeChildrenOutsideTile = true;
+        //[Tooltip("Remove children not inside a tile, to start with a clean slate for the next tile.")]
+        //[SerializeField]
+        //private bool removeChildrenOutsideTile = true;
 
         [SerializeField]
         private Vector2 tileOffset;
@@ -151,7 +151,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.Log(www.error);
             }

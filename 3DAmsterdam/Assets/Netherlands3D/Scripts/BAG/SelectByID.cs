@@ -318,7 +318,7 @@ namespace Netherlands3D.LayerSystem
             var hideRequest = UnityWebRequest.Get(url);
             print(url);
             yield return hideRequest.SendWebRequest();
-            if (hideRequest.isNetworkError || hideRequest.isHttpError)
+            if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }
@@ -369,7 +369,7 @@ namespace Netherlands3D.LayerSystem
 
             yield return hideRequest.SendWebRequest();
 
-            if (hideRequest.isNetworkError || hideRequest.isHttpError)
+            if (hideRequest.result == UnityWebRequest.Result.ConnectionError || hideRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 WarningDialogs.Instance.ShowNewDialog("Sorry, door een probleem met de BAG id server is een selectie maken tijdelijk niet mogelijk.");
             }

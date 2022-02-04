@@ -23,7 +23,7 @@ namespace Netherlands3D.Interface.SidePanel
             UnityWebRequest www = UnityWebRequest.Get(Config.activeConfiguration.webserverRootPath + metaDataPath);
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
                 PropertiesPanel.Instance.ClearGeneratedFields();
                 PropertiesPanel.Instance.AddLabel("Sorry, laag metadata kan tijdelijk niet worden geladen.");

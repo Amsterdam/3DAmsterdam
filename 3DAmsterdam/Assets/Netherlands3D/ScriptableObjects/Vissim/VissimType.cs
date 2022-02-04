@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [CreateAssetMenu(fileName = "VissimType", menuName = "Vissim/VissimType", order = 1)]
 public class VissimType : ScriptableObject
 {
-    public string name;
+    public new string name;
     public Sprite typeImage;
     public GameObject[] vissimTypeAssets;
 }

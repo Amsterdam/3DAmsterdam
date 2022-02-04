@@ -125,7 +125,7 @@ namespace Netherlands3D.AssetGeneration
 
 			int heightMax = 15; //vertices above this value are considered to be spikes, vlaue in meters
 			int heightMin = -15; //vertices above this value are considered to be spikes, vlaue in meters            
-			int lookaroundWidth = 1; //area in meters to look around for other vertices to find common height
+			//int lookaroundWidth = 1; //area in meters to look around for other vertices to find common height
 
 			foreach (var file in files)
 			{

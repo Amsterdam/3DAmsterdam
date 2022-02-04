@@ -22,7 +22,7 @@ namespace Netherlands3D.Masking
             HelpMessage.Instance.Show("Beweeg uw muis over het maaiveld om er doorheen te kijken.");
             TakeInteractionPriority();
 		}
-		private void OnDisable()
+		protected override void OnDisable()
 		{
             StopInteraction();
         }
