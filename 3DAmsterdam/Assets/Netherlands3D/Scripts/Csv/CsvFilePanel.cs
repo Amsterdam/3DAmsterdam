@@ -30,13 +30,16 @@ public class CsvFilePanel : MonoBehaviour
 
     private CsvColorsFinder csvColorsFinder;
     private CsvNumbersFinder csvNumbersFinder;
-    private CsvGeoLocationFinder csvGeoLocation;
+    private CsvGeoLocationFinder csvGeoLocationFinder;
 
     private GameObject LocationMarkersParent;
 
     private ActionDropDown currentFilterDropdown;
 
     [Header("Listeners")]
+    [SerializeField]
+    private IntEvent onSelectCSVContentType;
+
     [SerializeField]
     private BoolEvent onToggleBetaFeatures;
 
@@ -63,11 +66,27 @@ public class CsvFilePanel : MonoBehaviour
     public string[] Columns;
     public List<string[]> Rows;
 
+    public enum CSVContentFinderType
+    {
+        AUTODETECT,
+        LOCATIONS,
+        COLORS,
+        NUMBERS
+    }
+    public CSVContentFinderType currentContentFinderType = CSVContentFinderType.AUTODETECT;
+
     private void Awake()
 	{
 		onToggleBetaFeatures.started.AddListener(Show);
 		onFilesImported.started.AddListener(LoadCsvFromFile);
-	}
+
+        onSelectCSVContentType.started.AddListener(SelectCSVContentType);
+    }
+  
+    public void SelectCSVContentType(int type)
+	{
+        currentContentFinderType = (CSVContentFinderType)type;
+    }
 
 	public void LoadCsvFromFile(string filename)
     {
@@ -111,9 +130,32 @@ public class CsvFilePanel : MonoBehaviour
         Columns = Rows[0];
         Rows.RemoveAt(0);
 
-        //Not determine what kind of content we are dealing with
-        DetermineCSVContent();
+        //Clear UI and start finder type
+        PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
+        PropertiesPanel.Instance.ClearGeneratedFields();
+        StartFinderType();
     }
+
+    void StartFinderType()
+    {
+		switch (currentContentFinderType)
+		{
+			case CSVContentFinderType.AUTODETECT:
+                AutoDetectCSVContent();
+                break;
+			case CSVContentFinderType.LOCATIONS:
+                FindLocationBasedContent();
+                break;
+			case CSVContentFinderType.COLORS:
+                FindColorBasedContent();
+				break;
+			case CSVContentFinderType.NUMBERS:
+                FindNumbersBasedContent();
+				break;
+			default:
+				break;
+		}
+	}
 
     private void ReportProgress(int lineNr, int ofTotal)
     {
@@ -126,43 +168,59 @@ public class CsvFilePanel : MonoBehaviour
         gameObject.SetActive(active);
     }
 
-    public void DetermineCSVContent()
+    public void AutoDetectCSVContent()
 	{
-		PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-		PropertiesPanel.Instance.ClearGeneratedFields();
+        //First check for geolocation based content
+        if (FindLocationBasedContent()) return;
 
-		//First check for geolocation based content
-		csvGeoLocation = new CsvGeoLocationFinder(Columns, Rows);
-		if (csvGeoLocation.Status == CsvContentFinder.CsvContentFinderStatus.Success)
-		{
-			ShowLocationBasedOptions();
-			return;
-		}
+        //Second, check for data with explicity defined hex colors
+        if (FindColorBasedContent()) return;
 
-		//Second, check for data with explicity defined hex colors
-		csvColorsFinder = new CsvColorsFinder(Columns, Rows);
-		if (csvColorsFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
-		{
-			ShowColorToIDMappingOptions();
-			return;
-		}
+        //Last, check for numbers we might be able to map to a gradient
+        if (FindNumbersBasedContent()) return;
 
-		//Last, check for numbers we might be able to map to a gradient
-		csvNumbersFinder = new CsvNumbersFinder(Columns, Rows);
-		if (csvNumbersFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
-		{
-			ShowGradientToIDMappingOptions();
-			return;
-		}
-
-		//In case of failure, show all messages
-		DrawStatusMessages();
+        //In case of failure, show all messages
+        DrawStatusMessages();
 	}
 
-	private void DrawStatusMessages()
+    private bool FindColorBasedContent()
+    {
+        csvColorsFinder = new CsvColorsFinder(Columns, Rows);
+        if (csvColorsFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+        {
+            ShowColorToIDMappingOptions();
+            return true;
+        }
+        return false;
+    }
+
+    private bool FindNumbersBasedContent()
+    {
+        csvNumbersFinder = new CsvNumbersFinder(Columns, Rows);
+        if (csvNumbersFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+        {
+            ShowGradientToIDMappingOptions();
+            return true;
+        }
+        return false;
+    }
+
+    private bool FindLocationBasedContent()
+    {
+        csvGeoLocationFinder = new CsvGeoLocationFinder(Columns, Rows);
+        if (csvGeoLocationFinder.Status == CsvContentFinder.CsvContentFinderStatus.Success)
+        {
+            ShowLocationBasedOptions();
+            return true;
+        }
+        return false;
+    }
+
+
+    private void DrawStatusMessages()
 	{
 		PropertiesPanel.Instance.AddSpacer(20);
-		foreach (var line in csvGeoLocation.StatusMessageLines)
+		foreach (var line in csvGeoLocationFinder.StatusMessageLines)
 		{
 			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
 		}
@@ -269,19 +327,19 @@ public class CsvFilePanel : MonoBehaviour
     private void ShowLocationBasedOptions()
 	{
 		PropertiesPanel.Instance.AddLabel("Label");
-		PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
+		PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
 		{
-			csvGeoLocation.LabelColumnName = action;
-			csvGeoLocation.SetlabelIndex(action);
+			csvGeoLocationFinder.LabelColumnName = action;
+			csvGeoLocationFinder.SetlabelIndex(action);
 		}, "");
 
 		PropertiesPanel.Instance.AddSpacer(10);
 		PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
 		PropertiesPanel.Instance.AddSpacer(10);
 
-		foreach (var column in csvGeoLocation.Columns)
+		foreach (var column in csvGeoLocationFinder.Columns)
 		{
-			if (csvGeoLocation.CoordinateColumns.Contains(column)) continue;
+			if (csvGeoLocationFinder.CoordinateColumns.Contains(column)) continue;
 
 			selectedColumnsToDisplay.Add(column, true);
 			PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
@@ -315,7 +373,7 @@ public class CsvFilePanel : MonoBehaviour
 
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
         
-        PropertiesPanel.Instance.AddLabel($"CSV file geladen met {csvGeoLocation.Rows.Count} rijen");
+        PropertiesPanel.Instance.AddLabel($"CSV file geladen met {csvGeoLocationFinder.Rows.Count} rijen");
         PropertiesPanel.Instance.AddLabel("Klik op een icoon voor details");
 
     }
@@ -338,19 +396,19 @@ public class CsvFilePanel : MonoBehaviour
 
     void ShowAll()
     {
-        var firstrow = csvGeoLocation.Rows[0];
-        double firstrow_x = double.Parse(firstrow[csvGeoLocation.XColumnIndex]);
-        bool isRd = csvGeoLocation.IsRd(firstrow_x);
+        var firstrow = csvGeoLocationFinder.Rows[0];
+        double firstrow_x = double.Parse(firstrow[csvGeoLocationFinder.XColumnIndex]);
+        bool isRd = csvGeoLocationFinder.IsRd(firstrow_x);
 
-        for (int rowindex = 0; rowindex < csvGeoLocation.Rows.Count; rowindex++)
+        for (int rowindex = 0; rowindex < csvGeoLocationFinder.Rows.Count; rowindex++)
         {
-            var row = csvGeoLocation.Rows[rowindex];
+            var row = csvGeoLocationFinder.Rows[rowindex];
 
             var locationMarker = Instantiate(marker, LocationMarkersParent.transform);
 
             var billboard = locationMarker.GetComponent<Billboard>();
             var textmesh = locationMarker.GetComponentInChildren<TextMesh>();
-            textmesh.text = row[csvGeoLocation.LabelColumnIndex];
+            textmesh.text = row[csvGeoLocationFinder.LabelColumnIndex];
 
             labels.Add(textmesh);
 
@@ -361,8 +419,8 @@ public class CsvFilePanel : MonoBehaviour
                 Show(action);
             });
 
-            double x = double.Parse(row[csvGeoLocation.XColumnIndex]);
-            double y = double.Parse(row[csvGeoLocation.YColumnIndex]);
+            double x = double.Parse(row[csvGeoLocationFinder.XColumnIndex]);
+            double y = double.Parse(row[csvGeoLocationFinder.YColumnIndex]);
 
             Vector3 pos;
 
@@ -381,10 +439,10 @@ public class CsvFilePanel : MonoBehaviour
 
     private void UpdateLabels()
     {
-        for (int i = 0; i < csvGeoLocation.Rows.Count; i++) 
+        for (int i = 0; i < csvGeoLocationFinder.Rows.Count; i++) 
         {
-            var row = csvGeoLocation.Rows[i];
-            labels[i].text = row[csvGeoLocation.LabelColumnIndex];
+            var row = csvGeoLocationFinder.Rows[i];
+            labels[i].text = row[csvGeoLocationFinder.LabelColumnIndex];
         }
      }
 
@@ -394,20 +452,20 @@ public class CsvFilePanel : MonoBehaviour
 
         //dropdown to select the label of the pointer
         PropertiesPanel.Instance.AddLabel("Label");
-        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocation.ColumnsExceptCoordinates, (action) =>
+        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
         {
             Debug.Log($"label: {action}");
-            csvGeoLocation.LabelColumnName = action;
-            csvGeoLocation.SetlabelIndex(action);
+            csvGeoLocationFinder.LabelColumnName = action;
+            csvGeoLocationFinder.SetlabelIndex(action);
 
             UpdateLabels();
-            currentFilterDropdown.UpdateOptions(csvGeoLocation.GetFiltersByColumn());
+            currentFilterDropdown.UpdateOptions(csvGeoLocationFinder.GetFiltersByColumn());
 
-        }, csvGeoLocation.LabelColumnName);
+        }, csvGeoLocationFinder.LabelColumnName);
 
         PropertiesPanel.Instance.AddLabel("Filters");
 
-        string[] filters = csvGeoLocation.GetFiltersByColumn();        
+        string[] filters = csvGeoLocationFinder.GetFiltersByColumn();        
 
         //filter dropdown
         currentFilterDropdown = PropertiesPanel.Instance.AddActionDropdown(filters, (action) =>
@@ -418,18 +476,18 @@ public class CsvFilePanel : MonoBehaviour
                 var billboard = marker.GetComponent<Billboard>();
 
                 if(action == "Toon alles") billboard.Show();
-                else billboard.FilterOn(csvGeoLocation.LabelColumnIndex, action);
+                else billboard.FilterOn(csvGeoLocationFinder.LabelColumnIndex, action);
             }
 
         }, "");
 
         PropertiesPanel.Instance.AddSpacer(20);
 
-        var row = csvGeoLocation.Rows[index];
+        var row = csvGeoLocationFinder.Rows[index];
 
         for (int i = 0; i < row.Length; i++)
         {
-            var column = csvGeoLocation.Columns[i];
+            var column = csvGeoLocationFinder.Columns[i];
             var text = row[i];
 
             if (selectedColumnsToDisplay.ContainsKey(column) &&  selectedColumnsToDisplay[column])
