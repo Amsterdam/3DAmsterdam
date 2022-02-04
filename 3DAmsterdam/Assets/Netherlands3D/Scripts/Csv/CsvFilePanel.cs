@@ -64,12 +64,12 @@ public class CsvFilePanel : MonoBehaviour
     public List<string[]> Rows;
 
     private void Awake()
-    {
-        onToggleBetaFeatures.started.AddListener(Show);
-        onFilesImported.started.AddListener(LoadCsvFromFile);
-    }
+	{
+		onToggleBetaFeatures.started.AddListener(Show);
+		onFilesImported.started.AddListener(LoadCsvFromFile);
+	}
 
-    public void LoadCsvFromFile(string filename)
+	public void LoadCsvFromFile(string filename)
     {
         if (!filename.EndsWith(".csv") && !filename.EndsWith(".CSV"))
             return;
@@ -129,7 +129,7 @@ public class CsvFilePanel : MonoBehaviour
     public void DetermineCSVContent()
 	{
 		PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-		PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+		PropertiesPanel.Instance.ClearGeneratedFields();
 
 		//First check for geolocation based content
 		csvGeoLocation = new CsvGeoLocationFinder(Columns, Rows);

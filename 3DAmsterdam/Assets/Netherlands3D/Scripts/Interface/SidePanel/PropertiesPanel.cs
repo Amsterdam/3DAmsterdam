@@ -555,10 +555,11 @@ namespace Netherlands3D.Interface.SidePanel
             }
         }
 
-        public void ClearGeneratedFields(GameObject ignoreGameObject)
+        public void ClearGeneratedFields(GameObject ignoreGameObject = null)
         {
             ClearGeneratedFields(ignoreGameObject, null);
         }
+
         public void ClearGeneratedFields(List<GameObject> ignoreGameObjects)
         {
             ClearGeneratedFields(null, ignoreGameObjects);
