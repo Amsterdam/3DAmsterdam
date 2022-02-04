@@ -41,8 +41,8 @@ public class BuildingMeasuring : Interactable
     private Mesh targetMesh;
     private MeshCollider targetCollider;
 
-    [SerializeField]
-    private int maxVertexSnapPerFrame = 10000;
+    //[SerializeField]
+    //private int maxVertexSnapPerFrame = 10000;
 
     public float Distance { get { return Vector3.Distance(positions[0], positions[1]); } }
 

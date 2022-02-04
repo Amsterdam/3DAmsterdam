@@ -153,7 +153,7 @@ namespace Amsterdam3D.Sewerage
 			yield return sewerageRequest.SendWebRequest();
 			tile.runningWebRequest = null;
 
-			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+			if (sewerageRequest.result != UnityWebRequest.Result.ConnectionError && sewerageRequest.result != UnityWebRequest.Result.ProtocolError)
 			{
 				GeoJSON customJsonHandler = new GeoJSON(sewerageRequest.downloadHandler.text);
 
@@ -211,7 +211,7 @@ namespace Amsterdam3D.Sewerage
 			yield return sewerageRequest.SendWebRequest();
 			tile.runningWebRequest = null;
 
-			if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+			if (sewerageRequest.result != UnityWebRequest.Result.ConnectionError && sewerageRequest.result != UnityWebRequest.Result.ProtocolError)
 			{
 				yield return SpawnManHoleObjects(sewerageRequest.downloadHandler.text, tileChange, tile, callback);
             }

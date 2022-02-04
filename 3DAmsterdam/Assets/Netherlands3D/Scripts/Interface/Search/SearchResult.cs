@@ -53,7 +53,7 @@ namespace Netherlands3D.Interface.Search
             using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
             {
                 yield return webRequest.SendWebRequest();
-                if (webRequest.isNetworkError)
+                if (webRequest.result == UnityWebRequest.Result.ConnectionError)
                 {
                     Debug.Log("Error: " + webRequest.error);
                 }

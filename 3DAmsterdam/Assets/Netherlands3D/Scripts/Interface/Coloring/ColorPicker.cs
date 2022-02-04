@@ -36,7 +36,7 @@ namespace Netherlands3D.Interface.Coloring
 		private Vector3 greenVector;
 		private Vector3 blueVector;
 
-		private bool ignoreChanges = false;
+		//private bool ignoreChanges = false;
 
 		public void OnPointerDown(PointerEventData eventData) => OnDrag(eventData);
 		public void OnBeginDrag(PointerEventData eventData) => OnDrag(eventData);

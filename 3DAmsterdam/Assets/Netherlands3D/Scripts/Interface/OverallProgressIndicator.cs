@@ -8,7 +8,7 @@ namespace Netherlands3D
     public class OverallProgressIndicator : MonoBehaviour
     {
         private static Image fillImage;
-        private float fadeOutSpeed = 1.0f;
+        //private float fadeOutSpeed = 1.0f;
 
         void Awake()
         {

@@ -117,7 +117,7 @@ namespace Netherlands3D.Sharing
             UnityWebRequest getSceneRequest = UnityWebRequest.Get(Config.activeConfiguration.sharingBaseURL + Config.activeConfiguration.sharingSceneSubdirectory + sceneId + "_scene.json");
             getSceneRequest.SetRequestHeader("Content-Type", "application/json");
             yield return getSceneRequest.SendWebRequest();
-            if (getSceneRequest.isNetworkError || getSceneRequest.isHttpError || !getSceneRequest.downloadHandler.text.StartsWith("{"))
+            if (getSceneRequest.result == UnityWebRequest.Result.ConnectionError || getSceneRequest.result == UnityWebRequest.Result.ProtocolError|| !getSceneRequest.downloadHandler.text.StartsWith("{"))
             {
                 WarningDialogs.Instance.ShowNewDialog("De gedeelde scene is helaas niet actief of verlopen. Dit gebeurt automatisch na 14 dagen.");
             }

@@ -99,7 +99,7 @@ namespace Netherlands3D.LayerSystem
 			yield return webRequest.SendWebRequest();
 			tiles[tileKey].runningWebRequest = null;
 
-			if (webRequest.isNetworkError || webRequest.isHttpError)
+			if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
 			{
 				RemoveGameObjectFromTile(tileKey);
 				callback(tileChange);
@@ -177,7 +177,7 @@ namespace Netherlands3D.LayerSystem
 			{
 				yield return uwr.SendWebRequest();
 
-				if (uwr.isNetworkError || uwr.isHttpError)
+				if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
 				{
 					callback(tileChange);
 				}
@@ -307,9 +307,9 @@ namespace Netherlands3D.LayerSystem
 
 			using (UnityWebRequest uwr = UnityWebRequestAssetBundle.GetAssetBundle(dataURL))
 			{
-				yield return uwr.SendWebRequest();		
+				yield return uwr.SendWebRequest();
 
-				if (uwr.isNetworkError || uwr.isHttpError)
+				if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
 				{
 					//Not showing warnings for now, because this can occur pretty often. I dialog would be annoying.
 					//WarningDialogs.Instance.ShowNewDialog("De metadata voor " + obj.name + " kon niet worden geladen. Ben je nog online?");

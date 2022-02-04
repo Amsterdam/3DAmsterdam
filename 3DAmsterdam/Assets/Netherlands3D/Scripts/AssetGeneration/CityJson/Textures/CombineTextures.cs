@@ -273,7 +273,6 @@ namespace TextureCombiner
 			maximage = widest;
 
 			double minSize = System.Math.Sqrt(Area);
-			double size = 0;
 			if (minSize < 128 && maximage < 128)
 			{
 				return 128;

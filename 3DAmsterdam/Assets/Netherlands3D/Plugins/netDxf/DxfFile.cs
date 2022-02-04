@@ -40,8 +40,7 @@ public class DxfFile
 
         var mydocs = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
         dxfDocument.Save(Path.Combine(mydocs, "testDXFBinary.dxf"), true);        
-        return;
-#endif
+#else
         using (var stream = new MemoryStream())
         {
             if (dxfDocument.Save(stream))
@@ -53,6 +52,7 @@ public class DxfFile
                 Debug.Log("cant write file");
             }
         }
+#endif
     }
 
     public void AddTriangles(List<Vector3RD> triangleVertices, string layerName)

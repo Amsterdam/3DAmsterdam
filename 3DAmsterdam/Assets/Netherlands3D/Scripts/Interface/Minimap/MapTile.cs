@@ -42,7 +42,7 @@ namespace Netherlands3D.Interface.Minimap
 			{
 				yield return uwr.SendWebRequest();
 
-				if (uwr.isNetworkError || uwr.isHttpError)
+				if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError)
 				{
 					Debug.Log("Could not find minimap tile :" + tileImageUrl);
 				}

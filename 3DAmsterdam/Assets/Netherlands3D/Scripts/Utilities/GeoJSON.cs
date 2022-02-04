@@ -53,7 +53,7 @@ namespace Netherlands3D.Utilities
         }
 
 
-        private string geometryLineStringLocatorEndString = null;
+        //private string geometryLineStringLocatorEndString = null;
         public string GeometryLineStringLocatorEndString
         {
             get

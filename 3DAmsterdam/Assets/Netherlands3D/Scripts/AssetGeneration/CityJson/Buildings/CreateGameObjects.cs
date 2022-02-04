@@ -378,7 +378,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
 
 		private Texture2D LoadTexture(Surfacetexture tex)
 		{
-			Texture2D texture;
+			//Texture2D texture;
 			if (tex is null)
 			{
 				return null;

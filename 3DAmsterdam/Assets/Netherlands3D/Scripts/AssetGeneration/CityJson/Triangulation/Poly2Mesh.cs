@@ -195,6 +195,7 @@ public static class Poly2Mesh
         catch (System.Exception e)
         {
             //			Profiler.Exit(profileID);
+            Debug.LogError(e.Message);
             return null;
         }
         // Now, to get back to our original positions, use our code-to-position map.  We do

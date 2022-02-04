@@ -45,7 +45,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
             //    vertices.Add(allvertices[indices[i]]);
             //}
 
-            Vector2 tileId;
+            //Vector2 tileId;
             //check if entire object is inside one tile
                     List<Vector2> overlappingTiles = getOverlappingTiles(vertices, tileSize);
                     foreach (var item in overlappingTiles)
@@ -262,7 +262,7 @@ namespace Netherlands3D.AssetGeneration.CityJSON
                 Debug.Log("sorting cityobjects("+cityObjects.Count+")");
                 yield return null;
                 int total = cityObjects.Count();
-                int counter = 0;
+                //int counter = 0;
                 Parallel.ForEach(cityObjects, cityObject => { cityObject.GenerateTriangleLists( tileSize,totalBoundingBox); });
 
                 Debug.Log("collecting cityobjects");

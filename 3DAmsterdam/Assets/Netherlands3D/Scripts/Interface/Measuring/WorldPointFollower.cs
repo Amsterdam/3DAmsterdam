@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
 		public Vector3 WorldPosition { get => worldPosition; set => worldPosition = value; }
 
 		public bool isEnabled = true;
-		private bool insideView = false;
+		//private bool insideView = false;
 
 		private float maxRenderDistanceAtGround = 100;
 

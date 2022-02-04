@@ -41,7 +41,7 @@ public class MeasuringLine : Interactable
 	private Material linePlacedMaterial;
 
 	private Mesh targetMesh;
-	private bool newColliderFound = false;
+	//private bool newColliderFound = false;
 	private MeshCollider targetCollider;
 
 	[SerializeField]

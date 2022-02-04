@@ -269,7 +269,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
 
             List<Vector2[]> list = new List<Vector2[]>();
-            var builtArea = 0f;
+            //var builtArea = 0f;
 
             var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagId}";
 
@@ -368,7 +368,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 var json = JSON.Parse(req.downloadHandler.text);
                 var isMonument = json["features"].Linq.Any();
 
-                IsBeschermdEvent?.Invoke(isMonument);
+                IsMonumentEvent?.Invoke(isMonument);
             }
         }
 
