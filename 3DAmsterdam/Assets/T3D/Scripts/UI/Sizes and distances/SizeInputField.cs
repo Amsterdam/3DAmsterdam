@@ -49,7 +49,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
             shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;
 
-            if (SessionSaver.LoadPreviousSession && shapeableUitbouw)
+            //in some specific cases the value is not present in the loaded data, so if that is the case (value == 0) don't load the data
+            if (SessionSaver.LoadPreviousSession && shapeableUitbouw && value.Value > 0)
             {
                 LoadData();
             }
@@ -58,7 +59,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private void LoadData()
         {
             float delta = 0;
-
             switch (size)
             {
                 case SizeType.Width:
