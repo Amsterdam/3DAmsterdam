@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Utilities;
+using System;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -18,6 +19,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private GameObject perceelMeshGameObject;
         private GameObject perceelOutlineGameObject;
+
+        [SerializeField]
+        private GameObject terreinMeshGameObject;
 
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
@@ -35,6 +39,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {            
             perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
             perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
+
+            terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -138,6 +144,7 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelMeshGameObject.SetActive(active);
             perceelOutlineGameObject.SetActive(active);
 
+            terreinMeshGameObject.SetActive(!active);
         }
     }
 }
