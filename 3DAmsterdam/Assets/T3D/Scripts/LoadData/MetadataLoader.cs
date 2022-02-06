@@ -37,14 +37,29 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
         public float Area { get; private set; }
 
-        public Vector2RD PerceelnummerPlaatscoordinaat;
+        public Vector2RD PerceelCenter;
+        public float PerceelRadius;
 
-        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, float area, Vector2RD perceelnummerPlaatscoordinaat)
+        public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, float area)
         {
             IsLoaded = isLoaded;
             Perceel = perceel;
             Area = area;
-            PerceelnummerPlaatscoordinaat = perceelnummerPlaatscoordinaat;
+
+            var flatten = perceel.SelectMany(o => o);
+
+            var minx = flatten.Min(v => v.x);
+            var maxx = flatten.Max(v => v.x);
+            var miny = flatten.Min(v => v.y);
+            var maxy = flatten.Max(v => v.y);
+            var centerx = minx + ((maxx - minx) / 2);
+            var centery = miny + ((maxy - miny) / 2);
+            var center = new Vector2(centerx, centery);
+
+            PerceelCenter.x = centerx;
+            PerceelCenter.y = centery;
+
+            PerceelRadius = Vector2.Distance(center, new Vector2(maxx, maxy));
         }
     }
 
@@ -463,7 +478,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
             //PerceelData = list;
             var perceelGrootte = float.Parse(jsonData["features"][0]["properties"]["kadastraleGrootteWaarde"]);
-            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list, perceelGrootte, perceelnummerPlaatscoordinaat));
+            PerceelDataLoaded?.Invoke(this, new PerceelDataEventArgs(true, list, perceelGrootte));
 
             //PlaatsUitbouw();
         }

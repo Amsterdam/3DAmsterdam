@@ -41,7 +41,7 @@ public class CityJsonVisualiser : MonoBehaviour
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        perceelCenter = new Vector3RD(args.PerceelnummerPlaatscoordinaat.x, args.PerceelnummerPlaatscoordinaat.y, 0);
+        perceelCenter = new Vector3RD(args.PerceelCenter.x, args.PerceelCenter.y, 0);
     }
 
     private void OnBimCityJsonReceived(string cityJson)
