@@ -51,10 +51,7 @@ public class FileInputIndexedDB : MonoBehaviour
 	private void Awake()
 	{
         clearDataBaseEvent.started.AddListener(ClearDatabase);
-    }
 
-	public void Start()
-    {
 #if !UNITY_EDITOR && UNITY_WEBGL
         InitializeIndexedDB(Application.persistentDataPath);
 #endif

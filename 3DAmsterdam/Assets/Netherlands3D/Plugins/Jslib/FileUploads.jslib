@@ -20,15 +20,16 @@ mergeInto(LibraryManager.library, {
             newInput.type = 'file';
             newInput.accept = acceptedExtentions;
 			newInput.multiple = multiFileSelect;
+			newInput.onclick = function() {
+				unityInstance.SendMessage(inputFieldName, 'ClickNativeButton');
+			};
             newInput.onchange = function () {
                 window.ReadFiles(this.files);
             };
             newInput.style.cssText = 'display:none; cursor:pointer; opacity: 0; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
             document.body.appendChild(newInput);
         };
-        //window.InjectHiddenFileInput('obj', '.obj,.mtl', true);
-        //window.InjectHiddenFileInput('csv', '.csv,.tsv', false);
-        //window.InjectHiddenFileInput('fzp', '.fzp', false);
+
         window.InjectHiddenFileInput('geojson', '.json,.geojson', false);
 
         //Support for dragging dropping files on browser window

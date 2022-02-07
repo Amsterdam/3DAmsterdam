@@ -132,8 +132,24 @@ public class CsvFilePanel : MonoBehaviour
 
         //Clear UI and start finder type
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
-        PropertiesPanel.Instance.ClearGeneratedFields();
+        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+        UIClearIgnoreObject.gameObject.SetActive(false);
+        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
+        {
+            Restart();
+        });
         StartFinderType();
+    }
+
+    private void Restart()
+    {
+        //Clear finders from memory
+        csvColorsFinder = null;
+        csvGeoLocationFinder = null;
+        csvNumbersFinder = null;
+
+        UIClearIgnoreObject.gameObject.SetActive(true);
+        PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
     }
 
     void StartFinderType()
@@ -145,13 +161,16 @@ public class CsvFilePanel : MonoBehaviour
                 break;
 			case CSVContentFinderType.LOCATIONS:
                 FindLocationBasedContent();
+                DrawStatusMessages();
                 break;
 			case CSVContentFinderType.COLORS:
                 FindColorBasedContent();
-				break;
+                DrawStatusMessages();
+                break;
 			case CSVContentFinderType.NUMBERS:
                 FindNumbersBasedContent();
-				break;
+                DrawStatusMessages();
+                break;
 			default:
 				break;
 		}
@@ -229,7 +248,12 @@ public class CsvFilePanel : MonoBehaviour
 		{
 			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
 		}
-	}
+        PropertiesPanel.Instance.AddSpacer(20);
+        foreach (var line in csvNumbersFinder.StatusMessageLines)
+        {
+            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+        }
+    }
 
 	private void ShowColorToIDMappingOptions()
     {

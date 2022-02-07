@@ -45,6 +45,19 @@ public class CsvColorsFinder : CsvContentFinder
         this.Rows = Rows;
 
         FindColors();
+
+        if (Columns.Length == 1)
+        {
+            Status = CsvContentFinderStatus.Failed;
+            StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
+            return;
+        }
+        if (ColorColumnIndices.Count < 2)
+        {
+            Status = CsvContentFinderStatus.Failed;
+            StatusMessageLines.Add("Geen kolommen met kleuren gevonden. Zorg dat de kleurkolommen een HTML kleurcode hebben zoals: #FF0000");
+            return;
+        }
     }
 
 	void FindColors()

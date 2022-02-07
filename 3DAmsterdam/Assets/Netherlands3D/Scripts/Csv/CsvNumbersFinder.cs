@@ -22,7 +22,20 @@ public class CsvNumbersFinder : CsvContentFinder
         this.Columns = Columns;
         this.Rows = Rows;
 
-        GetNumberColumns();       
+        GetNumberColumns();
+
+        if (Columns.Length == 1)
+        {
+            Status = CsvContentFinderStatus.Failed;
+            StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
+            return;
+        }
+        if (NumberColumnIndices.Count < 2)
+        {
+            Status = CsvContentFinderStatus.Failed;
+            StatusMessageLines.Add("Geen kolommen met nummers/getallen gevonden.");
+            return;
+        }
     }
 
     void GetNumberColumns()
