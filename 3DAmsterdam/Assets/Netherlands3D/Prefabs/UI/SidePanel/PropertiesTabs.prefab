@@ -2311,7 +2311,7 @@ GameObject:
   - component: {fileID: 7314724982619669250}
   - component: {fileID: 1830849596442504041}
   - component: {fileID: 296670367439904562}
-  - component: {fileID: 4679574347096481607}
+  - component: {fileID: 1840908534637879800}
   m_Layer: 5
   m_Name: ButtonImportCSV
   m_TagString: Untagged
@@ -2447,7 +2447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &4679574347096481607
+--- !u!114 &1840908534637879800
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2456,11 +2456,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3942592630639613020}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe1f2068ab962424e9ca6d554ee4deae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  htmlObjectID: csv-input
-  alignEveryUpdate: 1
+  fileInputName: import-csv-numeric
+  fileExtentions: .csv
 --- !u!1 &4481597034163157663
 GameObject:
   m_ObjectHideFlags: 0
@@ -2815,7 +2815,7 @@ GameObject:
   - component: {fileID: 4516173052855010558}
   - component: {fileID: 1109688213852884622}
   - component: {fileID: 5588791383619037148}
-  - component: {fileID: 2595816464260504738}
+  - component: {fileID: 2096287134865951619}
   m_Layer: 5
   m_Name: ButtonImportCSV
   m_TagString: Untagged
@@ -2951,7 +2951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &2595816464260504738
+--- !u!114 &2096287134865951619
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2960,11 +2960,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4988419491435111799}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe1f2068ab962424e9ca6d554ee4deae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  htmlObjectID: csv-input
-  alignEveryUpdate: 1
+  fileInputName: import-csv-colors
+  fileExtentions: .csv
 --- !u!1 &5202057630210708037
 GameObject:
   m_ObjectHideFlags: 0
@@ -4275,7 +4275,7 @@ GameObject:
   - component: {fileID: 3744154841980871408}
   - component: {fileID: 1790660897619560158}
   - component: {fileID: 5180686973748872948}
-  - component: {fileID: 9215370104661558876}
+  - component: {fileID: 6287480442702622489}
   m_Layer: 5
   m_Name: ButtonImportCSV
   m_TagString: Untagged
@@ -4411,7 +4411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 1
---- !u!114 &9215370104661558876
+--- !u!114 &6287480442702622489
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4420,11 +4420,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8511459641113007144}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0c079f7565f89b448a16883b433085c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe1f2068ab962424e9ca6d554ee4deae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  htmlObjectID: csv-input
-  alignEveryUpdate: 1
+  fileInputName: import-csv-locations
+  fileExtentions: .csv,.tsv
 --- !u!1 &8649828829062296644
 GameObject:
   m_ObjectHideFlags: 0
