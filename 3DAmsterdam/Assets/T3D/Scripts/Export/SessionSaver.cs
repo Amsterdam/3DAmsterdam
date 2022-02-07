@@ -23,9 +23,11 @@ public static class SessionSaver
         if (SessionId == null)
         {
             Debug.Log("Session id not found, using testID");
-            SessionId = "29f0f430-7206-11ec-9808-3117a2780adf";
-            SessionId = "2ffaf370-576d-11ec-8a04-35c209595469";
-            SessionId = "4f2e5410-85af-11ec-b02f-8508d1049190";
+            //SessionId = "29f0f430-7206-11ec-9808-3117a2780adf";
+            //SessionId = "2ffaf370-576d-11ec-8a04-35c209595469"; //Stadhouderslaan 79 Utrecht IFC model
+            //SessionId = "4f2e5410-85af-11ec-b02f-8508d1049190"; //Stadhouderslaan 79 Utrecht
+            SessionId = "719bd3a0-8376-11ec-9953-4b875c5f9637"; // Jan Pieterzoon Coenstr 40 Utrecht
+            //SessionId = "1186a670-8849-11ec-b2fe-1dc941e32fde"; //Haarlemmerstraatweg 35
         }
         SessionId += "_html";
 

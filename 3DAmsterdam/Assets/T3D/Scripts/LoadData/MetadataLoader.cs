@@ -37,8 +37,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Perceel { get; private set; } //in RD coordinaten
         public float Area { get; private set; }
 
-        public Vector2RD PerceelCenter;
-        public float PerceelRadius;
+        public Vector2RD Center;
+        public float Radius;
 
         public PerceelDataEventArgs(bool isLoaded, List<Vector2[]> perceel, float area)
         {
@@ -46,20 +46,9 @@ namespace Netherlands3D.T3D.Uitbouw
             Perceel = perceel;
             Area = area;
 
-            var flatten = perceel.SelectMany(o => o);
-
-            var minx = flatten.Min(v => v.x);
-            var maxx = flatten.Max(v => v.x);
-            var miny = flatten.Min(v => v.y);
-            var maxy = flatten.Max(v => v.y);
-            var centerx = minx + ((maxx - minx) / 2);
-            var centery = miny + ((maxy - miny) / 2);
-            var center = new Vector2(centerx, centery);
-
-            PerceelCenter.x = centerx;
-            PerceelCenter.y = centery;
-
-            PerceelRadius = Vector2.Distance(center, new Vector2(maxx, maxy));
+            var centerAndRadius = Utilities.GeometryCalculator.GetCenterAndRadius(perceel);
+            Center = new Vector2RD( centerAndRadius.Center.x, centerAndRadius.Center.y);
+            Radius = centerAndRadius.Radius;
         }
     }
 
@@ -69,11 +58,19 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Outline { get; private set; } //in RD coordinaten
         public float TotalArea { get; private set; }
 
+        public Vector2RD Center;
+        public float Radius;
+
         public BuildingOutlineEventArgs(bool isLoaded, List<Vector2[]> outline, float totalArea)
         {
             IsLoaded = isLoaded;
             Outline = outline;
             TotalArea = totalArea;
+
+            var centerAndRadius = Utilities.GeometryCalculator.GetCenterAndRadius(outline);
+            Center = new Vector2RD(centerAndRadius.Center.x, centerAndRadius.Center.y);
+            Radius = centerAndRadius.Radius;
+
         }
     }
 
@@ -83,14 +80,17 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public string Huisnummer { get; private set; }
 
+        public string HuisnummerToevoeging { get; private set; }
+
         public string Plaats { get; private set; }
 
         public string Postcode { get; private set; }
 
-        public AdressDataEventArgs(string kortenaam, string huisnummer, string postcode, string plaats)
+        public AdressDataEventArgs(string kortenaam, string huisnummer, string huisnummertoevoeging, string postcode, string plaats)
         {
             Straat = kortenaam;
             Huisnummer = huisnummer;
+            HuisnummerToevoeging = huisnummertoevoeging;
             Postcode = postcode;
             Plaats = plaats;
         }
@@ -149,13 +149,10 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BimCityJsonEventHandler(string cityJson);
         public event BimCityJsonEventHandler BimCityJsonReceived;
 
-
-
         //public List<Vector2[]> PerceelData;
         private string postcode;
         private string huisnummer;
-
-        public Vector2RD perceelnummerPlaatscoordinaat;
+        
         private Vector2RD buildingcenter;
 
         //public string BimModelId;
@@ -171,21 +168,30 @@ namespace Netherlands3D.T3D.Uitbouw
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
 
+        Vector2RD PerceelCenter;
+
+
         void Awake()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-
             Building = building;
             Perceel = perceel;
-
             Instance = this;
             AddressLoaded += OnAddressLoaded;
+
+            Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+
+        }
+
+        private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
+        {
+            PerceelCenter = args.Center;
         }
 
         private void OnAddressLoaded(object source, AdressDataEventArgs args)
         {            
-            StartCoroutine(GetAdressenUitgebreid(args.Postcode, args.Huisnummer));
+            StartCoroutine(GetAdressenUitgebreid(args.Postcode, args.Huisnummer, args.HuisnummerToevoeging));
         }
 
         public void RequestBuildingData(Vector3RD position, string id)
@@ -306,20 +312,22 @@ namespace Netherlands3D.T3D.Uitbouw
                 foreach (JSONObject adres in addresses)
                 {
                     var kortenaam = adres["korteNaam"].Value;
-                    var huisnummer = adres["huisnummer"].Value;
+                    var huisnummer = adres["huisnummer"].Value;                    
+                    var huisnummertoevoeging = adres["huisnummertoevoeging"].Value;
                     var postcode = adres["postcode"].Value;
                     var plaats = adres["woonplaatsNaam"].Value;
 
-                    AddressLoaded?.Invoke(this, new AdressDataEventArgs(kortenaam, huisnummer, postcode, plaats));
+                    AddressLoaded?.Invoke(this, new AdressDataEventArgs(kortenaam, huisnummer, huisnummertoevoeging, postcode, plaats));
                 }
             }
         }
 
-        IEnumerator GetAdressenUitgebreid(string postcode, string huisnummer)
+        IEnumerator GetAdressenUitgebreid(string postcode, string huisnummer, string huisnummertoevoeging)
         {
             var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode={postcode}&huisnummer={huisnummer}&exacteMatch=true";
+            var url_toevoeging = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode={postcode}&huisnummer={huisnummer}&huisnummertoevoeging={huisnummertoevoeging}&exacteMatch=true";
 
-            UnityWebRequest req = UnityWebRequest.Get(url);
+            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(huisnummertoevoeging) ? url : url_toevoeging);
             req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
             req.SetRequestHeader("Accept-Crs", "epsg:28992");
 
@@ -450,8 +458,6 @@ namespace Netherlands3D.T3D.Uitbouw
             JSONNode feature1 = jsonData["features"][0];
             //var perceelGrootte = $"Perceeloppervlakte: {feature1["properties"]["kadastraleGrootteWaarde"]}";
 
-            perceelnummerPlaatscoordinaat = new Vector2RD(feature1["properties"]["perceelnummerPlaatscoordinaatX"], feature1["properties"]["perceelnummerPlaatscoordinaatY"]);
-
             List<Vector2[]> list = new List<Vector2[]>();
 
             foreach (JSONNode feature in jsonData["features"])
@@ -485,7 +491,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void PlaatsUitbouw()
         {
-            var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
+            
             if (T3DInit.Instance.UploadedModel && !Uitbouw)
             {
                 var obj = CityJsonVisualiser.Instance;
@@ -494,7 +500,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             else if (!Uitbouw)
             {
-                var obj = Instantiate(shapableUitbouwPrefab, pos, Quaternion.identity);
+                var obj = Instantiate(shapableUitbouwPrefab, CoordConvert.RDtoUnity(PerceelCenter), Quaternion.identity);
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             //uitbouwPrefab.SetActive(true);

@@ -4,6 +4,7 @@ using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using ConvertCoordinates;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
@@ -13,7 +14,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     public float ZoomSpeed = 0.01f;
     public float spinSpeed = 60;
     public float moveSpeed = 5f;
-    public float firstPersonHeight = 3.23f;
+    public float firstPersonHeight = 2f;
+    public float firstPersonCameraDistance = 5f;
     public float MaxCameraDistance = 200;
 
     [SerializeField]
@@ -30,6 +32,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     Quaternion lastRotateRotation;
     Vector2 currentRotation;
 
+    Vector2RD PerceelCenter;
+    Vector2RD BuildingCenter;
+    float BuildingRadius;
+
+
     float groundLevel;
 
     public static RotateCamera Instance;
@@ -41,9 +48,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void Start()
     {
+        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
+        MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
 
-        mycam = CameraModeChanger.Instance.ActiveCamera;
+       mycam = CameraModeChanger.Instance.ActiveCamera;
 
         availableActionMaps = new List<InputActionMap>()
         {
@@ -52,6 +61,17 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         };
         
         AddActionListeners();
+    }
+
+    private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
+    {
+        BuildingCenter = args.Center;
+        BuildingRadius = args.Radius;
+    }
+
+    private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
+    {
+        PerceelCenter = args.Center;
     }
 
     private void Update()
@@ -71,13 +91,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             }
             FirstPersonLook();
         }
-
-
     }
 
     private void OnBuildingDataProcessed(BuildingMeshGenerator building)
     {
-        groundLevel = building.GroundLevel;
+        groundLevel = building.GroundLevel;     
     }
 
     public bool ToggleRotateFirstPersonMode()
@@ -90,8 +108,13 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         {
             lastRotatePosition = mycam.transform.position;
             lastRotateRotation = mycam.transform.rotation;
-            var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
-            mycam.transform.position = new Vector3(perceelmidden.x, groundLevel + firstPersonHeight, perceelmidden.z);
+
+            var perceelCenter = CoordConvert.RDtoUnity(PerceelCenter);
+            var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
+            var cameraoffset = (perceelCenter - buildingCenter).normalized * (BuildingRadius + firstPersonCameraDistance);
+
+            mycam.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel + firstPersonHeight, buildingCenter.z + cameraoffset.z);
+
             mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, RestrictionChecker.ActiveUitbouw.CenterPoint.y , RestrictionChecker.ActiveUitbouw.CenterPoint.z));
             currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
         }
