@@ -28,13 +28,15 @@ public class CsvNumbersFinder : CsvContentFinder
         {
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
-            return;
         }
-        if (NumberColumnIndices.Count < 2)
+        else if (NumberColumnIndices.Count < 2)
         {
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen met nummers/getallen gevonden.");
-            return;
+        }
+        else if(NumberColumnIndices.Count > 0 && IDColumnIndices.Count > 0)
+        {
+            Status = CsvContentFinderStatus.Success;
         }
     }
 
@@ -63,8 +65,6 @@ public class CsvNumbersFinder : CsvContentFinder
                 }
             }
         }
-
-        Status = (NumberColumnIndices.Count > 0 && IDColumnIndices.Count > 0) ? CsvContentFinderStatus.Success : CsvContentFinderStatus.Failed;
     }
 
     public void SetIDColumn(string columnName)
@@ -106,7 +106,11 @@ public class CsvNumbersFinder : CsvContentFinder
 
             double outputNumber = 0;
             ParseNumber(numberText, out outputNumber);
-            idsAndNumbers.Add(id, (float)outputNumber);
+
+            if (!idsAndNumbers.ContainsKey(id))
+            {
+                idsAndNumbers.Add(id, (float)outputNumber);
+            }
         }
 
         return idsAndNumbers;

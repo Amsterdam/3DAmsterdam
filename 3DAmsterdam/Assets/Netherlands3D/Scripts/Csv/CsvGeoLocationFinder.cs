@@ -34,13 +34,14 @@ public class CsvGeoLocationFinder : CsvContentFinder
         {
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen kolommen gedetecteerd, controleer of de kolommen gescheiden zijn met het ; teken in het CSV bestand");
-            return;
         }
-        if (CoordinateColumns.Length < 2)
+        else if (CoordinateColumns.Length < 2)
         {
             Status = CsvContentFinderStatus.Failed;
             StatusMessageLines.Add("Geen coördinaten gedetecteerd, controleer het CSV bestand");
-            return;
+        }
+        else{
+            Status = CsvContentFinderStatus.Success;
         }
     }
 

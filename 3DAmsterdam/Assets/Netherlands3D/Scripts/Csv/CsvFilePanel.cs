@@ -134,10 +134,7 @@ public class CsvFilePanel : MonoBehaviour
         PropertiesPanel.Instance.SetDynamicFieldsTargetContainer(GeneratedFieldsContainer);
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
         UIClearIgnoreObject.gameObject.SetActive(false);
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
+        
         StartFinderType();
     }
 
@@ -238,25 +235,56 @@ public class CsvFilePanel : MonoBehaviour
 
     private void DrawStatusMessages()
 	{
-		PropertiesPanel.Instance.AddSpacer(20);
-		foreach (var line in csvGeoLocationFinder.StatusMessageLines)
-		{
-			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-		}
-		PropertiesPanel.Instance.AddSpacer(20);
-		foreach (var line in csvColorsFinder.StatusMessageLines)
-		{
-			PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
-		}
-        PropertiesPanel.Instance.AddSpacer(20);
-        foreach (var line in csvNumbersFinder.StatusMessageLines)
+        var showTryAgainButton = false;
+
+        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
         {
-            PropertiesPanel.Instance.AddTextfieldColor(line, Color.red, FontStyle.Normal);
+            Restart();
+        });
+
+        PropertiesPanel.Instance.AddSpacer(20);
+        if(csvGeoLocationFinder != null){ 
+		    foreach (var line in csvGeoLocationFinder.StatusMessageLines)
+		    {
+			    PropertiesPanel.Instance.AddTextfield(line);
+                showTryAgainButton = true;
+            }
+        }
+        PropertiesPanel.Instance.AddSpacer(20);
+        if (csvColorsFinder != null)
+        {
+            foreach (var line in csvColorsFinder.StatusMessageLines)
+            {
+                PropertiesPanel.Instance.AddTextfield(line);
+                showTryAgainButton = true;
+            }
+        }
+        PropertiesPanel.Instance.AddSpacer(20);
+        if (csvNumbersFinder != null)
+        {
+            foreach (var line in csvNumbersFinder.StatusMessageLines)
+            {
+                PropertiesPanel.Instance.AddTextfield(line);
+                showTryAgainButton = true;
+            }
+        }
+
+        if(showTryAgainButton)
+        {
+            PropertiesPanel.Instance.AddActionButtonBig("Opnieuw proberen", (action) =>
+            {
+                Restart();
+            });
         }
     }
 
 	private void ShowColorToIDMappingOptions()
     {
+        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
+        {
+            Restart();
+        });
+
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
         for (int i = 0; i < csvColorsFinder.IDColumnIndices.Count; i++)
@@ -283,14 +311,23 @@ public class CsvFilePanel : MonoBehaviour
             csvColorsFinder.SetColorColumn(action);
         }, columnsWithColors[0]);
 
-        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+        PropertiesPanel.Instance.AddActionButtonBig("Toepassen", (action) =>
         {
             ShowColors();
+        });
+        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
+        {
+            Restart();
         });
     }
 
     private void ShowGradientToIDMappingOptions()
     {
+        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
+        {
+            Restart();
+        });
+
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
         for (int i = 0; i < csvNumbersFinder.IDColumnIndices.Count; i++)
@@ -324,11 +361,54 @@ public class CsvFilePanel : MonoBehaviour
         var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", 0);
         var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", 10);
 
-        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+        PropertiesPanel.Instance.AddActionButtonBig("Toepassen", (action) =>
         {
             double.TryParse(inputFieldMin.text, out double min);
             double.TryParse(inputFieldMax.text, out double max);
             ShowGradientColors(min, max);
+        });
+        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
+        {
+            Restart();
+        });
+    }
+
+    private void ShowLocationBasedOptions()
+    {
+        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
+        {
+            Restart();
+        });
+
+        PropertiesPanel.Instance.AddLabel("Label");
+        PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
+        {
+            csvGeoLocationFinder.LabelColumnName = action;
+            csvGeoLocationFinder.SetlabelIndex(action);
+        }, "");
+
+        PropertiesPanel.Instance.AddSpacer(10);
+        PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
+        PropertiesPanel.Instance.AddSpacer(10);
+
+        foreach (var column in csvGeoLocationFinder.Columns)
+        {
+            if (csvGeoLocationFinder.CoordinateColumns.Contains(column)) continue;
+
+            selectedColumnsToDisplay.Add(column, true);
+            PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
+            {
+                selectedColumnsToDisplay[column] = action;
+            });
+        }
+
+        PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
+        {
+            MapAndShowLocations();
+        });
+        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
+        {
+            Restart();
         });
     }
 
@@ -348,36 +428,6 @@ public class CsvFilePanel : MonoBehaviour
         showColorGradientBasedOnIds.started.Invoke(colorsAndNumbers);
     }
 
-    private void ShowLocationBasedOptions()
-	{
-		PropertiesPanel.Instance.AddLabel("Label");
-		PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
-		{
-			csvGeoLocationFinder.LabelColumnName = action;
-			csvGeoLocationFinder.SetlabelIndex(action);
-		}, "");
-
-		PropertiesPanel.Instance.AddSpacer(10);
-		PropertiesPanel.Instance.AddLabel("Welke informatie wilt u zichtbaar maken als er op een label geklikt wordt?");
-		PropertiesPanel.Instance.AddSpacer(10);
-
-		foreach (var column in csvGeoLocationFinder.Columns)
-		{
-			if (csvGeoLocationFinder.CoordinateColumns.Contains(column)) continue;
-
-			selectedColumnsToDisplay.Add(column, true);
-			PropertiesPanel.Instance.AddActionCheckbox(column, true, (action) =>
-			{
-				selectedColumnsToDisplay[column] = action;
-			});
-		}
-
-		PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
-		{
-			MapAndShow();
-		});
-	}
-
 	private void CleanUp()
 	{
 		if (LocationMarkersParent == null)
@@ -387,22 +437,30 @@ public class CsvFilePanel : MonoBehaviour
 		else
 		{
 			ClearLocationMarkers();
-			Reset();
+			ResetSelections();
 		}
 	}
 
-	void MapAndShow()
+	void MapAndShowLocations()
     {
-        ShowAll();
+        ShowAllLocations();
 
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
-        
+        PropertiesPanel.Instance.AddActionButtonText("<Terug", (action) =>
+        {
+            CleanUp();
+            PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+            ShowLocationBasedOptions();
+        });
         PropertiesPanel.Instance.AddLabel($"CSV file geladen met {csvGeoLocationFinder.Rows.Count} rijen");
         PropertiesPanel.Instance.AddLabel("Klik op een icoon voor details");
-
+        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
+        {
+            Restart();
+        });
     }
 
-    private void Reset()
+    private void ResetSelections()
     {
         selectedColumnsToDisplay.Clear();
         labels.Clear();
@@ -418,50 +476,52 @@ public class CsvFilePanel : MonoBehaviour
 
     private List<TextMesh> labels = new List<TextMesh>();
 
-    void ShowAll()
+    void ShowAllLocations()
     {
         var firstrow = csvGeoLocationFinder.Rows[0];
         double firstrow_x = double.Parse(firstrow[csvGeoLocationFinder.XColumnIndex]);
         bool isRd = csvGeoLocationFinder.IsRd(firstrow_x);
 
         for (int rowindex = 0; rowindex < csvGeoLocationFinder.Rows.Count; rowindex++)
-        {
-            var row = csvGeoLocationFinder.Rows[rowindex];
+		{
+			var row = csvGeoLocationFinder.Rows[rowindex];
+			AddMarker(isRd, rowindex, row);
+		}
+	}
 
-            var locationMarker = Instantiate(marker, LocationMarkersParent.transform);
+	private void AddMarker(bool isRd, int rowindex, string[] row)
+	{
+		var locationMarker = Instantiate(marker, LocationMarkersParent.transform);
+		var billboard = locationMarker.GetComponent<Billboard>();
+		var textmesh = locationMarker.GetComponentInChildren<TextMesh>();
+		textmesh.text = row[csvGeoLocationFinder.LabelColumnIndex];
+		labels.Add(textmesh);
 
-            var billboard = locationMarker.GetComponent<Billboard>();
-            var textmesh = locationMarker.GetComponentInChildren<TextMesh>();
-            textmesh.text = row[csvGeoLocationFinder.LabelColumnIndex];
+		billboard.Index = rowindex;
+		billboard.Row = row;
+		billboard.ClickAction = (action =>
+		{
+			ShowPositionDetails(action);
+		});
 
-            labels.Add(textmesh);
+		double.TryParse(row[csvGeoLocationFinder.XColumnIndex], out double x);
+		double.TryParse(row[csvGeoLocationFinder.YColumnIndex], out double y);
 
-            billboard.Index = rowindex;
-            billboard.Row = row;
-            billboard.ClickAction = (action =>
-            {
-                Show(action);
-            });
+		Vector3 pos;
 
-            double x = double.Parse(row[csvGeoLocationFinder.XColumnIndex]);
-            double y = double.Parse(row[csvGeoLocationFinder.YColumnIndex]);
+		if (isRd)
+		{
+			pos = CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
+		}
+		else
+		{
+			pos = CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
+		}
 
-            Vector3 pos;
+		locationMarker.transform.position = pos;
+	}
 
-            if (isRd)
-            {
-                pos = CoordConvert.RDtoUnity(new Vector3RD(x, y, 7));
-            }
-            else
-            {
-                pos = CoordConvert.WGS84toUnity(new Vector3WGS(y, x, 7));
-            }
-
-            locationMarker.transform.position = pos;
-        }
-    }
-
-    private void UpdateLabels()
+	private void UpdateLabels()
     {
         for (int i = 0; i < csvGeoLocationFinder.Rows.Count; i++) 
         {
@@ -470,9 +530,15 @@ public class CsvFilePanel : MonoBehaviour
         }
      }
 
-    void Show(int index)
+    void ShowPositionDetails(int index)
     {
         PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+        PropertiesPanel.Instance.AddActionButtonText("<Terug", (action) =>
+        {
+            CleanUp();
+            PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+            ShowLocationBasedOptions();
+        });
 
         //dropdown to select the label of the pointer
         PropertiesPanel.Instance.AddLabel("Label");
