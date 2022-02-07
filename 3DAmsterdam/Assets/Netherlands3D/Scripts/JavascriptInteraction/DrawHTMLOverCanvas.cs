@@ -49,8 +49,9 @@ namespace Netherlands3D.JavascriptConnection
 		/// Sets the target html DOM id to follow.
 		/// </summary>
 		/// <param name="id">The ID (without #)</param>
-		public void AlignObjectID(string id){
+		public void AlignObjectID(string id, bool alignEveryUpdate = true){
 			htmlObjectID = id;
+			this.alignEveryUpdate = alignEveryUpdate;
 		}
 
 		/// <summary>
