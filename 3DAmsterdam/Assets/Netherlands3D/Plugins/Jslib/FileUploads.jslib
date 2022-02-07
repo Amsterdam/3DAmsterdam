@@ -150,8 +150,11 @@ mergeInto(LibraryManager.library, {
         }
     },
 	AddFileInput: function (inputName,fileExtentions) {
+		var inputNameID = Pointer_stringify(inputName);
+        var allowedFileExtentions = Pointer_stringify(fileExtentions);
+		
 		if (typeof window.InjectHiddenFileInput !== "undefined") { 
-			window.InjectHiddenFileInput(inputName, fileExtentions, false);
+			window.InjectHiddenFileInput(inputNameID, allowedFileExtentions, false);
 		}
 		else{
 			console.log("Cant create file inputfield. You need to initialize the IndexedDB connection first using InitializeIndexedDB(str)");
