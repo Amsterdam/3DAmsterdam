@@ -27,9 +27,6 @@ namespace Netherlands3D.Settings {
         [SerializeField]
         private Map minimap;
 
-        [SerializeField]
-        private Fps fpsCounter;
-
         private CanvasSettings canvasSettings;
         private Rendering.RenderSettings renderSettings;
 
@@ -174,8 +171,6 @@ namespace Netherlands3D.Settings {
             //Currently we only use the quality settings files for shadow quality differences
             //3 = 2045, 2 = 1024, 1=514, 0=Off
             QualitySettings.SetQualityLevel(settings.shadowQuality, true);
-
-            fpsCounter.ToggleVisualFPS(settings.drawFPS);
 			
 			if (Config.activeConfiguration.EnableMinimap)
 			{
