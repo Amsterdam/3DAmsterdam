@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DownloadCityJsonState : State
+public class SubmitPermitRequestState : State
 {
     private string userNameKey;
     private SaveableString userName;
@@ -12,6 +12,7 @@ public class DownloadCityJsonState : State
     private string userMailKey;
     private SaveableString userMail;
     [SerializeField] private InputField mailInputField;
+    public static string UserMail;// => userMail.Value;
 
     private string userCommentsKey;
     private SaveableString userComments;
@@ -20,6 +21,8 @@ public class DownloadCityJsonState : State
     private string userPermissionKey;
     private SaveableBool userPermission;
     [SerializeField] private Toggle permissionToggle;
+
+    [SerializeField] private SubmitPanel submitPanel;
 
     protected override void Awake()
     {
@@ -34,6 +37,8 @@ public class DownloadCityJsonState : State
         userMail = new SaveableString(userMailKey);
         userComments = new SaveableString(userCommentsKey);
         userPermission = new SaveableBool(userPermissionKey);
+
+        //print("saved data:" + userName.Value);
     }
 
     public override void StateCompletedAction()
@@ -43,6 +48,6 @@ public class DownloadCityJsonState : State
         userComments.SetValue(commentsInputField.text);
         userPermission.SetValue(permissionToggle.isOn);
 
-        SessionSaver.ExportSavedData();
+        submitPanel.gameObject.SetActive(true);
     }
 }
