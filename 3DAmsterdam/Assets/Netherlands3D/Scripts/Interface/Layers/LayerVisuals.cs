@@ -167,15 +167,18 @@ namespace Netherlands3D.Interface.Layers
 				{
 					materialSlot.ResetColor();
 				}
-			}			
-			foreach (MaterialSlot materialSlot in selectedMaterialSlots)
-			{
-				materialSlot.ResetColor();
 			}
-			hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
-			colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
-			opacitySlider.value = selectedMaterialSlots[0].materialOpacity;
-			targetInterfaceLayer.UpdateLayerPrimaryColor();
+			if (selectedMaterialSlots != null && selectedMaterialSlots.Count > 0)
+			{
+				foreach (MaterialSlot materialSlot in selectedMaterialSlots)
+				{
+					materialSlot.ResetColor();
+				}		
+				hexColorField.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+				colorPicker.ChangeColorInput(selectedMaterialSlots[0].GetMaterialColor);
+				opacitySlider.value = selectedMaterialSlots[0].materialOpacity;
+				targetInterfaceLayer.UpdateLayerPrimaryColor();
+			}
 		}
 
 		/// <summary>
