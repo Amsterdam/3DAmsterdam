@@ -62,6 +62,8 @@ public class CsvFilePanel : MonoBehaviour
     private StringEvent setProgressBarMessage;
     [SerializeField]
     private StringEvent setProgressBarDetailedMessage;
+    [SerializeField]
+    private BoolEvent setEnableDrawingColors;
 
     public string[] Columns;
     public List<string[]> Rows;
@@ -140,6 +142,9 @@ public class CsvFilePanel : MonoBehaviour
 
     private void Restart()
     {
+        //Stop drawing colors
+        setEnableDrawingColors.started.Invoke(false);
+
         //Clear finders from memory
         csvColorsFinder = null;
         csvGeoLocationFinder = null;
