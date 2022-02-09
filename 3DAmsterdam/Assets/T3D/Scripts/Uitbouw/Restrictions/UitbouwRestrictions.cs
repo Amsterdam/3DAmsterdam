@@ -158,5 +158,18 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             return true;
         }
+
+        public static IDictionary<UitbouwRestrictionType, UitbouwRestriction> NonConformingRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
+        {
+            var nonConformingRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>();
+            foreach(var restriction in activeRestrictions)
+            {
+                if (!restriction.Value.ConformsToRestriction(building, perceel, uitbouw))
+                {
+                    nonConformingRestrictions.Add(restriction.Key, restriction.Value);
+                }
+            }
+            return nonConformingRestrictions;
+        }
     }
 }
