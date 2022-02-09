@@ -10,12 +10,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         [SerializeField]
         private UitbouwRestrictionType restrictionType;
-        private UitbouwRestriction restrction;
+        private UitbouwRestriction restriction;
 
 
         private void Awake()
         {
-            restrction = RestrictionChecker.ActiveRestrictions[restrictionType];
+            restriction = RestrictionChecker.GetRestriction(restrictionType);
         }
 
         private void Start()
@@ -25,7 +25,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void UpdateUI()
         {
-            if (restrction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw))
+            if (restriction == null || restriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw))
                 gameObject.SetActive(false);
         }
     }
