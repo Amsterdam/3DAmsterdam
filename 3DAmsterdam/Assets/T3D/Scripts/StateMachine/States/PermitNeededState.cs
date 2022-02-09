@@ -11,20 +11,14 @@ public class PermitNeededState : State
     [SerializeField]
     private GameObject permitNeededPanel;
 
-    private string permissionToUseDesignKey;
-    private SaveableBool permissionToUseDesign;
-
     private bool conformsToAllRestrictions;
 
     [SerializeField]
-    private Toggle permissionToggle;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        permissionToUseDesignKey = GetType() + ".PermissionToUseDesign";
-        permissionToUseDesign = new SaveableBool(permissionToUseDesignKey);
-    }
+    private Button nextButton;
+    [SerializeField]
+    private string noPermitNeededButtonText;
+    [SerializeField]
+    private string permitNeededButtonText;
 
     public override void StateEnteredAction()
     {
@@ -34,18 +28,8 @@ public class PermitNeededState : State
 
         noPermitNeededPanel.SetActive(conformsToAllRestrictions);
         permitNeededPanel.SetActive(!conformsToAllRestrictions);
-    }
-
-    public override void StateCompletedAction()
-    {
-        if (conformsToAllRestrictions)
-        {
-            permissionToUseDesign.SetValue(permissionToggle.isOn);
-        }
-        else
-        {
-            permissionToUseDesign.SetValue(true);
-        }
+        var buttonText = conformsToAllRestrictions ? noPermitNeededButtonText : permitNeededButtonText;
+        SetButtonText(buttonText);
     }
 
     public override int GetDesiredStateIndex()
@@ -58,5 +42,15 @@ public class PermitNeededState : State
         {
             return 0; //metadata/submission step
         }
+    }
+
+    private void SetButtonText(string newText)
+    {
+        nextButton.GetComponentInChildren<Text>().text = newText;
+        //var text = nextButton.GetComponentInChildren<Text>();
+        //text.text = newText;
+        //var rectTransform = nextButton.GetComponent<RectTransform>();
+        //var width = text.preferredWidth;
+        //rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);
     }
 }
