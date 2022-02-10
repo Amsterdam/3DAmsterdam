@@ -489,6 +489,7 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 var obj = CityJsonVisualiser.Instance;
                 obj.VisualizeCityJson();
+                obj.SetUitbouwPosition(spawnPosition);
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             else if (!Uitbouw)
