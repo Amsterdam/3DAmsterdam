@@ -341,7 +341,6 @@ namespace Netherlands3D.T3D.Uitbouw
                     Vector2RD building_center = new Vector2RD(point[0], point[1]);
                     AdresUitgebreidLoaded?.Invoke(this, new AdresUitgebreidDataEventArgs(building_center));
                 }
-
             }
         }
 
@@ -483,9 +482,9 @@ namespace Netherlands3D.T3D.Uitbouw
             //PlaatsUitbouw();
         }
 
-        public void PlaatsUitbouw()
+        public void PlaatsUitbouw(Vector3 spawnPosition)
         {
-            var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
+            //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             if (T3DInit.Instance.UploadedModel && !Uitbouw)
             {
                 var obj = CityJsonVisualiser.Instance;
@@ -494,7 +493,7 @@ namespace Netherlands3D.T3D.Uitbouw
             }
             else if (!Uitbouw)
             {
-                var obj = Instantiate(shapableUitbouwPrefab, pos, Quaternion.identity);
+                var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
                 Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
             }
             //uitbouwPrefab.SetActive(true);
