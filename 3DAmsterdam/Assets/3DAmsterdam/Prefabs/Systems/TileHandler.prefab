@@ -545,6 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6735491049249484866}
   - component: {fileID: 4293808997148806720}
+  - component: {fileID: 1039665292243792596}
   m_Layer: 0
   m_Name: TileHandler
   m_TagString: Untagged
@@ -600,6 +601,19 @@ MonoBehaviour:
   - {fileID: 7981405137232490983}
   pendingTileChanges: []
   activeTileChangesView: []
+--- !u!114 &1039665292243792596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735491049249484867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26321d9a73438641a663b37b7e750fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverRootWebAddress: https://acc.3d.amsterdam.nl
 --- !u!1 &6735491049897729531
 GameObject:
   m_ObjectHideFlags: 0
