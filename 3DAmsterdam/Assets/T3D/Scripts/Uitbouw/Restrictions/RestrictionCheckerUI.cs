@@ -18,7 +18,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
-            restrction = RestrictionChecker.ActiveRestrictions[restrictionType];
+            restrction = RestrictionChecker.GetRestriction(restrictionType);
             image = GetComponent<Image>();
         }
 

@@ -19,7 +19,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Awake()
         {
-            RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restriction);
+            //RestrictionChecker.ActiveRestrictions.TryGetValue(restrictionType, out restriction);
+            restriction = RestrictionChecker.GetRestriction(restrictionType);
         }
 
         protected override void CreatePopup()
