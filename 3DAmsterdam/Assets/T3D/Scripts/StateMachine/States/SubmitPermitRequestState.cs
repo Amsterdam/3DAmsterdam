@@ -22,8 +22,7 @@ public class SubmitPermitRequestState : State
     //private SaveableBool userPermission;
     //[SerializeField] private Toggle permissionToggle;
 
-    private string submissionDateKey;
-    private SaveableString submissionDate;
+    //private string submissionDateKey;
 
     protected override void Awake()
     {
@@ -33,13 +32,12 @@ public class SubmitPermitRequestState : State
         userMailKey = GetType().ToString() + ".userMail";
         userCommentsKey = GetType().ToString() + ".userComments";
         //userPermissionKey = GetType().ToString() + ".userPermission";
-        submissionDateKey = GetType().ToString() + ".submissionDate";
+        //submissionDateKey = GetType().ToString() + ".submissionDate";
 
         userName = new SaveableString(userNameKey);
         userMail = new SaveableString(userMailKey);
         userComments = new SaveableString(userCommentsKey);
         //userPermission = new SaveableBool(userPermissionKey);
-        submissionDate = new SaveableString(submissionDateKey);
 
         nameInputField.text = userName.Value;
         mailInputField.text = userMail.Value;
@@ -53,6 +51,5 @@ public class SubmitPermitRequestState : State
         UserMail = userMail.Value;
         userComments.SetValue(commentsInputField.text);
         //userPermission.SetValue(permissionToggle.isOn);
-        submissionDate.SetValue(System.DateTime.Now.ToString());
     }
 }
