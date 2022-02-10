@@ -24,6 +24,8 @@ public static class HTMLKeys
     public const string MODEL_ID_KEY = "$_model_id";
     public const string MODEL_VERSION_ID_KEY = "$_model_version_id";
     public const string IS_USER_FEEDBACK_KEY = "$_is_user_feedback";
+
+    public const string HAS_SUBMITTED_KEY = "$_has_submitted";
 }
 
 public class T3DInit : MonoBehaviour
