@@ -18,9 +18,9 @@ public class SubmitPermitRequestState : State
     private SaveableString userComments;
     [SerializeField] private InputField commentsInputField;
 
-    private string userPermissionKey;
-    private SaveableBool userPermission;
-    [SerializeField] private Toggle permissionToggle;
+    //private string userPermissionKey;
+    //private SaveableBool userPermission;
+    //[SerializeField] private Toggle permissionToggle;
 
     private string submissionDateKey;
     private SaveableString submissionDate;
@@ -32,18 +32,18 @@ public class SubmitPermitRequestState : State
         userNameKey = GetType().ToString() + ".userName";
         userMailKey = GetType().ToString() + ".userMail";
         userCommentsKey = GetType().ToString() + ".userComments";
-        userPermissionKey = GetType().ToString() + ".userPermission";
+        //userPermissionKey = GetType().ToString() + ".userPermission";
         submissionDateKey = GetType().ToString() + ".submissionDate";
 
         userName = new SaveableString(userNameKey);
         userMail = new SaveableString(userMailKey);
         userComments = new SaveableString(userCommentsKey);
-        userPermission = new SaveableBool(userPermissionKey);
+        //userPermission = new SaveableBool(userPermissionKey);
         submissionDate = new SaveableString(submissionDateKey);
 
-        UserMail = userMail.Value;
-
-        //print("saved data:" + userName.Value);
+        nameInputField.text = userName.Value;
+        mailInputField.text = userMail.Value;
+        commentsInputField.text = userComments.Value;
     }
 
     public override void StateCompletedAction()
@@ -52,7 +52,7 @@ public class SubmitPermitRequestState : State
         userMail.SetValue(mailInputField.text);
         UserMail = userMail.Value;
         userComments.SetValue(commentsInputField.text);
-        userPermission.SetValue(permissionToggle.isOn);
+        //userPermission.SetValue(permissionToggle.isOn);
         submissionDate.SetValue(System.DateTime.Now.ToString());
     }
 }
