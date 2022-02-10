@@ -17,7 +17,7 @@ namespace Netherlands3D.Utilities
 
         private const string branchBuildsFolder = "BranchBuilds";
 
-        private const string consistentBuildFolderName = "3DAmsterdamWebGL";
+        private const string consistentBuildFolderName = "3D Amsterdam WebGL";
 
         [MenuItem("Netherlands 3D/Set data target/Production")]
         public static void SwitchBranchMaster()
