@@ -57,7 +57,7 @@ public class PermitNeededState : State
     {
         if (conformsToAllRestrictions)
         {
-            return -1; //no next step
+            return 1; //send + success step
         }
         else
         {
@@ -68,10 +68,5 @@ public class PermitNeededState : State
     private void SetButtonText(string newText)
     {
         nextButton.GetComponentInChildren<Text>().text = newText;
-        //var text = nextButton.GetComponentInChildren<Text>();
-        //text.text = newText;
-        //var rectTransform = nextButton.GetComponent<RectTransform>();
-        //var width = text.preferredWidth;
-        //rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);
     }
 }

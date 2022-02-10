@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SubmitPanel : MonoBehaviour
+public class SubmitRequestState : State
 {
     [SerializeField]
     private GameObject inProgressPanel;
@@ -14,12 +14,12 @@ public class SubmitPanel : MonoBehaviour
     private Text successText;
     private string defaultSucessString;
 
-    private void Awake()
+    protected override void Awake()
     {
         defaultSucessString = successText.text;
     }
 
-    private void OnEnable()
+    public override void StateEnteredAction()
     {
         ShowSuccessMessage(false);
         StartCoroutine(SaveDataWhenCurrentSaveCompletes());

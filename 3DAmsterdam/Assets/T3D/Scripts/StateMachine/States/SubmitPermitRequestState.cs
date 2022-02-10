@@ -24,7 +24,6 @@ public class SubmitPermitRequestState : State
 
     private string submissionDateKey;
     private SaveableString submissionDate;
-    [SerializeField] private SubmitPanel submitPanel;
 
     protected override void Awake()
     {
@@ -52,7 +51,5 @@ public class SubmitPermitRequestState : State
         userComments.SetValue(commentsInputField.text);
         userPermission.SetValue(permissionToggle.isOn);
         submissionDate.SetValue(System.DateTime.Now.ToString());
-
-        submitPanel.gameObject.SetActive(true);
     }
 }
