@@ -15,10 +15,12 @@ public class SubmitRequestState : State
     private string defaultSucessString;
 
     private SaveableBool hasSubmitted;
+    private SaveableString submissionDate;
 
     protected override void Awake()
     {
         hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
+        submissionDate = new SaveableString(HTMLKeys.DATE_KEY);
         defaultSucessString = successText.text;
     }
 
@@ -31,7 +33,11 @@ public class SubmitRequestState : State
     private IEnumerator SaveDataWhenCurrentSaveCompletes()
     {
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
+
         hasSubmitted.SetValue(true);
+        var formattedDate = DateTime.Now.ToString("dd MMMM yyyy");
+        submissionDate.SetValue(formattedDate);
+
         SessionSaver.ExportSavedData(); // export new save data
         SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;
     }
@@ -49,7 +55,6 @@ public class SubmitRequestState : State
     {
         inProgressPanel.SetActive(!show);
         successPanel.SetActive(show);
-        print("mail: " + SubmitPermitRequestState.UserMail);
         successText.text = string.Format(defaultSucessString, "<color=\"blue\">" + SubmitPermitRequestState.UserMail+"</color>");
     }
 }
