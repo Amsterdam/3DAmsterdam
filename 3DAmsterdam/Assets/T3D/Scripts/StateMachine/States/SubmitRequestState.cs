@@ -14,8 +14,11 @@ public class SubmitRequestState : State
     private Text successText;
     private string defaultSucessString;
 
+    private SaveableBool hasSubmitted;
+
     protected override void Awake()
     {
+        hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
         defaultSucessString = successText.text;
     }
 
@@ -28,6 +31,7 @@ public class SubmitRequestState : State
     private IEnumerator SaveDataWhenCurrentSaveCompletes()
     {
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
+        hasSubmitted.SetValue(true);
         SessionSaver.ExportSavedData(); // export new save data
         SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;
     }
