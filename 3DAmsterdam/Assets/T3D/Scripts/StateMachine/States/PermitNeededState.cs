@@ -20,6 +20,17 @@ public class PermitNeededState : State
     [SerializeField]
     private string permitNeededButtonText;
 
+    [SerializeField]
+    private RectTransform checkersPanel;
+    private float checkersPanelDefaultHeight;
+    private RestrictionCheckerDisabler[] checkers;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        checkersPanelDefaultHeight = checkersPanel.sizeDelta.y;
+    }
+
     public override void StateEnteredAction()
     {
         //check if restrictions fail
@@ -30,6 +41,16 @@ public class PermitNeededState : State
         permitNeededPanel.SetActive(!conformsToAllRestrictions);
         var buttonText = conformsToAllRestrictions ? noPermitNeededButtonText : permitNeededButtonText;
         SetButtonText(buttonText);
+
+        checkers = GetComponentsInChildren<RestrictionCheckerDisabler>(true);
+        float newY = checkersPanelDefaultHeight;
+        foreach (var checker in checkers)
+        {
+            checker.UpdateUI();
+            newY -= checker.SizeMinus;
+
+        }
+        checkersPanel.sizeDelta = new Vector2(checkersPanel.sizeDelta.x, newY);
     }
 
     public override int GetDesiredStateIndex()
