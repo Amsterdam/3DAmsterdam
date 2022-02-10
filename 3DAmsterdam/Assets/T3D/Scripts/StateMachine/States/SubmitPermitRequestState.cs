@@ -41,6 +41,8 @@ public class SubmitPermitRequestState : State
         userPermission = new SaveableBool(userPermissionKey);
         submissionDate = new SaveableString(submissionDateKey);
 
+        UserMail = userMail.Value;
+
         //print("saved data:" + userName.Value);
     }
 
@@ -48,6 +50,7 @@ public class SubmitPermitRequestState : State
     {
         userName.SetValue(nameInputField.text);
         userMail.SetValue(mailInputField.text);
+        UserMail = userMail.Value;
         userComments.SetValue(commentsInputField.text);
         userPermission.SetValue(permissionToggle.isOn);
         submissionDate.SetValue(System.DateTime.Now.ToString());

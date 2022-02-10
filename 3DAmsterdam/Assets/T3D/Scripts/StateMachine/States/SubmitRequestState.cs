@@ -45,7 +45,7 @@ public class SubmitRequestState : State
     {
         inProgressPanel.SetActive(!show);
         successPanel.SetActive(show);
-
-        successText.text = string.Format(defaultSucessString, SubmitPermitRequestState.UserMail);
+        print("mail: " + SubmitPermitRequestState.UserMail);
+        successText.text = string.Format(defaultSucessString, "<color=\"blue\">" + SubmitPermitRequestState.UserMail+"</color>");
     }
 }
