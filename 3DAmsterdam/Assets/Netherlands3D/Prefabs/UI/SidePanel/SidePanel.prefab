@@ -56,7 +56,7 @@ MonoBehaviour:
   startingActiveTab: {fileID: 0}
   customObjectsTab: {fileID: 3788446937297967769}
   objectInformationTab: {fileID: 7067143822108905586}
-  annotationsTab: {fileID: 4704733281842877249}
+  annotationsTab: {fileID: 0}
   layersTab: {fileID: 1298800264809438909}
   settingsTab: {fileID: 6549353519786560842}
   animationSpeed: 10
@@ -2208,18 +2208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7067143822108905586 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3375611066624203277, guid: 02ad944e407562d40ae7234a9622449a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5533549267884870271}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6549353519786560842 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1596781078301083445, guid: 02ad944e407562d40ae7234a9622449a,
@@ -2244,18 +2232,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc99f9dec8005e442b69b78d710325b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7222801889008690497 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2951988272139906878, guid: 02ad944e407562d40ae7234a9622449a,
+--- !u!224 &6285694825534217085 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2013209749094191362, guid: 02ad944e407562d40ae7234a9622449a,
     type: 3}
   m_PrefabInstance: {fileID: 5533549267884870271}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 987aaa0500b65804fa7e68920e776ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3973428173878463999 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8930477955564996480, guid: 02ad944e407562d40ae7234a9622449a,
@@ -2298,12 +2280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27eeebeee174686499a85dfa1fddaf3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &2534885638861334160 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8063313273068924143, guid: 02ad944e407562d40ae7234a9622449a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5533549267884870271}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4987033549073905172 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 720185796772494443, guid: 02ad944e407562d40ae7234a9622449a,
@@ -2328,9 +2304,9 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5533549267884870271}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4704733281842877249 stripped
+--- !u!114 &3788446937297967769 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 973213216032512318, guid: 02ad944e407562d40ae7234a9622449a,
+  m_CorrespondingSourceObject: {fileID: 8671779864189685990, guid: 02ad944e407562d40ae7234a9622449a,
     type: 3}
   m_PrefabInstance: {fileID: 5533549267884870271}
   m_PrefabAsset: {fileID: 0}
@@ -2340,9 +2316,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3788446937297967769 stripped
+--- !u!114 &7067143822108905586 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8671779864189685990, guid: 02ad944e407562d40ae7234a9622449a,
+  m_CorrespondingSourceObject: {fileID: 3375611066624203277, guid: 02ad944e407562d40ae7234a9622449a,
     type: 3}
   m_PrefabInstance: {fileID: 5533549267884870271}
   m_PrefabAsset: {fileID: 0}
@@ -2392,9 +2368,9 @@ MonoBehaviour:
   camerasLayerPrefab: {fileID: 8778083341583675047, guid: 569f4ba7ba4b61b4ebf54b6b18c2a080,
     type: 3}
   customLayersContainer: {fileID: 4110384795647470943}
-  annotationsContainer: {fileID: 2534885638861334160}
+  annotationsContainer: {fileID: 6285694825534217085}
   cameraContainer: {fileID: 4110384795647470943}
-  layerVisualsDialog: {fileID: 7222801889008690497}
+  layerVisualsDialog: {fileID: 0}
 --- !u!1001 &7293728218823840961
 PrefabInstance:
   m_ObjectHideFlags: 0

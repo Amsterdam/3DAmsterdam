@@ -13,13 +13,31 @@ namespace Netherlands3D.Interface {
         [SerializeField]
         private GameObject paletteColorPrefab;
 
-        private void Awake()
+        [SerializeField]
+        private Text titleText;
+
+        private void Start()
         {
             GenerateColorsList();
         }
 
-        private void GenerateColorsList()
+		private void OnValidate()
+		{
+            if(Application.isPlaying)
+                GenerateColorsList();
+        }
+
+		private void GenerateColorsList()
         {
+            foreach(Transform child in transform)
+            {
+                if (child != titleText.gameObject.transform) 
+                {
+                    Destroy(child.gameObject);
+                }
+			}
+            if (!colorPalette) return;
+
             foreach (var namedColor in colorPalette.colors)
             {
                 var newNamedColor = Instantiate(paletteColorPrefab, this.transform);

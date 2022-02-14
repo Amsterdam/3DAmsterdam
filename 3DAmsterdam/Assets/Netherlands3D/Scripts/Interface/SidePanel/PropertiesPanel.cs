@@ -175,15 +175,6 @@ namespace Netherlands3D.Interface.SidePanel
         }
 
         /// <summary>
-        /// Open the annotations tab
-        /// </summary>
-        public void OpenAnnotations()
-        {
-            annotationsTab.OpenTab(true);
-            OpenPanel();
-        }
-
-        /// <summary>
         /// Open the static tile layers tab
         /// </summary>
         public void OpenLayers()

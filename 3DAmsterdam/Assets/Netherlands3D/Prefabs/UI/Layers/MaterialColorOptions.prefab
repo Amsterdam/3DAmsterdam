@@ -960,8 +960,9 @@ GameObject:
   - component: {fileID: 4489851701306706169}
   - component: {fileID: 7177407348382016308}
   - component: {fileID: 7376752055306263016}
+  - component: {fileID: 6017217609161619495}
   m_Layer: 5
-  m_Name: LayerVisuals
+  m_Name: MaterialColorOptions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1085,6 +1086,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6017217609161619495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2620163864018914940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2660055003587506494
 GameObject:
   m_ObjectHideFlags: 0
