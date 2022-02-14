@@ -10,23 +10,29 @@ namespace Netherlands3D.T3D.Uitbouw
 
         [SerializeField]
         private UitbouwRestrictionType restrictionType;
-        private UitbouwRestriction restrction;
+        private UitbouwRestriction restriction;
 
+        private bool conforms;
+        public bool Conforms => conforms;
+
+        [SerializeField]
+        private float sizeMinusWhenDisabled;
+        public float SizeMinus => conforms ? sizeMinusWhenDisabled : 0;
 
         private void Awake()
         {
-            restrction = RestrictionChecker.ActiveRestrictions[restrictionType];
+            restriction = RestrictionChecker.GetRestriction(restrictionType);
         }
 
-        private void Start()
+        private void Update()
         {
             UpdateUI();
         }
 
-        private void UpdateUI()
+        public void UpdateUI()
         {
-            if (restrction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw))
-                gameObject.SetActive(false);
+            conforms = restriction == null || restriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
+            gameObject.SetActive(!conforms);
         }
     }
 }

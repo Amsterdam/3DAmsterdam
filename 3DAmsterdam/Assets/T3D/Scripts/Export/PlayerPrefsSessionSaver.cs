@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerPrefsSessionSaver : IDataSaver
 {
     public event IDataSaver.DataSavedEventHandler SavingCompleted;
+    public bool SaveInProgress => false;
 
     public void ExportSaveData(string sessionId)
     {

@@ -18,6 +18,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     private SaveFeedback saveFeedback;
 
     public event IDataSaver.DataSavedEventHandler SavingCompleted;
+    public bool SaveInProgress => uploadCoroutine != null;
 
     private void Awake()
     {
@@ -122,8 +123,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             {
                 saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.ChangesSaved);
                 SavingCompleted?.Invoke(true);
-                uploadCoroutine = null;
             }
+            uploadCoroutine = null;
         }
     }
 
@@ -139,7 +140,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         var newObject = new JSONObject();
 
         //save readOnly keys
-        foreach(var key in rootObject.Keys)
+        foreach (var key in rootObject.Keys)
         {
             if (key.Value.StartsWith(readOnlyMarker))
             {
