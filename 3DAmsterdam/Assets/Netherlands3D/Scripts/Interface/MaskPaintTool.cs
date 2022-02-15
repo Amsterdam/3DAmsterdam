@@ -50,7 +50,6 @@ namespace Netherlands3D.Interface.Tools
             PropertiesPanel.Instance.OpenLayers();
 
             maskLayer.ToggleLinkedObject(true);
-            maskLayer.ExpandLayerOptions(true);
         }
     }
 }

@@ -229,63 +229,6 @@ namespace Netherlands3D.Interface.Layers
 			toggleActiveLayer.SetIsOnWithoutNotify(isOn);
 		}
 
-		/// <summary>
-		/// Opens if closed, closes if opened.
-		/// </summary>
-		public void ToggleLayerOpened()
-		{
-			expanded = !expanded;
-
-			if(hasOptions)
-				ExpandLayerOptions(expanded);
-
-			if(expanded)
-			{
-				//In case of own models,make sure to always grab the latest materials
-				if (layerType == LayerType.OBJMODEL)
-				{
-					GetUniqueNestedMaterials();
-					GetResetColorValues();
-					UpdateLayerPrimaryColor();
-				}
-
-				//If we do not use any custom options for this layer, use the default layer visuals panel
-				if(hasOptions && !customOptions)
-					parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
-			}
-			else{
-				parentInterfaceLayers.LayerVisuals.Close();
-			}
-		}
-
-		/// <summary>
-		/// Should these layer options be expanded
-		/// </summary>
-		/// <param name="expandLayer">Expanded or closed</param>
-		public void ExpandLayerOptions(bool expandLayer = true)
-		{
-			expanded = expandLayer;
-
-			if (customOptions)
-			{
-				customOptions.SetActive(expandLayer);
-				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
-			}
-
-			if (expandIcon)
-				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
-
-			if (expanded && autoCloseNeighbourLayers)
-			{
-				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
-				foreach(var layer in neighbourLayers)
-				{
-					if (layer != this)
-						layer.ExpandLayerOptions(false);
-				}
-			}
-		}
-
         public void RenameLayer(string newName){
             name = newName; //use our object name to store our full name
 

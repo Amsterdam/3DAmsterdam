@@ -43,7 +43,6 @@ namespace Netherlands3D.Interface.Layers
                 if (transformable)
                 {
                     transformable.Select();
-                    ToggleLayerOpened();
                 }
             }
         }
@@ -73,7 +72,7 @@ namespace Netherlands3D.Interface.Layers
 
         private void OnDestroy()
         {
-            GameObject.Destroy(LinkedObject);
+            Destroy(LinkedObject);
         }
     }
 }
