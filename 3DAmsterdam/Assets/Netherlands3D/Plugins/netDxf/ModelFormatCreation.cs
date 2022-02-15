@@ -8,7 +8,7 @@ using Netherlands3D.Interface;
 public class ModelFormatCreation : MonoBehaviour
 {
 
-	public void FreezeLayers(List<Layer> layerList, bool freeze)
+    public void FreezeLayers(List<Layer> layerList, bool freeze)
 	{
 		foreach (var layer in layerList)
 		{

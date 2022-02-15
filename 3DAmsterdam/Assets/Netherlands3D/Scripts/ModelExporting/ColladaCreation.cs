@@ -8,8 +8,7 @@ using UnityEngine;
 
 public class ColladaCreation : ModelFormatCreation
 {
-    [SerializeField]
-    private LoadingScreen loadingScreen;
+
     private MeshClipper.RDBoundingBox boundingbox;
 
     private bool coordinatesToZero = true;
@@ -32,16 +31,16 @@ public class ColladaCreation : ModelFormatCreation
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
 
-        loadingScreen.ShowMessage("Collada-bestand genereren...");
-        loadingScreen.ProgressBar.Percentage(0.1f);
+        LoadingScreen.Instance.ShowMessage("Collada-bestand genereren...");
+        LoadingScreen.Instance.ProgressBar.Percentage(0.1f);
         yield return new WaitForEndOfFrame();
 
         int layercounter = 0;
         foreach (var layer in layerList)
         {
             layercounter++;
-            loadingScreen.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
-            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
+            LoadingScreen.Instance.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
+            LoadingScreen.Instance.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
             yield return new WaitForEndOfFrame();
 
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
@@ -55,7 +54,7 @@ public class ColladaCreation : ModelFormatCreation
                 for (int submeshID = 0; submeshID < gameObject.GetComponent<MeshFilter>().sharedMesh.subMeshCount; submeshID++)
                 {
                     string layerName = gameObject.GetComponent<MeshRenderer>().sharedMaterials[submeshID].name.Replace(" (Instance)", "").Split(' ')[0];
-                    loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
+                    LoadingScreen.Instance.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
                     yield return new WaitForEndOfFrame();
 
                     meshClipper.ClipSubMesh(boundingbox, submeshID);
@@ -79,8 +78,8 @@ public class ColladaCreation : ModelFormatCreation
             yield return new WaitForEndOfFrame();
         }
 
-        loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
-        loadingScreen.ProgressBar.SetMessage("Het Collada (.dae) bestand wordt afgerond...");
+        LoadingScreen.Instance.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
+        LoadingScreen.Instance.ProgressBar.SetMessage("Het Collada (.dae) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
 
         //Create the collada file XML contents, and add our geo info (supported from collada 1.5)
@@ -90,7 +89,7 @@ public class ColladaCreation : ModelFormatCreation
         colladaFile.Save("Collada-RD-" + bottomLeftRD.x.ToString(CultureInfo.InvariantCulture) + "_" + bottomLeftRD.y.ToString(CultureInfo.InvariantCulture) + ".dae");
 
         FreezeLayers(layerList, false);
-        loadingScreen.Hide();
+        LoadingScreen.Instance.Hide();
         Debug.Log("file saved");
     }
 }

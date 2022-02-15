@@ -7,11 +7,9 @@ using Netherlands3D.Interface;
 
 public class DXFCreation : ModelFormatCreation
 {
-    [SerializeField]
-    private LoadingScreen loadingScreen;
     private MeshClipper.RDBoundingBox boundingbox;
 
-    public void CreateDXF(Bounds UnityBounds, List<Layer> layerList)
+	public void CreateDXF(Bounds UnityBounds, List<Layer> layerList)
     {
         StartCoroutine(CreateFile(UnityBounds, layerList));
     }
@@ -27,18 +25,18 @@ public class DXFCreation : ModelFormatCreation
         dxfFile.SetupDXF();
         yield return null;
         MeshClipper meshClipper = new MeshClipper();
-        
-        loadingScreen.ShowMessage("DXF-bestand genereren...");
-        loadingScreen.ProgressBar.SetMessage("");
-        loadingScreen.ProgressBar.Percentage(0.1f);
+
+        LoadingScreen.Instance.ShowMessage("DXF-bestand genereren...");
+        LoadingScreen.Instance.ProgressBar.SetMessage("");
+        LoadingScreen.Instance.ProgressBar.Percentage(0.1f);
         yield return new WaitForEndOfFrame();
 
         int layercounter = 0;
         foreach (var layer in layerList)
         {
             layercounter++;
-            loadingScreen.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
-            loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
+            LoadingScreen.Instance.ProgressBar.Percentage((float)layercounter / ((float)layerList.Count+1));
+            LoadingScreen.Instance.ProgressBar.SetMessage("Laag '" + layer.name + "' wordt omgezet...");
             yield return new WaitForEndOfFrame();
 
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
@@ -66,7 +64,7 @@ public class DXFCreation : ModelFormatCreation
                     layerName = layerName.Replace(",", "");
                     layerName = layerName.Replace("'", "");
 
-                    loadingScreen.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
+                    LoadingScreen.Instance.ProgressBar.SetMessage("Laag '" + layer.name + "' object " + layerName + " wordt uitgesneden...");
                     yield return new WaitForEndOfFrame();
 
                     meshClipper.ClipSubMesh(boundingbox, submeshID);
@@ -78,12 +76,12 @@ public class DXFCreation : ModelFormatCreation
             yield return new WaitForEndOfFrame();
         }
 
-        loadingScreen.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
-        loadingScreen.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
+        LoadingScreen.Instance.ProgressBar.Percentage((float)layerList.Count / ((float)layerList.Count + 1));
+        LoadingScreen.Instance.ProgressBar.SetMessage("Het AutoCAD DXF (.dxf) bestand wordt afgerond...");
         yield return new WaitForEndOfFrame();
         dxfFile.Save();
 
-        loadingScreen.Hide();
+        LoadingScreen.Instance.Hide();
         FreezeLayers(layerList, false);
         Debug.Log("file saved");
     }
