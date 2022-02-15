@@ -24,8 +24,6 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Tab objectInformationTab;
         [SerializeField]
-        private Tab annotationsTab;
-        [SerializeField]
         private Tab layersTab;
         [SerializeField]
         private Tab settingsTab;
