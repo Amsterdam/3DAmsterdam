@@ -14,21 +14,22 @@ mergeInto(LibraryManager.library, {
         window.dbVersion = 21;
 
         //Inject our required html input fields
-        window.InjectHiddenFileInput = function InjectHiddenFileInput(type, acceptedExtentions, multiFileSelect) {
+        window.InjectHiddenFileInput = function InjectHiddenFileInput(inputFieldName, acceptedExtentions, multiFileSelect) {
             var newInput = document.createElement("input");
-            newInput.id = type + '-input';
+            newInput.id = inputFieldName;
             newInput.type = 'file';
             newInput.accept = acceptedExtentions;
 			newInput.multiple = multiFileSelect;
+			newInput.onclick = function() {
+				unityInstance.SendMessage(inputFieldName, 'ClickNativeButton');
+			};
             newInput.onchange = function () {
                 window.ReadFiles(this.files);
             };
             newInput.style.cssText = 'display:none; cursor:pointer; opacity: 0; position: fixed; bottom: 0; left: 0; z-index: 2; width: 0px; height: 0px;';
             document.body.appendChild(newInput);
         };
-        window.InjectHiddenFileInput('obj', '.obj,.mtl', true);
-        window.InjectHiddenFileInput('csv', '.csv,.tsv', false);
-        window.InjectHiddenFileInput('fzp', '.fzp', false);
+
         window.InjectHiddenFileInput('geojson', '.json,.geojson', false);
 
         //Support for dragging dropping files on browser window
@@ -148,6 +149,17 @@ mergeInto(LibraryManager.library, {
         dbConnectionRequest.onerror = function () {
             alert("Kan geen verbinding maken met de indexedDatabase");
         }
+    },
+	AddFileInput: function (inputName,fileExtentions) {
+		var inputNameID = Pointer_stringify(inputName);
+        var allowedFileExtentions = Pointer_stringify(fileExtentions);
+		
+		if (typeof window.InjectHiddenFileInput !== "undefined") { 
+			window.InjectHiddenFileInput(inputNameID, allowedFileExtentions, false);
+		}
+		else{
+			console.log("Cant create file inputfield. You need to initialize the IndexedDB connection first using InitializeIndexedDB(str)");
+		}
     },
     SyncFilesFromIndexedDB: function () {
         FS.syncfs(true, function (err) {

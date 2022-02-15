@@ -45,6 +45,14 @@ namespace Netherlands3D.JavascriptConnection
             DisplayDOMObjectWithID(htmlObjectID,"none");
         }
 #endif
+		/// <summary>
+		/// Sets the target html DOM id to follow.
+		/// </summary>
+		/// <param name="id">The ID (without #)</param>
+		public void AlignObjectID(string id, bool alignEveryUpdate = true){
+			htmlObjectID = id;
+			this.alignEveryUpdate = alignEveryUpdate;
+		}
 
 		/// <summary>
 		/// Tell JavaScript to make a DOM object with htmlObjectID to align with the Image component

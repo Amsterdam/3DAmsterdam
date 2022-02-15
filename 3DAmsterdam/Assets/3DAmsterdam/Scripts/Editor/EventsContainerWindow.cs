@@ -8,6 +8,7 @@ namespace Netherlands3D.Events
     {
         static string[] floatEventContainers;
         static string[] intEventContainers;
+        static string[] boolEventContainers;
         static string[] triggerEventContainers;
         static string[] stringEventContainers;
         static string[] vector3EventContainers;
@@ -72,6 +73,27 @@ namespace Netherlands3D.Events
                 {
                     int floatInput = int.Parse(testData);
                     asset.started?.Invoke(floatInput);
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            //BoolEvent
+            if (boolEventContainers == null) boolEventContainers = AssetDatabase.FindAssets("t:BoolEvent");
+            if (boolEventContainers.Length > 0) GUILayout.Label("BoolEvent Containers", EditorStyles.boldLabel);
+            foreach (var boolEventContainer in boolEventContainers)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(boolEventContainer);
+
+                if (filterName.Length > 0 && assetPath.IndexOf(filterName, StringComparison.OrdinalIgnoreCase) == -1) continue;
+
+                BoolEvent asset = (BoolEvent)AssetDatabase.LoadAssetAtPath(assetPath, typeof(BoolEvent));
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.ObjectField(asset, typeof(BoolEvent), false);
+                if (GUILayout.Button("Trigger", GUILayout.Height(invokeButtonHeight)))
+                {
+                    bool boolInput = (testData.ToLower() == "true") ? true : false;
+                    asset.started?.Invoke(boolInput);
                 }
                 GUILayout.EndHorizontal();
             }

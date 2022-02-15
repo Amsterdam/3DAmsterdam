@@ -4,6 +4,7 @@ using UnityEngine;
 using NUnit.Framework;
 using System.IO;
 using System;
+using System.Linq;
 
 public class CsvGeoLocationUnitTests
 {
@@ -15,7 +16,19 @@ Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects /
     [Test]
     public void TestCsvGeoLocationParse()
     {
-        var csvgeoloc = new CsvGeoLocation(csv);
+        var lines = CsvParser.ReadLines(csv, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+        var csvgeoloc = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
         Assert.AreEqual(2, csvgeoloc.CoordinateColumns.Length );       
     }
@@ -23,7 +36,20 @@ Overspanning viaduct Laarderweg; 80000; 350000; 3/9/2021; 30/12/2021; projects /
     [Test]
     public void TestCsvGeoLocationRows()
     {
-        var csvgeoloc = new CsvGeoLocation(csv);
+        var lines = CsvParser.ReadLines(csv, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+
+        var csvgeoloc = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(3, csvgeoloc.Rows.Count);
 
         var omschrijving1 = csvgeoloc.Rows[0][0];
@@ -42,7 +68,19 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 "";Particulier Initiatief;Nieuwbouw;Definitie;400;2022;2024;52.0964235021;5.084729408;134273.0759;456507.0160
 165;West;Vlampijpzone;Gemeente & meerdere partijen;Herinrichting openbare ruimte;Openbare Ruimte;Openbare Ruimte;Uitvoering;0;2017;2020;52.1053533697;5.0847081297;134275.7563;457500.5473";
 
-        var projects = new CsvGeoLocation(csv);
+        var lines = CsvParser.ReadLines(csv, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+        var projects = new CsvGeoLocationFinder(Columns, Rows);
 
         Assert.AreEqual(15, projects.Columns.Length);
         Assert.AreEqual(2, projects.Rows.Count);
@@ -64,9 +102,20 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 0363020012061174;N;N;0363200012063218;24;A;;1081KG;0363300000004022;Koenenkade;3594;Amsterdam;0363;Amsterdam;;Plaats aangewezen;;2011-06-22T00:00:00;;2011-06-22;SK00000653;03630000000849;K90e;Amsterdamse Bos;03630012052010;K90;Buitenveldert-West;03630950000010;DX11;Buitenveldert, Zuidas;03630940000010;PX12;Buitenveldert, Zuidas;03630011872038;K;Zuid;POLYGON ((117912.506 482707.925, 117912.381 482708.05, 117904.486 482720.581, 117900.852 482721.584, 117900.1 482718.201, 117907.619 482705.043, 117912.506 482707.925))
 0363020001027084;N;N;0363200000515068;120;G;;1018VZ;0363300000003920;Nieuwe Prinsengracht;3594;Amsterdam;0363;Amsterdam;;Plaats aangewezen;;2010-09-09T00:00:00;;2010-09-09;GV00000407;03630000000516;A08a;Weesperbuurt;03630012052031;A08;Weesperbuurt/Plantage;03630950000001;DX02;Centrum-Oost;03630940000001;PX02;Centrum-Oost;03630000000018;A;Centrum;POLYGON ((122508.275 486350.327, 122508.527 486350.053, 122509.492 486349.574, 122510.012 486349.508, 122511.188 486349.569, 122512.612 486349.838, 122526.48 486353.827, 122525.443 486357.431, 122511.575 486353.442, 122510.226 486352.914, 122509.197 486352.341, 122508.792 486352.01, 122508.229 486351.091, 122508.162 486350.72, 122508.275 486350.327))";
 
-        var bagligplaatsen = new CsvGeoLocation(csv);
-        Assert.AreEqual(bagligplaatsen.Status, CsvGeoLocation.CsvGeoLocationStatus.FailedNoCoordinates);
+        var lines = CsvParser.ReadLines(csv, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
 
+        var bagligplaatsen = new CsvGeoLocationFinder(Columns, Rows);
+        Assert.AreEqual(bagligplaatsen.Status, CsvContentFinder.CsvContentFinderStatus.Failed);
     }
 
     [Test]
@@ -81,7 +130,19 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 1178263181.03681;1178263181_036811_5;52.3516244602;4.8419080467;44.611617892;-1.7137684824;0.6385912069;91.6988523355
 1178263196.78151;1178263196_781509_6;52.3516072083;4.8417661974;45.2869139686;-1.4987202908;-0.0137625108;88.9704470561";
 
-        var panoramas = new CsvGeoLocation(csv);
+        var lines = CsvParser.ReadLines(csv, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
         Assert.AreEqual(2, panoramas.CoordinateColumns.Length);
 
     }
@@ -95,8 +156,20 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 1178263177.306679	1178263177_306679_2	52.3516082396404	4.84234135030321	44.5097852116451	-0.708516704927227	-0.108377587284742	90.0325795636947
 1178263178.386648	1178263178_386648_3	52.3516118476512	4.8421957188643	44.5319389142096	-1.065234147629	0.242642421605154	92.0613240058035";
 
-        var panoramas = new CsvGeoLocation(panoramadata);
-        Assert.AreEqual(CsvGeoLocation.CsvGeoLocationStatus.FailedNoColumns, panoramas.Status);
+        var lines = CsvParser.ReadLines(panoramadata, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
+        Assert.AreEqual(CsvContentFinder.CsvContentFinderStatus.Failed, panoramas.Status);
     }
 
     [Test]
@@ -108,26 +181,23 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
 1178263177.306679;1178263177_306679_2;52.3516082396404;4.84234135030321;44.5097852116451;-0.708516704927227;-0.108377587284742;90.0325795636947
 1178263178.386648;1178263178_386648_3;52.3516118476512;4.8421957188643;44.5319389142096;-1.065234147629;0.242642421605154;92.0613240058035";
 
-        var panoramas = new CsvGeoLocation(panoramadata);
-        Assert.AreEqual(CsvGeoLocation.CsvGeoLocationStatus.Success, panoramas.Status);
+        var lines = CsvParser.ReadLines(panoramadata, 0);
+        var Columns = lines.First();
+        var Rows = new List<string[]>();
+        int columnscount = Columns.Length;
+        for (int i = 1; i < lines.Count; i++)
+        {
+            if (lines[i].Length == columnscount)
+            {
+                Rows.Add(lines[i]);
+            }
+        }
+
+        var panoramas = new CsvGeoLocationFinder(Columns, Rows);
+        Assert.AreEqual(CsvContentFinder.CsvContentFinderStatus.Success, panoramas.Status);
         Assert.AreEqual(panoramas.CoordinateColumns.Length, 2);
 
     }
-
-
-    //[Test]
-    //public void LoadAndParseCsvFile()
-    //{
-    //    string csv = File.ReadAllText(@"F:\Data\Projecten CSV\gu_programma_ruimtelijke_ontwikkeling_20200615_20200630.csv");
-    //    var projects = new CsvGeoLocation(csv);
-    //    Assert.AreEqual(15, projects.Columns.Length);
-    //    Assert.AreEqual(370, projects.Rows.Count);
-
-    //    foreach (var row in projects.Rows)
-    //    {
-    //        Assert.AreEqual(15, row.Length);
-    //    }
-    //}
 
     [Test]
     public void TestIsCoordinate()
@@ -144,36 +214,35 @@ Het slopen van 178 gestapelde sociale huurwoningen, 9 winkels, een garage en 6 o
         //range lat 50.57222 - 53.62702
         //range lon 3.29804 - 7.57893
 
-        bool iscoordinate1 = CsvGeoLocation.IsCoordinate("title");
+        bool iscoordinate1 = CsvGeoLocationFinder.IsCoordinate("title");
         Assert.AreEqual(false, iscoordinate1, "IsCoordinate title");
 
-        bool iscoordinate2 = CsvGeoLocation.IsCoordinate("2343");
+        bool iscoordinate2 = CsvGeoLocationFinder.IsCoordinate("2343");
         Assert.AreEqual(false, iscoordinate2, "IsCoordinate 2343");
 
-        bool iscoordinate3 = CsvGeoLocation.IsCoordinate("7500");
+        bool iscoordinate3 = CsvGeoLocationFinder.IsCoordinate("7500");
         Assert.AreEqual(true, iscoordinate3, "IsCoordinate 7500");
 
-        bool iscoordinate4 = CsvGeoLocation.IsCoordinate("4");
+        bool iscoordinate4 = CsvGeoLocationFinder.IsCoordinate("4");
         Assert.AreEqual(true, iscoordinate4, "IsCoordinate 4");
 
-        bool iscoordinate5 = CsvGeoLocation.IsCoordinate("9");
+        bool iscoordinate5 = CsvGeoLocationFinder.IsCoordinate("9");
         Assert.AreEqual(false, iscoordinate5, "IsCoordinate 9");
 
-        bool iscoordinate6 = CsvGeoLocation.IsCoordinate("284000");
+        bool iscoordinate6 = CsvGeoLocationFinder.IsCoordinate("284000");
         Assert.AreEqual(false, iscoordinate6, "IsCoordinate 284000");
 
-        bool iscoordinate7 = CsvGeoLocation.IsCoordinate("650000");
+        bool iscoordinate7 = CsvGeoLocationFinder.IsCoordinate("650000");
         Assert.AreEqual(false, iscoordinate7, "IsCoordinate 650000");
 
-        bool iscoordinate8 = CsvGeoLocation.IsCoordinate("450000");
+        bool iscoordinate8 = CsvGeoLocationFinder.IsCoordinate("450000");
         Assert.AreEqual(true, iscoordinate8, "IsCoordinate 450000");
 
-        bool iscoordinate9 = CsvGeoLocation.IsCoordinate("450000,12342134");
+        bool iscoordinate9 = CsvGeoLocationFinder.IsCoordinate("450000,12342134");
         Assert.AreEqual(true, iscoordinate9, "IsCoordinate 450000,12342134");
 
-        bool iscoordinate10 = CsvGeoLocation.IsCoordinate("450000.12342134");
+        bool iscoordinate10 = CsvGeoLocationFinder.IsCoordinate("450000.12342134");
         Assert.AreEqual(true, iscoordinate10, "IsCoordinate 450000.12342134");
-
     }
 
 }

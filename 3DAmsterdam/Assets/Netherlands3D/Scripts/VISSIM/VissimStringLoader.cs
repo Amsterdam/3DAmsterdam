@@ -32,7 +32,6 @@ namespace Netherlands3D.Traffic.VISSIM
 
         private string fileExtention = ".fzp";
 
-        [SerializeField] private LoadingScreen loadingObjScreen = default;
         [SerializeField] private Playback playback = default;
         [SerializeField] private ConvertFZP converter = default;
 
@@ -82,9 +81,9 @@ namespace Netherlands3D.Traffic.VISSIM
         IEnumerator LoadingProgress(string vissimData)
         {
             // starts loading and sets to 50% by default
-            loadingObjScreen.ProgressBar.SetMessage("50%");
-            loadingObjScreen.ProgressBar.Percentage(.5f);
-            loadingObjScreen.ShowMessage("FZP wordt geladen: Vissim");
+            LoadingScreen.Instance.ProgressBar.SetMessage("50%");
+            LoadingScreen.Instance.ProgressBar.Percentage(.5f);
+            LoadingScreen.Instance.ShowMessage("FZP wordt geladen: Vissim");
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
@@ -92,12 +91,12 @@ namespace Netherlands3D.Traffic.VISSIM
             converter.ReadFileFZP(vissimData);
             yield return new WaitForSeconds(1f);
             // loading "done"
-            loadingObjScreen.ProgressBar.SetMessage("100%");
-            loadingObjScreen.ProgressBar.Percentage(1f);
+            LoadingScreen.Instance.ProgressBar.SetMessage("100%");
+            LoadingScreen.Instance.ProgressBar.Percentage(1f);
             yield return new WaitForSeconds(0.5f);
 
             clearDataBaseEvent.started.Invoke(true);
-            loadingObjScreen.Hide();
+            LoadingScreen.Instance.Hide();
         }
 
         public void DestroyVissim()

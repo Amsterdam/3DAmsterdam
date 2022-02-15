@@ -519,7 +519,7 @@ MonoBehaviour:
   Datasets:
   - Description: 
     lod: 0
-    path: https://3d.amsterdam.nl/web/data/binary/trees1.1/trees_{x}-{y}-lod1.bin
+    path: /data/trees1.1/trees_{x}-{y}-lod1.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -545,6 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6735491049249484866}
   - component: {fileID: 4293808997148806720}
+  - component: {fileID: 1039665292243792596}
   m_Layer: 0
   m_Name: TileHandler
   m_TagString: Untagged
@@ -600,6 +601,19 @@ MonoBehaviour:
   - {fileID: 7981405137232490983}
   pendingTileChanges: []
   activeTileChangesView: []
+--- !u!114 &1039665292243792596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735491049249484867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26321d9a73438641a663b37b7e750fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverRootWebAddress: https://acc.3d.amsterdam.nl
 --- !u!1 &6735491049897729531
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +626,7 @@ GameObject:
   - component: {fileID: 607520655949060780}
   - component: {fileID: 9008646461480878716}
   - component: {fileID: 5469510738808986681}
+  - component: {fileID: 8355819865487389043}
   m_Layer: 8
   m_Name: Buildings
   m_TagString: Untagged
@@ -651,13 +666,13 @@ MonoBehaviour:
   Datasets:
   - Description: LOD1.2
     lod: 0
-    path: https://3d.amsterdam.nl/web/data/binary/buildings1.1/buildings_{x}_{y}.1.2.bin
+    path: /data/buildings1.1/buildings_{x}_{y}.1.2.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: LOD2.2
     lod: 1
-    path: https://3d.amsterdam.nl/web/data/binary/buildings1.1/buildings_{x}_{y}.2.2.bin
+    path: /data/buildings1.1/buildings_{x}_{y}.2.2.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
@@ -695,6 +710,8 @@ MonoBehaviour:
   selectedIDs: []
   hiddenIDs: []
   selectedBuildings: {fileID: 11400000, guid: a942c6b143776a34d889a4eb807d4c78, type: 2}
+  onColoringSubobjects: {fileID: 11400000, guid: e9581f81ce16250469ef0e9232e6e385,
+    type: 2}
 --- !u!114 &5469510738808986681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -710,6 +727,35 @@ MonoBehaviour:
   onSelectedBuildings: {fileID: 11400000, guid: a942c6b143776a34d889a4eb807d4c78,
     type: 2}
   clickedPosition: {fileID: 0}
+--- !u!114 &8355819865487389043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735491049897729531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eacbc7ab9af56f40af9a3b50159ed5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableOnStart: 1
+  onEnableDrawingColors: {fileID: 11400000, guid: e9581f81ce16250469ef0e9232e6e385,
+    type: 2}
+  onReceiveIdsAndColors: {fileID: 11400000, guid: 4866859441f5efc41902fbeaee6a78ed,
+    type: 2}
+  onReceiveIdsAndFloats: {fileID: 11400000, guid: fb2cf9652db7b5543805d7d32c265542,
+    type: 2}
+  onReceiveMinRange: {fileID: 11400000, guid: 84ac3174f13dc9e44960250748b72a2e, type: 2}
+  onReceiveMaxRange: {fileID: 11400000, guid: 102194ef148d69c40af1842e74c88a3f, type: 2}
+  dataSource: file:///somecsv.csv
+  idColumn: 0
+  colorColumn: 2
+  colorInterpretation: 0
+  minimumValue: 0
+  maximumValue: 0
+  gradientContainer: {fileID: 11400000, guid: a8677e00698bac441a4d2bce5c3869cb, type: 2}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &7139907241435937829
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,13 +805,13 @@ MonoBehaviour:
   Datasets:
   - Description: 
     lod: 0
-    path: https://3d.amsterdam.nl/web/data/binary/terrain1.1/terrain_{x}-{y}-lod0.bin
+    path: /data/terrain1.1/terrain_{x}-{y}-lod0.bin
     maximumDistance: 6000
     maximumDistanceSquared: 0
     enabled: 1
   - Description: 
     lod: 1
-    path: https://3d.amsterdam.nl/web/data/binary/terrain1.1/terrain_{x}-{y}-lod1.bin
+    path: /data/terrain1.1/terrain_{x}-{y}-lod1.bin
     maximumDistance: 3000
     maximumDistanceSquared: 0
     enabled: 1
