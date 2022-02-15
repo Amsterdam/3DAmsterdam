@@ -19,8 +19,6 @@ namespace Netherlands3D.Interface.SidePanel
         [SerializeField]
         private Tab startingActiveTab;
 
-		[SerializeField]
-        private Tab customObjectsTab;
         [SerializeField]
         private Tab objectInformationTab;
         [SerializeField]
@@ -89,7 +87,7 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
-        [SerializeField]
+
         private TransformPanel transformPanel;
         [SerializeField]
         private InputField selectableText;
@@ -115,7 +113,10 @@ namespace Netherlands3D.Interface.SidePanel
 
 		void Awake()
 		{
-			if (Instance == null)
+            //Find the transformpanel
+            transformPanel = FindObjectOfType<TransformPanel>();
+
+            if (Instance == null)
 			{
 				Instance = this;
 			}
@@ -188,7 +189,7 @@ namespace Netherlands3D.Interface.SidePanel
         /// <param name="gizmoTransformType">The type of transformation we are doing to show the right gizmo type</param>
         public void OpenCustomObjects(Transformable setTargetTransformable = null, int gizmoTransformType = -1)
         {
-            customObjectsTab.OpenTab(true);
+            layersTab.OpenTab(true);
 
             if (setTargetTransformable)
                 OpenTransformPanel(setTargetTransformable, gizmoTransformType);
@@ -267,7 +268,8 @@ namespace Netherlands3D.Interface.SidePanel
                 Selector.Instance.ClearHighlights();
                 transformPanel.DisableGizmo();
                 Transformable.lastSelectedTransformable = null;
-                transformPanel.gameObject.SetActive(false);
+                if(transformPanel.gameObject)
+                    transformPanel.gameObject.SetActive(false);
             }
         }
 

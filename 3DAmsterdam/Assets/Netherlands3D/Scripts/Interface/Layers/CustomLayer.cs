@@ -68,7 +68,6 @@ namespace Netherlands3D.Interface.Layers
         public void Remove()
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
-            parentInterfaceLayers.LayerVisuals.Close();
             Destroy(gameObject);
         }
 

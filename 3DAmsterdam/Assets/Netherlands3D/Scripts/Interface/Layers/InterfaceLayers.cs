@@ -17,12 +17,6 @@ namespace Netherlands3D.Interface.Layers
 		[SerializeField]
 		private RectTransform customLayersContainer;
 
-		[SerializeField]
-		private RectTransform annotationsContainer;
-
-		[SerializeField]
-		private RectTransform cameraContainer;
-
 		private Animator animator;
 		private bool toggledVisible = false;
 
@@ -72,20 +66,20 @@ namespace Netherlands3D.Interface.Layers
 			
 			if (type == LayerType.ANNOTATION)
 			{
-				annotationsContainer.gameObject.SetActive(true);
-				newCustomlayer = Instantiate(annotationLayerPrefab, annotationsContainer);
+				customLayersContainer.gameObject.SetActive(true);
+				newCustomlayer = Instantiate(annotationLayerPrefab, customLayersContainer);
 				newCustomlayer.Create("Opmerking", linkedWorldObject, type, this);
-				newCustomlayer.transform.SetParent(annotationsContainer);
+				newCustomlayer.transform.SetParent(customLayersContainer);
 
 				if (createdByUser)
 					linkedWorldObject.GetComponent<Annotation>().PlaceUsingPointer();
 			}
 			else if (type == LayerType.CAMERA) 
 			{
-				cameraContainer.gameObject.SetActive(true);
+				customLayersContainer.gameObject.SetActive(true);
 				newCustomlayer = Instantiate(camerasLayerPrefab, customLayersContainer);
 				newCustomlayer.Create(linkedWorldObject.name, linkedWorldObject, type, this);
-				newCustomlayer.transform.SetParent(cameraContainer);
+				newCustomlayer.transform.SetParent(customLayersContainer);
 			}
 			else
 			{
