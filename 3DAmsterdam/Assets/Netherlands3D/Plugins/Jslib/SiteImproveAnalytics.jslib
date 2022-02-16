@@ -25,10 +25,10 @@ mergeInto(LibraryManager.library, {
         var actionString = Pointer_stringify(action);
         var labelString = Pointer_stringify(label);
 
-        if (labelString != "" && _sz) {
+        if (labelString != "" && typeof _sz !== 'undefined') {
             _sz.push(['event', categoryString, actionString, labelString]);
         } 
-		else if(_sz){
+		else if(typeof _sz !== 'undefined'){
             _sz.push(['event', categoryString, actionString]);
         }
     }
