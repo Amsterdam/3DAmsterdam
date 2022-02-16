@@ -1,5 +1,7 @@
-﻿using Netherlands3D.JavascriptConnection;
+﻿using Netherlands3D.Events;
+using Netherlands3D.JavascriptConnection;
 using Netherlands3D.TileSystem;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -19,6 +21,9 @@ namespace Netherlands3D.Interface.Layers
 	public class InterfaceLayer : ChangePointerStyleHandler
 	{
 		[SerializeField]
+		private ObjectEvent openColorOptions;
+
+		[SerializeField]
 		private Text layerNameText;
 		public string GetName => layerNameText.text;
 
@@ -30,12 +35,6 @@ namespace Netherlands3D.Interface.Layers
 		private GameObject linkedObject;
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
-		[SerializeField]
-		private bool hasOptions = true;
-
-		[SerializeField]
-		private GameObject customOptions;
-
 		public Material opaqueShaderSourceOverride;
 		public Material transparentShaderSourceOverride;
 
@@ -43,7 +42,6 @@ namespace Netherlands3D.Interface.Layers
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
 		public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
-
 		private List<Color> resetColorValues;
 
 		private bool active = true;
@@ -59,12 +57,6 @@ namespace Netherlands3D.Interface.Layers
 				toggleActiveLayer.isOn = active;
 			}
 		}
-
-		[SerializeField]
-		private Image expandIcon;
-		private bool expanded = false;
-		[SerializeField]
-		private bool autoCloseNeighbourLayers = true;
 
 		[Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
 		public bool usingRuntimeInstancedMaterials = false;
@@ -94,6 +86,11 @@ namespace Netherlands3D.Interface.Layers
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();
 			}
+		}
+
+		public void OpenColorOptions()
+		{
+			openColorOptions.started.Invoke(this);
 		}
 
 		private void Start()

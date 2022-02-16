@@ -27,7 +27,6 @@ namespace Netherlands3D.Interface.Layers
 		void Start()
 		{
 			animator = GetComponent<Animator>();
-			LayerVisuals.gameObject.SetActive(false);
 		}
 
 		/// <summary>
