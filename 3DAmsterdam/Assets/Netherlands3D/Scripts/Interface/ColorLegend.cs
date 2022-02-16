@@ -21,12 +21,6 @@ namespace Netherlands3D.Interface {
             GenerateColorsList();
         }
 
-		private void OnValidate()
-		{
-            if(Application.isPlaying)
-                GenerateColorsList();
-        }
-
 		private void GenerateColorsList()
         {
             foreach(Transform child in transform)
