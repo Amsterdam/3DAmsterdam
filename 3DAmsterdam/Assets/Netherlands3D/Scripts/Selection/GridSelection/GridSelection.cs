@@ -44,6 +44,13 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private MeshRenderer selectionBlockMeshRenderer;
 
+		private void Awake()
+		{
+			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
+
+			var canvas = FindObjectOfType<Canvas>();
+		}
+
 		private void Start()
 		{
 			ActionMap = ActionHandler.actions.GridSelection;
@@ -54,13 +61,6 @@ namespace Netherlands3D.Interface
 			drawAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.DrawVoxels);
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
-
-			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
-
-			var canvas = FindObjectOfType<Canvas>();
-
-			bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
-			topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
 
 			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
 			SetGridSize();
@@ -121,22 +121,31 @@ namespace Netherlands3D.Interface
 
 		private void OnEnable()
 		{
+			if(!bottomLeftCoordinateVisual && CoordinateNumbers.Instance)
+			{
+				bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+				topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+			}
+
 			if(bottomLeftCoordinateVisual)
 				bottomLeftCoordinateVisual.gameObject.SetActive(true);
 
-			if (bottomLeftCoordinateVisual)
+			if (topRightCoordinateVisual)
 				topRightCoordinateVisual.gameObject.SetActive(true);
-
 
 			if(VisualGrid.Instance)
 				VisualGrid.Instance.Show();
+
 			TakeInteractionPriority();
 		}
 
 		private void OnDisable()
 		{
-			bottomLeftCoordinateVisual.gameObject.SetActive(false);
-			topRightCoordinateVisual.gameObject.SetActive(false);
+			if (bottomLeftCoordinateVisual)
+				bottomLeftCoordinateVisual.gameObject.SetActive(false);
+
+			if (topRightCoordinateVisual)
+				topRightCoordinateVisual.gameObject.SetActive(false);
 
 			onToolDisabled.Invoke();
 

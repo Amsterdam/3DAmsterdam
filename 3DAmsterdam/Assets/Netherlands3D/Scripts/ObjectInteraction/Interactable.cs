@@ -81,9 +81,9 @@ namespace Netherlands3D.ObjectInteraction
         public virtual bool HasInteractionPriority()
         {
             //Always have priority if none is set
-            if (!Selector.Instance.GetActiveInteractable()) return true;
+            if (Selector.Instance && !Selector.Instance.GetActiveInteractable()) return true;
 
-            return Selector.Instance.GetActiveInteractable() == this;
+            return Selector.Instance && Selector.Instance.GetActiveInteractable() == this;
         }
     }
 }
