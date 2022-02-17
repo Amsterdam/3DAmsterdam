@@ -44,7 +44,7 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private MeshRenderer selectionBlockMeshRenderer;
 
-		private void Awake()
+		private void Start()
 		{
 			ActionMap = ActionHandler.actions.GridSelection;
 
@@ -61,6 +61,9 @@ namespace Netherlands3D.Interface
 
 			bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
 			topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+
+			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
+			SetGridSize();
 		}
 
 		/// <summary>
@@ -79,11 +82,6 @@ namespace Netherlands3D.Interface
 			if (scaleBlock) Destroy(scaleBlock);
 		}
 
-		void Start()
-		{
-			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
-			SetGridSize();
-		}
 		private void Toggle(IAction action)
 		{
 			if (action.Performed)
@@ -123,12 +121,18 @@ namespace Netherlands3D.Interface
 
 		private void OnEnable()
 		{
-			bottomLeftCoordinateVisual.gameObject.SetActive(true);
-			topRightCoordinateVisual.gameObject.SetActive(true);
+			if(bottomLeftCoordinateVisual)
+				bottomLeftCoordinateVisual.gameObject.SetActive(true);
 
-			VisualGrid.Instance.Show();
+			if (bottomLeftCoordinateVisual)
+				topRightCoordinateVisual.gameObject.SetActive(true);
+
+
+			if(VisualGrid.Instance)
+				VisualGrid.Instance.Show();
 			TakeInteractionPriority();
 		}
+
 		private void OnDisable()
 		{
 			bottomLeftCoordinateVisual.gameObject.SetActive(false);
@@ -136,7 +140,9 @@ namespace Netherlands3D.Interface
 
 			onToolDisabled.Invoke();
 
-			VisualGrid.Instance.Hide();
+			if (VisualGrid.Instance)
+				VisualGrid.Instance.Hide();
+
 			StopInteraction();
 		}
 

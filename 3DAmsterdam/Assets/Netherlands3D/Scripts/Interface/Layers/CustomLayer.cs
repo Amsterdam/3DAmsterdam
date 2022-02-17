@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Events;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.ObjectInteraction;
 using System.Collections;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 namespace Netherlands3D.Interface.Layers
 {
     public class CustomLayer : InterfaceLayer, IPointerClickHandler
-    {               
+    {
         [SerializeField]
         private GameObject removeButton;
 

@@ -20,8 +20,11 @@ namespace Netherlands3D.Interface.Layers
 
 	public class InterfaceLayer : ChangePointerStyleHandler
 	{
+		[Header("Trigger events")]
 		[SerializeField]
-		private ObjectEvent openColorOptions;
+		private GameObjectEvent openColorOptions;
+		[SerializeField]
+		private GameObjectEvent openTransformOptions;
 
 		[SerializeField]
 		private Text layerNameText;
@@ -90,7 +93,11 @@ namespace Netherlands3D.Interface.Layers
 
 		public void OpenColorOptions()
 		{
-			openColorOptions.started.Invoke(this);
+			openColorOptions.started.Invoke(gameObject);
+		}
+		public void OpenTransformOptions()
+		{
+			openTransformOptions.Invoke(LinkedObject);
 		}
 
 		private void Start()

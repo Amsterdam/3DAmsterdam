@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface.Layers
 	{
 		[Header("Listening to")]
 		[SerializeField]
-		private ObjectEvent openWithTargetLayer;
+		private GameObjectEvent openWithTargetLayer;
 
 		[SerializeField]
 		private MaterialSlot materialSlotPrefab;
@@ -28,7 +28,8 @@ namespace Netherlands3D.Interface.Layers
 		[SerializeField]
 		private Slider opacitySlider;
 
-		private RectTransform containerRectTransform;
+		[SerializeField]
+		private RectTransform materialSlotContainer;
 
 		[HideInInspector]
 		public InterfaceLayer targetInterfaceLayer;
@@ -41,7 +42,6 @@ namespace Netherlands3D.Interface.Layers
 		{
 			colorPicker.selectedNewColor += ChangeMaterialColor;
 			hexColorField.selectedNewColor += ChangeMaterialColor;
-			containerRectTransform = GetComponent<RectTransform>();
 
 			if (openWithTargetLayer)
 				openWithTargetLayer.started.AddListener(OpenWithOptionsForLayer);
@@ -88,9 +88,10 @@ namespace Netherlands3D.Interface.Layers
 			}
 		}
 
-		public void OpenWithOptionsForLayer(object interfaceLayer)
+		public void OpenWithOptionsForLayer(GameObject layerGameObject)
 		{
-			OpenWithOptionsForLayer((InterfaceLayer)interfaceLayer);
+			var interfaceLayer = layerGameObject.GetComponent<InterfaceLayer>();
+			OpenWithOptionsForLayer(interfaceLayer);
 		}
 
 		/// <summary>
@@ -112,7 +113,7 @@ namespace Netherlands3D.Interface.Layers
 
 				//Move this panel underneath the selected layer
 				int targetInterfaceLayerIndex = targetInterfaceLayer.transform.GetSiblingIndex();
-				containerRectTransform.SetSiblingIndex(targetInterfaceLayerIndex + 1);
+				materialSlotContainer.SetSiblingIndex(targetInterfaceLayerIndex + 1);
 
 				//And move the rest down
 				for (int i = 0; i < layers.Length; i++)
@@ -147,7 +148,7 @@ namespace Netherlands3D.Interface.Layers
 			{
 				var uniqueMaterial = targetInterfaceLayer.UniqueLinkedObjectMaterials[i];
 
-				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, containerRectTransform);
+				MaterialSlot newMaterialSlot = Instantiate(materialSlotPrefab, materialSlotContainer);
 				newMaterialSlot.Init(uniqueMaterial, targetInterfaceLayer.ResetColorValues[i], this, targetInterfaceLayer.transparentShaderSourceOverride, targetInterfaceLayer.opaqueShaderSourceOverride, targetInterfaceLayer.swapTransparentMaterialSources);
 
 				if (selectedMaterialSlots.Count < 1) SelectMaterialSlot(newMaterialSlot);
@@ -180,7 +181,7 @@ namespace Netherlands3D.Interface.Layers
 			if (resetAll)
 			{
 				//Simple reset all material slots, instead of our selected list
-				var allMaterialSlots = containerRectTransform.GetComponentsInChildren<MaterialSlot>();
+				var allMaterialSlots = materialSlotContainer.GetComponentsInChildren<MaterialSlot>();
 				foreach (MaterialSlot materialSlot in allMaterialSlots)
 				{
 					materialSlot.ResetColor();
@@ -206,7 +207,7 @@ namespace Netherlands3D.Interface.Layers
 		{
 			ClearMaterialSlotsSelection();
 
-			MaterialSlot[] slots = containerRectTransform.GetComponentsInChildren<MaterialSlot>();
+			MaterialSlot[] slots = materialSlotContainer.GetComponentsInChildren<MaterialSlot>();
 			foreach (MaterialSlot materialSlot in slots)
 			{
 				Destroy(materialSlot.gameObject);
@@ -238,7 +239,7 @@ namespace Netherlands3D.Interface.Layers
 			{
 				selectedMaterialSlots.Clear();
 				//If we are not multiselecting, make sure we only select this one
-				var materialSlots = containerRectTransform.GetComponentsInChildren<MaterialSlot>();
+				var materialSlots = materialSlotContainer.GetComponentsInChildren<MaterialSlot>();
 				foreach (MaterialSlot slot in materialSlots)
 					slot.Selected = (slot == selectedMaterialSlot) ? true : false;
 			}

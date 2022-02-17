@@ -37,7 +37,9 @@ namespace Netherlands3D.ObjectInteraction
         public virtual void TakeInteractionPriority()
         {
             if (ActionMap != null) ActionMap.Enable();
-            Selector.Instance.SetActiveInteractable(this);
+
+            if(Selector.Instance)
+                Selector.Instance.SetActiveInteractable(this);
         }
         /// <summary>
         /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
