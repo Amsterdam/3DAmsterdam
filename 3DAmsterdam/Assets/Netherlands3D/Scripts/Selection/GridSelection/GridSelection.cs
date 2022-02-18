@@ -47,14 +47,12 @@ namespace Netherlands3D.Interface
 		private void Awake()
 		{
 			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
-
 			var canvas = FindObjectOfType<Canvas>();
 		}
 
 		private void Start()
 		{
 			ActionMap = ActionHandler.actions.GridSelection;
-
 			toggleAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ToggleVoxel);
 			toggleAction.SubscribePerformed(Toggle);
 
@@ -135,6 +133,9 @@ namespace Netherlands3D.Interface
 
 			if(VisualGrid.Instance)
 				VisualGrid.Instance.Show();
+
+			if(ActionHandler.instance)
+				ActionMap = ActionHandler.actions.GridSelection;
 
 			TakeInteractionPriority();
 		}

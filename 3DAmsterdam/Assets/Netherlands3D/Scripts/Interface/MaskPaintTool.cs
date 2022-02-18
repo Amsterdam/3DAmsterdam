@@ -37,7 +37,6 @@ namespace Netherlands3D.Interface.Tools
 		private void Awake()
 		{
             if (startCreatingMask) startCreatingMask.started.AddListener(StartPaintingMask);
-            gridSelection.gameObject.SetActive(false);
         }
 
 		private void OnEnable()

@@ -26,11 +26,6 @@ namespace Netherlands3D.ObjectInteraction
 			Instance = this;
 		}
 
-		private void Start()
-		{
-			Hide();
-		}
-
 		public void Show()
 		{
 			gameObject.SetActive(true);

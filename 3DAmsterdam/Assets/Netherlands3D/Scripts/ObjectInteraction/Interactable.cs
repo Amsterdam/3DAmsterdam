@@ -41,6 +41,7 @@ namespace Netherlands3D.ObjectInteraction
             if(Selector.Instance)
                 Selector.Instance.SetActiveInteractable(this);
         }
+
         /// <summary>
         /// Flagges the interactable interaction as done, releasing the priority focus inside the selector.
         /// </summary>
