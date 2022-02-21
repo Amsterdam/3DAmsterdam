@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5368086782814792571}
   - component: {fileID: 5575575160467892793}
   m_Layer: 5
-  m_Name: CSVOptions
+  m_Name: CSVOptionsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3397,6 +3397,19 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8956231178473763180}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2763478162514100549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979235538663005106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleOnHover: 1
 --- !u!114 &5599810742237017283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3411,16 +3424,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allowOutsideOfScreen: 0
   rememberPosition: 1
---- !u!114 &2763478162514100549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 979235538663005106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c505de94c194c84796cbdee4b88b119, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  styleOnHover: 1
