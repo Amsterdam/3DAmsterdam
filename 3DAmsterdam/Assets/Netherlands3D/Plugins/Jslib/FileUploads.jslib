@@ -150,12 +150,12 @@ mergeInto(LibraryManager.library, {
             alert("Kan geen verbinding maken met de indexedDatabase");
         }
     },
-	AddFileInput: function (inputName,fileExtentions) {
+	AddFileInput: function (inputName,fileExtentions,multiSelect) {
 		var inputNameID = Pointer_stringify(inputName);
         var allowedFileExtentions = Pointer_stringify(fileExtentions);
 		
 		if (typeof window.InjectHiddenFileInput !== "undefined") { 
-			window.InjectHiddenFileInput(inputNameID, allowedFileExtentions, false);
+			window.InjectHiddenFileInput(inputNameID, allowedFileExtentions, multiSelect);
 		}
 		else{
 			console.log("Cant create file inputfield. You need to initialize the IndexedDB connection first using InitializeIndexedDB(str)");

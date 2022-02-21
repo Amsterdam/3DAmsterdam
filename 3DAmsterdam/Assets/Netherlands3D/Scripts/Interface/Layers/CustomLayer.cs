@@ -1,4 +1,5 @@
 ﻿using Netherlands3D.Cameras;
+using Netherlands3D.Events;
 using Netherlands3D.Interface.SidePanel;
 using Netherlands3D.ObjectInteraction;
 using System.Collections;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 namespace Netherlands3D.Interface.Layers
 {
     public class CustomLayer : InterfaceLayer, IPointerClickHandler
-    {               
+    {
         [SerializeField]
         private GameObject removeButton;
 
@@ -43,7 +44,6 @@ namespace Netherlands3D.Interface.Layers
                 if (transformable)
                 {
                     transformable.Select();
-                    ToggleLayerOpened();
                 }
             }
         }
@@ -68,13 +68,12 @@ namespace Netherlands3D.Interface.Layers
         public void Remove()
         {
             //TODO: A confirmation before removing might be required. Can be very annoying. Verify with users.
-            parentInterfaceLayers.LayerVisuals.Close();
             Destroy(gameObject);
         }
 
         private void OnDestroy()
         {
-            GameObject.Destroy(LinkedObject);
+            Destroy(LinkedObject);
         }
     }
 }

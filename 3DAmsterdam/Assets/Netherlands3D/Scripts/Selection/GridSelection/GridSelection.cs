@@ -46,8 +46,13 @@ namespace Netherlands3D.Interface
 
 		private void Awake()
 		{
-			ActionMap = ActionHandler.actions.GridSelection;
+			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
+			var canvas = FindObjectOfType<Canvas>();
+		}
 
+		private void Start()
+		{
+			ActionMap = ActionHandler.actions.GridSelection;
 			toggleAction = ActionHandler.instance.GetAction(ActionHandler.actions.GridSelection.ToggleVoxel);
 			toggleAction.SubscribePerformed(Toggle);
 
@@ -55,12 +60,8 @@ namespace Netherlands3D.Interface
 			drawAction.SubscribePerformed(Drawing);
 			drawAction.SubscribeCancelled(Drawing);
 
-			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
-
-			var canvas = FindObjectOfType<Canvas>();
-
-			bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
-			topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
+			SetGridSize();
 		}
 
 		/// <summary>
@@ -79,11 +80,6 @@ namespace Netherlands3D.Interface
 			if (scaleBlock) Destroy(scaleBlock);
 		}
 
-		void Start()
-		{
-			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
-			SetGridSize();
-		}
 		private void Toggle(IAction action)
 		{
 			if (action.Performed)
@@ -123,20 +119,40 @@ namespace Netherlands3D.Interface
 
 		private void OnEnable()
 		{
-			bottomLeftCoordinateVisual.gameObject.SetActive(true);
-			topRightCoordinateVisual.gameObject.SetActive(true);
+			if(!bottomLeftCoordinateVisual && CoordinateNumbers.Instance)
+			{
+				bottomLeftCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+				topRightCoordinateVisual = CoordinateNumbers.Instance.CreateCoordinateNumber();
+			}
 
-			VisualGrid.Instance.Show();
+			if(bottomLeftCoordinateVisual)
+				bottomLeftCoordinateVisual.gameObject.SetActive(true);
+
+			if (topRightCoordinateVisual)
+				topRightCoordinateVisual.gameObject.SetActive(true);
+
+			if(VisualGrid.Instance)
+				VisualGrid.Instance.Show();
+
+			if(ActionHandler.instance)
+				ActionMap = ActionHandler.actions.GridSelection;
+
 			TakeInteractionPriority();
 		}
+
 		private void OnDisable()
 		{
-			bottomLeftCoordinateVisual.gameObject.SetActive(false);
-			topRightCoordinateVisual.gameObject.SetActive(false);
+			if (bottomLeftCoordinateVisual)
+				bottomLeftCoordinateVisual.gameObject.SetActive(false);
+
+			if (topRightCoordinateVisual)
+				topRightCoordinateVisual.gameObject.SetActive(false);
 
 			onToolDisabled.Invoke();
 
-			VisualGrid.Instance.Hide();
+			if (VisualGrid.Instance)
+				VisualGrid.Instance.Hide();
+
 			StopInteraction();
 		}
 

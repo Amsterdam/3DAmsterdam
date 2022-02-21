@@ -9,7 +9,7 @@ namespace Netherlands3D.JavascriptConnection
     public class AddFileInputSelection : MonoBehaviour
     {
         [DllImport("__Internal")]
-        private static extern void AddFileInput(string inputName, string fileExtentions);
+        private static extern void AddFileInput(string inputName, string fileExtentions, bool multiSelect);
 
         [Tooltip("HTML DOM ID")]
         [SerializeField]
@@ -19,6 +19,10 @@ namespace Netherlands3D.JavascriptConnection
         [SerializeField]
         private string fileExtentions = ".csv";
 
+        [Tooltip("Allowed selection multiple files")]
+        [SerializeField]
+        private bool multiSelect = false;
+
         private Button button;
 
         void Start()
@@ -26,7 +30,7 @@ namespace Netherlands3D.JavascriptConnection
             button = GetComponent<Button>();
             name = fileInputName;
 #if !UNITY_EDITOR && UNITY_WEBGL
-            AddFileInput(fileInputName, fileExtentions);
+            AddFileInput(fileInputName, fileExtentions,multiSelect);
             gameObject.AddComponent<DrawHTMLOverCanvas>().AlignObjectID(fileInputName);
 #endif
         }

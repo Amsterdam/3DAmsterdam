@@ -39,9 +39,10 @@ public class CsvFilePanel : MonoBehaviour
     [Header("Listeners")]
     [SerializeField]
     private IntEvent onSelectCSVContentType;
-
     [SerializeField]
     private BoolEvent onToggleBetaFeatures;
+    [SerializeField]
+    private TriggerEvent onClearData;
 
     [SerializeField]
     private StringEvent onFilesImported;
@@ -65,6 +66,9 @@ public class CsvFilePanel : MonoBehaviour
     [SerializeField]
     private BoolEvent setEnableDrawingColors;
 
+    [SerializeField]
+    private BoolEvent activateCSVLayer;
+
     public string[] Columns;
     public List<string[]> Rows;
 
@@ -83,9 +87,21 @@ public class CsvFilePanel : MonoBehaviour
 		onFilesImported.started.AddListener(LoadCsvFromFile);
 
         onSelectCSVContentType.started.AddListener(SelectCSVContentType);
+        
+        onClearData.started.AddListener(Restart);
+        activateCSVLayer.started.AddListener(ShowVisuals);
     }
-  
-    public void SelectCSVContentType(int type)
+
+	private void ShowVisuals(bool showData)
+	{
+        setEnableDrawingColors.started.Invoke(showData);
+        foreach (Transform marker in LocationMarkersParent.transform)
+        {
+            marker.gameObject.SetActive(showData);
+        }
+    }
+
+	public void SelectCSVContentType(int type)
 	{
         currentContentFinderType = (CSVContentFinderType)type;
     }
@@ -285,10 +301,7 @@ public class CsvFilePanel : MonoBehaviour
 
 	private void ShowColorToIDMappingOptions()
     {
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
+        activateCSVLayer.started.Invoke(true);
 
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
@@ -320,18 +333,11 @@ public class CsvFilePanel : MonoBehaviour
         {
             ShowColors();
         });
-        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
-        {
-            Restart();
-        });
     }
 
     private void ShowGradientToIDMappingOptions()
     {
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
+        activateCSVLayer.started.Invoke(true);
 
         PropertiesPanel.Instance.AddLabel("BAG ID kolom:");
         List<string> columnsWithIDs = new List<string>();
@@ -372,18 +378,11 @@ public class CsvFilePanel : MonoBehaviour
             double.TryParse(inputFieldMax.text, out double max);
             ShowGradientColors(min, max);
         });
-        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
-        {
-            Restart();
-        });
     }
 
     private void ShowLocationBasedOptions()
     {
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
+        activateCSVLayer.started.Invoke(true);
 
         PropertiesPanel.Instance.AddLabel("Label");
         PropertiesPanel.Instance.AddActionDropdown(csvGeoLocationFinder.ColumnsExceptCoordinates, (action) =>
@@ -410,10 +409,6 @@ public class CsvFilePanel : MonoBehaviour
         PropertiesPanel.Instance.AddActionButtonBig("Toon data", (action) =>
         {
             MapAndShowLocations();
-        });
-        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
-        {
-            Restart();
         });
     }
 
@@ -459,10 +454,6 @@ public class CsvFilePanel : MonoBehaviour
         });
         PropertiesPanel.Instance.AddLabel($"CSV file geladen met {csvGeoLocationFinder.Rows.Count} rijen");
         PropertiesPanel.Instance.AddLabel("Klik op een icoon voor details");
-        PropertiesPanel.Instance.AddActionButtonBig("Annuleren", (action) =>
-        {
-            Restart();
-        });
     }
 
     private void ResetSelections()

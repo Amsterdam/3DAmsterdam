@@ -1,5 +1,7 @@
-﻿using Netherlands3D.JavascriptConnection;
+﻿using Netherlands3D.Events;
+using Netherlands3D.JavascriptConnection;
 using Netherlands3D.TileSystem;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +20,12 @@ namespace Netherlands3D.Interface.Layers
 
 	public class InterfaceLayer : ChangePointerStyleHandler
 	{
+		[Header("Trigger events")]
+		[SerializeField]
+		private GameObjectEvent openColorOptions;
+		[SerializeField]
+		private GameObjectEvent openTransformOptions;
+
 		[SerializeField]
 		private Text layerNameText;
 		public string GetName => layerNameText.text;
@@ -30,12 +38,6 @@ namespace Netherlands3D.Interface.Layers
 		private GameObject linkedObject;
 		public GameObject LinkedObject { get => linkedObject; set => linkedObject = value; }
 
-		[SerializeField]
-		private bool hasOptions = true;
-
-		[SerializeField]
-		private GameObject customOptions;
-
 		public Material opaqueShaderSourceOverride;
 		public Material transparentShaderSourceOverride;
 
@@ -43,7 +45,6 @@ namespace Netherlands3D.Interface.Layers
 		private List<Material> uniqueLinkedObjectMaterials;
 		public List<Material> UniqueLinkedObjectMaterials { get => uniqueLinkedObjectMaterials; set => uniqueLinkedObjectMaterials = value; }
 		public List<Color> ResetColorValues { get => resetColorValues; set => resetColorValues = value; }
-
 		private List<Color> resetColorValues;
 
 		private bool active = true;
@@ -59,12 +60,6 @@ namespace Netherlands3D.Interface.Layers
 				toggleActiveLayer.isOn = active;
 			}
 		}
-
-		[SerializeField]
-		private Image expandIcon;
-		private bool expanded = false;
-		[SerializeField]
-		private bool autoCloseNeighbourLayers = true;
 
 		[Tooltip("Enable if materials are created on the fly within the layer of this linked object")]
 		public bool usingRuntimeInstancedMaterials = false;
@@ -94,6 +89,15 @@ namespace Netherlands3D.Interface.Layers
 				UpdateLayerPrimaryColor();
 				GetResetColorValues();
 			}
+		}
+
+		public void OpenColorOptions()
+		{
+			openColorOptions.started.Invoke(gameObject);
+		}
+		public void OpenTransformOptions()
+		{
+			openTransformOptions.Invoke(LinkedObject);
 		}
 
 		private void Start()
@@ -227,63 +231,6 @@ namespace Netherlands3D.Interface.Layers
 			}
 
 			toggleActiveLayer.SetIsOnWithoutNotify(isOn);
-		}
-
-		/// <summary>
-		/// Opens if closed, closes if opened.
-		/// </summary>
-		public void ToggleLayerOpened()
-		{
-			expanded = !expanded;
-
-			if(hasOptions)
-				ExpandLayerOptions(expanded);
-
-			if(expanded)
-			{
-				//In case of own models,make sure to always grab the latest materials
-				if (layerType == LayerType.OBJMODEL)
-				{
-					GetUniqueNestedMaterials();
-					GetResetColorValues();
-					UpdateLayerPrimaryColor();
-				}
-
-				//If we do not use any custom options for this layer, use the default layer visuals panel
-				if(hasOptions && !customOptions)
-					parentInterfaceLayers.LayerVisuals.OpenWithOptionsForLayer(this);
-			}
-			else{
-				parentInterfaceLayers.LayerVisuals.Close();
-			}
-		}
-
-		/// <summary>
-		/// Should these layer options be expanded
-		/// </summary>
-		/// <param name="expandLayer">Expanded or closed</param>
-		public void ExpandLayerOptions(bool expandLayer = true)
-		{
-			expanded = expandLayer;
-
-			if (customOptions)
-			{
-				customOptions.SetActive(expandLayer);
-				customOptions.transform.SetSiblingIndex(transform.GetSiblingIndex() + 1);
-			}
-
-			if (expandIcon)
-				expandIcon.rectTransform.eulerAngles = new Vector3(0, 0, (expanded) ? -90 : 0); //Rotate chevron icon
-
-			if (expanded && autoCloseNeighbourLayers)
-			{
-				var neighbourLayers = this.transform.parent.GetComponentsInChildren<InterfaceLayer>();
-				foreach(var layer in neighbourLayers)
-				{
-					if (layer != this)
-						layer.ExpandLayerOptions(false);
-				}
-			}
 		}
 
         public void RenameLayer(string newName){
