@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Netherlands3D.Events;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,10 +24,16 @@ namespace Netherlands3D.Help
         private bool allowHideViaInteraction = false;
         private bool oneFrameHasPassed = false;
 
+        [Header("Listen to")]
+        [SerializeField]
+        private StringEvent onShowHelpMessage;
+
         void Awake()
         {
             Instance = this;
             gameObject.SetActive(false);
+
+            onShowHelpMessage.started.AddListener(Show);
         }
 
         public void Show(string textMessage)
