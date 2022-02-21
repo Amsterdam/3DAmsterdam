@@ -1,9 +1,17 @@
+using ConvertCoordinates;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 namespace Netherlands3D.Utilities
 {
+    public struct CenterAndRadius
+    {
+        public Vector2 Center;
+        public float Radius;
+    }
+
     public static class GeometryCalculator
     {
         public static bool ContainsPoint(Vector2[] polyPoints, Vector2 p)
@@ -129,5 +137,34 @@ namespace Netherlands3D.Utilities
 
             return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
         }
+
+        public static CenterAndRadius GetCenterAndRadius(List<Vector2[]> allpoints)
+        {
+            var points = allpoints.SelectMany(o => o).ToArray();
+            return GetCenterAndRadius(points);
+
+
+        }
+
+        public static CenterAndRadius GetCenterAndRadius(Vector2[] points)
+        {
+            var minx = points.Min(v => v.x);
+            var maxx = points.Max(v => v.x);
+            var miny = points.Min(v => v.y);
+            var maxy = points.Max(v => v.y);
+            var centerx = minx + ((maxx - minx) / 2);
+            var centery = miny + ((maxy - miny) / 2);
+
+            var center = new Vector2(centerx, centery);
+
+            var centerAndRadius = new CenterAndRadius()
+            {
+                Center = center,
+                Radius = Vector2.Distance(center, new Vector2(maxx, maxy))
+            };
+
+            return centerAndRadius;            
+        }
+
     }
 }

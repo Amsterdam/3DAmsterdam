@@ -4,6 +4,7 @@ using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using ConvertCoordinates;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
@@ -13,8 +14,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     public float ZoomSpeed = 0.01f;
     public float spinSpeed = 60;
     public float moveSpeed = 5f;
-    public float firstPersonHeight = 3.23f;
+    public float firstPersonHeight = 2f;
+    public float firstPersonCameraDistance = 5f;
     public float MaxCameraDistance = 200;
+    public float MaxFirstPersonDistance = 40;
 
     [SerializeField]
     private bool dragging = false;
@@ -30,6 +33,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     Quaternion lastRotateRotation;
     Vector2 currentRotation;
 
+    Vector2RD PerceelCenter;
+    Vector2RD BuildingCenter;
+    float BuildingRadius;
+
+
     float groundLevel;
 
     public static RotateCamera Instance;
@@ -41,9 +49,11 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void Start()
     {
+        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
+        MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
 
-        mycam = CameraModeChanger.Instance.ActiveCamera;
+       mycam = CameraModeChanger.Instance.ActiveCamera;
 
         availableActionMaps = new List<InputActionMap>()
         {
@@ -54,12 +64,22 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         AddActionListeners();
     }
 
+    private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
+    {
+        BuildingCenter = args.Center;
+        BuildingRadius = args.Radius;
+    }
+
+    private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
+    {
+        PerceelCenter = args.Center;
+    }
+
     private void Update()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
-        {
-           // LookAt();
+        {         
             RotateAround(mouseDelta.x, mouseDelta.y);
         }        
         else if(isFirstPersonMode)
@@ -69,30 +89,39 @@ public class RotateCamera : MonoBehaviour, ICameraControls
                 mycam.transform.RotateAround(mycam.transform.position, mycam.transform.right, -mouseDelta.y * RotationSpeed);
                 mycam.transform.RotateAround(mycam.transform.position, Vector3.up, mouseDelta.x * RotationSpeed);
             }
-            FirstPersonLook();
+            HandleFirstPersonKeyboard();
         }
-
-
     }
 
     private void OnBuildingDataProcessed(BuildingMeshGenerator building)
     {
-        groundLevel = building.GroundLevel;
+        groundLevel = building.GroundLevel;     
     }
 
     public bool ToggleRotateFirstPersonMode()
     {
-        if (RestrictionChecker.ActiveUitbouw == null) return false;
-
         isFirstPersonMode = !isFirstPersonMode;
 
         if (isFirstPersonMode)        
         {
             lastRotatePosition = mycam.transform.position;
             lastRotateRotation = mycam.transform.rotation;
-            var perceelmidden = ConvertCoordinates.CoordConvert.RDtoUnity(MetadataLoader.Instance.perceelnummerPlaatscoordinaat);
-            mycam.transform.position = new Vector3(perceelmidden.x, groundLevel + firstPersonHeight, perceelmidden.z);
-            mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, RestrictionChecker.ActiveUitbouw.CenterPoint.y , RestrictionChecker.ActiveUitbouw.CenterPoint.z));
+
+            var perceelCenter = CoordConvert.RDtoUnity(PerceelCenter);
+            var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
+            var cameraoffset = (perceelCenter - buildingCenter).normalized * (BuildingRadius + firstPersonCameraDistance);
+
+            mycam.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel + firstPersonHeight, buildingCenter.z + cameraoffset.z);
+
+            if (RestrictionChecker.ActiveUitbouw == null)
+            {
+                mycam.transform.LookAt(buildingCenter);
+            }
+            else
+            {
+                mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, RestrictionChecker.ActiveUitbouw.CenterPoint.y, RestrictionChecker.ActiveUitbouw.CenterPoint.z));
+            }
+                
             currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
         }
         else
@@ -105,32 +134,34 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     }
    
 
-    private void FirstPersonLook()
-    {
-        var lastY = mycam.transform.position.y;
+    private void HandleFirstPersonKeyboard()
+    {        
+        var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
+
+        Vector3? newpos = null;
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {            
-            mycam.transform.position += -mycam.transform.right * moveSpeed/5 * Time.deltaTime;
+            newpos = mycam.transform.position - mycam.transform.right * moveSpeed/5 * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.RightArrow))
-        {         
-            mycam.transform.position += mycam.transform.right * moveSpeed/5 * Time.deltaTime;
+        {
+            newpos = mycam.transform.position + mycam.transform.right * moveSpeed/5 * Time.deltaTime;
         }
-        
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            var newpos = mycam.transform.position += mycam.transform.forward * moveSpeed * Time.deltaTime;
-            newpos.y = lastY;
-            mycam.transform.position = newpos;
+            newpos = mycam.transform.position + mycam.transform.forward * moveSpeed * Time.deltaTime;            
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            var newpos = mycam.transform.position += -mycam.transform.forward * moveSpeed * Time.deltaTime;
-            newpos.y = lastY;
-            mycam.transform.position = newpos;
+            newpos = mycam.transform.position - mycam.transform.forward * moveSpeed * Time.deltaTime;            
         }
-       
+
+        if (newpos == null || Vector3.Distance(newpos.Value, buildingCenter) > MaxFirstPersonDistance) return;
+
+        newpos = new Vector3(newpos.Value.x, groundLevel + firstPersonHeight, newpos.Value.z);
+        mycam.transform.position = newpos.Value;
     }
 
     private void AddActionListeners()
@@ -172,7 +203,8 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
             if (isFirstPersonMode)
             {
-                newpos.y = lastY;
+                if (Vector3.Distance(newpos, CoordConvert.RDtoUnity(BuildingCenter)) > MaxFirstPersonDistance) return;
+                newpos.y = lastY;                
             }
             else if (newpos.y < MinCameraHeight) return;
             else if (CameraInRange(newpos) == false) return;

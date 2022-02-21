@@ -9,47 +9,41 @@ public class PositionCamera: MonoBehaviour
 {
     public float CameraHeight = 10;
     public float CameraDistance = 10;
+    public float LookatBuildingHeight = 2;
 
     Vector2RD? perceelcenter = null;
     Vector2RD? buildingcenter = null;
-    float perceelRadius;
+    
+    float buildingRadius;
+    
     float? groundLevel;
     bool cameraIsSet = false;
 
-    Vector3 buildingpos;
-
-    BuildingMeshGenerator thebuilding;
+    Vector3 buildingCenter;
+    
 
     void Start()
     {
         MetadataLoader.Instance.AdresUitgebreidLoaded += OnAdresUitgebreidLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
+        MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
     }
 
-    bool lookatUitbouw = false;
-
-    private void Update()
+    private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
     {
-        if (lookatUitbouw == false && RestrictionChecker.ActiveUitbouw != null)
-        {
-            var camera = CameraModeChanger.Instance.ActiveCamera;
-            camera.transform.LookAt(RestrictionChecker.ActiveUitbouw.CenterPoint);
-            lookatUitbouw = true;
-        }
+        buildingRadius = args.Radius;
     }
 
     private void OnBuildingDataProcessed(BuildingMeshGenerator building)
-    {
-        thebuilding = building;
-        groundLevel = building.GroundLevel;
+    {        
+        groundLevel = building.GroundLevel;        
         CheckSetCameraposition();
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        perceelcenter = args.PerceelCenter;
-        perceelRadius = args.PerceelRadius;
+        perceelcenter = args.Center;        
         CheckSetCameraposition();
         // if (cameraIsSet == false && buildingcenter != null) SetCameraposition();
     }
@@ -70,13 +64,12 @@ public class PositionCamera: MonoBehaviour
 
         cameraIsSet = true;
 
-        buildingpos = CoordConvert.RDtoUnity(buildingcenter.Value);
-        var perceelpos = CoordConvert.RDtoUnity(perceelcenter.Value);
-
-        var cameraoffset = (perceelpos - buildingpos).normalized * (perceelRadius + CameraDistance);
+        buildingCenter = CoordConvert.RDtoUnity(buildingcenter.Value);
+        var perceelCenter = CoordConvert.RDtoUnity(perceelcenter.Value);
+        var cameraoffset = (perceelCenter - buildingCenter).normalized * (buildingRadius + CameraDistance);
 
         var camera = CameraModeChanger.Instance.ActiveCamera;
-        camera.transform.position = new Vector3(perceelpos.x + cameraoffset.x, groundLevel.Value + CameraHeight, perceelpos.z + cameraoffset.z);
+        camera.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel.Value + CameraHeight, buildingCenter.z + cameraoffset.z);
 
         if (RestrictionChecker.ActiveUitbouw != null)
         {
@@ -84,10 +77,11 @@ public class PositionCamera: MonoBehaviour
         }
         else if (RestrictionChecker.ActiveBuilding)
         {
-            camera.transform.LookAt(RestrictionChecker.ActiveBuilding.BuildingCenter);
+            var lookatpos = new Vector3(RestrictionChecker.ActiveBuilding.BuildingCenter.x, groundLevel.Value + LookatBuildingHeight, RestrictionChecker.ActiveBuilding.BuildingCenter.z);
+            camera.transform.LookAt(lookatpos);
         }
 
-        //camera.transform.LookAt(buildingpos);
+        
     }
 }
 

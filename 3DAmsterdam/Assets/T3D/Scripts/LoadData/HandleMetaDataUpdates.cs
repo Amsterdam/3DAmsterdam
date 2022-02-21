@@ -64,7 +64,7 @@ public class HandleMetaDataUpdates : MonoBehaviour
     {
         foreach(var adrestext in AdresText)
         {
-            adrestext.text = $"{args.Straat} {args.Huisnummer}";
+            adrestext.text = $"{args.Straat} {args.Huisnummer} {args.HuisnummerToevoeging}";
         }
 
         foreach (var postcodeplaats in PostcodePlaatsText)

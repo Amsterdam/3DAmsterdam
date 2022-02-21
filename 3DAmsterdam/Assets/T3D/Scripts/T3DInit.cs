@@ -1,4 +1,5 @@
 using ConvertCoordinates;
+using Netherlands3D;
 using Netherlands3D.Cameras;
 using Netherlands3D.Settings;
 using Netherlands3D.T3D.Uitbouw;
@@ -106,6 +107,10 @@ public class T3DInit : MonoBehaviour
         yield return null; //wait a frame
 
         var posRD = cameraPosition.Value;
+
+        //set relative center to cameraposition to avoid floating point precision issues
+        Config.activeConfiguration.RelativeCenterRD = new Vector2RD(posRD.x,posRD.y);
+
         GotoPosition(posRD);
         StartCoroutine(TileVisualizer.LoadTile(posRD.x, posRD.y, BagId));
 
