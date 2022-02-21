@@ -74,7 +74,8 @@ public class WallSelectionState : State
         else
         {
             //create uitbouw since there was no uitbouw previously placed
-            MetadataLoader.Instance.PlaatsUitbouw();
+            var spawnPosition = building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
+            MetadataLoader.Instance.PlaatsUitbouw(spawnPosition);
         }
     }
 }

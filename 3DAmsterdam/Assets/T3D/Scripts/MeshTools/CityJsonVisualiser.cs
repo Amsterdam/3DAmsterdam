@@ -91,4 +91,9 @@ public class CityJsonVisualiser : MonoBehaviour
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
     }
+
+    public void SetUitbouwPosition(Vector3 pos)
+    {
+        uitbouw.transform.position = pos;
+    }
 }
