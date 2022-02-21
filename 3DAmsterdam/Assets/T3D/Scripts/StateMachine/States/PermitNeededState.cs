@@ -25,9 +25,13 @@ public class PermitNeededState : State
     private float checkersPanelDefaultHeight;
     private RestrictionCheckerDisabler[] checkers;
 
+    private SaveableBool hasSubmitted;
+
     protected override void Awake()
     {
         base.Awake();
+        hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
+        print(hasSubmitted.Value);
         checkersPanelDefaultHeight = checkersPanel.sizeDelta.y;
     }
 
@@ -55,7 +59,13 @@ public class PermitNeededState : State
 
     public override int GetDesiredStateIndex()
     {
-        if (conformsToAllRestrictions)
+        //nullcheck is needed for OnValidate() in the base class for in the editor
+        if(hasSubmitted != null && hasSubmitted.Value) //if this is a submitted request, go to the view state after all steps that reconstruct the request.
+        {
+            return 2;
+        }
+        //if this is not a submitted request, check if all restriction requirements are met, if so send the request and go to the success step. if not, ask for additional data in the next step
+        else if (conformsToAllRestrictions)
         {
             return 1; //send + success step
         }
