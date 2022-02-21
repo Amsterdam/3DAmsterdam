@@ -27,11 +27,14 @@ namespace Netherlands3D.Interface
             changePointerStyle.StyleOnHover = ChangePointerStyleHandler.Style.GRAB;
             rectTransform = transform.parent.GetComponent<RectTransform>();
             if (!rectTransform) Destroy(this);
+        }
 
+		private void Start()
+		{
             if (rememberPosition) LoadPosition();
         }
 
-        public void OnDrag(PointerEventData eventData)
+		public void OnDrag(PointerEventData eventData)
         {
             rectTransform.position += new Vector3(eventData.delta.x, eventData.delta.y);
 
