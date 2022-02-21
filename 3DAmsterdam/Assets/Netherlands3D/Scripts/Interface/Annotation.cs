@@ -84,7 +84,6 @@ namespace Netherlands3D.Interface
 			base.Placed();
             //After we placed the annotation, start editing it, so the user can immediatly change its content
             StartEditingText();
-            PropertiesPanel.Instance.OpenAnnotations();
 
             //Move back into orignal ordered parent
             transform.SetParent(originalParent);
