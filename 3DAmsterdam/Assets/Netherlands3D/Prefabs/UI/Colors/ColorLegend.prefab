@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6654833298956790381}
   - component: {fileID: 5045802356220993310}
   - component: {fileID: 2260076985791271166}
+  - component: {fileID: 8385082211640761260}
   m_Layer: 5
   m_Name: ColorLegend
   m_TagString: Untagged
@@ -148,6 +149,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &8385082211640761260
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8133148720504027011}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 03e312e936bedf94e82d57ba24e44917, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &9183261131473137977
 PrefabInstance:
   m_ObjectHideFlags: 0

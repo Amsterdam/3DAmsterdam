@@ -72,6 +72,8 @@ public class CsvFilePanel : MonoBehaviour
     public string[] Columns;
     public List<string[]> Rows;
 
+    private string columnWithNumbers = "";
+
     public enum CSVContentFinderType
     {
         AUTODETECT,
@@ -360,17 +362,27 @@ public class CsvFilePanel : MonoBehaviour
             var index = csvNumbersFinder.NumberColumnIndices[i];
             columnsWithNumbers.Add(Columns[index]);
         }
-        csvNumbersFinder.SetNumberColumn(columnsWithNumbers[0]);
 
+        //Dropdown with the column to use.
+        if (columnWithNumbers == "")
+        {
+            columnWithNumbers = csvNumbersFinder.GetSecondaryNumberColumn();
+        }
+        csvNumbersFinder.SetNumberColumn(columnWithNumbers);
         PropertiesPanel.Instance.AddActionDropdown(columnsWithNumbers.ToArray(), (action) =>
         {
+            columnWithNumbers = action;
             csvNumbersFinder.SetNumberColumn(action);
-        }, columnsWithNumbers[0]);
+            //Redraw UI to update number fields
+            PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+            ShowGradientToIDMappingOptions();
+
+        }, columnWithNumbers);
 
         //Choose ranges
         PropertiesPanel.Instance.AddLabel("Bereik:");
-        var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", 0);
-        var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", 10);
+        var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", csvNumbersFinder.GetMinNumberValue());
+        var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", csvNumbersFinder.GetMaxNumberValue());
 
         PropertiesPanel.Instance.AddActionButtonBig("Toepassen", (action) =>
         {

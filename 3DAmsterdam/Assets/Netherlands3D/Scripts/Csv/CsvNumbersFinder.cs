@@ -17,7 +17,7 @@ public class CsvNumbersFinder : CsvContentFinder
     public List<int> IDColumnIndices = new List<int>();
     public List<int> NumberColumnIndices = new List<int>();
 
-    public CsvNumbersFinder(string[] Columns, List<string[]> Rows)
+	public CsvNumbersFinder(string[] Columns, List<string[]> Rows)
     {
         this.Columns = Columns;
         this.Rows = Rows;
@@ -40,7 +40,7 @@ public class CsvNumbersFinder : CsvContentFinder
         }
     }
 
-    void GetNumberColumns()
+    private void GetNumberColumns()
     {
         //finding the coordinate columns
         var list = new List<string>();
@@ -65,6 +65,60 @@ public class CsvNumbersFinder : CsvContentFinder
                 }
             }
         }
+    }
+
+    public string GetSecondaryNumberColumn()
+    {
+        var columnIndexNotID = NumberColumnIndices.Where(columnIndex => columnIndex != IDColumnIndex).FirstOrDefault();
+        return Columns[columnIndexNotID];
+    }
+
+    /// <summary>
+    /// Get highest value in the number column
+    /// </summary>
+    /// <returns>Lowest value</returns>
+	public double GetMaxNumberValue()
+    {
+        double max = 0;
+        var rowCount = Rows.Count;
+
+        for (int i = 1; i < rowCount; i++)
+		{
+            var numberColumn = Rows[i][NumberColumnIndex];
+            double number = 0;
+            if (ParseNumber(numberColumn, out number))
+            {
+                if(number > max)
+                {
+                    max = number;
+                }
+            }
+        }
+        return max;
+    }
+
+    /// <summary>
+    /// Get lowest value in the number column
+    /// </summary>
+    /// <returns>Lowest value</returns>
+    public double GetMinNumberValue()
+    {
+        double min = double.MaxValue;
+        var rowCount = Rows.Count;
+
+        for (int i = 1; i < rowCount; i++)
+        {
+            var numberColumn = Rows[i][NumberColumnIndex];
+            double number = 0;
+            if (ParseNumber(numberColumn, out number))
+            {
+                if (number <= min)
+                {
+                    min = number;
+                }
+            }
+        }
+        return min;
     }
 
     public void SetIDColumn(string columnName)

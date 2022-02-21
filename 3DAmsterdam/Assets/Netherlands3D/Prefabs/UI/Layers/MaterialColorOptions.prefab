@@ -998,6 +998,7 @@ GameObject:
   - component: {fileID: 7376752055306263016}
   - component: {fileID: 6017217609161619495}
   - component: {fileID: 5807592542297898713}
+  - component: {fileID: 3552653967649835816}
   m_Layer: 5
   m_Name: MaterialColorOptions
   m_TagString: Untagged
@@ -1156,6 +1157,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9274b11f9c1f2d4299622a94bf7c327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &3552653967649835816
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2620163864018914940}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 03e312e936bedf94e82d57ba24e44917, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2660055003587506494
 GameObject:
   m_ObjectHideFlags: 0
@@ -3707,6 +3727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowOutsideOfScreen: 0
+  rememberPosition: 1
 --- !u!114 &4295631994120836186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5129,6 +5150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowOutsideOfScreen: 0
+  rememberPosition: 1
 --- !u!114 &9090173096329232511
 MonoBehaviour:
   m_ObjectHideFlags: 0
