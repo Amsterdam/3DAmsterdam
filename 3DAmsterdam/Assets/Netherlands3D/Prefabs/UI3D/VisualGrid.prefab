@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7543742973349264136}
   - component: {fileID: 3965490971895839868}
   - component: {fileID: 7061825515499473784}
+  - component: {fileID: 3819655767883815687}
   m_Layer: 0
   m_Name: VisualGrid
   m_TagString: Untagged
@@ -110,3 +111,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3819655767883815687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695301189375722648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 29c5c9e4d7ad84c458aa33b0d271fc4f, type: 2}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5695301189375722648}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  onFalse:
+    m_PersistentCalls:
+      m_Calls: []
