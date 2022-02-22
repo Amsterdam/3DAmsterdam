@@ -18,7 +18,7 @@ public class SendFeedback : MonoBehaviour
     //private string timestampKey;
     //private SaveableString timestamp;
 
-    const string uploadURL = "https://t3dapi.azurewebsites.net/api/userfeedback/";
+    const string uploadURL = "https://t3dbackend.azurewebsites.net/api/userfeedback/";
     public Coroutine uploadCoroutine;
 
     [SerializeField]
