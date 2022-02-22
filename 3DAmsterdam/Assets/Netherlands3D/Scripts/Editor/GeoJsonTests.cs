@@ -604,7 +604,7 @@ public class GeoJsonTests
 
                 yield return sewerageRequest.SendWebRequest();
 
-                if (!sewerageRequest.isNetworkError && !sewerageRequest.isHttpError)
+                if (sewerageRequest.result == UnityWebRequest.Result.Success)
                 {
                     try
                     {

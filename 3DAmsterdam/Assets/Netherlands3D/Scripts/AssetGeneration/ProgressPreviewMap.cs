@@ -49,7 +49,7 @@ namespace Netherlands3D.AssetGeneration
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(downloadUrl);
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
             }
