@@ -1,4 +1,5 @@
 using Netherlands3D.Core.Colors;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,17 +17,27 @@ namespace Netherlands3D.Interface
 
         private RawImage rawImage;
 
-        private void Awake()
-        {
+		private void Awake()
+		{
             rawImage = this.GetComponent<RawImage>();
         }
 
-        void OnEnable()
+		public void SetGradient(GradientContainer gradientContainer)
         {
+            if(gradientContainer) gradientContainer.ClearTexture();
+
+            this.gradientContainer = gradientContainer;
+
+            DrawTexture();
+        }
+
+        private void DrawTexture()
+        {
+            rawImage = this.GetComponent<RawImage>();
             rawImage.texture = gradientContainer.GetGradientTexture(textureWidthInPixels);
         }
 
-        void OnDisable()
+		void OnDestroy()
         {
             gradientContainer.ClearTexture();
         }

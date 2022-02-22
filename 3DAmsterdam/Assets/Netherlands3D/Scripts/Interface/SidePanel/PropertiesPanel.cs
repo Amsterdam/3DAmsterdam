@@ -1,5 +1,6 @@
 ﻿using Netherlands3D.BAG;
 using Netherlands3D.Cameras;
+using Netherlands3D.Core.Colors;
 using Netherlands3D.ObjectInteraction;
 using System;
 using System.Collections;
@@ -87,6 +88,8 @@ namespace Netherlands3D.Interface.SidePanel
         private ActionDropDown dropdownPrefab;
         [SerializeField]
         private ActionCheckbox checkboxPrefab;
+        [SerializeField]
+        private Button gradientButtonPrefab;
 
         private TransformPanel transformPanel;
         [SerializeField]
@@ -433,6 +436,15 @@ namespace Netherlands3D.Interface.SidePanel
                 if (text != inputField.textComponent) text.text = label;
 
             return inputField;
+        }
+
+        public Button AddGradientButton(string gradientName, GradientContainer gradient)
+        {
+            Button gradientButton = Instantiate(gradientButtonPrefab,targetFieldsContainer);
+            gradientButton.name = gradientName;
+            gradientButton.GetComponentInChildren<GradientImage>().SetGradient(gradient);
+            gradientButton.gameObject.AddComponent<TooltipTrigger>().TooltipText = gradientName;
+            return gradientButton;
         }
 
         public void AddTextfield(string content, bool selectable = false)
