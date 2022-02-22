@@ -267,11 +267,6 @@ public class CsvFileParser : MonoBehaviour
 	{
         var showTryAgainButton = false;
 
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
-
         PropertiesPanel.Instance.AddSpacer(20);
         if(csvGeoLocationFinder != null){ 
 		    foreach (var line in csvGeoLocationFinder.StatusMessageLines)

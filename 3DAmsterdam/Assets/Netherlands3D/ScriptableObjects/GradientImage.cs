@@ -37,7 +37,7 @@ namespace Netherlands3D.Interface
             rawImage.texture = gradientContainer.GetGradientTexture(textureWidthInPixels);
         }
 
-		void OnDestroy()
+		public void ClearContainerTexture()
         {
             gradientContainer.ClearTexture();
         }
