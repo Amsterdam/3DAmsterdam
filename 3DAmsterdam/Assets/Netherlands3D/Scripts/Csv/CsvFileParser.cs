@@ -393,8 +393,10 @@ public class CsvFileParser : MonoBehaviour
             Button gradientButton = PropertiesPanel.Instance.AddGradientButton(gradientContainer.name, gradientContainer);
             gradientButton.onClick.AddListener(() => {
                 setGradient.started.Invoke(gradientContainer);
+
                 double.TryParse(inputFieldMin.text, out double min);
                 double.TryParse(inputFieldMax.text, out double max);
+                
                 ShowGradientColors(min, max);
             });
         }
