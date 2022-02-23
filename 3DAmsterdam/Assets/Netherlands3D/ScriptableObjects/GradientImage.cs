@@ -24,8 +24,6 @@ namespace Netherlands3D.Interface
 
 		public void SetGradient(GradientContainer gradientContainer)
         {
-            if(gradientContainer) gradientContainer.ClearTexture();
-
             this.gradientContainer = gradientContainer;
 
             DrawTexture();
