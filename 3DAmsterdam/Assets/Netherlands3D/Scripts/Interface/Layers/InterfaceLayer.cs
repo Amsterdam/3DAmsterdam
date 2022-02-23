@@ -212,6 +212,10 @@ namespace Netherlands3D.Interface.Layers
 		/// <param name="isOn"></param>
 		public void ToggleLinkedObject(bool isOn)
 		{
+            if (!linkedObject)
+            {
+				return;
+            }
 			if (layerType == LayerType.STATIC)
 			{
 				var staticLayer = LinkedObject.GetComponent<Layer>();
