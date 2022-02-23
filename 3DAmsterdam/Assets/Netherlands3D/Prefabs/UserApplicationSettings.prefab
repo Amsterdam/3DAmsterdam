@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 5808193173905523447}
   - component: {fileID: 1744183435973826930}
   - component: {fileID: 1620163357301275705}
+  - component: {fileID: 883497885346991607}
   m_Layer: 0
   m_Name: UserApplicationSettings
   m_TagString: Untagged
@@ -110,3 +111,31 @@ MonoBehaviour:
   realtimeReflectionProbe: {fileID: 0}
   aoRenderFeature: {fileID: -8540687902898676516, guid: d190a601dc54b944ca6d4c59c10fdbca,
     type: 2}
+--- !u!114 &883497885346991607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891215064021093206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e0c5bc301d6444a8cc7d3da9ce4b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+  trigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1620163357301275705}
+        m_TargetAssemblyTypeName: Netherlands3D.Rendering.RenderSettings, Assembly-CSharp
+        m_MethodName: ToggleAO
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
