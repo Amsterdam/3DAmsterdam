@@ -14,8 +14,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Netherlands3D.Core.Colors;
 
-public class CsvFilePanel : MonoBehaviour
+public class CsvFileParser : MonoBehaviour
 {
     [SerializeField]
     private GameObject marker;
@@ -56,6 +57,9 @@ public class CsvFilePanel : MonoBehaviour
     private FloatEvent setGradientValueMin;
     [SerializeField]
     private FloatEvent setGradientValueMax;
+    [SerializeField]
+    private GradientContainerEvent setGradient;
+
 
     [SerializeField]
     private FloatEvent setProgressBarPercentage;
@@ -71,6 +75,11 @@ public class CsvFilePanel : MonoBehaviour
 
     public string[] Columns;
     public List<string[]> Rows;
+
+    private string columnWithNumbers = "";
+
+    [SerializeField]
+    private GradientsGroup gradientsGroup;
 
     public enum CSVContentFinderType
     {
@@ -258,11 +267,6 @@ public class CsvFilePanel : MonoBehaviour
 	{
         var showTryAgainButton = false;
 
-        PropertiesPanel.Instance.AddActionButtonText("<Terug naar importeer opties", (action) =>
-        {
-            Restart();
-        });
-
         PropertiesPanel.Instance.AddSpacer(20);
         if(csvGeoLocationFinder != null){ 
 		    foreach (var line in csvGeoLocationFinder.StatusMessageLines)
@@ -360,24 +364,40 @@ public class CsvFilePanel : MonoBehaviour
             var index = csvNumbersFinder.NumberColumnIndices[i];
             columnsWithNumbers.Add(Columns[index]);
         }
-        csvNumbersFinder.SetNumberColumn(columnsWithNumbers[0]);
 
+        //Dropdown with the column to use.
+        if (columnWithNumbers == "")
+        {
+            columnWithNumbers = csvNumbersFinder.GetSecondaryNumberColumn();
+        }
+        csvNumbersFinder.SetNumberColumn(columnWithNumbers);
         PropertiesPanel.Instance.AddActionDropdown(columnsWithNumbers.ToArray(), (action) =>
         {
+            columnWithNumbers = action;
             csvNumbersFinder.SetNumberColumn(action);
-        }, columnsWithNumbers[0]);
+            //Redraw UI to update number fields
+            PropertiesPanel.Instance.ClearGeneratedFields(UIClearIgnoreObject);
+            ShowGradientToIDMappingOptions();
+
+        }, columnWithNumbers);
 
         //Choose ranges
         PropertiesPanel.Instance.AddLabel("Bereik:");
-        var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", 0);
-        var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", 10);
+        var inputFieldMin = PropertiesPanel.Instance.AddNumberInput("Minimaal:", csvNumbersFinder.GetMinNumberValue());
+        var inputFieldMax = PropertiesPanel.Instance.AddNumberInput("Maximaal:", csvNumbersFinder.GetMaxNumberValue());
 
-        PropertiesPanel.Instance.AddActionButtonBig("Toepassen", (action) =>
+        //Choose type of gradient
+        PropertiesPanel.Instance.AddLabel("Pas kleurverloop toe:");
+        foreach (var gradientContainer in gradientsGroup.gradientContainers)
         {
-            double.TryParse(inputFieldMin.text, out double min);
-            double.TryParse(inputFieldMax.text, out double max);
-            ShowGradientColors(min, max);
-        });
+            Button gradientButton = PropertiesPanel.Instance.AddGradientButton(gradientContainer.name, gradientContainer);
+            gradientButton.onClick.AddListener(() => {
+                setGradient.started.Invoke(gradientContainer);
+                double.TryParse(inputFieldMin.text, out double min);
+                double.TryParse(inputFieldMax.text, out double max);
+                ShowGradientColors(min, max);
+            });
+        }
     }
 
     private void ShowLocationBasedOptions()
@@ -568,7 +588,6 @@ public class CsvFilePanel : MonoBehaviour
         }, "");
 
         PropertiesPanel.Instance.AddSpacer(20);
-
         var row = csvGeoLocationFinder.Rows[index];
 
         for (int i = 0; i < row.Length; i++)

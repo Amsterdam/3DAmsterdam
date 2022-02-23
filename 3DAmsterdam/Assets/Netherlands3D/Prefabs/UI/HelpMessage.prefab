@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 708201799545207544}
   - component: {fileID: 436842243736320560}
   - component: {fileID: 3020113608420690183}
+  - component: {fileID: 915874200696581198}
   m_Layer: 5
   m_Name: HelpMessage
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -111,3 +113,16 @@ MonoBehaviour:
   messageTime: 10
   minimumMessageTime: 1
   fadeOutTime: 1
+  onShowHelpMessage: {fileID: 11400000, guid: 418aff60daf6de1498085f07a7cfd20a, type: 2}
+--- !u!114 &915874200696581198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5395418093126858678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef64adab0b39a69419417838a861e0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
