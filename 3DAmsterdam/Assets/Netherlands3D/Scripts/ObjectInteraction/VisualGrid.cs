@@ -21,6 +21,9 @@ namespace Netherlands3D.ObjectInteraction
 		private float largeCellSize = 1000.0f;
 		public float LargeCellSize { get => largeCellSize; }
 
+		[SerializeField]
+		private MeshRenderer meshRenderer;
+
 		void Awake()
 		{
 			Instance = this;
@@ -28,12 +31,12 @@ namespace Netherlands3D.ObjectInteraction
 
 		public void Show()
 		{
-			gameObject.SetActive(true);
+			meshRenderer.enabled = true;
 		}
 
 		public void Hide()
 		{
-			gameObject.SetActive(false);
+			meshRenderer.enabled = false;
 		}
 	}
 }
