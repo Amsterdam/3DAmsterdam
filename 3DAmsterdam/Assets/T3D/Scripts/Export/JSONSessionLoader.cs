@@ -10,8 +10,8 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     //private bool getUserFeedback = T3DInit.;
 
     private JSONNode rootObject;// = new JSONObject();
-    const string downloadURL = "https://t3dapi.azurewebsites.net/api/download/";
-    const string feedbackURL = "https://t3dapi.azurewebsites.net/api/getuserfeedback/";
+    const string downloadURL = "https://t3dbackend.azurewebsites.net/api/download/";
+    const string feedbackURL = "https://t3dbackend.azurewebsites.net/api/getuserfeedback/";
     private bool hasLoaded = false;
 
     public static JSONSessionLoader Instance;

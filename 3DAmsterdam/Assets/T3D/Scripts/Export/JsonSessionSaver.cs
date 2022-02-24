@@ -8,7 +8,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     const string readOnlyMarker = "$";
 
     private JSONNode rootObject = new JSONObject();
-    const string uploadURL = "https://t3dapi.azurewebsites.net/api/upload/";
+    const string uploadURL = "https://t3dbackend.azurewebsites.net/api/upload/";
 
     public static JsonSessionSaver Instance;
 
