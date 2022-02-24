@@ -42,8 +42,6 @@ public class TileVisualizer : MonoBehaviour
 		var rd = new Vector3RD(position.x, position.y, 0);
 		var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
 		MetadataLoader.Instance.RaiseBuildingMetaDataLoaded(objectdata, tileOffset);
-
-
 	}
 
 	private IEnumerator DownloadBinaryMesh(Vector2 position)
