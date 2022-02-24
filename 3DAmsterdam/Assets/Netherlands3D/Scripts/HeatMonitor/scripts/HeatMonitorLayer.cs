@@ -1,17 +1,26 @@
+using HeatMonitor;
 using Netherlands3D;
+using Netherlands3D.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Networking;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
-
-using HeatMonitor;
-using Netherlands3D.Core;
 
 public class HeatMonitorLayer : MonoBehaviour
 {
+
+    /// <summary>
+    /// Reference to FRD so we can change stencil settings.
+    /// </summary>
+    [SerializeField]
+    private ForwardRendererData forwardRenderer;
+
+
+
 
     [SerializeField]
     private ApplicationConfiguration applicationConfiguration;
@@ -106,6 +115,54 @@ public class HeatMonitorLayer : MonoBehaviour
     private int idGlobalMaxValue;
 
     /// <summary>
+    /// Stencil render feature we look for.
+    /// </summary>
+    [SerializeField]
+    private string stencilRenderFeatureName = "StencilRender";
+
+    /// <summary>
+    /// Quick hack to make layermask updates possible.
+    /// </summary>
+    
+
+    public void ChangeStencilSettings(LayerMask mask)
+    {
+        // Try to find the render feature.
+
+        for (int i = 0; i < forwardRenderer.rendererFeatures.Count; i++)
+        {
+            if (string.Compare(forwardRenderer.rendererFeatures[i].name, stencilRenderFeatureName, true) == 0)
+            {
+                var renderObjects = (RenderObjects)forwardRenderer.rendererFeatures[i];
+
+                if (renderObjects != null)
+                {
+                    
+                    renderObjects.settings.filterSettings.LayerMask = mask;
+
+                    forwardRenderer.SetDirty();
+                    
+                    return;
+                }
+            }
+        }
+    }
+
+
+    public void ProjectOnBuildings(bool state)
+    {
+        if (state == true)
+        {
+            ChangeStencilSettings((1 << LayerMask.NameToLayer("Buildings") | 1 << LayerMask.NameToLayer("Terrain")));
+        }
+        else
+        {
+            ChangeStencilSettings(1 << LayerMask.NameToLayer("Terrain"));
+        }
+
+    }
+
+    /// <summary>
     /// Change the active layer.
     /// </summary>
     /// <param name="layer"></param>
@@ -146,7 +203,7 @@ public class HeatMonitorLayer : MonoBehaviour
     /// </summary>
     private void ResetTiles()
     {
-        foreach(var kvp in RDToTileDictionary)
+        foreach (var kvp in RDToTileDictionary)
         {
             kvp.Value.SetActive(false);
         }
@@ -226,7 +283,7 @@ public class HeatMonitorLayer : MonoBehaviour
         Shader.SetGlobalFloat(idGlobalMinValue, minValue);
         Shader.SetGlobalFloat(idGlobalMaxValue, maxValue);
 
-        
+
 
     }
 
@@ -308,7 +365,7 @@ public class HeatMonitorLayer : MonoBehaviour
 
 
         string tileName = @"heat_";
-        string baseURL = GetTileURL(activeLayer); 
+        string baseURL = GetTileURL(activeLayer);
 
         RDToTileDictionary = new Dictionary<System.Tuple<int, int>, GameObject>();
 
