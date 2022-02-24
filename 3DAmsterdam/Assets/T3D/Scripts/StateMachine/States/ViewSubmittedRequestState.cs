@@ -29,4 +29,9 @@ public class ViewSubmittedRequestState : State
         //T3DInit.Instance.IsEditMode = false;
         JsonSessionSaver.Instance.EnableAutoSave(false);
     }
+
+    protected override void LoadSavedState()
+    {
+        //base.LoadSavedState(); //don't go to any next state in this state
+    }
 }

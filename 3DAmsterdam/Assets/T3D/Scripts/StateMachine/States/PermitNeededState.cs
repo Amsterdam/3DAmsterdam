@@ -31,7 +31,6 @@ public class PermitNeededState : State
     {
         base.Awake();
         hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
-        print(hasSubmitted.Value);
         checkersPanelDefaultHeight = checkersPanel.sizeDelta.y;
     }
 
