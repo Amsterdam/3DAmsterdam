@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ public class SendFeedback : MonoBehaviour
     //private string timestampKey;
     //private SaveableString timestamp;
 
-    const string uploadURL = "https://t3dbackend.azurewebsites.net/api/userfeedback/";
+    const string uploadURL = "api/userfeedback/";
     public Coroutine uploadCoroutine;
 
     [SerializeField]
@@ -80,7 +81,7 @@ public class SendFeedback : MonoBehaviour
 
     private IEnumerator UploadData(string name, string data)
     {
-        var uwr = UnityWebRequest.Put(uploadURL + name, data);
+        var uwr = UnityWebRequest.Put(Config.activeConfiguration.T3DAzureFunctionURL + "api/userfeedback/" + name, data);
         uwr.SetRequestHeader("Content-Type", "application/json");
 
         print(uploadURL + name);
