@@ -1,4 +1,5 @@
 using System.Collections;
+using Netherlands3D;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,7 +9,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     const string readOnlyMarker = "$";
 
     private JSONNode rootObject = new JSONObject();
-    const string uploadURL = "https://t3dbackend.azurewebsites.net/api/upload/";
+    const string uploadURL = "api/upload/";
 
     public static JsonSessionSaver Instance;
 
@@ -108,7 +109,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
 
     private IEnumerator UploadData(string name, string data)
     {
-        var uwr = UnityWebRequest.Put(uploadURL + name, data);
+        var url = Config.activeConfiguration.T3DAzureFunctionURL + uploadURL + name;
+        var uwr = UnityWebRequest.Put(url, data);
 
         using (uwr)
         {

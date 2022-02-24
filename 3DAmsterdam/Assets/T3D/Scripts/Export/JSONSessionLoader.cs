@@ -4,14 +4,15 @@ using UnityEngine;
 using SimpleJSON;
 using UnityEngine.Networking;
 using System;
+using Netherlands3D;
 
 public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
     //private bool getUserFeedback = T3DInit.;
 
     private JSONNode rootObject;// = new JSONObject();
-    const string downloadURL = "https://t3dbackend.azurewebsites.net/api/download/";
-    const string feedbackURL = "https://t3dbackend.azurewebsites.net/api/getuserfeedback/";
+    const string downloadURL = "api/download/";
+    const string feedbackURL = "api/getuserfeedback/";
     private bool hasLoaded = false;
 
     public static JSONSessionLoader Instance;
@@ -65,7 +66,8 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
-        string url = T3DInit.Instance.IsUserFeedback ? feedbackURL : downloadURL;
+        string url = Config.activeConfiguration.T3DAzureFunctionURL;
+        url += T3DInit.Instance.IsUserFeedback ? feedbackURL : downloadURL;
         var uwr = UnityWebRequest.Get(url + name);
         print(url + name);
 
