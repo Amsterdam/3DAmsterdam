@@ -420,8 +420,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             yield return null;
 
-            var urlIfc = $"https://t3dbackend.azurewebsites.net/api/getbimcityjson/{T3DInit.Instance.BimModelId}";
-            var urlSketchup = $"https://t3dbackend.azurewebsites.net/api/downloadcityjson/{T3DInit.Instance.BlobId}.json";
+            var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{T3DInit.Instance.BimModelId}";
+            var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{T3DInit.Instance.BlobId}.json";
 
             UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(T3DInit.Instance.BimModelId) == false ? urlIfc : urlSketchup);
             req.SetRequestHeader("Content-Type", "application/json");

@@ -1,4 +1,5 @@
 using ConvertCoordinates;
+using Netherlands3D;
 using Netherlands3D.Core;
 using Netherlands3D.LayerSystem;
 using Netherlands3D.T3D.Uitbouw;
@@ -41,13 +42,11 @@ public class TileVisualizer : MonoBehaviour
 		var rd = new Vector3RD(position.x, position.y, 0);
 		var tileOffset = CoordConvert.RDtoUnity(rd) + new Vector3(500, 0, 500);
 		MetadataLoader.Instance.RaiseBuildingMetaDataLoaded(objectdata, tileOffset);
-
-
 	}
 
 	private IEnumerator DownloadBinaryMesh(Vector2 position)
 	{
-		string url = DataPath.ReplaceXY(position.x, position.y);
+		string url = (Config.activeConfiguration.T3DSandboxEnvironment + DataPath).ReplaceXY(position.x, position.y);
 
 		//On WebGL we request brotli encoded files instead. We might want to base this on browser support.
 //#if !UNITY_EDITOR && UNITY_WEBGL
@@ -75,7 +74,7 @@ public class TileVisualizer : MonoBehaviour
 
 	private IEnumerator DownloadBinaryMeshData(Vector2 position, string bagId )
 	{
-		string url = MetaDataPath.ReplaceXY(position.x, position.y);
+		string url = (Config.activeConfiguration.T3DSandboxEnvironment + MetaDataPath).ReplaceXY(position.x, position.y);
 		var webRequest = UnityWebRequest.Get(url);
 
 		yield return webRequest.SendWebRequest();

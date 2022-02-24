@@ -55,6 +55,7 @@ public class WallSelectionState : State
     public override void StateEnteredAction()
     {
         building.SelectedWall.AllowSelection = true;
+        building.SelectedWall.WallChanged = false;
         if (RestrictionChecker.ActiveUitbouw)
         {
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
@@ -70,6 +71,11 @@ public class WallSelectionState : State
             //re-enable uitbouw that was previously placed
             RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
+            if (building.SelectedWall.WallChanged)
+            {
+                var spawnPosition = building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
+                RestrictionChecker.ActiveUitbouw.transform.position = spawnPosition;
+            }
         }
         else
         {

@@ -68,6 +68,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public Plane WallPlane { get; private set; }
         public Mesh WallMesh { get; private set; }
         public Vector3 CenterPoint { get; private set; }
+        public bool WallChanged { get; set; } //is a different wall selected than before? Used to reposition the uitbouw when user went back and selected a different wall
 
         private string rayOriginKey;
         private SaveableVector3 rayOrigin;
@@ -129,6 +130,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     WallMesh = wall;
                     wallMeshFilter.mesh = WallMesh;
                     WallIsSelected = true;
+                    WallChanged = true;
                 }
                 else
                 {
