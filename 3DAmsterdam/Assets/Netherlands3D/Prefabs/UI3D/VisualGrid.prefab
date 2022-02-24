@@ -55,7 +55,7 @@ MeshRenderer:
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -99,6 +99,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: 5d026bddb0c86554eac472767f8cbec4, type: 2}
   cellSize: 100
   largeCellSize: 1000
+  meshRenderer: {fileID: 7543742973349264136}
 --- !u!114 &7061825515499473784
 MonoBehaviour:
   m_ObjectHideFlags: 0
