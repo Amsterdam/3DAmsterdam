@@ -409,6 +409,7 @@ namespace Netherlands3D.Sharing
               
               foreach (var child in customLayerChildren)
               {
+                    if (child.LayerType != LayerType.CAMERA) continue;
                     var firstPersonObject = child.LinkedObject.GetComponent<FirstPersonLocation>();
                     if (!firstPersonObject) continue;
 

@@ -23,6 +23,8 @@ namespace Netherlands3D.Interface.Layers
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!LinkedObject) return;
+
             //Catch double click on layer, to move camera to the linked object
             if (layerType == LayerType.ANNOTATION)
             {
