@@ -17,6 +17,14 @@ namespace Netherlands3D.Interface
         public delegate void DistanceInputOverrideEventHandler(NumberInputField source, float distance);
         public event DistanceInputOverrideEventHandler DistanceInputOverride;
 
+        public bool IsSelected
+        {
+            get
+            {
+                return EventSystem.current.currentSelectedGameObject?.GetComponentInParent<NumberInputField>() == this;
+            }
+        }
+
         private void Awake()
         {
             Distance = GetComponent<Distance>();

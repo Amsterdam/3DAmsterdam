@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
+using Netherlands3D.Interface;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,6 +18,8 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
     private float fadeEndDistance = 30f;
     private float textTargetAlpha = 1f;
     private float imageTargetAlpha = 1f;
+
+    private bool isHovering;
 
     private void Awake()
     {
@@ -47,12 +50,12 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        SetTargetTransparency(1f, 1f);
+        isHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        SetTargetTransparency(notHoveringTextAlpha, notHoveringImageAlpha);
+        isHovering = false;
     }
 
     private void Update()
@@ -61,7 +64,14 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         zoomMultiplier = Mathf.InverseLerp(fadeEndDistance, fadeStartDistance, dist);
         print(textTargetAlpha + "\t" + dist + "\t" + zoomMultiplier);
-        SetTargetTransparency(textTargetAlpha, imageTargetAlpha);
 
+        if (isHovering || GetComponent<NumberInputField>().IsSelected)
+        {
+            SetTargetTransparency(1f, 1f);
+        }
+        else
+        {
+            SetTargetTransparency(notHoveringTextAlpha, notHoveringImageAlpha);
+        }
     }
 }

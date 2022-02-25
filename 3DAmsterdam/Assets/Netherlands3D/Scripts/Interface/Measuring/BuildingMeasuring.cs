@@ -38,6 +38,9 @@ public class BuildingMeasuring : Interactable
     [SerializeField]
     private Material linePlacedMaterial;
 
+    [SerializeField]
+    private Material lineSelectedMaterial;
+
     private Mesh targetMesh;
     private MeshCollider targetCollider;
 
@@ -46,7 +49,7 @@ public class BuildingMeasuring : Interactable
 
     public float Distance { get { return Vector3.Distance(positions[0], positions[1]); } }
 
-    public delegate void DistanceInputOverrideEventHandler(BuildingMeasuring source, Vector3 direction,float delta);
+    public delegate void DistanceInputOverrideEventHandler(BuildingMeasuring source, Vector3 direction, float delta);
     public event DistanceInputOverrideEventHandler DistanceInputOverride;
 
     private void Awake()
@@ -202,43 +205,22 @@ public class BuildingMeasuring : Interactable
         {
             UpdateLinePositions();
             DrawAutoScalingLine();
+            UpdateLineColor();
         }
     }
 
-    //private IEnumerator SnapToClosestVertex()
-    //{
-    //    while (true)
-    //    {
-    //        if (Selector.doingMultiselect && targetMesh)
-    //        {
-    //            Debug.Log("Trying to snap");
-    //            Mesh runningThroughMesh = targetMesh;
+    private void UpdateLineColor()
+    {
+        if (distanceLabel && distanceLabel.IsSelected)
+        {
+            lineRenderer.material = lineSelectedMaterial;
+        }
+        else
+        {
+            lineRenderer.material = lineMaterial;
+        }
 
-    //            var closestDistance = float.MaxValue;
-    //            var closestVertex = Vector3.one * float.MaxValue;
-
-    //            //Check all mesh verts tied to this triangle for distance;
-    //            for (int i = 0; i < targetMesh.vertices.Length; i++)
-    //            {
-    //                if (targetMesh != runningThroughMesh) yield break;
-
-    //                var vertexWorldCoordinate = targetCollider.transform.TransformPoint(targetMesh.vertices[i]);
-    //                //var vertexDistance = Vector3.Distance(vertexWorldCoordinate, previewTargetPoint.transform.position);
-    //                //if (vertexDistance < closestDistance)
-    //                //	closestVertex = vertexWorldCoordinate;
-
-    //                if ((i % maxVertexSnapPerFrame) == 0)
-    //                {
-    //                    yield return new WaitForEndOfFrame();
-    //                }
-    //            }
-
-    //            //We need to have finished going through the vertices, before we can override out target position:
-    //            //previewTargetPoint.transform.position = closestVertex;
-    //        }
-    //        yield return null;
-    //    }
-    //}
+    }
 
     private void DrawAutoScalingLine()
     {
