@@ -59,7 +59,7 @@ namespace Netherlands3D.Interface
         /// <param name="scaleFactor"></param>
         public void ChangeCanvasScale(float scaleFactor)
         {
-            canvasScale = scaleFactor;
+            canvasScale = Mathf.Clamp(scaleFactor,0.5f,2.0f);
 
             foreach (var scaler in canvasScalers)
                 scaler.scaleFactor = canvasScale;
