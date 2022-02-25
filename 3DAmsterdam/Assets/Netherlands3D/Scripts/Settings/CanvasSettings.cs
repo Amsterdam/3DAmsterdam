@@ -14,9 +14,8 @@ namespace Netherlands3D.Interface
         [DllImport("__Internal")]
         private static extern string ChangeInterfaceScale(float scale);
 
-
         [SerializeField]
-        private CanvasScaler canvasScaler;
+        private CanvasScaler[] canvasScalers;
         private string canvasScaleFactorKey = "canvasScaleFactor";
 
         //static scale we can request through class
@@ -26,7 +25,12 @@ namespace Netherlands3D.Interface
 
         private float referenceWidth = 1920.0f;
 
-        [ContextMenu("Clear the stored Canvas settings PlayerPrefs")]
+		private void Awake()
+		{
+            canvasScalers = FindObjectsOfType<CanvasScaler>();
+        }
+
+		[ContextMenu("Clear the stored Canvas settings PlayerPrefs")]
         public void ClearPlayerPrefs()
         {
             PlayerPrefs.DeleteKey(canvasScaleFactorKey);
@@ -39,7 +43,10 @@ namespace Netherlands3D.Interface
         public float DetectPreferedCanvasScale()
         {
             canvasScale = Mathf.Clamp(Screen.width / referenceWidth, 1.0f, maxAutoWidth);
-            canvasScaler.scaleFactor = canvasScale;
+
+            foreach(var scaler in canvasScalers)
+                scaler.scaleFactor = canvasScale;
+
             #if !UNITY_EDITOR && UNITY_WEBGL
             ChangeInterfaceScale(canvasScale);
             #endif
@@ -53,7 +60,10 @@ namespace Netherlands3D.Interface
         public void ChangeCanvasScale(float scaleFactor)
         {
             canvasScale = scaleFactor;
-            canvasScaler.scaleFactor = canvasScale;
+
+            foreach (var scaler in canvasScalers)
+                scaler.scaleFactor = canvasScale;
+
             PlayerPrefs.SetFloat(canvasScaleFactorKey, canvasScale);
             #if !UNITY_EDITOR && UNITY_WEBGL
             ChangeInterfaceScale(canvasScale);
