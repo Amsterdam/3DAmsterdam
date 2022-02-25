@@ -63,7 +63,6 @@ public class DistanceAppearance : MonoBehaviour, IPointerEnterHandler, IPointerE
         var dist = Vector3.Distance(RotateCamera.CameraTargetPoint, CameraModeChanger.Instance.ActiveCamera.transform.position);
 
         zoomMultiplier = Mathf.InverseLerp(fadeEndDistance, fadeStartDistance, dist);
-        print(textTargetAlpha + "\t" + dist + "\t" + zoomMultiplier);
 
         if (isHovering || GetComponent<NumberInputField>().IsSelected)
         {
