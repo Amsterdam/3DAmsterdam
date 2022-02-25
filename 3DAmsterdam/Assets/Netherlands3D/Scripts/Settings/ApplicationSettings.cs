@@ -150,10 +150,10 @@ namespace Netherlands3D.Settings {
 
 
 			PropertiesPanel.Instance.AddLabel("Interface schaal");
-			PropertiesPanel.Instance.AddActionSlider("1x", "2x", 1.0f, 2.0f, settings.canvasDPI, (value) => {
-				settings.canvasDPI = value;
+			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 75, 200, settings.canvasDPI, (value) => {
+				settings.canvasDPI = value * 0.01f;
 				ApplySettings();
-            },false,"Interface schaal");
+            },true,"Interface schaal");
 
 			//Graphic options
 			PropertiesPanel.Instance.AddTitle("Grafisch");
