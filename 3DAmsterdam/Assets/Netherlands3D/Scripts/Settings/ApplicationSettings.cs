@@ -106,7 +106,8 @@ namespace Netherlands3D.Settings {
 			selectedTemplate = 3;
 			
 			//Only enable lod 0 for the terrainlayer
-			terrainLayer.Datasets[1].enabled = false;
+			if(terrainLayer)
+				terrainLayer.Datasets[1].enabled = false;
 
 			CreateSettingsProfile(settingsProfilesTemplates[selectedTemplate]);
 
