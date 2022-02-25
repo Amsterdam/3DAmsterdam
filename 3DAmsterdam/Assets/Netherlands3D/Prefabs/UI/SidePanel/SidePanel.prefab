@@ -2970,6 +2970,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784b1a064d46f5748a170dbf49aed0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1403248280924594323 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6895656845740255980, guid: 02ad944e407562d40ae7234a9622449a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5533549267884870271}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8165766848133850524 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4438785695775682531, guid: 02ad944e407562d40ae7234a9622449a,
@@ -2982,12 +2988,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc99f9dec8005e442b69b78d710325b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6285694825534217085 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2013209749094191362, guid: 02ad944e407562d40ae7234a9622449a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5533549267884870271}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3973428173878463999 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8930477955564996480, guid: 02ad944e407562d40ae7234a9622449a,
@@ -3045,7 +3045,7 @@ MonoBehaviour:
     type: 3}
   camerasLayerPrefab: {fileID: 8778083341583675047, guid: 569f4ba7ba4b61b4ebf54b6b18c2a080,
     type: 3}
-  customLayersContainer: {fileID: 6285694825534217085}
+  customLayersContainer: {fileID: 1403248280924594323}
   layerVisualsDialog: {fileID: 0}
 --- !u!1001 &7293728218823840961
 PrefabInstance:

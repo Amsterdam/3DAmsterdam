@@ -18,7 +18,7 @@ namespace Netherlands3D.Interface.Layers
         private void Start()
         {
             //Make sure we always add from the top (minus add button, and annotation group)
-            this.transform.SetSiblingIndex(2);
+            this.transform.SetAsLastSibling();
         }
 
         public void OnPointerClick(PointerEventData eventData)
