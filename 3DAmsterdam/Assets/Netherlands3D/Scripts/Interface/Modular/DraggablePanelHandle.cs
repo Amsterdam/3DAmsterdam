@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
 {
@@ -27,6 +28,9 @@ namespace Netherlands3D.Interface
         private int lastScreenWidth = 0;
         private int lastScreenHeight = 0;
         private Vector2 preferedSize;
+
+        private bool panelHasContentSizeFitter = false;
+
         void Awake()
         {
             changePointerStyle = this.GetComponent<ChangePointerStyleHandler>();
@@ -44,6 +48,8 @@ namespace Netherlands3D.Interface
 		{
             if (rememberPosition) LoadPosition();
             ClampInScreenBounds();
+
+            panelHasContentSizeFitter = (rectTransform.GetComponent<ContentSizeFitter>());
         }
 
 		private void Update()
@@ -73,10 +79,12 @@ namespace Netherlands3D.Interface
 		{
 			if (!allowOutsideOfScreen)
 			{
-                //Make sure this panel is small enought to fit in current screen in height
-                Vector2 currentSize = rectTransform.sizeDelta;
-                currentSize.y = Math.Min(Screen.height-(marginPixels*2), preferedSize.y);
-                rectTransform.sizeDelta = currentSize;
+                //Make sure this panel is small enought to fit in current screen in height if it does not have a contentsizefitter overruling it.
+                if(!panelHasContentSizeFitter){ 
+                    Vector2 currentSize = rectTransform.sizeDelta;
+                    currentSize.y = Math.Min(Screen.height-(marginPixels*2), preferedSize.y);
+                    rectTransform.sizeDelta = currentSize;
+                }
 
                 //Clamp position (based on centered anchor)
                 rectTransform.position = new Vector2(
