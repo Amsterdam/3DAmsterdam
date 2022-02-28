@@ -232,8 +232,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void RotateAround(float xaxis, float yaxis)
     {
-        mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);
-
+        if (RestrictionChecker.ActiveUitbouw != null)
+        {
+            mycam.transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * RotationSpeed);
+        }
         //if (RestrictionChecker.ActiveUitbouw != null)
         //{
         //    //mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
