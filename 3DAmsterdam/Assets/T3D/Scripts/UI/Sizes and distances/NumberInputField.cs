@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Netherlands3D.ObjectInteraction;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Netherlands3D.Interface
@@ -12,10 +13,17 @@ namespace Netherlands3D.Interface
     public class NumberInputField : MonoBehaviour
     {
         public Distance Distance { get; private set; }
-        private InputField inputField;
 
         public delegate void DistanceInputOverrideEventHandler(NumberInputField source, float distance);
         public event DistanceInputOverrideEventHandler DistanceInputOverride;
+
+        public bool IsSelected
+        {
+            get
+            {
+                return EventSystem.current.currentSelectedGameObject?.GetComponentInParent<NumberInputField>() == this;
+            }
+        }
 
         private void Awake()
         {
@@ -48,7 +56,6 @@ namespace Netherlands3D.Interface
 
         private bool TryParseUserString(string inputString, out float distance, out string units)
         {
-            distance = 0f;
             units = "cm";
             return float.TryParse(inputString, out distance);
         }
