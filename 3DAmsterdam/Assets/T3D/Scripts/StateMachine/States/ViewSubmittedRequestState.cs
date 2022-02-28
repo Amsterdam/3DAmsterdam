@@ -38,7 +38,7 @@ public class ViewSubmittedRequestState : State
         streetText.text = string.Format(defaultStreetText, street.Value, number.Value);
         zipCodeText.text = string.Format(defaultZipCodeText, zipCode.Value, city.Value);
         dateText.text = string.Format(defaultDateText, date.Value);
-        projectIDText.text = string.Format(defaultProjectIDText, projectID.Value);
+        projectIDText.text = string.Format(defaultProjectIDText, projectID.Value.Substring(0, 8));
 
         //T3DInit.Instance.IsEditMode = false;
         JsonSessionSaver.Instance.EnableAutoSave(false);
