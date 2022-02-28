@@ -31,33 +31,18 @@ namespace Netherlands3D.Interface.Tools
 
         private void StartPaintingMask()
         {
-            this.gameObject.SetActive(true);
+            gridSelection.StartSelection(maskBlockMaterial);
         }
 
 		private void Awake()
 		{
             if (startCreatingMask) startCreatingMask.started.AddListener(StartPaintingMask);
+            gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
         }
 
 		private void OnEnable()
         {
             if(HelpMessage.Instance) HelpMessage.Instance.Show(helpMessage);
-
-            gridSelection.onGridSelected.RemoveAllListeners();
-            gridSelection.StartSelection(maskBlockMaterial);
-            gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
-            gridSelection.onToolDisabled.AddListener(ToolWasDisabled);
-        }
-
-		private void ToolWasDisabled()
-        {
-            this.gameObject.SetActive(false);
-		}
-
-		private void OnDisable()
-		{
-            gridSelection.onGridSelected.RemoveListener(SelectedMaskBounds);
-            gridSelection.onToolDisabled.RemoveListener(ToolWasDisabled);
         }
 
 		private void SelectedMaskBounds(Bounds bounds)
