@@ -125,9 +125,10 @@ namespace Netherlands3D.Interface.Layers
 		public void ChangeColor(Color pickedColor)
 		{
 			colorImage.color = pickedColor;
-			targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
+			if(targetMaterial)
+				targetMaterial.SetColor("_BaseColor", new Color(pickedColor.r, pickedColor.g, pickedColor.b, materialOpacity));
 
-			if(layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
+			if(layerVisuals && layerVisuals.targetInterfaceLayer.usingRuntimeInstancedMaterials)
 				CopyPropertiesToAllChildMaterials();
 		}
 
