@@ -167,6 +167,8 @@ public class CsvFileParser : MonoBehaviour
 
     private void Restart()
     {
+        CleanUp();
+
         //Stop drawing colors
         setEnableDrawingColors.started.Invoke(false);
 
