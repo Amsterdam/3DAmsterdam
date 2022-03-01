@@ -14,7 +14,6 @@ namespace Netherlands3D.Interface
         [DllImport("__Internal")]
         private static extern string ChangeInterfaceScale(float scale);
 
-        [SerializeField]
         private CanvasScaler[] canvasScalers;
         private string canvasScaleFactorKey = "canvasScaleFactor";
 

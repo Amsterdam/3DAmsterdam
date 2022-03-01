@@ -150,8 +150,8 @@ namespace Netherlands3D.Settings {
 
 
 			PropertiesPanel.Instance.AddLabel("Interface schaal");
-			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 75, 200, settings.canvasDPI, (value) => {
-				settings.canvasDPI = value * 0.01f;
+			PropertiesPanel.Instance.AddActionSlider("0.75x", "2x", 75, 200, settings.canvasScale, (value) => {
+				settings.canvasScale = value;
 				ApplySettings();
             },true,"Interface schaal");
 
@@ -244,7 +244,7 @@ namespace Netherlands3D.Settings {
 
 			ToggleActiveEvent.Raise(settings.showExperimentelFeatures);
 
-			canvasSettings.ChangeCanvasScale(settings.canvasDPI);
+			canvasSettings.ChangeCanvasScale(settings.canvasScale * 0.01f);
 
             renderSettings.SetRenderScale(settings.renderResolution);
             renderSettings.ToggleReflections(settings.realtimeReflections);
