@@ -44,10 +44,11 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		private MeshRenderer selectionBlockMeshRenderer;
 
+		private bool doneInitialisation = false;
+
 		private void Awake()
 		{
 			selectionBlocks = new Dictionary<Vector3Int, GameObject>();
-			var canvas = FindObjectOfType<Canvas>();
 		}
 
 		private void Start()
@@ -62,6 +63,8 @@ namespace Netherlands3D.Interface
 
 			this.transform.position = new Vector3(0, Config.activeConfiguration.zeroGroundLevelY, 0);
 			SetGridSize();
+
+			doneInitialisation = true;
 		}
 
 		/// <summary>
@@ -158,6 +161,8 @@ namespace Netherlands3D.Interface
 
 		public override void Escape()
 		{
+			if (!doneInitialisation) return;
+
 			base.Escape();
 			gameObject.SetActive(false);
 		}
@@ -269,8 +274,11 @@ namespace Netherlands3D.Interface
 			var max = bounds.max;
 			if (zeroHeight) max.y = 0;
 
-			bottomLeftCoordinateVisual.DrawCoordinate(min);
-			topRightCoordinateVisual.DrawCoordinate(max);
+			if (bottomLeftCoordinateVisual)
+				bottomLeftCoordinateVisual.DrawCoordinate(min);
+
+			if (topRightCoordinateVisual)
+				topRightCoordinateVisual.DrawCoordinate(max);
 		}
 
 		private void FinishSelection()
