@@ -29,15 +29,20 @@ namespace Netherlands3D.Interface.Tools
         [SerializeField]
         private Material maskBlockMaterial;
 
-        private void StartPaintingMask()
-        {
-            gridSelection.StartSelection(maskBlockMaterial);
-        }
-
 		private void Awake()
 		{
             if (startCreatingMask) startCreatingMask.started.AddListener(StartPaintingMask);
             gridSelection.onGridSelected.AddListener(SelectedMaskBounds);
+        }
+
+		private void Start()
+		{
+            this.gameObject.SetActive(false);
+		}
+
+		private void StartPaintingMask()
+        {
+            gridSelection.StartSelection(maskBlockMaterial);
         }
 
 		private void OnEnable()
