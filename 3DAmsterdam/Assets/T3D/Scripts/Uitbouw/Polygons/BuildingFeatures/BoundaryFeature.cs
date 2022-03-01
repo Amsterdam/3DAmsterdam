@@ -288,6 +288,12 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //Destroy(gameObject);
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
+
+            //remove the boundary feature from the list, extra measure to ensure list is reset when restarting the current session
+            if (PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Contains(this))
+            {
+                PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Remove(this);
+            }
         }
 
         public void EditFeature()

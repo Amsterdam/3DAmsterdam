@@ -68,7 +68,6 @@ public class PlaceBoundaryFeaturesState : State
 
     public void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
     {
-        print("adding: " + feature);
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value + 1);
 
         int id = amountOfPlacedFeatues.Value;
@@ -81,7 +80,6 @@ public class PlaceBoundaryFeaturesState : State
 
     public void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
     {
-        print("removing: " + feature);
         //the ids may need to be adjusted to maintain an increment of 1
         var lastBf = SavedBoundaryFeatures[SavedBoundaryFeatures.Count - 1];
 
@@ -105,6 +103,5 @@ public class PlaceBoundaryFeaturesState : State
         SavedBoundaryFeatures = SavedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
         //decrement amount
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
-
     }
 }
