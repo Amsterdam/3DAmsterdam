@@ -551,7 +551,7 @@ namespace Netherlands3D.Interface.SidePanel
             thumbnailImage = null;
             foreach (Transform field in generatedFieldsRootContainer)
             {
-                if(ignoreGameObject != null && field.gameObject == ignoreGameObject) continue;
+                if(ignoreGameObject != null && field.gameObject == ignoreGameObject || ignoreGameObject.transform.IsChildOf(field)) continue;
                 else if (ignoreGameObjects != null && field.gameObject == ignoreGameObjects.Contains(field.gameObject)) continue;
 
                 Destroy(field.gameObject);

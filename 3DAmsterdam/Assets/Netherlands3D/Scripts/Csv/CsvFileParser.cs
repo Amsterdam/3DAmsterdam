@@ -400,6 +400,8 @@ public class CsvFileParser : MonoBehaviour
                 ShowGradientColors(min, max);
             });
         }
+
+
     }
 
     private void ShowLocationBasedOptions()
