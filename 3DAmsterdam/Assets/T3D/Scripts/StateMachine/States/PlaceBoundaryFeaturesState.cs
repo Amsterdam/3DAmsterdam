@@ -12,7 +12,7 @@ public class PlaceBoundaryFeaturesState : State
     SaveableInt amountOfPlacedFeatues;
     //List<int> ids = new List<int>();
     //SaveableIntArray ids; //save the actual placed ids, the id increments every time a new bf is placed, but does not decrement when a bf is deleted to avoid having to change all ids to account for the missing id
-    List<BoundaryFeature> savedBoundaryFeatures = new List<BoundaryFeature>();
+    public static List<BoundaryFeature> SavedBoundaryFeatures = new List<BoundaryFeature>();
 
     protected override void Awake()
     {
@@ -68,6 +68,7 @@ public class PlaceBoundaryFeaturesState : State
 
     public void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
     {
+        print("adding: " + feature);
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value + 1);
 
         int id = amountOfPlacedFeatues.Value;
@@ -75,13 +76,14 @@ public class PlaceBoundaryFeaturesState : State
         //feature.PrefabName = prefabName;
         feature.InitializeSaveData(id);
         feature.UpdateMetadata(id, prefabName);
-        savedBoundaryFeatures.Add(feature);
+        SavedBoundaryFeatures.Add(feature);
     }
 
     public void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
     {
+        print("removing: " + feature);
         //the ids may need to be adjusted to maintain an increment of 1
-        var lastBf = savedBoundaryFeatures[savedBoundaryFeatures.Count - 1];
+        var lastBf = SavedBoundaryFeatures[SavedBoundaryFeatures.Count - 1];
 
         //if the last feautre is not the one being removed, the ids need to be changed
         if (lastBf != feature)
@@ -97,10 +99,10 @@ public class PlaceBoundaryFeaturesState : State
         }
 
         // delete the bf from the list
-        savedBoundaryFeatures.Remove(feature);
+        SavedBoundaryFeatures.Remove(feature);
 
         //sort list so that this function will not result in duplicate ids the next time it is called
-        savedBoundaryFeatures = savedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
+        SavedBoundaryFeatures = SavedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
         //decrement amount
         amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
 

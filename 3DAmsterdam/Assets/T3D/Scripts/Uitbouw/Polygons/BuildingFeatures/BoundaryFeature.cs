@@ -84,6 +84,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public string PrefabName { get; set; } //set this when instantiating to save the prefab to load the next time
         public BoundaryFeatureSaveData SaveData { get; private set; }
 
+        [SerializeField]
+        private string displayName;
+        public string DisplayName => displayName;
+
         protected override void Awake()
         {
             base.Awake();
