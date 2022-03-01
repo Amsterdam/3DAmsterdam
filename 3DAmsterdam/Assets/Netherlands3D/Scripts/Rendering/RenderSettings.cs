@@ -28,7 +28,16 @@ namespace Netherlands3D.Rendering
 
         public static RenderSettings Instance;
 
-		private void Awake()
+        [Header("SSAO forward rendering settings")]
+        [SerializeField]
+        private ForwardRendererData forwardRendererData;
+
+        [SerializeField]
+        private LayerMask aoEnabledLayerMask;
+        [SerializeField]
+        private LayerMask aoDisabledLayerMask;
+
+        private void Awake()
 		{
             Instance = this;
         }
@@ -98,7 +107,8 @@ namespace Netherlands3D.Rendering
         public void ToggleAO(bool enabled)
         {
             aoRenderFeature.SetActive(enabled);
-		}
+            forwardRendererData.opaqueLayerMask = (enabled) ? aoEnabledLayerMask : aoDisabledLayerMask;
+        }
 
         public void SetRenderScale(float renderScale)
         {
