@@ -40,7 +40,11 @@ public class DXFCreation : ModelFormatCreation
             yield return new WaitForEndOfFrame();
 
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
-            if (gameObjectsToClip.Count==0)
+            if (gameObjectsToClip.Count == 0)
+            {
+                AddChildMeshesToClippableObjects(layer, gameObjectsToClip);
+            }
+            if (gameObjectsToClip.Count == 0)
             {
                 continue;
             }
@@ -84,6 +88,18 @@ public class DXFCreation : ModelFormatCreation
         LoadingScreen.Instance.Hide();
         FreezeLayers(layerList, false);
         Debug.Log("file saved");
+    }
+
+    private void AddChildMeshesToClippableObjects(Layer layer, List<GameObject> gameObjectsToClip)
+    {
+        if (layer.transform.childCount > 0)
+        {
+            MeshFilter[] meshFilterChildren = layer.GetComponentsInChildren<MeshFilter>(true);
+            for (int i = 0; i < meshFilterChildren.Length; i++)
+            {
+                gameObjectsToClip.Add(meshFilterChildren[i].gameObject);
+            }
+        }
     }
 
     private netDxf.AciColor GetColor(Material material)

@@ -16,7 +16,7 @@ namespace Netherlands3D.Interface
 		[SerializeField]
 		List<TileSystem.Layer> selectableLayers;
 
-		private bool[] exportLayerToggles = new bool[4] { true, true, true, true };
+		private bool[] exportLayerToggles = new bool[5] { true, true, true, true, true };
 
 		private Bounds exportBounds;
 
@@ -77,6 +77,11 @@ namespace Netherlands3D.Interface
 			{
 				exportLayerToggles[3] = action;
 				PlayerPrefs.SetInt("exportLayer3Toggle", Convert.ToInt32(exportLayerToggles[3]));
+			});
+			PropertiesPanel.Instance.AddActionCheckbox("NAP 0", Convert.ToBoolean(PlayerPrefs.GetInt("exportLayer4Toggle", 1)), (action) =>
+			{
+				exportLayerToggles[4] = action;
+				PlayerPrefs.SetInt("exportLayer4Toggle", Convert.ToInt32(exportLayerToggles[4]));
 			});
 
 			var exportFormats = new string[] { "AutoCAD DXF (.dxf)", "Collada DAE (.dae)" };
