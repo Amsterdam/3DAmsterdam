@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +36,9 @@ public class SubmitRequestState : State
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
 
         hasSubmitted.SetValue(true);
-        var formattedDate = DateTime.Now.ToString("dd MMMM yyyy");
+
+        CultureInfo culture = new CultureInfo("nl-NL", false);
+        var formattedDate = DateTime.Now.ToString("dd MMMM yyyy", culture);
         submissionDate.SetValue(formattedDate);
 
         SessionSaver.ExportSavedData(); // export new save data

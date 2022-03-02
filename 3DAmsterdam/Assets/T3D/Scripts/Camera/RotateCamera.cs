@@ -232,32 +232,12 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void RotateAround(float xaxis, float yaxis)
     {
-        if (RestrictionChecker.ActiveUitbouw != null)
-        {
-            mycam.transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * RotationSpeed);
-        }
-        //if (RestrictionChecker.ActiveUitbouw != null)
-        //{
-        //    //mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, mycam.transform.right, -yaxis * RotationSpeed);
-        //    mycam.transform.RotateAround(RestrictionChecker.ActiveUitbouw.CenterPoint, Vector3.up, xaxis * RotationSpeed);
-        //} 
-        //else if (RestrictionChecker.ActiveBuilding)
-        //    mycam.transform.RotateAround(RestrictionChecker.ActiveBuilding.BuildingCenter, Vector3.up, xaxis * RotationSpeed);        
+        mycam.transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * RotationSpeed);
     }
 
     bool CameraInRange(Vector3 newCameraPosition)
     {
         return Vector3.Distance(CameraTargetPoint, newCameraPosition) < MaxCameraDistance;
-
-        //if (RestrictionChecker.ActiveUitbouw != null)
-        //{
-        //    return Vector3.Distance(RestrictionChecker.ActiveUitbouw.CenterPoint, newCameraPosition) < MaxCameraDistance;
-        //}
-        //else if (RestrictionChecker.ActiveBuilding)
-        //{
-        //    return Vector3.Distance(RestrictionChecker.ActiveBuilding.BuildingCenter, newCameraPosition) < MaxCameraDistance;
-        //}
-        //return false;
     }
 
     public float GetNormalizedCameraHeight()

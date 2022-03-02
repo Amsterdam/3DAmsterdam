@@ -74,43 +74,35 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                     {
                         if (placedBoundaryFeature == null)
                         {
-                            placedBoundaryFeature = Instantiate(ComponentObject, wall.transform.parent);
-                            //placedBoundaryFeature.SetWall(wall); //set wall immediately because it is needed for the save data
-                            AddBoundaryFeatureToSaveData(ComponentObject.name, placedBoundaryFeature);
+                            AddBoundaryFeatureToSaveData(ComponentObject.name, wall.transform.parent);
                         }
 
                         placedBoundaryFeature.SetWall(wall); //set wall again to update it if the wall changes
-
                         placedBoundaryFeature.transform.position = hit.point;
-                        //placedBoundaryFeature.transform.forward = wall.transform.forward;
                         placedBoundaryFeature.transform.rotation = hit.transform.rotation;
-
-                        //placedBoundaryFeature.transform.position = hit.point;
-                        //placedBoundaryFeature.transform.rotation = hit.transform.rotation;
-
                         ComponentImage.enabled = false;
                     }
                     else if (placedBoundaryFeature != null)
                     {
                         RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
-                        Destroy(placedBoundaryFeature.gameObject);
                         ComponentImage.enabled = true;
                     }
                 }
             }
             else if (placedBoundaryFeature != null)
             {
-                Destroy(placedBoundaryFeature.gameObject);
+                RemoveBoundaryFeatureFromSaveData(placedBoundaryFeature);
                 ComponentImage.enabled = true;
             }
         }
 
-        private void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
+        private void AddBoundaryFeatureToSaveData(string prefabName, Transform parent)
         {
             var state = State.ActiveState as PlaceBoundaryFeaturesState;
             if (state)
             {
-                state.AddBoundaryFeatureToSaveData(prefabName, feature);
+                placedBoundaryFeature = Instantiate(ComponentObject, parent);
+                state.AddBoundaryFeatureToSaveData(prefabName, placedBoundaryFeature);
             }
         }
 
@@ -120,6 +112,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (state)
             {
                 state.RemoveBoundaryFeatureFromSaveData(feature);
+                Destroy(feature.gameObject);
             }
         }
     }

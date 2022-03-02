@@ -84,6 +84,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         public string PrefabName { get; set; } //set this when instantiating to save the prefab to load the next time
         public BoundaryFeatureSaveData SaveData { get; private set; }
 
+        [SerializeField]
+        private string displayName;
+        public string DisplayName => displayName;
+
         protected override void Awake()
         {
             base.Awake();
@@ -284,6 +288,12 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //Destroy(gameObject);
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
+
+            //remove the boundary feature from the list, extra measure to ensure list is reset when restarting the current session
+            if (PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Contains(this))
+            {
+                PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Remove(this);
+            }
         }
 
         public void EditFeature()
