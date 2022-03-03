@@ -15,7 +15,7 @@ public class CityJsonVisualiser : MonoBehaviour
 {
     public Material MeshMaterial;
     private Vector3RD? perceelCenter;
-    private string cityJson;
+    private string cityJson = string.Empty;
     private UploadedUitbouw uitbouw;
 
     public static CityJsonVisualiser Instance;
@@ -52,8 +52,13 @@ public class CityJsonVisualiser : MonoBehaviour
     public void VisualizeCityJson()
     {
         EnableUploadedModel(true);
+        StartCoroutine(ParseCityJson());
+    }
 
-        var cityJsonModel = new CityJsonModel(this.cityJson, new Vector3RD());
+    private IEnumerator ParseCityJson()
+    {
+        yield return new WaitUntil(() => cityJson != string.Empty);
+        var cityJsonModel = new CityJsonModel(cityJson, new Vector3RD());
         var meshmaker = new CityJsonMeshUtility();
 
         foreach (KeyValuePair<string, JSONNode> co in cityJsonModel.cityjsonNode["CityObjects"])

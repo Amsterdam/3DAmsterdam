@@ -38,18 +38,16 @@ namespace Netherlands3D.T3D.Uitbouw
             //base.Start();
             MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
             MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
-            MetadataLoader.Instance.IsBeschermdEvent += Instance_IsBeschermdEvent;
-            MetadataLoader.Instance.IsMonumentEvent += Instance_IsMonumentEvent;
+
+            SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted; ;
         }
 
-        private void Instance_IsMonumentEvent(bool isMonument)
+        private void Loader_LoadingCompleted(bool loadSucceeded)
         {
-            IsMonument = isMonument;
-        }
-
-        private void Instance_IsBeschermdEvent(bool isBeschermd)
-        {
-            IsBeschermd = isBeschermd;
+            var isMonument = new SaveableBool(HTMLKeys.IS_MONUMENT);
+            var isBeschermd = new SaveableBool(HTMLKeys.IS_BESCHERMD);
+            IsMonument = isMonument.Value;
+            IsBeschermd = isBeschermd.Value;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
@@ -146,9 +144,5 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.RecalculateNormals();
             return mesh;
         }
-
-        //public override CitySurface[] GetSurfaces()
-        //{
-        //}
     }
 }

@@ -74,38 +74,6 @@ namespace Netherlands3D.T3D.Uitbouw
         }
     }
 
-    public class AdressDataEventArgs : EventArgs
-    {
-        public string Straat { get; private set; }
-
-        public string Huisnummer { get; private set; }
-
-        public string HuisnummerToevoeging { get; private set; }
-
-        public string Plaats { get; private set; }
-
-        public string Postcode { get; private set; }
-
-        public AdressDataEventArgs(string kortenaam, string huisnummer, string huisnummertoevoeging, string postcode, string plaats)
-        {
-            Straat = kortenaam;
-            Huisnummer = huisnummer;
-            HuisnummerToevoeging = huisnummertoevoeging;
-            Postcode = postcode;
-            Plaats = plaats;
-        }
-    }
-
-    public class AdresUitgebreidDataEventArgs : EventArgs
-    {
-        public Vector2RD Coordinate { get; private set; }
-
-        public AdresUitgebreidDataEventArgs(Vector2RD coordinate)
-        {
-            Coordinate = coordinate;
-        }
-    }
-
     public class MetadataLoader : MonoBehaviour
     {
         public static MetadataLoader Instance;
@@ -131,32 +99,11 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void PerceelDataLoadedEventHandler(object source, PerceelDataEventArgs args);
         public event PerceelDataLoadedEventHandler PerceelDataLoaded;
 
-        public delegate void AddressLoadedEventHandler(object source, AdressDataEventArgs args);
-        public event AddressLoadedEventHandler AddressLoaded;
-
-        public delegate void MonumentEventHandler(bool isMonument);
-        public event MonumentEventHandler IsMonumentEvent;
-
-        public delegate void AdresUitgebreidLoadedEventHandler(object source, AdresUitgebreidDataEventArgs args);
-        public event AdresUitgebreidLoadedEventHandler AdresUitgebreidLoaded;
-
-        public delegate void BeschermdEventHandler(bool isBeschermd);
-        public event BeschermdEventHandler IsBeschermdEvent;
-
         public delegate void BuildingOutlineLoadedEventHandler(object source, BuildingOutlineEventArgs args);
         public event BuildingOutlineLoadedEventHandler BuildingOutlineLoaded;
 
         public delegate void BimCityJsonEventHandler(string cityJson);
         public event BimCityJsonEventHandler BimCityJsonReceived;
-
-        //public List<Vector2[]> PerceelData;
-        private string postcode;
-        private string huisnummer;
-        
-        private Vector2RD buildingcenter;
-
-        //public string BimModelId;
-        //public string BimModelVersionId;
 
         [SerializeField]
         private BuildingMeshGenerator building;
@@ -168,9 +115,6 @@ namespace Netherlands3D.T3D.Uitbouw
         public static BuildingMeshGenerator Building { get; private set; }
         public static PerceelRenderer Perceel { get; private set; }
 
-        Vector2RD PerceelCenter;
-
-
         void Awake()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -178,20 +122,6 @@ namespace Netherlands3D.T3D.Uitbouw
             Building = building;
             Perceel = perceel;
             Instance = this;
-            AddressLoaded += OnAddressLoaded;
-
-            Instance.PerceelDataLoaded += OnPerceelDataLoaded;
-
-        }
-
-        private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
-        {
-            PerceelCenter = args.Center;
-        }
-
-        private void OnAddressLoaded(object source, AdressDataEventArgs args)
-        {            
-            StartCoroutine(GetAdressenUitgebreid(args.Postcode, args.Huisnummer, args.HuisnummerToevoeging));
         }
 
         public void RequestBuildingData(Vector3RD position, string id)
@@ -201,50 +131,10 @@ namespace Netherlands3D.T3D.Uitbouw
                 StartCoroutine(GetBimCityJson());
             }
 
-            StartCoroutine(UpdateSidePanelAddress(id));
-
-            //yield return new WaitForSeconds(1); //todo: replace this with a wait for the tile to be loaded or something similar
-
             StartCoroutine(GetPerceelData(position));
-
-           // StartCoroutine(HighlightBuilding(position, id));
-
-            StartCoroutine(GetMonumentStatus(position));
-
-            StartCoroutine(GetBeschermdStatus(position));
 
             StartCoroutine(RequestBuildingOutlineData(id));
 
-        }
-
-        IEnumerator HighlightBuilding(Vector3RD position, string id)
-        {
-            Transform buildingTile = null;
-            Vector3RD tegelRD = new Vector3RD();
-
-            yield return new WaitUntil(
-                () =>
-                {
-                    if (buildingsLayer.transform.childCount > 0)
-                    {
-                        foreach (Transform tile in buildingsLayer.transform)
-                        {
-                            tegelRD = tile.name.GetRDCoordinate();
-
-                            if (tegelRD.x == 0) return false;
-
-                            if (position.x >= tegelRD.x && position.x < tegelRD.x + 1000 && position.y >= tegelRD.y && position.y < tegelRD.y + 1000)
-                            {
-                                buildingTile = tile;
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    return false;
-                }
-            );
-            StartCoroutine(DownloadBuildingData(tegelRD, id, buildingTile.gameObject));
         }
 
         IEnumerator RequestBuildingOutlineData(string bagId)
@@ -286,72 +176,6 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
-        IEnumerator UpdateSidePanelAddress(string bagId)
-        {
-
-            List<Vector2[]> list = new List<Vector2[]>();
-            //var builtArea = 0f;
-
-            var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressen?pandIdentificatie={bagId}";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
-            req.SetRequestHeader("Accept-Crs", "epsg:28992");
-
-            yield return req.SendWebRequest();
-
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var addresses = json["_embedded"]["adressen"];
-
-                foreach (JSONObject adres in addresses)
-                {
-                    var kortenaam = adres["korteNaam"].Value;
-                    var huisnummer = adres["huisnummer"].Value;                    
-                    var huisnummertoevoeging = adres["huisnummertoevoeging"].Value;
-                    var postcode = adres["postcode"].Value;
-                    var plaats = adres["woonplaatsNaam"].Value;
-
-                    AddressLoaded?.Invoke(this, new AdressDataEventArgs(kortenaam, huisnummer, huisnummertoevoeging, postcode, plaats));
-                }
-            }
-        }
-
-        IEnumerator GetAdressenUitgebreid(string postcode, string huisnummer, string huisnummertoevoeging)
-        {
-            var url = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode={postcode}&huisnummer={huisnummer}&exacteMatch=true";
-            var url_toevoeging = $"https://api.bag.kadaster.nl/lvbag/individuelebevragingen/v2/adressenuitgebreid?postcode={postcode}&huisnummer={huisnummer}&huisnummertoevoeging={huisnummertoevoeging}&exacteMatch=true";
-
-            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(huisnummertoevoeging) ? url : url_toevoeging);
-            req.SetRequestHeader("X-Api-Key", "l772bb9814e5584919b36a91077cdacea7");
-            req.SetRequestHeader("Accept-Crs", "epsg:28992");
-
-            yield return req.SendWebRequest();
-
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Adressenuitgebreid data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var addresses = json["_embedded"]["adressen"];
-
-                foreach (JSONObject adres in addresses)
-                {
-                    var point = adres["adresseerbaarObjectGeometrie"]["punt"]["coordinates"].AsArray;
-
-                    Vector2RD building_center = new Vector2RD(point[0], point[1]);
-                    AdresUitgebreidLoaded?.Invoke(this, new AdresUitgebreidDataEventArgs(building_center));
-                }
-            }
-        }
-
         IEnumerator GetPerceelData(Vector3RD position)
         {
             //yield return null;
@@ -369,50 +193,6 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 var json = JSON.Parse(req.downloadHandler.text);
                 ProcessPerceelData(json);
-            }
-        }
-
-        IEnumerator GetMonumentStatus(Vector3RD position)
-        {
-            yield return null;
-
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:NationalListedMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("MonumentStatus data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var isMonument = json["features"].Linq.Any();
-
-                IsMonumentEvent?.Invoke(isMonument);
-            }
-        }
-
-        IEnumerator GetBeschermdStatus(Vector3RD position)
-        {
-            yield return null;
-
-            var bbox = $"{ position.x - 0.5},{ position.y - 0.5},{ position.x + 0.5},{ position.y + 0.5}";
-            var url = $"https://services.rce.geovoorziening.nl/rce/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rce:ArcheologicalMonuments&STARTINDEX=0&COUNT=1&SRSNAME=EPSG:28992&BBOX={bbox}&outputFormat=json";
-
-            UnityWebRequest req = UnityWebRequest.Get(url);
-            yield return req.SendWebRequest();
-            if (req.result == UnityWebRequest.Result.ConnectionError || req.result == UnityWebRequest.Result.ProtocolError)
-            {
-                WarningDialogs.Instance.ShowNewDialog("Perceel data kon niet opgehaald worden");
-            }
-            else
-            {
-                var json = JSON.Parse(req.downloadHandler.text);
-                var isBeschermd = json["features"].Linq.Any();
-
-                IsBeschermdEvent?.Invoke(isBeschermd);
             }
         }
 
@@ -491,17 +271,20 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw(Vector3 spawnPosition)
         {
             //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            if (T3DInit.Instance.UploadedModel && !Uitbouw)
+            if (!Uitbouw)
             {
-                var obj = CityJsonVisualiser.Instance;
-                obj.VisualizeCityJson();
-                obj.SetUitbouwPosition(spawnPosition);
-                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
-            }
-            else if (!Uitbouw)
-            {
-                var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
-                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                if (T3DInit.Instance.UploadedModel)
+                {
+                    var obj = CityJsonVisualiser.Instance;
+                    obj.VisualizeCityJson();
+                    obj.SetUitbouwPosition(spawnPosition);
+                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                }
+                else
+                {
+                    var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
+                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                }
             }
             //uitbouwPrefab.SetActive(true);
             //uitbouwPrefab.transform.position = pos;

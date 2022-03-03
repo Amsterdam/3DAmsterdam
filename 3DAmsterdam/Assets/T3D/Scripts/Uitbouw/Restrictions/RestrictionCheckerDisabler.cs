@@ -7,7 +7,6 @@ namespace Netherlands3D.T3D.Uitbouw
 {
     public class RestrictionCheckerDisabler : MonoBehaviour
     {
-
         [SerializeField]
         private UitbouwRestrictionType restrictionType;
         private UitbouwRestriction restriction;

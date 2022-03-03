@@ -12,6 +12,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private MeshFilter meshFilter;
         private Mesh mesh;
 
+        private MeshFilter tempMeshFilter;
+
         Vector3 transformedExtents;
 
         public override Vector3 LeftCenter => meshFilter.transform.position + mesh.bounds.center - transform.right * transformedExtents.x;
@@ -31,8 +33,26 @@ namespace Netherlands3D.T3D.Uitbouw
             SetDimensions(Multiply(meshFilter.transform.lossyScale, mesh.bounds.size));
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            //if we receive the BIM CityJSON later than the state is loaded and this object is enabled, we need to provide a temporary meshfilter to avoid NullReferences.
+            if (!meshFilter)
+            {
+                var temp = new GameObject();
+                tempMeshFilter = temp.AddComponent<MeshFilter>();
+                SetMeshFilter(tempMeshFilter);
+            }
+        }
+
         public void SetMeshFilter(MeshFilter mf)
         {
+            if(mf != tempMeshFilter)
+            {
+                Destroy(tempMeshFilter.gameObject);
+            }
+
             meshFilter = mf;
             mesh = meshFilter.mesh;
             transformedExtents = Multiply(meshFilter.transform.lossyScale, mesh.bounds.extents);
