@@ -26,6 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw
         protected override void CreatePopup()
         {
             bool conforms = restriction == null || restriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
+            Debug.Log(gameObject.name + "\t" + conforms, gameObject);
             CreatePopup(conforms);
         }
 
@@ -33,8 +34,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
 
-            string passedText = string.Empty;
-            string failedText = string.Empty;
+            string passedText = conformsText;
+            string failedText = exceedsText;
 
             switch (restrictionType)
             {
@@ -43,7 +44,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     failedText = string.Format(exceedsText, HeightRestriction.MaxHeight, (RestrictionChecker.ActiveUitbouw.Height - HeightRestriction.MaxHeight).ToString("F2"));
                     break;
                 case UitbouwRestrictionType.Depth:
-                    passedText = string.Format(conformsText,  DepthRestriction.MaxDepth, RestrictionChecker.ActiveUitbouw.Depth.ToString("F2"));
+                    passedText = string.Format(conformsText, DepthRestriction.MaxDepth, RestrictionChecker.ActiveUitbouw.Depth.ToString("F2"));
                     failedText = string.Format(exceedsText, DepthRestriction.MaxDepth, (RestrictionChecker.ActiveUitbouw.Depth - DepthRestriction.MaxDepth).ToString("F2"));
                     break;
                 case UitbouwRestrictionType.Area:

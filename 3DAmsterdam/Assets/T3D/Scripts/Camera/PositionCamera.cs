@@ -24,10 +24,17 @@ public class PositionCamera: MonoBehaviour
 
     void Start()
     {
-        MetadataLoader.Instance.AdresUitgebreidLoaded += OnAdresUitgebreidLoaded;
+        //MetadataLoader.Instance.AdresUitgebreidLoaded += OnAdresUitgebreidLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
         MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
+
+        SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
+    }
+
+    private void Loader_LoadingCompleted(bool loadSucceeded)
+    {
+        OnAdresUitgebreidLoaded();
     }
 
     private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
@@ -48,9 +55,10 @@ public class PositionCamera: MonoBehaviour
         // if (cameraIsSet == false && buildingcenter != null) SetCameraposition();
     }
 
-    private void OnAdresUitgebreidLoaded(object source, AdresUitgebreidDataEventArgs args)
+    private void OnAdresUitgebreidLoaded()
     {
-        buildingcenter = args.Coordinate;
+        var buildingPosition = new SaveableVector3RD(HTMLKeys.RD_POSITION_KEY);
+        buildingcenter = new Vector2RD(buildingPosition.Value.x, buildingPosition.Value.y);
         CheckSetCameraposition();
         //if (cameraIsSet == false && perceelcenter != null) SetCameraposition();        
     }

@@ -28,7 +28,8 @@ public static class SessionSaver
             //SessionId = "4f2e5410-85af-11ec-b02f-8508d1049190"; //Stadhouderslaan 79 Utrecht
             //SessionId = "719bd3a0-8376-11ec-9953-4b875c5f9637"; // Jan Pieterzoon Coenstr 40 Utrecht
             //SessionId = "1186a670-8849-11ec-b2fe-1dc941e32fde"; //Haarlemmerstraatweg 35
-            SessionId = "7ef78e70-9971-11ec-b20a-4f1ed5ad072e"; 
+            SessionId = "a971a840-9ae1-11ec-b6a0-4b7592947525"; // Paleis op de dam (monument + beschermd)
+            //SessionId = "7ef78e70-9971-11ec-b20a-4f1ed5ad072e";
         }
         SessionId += "_html";
 
