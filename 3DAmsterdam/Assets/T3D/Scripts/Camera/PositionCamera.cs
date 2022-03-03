@@ -17,12 +17,9 @@ public class PositionCamera: MonoBehaviour
     float buildingRadius;
     
     float? groundLevel;
-    bool cameraIsSet = false;
+    bool cameraIsSet = false;    
 
-    Vector3 buildingCenter;
-    
-
-    void Start()
+    void OnEnable()
     {
         MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
@@ -31,9 +28,18 @@ public class PositionCamera: MonoBehaviour
         SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
     }
 
+    void OnDisable()
+    {
+        MetadataLoader.Instance.PerceelDataLoaded -= OnPerceelDataLoaded;
+        BuildingMeshGenerator.Instance.BuildingDataProcessed -= OnBuildingDataProcessed;
+        MetadataLoader.Instance.BuildingOutlineLoaded -= OnBuildingOutlineLoaded;
+
+        SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
+    }
+
     private void Loader_LoadingCompleted(bool loadSucceeded)
     {
-        OnAdresUitgebreidLoaded();
+        SetCameraPosition();
     }
 
     private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
@@ -54,7 +60,7 @@ public class PositionCamera: MonoBehaviour
         // if (cameraIsSet == false && buildingcenter != null) SetCameraposition();
     }
 
-    private void OnAdresUitgebreidLoaded()
+    private void SetCameraPosition()
     {
         var buildingPosition = new SaveableVector3RD(HTMLKeys.RD_POSITION_KEY);
         buildingcenter = new Vector2RD(buildingPosition.Value.x, buildingPosition.Value.y);
@@ -71,12 +77,12 @@ public class PositionCamera: MonoBehaviour
 
         cameraIsSet = true;
 
-        buildingCenter = CoordConvert.RDtoUnity(buildingcenter.Value);
+        var buildingCenterUnity = CoordConvert.RDtoUnity(buildingcenter.Value);
         var perceelCenter = CoordConvert.RDtoUnity(perceelcenter.Value);
-        var cameraoffset = (perceelCenter - buildingCenter).normalized * (buildingRadius + CameraDistance);
+        var cameraoffset = (perceelCenter - buildingCenterUnity).normalized * (buildingRadius + CameraDistance);
 
         var camera = CameraModeChanger.Instance.ActiveCamera;
-        camera.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel.Value + CameraHeight, buildingCenter.z + cameraoffset.z);
+        camera.transform.position = new Vector3(buildingCenterUnity.x + cameraoffset.x, groundLevel.Value + CameraHeight, buildingCenterUnity.z + cameraoffset.z);
 
         if (RestrictionChecker.ActiveUitbouw != null)
         {
