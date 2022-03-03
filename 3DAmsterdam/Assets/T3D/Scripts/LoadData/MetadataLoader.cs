@@ -271,17 +271,20 @@ namespace Netherlands3D.T3D.Uitbouw
         public void PlaatsUitbouw(Vector3 spawnPosition)
         {
             //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
-            if (T3DInit.Instance.UploadedModel && !Uitbouw)
+            if (!Uitbouw)
             {
-                var obj = CityJsonVisualiser.Instance;
-                obj.VisualizeCityJson();
-                obj.SetUitbouwPosition(spawnPosition);
-                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
-            }
-            else if (!Uitbouw)
-            {
-                var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
-                Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                if (T3DInit.Instance.UploadedModel)
+                {
+                    var obj = CityJsonVisualiser.Instance;
+                    obj.VisualizeCityJson();
+                    obj.SetUitbouwPosition(spawnPosition);
+                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                }
+                else
+                {
+                    var obj = Instantiate(shapableUitbouwPrefab, spawnPosition, Quaternion.identity);
+                    Uitbouw = obj.GetComponentInChildren<UitbouwBase>();
+                }
             }
             //uitbouwPrefab.SetActive(true);
             //uitbouwPrefab.transform.position = pos;
