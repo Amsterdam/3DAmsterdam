@@ -292,7 +292,16 @@ namespace Netherlands3D.Cameras
             }
 
             Clamping();
+            ClipRangeByDistance();
             //ClampRotation(); //clamping doesnt work because we rotate around point, moving the camera
+        }
+
+        /// <summary>
+        /// To avoid Z-fighting issues when looking from a distance increase near clipplane distance based on camera height
+        /// </summary>
+        private void ClipRangeByDistance()
+        {
+            cameraComponent.nearClipPlane = Mathf.Max(0.3f, cameraComponent.transform.position.y / 100f);
         }
 
         void CheckRotatingAround()
