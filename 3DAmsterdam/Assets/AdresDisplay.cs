@@ -21,7 +21,6 @@ public class AdresDisplay : MonoBehaviour
     {
         var straat = new SaveableString(HTMLKeys.STREET_KEY);
         var huisnummer = new SaveableString(HTMLKeys.HOUSE_NUMBER_KEY);
-        //var huisnummertoevoeging = ;
         var postcode = new SaveableString(HTMLKeys.ZIP_CODE_KEY);
         var plaats = new SaveableString(HTMLKeys.CITY_KEY);
 

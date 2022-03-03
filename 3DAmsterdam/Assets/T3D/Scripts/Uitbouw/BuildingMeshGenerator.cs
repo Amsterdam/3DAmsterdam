@@ -144,9 +144,5 @@ namespace Netherlands3D.T3D.Uitbouw
             mesh.RecalculateNormals();
             return mesh;
         }
-
-        //public override CitySurface[] GetSurfaces()
-        //{
-        //}
     }
 }

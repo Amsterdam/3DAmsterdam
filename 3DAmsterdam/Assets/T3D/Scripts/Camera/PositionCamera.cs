@@ -24,7 +24,6 @@ public class PositionCamera: MonoBehaviour
 
     void Start()
     {
-        //MetadataLoader.Instance.AdresUitgebreidLoaded += OnAdresUitgebreidLoaded;
         MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
         BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
         MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
