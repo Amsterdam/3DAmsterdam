@@ -89,12 +89,25 @@ public class MeshClipper
     private trianglePosition GetTrianglePosition(Vector3 point1, Vector3 point2, Vector3 point3, RDBoundingBox boundingBox)
     {
         int counter = 0;
-        if (PointISInsideArea(point1,boundingBox)){counter++;}
-        if (PointISInsideArea(point2, boundingBox)) { counter++; }
-        if (PointISInsideArea(point3, boundingBox)) { counter++; }
+        if (PointIsInsideArea(point1, boundingBox)) { counter++; }
+        if (PointIsInsideArea(point2, boundingBox)) { counter++; }
+        if (PointIsInsideArea(point3, boundingBox)) { counter++; }
 
         if (counter ==0)
         {
+            /*var bbox1 = new Vector3((float)boundingBox.minX, 0, (float)boundingBox.minY);
+            var bbox2 = new Vector3((float)boundingBox.minX, 0, (float)boundingBox.maxY);
+            var bbox3 = new Vector3((float)boundingBox.maxX, 0, (float)boundingBox.maxY);
+            var bbox4 = new Vector3((float)boundingBox.maxX, 0, (float)boundingBox.minY);
+
+            if (PointIsInTriangle(bbox1, point1, point2, point3) ||
+                PointIsInTriangle(bbox2, point1, point2, point3) ||
+                PointIsInTriangle(bbox3, point1, point2, point3) ||
+                PointIsInTriangle(bbox4, point1, point2, point3))
+            {
+                return trianglePosition.overlap;
+			}
+            */
             return trianglePosition.outside;
         }
         else if(counter ==3)
@@ -107,19 +120,18 @@ public class MeshClipper
         }
     }
 
-    public static bool PointIsInTriangle(Vector2 p, Vector2 p0, Vector2 p1, Vector2 p2)
+    public static bool PointIsInTriangle(Vector3 p, Vector3 p0, Vector3 p1, Vector3 p2)
     {
-        var a = .5f * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
+        var a = .5f * (-p1.z * p2.x + p0.z * (-p1.x + p2.x) + p0.x * (p1.z - p2.z) + p1.x * p2.z);
         var sign = a < 0 ? -1 : 1;
-        var s = (p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * p.x + (p0.x - p2.x) * p.y) * sign;
-        var t = (p0.x * p1.y - p0.y * p1.x + (p0.y - p1.y) * p.x + (p1.x - p0.x) * p.y) * sign;
+        var s = (p0.z * p2.x - p0.x * p2.z + (p2.z - p0.z) * p.x + (p0.x - p2.x) * p.z) * sign;
+        var t = (p0.x * p1.z - p0.z * p1.x + (p0.z - p1.z) * p.x + (p1.x - p0.x) * p.z) * sign;
 
         return s > 0 && t > 0 && (s + t) < 2 * a * sign;
     }
 
-    private bool PointISInsideArea(Vector3 vector, RDBoundingBox boundingBox)
+    private bool PointIsInsideArea(Vector3 vector, RDBoundingBox boundingBox)
     {
-
         if (vector.x < 0 || vector.x > boundingBox.width)
         {
             return false;
@@ -128,7 +140,6 @@ public class MeshClipper
         {
             return false;
         }
-
         return true;
     }
 

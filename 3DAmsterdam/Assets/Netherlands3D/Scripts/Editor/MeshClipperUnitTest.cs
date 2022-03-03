@@ -24,7 +24,7 @@ public class MeshClipperUnitTest
         Assert.AreEqual(false, pointOutside);
         Assert.AreEqual(true, pointInside);
     }
-
+    /*
     [Test]
     public void TestTriangleOverlapBounds()
     {
@@ -36,5 +36,5 @@ public class MeshClipperUnitTest
 
         MeshClipper.trianglePosition trianglePosition = MeshClipper.GetTrianglePosition(p1, p2, p3, boundingBox);
         Assert.AreEqual(MeshClipper.trianglePosition.overlap, trianglePosition);
-    }
+    }*/
 }
