@@ -931,7 +931,7 @@ namespace Netherlands3D.ModelParsing
 			finalNormals.SetupWriting("finalNormals");
 			for (int i = 0; i < keyList.Count; i++)
 			{
-				loadingObjScreen.ShowMessage("Model wordt samengesteld voor materiaal " + (i+1) + " van " +keyList.Count);
+				loadingObjScreen.ShowMessage("Model wordt samengesteld. Onderdeel " + (i+1) + " van " +keyList.Count);
 				yield return null;
 				submesh = submeshes[keyList[i]];
 				submesh.startVertex = vertexcount;
@@ -1002,7 +1002,7 @@ namespace Netherlands3D.ModelParsing
 			Mesh mesh = new Mesh();
 			int finalVertexCount = finalVertices.Count();
 			Vector3[] defVertices = new Vector3[finalVertexCount];
-			loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 1 van 3");
+			loadingObjScreen.ShowMessage("Onderdelen worden samengevoegd stap 1 van 3");
 			for (int i = 0; i < finalVertexCount; i++)
             {
                 if (i%10000==1)
@@ -1020,7 +1020,7 @@ namespace Netherlands3D.ModelParsing
 
 			if (hasNormals)
             {
-				loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 2 van 3");
+				loadingObjScreen.ShowMessage("Onderdelen worden samengevoegd stap 2 van 3");
 				finalNormals.SetupReading();
 				Vector3[] defNormals = new Vector3[finalVertexCount];
 				for (int i = 0; i < finalVertexCount; i++)
@@ -1043,7 +1043,7 @@ namespace Netherlands3D.ModelParsing
 
 			int indexCount = finalIndices.numberOfVertices();
 			int[] defIndices = new int[indexCount];
-			loadingObjScreen.ShowMessage("Materialen worden samengevoegd stap 3 van 3");
+			loadingObjScreen.ShowMessage("Onderdelen worden samengevoegd stap 3 van 3");
 			for (int i = 0; i < indexCount; i++)
 			{
 				if (i % 10000 == 1)
