@@ -51,6 +51,8 @@ namespace Netherlands3D.Utilities
             Debug.Log("Reading git HEAD file:" + headLine);
 
             headLine = headLine.Replace("feature/", "feature-");
+            headLine = headLine.Replace("bugfix/", "bugfix-");
+
             var positionLastSlash = headLine.LastIndexOf("/") + 1;
             var headName = headLine.Substring(positionLastSlash, headLine.Length - positionLastSlash);
 
@@ -98,7 +100,7 @@ namespace Netherlands3D.Utilities
 
         private static void ZipAndDeploy(string mainName, BuildSummary buildSummary)
         {
-            var zipFilePath = $"{buildSummary.outputPath}../{mainName.Replace("feature-", "")}.zip";
+            var zipFilePath = $"{buildSummary.outputPath}../{mainName}.zip";
 
             if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
             ZipFile.CreateFromDirectory(buildSummary.outputPath, zipFilePath);
