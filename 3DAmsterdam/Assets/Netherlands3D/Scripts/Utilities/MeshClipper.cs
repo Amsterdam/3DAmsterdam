@@ -73,10 +73,9 @@ public class MeshClipper
                 }
             }
         }
-
     }
 
-    private List<Vector3> CreateClippingPolygon(RDBoundingBox boundingBox)
+    public static List<Vector3> CreateClippingPolygon(RDBoundingBox boundingBox)
     {
         List<Vector3> output = new List<Vector3>(4);
         output.Add(new Vector3(0, 0, 0));
@@ -86,31 +85,36 @@ public class MeshClipper
         return output;
     }
 
-    private trianglePosition GetTrianglePosition(Vector3 point1, Vector3 point2, Vector3 point3, RDBoundingBox boundingBox)
+    /// <summary>
+    /// Returns if triangle is inside, outside or overlapping with boundingbox
+    /// </summary>
+    /// <param name="point1">Triangle point position using boundingbox bottomleft as origin</param>
+    /// <param name="point2">Triangle point position using boundingbox bottomleft as origin</param>
+    /// <param name="point3">Triangle point position using boundingbox bottomleft as origin</param>
+    /// <param name="boundingBox">RD boundingbox</param>
+    /// <returns></returns>
+    public static trianglePosition GetTrianglePosition(Vector3 point1, Vector3 point2, Vector3 point3, RDBoundingBox boundingBox)
     {
         int counter = 0;
         if (PointIsInsideArea(point1, boundingBox)) { counter++; }
         if (PointIsInsideArea(point2, boundingBox)) { counter++; }
         if (PointIsInsideArea(point3, boundingBox)) { counter++; }
 
-        if (counter ==0)
+        if (counter == 0)
         {
-            /*var bbox1 = new Vector3((float)boundingBox.minX, 0, (float)boundingBox.minY);
-            var bbox2 = new Vector3((float)boundingBox.minX, 0, (float)boundingBox.maxY);
-            var bbox3 = new Vector3((float)boundingBox.maxX, 0, (float)boundingBox.maxY);
-            var bbox4 = new Vector3((float)boundingBox.maxX, 0, (float)boundingBox.minY);
+            var bbox1 = new Vector3(0, 0, 0);
+            var bbox2 = new Vector3(0, 0, (float)boundingBox.height);
+            var bbox3 = new Vector3((float)boundingBox.width, 0, (float)boundingBox.height);
+            var bbox4 = new Vector3((float)boundingBox.width, 0, 0);
 
-            if (PointIsInTriangle(bbox1, point1, point2, point3) ||
-                PointIsInTriangle(bbox2, point1, point2, point3) ||
-                PointIsInTriangle(bbox3, point1, point2, point3) ||
-                PointIsInTriangle(bbox4, point1, point2, point3))
-            {
-                return trianglePosition.overlap;
-			}
-            */
+            if (PointIsInTriangle(bbox1, point1, point2, point3)) return trianglePosition.overlap;
+            if (PointIsInTriangle(bbox2, point1, point2, point3)) return trianglePosition.overlap;
+            if (PointIsInTriangle(bbox3, point1, point2, point3)) return trianglePosition.overlap;
+            if (PointIsInTriangle(bbox4, point1, point2, point3)) return trianglePosition.overlap;
+
             return trianglePosition.outside;
         }
-        else if(counter ==3)
+        else if(counter == 3)
         {
             return trianglePosition.inside;
         }
@@ -130,7 +134,7 @@ public class MeshClipper
         return s > 0 && t > 0 && (s + t) < 2 * a * sign;
     }
 
-    private bool PointIsInsideArea(Vector3 vector, RDBoundingBox boundingBox)
+    public static bool PointIsInsideArea(Vector3 vector, RDBoundingBox boundingBox)
     {
         if (vector.x < 0 || vector.x > boundingBox.width)
         {
