@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class ColladaCreation : ModelFormatCreation
 {
-
     private MeshClipper.RDBoundingBox boundingbox;
 
     private bool coordinatesToZero = true;
@@ -46,8 +45,13 @@ public class ColladaCreation : ModelFormatCreation
             List<GameObject> gameObjectsToClip = GetTilesInLayer(layer, bottomLeftRD, topRightRD);
             if (gameObjectsToClip.Count == 0)
             {
+                AddChildMeshesToClippableObjects(layer, gameObjectsToClip);
+            }
+            if (gameObjectsToClip.Count == 0)
+            {
                 continue;
             }
+
             foreach (var gameObject in gameObjectsToClip)
             {
                 meshClipper.SetGameObject(gameObject);
@@ -92,4 +96,16 @@ public class ColladaCreation : ModelFormatCreation
         LoadingScreen.Instance.Hide();
         Debug.Log("file saved");
     }
+
+	private void AddChildMeshesToClippableObjects(Layer layer, List<GameObject> gameObjectsToClip)
+	{
+		if (layer.transform.childCount > 0)
+		{
+			MeshFilter[] meshFilterChildren = layer.GetComponentsInChildren<MeshFilter>(true);
+			for (int i = 0; i < meshFilterChildren.Length; i++)
+			{
+				gameObjectsToClip.Add(meshFilterChildren[i].gameObject);    
+			}
+		}
+	}
 }
