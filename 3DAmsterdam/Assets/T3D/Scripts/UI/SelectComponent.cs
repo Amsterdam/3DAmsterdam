@@ -21,19 +21,10 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         private Toggle toggle;
         private Image image;
 
-        //private Vector3 startPositionDragContainer;
-
         void Start()
         {
-            //startPositionDragContainer = DragContainer.transform.position;
-
             toggle = GetComponent<Toggle>();
             image = GetComponent<Image>();
-
-            //toggle.onValueChanged.AddListener(delegate
-            //{
-            //    ToggleValueChanged(toggle);
-            //});
         }
 
         public void Deslect()
