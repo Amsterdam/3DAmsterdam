@@ -2,11 +2,12 @@ using Netherlands3D.T3D.Uitbouw;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public class SelectComponent : MonoBehaviour
+    public class SelectComponent : MonoBehaviour, IDragHandler
     {
         public GameObject DragContainer;
         public Sprite DragContainerImage;
@@ -20,33 +21,25 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         private Toggle toggle;
         private Image image;
 
-        private Vector3 startPositionDragContainer;
-
         void Start()
         {
-            startPositionDragContainer = DragContainer.transform.position;
-
             toggle = GetComponent<Toggle>();
             image = GetComponent<Image>();
-
-            toggle.onValueChanged.AddListener(delegate
-            {
-                ToggleValueChanged(toggle);
-            });
         }
 
-        public void SetToggle(bool ison)
+        public void Deslect()
         {
-            toggle.isOn = ison;
+            SetComponentSelected(false);
         }
 
-        void ToggleValueChanged(Toggle changed)
+        void SetComponentSelected(bool changed)
         {
-            image.color = changed.isOn ? SelectedColor : Color.white;
+            toggle.isOn = changed;
+            image.color = changed ? SelectedColor : Color.white;
 
-            if (changed.isOn)
+            if (changed)
             {
-                DragContainer.transform.position = startPositionDragContainer;
+                DragContainer.transform.position = Input.mousePosition;
                 DragContainer.SetActive(true);
                 DragContainer.GetComponent<HandleDragContainer>().ComponentImage.enabled = true;
 
@@ -57,6 +50,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             }
 
             LibraryComponentSelectedEvent.Raise(this, DragContainerImage, IsTopComponent, ComponentWidth, ComponentHeight, ComponentObject, this);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            SetComponentSelected(true);
         }
     }
 }

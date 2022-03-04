@@ -43,20 +43,20 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void Update()
         {
-            if (Input.GetMouseButton(0) == false && placedBoundaryFeature != null)
+            if (Input.GetMouseButton(0) == false)
             {
-                //Destroy(placedBoundaryFeature.gameObject);
-                placedBoundaryFeature = null; //place object and set this one to null to 
-                selectComponent.SetToggle(false);
+                if (placedBoundaryFeature != null)
+                {
+                    //Destroy(placedBoundaryFeature.gameObject);
+                    placedBoundaryFeature = null; //place object and set this one to null to 
+                }
+                selectComponent.Deslect();
                 return;
             }
 
-            if (Input.GetMouseButton(0) == false) return;
 
             RaycastHit hit;
-            var screenpoint = ComponentImage.rectTransform.position;
-            screenpoint.x += ComponentImage.rectTransform.rect.width / 2;
-            screenpoint.y -= ComponentImage.rectTransform.rect.height / 2;
+            var screenpoint = Input.mousePosition;
 
             Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
 
