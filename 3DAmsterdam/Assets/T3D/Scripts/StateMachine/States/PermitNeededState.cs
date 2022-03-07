@@ -78,4 +78,15 @@ public class PermitNeededState : State
     {
         nextButton.GetComponentInChildren<Text>().text = newText;
     }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            print("setting submitted to false");
+            hasSubmitted.SetValue(false);
+        }
+    }
+#endif
 }
