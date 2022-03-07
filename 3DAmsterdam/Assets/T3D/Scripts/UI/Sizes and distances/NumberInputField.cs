@@ -21,7 +21,11 @@ namespace Netherlands3D.Interface
         {
             get
             {
-                return EventSystem.current.currentSelectedGameObject?.GetComponentInParent<NumberInputField>() == this;
+                if (EventSystem.current.currentSelectedGameObject)
+                {
+                    return EventSystem.current.currentSelectedGameObject.GetComponentInParent<NumberInputField>() == this;
+                }
+                return false;
             }
         }
 
