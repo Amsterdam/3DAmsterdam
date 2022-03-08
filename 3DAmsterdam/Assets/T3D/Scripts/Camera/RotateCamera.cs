@@ -31,12 +31,13 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     Vector3 lastRotatePosition;
     Quaternion lastRotateRotation;
-    Vector2 currentRotation;
 
     Vector2RD PerceelCenter;
     Vector2RD BuildingCenter;
     float BuildingRadius;
 
+    [SerializeField]
+    private float autoOrientRotateSpeed = 10f;
 
     float groundLevel;
 
@@ -95,6 +96,15 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void Update()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
+        if (!dragging && !Input.GetMouseButton(0))
+        {
+
+            print("lookat");
+            Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - mycam.transform.position).normalized, Vector3.up);
+            mycam.transform.rotation = Quaternion.Slerp(mycam.transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
+            //mycam.transform.LookAt(CameraTargetPoint, Vector3.up);
+        }
+
         if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
         {
             RotateAround(mouseDelta.x, mouseDelta.y);
@@ -129,17 +139,9 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             var cameraoffset = (perceelCenter - buildingCenter).normalized * (BuildingRadius + firstPersonCameraDistance);
 
             mycam.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel + firstPersonHeight, buildingCenter.z + cameraoffset.z);
+            mycam.transform.LookAt(CameraTargetPoint);
 
-            if (RestrictionChecker.ActiveUitbouw == null)
-            {
-                mycam.transform.LookAt(buildingCenter);
-            }
-            else
-            {
-                mycam.transform.LookAt(new Vector3(RestrictionChecker.ActiveUitbouw.CenterPoint.x, RestrictionChecker.ActiveUitbouw.CenterPoint.y, RestrictionChecker.ActiveUitbouw.CenterPoint.z));
-            }
-
-            currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
+            //currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
         }
         else
         {
