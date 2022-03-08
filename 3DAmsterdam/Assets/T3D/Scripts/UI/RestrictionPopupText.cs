@@ -26,13 +26,13 @@ namespace Netherlands3D.T3D.Uitbouw
         protected override void CreatePopup()
         {
             bool conforms = restriction == null || restriction.ConformsToRestriction(RestrictionChecker.ActiveBuilding, RestrictionChecker.ActivePerceel, RestrictionChecker.ActiveUitbouw);
-            Debug.Log(gameObject.name + "\t" + conforms, gameObject);
+            //Debug.Log(gameObject.name + "\t" + conforms, gameObject);
             CreatePopup(conforms);
         }
 
         void CreatePopup(bool conformsToRestriction)
         {
-            popup = Instantiate(popupPrefab, transform.position, transform.rotation, transform);
+            popup = Instantiate(popupPrefab, transform.position, transform.rotation, GetComponentInParent<State>().transform);
 
             string passedText = conformsText;
             string failedText = exceedsText;
