@@ -12,15 +12,26 @@ public class InfoHoverButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField]
     protected GameObject popupPrefab;
     protected GameObject popup;
+    private bool pointerInRect;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        CreatePopup();
+        pointerInRect = true;
+        if (!popup)
+            CreatePopup();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Destroy(popup);
+        pointerInRect = false;
+    }
+
+    private void Update()
+    {
+        if (popup && !pointerInRect && !popup.GetComponentInChildren<PopupInfo>().PointerInRect)
+        {
+            Destroy(popup);
+        }
     }
 
     protected virtual void CreatePopup()

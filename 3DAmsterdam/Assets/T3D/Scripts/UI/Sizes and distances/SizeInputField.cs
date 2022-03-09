@@ -17,8 +17,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
     public class SizeInputField : MonoBehaviour
     {
-        public bool UpdateOnce;
-        private bool hasUpdatedText;
+        //public bool UpdateOnce;
+        //private bool hasUpdatedText;
 
         private InputField inputField;
         [SerializeField]
@@ -79,13 +79,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (hasUpdatedText == false && UpdateOnce && RestrictionChecker.ActiveUitbouw != null)
-            {
+            if (RestrictionChecker.ActiveUitbouw != null)
                 SetText();
-                hasUpdatedText = true;
-            }
-
-            if (!UpdateOnce && !inputField.isFocused)
+            else if (!inputField)
+                SetText();
+            else if (!inputField.isFocused)
                 SetText();
         }
 

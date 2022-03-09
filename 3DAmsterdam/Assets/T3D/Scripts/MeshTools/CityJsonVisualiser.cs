@@ -67,6 +67,9 @@ public class CityJsonVisualiser : MonoBehaviour
             var mesh = meshmaker.CreateMesh(transform, cityJsonModel, co.Value);
             AddMeshGameObject(key, mesh);
         }
+
+        //re-initialize the usermovementaxes to ensure the new meshes are dragable
+        uitbouw.GetComponent<UitbouwMovement>().InitializeUserMovementAxes();
     }
 
     void AddMeshGameObject(string name, Mesh mesh)

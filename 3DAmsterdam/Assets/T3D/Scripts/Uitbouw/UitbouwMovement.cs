@@ -27,9 +27,8 @@ namespace Netherlands3D.T3D.Uitbouw
             SetAllowMovement(AllowDrag);
         }
 
-        void InitializeUserMovementAxes()
+        public void InitializeUserMovementAxes()
         {
-
             var colliders = GetComponentsInChildren<Collider>();
             userMovementAxes = new DragableAxis[colliders.Length + 2];
             for (int i = 0; i < colliders.Length; i++)
