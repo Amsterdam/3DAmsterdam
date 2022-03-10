@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Netherlands3D;
 using SimpleJSON;
 using UnityEngine;
@@ -58,6 +59,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             rootObject[key] = value;
             saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
         }
+
+        rootObject[key] = new Vector3();
     }
 
     public void SaveBool(string key, bool value)
@@ -91,6 +94,13 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         {
             print("cannot make rootObject string");
             return;
+        }
+
+        print("test");
+        foreach (var container in saveDataContainers)
+        {
+            var str = JsonUtility.ToJson(container);
+            print(str);
         }
 
         string saveData = GetJsonSaveData();
@@ -128,6 +138,13 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             }
             uploadCoroutine = null;
         }
+    }
+
+    private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>();
+    public void AddContainer(SaveDataContainer saveDataContainer)
+    {
+        print("adding: " + saveDataContainer);
+        saveDataContainers.Add(saveDataContainer);
     }
 
     public void InitializeRootObject(JSONNode loadedObject)
