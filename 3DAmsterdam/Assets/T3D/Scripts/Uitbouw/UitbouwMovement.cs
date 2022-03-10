@@ -30,7 +30,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void InitializeUserMovementAxes()
         {
             var colliders = GetComponentsInChildren<Collider>();
-            userMovementAxes = new DragableAxis[colliders.Length + 2];
+            userMovementAxes = new DragableAxis[colliders.Length];
             for (int i = 0; i < colliders.Length; i++)
             {
                 userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
@@ -39,16 +39,16 @@ namespace Netherlands3D.T3D.Uitbouw
 
             var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 
-            userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
-            userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            //userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
         }
 
-        private void SetArrowPositions()
-        {
-            var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
-            userMovementAxes[userMovementAxes.Length - 2].transform.position = uitbouw.LeftCenter - arrowOffsetY;
-            userMovementAxes[userMovementAxes.Length - 1].transform.position = uitbouw.RightCenter - arrowOffsetY;
-        }
+        //private void SetArrowPositions()
+        //{
+        //    var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
+        //    userMovementAxes[userMovementAxes.Length - 2].transform.position = uitbouw.LeftCenter - arrowOffsetY;
+        //    userMovementAxes[userMovementAxes.Length - 1].transform.position = uitbouw.RightCenter - arrowOffsetY;
+        //}
 
         private void Update()
         {
@@ -56,7 +56,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 ProcessUserInput();
             LimitPositionOnWall();
 
-            SetArrowPositions();
+            //SetArrowPositions();
         }
 
         private void ProcessUserInput()
@@ -102,8 +102,8 @@ namespace Netherlands3D.T3D.Uitbouw
             var measuring = GetComponent<UitbouwMeasurement>();
             measuring.DrawDistanceActive = allowed;
 
-            userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
-            userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
+            //userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
+            //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
         }
     }
 }
