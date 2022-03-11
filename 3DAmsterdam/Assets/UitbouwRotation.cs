@@ -27,44 +27,33 @@ public class UitbouwRotation : MonoBehaviour
         }
     }
 
-    GameObject test;
-    GameObject test2;
-    private void Awake()
-    {
-        test = new GameObject();
-        test2 = new GameObject();
-    }
-
     private float CalculateDeltaAngle()
     {
         var newOrigin = transform.position;
-        var contactPlane = new Plane(transform.up, newOrigin);
+        var groundPlane = new Plane(transform.up, newOrigin);
         var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (contactPlane.Raycast(ray, out float enter))
+        Vector3 newIntersectionPoint;
+        if (groundPlane.Raycast(ray, out float enter))
         {
-            var newIntersectionPoint = ray.origin + (ray.direction * enter);
-            print(previousIntersectionPoint + "\t" + newIntersectionPoint);
-
-            test.transform.position = newIntersectionPoint;
-            test2.transform.position = previousIntersectionPoint;
-
-            var previousDir = (previousIntersectionPoint - previousOrigin).normalized;
-            var newDir = (newIntersectionPoint - newOrigin).normalized;
-
-            var angle = Vector3.SignedAngle(previousDir, newDir, transform.up);
-            
-            previousOrigin = newOrigin;
-            previousIntersectionPoint = newIntersectionPoint;
-
-            return angle;
+            newIntersectionPoint = ray.origin + (ray.direction * enter);
         }
         else
         {
-            previousIntersectionPoint = Vector3.zero;
+            var horizonPlane = new Plane(-CameraModeChanger.Instance.ActiveCamera.transform.forward, previousIntersectionPoint);
+            horizonPlane.Raycast(ray, out enter);
+            var planeIntersection = ray.origin + (ray.direction * enter);
+            newIntersectionPoint = groundPlane.ClosestPointOnPlane(planeIntersection);
         }
-        test2.transform.position = previousIntersectionPoint;
 
-        return 0;
+        var previousDir = (previousIntersectionPoint - previousOrigin).normalized;
+        var newDir = (newIntersectionPoint - newOrigin).normalized;
+
+        var angle = Vector3.SignedAngle(previousDir, newDir, transform.up);
+
+        previousOrigin = newOrigin;
+        previousIntersectionPoint = newIntersectionPoint;
+
+        return angle;
     }
 }
