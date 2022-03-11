@@ -8,10 +8,15 @@ public class UitbouwRotation : MonoBehaviour
     private Vector3 previousIntersectionPoint;
     private Vector3 previousOrigin;
 
+    public bool AllowRotation { get; private set; } = true;
+
+    [SerializeField]
+    private UitbouwTransformGizmo rotationGizmoPrefab;
+
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetMouseButton(0))
+        if (AllowRotation)
         {
             Rotate();
         }
@@ -20,7 +25,6 @@ public class UitbouwRotation : MonoBehaviour
     private void Rotate()
     {
         var deltaAngle = CalculateDeltaAngle();
-        print("deltaangle:" + deltaAngle);
         foreach (Transform t in transform)
         {
             t.Rotate(transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
@@ -55,5 +59,16 @@ public class UitbouwRotation : MonoBehaviour
         previousIntersectionPoint = newIntersectionPoint;
 
         return angle;
+    }
+
+    public virtual void SetAllowRotation(bool allowed)
+    {
+        AllowRotation = allowed && T3DInit.Instance.IsEditMode;
+    }
+
+    private void CreateRotationGizmo()
+    {
+        var rotationGizmo = Instantiate(rotationGizmoPrefab, transform.parent);
+        rotationGizmo.AlignWithWorldPosition(transform.position);
     }
 }

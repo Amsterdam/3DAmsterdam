@@ -37,7 +37,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 userMovementAxes[i].SetUitbouw(uitbouw);
             }
 
-            var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
+            //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 
             //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
             //userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
