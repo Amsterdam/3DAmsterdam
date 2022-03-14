@@ -5,9 +5,9 @@ using UnityEngine;
 [Serializable]
 public class SaveDataContainer
 {
-    public string Key;
-    public SaveDataContainer()
-    {
-        SessionSaver.AddContainer(this);
-    }
+    //public string Key;
+    //public SaveDataContainer()
+    //{
+    //    SessionSaver.AddContainer(this);
+    //}
 }

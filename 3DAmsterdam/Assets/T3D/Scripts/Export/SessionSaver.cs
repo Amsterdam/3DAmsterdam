@@ -113,9 +113,4 @@ public static class SessionSaver
         T3DInit.Instance.LoadBuilding();
         Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
-
-    public static void AddContainer(SaveDataContainer saveDataContainer)
-    {
-        JsonSessionSaver.Instance.AddContainer(saveDataContainer);
-    }
 }

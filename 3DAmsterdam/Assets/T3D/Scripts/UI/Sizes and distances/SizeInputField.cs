@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using KeyValueStore;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,8 +16,10 @@ namespace Netherlands3D.T3D.Uitbouw
         Area
     }
 
-    public class SizeInputFieldSaveData : SaveDataContainer
+    [Saveable]
+    public struct SizeInputFieldSaveData
     {
+        public SizeType Size;
         public float Value;
     }
 
@@ -28,6 +31,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private ShapeableUitbouw shapeableUitbouw;
         private SizeInputFieldSaveData saveData;
+
+        [Saveable]
+        float value { get; }
 
         private void Awake()
         {

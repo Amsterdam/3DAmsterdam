@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using KeyValueStore;
 using Netherlands3D;
 using SimpleJSON;
 using UnityEngine;
@@ -97,11 +98,10 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         print("test");
-        foreach (var container in saveDataContainers)
-        {
-            var str = JsonUtility.ToJson(container);
-            print(str);
-        }
+
+        var types = SaveableAttribute.GetTypesWithSaveableAttribute();
+        foreach (var t in types)
+            Debug.Log(t.ToString());
 
         string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
@@ -138,13 +138,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             }
             uploadCoroutine = null;
         }
-    }
-
-    private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>();
-    public void AddContainer(SaveDataContainer saveDataContainer)
-    {
-        print("adding: " + saveDataContainer);
-        saveDataContainers.Add(saveDataContainer);
     }
 
     public void InitializeRootObject(JSONNode loadedObject)
