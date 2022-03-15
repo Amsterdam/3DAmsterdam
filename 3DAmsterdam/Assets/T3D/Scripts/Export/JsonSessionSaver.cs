@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using KeyValueStore;
 using Netherlands3D;
 using SimpleJSON;
@@ -11,6 +13,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     const string readOnlyMarker = "$";
 
     private JSONNode rootObject = new JSONObject();
+    private JSONNode rootObject2 = new JSONObject();
     const string uploadURL = "api/upload/";
 
     public static JsonSessionSaver Instance;
@@ -97,11 +100,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             return;
         }
 
-        print("test");
-
-        var types = SaveableAttribute.GetTypesWithSaveableAttribute();
-        foreach (var t in types)
-            Debug.Log(t.ToString());
+        SerializeSaveableContainers();
 
         string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
@@ -115,6 +114,23 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             print("Still waiting for coroutine to return, not saving data");
             SavingCompleted?.Invoke(false);
         }
+    }
+
+    private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>(); //todo move
+    public void AddContainer(SaveDataContainer saveDataContainer)
+    {
+        saveDataContainers.Add(saveDataContainer);
+    }
+
+    private string SerializeSaveableContainers()
+    {
+        foreach (var container in saveDataContainers)
+        {
+            string jsonContent = JsonUtility.ToJson(container); // Base container's derivative class content variables
+            rootObject2[container.BaseKey].Add(container.Id, JSONNode.Parse(jsonContent)); //todo : not seralize and deserialize here
+        }
+
+        return rootObject2.ToString();
     }
 
     private IEnumerator UploadData(string name, string data)

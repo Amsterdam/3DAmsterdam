@@ -31,9 +31,10 @@ public static class SessionSaver
         SessionId = "ddd8af70-9e15-11ec-a02d-f7d9626e4800";
         //SessionId = "feacd4b0-9bb8-11ec-89dd-6536bf8ad53b";
         //}
+        SessionId = "bb624aa0-a38d-11ec-9c1f-f76d9510d139";
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
-#endif  
+#endif
         SessionId += "_html";
 
         Debug.Log("session id: " + SessionId);
@@ -112,5 +113,10 @@ public static class SessionSaver
         Debug.Log("loaded session: " + SessionId);
         T3DInit.Instance.LoadBuilding();
         Loader.LoadingCompleted -= Loader_LoadingCompleted;
+    }
+
+    public static void AddContainer(SaveDataContainer saveDataContainer)
+    {
+        JsonSessionSaver.Instance.AddContainer(saveDataContainer);
     }
 }

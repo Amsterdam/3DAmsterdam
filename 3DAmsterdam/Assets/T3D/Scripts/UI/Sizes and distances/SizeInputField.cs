@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+using System.Reflection;
+
 namespace Netherlands3D.T3D.Uitbouw
 {
     public enum SizeType
@@ -16,11 +18,13 @@ namespace Netherlands3D.T3D.Uitbouw
         Area
     }
 
-    [Saveable]
-    public struct SizeInputFieldSaveData
+    public class SizeInputFieldSaveData : SaveDataContainer
     {
-        public SizeType Size;
         public float Value;
+
+        public SizeInputFieldSaveData(SizeType type) : base(type.ToString())
+        {
+        }
     }
 
     public class SizeInputField : MonoBehaviour
@@ -32,13 +36,13 @@ namespace Netherlands3D.T3D.Uitbouw
         private ShapeableUitbouw shapeableUitbouw;
         private SizeInputFieldSaveData saveData;
 
-        [Saveable]
-        float value { get; }
-
         private void Awake()
         {
-            saveData = new SizeInputFieldSaveData();
+            saveData = new SizeInputFieldSaveData(size);
+            print("created: " + saveData);
             inputField = GetComponent<InputField>();
+
+            //var Value = new SaveableFloat(GetType().ToString()+ size.ToString()) ;
         }
 
         private void Start()
