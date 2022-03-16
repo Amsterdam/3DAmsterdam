@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SimpleJSON;
 using UnityEngine;
 using System.Reflection;
@@ -30,21 +29,44 @@ public abstract class SaveDataContainer
     {
         TypeKey = GetTypeKey();
         InstanceId = "instance";
-        SessionSaver.AddContainer(this); //todo: Addcontainer needs to load data
+
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        if (SessionSaver.HasLoaded)
+        {
+            LoadData();
+        }
+
+        SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
+        SessionSaver.AddContainer(this); //add container to save data
+    }
+
+    private void Loader_LoadingCompleted(bool loadSucceeded)
+    {
+        if (loadSucceeded)
+            LoadData();
+    }
+
+    private void LoadData()
+    {
+        SessionSaver.LoadContainer(this);
     }
 
     public SaveDataContainer(int instanceId)
     {
         TypeKey = GetTypeKey();
         InstanceId = instanceId.ToString();
-        SessionSaver.AddContainer(this);
+        Initialize();
     }
 
     public SaveDataContainer(string instanceId)
     {
         TypeKey = GetTypeKey();
         InstanceId = instanceId;
-        SessionSaver.AddContainer(this);
+        Initialize();
     }
 
     private string GetTypeKey()

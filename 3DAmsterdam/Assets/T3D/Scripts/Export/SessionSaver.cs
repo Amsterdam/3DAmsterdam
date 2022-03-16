@@ -30,10 +30,10 @@ public static class SessionSaver
         //SessionId = "4f2e5410-85af-11ec-b02f-8508d1049190"; //Stadhouderslaan 79 Utrecht
         //SessionId = "719bd3a0-8376-11ec-9953-4b875c5f9637"; // Jan Pieterzoon Coenstr 40 Utrecht
         //SessionId = "1186a670-8849-11ec-b2fe-1dc941e32fde"; //Haarlemmerstraatweg 35
-        SessionId = "ddd8af70-9e15-11ec-a02d-f7d9626e4800";
+        //SessionId = "ddd8af70-9e15-11ec-a02d-f7d9626e4800";
         //SessionId = "feacd4b0-9bb8-11ec-89dd-6536bf8ad53b";
         //}
-        SessionId = "bb624aa0-a38d-11ec-9c1f-f76d9510d139";
+        SessionId = "253ab790-a529-11ec-a03e-a5517f5c8ad9";
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif
@@ -119,24 +119,18 @@ public static class SessionSaver
 
     public static void AddContainer(SaveDataContainer saveDataContainer)
     {
-        Debug.Log("test");
-        Debug.Log("attempting to load: " + saveDataContainer.TypeKey + "\t" + saveDataContainer.InstanceId);
-        ////check if object already exists in the save data, in which case load the save data:
-        var json = JSONSessionLoader.Instance.GetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId);
-        Debug.Log("loaded: " + json);
-        string expected = JsonUtility.ToJson(saveDataContainer);
-        Debug.Log("expected json: " + expected);
-        JsonUtility.FromJsonOverwrite(json, saveDataContainer);
-        //var parseTest = JsonUtility.FromJson(json, saveDataContainer.GetType());
-        //Debug.Log("parse test: " + parseTest);
-        //dynamic parsedObject = JsonUtility.FromJson(json, saveDataContainer.GetType());
-        //Debug.Log("parsedObject == null: " + (parsedObject == null));
-        //if (parsedObject != null)
-        //{
-        //    saveDataContainer = parsedObject;
-        //}
-
-        //Debug.Log("adding: " + saveDataContainer);
         JsonSessionSaver.Instance.AddContainer(saveDataContainer);
+    }
+
+    public static void LoadContainer(SaveDataContainer saveDataContainer)
+    {
+        Debug.Log("attempting to load: " + saveDataContainer.TypeKey + "\t" + saveDataContainer.InstanceId);
+
+        //check if object already exists in the save data, in which case load the save data:
+        if (JSONSessionLoader.Instance.TryGetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId, out string json))
+        {
+            Debug.Log("Loaded JSON: " + json);
+            JsonUtility.FromJsonOverwrite(json, saveDataContainer);
+        }
     }
 }

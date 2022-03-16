@@ -103,7 +103,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         string newData = SerializeSaveableContainers();
-        print(newData);
+        //print(newData);
 
         string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
@@ -128,8 +128,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     {
         foreach (var container in saveDataContainers)
         {
-            print(container);
-
             string jsonContent = JsonUtility.ToJson(container); // Base container's derivative class content variables
             var node = JSONNode.Parse(jsonContent); //todo : not seralize and deserialize here
             rootObject2[container.TypeKey].Add(container.InstanceId, node); 
