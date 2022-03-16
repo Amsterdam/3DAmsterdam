@@ -47,6 +47,12 @@ namespace Netherlands3D.T3D.Uitbouw
         }
     }
 
+    public class WallSelectorSaveDataContainer : SaveDataContainer
+    {
+        public Vector3 RayOrigin;
+        public Vector3 RayDirection;
+    }
+
     public class WallSelector : MonoBehaviour
     {
         [SerializeField]
@@ -70,18 +76,11 @@ namespace Netherlands3D.T3D.Uitbouw
         public Vector3 CenterPoint { get; private set; }
         public bool WallChanged { get; set; } //is a different wall selected than before? Used to reposition the uitbouw when user went back and selected a different wall
 
-        private string rayOriginKey;
-        private SaveableVector3 rayOrigin;
-        private string rayDirectionKey;
-        private SaveableVector3 rayDirection;
+        private WallSelectorSaveDataContainer saveData;
 
         private void Awake()
         {
-            rayOriginKey = GetType().ToString() + ".rayOrigin";
-            rayDirectionKey = GetType().ToString() + ".rayDirection";
-
-            rayOrigin = new SaveableVector3(rayOriginKey);
-            rayDirection = new SaveableVector3(rayDirectionKey);
+            saveData = new WallSelectorSaveDataContainer();
 
             wallMeshFilter = GetComponent<MeshFilter>();
             building = GetComponentInParent<BuildingMeshGenerator>();
@@ -101,7 +100,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             if (SessionSaver.LoadPreviousSession)
             {
-                var ray = new Ray(rayOrigin.Value, rayDirection.Value);
+                var ray = new Ray(saveData.RayOrigin, saveData.RayDirection);
                 if (TryGetValidWall(ray, out var wall))
                 {
                     WallMesh = wall;
@@ -152,8 +151,8 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             face = new Mesh();
 
-            rayOrigin.SetValue(ray.origin);
-            rayDirection.SetValue(ray.direction);
+            saveData.RayOrigin = ray.origin;
+            saveData.RayDirection = ray.direction;
 
             if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMask.GetMask("ActiveSelection")))
             {
@@ -284,7 +283,7 @@ namespace Netherlands3D.T3D.Uitbouw
                         coplanarVertices.RemoveAt(i);
                         for (int j = 0; j < contiguousTris.Count; j++)
                         {
-                            if(contiguousTris[j] > i)
+                            if (contiguousTris[j] > i)
                             {
                                 contiguousTris[j]--;
                             }

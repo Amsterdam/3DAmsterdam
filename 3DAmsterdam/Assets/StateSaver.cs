@@ -4,16 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+public class StateSaverSaveDataContainer : SaveDataContainer
+{
+    public int ActiveStateIndex;
+}
+
 public class StateSaver : MonoBehaviour
 {
     public State[] states;
-    private string activeStateIndexKey;
-    public SaveableInt ActiveStateIndex { get; private set; }
+    public int ActiveStateIndex => saveData.ActiveStateIndex;
+    private StateSaverSaveDataContainer saveData;
 
     private void Awake()
     {
-        activeStateIndexKey = GetType().ToString() + ".activeStateIndex";
-        ActiveStateIndex = new SaveableInt(activeStateIndexKey);
+        saveData = new StateSaverSaveDataContainer();
     }
 
     private void OnEnable()
@@ -28,7 +32,7 @@ public class StateSaver : MonoBehaviour
 
     private void State_ActiveStateChanged(State newState)
     {
-        ActiveStateIndex.SetValue(GetStateIndex(newState));
+        saveData.ActiveStateIndex = GetStateIndex(newState);
     }
 
     private void Start()

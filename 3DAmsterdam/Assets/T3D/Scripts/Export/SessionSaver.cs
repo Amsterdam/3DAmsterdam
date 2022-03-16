@@ -17,7 +17,7 @@ public static class SessionSaver
     public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
-    public static bool HasLoaded => Loader != null && Loader.HasLoaded;
+    public static bool HasLoaded => Loader.HasLoaded;
 
     static SessionSaver()
     {

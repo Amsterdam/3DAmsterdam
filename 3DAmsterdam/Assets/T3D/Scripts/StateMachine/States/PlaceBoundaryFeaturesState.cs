@@ -6,26 +6,27 @@ using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using UnityEngine;
 
+public class PlaceBoundaryFeaturesStateSaveDataContainer : SaveDataContainer
+{
+    public int AmountOfPlacedFeatues;
+}
+
 public class PlaceBoundaryFeaturesState : State
 {
-    string amountOfPlacedFeatuesKey;
-    SaveableInt amountOfPlacedFeatues;
-    //List<int> ids = new List<int>();
-    //SaveableIntArray ids; //save the actual placed ids, the id increments every time a new bf is placed, but does not decrement when a bf is deleted to avoid having to change all ids to account for the missing id
+    private PlaceBoundaryFeaturesStateSaveDataContainer saveData;
     public static List<BoundaryFeature> SavedBoundaryFeatures = new List<BoundaryFeature>();
 
     protected override void Awake()
     {
         base.Awake();
-        amountOfPlacedFeatuesKey = GetType().ToString() + ".amountOfPlacedFeatues";
-        amountOfPlacedFeatues = new SaveableInt(amountOfPlacedFeatuesKey);
+        saveData = new PlaceBoundaryFeaturesStateSaveDataContainer();
     }
 
     public override void StateLoadedAction()
     {
         //after loading the amount of saved features, this number needs to be reset so it can be reused in this session.
-        var amountOfSavedFeatures = amountOfPlacedFeatues.Value;
-        amountOfPlacedFeatues.SetValue(0);
+        var amountOfSavedFeatures = saveData.AmountOfPlacedFeatues;
+        saveData.AmountOfPlacedFeatues = 0;
 
         for (int i = 1; i <= amountOfSavedFeatures; i++)
         {
@@ -68,9 +69,9 @@ public class PlaceBoundaryFeaturesState : State
 
     public void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
     {
-        amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value + 1);
+        saveData.AmountOfPlacedFeatues++;
 
-        int id = amountOfPlacedFeatues.Value;
+        int id = saveData.AmountOfPlacedFeatues;
         //feature.SetId(id);
         //feature.PrefabName = prefabName;
         feature.InitializeSaveData(id);
@@ -102,6 +103,6 @@ public class PlaceBoundaryFeaturesState : State
         //sort list so that this function will not result in duplicate ids the next time it is called
         SavedBoundaryFeatures = SavedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
         //decrement amount
-        amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
+        saveData.AmountOfPlacedFeatues--;
     }
 }

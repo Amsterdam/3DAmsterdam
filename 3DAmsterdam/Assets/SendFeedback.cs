@@ -6,18 +6,17 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+public class SendFeedbackSaveDataContainer : SaveDataContainer
+{
+    public string UserFeedback;
+}
+
 public class SendFeedback : MonoBehaviour
 {
-    //[SerializeField]
-    //private InputField hardwareInfoInputField;
     [SerializeField]
     private InputField userFeedbackInputField;
 
-    private string userFeedbackKey;
-    private SaveableString userFeedback;
-
-    //private string timestampKey;
-    //private SaveableString timestamp;
+    private SendFeedbackSaveDataContainer saveData;
 
     const string uploadURL = "api/userfeedback/";
     public Coroutine uploadCoroutine;
@@ -35,11 +34,7 @@ public class SendFeedback : MonoBehaviour
 
     private void InitializeSaveableVariables()
     {
-        userFeedbackKey = GetType() + ".userFeedback";
-        userFeedback = new SaveableString(userFeedbackKey);
-
-        //timestampKey = GetType() + ".userFeedback";
-        //timestamp = new SaveableString(timestampKey);
+        saveData = new SendFeedbackSaveDataContainer();
     }
 
     public void SubmitFeedback()
@@ -49,19 +44,19 @@ public class SendFeedback : MonoBehaviour
 
         InitializeSaveableVariables();
 
-        userFeedback.SetValue(userFeedbackInputField.text);
+        saveData.UserFeedback = userFeedbackInputField.text;
         //timestamp.SetValue(DateTime.Now.ToString("yyyyMMddHHmmss"));
         string fileName = SessionSaver.SessionId;// + "_" + timestamp.Value;
         ExportSaveData(fileName);
 
-        RemoveUserMetadata(); //delete the keys again since they will not be needed for session saving
+        //RemoveUserMetadata(); //delete the keys again since they will not be needed for session saving
     }
 
-    private void RemoveUserMetadata()
-    {
-        SessionSaver.DeleteKey(userFeedbackKey);
-        //SessionSaver.DeleteKey(timestampKey);
-    }
+    //private void RemoveUserMetadata()
+    //{
+    //    SessionSaver.DeleteKey(userFeedbackKey);
+    //    //SessionSaver.DeleteKey(timestampKey);
+    //}
 
     public void ExportSaveData(string fileName)
     {

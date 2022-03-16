@@ -102,9 +102,10 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             return;
         }
 
-        string newData = SerializeSaveableContainers();
+        //string saveData = GetJsonSaveData();
+        string saveData = SerializeSaveableContainers();
+        print("saving: " + saveData);
 
-        string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
 
         if (uploadCoroutine == null)

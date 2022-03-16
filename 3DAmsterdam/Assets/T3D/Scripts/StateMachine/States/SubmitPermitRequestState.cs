@@ -3,53 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class SubmitPermitRequestStateSaveDataContainer : SaveDataContainer
+{
+    public string UserName;
+    public string UserMail;
+    public string UserComments;
+}
+
 public class SubmitPermitRequestState : State
 {
-    private string userNameKey;
-    private SaveableString userName;
     [SerializeField] private InputField nameInputField;
-
-    private string userMailKey;
-    private SaveableString userMail;
     [SerializeField] private InputField mailInputField;
-    public static string UserMail;// => userMail.Value;
-
-    private string userCommentsKey;
-    private SaveableString userComments;
     [SerializeField] private InputField commentsInputField;
 
-    //private string userPermissionKey;
-    //private SaveableBool userPermission;
-    //[SerializeField] private Toggle permissionToggle;
-
-    //private string submissionDateKey;
+    public static string UserMail;// => userMail.Value;
+    private SubmitPermitRequestStateSaveDataContainer saveData;
 
     protected override void Awake()
     {
         base.Awake();
 
-        userNameKey = GetType().ToString() + ".userName";
-        userMailKey = GetType().ToString() + ".userMail";
-        userCommentsKey = GetType().ToString() + ".userComments";
-        //userPermissionKey = GetType().ToString() + ".userPermission";
-        //submissionDateKey = GetType().ToString() + ".submissionDate";
+        saveData = new SubmitPermitRequestStateSaveDataContainer();
 
-        userName = new SaveableString(userNameKey);
-        userMail = new SaveableString(userMailKey);
-        userComments = new SaveableString(userCommentsKey);
-        //userPermission = new SaveableBool(userPermissionKey);
-
-        nameInputField.text = userName.Value;
-        mailInputField.text = userMail.Value;
-        commentsInputField.text = userComments.Value;
+        nameInputField.text = saveData.UserName;
+        mailInputField.text = saveData.UserMail;
+        commentsInputField.text = saveData.UserComments;
     }
 
     public override void StateCompletedAction()
     {
-        userName.SetValue(nameInputField.text);
-        userMail.SetValue(mailInputField.text);
-        UserMail = userMail.Value;
-        userComments.SetValue(commentsInputField.text);
+        saveData.UserName = nameInputField.text;
+        saveData.UserMail = mailInputField.text;
+        UserMail = saveData.UserMail;
+        saveData.UserComments = commentsInputField.text;
         //userPermission.SetValue(permissionToggle.isOn);
     }
 }

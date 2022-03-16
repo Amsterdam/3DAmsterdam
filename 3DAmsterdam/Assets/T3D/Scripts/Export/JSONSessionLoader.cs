@@ -95,11 +95,11 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             else
             {
                 //todo: replace with text from call
-                //print("loading succeeded: " + uwr.downloadHandler.text);
-                //callback?.Invoke(uwr.downloadHandler.text);
+                print("loading succeeded: " + uwr.downloadHandler.text);
+                callback?.Invoke(uwr.downloadHandler.text);
 
-                print("using TestString: " + TestString);
-                callback?.Invoke(TestString);
+                //print("using TestString: " + TestString);
+                //callback?.Invoke(TestString);
             }
         }
     }

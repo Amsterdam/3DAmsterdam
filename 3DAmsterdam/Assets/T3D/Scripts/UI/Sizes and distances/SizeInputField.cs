@@ -39,7 +39,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Awake()
         {
             saveData = new SizeInputFieldSaveData(size);
-            print("created: " + saveData);
             inputField = GetComponent<InputField>();
 
             //var Value = new SaveableFloat(GetType().ToString()+ size.ToString()) ;
