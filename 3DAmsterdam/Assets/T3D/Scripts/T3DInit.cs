@@ -7,30 +7,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class HTMLKeys
-{
-    //todo: make $_ a part of the way the saveablevariables' keys are saved
+//public static class HTMLKeys
+//{
+//    //todo: make $_ a part of the way the saveablevariables' keys are saved
 
-    public const string SESSION_ID_KEY = "$_session_id";
-    public const string STREET_KEY = "$_street";
-    public const string CITY_KEY = "$_city";
-    public const string HOUSE_NUMBER_KEY = "$_huisnummer";
-    public const string ZIP_CODE_KEY = "$_postcode";
-    public const string DATE_KEY = "$_date";
+//    public const string SESSION_ID_KEY = "$_session_id";
+//    public const string STREET_KEY = "$_street";
+//    public const string CITY_KEY = "$_city";
+//    public const string HOUSE_NUMBER_KEY = "$_huisnummer";
+//    public const string ZIP_CODE_KEY = "$_postcode";
+//    public const string DATE_KEY = "$_date";
 
-    public const string HAS_FILE_KEY = "$_hasfile";
-    public const string RD_POSITION_KEY = "$_rd_position";
-    public const string BAG_ID_KEY = "$_bag_id";
-    public const string BLOB_ID_KEY = "$_blob_id";
-    public const string MODEL_ID_KEY = "$_model_id";
-    public const string MODEL_VERSION_ID_KEY = "$_model_version_id";
-    public const string IS_USER_FEEDBACK_KEY = "$_is_user_feedback";
+//    public const string HAS_FILE_KEY = "$_hasfile";
+//    public const string RD_POSITION_KEY = "$_rd_position";
+//    public const string BAG_ID_KEY = "$_bag_id";
+//    public const string BLOB_ID_KEY = "$_blob_id";
+//    public const string MODEL_ID_KEY = "$_model_id";
+//    public const string MODEL_VERSION_ID_KEY = "$_model_version_id";
+//    public const string IS_USER_FEEDBACK_KEY = "$_is_user_feedback";
 
-    public const string IS_BESCHERMD = "$_isbeschermd";
-    public const string IS_MONUMENT = "$_ismonument";
+//    public const string IS_BESCHERMD = "$_isbeschermd";
+//    public const string IS_MONUMENT = "$_ismonument";
 
-    public const string HAS_SUBMITTED_KEY = "$_has_submitted";
-}
+//    public const string HAS_SUBMITTED_KEY = "$_has_submitted";
+//}
 
 public class HTMLInitSaveData : SaveDataContainer
 {
@@ -41,7 +41,7 @@ public class HTMLInitSaveData : SaveDataContainer
     public string HouseNumberAddition;
     public string ZipCode;
     public bool HasFile;
-    public Vector2RD RDPosition; //todo: is this serializable in the json parser
+    public Vector3RD RDPosition; //todo: is this serializable in the json parser
     public string BagId; //todo needs to be nullable
     public string BlobId;
     public string ModelId;
@@ -55,59 +55,71 @@ public class HTMLInitSaveData : SaveDataContainer
 
 public class T3DInit : MonoBehaviour
 {
-    private string cameraPositionKey = HTMLKeys.RD_POSITION_KEY;
-    private SaveableVector3RD cameraPosition;
+    //private string cameraPositionKey = HTMLKeys.RD_POSITION_KEY;
+    //private SaveableVector3RD cameraPosition;
 
-    private string bagIdKey = HTMLKeys.BAG_ID_KEY;
-    private SaveableString bagId;
-    public string BagId => bagId.Value;
+    //private string bagIdKey = HTMLKeys.BAG_ID_KEY;
+    //private SaveableString bagId;
+    //public string BagId => bagId.Value;
 
-    private string uploadedModelKey = HTMLKeys.HAS_FILE_KEY;
-    private SaveableBool uploadedModel;
-    public bool UploadedModel => uploadedModel.Value;
+    //private string uploadedModelKey = HTMLKeys.HAS_FILE_KEY;
+    //private SaveableBool uploadedModel;
+    //public bool UploadedModel => uploadedModel.Value;
 
-    private string bimModelIdKey = HTMLKeys.MODEL_ID_KEY;
-    public SaveableString bimModelId;
-    public string BimModelId => bimModelId.Value;
+    //private string bimModelIdKey = HTMLKeys.MODEL_ID_KEY;
+    //public SaveableString bimModelId;
+    //public string BimModelId => bimModelId.Value;
 
-    private string bimModelVersionIdKey = HTMLKeys.MODEL_VERSION_ID_KEY;
-    public SaveableString bimModelVersionId;
-    public string BimModelVersionId => bimModelVersionId.Value;
+    //private string bimModelVersionIdKey = HTMLKeys.MODEL_VERSION_ID_KEY;
+    //public SaveableString bimModelVersionId;
+    //public string BimModelVersionId => bimModelVersionId.Value;
 
-    private string isUserFeedbackKey = HTMLKeys.IS_USER_FEEDBACK_KEY;
-    private SaveableBool isUserFeedback;
+    //private string isUserFeedbackKey = HTMLKeys.IS_USER_FEEDBACK_KEY;
+    //private SaveableBool isUserFeedback;
 
-    private string blobIdKey = HTMLKeys.BLOB_ID_KEY;
-    private SaveableString blobId;
-    public string BlobId => blobId.Value;
+    //private string blobIdKey = HTMLKeys.BLOB_ID_KEY;
+    //private SaveableString blobId;
+    //public string BlobId => blobId.Value;
 
-    public bool IsUserFeedback => isUserFeedback.Value;
+    //public bool IsUserFeedback => isUserFeedback.Value;
     public bool IsEditMode { get; private set; } = true;
 
     public static T3DInit Instance;
 
     public TileVisualizer TileVisualizer;
-    public HTMLInitSaveData HTMLData;
+
+    //private static HTMLInitSaveData data;
+    public static HTMLInitSaveData HTMLData = null;
+    //{
+    //    get
+    //    {
+    //        if (data == null)
+    //        {
+    //            data = new HTMLInitSaveData();
+    //        }
+    //        return data;
+    //    }
+    //}
     public Netherlands3D.Rendering.RenderSettings RenderSettings;
 
     private void Awake()
     {
         Instance = this;
-        InitializeSaveableVariables();
+        //InitializeSaveableVariables();
         HTMLData = new HTMLInitSaveData();
     }
 
-    private void InitializeSaveableVariables()
-    {
-        
-        uploadedModel = new SaveableBool(uploadedModelKey);
-        cameraPosition = new SaveableVector3RD(cameraPositionKey);
-        bagId = new SaveableString(bagIdKey);
-        bimModelId = new SaveableString(bimModelIdKey);
-        bimModelVersionId = new SaveableString(bimModelVersionIdKey);
-        isUserFeedback = new SaveableBool(isUserFeedbackKey);
-        blobId = new SaveableString(blobIdKey);
-    }
+    //private void InitializeSaveableVariables()
+    //{
+
+    //    uploadedModel = new SaveableBool(uploadedModelKey);
+    //    cameraPosition = new SaveableVector3RD(cameraPositionKey);
+    //    bagId = new SaveableString(bagIdKey);
+    //    bimModelId = new SaveableString(bimModelIdKey);
+    //    bimModelVersionId = new SaveableString(bimModelVersionIdKey);
+    //    isUserFeedback = new SaveableBool(isUserFeedbackKey);
+    //    blobId = new SaveableString(blobIdKey);
+    //}
 
     void Start()
     {
@@ -131,15 +143,13 @@ public class T3DInit : MonoBehaviour
     {
         yield return null; //wait a frame
 
-        var posRD = cameraPosition.Value;
-
         //set relative center to cameraposition to avoid floating point precision issues
-        Config.activeConfiguration.RelativeCenterRD = new Vector2RD(posRD.x,posRD.y);
+        Config.activeConfiguration.RelativeCenterRD = new Vector2RD(HTMLData.RDPosition.x, HTMLData.RDPosition.y);
 
-        GotoPosition(posRD);
-        StartCoroutine(TileVisualizer.LoadTile(posRD.x, posRD.y, BagId));
+        GotoPosition(HTMLData.RDPosition);
+        StartCoroutine(TileVisualizer.LoadTile(HTMLData.RDPosition.x, HTMLData.RDPosition.y, HTMLData.BagId));
 
-        MetadataLoader.Instance.RequestBuildingData(cameraPosition.Value, bagId.Value);
+        MetadataLoader.Instance.RequestBuildingData(HTMLData.RDPosition, HTMLData.BagId);
     }
 
     private void ToggleQuality(bool ishigh)

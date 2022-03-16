@@ -17,7 +17,7 @@ public static class SessionSaver
     public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
-    public static bool HasLoaded => Loader.HasLoaded;
+    public static bool HasLoaded => Loader != null && Loader.HasLoaded;
 
     static SessionSaver()
     {
@@ -33,7 +33,7 @@ public static class SessionSaver
         //SessionId = "ddd8af70-9e15-11ec-a02d-f7d9626e4800";
         //SessionId = "feacd4b0-9bb8-11ec-89dd-6536bf8ad53b";
         //}
-        SessionId = "253ab790-a529-11ec-a03e-a5517f5c8ad9";
+        SessionId = "17b6cfc0-a531-11ec-b88b-cff3a4fba0f3";
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif

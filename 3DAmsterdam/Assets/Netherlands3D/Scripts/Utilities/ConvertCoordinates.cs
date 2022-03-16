@@ -42,6 +42,7 @@ namespace ConvertCoordinates
     /// <summary>
     /// Vector3 width Double values to represent RD-coordinates (X,Y,H)
     /// </summary>
+    [System.Serializable]
     public struct Vector3RD
     {
         public double x;

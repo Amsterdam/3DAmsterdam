@@ -25,12 +25,12 @@ public class PermitNeededState : State
     private float checkersPanelDefaultHeight;
     private RestrictionCheckerDisabler[] checkers;
 
-    private SaveableBool hasSubmitted;
+    //private SaveableBool hasSubmitted;
 
     protected override void Awake()
     {
         base.Awake();
-        hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
+        //hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
         checkersPanelDefaultHeight = checkersPanel.sizeDelta.y;
     }
 
@@ -59,7 +59,7 @@ public class PermitNeededState : State
     public override int GetDesiredStateIndex()
     {
         //nullcheck is needed for OnValidate() in the base class for in the editor
-        if(hasSubmitted != null && hasSubmitted.Value) //if this is a submitted request, go to the view state after all steps that reconstruct the request.
+        if (T3DInit.HTMLData != null && T3DInit.HTMLData.HasSubmitted) //if this is a submitted request, go to the view state after all steps that reconstruct the request.
         {
             return 2;
         }
@@ -85,7 +85,7 @@ public class PermitNeededState : State
         if (Input.GetKeyDown(KeyCode.Q))
         {
             print("setting submitted to false");
-            hasSubmitted.SetValue(false);
+            T3DInit.HTMLData.HasSubmitted = false;
         }
     }
 #endif

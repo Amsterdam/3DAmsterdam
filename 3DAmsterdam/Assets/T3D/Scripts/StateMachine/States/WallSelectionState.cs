@@ -48,7 +48,7 @@ public class WallSelectionState : State
         if (T3DInit.Instance == null)
             desiredNextStateIndex = 0;
         else
-            desiredNextStateIndex = T3DInit.Instance.UploadedModel ? 0 : 1;
+            desiredNextStateIndex = T3DInit.HTMLData.HasFile ? 0 : 1;
         return desiredNextStateIndex;
     }
 

@@ -9,7 +9,6 @@ using Netherlands3D;
 public class JSONSessionLoader : MonoBehaviour, IDataLoader
 {
     private JSONNode rootObject;// = new JSONObject();
-    private JSONNode rootObject2;
     const string downloadURL = "api/download/";
     const string feedbackURL = "api/getuserfeedback/";
     private bool hasLoaded = false;
@@ -68,12 +67,12 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
     public bool TryGetJson(string type, string instanceId, out string json)
     {
-        if (rootObject2 == null)
+        if (rootObject == null)
         {
-            Debug.LogError("rootObject2 is null");
+            Debug.LogError("rootObject is null");
         }
 
-        var node = rootObject2[type][instanceId];
+        var node = rootObject[type][instanceId];
         json = node.ToString();
 
         return node != null;
@@ -82,7 +81,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
         string url = Config.activeConfiguration.T3DAzureFunctionURL;
-        url += T3DInit.Instance.IsUserFeedback ? feedbackURL : downloadURL;
+        url += T3DInit.HTMLData.IsUserFeedback ? feedbackURL : downloadURL;
         var uwr = UnityWebRequest.Get(url + name);
         print(url + name);
 
@@ -95,8 +94,12 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             }
             else
             {
-                print("loading succeeded: " + uwr.downloadHandler.text);
-                callback?.Invoke(uwr.downloadHandler.text);
+                //todo: replace with text from call
+                //print("loading succeeded: " + uwr.downloadHandler.text);
+                //callback?.Invoke(uwr.downloadHandler.text);
+
+                print("using TestString: " + TestString);
+                callback?.Invoke(TestString);
             }
         }
     }
@@ -106,8 +109,6 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     {
         //var jsonString = PlayerPrefs.GetString(sessionId);
         rootObject = JSON.Parse(data);
-        print("data received from server parsing teststring2: " + TestString);
-        rootObject2 = JSON.Parse(TestString);
 
         if (rootObject == null)
         {
@@ -115,17 +116,11 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             rootObject = new JSONObject();
         }
 
-        if (rootObject2 == null)
-        {
-            Debug.LogError("parsing new data unsuccesful. Data: " + TestString);
-            rootObject = new JSONObject();
-        }
-
         hasLoaded = rootObject != null;
 
         if (hasLoaded)
         {
-            JsonSessionSaver.Instance.InitializeRootObject(rootObject, rootObject2); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
+            JsonSessionSaver.Instance.InitializeRootObject(rootObject, rootObject); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
         }
 
         LoadingCompleted?.Invoke(hasLoaded);

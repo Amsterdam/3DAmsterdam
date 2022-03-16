@@ -103,7 +103,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
 
         string newData = SerializeSaveableContainers();
-        //print(newData);
 
         string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
