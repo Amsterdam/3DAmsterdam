@@ -15,13 +15,8 @@ public class SubmitRequestState : State
     private Text successText;
     private string defaultSucessString;
 
-    //private SaveableBool hasSubmitted;
-    //private SaveableString submissionDate;
-
     protected override void Awake()
     {
-        //hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
-        //submissionDate = new SaveableString(HTMLKeys.DATE_KEY);
         defaultSucessString = successText.text;
     }
 
@@ -35,13 +30,10 @@ public class SubmitRequestState : State
     {
         yield return new WaitUntil(() => !SessionSaver.Saver.SaveInProgress); //wait until potential existing save finishes
 
-        //hasSubmitted.SetValue(true);
         T3DInit.HTMLData.HasSubmitted = true;
 
         CultureInfo culture = new CultureInfo("nl-NL", false);
         var formattedDate = DateTime.Now.ToString("dd MMMM yyyy", culture);
-
-        //submissionDate.SetValue(formattedDate);
         T3DInit.HTMLData.Date= formattedDate;
 
         SessionSaver.ExportSavedData(); // export new save data

@@ -25,12 +25,9 @@ public class PermitNeededState : State
     private float checkersPanelDefaultHeight;
     private RestrictionCheckerDisabler[] checkers;
 
-    //private SaveableBool hasSubmitted;
-
     protected override void Awake()
     {
         base.Awake();
-        //hasSubmitted = new SaveableBool(HTMLKeys.HAS_SUBMITTED_KEY);
         checkersPanelDefaultHeight = checkersPanel.sizeDelta.y;
     }
 

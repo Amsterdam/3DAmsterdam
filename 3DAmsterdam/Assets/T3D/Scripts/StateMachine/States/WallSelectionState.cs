@@ -6,12 +6,7 @@ using UnityEngine.UI;
 
 public class WallSelectionState : State
 {
-
     private BuildingMeshGenerator building;
-    //[SerializeField]
-    //private GameObject nextStep_U;
-    //[SerializeField]
-    //private GameObject NextStep_D;
     [SerializeField]
     private Button nextButton;
     [SerializeField]

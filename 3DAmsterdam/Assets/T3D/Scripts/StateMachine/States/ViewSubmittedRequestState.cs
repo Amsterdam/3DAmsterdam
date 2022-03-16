@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class ViewSubmittedRequestState : State
 {
-    //private SaveableString date;
-    //private SaveableString projectID;
-
     [SerializeField]
     private Text /*streetText, zipCodeText,*/ dateText, projectIDText;
     private string defaultDateText, defaultProjectIDText;
@@ -25,9 +22,7 @@ public class ViewSubmittedRequestState : State
 
     protected override void Awake()
     {
-        base.Awake();
-        //date = new SaveableString(HTMLKeys.DATE_KEY);
-        //projectID = new SaveableString(HTMLKeys.SESSION_ID_KEY);        
+        base.Awake();      
 
         defaultDateText = dateText.text;
         defaultProjectIDText = projectIDText.text;
