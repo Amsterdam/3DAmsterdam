@@ -32,6 +32,27 @@ public static class HTMLKeys
     public const string HAS_SUBMITTED_KEY = "$_has_submitted";
 }
 
+public class HTMLInitSaveData : SaveDataContainer
+{
+    public string SessionId;
+    public string Street;
+    public string City;
+    public string HouseNumber;
+    public string HouseNumberAddition;
+    public string ZipCode;
+    public bool HasFile;
+    public Vector2RD RDPosition; //todo: is this serializable in the json parser
+    public string BagId; //todo needs to be nullable
+    public string BlobId;
+    public string ModelId;
+    public string ModelVersionId;
+    public string Date;
+    public bool IsUserFeedback;
+    public bool HasSubmitted;
+    public bool IsMonument;
+    public bool IsBeschermd;
+}
+
 public class T3DInit : MonoBehaviour
 {
     private string cameraPositionKey = HTMLKeys.RD_POSITION_KEY;
@@ -66,13 +87,14 @@ public class T3DInit : MonoBehaviour
     public static T3DInit Instance;
 
     public TileVisualizer TileVisualizer;
-
+    public HTMLInitSaveData HTMLData;
     public Netherlands3D.Rendering.RenderSettings RenderSettings;
 
     private void Awake()
     {
         Instance = this;
         InitializeSaveableVariables();
+        HTMLData = new HTMLInitSaveData();
     }
 
     private void InitializeSaveableVariables()

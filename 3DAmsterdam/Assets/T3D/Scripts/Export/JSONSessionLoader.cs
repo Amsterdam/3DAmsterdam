@@ -11,6 +11,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     //private bool getUserFeedback = T3DInit.;
 
     private JSONNode rootObject;// = new JSONObject();
+    private JSONNode rootObject2;
     const string downloadURL = "api/download/";
     const string feedbackURL = "api/getuserfeedback/";
     private bool hasLoaded = false;
@@ -19,6 +20,9 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
 
     public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
     public bool HasLoaded => hasLoaded;
+
+    [TextArea]
+    public string TestString;
 
     private void Awake()
     {
@@ -64,6 +68,25 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
         StartCoroutine(DownloadData(sessionId, ResponseCallback));
     }
 
+    public string GetJson(string type, string instanceId)
+    {
+        if (!rootObject2)
+        {
+            print("rootObject2 is null, parsing: " + TestString);
+            rootObject2 = JSON.Parse(TestString); //todo delete
+        }
+
+        foreach (var key in rootObject2.Keys)
+        {
+            print("key: " + key.Value);
+            print("val: " + rootObject2[key.Value].ToString());
+        }
+        print(type + " node: " + rootObject2[type].ToString());
+        print(instanceId + " node: " + rootObject2[type][instanceId].ToString());
+
+        return rootObject2[type][instanceId].ToString();
+    }
+
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
         string url = Config.activeConfiguration.T3DAzureFunctionURL;
@@ -90,7 +113,9 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     private void ResponseCallback(string data)
     {
         //var jsonString = PlayerPrefs.GetString(sessionId);
-        rootObject = JSONNode.Parse(data);
+        rootObject = JSON.Parse(data);
+        print("parsing teststring2: " + TestString);
+        rootObject2 = JSON.Parse(TestString);
 
         if (rootObject == null)
         {
@@ -98,12 +123,19 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             rootObject = new JSONObject();
         }
 
+        if (rootObject2 == null)
+        {
+            Debug.LogError("parsing new data unsuccesful. Data: " + TestString);
+            rootObject = new JSONObject();
+        }
+
+
         hasLoaded = rootObject != null;
         LoadingCompleted?.Invoke(hasLoaded);
 
         if (hasLoaded)
         {
-            JsonSessionSaver.Instance.InitializeRootObject(rootObject); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
+            JsonSessionSaver.Instance.InitializeRootObject(rootObject, rootObject2); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
         }
     }
 }

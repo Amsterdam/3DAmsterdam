@@ -1,3 +1,5 @@
+#define DEBUG
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -117,6 +119,24 @@ public static class SessionSaver
 
     public static void AddContainer(SaveDataContainer saveDataContainer)
     {
+        Debug.Log("test");
+        Debug.Log("attempting to load: " + saveDataContainer.TypeKey + "\t" + saveDataContainer.InstanceId);
+        ////check if object already exists in the save data, in which case load the save data:
+        var json = JSONSessionLoader.Instance.GetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId);
+        Debug.Log("loaded: " + json);
+        string expected = JsonUtility.ToJson(saveDataContainer);
+        Debug.Log("expected json: " + expected);
+        JsonUtility.FromJsonOverwrite(json, saveDataContainer);
+        //var parseTest = JsonUtility.FromJson(json, saveDataContainer.GetType());
+        //Debug.Log("parse test: " + parseTest);
+        //dynamic parsedObject = JsonUtility.FromJson(json, saveDataContainer.GetType());
+        //Debug.Log("parsedObject == null: " + (parsedObject == null));
+        //if (parsedObject != null)
+        //{
+        //    saveDataContainer = parsedObject;
+        //}
+
+        //Debug.Log("adding: " + saveDataContainer);
         JsonSessionSaver.Instance.AddContainer(saveDataContainer);
     }
 }

@@ -26,6 +26,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     public event IDataSaver.DataSavedEventHandler SavingCompleted;
     public bool SaveInProgress => uploadCoroutine != null;
 
+    private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>();
+
     private void Awake()
     {
         Instance = this;
@@ -100,7 +102,8 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             return;
         }
 
-        SerializeSaveableContainers();
+        string newData = SerializeSaveableContainers();
+        print(newData);
 
         string saveData = GetJsonSaveData();
         PlayerPrefs.SetString(sessionId, saveData);
@@ -116,7 +119,6 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
     }
 
-    private List<SaveDataContainer> saveDataContainers = new List<SaveDataContainer>(); //todo move
     public void AddContainer(SaveDataContainer saveDataContainer)
     {
         saveDataContainers.Add(saveDataContainer);
@@ -126,8 +128,11 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
     {
         foreach (var container in saveDataContainers)
         {
+            print(container);
+
             string jsonContent = JsonUtility.ToJson(container); // Base container's derivative class content variables
-            rootObject2[container.BaseKey].Add(container.Id, JSONNode.Parse(jsonContent)); //todo : not seralize and deserialize here
+            var node = JSONNode.Parse(jsonContent); //todo : not seralize and deserialize here
+            rootObject2[container.TypeKey].Add(container.InstanceId, node); 
         }
 
         return rootObject2.ToString();
@@ -156,10 +161,12 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
     }
 
-    public void InitializeRootObject(JSONNode loadedObject)
+    public void InitializeRootObject(JSONNode loadedObject, JSONNode newObject)
     {
         rootObject = loadedObject;
+        rootObject2 = newObject;
         print("new save data: " + rootObject.ToString());
+        print("new save data2: " + rootObject2.ToString());
         EnableAutoSave(true);
     }
 
