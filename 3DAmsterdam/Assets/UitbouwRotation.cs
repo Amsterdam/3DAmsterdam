@@ -7,16 +7,33 @@ namespace Netherlands3D.T3D.Uitbouw
     [RequireComponent(typeof(UitbouwBase))]
     public class UitbouwRotation : MonoBehaviour
     {
+        private UitbouwBase uitbouw;
         private Vector3 previousIntersectionPoint;
         private Vector3 previousOrigin;
 
         public bool AllowRotation { get; private set; } = true;
 
+        private bool isRotating;
+
+        private void Awake()
+        {
+            uitbouw = GetComponent<UitbouwBase>();
+        }
+
         void Update()
         {
-            if (AllowRotation && GetComponent<UitbouwBase>().TransformGizmo.WantsToRotate)
+            if (AllowRotation && uitbouw.TransformGizmo.WantsToRotate)
             {
+                if (!isRotating)
+                {
+                    CalculateDeltaAngle(); // used to set the previousOrigin and Intersection so that a jump does not occur due to old garbage values 
+                    isRotating = true;
+                }
                 Rotate();
+            }
+            else
+            {
+                isRotating = false;
             }
         }
 
@@ -25,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var deltaAngle = CalculateDeltaAngle();
             foreach (Transform t in transform)
             {
-                t.RotateAround(transform.position, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
+                t.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
             }
         }
 
