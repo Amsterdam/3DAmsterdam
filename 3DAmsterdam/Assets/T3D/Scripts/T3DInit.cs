@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[KeepSaveDataOnReset]
 public class HTMLInitSaveData : SaveDataContainer
 {
     public string SessionId;

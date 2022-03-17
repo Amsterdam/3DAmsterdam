@@ -81,7 +81,6 @@ public abstract class SaveDataContainer
 
     ~SaveDataContainer()
     {
-        Debug.Log("destroying: " + TypeKey + "\t" + InstanceId);
         DeleteSaveData();
         SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }

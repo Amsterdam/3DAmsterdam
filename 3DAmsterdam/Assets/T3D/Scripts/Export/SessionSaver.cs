@@ -13,8 +13,8 @@ public static class SessionSaver
 {
     public static bool LoadPreviousSession { get; set; } = true;
 
-    public static IDataLoader Loader { get { return JSONSessionLoader.Instance; } }
-    public static IDataSaver Saver { get { return JsonSessionSaver.Instance; } }
+    public static JSONSessionLoader Loader { get { return JSONSessionLoader.Instance; } }
+    public static JsonSessionSaver Saver { get { return JsonSessionSaver.Instance; } }
 
     public static string SessionId { get; private set; }
     public static bool HasLoaded => Loader.HasLoaded;
@@ -53,50 +53,50 @@ public static class SessionSaver
         Saver.ClearAllData(SessionId);
     }
 
-    public static void SaveFloat(string key, float value)
-    {
-        Saver.SaveFloat(key, value);
-    }
+    //public static void SaveFloat(string key, float value)
+    //{
+    //    Saver.SaveFloat(key, value);
+    //}
 
-    public static void SaveInt(string key, int value)
-    {
-        Saver.SaveInt(key, value);
-    }
+    //public static void SaveInt(string key, int value)
+    //{
+    //    Saver.SaveInt(key, value);
+    //}
 
-    public static void SaveString(string key, string value)
-    {
-        Saver.SaveString(key, value);
-    }
+    //public static void SaveString(string key, string value)
+    //{
+    //    Saver.SaveString(key, value);
+    //}
 
-    public static void SaveBool(string key, bool value)
-    {
-        Saver.SaveBool(key, value);
-    }
+    //public static void SaveBool(string key, bool value)
+    //{
+    //    Saver.SaveBool(key, value);
+    //}
 
-    public static float LoadFloat(string key)
-    {
-        return Loader.LoadFloat(key);
-    }
+    //public static float LoadFloat(string key)
+    //{
+    //    return Loader.LoadFloat(key);
+    //}
 
-    public static int LoadInt(string key)
-    {
-        return Loader.LoadInt(key);
-    }
+    //public static int LoadInt(string key)
+    //{
+    //    return Loader.LoadInt(key);
+    //}
 
-    public static string LoadString(string key)
-    {
-        return Loader.LoadString(key);
-    }
+    //public static string LoadString(string key)
+    //{
+    //    return Loader.LoadString(key);
+    //}
 
-    public static bool LoadBool(string key)
-    {
-        return Loader.LoadBool(key);
-    }
+    //public static bool LoadBool(string key)
+    //{
+    //    return Loader.LoadBool(key);
+    //}
 
-    public static void DeleteKey(string key)
-    {
-        Saver.DeleteKey(key);
-    }
+    //public static void DeleteKey(string key)
+    //{
+    //    Saver.DeleteKey(key);
+    //}
 
     public static void ExportSavedData()
     {

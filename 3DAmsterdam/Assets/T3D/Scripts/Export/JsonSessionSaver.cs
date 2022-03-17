@@ -1,18 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using KeyValueStore;
 using Netherlands3D;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class JsonSessionSaver : MonoBehaviour, IDataSaver
+public class JsonSessionSaver : MonoBehaviour//, IDataSaver
 {
-    const string readOnlyMarker = "$";
+    //const string readOnlyMarker = "$";
 
-    private JSONNode rootObject = new JSONObject();
+    //private JSONNode rootObject = new JSONObject();
     private JSONNode rootObject2 = new JSONObject();
     const string uploadURL = "api/upload/";
 
@@ -40,67 +40,67 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
             StartCoroutine(AutoSaveTimer());
     }
 
-    public void SaveFloat(string key, float value)
-    {
-        if (rootObject[key] != value)
-        {
-            rootObject[key] = value;
-            saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-        }
-    }
+    //public void SaveFloat(string key, float value)
+    //{
+    //    if (rootObject[key] != value)
+    //    {
+    //        rootObject[key] = value;
+    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+    //    }
+    //}
 
-    public void SaveInt(string key, int value)
-    {
-        if (rootObject[key] != value)
-        {
-            rootObject[key] = value;
-            saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-        }
-    }
+    //public void SaveInt(string key, int value)
+    //{
+    //    if (rootObject[key] != value)
+    //    {
+    //        rootObject[key] = value;
+    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+    //    }
+    //}
 
-    public void SaveString(string key, string value)
-    {
-        if (rootObject[key] != value)
-        {
-            rootObject[key] = value;
-            saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-        }
+    //public void SaveString(string key, string value)
+    //{
+    //    if (rootObject[key] != value)
+    //    {
+    //        rootObject[key] = value;
+    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+    //    }
 
-        rootObject[key] = new Vector3();
-    }
+    //    rootObject[key] = new Vector3();
+    //}
 
-    public void SaveBool(string key, bool value)
-    {
-        if (rootObject[key] != value)
-        {
-            rootObject[key] = value;
-            saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-        }
-    }
+    //public void SaveBool(string key, bool value)
+    //{
+    //    if (rootObject[key] != value)
+    //    {
+    //        rootObject[key] = value;
+    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+    //    }
+    //}
 
-    public void DeleteKey(string key)
-    {
-        rootObject.Remove(key);
-        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    }
+    //public void DeleteKey(string key)
+    //{
+    //    rootObject.Remove(key);
+    //    saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
+    //}
 
-    public string GetJsonSaveData()
-    {
-        return rootObject.ToString();
-    }
+    //public string GetJsonSaveData()
+    //{
+    //    return rootObject.ToString();
+    //}
 
     public void ExportSaveData(string sessionId)
     {
         //todo: why does rootObject.ToString() not work before building is loaded? Find the issue and remove try/catch
-        try
-        {
-            rootObject.ToString();
-        }
-        catch
-        {
-            print("cannot make rootObject string");
-            return;
-        }
+        //try
+        //{
+        //    rootObject.ToString();
+        //}
+        //catch
+        //{
+        //    print("cannot make rootObject string");
+        //    return;
+        //}
 
         //string saveData = GetJsonSaveData();
         string saveData = SerializeSaveableContainers();
@@ -129,7 +129,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         saveDataContainers.Remove(saveDataContainer);
     }
 
-    private string SerializeSaveableContainers()
+    public string SerializeSaveableContainers()
     {
         rootObject2 = new JSONObject(); //delete any old data that may be in the rootObject
         foreach (var container in saveDataContainers)
@@ -165,35 +165,22 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         }
     }
 
-    public void InitializeRootObject(JSONNode loadedObject, JSONNode newObject)
-    {
-        rootObject = loadedObject;
-        rootObject2 = newObject;
-        print("new save data: " + rootObject.ToString());
-        print("new save data2: " + rootObject2.ToString());
-        EnableAutoSave(true);
-    }
-
     public void ClearAllData(string sessionId)
     {
-        var newObject = new JSONObject();
+        var persistentTypes = KeepSaveDataOnResetAttribute.GetPersistentTypeKeys();
+        List<SaveDataContainer> persistentContainers = new List<SaveDataContainer>();
 
-        //save readOnly keys
-        foreach (var key in rootObject.Keys)
+        foreach (var container in saveDataContainers)
         {
-            if (key.Value.StartsWith(readOnlyMarker))
+            if (persistentTypes.Contains(container.TypeKey))
             {
-                newObject.Add(key.Value, rootObject[key.Value]);
-                print("read only: " + key.Value);
+                persistentContainers.Add(container);
             }
         }
 
-        rootObject = newObject;
+        saveDataContainers = persistentContainers;
         saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-
         ExportSaveData(sessionId);
-
-        PlayerPrefs.DeleteKey(sessionId);
     }
 
     private IEnumerator AutoSaveTimer()

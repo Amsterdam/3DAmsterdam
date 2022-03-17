@@ -60,7 +60,7 @@ public class SendFeedback : MonoBehaviour
 
     public void ExportSaveData(string fileName)
     {
-        string saveData = JsonSessionSaver.Instance.GetJsonSaveData();
+        string saveData = SessionSaver.Saver.SerializeSaveableContainers();
         Debug.Log("Saving data: " + saveData);
 
         if (uploadCoroutine == null)
