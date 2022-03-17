@@ -129,12 +129,9 @@ public static class SessionSaver
 
     public static void LoadContainer(SaveDataContainer saveDataContainer)
     {
-        Debug.Log("attempting to load: " + saveDataContainer.TypeKey + "\t" + saveDataContainer.InstanceId);
-
         //check if object already exists in the save data, in which case load the save data:
         if (JSONSessionLoader.Instance.TryGetJson(saveDataContainer.TypeKey, saveDataContainer.InstanceId, out string json))
         {
-            Debug.Log("Loaded JSON: " + json);
             JsonUtility.FromJsonOverwrite(json, saveDataContainer);
         }
     }

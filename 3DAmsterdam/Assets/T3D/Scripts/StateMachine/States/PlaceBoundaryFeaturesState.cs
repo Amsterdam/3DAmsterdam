@@ -6,38 +6,28 @@ using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using UnityEngine;
 
-public class PlaceBoundaryFeaturesStateSaveDataContainer : SaveDataContainer
-{
-    public int AmountOfPlacedFeatues;
-}
-
 public class PlaceBoundaryFeaturesState : State
 {
-    private PlaceBoundaryFeaturesStateSaveDataContainer saveData;
     public static List<BoundaryFeature> SavedBoundaryFeatures = new List<BoundaryFeature>();
+    public int AmountOfPlacedFeatues => SavedBoundaryFeatures.Count;
 
     protected override void Awake()
     {
         base.Awake();
-        saveData = new PlaceBoundaryFeaturesStateSaveDataContainer();
+        SavedBoundaryFeatures = new List<BoundaryFeature>(); //ensure the static list is emptied whenever the scene is reset
     }
 
     public override void StateLoadedAction()
     {
-        //after loading the amount of saved features, this number needs to be reset so it can be reused in this session.
-        //var amountOfSavedFeatures = saveData.AmountOfPlacedFeatues;
-        saveData.AmountOfPlacedFeatues = 0;
-
-        if (!SessionSaver.LoadPreviousSession)
-            return;
-
-        LoadSavedBoundaryFeatures();
+        if (SessionSaver.LoadPreviousSession)
+            LoadSavedFeatures();
     }
 
-    private void LoadSavedBoundaryFeatures()
+    private void LoadSavedFeatures()
     {
-        var availableComponents = GetComponentsInChildren<SelectComponent>(); //list of boundary feature types in the library
-        var boundaryFeatureSaveDataNode = SessionSaver.GetJSONNodeOfType(typeof(BoundaryFeatureSaveData).ToString()); //get the saved data
+        var availableComponents = GetComponentsInChildren<SelectComponent>();
+
+        var boundaryFeatureSaveDataNode = SessionSaver.GetJSONNodeOfType(typeof(BoundaryFeatureSaveData).ToString());
 
         foreach (var node in boundaryFeatureSaveDataNode)
         {
@@ -45,7 +35,7 @@ public class PlaceBoundaryFeaturesState : State
             var data = node.Value;
 
             var prefabName = data["PrefabName"];
-            var selectedComponent = availableComponents.FirstOrDefault(comp => comp.ComponentObject.name == prefabName); // find matching prefab in the library
+            var selectedComponent = availableComponents.FirstOrDefault(comp => comp.ComponentObject.name == prefabName);
 
             if (selectedComponent == null)
             {
@@ -53,8 +43,9 @@ public class PlaceBoundaryFeaturesState : State
                 continue;
             }
 
-            var placedBoundaryFeature = Instantiate(selectedComponent.ComponentObject);
-            AddBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName);
+            var placedBoundaryFeature = Instantiate(selectedComponent.ComponentObject/*savedPosition, savedRotation*/);
+            //placedBoundaryFeature.LoadData(int.Parse(key), prefabName);
+            AddBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName, key);
             placedBoundaryFeature.LoadData();
         }
     }
@@ -70,11 +61,15 @@ public class PlaceBoundaryFeaturesState : State
     }
 
     // called when user drags an item to the uitbouw
-    public void AddBoundaryFeatureToSaveData(BoundaryFeature feature, string prefabName)
+    public void AddNewBoundaryFeatureToSaveData(BoundaryFeature feature, string prefabName)
     {
-        saveData.AmountOfPlacedFeatues++;
+        int id = AmountOfPlacedFeatues;
+        AddBoundaryFeatureToSaveData(feature, prefabName, id.ToString());
+    }
 
-        int id = saveData.AmountOfPlacedFeatues;
+    //called to load data, since the keys are already known
+    private void AddBoundaryFeatureToSaveData(BoundaryFeature feature, string prefabName, string id)
+    {
         feature.InitializeSaveData(id, prefabName);
         SavedBoundaryFeatures.Add(feature);
     }
@@ -91,11 +86,6 @@ public class PlaceBoundaryFeaturesState : State
         feature.SaveData.DeleteSaveData();
         // delete the bf from the list
         SavedBoundaryFeatures.Remove(feature);
-
-        //sort list so that this function will not result in duplicate ids the next time it is called
-        SavedBoundaryFeatures = SavedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
-        //decrement amount
-        saveData.AmountOfPlacedFeatues--;
 
         return;
     }

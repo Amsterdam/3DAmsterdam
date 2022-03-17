@@ -101,7 +101,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (state)
             {
                 placedBoundaryFeature = Instantiate(ComponentObject, parent);
-                state.AddBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName);
+                state.AddNewBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName);
             }
         }
 
