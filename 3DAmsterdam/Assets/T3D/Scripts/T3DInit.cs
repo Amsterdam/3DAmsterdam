@@ -17,8 +17,8 @@ public class HTMLInitSaveData : SaveDataContainer
     public string HouseNumberAddition;
     public string ZipCode;
     public bool HasFile;
-    public Vector3RD RDPosition; //todo: is this serializable in the json parser
-    public string BagId; //todo needs to be nullable
+    public Vector3RD RDPosition;
+    public string BagId;
     public string BlobId;
     public string ModelId;
     public string ModelVersionId;

@@ -10,10 +10,7 @@ using UnityEngine.Networking;
 
 public class JsonSessionSaver : MonoBehaviour//, IDataSaver
 {
-    //const string readOnlyMarker = "$";
-
-    //private JSONNode rootObject = new JSONObject();
-    private JSONNode rootObject2 = new JSONObject();
+    private JSONNode rootObject = new JSONObject();
     const string uploadURL = "api/upload/";
 
     public static JsonSessionSaver Instance;
@@ -40,69 +37,8 @@ public class JsonSessionSaver : MonoBehaviour//, IDataSaver
             StartCoroutine(AutoSaveTimer());
     }
 
-    //public void SaveFloat(string key, float value)
-    //{
-    //    if (rootObject[key] != value)
-    //    {
-    //        rootObject[key] = value;
-    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    //    }
-    //}
-
-    //public void SaveInt(string key, int value)
-    //{
-    //    if (rootObject[key] != value)
-    //    {
-    //        rootObject[key] = value;
-    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    //    }
-    //}
-
-    //public void SaveString(string key, string value)
-    //{
-    //    if (rootObject[key] != value)
-    //    {
-    //        rootObject[key] = value;
-    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    //    }
-
-    //    rootObject[key] = new Vector3();
-    //}
-
-    //public void SaveBool(string key, bool value)
-    //{
-    //    if (rootObject[key] != value)
-    //    {
-    //        rootObject[key] = value;
-    //        saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    //    }
-    //}
-
-    //public void DeleteKey(string key)
-    //{
-    //    rootObject.Remove(key);
-    //    saveFeedback.SetSaveStatus(SaveFeedback.SaveStatus.WaitingToSave);
-    //}
-
-    //public string GetJsonSaveData()
-    //{
-    //    return rootObject.ToString();
-    //}
-
     public void ExportSaveData(string sessionId)
     {
-        //todo: why does rootObject.ToString() not work before building is loaded? Find the issue and remove try/catch
-        //try
-        //{
-        //    rootObject.ToString();
-        //}
-        //catch
-        //{
-        //    print("cannot make rootObject string");
-        //    return;
-        //}
-
-        //string saveData = GetJsonSaveData();
         string saveData = SerializeSaveableContainers();
         print(saveData);
 
@@ -131,15 +67,15 @@ public class JsonSessionSaver : MonoBehaviour//, IDataSaver
 
     public string SerializeSaveableContainers()
     {
-        rootObject2 = new JSONObject(); //delete any old data that may be in the rootObject
+        rootObject = new JSONObject(); //delete any old data that may be in the rootObject
         foreach (var container in saveDataContainers)
         {
             string jsonContent = JsonUtility.ToJson(container); // Base container's derivative class content variables
             var node = JSONNode.Parse(jsonContent); //todo : not seralize and deserialize here
-            rootObject2[container.TypeKey].Add(container.InstanceId, node);
+            rootObject[container.TypeKey].Add(container.InstanceId, node);
         }
 
-        return rootObject2.ToString();
+        return rootObject.ToString();
     }
 
     private IEnumerator UploadData(string name, string data)

@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 using System;
 using Netherlands3D;
 
-public class JSONSessionLoader : MonoBehaviour, IDataLoader
+public class JSONSessionLoader : MonoBehaviour//, IDataLoader
 {
     private JSONNode rootObject;// = new JSONObject();
     const string downloadURL = "api/download/";
@@ -24,38 +24,6 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     private void Awake()
     {
         Instance = this;
-    }
-
-    public float LoadFloat(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public int LoadInt(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public string LoadString(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public bool LoadBool(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
     }
 
     public void ReadSaveData(string sessionId)
