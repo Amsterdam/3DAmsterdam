@@ -76,8 +76,6 @@ public abstract class SaveDataContainer
 
     public void DeleteSaveData()
     {
-        Debug.Log("Deleting data: " + TypeKey + "\t:" + InstanceId);
-
         SessionSaver.RemoveContainer(this);
     }
 

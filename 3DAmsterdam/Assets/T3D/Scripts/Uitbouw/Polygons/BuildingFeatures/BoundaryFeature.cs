@@ -42,64 +42,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         }
     }
 
-    /*
-    public class BoundaryFeatureSaveData_OLD
-    {
-        public static string BaseKey { get { return typeof(BoundaryFeatureSaveData_OLD).ToString(); } }
-
-        //public string BaseKey;
-        public SaveableInt Id; //unique id for this boundary feature
-        public SaveableString PrefabName; //which prefab should be instantiated?
-        public SaveableInt WallSide;
-        public SaveableVector3 Position;
-        public SaveableQuaternion Rotation;
-        public SaveableVector3 Size;
-
-        public BoundaryFeatureSaveData_OLD(int objectId)
-        {
-            var baseKey = BaseKey + "." + objectId;
-            Id = new SaveableInt(baseKey + ".Id");
-            PrefabName = new SaveableString(baseKey + ".PrefabName"); ;
-            WallSide = new SaveableInt(baseKey + ".WallSide"); ;
-            Position = new SaveableVector3(baseKey + ".Position");
-            Rotation = new SaveableQuaternion(baseKey + ".Rotation");
-            Size = new SaveableVector3(baseKey + ".Size");
-        }
-
-        public void UpdateData(int id, string prefabName, WallSide wallSide, Vector3 position, Quaternion rotation, Vector3 size)
-        {
-            Id.SetValue(id);
-            PrefabName.SetValue(prefabName);
-            WallSide.SetValue((int)wallSide);
-            Position.SetValue(position);
-            Rotation.SetValue(rotation);
-            Size.SetValue(size);
-        }
-
-        public void UpdateWall(WallSide newWall)
-        {
-            WallSide.SetValue((int)newWall);
-        }
-
-        public void UpdateDimensions(Vector3 position, Quaternion rotation, Vector3 size)
-        {
-            Position.SetValue(position);
-            Rotation.SetValue(rotation);
-            Size.SetValue(size);
-        }
-
-        public void DeleteKeys()
-        {
-            Id.Delete();
-            PrefabName.Delete();
-            WallSide.Delete();
-            Position.Delete();
-            Rotation.Delete();
-            Size.Delete();
-        }
-    }
-    */
-
     public class BoundaryFeature : SquareSurface
     {
         public UitbouwMuur Wall { get; private set; }
@@ -113,7 +55,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         private float editUIOffset = 0.2f;
 
         public int Id => int.Parse(SaveData.InstanceId); //set this when instantiating to differentiate it from other bfs in the save data
-        //public string PrefabName { get; set; } //set this when instantiating to save the prefab to load the next time
         public BoundaryFeatureSaveData SaveData { get; private set; }
 
         [SerializeField]
@@ -155,8 +96,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         public void LoadData()
         {
-            //InitializeSaveData(id);
-
             transform.rotation = SaveData.Rotation;
             transform.position = SaveData.Position;
 
@@ -169,8 +108,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             }
 
             SetSize(SaveData.Size);
-
-            //transform.SetParent(wall.transform.parent, true); //breaks the positioning for some reason
         }
 
         public void SetWall(UitbouwMuur wall)
@@ -180,7 +117,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //remove the hole from the current wall, if the current wall exists
             if (Wall != null)
             {
-                //Surface = Wall.GetComponent<CitySurface>();
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             }
             //set the new wall
@@ -239,7 +175,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            //var pos = meshTransform.position + meshTransform.rotation * meshTransform.GetComponent<SpriteRenderer>().bounds.extents;
             var trCorner = GetCorner(rightBound, topBound);
             var dir = (trCorner - transform.position).normalized;
             editUI.AlignWithWorldPosition(trCorner + dir * editUIOffset);
@@ -312,7 +247,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (editUI)
                 Destroy(editUI.gameObject);
-            //Destroy(gameObject);
+
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
 
