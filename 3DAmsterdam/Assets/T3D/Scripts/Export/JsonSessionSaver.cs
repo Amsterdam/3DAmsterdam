@@ -104,7 +104,7 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
 
         //string saveData = GetJsonSaveData();
         string saveData = SerializeSaveableContainers();
-        print("saving: " + saveData);
+        print(saveData);
 
         PlayerPrefs.SetString(sessionId, saveData);
 
@@ -124,13 +124,19 @@ public class JsonSessionSaver : MonoBehaviour, IDataSaver
         saveDataContainers.Add(saveDataContainer);
     }
 
+    public void RemoveContainer(SaveDataContainer saveDataContainer)
+    {
+        saveDataContainers.Remove(saveDataContainer);
+    }
+
     private string SerializeSaveableContainers()
     {
+        rootObject2 = new JSONObject(); //delete any old data that may be in the rootObject
         foreach (var container in saveDataContainers)
         {
             string jsonContent = JsonUtility.ToJson(container); // Base container's derivative class content variables
             var node = JSONNode.Parse(jsonContent); //todo : not seralize and deserialize here
-            rootObject2[container.TypeKey].Add(container.InstanceId, node); 
+            rootObject2[container.TypeKey].Add(container.InstanceId, node);
         }
 
         return rootObject2.ToString();

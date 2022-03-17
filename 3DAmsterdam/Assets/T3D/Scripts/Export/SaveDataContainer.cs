@@ -23,7 +23,7 @@ public abstract class SaveDataContainer
     /// </summary>
 
     public string TypeKey { get; private set; }
-    public string InstanceId { get; private set; }
+    public string InstanceId { get; protected set; }
 
     public SaveDataContainer()
     {
@@ -72,5 +72,19 @@ public abstract class SaveDataContainer
     private string GetTypeKey()
     {
         return GetType().ToString();
+    }
+
+    public void DeleteSaveData()
+    {
+        Debug.Log("Deleting data: " + TypeKey + "\t:" + InstanceId);
+
+        SessionSaver.RemoveContainer(this);
+    }
+
+    ~SaveDataContainer()
+    {
+        Debug.Log("destroying: " + TypeKey + "\t" + InstanceId);
+        DeleteSaveData();
+        SessionSaver.Loader.LoadingCompleted -= Loader_LoadingCompleted;
     }
 }

@@ -101,19 +101,22 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             var state = State.ActiveState as PlaceBoundaryFeaturesState;
             if (state)
             {
+                //state.PlaceBoundaryFeature(ComponentObject, parent, prefabName);
                 placedBoundaryFeature = Instantiate(ComponentObject, parent);
-                state.AddBoundaryFeatureToSaveData(prefabName, placedBoundaryFeature);
+                state.AddBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName);
             }
         }
 
         private void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
         {
-            var state = State.ActiveState as PlaceBoundaryFeaturesState;
-            if (state)
-            {
-                state.RemoveBoundaryFeatureFromSaveData(feature);
-                Destroy(feature.gameObject);
-            }
+            feature.DeleteFeature(); //handles all the destruction logic
+
+            //var state = State.ActiveState as PlaceBoundaryFeaturesState;
+            //if (state)
+            //{
+            //    state.RemoveBoundaryFeatureFromSaveData(feature);
+            //    Destroy(feature.gameObject);
+            //}
         }
     }
 }

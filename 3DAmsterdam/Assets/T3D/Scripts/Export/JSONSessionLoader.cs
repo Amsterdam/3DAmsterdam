@@ -65,6 +65,15 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
         StartCoroutine(DownloadData(sessionId, ResponseCallback));
     }
 
+    public JSONNode GetJSONNodeOfType(string typeKey)
+    {
+        if (rootObject == null)
+        {
+            Debug.LogError("rootObject is null");
+        }
+        return rootObject[typeKey];
+    }
+
     public bool TryGetJson(string type, string instanceId, out string json)
     {
         if (rootObject == null)

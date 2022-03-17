@@ -86,12 +86,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (RestrictionChecker.ActiveUitbouw != null)
-                SetText();
-            else if (!inputField)
-                SetText();
-            else if (!inputField.isFocused)
-                SetText();
+            if (RestrictionChecker.ActiveUitbouw != null) // Only set text if uitbouw exists
+            {
+                if (!inputField || !inputField.isFocused) //Text can be set because manual override is not possible, and when input field is not focused, since the user is not inputting in this input field
+                {
+                    SetText();
+                }
+            }
         }
 
         void SetText()

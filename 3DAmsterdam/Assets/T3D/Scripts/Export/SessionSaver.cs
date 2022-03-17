@@ -122,6 +122,11 @@ public static class SessionSaver
         JsonSessionSaver.Instance.AddContainer(saveDataContainer);
     }
 
+    public static void RemoveContainer(SaveDataContainer saveDataContainer)
+    {
+        JsonSessionSaver.Instance.RemoveContainer(saveDataContainer);
+    }
+
     public static void LoadContainer(SaveDataContainer saveDataContainer)
     {
         Debug.Log("attempting to load: " + saveDataContainer.TypeKey + "\t" + saveDataContainer.InstanceId);
@@ -132,5 +137,10 @@ public static class SessionSaver
             Debug.Log("Loaded JSON: " + json);
             JsonUtility.FromJsonOverwrite(json, saveDataContainer);
         }
+    }
+
+    public static JSONNode GetJSONNodeOfType(string typeKey)
+    {
+        return JSONSessionLoader.Instance.GetJSONNodeOfType(typeKey);
     }
 }
