@@ -2,73 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
-
-public class UitbouwRotation : MonoBehaviour
+namespace Netherlands3D.T3D.Uitbouw
 {
-    private Vector3 previousIntersectionPoint;
-    private Vector3 previousOrigin;
-
-    public bool AllowRotation { get; private set; } = true;
-
-    [SerializeField]
-    private UitbouwTransformGizmo rotationGizmoPrefab;
-
-    // Update is called once per frame
-    void Update()
+    [RequireComponent(typeof(UitbouwBase))]
+    public class UitbouwRotation : MonoBehaviour
     {
-        if (AllowRotation)
-        {
-            Rotate();
-        }
-    }
+        private Vector3 previousIntersectionPoint;
+        private Vector3 previousOrigin;
 
-    private void Rotate()
-    {
-        var deltaAngle = CalculateDeltaAngle();
-        foreach (Transform t in transform)
-        {
-            t.Rotate(transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
-        }
-    }
+        public bool AllowRotation { get; private set; } = true;
 
-    private float CalculateDeltaAngle()
-    {
-        var newOrigin = transform.position;
-        var groundPlane = new Plane(transform.up, newOrigin);
-        var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
-
-        Vector3 newIntersectionPoint;
-        if (groundPlane.Raycast(ray, out float enter))
+        void Update()
         {
-            newIntersectionPoint = ray.origin + (ray.direction * enter);
-        }
-        else
-        {
-            var horizonPlane = new Plane(-CameraModeChanger.Instance.ActiveCamera.transform.forward, previousIntersectionPoint);
-            horizonPlane.Raycast(ray, out enter);
-            var planeIntersection = ray.origin + (ray.direction * enter);
-            newIntersectionPoint = groundPlane.ClosestPointOnPlane(planeIntersection);
+            if (AllowRotation && GetComponent<UitbouwBase>().TransformGizmo.WantsToRotate)
+            {
+                Rotate();
+            }
         }
 
-        var previousDir = (previousIntersectionPoint - previousOrigin).normalized;
-        var newDir = (newIntersectionPoint - newOrigin).normalized;
+        private void Rotate()
+        {
+            var deltaAngle = CalculateDeltaAngle();
+            foreach (Transform t in transform)
+            {
+                t.RotateAround(transform.position, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
+            }
+        }
 
-        var angle = Vector3.SignedAngle(previousDir, newDir, transform.up);
+        private float CalculateDeltaAngle()
+        {
+            var newOrigin = transform.position;
+            var groundPlane = new Plane(transform.up, newOrigin);
+            var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
 
-        previousOrigin = newOrigin;
-        previousIntersectionPoint = newIntersectionPoint;
+            Vector3 newIntersectionPoint;
+            if (groundPlane.Raycast(ray, out float enter))
+            {
+                newIntersectionPoint = ray.origin + (ray.direction * enter);
+            }
+            else
+            {
+                var horizonPlane = new Plane(-CameraModeChanger.Instance.ActiveCamera.transform.forward, previousIntersectionPoint);
+                horizonPlane.Raycast(ray, out enter);
+                var planeIntersection = ray.origin + (ray.direction * enter);
+                newIntersectionPoint = groundPlane.ClosestPointOnPlane(planeIntersection);
+            }
 
-        return angle;
-    }
+            var previousDir = (previousIntersectionPoint - previousOrigin).normalized;
+            var newDir = (newIntersectionPoint - newOrigin).normalized;
 
-    public virtual void SetAllowRotation(bool allowed)
-    {
-        AllowRotation = allowed && T3DInit.Instance.IsEditMode;
-    }
+            var angle = Vector3.SignedAngle(previousDir, newDir, transform.up);
 
-    private void CreateRotationGizmo()
-    {
-        var rotationGizmo = Instantiate(rotationGizmoPrefab, transform.parent);
-        rotationGizmo.AlignWithWorldPosition(transform.position);
+            previousOrigin = newOrigin;
+            previousIntersectionPoint = newIntersectionPoint;
+
+            return angle;
+        }
+
+        public virtual void SetAllowRotation(bool allowed)
+        {
+            AllowRotation = allowed && T3DInit.Instance.IsEditMode;
+        }
     }
 }

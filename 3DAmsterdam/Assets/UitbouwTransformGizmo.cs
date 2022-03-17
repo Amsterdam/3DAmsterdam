@@ -7,7 +7,10 @@ using UnityEngine.UI;
 public class UitbouwTransformGizmo : WorldPointFollower
 {
     [SerializeField]
-    private Button button;
+    private UitbouwTransformButton moveButton;
+    [SerializeField]
+    private UitbouwTransformButton rotateButton;
 
-    
+    public bool WantsToMove => moveButton.IsDragging;
+    public bool WantsToRotate => rotateButton.IsDragging;
 }

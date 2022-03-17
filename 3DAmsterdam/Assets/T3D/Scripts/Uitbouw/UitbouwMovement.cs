@@ -52,7 +52,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (AllowDrag)
+            if (AllowDrag && GetComponent<UitbouwBase>().TransformGizmo.WantsToMove)
                 ProcessUserInput();
             LimitPositionOnWall();
 

@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 2510410811634128243}
   - component: {fileID: 6849669558771954186}
   - component: {fileID: 6641196300282613232}
+  - component: {fileID: 8290729776069747320}
   m_Layer: 17
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -578,6 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a482b0c4062ac449580272bbdedbc283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransformGizmo: {fileID: 0}
   walls:
   - {fileID: 3154073171412169850}
   - {fileID: 3241695757148375439}
@@ -629,6 +631,18 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
+--- !u!114 &8290729776069747320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50cf9f236c214731a27e6c200d3d6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0

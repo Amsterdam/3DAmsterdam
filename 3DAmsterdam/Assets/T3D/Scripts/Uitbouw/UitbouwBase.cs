@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Interface;
 using SimpleJSON;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private string positionKey;
         private SaveableVector3 savedPosition;
+
+        public UitbouwTransformGizmo TransformGizmo;
 
         public Vector3 LeftCorner
         {
@@ -99,6 +102,8 @@ namespace Netherlands3D.T3D.Uitbouw
             building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
                 transform.position = savedPosition.Value;
+
+            TransformGizmo = CoordinateNumbers.Instance.CreateUitbouwTransformGizmo();
         }
 
         protected virtual void Update()
@@ -107,6 +112,7 @@ namespace Netherlands3D.T3D.Uitbouw
             ProcessSnapping();
 
             savedPosition.SetValue(transform.position);
+            TransformGizmo.AlignWithWorldPosition(transform.position);
         }
 
         protected void SetDimensions(float w, float d, float h)

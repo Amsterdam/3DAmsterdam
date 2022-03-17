@@ -24,6 +24,9 @@ namespace Netherlands3D.Interface
         [SerializeField]
         private EditUI editUIPrefab;
 
+        [SerializeField]
+        private UitbouwTransformGizmo uitbouwTransformGizmoPrefab;
+
         public static CoordinateNumbers Instance;
 
         void Awake()
@@ -51,6 +54,11 @@ namespace Netherlands3D.Interface
             var ui = Instantiate(editUIPrefab, this.transform);
             ui.SetFeature(feature);
             return ui;
+        }
+
+        public UitbouwTransformGizmo CreateUitbouwTransformGizmo()
+        {
+            return Instantiate(uitbouwTransformGizmoPrefab, transform);
         }
     }
 }
