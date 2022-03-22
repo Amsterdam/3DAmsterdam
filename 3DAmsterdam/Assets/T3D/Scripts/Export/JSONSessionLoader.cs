@@ -18,9 +18,6 @@ public class JSONSessionLoader : MonoBehaviour//, IDataLoader
     public event IDataLoader.DataLoadedEventHandler LoadingCompleted;
     public bool HasLoaded => hasLoaded;
 
-    [TextArea]
-    public string TestString;
-
     private void Awake()
     {
         Instance = this;
@@ -74,9 +71,6 @@ public class JSONSessionLoader : MonoBehaviour//, IDataLoader
                 //todo: replace with text from call
                 print("loading succeeded: " + uwr.downloadHandler.text);
                 callback?.Invoke(uwr.downloadHandler.text);
-
-                //print("using TestString: " + TestString);
-                //callback?.Invoke(TestString);
             }
         }
     }
