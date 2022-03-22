@@ -23,7 +23,7 @@ public class SaveFeedback : MonoBehaviour
         switch (status)
         {
             case SaveStatus.ChangesSaved:
-                feedbackText.text = "Wijzigingen opgeslagen";
+                feedbackText.text = "";
                 busyImage.enabled = false;
                 break;
             case SaveStatus.Saving:
@@ -32,7 +32,7 @@ public class SaveFeedback : MonoBehaviour
                 busyImage.enabled = true;
                 break;
             case SaveStatus.WaitingToSave:
-                feedbackText.text = "Ontwerp gewijzigd";
+                feedbackText.text = "";
                 busyImage.enabled = false;
                 break;
         }

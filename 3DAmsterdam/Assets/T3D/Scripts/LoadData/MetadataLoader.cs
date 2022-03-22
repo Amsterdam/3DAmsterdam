@@ -126,7 +126,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void RequestBuildingData(Vector3RD position, string id)
         {
-            if (T3DInit.Instance.UploadedModel && (!string.IsNullOrEmpty(T3DInit.Instance.BimModelId) || !string.IsNullOrEmpty(T3DInit.Instance.BlobId)))
+            if (T3DInit.HTMLData.HasFile && (!string.IsNullOrEmpty(T3DInit.HTMLData.ModelId) || !string.IsNullOrEmpty(T3DInit.HTMLData.BlobId)))
             { 
                 StartCoroutine(GetBimCityJson());
             }
@@ -200,10 +200,10 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             yield return null;
 
-            var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{T3DInit.Instance.BimModelId}";
-            var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{T3DInit.Instance.BlobId}.json";
+            var urlIfc = Config.activeConfiguration.T3DAzureFunctionURL + $"api/getbimcityjson/{T3DInit.HTMLData.ModelId}";
+            var urlSketchup = Config.activeConfiguration.T3DAzureFunctionURL + $"api/downloadcityjson/{T3DInit.HTMLData.BlobId}.json";
 
-            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(T3DInit.Instance.BimModelId) == false ? urlIfc : urlSketchup);
+            UnityWebRequest req = UnityWebRequest.Get(string.IsNullOrEmpty(T3DInit.HTMLData.ModelId) == false ? urlIfc : urlSketchup);
             req.SetRequestHeader("Content-Type", "application/json");
 
             yield return req.SendWebRequest();
@@ -273,7 +273,7 @@ namespace Netherlands3D.T3D.Uitbouw
             //var pos = CoordConvert.RDtoUnity(perceelnummerPlaatscoordinaat);
             if (!Uitbouw)
             {
-                if (T3DInit.Instance.UploadedModel)
+                if (T3DInit.HTMLData.HasFile)
                 {
                     var obj = CityJsonVisualiser.Instance;
                     obj.VisualizeCityJson();

@@ -7,59 +7,38 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 {
-    public class BoundaryFeatureSaveData
+    public class BoundaryFeatureSaveData : SaveDataContainer
     {
-        public static string BaseKey { get { return typeof(BoundaryFeatureSaveData).ToString(); } }
+        //public int Id; //unique id for this boundary feature
+        public string PrefabName; //which prefab should be instantiated?
+        public WallSide WallSide;
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public Vector3 Size;
 
-        //public string BaseKey;
-        public SaveableInt Id; //unique id for this boundary feature
-        public SaveableString PrefabName; //which prefab should be instantiated?
-        public SaveableInt WallSide;
-        public SaveableVector3 Position;
-        public SaveableQuaternion Rotation;
-        public SaveableVector3 Size;
-
-        public BoundaryFeatureSaveData(int objectId)
+        public BoundaryFeatureSaveData(string instanceId) : base(instanceId)
         {
-            var baseKey = BaseKey + "." + objectId;
-            Id = new SaveableInt(baseKey + ".Id");
-            PrefabName = new SaveableString(baseKey + ".PrefabName"); ;
-            WallSide = new SaveableInt(baseKey + ".WallSide"); ;
-            Position = new SaveableVector3(baseKey + ".Position");
-            Rotation = new SaveableQuaternion(baseKey + ".Rotation");
-            Size = new SaveableVector3(baseKey + ".Size");
         }
 
-        public void UpdateData(int id, string prefabName, WallSide wallSide, Vector3 position, Quaternion rotation, Vector3 size)
+        public BoundaryFeatureSaveData(string instanceId, string prefabName, WallSide wallSide, Vector3 position, Quaternion rotation, Vector3 size) : base(instanceId)
         {
-            Id.SetValue(id);
-            PrefabName.SetValue(prefabName);
-            WallSide.SetValue((int)wallSide);
-            Position.SetValue(position);
-            Rotation.SetValue(rotation);
-            Size.SetValue(size);
+            PrefabName = prefabName;
+            WallSide = wallSide;
+            Position = position;
+            Rotation = rotation;
+            Size = size;
         }
 
-        public void UpdateWall(WallSide newWall)
+        public void SetId(string id)
         {
-            WallSide.SetValue((int)newWall);
+            InstanceId = id;
         }
 
         public void UpdateDimensions(Vector3 position, Quaternion rotation, Vector3 size)
         {
-            Position.SetValue(position);
-            Rotation.SetValue(rotation);
-            Size.SetValue(size);
-        }
-
-        public void DeleteKeys()
-        {
-            Id.Delete();
-            PrefabName.Delete();
-            WallSide.Delete();
-            Position.Delete();
-            Rotation.Delete();
-            Size.Delete();
+            Position = position;
+            Rotation = rotation;
+            Size = size;
         }
     }
 
@@ -75,13 +54,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         [SerializeField]
         private float editUIOffset = 0.2f;
 
-        //private Vector3 deltaPos;
-
-        //private string idKey;
-        //private SaveableInt id;
-        //private int instanceId;
-        public int Id { get; private set; } //set this when instantiating to differentiate it from other bfs in the save data
-        public string PrefabName { get; set; } //set this when instantiating to save the prefab to load the next time
+        public string Id => SaveData.InstanceId; //set this when instantiating to differentiate it from other bfs in the save data
         public BoundaryFeatureSaveData SaveData { get; private set; }
 
         [SerializeField]
@@ -92,10 +65,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             base.Awake();
 
-            //idKey = GetType().Namespace + GetType().ToString() + "." + GetInstanceID().ToString();
-            //id = new SaveableInt(idKey);
-
-            //featureTransform = transform.parent;
             distanceMeasurements = GetComponents<DistanceMeasurement>();
             editUI = CoordinateNumbers.Instance.CreateEditUI(this);
         }
@@ -106,45 +75,33 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             SetMode(EditMode.None);
         }
 
-        public void InitializeSaveData(int id)
+        public void InitializeSaveData(string id, string prefabName)
         {
             if (SaveData == null)
             {
-                Id = id;
                 SaveData = new BoundaryFeatureSaveData(id);
+                SaveData.PrefabName = prefabName;
+            }
+            else
+            {
+                Debug.LogError("Save data for: " + id + " already exists as: " + SaveData.InstanceId);
             }
         }
 
-        public void UpdateMetadata(int id, string prefabName)
+        public void LoadData()
         {
-            Id = id;
-            PrefabName = prefabName;
-
-            var wallSide = (WallSide)SaveData.WallSide.Value;
-            SaveData = new BoundaryFeatureSaveData(Id); // reset the key used to save data
-            SaveData.UpdateData(Id, PrefabName, wallSide, transform.position, transform.rotation, Size);
-        }
-
-        public void LoadData(int id)
-        {
-            InitializeSaveData(id);
-
-            PrefabName = SaveData.PrefabName.Value;
-            var side = (WallSide)SaveData.WallSide.Value;
-
-            transform.rotation = SaveData.Rotation.Value;
-            transform.position = SaveData.Position.Value;
+            transform.rotation = SaveData.Rotation;
+            transform.position = SaveData.Position;
 
             var shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;
             if (shapeableUitbouw)
             {
+                var side = SaveData.WallSide;
                 var wall = shapeableUitbouw.GetWall(side);
                 SetWall(wall);
             }
 
-            SetSize(SaveData.Size.Value);
-
-            //transform.SetParent(wall.transform.parent, true); //breaks the positioning for some reason
+            SetSize(SaveData.Size);
         }
 
         public void SetWall(UitbouwMuur wall)
@@ -154,12 +111,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             //remove the hole from the current wall, if the current wall exists
             if (Wall != null)
             {
-                //Surface = Wall.GetComponent<CitySurface>();
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
             }
             //set the new wall
             Wall = wall;
-            SaveData.UpdateWall(wall.Side);
+            SaveData.WallSide = wall.Side;
 
             //add the hole to the new wall, if the new wall exists
             if (Wall != null)
@@ -213,7 +169,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
         private void SetButtonPositions()
         {
-            //var pos = meshTransform.position + meshTransform.rotation * meshTransform.GetComponent<SpriteRenderer>().bounds.extents;
             var trCorner = GetCorner(rightBound, topBound);
             var dir = (trCorner - transform.position).normalized;
             editUI.AlignWithWorldPosition(trCorner + dir * editUIOffset);
@@ -278,6 +233,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
                 state.RemoveBoundaryFeatureFromSaveData(this);
             }
 
+            SaveData.DeleteSaveData();
             Destroy(gameObject);
         }
 
@@ -285,15 +241,16 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
         {
             if (editUI)
                 Destroy(editUI.gameObject);
-            //Destroy(gameObject);
+
             if (Wall)
                 Wall.Surface.TryRemoveHole(Surface.SolidSurfacePolygon);
 
             //remove the boundary feature from the list, extra measure to ensure list is reset when restarting the current session
-            if (PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Contains(this))
-            {
-                PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Remove(this);
-            }
+            //replaced with a ne List<>() call in PlaceBoundaryFeatureState
+            //if (PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Contains(this))
+            //{
+            //    PlaceBoundaryFeaturesState.SavedBoundaryFeatures.Remove(this);
+            //}
         }
 
         public void EditFeature()

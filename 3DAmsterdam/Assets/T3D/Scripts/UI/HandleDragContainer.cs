@@ -47,7 +47,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             {
                 if (placedBoundaryFeature != null)
                 {
-                    //Destroy(placedBoundaryFeature.gameObject);
                     placedBoundaryFeature = null; //place object and set this one to null to 
                 }
                 selectComponent.Deslect();
@@ -102,18 +101,13 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
             if (state)
             {
                 placedBoundaryFeature = Instantiate(ComponentObject, parent);
-                state.AddBoundaryFeatureToSaveData(prefabName, placedBoundaryFeature);
+                state.AddNewBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName);
             }
         }
 
         private void RemoveBoundaryFeatureFromSaveData(BoundaryFeature feature)
         {
-            var state = State.ActiveState as PlaceBoundaryFeaturesState;
-            if (state)
-            {
-                state.RemoveBoundaryFeatureFromSaveData(feature);
-                Destroy(feature.gameObject);
-            }
+            feature.DeleteFeature(); //handles all the destruction logic
         }
     }
 }

@@ -8,28 +8,45 @@ using UnityEngine;
 
 public class PlaceBoundaryFeaturesState : State
 {
-    string amountOfPlacedFeatuesKey;
-    SaveableInt amountOfPlacedFeatues;
-    //List<int> ids = new List<int>();
-    //SaveableIntArray ids; //save the actual placed ids, the id increments every time a new bf is placed, but does not decrement when a bf is deleted to avoid having to change all ids to account for the missing id
     public static List<BoundaryFeature> SavedBoundaryFeatures = new List<BoundaryFeature>();
+    public int AmountOfPlacedFeatues => SavedBoundaryFeatures.Count;
 
     protected override void Awake()
     {
         base.Awake();
-        amountOfPlacedFeatuesKey = GetType().ToString() + ".amountOfPlacedFeatues";
-        amountOfPlacedFeatues = new SaveableInt(amountOfPlacedFeatuesKey);
+        SavedBoundaryFeatures = new List<BoundaryFeature>(); //ensure the static list is emptied whenever the scene is reset
     }
 
     public override void StateLoadedAction()
     {
-        //after loading the amount of saved features, this number needs to be reset so it can be reused in this session.
-        var amountOfSavedFeatures = amountOfPlacedFeatues.Value;
-        amountOfPlacedFeatues.SetValue(0);
+        if (SessionSaver.LoadPreviousSession)
+            LoadSavedFeatures();
+    }
 
-        for (int i = 1; i <= amountOfSavedFeatures; i++)
+    private void LoadSavedFeatures()
+    {
+        var availableComponents = GetComponentsInChildren<SelectComponent>();
+
+        var boundaryFeatureSaveDataNode = SessionSaver.GetJSONNodeOfType(typeof(BoundaryFeatureSaveData).ToString());
+
+        foreach (var node in boundaryFeatureSaveDataNode)
         {
-            LoadBoundaryFeature(i);
+            var key = node.Key;
+            var data = node.Value;
+
+            var prefabName = data["PrefabName"];
+            var selectedComponent = availableComponents.FirstOrDefault(comp => comp.ComponentObject.name == prefabName);
+
+            if (selectedComponent == null)
+            {
+                Debug.LogError("Saved component: " + prefabName + " not available in component library.");
+                continue;
+            }
+
+            var placedBoundaryFeature = Instantiate(selectedComponent.ComponentObject/*savedPosition, savedRotation*/);
+            //placedBoundaryFeature.LoadData(int.Parse(key), prefabName);
+            AddBoundaryFeatureToSaveData(placedBoundaryFeature, prefabName, key);
+            placedBoundaryFeature.LoadData();
         }
     }
 
@@ -43,38 +60,17 @@ public class PlaceBoundaryFeaturesState : State
         GetComponent<BoundaryFeatureEditHandler>().SetAllowBoundaryFeatureEditing(false);
     }
 
-    private void LoadBoundaryFeature(int id)
+    // called when user drags an item to the uitbouw
+    public void AddNewBoundaryFeatureToSaveData(BoundaryFeature feature, string prefabName)
     {
-        BoundaryFeature componentObject = null;
-
-        var components = GetComponentsInChildren<SelectComponent>();
-        var saveData = new BoundaryFeatureSaveData(id);
-
-        foreach (var component in components)
-        {
-            if (component.ComponentObject.name == saveData.PrefabName.Value)
-            {
-                componentObject = component.ComponentObject;
-            }
-        }
-
-        if (componentObject == null) return;
-
-        //var wall = RestrictionChecker.ActiveUitbouw.GetWall();
-        var placedBoundaryFeature = Instantiate(componentObject, saveData.Position.Value, saveData.Rotation.Value);
-        placedBoundaryFeature.LoadData(id);
-        AddBoundaryFeatureToSaveData(componentObject.name, placedBoundaryFeature);
+        int id = AmountOfPlacedFeatues;
+        AddBoundaryFeatureToSaveData(feature, prefabName, id.ToString());
     }
 
-    public void AddBoundaryFeatureToSaveData(string prefabName, BoundaryFeature feature)
+    //called to load data, since the keys are already known
+    private void AddBoundaryFeatureToSaveData(BoundaryFeature feature, string prefabName, string id)
     {
-        amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value + 1);
-
-        int id = amountOfPlacedFeatues.Value;
-        //feature.SetId(id);
-        //feature.PrefabName = prefabName;
-        feature.InitializeSaveData(id);
-        feature.UpdateMetadata(id, prefabName);
+        feature.InitializeSaveData(id, prefabName);
         SavedBoundaryFeatures.Add(feature);
     }
 
@@ -82,26 +78,15 @@ public class PlaceBoundaryFeaturesState : State
     {
         //the ids may need to be adjusted to maintain an increment of 1
         var lastBf = SavedBoundaryFeatures[SavedBoundaryFeatures.Count - 1];
+        var deletedID = feature.Id;
 
-        //if the last feautre is not the one being removed, the ids need to be changed
-        if (lastBf != feature)
-        {
-            //remove old keys from the save data
-            lastBf.SaveData.DeleteKeys();
-            //set the last saved id to the removed id this way the ids remain incremented by 1.
-            lastBf.UpdateMetadata(feature.Id, lastBf.PrefabName);
-        }
-        else //if the last bf is being removed, just delete those keys
-        {
-            lastBf.SaveData.DeleteKeys();
-        }
-
+        //set the id of the last boundary feature to the id of the feature to be deleted to maintain an increment of 1
+        lastBf.SaveData.SetId(deletedID);
+        //delete the saveData of the deleted feature.
+        feature.SaveData.DeleteSaveData();
         // delete the bf from the list
         SavedBoundaryFeatures.Remove(feature);
 
-        //sort list so that this function will not result in duplicate ids the next time it is called
-        SavedBoundaryFeatures = SavedBoundaryFeatures.OrderBy(bf => bf.Id).ToList();
-        //decrement amount
-        amountOfPlacedFeatues.SetValue(amountOfPlacedFeatues.Value - 1);
+        return;
     }
 }

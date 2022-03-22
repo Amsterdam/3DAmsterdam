@@ -6,10 +6,8 @@ using UnityEngine.Networking;
 using System;
 using Netherlands3D;
 
-public class JSONSessionLoader : MonoBehaviour, IDataLoader
+public class JSONSessionLoader : MonoBehaviour//, IDataLoader
 {
-    //private bool getUserFeedback = T3DInit.;
-
     private JSONNode rootObject;// = new JSONObject();
     const string downloadURL = "api/download/";
     const string feedbackURL = "api/getuserfeedback/";
@@ -25,49 +23,39 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
         Instance = this;
     }
 
-    public float LoadFloat(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public int LoadInt(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public string LoadString(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
-    public bool LoadBool(string key)
-    {
-        var val = rootObject[key];
-        if (val)
-            return val;
-        return default;
-    }
-
     public void ReadSaveData(string sessionId)
     {
-        Debug.Log("loading data for session: " + sessionId);
+        //Debug.Log("loading data for session: " + sessionId);
 
         StartCoroutine(DownloadData(sessionId, ResponseCallback));
+    }
+
+    public JSONNode GetJSONNodeOfType(string typeKey)
+    {
+        if (rootObject == null)
+        {
+            Debug.LogError("rootObject is null");
+        }
+        return rootObject[typeKey];
+    }
+
+    public bool TryGetJson(string type, string instanceId, out string json)
+    {
+        if (rootObject == null)
+        {
+            Debug.LogError("rootObject is null");
+        }
+
+        var node = rootObject[type][instanceId];
+        json = node.ToString();
+
+        return node != null;
     }
 
     private IEnumerator DownloadData(string name, Action<string> callback = null)
     {
         string url = Config.activeConfiguration.T3DAzureFunctionURL;
-        url += T3DInit.Instance.IsUserFeedback ? feedbackURL : downloadURL;
+        url += T3DInit.HTMLData.IsUserFeedback ? feedbackURL : downloadURL;
         var uwr = UnityWebRequest.Get(url + name);
         print(url + name);
 
@@ -80,6 +68,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
             }
             else
             {
+                //todo: replace with text from call
                 print("loading succeeded: " + uwr.downloadHandler.text);
                 callback?.Invoke(uwr.downloadHandler.text);
             }
@@ -90,7 +79,7 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
     private void ResponseCallback(string data)
     {
         //var jsonString = PlayerPrefs.GetString(sessionId);
-        rootObject = JSONNode.Parse(data);
+        rootObject = JSON.Parse(data);
 
         if (rootObject == null)
         {
@@ -99,11 +88,12 @@ public class JSONSessionLoader : MonoBehaviour, IDataLoader
         }
 
         hasLoaded = rootObject != null;
+
         LoadingCompleted?.Invoke(hasLoaded);
 
         if (hasLoaded)
         {
-            JsonSessionSaver.Instance.InitializeRootObject(rootObject); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
+            JsonSessionSaver.Instance.EnableAutoSave(true); //if there are default values present in the loaded data, put them in the save data to avoid deleting them when they remain unused
         }
     }
 }
