@@ -24,6 +24,8 @@ namespace Netherlands3D.Cameras
         [SerializeField]
         private float spinSpeed = 0.5f;
 
+        private float farClipPlane = 6000;
+
         [SerializeField]
         private float firstPersonModifierSpinSpeed = 0.5f;
 
@@ -102,6 +104,8 @@ namespace Netherlands3D.Cameras
         {
             cameraComponent = GetComponent<Camera>();
             startFov = cameraComponent.fieldOfView;
+
+            farClipPlane = cameraComponent.farClipPlane;
         }
 
         void Start()
@@ -301,6 +305,13 @@ namespace Netherlands3D.Cameras
         /// </summary>
         private void ClipRangeByDistance()
         {
+            if(cameraComponent.orthographic)
+            {
+                cameraComponent.farClipPlane = cameraComponent.transform.position.y + 200;
+            }
+            else{
+                cameraComponent.farClipPlane = farClipPlane;
+            }
             cameraComponent.nearClipPlane = Mathf.Max(0.3f, cameraComponent.transform.position.y / 100f);
         }
 
