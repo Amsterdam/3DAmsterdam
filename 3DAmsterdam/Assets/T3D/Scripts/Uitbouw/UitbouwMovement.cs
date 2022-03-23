@@ -10,9 +10,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private UitbouwBase uitbouw;
         public bool AllowDrag { get; private set; } = true;
 
-        [SerializeField]
-        private GameObject dragableAxisPrefab;
-        private DragableAxis[] userMovementAxes;
+        //[SerializeField]
+        //private GameObject dragableAxisPrefab;
 
         private void Awake()
         {
@@ -23,24 +22,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             AllowDrag = AllowDrag && T3DInit.Instance.IsEditMode;
 
-            InitializeUserMovementAxes();
             SetAllowMovement(AllowDrag);
-        }
-
-        public void InitializeUserMovementAxes()
-        {
-            var colliders = GetComponentsInChildren<Collider>();
-            userMovementAxes = new DragableAxis[colliders.Length];
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
-                userMovementAxes[i].SetUitbouw(uitbouw);
-            }
-
-            //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
-
-            //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
-            //userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
         }
 
         //private void SetArrowPositions()
@@ -52,8 +34,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (AllowDrag && GetComponent<UitbouwBase>().TransformGizmo.WantsToMove)
+            if (AllowDrag && uitbouw.TransformGizmo.MoveModeSelected)
                 ProcessUserInput();
+
             LimitPositionOnWall();
 
             //SetArrowPositions();
@@ -61,7 +44,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessUserInput()
         {
-            foreach (var axis in userMovementAxes) //drag input
+            foreach (var axis in uitbouw.UserMovementAxes) //drag input
             {
                 transform.position += axis.DeltaPosition;
             }

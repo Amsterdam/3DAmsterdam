@@ -22,19 +22,20 @@ namespace Netherlands3D.T3D.Uitbouw
 
         void Update()
         {
-            if (AllowRotation && uitbouw.TransformGizmo.WantsToRotate)
-            {
+            if (AllowRotation && uitbouw.TransformGizmo.RotateModeSelected && uitbouw.IsDraggingMovementAxis)
+                ProcessUserInput();
+            else
+                isRotating = false;
+        }
+
+        private void ProcessUserInput()
+        {
                 if (!isRotating)
                 {
                     CalculateDeltaAngle(); // used to set the previousOrigin and Intersection so that a jump does not occur due to old garbage values 
                     isRotating = true;
                 }
                 Rotate();
-            }
-            else
-            {
-                isRotating = false;
-            }
         }
 
         private void Rotate()

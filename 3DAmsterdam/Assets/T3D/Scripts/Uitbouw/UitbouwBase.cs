@@ -30,7 +30,9 @@ namespace Netherlands3D.T3D.Uitbouw
         private string positionKey;
         private SaveableVector3 savedPosition;
 
-        public UitbouwTransformGizmo TransformGizmo;
+        private DragableAxis[] userMovementAxes;
+        public DragableAxis[] UserMovementAxes => userMovementAxes;
+        public UitbouwTransformGizmo TransformGizmo { get; private set; }
 
         public Vector3 LeftCorner
         {
@@ -88,14 +90,43 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        public bool IsDraggingMovementAxis
+        {
+            get
+            {
+                foreach(var axis in userMovementAxes)
+                {
+                    if (axis.IsDragging)
+                        return true;
+                }
+                return false;
+            }
+        }
+
         protected virtual void Awake()
         {
             positionKey = GetType().ToString() + ".uitbouwPosition";
             savedPosition = new SaveableVector3(positionKey);
-
+            InitializeUserMovementAxes();
         }
 
         public abstract void UpdateDimensions();
+
+        public void InitializeUserMovementAxes()
+        {
+            var colliders = GetComponentsInChildren<Collider>();
+            userMovementAxes = new DragableAxis[colliders.Length];
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
+                userMovementAxes[i].SetUitbouw(this);
+            }
+
+            //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
+
+            //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            //userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+        }
 
         protected virtual void Start()
         {
