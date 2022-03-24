@@ -20,8 +20,10 @@ namespace Netherlands3D.T3D.Uitbouw
         //[SerializeField]
         private UitbouwBase uitbouw;
         private Vector3 offset;
+        private Vector3 projectedOffset;
 
-        public Vector3 DeltaPosition { get; private set; }
+        public Vector3 PlanarDeltaPosition { get; private set; }
+        public Vector3 LateralDeltaPosition { get; private set; }
         public bool IsDragging { get; private set; }
 
         [SerializeField]
@@ -79,8 +81,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 //end drag
                 StopInteraction();
                 IsDragging = false;
+
+                projectedOffset = Vector3.zero;
+                LateralDeltaPosition = Vector3.zero;
+
                 offset = Vector3.zero;
-                DeltaPosition = Vector3.zero;
+                PlanarDeltaPosition = Vector3.zero;
             }
         }
 
@@ -88,14 +94,18 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             Vector3 aimedPosition = GetPointerPositionInWorld();
             var projectedLocalPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right);
-            offset = projectedLocalPoint;
+            projectedOffset = projectedLocalPoint;
+            offset = aimedPosition;
         }
 
         private void CalculateDeltaPosition()
         {
             Vector3 aimedPosition = GetPointerPositionInWorld();
             var projectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right) + transform.position;
-            DeltaPosition = projectedPoint - offset - transform.position;
+            print("offset: " + offset + "\t" + projectedOffset);
+            PlanarDeltaPosition = aimedPosition - offset - transform.position;
+            print(PlanarDeltaPosition);
+            LateralDeltaPosition = projectedPoint - projectedOffset - transform.position;
         }
 
         private void SetHighlight(InteractableState status) //0: normal, 1: hover, 2: selected

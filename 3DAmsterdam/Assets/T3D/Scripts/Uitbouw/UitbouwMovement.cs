@@ -10,6 +10,9 @@ namespace Netherlands3D.T3D.Uitbouw
         private UitbouwBase uitbouw;
         public bool AllowDrag { get; private set; } = true;
 
+        [SerializeField]
+        private bool snapToWall;
+
         //[SerializeField]
         //private GameObject dragableAxisPrefab;
 
@@ -37,6 +40,7 @@ namespace Netherlands3D.T3D.Uitbouw
             if (AllowDrag && uitbouw.TransformGizmo.MoveModeSelected)
                 ProcessUserInput();
 
+            ProcessSnapping();
             LimitPositionOnWall();
 
             //SetArrowPositions();
@@ -46,8 +50,42 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             foreach (var axis in uitbouw.UserMovementAxes) //drag input
             {
-                transform.position += axis.DeltaPosition;
+                if (snapToWall)
+                    transform.position += axis.LateralDeltaPosition;
+                else
+                    transform.position += axis.PlanarDeltaPosition;
             }
+        }
+
+        private void ProcessSnapping()
+        {
+            if (uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
+            {
+                if (snapToWall)
+                    SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
+
+                SnapToGround(uitbouw.ActiveBuilding);
+            }
+        }
+
+        private void SnapToWall(WallSelector selectedWall)
+        {
+            var dir = selectedWall.WallPlane.normal;
+            transform.forward = -dir; //rotate towards correct direction
+
+            //remove local x component
+            var diff = selectedWall.WallPlane.ClosestPointOnPlane(transform.position) - transform.position; //moveVector
+            var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
+            rotatedPoint.x = 0; //remove horizontal component
+            var projectedPoint = transform.rotation * rotatedPoint; //rotate back
+            var newPoint = projectedPoint + transform.position; // apply movevector
+
+            transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
+        }
+
+        private void SnapToGround(BuildingMeshGenerator building)
+        {
+            transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
         }
 
         private void LimitPositionOnWall()
@@ -76,7 +114,7 @@ namespace Netherlands3D.T3D.Uitbouw
             else
                 transform.position = minPos;
 
-            uitbouw.SnapToGround(uitbouw.ActiveBuilding);
+            SnapToGround(uitbouw.ActiveBuilding);
         }
 
         public virtual void SetAllowMovement(bool allowed)

@@ -94,7 +94,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             get
             {
-                foreach(var axis in userMovementAxes)
+                foreach (var axis in userMovementAxes)
                 {
                     if (axis.IsDragging)
                         return true;
@@ -122,6 +122,9 @@ namespace Netherlands3D.T3D.Uitbouw
                 userMovementAxes[i].SetUitbouw(this);
             }
 
+            if (!TransformGizmo)
+                TransformGizmo = CoordinateNumbers.Instance.CreateUitbouwTransformGizmo();
+
             //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 
             //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
@@ -134,14 +137,10 @@ namespace Netherlands3D.T3D.Uitbouw
             if (SessionSaver.LoadPreviousSession)
                 transform.position = savedPosition.Value;
 
-            TransformGizmo = CoordinateNumbers.Instance.CreateUitbouwTransformGizmo();
         }
 
         protected virtual void Update()
         {
-            //LimitPositionOnWall();
-            ProcessSnapping();
-
             savedPosition.SetValue(transform.position);
             TransformGizmo.AlignWithWorldPosition(transform.position);
         }
@@ -158,30 +157,6 @@ namespace Netherlands3D.T3D.Uitbouw
         protected void SetDimensions(Vector3 size)
         {
             SetDimensions(size.x, size.z, size.y);
-        }
-
-        private void ProcessSnapping()
-        {
-            if (building && building.SelectedWall.WallIsSelected)
-            {
-                SnapToWall(building.SelectedWall);
-                SnapToGround(building);
-            }
-        }
-
-        private void SnapToWall(WallSelector selectedWall)
-        {
-            var dir = selectedWall.WallPlane.normal;
-            transform.forward = -dir; //rotate towards correct direction
-
-            //remove local x component
-            var diff = selectedWall.WallPlane.ClosestPointOnPlane(transform.position) - transform.position; //moveVector
-            var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
-            rotatedPoint.x = 0; //remove horizontal component
-            var projectedPoint = transform.rotation * rotatedPoint; //rotate back
-            var newPoint = projectedPoint + transform.position; // apply movevector
-
-            transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
         }
 
         public Vector2[] GetFootprint()
@@ -209,11 +184,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 }
             }
             return footprint.ToArray();
-        }
-
-        public void SnapToGround(BuildingMeshGenerator building)
-        {
-            transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
         }
     }
 }
