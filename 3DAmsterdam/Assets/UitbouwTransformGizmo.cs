@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Interface;
@@ -11,4 +12,9 @@ public class UitbouwTransformGizmo : WorldPointFollower
 
     public bool MoveModeSelected => moveToggle.isOn;
     public bool RotateModeSelected => rotateToggle.isOn;
+
+    public void SetActive(bool active)
+    {
+        gameObject.SetActive(active);
+    }
 }
