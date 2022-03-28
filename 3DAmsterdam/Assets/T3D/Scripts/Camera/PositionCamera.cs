@@ -62,8 +62,8 @@ public class PositionCamera: MonoBehaviour
 
     private void SetCameraPosition()
     {
-        var buildingPosition = new SaveableVector3RD(HTMLKeys.RD_POSITION_KEY);
-        buildingcenter = new Vector2RD(buildingPosition.Value.x, buildingPosition.Value.y);
+        var buildingPosition = T3DInit.HTMLData.RDPosition;
+        buildingcenter = new Vector2RD(buildingPosition.x, buildingPosition.y);
         CheckSetCameraposition();
         //if (cameraIsSet == false && perceelcenter != null) SetCameraposition();        
     }

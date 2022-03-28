@@ -19,11 +19,12 @@ public class AdresDisplay : MonoBehaviour
 
     private void LoadAddress()
     {
-        var straat = new SaveableString(HTMLKeys.STREET_KEY);
-        var huisnummer = new SaveableString(HTMLKeys.HOUSE_NUMBER_KEY);
-        var postcode = new SaveableString(HTMLKeys.ZIP_CODE_KEY);
-        var plaats = new SaveableString(HTMLKeys.CITY_KEY);
+        var straat = T3DInit.HTMLData.Street;// new SaveableString(HTMLKeys.STREET_KEY);
+        var huisnummer = T3DInit.HTMLData.HouseNumber;
+        var huisnummerToevoeging = T3DInit.HTMLData.HouseNumberAddition;
+        var postcode = T3DInit.HTMLData.ZipCode;
+        var plaats = T3DInit.HTMLData.City;
 
-        text.text = $"{straat.Value} {huisnummer.Value}\n{postcode.Value} {plaats.Value}";
+        text.text = $"{straat} {huisnummer}{huisnummerToevoeging}\n{postcode} {plaats}";
     }
 }

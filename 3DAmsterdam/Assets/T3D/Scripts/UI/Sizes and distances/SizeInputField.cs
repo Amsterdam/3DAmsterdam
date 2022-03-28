@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+using System.Reflection;
+
 namespace Netherlands3D.T3D.Uitbouw
 {
     public enum SizeType
@@ -15,26 +17,30 @@ namespace Netherlands3D.T3D.Uitbouw
         Area
     }
 
+    public class SizeInputFieldSaveData : SaveDataContainer
+    {
+        public float Value;
+
+        public SizeInputFieldSaveData(SizeType type) : base(type.ToString())
+        {
+        }
+    }
+
     public class SizeInputField : MonoBehaviour
     {
-        //public bool UpdateOnce;
-        //private bool hasUpdatedText;
-
         private InputField inputField;
         [SerializeField]
         private SizeType size;
-        private SaveableFloat value;
-        private string valueKey;
 
         private ShapeableUitbouw shapeableUitbouw;
-
-        //[SerializeField]
-        //private string unitText = "m";
+        private SizeInputFieldSaveData saveData;
 
         private void Awake()
         {
+            saveData = new SizeInputFieldSaveData(size);
             inputField = GetComponent<InputField>();
-            valueKey = GetType().ToString() + "." + size.ToString();
+
+            //var Value = new SaveableFloat(GetType().ToString()+ size.ToString()) ;
         }
 
         private void Start()
@@ -45,12 +51,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 inputField.interactable = T3DInit.Instance.IsEditMode;
             }
 
-            value = new SaveableFloat(valueKey);
+            //value = new SaveableFloat(valueKey);
 
             shapeableUitbouw = RestrictionChecker.ActiveUitbouw as ShapeableUitbouw;
 
             //in some specific cases the value is not present in the loaded data, so if that is the case (value == 0) don't load the data
-            if (SessionSaver.LoadPreviousSession && shapeableUitbouw && value.Value > 0)
+            if (SessionSaver.LoadPreviousSession && shapeableUitbouw && saveData.Value > 0)
             {
                 LoadData();
             }
@@ -62,16 +68,16 @@ namespace Netherlands3D.T3D.Uitbouw
             switch (size)
             {
                 case SizeType.Width:
-                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Width;
+                    delta = (saveData.Value / 100) - RestrictionChecker.ActiveUitbouw.Width;
                     shapeableUitbouw.MoveWall(WallSide.Left, delta / 2);
                     shapeableUitbouw.MoveWall(WallSide.Right, delta / 2);
                     break;
                 case SizeType.Height:
-                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Height;
+                    delta = (saveData.Value / 100) - RestrictionChecker.ActiveUitbouw.Height;
                     shapeableUitbouw.MoveWall(WallSide.Top, delta);
                     break;
                 case SizeType.Depth:
-                    delta = (value.Value / 100) - RestrictionChecker.ActiveUitbouw.Depth;
+                    delta = (saveData.Value / 100) - RestrictionChecker.ActiveUitbouw.Depth;
                     shapeableUitbouw.MoveWall(WallSide.Front, delta);
                     break;
             }
@@ -79,12 +85,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (RestrictionChecker.ActiveUitbouw != null)
-                SetText();
-            else if (!inputField)
-                SetText();
-            else if (!inputField.isFocused)
-                SetText();
+            if (RestrictionChecker.ActiveUitbouw != null) // Only set text if uitbouw exists
+            {
+                if (!inputField || !inputField.isFocused) //Text can be set because manual override is not possible, and when input field is not focused, since the user is not inputting in this input field
+                {
+                    SetText();
+                }
+            }
         }
 
         void SetText()
@@ -92,31 +99,31 @@ namespace Netherlands3D.T3D.Uitbouw
             switch (size)
             {
                 case SizeType.Width:
-                    value.SetValue(RestrictionChecker.ActiveUitbouw.Width * 100);
+                    saveData.Value = RestrictionChecker.ActiveUitbouw.Width * 100;
                     break;
                 case SizeType.Height:
-                    value.SetValue(RestrictionChecker.ActiveUitbouw.Height * 100);
+                    saveData.Value = RestrictionChecker.ActiveUitbouw.Height * 100;
                     break;
                 case SizeType.Depth:
-                    value.SetValue(RestrictionChecker.ActiveUitbouw.Depth * 100);
+                    saveData.Value = RestrictionChecker.ActiveUitbouw.Depth * 100;
                     break;
                 case SizeType.Area:
-                    value.SetValue(RestrictionChecker.ActiveUitbouw.Area);
+                    saveData.Value = RestrictionChecker.ActiveUitbouw.Area;
                     break;
             }
 
             if (inputField != null)
             {
                 if (size == SizeType.Area)
-                    inputField.text = value.Value.ToString("F2");
+                    inputField.text = saveData.Value.ToString("F2");
                 else
-                    inputField.text = value.Value.ToString("F0");
+                    inputField.text = saveData.Value.ToString("F0");
             }
             else
             {
                 foreach (var textObject in GetComponentsInChildren<Text>())
                 {
-                    textObject.text = value.Value.ToString("F0");
+                    textObject.text = saveData.Value.ToString("F0");
                 }
             }
         }
@@ -159,7 +166,7 @@ namespace Netherlands3D.T3D.Uitbouw
                     print("enter a positive number");
                     return false;
                 }
-                delta = amount - value.Value;
+                delta = amount - saveData.Value;
                 return true;
             }
             return false;

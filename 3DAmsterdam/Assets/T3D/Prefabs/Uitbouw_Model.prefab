@@ -77,7 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb83d3852f72465181f0e3231eb9741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransformGizmo: {fileID: 0}
+  gizmoPrefab: {fileID: 4771809076852453154, guid: e6f5c545e2b8d4f3ca1541c163405f67,
+    type: 3}
   meshFilter: {fileID: 0}
 --- !u!114 &4051661277681129896
 MonoBehaviour:
@@ -91,8 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5d2f640d9c148348231fc5f5a40396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragableAxisPrefab: {fileID: 3932690295695391041, guid: 2b40b1ed001dd402d9feaf7a850db1d7,
-    type: 3}
+  snapToWall: 0
 --- !u!114 &6641196300282613232
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -44,10 +44,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Loader_LoadingCompleted(bool loadSucceeded)
         {
-            var isMonument = new SaveableBool(HTMLKeys.IS_MONUMENT);
-            var isBeschermd = new SaveableBool(HTMLKeys.IS_BESCHERMD);
-            IsMonument = isMonument.Value;
-            IsBeschermd = isBeschermd.Value;
+            IsMonument = T3DInit.HTMLData.IsMonument;
+            IsBeschermd = T3DInit.HTMLData.IsBeschermd;
         }
 
         private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)

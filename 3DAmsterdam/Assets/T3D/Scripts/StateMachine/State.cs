@@ -34,7 +34,7 @@ public class State : MonoBehaviour
     {
         StateLoadedAction();
         var stateSaver = GetComponentInParent<StateSaver>();
-        var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex.Value);
+        var savedState = stateSaver.GetState(stateSaver.ActiveStateIndex);
         if (ActiveState != savedState)
         {
             EndState();

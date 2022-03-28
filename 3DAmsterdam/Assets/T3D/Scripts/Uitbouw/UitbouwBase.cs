@@ -6,6 +6,11 @@ using UnityEngine;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
+    public class UitbouwBaseSaveDataContainer : SaveDataContainer
+    {
+        public Vector3 Position;
+    }
+
     public abstract class UitbouwBase : MonoBehaviour
     {
         //public CityObject CityObject { get; private set; }
@@ -27,8 +32,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public abstract Vector3 FrontCenter { get; }
         public abstract Vector3 BackCenter { get; }
 
-        private string positionKey;
-        private SaveableVector3 savedPosition;
+        private UitbouwBaseSaveDataContainer saveData;
 
         private DragableAxis[] userMovementAxes;
         public DragableAxis[] UserMovementAxes => userMovementAxes;
@@ -108,9 +112,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Awake()
         {
-            positionKey = GetType().ToString() + ".uitbouwPosition";
-            savedPosition = new SaveableVector3(positionKey);
             InitializeUserMovementAxes();
+            saveData = new UitbouwBaseSaveDataContainer();
         }
 
         public abstract void UpdateDimensions();
@@ -135,16 +138,13 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
-                transform.position = savedPosition.Value;
-
+                transform.position = saveData.Position;
         }
 
         protected virtual void Update()
         {
             UpdateGizmo();
-
-            savedPosition.SetValue(transform.position);
-            //TransformGizmo.AlignWithWorldPosition(transform.position);
+            saveData.Position = transform.position;
         }
 
         public void EnableGizmo(bool enable)

@@ -6,12 +6,7 @@ using UnityEngine.UI;
 
 public class WallSelectionState : State
 {
-
     private BuildingMeshGenerator building;
-    //[SerializeField]
-    //private GameObject nextStep_U;
-    //[SerializeField]
-    //private GameObject NextStep_D;
     [SerializeField]
     private Button nextButton;
     [SerializeField]
@@ -48,7 +43,7 @@ public class WallSelectionState : State
         if (T3DInit.Instance == null)
             desiredNextStateIndex = 0;
         else
-            desiredNextStateIndex = T3DInit.Instance.UploadedModel ? 0 : 1;
+            desiredNextStateIndex = T3DInit.HTMLData.HasFile ? 0 : 1;
         return desiredNextStateIndex;
     }
 
