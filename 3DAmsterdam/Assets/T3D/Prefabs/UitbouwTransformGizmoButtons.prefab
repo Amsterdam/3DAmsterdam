@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 6428259430466806073}
   - component: {fileID: 2770994269425423847}
   - component: {fileID: 6282881631896290231}
+  - component: {fileID: 3261973162509701816}
   m_Layer: 5
   m_Name: MoveToggle
   m_TagString: Untagged
@@ -431,6 +432,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &3261973162509701816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2221472650504562684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 122edd92bebb84125b7834e29e4928b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2424927649570778969
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,8 +523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnabled: 1
-  moveToggle: {fileID: 6282881631896290231}
-  rotateToggle: {fileID: 5426325370075725140}
+  moveToggle: {fileID: 3261973162509701816}
+  rotateToggle: {fileID: 3143082265660293081}
 --- !u!114 &2116685554615826212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,6 +550,7 @@ GameObject:
   - component: {fileID: 1406595443117761812}
   - component: {fileID: 8673270946010334952}
   - component: {fileID: 5426325370075725140}
+  - component: {fileID: 3143082265660293081}
   m_Layer: 5
   m_Name: RotateToggle
   m_TagString: Untagged
@@ -651,6 +665,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &3143082265660293081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2715947733774097458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 122edd92bebb84125b7834e29e4928b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2796798634998484673
 GameObject:
   m_ObjectHideFlags: 0

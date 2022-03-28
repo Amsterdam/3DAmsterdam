@@ -42,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
             uitbouw = linkedUitbouw;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             ProcessInteractionState();
 

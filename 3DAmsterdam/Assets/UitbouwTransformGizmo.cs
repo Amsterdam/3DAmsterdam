@@ -29,12 +29,13 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
 
-            GizmoButtons = CoordinateNumbers.Instance.CreateUitbouwTransformGizmo();
+            GizmoButtons = CoordinateNumbers.Instance.CreateUitbouwTransformGizmoButtons();
             GizmoButtons.SubscribeListeners(this);
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             GizmoButtons.AlignWithWorldPosition(GizmoPoint);
         }
 

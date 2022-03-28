@@ -121,11 +121,18 @@ namespace Netherlands3D.T3D.Uitbouw
         public void InitializeUserMovementAxes()
         {
             var colliders = GetComponentsInChildren<Collider>();
-            userMovementAxes = new DragableAxis[colliders.Length];
+            userMovementAxes = new DragableAxis[colliders.Length + 1];
             for (int i = 0; i < colliders.Length; i++)
             {
                 userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
                 userMovementAxes[i].SetUitbouw(this);
+            }
+
+            if (!Gizmo)
+            {
+                var gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this);
+                userMovementAxes[userMovementAxes.Length - 1] = gizmo;
+                Gizmo = gizmo as UitbouwTransformGizmo;
             }
 
             //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
@@ -149,16 +156,13 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public void EnableGizmo(bool enable)
         {
-            if(!Gizmo)
-                Gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this) as UitbouwTransformGizmo;
-
             Gizmo.SetActive(enable);
         }
 
         private void UpdateGizmo()
         {
-            Gizmo.transform.position = BottomCenter;
-            Gizmo.SetDiameter(Extents.magnitude);
+            Gizmo.transform.position = BottomCenter + 0.001f * Vector3.one; //avoid z-fighting
+            Gizmo.SetDiameter(Extents.magnitude * 2);
         }
 
         protected void SetDimensions(float w, float d, float h)

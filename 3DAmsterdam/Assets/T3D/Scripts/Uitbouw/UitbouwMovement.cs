@@ -38,10 +38,17 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Update()
         {
             if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
+            {
                 ProcessUserInput();
+            }
 
-            ProcessSnapping();
-            LimitPositionOnWall();
+            if (snapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
+            {
+                SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
+                LimitPositionOnWall();
+            }
+
+            SnapToGround(uitbouw.ActiveBuilding);
 
             //SetArrowPositions();
         }
@@ -54,17 +61,6 @@ namespace Netherlands3D.T3D.Uitbouw
                     transform.position += axis.LateralDeltaPosition;
                 else
                     transform.position += axis.PlanarDeltaPosition;
-            }
-        }
-
-        private void ProcessSnapping()
-        {
-            if (uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
-            {
-                if (snapToWall)
-                    SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
-
-                SnapToGround(uitbouw.ActiveBuilding);
             }
         }
 

@@ -57,7 +57,7 @@ namespace Netherlands3D.Interface
             return ui;
         }
 
-        public UitbouwTransformGizmoButtons CreateUitbouwTransformGizmo()
+        public UitbouwTransformGizmoButtons CreateUitbouwTransformGizmoButtons()
         {
             return Instantiate(uitbouwTransformGizmoButtonsPrefab, transform);
         }
