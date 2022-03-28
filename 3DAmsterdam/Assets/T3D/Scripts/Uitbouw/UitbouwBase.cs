@@ -32,7 +32,10 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private DragableAxis[] userMovementAxes;
         public DragableAxis[] UserMovementAxes => userMovementAxes;
-        public UitbouwTransformGizmo TransformGizmo { get; private set; }
+
+        [SerializeField]
+        private UitbouwTransformGizmo gizmoPrefab;
+        public UitbouwTransformGizmo Gizmo { get; private set; }
 
         public Vector3 LeftCorner
         {
@@ -122,9 +125,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 userMovementAxes[i].SetUitbouw(this);
             }
 
-            if (!TransformGizmo)
-                TransformGizmo = CoordinateNumbers.Instance.CreateUitbouwTransformGizmo();
-
             //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
 
             //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
@@ -141,8 +141,24 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Update()
         {
+            UpdateGizmo();
+
             savedPosition.SetValue(transform.position);
-            TransformGizmo.AlignWithWorldPosition(transform.position);
+            //TransformGizmo.AlignWithWorldPosition(transform.position);
+        }
+
+        public void EnableGizmo(bool enable)
+        {
+            if(!Gizmo)
+                Gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this) as UitbouwTransformGizmo;
+
+            Gizmo.SetActive(enable);
+        }
+
+        private void UpdateGizmo()
+        {
+            Gizmo.transform.position = BottomCenter;
+            Gizmo.SetDiameter(Extents.magnitude);
         }
 
         protected void SetDimensions(float w, float d, float h)

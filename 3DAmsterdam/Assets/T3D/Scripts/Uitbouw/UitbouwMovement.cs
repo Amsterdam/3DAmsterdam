@@ -37,7 +37,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Update()
         {
-            if (AllowDrag && uitbouw.TransformGizmo.MoveModeSelected)
+            if (AllowDrag && uitbouw.Gizmo.Mode == GizmoMode.Move)
                 ProcessUserInput();
 
             ProcessSnapping();

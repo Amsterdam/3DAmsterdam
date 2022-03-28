@@ -19,7 +19,7 @@ public class PlaceUitbouwState : State
     {
         base.StateEnteredAction();
 
-        RestrictionChecker.ActiveUitbouw.TransformGizmo.SetActive(true);
+        RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
         if (!uitbouwMovement.AllowDrag)
         {
             uitbouwMovement.SetAllowMovement(true);
@@ -30,7 +30,7 @@ public class PlaceUitbouwState : State
     public override void StateCompletedAction()
     {
         base.StateCompletedAction();
-        RestrictionChecker.ActiveUitbouw.TransformGizmo.SetActive(false);
+        RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
         RestrictionChecker.ActiveUitbouw.UpdateDimensions(); // force update the dimensions since these may not have been set yet when reloading and leaving this state
         uitbouwMovement.SetAllowMovement(false);
         uitbouwRotation.SetAllowRotation(false);

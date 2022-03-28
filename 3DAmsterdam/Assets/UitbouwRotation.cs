@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Netherlands3D.Cameras;
 using UnityEngine;
+
 namespace Netherlands3D.T3D.Uitbouw
 {
     [RequireComponent(typeof(UitbouwBase))]
@@ -11,8 +12,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private Vector3 previousIntersectionPoint;
         private Vector3 previousOrigin;
 
-        public bool AllowRotation { get; private set; } = true;
-
+        public bool AllowRotation { get; private set; } = true; //global lock
         private bool isRotating;
 
         private void Awake()
@@ -20,9 +20,9 @@ namespace Netherlands3D.T3D.Uitbouw
             uitbouw = GetComponent<UitbouwBase>();
         }
 
-        void Update()
+        private void Update()
         {
-            if (AllowRotation && uitbouw.TransformGizmo.RotateModeSelected && uitbouw.IsDraggingMovementAxis)
+            if (AllowRotation && uitbouw.Gizmo.Mode == GizmoMode.Rotate && uitbouw.IsDraggingMovementAxis)
                 ProcessUserInput();
             else
                 isRotating = false;
@@ -30,12 +30,12 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void ProcessUserInput()
         {
-                if (!isRotating)
-                {
-                    CalculateDeltaAngle(); // used to set the previousOrigin and Intersection so that a jump does not occur due to old garbage values 
-                    isRotating = true;
-                }
-                Rotate();
+            if (!isRotating)
+            {
+                CalculateDeltaAngle(); // used to set the previousOrigin and Intersection so that a jump does not occur due to old garbage values 
+                isRotating = true;
+            }
+            Rotate();
         }
 
         private void Rotate()

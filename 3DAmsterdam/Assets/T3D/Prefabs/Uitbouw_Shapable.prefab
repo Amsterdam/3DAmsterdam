@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a482b0c4062ac449580272bbdedbc283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransformGizmo: {fileID: 0}
+  rotationRing: {fileID: 0}
   walls:
   - {fileID: 3154073171412169850}
   - {fileID: 3241695757148375439}
@@ -599,8 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5d2f640d9c148348231fc5f5a40396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragableAxisPrefab: {fileID: 3932690295695391041, guid: 2b40b1ed001dd402d9feaf7a850db1d7,
-    type: 3}
+  snapToWall: 0
 --- !u!114 &6849669558771954186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,6 +642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c50cf9f236c214731a27e6c200d3d6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotateGizmoPrefab: {fileID: 0}
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0
