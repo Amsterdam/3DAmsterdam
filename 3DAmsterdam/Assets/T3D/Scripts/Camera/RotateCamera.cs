@@ -96,7 +96,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void Update()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
-        if (!dragging && !Input.GetMouseButton(0))
+        if (!isFirstPersonMode && !dragging && !Input.GetMouseButton(0))
         {
             Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - mycam.transform.position).normalized, Vector3.up);
             mycam.transform.rotation = Quaternion.Slerp(mycam.transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
