@@ -10,8 +10,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private UitbouwBase uitbouw;
         public bool AllowDrag { get; private set; } = true;
 
-        [SerializeField]
-        private bool snapToWall;
+        //[SerializeField]
+        //private bool snapToWall;
 
         //[SerializeField]
         //private GameObject dragableAxisPrefab;
@@ -42,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 ProcessUserInput();
             }
 
-            if (snapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
+            if (T3DInit.HTMLData.SnapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
             {
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
                 LimitPositionOnWall();
@@ -57,7 +57,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             foreach (var axis in uitbouw.UserMovementAxes) //drag input
             {
-                if (snapToWall)
+                if (T3DInit.HTMLData.SnapToWall)
                     transform.position += axis.LateralDeltaPosition;
                 else
                     transform.position += axis.PlanarDeltaPosition;
@@ -117,7 +117,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             AllowDrag = allowed && T3DInit.Instance.IsEditMode;
             var measuring = GetComponent<UitbouwMeasurement>();
-            measuring.DrawDistanceActive = allowed;
+            measuring.DrawDistanceActive = allowed && T3DInit.HTMLData.SnapToWall;
 
             //userMovementAxes[userMovementAxes.Length - 2].gameObject.SetActive(allowed);
             //userMovementAxes[userMovementAxes.Length - 1].gameObject.SetActive(allowed);
