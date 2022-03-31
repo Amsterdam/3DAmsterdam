@@ -28,9 +28,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-
-            GizmoButtons = CoordinateNumbers.Instance.CreateUitbouwTransformGizmoButtons();
-            GizmoButtons.SubscribeListeners(this);
         }
 
         protected override void Update()
@@ -50,6 +47,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 SetMode(GizmoMode.None);
             else
                 SetMode(GizmoMode.Move);
+
+            if (!GizmoButtons)
+            {
+                GizmoButtons = CoordinateNumbers.Instance.CreateUitbouwTransformGizmoButtons();
+                GizmoButtons.SubscribeListeners(this);
+            }
 
             GizmoButtons.SetActive(active);
             gameObject.SetActive(active);
