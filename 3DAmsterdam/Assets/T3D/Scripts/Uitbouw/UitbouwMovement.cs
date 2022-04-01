@@ -26,6 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw
             AllowDrag = AllowDrag && T3DInit.Instance.IsEditMode;
 
             SetAllowMovement(AllowDrag);
+            SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
         }
 
         //private void SetArrowPositions()
