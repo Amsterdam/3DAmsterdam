@@ -9,6 +9,7 @@ public class State : MonoBehaviour
     protected State previousState;
     [SerializeField]
     private bool isFirstState;
+    public bool IsFirstState => isFirstState;
     [SerializeField, ReadOnly]
     protected int desiredNextStateIndex;
 

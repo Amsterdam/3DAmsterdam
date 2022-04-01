@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Netherlands3D.T3D.Uitbouw;
 
 public class StateSaverSaveDataContainer : SaveDataContainer
 {
@@ -18,6 +19,7 @@ public class StateSaver : MonoBehaviour
     private void Awake()
     {
         saveData = new StateSaverSaveDataContainer();
+        states = GetComponentsInChildren<State>(true);
     }
 
     private void OnEnable()
@@ -28,6 +30,12 @@ public class StateSaver : MonoBehaviour
     private void OnDisable()
     {
         State.ActiveStateChangedByUser -= State_ActiveStateChanged;
+        //MetadataLoader.Instance.BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
+    }
+
+    private void Start() // in start to avoid timing issues
+    {
+        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
     }
 
     private void State_ActiveStateChanged(State newState)
@@ -35,9 +43,15 @@ public class StateSaver : MonoBehaviour
         saveData.ActiveStateIndex = GetStateIndex(newState);
     }
 
-    private void Start()
+    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
     {
-        states = GetComponentsInChildren<State>(true);
+        GoToFirstState();
+    }
+
+    private void GoToFirstState()
+    {
+        var firstState = states.FirstOrDefault(s => s.IsFirstState);
+        firstState.gameObject.SetActive(true);
     }
 
     public int GetStateIndex(State state)

@@ -27,8 +27,6 @@ public class HandleButtonsT3D : MonoBehaviour
 
     public DropUp MaandenDropup;
 
-    public GameObject Step0; //selectWall
-
     //Sun related
     public Text DagText;
     public Text MaandText;
@@ -48,8 +46,6 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
-        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
-
         ButtonOmgeving.onClick.AddListener(ToggleBuildings);
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
         ButtonMinusHour.onClick.AddListener(MinusHour);
@@ -69,11 +65,6 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();
 
         MaandenDropup.SetItems(months, dateTimeNow.Month - 1, SetMonth);
-    }
-
-    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-    {        
-        Step0.SetActive(true);     
     }
 
     void SetMonth(int month)
