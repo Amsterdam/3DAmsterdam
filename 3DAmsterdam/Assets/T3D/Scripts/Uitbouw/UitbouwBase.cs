@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Interface;
 using SimpleJSON;
 using UnityEngine;
 
@@ -32,6 +33,13 @@ namespace Netherlands3D.T3D.Uitbouw
         public abstract Vector3 BackCenter { get; }
 
         private UitbouwBaseSaveDataContainer saveData;
+
+        private DragableAxis[] userMovementAxes;
+        public DragableAxis[] UserMovementAxes => userMovementAxes;
+
+        [SerializeField]
+        private UitbouwTransformGizmo gizmoPrefab;
+        public UitbouwTransformGizmo Gizmo { get; private set; }
 
         public Vector3 LeftCorner
         {
@@ -89,12 +97,49 @@ namespace Netherlands3D.T3D.Uitbouw
             }
         }
 
+        public bool IsDraggingMovementAxis
+        {
+            get
+            {
+                foreach (var axis in userMovementAxes)
+                {
+                    if (axis.IsDragging)
+                        return true;
+                }
+                return false;
+            }
+        }
+
         protected virtual void Awake()
         {
+            InitializeUserMovementAxes();
             saveData = new UitbouwBaseSaveDataContainer();
         }
 
         public abstract void UpdateDimensions();
+
+        public void InitializeUserMovementAxes()
+        {
+            var colliders = GetComponentsInChildren<Collider>();
+            userMovementAxes = new DragableAxis[colliders.Length + 1];
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                userMovementAxes[i] = colliders[i].gameObject.AddComponent<DragableAxis>();
+                userMovementAxes[i].SetUitbouw(this);
+            }
+
+            if (!Gizmo)
+            {
+                var gizmo = DragableAxis.CreateDragableAxis(gizmoPrefab.gameObject, BottomCenter, gizmoPrefab.transform.rotation, this);
+                userMovementAxes[userMovementAxes.Length - 1] = gizmo;
+                Gizmo = gizmo as UitbouwTransformGizmo;
+            }
+
+            //var arrowOffsetY = transform.up * (uitbouw.Extents.y - 0.01f);
+
+            //userMovementAxes[colliders.Length] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.LeftCenter - arrowOffsetY, Quaternion.AngleAxis(90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+            //userMovementAxes[colliders.Length + 1] = DragableAxis.CreateDragableAxis(dragableAxisPrefab, uitbouw.RightCenter - arrowOffsetY, Quaternion.AngleAxis(-90, Vector3.up) * dragableAxisPrefab.transform.rotation, uitbouw);
+        }
 
         protected virtual void Start()
         {
@@ -105,10 +150,19 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Update()
         {
-            //LimitPositionOnWall();
-            ProcessSnapping();
-
+            UpdateGizmo();
             saveData.Position = transform.position;
+        }
+
+        public void EnableGizmo(bool enable)
+        {
+            Gizmo.SetActive(enable);
+        }
+
+        private void UpdateGizmo()
+        {
+            Gizmo.transform.position = BottomCenter + 0.001f * Vector3.one; //avoid z-fighting
+            Gizmo.SetDiameter(Extents.magnitude * 2);
         }
 
         protected void SetDimensions(float w, float d, float h)
@@ -123,30 +177,6 @@ namespace Netherlands3D.T3D.Uitbouw
         protected void SetDimensions(Vector3 size)
         {
             SetDimensions(size.x, size.z, size.y);
-        }
-
-        private void ProcessSnapping()
-        {
-            if (building && building.SelectedWall.WallIsSelected)
-            {
-                SnapToWall(building.SelectedWall);
-                SnapToGround(building);
-            }
-        }
-
-        private void SnapToWall(WallSelector selectedWall)
-        {
-            var dir = selectedWall.WallPlane.normal;
-            transform.forward = -dir; //rotate towards correct direction
-
-            //remove local x component
-            var diff = selectedWall.WallPlane.ClosestPointOnPlane(transform.position) - transform.position; //moveVector
-            var rotatedPoint = Quaternion.Inverse(transform.rotation) * diff; //moveVector aligned in world space
-            rotatedPoint.x = 0; //remove horizontal component
-            var projectedPoint = transform.rotation * rotatedPoint; //rotate back
-            var newPoint = projectedPoint + transform.position; // apply movevector
-
-            transform.position = newPoint;//hit.point - uitbouwAttachDirection * Depth / 2;
         }
 
         public Vector2[] GetFootprint()
@@ -174,11 +204,6 @@ namespace Netherlands3D.T3D.Uitbouw
                 }
             }
             return footprint.ToArray();
-        }
-
-        public void SnapToGround(BuildingMeshGenerator building)
-        {
-            transform.position = new Vector3(transform.position.x, building.GroundLevel /*+ Height / 2*/, transform.position.z);
         }
     }
 }

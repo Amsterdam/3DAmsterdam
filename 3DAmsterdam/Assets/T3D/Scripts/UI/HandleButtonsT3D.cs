@@ -162,6 +162,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public void AllowUitbouwMovement(bool enable)
     {
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(enable);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(enable);
     }
 
     #endregion

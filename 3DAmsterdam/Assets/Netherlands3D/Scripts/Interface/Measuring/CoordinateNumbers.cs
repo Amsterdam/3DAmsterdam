@@ -1,4 +1,5 @@
 using Netherlands3D.Interface;
+using Netherlands3D.T3D.Uitbouw;
 using Netherlands3D.T3D.Uitbouw.BoundaryFeatures;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,9 @@ namespace Netherlands3D.Interface
 
         [SerializeField]
         private EditUI editUIPrefab;
+
+        [SerializeField]
+        private UitbouwTransformGizmoButtons uitbouwTransformGizmoButtonsPrefab;
 
         public static CoordinateNumbers Instance;
 
@@ -51,6 +55,12 @@ namespace Netherlands3D.Interface
             var ui = Instantiate(editUIPrefab, this.transform);
             ui.SetFeature(feature);
             return ui;
+        }
+
+        public UitbouwTransformGizmoButtons CreateUitbouwTransformGizmoButtons()
+        {
+            print(uitbouwTransformGizmoButtonsPrefab);
+            return Instantiate(uitbouwTransformGizmoButtonsPrefab, transform);
         }
     }
 }

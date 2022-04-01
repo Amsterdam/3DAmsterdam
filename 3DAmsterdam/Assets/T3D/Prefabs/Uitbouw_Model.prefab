@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 613287082891894880}
   - component: {fileID: 4051661277681129896}
   - component: {fileID: 6641196300282613232}
+  - component: {fileID: 8159273155836315771}
   m_Layer: 0
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -76,6 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb83d3852f72465181f0e3231eb9741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gizmoPrefab: {fileID: 4771809076852453154, guid: e6f5c545e2b8d4f3ca1541c163405f67,
+    type: 3}
   meshFilter: {fileID: 0}
 --- !u!114 &4051661277681129896
 MonoBehaviour:
@@ -89,8 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5d2f640d9c148348231fc5f5a40396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragableAxisPrefab: {fileID: 3932690295695391041, guid: 2b40b1ed001dd402d9feaf7a850db1d7,
-    type: 3}
+  snapToWall: 0
 --- !u!114 &6641196300282613232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,3 +109,15 @@ MonoBehaviour:
   measurementLine: {fileID: 3551644316045364558, guid: 93001c4ebd7a94dd8ae18fc783d1e530,
     type: 3}
   numberOfLines: 2
+--- !u!114 &8159273155836315771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50cf9f236c214731a27e6c200d3d6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -8,6 +8,7 @@ using ConvertCoordinates;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
+    private float cameraHeightAboveGroundLevel = 15f;
     private Camera mycam;
     public float MinCameraHeight = 4;
     public float RotationSpeed = 0.5f;
@@ -96,7 +97,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void Update()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
-        if (!dragging && !Input.GetMouseButton(0))
+        if (!isFirstPersonMode && !dragging && !Input.GetMouseButton(0))
         {
             Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - mycam.transform.position).normalized, Vector3.up);
             mycam.transform.rotation = Quaternion.Slerp(mycam.transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
@@ -121,6 +122,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void OnBuildingDataProcessed(BuildingMeshGenerator building)
     {
         groundLevel = building.GroundLevel;
+        mycam.transform.position = new Vector3(mycam.transform.position.x, groundLevel + cameraHeightAboveGroundLevel, mycam.transform.position.z);
     }
 
     public bool ToggleRotateFirstPersonMode()

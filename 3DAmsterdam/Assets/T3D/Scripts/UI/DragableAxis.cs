@@ -19,9 +19,11 @@ namespace Netherlands3D.T3D.Uitbouw
 
         //[SerializeField]
         private UitbouwBase uitbouw;
-        private Vector3 offset;
+        private Vector3 planeProjectedOffset;
+        private Vector3 axisProjectedOffset;
 
-        public Vector3 DeltaPosition { get; private set; }
+        public Vector3 PlanarDeltaPosition { get; private set; }
+        public Vector3 LateralDeltaPosition { get; private set; }
         public bool IsDragging { get; private set; }
 
         [SerializeField]
@@ -40,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
             uitbouw = linkedUitbouw;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             ProcessInteractionState();
 
@@ -79,23 +81,31 @@ namespace Netherlands3D.T3D.Uitbouw
                 //end drag
                 StopInteraction();
                 IsDragging = false;
-                offset = Vector3.zero;
-                DeltaPosition = Vector3.zero;
+
+                axisProjectedOffset = Vector3.zero;
+                LateralDeltaPosition = Vector3.zero;
+
+                planeProjectedOffset = Vector3.zero;
+                PlanarDeltaPosition = Vector3.zero;
             }
         }
 
         public void RecalculateOffset()
         {
             Vector3 aimedPosition = GetPointerPositionInWorld();
-            var projectedLocalPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right);
-            offset = projectedLocalPoint;
+            var axisPorjectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right);
+            var planeProjectedPoint = uitbouw.GroundPlane.ClosestPointOnPlane(aimedPosition);
+            axisProjectedOffset = axisPorjectedPoint;
+            planeProjectedOffset = planeProjectedPoint - transform.position;
         }
 
         private void CalculateDeltaPosition()
         {
             Vector3 aimedPosition = GetPointerPositionInWorld();
-            var projectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right) + transform.position;
-            DeltaPosition = projectedPoint - offset - transform.position;
+            var axisProjectedPoint = Vector3.Project((aimedPosition - transform.position), uitbouw.transform.right) + transform.position;
+            var planeProjectedPoint = uitbouw.GroundPlane.ClosestPointOnPlane(aimedPosition);
+            PlanarDeltaPosition = planeProjectedPoint - planeProjectedOffset - transform.position;
+            LateralDeltaPosition = axisProjectedPoint - axisProjectedOffset - transform.position;
         }
 
         private void SetHighlight(InteractableState status) //0: normal, 1: hover, 2: selected

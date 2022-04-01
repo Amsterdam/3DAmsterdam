@@ -27,6 +27,7 @@ public class HTMLInitSaveData : SaveDataContainer
     public bool HasSubmitted;
     public bool IsMonument;
     public bool IsBeschermd;
+    public bool SnapToWall;
 }
 
 public class T3DInit : MonoBehaviour

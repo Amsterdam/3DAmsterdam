@@ -69,7 +69,7 @@ public class CityJsonVisualiser : MonoBehaviour
         }
 
         //re-initialize the usermovementaxes to ensure the new meshes are dragable
-        uitbouw.GetComponent<UitbouwMovement>().InitializeUserMovementAxes();
+        uitbouw.InitializeUserMovementAxes();
     }
 
     void AddMeshGameObject(string name, Mesh mesh)
