@@ -14,7 +14,7 @@ namespace Netherlands3D.Interface
 
         void Start()
         {
-            GodViewCamera.focusingOnTargetPoint += Show;
+            RotateCamera.focusingOnTargetPoint += Show;
             pointerImage = GetComponent<Image>();
             pointerImage.color = Color.clear;
         }

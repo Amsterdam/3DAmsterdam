@@ -8,6 +8,10 @@ using ConvertCoordinates;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
+
+    public delegate void FocusPointChanged(Vector3 pointerPosition);
+    public static FocusPointChanged focusingOnTargetPoint;
+
     //public CameraModeT3D CameraMode { get; private set; }
 
     private float cameraHeightAboveGroundLevel = 15f;
@@ -93,7 +97,9 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private void Update()
     {
         if (StateSaver.Instance.ActiveStateIndex > 2)
+        {
             SmoothRotateToCameraTargetPoint();
+        }
     }
 
     private void SmoothRotateToCameraTargetPoint()
@@ -209,12 +215,27 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void EnableKeyboardActionMap(bool enabled)
     {
-
+        if (enabled && !ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Disable();
+        }
     }
 
     public void EnableMouseActionMap(bool enabled)
     {
-
+        //Wordt aangeroepen vanuit Selector.cs functie EnableCameraActionMaps
+        if (enabled && !ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Disable();
+        }
     }
 
     public bool UsesActionMap(InputActionMap actionMap)
