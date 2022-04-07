@@ -75,7 +75,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public static bool IsInPerceel(Vector2[] uitbouwFootprint, List<Vector2[]> perceel, Vector3 uitbouwPositionOffset)
         {
-            if(uitbouwFootprint == null)
+            if (uitbouwFootprint == null)
             {
                 Debug.Log("UitbouwRestriction.cs > IsInPerceel > uitbouwFootprint is null");
                 return false;
@@ -90,7 +90,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 Debug.Log("UitbouwRestriction.cs > IsInPerceel > uitbouwPositionOffset is null");
                 return false;
             }
-            
+
             var q = from i in perceel
                     from p in i
                     select CoordConvert.RDtoUnity(p) into v3
@@ -113,9 +113,20 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
-            return building.SelectedWall.WallIsSelected;
+            if (T3DInit.HTMLData.SnapToWall)
+                return building.SelectedWall.WallIsSelected;
+            else
+                return uitbouw != null;
         }
     }
+
+    //public class AttachedToWallRestriction : UitbouwRestriction
+    //{
+    //    public bool ConformsToRestriction(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
+    //    {
+    //        return building.SelectedWall.WallIsSelected || !T3DInit.HTMLData.SnapToWall;
+    //    }
+    //}
 
     public enum UitbouwRestrictionType
     {
@@ -172,7 +183,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public static IDictionary<UitbouwRestrictionType, UitbouwRestriction> NonConformingRestrictions(BuildingMeshGenerator building, PerceelRenderer perceel, UitbouwBase uitbouw)
         {
             var nonConformingRestrictions = new Dictionary<UitbouwRestrictionType, UitbouwRestriction>();
-            foreach(var restriction in activeRestrictions)
+            foreach (var restriction in activeRestrictions)
             {
                 if (!restriction.Value.ConformsToRestriction(building, perceel, uitbouw))
                 {

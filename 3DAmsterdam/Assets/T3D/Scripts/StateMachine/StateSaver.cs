@@ -16,10 +16,14 @@ public class StateSaver : MonoBehaviour
     public int ActiveStateIndex => saveData.ActiveStateIndex;
     private StateSaverSaveDataContainer saveData;
 
+    public static StateSaver Instance;
+
     private void Awake()
     {
         saveData = new StateSaverSaveDataContainer();
         states = GetComponentsInChildren<State>(true);
+
+        Instance = this;
     }
 
     private void OnEnable()
@@ -35,17 +39,12 @@ public class StateSaver : MonoBehaviour
 
     private void Start() // in start to avoid timing issues
     {
-        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
+        GoToFirstState();
     }
 
     private void State_ActiveStateChanged(State newState)
     {
         saveData.ActiveStateIndex = GetStateIndex(newState);
-    }
-
-    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-    {
-        GoToFirstState();
     }
 
     private void GoToFirstState()

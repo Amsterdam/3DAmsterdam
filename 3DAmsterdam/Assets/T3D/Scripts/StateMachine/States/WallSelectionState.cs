@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,13 +8,21 @@ using UnityEngine.UI;
 public class WallSelectionState : State
 {
     private BuildingMeshGenerator building;
+
     [SerializeField]
     private Button nextButton;
     [SerializeField]
     private Text infoText;
 
-    private const string selectedText = "aangegeven gevel";
-    private const string unselectedText = "selecteer gevel";
+    [SerializeField]
+    private string selectedText = "aangegeven gevel";
+    [SerializeField]
+    private string unselectedText = "selecteer gevel";
+
+    private bool SnapToWall => T3DInit.HTMLData.SnapToWall;
+
+    private bool allowSelectPlaceLocation;
+    private Vector3 placeLocation;
 
     protected override void Awake()
     {
@@ -24,9 +33,21 @@ public class WallSelectionState : State
         nextButton.interactable = false;
     }
 
+    protected override void Start()
+    {
+        base.Start();
+        MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
+    }
+
     private void Update()
     {
-        if (building.SelectedWall.WallIsSelected)
+        CalculatePlaceLocation();
+        ProcessUIState();
+    }
+
+    private void ProcessUIState()
+    {
+        if (LocationIsSelected())
         {
             nextButton.interactable = true;
             infoText.text = selectedText;
@@ -36,6 +57,37 @@ public class WallSelectionState : State
             nextButton.interactable = false;
             infoText.text = unselectedText;
         }
+    }
+
+    private void SetAllowSelectPlaceLocation(bool allow)
+    {
+        allowSelectPlaceLocation = allow;
+        //placeMarker.gameObject.SetActive(allow);
+    }
+
+    private void CalculatePlaceLocation()
+    {
+        var groundPlane = new Plane(transform.up, -building.GroundLevel);
+        var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
+        var cast = groundPlane.Raycast(ray, out float enter);
+        if (cast)
+        {
+            placeLocation = ray.origin + (ray.direction * enter);
+            RestrictionChecker.ActiveUitbouw.transform.position = placeLocation;
+
+            if (allowSelectPlaceLocation && Input.GetMouseButtonDown(0))
+            {
+                StepEndedByUser();
+            }
+        }
+    }
+
+    private bool LocationIsSelected()
+    {
+        if (SnapToWall)
+            return building.SelectedWall.WallIsSelected;
+        else
+            return RestrictionChecker.ActiveUitbouw != null;
     }
 
     public override int GetDesiredStateIndex()
@@ -49,8 +101,11 @@ public class WallSelectionState : State
 
     public override void StateEnteredAction()
     {
-        building.SelectedWall.AllowSelection = true;
+        building.SelectedWall.AllowSelection = SnapToWall;
         building.SelectedWall.WallChanged = false;
+
+        SetAllowSelectPlaceLocation(!SnapToWall);
+
         if (RestrictionChecker.ActiveUitbouw)
         {
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
@@ -62,23 +117,35 @@ public class WallSelectionState : State
     public override void StateCompletedAction()
     {
         building.SelectedWall.AllowSelection = false;
+        SetAllowSelectPlaceLocation(false);
+        CreateOrEnableUitbouw(GetSpawnPosition());
+    }
+
+    private void CreateOrEnableUitbouw(Vector3 location)
+    {
         if (RestrictionChecker.ActiveUitbouw)
         {
             //re-enable uitbouw that was previously placed
             RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); //disable rotation
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
-            if (building.SelectedWall.WallChanged)
+            if (building.SelectedWall.WallChanged || !SnapToWall)
             {
-                var spawnPosition = building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
-                RestrictionChecker.ActiveUitbouw.transform.position = spawnPosition;
+                RestrictionChecker.ActiveUitbouw.transform.position = location;
             }
         }
         else
         {
             //create uitbouw since there was no uitbouw previously placed
-            var spawnPosition = building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
-            MetadataLoader.Instance.PlaatsUitbouw(spawnPosition);
+            MetadataLoader.Instance.PlaatsUitbouw(location);
         }
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        if (SnapToWall)
+            return building.SelectedWall.transform.position + building.SelectedWall.WallMesh.bounds.center;
+        else
+            return placeLocation;
     }
 }

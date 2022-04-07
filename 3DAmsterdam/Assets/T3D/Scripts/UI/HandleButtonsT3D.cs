@@ -119,10 +119,12 @@ public class HandleButtonsT3D : MonoBehaviour
  
     void ToggleRotateFirstperson()
     {
-        var isfirstperson = RotateCamera.Instance.ToggleRotateFirstPersonMode();
+        var newMode = T3D.CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
+        print("setting " + newMode);
+        T3D.CameraModeChanger.Instance.SetCameraMode(newMode);
         var tooltiptrigger = ButtonToggleRotateFirstperson.GetComponent<TooltipTrigger>();
 
-        tooltiptrigger.TooltipText = isfirstperson ? "Roteren" : "Lopen";
+        tooltiptrigger.TooltipText = newMode == CameraMode.StreetView ? "Roteren" : "Lopen";
     }
 
     private void UpdateTijd()

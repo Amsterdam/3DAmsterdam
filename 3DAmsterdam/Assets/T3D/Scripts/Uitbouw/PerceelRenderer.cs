@@ -6,6 +6,7 @@ using UnityEngine;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Utilities;
 using System;
+using Netherlands3D.Cameras;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -36,7 +37,7 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void BuildingMeshGenerator_BuildingDataProcessed(BuildingMeshGenerator building)
-        {            
+        {
             perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
             perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
 
