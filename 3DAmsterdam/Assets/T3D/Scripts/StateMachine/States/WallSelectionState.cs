@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Netherlands3D.Cameras;
+using Netherlands3D.T3D;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.UI;
@@ -101,6 +101,9 @@ public class WallSelectionState : State
 
     public override void StateEnteredAction()
     {
+        if (!SnapToWall)
+            CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.TopDown);
+
         building.SelectedWall.AllowSelection = SnapToWall;
         building.SelectedWall.WallChanged = false;
 
@@ -116,6 +119,7 @@ public class WallSelectionState : State
 
     public override void StateCompletedAction()
     {
+        CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.GodView);
         building.SelectedWall.AllowSelection = false;
         SetAllowSelectPlaceLocation(false);
         CreateOrEnableUitbouw(GetSpawnPosition());
