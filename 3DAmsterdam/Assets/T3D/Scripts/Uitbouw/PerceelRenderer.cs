@@ -27,6 +27,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
         public Vector3 Center { get; private set; }
+        public float Radius { get; private set; }
+        public bool IsLoaded { get; private set; } = false;
 
         private void Start()
         {
@@ -55,6 +57,8 @@ namespace Netherlands3D.T3D.Uitbouw
             Area = args.Area;
             var coord = CoordConvert.RDtoUnity(args.Center);
             Center = new Vector3(coord.x, Center.y, coord.z);
+            Radius = args.Radius;
+            IsLoaded = true;
         }
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)

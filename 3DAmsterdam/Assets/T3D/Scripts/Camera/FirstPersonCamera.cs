@@ -18,34 +18,13 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
     private bool dragging = false;
     [SerializeField]
     private float MaxFirstPersonDistance = 40;
-    //[SerializeField]
-    //private float firstPersonHeight = 2f;
     [SerializeField]
     private float firstPersonCameraDistance = 5f;
     [SerializeField]
     private float rotationSpeed = 0.5f;
-    [SerializeField]
-    private float zoomSpeed = 0.01f;
-
-    private float scrollDelta;
     private IAction dragActionMouse;
-    private IAction zoomScrollActionMouse;
 
-    //public static Vector3 CameraTargetPoint
-    //{
-    //    get
-    //    {
-    //        if (RestrictionChecker.ActiveUitbouw)
-    //        {
-    //            return RestrictionChecker.ActiveUitbouw.CenterPoint;
-    //        }
-    //        else if (RestrictionChecker.ActiveBuilding)
-    //        {
-    //            return RestrictionChecker.ActiveBuilding.BuildingCenter;
-    //        }
-    //        return Vector3.zero;
-    //    }
-    //}
+    public CameraMode Mode => CameraMode.StreetView;
 
     private void Awake()
     {
@@ -98,13 +77,9 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
         //Mouse actions
         dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
 
-        zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
-
         //Listeners
         dragActionMouse.SubscribePerformed(Drag);
         dragActionMouse.SubscribeCancelled(Drag);
-
-        //zoomScrollActionMouse.SubscribePerformed(Zoom);
     }
 
     private void Drag(IAction action)

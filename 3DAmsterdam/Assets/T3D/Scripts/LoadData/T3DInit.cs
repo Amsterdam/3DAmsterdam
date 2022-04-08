@@ -6,6 +6,7 @@ using Netherlands3D.T3D.Uitbouw;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 [KeepSaveDataOnReset]
 public class HTMLInitSaveData : SaveDataContainer

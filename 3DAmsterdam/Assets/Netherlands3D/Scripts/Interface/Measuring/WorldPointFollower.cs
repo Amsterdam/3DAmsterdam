@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 namespace Netherlands3D.Interface
 {
@@ -65,7 +66,7 @@ namespace Netherlands3D.Interface
 			}
 
 			//Else maybe hide depending on distance from streetview camera
-			if (CameraModeChanger.Instance.CameraMode == CameraMode.StreetView)
+			if (CameraModeChanger.Instance.CurrentMode == CameraMode.StreetView)
 			{
 				var distance = WorldPosition - CameraModeChanger.Instance.ActiveCamera.transform.position;
 				if (distance.magnitude > maxRenderDistanceAtGround)

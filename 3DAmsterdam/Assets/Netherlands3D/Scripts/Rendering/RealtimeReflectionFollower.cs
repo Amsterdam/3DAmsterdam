@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 namespace Netherlands3D.Rendering {
 	public class RealtimeReflectionFollower : MonoBehaviour

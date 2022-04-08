@@ -31,30 +31,15 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private float startDistanceFromCenter = 15f;
 
-    //[SerializeField]
     private bool dragging = false;
-
     private float scrollDelta;
 
     private IAction dragActionMouse;
     private IAction zoomScrollActionMouse;
 
-    //List<InputActionMap> availableActionMaps;
-
-    //Vector3 lastRotatePosition;
-    //Quaternion lastRotateRotation;
-
-    //Vector2RD PerceelCenter;
-    //Vector2RD BuildingCenter;
-    //float BuildingRadius;
-
     [SerializeField]
     private float autoOrientRotateSpeed = 10f;
-
-    //float groundLevel;
-
-    //public static RotateCamera Instance;
-    //bool isFirstPersonMode = false;
+    public CameraMode Mode => CameraMode.GodView;
 
     public static Vector3 CameraTargetPoint
     {
@@ -72,34 +57,18 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
     }
 
-    //private void Awake()
-    //{
-    //    Instance = this;
-    //}
-
     void Start()
     {
-        //BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
-        //MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
-
-        //mycam = CameraModeChanger.Instance.ActiveCamera;
         myCam = GetComponent<Camera>();
 
         AddActionListeners();
-        BuildingMeshGenerator.Instance.BuildingDataProcessed += Instance_BuildingDataProcessed;
+        RestrictionChecker.ActiveBuilding.BuildingDataProcessed += Instance_BuildingDataProcessed;
     }
 
     private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
     {
-        print(RestrictionChecker.ActivePerceel.Center);
         SetCameraStartPosition(building.GroundLevel);
     }
-
-    //private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
-    //{
-    //    BuildingCenter = args.Center;
-    //    BuildingRadius = args.Radius;
-    //}
 
     private void Update()
     {
@@ -115,7 +84,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         dir.y = 0;
         transform.position = CameraTargetPoint + dir * startDistanceFromCenter;
         SetNormalizedCameraHeight(groundLevel);
-        //myCam.transform.Translate(0, RestrictionChecker.ActiveBuilding.GroundLevel + cameraHeightAboveGroundLevel, 0, Space.World);
         transform.LookAt(CameraTargetPoint);
     }
 
@@ -126,7 +94,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         {
             Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - transform.position).normalized, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
-            //mycam.transform.LookAt(CameraTargetPoint, Vector3.up);
         }
 
         if (dragging && Input.GetMouseButton(0))
@@ -134,12 +101,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
             RotateAround(mouseDelta.x, mouseDelta.y);
         }
     }
-
-    //private void OnBuildingDataProcessed(BuildingMeshGenerator building)
-    //{
-    //    groundLevel = building.GroundLevel;
-    //    myCam.transform.position = new Vector3(myCam.transform.position.x, groundLevel + cameraHeightAboveGroundLevel, myCam.transform.position.z);
-    //}
 
     private void AddActionListeners()
     {
@@ -177,11 +138,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
             var newpos = transform.position + transform.forward.normalized * (scrollDelta * moveSpeed * zoomSpeed);
 
-            //if (isFirstPersonMode)
-            //{
-            //    if (Vector3.Distance(newpos, CoordConvert.RDtoUnity(BuildingCenter)) > MaxFirstPersonDistance) return;
-            //    newpos.y = lastY;
-            //}
             if (newpos.y < minCameraHeight) return;
             else if (CameraInRange(newpos) == false) return;
 
@@ -192,7 +148,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     void RotateAround(float xaxis, float yaxis)
     {
         transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
-        //myCam.transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed);
     }
 
     bool CameraInRange(Vector3 newCameraPosition)

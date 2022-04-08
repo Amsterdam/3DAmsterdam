@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ConvertCoordinates;
 using Netherlands3D.Cameras;
+using Netherlands3D.InputHandler;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
     private Camera myCam;
     [SerializeField]
     private float cameraHeightAboveGroundLevel = 50f;
+    public CameraMode Mode => CameraMode.TopDown;
 
     private void Awake()
     {
@@ -20,54 +22,81 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 
     private void Start()
     {
-        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+        if (RestrictionChecker.ActivePerceel.IsLoaded)
+            SetCameraStartPosition(RestrictionChecker.ActivePerceel.Center, RestrictionChecker.ActivePerceel.Radius);
+        else
+            MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
+    }
+
+    public void SetCameraStartPosition(Vector3 perceelCenter, float perceelRadius)
+    {
+        cameraHeightAboveGroundLevel = RestrictionChecker.ActiveBuilding.HeightLevel;//perceelRadius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        transform.position = new Vector3(perceelCenter.x, CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
+        myCam.orthographicSize = perceelRadius;
+
+        print(perceelRadius);
+        var test = new GameObject();
+        test.transform.position = RestrictionChecker.ActivePerceel.Center;
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
     {
-        //PerceelCenter = args.Center;
         var perceelCenter = CoordConvert.RDtoUnity(args.Center);
-        cameraHeightAboveGroundLevel = args.Radius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-        transform.position = new Vector3(perceelCenter.x, CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
-    }
-
-    public void EnableKeyboardActionMap(bool enabled)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void EnableMouseActionMap(bool enabled)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public float GetCameraHeight()
-    {
-        throw new System.NotImplementedException();
+        SetCameraStartPosition(perceelCenter, args.Radius);
     }
 
     public float GetNormalizedCameraHeight()
     {
-        throw new System.NotImplementedException();
+        return cameraHeightAboveGroundLevel;
     }
 
-    public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
+    public float GetCameraHeight()
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
-    {
-        throw new System.NotImplementedException();
+        return transform.position.y;
     }
 
     public void SetNormalizedCameraHeight(float height)
     {
-        throw new System.NotImplementedException();
+        transform.position = new Vector3(transform.position.x, height + cameraHeightAboveGroundLevel, transform.position.z);
+    }
+
+    public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
+    {
+
+    }
+
+    public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
+    {
+        return myCam.ScreenToWorldPoint(Input.mousePosition); //todo
+    }
+
+    public void EnableKeyboardActionMap(bool enabled)
+    {
+        if (enabled && !ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Disable();
+        }
+    }
+
+    public void EnableMouseActionMap(bool enabled)
+    {
+        //Wordt aangeroepen vanuit Selector.cs functie EnableCameraActionMaps
+        if (enabled && !ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Disable();
+        }
     }
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        throw new System.NotImplementedException();
+        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
     }
 }

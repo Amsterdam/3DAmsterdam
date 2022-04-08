@@ -33,9 +33,9 @@ namespace Netherlands3D.T3D
             };
 
             cameraDictionary = new Dictionary<CameraMode, Camera>();
-            for (int i = 0; i < cameras.Length; i++)
+            foreach(Camera cam in cameras)
             {
-                cameraDictionary.Add((CameraMode)i, cameras[i]);
+                cameraDictionary.Add(cam.GetComponent<ICameraControls>().Mode, cam);
             }
 
             InitializeCameraMode(CameraMode.GodView);
@@ -43,7 +43,7 @@ namespace Netherlands3D.T3D
 
         private void Start()
         {
-            BuildingMeshGenerator.Instance.BuildingDataProcessed += Instance_BuildingDataProcessed;
+            RestrictionChecker.ActiveBuilding.BuildingDataProcessed += Instance_BuildingDataProcessed;
         }
 
         private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
@@ -71,31 +71,12 @@ namespace Netherlands3D.T3D
             CurrentCameraControls.SetNormalizedCameraHeight(GroundLevel);
         }
 
-        //public bool ToggleRotateFirstPersonMode()
-        //{
-        //    isFirstPersonMode = !isFirstPersonMode;
-
-        //    if (isFirstPersonMode)
-        //    {
-        //        lastRotatePosition = myCam.transform.position;
-        //        lastRotateRotation = myCam.transform.rotation;
-
-        //        var perceelCenter = CoordConvert.RDtoUnity(PerceelCenter);
-        //        var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
-        //        var cameraoffset = (perceelCenter - buildingCenter).normalized * (BuildingRadius + firstPersonCameraDistance);
-
-        //        myCam.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel + firstPersonHeight, buildingCenter.z + cameraoffset.z);
-        //        myCam.transform.LookAt(CameraTargetPoint);
-
-        //        //currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
-        //    }
-        //    else
-        //    {
-        //        myCam.transform.position = lastRotatePosition;
-        //        myCam.transform.rotation = lastRotateRotation;
-        //    }
-
-        //    return isFirstPersonMode;
-        //}
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.T))
+                SetCameraMode(CameraMode.TopDown);
+            if (Input.GetKeyDown(KeyCode.R))
+                SetCameraMode(CameraMode.GodView);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Netherlands3D.Cameras;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 namespace Netherlands3D.Interface
 {
@@ -29,7 +30,7 @@ namespace Netherlands3D.Interface
 
         void Start()
         {
-            CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
+            //CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
         }
 
         void DisableMainCanvasItems()

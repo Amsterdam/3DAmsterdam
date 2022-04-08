@@ -120,7 +120,7 @@ namespace Netherlands3D.Interface
 		private void Update()
 		{
 			//Always update our main selector ray, and raycast for Interactables that we are hovering
-			mainSelectorRay = T3D.CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+			mainSelectorRay = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 			hits = Physics.RaycastAll(mainSelectorRay, 10000, raycastLayers.value);
 			if (hits.Length > 0)
 			{

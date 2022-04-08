@@ -11,6 +11,7 @@ namespace Netherlands3D.T3D.Uitbouw
     {
         public Vector3 BuildingCenter { get; private set; }
         public float GroundLevel { get; private set; }
+        public float HeightLevel { get; private set; }
         public bool IsMonument { get; private set; }
         public bool IsBeschermd { get; private set; }
         public float Area { get; private set; }
@@ -25,11 +26,8 @@ namespace Netherlands3D.T3D.Uitbouw
         public delegate void BuildingDataProcessedEventHandler(BuildingMeshGenerator building);
         public event BuildingDataProcessedEventHandler BuildingDataProcessed;
 
-        public static BuildingMeshGenerator Instance;
-
         private void Awake()
         {
-            Instance = this;
             SelectedWall = GetComponentInChildren<WallSelector>();
         }
 
@@ -58,6 +56,7 @@ namespace Netherlands3D.T3D.Uitbouw
             var col = gameObject.AddComponent<MeshCollider>();
             BuildingCenter = col.bounds.center;
             GroundLevel = BuildingCenter.y - col.bounds.extents.y; //hack: if the building geometry goes through the ground this will not work properly
+            HeightLevel = BuildingCenter.y + col.bounds.extents.y;
 
             BuildingDataProcessed.Invoke(this); // it cannot be assumed if the perceel or building data loads + processes first due to the server requests, so this event is called to make sure the processed building information can be used by other classes
             BuildingDataIsProcessed = true;

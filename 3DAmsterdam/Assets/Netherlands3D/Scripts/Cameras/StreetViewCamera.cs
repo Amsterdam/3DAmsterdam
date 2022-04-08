@@ -34,6 +34,7 @@ namespace Netherlands3D.Cameras
 
 		[SerializeField]
 		private string helpMessage = "Kijk rond met de <b>muis</b>. Gebruik de <b>pijltjestoetsen</b> om te lopen. Houd <b>Shift</b> ingedrukt om te rennen.";
+		public CameraMode Mode => CameraMode.StreetView;
 
 		private void OnEnable()
 		{
