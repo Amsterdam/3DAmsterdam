@@ -5,6 +5,7 @@ using Netherlands3D.Cameras;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class TopDownCamera : MonoBehaviour, ICameraControls
 {
@@ -27,7 +28,7 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
         //PerceelCenter = args.Center;
         var perceelCenter = CoordConvert.RDtoUnity(args.Center);
         cameraHeightAboveGroundLevel = args.Radius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-        transform.position = new Vector3(perceelCenter.x, T3D.CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
+        transform.position = new Vector3(perceelCenter.x, CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
     }
 
     public void EnableKeyboardActionMap(bool enabled)

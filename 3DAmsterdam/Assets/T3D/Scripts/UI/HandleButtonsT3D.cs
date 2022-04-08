@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
@@ -119,9 +119,8 @@ public class HandleButtonsT3D : MonoBehaviour
  
     void ToggleRotateFirstperson()
     {
-        var newMode = T3D.CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
-        print("setting " + newMode);
-        T3D.CameraModeChanger.Instance.SetCameraMode(newMode);
+        var newMode = Netherlands3D.T3D.CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
+        CameraModeChanger.Instance.SetCameraMode(newMode);
         var tooltiptrigger = ButtonToggleRotateFirstperson.GetComponent<TooltipTrigger>();
 
         tooltiptrigger.TooltipText = newMode == CameraMode.StreetView ? "Roteren" : "Lopen";

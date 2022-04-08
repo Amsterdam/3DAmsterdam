@@ -36,10 +36,10 @@ namespace Netherlands3D.T3D.Uitbouw
         protected void Start()//in start to avoid race conditions
         {
             //base.Start();
-            MetadataLoader.Instance.BuildingMetaDataLoaded += PerceelRenderer_BuildingMetaDataLoaded;
+            MetadataLoader.Instance.BuildingMetaDataLoaded += Instance_BuildingMetaDataLoaded;
             MetadataLoader.Instance.BuildingOutlineLoaded += Instance_BuildingOutlineLoaded;
 
-            SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted; ;
+            SessionSaver.Loader.LoadingCompleted += Loader_LoadingCompleted;
         }
 
         private void Loader_LoadingCompleted(bool loadSucceeded)
@@ -48,7 +48,7 @@ namespace Netherlands3D.T3D.Uitbouw
             IsBeschermd = T3DInit.HTMLData.IsBeschermd;
         }
 
-        private void PerceelRenderer_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+        private void Instance_BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
         {            
             var buildingMesh = ExtractBuildingMesh(args.ObjectData, args.ObjectData.highlightIDs[0]);
             transform.position = args.TileOffset;

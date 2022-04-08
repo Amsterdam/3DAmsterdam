@@ -6,7 +6,7 @@ using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace T3D
+namespace Netherlands3D.T3D
 {
     public class CameraModeChanger : MonoBehaviour
     {

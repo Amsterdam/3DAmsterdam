@@ -5,23 +5,32 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using ConvertCoordinates;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
 
     public delegate void FocusPointChanged(Vector3 pointerPosition);
+
     public static FocusPointChanged focusingOnTargetPoint;
 
     //public CameraModeT3D CameraMode { get; private set; }
 
     private float cameraHeightAboveGroundLevel = 15f;
     private Camera myCam;
-    public float MinCameraHeight = 4;
-    public float RotationSpeed = 0.5f;
-    public float ZoomSpeed = 0.01f;
-    public float spinSpeed = 60;
-    public float MaxCameraDistance = 200;
-    
+    [SerializeField]
+    private float minCameraHeight = 4;
+    [SerializeField]
+    private float rotationSpeed = 0.5f;
+    [SerializeField]
+    private float zoomSpeed = 0.01f;
+    [SerializeField]
+    private float spinSpeed = 60;
+    [SerializeField]
+    private float maxCameraDistance = 200;
+    [SerializeField]
+    private float startDistanceFromCenter = 15f;
+
     //[SerializeField]
     private bool dragging = false;
 
@@ -46,8 +55,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     //public static RotateCamera Instance;
     //bool isFirstPersonMode = false;
-
-    List<InputActionMap> availableActionMaps;
 
     public static Vector3 CameraTargetPoint
     {
@@ -78,14 +85,14 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         //mycam = CameraModeChanger.Instance.ActiveCamera;
         myCam = GetComponent<Camera>();
 
-        //availableActionMaps = T3D.CameraModeChanger.Instance.AvailableActionMaps;
-        availableActionMaps = new List<InputActionMap>()
-        {
-            ActionHandler.actions.GodViewMouse,
-            ActionHandler.actions.GodViewKeyboard
-        };
-
         AddActionListeners();
+        BuildingMeshGenerator.Instance.BuildingDataProcessed += Instance_BuildingDataProcessed;
+    }
+
+    private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
+    {
+        print(RestrictionChecker.ActivePerceel.Center);
+        SetCameraStartPosition(building.GroundLevel);
     }
 
     //private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
@@ -102,13 +109,23 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
     }
 
+    public void SetCameraStartPosition(float groundLevel)
+    {
+        var dir = (RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter).normalized;
+        dir.y = 0;
+        transform.position = CameraTargetPoint + dir * startDistanceFromCenter;
+        SetNormalizedCameraHeight(groundLevel);
+        //myCam.transform.Translate(0, RestrictionChecker.ActiveBuilding.GroundLevel + cameraHeightAboveGroundLevel, 0, Space.World);
+        transform.LookAt(CameraTargetPoint);
+    }
+
     private void SmoothRotateToCameraTargetPoint()
     {
         var mouseDelta = Mouse.current.delta.ReadValue();
         if (!dragging && !Input.GetMouseButton(0))
         {
-            Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - myCam.transform.position).normalized, Vector3.up);
-            myCam.transform.rotation = Quaternion.Slerp(myCam.transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
+            Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - transform.position).normalized, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
             //mycam.transform.LookAt(CameraTargetPoint, Vector3.up);
         }
 
@@ -126,12 +143,9 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void AddActionListeners()
     {
-        print("subscribing");
         //Mouse actions
         dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
         zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
-
-        print(dragActionMouse);
 
         //Listeners
         dragActionMouse.SubscribePerformed(Drag);
@@ -142,7 +156,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void Drag(IAction action)
     {
-        print("drag");
         if (action.Cancelled)
         {
             dragging = false;
@@ -155,36 +168,36 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void Zoom(IAction action)
     {
-        print("zoom");
         scrollDelta = ActionHandler.actions.GodViewMouse.Zoom.ReadValue<Vector2>().y;
 
         if (scrollDelta != 0)
         {
-            var lastY = myCam.transform.position.y;
-            var moveSpeed = Mathf.Sqrt(myCam.transform.position.y) * 1.3f;
+            //var lastY = myCam.transform.position.y;
+            var moveSpeed = Mathf.Sqrt(transform.position.y) * 1.3f;
 
-            var newpos = myCam.transform.position + myCam.transform.forward.normalized * (scrollDelta * moveSpeed * ZoomSpeed);
+            var newpos = transform.position + transform.forward.normalized * (scrollDelta * moveSpeed * zoomSpeed);
 
             //if (isFirstPersonMode)
             //{
             //    if (Vector3.Distance(newpos, CoordConvert.RDtoUnity(BuildingCenter)) > MaxFirstPersonDistance) return;
             //    newpos.y = lastY;
             //}
-            if (newpos.y < MinCameraHeight) return;
+            if (newpos.y < minCameraHeight) return;
             else if (CameraInRange(newpos) == false) return;
 
-            myCam.transform.position = newpos;
+            transform.position = newpos;
         }
     }
 
     void RotateAround(float xaxis, float yaxis)
     {
-        myCam.transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * RotationSpeed);
+        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
+        //myCam.transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed);
     }
 
     bool CameraInRange(Vector3 newCameraPosition)
     {
-        return Vector3.Distance(CameraTargetPoint, newCameraPosition) < MaxCameraDistance;
+        return Vector3.Distance(CameraTargetPoint, newCameraPosition) < maxCameraDistance;
     }
 
     // Interface methods
@@ -205,7 +218,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
     {
-
     }
 
     public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
@@ -240,6 +252,6 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        return availableActionMaps.Contains(actionMap);
+        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
     }
 }

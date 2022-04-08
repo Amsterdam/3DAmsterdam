@@ -26,6 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
+        public Vector3 Center { get; private set; }
 
         private void Start()
         {
@@ -42,6 +43,7 @@ namespace Netherlands3D.T3D.Uitbouw
             perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
 
             terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
+            Center = new Vector3(Center.x, building.GroundLevel, Center.z);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -51,6 +53,8 @@ namespace Netherlands3D.T3D.Uitbouw
             GenerateMeshFromPerceel(args.Perceel);
             SetPerceelActive(false);
             Area = args.Area;
+            var coord = CoordConvert.RDtoUnity(args.Center);
+            Center = new Vector3(coord.x, Center.y, coord.z);
         }
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
