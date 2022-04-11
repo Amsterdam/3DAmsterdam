@@ -50,9 +50,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
-            Perceel = args.Perceel;
-            //RenderPerceelOutline(args.Perceel);           
+            Perceel = args.Perceel;      
             GenerateMeshFromPerceel(args.Perceel);
+            RenderPerceelOutline(args.Perceel);
             SetPerceelActive(false);
             Area = args.Area;
             var coord = CoordConvert.RDtoUnity(args.Center);
@@ -151,7 +151,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void SetPerceelActive(bool active)
         {
             perceelMeshGameObject.SetActive(active);
-            perceelOutlineGameObject.SetActive(active);
+            //perceelOutlineGameObject.SetActive(active);
 
             terreinMeshGameObject.SetActive(!active);
         }

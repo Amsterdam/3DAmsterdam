@@ -34,7 +34,6 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
         transform.position = new Vector3(perceelCenter.x, CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
         myCam.orthographicSize = perceelRadius;
 
-        print(perceelRadius);
         var test = new GameObject();
         test.transform.position = RestrictionChecker.ActivePerceel.Center;
     }

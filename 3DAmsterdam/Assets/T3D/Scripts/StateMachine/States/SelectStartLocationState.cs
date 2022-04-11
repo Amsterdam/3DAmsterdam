@@ -49,7 +49,8 @@ public class SelectStartLocationState : State
         var cast = groundPlane.Raycast(ray, out float enter);
         if (cast)
         {
-            placeLocation = ray.origin + (ray.direction * enter);
+            var offset = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveUitbouw.transform.position;
+            placeLocation = ray.origin + (ray.direction * enter) - offset;
             RestrictionChecker.ActiveUitbouw.transform.position = placeLocation;
         }
     }

@@ -64,7 +64,6 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
         var newDist = Vector2.Distance(newPos, buildingCenter);
         if (newDist > MaxFirstPersonDistance)
         {
-
             Vector2 fromOriginToObject = newPos - buildingCenter;
             fromOriginToObject *= MaxFirstPersonDistance / newDist;
             newPos = buildingCenter + fromOriginToObject;

@@ -18,7 +18,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
     public Button ButtonZoomIn;
-    public Button ButtonZoomOut;    
+    public Button ButtonZoomOut;
     public Button ButtonToggleRotateFirstperson;
 
     public GameObject BuildingsLayer;
@@ -51,7 +51,7 @@ public class HandleButtonsT3D : MonoBehaviour
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
         ButtonZoomIn.onClick.AddListener(ZoomIn);
-        ButtonZoomOut.onClick.AddListener(ZoomOut);       
+        ButtonZoomOut.onClick.AddListener(ZoomOut);
         ButtonToggleRotateFirstperson.onClick.AddListener(ToggleRotateFirstperson);
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
@@ -109,17 +109,23 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void ZoomIn()
     {
-        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
+            CameraModeChanger.Instance.ActiveCamera.orthographicSize -= 5;
+        else
+            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void ZoomOut()
     {
-        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
+            CameraModeChanger.Instance.ActiveCamera.orthographicSize += 5;
+        else
+            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
- 
+
     void ToggleRotateFirstperson()
     {
-        var newMode = Netherlands3D.T3D.CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
+        var newMode = CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
         CameraModeChanger.Instance.SetCameraMode(newMode);
         var tooltiptrigger = ButtonToggleRotateFirstperson.GetComponent<TooltipTrigger>();
 
