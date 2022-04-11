@@ -98,7 +98,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &1774594892633574138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,6 +303,8 @@ RectTransform:
   - {fileID: 7800358719420880074}
   - {fileID: 3659180283446947558}
   - {fileID: 784803781898111496}
+  - {fileID: 5266087012113019389}
+  - {fileID: 3306144684308924982}
   m_Father: {fileID: 5667875306692167949}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -395,7 +397,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7409894788581918199}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -934,15 +936,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44a303078c0f68e4eb64f0a01b440f08, type: 3}
---- !u!224 &777344324512144219 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
-    type: 3}
-  m_PrefabInstance: {fileID: 354569137734557497}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8446417012933703143 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8204464804396968670, guid: 44a303078c0f68e4eb64f0a01b440f08,
+    type: 3}
+  m_PrefabInstance: {fileID: 354569137734557497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &777344324512144219 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1018376791691773026, guid: 44a303078c0f68e4eb64f0a01b440f08,
     type: 3}
   m_PrefabInstance: {fileID: 354569137734557497}
   m_PrefabAsset: {fileID: 0}
@@ -973,6 +975,281 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   styleOnHover: 3
+--- !u!1001 &428842468494054466
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4723554240338040194}
+    m_Modifications:
+    - target: {fileID: 1350736383054739691, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Text
+      value: Kadastrale kaart PDOK
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 212.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 2936435000665784762}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6951801936283373374}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Name
+      value: RadioButton (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c,
+        type: 2}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fc94bfc95ef40de4191dc6c004e8e1fe, type: 3}
+--- !u!224 &3306144684308924982 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 428842468494054466}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8103876110172298572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 428842468494054466}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6951801936283373374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8103876110172298572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/kadastralekaart/wms/v4_0?SERVICE=WMS&service=WMS&request=GETMAP&version=1.3.0&LAYERS=KadastraleGrens&WIDTH={Width}&HEIGHT={Height}&format=image/png&crs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 10957c1db61877041bbfea49c3b7c46e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1934931512721993874
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1108,12 +1385,32 @@ PrefabInstance:
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 819787681}
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1123,7 +1420,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1164,6 +1461,70 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1934931512721993874}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8025146687538887068 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 1934931512721993874}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &819787681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8025146687538887068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/planologischezonesschiphol.map&service=WMS&request=GETMAP&version=1.1.1&LAYERS=maatgevendetoetshoogteschiphol&Styles=default&WIDTH={Width}&HEIGHT={Height}&format=image/png&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}&transparent=true
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 23a266caa6e8ab040879da7f9a343a15, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/planologischezonesschiphol.map&version=1.1.1&service=WMS&request=GetLegendGraphic&layer=maatgevendetoetshoogteschiphol&format=image/png&STYLE=default
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &2519317592026158204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1299,12 +1660,32 @@ PrefabInstance:
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2074944537}
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1314,7 +1695,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1349,12 +1730,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc94bfc95ef40de4191dc6c004e8e1fe, type: 3}
+--- !u!1 &6301423810041355634 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 2519317592026158204}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &784803781898111496 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
     type: 3}
   m_PrefabInstance: {fileID: 2519317592026158204}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2074944537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6301423810041355634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/top10nlv2/wms?SERVICE=WMS&service=WMS&request=GETMAP&version=1.1.1&LAYERS=top10nlv2&WIDTH={Width}&HEIGHT={Height}&format=image/png&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 23a266caa6e8ab040879da7f9a343a15, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/top10nlv2/wms?SERVICE=WMS&service=WMS&request=GetLegendGraphic&version=1.1.1&LAYER=top10nlv2&format=image/png&srs=EPSG:28992
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &4195289925839081207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1490,12 +1935,32 @@ PrefabInstance:
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1657534845}
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1505,7 +1970,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1546,6 +2011,70 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4195289925839081207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5745999820338841593 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 4195289925839081207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1657534845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5745999820338841593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://service.pdok.nl/hwh/luchtfotorgb/wms/v1_0?service=WMS&request=GETMAP&version=1.1.1&LAYERS=Actueel_orthoHR&Styles=Default&WIDTH={Width}&HEIGHT={Height}&format=image/jpeg&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}&transparent=true
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 10957c1db61877041bbfea49c3b7c46e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &4923054570772679358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1681,12 +2210,32 @@ PrefabInstance:
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1029003124}
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1696,7 +2245,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1731,12 +2280,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc94bfc95ef40de4191dc6c004e8e1fe, type: 3}
+--- !u!1 &3591472944434135984 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 4923054570772679358}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7800358719420880074 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
     type: 3}
   m_PrefabInstance: {fileID: 4923054570772679358}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1029003124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591472944434135984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/planologischegeluidszones.map&service=WMS&request=GETMAP&version=1.1.1&LAYERS=milieu_geluid_planologisch_industrie,metro,spoorwegen&Styles=default&WIDTH={Width}&HEIGHT={Height}&format=image/png&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}&transparent=true
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 10957c1db61877041bbfea49c3b7c46e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://map.data.amsterdam.nl/cgi-bin/mapserv?map=/srv/mapserver/planologischezonesschiphol.map&version=1.1.1&service=WMS&request=GetLegendGraphic&layer=maatgevendetoetshoogteschiphol&format=image/png&STYLE=default
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &5230279722528419965
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1872,12 +2485,32 @@ PrefabInstance:
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 150037796}
     - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1887,7 +2520,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -1928,6 +2561,70 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5230279722528419965}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4400265477714393459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 5230279722528419965}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &150037796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4400265477714393459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/ahn3/ows?SERVICE=WMS&service=WMS&request=GETMAP&version=1.1.1&LAYERS=ahn3_5m_dtm&Styles=ahn3:ahn3_05m_detail&WIDTH={Width}&HEIGHT={Height}&format=image/png&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}&transparent=true
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 23a266caa6e8ab040879da7f9a343a15, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/ahn3/ows?SERVICE=WMS&service=WMS&request=GetLegendGraphic&version=1.1.1&LAYER=ahn3_5m_dtm&Styles=ahn3:ahn3_05m_detail&&format=image/png&transparent=true
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &5472846077165677562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2178,6 +2875,281 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5901826330964172763}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6991454544735268745
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4723554240338040194}
+    m_Modifications:
+    - target: {fileID: 1350736383054739691, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Text
+      value: Enkelbestemmingen PDOK
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 212.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 2936435000665784762}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2458941423524179624}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Name
+      value: RadioButton (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c,
+        type: 2}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fc94bfc95ef40de4191dc6c004e8e1fe, type: 3}
+--- !u!1 &1478288215081543303 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 6991454544735268745}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &5266087012113019389 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 6991454544735268745}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2458941423524179624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478288215081543303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 'https://geodata.nationaalgeoregister.nl/plu/wms/v4_0?SERVICE=WMS&service=WMS&request=GETMAP&version=1.3.0&LAYERS=Enkelbestemming&WIDTH={Width}&HEIGHT={Height}&format=image/png&crs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax} '
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 23a266caa6e8ab040879da7f9a343a15, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://geodata.nationaalgeoregister.nl/plu/wms/v4_0?SERVICE=WMS&service=WMS&request=GetLegendGraphic&version=1.3.0&LAYER=Enkelbestemming&format=image/png&crs=EPSG:28992
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &7142700641606636339
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2300,6 +3272,31 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 2936435000665784762}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 206445721}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Invoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Netherlands3D.Core.BoolEventListener, nl.netherlands3d.core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513899203577827255, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Name
@@ -2308,7 +3305,7 @@ PrefabInstance:
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915827818853375215, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
         type: 3}
@@ -2343,12 +3340,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc94bfc95ef40de4191dc6c004e8e1fe, type: 3}
+--- !u!1 &1628814270164867645 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8468259960137484558, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 7142700641606636339}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5408185997909036359 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2887446044985466484, guid: fc94bfc95ef40de4191dc6c004e8e1fe,
     type: 3}
   m_PrefabInstance: {fileID: 7142700641606636339}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &206445721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1628814270164867645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda199de660f4334b8a50d8e350bdf29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent: {fileID: 0}
+  onTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+  onTrue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 7b7f86e8c9d05fc42832176c83edd04c, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.StringEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://service.pdok.nl/hwh/luchtfotocir/wms/v1_0?service=WMS&request=GETMAP&version=1.1.1&LAYERS=Actueel_ortho25IR&Styles=Default&WIDTH={Width}&HEIGHT={Height}&format=image/jpeg&srs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 10957c1db61877041bbfea49c3b7c46e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFalse:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: c6e4046d28fbd954280f0b5524dbd6bc, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &8900708638758999965
 PrefabInstance:
   m_ObjectHideFlags: 0
