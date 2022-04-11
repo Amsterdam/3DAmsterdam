@@ -10,8 +10,6 @@ public class SelectStartLocationState : State
 {
     private BuildingMeshGenerator building;
 
-    //[SerializeField]
-    //private Button nextButton;
     [SerializeField]
     private Text infoText;
 
@@ -20,9 +18,6 @@ public class SelectStartLocationState : State
     [SerializeField]
     private string unselectedText = "selecteer locatie";
 
-    //private bool SnapToWall => T3DInit.HTMLData.SnapToWall;
-
-    //private bool allowSelectPlaceLocation;
     private Vector3 placeLocation;
 
     protected override void Awake()
@@ -41,33 +36,11 @@ public class SelectStartLocationState : State
     {
         CalculatePlaceLocation();
 
-        //var allLayersExceptUI = int.MaxValue ^ LayerMask.NameToLayer("UI");
         if (!Selector.Instance.HoveringInterface() && Input.GetMouseButtonDown(0))
         {
             StepEndedByUser();
         }
-        //ProcessUIState();
     }
-
-    //private void ProcessUIState()
-    //{
-    //    if (LocationIsSelected())
-    //    {
-    //        nextButton.interactable = true;
-    //        infoText.text = selectedText;
-    //    }
-    //    else
-    //    {
-    //        nextButton.interactable = false;
-    //        infoText.text = unselectedText;
-    //    }
-    //}
-
-    //private void SetAllowSelectPlaceLocation(bool allow)
-    //{
-    //allowSelectPlaceLocation = allow;
-    //placeMarker.gameObject.SetActive(allow);
-    //}
 
     private void CalculatePlaceLocation()
     {
