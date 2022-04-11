@@ -1,8 +1,10 @@
 ﻿using Amsterdam3D.Sewerage;
 using ConvertCoordinates;
 using Netherlands3D.BAG;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Netherlands3D
@@ -46,8 +48,62 @@ namespace Netherlands3D
         [Header("External URLs")]
         public string LocationSuggestionUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q={SEARCHTERM}%20and%20Amsterdam%20&rows=5";
         public string LookupUrl = "https://geodata.nationaalgeoregister.nl/locatieserver/v3/lookup?id={ID}";
-        public string T3DSandboxEnvironment = "https://t3dstorage.z6.web.core.windows.net/";
-        public string T3DAzureFunctionURL = "https://t3dbackend.azurewebsites.net/";
+
+        private Regex regex_url = new Regex(@"https:\/\/t3d-.", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private string _T3DSandboxEnvironment = null;
+        public string _T3DAzureFunctionURL = null;
+
+        [HideInInspector]
+        public string T3DSandboxEnvironment
+        {
+            get
+            {
+                if( string.IsNullOrEmpty(_T3DSandboxEnvironment))
+                {
+                    var url = Application.absoluteURL;
+                    //var url = "https://t3d-o-cdn.azureedge.net"; //testurl
+
+                    if (string.IsNullOrEmpty(url)) return "https://t3dstorage.z6.web.core.windows.net/";
+                    if (url.StartsWith("http://localhost")) return "https://t3dstorage.z6.web.core.windows.net/";
+                    if (url.StartsWith("https://t3dstorage.")) return "https://t3dstorage.z6.web.core.windows.net/";
+
+                    MatchCollection matches = regex_url.Matches(url);
+                    if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
+
+                    var urlstart = matches[0].Value;
+                    _T3DSandboxEnvironment = $"{urlstart}-cdn.azureedge.net/";
+                }
+
+                return _T3DSandboxEnvironment;
+            }
+        }
+
+        [HideInInspector]
+        public string T3DAzureFunctionURL
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_T3DAzureFunctionURL))
+                {
+                    var url = Application.absoluteURL;
+                    //var url = "https://t3d-o-cdn.azureedge.net"; //testurl
+
+                    if (string.IsNullOrEmpty(url)) return "https://t3dbackend.azurewebsites.net/";
+                    if (url.StartsWith("http://localhost")) return "https://t3dbackend.azurewebsites.net/";
+                    if (url.StartsWith("https://t3dstorage.")) return "https://t3dbackend.azurewebsites.net/";
+
+                    MatchCollection matches = regex_url.Matches(url);
+                    if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
+
+                    var urlstart = matches[0].Value;
+                    _T3DAzureFunctionURL = $"{urlstart}-functions.azurewebsites.net/";
+                }
+
+                return _T3DAzureFunctionURL;                
+            }
+        }
+
 
         [Header("Sewerage Api URLs")]
         public SewerageApiType sewerageApiType;
