@@ -1223,6 +1223,18 @@ MonoBehaviour:
           m_StringArgument: https://geodata.nationaalgeoregister.nl/kadastralekaart/wms/v4_0?SERVICE=WMS&service=WMS&request=GETMAP&version=1.3.0&LAYERS=KadastraleGrens&WIDTH={Width}&HEIGHT={Height}&format=image/png&crs=EPSG:28992&bbox={Xmin},{Ymin},{Xmax},{Ymax}
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 10957c1db61877041bbfea49c3b7c46e, type: 2}
+        m_TargetAssemblyTypeName: Netherlands3D.Events.TriggerEvent, nl.netherlands3d.core
+        m_MethodName: Invoke
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onFalse:
     m_PersistentCalls:
       m_Calls:
