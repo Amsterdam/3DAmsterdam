@@ -704,12 +704,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   submeshIndex: 0
+  maxSelectDistance: 8000
   selectionVertexColor: {r: 0, g: 1.0870034, b: 2.1185474, a: 1}
-  exclusiveSelectedShader: {fileID: 2100000, guid: 3e01e22160827d743a18b16cdf5aa3f7,
-    type: 2}
-  selectedIDs: []
-  hiddenIDs: []
-  selectedBuildings: {fileID: 11400000, guid: a942c6b143776a34d889a4eb807d4c78, type: 2}
+  clickedOnObject: {fileID: 11400000, guid: c449128a54e1de445b8b7bce6ce3da26, type: 2}
+  selectedIdsOnClick: {fileID: 11400000, guid: a942c6b143776a34d889a4eb807d4c78, type: 2}
+  clickedOnPosition: {fileID: 0}
   onColoringSubobjects: {fileID: 11400000, guid: e9581f81ce16250469ef0e9232e6e385,
     type: 2}
 --- !u!114 &5469510738808986681
