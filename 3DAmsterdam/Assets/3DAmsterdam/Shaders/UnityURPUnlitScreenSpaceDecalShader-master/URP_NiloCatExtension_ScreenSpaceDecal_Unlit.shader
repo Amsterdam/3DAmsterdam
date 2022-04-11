@@ -197,10 +197,10 @@ Shader "Universal Render Pipeline/NiloCat Extension/Screen Space Decal/Unlit"
                     // if orthographic camera, _CameraDepthTexture store scene depth linearly within [0,1]
                     // if platform use reverse depth, make sure to 1-depth also
                     // https://docs.unity3d.com/Manual/SL-PlatformDifferences.html
-                    #if defined(UNITY_REVERSED_Z)
-                    sceneRawDepth = 1-sceneRawDepth;
-                    #endif
-
+                    //#if defined(UNITY_REVERSED_Z)
+                    //sceneRawDepth = 1-sceneRawDepth;
+                    //#endif
+                    
                     // simply lerp(near,far, [0,1] linear depth) to get view space depth                  
                     float sceneDepthVS = lerp(_ProjectionParams.y, _ProjectionParams.z, sceneRawDepth);
 
