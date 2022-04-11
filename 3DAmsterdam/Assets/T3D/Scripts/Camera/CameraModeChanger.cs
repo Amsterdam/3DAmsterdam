@@ -70,13 +70,5 @@ namespace Netherlands3D.T3D
             CurrentCameraControls = ActiveCamera.GetComponent<ICameraControls>();
             CurrentCameraControls.SetNormalizedCameraHeight(GroundLevel);
         }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.T))
-                SetCameraMode(CameraMode.TopDown);
-            if (Input.GetKeyDown(KeyCode.R))
-                SetCameraMode(CameraMode.GodView);
-        }
     }
 }
