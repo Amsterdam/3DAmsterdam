@@ -30,6 +30,13 @@ public class SubmitPermitRequestState : State
         commentsInputField.text = saveData.UserComments;
     }
 
+    public override int GetDesiredStateIndex()
+    {
+        if (T3DInit.HTMLData != null && T3DInit.HTMLData.HasSubmitted)
+            return 1;
+        return 0;
+    }
+
     public override void StateCompletedAction()
     {
         saveData.UserName = nameInputField.text;
