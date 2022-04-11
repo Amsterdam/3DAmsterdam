@@ -6,6 +6,7 @@ using UnityEngine;
 using Netherlands3D.Interface.Layers;
 using Netherlands3D.Utilities;
 using System;
+using Netherlands3D.Cameras;
 
 namespace Netherlands3D.T3D.Uitbouw
 {
@@ -25,6 +26,9 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public List<Vector2[]> Perceel { get; private set; }
         public float Area { get; private set; }
+        public Vector3 Center { get; private set; }
+        public float Radius { get; private set; }
+        public bool IsLoaded { get; private set; } = false;
 
         private void Start()
         {
@@ -36,20 +40,25 @@ namespace Netherlands3D.T3D.Uitbouw
         }
 
         private void BuildingMeshGenerator_BuildingDataProcessed(BuildingMeshGenerator building)
-        {            
+        {
             perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
             perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
 
             terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
+            Center = new Vector3(Center.x, building.GroundLevel, Center.z);
         }
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
-            Perceel = args.Perceel;
-            //RenderPerceelOutline(args.Perceel);           
+            Perceel = args.Perceel;      
             GenerateMeshFromPerceel(args.Perceel);
+            RenderPerceelOutline(args.Perceel);
             SetPerceelActive(false);
             Area = args.Area;
+            var coord = CoordConvert.RDtoUnity(args.Center);
+            Center = new Vector3(coord.x, Center.y, coord.z);
+            Radius = args.Radius;
+            IsLoaded = true;
         }
 
         void GenerateMeshFromPerceel(List<Vector2[]> perceel)
@@ -142,7 +151,7 @@ namespace Netherlands3D.T3D.Uitbouw
         public void SetPerceelActive(bool active)
         {
             perceelMeshGameObject.SetActive(active);
-            perceelOutlineGameObject.SetActive(active);
+            //perceelOutlineGameObject.SetActive(active);
 
             terreinMeshGameObject.SetActive(!active);
         }

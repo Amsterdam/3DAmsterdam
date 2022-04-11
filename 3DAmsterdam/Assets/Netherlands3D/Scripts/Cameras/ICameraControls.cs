@@ -10,6 +10,8 @@ namespace Netherlands3D.Cameras
 {
     public interface ICameraControls
     {
+        public CameraMode Mode { get; }
+
         float GetNormalizedCameraHeight();
 
         float GetCameraHeight();

@@ -33,7 +33,8 @@ namespace Netherlands3D.T3D.Uitbouw
         protected override void Update()
         {
             base.Update();
-            GizmoButtons.AlignWithWorldPosition(GizmoPoint);
+            if (GizmoButtons)
+                GizmoButtons.AlignWithWorldPosition(GizmoPoint);
         }
 
         public void SetDiameter(float d)

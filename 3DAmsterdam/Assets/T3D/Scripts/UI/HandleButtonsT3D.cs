@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class HandleButtonsT3D : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class HandleButtonsT3D : MonoBehaviour
     public Button ButtonMinusHour;
     public Button ButtonAddHour;
     public Button ButtonZoomIn;
-    public Button ButtonZoomOut;    
+    public Button ButtonZoomOut;
     public Button ButtonToggleRotateFirstperson;
 
     public GameObject BuildingsLayer;
@@ -26,8 +26,6 @@ public class HandleButtonsT3D : MonoBehaviour
     public GameObject Zonnepaneel;
 
     public DropUp MaandenDropup;
-
-    public GameObject Step0; //selectWall
 
     //Sun related
     public Text DagText;
@@ -48,14 +46,12 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void Start()
     {
-        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
-
         ButtonOmgeving.onClick.AddListener(ToggleBuildings);
         ButtonZon.onClick.AddListener(ToggleZonnepaneel);
         ButtonMinusHour.onClick.AddListener(MinusHour);
         ButtonAddHour.onClick.AddListener(AddHour);
         ButtonZoomIn.onClick.AddListener(ZoomIn);
-        ButtonZoomOut.onClick.AddListener(ZoomOut);       
+        ButtonZoomOut.onClick.AddListener(ZoomOut);
         ButtonToggleRotateFirstperson.onClick.AddListener(ToggleRotateFirstperson);
 
         //Cursor.SetCursor(RotateIcon, Vector2.zero, CursorMode.Auto);
@@ -69,11 +65,6 @@ public class HandleButtonsT3D : MonoBehaviour
         UpdateTijd();
 
         MaandenDropup.SetItems(months, dateTimeNow.Month - 1, SetMonth);
-    }
-
-    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
-    {        
-        Step0.SetActive(true);     
     }
 
     void SetMonth(int month)
@@ -118,20 +109,27 @@ public class HandleButtonsT3D : MonoBehaviour
 
     void ZoomIn()
     {
-        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
+            CameraModeChanger.Instance.ActiveCamera.orthographicSize -= 5;
+        else
+            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position + (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
 
     void ZoomOut()
     {
-        CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
+        if (CameraModeChanger.Instance.CurrentMode == CameraMode.TopDown)
+            CameraModeChanger.Instance.ActiveCamera.orthographicSize += 5;
+        else
+            CameraModeChanger.Instance.ActiveCamera.transform.position = CameraModeChanger.Instance.ActiveCamera.transform.position - (Time.deltaTime * CameraModeChanger.Instance.ActiveCamera.transform.forward * zoomSpeed);
     }
- 
+
     void ToggleRotateFirstperson()
     {
-        var isfirstperson = RotateCamera.Instance.ToggleRotateFirstPersonMode();
+        var newMode = CameraModeChanger.Instance.CurrentMode == CameraMode.GodView ? CameraMode.StreetView : CameraMode.GodView;
+        CameraModeChanger.Instance.SetCameraMode(newMode);
         var tooltiptrigger = ButtonToggleRotateFirstperson.GetComponent<TooltipTrigger>();
 
-        tooltiptrigger.TooltipText = isfirstperson ? "Roteren" : "Lopen";
+        tooltiptrigger.TooltipText = newMode == CameraMode.StreetView ? "Roteren" : "Lopen";
     }
 
     private void UpdateTijd()

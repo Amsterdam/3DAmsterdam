@@ -5,45 +5,41 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using ConvertCoordinates;
+using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
+
+    public delegate void FocusPointChanged(Vector3 pointerPosition);
+
+    public static FocusPointChanged focusingOnTargetPoint;
+
+    //public CameraModeT3D CameraMode { get; private set; }
+
     private float cameraHeightAboveGroundLevel = 15f;
-    private Camera mycam;
-    public float MinCameraHeight = 4;
-    public float RotationSpeed = 0.5f;
-    public float ZoomSpeed = 0.01f;
-    public float spinSpeed = 60;
-    public float moveSpeed = 5f;
-    public float firstPersonHeight = 2f;
-    public float firstPersonCameraDistance = 5f;
-    public float MaxCameraDistance = 200;
-    public float MaxFirstPersonDistance = 40;
-
+    private Camera myCam;
     [SerializeField]
-    private bool dragging = false;
+    private float minCameraHeight = 4;
+    [SerializeField]
+    private float rotationSpeed = 0.5f;
+    [SerializeField]
+    private float zoomSpeed = 0.01f;
+    [SerializeField]
+    private float spinSpeed = 60;
+    [SerializeField]
+    private float maxCameraDistance = 200;
+    [SerializeField]
+    private float startDistanceFromCenter = 15f;
 
+    private bool dragging = false;
     private float scrollDelta;
 
     private IAction dragActionMouse;
     private IAction zoomScrollActionMouse;
 
-    List<InputActionMap> availableActionMaps;
-
-    Vector3 lastRotatePosition;
-    Quaternion lastRotateRotation;
-
-    Vector2RD PerceelCenter;
-    Vector2RD BuildingCenter;
-    float BuildingRadius;
-
     [SerializeField]
     private float autoOrientRotateSpeed = 10f;
-
-    float groundLevel;
-
-    public static RotateCamera Instance;
-    bool isFirstPersonMode = false;
+    public CameraMode Mode => CameraMode.GodView;
 
     public static Vector3 CameraTargetPoint
     {
@@ -61,133 +57,55 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
     }
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     void Start()
     {
-        MetadataLoader.Instance.PerceelDataLoaded += OnPerceelDataLoaded;
-        BuildingMeshGenerator.Instance.BuildingDataProcessed += OnBuildingDataProcessed;
-        MetadataLoader.Instance.BuildingOutlineLoaded += OnBuildingOutlineLoaded;
-
-        mycam = CameraModeChanger.Instance.ActiveCamera;
-
-        availableActionMaps = new List<InputActionMap>()
-        {
-            ActionHandler.actions.GodViewMouse,
-            ActionHandler.actions.GodViewKeyboard
-        };
+        myCam = GetComponent<Camera>();
 
         AddActionListeners();
+        RestrictionChecker.ActiveBuilding.BuildingDataProcessed += Instance_BuildingDataProcessed;
     }
 
-    private void OnBuildingOutlineLoaded(object source, BuildingOutlineEventArgs args)
+    private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
     {
-        BuildingCenter = args.Center;
-        BuildingRadius = args.Radius;
-    }
-
-    private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
-    {
-        PerceelCenter = args.Center;
+        SetCameraStartPosition(building.GroundLevel);
     }
 
     private void Update()
     {
-        var mouseDelta = Mouse.current.delta.ReadValue();
-        if (!isFirstPersonMode && !dragging && !Input.GetMouseButton(0))
+        if (StateSaver.Instance.ActiveStateIndex > 2)
         {
-            Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - mycam.transform.position).normalized, Vector3.up);
-            mycam.transform.rotation = Quaternion.Slerp(mycam.transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
-            //mycam.transform.LookAt(CameraTargetPoint, Vector3.up);
+            SmoothRotateToCameraTargetPoint();
+        }
+    }
+
+    public void SetCameraStartPosition(float groundLevel)
+    {
+        var dir = (RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter).normalized;
+        dir.y = 0;
+        transform.position = CameraTargetPoint + dir * startDistanceFromCenter;
+        SetNormalizedCameraHeight(groundLevel);
+        transform.LookAt(CameraTargetPoint);
+    }
+
+    private void SmoothRotateToCameraTargetPoint()
+    {
+        var mouseDelta = Mouse.current.delta.ReadValue();
+        if (!dragging && !Input.GetMouseButton(0))
+        {
+            Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - transform.position).normalized, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
         }
 
-        if (dragging && Input.GetMouseButton(0) && isFirstPersonMode == false)
+        if (dragging && Input.GetMouseButton(0))
         {
             RotateAround(mouseDelta.x, mouseDelta.y);
         }
-        else if (isFirstPersonMode)
-        {
-            if (dragging && Input.GetMouseButton(0))
-            {
-                mycam.transform.RotateAround(mycam.transform.position, mycam.transform.right, -mouseDelta.y * RotationSpeed);
-                mycam.transform.RotateAround(mycam.transform.position, Vector3.up, mouseDelta.x * RotationSpeed);
-            }
-            HandleFirstPersonKeyboard();
-        }
-    }
-
-    private void OnBuildingDataProcessed(BuildingMeshGenerator building)
-    {
-        groundLevel = building.GroundLevel;
-        mycam.transform.position = new Vector3(mycam.transform.position.x, groundLevel + cameraHeightAboveGroundLevel, mycam.transform.position.z);
-    }
-
-    public bool ToggleRotateFirstPersonMode()
-    {
-        isFirstPersonMode = !isFirstPersonMode;
-
-        if (isFirstPersonMode)
-        {
-            lastRotatePosition = mycam.transform.position;
-            lastRotateRotation = mycam.transform.rotation;
-
-            var perceelCenter = CoordConvert.RDtoUnity(PerceelCenter);
-            var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
-            var cameraoffset = (perceelCenter - buildingCenter).normalized * (BuildingRadius + firstPersonCameraDistance);
-
-            mycam.transform.position = new Vector3(buildingCenter.x + cameraoffset.x, groundLevel + firstPersonHeight, buildingCenter.z + cameraoffset.z);
-            mycam.transform.LookAt(CameraTargetPoint);
-
-            //currentRotation = new Vector2(mycam.transform.rotation.eulerAngles.y, mycam.transform.rotation.eulerAngles.x);
-        }
-        else
-        {
-            mycam.transform.position = lastRotatePosition;
-            mycam.transform.rotation = lastRotateRotation;
-        }
-
-        return isFirstPersonMode;
-    }
-
-
-    private void HandleFirstPersonKeyboard()
-    {
-        var buildingCenter = CoordConvert.RDtoUnity(BuildingCenter);
-
-        Vector3? newpos = null;
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            newpos = mycam.transform.position - mycam.transform.right * moveSpeed / 5 * Time.deltaTime;
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            newpos = mycam.transform.position + mycam.transform.right * moveSpeed / 5 * Time.deltaTime;
-        }
-
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            newpos = mycam.transform.position + mycam.transform.forward * moveSpeed * Time.deltaTime;
-        }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            newpos = mycam.transform.position - mycam.transform.forward * moveSpeed * Time.deltaTime;
-        }
-
-        if (newpos == null || Vector3.Distance(newpos.Value, buildingCenter) > MaxFirstPersonDistance) return;
-
-        newpos = new Vector3(newpos.Value.x, groundLevel + firstPersonHeight, newpos.Value.z);
-        mycam.transform.position = newpos.Value;
     }
 
     private void AddActionListeners()
     {
         //Mouse actions
         dragActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Drag);
-
         zoomScrollActionMouse = ActionHandler.instance.GetAction(ActionHandler.actions.GodViewMouse.Zoom);
 
         //Listeners
@@ -215,70 +133,80 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
         if (scrollDelta != 0)
         {
-            var lastY = mycam.transform.position.y;
-            var moveSpeed = Mathf.Sqrt(mycam.transform.position.y) * 1.3f;
+            //var lastY = myCam.transform.position.y;
+            var moveSpeed = Mathf.Sqrt(transform.position.y) * 1.3f;
 
-            var newpos = mycam.transform.position + mycam.transform.forward.normalized * (scrollDelta * moveSpeed * ZoomSpeed);
+            var newpos = transform.position + transform.forward.normalized * (scrollDelta * moveSpeed * zoomSpeed);
 
-            if (isFirstPersonMode)
-            {
-                if (Vector3.Distance(newpos, CoordConvert.RDtoUnity(BuildingCenter)) > MaxFirstPersonDistance) return;
-                newpos.y = lastY;
-            }
-            else if (newpos.y < MinCameraHeight) return;
+            if (newpos.y < minCameraHeight) return;
             else if (CameraInRange(newpos) == false) return;
 
-            mycam.transform.position = newpos;
+            transform.position = newpos;
         }
     }
 
     void RotateAround(float xaxis, float yaxis)
     {
-        mycam.transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * RotationSpeed);
+        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
     }
 
     bool CameraInRange(Vector3 newCameraPosition)
     {
-        return Vector3.Distance(CameraTargetPoint, newCameraPosition) < MaxCameraDistance;
+        return Vector3.Distance(CameraTargetPoint, newCameraPosition) < maxCameraDistance;
     }
 
+    // Interface methods
     public float GetNormalizedCameraHeight()
     {
-        return 0;
+        return cameraHeightAboveGroundLevel;
     }
 
     public float GetCameraHeight()
     {
-        return 0;
+        return transform.position.y;
     }
 
     public void SetNormalizedCameraHeight(float height)
     {
-
+        transform.position = new Vector3(transform.position.x, height + cameraHeightAboveGroundLevel, transform.position.z);
     }
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)
     {
-
     }
 
     public Vector3 GetPointerPositionInWorld(Vector3 optionalPositionOverride = default)
     {
-        return Vector3.zero;
+        return myCam.ScreenToWorldPoint(Input.mousePosition); //todo
     }
 
     public void EnableKeyboardActionMap(bool enabled)
     {
-
+        if (enabled && !ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewKeyboard.enabled)
+        {
+            ActionHandler.actions.GodViewKeyboard.Disable();
+        }
     }
 
     public void EnableMouseActionMap(bool enabled)
     {
-
+        //Wordt aangeroepen vanuit Selector.cs functie EnableCameraActionMaps
+        if (enabled && !ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Enable();
+        }
+        else if (!enabled && ActionHandler.actions.GodViewMouse.enabled)
+        {
+            ActionHandler.actions.GodViewMouse.Disable();
+        }
     }
 
     public bool UsesActionMap(InputActionMap actionMap)
     {
-        return availableActionMaps.Contains(actionMap);
+        return CameraModeChanger.Instance.AvailableActionMaps.Contains(actionMap);
     }
 }

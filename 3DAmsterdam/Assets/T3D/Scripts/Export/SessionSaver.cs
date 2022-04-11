@@ -34,7 +34,9 @@ public static class SessionSaver
         //SessionId = "feacd4b0-9bb8-11ec-89dd-6536bf8ad53b";
         //}
         //SessionId = "17b6cfc0-a531-11ec-b88b-cff3a4fba0f3";
-        SessionId = "7e184780-a9c3-11ec-ac3e-5b3e00f4b66e";
+        //SessionId = "7e184780-a9c3-11ec-ac3e-5b3e00f4b66e";
+        //SessionId = "d114e8f0-aea8-11ec-b7c3-51a5ce73359d";
+        SessionId = "7faac8c0-b1a2-11ec-bcb7-d94c343c6200"; //snap
 #else
         SessionId = Application.absoluteURL.GetUrlParamValue("sessionId");
 #endif

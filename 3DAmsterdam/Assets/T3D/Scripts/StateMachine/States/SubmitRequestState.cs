@@ -23,7 +23,8 @@ public class SubmitRequestState : State
     public override void StateEnteredAction()
     {
         ShowSuccessMessage(false);
-        StartCoroutine(SaveDataWhenCurrentSaveCompletes());
+        if (!T3DInit.HTMLData.HasSubmitted)
+            StartCoroutine(SaveDataWhenCurrentSaveCompletes());
     }
 
     private IEnumerator SaveDataWhenCurrentSaveCompletes()
@@ -34,7 +35,7 @@ public class SubmitRequestState : State
 
         CultureInfo culture = new CultureInfo("nl-NL", false);
         var formattedDate = DateTime.Now.ToString("dd MMMM yyyy", culture);
-        T3DInit.HTMLData.Date= formattedDate;
+        T3DInit.HTMLData.Date = formattedDate;
 
         SessionSaver.ExportSavedData(); // export new save data
         SessionSaver.Saver.SavingCompleted += Saver_SavingCompleted;
@@ -42,17 +43,18 @@ public class SubmitRequestState : State
 
     private void Saver_SavingCompleted(bool saveSucceeded)
     {
+        SessionSaver.Saver.SavingCompleted -= Saver_SavingCompleted;
         if (saveSucceeded)
         {
             ShowSuccessMessage(true);
+            EndState();
         }
-        SessionSaver.Saver.SavingCompleted -= Saver_SavingCompleted;
     }
 
     private void ShowSuccessMessage(bool show)
     {
         inProgressPanel.SetActive(!show);
         successPanel.SetActive(show);
-        successText.text = string.Format(defaultSucessString, "<color=\"blue\">" + SubmitPermitRequestState.UserMail+"</color>");
+        successText.text = string.Format(defaultSucessString, "<color=\"blue\">" + SubmitPermitRequestState.UserMail + "</color>");
     }
 }

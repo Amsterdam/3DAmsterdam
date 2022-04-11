@@ -50,6 +50,10 @@ namespace Netherlands3D.Cameras
             ActiveCamera = currentCamera.GetComponent<Camera>();
             Instance = this;
         }
+        private void Start()
+        {
+            
+        }
 
         public void FirstPersonMode(Vector3 position, Quaternion rotation)
         {
@@ -126,6 +130,7 @@ namespace Netherlands3D.Cameras
     {
         GodView,
         StreetView,
-        VR
+        VR,
+        TopDown
     }
 }

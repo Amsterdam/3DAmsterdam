@@ -26,7 +26,7 @@ namespace Netherlands3D.T3D.Uitbouw
             AllowDrag = AllowDrag && T3DInit.Instance.IsEditMode;
 
             SetAllowMovement(AllowDrag);
-            SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
+            //SnapToWall(uitbouw.ActiveBuilding.SelectedWall); //position uitbouw outside of house if it spawns inside
         }
 
         //private void SetArrowPositions()
@@ -47,6 +47,10 @@ namespace Netherlands3D.T3D.Uitbouw
             {
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
                 LimitPositionOnWall();
+            }
+            else
+            {
+                LimitPositionWithinPerceelRadius(RestrictionChecker.ActivePerceel);
             }
 
             SnapToGround(uitbouw.ActiveBuilding);
@@ -98,6 +102,22 @@ namespace Netherlands3D.T3D.Uitbouw
             if (Vector3.Distance(projectedPosition, projectedCenter) > maxOffset)
             {
                 ClipDistance(maxOffset);
+            }
+        }
+
+        private void LimitPositionWithinPerceelRadius(PerceelRenderer perceel)
+        {
+            var perceelRadius = perceel.Radius;
+            var perceelCenter = new Vector2(perceel.Center.x, perceel.Center.z);
+            var position2D = new Vector2(transform.position.x, transform.position.z);
+            var dist = Vector2.Distance(position2D, perceelCenter);
+
+            if (dist > perceelRadius)
+            {
+                var fromOriginToObject = position2D - perceelCenter;
+                fromOriginToObject *= perceelRadius / dist;
+                var newPos = perceelCenter + fromOriginToObject;
+                transform.position = new Vector3(newPos.x, transform.position.y, newPos.y);
             }
         }
 

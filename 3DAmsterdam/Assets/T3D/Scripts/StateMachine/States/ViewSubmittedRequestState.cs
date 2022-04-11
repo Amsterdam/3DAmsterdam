@@ -17,6 +17,7 @@ public class ViewSubmittedRequestState : State
     [SerializeField]
     private Text titleText;
 
+    [SerializeField]
     private ScrollRect scrollRect;
     private float defaultScrollElasticity;
 
@@ -27,7 +28,7 @@ public class ViewSubmittedRequestState : State
         defaultDateText = dateText.text;
         defaultProjectIDText = projectIDText.text;
 
-        scrollRect = GetComponent<ScrollRect>();
+        //scrollRect = GetComponent<ScrollRect>();
         defaultScrollElasticity = scrollRect.elasticity;
     }
 
@@ -71,5 +72,8 @@ public class ViewSubmittedRequestState : State
         {
             scrollRect.elasticity = 0;
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+            T3DInit.HTMLData.HasSubmitted = false;
     }
 }
