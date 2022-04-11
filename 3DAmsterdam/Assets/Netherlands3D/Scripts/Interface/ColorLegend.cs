@@ -149,6 +149,13 @@ namespace Netherlands3D.Interface {
 			{
 				Destroy(child.gameObject);
 			}
+
+			//Make sure scrollview is reset to up
+			var scrollView = container.GetComponent<ScrollRect>();
+			if(scrollView)
+			{
+				scrollView.verticalNormalizedPosition = 1;
+			}
 		}
 	}
 }
