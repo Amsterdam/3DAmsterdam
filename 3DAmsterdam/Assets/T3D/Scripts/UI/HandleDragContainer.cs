@@ -64,10 +64,11 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             if (casted)
             {
+                print("hit");
                 var wall = hit.transform.GetComponent<UitbouwMuur>();
                 if (wall)
                 {
-                    bool allowed = (isTopComponent && wall.Side == WallSide.Top) || (!isTopComponent && (wall.Side == WallSide.Left || wall.Side == WallSide.Right || wall.Side == WallSide.Front));
+                    bool allowed = (isTopComponent && wall.Side == WallSide.Top) || (!isTopComponent && (wall.Side == WallSide.Left || wall.Side == WallSide.Right || wall.Side == WallSide.Front || wall.Side == WallSide.Back));
 
                     if (allowed)
                     {
