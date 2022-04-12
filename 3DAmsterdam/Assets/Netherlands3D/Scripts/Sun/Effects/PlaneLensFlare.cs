@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using UnityEngine;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class PlaneLensFlare : MonoBehaviour
 {

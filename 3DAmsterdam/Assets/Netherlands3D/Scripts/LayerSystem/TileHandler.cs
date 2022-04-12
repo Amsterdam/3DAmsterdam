@@ -86,22 +86,21 @@ namespace Netherlands3D.LayerSystem
 
 		public static int runningTileDataRequests = 0;
 
-		public void OnCameraChanged()
-		{
-			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
-		}
-
 		void Start()
 		{
 			pauseLoading = false;
 			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
-			CameraModeChanger.Instance.OnFirstPersonModeEvent += OnCameraChanged;
-			CameraModeChanger.Instance.OnGodViewModeEvent += OnCameraChanged;
+            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
 
 			CacheCameraFrustum();
 		}
 
-		private void CacheCameraFrustum()
+        private void Instance_CameraModeChangedEvent(object source, CameraMode newMode)
+        {
+			cameraExtents = CameraModeChanger.Instance.CurrentCameraExtends;
+		}
+
+        private void CacheCameraFrustum()
 		{
 			tileBounds = new Bounds();
 			cameraFrustumPlanes = new Plane[6]
@@ -275,7 +274,7 @@ namespace Netherlands3D.LayerSystem
 		private void GetTileDistancesInView(List<int> tileSizes, Vector4 viewRange, Vector3Int cameraPosition)
 		{
 			//Godview only frustum check
-			if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+			if (filterByCameraFrustum && CameraModeChanger.Instance.CurrentMode == CameraMode.GodView)
 			{
 				GeometryUtility.CalculateFrustumPlanes(CameraModeChanger.Instance.ActiveCamera, cameraFrustumPlanes);
 			}
@@ -294,7 +293,7 @@ namespace Netherlands3D.LayerSystem
 					for (int y = startY; y <= endY; y += tileSize)
 					{
 						Vector3Int tileID = new Vector3Int(x, y, tileSize);
-						if (filterByCameraFrustum && CameraModeChanger.Instance.CameraMode == CameraMode.GodView)
+						if (filterByCameraFrustum && CameraModeChanger.Instance.CurrentMode == CameraMode.GodView)
 						{
 							tileBounds.SetMinMax(CoordConvert.RDtoUnity(new Vector2(x, y)), CoordConvert.RDtoUnity(new Vector2(x + tileSize, y + tileSize)));
 							if (GeometryUtility.TestPlanesAABB(cameraFrustumPlanes, tileBounds))

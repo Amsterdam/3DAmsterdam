@@ -33,8 +33,7 @@ namespace Netherlands3D.Interface
 				gridSelection.gameObject.SetActive(false);
 
 			cameraModeChanger = CameraModeChanger.Instance;
-			cameraModeChanger.OnGodViewModeEvent += EnableObject;
-			cameraModeChanger.OnFirstPersonModeEvent += DisableObject;
+            cameraModeChanger.CameraModeChangedEvent += CameraModeChanger_CameraModeChangedEvent;
 
 			if (waitingForClick)
 			{
@@ -43,7 +42,15 @@ namespace Netherlands3D.Interface
 			}
 		}
 
-		protected override void Placed()
+        private void CameraModeChanger_CameraModeChangedEvent(object source, CameraMode newMode)
+        {
+			if (newMode == CameraMode.GodView || newMode == CameraMode.TopDown)
+				EnableObject();
+			if (newMode == CameraMode.StreetView)
+				DisableObject();
+        }
+
+        protected override void Placed()
 		{
 			base.Placed();
 			placedAnimator.enabled = true;
@@ -65,15 +72,15 @@ namespace Netherlands3D.Interface
 		{
 			if (waitingForClick) return;
 
-			cameraModeChanger.FirstPersonMode(WorldPointerFollower.WorldPosition, savedRotation);
+			//cameraModeChanger.FirstPersonMode(WorldPointerFollower.WorldPosition, savedRotation);
+			cameraModeChanger.SetCameraMode(CameraMode.StreetView);
 			gameObject.SetActive(false);
 		}
 
 		private void OnDestroy()
 		{ 
 			if(cameraModeChanger){
-				cameraModeChanger.OnGodViewModeEvent -= EnableObject;
-				cameraModeChanger.OnFirstPersonModeEvent -= DisableObject;
+				cameraModeChanger.CameraModeChangedEvent -= CameraModeChanger_CameraModeChangedEvent;
 			}
 		}
 	}

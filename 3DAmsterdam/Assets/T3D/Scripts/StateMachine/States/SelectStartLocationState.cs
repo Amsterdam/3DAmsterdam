@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Netherlands3D.Cameras;
 using Netherlands3D.Interface;
 using Netherlands3D.T3D;
 using Netherlands3D.T3D.Uitbouw;
@@ -66,7 +67,7 @@ public class SelectStartLocationState : State
 
     public override void StateEnteredAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.TopDown);
+        CameraModeChanger.Instance.SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
         if (RestrictionChecker.ActiveUitbouw)

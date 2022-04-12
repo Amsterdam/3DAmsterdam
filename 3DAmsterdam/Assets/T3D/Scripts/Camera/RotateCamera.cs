@@ -5,7 +5,6 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using ConvertCoordinates;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
@@ -47,12 +46,15 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         {
             if (RestrictionChecker.ActiveUitbouw)
             {
+                print("using uitbouw center");
                 return RestrictionChecker.ActiveUitbouw.CenterPoint;
             }
             else if (RestrictionChecker.ActiveBuilding)
             {
+                print("using building center");
                 return RestrictionChecker.ActiveBuilding.BuildingCenter;
             }
+            print("no target point found using Vector3.zero");
             return Vector3.zero;
         }
     }
@@ -72,9 +74,16 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void Update()
     {
-        if (StateSaver.Instance.ActiveStateIndex > 2)
+        ProcessUserInput();
+        SmoothRotateToCameraTargetPoint();
+    }
+
+    private void ProcessUserInput()
+    {
+        if (dragging && Input.GetMouseButton(0))
         {
-            SmoothRotateToCameraTargetPoint();
+            var mouseDelta = Mouse.current.delta.ReadValue();
+            RotateAround(mouseDelta.x, mouseDelta.y);
         }
     }
 
@@ -89,16 +98,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     private void SmoothRotateToCameraTargetPoint()
     {
-        var mouseDelta = Mouse.current.delta.ReadValue();
         if (!dragging && !Input.GetMouseButton(0))
         {
             Quaternion targetRotation = Quaternion.LookRotation((CameraTargetPoint - transform.position).normalized, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientRotateSpeed);
-        }
-
-        if (dragging && Input.GetMouseButton(0))
-        {
-            RotateAround(mouseDelta.x, mouseDelta.y);
         }
     }
 

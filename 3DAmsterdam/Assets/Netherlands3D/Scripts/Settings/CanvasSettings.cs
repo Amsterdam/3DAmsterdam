@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Netherlands3D.Cameras;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 namespace Netherlands3D.Interface
 {
@@ -30,13 +29,16 @@ namespace Netherlands3D.Interface
 
         void Start()
         {
-            //CameraModeChanger.Instance.OnFirstPersonModeEvent += DisableMainCanvasItems;
+            CameraModeChanger.Instance.CameraModeChangedEvent += DisableMainCanvasItems;
         }
 
-        void DisableMainCanvasItems()
+        private void DisableMainCanvasItems(object source, CameraMode newMode)
         {
-            interfaceLayers.SetActive(false);
-            mainMenu.SetActive(false);
+            if (newMode == CameraMode.StreetView)
+            {
+                interfaceLayers.SetActive(false);
+                mainMenu.SetActive(false);
+            }
         }
 
         [ContextMenu("Clear the stored Canvas settings PlayerPrefs")]

@@ -7,8 +7,6 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
-
 namespace Netherlands3D.Rendering
 {
     public class RenderSettings : MonoBehaviour
