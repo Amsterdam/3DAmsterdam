@@ -62,11 +62,11 @@ namespace Netherlands3D
                 if( string.IsNullOrEmpty(_T3DSandboxEnvironment))
                 {
                     var url = Application.absoluteURL;
-                    //var url = "https://t3d-o-cdn.azureedge.net"; //testurl
+                    var defaultURL = "https://t3d-o-cdn.azureedge.net/"; //testurl
 
-                    if (string.IsNullOrEmpty(url)) return "https://t3dstorage.z6.web.core.windows.net/";
-                    if (url.StartsWith("http://localhost")) return "https://t3dstorage.z6.web.core.windows.net/";
-                    if (url.StartsWith("https://t3dstorage.")) return "https://t3dstorage.z6.web.core.windows.net/";
+                    if (string.IsNullOrEmpty(url)) return defaultURL;
+                    if (url.StartsWith("http://localhost")) return defaultURL;
+                    if (url.StartsWith("https://t3dstorage.")) return defaultURL;
 
                     MatchCollection matches = regex_url.Matches(url);
                     if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
@@ -87,11 +87,11 @@ namespace Netherlands3D
                 if (string.IsNullOrEmpty(_T3DAzureFunctionURL))
                 {
                     var url = Application.absoluteURL;
-                    //var url = "https://t3d-o-cdn.azureedge.net"; //testurl
+                    var defaultURL = "https://t3d-o-functions.azurewebsites.net/"; //testurl
 
-                    if (string.IsNullOrEmpty(url)) return "https://t3dbackend.azurewebsites.net/";
-                    if (url.StartsWith("http://localhost")) return "https://t3dbackend.azurewebsites.net/";
-                    if (url.StartsWith("https://t3dstorage.")) return "https://t3dbackend.azurewebsites.net/";
+                    if (string.IsNullOrEmpty(url)) return defaultURL;
+                    if (url.StartsWith("http://localhost")) return defaultURL;
+                    if (url.StartsWith("https://t3dstorage.")) return defaultURL;
 
                     MatchCollection matches = regex_url.Matches(url);
                     if (matches.Count == 0) throw new Exception("Kan omgeving niet detecteren");
