@@ -46,15 +46,13 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         {
             if (RestrictionChecker.ActiveUitbouw)
             {
-                print("using uitbouw center");
                 return RestrictionChecker.ActiveUitbouw.CenterPoint;
             }
             else if (RestrictionChecker.ActiveBuilding)
             {
-                print("using building center");
                 return RestrictionChecker.ActiveBuilding.BuildingCenter;
             }
-            print("no target point found using Vector3.zero");
+            print("no camera target point found using Vector3.zero");
             return Vector3.zero;
         }
     }

@@ -64,7 +64,6 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             if (casted)
             {
-                print("hit");
                 var wall = hit.transform.GetComponent<UitbouwMuur>();
                 if (wall)
                 {
