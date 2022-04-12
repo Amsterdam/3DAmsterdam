@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 namespace Netherlands3D.Interface
 {

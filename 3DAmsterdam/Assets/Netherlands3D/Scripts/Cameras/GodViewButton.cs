@@ -10,10 +10,21 @@ namespace Netherlands3D.Cameras
     {
         void Start()
         {
-            CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
-            CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
+            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
+
+            //CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
+            //CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
             gameObject.SetActive(false);
         }
+
+        private void Instance_CameraModeChangedEvent(object source, CameraMode newMode)
+        {
+            if (newMode == CameraMode.StreetView)
+                EnableObject();
+            else if(newMode == CameraMode.GodView || newMode == CameraMode.TopDown)
+                DisableObject();
+        }
+
         public void EnableObject()
         {
             gameObject.SetActive(true);

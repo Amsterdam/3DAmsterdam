@@ -14,9 +14,16 @@ namespace Netherlands3D.Interface
         void Start()
         {
             //todo, make these event handlers all a seperate monobehaviour
-            CameraModeChanger.Instance.OnFirstPersonModeEvent += EnableObject;
-            CameraModeChanger.Instance.OnGodViewModeEvent += DisableObject;
+            CameraModeChanger.Instance.CameraModeChangedEvent += Instance_CameraModeChangedEvent;
             gameObject.SetActive(false);
+        }
+
+        private void Instance_CameraModeChangedEvent(object source, CameraMode newMode)
+        {
+            if (newMode == CameraMode.GodView || newMode == CameraMode.TopDown)
+                DisableObject();
+            else if (newMode == CameraMode.StreetView)
+                DisableObject();
         }
 
         public void EnableObject()

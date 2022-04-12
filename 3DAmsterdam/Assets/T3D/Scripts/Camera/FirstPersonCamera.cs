@@ -6,7 +6,6 @@ using Netherlands3D.InputHandler;
 using Netherlands3D.T3D.Uitbouw;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class FirstPersonCamera : MonoBehaviour, ICameraControls
 {

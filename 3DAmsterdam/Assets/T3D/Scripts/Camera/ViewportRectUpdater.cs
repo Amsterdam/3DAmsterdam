@@ -1,6 +1,6 @@
+using Netherlands3D.Cameras;
 using UnityEngine;
 using UnityEngine.UI;
-using CameraModeChanger = Netherlands3D.T3D.CameraModeChanger;
 
 public class ViewportRectUpdater : MonoBehaviour
 {
