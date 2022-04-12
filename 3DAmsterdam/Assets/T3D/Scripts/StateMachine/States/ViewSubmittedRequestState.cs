@@ -23,7 +23,7 @@ public class ViewSubmittedRequestState : State
 
     protected override void Awake()
     {
-        base.Awake();      
+        base.Awake();
 
         defaultDateText = dateText.text;
         defaultProjectIDText = projectIDText.text;
@@ -73,7 +73,12 @@ public class ViewSubmittedRequestState : State
             scrollRect.elasticity = 0;
         }
 
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q))
+        {
+            print("setting submitted to false");
             T3DInit.HTMLData.HasSubmitted = false;
+        }
+#endif
     }
 }
