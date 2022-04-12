@@ -27,12 +27,22 @@ public class StartState : State
     public override void StateEnteredAction()
     {
         if (RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed)
-            EndState();
+        {
+            GoToNextState();
+        }
     }
 
     private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
     {
-        EndState();
+        GoToNextState();
+    }
+
+    private void GoToNextState()
+    {
+        if (StateSaver.Instance.ActiveStateIndex > 0)
+            EndState();
+        else
+            StepEndedByUser(); //use By User function to ensure state Index in incremented;
     }
 
     //public override void StateEnteredAction()
