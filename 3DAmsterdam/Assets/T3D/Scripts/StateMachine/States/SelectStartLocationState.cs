@@ -31,10 +31,14 @@ public class SelectStartLocationState : State
         building = RestrictionChecker.ActiveBuilding;
     }
 
-    public override void StateLoadedAction()
+    protected override void Start()
     {
-        MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
-        RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
+        if (!RestrictionChecker.ActiveUitbouw)
+        {
+            MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
+            RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
+        }
+        base.Start(); // load uitbouw before processing base Start function
     }
 
     private void Update()
