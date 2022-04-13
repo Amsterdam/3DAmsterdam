@@ -31,9 +31,8 @@ public class SelectStartLocationState : State
         building = RestrictionChecker.ActiveBuilding;
     }
 
-    protected override void Start()
+    public override void StateLoadedAction()
     {
-        base.Start();
         MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
         RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
     }
@@ -98,24 +97,8 @@ public class SelectStartLocationState : State
         CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
         building.transform.position -= Vector3.up * 0.001f; //reset position 
         building.SelectedWall.AllowSelection = false;
-        CreateOrEnableUitbouw(placeLocation);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true);
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
         Destroy(instructionsTag.gameObject);
-    }
-
-    private void CreateOrEnableUitbouw(Vector3 location)
-    {
-        if (RestrictionChecker.ActiveUitbouw)
-        {
-            //re-enable uitbouw that was previously placed
-            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); //disable rotation
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
-            RestrictionChecker.ActiveUitbouw.transform.position = location;
-        }
-        else
-        {
-            //create uitbouw since there was no uitbouw previously placed
-            MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
-        }
     }
 }
