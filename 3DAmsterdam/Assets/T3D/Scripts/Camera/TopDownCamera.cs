@@ -11,7 +11,7 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 {
     private Camera myCam;
     [SerializeField]
-    private float cameraHeightAboveGroundLevel = 50f;
+    private float cameraHeight = 10000f;
     public CameraMode Mode => CameraMode.TopDown;
 
     private void Awake()
@@ -29,12 +29,11 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 
     public void SetCameraStartPosition(Vector3 perceelCenter, float perceelRadius)
     {
-        cameraHeightAboveGroundLevel = RestrictionChecker.ActiveBuilding.HeightLevel;//perceelRadius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-        transform.position = new Vector3(perceelCenter.x, CameraModeChanger.Instance.GroundLevel + cameraHeightAboveGroundLevel, perceelCenter.z);
+        cameraHeight = RestrictionChecker.ActiveBuilding.HeightLevel + 1; // add 1 to ensure no clipping occurs due to being exactly at height level
+        //perceelRadius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        transform.position = new Vector3(perceelCenter.x, cameraHeight, perceelCenter.z);
         myCam.orthographicSize = perceelRadius;
-
-        var test = new GameObject();
-        test.transform.position = RestrictionChecker.ActivePerceel.Center;
+        print("set size: " + myCam.orthographicSize);
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
@@ -45,17 +44,18 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
 
     public float GetNormalizedCameraHeight()
     {
-        return cameraHeightAboveGroundLevel;
+        return cameraHeight - RestrictionChecker.ActiveBuilding.GroundLevel;
     }
 
     public float GetCameraHeight()
     {
-        return transform.position.y;
+        return cameraHeight;
     }
 
     public void SetNormalizedCameraHeight(float height)
     {
-        transform.position = new Vector3(transform.position.x, height + cameraHeightAboveGroundLevel, transform.position.z);
+        cameraHeight = height + RestrictionChecker.ActiveBuilding.GroundLevel;
+        transform.position = new Vector3(transform.position.x, cameraHeight, transform.position.z);
     }
 
     public void MoveAndFocusOnLocation(Vector3 targetLocation, Quaternion rotation)

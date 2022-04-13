@@ -20,6 +20,10 @@ public class SelectStartLocationState : State
     private string unselectedText = "selecteer locatie";
 
     private Vector3 placeLocation;
+    [SerializeField]
+    private WorldPointFollower instructionsTagPrefab;
+    private WorldPointFollower instructionsTag;
+    private float orthographicCameraDefaultSize;
 
     protected override void Awake()
     {
@@ -31,19 +35,28 @@ public class SelectStartLocationState : State
     {
         base.Start();
         MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
+        RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
     }
 
     private void Update()
     {
-        CalculatePlaceLocation();
+        CalculateAndApplyPlaceLocation();
 
         if (!Selector.Instance.HoveringInterface() && Input.GetMouseButtonDown(0))
         {
             StepEndedByUser();
         }
+
+        if (orthographicCameraDefaultSize == 0)
+        {
+            orthographicCameraDefaultSize = CameraModeChanger.Instance.ActiveCamera.orthographicSize;
+        }
+
+        var tagScaleFactor = orthographicCameraDefaultSize / CameraModeChanger.Instance.ActiveCamera.orthographicSize;
+        instructionsTag.transform.localScale = Vector3.one * tagScaleFactor;
     }
 
-    private void CalculatePlaceLocation()
+    private void CalculateAndApplyPlaceLocation()
     {
         var groundPlane = new Plane(transform.up, -building.GroundLevel);
         var ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(Input.mousePosition);
@@ -52,7 +65,8 @@ public class SelectStartLocationState : State
         {
             var offset = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveUitbouw.transform.position;
             placeLocation = ray.origin + (ray.direction * enter) - offset;
-            RestrictionChecker.ActiveUitbouw.transform.position = placeLocation;
+            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(placeLocation);
+            instructionsTag.AlignWithWorldPosition(RestrictionChecker.ActiveUitbouw.CenterPoint);
         }
     }
 
@@ -74,16 +88,18 @@ public class SelectStartLocationState : State
         {
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
-            RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
+            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
         }
+        instructionsTag = CoordinateNumbers.Instance.CreateGenericWorldPointFollower(instructionsTagPrefab);
     }
 
     public override void StateCompletedAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.GodView);
+        CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
         building.transform.position -= Vector3.up * 0.001f; //reset position 
         building.SelectedWall.AllowSelection = false;
         CreateOrEnableUitbouw(placeLocation);
+        Destroy(instructionsTag.gameObject);
     }
 
     private void CreateOrEnableUitbouw(Vector3 location)
@@ -91,7 +107,7 @@ public class SelectStartLocationState : State
         if (RestrictionChecker.ActiveUitbouw)
         {
             //re-enable uitbouw that was previously placed
-            RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
+            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(true);
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true); //disable rotation
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
             RestrictionChecker.ActiveUitbouw.transform.position = location;

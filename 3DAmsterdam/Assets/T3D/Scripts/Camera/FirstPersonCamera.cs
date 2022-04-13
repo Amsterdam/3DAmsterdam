@@ -29,9 +29,14 @@ public class FirstPersonCamera : MonoBehaviour, ICameraControls
     {
         myCam = GetComponent<Camera>();
     }
-    private void Start()
+
+    private void OnEnable()
     {
         SetCameraStartPosition();
+    }
+
+    private void Start()
+    {
         AddActionListeners();
     }
 

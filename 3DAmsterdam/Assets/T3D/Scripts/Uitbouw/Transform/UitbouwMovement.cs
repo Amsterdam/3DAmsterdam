@@ -43,6 +43,13 @@ namespace Netherlands3D.T3D.Uitbouw
                 ProcessUserInput();
             }
 
+            ProcessMovementLimits();
+
+            //SetArrowPositions();
+        }
+
+        private void ProcessMovementLimits()
+        {
             if (T3DInit.HTMLData.SnapToWall && uitbouw.ActiveBuilding && uitbouw.ActiveBuilding.SelectedWall.WallIsSelected)
             {
                 SnapToWall(uitbouw.ActiveBuilding.SelectedWall);
@@ -54,8 +61,6 @@ namespace Netherlands3D.T3D.Uitbouw
             }
 
             SnapToGround(uitbouw.ActiveBuilding);
-
-            //SetArrowPositions();
         }
 
         private void ProcessUserInput()
@@ -67,6 +72,12 @@ namespace Netherlands3D.T3D.Uitbouw
                 else
                     transform.position += axis.PlanarDeltaPosition;
             }
+        }
+
+        public void SetPosition(Vector3 placeLocation)
+        {
+            transform.position = placeLocation;
+            ProcessMovementLimits();
         }
 
         private void SnapToWall(WallSelector selectedWall)

@@ -149,6 +149,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     void RotateAround(float xaxis, float yaxis)
     {
         transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
+        transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed); //todo limit angle
     }
 
     bool CameraInRange(Vector3 newCameraPosition)
