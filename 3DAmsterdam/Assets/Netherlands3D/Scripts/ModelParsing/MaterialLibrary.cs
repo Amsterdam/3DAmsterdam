@@ -149,7 +149,7 @@ namespace Netherlands3D.Rendering
 
         private List<string> FoundMatch(MeshRenderer renderer)
         {
-            var materialArray = renderer.materials;
+            var materialArray = renderer.sharedMaterials;
             List<string> materialNames = new List<string>();
             for (int i = 0; i < materialArray.Length; i++)
             {
@@ -161,7 +161,7 @@ namespace Netherlands3D.Rendering
 
 		private void ApplyMaterialOverrides(MeshRenderer renderer)
 		{
-			var materialArray = renderer.materials;
+			var materialArray = renderer.sharedMaterials;
 			for (int i = 0; i < materialArray.Length; i++)
 			{
 				var replacement = FindMaterialReplacement(materialArray[i], true);
