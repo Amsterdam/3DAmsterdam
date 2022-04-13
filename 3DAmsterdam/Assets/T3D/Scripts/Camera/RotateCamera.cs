@@ -29,6 +29,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private float maxCameraDistance = 200;
     [SerializeField]
     private float startDistanceFromCenter = 15f;
+    [SerializeField]
+    private float minimumYangle = 10f;
+    [SerializeField]
+    private float maximumYangle = 65f;
 
     private bool dragging = false;
     private float scrollDelta;
@@ -149,7 +153,18 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     void RotateAround(float xaxis, float yaxis)
     {
         transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
-        transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed); //todo limit angle
+        transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed);
+        var newAngle = CalculateAngle();
+        if (newAngle > maximumYangle || newAngle < minimumYangle || transform.position.y < RestrictionChecker.ActiveBuilding.GroundLevel)
+        {
+            transform.RotateAround(CameraTargetPoint, transform.right, yaxis * rotationSpeed); //todo Ugly way of limiting angles
+        }
+    }
+
+    private float CalculateAngle()
+    {
+        var pointOnGround = new Vector3(transform.position.x, CameraTargetPoint.y, transform.position.z);
+        return Vector3.Angle(pointOnGround - CameraTargetPoint, transform.position - CameraTargetPoint);
     }
 
     bool CameraInRange(Vector3 newCameraPosition)
