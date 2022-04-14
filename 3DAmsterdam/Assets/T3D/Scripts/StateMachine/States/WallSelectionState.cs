@@ -92,7 +92,7 @@ public class WallSelectionState : State
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
             if (building.SelectedWall.WallChanged)
             {
-                RestrictionChecker.ActiveUitbouw.transform.position = location;
+                RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);
             }
         }
         else

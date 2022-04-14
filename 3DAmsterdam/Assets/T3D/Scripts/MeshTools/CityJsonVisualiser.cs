@@ -94,7 +94,7 @@ public class CityJsonVisualiser : MonoBehaviour
         uitbouw.gameObject.SetActive(enable);
 
         if (perceelCenter != null)
-            uitbouw.transform.position = CoordConvert.RDtoUnity(perceelCenter.Value); //set position to ensure snapping to wall is somewhat accurate
+            uitbouw.GetComponent<UitbouwMovement>().SetPosition(CoordConvert.RDtoUnity(perceelCenter.Value)); //set position to ensure snapping to wall is somewhat accurate
 
         uitbouw.GetComponent<UitbouwMovement>().enabled = enable;
         uitbouw.GetComponent<UitbouwMeasurement>().enabled = enable;
@@ -102,6 +102,6 @@ public class CityJsonVisualiser : MonoBehaviour
 
     public void SetUitbouwPosition(Vector3 pos)
     {
-        uitbouw.transform.position = pos;
+        uitbouw.GetComponent<UitbouwMovement>().SetPosition(pos);
     }
 }

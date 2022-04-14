@@ -41,10 +41,11 @@ namespace Netherlands3D.T3D.Uitbouw
         private void Rotate()
         {
             var deltaAngle = CalculateDeltaAngle();
-            foreach (Transform t in transform)
-            {
-                t.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
-            }
+            transform.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
+            //foreach (Transform t in transform)
+            //{
+            //    t.RotateAround(uitbouw.CenterPoint, transform.up, deltaAngle); //rotate children because snapping occurs on this Transform
+            //}
         }
 
         private float CalculateDeltaAngle()
