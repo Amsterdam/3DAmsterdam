@@ -147,10 +147,10 @@ namespace Netherlands3D.T3D.Uitbouw
             building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
             {
-                print(SessionSaver.HasLoaded);
+                print("data loaded: " + SessionSaver.HasLoaded);
                 print("setting save data:" + saveData.Position +"\t"+ saveData.Rotation.eulerAngles);
-                transform.position = saveData.Position;
-                transform.rotation = saveData.Rotation;
+                transform.SetPositionAndRotation(saveData.Position, saveData.Rotation);
+                print(gameObject.name + " loaded pos: " + transform.position);
             }
         }
 
@@ -159,6 +159,8 @@ namespace Netherlands3D.T3D.Uitbouw
             UpdateGizmo();
             saveData.Position = transform.position;
             saveData.Rotation = transform.rotation;
+
+            //print("saving: " + transform.position);
         }
 
         public void EnableGizmo(bool enable)

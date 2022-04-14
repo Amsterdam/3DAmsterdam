@@ -14,26 +14,20 @@ public class StartState : State
         return T3DInit.HTMLData.SnapToWall ? 0 : 1;
     }
 
-    private void OnEnable()
-    {
-        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
-    }
-
-    private void OnDisable()
-    {
-        MetadataLoader.Instance.BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
-    }
-
     public override void StateEnteredAction()
     {
-        if (RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed)
-        {
-            GoToNextState();
-        }
+        StartCoroutine(WaitForDataLoadingToComplete());
     }
 
-    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+    private IEnumerator WaitForDataLoadingToComplete()
     {
+        //wait until all data is loaded to avoid timing issues in later steps
+        yield return new WaitUntil(() =>
+            SessionSaver.HasLoaded &&
+            RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed &&
+            RestrictionChecker.ActivePerceel.IsLoaded
+        );
+
         GoToNextState();
     }
 

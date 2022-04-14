@@ -5,6 +5,7 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using ConvertCoordinates;
+using System.Collections;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
@@ -66,16 +67,17 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         myCam = GetComponent<Camera>();
 
         AddActionListeners();
-        RestrictionChecker.ActiveBuilding.BuildingDataProcessed += Instance_BuildingDataProcessed;
     }
 
-    private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
+    private void OnEnable()
     {
-        SetCameraStartPosition(building.GroundLevel);
+        StartCoroutine(SetCameraStartPosition());
     }
 
     private void Update()
     {
+        //print("update: snap, waiting :" + RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed + "\t" + (RestrictionChecker.ActivePerceel != null));
+        //print("update: no snap, waiting :" + RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed + "\t" + (RestrictionChecker.ActiveUitbouw != null));
         ProcessUserInput();
         SmoothRotateToCameraTargetPoint();
     }
@@ -89,12 +91,25 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
     }
 
-    public void SetCameraStartPosition(float groundLevel)
+    private IEnumerator SetCameraStartPosition()
     {
-        var dir = (RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter).normalized;
+        //wait until Ground level and building center are known, and  the active uitbouw exists
+        Vector3 dir;
+        if (T3DInit.HTMLData.SnapToWall)
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActivePerceel != null);
+            dir = RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
+        else
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActiveUitbouw != null);
+            dir = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
         dir.y = 0;
+        dir.Normalize();
+
         transform.position = CameraTargetPoint + dir * startDistanceFromCenter;
-        SetNormalizedCameraHeight(groundLevel);
+        SetNormalizedCameraHeight(RestrictionChecker.ActiveBuilding.GroundLevel);
         transform.LookAt(CameraTargetPoint);
     }
 

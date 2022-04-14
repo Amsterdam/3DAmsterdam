@@ -31,16 +31,6 @@ public class SelectStartLocationState : State
         building = RestrictionChecker.ActiveBuilding;
     }
 
-    protected override void Start()
-    {
-        if (!RestrictionChecker.ActiveUitbouw)
-        {
-            MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
-            RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
-        }
-        base.Start(); // load uitbouw before processing base Start function
-    }
-
     private void Update()
     {
         CalculateAndApplyPlaceLocation();
@@ -84,15 +74,19 @@ public class SelectStartLocationState : State
 
     public override void StateEnteredAction()
     {
+        if (!RestrictionChecker.ActiveUitbouw)
+        {
+            MetadataLoader.Instance.PlaatsUitbouw(placeLocation);
+        }
+
         CameraModeChanger.Instance.SetCameraMode(CameraMode.TopDown);
         building.transform.position += Vector3.up * 0.001f; //fix z-fighting in orthographic mode
 
-        if (RestrictionChecker.ActiveUitbouw)
-        {
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
-            RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
-            //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
-        }
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
+        RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
+        RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
+
+        //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
         instructionsTag = CoordinateNumbers.Instance.CreateGenericWorldPointFollower(instructionsTagPrefab);
     }
 

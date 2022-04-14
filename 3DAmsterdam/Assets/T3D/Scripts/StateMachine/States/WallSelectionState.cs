@@ -64,6 +64,8 @@ public class WallSelectionState : State
 
     public override void StateEnteredAction()
     {
+        CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
+
         building.SelectedWall.AllowSelection = true;
         building.SelectedWall.WallChanged = false;
 
@@ -77,7 +79,6 @@ public class WallSelectionState : State
 
     public override void StateCompletedAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.GodView);
         building.SelectedWall.AllowSelection = false;
         CreateOrEnableUitbouw(GetSpawnPosition());
     }

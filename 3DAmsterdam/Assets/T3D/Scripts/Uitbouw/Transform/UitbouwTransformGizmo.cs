@@ -16,7 +16,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwTransformGizmo : DragableAxis
     {
         public GizmoMode Mode { get; private set; }
-        public Vector3 GizmoPoint => transform.position + RestrictionChecker.ActiveUitbouw.transform.rotation * RestrictionChecker.ActiveUitbouw.Extents;// * Radius;
+        public Vector3 GizmoPoint => transform.position + RestrictionChecker.ActiveUitbouw.transform.rotation * RestrictionChecker.ActiveUitbouw.Extents;
         public float Radius => transform.localScale.x / 2;
 
         private SpriteRenderer spriteRenderer;
