@@ -14,14 +14,6 @@ public class StateSaver : MonoBehaviour
 {
     public State[] states;
     public int ActiveStateIndex => saveData.ActiveStateIndex;
-    //{
-    //    get
-    //    {
-    //        var index = GetStateIndex(State.ActiveState);
-    //        saveData.ActiveStateIndex = index;
-    //        return index;
-    //    }
-    //}
     private StateSaverSaveDataContainer saveData;
 
     public static StateSaver Instance;
