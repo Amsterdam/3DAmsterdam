@@ -35,6 +35,8 @@ namespace Netherlands3D.T3D.Uitbouw
         private ShapeableUitbouw shapeableUitbouw;
         private SizeInputFieldSaveData saveData;
 
+        public bool IsSelected => EventSystem.current.currentSelectedGameObject == gameObject;
+
         private void Awake()
         {
             saveData = new SizeInputFieldSaveData(size);
@@ -91,6 +93,26 @@ namespace Netherlands3D.T3D.Uitbouw
                 {
                     SetText();
                 }
+            }
+            SetWallColors(size, IsSelected);
+        }
+
+        private void SetWallColors(SizeType size, bool highlight)
+        {
+            switch (size)
+            {
+                case SizeType.Width:
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Left, highlight);
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Right, highlight);
+                    break;
+                case SizeType.Height:
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Top, highlight);
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Bottom, highlight);
+                    break;
+                case SizeType.Depth:
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Front, highlight);
+                    shapeableUitbouw.SetWallHighlightActive(WallSide.Back, highlight);
+                    break;
             }
         }
 

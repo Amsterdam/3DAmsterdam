@@ -63,7 +63,7 @@ Shader "Custom/Outline Fill Planar" {
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
         //float3 offset = float3(_OutlineWidth/100.0, 0, _OutlineWidth/100.0);
-        input.vertex.xyz *= 1 + _OutlineWidth;
+        input.vertex.xyz *= 1 + _OutlineWidth / 100.0;
         //float3 normal = any(input.smoothNormal) ? input.smoothNormal : input.normal;
         //float3 viewPosition = UnityObjectToViewPos(input.vertex);
         //float3 viewNormal = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, normal));
