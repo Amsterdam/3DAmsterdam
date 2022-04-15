@@ -42,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
         private void BuildingMeshGenerator_BuildingDataProcessed(BuildingMeshGenerator building)
         {
             perceelMeshGameObject.transform.position = new Vector3(perceelMeshGameObject.transform.position.x, building.GroundLevel, perceelMeshGameObject.transform.position.z);
-            perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel, perceelOutlineGameObject.transform.position.z);
+            perceelOutlineGameObject.transform.position = new Vector3(perceelOutlineGameObject.transform.position.x, building.GroundLevel + 0.01f, perceelOutlineGameObject.transform.position.z);
 
             terreinMeshGameObject.transform.position = new Vector3(building.transform.position.x, building.GroundLevel, building.transform.position.z);
             Center = new Vector3(Center.x, building.GroundLevel, Center.z);
@@ -50,7 +50,7 @@ namespace Netherlands3D.T3D.Uitbouw
 
         private void Instance_PerceelDataLoaded(object source, PerceelDataEventArgs args)
         {
-            Perceel = args.Perceel;      
+            Perceel = args.Perceel;
             GenerateMeshFromPerceel(args.Perceel);
             RenderPerceelOutline(args.Perceel);
             SetPerceelActive(false);
