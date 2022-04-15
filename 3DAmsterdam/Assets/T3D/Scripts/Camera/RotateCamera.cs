@@ -21,7 +21,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private float minCameraHeight = 4;
     [SerializeField]
-    private float rotationSpeed = 0.5f;
+    private float rotationSpeed = 5f;
     [SerializeField]
     private float zoomSpeed = 0.01f;
     [SerializeField]
@@ -167,19 +167,21 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void RotateAround(float xaxis, float yaxis)
     {
-        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
-        transform.RotateAround(CameraTargetPoint, transform.right, -yaxis * rotationSpeed);
-        var newAngle = CalculateAngle();
-        if (newAngle > maximumYangle || newAngle < minimumYangle || transform.position.y < RestrictionChecker.ActiveBuilding.GroundLevel)
-        {
-            transform.RotateAround(CameraTargetPoint, transform.right, yaxis * rotationSpeed); //todo Ugly way of limiting angles
-        }
-    }
+        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed * Time.deltaTime);
 
-    private float CalculateAngle()
-    {
-        var pointOnGround = new Vector3(transform.position.x, CameraTargetPoint.y, transform.position.z);
-        return Vector3.Angle(pointOnGround - CameraTargetPoint, transform.position - CameraTargetPoint);
+        var yAngle = Vector3.Angle(Vector3.up, (transform.position - CameraTargetPoint).normalized);
+        var deltaYAngle = yaxis * rotationSpeed * Time.deltaTime;
+
+        if (yAngle + deltaYAngle > maximumYangle)
+        {
+            deltaYAngle = maximumYangle - yAngle;
+        }
+        else if (yAngle + deltaYAngle < minimumYangle)
+        {
+            deltaYAngle = minimumYangle - yAngle;
+        }
+
+        transform.RotateAround(CameraTargetPoint, transform.right, -deltaYAngle); //use -deltaAngle because this function rotates in the opposite direction for some reason
     }
 
     bool CameraInRange(Vector3 newCameraPosition)

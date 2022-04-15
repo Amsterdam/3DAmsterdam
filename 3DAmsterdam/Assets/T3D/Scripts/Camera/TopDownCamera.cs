@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 public class TopDownCamera : MonoBehaviour, ICameraControls
 {
     private Camera myCam;
-    [SerializeField]
+    //[SerializeField]
     private float cameraHeight = 10000f;
     public CameraMode Mode => CameraMode.TopDown;
 
@@ -33,7 +33,6 @@ public class TopDownCamera : MonoBehaviour, ICameraControls
         //perceelRadius / Mathf.Tan(myCam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         transform.position = new Vector3(perceelCenter.x, cameraHeight, perceelCenter.z);
         myCam.orthographicSize = perceelRadius;
-        print("set size: " + myCam.orthographicSize);
     }
 
     private void OnPerceelDataLoaded(object source, PerceelDataEventArgs args)
