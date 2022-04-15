@@ -16,7 +16,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwTransformGizmo : DragableAxis
     {
         public GizmoMode Mode { get; private set; }
-        public Vector3 GizmoPoint => transform.position + transform.right * Radius;
+        public Vector3 GizmoPoint => transform.position + RestrictionChecker.ActiveUitbouw.transform.rotation * RestrictionChecker.ActiveUitbouw.Extents;
         public float Radius => transform.localScale.x / 2;
 
         private SpriteRenderer spriteRenderer;
@@ -42,7 +42,7 @@ namespace Netherlands3D.T3D.Uitbouw
             transform.localScale = new Vector3(d, d, d);
         }
 
-        public void SetActive(bool active)
+        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true)
         {
             if (!active)
                 SetMode(GizmoMode.None);
@@ -55,7 +55,7 @@ namespace Netherlands3D.T3D.Uitbouw
                 GizmoButtons.SubscribeListeners(this);
             }
 
-            GizmoButtons.SetActive(active);
+            GizmoButtons.SetActive(active, allowMove, allowRotate);
             gameObject.SetActive(active);
         }
 

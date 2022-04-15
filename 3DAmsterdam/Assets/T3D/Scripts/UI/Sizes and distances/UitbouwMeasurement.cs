@@ -18,7 +18,7 @@ namespace Netherlands3D.T3D.Uitbouw
         protected override void Measuring_DistanceInputOverride(BuildingMeasuring source, Vector3 direction, float delta)
         {
             //var axis = (source.LinePoints[1].transform.position - source.LinePoints[0].transform.position).normalized;
-            uitbouw.transform.position += direction * delta;
+            uitbouw.GetComponent<UitbouwMovement>().SetPosition(uitbouw.transform.position + direction * delta);
         }
 
         protected override void DrawLines()

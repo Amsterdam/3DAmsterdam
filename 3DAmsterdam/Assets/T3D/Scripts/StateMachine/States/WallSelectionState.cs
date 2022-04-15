@@ -64,6 +64,8 @@ public class WallSelectionState : State
 
     public override void StateEnteredAction()
     {
+        CameraModeChanger.Instance.SetCameraMode(CameraMode.GodView);
+
         building.SelectedWall.AllowSelection = true;
         building.SelectedWall.WallChanged = false;
 
@@ -77,7 +79,6 @@ public class WallSelectionState : State
 
     public override void StateCompletedAction()
     {
-        CameraModeChanger.Instance.SetCameraMode(Netherlands3D.Cameras.CameraMode.GodView);
         building.SelectedWall.AllowSelection = false;
         CreateOrEnableUitbouw(GetSpawnPosition());
     }
@@ -92,7 +93,7 @@ public class WallSelectionState : State
             RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
             if (building.SelectedWall.WallChanged)
             {
-                RestrictionChecker.ActiveUitbouw.transform.position = location;
+                RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetPosition(location);
             }
         }
         else

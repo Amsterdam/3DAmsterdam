@@ -61,6 +61,14 @@ public class State : MonoBehaviour
         return null;
     }
 
+    public void EnterStartState()
+    {
+        if (!IsFirstState)
+            Debug.LogError("trying to enter state " + this.ToString() + " but this state is not marked as the first state. Incorrect behaviour can occur");
+
+        EnterState(null);
+    }
+
     // when the state is entered
     protected virtual void EnterState(State previousState)
     {

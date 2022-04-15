@@ -5,6 +5,7 @@ using Netherlands3D.InputHandler;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using ConvertCoordinates;
+using System.Collections;
 
 public class RotateCamera : MonoBehaviour, ICameraControls
 {
@@ -20,7 +21,7 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     [SerializeField]
     private float minCameraHeight = 4;
     [SerializeField]
-    private float rotationSpeed = 0.5f;
+    private float rotationSpeed = 5f;
     [SerializeField]
     private float zoomSpeed = 0.01f;
     [SerializeField]
@@ -29,6 +30,10 @@ public class RotateCamera : MonoBehaviour, ICameraControls
     private float maxCameraDistance = 200;
     [SerializeField]
     private float startDistanceFromCenter = 15f;
+    [SerializeField]
+    private float minimumYangle = 10f;
+    [SerializeField]
+    private float maximumYangle = 65f;
 
     private bool dragging = false;
     private float scrollDelta;
@@ -62,16 +67,17 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         myCam = GetComponent<Camera>();
 
         AddActionListeners();
-        RestrictionChecker.ActiveBuilding.BuildingDataProcessed += Instance_BuildingDataProcessed;
     }
 
-    private void Instance_BuildingDataProcessed(BuildingMeshGenerator building)
+    private void OnEnable()
     {
-        SetCameraStartPosition(building.GroundLevel);
+        StartCoroutine(SetCameraStartPosition());
     }
 
     private void Update()
     {
+        //print("update: snap, waiting :" + RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed + "\t" + (RestrictionChecker.ActivePerceel != null));
+        //print("update: no snap, waiting :" + RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed + "\t" + (RestrictionChecker.ActiveUitbouw != null));
         ProcessUserInput();
         SmoothRotateToCameraTargetPoint();
     }
@@ -85,12 +91,25 @@ public class RotateCamera : MonoBehaviour, ICameraControls
         }
     }
 
-    public void SetCameraStartPosition(float groundLevel)
+    private IEnumerator SetCameraStartPosition()
     {
-        var dir = (RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter).normalized;
+        //wait until Ground level and building center are known, and  the active uitbouw exists
+        Vector3 dir;
+        if (T3DInit.HTMLData.SnapToWall)
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActivePerceel != null);
+            dir = RestrictionChecker.ActivePerceel.Center - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
+        else
+        {
+            yield return new WaitUntil(() => RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed && RestrictionChecker.ActiveUitbouw != null);
+            dir = RestrictionChecker.ActiveUitbouw.CenterPoint - RestrictionChecker.ActiveBuilding.BuildingCenter;
+        }
         dir.y = 0;
+        dir.Normalize();
+
         transform.position = CameraTargetPoint + dir * startDistanceFromCenter;
-        SetNormalizedCameraHeight(groundLevel);
+        SetNormalizedCameraHeight(RestrictionChecker.ActiveBuilding.GroundLevel);
         transform.LookAt(CameraTargetPoint);
     }
 
@@ -148,7 +167,21 @@ public class RotateCamera : MonoBehaviour, ICameraControls
 
     void RotateAround(float xaxis, float yaxis)
     {
-        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed);
+        transform.RotateAround(CameraTargetPoint, Vector3.up, xaxis * rotationSpeed * Time.deltaTime);
+
+        var yAngle = Vector3.Angle(Vector3.up, (transform.position - CameraTargetPoint).normalized);
+        var deltaYAngle = yaxis * rotationSpeed * Time.deltaTime;
+
+        if (yAngle + deltaYAngle > maximumYangle)
+        {
+            deltaYAngle = maximumYangle - yAngle;
+        }
+        else if (yAngle + deltaYAngle < minimumYangle)
+        {
+            deltaYAngle = minimumYangle - yAngle;
+        }
+
+        transform.RotateAround(CameraTargetPoint, transform.right, -deltaYAngle); //use -deltaAngle because this function rotates in the opposite direction for some reason
     }
 
     bool CameraInRange(Vector3 newCameraPosition)

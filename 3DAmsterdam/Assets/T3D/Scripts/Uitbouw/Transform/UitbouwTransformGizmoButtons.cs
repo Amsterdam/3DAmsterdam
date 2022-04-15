@@ -17,9 +17,11 @@ namespace Netherlands3D.T3D.Uitbouw
         //public bool MoveModeSelected => moveToggle.isOn;
         //public bool RotateModeSelected => rotateToggle.isOn;
 
-        public void SetActive(bool active)
+        public void SetActive(bool active, bool allowMove = true, bool allowRotate = true)
         {
             gameObject.SetActive(active);
+            moveToggle.transform.parent.gameObject.SetActive(allowMove);
+            rotateToggle.transform.parent.gameObject.SetActive(allowRotate);
         }
 
         public void SubscribeListeners(UitbouwTransformGizmo rotateGizmo)

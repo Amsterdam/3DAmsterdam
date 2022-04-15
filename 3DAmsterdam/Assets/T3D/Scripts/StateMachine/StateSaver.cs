@@ -50,7 +50,8 @@ public class StateSaver : MonoBehaviour
     private void GoToFirstState()
     {
         var firstState = states.FirstOrDefault(s => s.IsFirstState);
-        firstState.gameObject.SetActive(true);
+        firstState.EnterStartState();
+        //firstState.gameObject.SetActive(true);
     }
 
     public int GetStateIndex(State state)

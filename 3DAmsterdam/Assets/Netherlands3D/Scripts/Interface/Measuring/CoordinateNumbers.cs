@@ -59,8 +59,12 @@ namespace Netherlands3D.Interface
 
         public UitbouwTransformGizmoButtons CreateUitbouwTransformGizmoButtons()
         {
-            print(uitbouwTransformGizmoButtonsPrefab);
             return Instantiate(uitbouwTransformGizmoButtonsPrefab, transform);
+        }
+
+        public WorldPointFollower CreateGenericWorldPointFollower(WorldPointFollower prefab)
+        {
+            return Instantiate(prefab, transform);
         }
     }
 }

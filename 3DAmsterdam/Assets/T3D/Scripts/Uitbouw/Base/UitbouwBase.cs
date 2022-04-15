@@ -9,6 +9,7 @@ namespace Netherlands3D.T3D.Uitbouw
     public class UitbouwBaseSaveDataContainer : SaveDataContainer
     {
         public Vector3 Position;
+        public Quaternion Rotation;
     }
 
     public abstract class UitbouwBase : MonoBehaviour
@@ -112,8 +113,8 @@ namespace Netherlands3D.T3D.Uitbouw
 
         protected virtual void Awake()
         {
-            InitializeUserMovementAxes();
             saveData = new UitbouwBaseSaveDataContainer();
+            InitializeUserMovementAxes();
         }
 
         public abstract void UpdateDimensions();
@@ -145,18 +146,21 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             building = RestrictionChecker.ActiveBuilding; //in start to ensure ActiveBuilding is set
             if (SessionSaver.LoadPreviousSession)
-                transform.position = saveData.Position;
+            {
+                transform.SetPositionAndRotation(saveData.Position, saveData.Rotation);
+            }
         }
 
         protected virtual void Update()
         {
             UpdateGizmo();
             saveData.Position = transform.position;
+            saveData.Rotation = transform.rotation;
         }
 
         public void EnableGizmo(bool enable)
         {
-            Gizmo.SetActive(enable);
+            Gizmo.SetActive(enable, true, !T3DInit.HTMLData.SnapToWall);
         }
 
         private void UpdateGizmo()

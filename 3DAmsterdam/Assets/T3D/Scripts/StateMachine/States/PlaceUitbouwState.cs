@@ -18,7 +18,6 @@ public class PlaceUitbouwState : State
     public override void StateEnteredAction()
     {
         base.StateEnteredAction();
-
         RestrictionChecker.ActiveUitbouw.EnableGizmo(true);
         if (!uitbouwMovement.AllowDrag)
         {

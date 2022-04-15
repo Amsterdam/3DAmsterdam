@@ -14,33 +14,33 @@ public class StartState : State
         return T3DInit.HTMLData.SnapToWall ? 0 : 1;
     }
 
-    private void OnEnable()
-    {
-        MetadataLoader.Instance.BuildingMetaDataLoaded += BuildingMetaDataLoaded;
-    }
-
-    private void OnDisable()
-    {
-        MetadataLoader.Instance.BuildingMetaDataLoaded -= BuildingMetaDataLoaded;
-    }
-
     public override void StateEnteredAction()
     {
-        if (RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed)
-        {
-            GoToNextState();
-        }
+        StartCoroutine(WaitForDataLoadingToComplete());
     }
 
-    private void BuildingMetaDataLoaded(object source, ObjectDataEventArgs args)
+    protected override void LoadSavedState()
     {
+        //do not call base function, even when loading a session we need to wait for the data to load correctly.
+        //base.LoadSavedState();
+    }  
+
+    private IEnumerator WaitForDataLoadingToComplete()
+    {
+        //wait until all data is loaded to avoid timing issues in later steps
+        yield return new WaitUntil(() =>
+            SessionSaver.HasLoaded &&
+            RestrictionChecker.ActiveBuilding.BuildingDataIsProcessed &&
+            RestrictionChecker.ActivePerceel.IsLoaded
+        );
+
         GoToNextState();
     }
 
     private void GoToNextState()
     {
-        if (StateSaver.Instance.ActiveStateIndex > 0)
-            EndState();
+        if (StateSaver.Instance.ActiveStateIndex != StateSaver.Instance.GetStateIndex(this))
+            base.LoadSavedState(); //continue loading states the data once the data is loaded
         else
             StepEndedByUser(); //use By User function to ensure state Index in incremented;
     }
