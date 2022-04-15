@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6754303235095884790}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Uitbouw_Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,8 @@ GameObject:
   - component: {fileID: 4051661277681129896}
   - component: {fileID: 6641196300282613232}
   - component: {fileID: 8159273155836315771}
-  m_Layer: 0
+  - component: {fileID: 1652044654856456080}
+  m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +93,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5d2f640d9c148348231fc5f5a40396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapToWall: 0
 --- !u!114 &6641196300282613232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,3 +121,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c50cf9f236c214731a27e6c200d3d6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1652044654856456080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 1, b: 0.13333344, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+  isPlane: 0

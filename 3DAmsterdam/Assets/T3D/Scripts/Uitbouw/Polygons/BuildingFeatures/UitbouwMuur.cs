@@ -21,8 +21,6 @@ namespace Netherlands3D.T3D.Uitbouw
         private WallSide side;
         public WallSide Side => side;
 
-        bool isActive = false;
-
         private UitbouwMuur left;
         private UitbouwMuur right;
         private UitbouwMuur top;
@@ -40,6 +38,9 @@ namespace Netherlands3D.T3D.Uitbouw
         public MeshFilter MeshFilter => meshFilter;
 
         public Plane WallPlane => new Plane(-transform.forward, transform.position);
+
+        [SerializeField]
+        private Material normalMaterial, highlightMaterial;
 
         //private void OnValidate()
         //{
@@ -105,6 +106,11 @@ namespace Netherlands3D.T3D.Uitbouw
             bottom.RecalculateScale();
         }
 
+        public void SetHighlightActive(bool enable)
+        {
+            GetComponent<MeshRenderer>().material = enable ? highlightMaterial : normalMaterial;
+        }
+
         public void RecalculatePosition(Vector3 delta)
         {
             transform.position += delta;
@@ -119,7 +125,7 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             oldPosition = transform.position;
             deltaPosition = Vector3.zero;
-            isActive = active;
+            //isActive = active;
         }
 
         public void MoveWall(float delta)

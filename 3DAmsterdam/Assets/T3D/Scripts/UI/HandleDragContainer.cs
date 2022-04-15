@@ -59,7 +59,7 @@ namespace Netherlands3D.T3D.Uitbouw.BoundaryFeatures
 
             Ray ray = CameraModeChanger.Instance.ActiveCamera.ScreenPointToRay(screenpoint);
 
-            var mask = LayerMask.GetMask("Maskable");
+            var mask = LayerMask.GetMask("Uitbouw");
             bool casted = Physics.Raycast(ray, out hit, Mathf.Infinity, mask);
 
             if (casted)

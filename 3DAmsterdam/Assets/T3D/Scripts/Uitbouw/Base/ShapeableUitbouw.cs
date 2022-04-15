@@ -30,6 +30,14 @@ namespace Netherlands3D.T3D.Uitbouw
 
         public override Vector3 BackCenter => back.transform.position;
 
+        //[SerializeField]
+        //private Color highlightColor;
+        //[SerializeField]
+        //private Color normalColor;
+
+        //public Color HighlightColor => highlightColor;
+        //public Color NormalColor => normalColor;
+
         public override void UpdateDimensions()
         {
             SetDimensions(left, right, bottom, top, front, back);
@@ -72,6 +80,12 @@ namespace Netherlands3D.T3D.Uitbouw
         {
             var muur = walls.FirstOrDefault(x => x.Side == side);
             return muur;
+        }
+
+        public void SetWallHighlightActive(WallSide side, bool enable)
+        {
+            var wall = GetWall(side);
+            wall.SetHighlightActive(enable);
         }
     }
 }

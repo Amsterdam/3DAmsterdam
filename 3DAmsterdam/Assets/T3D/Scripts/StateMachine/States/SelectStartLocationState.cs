@@ -85,6 +85,7 @@ public class SelectStartLocationState : State
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(false); //disable movement and measuring lines
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(false); //disable rotation
         RestrictionChecker.ActiveUitbouw.EnableGizmo(false);
+        RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = true;
 
         //RestrictionChecker.ActiveUitbouw.transform.parent.gameObject.SetActive(false); //disable uitbouw that was already placed, but preserve any boundary features that were added
         instructionsTag = CoordinateNumbers.Instance.CreateGenericWorldPointFollower(instructionsTagPrefab);
@@ -97,6 +98,7 @@ public class SelectStartLocationState : State
         building.SelectedWall.AllowSelection = false;
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwRotation>().SetAllowRotation(true);
         RestrictionChecker.ActiveUitbouw.GetComponent<UitbouwMovement>().SetAllowMovement(true);
+        RestrictionChecker.ActiveUitbouw.GetComponent<Outline>().enabled = false;
         Destroy(instructionsTag.gameObject);
     }
 }
