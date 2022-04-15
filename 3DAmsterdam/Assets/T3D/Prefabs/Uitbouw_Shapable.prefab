@@ -125,7 +125,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6754303235095884790}
-  - component: {fileID: 5866542069872169620}
   m_Layer: 20
   m_Name: Uitbouw_Shapable
   m_TagString: Untagged
@@ -148,24 +147,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5866542069872169620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604081640823115902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 0, g: 1, b: 0.13333344, a: 1}
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &2228489600411045612
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,6 +545,7 @@ GameObject:
   - component: {fileID: 6849669558771954186}
   - component: {fileID: 6641196300282613232}
   - component: {fileID: 8290729776069747320}
+  - component: {fileID: 5407043954321932671}
   m_Layer: 20
   m_Name: Uitbouw
   m_TagString: Untagged
@@ -661,6 +643,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c50cf9f236c214731a27e6c200d3d6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5407043954321932671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007389617465903191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 1, b: 0.13333344, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+  isPlane: 1
 --- !u!1 &8924733966033319186
 GameObject:
   m_ObjectHideFlags: 0
